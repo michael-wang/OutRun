@@ -49,7 +49,7 @@ export class EngineSound {
   setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
   update(speed: number, slip: number, gas: boolean) {
     this.active = true; this.engineHz = 42 + speed * 3.6 + (gas ? 24 : 0); this.skidLevel = slip > 0.15 ? Math.min(0.22, (slip - 0.15) * 0.32) : 0;
-    this.windLevel=.1*Math.min(1,(speed/78)**2);
+    this.windLevel=.13*Math.min(1,(speed/65)**2);
     if (!this.context) return;
     const now = this.context.currentTime;
     this.engine!.frequency.setTargetAtTime(this.engineHz, now, 0.08);

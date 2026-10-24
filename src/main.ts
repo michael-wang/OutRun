@@ -5,13 +5,14 @@ import { InputController, readSwapped, saveSwapped } from './input';
 import { EngineSound } from './sound';
 import { Immersive } from './immersive';
 import { CHASE, chaseTargets, chaseComposition } from './chase';
+import { SpeedAudit } from './speed-audit';
 import './style.css';
 
 document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="Pause / Menu">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed"><strong>000</strong><span>KM/H · ARCADE</span><em id="status">READY FOR THE COAST</em></aside>
-<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">W / ↑ accelerate &nbsp; A D / ← → steer<br>S / ↓ brake &nbsp; P / Esc pause &nbsp; R restart</p><small>FIRST DRIVE · LOCAL PLAYTEST · v0.3</small></section>
+<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">W / ↑ accelerate &nbsp; A D / ← → steer<br>S / ↓ brake &nbsp; P / Esc pause &nbsp; R restart</p><small>FIRST DRIVE · LOCAL PLAYTEST · v0.3.1</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button></div></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">MAKE YOURSELF AT HOME</div><h2>Controls</h2><label class="setting"><input id="swap" type="checkbox"> Steering on the right</label><p>Accelerator stays above brake on either side.</p><button id="close-settings" class="primary">Done</button></section>
 <div id="touch"><div class="steering"><button data-control="left" aria-label="Steer left">←</button><button data-control="right" aria-label="Steer right">→</button></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
@@ -29,6 +30,7 @@ const mobile=()=>matchMedia("(pointer:coarse)").matches;
 let mode:'menu'|'playing'|'paused'='menu'; let settingsOpen=false; let muted=false; let manual=false;
 let testControls:InputState|undefined;
 let cameraHeading=0; let initialized=false; let elapsed=0; let frames=0;
+const speedAudit=import.meta.env.DEV?new SpeedAudit():undefined;
 const immersive=new Immersive($('app'),()=>{
   $('fullscreen').textContent=immersive.active?'Exit fullscreen':immersive.installed?'PWA fullscreen':'Fullscreen';
   $('immersive-note').textContent=immersive.message;
@@ -92,7 +94,10 @@ function loop(now:number){
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
   if(!manual)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);advance(tick);remaining-=tick;}
-  render(dt);requestAnimationFrame(loop);
+  render(dt);
+  if(!manual&&mode==='playing'&&!settingsOpen)speedAudit?.record({wall:now,simulated:elapsed,progress:state.distance,speed:state.speed,position:world.car.position.toArray(),camera:camera.position.toArray(),trackLength:world.length,heading:state.worldHeading});
+  else speedAudit?.reset();
+  requestAnimationFrame(loop);
 }
 ui();resize();requestAnimationFrame(loop);
 function surfaceError(){const ray=new THREE.Raycaster(world.car.position.clone().add(new THREE.Vector3(0,10,0)),new THREE.Vector3(0,-1,0));const road=world.scene.getObjectByName('driving-surface');const hit=road?ray.intersectObject(road)[0]:undefined;return hit?world.car.position.y-.04-hit.point.y:null;}
@@ -100,6 +105,7 @@ if(import.meta.env.PROD && 'serviceWorker' in navigator){
   addEventListener('load',()=>{void navigator.serviceWorker.register('/sw.js').catch(()=>{});});
 }
 if(import.meta.env.DEV){(window as any).__drive={
+  audit:()=>structuredClone(speedAudit!.rows),
   controls:(value?:InputState)=>{testControls=value;},
   framing:()=>{
     world.car.updateMatrixWorld(true);camera.updateMatrixWorld(true);
@@ -112,7 +118,24 @@ if(import.meta.env.DEV){(window as any).__drive={
   manual:(value:boolean)=>{manual=value;},
   advance:(seconds:number,override?:InputState)=>{for(let i=0;i<Math.ceil(seconds*120);i++){advance(1/120,override);render(1/120,false);}render(1/120);},
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{
+    speedAudit?.reset();
     state={...createState(),...initial};state.velocityHeading=state.heading;state.worldHeading=world.sample(state.distance).roadHeading+state.heading;updateFootprint(state);elapsed=0;initialized=false;mode='playing';testControls=undefined;input.clear();ui();render(1/60);
   },
   sample:(d:number)=>{const p=world.sample(d);return {position:p.position.toArray(),curvature:p.curvature,roadHeading:p.roadHeading,tangent:p.tangent.toArray()};}
 };}
+// Explicit development URL only: reproducible same-segment A/B for human review.
+// No calibration driver or UI is retained in the production bundle.
+if(import.meta.env.DEV&&new URLSearchParams(location.search).has('velocity')){
+ void import('../tests/driver').then(({scriptedDriver})=>{
+  const g=(window as any).__drive;
+  const panel=document.createElement('div');panel.id='velocity-calibration';
+  panel.style.cssText='position:fixed;z-index:20;top:8px;left:25%;right:20%;text-align:center;font:12px system-ui;color:white;background:#123e;padding:6px;border-radius:8px';
+  panel.innerHTML='<div>DEV SPEED COMPARISON · automatic test driver · same start</div><button data-speed="22.22">Low</button> <button data-speed="65">High</button> <button id="velocity-exit">Exit demo</button><div id="velocity-time"></div>';
+  document.body.append(panel);
+  let target=22.22,driver=scriptedDriver();
+  const select=(speed:number)=>{target=speed;driver=scriptedDriver();g.reset({distance:400,speed});void sound.unlock().catch(()=>{});$('speed').style.visibility='hidden';};
+  panel.querySelectorAll<HTMLButtonElement>('[data-speed]').forEach(button=>button.onclick=()=>select(Number(button.dataset.speed)));
+  panel.querySelector<HTMLButtonElement>('#velocity-exit')!.onclick=()=>location.assign(location.pathname);
+  setInterval(()=>{const s=g.snapshot();if(s.mode!=='playing')return;const controls=driver(s,g.sample(s.distance).curvature,target);controls.gas=s.speed<target;controls.brake=s.speed>target+2;g.controls(controls);$('velocity-time').textContent=`${target<30?'LOW':'HIGH'} · ${s.elapsed.toFixed(1)} s · fixed camera · speed readout hidden`;},50);
+ });
+}

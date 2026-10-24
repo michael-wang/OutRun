@@ -28,30 +28,42 @@ export function createWorld() {
   ribbon(-7,7,0,0,asphalt).name='driving-surface'; ribbon(-6.65,-6.49,.025,.025,line); ribbon(6.49,6.65,.025,.025,line);
   const dashes:THREE.BufferGeometry[]=[];
   // Three 4.67m arcade lanes fit the existing 14m physical asphalt corridor.
-  for(let d=0;d<length;d+=12)for(const lane of [-7/3,7/3]){const dash=ribbon(lane-.1,lane+.1,.03,.03,line,d,Math.min(d+5,length),5);scene.remove(dash);dashes.push(dash.geometry);}
+  for(let d=0;d<length;d+=6)for(const lane of [-7/3,7/3]){const dash=ribbon(lane-.14,lane+.14,.03,.03,line,d,Math.min(d+3,length),3);scene.remove(dash);dashes.push(dash.geometry);}
   const markings=new THREE.Mesh(mergeGeometries(dashes)!,line);markings.receiveShadow=true;scene.add(markings);dashes.forEach(g=>g.dispose());
-  ribbon(-12.9,-12.7,.65,.65,rail); ribbon(-12.9,-12.7,1.12,1.12,rail);
+  ribbon(-12.5,-12.3,.65,.65,rail); ribbon(-12.5,-12.3,1.12,1.12,rail);
+  // Flush, high-contrast edge bands stay readable as they sweep past the car.
+  // Static world geometry, not a scrolling overlay or a speed-driven texture.
+  const edgeMaterials=[line,mat('#b64b35')];
+  for(let color=0;color<2;color++){
+    const pieces:THREE.BufferGeometry[]=[];
+    for(let d=color*3;d<length;d+=6)for(const side of [-1,1]){
+      const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];
+      const piece=ribbon(offsets[0],offsets[1],-.065,-.065,edgeMaterials[color],d,Math.min(d+3,length),1.5);
+      scene.remove(piece);pieces.push(piece.geometry);
+    }
+    const band=new THREE.Mesh(mergeGeometries(pieces)!,edgeMaterials[color]);band.receiveShadow=true;scene.add(band);pieces.forEach(g=>g.dispose());
+  }
   // Efficient instances keep close roadside objects plentiful on mobile.
   const dummy=new THREE.Object3D();
   function instances(geo:THREE.BufferGeometry,material:THREE.Material,poses:{p:THREE.Vector3;s?:THREE.Vector3;r?:THREE.Euler}[]) {
     const mesh=new THREE.InstancedMesh(geo,material,poses.length);mesh.castShadow=true;mesh.receiveShadow=true;
     poses.forEach((v,i)=>{dummy.position.copy(v.p);dummy.scale.copy(v.s??new THREE.Vector3(1,1,1));dummy.rotation.copy(v.r??new THREE.Euler());dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);}); scene.add(mesh); return mesh;
   }
-  const posts=[];for(let d=0;d<length;d+=12){const p=sample(d);posts.push({p:p.position.addScaledVector(p.right,-12.8).add(new THREE.Vector3(0,.58,0))});}
+  const posts=[];for(let d=0;d<length;d+=12){const p=sample(d);posts.push({p:p.position.addScaledVector(p.right,-12.4).add(new THREE.Vector3(0,.58,0))});}
   instances(new THREE.BoxGeometry(.15,1.2,.15),rail,posts);
   // Reproducible near-field references: 12m cadence matches the center dashes.
   // Outside the complete corridor footprint; instancing adds only four draws.
-  const markerPosts=[],markerCaps=[],edgePaint=[];
+  const markerPosts=[],markerCaps=[],markerStripes=[];
   for(let d=0;d<length;d+=12)for(const side of [-1,1]){
     const p=sample(d),yaw=Math.atan2(p.tangent.x,p.tangent.z);
-    const base=p.position.clone().addScaledVector(p.right,side*12.9);
-    markerPosts.push({p:base.clone().add(new THREE.Vector3(0,.65,0)),r:new THREE.Euler(0,yaw,0)});
-    markerCaps.push({p:base.clone().add(new THREE.Vector3(0,1.12,0)),r:new THREE.Euler(0,yaw,0)});
-    edgePaint.push({p:p.position.clone().addScaledVector(p.right,side*7.45).add(new THREE.Vector3(0,-.075,0)),r:new THREE.Euler(-Math.atan2(p.tangent.y,Math.hypot(p.tangent.x,p.tangent.z)),yaw,0)});
+    const base=p.position.clone().addScaledVector(p.right,side*12.4);
+    markerPosts.push({p:base.clone().add(new THREE.Vector3(0,.8,0)),r:new THREE.Euler(0,yaw,0)});
+    markerCaps.push({p:base.clone().add(new THREE.Vector3(0,1.45,0)),r:new THREE.Euler(0,yaw,0)});
+    markerStripes.push({p:base.clone().add(new THREE.Vector3(0,1.05,0)),r:new THREE.Euler(0,yaw,0)});
   }
-  instances(new THREE.BoxGeometry(.22,1.3,.22),line,markerPosts);
-  instances(new THREE.BoxGeometry(.25,.25,.25),mat('#e9904b'),markerCaps);
-  instances(new THREE.BoxGeometry(.7,.025,4),mat('#f1dbad'),edgePaint);
+  instances(new THREE.BoxGeometry(.38,1.6,.3),line,markerPosts);
+  instances(new THREE.BoxGeometry(.42,.3,.34),mat('#f5a53c'),markerCaps);
+  instances(new THREE.BoxGeometry(.4,.35,.32),mat('#263d43'),markerStripes);
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
   ribbon(-29,-27,-10.9,-10.9,new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72}),0,length,10);

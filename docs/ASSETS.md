@@ -11,3 +11,6 @@ Browser tests use Playwright-managed Chromium, downloaded only for development. 
 v0.2 adds original procedural PWA icons (`public/icons/coast-192.png` and `coast-512.png`), authored by `scripts/icons.mjs` using only Node's built-in PNG compression/encoding primitives. The manifest uses the neutral name Coast Drive Prototype. Three.js's bundled MIT-licensed BufferGeometryUtils combines static road markings; no new runtime dependency or external art was added.
 
 v0.3 adds original procedural reflector posts, shoulder paint, lane markings and seeded synthesized wind/engine harmonics. No external artwork, recordings or new dependencies were added. Motion evidence is recorded from this local game using Playwright and installed Edge; extracted PNGs are frames from those recordings.
+# v0.3.1 Velocity Gate additions
+
+Road-edge colour bands and the revised instanced reflector shapes are original procedural geometry authored in this repository. Synthesized wind uses the existing seeded local noise source. No external assets or dependencies were added. The v0.3.1 videos and screenshots are recordings of this local application; they contain no externally sourced game imagery or music.
