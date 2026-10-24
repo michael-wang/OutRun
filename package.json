@@ -1,1 +1,23 @@
-{"name":"first-drive","private":true,"version":"0.1.0","type":"module","scripts":{"dev":"vite --host 127.0.0.1","build":"tsc --noEmit && vite build","test":"vitest run","test:e2e":"playwright test"},"dependencies":{"three":"^0.180.0"},"devDependencies":{"@playwright/test":"^1.56.0","@types/three":"^0.180.0","typescript":"^5.9.3","vite":"^7.1.10","vitest":"^5.0.5"}}
+{
+  "name": "first-drive",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "test:e2e": "npm run build && playwright test",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/three": "^0.180.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10",
+    "vitest": "^5.0.5"
+  }
+}

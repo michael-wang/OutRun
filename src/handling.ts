@@ -1,25 +1,48 @@
 export interface InputState { gas: boolean; brake: boolean; steer: number }
-export interface DrivingState { distance: number; speed: number; lateral: number; heading: number; slip: number }
-export const MAX_SPEED = 65;
-export const createState = (): DrivingState => ({ distance: 0, speed: 0, lateral: 0, heading: 0, slip: 0 });
-const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n));
-
-/** Road-relative arcade model. Distances are scene units, not calibrated real-world meters. */
-export function step(state: DrivingState, input: InputState, dt: number, curvature: number): void {
-  dt = clamp(dt, 0, 0.05);
-  const steer = clamp(input.steer, -1, 1);
-  const offroad = Math.abs(state.lateral) > 6.6;
-  const acceleration = (input.gas ? 19 * (1 - state.speed / 88) : -3.8) - (input.brake ? 34 : 0) - (offroad ? 18 : 0);
-  state.speed = clamp(state.speed + acceleration * dt, 0, MAX_SPEED);
-  const demand = Math.abs(steer) * 0.9 + Math.abs(curvature) * state.speed * 2.3;
-  const targetSlip = clamp((state.speed - 27) / 26, 0, 1) * clamp((demand - 0.33) / 0.75, 0, 1);
-  state.slip += (targetSlip - state.slip) * (1 - Math.exp(-dt * (targetSlip > state.slip ? 3.5 : 5)));
-  const outward = clamp(-curvature * state.speed * state.speed * 0.014, -1.5, 1.5);
-  const lateralVelocity = steer * (2.8 + state.speed * 0.075) + outward * state.slip;
-  state.lateral = clamp(state.lateral + lateralVelocity * dt * Math.min(1, state.speed / 6), -7.25, 7.25);
-  const desiredHeading = steer * (0.10 + state.slip * 0.25) + outward * state.slip * 0.035;
-  state.heading += (desiredHeading - state.heading) * (1 - Math.exp(-dt * 7));
-  if (state.speed < 0.1) state.heading *= Math.exp(-dt * 6);
-  state.distance += state.speed * Math.max(0.94, Math.cos(state.heading)) * dt;
+export interface DrivingState {
+  distance: number; speed: number; lateral: number;
+  /** Body and velocity errors relative to road heading; positive means right. */
+  heading: number; velocityHeading: number; worldHeading: number;
+  steering: number; yawRate: number; slipAngle: number; slip: number;
+  offRoad: boolean; footprintEdge: number; curvature: number;
 }
-
+export const MAX_SPEED = 65;
+export const ROAD_HALF_WIDTH = 7;
+export const createState = (): DrivingState => ({ distance: 0, speed: 0, lateral: 0,
+  heading: 0, velocityHeading: 0, worldHeading: 0, steering: 0, yawRate: 0,
+  slipAngle: 0, slip: 0, offRoad: false, footprintEdge: 1.13, curvature: 0 });
+const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n));
+export const angleDifference = (angle: number) => Math.atan2(Math.sin(angle), Math.cos(angle));
+export const steeringRate = (speed: number) => Math.min(.6, speed * .035);
+export function updateFootprint(s: DrivingState) {
+  // Oriented footprint (2.26 wide x 4.7 long), not a lane-center threshold.
+  s.footprintEdge = Math.abs(s.lateral) + 1.13 * Math.abs(Math.cos(s.heading)) + 2.35 * Math.abs(Math.sin(s.heading));
+  s.offRoad = s.footprintEdge > ROAD_HALF_WIDTH;
+}
+/** Frenet kinematics: curvature changes the reference frame, NEVER world yaw.
+ * ds/dt = v cos(error)/(1-k*lateral); dl/dt = v sin(error).
+ * Both heading errors subtract k*ds. No lane spring, offset clamp or road steering.
+ */
+export function step(s: DrivingState, input: InputState, dt: number, curvature: number): void {
+  dt = clamp(dt, 0, .05);
+  s.curvature = curvature;
+  updateFootprint(s);
+  const acceleration = (input.gas ? 19 * (1 - s.speed / 88) : -3.8) - (input.brake ? 34 : 0)
+    - (s.offRoad ? 10 + s.speed * .07 : 0);
+  s.speed = clamp(s.speed + acceleration * dt, 0, MAX_SPEED);
+  s.steering += (clamp(input.steer, -1, 1) - s.steering) * (1 - Math.exp(-dt * 12));
+  s.yawRate = s.steering * steeringRate(s.speed);
+  s.worldHeading += s.yawRate * dt;
+  s.heading += s.yawRate * dt;
+  // Tire response lags body yaw under fast steering: velocity really slides.
+  const grip = 9 - 5.5 * clamp((s.speed - 25) / 35, 0, 1);
+  s.velocityHeading += angleDifference(s.heading - s.velocityHeading) * (1 - Math.exp(-grip * dt));
+  const ds = s.speed * Math.cos(s.velocityHeading) / Math.max(.3, 1 - curvature * s.lateral) * dt;
+  s.lateral += s.speed * Math.sin(s.velocityHeading) * dt;
+  s.distance += ds;
+  s.heading = angleDifference(s.heading - curvature * ds);
+  s.velocityHeading = angleDifference(s.velocityHeading - curvature * ds);
+  s.slipAngle = angleDifference(s.heading - s.velocityHeading);
+  s.slip = clamp(Math.abs(s.slipAngle) / .18, 0, 1) * clamp(s.speed / 25, 0, 1);
+  updateFootprint(s);
+}

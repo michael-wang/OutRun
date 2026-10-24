@@ -1,0 +1,178 @@
+{
+  "results": [
+    {
+      "distance": 586.5716652466488,
+      "speed": 65,
+      "lateral": 0.048812486338344875,
+      "heading": -0.14672744765661624,
+      "velocityHeading": -0.07612970297017338,
+      "worldHeading": 0.21770817707851,
+      "steering": -0.7198080174922769,
+      "yawRate": -0.4318848104953661,
+      "slipAngle": -0.07059774468644286,
+      "slip": 0.39220969270246037,
+      "offRoad": false,
+      "footprintEdge": 1.5102440426789592,
+      "curvature": -0.004057357451585272,
+      "mode": "playing",
+      "elapsed": 2.999999999999992,
+      "frames": 44,
+      "inputs": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.07750710166478732,
+        "rms": 0.028557951663279967
+      },
+      "trackLength": 3797.4782205064475,
+      "position": [
+        -94.272361453032,
+        39.72542105014068,
+        545.2610263823339
+      ],
+      "swapped": false,
+      "surfaceError": -0.003360190990044032,
+      "camera": {
+        "fov": 54,
+        "distance": 10,
+        "height": 4.3,
+        "lookAhead": 28,
+        "lookHeight": -0.5,
+        "position": [
+          -91.144699246766,
+          44.02542105014068,
+          535.7627250013766
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.10588524055652786
+    },
+    {
+      "distance": 541.2434006874762,
+      "speed": 41.44437102503008,
+      "lateral": 8.050441445580782,
+      "heading": -0.08568607778459217,
+      "velocityHeading": -0.07345685516996316,
+      "worldHeading": 0.42439752833744127,
+      "steering": -0.019145715533560648,
+      "yawRate": -0.011487429320136388,
+      "slipAngle": -0.012229222614629012,
+      "slip": 0.06794012563682784,
+      "offRoad": true,
+      "footprintEdge": 9.377411663771605,
+      "curvature": -0.0023941074841649043,
+      "mode": "playing",
+      "elapsed": 2.999999999999992,
+      "frames": 80,
+      "inputs": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 171.8998017675812,
+        "skidLevel": 0,
+        "rms": 0.03597432872071037
+      },
+      "trackLength": 3797.4782205064475,
+      "position": [
+        -82.00342722000703,
+        34.2626785348106,
+        500.71396622359833
+      ],
+      "swapped": false,
+      "surfaceError": null,
+      "camera": {
+        "fov": 54,
+        "distance": 10,
+        "height": 4.3,
+        "lookAhead": 28,
+        "lookHeight": -0.5,
+        "position": [
+          -77.6320133335943,
+          38.562678534810594,
+          491.7200382366908
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.10594178033736035
+    }
+  ],
+  "ratio": 0.6376057080773858,
+  "cameras": [
+    {
+      "fov": 54,
+      "distance": 10,
+      "height": 4.3,
+      "lookAhead": 28,
+      "lookHeight": -0.5,
+      "position": [
+        -3.5899093728815554,
+        26.79144924592216,
+        395.24976542732367
+      ]
+    },
+    {
+      "fov": 54,
+      "distance": 10,
+      "height": 4.3,
+      "lookAhead": 28,
+      "lookHeight": -0.5,
+      "position": [
+        -3.5899093728815554,
+        26.79144924592216,
+        395.24976542732367
+      ]
+    },
+    {
+      "fov": 54,
+      "distance": 10,
+      "height": 4.3,
+      "lookAhead": 28,
+      "lookHeight": -0.5,
+      "position": [
+        -3.5899093728815554,
+        26.79144924592216,
+        395.24976542732367
+      ]
+    }
+  ],
+  "movingOffsets": [
+    [
+      5.439946595799169,
+      4.300000000000001,
+      -8.39088678477151
+    ],
+    [
+      5.439946595799169,
+      4.300000000000001,
+      -8.39088678477151
+    ],
+    [
+      5.439946595799167,
+      4.300000000000001,
+      -8.39088678477151
+    ]
+  ]
+}

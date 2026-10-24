@@ -1,0 +1,42 @@
+type LockableOrientation = ScreenOrientation & { lock?: (orientation: string) => Promise<void> };
+export class Immersive {
+  message = '';
+  lockState: 'idle'|'locked'|'unsupported'|'denied' = 'idle';
+  pending = false;
+  constructor(private root: HTMLElement, private changed: () => void) {
+    document.addEventListener('fullscreenchange', () => { this.changed(); });
+    matchMedia('(display-mode: fullscreen)').addEventListener('change', () => this.changed());
+    matchMedia('(display-mode: standalone)').addEventListener('change', () => this.changed());
+  }
+  get installed() { return matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches; }
+  get active() { return document.fullscreenElement === this.root; }
+  async enter() {
+    if(this.pending) return;
+    this.pending=true; this.message=''; this.changed();
+    try {
+      if(!this.installed && !this.active) {
+        if(!this.root.requestFullscreen) throw new Error('unsupported');
+        // Invoked synchronously from a tap, before awaiting any other work.
+        await this.root.requestFullscreen({navigationUI:'hide'});
+        if(!this.active) throw new Error('not entered');
+      }
+      const orientation=screen.orientation as LockableOrientation;
+      if(!orientation?.lock) {
+        this.lockState='unsupported'; this.message='Rotate your device to landscape. Orientation lock is unavailable.';
+      } else {
+        try { await orientation.lock('landscape'); this.lockState='locked'; }
+        catch { this.lockState='denied'; this.message='Rotate your device to landscape. Automatic rotation was not allowed.'; }
+      }
+    } catch {
+      this.message='Fullscreen unavailable. Keep playing here, or tap Fullscreen to retry. Rotate to landscape.';
+    } finally { this.pending=false; this.changed(); }
+  }
+  async toggle() {
+    if(this.active) {
+      try { await document.exitFullscreen(); screen.orientation?.unlock?.(); this.lockState='idle'; this.message=''; }
+      catch { this.message='Could not exit fullscreen. Use the browser Back or Escape control.'; }
+      this.changed();
+    } else await this.enter();
+  }
+  snapshot(){return {active:this.active,installed:this.installed,lockState:this.lockState,pending:this.pending,message:this.message};}
+}

@@ -1,0 +1,44 @@
+
+> first-drive@0.2.0 test:e2e
+> npm run build && playwright test
+
+
+> first-drive@0.2.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 15 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.54 kB │ gzip:   0.36 kB
+dist/assets/index-Ca0WoZjA.css    6.07 kB │ gzip:   1.86 kB
+dist/assets/index-CJ63KAfB.js   513.93 kB │ gzip: 133.46 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 652ms
+[WebServer] (node:48168) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 13 tests using 1 worker
+
+(node:43104) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\drive.spec.ts:7:1 › desktop real-time driving, lifecycle, drift audio and continuous full route (49.7s)
+  ok  2 tests\drive.spec.ts:33:1 › trusted mobile multi-touch default and swapped, persistence, cancel and portrait (8.7s)
+  ok  3 tests\pwa.spec.ts:3:1 › production manifest icons worker and playable build (2.6s)
+  ok  4 tests\v02.spec.ts:9:2 › paired right bend: no steering departs, digital steering stays, recovery (11.5s)
+  ok  5 tests\v02.spec.ts:9:2 › paired left bend: no steering departs, digital steering stays, recovery (12.4s)
+  ok  6 tests\v02.spec.ts:28:1 › matched shoulder penalty and fixed camera at idle cruise and fast (1.3s)
+  ok  7 tests\v02.spec.ts:56:2 › mobile immersive success handles fullscreen and orientation without trapping play (3.3s)
+  ok  8 tests\v02.spec.ts:56:2 › mobile immersive reject handles fullscreen and orientation without trapping play (804ms)
+  ok  9 tests\v02.spec.ts:56:2 › mobile immersive lock-reject handles fullscreen and orientation without trapping play (696ms)
+  ok 10 tests\v02.spec.ts:56:2 › mobile immersive unsupported handles fullscreen and orientation without trapping play (658ms)
+  ok 11 tests\v02.spec.ts:56:2 › mobile immersive installed handles fullscreen and orientation without trapping play (679ms)
+  ok 12 tests\v02.spec.ts:68:1 › Pixel-like landscape touch, safe bounds, brake+steer, both layouts (2.8s)
+  ok 13 tests\v02.spec.ts:81:1 › climb crest descent camera views (4.1s)
+
+  13 passed (1.7m)
