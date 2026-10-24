@@ -1,43 +1,40 @@
 # Project OutRun
 
-**An original arcade-driving game inspired by the feeling of SEGA's 1986 Out Run and 2003 OutRun 2.**
+**An original 3D arcade racer inspired by the *driving experience* of classic 1986 Out Run and 2003 OutRun 2.** This is an independent homage, not an authorized remake. `Project OutRun` is an **internal codename**; `SUNSHIFT GT` is only an uncleared candidate public title. Do not copy SEGA/Ferrari logos, models, artwork, music, code or character designs.
 
-**Status:** Preproduction — v0.1 *First Drive* specification ready; implementation not started.
+## Current milestone: v0.4 — Arcade Handling & Rhythm
 
-"Project OutRun" is an **internal codename only**. **SUNSHIFT GT** is an unapproved candidate public name, not a final title. Do not use SEGA logos, the original game's music, graphics, distinctive licensed vehicles, or other protected assets. Public branding will be decided later.
+**Product owner decision:** v0.3.2's high-speed **1.75× arcade world pace is provisionally accepted**. The next priorities are:
 
-## North star
+1. **P0:** Calmer, precise directional steering at 1.75× without slowing down the world or auto-following the road.
+2. **P0:** PC controls: `A/D` steering, `Space` gas, `Enter` brake; Pixel 8 two-thumb layout remains as before.
+3. **P0:** Prominent arcade speedometer, readable in landscape fullscreen without obscuring the road.
+4. **P1:** Larger but controllable intentional drifts, with tire squeal tied to real slip rather than every gentle correction.
+5. **P1:** Designed arcade road rhythm: longer acceleration sections alternating with demanding S bends and short dangerous corners.
+6. **Deferred:** Original open-top sports car and two expressive occupants; themed scenery transitions.
 
-A beautiful sunlit coastal highway, a stylish sports car, thrilling speed, and satisfying recoverable drifts. **A joyride, not a racing simulator.**
-
-For v0.1, the player can simply drive for at least a minute on a scenic, winding 3D road using steering, acceleration, and braking. No opponents, races, scoring, or progression yet.
-
-- **Rendering:** Real 3D car and road, plus stylized 3D scenery and 2D distant landscape where useful.
-- **Tech:** Three.js, TypeScript, Vite; lightweight arcade vehicle dynamics rather than a full physics simulation.
-- **Desktop controls:** Keyboard.
-- **Mobile controls:** Two-handed landscape layout; steering on the left and vertical accelerator/brake on the right, with a setting to swap sides.
-- **Workflow:** Codex independently implements, launches, plays/tests, fixes, and submits one **locally playable** version; a human then evaluates the feel and visuals before planning the next version.
+**Important repo structure:** GitHub `main` is primarily **design specifications**. The playable v0.3.2 implementation exists on the **local Windows checkout**; it was reported committed at `43fba35` (implementation) + `cd36798` (handoff). Do not replace this working local code with the documentation-only remote branch.
 
 ## Start here
 
-| File | Purpose |
+| File | Why it matters |
 | --- | --- |
-| [AGENTS.md](AGENTS.md) | Codex operating rules; repo safety and autonomy |
-| [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md) | The experience and visual direction we are pursuing |
-| [docs/V0.1_SPEC.md](docs/V0.1_SPEC.md) | What to build — and explicitly what *not* to build |
-| [docs/V0.1_ACCEPTANCE.md](docs/V0.1_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
-| [docs/CODEX_KICKOFF.md](docs/CODEX_KICKOFF.md) | Ready-to-paste /goal command and detailed development brief |
+| [AGENTS.md](AGENTS.md) | Current Codex autonomy, safety and active milestone instructions |
+| [v0.4 product specification](docs/V0.4_SPEC.md) | Controls, steering, HUD, drift, track rhythm, non-goals |
+| [v0.4 acceptance](docs/V0.4_ACCEPTANCE.md) | Objective browser/phone regression tests and human playtest gates |
+| [v0.4 Codex kickoff](docs/CODEX_V0.4_KICKOFF.md) | Autonomous local-branch preparation + ready-to-paste Goal |
+| [Product vision](docs/PRODUCT_VISION.md) | The sunlit coastal arcade-racing experience |
+| [Arcade roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Current v0.4 work versus later convertible/scenery projects |
 
-### Starting a Codex implementation run
+### Codex workflow
 
-1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
-2. Open the OutRun checkout as a **Local** Codex project, then paste the **ready-to-use `/goal` command** from `docs/CODEX_KICKOFF.md` into a Codex Goal (where supported). This is the intended autonomous development mode.
-3. Codex should generate the app and its real npm scripts. When implementation exists, the expected commands are `npm install`, `npm run dev`, `npm run build`, `npm run test`, and `npm run test:e2e`.
+Open the user's existing **Local** Codex OutRun workspace at `C:\astra-dev\OutRun`. The **Goal in the v0.4 kickoff** should verify the current local branch, preserve the existing playable implementation, create a v0.4 development branch from it, and import **only** current docs from `origin/main`. Do not merge the documentation-only `main` into the working game or restart v0.1.
 
-This repository currently contains specifications, **not a playable build**. README run commands become actionable when Codex completes v0.1.
+The autonomous milestone is: **implement → run real game → drive/record/inspect → test/fix → local commit → human playtest**. A green build alone does not prove fun or correct game feel. Codex should not push, merge to main, or deploy publicly without approval.
 
-## Process
+## Platform and engineering principles
 
-One milestone at a time: **specify → autonomous implementation and self-QA → local playable handoff → human playtest → next milestone**.
-
-Shipping a small enjoyable drive matters more than a large feature list. A successful build alone is not a successful milestone.
+- **Three.js + TypeScript + Vite**; real 3D car and road with original stylized scenery, arcade dynamics rather than full physics simulation.
+- **Pixel 8 / Android Chrome:** 20:9 landscape fullscreen/PWA, two-thumb steering and vertically stacked accelerator/brake, swappable hand layout, safe-area and long-press protection.
+- **Driving core:** user must steer through curves; going off asphalt reduces speed; outer corridor bounds off-road drift without automatically recentering the car. Visibly fast coherent world travel at the accepted 1.75× pace.
+- **Autonomy:** ordinary coding, Git branch work and QA belong to Codex. User chooses product direction and judges final on-device results.
