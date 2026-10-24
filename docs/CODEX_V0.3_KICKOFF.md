@@ -7,7 +7,7 @@ User's latest Codex delivery: v0.2.1 committed locally as `9bdc6d8` and clean; i
 Workflow for Codex (do these engineering chores autonomously):
 1. At `C:\astra-dev\OutRun`, inspect `git remote -v`, `git status --short`, branch and recent log. Check the game source and `9bdc6d8` are present. Preserve any later work; never force-discard.
 2. From the current playable HEAD, create `codex/v0.3-arcade-velocity` (or use a safe existing matching feature branch).
-3. Fetch `origin/main`, then integrate **only** the v0.3 documentation commit `<V0_3_DOCS_COMMIT_SHA>` (cherry-pick if compatible); or restore only these new docs and `AGENTS.md` from origin/main if history conflicts. Resolve conflict without losing app code. **Do not merge remote main onto the local game blindly.**
+3. Fetch `origin/main`, then integrate the v0.3 requirements **without merging or replacing the playable game**: either cherry-pick docs commit `71f979e740f7087ce6d371601579760de4914ae8` if compatible, or selectively restore `AGENTS.md`, `docs/V0.3_SPEC.md`, `docs/V0.3_ACCEPTANCE.md` and `docs/CODEX_V0.3_KICKOFF.md` from `origin/main` after checking local edits. This selective-restore path includes subsequent documentation-only corrections. Resolve any conflicts while preserving game code. **Do not merge remote main onto the local game blindly.**
 4. Confirm `docs/V0.3_SPEC.md` and `docs/V0.3_ACCEPTANCE.md` now exist locally. Start the Goal below; do not revert to v0.2 kickoff.
 
 ## Paste into an actual Codex Goal in the OutRun Local project
