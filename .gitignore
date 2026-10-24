@@ -1,0 +1,11 @@
+node_modules/
+dist/
+converage/
+test-results/
+playwright-report/
+.env
+.env.local
+*.log
+
+!docs/evidence/*.log
+

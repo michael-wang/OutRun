@@ -2,7 +2,7 @@
 
 **An original arcade-driving game inspired by the feeling of SEGA's 1986 Out Run and 2003 OutRun 2.**
 
-**Status:** Preproduction — v0.1 *First Drive* specification ready; implementation not started.
+**Status:** v0.1 *First Drive* implemented for local human playtesting. See [handoff and evidence](docs/V0.1_HANDOFF.md).
 
 "Project OutRun" is an **internal codename only**. **SUNSHIFT GT** is an unapproved candidate public name, not a final title. Do not use SEGA logos, the original game's music, graphics, distinctive licensed vehicles, or other protected assets. Public branding will be decided later.
 
@@ -32,9 +32,29 @@ For v0.1, the player can simply drive for at least a minute on a scenic, winding
 
 1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
 2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_KICKOFF.md` (Goal Mode where available).
-3. Codex should generate the app and its real npm scripts. When implementation exists, the expected commands are `npm install`, `npm run dev`, `npm run build`, `npm run test`, and `npm run test:e2e`.
+3. The implementation and runnable commands are below. Read the handoff before planning any work beyond v0.1.
 
-This repository currently contains specifications, **not a playable build**. README run commands become actionable when Codex completes v0.1.
+## Run locally
+
+Use Node.js 22.12+ (verified with Node 24.21.0) and npm. From this repository:
+
+```powershell
+npm install
+npm run dev
+```
+
+Open http://127.0.0.1:5173/ and choose **Drive**. W/up accelerates; S/down brakes; A/D or left/right steers. P/Escape pauses; R restarts. Sound and Settings are in the top bar. Landscape touch controls support two thumbs; Settings swaps the hand groups and remembers the choice.
+
+```powershell
+npm run build
+npm run test
+npx playwright install chromium
+npm run test:e2e
+```
+
+The development server binds only to localhost. Browser installation needs network access; playing after installation uses local content only. If 5173 is occupied, Vite prints the alternate port; tests expect 5173. Use the repository's saved lockfile for reproducible dependency versions (`npm ci`).
+
+The development-only `window.__drive` facade exposes a snapshot, sampled track geometry and controlled fixed-step time for tests. Production builds omit it. Evidence is stored in `docs/evidence/`; transient browser results and build output are ignored.
 
 ## Process
 
