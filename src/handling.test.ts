@@ -11,7 +11,7 @@ describe('arcade driving', () => {
     run(state, { ...idle, gas: true }, 30); expect(state.speed).toBeLessThanOrEqual(MAX_SPEED);
     run(state, { ...idle, brake: true }, 5); expect(state.speed).toBe(0);
   });
-  it('steers in both directions without a lateral clamp', () => {
+  it('steers independently in both directions and can leave asphalt', () => {
     for (const sign of [-1,1]) {const state={...createState(),speed:45};run(state,{...idle,gas:true,steer:sign},.8);expect(state.lateral*sign).toBeGreaterThan(1);expect(state.heading*sign).toBeGreaterThan(.1);run(state,{...idle,gas:true},2);expect(Math.abs(state.lateral)).toBeGreaterThan(7);}
   });
   it('slips progressively during fast turns and recovers grip without snapping heading', () => {

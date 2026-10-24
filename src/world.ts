@@ -23,20 +23,20 @@ export function createWorld() {
   const grain=grainCanvas.getContext('2d')!; const pixels=grain.createImageData(64,64);
   for(let i=0;i<64*64;i++){const c=225+Math.round((Math.sin(i*37.17)*437.1%1)*18);pixels.data.set([c,c,c,255],i*4);}grain.putImageData(pixels,0,0);
   const texture=new THREE.CanvasTexture(grainCanvas);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;asphalt.map=texture;
-  ribbon(-27,-11,-9,-.1,sand,0,length,10); ribbon(-11,13,-.1,-.1,sand);
+  ribbon(-27,-13,-9,-.1,sand,0,length,10); ribbon(-13,13,-.1,-.1,sand);
   ribbon(13,75,-.12,-3,grass,0,length,10); ribbon(75,160,-3,-14,grass,0,length,10);
   ribbon(-7,7,0,0,asphalt).name='driving-surface'; ribbon(-6.65,-6.49,.025,.025,line); ribbon(6.49,6.65,.025,.025,line);
   const dashes:THREE.BufferGeometry[]=[];
   for(let d=0;d<length;d+=17){const dash=ribbon(-.075,.075,.03,.03,line,d,Math.min(d+7,length),7);scene.remove(dash);dashes.push(dash.geometry);}
   const markings=new THREE.Mesh(mergeGeometries(dashes)!,line);markings.receiveShadow=true;scene.add(markings);dashes.forEach(g=>g.dispose());
-  ribbon(-9.8,-9.6,.65,.65,rail); ribbon(-9.8,-9.6,1.12,1.12,rail);
+  ribbon(-12.9,-12.7,.65,.65,rail); ribbon(-12.9,-12.7,1.12,1.12,rail);
   // Efficient instances keep close roadside objects plentiful on mobile.
   const dummy=new THREE.Object3D();
   function instances(geo:THREE.BufferGeometry,material:THREE.Material,poses:{p:THREE.Vector3;s?:THREE.Vector3;r?:THREE.Euler}[]) {
     const mesh=new THREE.InstancedMesh(geo,material,poses.length);mesh.castShadow=true;mesh.receiveShadow=true;
     poses.forEach((v,i)=>{dummy.position.copy(v.p);dummy.scale.copy(v.s??new THREE.Vector3(1,1,1));dummy.rotation.copy(v.r??new THREE.Euler());dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);}); scene.add(mesh); return mesh;
   }
-  const posts=[];for(let d=0;d<length;d+=12){const p=sample(d);posts.push({p:p.position.addScaledVector(p.right,-9.7).add(new THREE.Vector3(0,.58,0))});}
+  const posts=[];for(let d=0;d<length;d+=12){const p=sample(d);posts.push({p:p.position.addScaledVector(p.right,-12.8).add(new THREE.Vector3(0,.58,0))});}
   instances(new THREE.BoxGeometry(.15,1.2,.15),rail,posts);
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
@@ -51,7 +51,7 @@ export function createWorld() {
   }
   instances(new THREE.CylinderGeometry(.18,.29,1,7),mat('#aa8a62'),trunks);
   instances(new THREE.SphereGeometry(1,7,4),mat('#26744c'),leaves);
-  const shrubs=[];for(let d=10,i=0;d<length;d+=20,i++){const p=sample(d),s=1+rand(i)*2;shrubs.push({p:p.position.addScaledVector(p.right,11+rand(i+10)*12).add(new THREE.Vector3(0,.5,0)),s:new THREE.Vector3(s,s*.7,s),r:new THREE.Euler(0,rand(i)*6,0)});}
+  const shrubs=[];for(let d=10,i=0;d<length;d+=20,i++){const p=sample(d),s=1+rand(i)*2;shrubs.push({p:p.position.addScaledVector(p.right,16+rand(i+10)*12).add(new THREE.Vector3(0,.5,0)),s:new THREE.Vector3(s,s*.7,s),r:new THREE.Euler(0,rand(i)*6,0)});}
   instances(new THREE.IcosahedronGeometry(1,1),mat('#567a4a'),shrubs);
   // Warm eroded ridges on the inland side. Sea remains visible beyond the outside rail.
   const rocks=[],ledges=[];for(let d=0,i=0;d<length;d+=65,i++){const p=sample(d),base=p.position.addScaledVector(p.right,52+rand(i)*40).add(new THREE.Vector3(0,-6,0));const yaw=rand(i)*6;

@@ -11,7 +11,7 @@ document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <header><span class="wordmark">FIRST DRIVE <small>COASTAL STUDY / 02</small></span><nav><button id="pause" aria-label="Pause">Pause</button><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed"><strong>000</strong><span>KM/H · ARCADE</span><em id="status">READY FOR THE COAST</em></aside>
-<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">W / ↑ accelerate &nbsp; A D / ← → steer<br>S / ↓ brake &nbsp; P / Esc pause &nbsp; R restart</p><small>FIRST DRIVE · LOCAL PLAYTEST · v0.2</small></section>
+<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">W / ↑ accelerate &nbsp; A D / ← → steer<br>S / ↓ brake &nbsp; P / Esc pause &nbsp; R restart</p><small>FIRST DRIVE · LOCAL PLAYTEST · v0.2.1</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Resume ↗</button></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">MAKE YOURSELF AT HOME</div><h2>Controls</h2><label class="setting"><input id="swap" type="checkbox"> Steering on the right</label><p>Accelerator stays above brake on either side.</p><button id="close-settings" class="primary">Done</button></section>
 <div id="touch"><div class="steering"><button data-control="left" aria-label="Steer left">←</button><button data-control="right" aria-label="Steer right">→</button></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
@@ -65,7 +65,7 @@ function advance(dt:number,override?:InputState){
   if(mode==='playing'&&!settingsOpen){const controls=override??input.snapshot();step(state,controls,dt,world.sample(state.distance).curvature);elapsed+=dt;sound.update(state.speed,state.slip,controls.gas);}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){
-  if(lateral < -11)return THREE.MathUtils.lerp(height-.1,-5.05,Math.min(1,(-lateral-11)/16));
+  if(lateral < -13)return THREE.MathUtils.lerp(height-.1,-5.05,Math.min(1,(-lateral-13)/14));
   if(lateral>13)return height-.12-Math.min(1,(lateral-13)/62)*2.88;
   return height+(Math.abs(lateral)>7?-.1:0);
 }
@@ -74,7 +74,7 @@ function render(dt:number,draw=true){
   world.car.position.copy(p.position).addScaledVector(p.right,state.lateral);
   world.car.position.y=groundHeight(p.position.y,state.lateral)+.04;
   world.car.rotation.set(-Math.atan2(p.tangent.y*Math.cos(state.heading),Math.hypot(p.tangent.x,p.tangent.z)),-state.worldHeading,-state.slipAngle*.16);
-  const travelHeading=state.worldHeading-state.slipAngle;
+  const travelHeading=state.corridorSide ? p.roadHeading : state.worldHeading-state.slipAngle;
   if(!initialized){cameraHeading=travelHeading;initialized=true;}
   else cameraHeading+=angleDifference(travelHeading-cameraHeading)*(1-Math.exp(-dt*7));
   // Anchor translation to the car. World-position lerp would add v/tau trailing

@@ -33,6 +33,11 @@ export class InputController extends InputLatch {
       button.addEventListener('pointercancel', release);
       button.addEventListener('lostpointercapture', release);
       button.addEventListener('contextmenu', event => event.preventDefault());
+      button.addEventListener('selectstart', event => event.preventDefault());
+      button.addEventListener('dragstart', event => event.preventDefault());
+      // Android's long-press recognizer can run independently of pointer defaults.
+      // Cancel native touch behavior here, retaining pointer-ID based game input.
+      button.addEventListener('touchstart', event => event.preventDefault(), { passive: false });
     });
     window.addEventListener('blur', () => this.clear());
     document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); });
