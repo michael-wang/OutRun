@@ -14,3 +14,11 @@ header #pause{min-width:76px;min-height:44px;padding:10px 14px;font-size:12px}
 .menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.menu-actions button{min-height:48px}
 #paused h1{font-size:32px;margin:12px 0}#speed strong{font-size:36px;letter-spacing:-1px}#speed span{font-size:8px}#status{font-size:9px}
 @media(pointer:coarse),(max-width:1000px){header .wordmark{display:none}#speed{top:18px;left:24px;right:auto;text-align:left}#speed strong{font-size:28px}#status{font-size:8px;margin-top:5px}#immersive-note{top:82px;max-width:220px;font-size:9px}#paused{left:50%;transform:translate(-50%,-48%);max-height:calc(100dvh - 30px)}#touch button{backdrop-filter:none}}
+/* v0.4: speed is a clear corner instrument, outside the forward road focus. */
+#speed{top:max(18px,env(safe-area-inset-top));right:max(24px,env(safe-area-inset-right));left:auto;bottom:auto;transform:none;text-align:right;width:158px;padding:10px 15px 11px;background:linear-gradient(125deg,#092e3bf2,#174e55eb);border:1px solid #ffdfa27a;border-right:5px solid #ffd18b;border-radius:10px;box-shadow:0 5px 20px #08333f45;text-shadow:0 2px 2px #002631}
+#speed strong{font-size:58px;line-height:1;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-2px;color:#fff9e8}
+#speed span{font-size:10px;letter-spacing:1.5px;color:#ffda9d;margin-top:3px}
+#status{font-size:8px;letter-spacing:.6px;margin-top:8px;max-width:none;white-space:nowrap}
+header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
+.panel{z-index:5}
+@media(pointer:coarse),(max-width:1000px){#speed{top:max(14px,env(safe-area-inset-top));right:max(24px,env(safe-area-inset-right));left:auto;width:144px;padding:8px 12px 9px}#speed strong{font-size:50px}#speed span{font-size:9px}#status{font-size:7px;margin-top:6px}header nav{margin-left:0;margin-right:auto}#immersive-note{top:70px}}

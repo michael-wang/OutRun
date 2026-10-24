@@ -2,7 +2,7 @@
 
 **An original arcade-driving game inspired by the feeling of SEGA's 1986 Out Run and 2003 OutRun 2.**
 
-**Status:** v0.2 *Driving Is a Game* implemented for local human and Pixel 8 playtesting. See [v0.2 handoff and evidence](docs/V0.2_HANDOFF.md). Physical Pixel 8 results remain unverified.
+**Status:** v0.4 *Arcade Handling & Rhythm* implemented for local human and Pixel 8 playtesting. See [v0.4 handoff and evidence](docs/V0.4_HANDOFF.md). Physical Pixel 8 results remain unverified.
 
 "Project OutRun" is an **internal codename only**. **SUNSHIFT GT** is an unapproved candidate public name, not a final title. Do not use SEGA logos, the original game's music, graphics, distinctive licensed vehicles, or other protected assets. Public branding will be decided later.
 
@@ -24,26 +24,26 @@ For v0.1, the player can simply drive for at least a minute on a scenic, winding
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | Codex operating rules; repo safety and autonomy |
 | [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md) | The experience and visual direction we are pursuing |
-| [docs/V0.1_SPEC.md](docs/V0.1_SPEC.md) | What to build — and explicitly what *not* to build |
-| [docs/V0.1_ACCEPTANCE.md](docs/V0.1_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
-| [docs/CODEX_KICKOFF.md](docs/CODEX_KICKOFF.md) | One-shot task for a Codex development run |
+| [docs/V0.4_SPEC.md](docs/V0.4_SPEC.md) | What to build — and explicitly what *not* to build |
+| [docs/V0.4_ACCEPTANCE.md](docs/V0.4_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
+| [docs/CODEX_V0.4_KICKOFF.md](docs/CODEX_V0.4_KICKOFF.md) | One-shot task for a Codex development run |
 
 ### Starting a Codex implementation run
 
 1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
-2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_KICKOFF.md` (Goal Mode where available).
-3. The implementation and runnable commands are below. Read the v0.2 handoff before planning further work.
+2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.4_KICKOFF.md` (Goal Mode where available).
+3. The implementation and runnable commands are below. Read the v0.4 handoff before planning further work.
 
 ## Run locally
 
 Use Node.js 22.12+ (verified with Node 24.21.0) and npm. From this repository:
 
 ```powershell
-npm install
+npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5173/ and choose **Drive**. W/up accelerates; S/down brakes; A/D or left/right steers. P/Escape pauses; R restarts. Sound and Settings are in the top bar. Landscape touch controls support two thumbs; Settings swaps the hand groups and remembers the choice.
+Open http://127.0.0.1:5173/ and choose **Drive**. Hold Space to accelerate, Enter to brake, and A/D to steer. Short taps make small corrections; longer holds develop stronger steering. Brake takes precedence over gas. W/S and arrow keys remain aliases. P/Escape pauses; R restarts. Sound and Settings are in the Menu. Landscape touch controls support two thumbs; Settings swaps the hand groups and remembers the choice.
 
 ```powershell
 npm run build
@@ -52,7 +52,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The development server binds only to localhost. Browser installation needs network access; playing after installation uses local content only. If 5173 is occupied, Vite prints the alternate port; tests expect 5173. Use the repository's saved lockfile for reproducible dependency versions (`npm ci`).
+For same-Wi-Fi phone play, run `npm run dev -- --host 0.0.0.0 --port 5173 --strictPort` and use the host PC LAN IPv4 address. Browser installation needs network access; playing after installation uses local content only. If 5173 is occupied, Vite prints the alternate port; tests expect 5173. Use the repository's saved lockfile for reproducible dependency versions (`npm ci`).
 
 The development-only `window.__drive` facade exposes a snapshot, sampled track geometry and controlled fixed-step time for tests. Production builds omit it. Evidence is stored in `docs/evidence/`; transient browser results and build output are ignored.
 
@@ -65,7 +65,7 @@ Shipping a small enjoyable drive matters more than a large feature list. A succe
 
 The car no longer follows curves automatically: steer through bends, ease off or brake before correcting a slide, and steer back after running wide. Off-road drag is progressive. Restart is available if you stray beyond the roadside scenery. The chase camera uses a fixed FOV and offset; the route now has a pronounced climb, crest and descent.
 
-Mobile Drive attempts actual browser fullscreen and landscape lock. Fullscreen retries/exits are available in the top bar; rejected or unavailable APIs show guidance while the game remains playable. Two-thumb controls and the persistent hand swap remain available.
+Mobile Drive attempts actual browser fullscreen and landscape lock. Fullscreen retries/exits are available in the Menu; rejected or unavailable APIs show guidance while the game remains playable. Two-thumb controls and the persistent hand swap remain available.
 
 For local Pixel testing, build and serve the production PWA:
 

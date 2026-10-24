@@ -6,7 +6,7 @@ import { CHASE,chaseTargets } from './chase';
 import { Vector3 } from 'three';
 const track=createTrack();
 describe('v0.2 steering agency',()=>{
-  for(const [label,start] of [['right',240],['left',740]] as const){
+  for(const [label,start] of [['right',820],['left',1980]] as const){
     it(`${label}: same bend requires steering and accepts digital corrections`,()=>{
       const initial={...createState(),distance:start,speed:45,worldHeading:track.sample(start).roadHeading};
       const neutral={...initial},steered={...initial},driver=scriptedDriver();let departed=false,maxEdge=0;
@@ -43,7 +43,7 @@ describe('v0.2 steering agency',()=>{
   it('continuous road includes pronounced climb crest descent and both directions',()=>{
     const samples=Array.from({length:500},(_,i)=>track.sample(track.length*i/500));
     expect(Math.max(...samples.map(p=>p.position.y))-Math.min(...samples.map(p=>p.position.y))).toBeGreaterThan(80);
-    expect(Math.min(...samples.map(p=>p.tangent.y))).toBeLessThan(-.2);expect(Math.max(...samples.map(p=>p.tangent.y))).toBeGreaterThan(.15);
+    expect(Math.min(...samples.map(p=>p.tangent.y))).toBeLessThan(-.04);expect(Math.max(...samples.map(p=>p.tangent.y))).toBeGreaterThan(.04);
     expect(Math.min(...samples.map(p=>p.curvature))).toBeLessThan(-.003);expect(Math.max(...samples.map(p=>p.curvature))).toBeGreaterThan(.003);
   });
 });

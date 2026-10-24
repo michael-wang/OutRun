@@ -1,6 +1,6 @@
 import type { InputState } from './handling';
 export type Control = 'left' | 'right' | 'gas' | 'brake';
-const keyControls: Record<string, Control> = { KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right', KeyW: 'gas', ArrowUp: 'gas', KeyS: 'brake', ArrowDown: 'brake' };
+const keyControls: Record<string, Control> = { KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right', Space:'gas', Enter:'brake', KeyW: 'gas', ArrowUp: 'gas', KeyS: 'brake', ArrowDown: 'brake' };
 export const SETTINGS_KEY = 'first-drive-controls-swapped';
 export function readSwapped(storage: Pick<Storage, 'getItem'> = localStorage): boolean { try { return storage.getItem(SETTINGS_KEY) === 'true'; } catch { return false; } }
 export function saveSwapped(value: boolean, storage: Pick<Storage, 'setItem'> = localStorage): void { try { storage.setItem(SETTINGS_KEY, String(value)); } catch { /* Private browsing can disable persistence. */ } }
@@ -20,12 +20,13 @@ export class InputLatch {
 
 export class InputController extends InputLatch {
   private buttons: HTMLElement[];
-  constructor(root: Document | HTMLElement = document) {
+  constructor(root: Document | HTMLElement = document, isDriving:()=>boolean=()=>true) {
     super();
     this.buttons = Array.from(root.querySelectorAll<HTMLElement>('[data-control]'));
     const paint = () => this.buttons.forEach(button => button.classList.toggle('pressed', this.held(button.dataset.control as Control)));
-    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control) { event.preventDefault(); this.press(`key:${event.code}`, control); paint(); } });
-    window.addEventListener('keyup', event => { this.release(`key:${event.code}`); paint(); });
+    const editing=(target:EventTarget|null)=>target instanceof HTMLElement&&!!target.closest('input,textarea,select,[contenteditable="true"]');
+    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control&&isDriving()&&!editing(event.target)) { event.preventDefault(); this.press(`key:${event.code}`, control); paint(); } });
+    window.addEventListener('keyup', event => { if(keyControls[event.code]&&isDriving()&&!editing(event.target))event.preventDefault();this.release(`key:${event.code}`); paint(); });
     this.buttons.forEach(button => {
       button.addEventListener('pointerdown', event => { event.preventDefault(); button.setPointerCapture(event.pointerId); this.press(`pointer:${event.pointerId}`, button.dataset.control as Control); paint(); });
       const release = (event: PointerEvent) => { this.release(`pointer:${event.pointerId}`); paint(); };

@@ -14,6 +14,9 @@ export class EngineSound {
   private skidLevel = 0;
   private windLevel = 0;
   private active = false;
+  private squealing=false;
+  private slipPersistence=0;
+  private quietPersistence=0;
   async unlock() {
     if (!this.context) {
       const context = this.context = new AudioContext();
@@ -47,8 +50,12 @@ export class EngineSound {
     await this.context.resume();
   }
   setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
-  update(speed: number, slip: number, gas: boolean) {
-    this.active = true; this.engineHz = 42 + speed * 3.6 + (gas ? 24 : 0); this.skidLevel = slip > 0.15 ? Math.min(0.22, (slip - 0.15) * 0.32) : 0;
+  update(speed: number, slip: number, gas: boolean,dt=1/60) {
+    this.slipPersistence=slip>.45&&speed>35?this.slipPersistence+dt:0;
+    this.quietPersistence=slip<.25||speed<25?this.quietPersistence+dt:0;
+    if(this.slipPersistence>.10)this.squealing=true;
+    if(this.quietPersistence>.18)this.squealing=false;
+    this.active = true; this.engineHz = 42 + speed * 3.6 + (gas ? 24 : 0); this.skidLevel = this.squealing ? Math.min(.22,Math.max(0,slip-.20)*.32):0;
     this.windLevel=.13*Math.min(1,(speed/65)**2);
     if (!this.context) return;
     const now = this.context.currentTime;
@@ -59,7 +66,7 @@ export class EngineSound {
     this.skid!.frequency.setTargetAtTime(1250 + slip * 600, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.045);
   }
-  pause() { this.active = false; this.skidLevel = 0;this.windLevel=0; if (this.context) { this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  pause() { this.active = false;this.squealing=false;this.slipPersistence=0;this.quietPersistence=0;this.skidLevel = 0;this.windLevel=0; if (this.context) { this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }

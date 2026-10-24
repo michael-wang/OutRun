@@ -1,0 +1,4 @@
+{"label":"tap","errors":[],"distance":232.8103512097673,"time":2.050099999999995,"offRoad":4,"maxSlipDegrees":0.6506551479634268,"maxSkid":0}
+{"label":"hold","errors":[],"distance":271.6289658739009,"time":2.850099999999992,"offRoad":44,"maxSlipDegrees":9.55009277895628,"maxSkid":0}
+{"label":"drift","errors":[],"distance":1696.057600671231,"time":8.350200000000145,"offRoad":38,"maxSlipDegrees":29.63589584306612,"maxSkid":0.20303613391334693}
+{"label":"rhythm","errors":[],"distance":3238.2922702390847,"time":36.60109999999845,"offRoad":0,"maxSlipDegrees":3.0962974404893857,"maxSkid":0}

@@ -11,7 +11,7 @@ test('all pace selections keep framing and hands-off departure; default is 1.75'
   expect(data.s.highSpeedPace).toBe(pace);expect(data.s.travelSpeed).toBe(65*pace);
   expect(data.frame.width).toBeGreaterThan(.20);expect(data.frame.width).toBeLessThan(.26);expect(data.s.camera.distance).toBe(8);expect(data.s.camera.fov).toBeCloseTo(38.741159);
   await page.screenshot({path:`docs/evidence/v0.3.2/phone-${pace}.png`});results.push(data);
-  for(const distance of [240,740]){
+  for(const distance of [820,1980]){
    await page.evaluate(distance=>{const g=(window as any).__drive;g.reset({distance,speed:55});},distance);
    const before=await page.evaluate(()=>(window as any).__drive.snapshot());
    await page.evaluate(()=>(window as any).__drive.advance(5,{gas:true,brake:false,steer:0}));
@@ -23,15 +23,15 @@ test('all pace selections keep framing and hands-off departure; default is 1.75'
  writeFileSync('docs/evidence/v0.3.2/framing.json',JSON.stringify(results,null,2));
 });
 for(const pace of [1.75,2])test(`pace ${pace} normal bend with real keyboard input remains controllable`,async({page})=>{
- await page.goto(`/?pace=${pace}`);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.reset({distance:400,speed:65}));
+ await page.goto(`/?pace=${pace}`);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.reset({distance:740,speed:65}));
  const driver=scriptedDriver(),trace:any[]=[];
  for(let i=0;i<90;i++){
   const s=await page.evaluate(()=>(window as any).__drive.snapshot()),k=await page.evaluate(d=>(window as any).__drive.sample(d).curvature,s.distance),input=driver(s,k);
-  for(const [key,active] of [['w',input.gas],['s',input.brake],['a',input.steer<0],['d',input.steer>0]] as const){if(active)await page.keyboard.down(key);else await page.keyboard.up(key);}
+  for(const [key,active] of [['Space',input.gas],['Enter',input.brake],['a',input.steer<0],['d',input.steer>0]] as const){if(active)await page.keyboard.down(key);else await page.keyboard.up(key);}
   await page.waitForTimeout(50);trace.push(s);
  }
  await page.screenshot({path:`docs/evidence/v0.3.2/keyboard-bend-${pace}.png`});writeFileSync(`docs/evidence/v0.3.2/keyboard-bend-${pace}.json`,JSON.stringify(trace,null,2));
- expect(trace.every(s=>!s.offRoad)).toBe(true);expect(trace.at(-1).distance).toBeGreaterThan(700);
+ expect(trace.every(s=>!s.offRoad)).toBe(true);expect(trace.at(-1).distance).toBeGreaterThan(1000);
 });
 test('2x real 30/60 render callback consistency and clean console',async({browser})=>{
  const runs=[];

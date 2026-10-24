@@ -1,0 +1,3335 @@
+{
+  "label": "tap",
+  "errors": [],
+  "distance": 232.8103512097673,
+  "time": 2.050099999999995,
+  "offRoad": 4,
+  "maxSlipDegrees": 0.6506551479634268,
+  "maxSkid": 0,
+  "final": {
+    "distance": 232.8103512097673,
+    "speed": 63.286189085298936,
+    "lateral": 6.4760096520374955,
+    "heading": 0.031682711109311146,
+    "velocityHeading": 0.03168271097881067,
+    "worldHeading": 0.031682711109311174,
+    "steering": 1.8289509984915402e-14,
+    "yawRate": 2.080431760784127e-14,
+    "slipAngle": 1.3050047847906754e-10,
+    "slip": 0,
+    "offRoad": true,
+    "footprintEdge": 7.679884471351608,
+    "curvature": 0,
+    "corridorSide": 0,
+    "steerHold": 0,
+    "steerSign": 1,
+    "drifting": false,
+    "driftRelease": 2.050099999999995,
+    "highSpeedPace": 1.75,
+    "effectivePace": 1.75,
+    "travelSpeed": 110.75083089927314,
+    "mode": "playing",
+    "elapsed": 2.050099999999995,
+    "frames": 132,
+    "inputs": {
+      "gas": true,
+      "brake": false,
+      "steer": 0
+    },
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 464.7029912373833,
+      "skidLevel": 0,
+      "windLevel": 0.13,
+      "rms": 0.043494115059336015
+    },
+    "trackLength": 6260,
+    "position": [
+      -6.476009652037713,
+      9.235822165310955,
+      232.81035120976765
+    ],
+    "swapped": false,
+    "surfaceError": 2.9166147719195123e-7,
+    "camera": {
+      "horizontalFov": 76,
+      "fov": 38.741159100630384,
+      "distance": 8,
+      "height": 2.6,
+      "lookAhead": 13.284848493623585,
+      "lookHeight": 0,
+      "position": [
+        -6.221762997121572,
+        11.753882371398202,
+        224.78821113139804
+      ]
+    },
+    "immersive": {
+      "active": false,
+      "installed": false,
+      "lockState": "idle",
+      "pending": false,
+      "message": ""
+    },
+    "rightScreenDelta": 0.15436102333007573,
+    "wall": 2618.4000000059605,
+    "frame": {
+      "left": 0.37920375512668814,
+      "right": 0.6207961778081077,
+      "top": 0.5089042687376811,
+      "bottom": 0.9199832860923949,
+      "width": 0.24159242268141956
+    }
+  },
+  "trace": [
+    {
+      "distance": 5.687499861120096,
+      "speed": 65,
+      "lateral": 0.0009429645463463974,
+      "heading": 0.0020715203667010635,
+      "velocityHeading": 0.00042656741468617275,
+      "worldHeading": 0.0020715203667010635,
+      "steering": 0.05939704619814042,
+      "yawRate": 0.06756414005038473,
+      "slipAngle": 0.0016449529520148906,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.1358086094012227,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0.05,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.05,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.05,
+      "frames": 12,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 1
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.02024971777938589
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.0009429645463517048,
+        8.040744544703422,
+        5.687499861120157
+      ],
+      "swapped": false,
+      "surfaceError": 5.8886781673095356e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.00041490523710899425,
+          10.638727615976135,
+          -2.3131553422074913
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.155026174116583,
+      "wall": 619.5,
+      "frame": {
+        "left": 0.3788491967560581,
+        "right": 0.6204407429034688,
+        "top": 0.508903596619118,
+        "bottom": 0.9200755879426532,
+        "width": 0.24159154614741074
+      }
+    },
+    {
+      "distance": 11.374993666707043,
+      "speed": 65,
+      "lateral": 0.008693408659546844,
+      "heading": 0.006962949558994553,
+      "velocityHeading": 0.0022700279455985226,
+      "worldHeading": 0.006962949558994553,
+      "steering": 0.10381868173865288,
+      "yawRate": 0.11809375047771767,
+      "slipAngle": 0.004692921613396031,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.1550288153078117,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0.09999999999999998,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.09999999999999998,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.09999999999999998,
+      "frames": 15,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 1
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.024954189107225445
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.008693408659557459,
+        8.042901966075227,
+        11.374993666707265
+      ],
+      "swapped": false,
+      "surfaceError": 8.133921092223773e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.004579113587476621,
+          10.63886801163878,
+          3.3736848135972197
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15501780021036554,
+      "wall": 668.8000000044703,
+      "frame": {
+        "left": 0.378071034654879,
+        "right": 0.6196540252153683,
+        "top": 0.5088951939970661,
+        "bottom": 0.9202836493717867,
+        "width": 0.24158299056048926
+      }
+    },
+    {
+      "distance": 17.06243850012881,
+      "speed": 65,
+      "lateral": 0.032951551449370314,
+      "heading": 0.014197468620669302,
+      "velocityHeading": 0.005963524128023728,
+      "worldHeading": 0.014197468620669307,
+      "steering": 0.14380645626322103,
+      "yawRate": 0.16357984399941392,
+      "slipAngle": 0.008233944492645574,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.1962005977922794,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0.15,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.15,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.15,
+      "frames": 18,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 1
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.036636665901228986
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.03295155144938624,
+        8.046472161410707,
+        17.06243850012924
+      ],
+      "swapped": false,
+      "surfaceError": -4.118945184927725e-10,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.01896579006630286,
+          10.640421165642417,
+          9.060486678109573
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15499459558940995,
+      "wall": 718.7000000029802,
+      "frame": {
+        "left": 0.3770311388307417,
+        "right": 0.6185883996904782,
+        "top": 0.5088709269395746,
+        "bottom": 0.9205702379612242,
+        "width": 0.2415572608597365
+      }
+    },
+    {
+      "distance": 22.749694510761298,
+      "speed": 65,
+      "lateral": 0.08478524224078947,
+      "heading": 0.022959448324785893,
+      "velocityHeading": 0.011603373697773216,
+      "worldHeading": 0.022959448324785907,
+      "steering": 0.13122410079115115,
+      "yawRate": 0.14926741464993443,
+      "slipAngle": 0.011356074627012677,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.2684373867740035,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0.14189999999999992,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.2,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.2,
+      "frames": 21,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.036723424669608616
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.0847852422408107,
+        8.05148251856839,
+        22.749694510761394
+      ],
+      "swapped": false,
+      "surfaceError": -2.5698824579478696e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.051887805642255445,
+          10.64341458159568,
+          14.747144545949155
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15494950413260347,
+      "wall": 769.8000000044703,
+      "frame": {
+        "left": 0.3759357630800598,
+        "right": 0.6174477560078262,
+        "top": 0.5088326735560003,
+        "bottom": 0.9208811290678312,
+        "width": 0.24151199292776637
+      }
+    },
+    {
+      "distance": 28.43653300290998,
+      "speed": 65,
+      "lateral": 0.17099361649970596,
+      "heading": 0.02776346245573547,
+      "velocityHeading": 0.017587578940026733,
+      "worldHeading": 0.027763462455735483,
+      "steering": 0.05896278927570184,
+      "yawRate": 0.06707017280111084,
+      "slipAngle": 0.010175883515708736,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.3657938921997503,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0.016899999999999908,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.25,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.25,
+      "frames": 24,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04281024056337469
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.1709936164997325,
+        8.057953245776133,
+        28.436533002909517
+      ],
+      "swapped": false,
+      "surfaceError": 1.2831789675260552e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.11045458579772581,
+          10.647868614980435,
+          20.433491493200787
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1548820931207145,
+      "wall": 819.2000000029802,
+      "frame": {
+        "left": 0.37571832415862666,
+        "right": 0.6172187782837322,
+        "top": 0.5087893375468817,
+        "bottom": 0.9209885491841321,
+        "width": 0.2415004541251055
+      }
+    },
+    {
+      "distance": 34.122835143215816,
+      "speed": 65,
+      "lateral": 0.28747420110413985,
+      "heading": 0.029921673293670063,
+      "velocityHeading": 0.02234868918041335,
+      "worldHeading": 0.029921673293670077,
+      "steering": 0.026493689026713136,
+      "yawRate": 0.03013657126788619,
+      "slipAngle": 0.007572984113256714,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.4872738309770361,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.30000000000000016,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.30000000000000016,
+      "frames": 27,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04113313285643554
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.2874742011041717,
+        8.065835203109932,
+        34.12283514321551
+      ],
+      "swapped": false,
+      "surfaceError": -7.696382198218998e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.19520754041384789,
+          10.653734234139439,
+          26.11944427005921
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15480251752043617,
+      "wall": 868.6000000014901,
+      "frame": {
+        "left": 0.37603760818642257,
+        "right": 0.6175540667265436,
+        "top": 0.5087672133240897,
+        "bottom": 0.9209425943587176,
+        "width": 0.241516458540121
+      }
+    },
+    {
+      "distance": 39.8086375632961,
+      "speed": 65,
+      "lateral": 0.42632419198264554,
+      "heading": 0.030891419933825773,
+      "velocityHeading": 0.025713599400297896,
+      "worldHeading": 0.030891419933825787,
+      "steering": 0.011904381846016818,
+      "yawRate": 0.01354123434984413,
+      "slipAngle": 0.005177820533527878,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.6283683581869708,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.3500000000000003,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.3500000000000003,
+      "frames": 30,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04210188617486234
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.4263241919826827,
+        8.07512785064501,
+        39.80863756329653
+      ],
+      "swapped": false,
+      "surfaceError": -1.6537288871631972e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.3027529635944133,
+          10.661010952256547,
+          31.80501721146108
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15472170349606995,
+      "wall": 919.5,
+      "frame": {
+        "left": 0.37654668037117545,
+        "right": 0.6180856574065775,
+        "top": 0.5087665227801849,
+        "bottom": 0.9208227541566831,
+        "width": 0.24153897703540206
+      }
+    },
+    {
+      "distance": 45.50541928278447,
+      "speed": 65,
+      "lateral": 0.5807329024081656,
+      "heading": 0.03132770925440538,
+      "velocityHeading": 0.027954137722998967,
+      "worldHeading": 0.0313277092544054,
+      "steering": 0.005340432032674121,
+      "yawRate": 0.006074741437166813,
+      "slipAngle": 0.0033735715314064142,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.78378651765513,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.4001000000000005,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.4001000000000005,
+      "frames": 33,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.043923613001036414
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.580732902408208,
+        8.085908772306254,
+        45.5054192827847
+      ],
+      "swapped": false,
+      "surfaceError": -1.984835087398551e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.42899049638401987,
+          10.66977235033268,
+          37.50163122634777
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15464703137517316,
+      "wall": 968.4000000059605,
+      "frame": {
+        "left": 0.37707756404204207,
+        "right": 0.618635826151363,
+        "top": 0.5087793262153449,
+        "bottom": 0.9206782864444792,
+        "width": 0.24155826210932096
+      }
+    },
+    {
+      "distance": 51.179183258140576,
+      "speed": 65,
+      "lateral": 0.744416860361478,
+      "heading": 0.03152294226907997,
+      "velocityHeading": 0.0293845821559915,
+      "worldHeading": 0.03152294226907999,
+      "steering": 0.002403453243589585,
+      "yawRate": 0.002733928064583153,
+      "slipAngle": 0.0021383601130884715,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.9479221149638306,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.4500000000000006,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.4500000000000006,
+      "frames": 36,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.043506705472510954
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.7444168603615258,
+        8.098074145597339,
+        51.17918325814024
+      ],
+      "swapped": false,
+      "surfaceError": 2.7095755683603784e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.5689851889581722,
+          10.679926722962023,
+          43.17523042235817
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1545828170339254,
+      "wall": 1019.5,
+      "frame": {
+        "left": 0.37755268400205166,
+        "right": 0.6191245505202567,
+        "top": 0.5087981150746111,
+        "bottom": 0.9205378574546808,
+        "width": 0.24157186651820506
+      }
+    },
+    {
+      "distance": 56.87550342672274,
+      "speed": 65,
+      "lateral": 0.9150358760400371,
+      "heading": 0.03161103916721499,
+      "velocityHeading": 0.030284032515299923,
+      "worldHeading": 0.03161103916721501,
+      "steering": 0.0010782146319840253,
+      "yawRate": 0.001226469143881829,
+      "slipAngle": 0.0013270066519150692,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 2.1187449132564407,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.5001000000000008,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.5001000000000008,
+      "frames": 39,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.042985564791245094
+      },
+      "trackLength": 6260,
+      "position": [
+        -0.9150358760400902,
+        8.111700688031446,
+        56.87550342672237
+      ],
+      "swapped": false,
+      "surfaceError": 2.911566951979694e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.7203575097064114,
+          10.691534700755005,
+          48.87134470762663
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15452969375413658,
+      "wall": 1068.6000000014901,
+      "frame": {
+        "left": 0.3779505318769987,
+        "right": 0.6195311395752414,
+        "top": 0.5088181232074178,
+        "bottom": 0.9204135623024252,
+        "width": 0.24158060769824274
+      }
+    },
+    {
+      "distance": 62.5489662733396,
+      "speed": 65,
+      "lateral": 1.0888565131993835,
+      "heading": 0.03165045563484391,
+      "velocityHeading": 0.030836244707568575,
+      "worldHeading": 0.03165045563484393,
+      "steering": 0.0004852488410436969,
+      "yawRate": 0.0005519705566872053,
+      "slipAngle": 0.0008142109272753321,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 2.2926567241630527,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.5500000000000006,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.5500000000000006,
+      "frames": 42,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04705286719876773
+      },
+      "trackLength": 6260,
+      "position": [
+        -1.0888565131994419,
+        8.126685144067793,
+        62.5489662733398
+      ],
+      "swapped": false,
+      "surfaceError": -3.5574514001268653e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -0.8791349974118181,
+          10.704509186947337,
+          54.54453999222709
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15448758410967725,
+      "wall": 1119.9000000059605,
+      "frame": {
+        "left": 0.3782664045850994,
+        "right": 0.6198522373942615,
+        "top": 0.508836512322951,
+        "bottom": 0.9203108838732994,
+        "width": 0.24158583280916213
+      }
+    },
+    {
+      "distance": 68.23372539066052,
+      "speed": 65,
+      "lateral": 1.2654060949038521,
+      "heading": 0.0316682173430555,
+      "velocityHeading": 0.031173782452894046,
+      "worldHeading": 0.03166821734305553,
+      "steering": 0.00021803635908524668,
+      "yawRate": 0.0002480163584594681,
+      "slipAngle": 0.0004944348901614534,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 2.4692473896454143,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.6000000000000003,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.6000000000000003,
+      "frames": 45,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04055838992192991
+      },
+      "trackLength": 6260,
+      "position": [
+        -1.2654060949039159,
+        8.143176974988673,
+        68.23372539066074
+      ],
+      "swapped": false,
+      "surfaceError": -3.0700430642127685e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -1.0441150539105186,
+          10.718987607571771,
+          60.228962442250086
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15445485186600114,
+      "wall": 1168.5,
+      "frame": {
+        "left": 0.3785113762966374,
+        "right": 0.6201002194136784,
+        "top": 0.5088522498148684,
+        "bottom": 0.9202288814657064,
+        "width": 0.24158884311704104
+      }
+    },
+    {
+      "distance": 73.92980880578446,
+      "speed": 65,
+      "lateral": 1.4437593767139716,
+      "heading": 0.03167620931334545,
+      "velocityHeading": 0.03137828133073817,
+      "worldHeading": 0.03167620931334548,
+      "steering": 0.00009781342462028794,
+      "yawRate": 0.00011126277050557755,
+      "slipAngle": 0.0002979279826072837,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 2.6476191571849435,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.6501,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.6501,
+      "frames": 48,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04027903552052541
+      },
+      "trackLength": 6260,
+      "position": [
+        -1.4437593767140406,
+        8.161114160798746,
+        73.92980880578486
+      ],
+      "swapped": false,
+      "surfaceError": -3.88073297941105e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -1.2137250085484155,
+          10.734908002370819,
+          65.92464363256398
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15442992107245324,
+      "wall": 1219.8000000044703,
+      "frame": {
+        "left": 0.37869731424498043,
+        "right": 0.6202878360111284,
+        "top": 0.5088650643442807,
+        "bottom": 0.9201652399816573,
+        "width": 0.24159052176614793
+      }
+    },
+    {
+      "distance": 79.61449540146731,
+      "speed": 65,
+      "lateral": 1.622629505086607,
+      "heading": 0.03167978965444839,
+      "velocityHeading": 0.03150097181252602,
+      "worldHeading": 0.03167978965444841,
+      "steering": 0.00004395040476139192,
+      "yawRate": 0.00004999358541608331,
+      "slipAngle": 0.00017881784192236988,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 2.826497566996962,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.7000999999999997,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.7000999999999997,
+      "frames": 51,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.044736845151078626
+      },
+      "trackLength": 6260,
+      "position": [
+        -1.6226295050866815,
+        8.180424418935031,
+        79.61449540146711
+      ],
+      "swapped": false,
+      "surfaceError": 2.236588425574837e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -1.3860993027653572,
+          10.752206199764808,
+          71.60887288131404
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1544112958649259,
+      "wall": 1269.5,
+      "frame": {
+        "left": 0.3788357297848225,
+        "right": 0.6204271619884244,
+        "top": 0.5088751107794086,
+        "bottom": 0.9201170456620823,
+        "width": 0.2415914322036019
+      }
+    },
+    {
+      "distance": 85.29916552029273,
+      "speed": 65,
+      "lateral": 1.8020225852558212,
+      "heading": 0.03168139840540737,
+      "velocityHeading": 0.031574459855469444,
+      "worldHeading": 0.03168139840540739,
+      "steering": 0.000019748189843968845,
+      "yawRate": 0.000022463565947514562,
+      "slipAngle": 0.00010693854993792244,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 3.0058943682517305,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.7500999999999994,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.7500999999999994,
+      "frames": 54,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04961506487371001
+      },
+      "trackLength": 6260,
+      "position": [
+        -1.8020225852559006,
+        8.201174820999992,
+        85.29916552029314
+      ],
+      "swapped": false,
+      "surfaceError": 1.8154300107653398e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -1.5607031434512433,
+          10.770945307398808,
+          77.29304007946719
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15439751318872239,
+      "wall": 1318.7000000029802,
+      "frame": {
+        "left": 0.37893782362401607,
+        "right": 0.6205297419634316,
+        "top": 0.5088828158692332,
+        "bottom": 0.9200810183532918,
+        "width": 0.2415919183394155
+      }
+    },
+    {
+      "distance": 90.97245645055582,
+      "speed": 65,
+      "lateral": 1.981368707739147,
+      "heading": 0.031682120343194724,
+      "velocityHeading": 0.031618273861719545,
+      "worldHeading": 0.03168212034319475,
+      "steering": 0.000008887642543733133,
+      "yawRate": 0.00001010969339349644,
+      "slipAngle": 0.00006384648147517852,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 3.1852421605961543,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.7999999999999993,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.7999999999999993,
+      "frames": 57,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.0440995122389654
+      },
+      "trackLength": 6260,
+      "position": [
+        -1.981368707739232,
+        8.223328297783869,
+        90.97245645055588
+      ],
+      "swapped": false,
+      "surfaceError": 1.0072481693157442e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -1.7365513180404717,
+          10.7910923398637,
+          82.96579345840348
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15438742500033834,
+      "wall": 1369.5,
+      "frame": {
+        "left": 0.3790123351927287,
+        "right": 0.6206045089250658,
+        "top": 0.5088886098793893,
+        "bottom": 0.9200544413328486,
+        "width": 0.2415921737323371
+      }
+    },
+    {
+      "distance": 96.6684801099687,
+      "speed": 65,
+      "lateral": 2.1616205742648393,
+      "heading": 0.031682446070609806,
+      "velocityHeading": 0.03164448268595054,
+      "worldHeading": 0.031682446070609833,
+      "steering": 0.000003987090766194728,
+      "yawRate": 0.000004535315746546503,
+      "slipAngle": 0.00003796338465926474,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 3.365494780537723,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.8500999999999989,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.8500999999999989,
+      "frames": 60,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04784308433077332
+      },
+      "trackLength": 6260,
+      "position": [
+        -2.1616205742649295,
+        8.24697934938807,
+        96.66848010996907
+      ],
+      "swapped": false,
+      "surfaceError": -1.7995001400095134e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -1.9142486351950154,
+          10.81272980174984,
+          88.66125014324736
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15438005170266172,
+      "wall": 1419.5,
+      "frame": {
+        "left": 0.379066653675006,
+        "right": 0.6206589606111997,
+        "top": 0.5088929325690397,
+        "bottom": 0.9200348955222424,
+        "width": 0.2415923069361937
+      }
+    },
+    {
+      "distance": 102.353130943224,
+      "speed": 65,
+      "lateral": 2.3416237781042537,
+      "heading": 0.03168259201320415,
+      "velocityHeading": 0.03166002952737661,
+      "worldHeading": 0.03168259201320418,
+      "steering": 0.0000017915153638156166,
+      "yawRate": 0.000002037848726340264,
+      "slipAngle": 0.000022562485827541667,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 3.5454983219460643,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.9000999999999986,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.9000999999999986,
+      "frames": 63,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.043704696144559595
+      },
+      "trackLength": 6260,
+      "position": [
+        -2.341623778104349,
+        8.271989478157753,
+        102.35313094322369
+      ],
+      "swapped": false,
+      "surfaceError": -3.911233150688531e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -2.092406207442182,
+          10.835731320785648,
+          94.34531486349057
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15437472717285458,
+      "wall": 1469.8000000044703,
+      "frame": {
+        "left": 0.3791057839828572,
+        "right": 0.6206981590580772,
+        "top": 0.5088961032250605,
+        "bottom": 0.9200207085836593,
+        "width": 0.24159237507522002
+      }
+    },
+    {
+      "distance": 108.02641039185836,
+      "speed": 65,
+      "lateral": 2.521332745954447,
+      "heading": 0.0316826575059226,
+      "velocityHeading": 0.03166924935587234,
+      "worldHeading": 0.03168265750592265,
+      "steering": 8.06268741135378e-7,
+      "yawRate": 9.171306930414925e-7,
+      "slipAngle": 0.000013408150050256418,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 3.72520744128257,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.9499999999999984,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.9499999999999984,
+      "frames": 66,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04333832194765895
+      },
+      "trackLength": 6260,
+      "position": [
+        -2.5213327459545476,
+        8.298408381283645,
+        108.02641039185797
+      ],
+      "swapped": false,
+      "surfaceError": 1.827888826966273e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -2.270784869802282,
+          10.86014665374026,
+          100.01799464433421
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15437089636772533,
+      "wall": 1518.6000000014901,
+      "frame": {
+        "left": 0.37913386842094265,
+        "right": 0.6207262778939602,
+        "top": 0.5088984109715924,
+        "bottom": 0.9200104571730388,
+        "width": 0.24159240947301752
+      }
+    },
+    {
+      "distance": 113.71105789832893,
+      "speed": 65,
+      "lateral": 2.701440983150858,
+      "heading": 0.031682687023458146,
+      "velocityHeading": 0.03167473411254458,
+      "worldHeading": 0.031682687023458195,
+      "steering": 3.622798982544557e-7,
+      "yawRate": 4.120933842644434e-7,
+      "slipAngle": 0.00000795291091356537,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 3.9053157467537853,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 0.9999999999999982,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 0.9999999999999982,
+      "frames": 69,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04412844500777873
+      },
+      "trackLength": 6260,
+      "position": [
+        -2.701440983150964,
+        8.32629898556427,
+        113.71105789832924
+      ],
+      "swapped": false,
+      "surfaceError": 1.7932759810435073e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -2.4499320159869113,
+          10.886030762680111,
+          105.70203071216865
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1543681381424147,
+      "wall": 1569.8000000044703,
+      "frame": {
+        "left": 0.3791540359123177,
+        "right": 0.6207464624585133,
+        "top": 0.5089000862897038,
+        "bottom": 0.9200030471761355,
+        "width": 0.24159242654619556
+      }
+    },
+    {
+      "distance": 119.40707396138444,
+      "speed": 65,
+      "lateral": 2.881932742001382,
+      "heading": 0.031682700306187424,
+      "velocityHeading": 0.031677991099200935,
+      "worldHeading": 0.031682700306187465,
+      "steering": 1.6252260709189003e-7,
+      "yawRate": 1.8486946556702493e-7,
+      "slipAngle": 0.000004709206986489023,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 4.0858075363275965,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.050099999999998,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.050099999999998,
+      "frames": 72,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.045292346863344164
+      },
+      "trackLength": 6260,
+      "position": [
+        -2.8819327420014935,
+        8.355651743498244,
+        119.40707396138437
+      ],
+      "swapped": false,
+      "surfaceError": -2.5698714445354653e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -2.6297301893161733,
+          10.913374172666899,
+          111.39742666279834
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1543661582136355,
+      "wall": 1619.7000000029802,
+      "frame": {
+        "left": 0.3791684671681331,
+        "right": 0.6207609018651592,
+        "top": 0.5089012951690315,
+        "bottom": 0.9199977080618771,
+        "width": 0.24159243469702607
+      }
+    },
+    {
+      "distance": 125.09172029390339,
+      "speed": 65,
+      "lateral": 3.062078028284915,
+      "heading": 0.03168270625512924,
+      "velocityHeading": 0.031679916216731725,
+      "worldHeading": 0.03168270625512928,
+      "steering": 7.302611469022919e-8,
+      "yawRate": 8.30672054601357e-8,
+      "slipAngle": 0.0000027900383975168475,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 4.2659528363711825,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.1000999999999979,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.1000999999999979,
+      "frames": 75,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04212829418992735
+      },
+      "trackLength": 6260,
+      "position": [
+        -3.0620780282850317,
+        8.386358918956288,
+        125.09172029390352
+      ],
+      "swapped": false,
+      "surfaceError": -1.2783482539191482e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -2.8093764613733123,
+          10.942077234897797,
+          117.08144902461173
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436474483308615,
+      "wall": 1668.5,
+      "frame": {
+        "left": 0.37917872815684195,
+        "right": 0.620771166432389,
+        "top": 0.5089021601329644,
+        "bottom": 0.9199938818094529,
+        "width": 0.2415924382755471
+      }
+    },
+    {
+      "distance": 130.76499707605822,
+      "speed": 65,
+      "lateral": 3.2418711557541533,
+      "heading": 0.031682708924756796,
+      "velocityHeading": 0.03168105480597392,
+      "worldHeading": 0.03168270892475682,
+      "steering": 3.286529088754085e-8,
+      "yawRate": 3.7384268384577726e-8,
+      "slipAngle": 0.000001654118782876135,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 4.445745970015335,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.149999999999998,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.149999999999998,
+      "frames": 78,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.040860065392780164
+      },
+      "trackLength": 6260,
+      "position": [
+        -3.2418711557542754,
+        8.418465852086385,
+        130.76499707605848
+      ],
+      "swapped": false,
+      "surfaceError": -1.0957423768331864e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -2.9888093743597417,
+          10.972185347870465,
+          122.75409971860533
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436373586553517,
+      "wall": 1718.6000000014901,
+      "frame": {
+        "left": 0.37918601504458727,
+        "right": 0.6207784545886296,
+        "top": 0.5089027771737641,
+        "bottom": 0.9199911383831137,
+        "width": 0.2415924395440423
+      }
+    },
+    {
+      "distance": 136.44964299736242,
+      "speed": 65,
+      "lateral": 3.422029417841127,
+      "heading": 0.03168271012772273,
+      "velocityHeading": 0.03168173075904123,
+      "worldHeading": 0.03168271012772275,
+      "steering": 1.4767327109909894e-8,
+      "yawRate": 1.6797834587522506e-8,
+      "slipAngle": 9.793686815001703e-7,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 4.6259042348848,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.1999999999999977,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.1999999999999977,
+      "frames": 81,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04345638750307834
+      },
+      "trackLength": 6260,
+      "position": [
+        -3.4220294178412543,
+        8.45203571732831,
+        136.44964299736233
+      ],
+      "swapped": false,
+      "surfaceError": -1.1619348327940315e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -3.168705343813122,
+          11.003753740492874,
+          128.43811617385518
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436301247866968,
+      "wall": 1768.5,
+      "frame": {
+        "left": 0.37919120275667284,
+        "right": 0.6207836424046216,
+        "top": 0.5089032177727486,
+        "bottom": 0.9199891610732855,
+        "width": 0.24159243964794874
+      }
+    },
+    {
+      "distance": 142.1456581195543,
+      "speed": 65,
+      "lateral": 3.602550866389603,
+      "heading": 0.03168271066893748,
+      "velocityHeading": 0.03168213153684909,
+      "worldHeading": 0.0316827106689375,
+      "steering": 6.624779661375495e-9,
+      "yawRate": 7.535686864814627e-9,
+      "slipAngle": 5.79132088389389e-7,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 4.806425684685119,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.2500999999999973,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.2500999999999973,
+      "frames": 84,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04407674090333365
+      },
+      "trackLength": 6260,
+      "position": [
+        -3.602550866389736,
+        8.48707495698143,
+        142.1456581195543
+      ],
+      "swapped": false,
+      "surfaceError": -2.464097530463505e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -3.349034561284338,
+          11.036788929254788,
+          134.13349935036857
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436249350063688,
+      "wall": 1818.5,
+      "frame": {
+        "left": 0.37919488872682894,
+        "right": 0.620787327888398,
+        "top": 0.5089035313193364,
+        "bottom": 0.9199877329908344,
+        "width": 0.24159243916156903
+      }
+    },
+    {
+      "distance": 147.8189346048609,
+      "speed": 65,
+      "lateral": 3.782353360511066,
+      "heading": 0.031682710911117434,
+      "velocityHeading": 0.03168236778809397,
+      "worldHeading": 0.031682710911117455,
+      "steering": 2.981471923578887e-9,
+      "yawRate": 3.391424313070984e-9,
+      "slipAngle": 3.431230234662852e-7,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 4.9862281793667504,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.2999999999999974,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.2999999999999974,
+      "frames": 87,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.03841904578851999
+      },
+      "trackLength": 6260,
+      "position": [
+        -3.782353360511204,
+        8.523404596791435,
+        147.8189346048611
+      ],
+      "swapped": false,
+      "surfaceError": -3.462534969855824e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -3.528695555930059,
+          11.07112400165486,
+          139.80614585485293
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436212232778465,
+      "wall": 1869.5,
+      "frame": {
+        "left": 0.3791974899987541,
+        "right": 0.6207899283808633,
+        "top": 0.5089037526359684,
+        "bottom": 0.9199867027024902,
+        "width": 0.24159243838210925
+      }
+    },
+    {
+      "distance": 153.5149496414553,
+      "speed": 65,
+      "lateral": 3.9628775099068325,
+      "heading": 0.03168271102040121,
+      "velocityHeading": 0.03168250817853193,
+      "worldHeading": 0.031682711020401225,
+      "steering": 1.3375199461135251e-9,
+      "yawRate": 1.521428938704135e-9,
+      "slipAngle": 2.0284186928037903e-7,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 5.166752329015293,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.3500999999999972,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.3500999999999972,
+      "frames": 90,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04140669294255688
+      },
+      "trackLength": 6260,
+      "position": [
+        -3.962877509906976,
+        8.561318560891502,
+        153.51494964145508
+      ],
+      "swapped": false,
+      "surfaceError": -2.672600825093241e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -3.709113265023767,
+          11.107036959296439,
+          145.5015283032225
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436185358114296,
+      "wall": 1919.4000000059605,
+      "frame": {
+        "left": 0.3791993390772808,
+        "right": 0.6207917765287031,
+        "top": 0.5089039097529295,
+        "bottom": 0.919985948107509,
+        "width": 0.24159243745142228
+      }
+    },
+    {
+      "distance": 159.18822607630443,
+      "speed": 65,
+      "lateral": 4.14268159609778,
+      "heading": 0.03168271106929649,
+      "velocityHeading": 0.031682590915827265,
+      "worldHeading": 0.03168271106929651,
+      "steering": 6.019487998694048e-10,
+      "yawRate": 6.84716759851448e-10,
+      "slipAngle": 1.2015346922272796e-7,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 5.346556415319337,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.3999999999999972,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.3999999999999972,
+      "frames": 93,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.044459820609243784
+      },
+      "trackLength": 6260,
+      "position": [
+        -4.142681596097928,
+        8.600473076336662,
+        159.18822607630403
+      ],
+      "swapped": false,
+      "surfaceError": 1.9700483377960154e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -3.8888365198267025,
+          11.144200070934883,
+          151.17417493757242
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436165935503587,
+      "wall": 1969.8000000044703,
+      "frame": {
+        "left": 0.3792006419682402,
+        "right": 0.6207930784192437,
+        "top": 0.5089040201320547,
+        "bottom": 0.9199853944231473,
+        "width": 0.24159243645100348
+      }
+    },
+    {
+      "distance": 164.8842410829167,
+      "speed": 65,
+      "lateral": 4.323206691508039,
+      "heading": 0.03168271109136165,
+      "velocityHeading": 0.031682640072651425,
+      "worldHeading": 0.031682711091361664,
+      "steering": 2.7004061986872003e-10,
+      "yawRate": 3.0717120510066905e-10,
+      "slipAngle": 7.101871022513473e-8,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 5.527081510780634,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.450099999999997,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.450099999999997,
+      "frames": 96,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.042479233259999624
+      },
+      "trackLength": 6260,
+      "position": [
+        -4.323206691508193,
+        8.641180600369893,
+        164.8842410829165
+      ],
+      "swapped": false,
+      "surfaceError": -3.5154684319138596e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -4.0692983807249705,
+          11.182909896569672,
+          156.86955813506665
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436151660282824,
+      "wall": 2018.8000000044703,
+      "frame": {
+        "left": 0.3792015669347143,
+        "right": 0.6207940023449385,
+        "top": 0.5089040981017872,
+        "bottom": 0.9199849793558985,
+        "width": 0.24159243541022424
+      }
+    },
+    {
+      "distance": 170.55751750009793,
+      "speed": 65,
+      "lateral": 4.503011335163922,
+      "heading": 0.03168271110123344,
+      "velocityHeading": 0.03168266903848935,
+      "worldHeading": 0.031682711101233454,
+      "steering": 1.2153136670469457e-10,
+      "yawRate": 1.382419296265901e-10,
+      "slipAngle": 4.206274409335187e-8,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 5.70688615445935,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.4999999999999971,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.4999999999999971,
+      "frames": 99,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.041851484474521736
+      },
+      "trackLength": 6260,
+      "position": [
+        -4.503011335164081,
+        8.683177114598218,
+        170.55751750009762
+      ],
+      "swapped": false,
+      "surfaceError": 9.680001156198159e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -4.249052691410259,
+          11.222918433017046,
+          162.54220596262266
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436141128704337,
+      "wall": 2069.7000000029802,
+      "frame": {
+        "left": 0.379202218024695,
+        "right": 0.620794652380728,
+        "top": 0.5089041525659206,
+        "bottom": 0.9199846653225316,
+        "width": 0.24159243435603295
+      }
+    },
+    {
+      "distance": 176.25353249621304,
+      "speed": 65,
+      "lateral": 4.6835367617847465,
+      "heading": 0.031682711105688356,
+      "velocityHeading": 0.03168268624615457,
+      "worldHeading": 0.03168271110568838,
+      "steering": 5.452026086861294e-11,
+      "yawRate": 6.201679673804722e-11,
+      "slipAngle": 2.4859533785670518e-8,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 5.887411581090478,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.550099999999997,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.550099999999997,
+      "frames": 102,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.040278394138142916
+      },
+      "trackLength": 6260,
+      "position": [
+        -4.683536761784911,
+        8.726749005693357,
+        176.2535324962127
+      ],
+      "swapped": false,
+      "surfaceError": 2.2733286009213316e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -4.429536575542076,
+          11.264496197082646,
+          168.2375906864199
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1543613317414932,
+      "wall": 2118.10000000149,
+      "frame": {
+        "left": 0.37920267989936884,
+        "right": 0.6207951131887397,
+        "top": 0.5089041907701509,
+        "bottom": 0.9199844206257441,
+        "width": 0.24159243328937086
+      }
+    },
+    {
+      "distance": 181.93817819861255,
+      "speed": 65,
+      "lateral": 4.863701930978517,
+      "heading": 0.03168271110768398,
+      "velocityHeading": 0.03168269640045706,
+      "worldHeading": 0.03168271110768401,
+      "steering": 2.449753233949455e-11,
+      "yawRate": 2.786594303617505e-11,
+      "slipAngle": 1.4707226922427985e-8,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 6.067576750288866,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.6000999999999967,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.6000999999999967,
+      "frames": 105,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.03768386450203505
+      },
+      "trackLength": 6260,
+      "position": [
+        -4.863701930978687,
+        8.771624624709279,
+        181.9381781986121
+      ],
+      "swapped": false,
+      "surfaceError": -3.287202332558081e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -4.6096666470295995,
+          11.30738355181706,
+          173.92160831255097
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436127086884943,
+      "wall": 2168.7000000029802,
+      "frame": {
+        "left": 0.3792030053840045,
+        "right": 0.6207954376053051,
+        "top": 0.5089042172590741,
+        "bottom": 0.9199842263006176,
+        "width": 0.2415924322213006
+      }
+    },
+    {
+      "distance": 187.61145460824886,
+      "speed": 65,
+      "lateral": 5.043506812695402,
+      "heading": 0.03168271110857955,
+      "velocityHeading": 0.03168270239865562,
+      "worldHeading": 0.03168271110857958,
+      "steering": 1.1025076847914947e-11,
+      "yawRate": 1.2541024914503252e-11,
+      "slipAngle": 8.709923927929797e-9,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 6.247381632007822,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.6499999999999968,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.6499999999999968,
+      "frames": 108,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.038153722566453246
+      },
+      "trackLength": 6260,
+      "position": [
+        -5.043506812695577,
+        8.817807264557338,
+        187.61145460824895
+      ],
+      "swapped": false,
+      "surfaceError": 5.425725824181882e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -4.789440989458695,
+          11.351583844208232,
+          179.5942589138758
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436122316256473,
+      "wall": 2218.7000000029802,
+      "frame": {
+        "left": 0.3792032348902806,
+        "right": 0.6207956660444814,
+        "top": 0.5089042355066129,
+        "bottom": 0.9199840674899784,
+        "width": 0.24159243115420082
+      }
+    },
+    {
+      "distance": 193.30746959988144,
+      "speed": 65,
+      "lateral": 5.224032380749813,
+      "heading": 0.031682711108983595,
+      "velocityHeading": 0.03168270596169793,
+      "worldHeading": 0.03168271110898363,
+      "steering": 4.945966478805413e-12,
+      "yawRate": 5.626036869641157e-12,
+      "slipAngle": 5.147285667139734e-9,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 6.427907200063168,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.7000999999999964,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.7000999999999964,
+      "frames": 111,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.03467001004564694
+      },
+      "trackLength": 6260,
+      "position": [
+        -5.2240323807499935,
+        8.865626848828683,
+        193.30746959988113
+      ],
+      "swapped": false,
+      "surfaceError": -3.6746790854635947e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -4.96993909312856,
+          11.397415151401155,
+          185.289646666432
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1543611845404672,
+      "wall": 2269.8000000044703,
+      "frame": {
+        "left": 0.3792033976532862,
+        "right": 0.6207958277361341,
+        "top": 0.5089042480185125,
+        "bottom": 0.9199839329974242,
+        "width": 0.24159243008284786
+      }
+    },
+    {
+      "distance": 198.99211529963623,
+      "speed": 65,
+      "lateral": 5.404197633390852,
+      "heading": 0.03168271110916464,
+      "velocityHeading": 0.03168270806412987,
+      "worldHeading": 0.03168271110916467,
+      "steering": 2.2223659944801386e-12,
+      "yawRate": 2.5279413187211577e-12,
+      "slipAngle": 3.0450347660027077e-9,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 6.608072452704624,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.7500999999999962,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.7500999999999962,
+      "frames": 114,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.034775716163053284
+      },
+      "trackLength": 6260,
+      "position": [
+        -5.404197633391037,
+        8.914737003550949,
+        198.99211529963569
+      ],
+      "swapped": false,
+      "surfaceError": -1.7738472024575458e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -5.150079202984734,
+          11.444543076825736,
+          190.97366750377458
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436115255386934,
+      "wall": 2319.5,
+      "frame": {
+        "left": 0.3792035123676105,
+        "right": 0.6207959413818851,
+        "top": 0.5089042564120232,
+        "bottom": 0.9199838163968078,
+        "width": 0.24159242901427458
+      }
+    },
+    {
+      "distance": 204.67676099910898,
+      "speed": 65,
+      "lateral": 5.584362894930521,
+      "heading": 0.03168271110924598,
+      "velocityHeading": 0.03168270930788078,
+      "worldHeading": 0.03168271110924602,
+      "steering": 9.985734101890997e-13,
+      "yawRate": 1.135877254090101e-12,
+      "slipAngle": 1.801365202835914e-9,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 6.788237714244483,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.800099999999996,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.800099999999996,
+      "frames": 117,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04317169954811398
+      },
+      "trackLength": 6260,
+      "position": [
+        -5.584362894930712,
+        8.965230748475527,
+        204.67676099910923
+      ],
+      "swapped": false,
+      "surfaceError": -3.565087780543763e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -5.330220931426339,
+          11.49305673497788,
+          196.65768950395784
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436112520677206,
+      "wall": 2369.7000000029802,
+      "frame": {
+        "left": 0.3792035934408402,
+        "right": 0.6207960213875012,
+        "top": 0.5089042619233738,
+        "bottom": 0.9199837122428918,
+        "width": 0.24159242794666103
+      }
+    },
+    {
+      "distance": 210.36140669841492,
+      "speed": 65,
+      "lateral": 5.764528161734281,
+      "heading": 0.03168271110928254,
+      "velocityHeading": 0.031682710043648976,
+      "worldHeading": 0.031682711109282564,
+      "steering": 4.486879559952697e-13,
+      "yawRate": 5.103825499446192e-13,
+      "slipAngle": 1.0656335605596645e-9,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 6.968402981048326,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.8500999999999959,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.75,
+      "mode": "playing",
+      "elapsed": 1.8500999999999959,
+      "frames": 120,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 475.5,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.04065229763644771
+      },
+      "trackLength": 6260,
+      "position": [
+        -5.764528161734478,
+        9.017145669721737,
+        210.36140669841453
+      ],
+      "swapped": false,
+      "surfaceError": 3.553906182673927e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -5.510363812918568,
+          11.542993777313294,
+          202.34171270043885
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1543611011499163,
+      "wall": 2418.5,
+      "frame": {
+        "left": 0.37920365077601037,
+        "right": 0.6207960776562005,
+        "top": 0.5089042654038919,
+        "bottom": 0.9199836168966766,
+        "width": 0.24159242688019011
+      }
+    },
+    {
+      "distance": 216.03444789305775,
+      "speed": 64.68167173411061,
+      "lateral": 5.944325646426064,
+      "heading": 0.03168271110929896,
+      "velocityHeading": 0.03168271047890589,
+      "worldHeading": 0.03168271110929899,
+      "steering": 2.0160849447922807e-13,
+      "yawRate": 2.2932966247012194e-13,
+      "slipAngle": 6.30393071077151e-10,
+      "slip": 0,
+      "offRoad": true,
+      "footprintEdge": 7.148200465740148,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.9000999999999957,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.19292553469356,
+      "mode": "playing",
+      "elapsed": 1.9000999999999957,
+      "frames": 123,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 473.4945319248968,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.038624889594280544
+      },
+      "trackLength": 6260,
+      "position": [
+        -5.9443256464262655,
+        9.070365523705096,
+        216.03444789305732
+      ],
+      "swapped": false,
+      "surfaceError": -3.516999527164444e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -5.69013977431071,
+          11.594242056119398,
+          208.01413388476905
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1543610794640137,
+      "wall": 2468.8000000044703,
+      "frame": {
+        "left": 0.37920369136325144,
+        "right": 0.6207961171803885,
+        "top": 0.5089042674568549,
+        "bottom": 0.9199835279423507,
+        "width": 0.24159242581713708
+      }
+    },
+    {
+      "distance": 221.66714397697777,
+      "speed": 64.20983759865649,
+      "lateral": 6.122844462620485,
+      "heading": 0.03168271110930634,
+      "velocityHeading": 0.03168271073638863,
+      "worldHeading": 0.031682711109306365,
+      "steering": 9.058853598158416e-14,
+      "yawRate": 1.0304445967905198e-13,
+      "slipAngle": 3.729177036615461e-10,
+      "slip": 0,
+      "offRoad": true,
+      "footprintEdge": 7.326719281934586,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 1.9500999999999955,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 112.36721579764887,
+      "mode": "playing",
+      "elapsed": 1.9500999999999955,
+      "frames": 126,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 470.5219768715359,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.038834035958879555
+      },
+      "trackLength": 6260,
+      "position": [
+        -6.122844462620692,
+        9.124566492803368,
+        221.66714397697785
+      ],
+      "swapped": false,
+      "surfaceError": -1.3360233985793002e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -5.868637798353291,
+          11.646487775087053,
+          213.64621560067337
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1543610595584352,
+      "wall": 2518.8000000044703,
+      "frame": {
+        "left": 0.3792037201340297,
+        "right": 0.6207961448969721,
+        "top": 0.5089042685124945,
+        "bottom": 0.9199834439440344,
+        "width": 0.2415924247629424
+      }
+    },
+    {
+      "distance": 227.25891790738032,
+      "speed": 63.74470847631583,
+      "lateral": 6.300066321150735,
+      "heading": 0.031682711109309654,
+      "velocityHeading": 0.03168271088870579,
+      "worldHeading": 0.03168271110930968,
+      "steering": 4.0704053033500873e-14,
+      "yawRate": 4.630086032560725e-14,
+      "slipAngle": 2.2060386156708134e-10,
+      "slip": 0,
+      "offRoad": true,
+      "footprintEdge": 7.503941140464843,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 2.0000999999999953,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 111.5532398335527,
+      "mode": "playing",
+      "elapsed": 2.0000999999999953,
+      "frames": 129,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 467.5916634007897,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.042762444618815315
+      },
+      "trackLength": 6260,
+      "position": [
+        -6.300066321150947,
+        9.179714986777634,
+        227.25891790738018
+      ],
+      "swapped": false,
+      "surfaceError": 1.9783035654086234e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -6.045839434964664,
+          11.69969755729285,
+          219.23738086422944
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436104095952424,
+      "wall": 2569.5,
+      "frame": {
+        "left": 0.3792037405698019,
+        "right": 0.6207961642875379,
+        "top": 0.5089042688694012,
+        "bottom": 0.9199833636304867,
+        "width": 0.24159242371773604
+      }
+    },
+    {
+      "distance": 232.8103512097673,
+      "speed": 63.286189085298936,
+      "lateral": 6.4760096520374955,
+      "heading": 0.031682711109311146,
+      "velocityHeading": 0.03168271097881067,
+      "worldHeading": 0.031682711109311174,
+      "steering": 1.8289509984915402e-14,
+      "yawRate": 2.080431760784127e-14,
+      "slipAngle": 1.3050047847906754e-10,
+      "slip": 0,
+      "offRoad": true,
+      "footprintEdge": 7.679884471351608,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steerHold": 0,
+      "steerSign": 1,
+      "drifting": false,
+      "driftRelease": 2.050099999999995,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 110.75083089927314,
+      "mode": "playing",
+      "elapsed": 2.050099999999995,
+      "frames": 132,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 464.7029912373833,
+        "skidLevel": 0,
+        "windLevel": 0.13,
+        "rms": 0.043494115059336015
+      },
+      "trackLength": 6260,
+      "position": [
+        -6.476009652037713,
+        9.235822165310955,
+        232.81035120976765
+      ],
+      "swapped": false,
+      "surfaceError": 2.9166147719195123e-7,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          -6.221762997121572,
+          11.753882371398202,
+          224.78821113139804
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15436102333007573,
+      "wall": 2618.4000000059605,
+      "frame": {
+        "left": 0.37920375512668814,
+        "right": 0.6207961778081077,
+        "top": 0.5089042687376811,
+        "bottom": 0.9199832860923949,
+        "width": 0.24159242268141956
+      }
+    }
+  ],
+  "audit": [
+    {
+      "wallSeconds": 1,
+      "simulationSeconds": 0.9999999999999981,
+      "displayedKmh": 234,
+      "gameSpeed": 65,
+      "effectivePace": 1.75,
+      "effectiveWorldSpeed": 113.75,
+      "lateralChange": 2.7619203367375627,
+      "metersPerUnit": 1,
+      "roadWidth": 14,
+      "markerSpacing": 12,
+      "worldMetersPerSecond": 113.75050201108357,
+      "roadWidthsPerSecond": 8.12503585793454,
+      "trackMetersPerSecond": 113.71009927770959,
+      "cameraMetersPerSecond": 113.73601291925772,
+      "markerPasses": 9,
+      "markerPassWallMs": [
+        662.8945863988071,
+        768.3926495302097,
+        873.9070331138529,
+        979.4392846703287,
+        1084.9809017453426,
+        1190.5263001708768,
+        1296.073070885457,
+        1401.6203084679487,
+        1507.1677042556364
+      ],
+      "markerPassesPerSecond": 9,
+      "fps": 60,
+      "medianFrameMs": 16.699999999999932,
+      "p95FrameMs": 16.799999999999955,
+      "worldPosition": [
+        -2.761963140339534,
+        8.335977145376305,
+        115.62109927706658
+      ],
+      "cameraPosition": [
+        -2.5101958044615573,
+        10.89503499644268,
+        107.61186484901539
+      ],
+      "worldHeading": 0.03168269270117918
+    },
+    {
+      "wallSeconds": 1.0166000000000002,
+      "simulationSeconds": 1.0165999999999973,
+      "displayedKmh": 228,
+      "gameSpeed": 63.4386053645485,
+      "effectivePace": 1.75,
+      "effectiveWorldSpeed": 111.01755938795988,
+      "lateralChange": 3.65542253558535,
+      "metersPerUnit": 1,
+      "roadWidth": 14,
+      "markerSpacing": 12,
+      "worldMetersPerSecond": 113.5165458745713,
+      "roadWidthsPerSecond": 8.108324705326522,
+      "trackMetersPerSecond": 113.45615300083121,
+      "cameraMetersPerSecond": 113.50368228772793,
+      "markerPasses": 10,
+      "markerPassWallMs": [
+        1612.7151531694924,
+        1718.2626195229059,
+        1823.8100916812682,
+        1929.3575657710264,
+        2034.905040492007,
+        2140.452515422528,
+        2245.999990422679,
+        2351.54746544556,
+        2457.1957058090197,
+        2564.1586276867934
+      ],
+      "markerPassesPerSecond": 9.83671060397403,
+      "fps": 60.00393468424158,
+      "medianFrameMs": 16.699999999999818,
+      "p95FrameMs": 16.799999999999727,
+      "worldPosition": [
+        -6.417385675924992,
+        9.216997854660328,
+        230.96062441771107
+      ],
+      "cameraPosition": [
+        -6.163145579070362,
+        11.735698323763117,
+        222.93868513097416
+      ],
+      "worldHeading": 0.0316827111093108
+    }
+  ],
+  "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+}

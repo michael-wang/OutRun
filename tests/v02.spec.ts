@@ -6,7 +6,7 @@ const snapshot=(page:Page)=>page.evaluate(()=>(window as any).__drive.snapshot()
 const reset=(page:Page,state:object)=>page.evaluate(state=>(window as any).__drive.reset(state),state);
 async function tick(page:Page,input:object,dt=.1){await page.evaluate(({input,dt})=>(window as any).__drive.advance(dt,input),{input,dt});}
 async function boot(page:Page){await page.goto('/?pace=1');await page.waitForFunction(()=>!!(window as any).__drive);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));}
-for(const [direction,distance] of [['right',240],['left',740]] as const){
+for(const [direction,distance] of [['right',820],['left',1980]] as const){
  test(`paired ${direction} bend: no steering departs, digital steering stays, recovery`,async({page})=>{
   await page.setViewportSize({width:1280,height:720});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await boot(page);
   const traces:Record<string,any[]>={};
@@ -81,7 +81,7 @@ test('Pixel-like landscape touch, safe bounds, brake+steer, both layouts',async(
 });
 test('climb crest descent camera views',async({page})=>{
  await page.setViewportSize({width:1280,height:720});await boot(page);
- const profile=[];for(const [label,distance] of [['climb',735],['crest',930],['descent',1020]] as const){await reset(page,{distance,speed:40});await page.screenshot({path:`docs/evidence/v0.2/hill-${label}.png`});profile.push({label,...await snapshot(page)});}
- await page.setViewportSize({width:960,height:432});await reset(page,{distance:735,speed:40});await page.screenshot({path:'docs/evidence/v0.2/hill-mobile.png'});
+ const profile=[];for(const [label,distance] of [['climb',1565],['crest',3130],['descent',4695]] as const){await reset(page,{distance,speed:40});await page.screenshot({path:`docs/evidence/v0.2/hill-${label}.png`});profile.push({label,...await snapshot(page)});}
+ await page.setViewportSize({width:960,height:432});await reset(page,{distance:1565,speed:40});await page.screenshot({path:'docs/evidence/v0.2/hill-mobile.png'});
  writeFileSync('docs/evidence/v0.2/hill.json',JSON.stringify(profile,null,2));
 });

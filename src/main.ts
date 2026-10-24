@@ -13,7 +13,7 @@ document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="Pause / Menu">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed"><strong>000</strong><span>KM/H · ARCADE</span><em id="status">READY FOR THE COAST</em></aside>
-<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">W / ↑ accelerate &nbsp; A D / ← → steer<br>S / ↓ brake &nbsp; P / Esc pause &nbsp; R restart</p><small>FIRST DRIVE · LOCAL PLAYTEST · v0.3.2</small></section>
+<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>FIRST DRIVE · LOCAL PLAYTEST · v0.4</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button></div></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">MAKE YOURSELF AT HOME</div><h2>Controls</h2><label class="setting"><input id="swap" type="checkbox"> Steering on the right</label><p>Accelerator stays above brake on either side.</p><button id="close-settings" class="primary">Done</button></section>
 <div id="touch"><div class="steering"><button data-control="left" aria-label="Steer left">←</button><button data-control="right" aria-label="Steer right">→</button></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
@@ -26,7 +26,7 @@ renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 $('view').append(renderer.domElement);
 const world=createWorld(); world.car.rotation.order="YXZ"; const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,.1,2200);
-const input=new InputController(); const sound=new EngineSound(); let state=createState(); state.worldHeading=world.sample(0).roadHeading;
+const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState(); state.worldHeading=world.sample(0).roadHeading;
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
 let mode:'menu'|'playing'|'paused'='menu'; let settingsOpen=false; let muted=false; let manual=false;
 let testControls:InputState|undefined;
@@ -42,7 +42,7 @@ let swapped=readSwapped();
 function applyLayout(){ $('touch').classList.toggle('swapped',swapped); ($('swap') as HTMLInputElement).checked=swapped; }
 applyLayout();
 function ui(){ $('menu').hidden=mode!=='menu'||settingsOpen; $('paused').hidden=mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',mode==='playing'&&!settingsOpen); $('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu'; }
-function start(){void sound.unlock().catch(()=>{}); mode='playing'; settingsOpen=false; input.clear(); ui();}
+function start(){void sound.unlock().catch(()=>{}); mode='playing'; settingsOpen=false; input.clear();(document.activeElement as HTMLElement)?.blur?.();ui();}
 function pause(){if(mode==='paused'){start();return;}mode='paused';input.clear();sound.pause();ui();}
 function restart(){state=createState();state.worldHeading=world.sample(0).roadHeading; elapsed=0; initialized=false; start();}
 $('drive').onclick=()=>{if(mobile())void immersive.enter();start();};
@@ -54,7 +54,10 @@ $('sound').onclick=()=>{muted=!muted;void sound.unlock().catch(()=>{});sound.set
 $('settings').onclick=()=>{if(mode==='playing')mode='paused';settingsOpen=true;input.clear();sound.pause();ui();};
 $('close-settings').onclick=()=>{settingsOpen=false;ui();};
 $('swap').onchange=()=>{swapped=($('swap') as HTMLInputElement).checked;saveSwapped(swapped);applyLayout();};
-addEventListener('keydown',e=>{if(e.repeat)return;if(e.code==='Escape'||e.code==='KeyP')pause();if(e.code==='KeyR')restart();});
+addEventListener('keydown',e=>{
+  if(e.repeat||(e.target instanceof HTMLElement&&e.target.closest('input,textarea,select,[contenteditable="true"]')))return;
+  if(e.code==='Escape'||e.code==='KeyP')pause();if(e.code==='KeyR')restart();
+});
 addEventListener('blur',()=>{input.clear();if(mode==='playing'){mode='paused';sound.pause();ui();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='playing'){mode='paused';input.clear();sound.pause();ui();}});
 function resize(){
@@ -67,7 +70,7 @@ addEventListener('resize',resize);addEventListener('orientationchange',resize);
 visualViewport?.addEventListener('resize',resize);
 document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&mode==='playing'){mode='paused';sound.pause();ui();}});
 function advance(dt:number,override?:InputState){
-  if(mode==='playing'&&!settingsOpen){const controls=override??(import.meta.env.DEV?testControls:undefined)??input.snapshot();step(state,controls,dt,world.sample(state.distance).curvature,highSpeedPace);elapsed+=dt;sound.update(state.speed*effectivePace(state.speed,highSpeedPace),state.slip,controls.gas);}else sound.pause();
+  if(mode==='playing'&&!settingsOpen){const controls=override??(import.meta.env.DEV?testControls:undefined)??input.snapshot();step(state,controls,dt,world.sample(state.distance).curvature,highSpeedPace);elapsed+=dt;sound.update(state.speed*effectivePace(state.speed,highSpeedPace),state.slip,controls.gas&&!controls.brake,dt);}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(lateral < -13)return THREE.MathUtils.lerp(height-.1,-5.05,Math.min(1,(-lateral-13)/14));
@@ -126,7 +129,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   sample:(d:number)=>{const p=world.sample(d);return {position:p.position.toArray(),curvature:p.curvature,roadHeading:p.roadHeading,tangent:p.tangent.toArray()};}
 };}
 // Explicit development URL only: reproducible same-segment A/B for human review.
-if(import.meta.env.DEV){
+if(import.meta.env.DEV&&(new URLSearchParams(location.search).has('pace')||new URLSearchParams(location.search).has('velocity'))){
  const selector=document.createElement('div');selector.id='pace-selector';
  selector.style.cssText='position:fixed;z-index:21;top:4px;left:24%;right:21%;text-align:center;background:#123e;color:#fff;font:11px system-ui;border-radius:6px;padding:4px';
  selector.innerHTML=`DEV PACE ${[1,1.5,1.75,2].map(p=>`<a style="color:${p===highSpeedPace?'#ffc874':'white'};padding:0 6px" href="?pace=${p}${location.search.includes('velocity')?'&velocity':''}">${p}×</a>`).join('')}<span id="pace-readout"></span>`;
