@@ -5,7 +5,7 @@ test('v0.3 displayed car framing, compact menu, fixed camera and both hand layou
  const results:any[]=[];mkdirSync('docs/evidence/v0.3',{recursive:true});
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  for(const [width,height] of [[1280,720],[960,432],[844,390]]){
-  await page.setViewportSize({width,height});await page.goto('/');await page.locator('#pause').click();await expect(page.locator('#settings')).toBeVisible();await page.locator('#resume').click();
+  await page.setViewportSize({width,height});await page.goto('/?pace=1');await page.locator('#pause').click();await expect(page.locator('#settings')).toBeVisible();await page.locator('#resume').click();
   await page.evaluate(()=>(window as any).__drive.manual(true));
   const cameras=[];
   for(const speed of [0,33.33,65]){

@@ -1,7 +1,7 @@
 import type { DrivingState, InputState } from '../src/handling';
 /** Test driver reads upcoming road like a player; never imported by production. */
-export function plannedSpeed(distance:number,sample:(distance:number)=>{curvature:number}) {
-  return Math.min(65,...[0,15,30,45,60,90].map(ahead=>Math.sqrt((.45/Math.max(.001,Math.abs(sample(distance+ahead).curvature)))**2+2*18*ahead)));
+export function plannedSpeed(distance:number,sample:(distance:number)=>{curvature:number},pace=1) {
+  return Math.min(65,...[0,15,30,45,60,90].map(ahead=>ahead*pace).map(ahead=>Math.sqrt((.45/Math.max(.001,Math.abs(sample(distance+ahead).curvature)))**2+2*18*ahead/pace)));
 }
 /** External test driver only. 100ms digital button taps, no gameplay autopilot. */
 export function scriptedDriver() {

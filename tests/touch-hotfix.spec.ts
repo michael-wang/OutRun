@@ -9,7 +9,7 @@ test('mobile long holds retain independent pointers and suppress only gameplay b
   const errors: string[] = [];
   page.on('pageerror', e => errors.push(e.message));
   await page.addInitScript(() => Object.defineProperty(HTMLElement.prototype, 'requestFullscreen', { value: undefined, configurable: true }));
-  await page.goto('/');
+  await page.goto('/?pace=1.75');
   await page.locator('#drive').click();
   await page.evaluate(() => {
     (window as any).controlPointers = {};

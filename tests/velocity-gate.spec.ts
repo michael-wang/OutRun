@@ -2,7 +2,7 @@ import { test,expect } from '@playwright/test';
 import { mkdirSync,writeFileSync } from 'node:fs';
 test('Velocity Gate measures wall-clock world travel and calibration is explicitly opt-in',async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
- await page.setViewportSize({width:960,height:432});await page.goto('/?velocity');
+ await page.setViewportSize({width:960,height:432});await page.goto('/?velocity&pace=1');
  await expect(page.locator('#velocity-calibration')).toBeVisible();
  const measurements:any[]=[];
  for(const target of [22.22,65]){
@@ -35,7 +35,7 @@ test('real rendering at 30 versus 60 callbacks per second preserves world speed'
  for(const halveFrames of [false,true]){
   const context=await browser.newContext({viewport:{width:960,height:432}}),page=await context.newPage();
   if(halveFrames)await page.addInitScript(()=>{const native=requestAnimationFrame.bind(window);window.requestAnimationFrame=callback=>native(()=>native(callback));});
-  await page.goto('http://127.0.0.1:5173/?velocity');await page.locator('[data-speed="65"]').click();await page.waitForTimeout(3400);
+  await page.goto('http://127.0.0.1:5173/?velocity&pace=1');await page.locator('[data-speed="65"]').click();await page.waitForTimeout(3400);
   const rows=await page.evaluate(()=>(window as any).__drive.audit());expect(rows.length).toBeGreaterThanOrEqual(3);
   const average=(key:string)=>rows.reduce((sum:number,row:any)=>sum+row[key],0)/rows.length;
   runs.push({halveFrames,worldMetersPerSecond:average('worldMetersPerSecond'),fps:average('fps'),rows});

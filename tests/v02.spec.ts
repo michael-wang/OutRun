@@ -5,7 +5,7 @@ import { scriptedDriver } from './driver';
 const snapshot=(page:Page)=>page.evaluate(()=>(window as any).__drive.snapshot());
 const reset=(page:Page,state:object)=>page.evaluate(state=>(window as any).__drive.reset(state),state);
 async function tick(page:Page,input:object,dt=.1){await page.evaluate(({input,dt})=>(window as any).__drive.advance(dt,input),{input,dt});}
-async function boot(page:Page){await page.goto('/');await page.waitForFunction(()=>!!(window as any).__drive);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));}
+async function boot(page:Page){await page.goto('/?pace=1');await page.waitForFunction(()=>!!(window as any).__drive);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));}
 for(const [direction,distance] of [['right',240],['left',740]] as const){
  test(`paired ${direction} bend: no steering departs, digital steering stays, recovery`,async({page})=>{
   await page.setViewportSize({width:1280,height:720});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await boot(page);

@@ -1,3 +1,4 @@
+import { effectivePace } from './pace';
 export interface InputState { gas: boolean; brake: boolean; steer: number }
 export interface DrivingState {
   distance: number; speed: number; lateral: number;
@@ -28,29 +29,31 @@ export function updateFootprint(s: DrivingState) {
  * Both heading errors subtract k*ds. No lane spring or road steering. The outer
  * shoulder alone has a positional contact constraint and outward-yaw stop.
  */
-export function step(s: DrivingState, input: InputState, dt: number, curvature: number): void {
+export function step(s: DrivingState, input: InputState, dt: number, curvature: number, highSpeedPace=1): void {
   dt = clamp(dt, 0, .05);
   s.curvature = curvature;
   updateFootprint(s);
   const acceleration = (input.gas ? 19 * (1 - s.speed / 88) + 6 * Math.max(0,1-s.speed/20) : -3.8) - (input.brake ? 34 : 0)
     - (s.offRoad ? 10 + s.speed * .07 : 0);
   s.speed = clamp(s.speed + acceleration * dt, 0, MAX_SPEED);
-  s.steering += (clamp(input.steer, -1, 1) - s.steering) * (1 - Math.exp(-dt * 12));
+  const pace=effectivePace(s.speed,highSpeedPace),travelSpeed=s.speed*pace;
+  s.steering += (clamp(input.steer, -1, 1) - s.steering) * (1 - Math.exp(-dt * 12 * pace));
   if (input.steer * s.corridorSide < 0) s.corridorSide = 0;
-  s.yawRate = s.corridorSide ? 0 : s.steering * steeringRate(s.speed);
+  // Preserve player turn radius as travel rises. Zero input never adds yaw.
+  s.yawRate = s.corridorSide ? 0 : s.steering * steeringRate(s.speed)*pace;
   s.worldHeading += s.yawRate * dt;
   s.heading += s.yawRate * dt;
   // Tire response lags body yaw under fast steering: velocity really slides.
   const grip = 9 - 5.5 * clamp((s.speed - 25) / 35, 0, 1);
-  s.velocityHeading += angleDifference(s.heading - s.velocityHeading) * (1 - Math.exp(-grip * dt));
+  s.velocityHeading += angleDifference(s.heading - s.velocityHeading) * (1 - Math.exp(-grip * pace * dt));
   const denominator = Math.max(.3, 1 - curvature * s.lateral);
-  const attempted = s.lateral + s.speed * Math.sin(s.velocityHeading) * dt;
+  const attempted = s.lateral + travelSpeed * Math.sin(s.velocityHeading) * dt;
   if (Math.abs(attempted) >= CORRIDOR_LIMIT) s.corridorSide = Math.sign(attempted);
   s.lateral = s.corridorSide ? s.corridorSide * CORRIDOR_LIMIT : attempted;
   // Sliding along the boundary preserves progress even when facing across it.
   // Neither this projection nor contact changes heading or moves the car inward.
   const forward = s.corridorSide ? Math.max(.35, Math.cos(s.velocityHeading)) : Math.cos(s.velocityHeading);
-  const ds = s.speed * forward / denominator * dt;
+  const ds = travelSpeed * forward / denominator * dt;
   s.distance += ds;
   s.heading = angleDifference(s.heading - curvature * ds);
   s.velocityHeading = angleDifference(s.velocityHeading - curvature * ds);

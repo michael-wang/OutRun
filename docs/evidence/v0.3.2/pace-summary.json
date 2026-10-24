@@ -1,0 +1,338 @@
+[
+  {
+    "pace": 1,
+    "label": "low",
+    "nominalExpectedMps": 22.22222222222222,
+    "worldMps": 22.48010514892177,
+    "trackMps": 22.478489856155253,
+    "widthsPerSecond": 1.605721796351555,
+    "cameraMps": 22.46874331904169,
+    "postsPerSecond": 1.872885426429978,
+    "dashesPerSecond": 3.7464149760258754,
+    "fps": 59.997492483785905,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 0.17400974592779617,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1,
+    "label": "mid",
+    "nominalExpectedMps": 41.666666666666664,
+    "worldMps": 41.80890231247678,
+    "trackMps": 41.78000334478702,
+    "widthsPerSecond": 2.986350165176913,
+    "cameraMps": 41.78227091278733,
+    "postsPerSecond": 3.4820479393476234,
+    "dashesPerSecond": 6.963333890797837,
+    "fps": 59.99700029997,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 0.7647823009396987,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1,
+    "label": "high",
+    "nominalExpectedMps": 65,
+    "worldMps": 64.9146647803951,
+    "trackMps": 64.69033702858347,
+    "widthsPerSecond": 4.6367617700282215,
+    "cameraMps": 64.83107232083879,
+    "postsPerSecond": 5.390065158712174,
+    "dashesPerSecond": 10.781722838097245,
+    "fps": 59.998500149985,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 2.7689339322389355,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1,
+    "label": "launch",
+    "nominalExpectedMps": null,
+    "worldMps": 54.50163915235839,
+    "trackMps": 54.306733236062556,
+    "widthsPerSecond": 3.892974225168456,
+    "cameraMps": 54.50759571372996,
+    "postsPerSecond": 4.70279123426105,
+    "dashesPerSecond": 9.051122206010426,
+    "fps": 59.87001501735929,
+    "p95FrameMs": 16.80000000000109,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 20,
+    "maxLateral": 4.051140138297832,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.5,
+    "label": "low",
+    "nominalExpectedMps": 23.377777777777776,
+    "worldMps": 23.718724546925344,
+    "trackMps": 23.71668081407762,
+    "widthsPerSecond": 1.6941946104946675,
+    "cameraMps": 23.70659965278449,
+    "postsPerSecond": 1.9767464225214333,
+    "dashesPerSecond": 3.9527801356796033,
+    "fps": 59.99798397103039,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 0.20918222927594896,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.5,
+    "label": "mid",
+    "nominalExpectedMps": 57.09876543209876,
+    "worldMps": 57.39017733821648,
+    "trackMps": 57.33661552251724,
+    "widthsPerSecond": 4.099298381301177,
+    "cameraMps": 57.328581102600744,
+    "postsPerSecond": 4.778528774368263,
+    "dashesPerSecond": 9.556102587086206,
+    "fps": 59.99700029997,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 0.8964055929470249,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.5,
+    "label": "high",
+    "nominalExpectedMps": 97.5,
+    "worldMps": 97.37289775563126,
+    "trackMps": 97.03492079875855,
+    "widthsPerSecond": 6.95520698254509,
+    "cameraMps": 97.25375656053032,
+    "postsPerSecond": 8.086569244506679,
+    "dashesPerSecond": 16.17248679979309,
+    "fps": 59.997000299970004,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 3.8474678467716634,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.5,
+    "label": "launch",
+    "nominalExpectedMps": null,
+    "worldMps": 78.54822487694773,
+    "trackMps": 78.25613754154935,
+    "widthsPerSecond": 5.610587491210553,
+    "cameraMps": 78.48949249924102,
+    "postsPerSecond": 6.803672064466319,
+    "dashesPerSecond": 13.042689590258226,
+    "fps": 59.99825127602848,
+    "p95FrameMs": 16.80000000000291,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 35,
+    "maxLateral": 4.046902669674349,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.75,
+    "label": "low",
+    "nominalExpectedMps": 23.955555555555556,
+    "worldMps": 24.334872794853922,
+    "trackMps": 24.33285353253336,
+    "widthsPerSecond": 1.738205199632423,
+    "cameraMps": 24.32234983842531,
+    "postsPerSecond": 2.027629582505753,
+    "dashesPerSecond": 4.05547558875556,
+    "fps": 59.99700029997001,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 0.22969345390011103,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.75,
+    "label": "mid",
+    "nominalExpectedMps": 64.81481481481481,
+    "worldMps": 65.19040354465744,
+    "trackMps": 65.13673989686885,
+    "widthsPerSecond": 4.65645739604696,
+    "cameraMps": 65.10976895367116,
+    "postsPerSecond": 5.428555166914123,
+    "dashesPerSecond": 10.856123316144808,
+    "fps": 59.998500149985,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 0.8592366404558611,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.75,
+    "label": "high",
+    "nominalExpectedMps": 113.75,
+    "worldMps": 113.60097862463978,
+    "trackMps": 113.29349902563484,
+    "widthsPerSecond": 8.114355616045698,
+    "cameraMps": 113.51491097339769,
+    "postsPerSecond": 9.440920101426146,
+    "dashesPerSecond": 18.88224983760581,
+    "fps": 59.99700029997,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 2.7824406161463933,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 1.75,
+    "label": "launch",
+    "nominalExpectedMps": null,
+    "worldMps": 87.65097240444202,
+    "trackMps": 87.29265578324384,
+    "widthsPerSecond": 6.260783743174428,
+    "cameraMps": 87.56817316411211,
+    "postsPerSecond": 7.600607497986719,
+    "dashesPerSecond": 14.548775963873974,
+    "fps": 59.99764818344632,
+    "p95FrameMs": 16.80000000000291,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 38,
+    "maxLateral": 3.3683485037553162,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 2,
+    "label": "low",
+    "nominalExpectedMps": 24.533333333333335,
+    "worldMps": 24.953756523122685,
+    "trackMps": 24.95187051144423,
+    "widthsPerSecond": 1.7824111802230487,
+    "cameraMps": 24.940817058729582,
+    "postsPerSecond": 2.080068634260789,
+    "dashesPerSecond": 4.158645085240705,
+    "fps": 59.998008362830475,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 0.25558776171082376,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 2,
+    "label": "mid",
+    "nominalExpectedMps": 72.53086419753086,
+    "worldMps": 72.96535482159327,
+    "trackMps": 72.89838394886192,
+    "widthsPerSecond": 5.2118110586852335,
+    "cameraMps": 72.87144291078887,
+    "postsPerSecond": 6.0754048186844924,
+    "dashesPerSecond": 12.149730658143653,
+    "fps": 59.999483821045395,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 1.177477151958085,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 2,
+    "label": "high",
+    "nominalExpectedMps": 130,
+    "worldMps": 129.83022158961705,
+    "trackMps": 129.4198647968329,
+    "widthsPerSecond": 9.27358725640122,
+    "cameraMps": 129.80358999090686,
+    "postsPerSecond": 10.785527917393454,
+    "dashesPerSecond": 21.56997746613882,
+    "fps": 59.99700029997,
+    "p95FrameMs": 16.800000000000182,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 0,
+    "maxLateral": 3.0554186311107143,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "pace": 2,
+    "label": "launch",
+    "nominalExpectedMps": null,
+    "worldMps": 94.6351911632627,
+    "trackMps": 94.17478724576772,
+    "widthsPerSecond": 6.759656511661623,
+    "cameraMps": 94.55406996857828,
+    "postsPerSecond": 8.202211819082962,
+    "dashesPerSecond": 15.69579787429462,
+    "fps": 59.99798619049544,
+    "p95FrameMs": 16.80000000000291,
+    "offRoadSamples": 0,
+    "finalOffRoad": false,
+    "brakeSamples": 44,
+    "maxLateral": 4.765952288379501,
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  }
+]

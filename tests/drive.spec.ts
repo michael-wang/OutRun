@@ -4,7 +4,7 @@ import { test, expect, Page } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
 const snap=(page:Page)=>page.evaluate(()=> (window as any).__drive.snapshot());
 const advance=(page:Page,n:number)=>page.evaluate(n=>(window as any).__drive.advance(n),n);
-async function boot(page:Page){await page.goto('/');await page.waitForFunction(()=>!!(window as any).__drive);await page.locator('#drive').click();}
+async function boot(page:Page){await page.goto('/?pace=1');await page.waitForFunction(()=>!!(window as any).__drive);await page.locator('#drive').click();}
 test('desktop real-time driving, lifecycle, drift audio and continuous full route',async({page})=>{
   await page.setViewportSize({width:1280,height:720});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
   await boot(page);await page.waitForTimeout(600);expect((await snap(page)).speed).toBe(0);

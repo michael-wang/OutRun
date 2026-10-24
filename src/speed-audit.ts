@@ -1,7 +1,7 @@
 /** Development-only measurements. No motion/scenery/speed is altered here. */
 export const WORLD_SCALE = {metersPerUnit:1,roadWidth:14,markerSpacing:12};
 export interface AuditFrame {
-  wall:number; simulated:number; progress:number; speed:number; position:number[]; camera:number[]; trackLength?:number; heading?:number;
+  wall:number; simulated:number; progress:number; speed:number; position:number[]; camera:number[]; trackLength?:number; heading?:number; lateral?:number; pace?:number;
 }
 const distance=(a:number[],b:number[])=>Math.hypot(...a.map((v,i)=>v-b[i]));
 export class SpeedAudit {
@@ -37,7 +37,7 @@ export class SpeedAudit {
     if(elapsed<1)return;
     const sorted=[...this.frameTimes].sort((a,b)=>a-b);
     this.rows.push({wallSeconds:elapsed,simulationSeconds:frame.simulated-this.start!.simulated,
-      displayedKmh:Math.round(frame.speed*3.6),gameSpeed:frame.speed,...WORLD_SCALE,
+      displayedKmh:Math.round(frame.speed*3.6),gameSpeed:frame.speed,effectivePace:frame.pace??1,effectiveWorldSpeed:frame.speed*(frame.pace??1),lateralChange:(frame.lateral??0)-(this.start!.lateral??0),...WORLD_SCALE,
       worldMetersPerSecond:this.traveled/elapsed,roadWidthsPerSecond:this.traveled/elapsed/WORLD_SCALE.roadWidth,
       trackMetersPerSecond:(frame.progress-this.start!.progress)/elapsed,
       cameraMetersPerSecond:this.cameraTravel/elapsed,markerPasses:this.passes.length,markerPassWallMs:[...this.passes],
