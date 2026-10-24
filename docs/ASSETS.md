@@ -9,3 +9,5 @@ Development dependencies: TypeScript (Apache-2.0), Vite (MIT), Vitest (MIT), Pla
 Browser tests use Playwright-managed Chromium, downloaded only for development. The built game requires no network assets, account, key, backend, or service.
 
 v0.2 adds original procedural PWA icons (`public/icons/coast-192.png` and `coast-512.png`), authored by `scripts/icons.mjs` using only Node's built-in PNG compression/encoding primitives. The manifest uses the neutral name Coast Drive Prototype. Three.js's bundled MIT-licensed BufferGeometryUtils combines static road markings; no new runtime dependency or external art was added.
+
+v0.3 adds original procedural reflector posts, shoulder paint, lane markings and seeded synthesized wind/engine harmonics. No external artwork, recordings or new dependencies were added. Motion evidence is recorded from this local game using Playwright and installed Edge; extracted PNGs are frames from those recordings.

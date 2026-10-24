@@ -6,3 +6,11 @@
 
 /* Suppress long-press/browser gestures only on the driving surface and controls. */
 canvas{touch-action:none}#touch [data-control]{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+
+/* v0.3: keep gameplay chrome quiet; secondary actions live in the pause panel. */
+header{top:max(16px,env(safe-area-inset-top));left:max(24px,env(safe-area-inset-left));right:max(24px,env(safe-area-inset-right));pointer-events:none}
+header nav{width:auto;margin-left:auto;pointer-events:auto}header .wordmark{font-size:12px;letter-spacing:2px;opacity:.8}header .wordmark small{display:none}
+header #pause{min-width:76px;min-height:44px;padding:10px 14px;font-size:12px}
+.menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.menu-actions button{min-height:48px}
+#paused h1{font-size:32px;margin:12px 0}#speed strong{font-size:36px;letter-spacing:-1px}#speed span{font-size:8px}#status{font-size:9px}
+@media(pointer:coarse),(max-width:1000px){header .wordmark{display:none}#speed{top:18px;left:24px;right:auto;text-align:left}#speed strong{font-size:28px}#status{font-size:8px;margin-top:5px}#immersive-note{top:82px;max-width:220px;font-size:9px}#paused{left:50%;transform:translate(-50%,-48%);max-height:calc(100dvh - 30px)}#touch button{backdrop-filter:none}}

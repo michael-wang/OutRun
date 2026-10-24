@@ -1,24 +1,20 @@
-# Codex working agreement — Project OutRun
+# Project OutRun — Codex operating agreement
 
-## Current milestone and requirements
-- The active task is **v0.2 Driving Is a Game**. Read `docs/CODEX_V0.2_KICKOFF.md`, `docs/V0.2_SPEC.md`, `docs/V0.2_ACCEPTANCE.md`, `docs/PIXEL8_PLAYTEST.md`, then `docs/PRODUCT_VISION.md`.
-- These v0.2 documents override conflicting v0.1 milestone instructions. Keep v0.1 files as historical records; **do not restart the v0.1 kickoff**.
-- Verify the checkout is `michael-wang/OutRun` before editing. **Never touch `C:\astra-dev\topwar`.** v0.1 game code may exist **only on the local `codex/first-drive` branch**; remote `main` is specifications-only. Do not overwrite local game code with an empty scaffold.
+## Which milestone?
+- **Active milestone: v0.3 Arcade Velocity.** First read `docs/CODEX_V0.3_KICKOFF.md`, `docs/V0.3_SPEC.md`, `docs/V0.3_ACCEPTANCE.md`, then `docs/PRODUCT_VISION.md` and relevant old milestone docs.
+- v0.1/v0.2/v0.2.1 specs and handoffs are **history and regression constraints**, not new tasks to repeat. If old text conflicts with v0.3, follow v0.3. Don't accidentally run a previous `/goal`.
+- Confirm git remote is `michael-wang/OutRun`. **Never change `C:\astra-dev\topwar`.** The playable v0.2.1 code was completed and committed **locally** as `9bdc6d8`. As of this design handoff, GitHub remote `main` contained documentation, not the full playable source. **Do not replace your playable local branch with remote `main`.**
 
-## Autonomy and scope
-- Implement → launch the actual browser game → play/test → inspect screenshots → fix → retest. Make routine design/engineering decisions independently, and do not ask the human for permission to edit ordinary files inside the authorized project. Respect actual sandbox permissions and escalate true blockers rather than bypassing them.
-- Preserve existing v0.1 work, working controls, audio and tests unless the new spec requires changing them. Use an existing implementation branch or a new branch **based on the playable implementation**.
-- Stack stays **Three.js + TypeScript + Vite** with minimal dependencies. No engine rewrite, full physics simulator, traffic AI, race modes, scoring, leaderboard, user accounts or heavy process overhead.
-- The driver must independently steer on winding roads: **no free auto-follow of the track curve**. At-speed hands-off driving in a bend must leave the road and incur an off-road speed penalty.
-- Pixel 8 **landscape fullscreen** is a primary target in v0.2, not an optional post-launch feature. Implement browser fullscreen/orientation and PWA pathways, safe areas and real two-thumb controls, with graceful fallbacks.
-- Do not publicly deploy, push/merge to `main`, buy services, inject secrets, change other repos, or copy SEGA/Ferrari art, code, music or trademarks. Use original/license-cleared bundled assets.
+## Autonomous development
+1. Work on a new feature branch **based on the local playable v0.2.1 HEAD**, preserving uncommitted work. Integrate the v0.3 docs without overriding game code. Never force reset, discard the app, or merge to remote `main`.
+2. Investigate actual code/scene metrics before changing camera/physics. Implement → run actual browser game → play/automate at several speeds → inspect screenshots AND motion recordings → fix → retest. Do not stop for routine code/style decisions; escalate genuine safety/permission blockers.
+3. Use the existing Three.js, TypeScript, Vite architecture. Optimize player experience, not simulation complexity. No engine rewrite, mandatory external assets, full physics engine, opponent traffic, races/scoreboards, new modes, multiplayer or large procedural world.
+4. v0.3 has two **release-blocking goals**: (a) **dominant car-and-road framing** on desktop and Pixel 8 landscape, (b) an unmistakable **high-speed visual experience** produced by world/roadside motion, NOT FOV/dolly zoom or misleading HUD numbers. More challenging curves are P1; scenic-theme transitions are **bonus only**.
+5. Preserve v0.2.1 functionality: steering must matter, off-road speed penalty, bounded shoulders with no auto-centering, responsive recovery, drift, brake, audio mute, no Android long-press context menu, multi-pointer independent controls, layout swap, fullscreen/landscape/PWA behavior, safe areas.
+6. Use a controlled fixed chase-camera composition; never reintroduce speed-based camera FOV/distance changes. Camera may smoothly follow road elevation and yaw without varying zoom with speed.
+7. Do not push, merge, public-deploy, incur paid services, touch secrets, or copy protected SEGA/Ferrari game images, music, meshes or trademarks. All new assets must be original or clearly license-cleared and bundled locally.
+8. Keep `npm run build`, `npm run test`, `npm run test:e2e` passing. Extend genuine behavior tests and add real motion evidence. A static screenshot and a displayed high speed number cannot by themselves prove speed sensation. Pixel 8 emulation is not physical hardware proof.
 
-## Quality gates
-- Maintain `npm run dev`, `npm run build`, `npm run test`, `npm run test:e2e`.
-- Add deterministic paired replay tests on left/right bends: neutral steering exits the road; realistic steering stays on-road. Check off-road slowdown and recoverability.
-- Check fixed FOV / no speed-driven camera zoom, road profile, speed cues and visible car drift. Inspect actual screenshot content, not just test output.
-- Test browser mobile layout and simultaneous two-pointer actions; mocked orientation/fullscreen success and failure; inspect phone-sized landscape screenshots. **Emulation does not prove actual Pixel 8 fullscreen, hardware FPS, PWA install or ergonomics.**
-- Report **PASS / FAIL / UNVERIFIED**, without fabricating device tests or listening results. Fix obvious defects before handoff.
-
-## Handoff
-Create `docs/V0.2_HANDOFF.md` with branch/commit, exact local launch, real build/unit/E2E results, P0 checklist, left/right replay traces, screenshot paths and visual review, hardware verification status, and known issues. Stop after v0.2 for human driving and Pixel 8 testing. No automatic v0.3 work.
+## Completion report
+Create `docs/V0.3_HANDOFF.md` with exact local launch URL, branch/commit, actual build/unit/E2E results, P0/P1 PASS/FAIL/UNVERIFIED, camera/car-width measurements on desktop and landscape mobile, low/mid/high-speed motion captures, curvature/off-road regressions, screenshots, visual critique, and known issues. If no physical Pixel 8 was connected, label device FPS/fullscreen/touch/audio checks UNVERIFIED for this version.
+Stop at v0.3 for human playtesting; do not begin v0.4.

@@ -1,3 +1,4 @@
+import { menuAction } from './ui';
 import { scriptedDriver } from './driver';
 import { test, expect, Page } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
@@ -13,14 +14,14 @@ test('desktop real-time driving, lifecycle, drift audio and continuous full rout
   await page.waitForTimeout(200);const audio=await snap(page);expect(audio.audio.contextState).toBe('running');expect(audio.audio.skidLevel).toBeGreaterThan(0);expect(audio.audio.rms).toBeGreaterThan(.001);
   await page.keyboard.up('d');await page.evaluate(()=>(window as any).__drive.reset({distance:240,speed:55}));await page.keyboard.down('w');await page.keyboard.down('a');await advance(page,.8);expect((await snap(page)).lateral).toBeLessThan(right.lateral);await page.keyboard.up('a');
   await page.keyboard.down('s');await advance(page,1);expect((await snap(page)).speed).toBeLessThan(right.speed);await page.keyboard.up('s');await page.keyboard.up('w');
-  await page.locator('#sound').click();await page.waitForTimeout(400);expect((await snap(page)).audio.rms).toBeLessThan(.0001);await page.locator('#sound').click();
+  await menuAction(page,'sound');await page.waitForTimeout(400);expect((await snap(page)).audio.rms).toBeLessThan(.0001);await menuAction(page,'sound');
   await page.keyboard.press('p');const paused=await snap(page);await advance(page,2);expect((await snap(page)).distance).toBe(paused.distance);await page.keyboard.press('Escape');
   await page.keyboard.press('r');expect((await snap(page)).distance).toBe(0);await page.keyboard.down('w');
   const route:any[]=[];
   for(const [seconds,label] of [[13,'12'],[24,'36'],[24,'60'],[29,'finish']] as const){
     route.push(...await page.evaluate(async seconds=>{
-      const source='/tests/driver.ts';const {scriptedDriver}=await import(source);const driver=scriptedDriver(),g=(window as any).__drive,trace=[];
-      for(let i=0;i<seconds*10;i++){const s=g.snapshot(),controls=driver(s,g.sample(s.distance).curvature);controls.gas=s.speed<46;g.advance(.1,controls);if(i%10===9)trace.push(g.snapshot());}return trace;
+      const source='/tests/driver.ts';const {scriptedDriver,plannedSpeed}=await import(source);const driver=scriptedDriver(),g=(window as any).__drive,trace=[];
+      for(let i=0;i<seconds*10;i++){const s=g.snapshot(),controls=driver(s,g.sample(s.distance).curvature,plannedSpeed(s.distance,g.sample));controls.gas=controls.gas&&s.speed<52;g.advance(.1,controls);if(i%10===9)trace.push(g.snapshot());}return trace;
     },seconds));
     await page.screenshot({path:`docs/evidence/v0.2/desktop-${label}.png`});
   }
@@ -35,7 +36,7 @@ test('trusted mobile multi-touch default and swapped, persistence, cancel and po
  const client=await context.newCDPSession(page);const point=async(control:string,id:number)=>{const b=await page.locator(`[data-control=${control}]`).boundingBox();return {x:b!.x+b!.width/2,y:b!.y+b!.height/2,id};};
  const evidence:any[]=[];
  for(const swapped of [false,true]){
-  if(swapped){await page.locator('#settings').click();await page.locator('#swap').check();await page.locator('#close-settings').click();await page.reload();await page.waitForFunction(()=>!!(window as any).__drive);expect(await page.locator('#swap').isChecked()).toBe(true);await page.locator('#drive').click();}
+  if(swapped){await menuAction(page,'settings');await page.locator('#swap').check();await page.locator('#close-settings').click();await page.reload();await page.waitForFunction(()=>!!(window as any).__drive);expect(await page.locator('#swap').isChecked()).toBe(true);await page.locator('#drive').click();}
   const gas=await point('gas',1),left=await point('left',2),brake=await point('brake',3);expect(gas.y).toBeLessThan(brake.y);expect(swapped?gas.x<left.x:gas.x>left.x).toBe(true);
   await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[gas]});await page.waitForTimeout(600);
   const beforeSteer=await snap(page);await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[gas,left]});await page.waitForTimeout(600);await client.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{...gas,x:gas.x-8},{...left,y:left.y-8}]});const both=await snap(page);expect(both.inputs.gas).toBe(true);expect(both.inputs.steer).toBe(-1);expect(both.worldHeading).toBeLessThan(beforeSteer.worldHeading);

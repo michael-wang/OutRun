@@ -1,0 +1,132 @@
+[
+  {
+    "name": "low",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "seconds": 5,
+    "startSpeed": 16.289620000000006,
+    "endSpeed": 17.584499314354964,
+    "distance": 84.8122733132858,
+    "simulatedSeconds": 4.900200000000039,
+    "wallSeconds": 4.89810000000149,
+    "markerPasses": 7,
+    "offRoadSamples": 0,
+    "brakeSamples": 0,
+    "highSpeedSeconds": 0,
+    "medianFrameMs": 16.699999999999818,
+    "p95FrameMs": 16.799999999999272,
+    "carBounds": {
+      "left": 0.3725505561952588,
+      "right": 0.6274635157312476,
+      "top": 0.5086449291589041,
+      "bottom": 0.9212947495931298
+    },
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "name": "mid",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "seconds": 5,
+    "startSpeed": 32.95038,
+    "endSpeed": 32.96213609492565,
+    "distance": 165.2048575494565,
+    "simulatedSeconds": 4.900200000000026,
+    "wallSeconds": 4.898700000002981,
+    "markerPasses": 14,
+    "offRoadSamples": 0,
+    "brakeSamples": 0,
+    "highSpeedSeconds": 0,
+    "medianFrameMs": 16.699999999999818,
+    "p95FrameMs": 16.800000000000182,
+    "carBounds": {
+      "left": 0.3723302788603572,
+      "right": 0.6286041102901464,
+      "top": 0.5084705621408251,
+      "bottom": 0.9212871272301841
+    },
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "name": "high",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "seconds": 5,
+    "startSpeed": 59.620000000000005,
+    "endSpeed": 59.67120776953196,
+    "distance": 293.6000340332886,
+    "simulatedSeconds": 4.900200000000028,
+    "wallSeconds": 4.899300000000745,
+    "markerPasses": 25,
+    "offRoadSamples": 0,
+    "brakeSamples": 0,
+    "highSpeedSeconds": 4.900200000000028,
+    "medianFrameMs": 16.699999999999818,
+    "p95FrameMs": 16.800000000000068,
+    "carBounds": {
+      "left": 0.36415225837135234,
+      "right": 0.6403956739162885,
+      "top": 0.507047203976117,
+      "bottom": 0.9220016038754354
+    },
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "name": "acceleration",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "seconds": 25,
+    "startSpeed": 0,
+    "endSpeed": 65,
+    "distance": 1461.3238312371077,
+    "simulatedSeconds": 24.900899999999485,
+    "wallSeconds": 24.89920000000298,
+    "markerPasses": 121,
+    "offRoadSamples": 0,
+    "brakeSamples": 0,
+    "highSpeedSeconds": 20.500599999999473,
+    "medianFrameMs": 16.699999999999818,
+    "p95FrameMs": 16.799999999999272,
+    "carBounds": {
+      "left": 0.3491088563743874,
+      "right": 0.6477910384042311,
+      "top": 0.50546773379475,
+      "bottom": 0.9279887569139651
+    },
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  },
+  {
+    "name": "s-bends",
+    "renderer": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "seconds": 25,
+    "startSpeed": 64.61961999999998,
+    "endSpeed": 64.61999999999998,
+    "distance": 1349.8640849017895,
+    "simulatedSeconds": 24.900699999999507,
+    "wallSeconds": 24.89789999999851,
+    "markerPasses": 113,
+    "offRoadSamples": 0,
+    "brakeSamples": 23,
+    "highSpeedSeconds": 12.50039999999952,
+    "medianFrameMs": 16.699999999999818,
+    "p95FrameMs": 16.799999999999272,
+    "carBounds": {
+      "left": 0.3534480826301638,
+      "right": 0.6506816157098751,
+      "top": 0.5039542211805244,
+      "bottom": 0.9293920720307596
+    },
+    "fovs": [
+      38.741159100630384
+    ],
+    "errors": []
+  }
+]

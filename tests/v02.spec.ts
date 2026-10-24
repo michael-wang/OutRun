@@ -1,3 +1,4 @@
+import { menuAction } from './ui';
 import { test,expect,Page } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
 import { scriptedDriver } from './driver';
@@ -37,7 +38,7 @@ test('matched shoulder penalty and fixed camera at idle cruise and fast',async({
   await reset(page,{distance:420,speed});cameras.push((await snapshot(page)).camera);
   await tick(page,{gas:speed>0,brake:false,steer:0},.5);const s=await snapshot(page);
   const delta=s.camera.position.map((v:number,i:number)=>v-s.position[i]);movingOffsets.push(delta);
-  expect(Math.hypot(delta[0],delta[2])).toBeCloseTo(10,8);expect(delta[1]).toBeCloseTo(4.3,8);
+  expect(Math.hypot(...delta)).toBeCloseTo(Math.hypot(8,2.6),8);expect(s.camera.distance).toBe(8);expect(s.camera.height).toBe(2.6);
  }
  expect(cameras[0]).toEqual(cameras[1]);expect(cameras[1]).toEqual(cameras[2]);
  writeFileSync('docs/evidence/v0.2/penalty-camera.json',JSON.stringify({results,ratio,cameras,movingOffsets},null,2));
@@ -57,7 +58,7 @@ for(const mode of ['success','reject','lock-reject','unsupported','installed'] a
   const context=await browser.newContext({viewport:{width:960,height:432},isMobile:true,hasTouch:true});const page=await context.newPage();const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await stubImmersion(page,mode);await boot(page);
   const state=await snapshot(page),calls=await page.evaluate(()=>(window as any).immersionCalls);
   expect(state.mode).toBe('playing');
-  if(mode==='success'){expect(state.immersive.active).toBe(true);expect(calls).toEqual(['fullscreen','landscape']);await page.locator('#fullscreen').click();expect((await snapshot(page)).immersive.active).toBe(false);expect((await snapshot(page)).mode).toBe('paused');await page.locator('#fullscreen').click();expect((await snapshot(page)).immersive.active).toBe(true);}
+  if(mode==='success'){expect(state.immersive.active).toBe(true);expect(calls).toEqual(['fullscreen','landscape']);await menuAction(page,'fullscreen');expect((await snapshot(page)).immersive.active).toBe(false);expect((await snapshot(page)).mode).toBe('paused');await menuAction(page,'fullscreen');expect((await snapshot(page)).immersive.active).toBe(true);}
   if(mode==='installed'){expect(state.immersive.installed).toBe(true);expect(state.immersive.active).toBe(false);expect(calls).toEqual(['landscape']);}
   if(mode==='reject'||mode==='unsupported'){expect(state.immersive.active).toBe(false);await expect(page.locator('#immersive-note')).toContainText('Fullscreen unavailable');}
   if(mode==='lock-reject'){expect(state.immersive.active).toBe(true);await expect(page.locator('#immersive-note')).toContainText('Rotate');}
@@ -69,7 +70,7 @@ test('Pixel-like landscape touch, safe bounds, brake+steer, both layouts',async(
  const context=await browser.newContext({viewport:{width:960,height:432},isMobile:true,hasTouch:true,deviceScaleFactor:1});const page=await context.newPage();await stubImmersion(page,'success');await boot(page);const client=await context.newCDPSession(page);
  const point=async(control:string,id:number)=>{const b=(await page.locator(`[data-control=${control}]`).boundingBox())!;expect(b.width).toBeGreaterThanOrEqual(56);expect(b.height).toBeGreaterThanOrEqual(56);expect(b.x).toBeGreaterThanOrEqual(20);expect(b.y+b.height).toBeLessThanOrEqual(432-20);return {x:b.x+b.width/2,y:b.y+b.height/2,id};};
  for(const swapped of [false,true]){
-  if(swapped){await page.locator('#settings').click();await page.locator('#swap').check();await page.locator('#close-settings').click();await page.locator('#resume').click();}
+  if(swapped){await menuAction(page,'settings');await page.locator('#swap').check();await page.locator('#close-settings').click();await page.locator('#resume').click();}
   await reset(page,{distance:420,speed:45});const gas=await point('gas',1),brake=await point('brake',1),right=await point('right',2);expect(gas.y).toBeLessThan(brake.y);expect(swapped?gas.x<right.x:gas.x>right.x).toBe(true);
   await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[brake,right]});expect((await snapshot(page)).inputs).toEqual({gas:false,brake:true,steer:1});await page.evaluate(()=>(window as any).__drive.advance(.4));expect((await snapshot(page)).speed).toBeLessThan(35);
   await page.evaluate(()=>window.dispatchEvent(new Event('blur')));expect((await snapshot(page)).inputs).toEqual({gas:false,brake:false,steer:0});await client.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});

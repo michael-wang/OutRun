@@ -27,7 +27,8 @@ export function createWorld() {
   ribbon(13,75,-.12,-3,grass,0,length,10); ribbon(75,160,-3,-14,grass,0,length,10);
   ribbon(-7,7,0,0,asphalt).name='driving-surface'; ribbon(-6.65,-6.49,.025,.025,line); ribbon(6.49,6.65,.025,.025,line);
   const dashes:THREE.BufferGeometry[]=[];
-  for(let d=0;d<length;d+=17){const dash=ribbon(-.075,.075,.03,.03,line,d,Math.min(d+7,length),7);scene.remove(dash);dashes.push(dash.geometry);}
+  // Three 4.67m arcade lanes fit the existing 14m physical asphalt corridor.
+  for(let d=0;d<length;d+=12)for(const lane of [-7/3,7/3]){const dash=ribbon(lane-.1,lane+.1,.03,.03,line,d,Math.min(d+5,length),5);scene.remove(dash);dashes.push(dash.geometry);}
   const markings=new THREE.Mesh(mergeGeometries(dashes)!,line);markings.receiveShadow=true;scene.add(markings);dashes.forEach(g=>g.dispose());
   ribbon(-12.9,-12.7,.65,.65,rail); ribbon(-12.9,-12.7,1.12,1.12,rail);
   // Efficient instances keep close roadside objects plentiful on mobile.
@@ -38,12 +39,25 @@ export function createWorld() {
   }
   const posts=[];for(let d=0;d<length;d+=12){const p=sample(d);posts.push({p:p.position.addScaledVector(p.right,-12.8).add(new THREE.Vector3(0,.58,0))});}
   instances(new THREE.BoxGeometry(.15,1.2,.15),rail,posts);
+  // Reproducible near-field references: 12m cadence matches the center dashes.
+  // Outside the complete corridor footprint; instancing adds only four draws.
+  const markerPosts=[],markerCaps=[],edgePaint=[];
+  for(let d=0;d<length;d+=12)for(const side of [-1,1]){
+    const p=sample(d),yaw=Math.atan2(p.tangent.x,p.tangent.z);
+    const base=p.position.clone().addScaledVector(p.right,side*12.9);
+    markerPosts.push({p:base.clone().add(new THREE.Vector3(0,.65,0)),r:new THREE.Euler(0,yaw,0)});
+    markerCaps.push({p:base.clone().add(new THREE.Vector3(0,1.12,0)),r:new THREE.Euler(0,yaw,0)});
+    edgePaint.push({p:p.position.clone().addScaledVector(p.right,side*7.45).add(new THREE.Vector3(0,-.075,0)),r:new THREE.Euler(-Math.atan2(p.tangent.y,Math.hypot(p.tangent.x,p.tangent.z)),yaw,0)});
+  }
+  instances(new THREE.BoxGeometry(.22,1.3,.22),line,markerPosts);
+  instances(new THREE.BoxGeometry(.25,.25,.25),mat('#e9904b'),markerCaps);
+  instances(new THREE.BoxGeometry(.7,.025,4),mat('#f1dbad'),edgePaint);
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
   ribbon(-29,-27,-10.9,-10.9,new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72}),0,length,10);
   const trunks: {p:THREE.Vector3;s:THREE.Vector3;r:THREE.Euler}[]=[], leaves:typeof trunks=[];
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
-  for(let d=12,i=0;d<length;d+=48,i++) {
+  for(let d=12,i=0;d<length;d+=32,i++) {
     const p=sample(d), offset=14+rand(i)*9, height=7+rand(i+50)*4;
     const base=p.position.addScaledVector(p.right,offset); base.y-=.4;
     trunks.push({p:base.clone().add(new THREE.Vector3(.15,height/2,0)),s:new THREE.Vector3(1,height,1),r:new THREE.Euler(0,0,-.025)});

@@ -3,7 +3,8 @@ import * as THREE from 'three';
 /** Shared geometry for rendering and deterministic driving tests. */
 export function createTrack() {
   const points = [[0,8,0],[30,14,240],[-80,42,450],[-100,92,700],[100,22,900],
-    [350,9,1000],[600,23,820],[660,54,500],[550,20,200],[350,8,-40],[100,7,-130]];
+    [350,9,1000],[450,24,1030],[550,40,1005],[650,68,1040],[760,45,1010],
+    [800,20,850],[660,54,500],[550,20,200],[350,8,-40],[100,7,-130]];
   const curve = new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(p[0]*1.25,p[1],p[2]*1.25)),true,'centripetal');
   curve.arcLengthDivisions=6000; curve.updateArcLengths();
   const length=curve.getLength();

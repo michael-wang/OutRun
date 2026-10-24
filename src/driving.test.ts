@@ -38,7 +38,7 @@ describe('v0.2 steering agency',()=>{
   });
   it('camera target geometry has no speed input and fixed FOV/offset',()=>{
     const position=new Vector3(4,10,20),a=chaseTargets(position,.2),b=chaseTargets(position,.2);
-    expect(a).toEqual(b);expect(a.eye.distanceTo(position)).toBeCloseTo(Math.hypot(CHASE.distance,CHASE.height));expect(CHASE.fov).toBe(54);
+    expect(a).toEqual(b);expect(a.eye.distanceTo(position)).toBeCloseTo(Math.hypot(CHASE.distance,CHASE.height));expect(CHASE.horizontalFov).toBe(76);
   });
   it('continuous road includes pronounced climb crest descent and both directions',()=>{
     const samples=Array.from({length:500},(_,i)=>track.sample(track.length*i/500));

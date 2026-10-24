@@ -1,3 +1,4 @@
+import { menuAction } from './ui';
 import { test, expect, Page } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 const snapshot = (page: Page) => page.evaluate(() => (window as any).__drive.snapshot());
@@ -70,7 +71,7 @@ test('mobile long holds retain independent pointers and suppress only gameplay b
   expect((await snapshot(page)).inputs).toEqual({ gas: false, brake: false, steer: 0 });
   await expect(page.locator('#touch .pressed')).toHaveCount(0);
   await client.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] });
-  await page.locator('#settings').click();
+  await menuAction(page,'settings');
   const ordinary = await page.locator('#preferences').evaluate(panel => ({
     context: panel.dispatchEvent(new Event('contextmenu', { bubbles: true, cancelable: true })),
     selection: panel.dispatchEvent(new Event('selectstart', { bubbles: true, cancelable: true })),

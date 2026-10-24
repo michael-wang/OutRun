@@ -32,7 +32,7 @@ export function step(s: DrivingState, input: InputState, dt: number, curvature: 
   dt = clamp(dt, 0, .05);
   s.curvature = curvature;
   updateFootprint(s);
-  const acceleration = (input.gas ? 19 * (1 - s.speed / 88) : -3.8) - (input.brake ? 34 : 0)
+  const acceleration = (input.gas ? 19 * (1 - s.speed / 88) + 6 * Math.max(0,1-s.speed/20) : -3.8) - (input.brake ? 34 : 0)
     - (s.offRoad ? 10 + s.speed * .07 : 0);
   s.speed = clamp(s.speed + acceleration * dt, 0, MAX_SPEED);
   s.steering += (clamp(input.steer, -1, 1) - s.steering) * (1 - Math.exp(-dt * 12));

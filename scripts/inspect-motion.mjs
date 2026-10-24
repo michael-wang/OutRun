@@ -1,0 +1,15 @@
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+const ffmpeg=process.argv[2];if(!ffmpeg)throw new Error('Pass the path to ffmpeg (the Playwright bundled executable works).');
+const directory=process.argv[3]??'docs/evidence/v0.3';mkdirSync(`${directory}/motion-frames`,{recursive:true});
+const summary=[];
+for(const name of ['low','mid','high','acceleration','s-bends']){
+ const evidence=JSON.parse(readFileSync(`${directory}/${name}.json`,'utf8')),a=evidence.trace[0],b=evidence.trace.at(-1);
+ const sorted=evidence.frameDurations.filter(v=>v>0).sort((a,b)=>a-b);
+ summary.push({name,renderer:evidence.renderer,seconds:evidence.seconds,startSpeed:a.speed,endSpeed:b.speed,distance:b.distance-a.distance,simulatedSeconds:b.elapsed-a.elapsed,wallSeconds:(b.wall-a.wall)/1000,markerPasses:Math.floor(b.distance/12)-Math.floor(a.distance/12),offRoadSamples:evidence.trace.filter(s=>s.offRoad).length,brakeSamples:evidence.trace.filter(s=>s.controls.brake).length,highSpeedSeconds:evidence.trace.reduce((sum,s,i)=>sum+(i&&evidence.trace[i-1].speed>=55?s.elapsed-evidence.trace[i-1].elapsed:0),0),medianFrameMs:sorted[Math.floor(sorted.length*.5)],p95FrameMs:sorted[Math.floor(sorted.length*.95)],carBounds:{left:Math.min(...evidence.trace.map(s=>s.framing.left)),right:Math.max(...evidence.trace.map(s=>s.framing.right)),top:Math.min(...evidence.trace.map(s=>s.framing.top)),bottom:Math.max(...evidence.trace.map(s=>s.framing.bottom))},fovs:[...new Set(evidence.trace.map(s=>s.camera.fov))],errors:evidence.errors});
+ for(const second of (name==='acceleration'?[2,7,12,18,24]:name==='s-bends'?[2,6,10,15,20,24]:[1.5,1.75,2,2.25]))
+  execFileSync(ffmpeg,['-hide_banner','-loglevel','error','-y','-ss',String(second),'-i',`${directory}/${name}.webm`,'-frames:v','1',`${directory}/motion-frames/${name}-${second}.png`]);
+}
+writeFileSync(`${directory}/motion-summary.json`,JSON.stringify(summary,null,2));
+writeFileSync(`${directory}/review.html`,`<!doctype html><meta name="viewport" content="width=device-width"><title>First Drive v0.3 motion review</title><style>body{margin:28px;background:#12343b;color:#fff5dc;font:16px system-ui}section{display:flex;flex-wrap:wrap;gap:20px}article{width:min(960px,100%)}section article{width:min(480px,100%)}video{width:100%}p{max-width:850px;line-height:1.6}</style><h1>First Drive / Arcade Velocity</h1><p>Actual local browser recordings, fixed camera. Low and high start at the same course position. Video recording excludes audio; engine state is verified separately. NVIDIA-backed Edge on this PC is not Pixel hardware evidence.</p><section>${['low','mid','high'].map(n=>`<article><h2>${n}</h2><video controls loop muted src="${n}.webm"></video></article>`).join('')}</section>${['acceleration','s-bends'].map(n=>`<article><h2>${n}</h2><video controls loop muted src="${n}.webm"></video></article>`).join('')}<p>Inputs in these recordings come from an external test driver, with digital steering taps and braking. There is no gameplay autopilot.</p>`);
+console.log(JSON.stringify(summary,null,2));
