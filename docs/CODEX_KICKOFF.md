@@ -34,6 +34,6 @@ Do not claim the human has accepted the game's feel or visuals. Once your self-Q
 ## Human setup (outside Codex)
 
 - Intended GitHub repository: `https://github.com/michael-wang/OutRun`.
-- Suggested local checkout: `C:\\astra-dev\\OutRun`.
-- **Important:** `C:\\astra-dev\\topwar` belongs to a different-named project; verify the folder before launching Codex. A repo checkout should be located in its own directory.
+- Suggested local checkout: `C:\astra-dev\OutRun`.
+- **Important:** `C:\astra-dev\topwar` belongs to a different-named project; verify the folder before launching Codex. A repo checkout should be located in its own directory.
 - Codex should work on a feature branch if practical and should **not merge to main or deploy publicly without human approval**.

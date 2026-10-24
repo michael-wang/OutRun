@@ -30,7 +30,7 @@ For v0.1, the player can simply drive for at least a minute on a scenic, winding
 
 ### Starting a Codex implementation run
 
-1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\\astra-dev\\OutRun`. **Never run these instructions inside `C:\\astra-dev\\topwar`.**
+1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
 2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_KICKOFF.md` (Goal Mode where available).
 3. Codex should generate the app and its real npm scripts. When implementation exists, the expected commands are `npm install`, `npm run dev`, `npm run build`, `npm run test`, and `npm run test:e2e`.
 
