@@ -9,6 +9,6 @@ describe('original convertible geometry',()=>{
   const ray=new THREE.Raycaster(new THREE.Vector3(0,3,-.2),new THREE.Vector3(0,-1,0));expect(ray.intersectObject(car,true)[0].point.y).toBeLessThan(.9);
  });
  it('batches the static artwork into a small draw/triangle budget',()=>{
-  let meshes=0,triangles=0;createCar().traverse(o=>{if(o instanceof THREE.Mesh){meshes++;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;}});expect(meshes).toBeLessThanOrEqual(20);expect(triangles).toBeLessThan(10000);
+  let meshes=0,triangles=0;createCar().traverse(o=>{if(o instanceof THREE.Mesh){meshes++;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;}});expect(meshes).toBeLessThanOrEqual(64);expect(triangles).toBeLessThan(14000);
  });
 });

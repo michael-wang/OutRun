@@ -1,40 +1,47 @@
 # Project OutRun — Codex operating agreement
 
-## ACTIVE milestone: v0.5 — High-Speed Spectacle
+## ACTIVE milestone — v0.6 Scenic Journey
 
-**Owner decision:** v0.4.3 was the first version where the owner genuinely enjoyed **high-speed cornering**. That is the new regression baseline. This new milestone is authorized to advance the game, **NOT** to rework its fundamental handling.
+The user's v0.5 playtest requests: (1) obvious wheel animation failure during hard cornering/drift, (2) expressive visible occupant motion, especially long hair whipping in the wind, and (3) **the main next investment: varied roadside scenery and more varied road sequences**. Treat v0.5's existing exhilarating Arcade Lateral Balance driving as the product baseline. **Do not change core handling just to add visuals.**
 
-**Read first:** `docs/CODEX_V0.5_KICKOFF.md`, `docs/V0.5_SPEC.md`, `docs/V0.5_ACCEPTANCE.md`, then `docs/PRODUCT_VISION.md` and earlier handoffs for regression context.
+Read in this order:
+1. `docs/CODEX_V0.6_KICKOFF.md`
+2. `docs/V0.6_SPEC.md`
+3. `docs/V0.6_ACCEPTANCE.md`
+4. `docs/PRODUCT_VISION.md`
+5. Previous v0.5 handoff, where available (regressions only).
 
-The previous stop-after-v0.4.3 instruction ended that milestone for human review; after this owner's approval it does not permanently prohibit a new v0.5 assignment.
+Earlier stop-after-v0.5 applied to that milestone. The new user-approved v0.6 milestone supersedes it; if actual Codex permission checks need clarification, get explicit approval in a NORMAL user chat instead of retrying a blocked action.
 
-## Repository and permissions
+## Local repo and permissions
 
-- Work ONLY in `C:\astra-dev\OutRun`; verify Git remote is `michael-wang/OutRun`. Never edit `C:\astra-dev\topwar`.
-- Latest playable v0.4.3 lives in the user's **LOCAL repository**, with code commit `84b18b3` and handoff `d370ef6`. Remote GitHub `main` is primarily documentation, **not** the game's working source. Never merge/reset/checkout the documentation-only main over the playable app.
-- Preserve the latest local playable HEAD and any uncommitted user edits. Create a new `codex/v0.5-high-speed-spectacle` branch **from that playable HEAD**. Fetch origin/main and selectively bring in current `AGENTS.md`, `docs/V0.5_SPEC.md`, `docs/V0.5_ACCEPTANCE.md` and `docs/CODEX_V0.5_KICKOFF.md` ONLY, after inspecting for conflicts.
-- If automated approval declines because of an old stop instruction, ask once for explicit user authorization in a **normal chat**; don't repeatedly retry or bypass permissions.
-- No push, merge, public deployment, outside-project edits, paid services, credentials, licensed SEGA/Ferrari marks or copied game assets.
+- Authorized repo `michael-wang/OutRun` at `C:\astra-dev\OutRun`. Never modify `C:\astra-dev\topwar` or any other repo.
+- Existing playable **v0.5 is LOCAL**, reported at implementation `645b7ed` and handoff `9a05fc3`. GitHub origin/main is mostly documentation and MUST NOT replace local playable game code.
+- Verify remote/status, preserve uncommitted files and start `codex/v0.6-scenic-journey` from newest **playable local HEAD**. Fetch origin/main and selectively restore ONLY `AGENTS.md`, `docs/V0.6_SPEC.md`, `docs/V0.6_ACCEPTANCE.md` and `docs/CODEX_V0.6_KICKOFF.md` into the new branch, checking conflicts. Don't overwrite the local app or local README. Never reset/checkout/merge origin/main wholesale over the playable branch.
+- Respect sandbox approval boundaries. No public deployment, pushing/merging to remote, paid services, secret use, copying SEGA/Ferrari cars/models/music/logos or unrelated changes.
 
-## Scope and execution order
+## What gets built and in what order
 
-**P0, do FIRST:**
-1. Preserve the existing v0.4.3 gameplay-first `Arcade Lateral Balance` and its difficulty-to-geometry inverse generator, soft 4-notch steering and accepted **1.75×** world pace.
-2. **Earlier visual pose onset:** light-to-moderate *actual bend* creates subtle visible vehicle attitude sooner. Avoid constant large yaw from a small correction on a straight or constant squealing.
-3. **Bolder peak drift:** demonstrable dramatic rendered body yaw (~50–60° candidate, occasional brief ~65° if readable) during genuine strong fast cornering. Visual animation must NOT add lateral/heading inertia to the authoritative driving model.
-4. **At-speed large corners:** build at least one substantial left and one substantial right **high-speed sweeping corner** with clear visual direction change, drivable near maximum displayed speed by a skilled human/scripted input. Keep the separately existing **braking-required Extreme corner**; do not silently make all hard-looking curves brake-only.
+**P0-1 — Fix wheel animation:** the car's rolling wheels are visibly frozen, especially when visual body yaw is large. Make each visible wheel roll correctly with real travel and front wheels steer correctly with input. Don't allow aliasing at speed to make wheels LOOK stationary. Validate during sharp left and right drift, standing still, acceleration and braking.
 
-**P1, ONLY after P0 passes:** replace old closed-roof placeholder with **one original roofless sports car** featuring clearly visible cockpit and two occupants, optimized for chase view and Pixel 8. Original style, no Ferrari copy. Modest expressive passenger/driver reaction is BONUS if time remains; do not invent huge character rigs, full animation pipelines or new tracks.
+**P0-2 — Scenic stage variety:** at least THREE unmistakably different stages on one continuous route: Azure Coast, Golden Canyon / arid highlands, Sunlit Coastal City. Stage visual identity must change in near, mid and distant layers; multiple distinctive landmarks and variation WITHIN each stage, not just a palette swap or hundreds of cloned palms/cubes. Two visible stage transitions during normal play, distance-based and without obvious pop/freeze. Preserve a clean, bright, inviting original art style.
 
-**Defer:** scenic biome transitions, traffic/rivals, four-level difficulty director, racing modes, scoreboards, complicated car physics or separate new game engine.
+**P0-3 — Road composition:** stage-specific authored challenge rhythms and elevation within the existing Gameplay-First required-steer/inverse-curvature system: fast coastline sweepers + crest, canyon S bends and technical braking, city boulevard/downhill speed reward. More interesting road scenery and perspective while preserving approachable playable skill. No invisible force, impossible road, missing mesh or mountain blocking the asphalt.
 
-## Verification and handoff
+**P1 — Occupant animation:** BOTH occupants show small intentional body/head lean with cornering, and a visibly long-haired female occupant gets exaggerated speed-sensitive hair motion (or adapt to established occupant designs). Wind continues even on straight roads when going fast; bends add asymmetry. Keep it inexpensive and readable on Pixel 8. No elaborate skeleton/rig unless already present.
 
-- Independently inspect existing actual source and game → implement small changes → run real browser play/driving → capture and inspect motion + screenshots → tune → run build/unit/Playwright → fix → commit locally.
-- Compare slight, medium and maximum bend poses with actual measured yaw (rendered) and underlying position (authoritative); confirm no change to vehicle dynamics from pose.
-- Verify high-speed sweep + Extreme brake-only corner using same inverse-required-steer model and real 3D road, with visible road geometry and ≥120s continuity.
-- Preserve pixel 8 fullscreen/landscape/PWA, touch steering strip+two thumb controls+swap+long-press protection, desktop A/D+Space/Enter, car-left analog needle speedometer, no auto-lane-follow, bounded offroad penalty and fast recovery, fixed camera FOV/dolly and performance.
+**Deferred:** opponents, traffic, hazards, gameplay director/DDA, left/right route forks, scores, multiple selectable cars, new engine, full cinematic cutscenes and character customization. No unrequested change to input mapping, game rules, or camera zoom.
 
-Create `docs/V0.5_HANDOFF.md` with local branch/commit/URL, source changes, before/after pose-onset and max-yaw measurements, full-speed sweeper drive evidence, old Extreme braking-required evidence, car and cockpit screenshots if implemented, desktop/mobile images, tests and honest real-device limits.
+## Preserve gameplay invariants
 
-**Stop after v0.5 for human playtesting.** This is a milestone boundary only, not an indefinite ban on future user-authorized work.
+Keep default **1.75× coherent world pace**, v0.5 4-soft-notch steering, low/mid/high/extreme/S challenges, fast left/right sweepers and braking-required Extreme, Arcade Lateral Balance without physical residual yaw, bounded off-road slowdown/recovery, expressive body drift, fixed-FOV chase view and car-left needle HUD. Maintain desktop A/D + Space gas + Enter brake, Pixel 8 20:9 landscape fullscreen/PWA, two-thumb analog strip & gas/brake handedness swap, long-press suppression, pause/mute. No scene-driven physics changes hidden on transition.
+
+## QA and evidence
+
+Work autonomously: inspect source → fix wheel issue → implement scenic stages & route → launch and drive actual browser → examine screenshots/video → optimize → if P0 passes add simple occupant reactions → run build/unit/Playwright, fix → local commit/handoff.
+
+Use Three.js efficient instancing or LOD for repeated scenery only where helpful; procedural textures and original low-cost local assets are fine. Don't create a speculative world editor, enormous asset pipeline or generic rendering engine.
+
+Deliver `docs/V0.6_HANDOFF.md` with actual branch/commit, reproducible local and Pixel URL, rendered wheel and occupant clips, labeled stage screenshots at desktop and Pixel-like landscape, actual two transitions recorded without pauses, stage-duration/distance map, road challenge table, ≥180s long-run geometry/console checks, before/after performance samples and PASS/FAIL/UNVERIFIED hardware status.
+
+**Stop after v0.6 for human playtest**, not because development is permanently forbidden.

@@ -4,7 +4,7 @@ import {actuateSteering} from '../src/steering';
 import {createState,step,updateFootprint} from '../src/handling';
 import {COURSE,curvatureForDemand,REFERENCE_SPEED,REFERENCE_TRAVEL} from '../src/challenges';
 import {createTrack} from '../src/track';
-const root='docs/evidence/v0.5';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.6';mkdirSync(root,{recursive:true});
 it('finite soft detents settle in 100ms, release in 60ms, and integrate identically at 30/60/120Hz',()=>{
  const runs=[];
  for(const hz of [30,60,120]){

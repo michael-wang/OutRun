@@ -28,7 +28,7 @@ test('Velocity Gate measures wall-clock world travel and calibration is explicit
  await expect(page.locator('#speed')).toBeVisible();
  await page.goto('http://127.0.0.1:4173/?velocity');await expect(page.locator('#velocity-calibration')).toHaveCount(0);
  expect(await page.evaluate(()=>(window as any).__drive)).toBeUndefined();
- expect(errors).toEqual([]);mkdirSync('docs/evidence/v0.5/regressions/v0.3.1',{recursive:true});writeFileSync('docs/evidence/v0.5/regressions/v0.3.1/browser-audit.json',JSON.stringify({errors,measurements},null,2));
+ expect(errors).toEqual([]);mkdirSync('docs/evidence/v0.6/regressions/v0.3.1',{recursive:true});writeFileSync('docs/evidence/v0.6/regressions/v0.3.1/browser-audit.json',JSON.stringify({errors,measurements},null,2));
 });
 test('real rendering at 30 versus 60 callbacks per second preserves world speed',async({browser})=>{
  const runs:any[]=[];
@@ -43,5 +43,5 @@ test('real rendering at 30 versus 60 callbacks per second preserves world speed'
  }
  expect(runs[1].fps/runs[0].fps).toBeGreaterThan(.4);expect(runs[1].fps/runs[0].fps).toBeLessThan(.6);
  expect(runs[1].worldMetersPerSecond/runs[0].worldMetersPerSecond).toBeCloseTo(1,1);
- writeFileSync('docs/evidence/v0.5/regressions/v0.3.1/frame-rate-audit.json',JSON.stringify(runs,null,2));
+ writeFileSync('docs/evidence/v0.6/regressions/v0.3.1/frame-rate-audit.json',JSON.stringify(runs,null,2));
 });

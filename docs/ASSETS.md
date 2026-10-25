@@ -16,3 +16,6 @@ v0.3 adds original procedural reflector posts, shoulder paint, lane markings and
 Road-edge colour bands and the revised instanced reflector shapes are original procedural geometry authored in this repository. Synthesized wind uses the existing seeded local noise source. No external assets or dependencies were added. The v0.3.1 videos and screenshots are recordings of this local application; they contain no externally sourced game imagery or music.
 
 v0.5 adds an original procedurally sculpted roofless roadster, cockpit, two stylized travelers, and FAST SWEEP signs. Geometry/materials are defined locally in src/car.ts and src/world.ts. No external models, character likenesses, artwork or dependencies were added. Static car geometry uses the existing Three.js MIT BufferGeometryUtils. No skeletal animation or runtime asset downloads.
+
+## v0.6 Scenic Journey
+All new wheels, travelers/hair pivots, coast/canyon/city prop geometry, landmarks, road and palette art are original procedural local code in src/wheels.ts, src/car.ts, src/occupants.ts, src/scenery.ts and src/world.ts. No external models, textures, likenesses, audio or dependencies added. Existing Three.js MIT geometry helpers are reused. No runtime asset downloads.

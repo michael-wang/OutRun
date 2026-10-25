@@ -12,7 +12,7 @@ for(const pace of [1,1.75,2]) for (const [side,distance,width,height] of [[-1,74
     const outward=side<0?'a':'d',inward=side<0?'d':'a';
     await page.keyboard.down('w');await page.keyboard.down(outward);
     await expect.poll(async()=>(await snapshot()).corridorSide,{timeout:8000}).toBe(side);
-    const directory=pace===1?'docs/evidence/v0.5/regressions/v0.2.1':`docs/evidence/v0.5/regressions/v0.3.2/boundary-pace-${pace}`;mkdirSync(directory,{recursive:true});
+    const directory=pace===1?'docs/evidence/v0.6/regressions/v0.2.1':`docs/evidence/v0.6/regressions/v0.3.2/boundary-pace-${pace}`;mkdirSync(directory,{recursive:true});
     const trace:any[]=[];const start=await snapshot(),wallStart=Date.now();
     await page.screenshot({path:`${directory}/boundary-${side}-entry.png`});
     // Real wall-clock gameplay, not a simulated-time-only acceptance test.

@@ -1,12 +1,16 @@
 import * as THREE from 'three';
+import {createRoadWheel} from './wheels';
+import {createOccupantMotion} from './occupants';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 /** Original roofless coastal roadster. +Z nose; unchanged wheelbase and ground contact. */
 export function createCar() {
   const car=new THREE.Group();car.name='coastal-roadster';
+  const wheels:ReturnType<typeof createRoadWheel>[]=[];
+  const travelers:{body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[]}[]=[];
   const material=(color:string,roughness=.5,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
   const paint=material('#ed5438',.3,.38), dark=material('#182c35'), silver=material('#d3e4de',.24,.8);
-  const tire=material('#192124',.95), leather=material('#d6a467',.8), seam=material('#805c3b',.8);
+  const leather=material('#d6a467',.8), seam=material('#805c3b',.8);
   const glass=new THREE.MeshStandardMaterial({color:'#a6d7df',transparent:true,opacity:.32,roughness:.12,metalness:.15,side:THREE.DoubleSide,depthWrite:false});
   function mesh(g:THREE.BufferGeometry,m:THREE.Material,x=0,y=0,z=0,parent:THREE.Group=car){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
   const box=(w:number,h:number,d:number,m:THREE.Material,x:number,y:number,z:number)=>mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z);
@@ -34,10 +38,7 @@ export function createCar() {
     box(.19,.085,.025,silver,side*1.18,1.02,.25);
     for(const z of [-1.45,1.38]){
       const brow=mesh(new THREE.TorusGeometry(.49,.065,6,18,Math.PI),paint,side*1.055,.46,z);brow.rotation.y=Math.PI/2;
-      const wheel=mesh(new THREE.CylinderGeometry(.46,.46,.27,24),tire,side*1.055,.46,z);wheel.rotation.z=Math.PI/2;
-      const rim=mesh(new THREE.CylinderGeometry(.3,.3,.282,16),silver,side*1.065,.46,z);rim.rotation.z=Math.PI/2;
-      const hub=mesh(new THREE.CylinderGeometry(.12,.12,.29,12),dark,side*1.07,.46,z);hub.rotation.z=Math.PI/2;
-      for(let i=0;i<5;i++){const a=i*Math.PI*2/5;bar([side*1.21,.46+Math.cos(a)*.14,z+Math.sin(a)*.14],[side*1.21,.46+Math.cos(a)*.27,z+Math.sin(a)*.27],.024,dark);}
+      const wheel=createRoadWheel(side,z>0);wheel.pivot.position.set(side*1.055,.46,z);car.add(wheel.pivot);wheels.push(wheel);
     }
     box(.1,.12,3.7,dark,side*1.04,.36,-.1);
   }
@@ -53,21 +54,33 @@ export function createCar() {
   // Original, intentionally simple travelers: teal-shirted driver and cream-shirted passenger.
   for(const [side,name,shirtColor,hairColor,skinColor] of [[-1,'driver','#197b80','#242b30','#c98c60'],[1,'passenger','#fff0d1','#623627','#edb88c']] as const){
     const person=new THREE.Group();person.name=name;car.add(person);const x=side*.41;
+    const head=new THREE.Group();head.name=`${name}-head`;person.add(head);
+    const arms:THREE.Group[]=[],locks:THREE.Group[]=[];
     const shirt=material(shirtColor,.85),hair=material(hairColor,.9),skin=material(skinColor,.85);
     oval(.225,.29,.16,shirt,x,1.03,-.48,person);
     oval(.13,.075,.12,skin,x,1.3,-.46,person);
-    oval(.17,.21,.17,skin,x,1.47,-.45,person);
-    oval(.178,.135,.18,hair,x,1.57,-.48,person);
+    oval(.17,.21,.17,skin,x,1.47,-.45,head);
+    oval(.178,.135,.18,hair,x,1.57,-.48,head);
     // Tiny sunglasses and nose read as faces in the inspection view, without texture assets.
-    for(const eye of [-1,1])oval(.057,.035,.025,dark,x+eye*.075,1.49,-.287,person);
-    bar([x-.07,1.49,-.28],[x+.07,1.49,-.28],.012,dark,person);
-    oval(.035,.05,.045,skin,x,1.44,-.28,person);
-    if(side===1){oval(.13,.19,.1,hair,x,1.43,-.6,person);oval(.075,.18,.065,hair,x+.08,1.28,-.65,person);}
+    for(const eye of [-1,1])oval(.057,.035,.025,dark,x+eye*.075,1.49,-.287,head);
+    bar([x-.07,1.49,-.28],[x+.07,1.49,-.28],.012,dark,head);
+    oval(.035,.05,.045,skin,x,1.44,-.28,head);
+    if(side===1){
+      oval(.13,.15,.1,hair,x,1.47,-.6,head);
+      for(let i=0;i<3;i++){
+        const lock=new THREE.Group();lock.name=`hair-lock-${i}`;lock.position.set(x+(i-1)*.085,1.53,-.62);head.add(lock);
+        oval(.065,.19,.055,hair,0,-.17,0,lock);
+        const tip=new THREE.Group();tip.position.y=-.32;lock.add(tip);oval(.048,.16,.045,hair,0,-.13,0,tip);locks.push(lock);
+      }
+    }
     for(const arm of [-1,1]){
       const shoulder=[x+arm*.19,1.16,-.45],elbow=[x+arm*.24,.99,-.17],hand=side===-1?[x+arm*.13,1.04,.23]:[x+arm*.13,.8,-.1];
-      bar(shoulder,elbow,.065,shirt,person);bar(elbow,hand,.048,skin,person);oval(.055,.055,.055,skin,...hand as [number,number,number],person);
+      const limb=new THREE.Group();person.add(limb);arms.push(limb);
+      bar(shoulder,elbow,.065,shirt,limb);bar(elbow,hand,.048,skin,limb);oval(.055,.055,.055,skin,...hand as [number,number,number],limb);
+      batch(limb);pivotAt(limb,...shoulder as [number,number,number]);
     }
-    batch(person);
+    batch(head);pivotAt(head,x,1.3,-.46);batch(person);pivotAt(person,x,.8,-.48);
+    travelers.push({body:person,head,arms,locks});
   }
   box(1.74,.12,.12,dark,0,.34,2.34);box(1.92,.17,.13,dark,0,.36,-2.29);
   const rear=material('#b51e22',.3);rear.emissive.set('#d62717');rear.emissiveIntensity=.55;
@@ -80,8 +93,13 @@ export function createCar() {
   box(.36,.13,.025,leather,0,.47,-2.37);
   for(let i=0;i<4;i++)box(.78,.025,.045,dark,0,.92-i*.025,-1.4-i*.13);
   box(1.87,.06,.15,paint,0,.91,-2.02);
-  batch(car);return car;
+  batch(car);
+  const people=createOccupantMotion(travelers,wheel);
+  car.userData.motion={advance:(ds:number,steer:number,dt:number)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
+  return car;
 }
+
+function pivotAt(group:THREE.Group,x:number,y:number,z:number){const p=new THREE.Vector3(x,y,z);for(const child of group.children)child.position.sub(p);group.position.copy(p);}
 
 /** Static material batches keep the more detailed cockpit cheap to draw. */
 function batch(group:THREE.Group){

@@ -9,6 +9,7 @@ import { SpeedAudit } from './speed-audit';
 import { DEFAULT_PACE,selectedPace,effectivePace } from './pace';
 import {speedometerMarkup,needleAngle} from './speedometer';
 import {COURSE,challengeAt,requiredSteering} from './challenges';
+import {ACTS,actWeights} from './acts';
 import {quantizeSteering} from './steering';
 import './style.css';
 
@@ -16,7 +17,7 @@ document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="Pause / Menu">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
-<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>FIRST DRIVE · LOCAL PLAYTEST · v0.5</small></section>
+<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.6</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button></div></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">MAKE YOURSELF AT HOME</div><h2>Controls</h2><label class="setting"><input id="swap" type="checkbox"> Steering on the right</label><p>Accelerator stays above brake on either side.</p><button id="close-settings" class="primary">Done</button></section>
 <div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="Steering position" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-label">← STEER →</span><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span><span class="steer-hint">4 LEVELS · RELEASE TO NEUTRAL</span></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
@@ -48,7 +49,7 @@ applyLayout();
 function ui(){ $('menu').hidden=mode!=='menu'||settingsOpen; $('paused').hidden=mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',mode==='playing'&&!settingsOpen); $('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu'; }
 function start(){state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;void sound.unlock().catch(()=>{}); mode='playing'; settingsOpen=false; input.clear();(document.activeElement as HTMLElement)?.blur?.();ui();}
 function pause(){if(mode==='paused'){start();return;}mode='paused';input.clear();sound.pause();ui();}
-function restart(){state=createState();state.worldHeading=world.sample(0).roadHeading; elapsed=0; initialized=false; start();}
+function restart(){world.car.userData.motion.reset();state=createState();state.worldHeading=world.sample(0).roadHeading; elapsed=0; initialized=false; start();}
 $('drive').onclick=()=>{if(mobile())void immersive.enter();start();};
 $('resume').onclick=start; $('pause').onclick=pause; $('restart').onclick=restart;
 $('fullscreen').onclick=()=>{input.clear();void immersive.toggle();};
@@ -75,7 +76,7 @@ visualViewport?.addEventListener('resize',resize);
 document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&mode==='playing'){mode='paused';sound.pause();ui();}});
 function advance(dt:number,override?:InputState){
   input.update(dt);
-  if(mode==='playing'&&!settingsOpen){const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}step(state,controls,dt,world.sample(state.distance).curvature,highSpeedPace);elapsed+=dt;sound.update(state.speed*effectivePace(state.speed,highSpeedPace),state.slip,controls.gas&&!controls.brake,dt);}else sound.pause();
+  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}step(state,controls,dt,world.sample(state.distance).curvature,highSpeedPace);world.car.userData.motion.advance(state.distance-beforeDistance,state.appliedSteer,dt);elapsed+=dt;sound.update(state.speed*effectivePace(state.speed,highSpeedPace),state.slip,controls.gas&&!controls.brake,dt);}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(lateral < -13)return THREE.MathUtils.lerp(height-.1,-5.05,Math.min(1,(-lateral-13)/14));
@@ -99,7 +100,7 @@ function render(dt:number,draw=true){
     const offset=inspectionView==='front'?new THREE.Vector3(3,2.7,6):inspectionView==='side'?new THREE.Vector3(6,2.8,0):new THREE.Vector3(0,5.8,-2.3);
     camera.position.copy(world.car.localToWorld(offset));camera.lookAt(world.car.localToWorld(new THREE.Vector3(0,.8,0)));
   }
-  world.update(elapsed,state.speed,state.slip);if(!draw)return;renderer.render(world.scene,camera);frames++;
+  world.update(elapsed,state.speed,state.slip,state.distance);if(!draw)return;world.car.userData.motion.render();renderer.render(world.scene,camera);frames++;
   $('speed').querySelector('strong')!.textContent=Math.round(state.speed*3.6).toString().padStart(3,'0');
   $('speed-needle').setAttribute('transform',`rotate(${needleAngle(state.speed*3.6)} 100 100)`);
   $('status').textContent=state.offRoad?'OFF ROAD · STEER BACK':state.slip>.2?'CORNERING · HOLD YOUR LINE':mode==='playing'?'STEER YOUR OWN LINE':'READY FOR THE COAST';
@@ -124,6 +125,10 @@ if(import.meta.env.DEV){(window as any).__drive={
   carView:(view:'front'|'side'|'cockpit')=>{
     manual=true;inspectionView=view;render(1/60);
   },
+  acts:()=>ACTS,
+  scenery:()=>({...world.scenery,weights:actWeights(state.distance),render:structuredClone(renderer.info.render),memory:structuredClone(renderer.info.memory)}),
+  wheels:()=>world.car.userData.motion.inspect(),
+  occupants:()=>world.car.userData.motion.occupants(),
   challenges:()=>COURSE,
   steering:()=>({rawSteer:input.steeringTarget,effectiveSteer:input.effectiveSteer,appliedSteer:state.appliedSteer,requiredSteer:requiredSteering(world.sample(state.distance).curvature,state.speed),roadRelativeX:state.lateral,challenge:challengeAt(state.distance)}),
   lookahead:(seconds=2)=>{
@@ -137,6 +142,7 @@ if(import.meta.env.DEV){(window as any).__drive={
     const hits=ray.intersectObjects(world.scene.children.filter(o=>['driving-surface','terrain','shoulder','distant-ridge','inland-ridge','inland-ledge'].includes(o.name)),true);
     return {distance,lateral,expected:p.y,hits:hits.slice(0,5).map(h=>({name:h.object.name,y:h.point.y,error:h.point.y-p.y}))};
   },
+  sceneryProbe:(distance:number,lateral=0)=>{world.scene.updateMatrixWorld(true);const p=world.sample(distance).position.addScaledVector(world.sample(distance).right,lateral);const ray=new THREE.Raycaster(p.clone().add(new THREE.Vector3(0,250,0)),new THREE.Vector3(0,-1,0));return ray.intersectObject(world.scene.getObjectByName('scenery')!,true).filter(h=>h.point.y>=p.y-.05).map(h=>({y:h.point.y,name:h.object.name}));},
   audit:()=>structuredClone(speedAudit!.rows),
   controls:(value?:InputState)=>{testControls=value;},
   hardDetents:(enabled:boolean)=>{hardDetents=enabled;},
@@ -151,7 +157,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   manual:(value:boolean)=>{manual=value;},
   advance:(seconds:number,override?:InputState)=>{for(let i=0;i<Math.ceil(seconds*120);i++){advance(1/120,override);render(1/120,false);}render(1/120);},
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{
-    inspectionView=undefined;
+    inspectionView=undefined;world.car.userData.motion.reset();
     speedAudit?.reset();
     state={...createState(),...initial};state.velocityHeading=state.heading;state.worldHeading=world.sample(state.distance).roadHeading+state.heading;updateFootprint(state);elapsed=0;initialized=false;mode='playing';testControls=undefined;input.clear();ui();render(1/60);
   },
@@ -187,3 +193,5 @@ if(import.meta.env.DEV&&new URLSearchParams(location.search).has('velocity')){
   setInterval(()=>{const s=g.snapshot();if(s.mode!=='playing')return;const controls=driver(s,g.sample(s.distance).curvature,target);controls.gas=s.speed<target;controls.brake=s.speed>target+2;g.controls(controls);$('velocity-time').textContent=`${target<30?'LOW':'HIGH'} · ${s.elapsed.toFixed(1)} s · fixed camera · speed readout hidden`;},50);
  });
 }
+
+if(import.meta.env.DEV&&new URLSearchParams(location.search).has('stage')){const id=new URLSearchParams(location.search).get('stage'),act=ACTS.find(a=>a.id===id);if(act)state.distance=act.start+700;}

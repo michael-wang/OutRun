@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.5';
+const root='docs/evidence/v0.6';
 const snap=(p:any)=>p.evaluate(()=>(window as any).__drive.snapshot());
 test('trusted finger jitter stays inside a notch until a deliberate threshold crossing',async({browser})=>{
  const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const touch=await touchDriver(page,context),rows=[];
@@ -49,6 +49,9 @@ test('five authored challenges: trusted touch notches, paired failures/braking a
   const need=await page.evaluate(()=>(window as any).__drive.steering().requiredSteer);await touch(Math.round(need*4)/4,true,false);await advance();rows.push(await snap(page));
  }
  expect(rows.every(s=>!s.offRoad)).toBe(true);expect(rows.some(s=>s.inputs.steer===-.5)).toBe(true);expect(rows.some(s=>s.inputs.steer===.5)).toBe(true);expect(rows.some(s=>s.inputs.steer===0)).toBe(true);
- await touch(null,false,false);const x=(await snap(page)).lateral;await page.evaluate(()=>(window as any).__drive.advance(.5));expect((await snap(page)).lateral).toBeCloseTo(x,8);
+ await touch(null,false,false);const x=(await snap(page)).lateral;
+ // Release check stays on the authored straight, before the next canyon bend.
+ expect(await page.evaluate(()=>{const g=(window as any).__drive,s=g.snapshot();return Math.abs(g.sample(s.distance+s.travelSpeed*.25).curvature);})).toBeLessThan(1e-8);
+ await page.evaluate(()=>(window as any).__drive.advance(.25));expect((await snap(page)).lateral).toBeCloseTo(x,8);
  runs.push({id:'s',rows});expect(errors).toEqual([]);writeFileSync(`${root}/paired-gameplay.json`,JSON.stringify({runs,errors},null,2));await context.close();
 });

@@ -2,9 +2,9 @@
 
 **An original arcade-driving game inspired by the feeling of SEGA's 1986 Out Run and 2003 OutRun 2.**
 
-**Status:** v0.5 *High-Speed Spectacle* implemented for local human and Pixel 8 playtesting. See [v0.5 handoff and evidence](docs/V0.5_HANDOFF.md). Physical Pixel 8 results remain unverified.
+**Status:** v0.6 *Scenic Journey* implemented for local human and Pixel 8 playtesting. See [v0.6 handoff and evidence](docs/V0.6_HANDOFF.md). Physical Pixel 8 results remain unverified.
 
-v0.5 adds earlier gentle-corner body attitude, dramatic loaded poses near 57 degrees, full-gas left/right coastal sweepers and an original convertible with two occupants. The accepted lateral handling, 1.75x pace and soft steering controls remain; the separate Extreme bend still requires braking. [Local review gallery](http://127.0.0.1:5173/docs/evidence/v0.5/review.html) is available while the dev server runs.
+v0.6 adds a continuous Azure Coast → Golden Canyon → Sunlit Coastal City route, distance-driven rolling/steering wheels, expressive occupants and wind-responsive hair. Handling, 1.75× pace and soft steering controls are preserved. [Local review gallery](http://127.0.0.1:5173/docs/evidence/v0.6/review.html) is available while the dev server runs.
 
 "Project OutRun" is an **internal codename only**. **SUNSHIFT GT** is an unapproved candidate public name, not a final title. Do not use SEGA logos, the original game's music, graphics, distinctive licensed vehicles, or other protected assets. Public branding will be decided later.
 
@@ -26,15 +26,15 @@ For v0.1, the player can simply drive for at least a minute on a scenic, winding
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | Codex operating rules; repo safety and autonomy |
 | [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md) | The experience and visual direction we are pursuing |
-| [docs/V0.5_SPEC.md](docs/V0.5_SPEC.md) | What to build — and explicitly what *not* to build |
-| [docs/V0.5_ACCEPTANCE.md](docs/V0.5_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
-| [docs/CODEX_V0.5_KICKOFF.md](docs/CODEX_V0.5_KICKOFF.md) | One-shot task for a Codex development run |
+| [docs/V0.6_SPEC.md](docs/V0.6_SPEC.md) | What to build — and explicitly what *not* to build |
+| [docs/V0.6_ACCEPTANCE.md](docs/V0.6_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
+| [docs/CODEX_V0.6_KICKOFF.md](docs/CODEX_V0.6_KICKOFF.md) | One-shot task for a Codex development run |
 
 ### Starting a Codex implementation run
 
 1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
-2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.5_KICKOFF.md` (Goal Mode where available).
-3. The implementation and runnable commands are below. Read the v0.5 handoff before planning further work.
+2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.6_KICKOFF.md` (Goal Mode where available).
+3. The implementation and runnable commands are below. Read the v0.6 handoff before planning further work.
 
 ## Run locally
 

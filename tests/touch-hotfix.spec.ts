@@ -47,8 +47,8 @@ test('mobile long holds retain independent pointers and suppress only gameplay b
     });
     expect(policies).toEqual({ touch: 'none', selection: 'none', webkitSelection: 'none', canceled: [true, true, true] });
   }
-  mkdirSync('docs/evidence/v0.5/regressions/v0.2.1', { recursive: true });
-  await page.screenshot({ path: 'docs/evidence/v0.5/regressions/v0.2.1/touch-long-hold.png' });
+  mkdirSync('docs/evidence/v0.6/regressions/v0.2.1', { recursive: true });
+  await page.screenshot({ path: 'docs/evidence/v0.6/regressions/v0.2.1/touch-long-hold.png' });
   // CDP touchEnd lists the contacts being released, not the contacts remaining.
   await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [left] });
   expect((await snapshot(page)).inputs).toEqual({ gas: true, brake: false, steer: 0 });
@@ -81,6 +81,6 @@ test('mobile long holds retain independent pointers and suppress only gameplay b
   await page.reload();
   await expect(page.locator('#swap')).toBeChecked();
   expect(errors).toEqual([]);
-  writeFileSync('docs/evidence/v0.5/regressions/v0.2.1/touch-long-hold.json', JSON.stringify({ physicalAndroidVibration: 'UNVERIFIED', errors, trace }, null, 2));
+  writeFileSync('docs/evidence/v0.6/regressions/v0.2.1/touch-long-hold.json', JSON.stringify({ physicalAndroidVibration: 'UNVERIFIED', errors, trace }, null, 2));
   await context.close();
 });
