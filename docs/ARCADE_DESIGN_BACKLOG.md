@@ -1,27 +1,27 @@
-# Project OutRun — Current arcade priorities and deferred roadmap
+# Project OutRun — product roadmap (after design paradigm shift)
 
-**Current playable game:** v0.4.1 (local implementation `4d4b05c`, handoff `34b6a3e`). **Current owner-approved next task:** v0.4.2 Corner Exit & Road Rhythm.
+## Current milestone: v0.4.2 Gameplay-First Driving Prototype
 
-## Now: v0.4.2
+Owner has explicitly replaced the old turn-physics + arbitrary-track approach with:
+- **Arcade Lateral Balance:** curvature imposes outward drift, steering applies limited opposing correction; reduce speed if curve demand exceeds available correction. Don't accumulate lateral/yaw inertia after exiting the bend.
+- **Gameplay-first geometry:** author discrete challenge segments by Required Steering at a reference speed, width, duration/distance, then derive actual curvature/3D mesh.
+- **Discrete effective control:** default neutral + four levels each direction, with continuously sliding touch/visual wheel and mobile/PC shared behavior.
+- Playtest proof: low/mid/high/too-fast requiring braking/S-curve on ONE small route. 1.75× accepted pace, off-road bounded slowdown, Pixel 8+PC support remain.
 
-- **P0:** Keep the newly enjoyable analog steering turn-in. Diagnose and reduce unwanted steering/yaw/slip continuation after a corner, enabling quick release and countersteer **without** automatically rotating car toward road tangent or magnetic lane centering.
-- **P1:** Much greater frequency/strength of road bends and **actual road elevation**, not just distant landscape. Use distance-authored gameplay rhythm and at least two visible climb/crest/descents in a 60–90s drive. Easy sections can be sweeping curves; avoid long lifeless straight stretches.
-- Preserve accepted **1.75× world pace**, car-left needle speedometer, bounded shoulder/off-road speed penalty, PC A/D + Space/Enter, Pixel 8 continuous touch strip/fullscreen/PWA/long-press protection, off-road recovery, original assets and working loop.
+This is a prototype, not permission to build a track editor or adaptive director.
 
-See `docs/V0.4.2_SPEC.md` and `docs/V0.4.2_ACCEPTANCE.md`.
+## AFTER the core prototype passes the human test
 
-## After arcade handling/rhythm is accepted
+### Experience Director, not just procedural roads
+Difficulty/elevation/visibility/width/obstacle profiles arranged into a designed **emotional rhythm**, using a small authored script first. Gradually explore Beginner / Intermediate / Advanced / Godlike as distinct challenge distributions. Any intentionally >100%-at-reference corner must still have at least one practical slowed-down or alternative strategy.
 
-**Original convertible and expressive occupants:**
-- Create an original unbranded open-top sports car with visible driver and passenger in chase view, with no imitation of a Ferrari model, SEGA logos or copyrighted character likeness.
-- After proving an efficient basic model, add small readable animated reactions to curves/crests/speed (body leaning, hair/scarf flow, hands rising). Performance on actual Pixel 8 matters.
+### Player model and branch choice
+Optional stage-boundary adaptive difficulty using average speed, off-road time, braking and correction accuracy, without secretly changing the active road mid-corner. Left/right road forks should communicate the choice and let player override any suggestion. Player skill must remain rewarded.
 
-**Scenic stage transitions:**
-- Distinct backgrounds and roadside themes every ~30–45s of representative fast driving, e.g. coast → arid roads → city → alpine/snow, with coherent handoffs, no loading stutter.
-- Scene variety is a reward for continued racing; it must not cover up bad speed or road handling.
+### More features after engine fun is proven
+- Original open-top sports car and visible driver/passenger with expressive animations.
+- Scenic changes approximately every 30–45s of normal fast driving (coast, desert, city, forest/snow) and thematic stage transitions.
+- Different cars with differentiated turn authority/grip/top speed; bounded object hazards and traffic/rival cars.
+- Scores/leaderboards, routes, game music and checkpoints. No scope expansion merely because Codex can generate it.
 
-**Later game systems:** Rival cars/traffic, time attack, branching routes, score, detailed audio/music, more levels — only after a strong base driving loop.
-
-## Product rule
-
-The next enhancement must improve player fun, not only produce more source code. Don't add systems before the core turn/accelerate/recover/continue loop passes a human playtest.
+**Priority:** drive is fun first; generated challenges actually measurable second; adaptive/meta systems only when needed.
