@@ -1,27 +1,23 @@
-# Project OutRun — product roadmap (after design paradigm shift)
+# Project OutRun — Product roadmap
 
-## Current milestone: v0.4.2 Gameplay-First Driving Prototype
+## Active v0.4.3: Soft Steering & Honest Curves
 
-Owner has explicitly replaced the old turn-physics + arbitrary-track approach with:
-- **Arcade Lateral Balance:** curvature imposes outward drift, steering applies limited opposing correction; reduce speed if curve demand exceeds available correction. Don't accumulate lateral/yaw inertia after exiting the bend.
-- **Gameplay-first geometry:** author discrete challenge segments by Required Steering at a reference speed, width, duration/distance, then derive actual curvature/3D mesh.
-- **Discrete effective control:** default neutral + four levels each direction, with continuously sliding touch/visual wheel and mobile/PC shared behavior.
-- Playtest proof: low/mid/high/too-fast requiring braking/S-curve on ONE small route. 1.75× accepted pace, off-road bounded slowdown, Pixel 8+PC support remain.
+v0.4.2 **validated the gameplay-first driving paradigm** in actual play. Current needs:
+- **Soft Detents:** Keep four stable steering magnitudes per side plus neutral and deliberate hysteresis, but smooth jumps in applied corrective force quickly, with responsive zero-return.
+- **Curve honesty:** Inverse-generate stronger and more visible actual bends for High and Too-Fast challenge levels by calibrating ONE shared curvature/pressure scale; difficulty should not come from hidden force on mild-looking geometry. Smooth track challenge transitions.
+- **Visual arcade drama:** Gentle inputs nearly neutral car body; large demanded steering produces exaggerated dynamic rendered car yaw, up to ~25–45° candidate, without reinserting path inertia or causing constant tire squeal.
+- Retain the low/medium/high/braking-required/S playable challenge course, accepted 1.75× world pace, Pixel 8 analog horizontal strip + two-thumb/pedals, car-left needle speedometer, bounded off-road return and browser test coverage.
 
-This is a prototype, not permission to build a track editor or adaptive director.
+Current formal specs: `docs/V0.4.3_SPEC.md` and `docs/V0.4.3_ACCEPTANCE.md`.
 
-## AFTER the core prototype passes the human test
+## After v0.4.3 is human-approved
 
-### Experience Director, not just procedural roads
-Difficulty/elevation/visibility/width/obstacle profiles arranged into a designed **emotional rhythm**, using a small authored script first. Gradually explore Beginner / Intermediate / Advanced / Godlike as distinct challenge distributions. Any intentionally >100%-at-reference corner must still have at least one practical slowed-down or alternative strategy.
+1. **Experience Director / difficulty scripts:** Hand-authored sequences of effort, width, sightline, elevation and optional obstacles, with Beginner/Intermediate/Advanced/Godlike versions. No advanced generator/editor until simple script improves real fun.
+2. **Player-aware branch choices:** End-of-stage visible easy/hard forks. Avoid cheating through mid-corner invisible DDA.
+3. **Original convertible:** Roofless original sports car, driver/passenger reacting with playful lean/hair/scarf/raised hands, maintaining Pixel 8 performance; no copying SEGA/Ferrari assets.
+4. **Distinct scenes:** ~30–45s themed coastal/desert/city/forest/snow transitions once driving cadence feels right.
+5. **Future cars / rival traffic / score:** Different grip/turn authority, obstacles, traffic, times and progression only after core driving has human-approved feel.
 
-### Player model and branch choice
-Optional stage-boundary adaptive difficulty using average speed, off-road time, braking and correction accuracy, without secretly changing the active road mid-corner. Left/right road forks should communicate the choice and let player override any suggestion. Player skill must remain rewarded.
+## Development philosophy
 
-### More features after engine fun is proven
-- Original open-top sports car and visible driver/passenger with expressive animations.
-- Scenic changes approximately every 30–45s of normal fast driving (coast, desert, city, forest/snow) and thematic stage transitions.
-- Different cars with differentiated turn authority/grip/top speed; bounded object hazards and traffic/rival cars.
-- Scores/leaderboards, routes, game music and checkpoints. No scope expansion merely because Codex can generate it.
-
-**Priority:** drive is fun first; generated challenges actually measurable second; adaptive/meta systems only when needed.
+The user wants an OUTRUN-LIKE FUN GAME, not impressive process machinery. Tune a small playable challenge and run actual browser/phone tests; do not confuse passing unit tests with a good driving feel.
