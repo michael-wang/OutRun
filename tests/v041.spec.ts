@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
-const root='docs/evidence/v0.4.2';
+const root='docs/evidence/v0.4.3';
 const snap=(page:any)=>page.evaluate(()=>(window as any).__drive.snapshot());
 const advance=(page:any,seconds:number)=>page.evaluate((seconds:number)=>(window as any).__drive.advance(seconds),seconds);
 test('analog keyboard holds, rapid neutral/reversal, brake priority and accessible menus',async({page})=>{
@@ -50,7 +50,7 @@ test('150ms analog corrections stop yaw on release and swapped sliding holds sur
  for(const x of [.25,.75]){
   await page.evaluate(()=>(window as any).__drive.reset({speed:65}));const b=(await page.locator('#steering-strip').boundingBox())!,finger={x:b.x+b.width*x,y:b.y+b.height/2,id:2};
   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[finger]});await advance(page,.15);const peak=await snap(page);expect(peak.lateralRate*(x<.5?-1:1)).toBeGreaterThan(.4);
-  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[finger]});await advance(page,.5);const released=await snap(page);expect(released.yawRate).toBe(0);expect(released.lateral).toBeCloseTo(peak.lateral,8);rows.push({x,peak,released});
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[finger]});await advance(page,.5);const released=await snap(page);expect(released.yawRate).toBe(0);expect(Math.abs(released.lateral-peak.lateral)).toBeLessThan(.2);expect(released.appliedSteer).toBe(0);rows.push({x,peak,released});
  }
  await page.locator('#pause').click();await page.locator('#settings').click();await page.locator('#swap').check();await page.locator('#close-settings').click();await page.reload();await expect(page.locator('#swap')).toBeChecked();await page.locator('#drive').click();
  const b=(await page.locator('#steering-strip').boundingBox())!,p=(await page.locator('[data-control=gas]').boundingBox())!,gas={x:p.x+p.width/2,y:p.y+p.height/2,id:1};let finger={x:b.x+b.width*.2,y:b.y+b.height/2,id:2};

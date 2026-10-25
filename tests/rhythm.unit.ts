@@ -8,7 +8,7 @@ it('inverse demand calibrates every authored core at reference and safe speed',(
  const table=COURSE.filter(c=>c.targetRequiredSteering).map(c=>({id:c.id,target:c.targetRequiredSteering,k:curvatureForDemand(c.targetRequiredSteering),at230:requiredSteering(curvatureForDemand(c.targetRequiredSteering),REFERENCE_SPEED),at190:requiredSteering(curvatureForDemand(c.targetRequiredSteering),190/3.6)}));
  for(const row of table)expect(row.at230).toBeCloseTo(row.target,10);
  expect(table.find(r=>r.id==='extreme')!.at190).toBeLessThan(1);
- mkdirSync('docs/evidence/v0.4.2',{recursive:true});writeFileSync('docs/evidence/v0.4.2/calibration.json',JSON.stringify({course:COURSE,table},null,2));
+ mkdirSync('docs/evidence/v0.4.3',{recursive:true});writeFileSync('docs/evidence/v0.4.3/calibration.json',JSON.stringify({course:COURSE,table},null,2));
 });
 it('normal core matching cancels drift, neutral fails and excess input moves inward',()=>{
  for(const u of [-.25,.5,.75]){
@@ -16,7 +16,7 @@ it('normal core matching cancels drift, neutral fails and excess input moves inw
   expect(steeringAuthority(v)*u-curvePressure(k,v)).toBeCloseTo(0,10);
   for(const [input,sign] of [[0,-Math.sign(u)],[u,0],[Math.sign(u),Math.sign(u)]]){
    const s={...createState(),speed:v};for(let i=0;i<240;i++){s.speed=v;step(s,{gas:false,brake:false,steer:input},1/120,k,1.75);}
-   if(sign)expect(s.lateral*sign).toBeGreaterThan(3);else expect(Math.abs(s.lateral)).toBeLessThan(.03);
+   if(sign)expect(s.lateral*sign).toBeGreaterThan(3);else {expect(Math.abs(s.lateral)).toBeLessThan(.46);expect(Math.abs(s.lateralRate)).toBeLessThan(.01);};
   }
  }
 });
@@ -33,13 +33,13 @@ it('full course rewards deliberate notches and planned braking; continuous inver
   runs.push({careful,time,off,trace});expect(s.distance).toBeGreaterThanOrEqual(track.length);
  }
  expect(runs[1].off).toBe(0);expect(runs[1].time).toBeGreaterThan(60);expect(runs[1].time).toBeLessThan(95);expect(runs[1].time).toBeLessThan(runs[0].time);
- for(let d=0;d<track.length;d+=5){const a=track.sample(d),b=track.sample(d+.01),delta=b.position.clone().sub(a.position).normalize();expect(delta.dot(a.tangent)).toBeGreaterThan(.99999);expect(Math.abs(a.curvature)).toBeLessThan(.004);}
+ for(let d=0;d<track.length;d+=5){const a=track.sample(d),b=track.sample(d+.01),delta=b.position.clone().sub(a.position).normalize();expect(delta.dot(a.tangent)).toBeGreaterThan(.99999);expect(Math.abs(a.curvature)).toBeLessThan(.008);}
  expect(track.sample(track.length-.001).position.distanceTo(track.sample(0).position)).toBeLessThan(.002);
- writeFileSync('docs/evidence/v0.4.2/course-unit.json',JSON.stringify(runs,null,2));
+ writeFileSync('docs/evidence/v0.4.3/course-unit.json',JSON.stringify(runs,null,2));
 });
 it('normal stationary start completes a playable lap within the 60–90 second target',()=>{
  const track=createTrack(),s=createState(),driver=scriptedDriver();let seconds=0,off=0;
  while(s.distance<track.length&&seconds<100){const input=driver(s,track.sample(s.distance).curvature,plannedSpeed(s.distance,track.sample));for(let i=0;i<12;i++)step(s,input,1/120,track.sample(s.distance).curvature,1.75);seconds+=.1;off+=Number(s.offRoad);}
  expect(s.distance).toBeGreaterThanOrEqual(track.length);expect(seconds).toBeGreaterThan(60);expect(seconds).toBeLessThan(90);expect(off).toBe(0);
- writeFileSync('docs/evidence/v0.4.2/standing-start.json',JSON.stringify({seconds,off,final:s},null,2));
+ writeFileSync('docs/evidence/v0.4.3/standing-start.json',JSON.stringify({seconds,off,final:s},null,2));
 });

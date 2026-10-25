@@ -1,6 +1,6 @@
 import {effectivePace} from './pace';
 import {steeringAuthority,curvePressure,requiredSteering} from './challenges';
-import {quantizeSteering} from './steering';
+import {quantizeSteering,actuateSteering} from './steering';
 export interface InputState {gas:boolean;brake:boolean;steer:number;rawSteer?:number}
 export interface DrivingState {
  distance:number;speed:number;lateral:number;
@@ -9,18 +9,21 @@ export interface DrivingState {
  slipAngle:number;slip:number;offRoad:boolean;footprintEdge:number;curvature:number;
  corridorSide:number;steeringTarget:number;drifting:boolean;
  rawSteer:number;effectiveSteer:number;requiredSteer:number;lateralRate:number;
+ appliedSteer:number;steerFrom:number;steerTo:number;steerTime:number;
 }
 export const MAX_SPEED=65,ROAD_HALF_WIDTH=7,CORRIDOR_LIMIT=9.6;
 export const createState=():DrivingState=>({distance:0,speed:0,lateral:0,heading:0,velocityHeading:0,worldHeading:0,
  steering:0,yawRate:0,slipAngle:0,slip:0,offRoad:false,footprintEdge:1.13,curvature:0,corridorSide:0,
- steeringTarget:0,drifting:false,rawSteer:0,effectiveSteer:0,requiredSteer:0,lateralRate:0});
+ steeringTarget:0,drifting:false,rawSteer:0,effectiveSteer:0,requiredSteer:0,lateralRate:0,
+ appliedSteer:0,steerFrom:0,steerTo:0,steerTime:0});
 const clamp=(n:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,n));
 export const angleDifference=(angle:number)=>Math.atan2(Math.sin(angle),Math.cos(angle));
 export function updateFootprint(s:DrivingState){
- s.footprintEdge=Math.abs(s.lateral)+1.13*Math.abs(Math.cos(s.heading))+2.35*Math.abs(Math.sin(s.heading));
+ // Collision envelope belongs to road-relative navigation, never the cinematic body pose.
+ s.footprintEdge=Math.abs(s.lateral)+1.13;
  s.offRoad=s.footprintEdge>ROAD_HALF_WIDTH;
 }
-/** Arcade balance: x' = authority(v)*notch - pressure(k,v).
+/** Arcade balance: x' = authority(v)*applied - pressure(k,v).
  * No yaw/slip/velocity integration feeds navigation. Pace affects travel only. */
 export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1){
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s);
@@ -29,17 +32,21 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  s.speed=clamp(s.speed+acceleration*dt,0,MAX_SPEED);
  s.rawSteer=input.rawSteer??input.steer;s.steeringTarget=s.rawSteer;
  s.effectiveSteer=quantizeSteering(input.steer,s.effectiveSteer);s.steering=s.effectiveSteer;
+ const appliedMean=actuateSteering(s,s.effectiveSteer,dt);
  s.requiredSteer=requiredSteering(curvature,s.speed);
- const rate=steeringAuthority(s.speed)*s.effectiveSteer-curvePressure(curvature,s.speed);
+ const rate=steeringAuthority(s.speed)*appliedMean-curvePressure(curvature,s.speed);
  if(s.corridorSide&&s.effectiveSteer*s.corridorSide<0&&rate*s.corridorSide<0)s.corridorSide=0;
  const attempted=s.lateral+rate*dt;
  if(Math.abs(attempted)>=CORRIDOR_LIMIT)s.corridorSide=Math.sign(attempted);
  s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?s.corridorSide*CORRIDOR_LIMIT:attempted;
  const ds=s.speed*effectivePace(s.speed,highSpeedPace)*dt;s.distance+=ds;
- const imbalance=s.effectiveSteer-s.requiredSteer;
- const body=clamp(imbalance*.18+s.effectiveSteer*.055,-.28,.28)*Math.min(1,s.speed/20);
- s.heading=body;s.velocityHeading=0;s.yawRate=0;
+ const load=Math.sign(s.appliedSteer)===Math.sign(s.requiredSteer)?Math.min(Math.abs(s.appliedSteer),Math.abs(s.requiredSteer)):0;
+ const strength=clamp((load-.25)/.5,0,1),pose=strength*strength*(3-2*strength);
+ const body=Math.sign(s.appliedSteer)*pose*(35+7*clamp((load-.75)/.25,0,1))*Math.PI/180*Math.min(1,s.speed/50);
+ s.heading+=(body-s.heading)*(1-Math.exp(-dt/(body===0?.06:.08)));
+ if(Math.abs(s.heading)<1e-7)s.heading=0;
+ s.velocityHeading=0;s.yawRate=0;
  s.worldHeading+=curvature*ds; // diagnostic tangent; renderer uses exact geometry
- s.slipAngle=body;s.slip=clamp((Math.abs(imbalance)-.3)*.65,0,.8)*Math.min(1,s.speed/35);
+ s.slipAngle=s.heading;s.slip=clamp((load-.55)/.25,0,1)*Math.min(1,s.speed/50);
  s.drifting=s.slip>.2;updateFootprint(s);
 }

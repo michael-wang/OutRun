@@ -1,43 +1,28 @@
 # Project OutRun — Codex working agreement
 
-## ACTIVE milestone: v0.4.2 Gameplay-First Driving Prototype
+## ACTIVE milestone: v0.4.3 — Soft Steering & Honest Curves
 
-**The previous v0.4.2 "Corner Exit & Road Rhythm" was designed but NOT handed off for implementation.** This revised owner-approved v0.4.2 completely supersedes that draft. DO NOT execute an older v0.4.2 Goal or merely tune the existing car yaw model.
+Human v0.4.2 playtest result: **GO for the new Gameplay-First / Arcade Lateral Balance architecture.** Problems to fix: abrupt four-level steering feel, car visual yaw too restrained, too much yaw on small corrections, and serious curve pressure despite mild-looking 3D geometry. This is a **calibration and presentation milestone**, NOT a reversion to realistic vehicle inertia.
 
-Read in order:
-1. `docs/CODEX_V0.4.2_KICKOFF.md`
-2. `docs/V0.4.2_SPEC.md`
-3. `docs/V0.4.2_ACCEPTANCE.md`
-4. `docs/ARCADE_DESIGN_BACKLOG.md` only for later work.
+Read `docs/CODEX_V0.4.3_KICKOFF.md`, `docs/V0.4.3_SPEC.md`, `docs/V0.4.3_ACCEPTANCE.md` before implementing. Older specs are regression context only. Stop-after-v0.4.2 was a previous milestone stop, not a prohibition on new user-authorized work.
 
-## Working tree protection
+## Repo/workspace safety
+- Confirm git remote `michael-wang/OutRun` at `C:\astra-dev\OutRun`. Never touch `C:\astra-dev\topwar`.
+- The **playable v0.4.2 implementation is LOCAL** (`d44c8e5` implementation, `f7ed029` handoff); remote GitHub `main` contains documentation. DO NOT check out/reset/merge docs-only `main` over the playable game.
+- Preserve latest playable local HEAD and user changes; branch safely to `codex/v0.4.3-soft-steering`. Fetch `origin/main` and selectively restore **only** current `AGENTS.md` and the three v0.4.3 documents. Do not overwrite app source or handoff.
+- If goal approval rejects an older stop instruction, request direct **normal chat** authorization instead of looping rejected actions. Respect approvals and sandboxes.
+- No pushes, merges, public deployments, payments, unlicensed assets or other-repo edits.
 
-- Confirm `C:\astra-dev\OutRun` and git remote `michael-wang/OutRun`. NEVER touch `C:\astra-dev\topwar`.
-- The latest playable **v0.4.1** exists on the user's LOCAL repository with implementation commit `4d4b05c` and handoff commit `34b6a3e`. As last checked, GitHub `main` contains project specifications, **not the playable app**. Do not switch/reset/merge documentation-only main over working game code.
-- Preserve unexpected local changes. Create `codex/v0.4.2-gameplay-first` from the latest playable local HEAD. Fetch `origin/main` and selectively import ONLY current `AGENTS.md`, `README.md` and `docs/V0.4.2_*.md` plus `docs/ARCADE_DESIGN_BACKLOG.md`, after checking for conflicts. Don't discard local handoffs/code.
-- For an auto-review conflict with an older "stop after v0.4.1" instruction, get explicit **ordinary chat** authorization, not a loop of rejected Goal retries. Respect sandbox approvals.
-- No push, merge, public deployment, paid services, unlicensed SEGA/Ferrari assets, or modifications outside OutRun.
+## Design non-negotiables
+1. Keep coherent **1.75×** world pace, 3D road/car, dynamic-looking but fixed FOV/dolly camera, original stylized visuals, left-of-car analog needle gauge, Pixel 8 landscape fullscreen/PWA/two-thumb/hand-swap/long-press and PC `A/D` steering / `Space` gas / `Enter` brake.
+2. Keep v0.4.2 **Arcade Lateral Balance** with road-relative (s,x), curvature causing outward pressure, player steering opposing it, **no persistent physical yaw/lateral inertia** and no automatic lane centering.
+3. **Soft detents**: retain nine stable steer choices (neutral, four notches on each side) but transition effective correction rapidly and smoothly. Deadzone/hysteresis prevent jitter. Don't create a slow sluggish input ramp or reintroduce post-bend residual movement.
+4. **Visual truth**: difficulty should be obvious from approaching road's visible bend. Calibrate shared pressure-vs-curvature scaling and **regenerate geometry by inverting challenge demand**; no independent invisible per-segment difficulty multipliers that make mild-looking bends impossible.
+5. **Arcade body pose**: tiny steering shouldn't visibly yaw or shriek; strong deliberate bends can produce exaggerated ~25–45° short-lived rendered body yaw and convincing skid feedback **without affecting the path**.
+6. Smooth challenge segment joins in distance/curvature/elevation while preserving measurable core Low/Medium/High/Extreme/S curve sections; no road seams or mountains blocking asphalt.
+7. Defer rivals, obstacles, adaptive difficulty, new cars/convertibles/biomes, physics rewrites, new UX systems and generic editors.
 
-## Product and engineering contract
+## QA and handoff
+Run real browser at PC/Pixel-like layouts, inspect moving low/high/Extreme/S driving clips, measure quantizer hysteresis and force transition, car yaw and projected road severity. Retain full build/unit/E2E including 120s loop continuity, hands-off outside drift and brake-required hard curve. Don't call subjective fun PASS solely from green tests.
 
-**Goal: a playable, deliberately designed challenge course, not a grand system diagram.**
-
-- Replace the existing yaw/slip-driven core navigation with a small **Arcade Lateral Balance** road-relative model: road bend demands outward lateral drift, and player's steering level counters it. No accumulation of uncontrolled yaw/lateral inertia into the next straight. Don't simulate real tire forces or use physics engine.
-- Inputs remain continuous-looking, but effective steering is **quantized**: first experiment has neutral and four steps on each side (±0.25, ±0.50, ±0.75, ±1.00), with adjustable step count behind a simple configuration. A center dead zone and boundary hysteresis reduce annoying fingertip jitter. Mobile horizontal absolute-position strip and PC A/D virtual wheel remain, with Space gas/Enter brake and touch-hand swap.
-- Build track **from required steering demand at a reference speed**: low/mid/high and >100%-at-reference requiring braking. This is genuine inverse difficulty-to-geometry design, NOT hand drawing curvy mesh then assigning labels afterward.
-- Deliver one short playable continuous course: low, medium, high, mandatory slow-down, plus **one reversible S-curve**. Each segment's actual required steering is tested against input steps, road width and speed. The course and scenery must render in genuine Three.js 3D without holes and stay drivable when looped.
-- Preserve human-approved `1.75×` world pace, 3D car/road/frame scale, car-left analog speedometer, Pixel 8 landscape/fullscreen/PWA/long-press safeguards, bounded shoulder/off-road speed penalty, no automatic lane centering or hidden "drive the bend" helper, audio/pause.
-- Keep modules/data small; avoid new authoring editor, procedural open world, RL driver, adaptive-difficulty director, traffic, other cars, new biomes, vehicle art, or unrelated UI overhaul in this milestone.
-
-## Definition of done
-
-Codex must **run the game in a real browser**, demonstrate the five challenges with actual recorded steering+brake behavior, and show that:
-1. no-steering fails a meaningful curve;
-2. a matching discrete level balances representative low/mid/high curves near the reference speed;
-3. on the hardest curve full lock at reference speed is **insufficient**, but slowing down makes the same curve controllable;
-4. after a curve ends and steering returns neutral, lateral position doesn't keep drifting from an old input;
-5. the generated path, elevated roadway, off-road boundaries and render mesh agree across loops.
-
-Test deterministic driving logic AND real rendered browser input, including Pixel-like multitouch. Run `npm run build`, `npm run test` and `npm run test:e2e`, visually inspect screenshots/video, fix failures, and create `docs/V0.4.2_HANDOFF.md` with observed PASS/FAIL/UNVERIFIED, source changes, inverse-calibration proof, playable links and known issues.
-
-**Stop after v0.4.2 for human playtest.** This ends this milestone, not future owner-approved work.
+Create `docs/V0.4.3_HANDOFF.md` with actual local branch+commit/URL, before/after measured inputs and road/pressure geometry, moving clips + desktop/mobile screenshots, PASS/FAIL/UNVERIFIED and physical device limitations. Stop at v0.4.3 for human acceptance, not further features.

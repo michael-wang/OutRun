@@ -12,10 +12,10 @@ describe('arcade driving', () => {
     run(state, { ...idle, brake: true }, 5); expect(state.speed).toBe(0);
   });
   it('steers independently in both directions and can leave asphalt', () => {
-    for (const sign of [-1,1]) {const state={...createState(),speed:45};run(state,{...idle,gas:true,steer:sign},.8);expect(state.lateral*sign).toBeGreaterThan(1);expect(state.heading*sign).toBeGreaterThan(.1);const x=state.lateral;run(state,{...idle,gas:true},2);expect(state.lateral).toBe(x);}
+    for (const sign of [-1,1]) {const state={...createState(),speed:45};run(state,{...idle,gas:true,steer:sign},.8);expect(state.lateral*sign).toBeGreaterThan(1);expect(state.heading).toBe(0);const x=state.lateral;run(state,{...idle,gas:true},.1);expect(Math.abs(state.lateral-x)).toBeLessThan(.4);const settled=state.lateral;run(state,{...idle,gas:true},2);expect(state.lateral).toBe(settled);}
   });
   it('slips progressively during fast turns and recovers grip without snapping heading', () => {
-    const state={...createState(),speed:60};run(state,{...idle,gas:true,steer:1},1.2,.006);expect(state.slip).toBeGreaterThan(.2);expect(state.heading).toBeLessThan(.7);const heading=state.worldHeading;run(state,{...idle,gas:true},2);expect(state.slip).toBeLessThan(.02);expect(state.worldHeading).toBeGreaterThanOrEqual(heading);
+    const state={...createState(),speed:60};run(state,{...idle,gas:true,steer:1},1.2,.006);expect(state.slip).toBeGreaterThan(.2);expect(state.heading).toBeLessThan(Math.PI/4);const heading=state.worldHeading;run(state,{...idle,gas:true},2);expect(state.slip).toBeLessThan(.02);expect(state.worldHeading).toBeGreaterThanOrEqual(heading);
   });});
 describe('independent inputs and settings', () => {
   it('retains gas while releasing steering and clears all on blur/cancel', () => {

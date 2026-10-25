@@ -6,7 +6,7 @@ import { CHASE,chaseTargets } from './chase';
 import { Vector3 } from 'three';
 const track=createTrack();
 describe('v0.2 steering agency',()=>{
-  for(const [label,start] of [['right',1200],['left',550]] as const){
+  for(const [label,start] of [['left',1200],['right',550]] as const){
     it(`${label}: same bend requires steering and accepts digital corrections`,()=>{
       const initial={...createState(),distance:start,speed:45,worldHeading:track.sample(start).roadHeading};
       const neutral={...initial},steered={...initial},driver=scriptedDriver();let departed=false,maxEdge=0;
