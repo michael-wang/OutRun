@@ -1,31 +1,24 @@
-# Project OutRun — Roadmap after human v0.4.3 GO
+# Project OutRun — Roadmap after v0.5
 
-**Current human-approved baseline:** v0.4.3 is the first genuinely enjoyable high-speed cornering experience. Keep Arcade Lateral Balance, inverse-generated difficulty-first road, four soft steering detents, 1.75× world pace and Pixel 8 controls.
+## v0.6 ACTIVE — Scenic Journey
 
-## ACTIVE: v0.5 High-Speed Spectacle
+**Owner feedback:** v0.5 is playable; wheels look static in large drift, occupants need life (especially windblown long hair), and the NEXT MAIN investment is richer roadside environments and more varied road sequences.
 
-**P0**
-- Slightly earlier *visible* yaw on real mild curves; quiet on near-straight micro corrections.
-- More spectacular, controllable full-corner rendered body yaw, target ~50–60° strong peaks with quick recovery, no driving-path inertia.
-- One left + one right dramatic high-speed long sweeper that can be driven flat-out (~220–234 indicated km/h), while retaining a genuinely brake-required technical Extreme corner and Low/Medium/High/S.
-- Keep coherent shared required-steer ↔ curvature inverse generation, road/shoulder integrity and >120s loop continuity.
+**P0:** fix visibly rolling/steering wheel geometry and high-speed alias issue; create one continuous three-act travel-distance-driven route: Azure Coast → Golden Canyon → Sunlit Coastal City. Distinct scene composition, near/mid/far props and unique landmarks, two smooth boundaries. Stage-specific demanding-but-driveable gameplay-first road sequences with grade, S, full-gas sweeper, brake-required Extreme. Preserve current fun 1.75× pace, pixel controls and collision rules.
 
-**P1 after P0 succeeds**
-- One original roofless sports car with visibly readable driver+passenger in chase view, proper stylized rear/cockpit/wheels/materials. No Ferrari/SEGA protected art; maintain Pixel 8 performance.
-- Bonus only: basic passenger/driver reactions (leaning/head/scarf/hair) driven by cornering, without full animation rig.
+**P1 after P0:** simple stylized driver/passenger leaning/head/arm response and speed-responsive exaggerated hair flutter for visible long-haired female occupant. No character-physics engine.
 
-See `docs/V0.5_SPEC.md` and `docs/V0.5_ACCEPTANCE.md`.
+See `docs/V0.6_SPEC.md` and `docs/V0.6_ACCEPTANCE.md` for detailed acceptance.
 
-## NEXT, subject to human acceptance
+## AFTER human accepts the scenic journey
 
-**Scenic stages:** Strong visual change every ~30–45s (Mediterranean coast → arid/dry coast → city → forest/alpine) with scene streaming and asset coherence, instead of duplicating hundreds of objects. Scenes reward progress without replacing fun handling.
+- **Difficulty/emotion scripts:** Beginner, Intermediate, Advanced, Godlike through stage-level required steering, width, sightline, elevation and obstacles; use small hand-authored patterns before designing editors or elaborate auto-generators.
+- **Branch selection:** visibly signposted easy/hard route choices; stage-boundary only. Player's choice overrides any adaptive recommendation, no invisible mid-corner cheating.
+- **Traffic/rivals:** start with small deterministic passing-vehicle traffic and collision/avoidance, then rival racing AI; prove fun and phone performance.
+- **Additional car choices:** differing top speed, lateral correction authority/grip, accelerations, visual identities and animations once current car is refined.
+- **Extended scenic travel:** Forest/alpine/snow and desert/city transitions, coherent music/FX, new roadside landmarks and level progression.
+- **Scoring and goals:** Time attack, stage checkpoints, medals/leaderboards only when basic journey has sustained fun.
 
-**Difficulty and emotions:** Human-authored Beginner/Intermediate/Advanced/Godlike scripts combining required steering, road width, sightlines, elevation and hazards. A simple prototype first, not an elaborate editor.
+## Product rule
 
-**Player-aware progression:** Optional clearly signposted left/right route forks with different difficulty, or stage-boundary adaptive challenge. Never secretly change road pressure or vehicle grip mid-corner.
-
-**Later systems:** Different vehicle performance traits, traffic/rivals, goals, scoring, route selection, achievements and soundtrack.
-
-## Work philosophy
-
-Incremental playable outcomes over process theater. Every milestone needs actual drive/video evidence and human fun review. If an exciting new feature makes an existing fun corner less fun, revert/tune that feature before claiming progress.
+Prioritize what the player sees and feels: authentic perceived world motion, predictable arcade control, readable corners, expressive visuals and scenery rewards. Use simple source/data structures and verifiable browser clips instead of expanding engineering complexity for its own sake. **No new feature can come at the cost of already-approved driving fun.**
