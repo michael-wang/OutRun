@@ -1,39 +1,38 @@
 # Project OutRun
 
-**An original 3D arcade racer inspired by the *driving experience* of classic 1986 Out Run and 2003 OutRun 2.** This is an independent homage, not an authorized remake. `Project OutRun` is an **internal codename**; `SUNSHIFT GT` is only an uncleared candidate public title. Do not copy SEGA/Ferrari logos, models, artwork, music, code or character designs.
+**An original 3D arcade-driving game inspired by the feeling—not copyrighted assets—of 1986 Out Run and 2003 OutRun 2.** `Project OutRun` is an internal codename only; `SUNSHIFT GT` remains an uncleared candidate public name. No SEGA/Ferrari music, logos, cars or game art.
 
-## Current milestone: v0.4.1 — Analog Arcade Steering & Rescue
+## Current milestone: v0.4.2 — Corner Exit & Road Rhythm
 
-**Product owner decision:** 1.75× world pace remains accepted. v0.4's handling regressed badly and the player reported road discontinuity. The next priorities are **regression repair**, not new gameplay:
+The owner has completed v0.4.1 playtesting and reports: **analog turn-in is more enjoyable**, but post-corner control causes overshoot to the opposite shoulder; much of the road is too straight and flat.
 
-1. **P0:** REPLACE binary on-screen left/right buttons with a **continuous horizontal absolute-position steering strip** on Pixel 8; PC A/D move the same virtual steering point. Direct arcade response with rapid wheel self-centering but NO vehicle lane-centering.
-2. **P0:** Resolve sluggish steering/yaw inertia by comparing v0.3.2 vs v0.4; preserve accepted 1.75× world pace and independent player steering. Diagnose/fix road discontinuity with at least 120 seconds' continuity checks.
-3. **P0:** Replace upper-right numeric-only HUD with a **LEFT-of-car analog needle speedometer + digital km/h**, responsive and non-overlapping with new steering strip or pedals.
-4. **Preserve:** PC A/D steering, Space accelerator, Enter brake; Pixel 8 two-thumb/fullscreen/PWA, long-press fix, bounded off-road slowdown.
-5. **Deferred:** Further track difficulty, convertible, occupants, scenery themes and new modes.
+**Priorities:**
+1. **P0:** Fix post-corner yaw/slip and allow prompt, proportionate correction **without** road/lane auto-centering. Keep the successful continuous steering strip and PC A/D virtual wheel.
+2. **P1:** Add more frequent, deliberately designed sweeping and challenging turns, especially S-curves, with real elevation climbs, crests and descents.
+3. **Preserve:** owner-accepted `1.75×` arcade world speed, car-left analog needle speedometer, PC A/D + Space gas + Enter brake, Pixel 8 landscape fullscreen/PWA/two-thumb/long-press, off-road slowdown/bounded shoulder, fixed chase camera and road continuity.
+4. **Deferred:** original convertible/passengers, scenery/biome transitions, traffic, scoring and new races.
 
-**Important repo structure:** GitHub `main` is primarily **design specifications**. The playable v0.4 implementation exists on the **local Windows checkout**; it was reported committed at `04a1f2b` (implementation) + `ba76b22` (handoff). Do not replace this working local code with the documentation-only remote branch.
+**Repo architecture:** GitHub remote `main` is primarily the specification/documentation base. The latest playable v0.4.1 source and handoff are on the user's LOCAL checkout, reported commits `4d4b05c` (code) and `34b6a3e` (handoff). **Do not replace the local playable branch with remote main**.
 
 ## Start here
 
-| File | Why it matters |
+| Document | Role |
 | --- | --- |
-| [AGENTS.md](AGENTS.md) | Current Codex autonomy, safety and active milestone instructions |
-| [v0.4.1 product specification](docs/V0.4.1_SPEC.md) | Virtual analog steering strip, direct arcade response, road continuity, needle dial |
-| [v0.4.1 acceptance](docs/V0.4.1_ACCEPTANCE.md) | Touch/keyboard analog input, heading behavior, long-drive checks and Pixel HUD |
-| [v0.4.1 Codex kickoff](docs/CODEX_V0.4.1_KICKOFF.md) | Autonomous local-branch preparation + ready-to-paste Goal |
-| [Product vision](docs/PRODUCT_VISION.md) | The sunlit coastal arcade-racing experience |
-| [Arcade roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Earlier handling, drift, track and future convertible/scenery ideas |
+| [AGENTS.md](AGENTS.md) | Current Codex operating rules and safe branch handling |
+| [v0.4.2 spec](docs/V0.4.2_SPEC.md) | Corner-exit handling, bend cadence, elevation and preservation |
+| [v0.4.2 acceptance](docs/V0.4.2_ACCEPTANCE.md) | Actual steering traces, corner-exit video, curvature/elevation and long-drive tests |
+| [v0.4.2 Codex kickoff](docs/CODEX_V0.4.2_KICKOFF.md) | Ready-to-paste Goal, including autonomous local branch/spec integration |
+| [Product vision](docs/PRODUCT_VISION.md) | The core sunny arcade-driving experience |
+| [Arcade roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Current versus deferred improvements |
 
-### Codex workflow
+## Implementation workflow
 
-Open the user's existing **Local** Codex OutRun workspace at `C:\astra-dev\OutRun`. The **Goal in the v0.4.1 kickoff** should verify the current local branch, preserve the existing playable implementation, create a v0.4.1 development branch from it, and import **only** current docs from `origin/main`. Do not merge the documentation-only `main` into the working game or restart v0.1.
+Use the already playable **Local Codex** OutRun project at `C:\astra-dev\OutRun`. Start from the current local v0.4.1 game, not a new scaffold. The v0.4.2 Goal verifies git state, safely branches from the playable code and imports **only** relevant docs from `origin/main`.
 
-The autonomous milestone is: **implement → run real game → drive/record/inspect → test/fix → local commit → human playtest**. A green build alone does not prove fun or correct game feel. Codex should not push, merge to main, or deploy publicly without approval.
+Autonomous cycle: inspect source → implement and tune → actually drive in browser and record → compare traces → test and fix → commit locally → human PC/Pixel 8 playtest. Build/tests alone cannot certify a good arcade feel.
 
-## Platform and engineering principles
+## Platform principles
 
-- **Three.js + TypeScript + Vite**; real 3D car and road with original stylized scenery, arcade dynamics rather than full physics simulation.
-- **Pixel 8 / Android Chrome:** 20:9 landscape fullscreen/PWA, two-thumb steering and vertically stacked accelerator/brake, swappable hand layout, safe-area and long-press protection.
-- **Driving core:** user must steer through curves; going off asphalt reduces speed; outer corridor bounds off-road drift without automatically recentering the car. Visibly fast coherent world travel at the accepted 1.75× pace.
-- **Autonomy:** ordinary coding, Git branch work and QA belong to Codex. User chooses product direction and judges final on-device results.
+Three.js + TypeScript + Vite. Real 3D road/car with stylized scenery, coherent 1.75× world movement, player-owned steering and recoverable off-road penalty. Pixel 8 landscape uses an absolute-position steering strip and separate gas/brake fingers, with handedness swap; PC uses A/D to steer and Space/Enter for throttle/brake. No accidental Android long-press menus, no automatic road tracking and no forced speed-based camera zoom.
+
+Never push/merge/deploy publicly or change other projects without authorization.

@@ -1,35 +1,27 @@
-# Project OutRun — Arcade product roadmap
+# Project OutRun — Current arcade priorities and deferred roadmap
 
-**Last product decision:** The user accepted **1.75× arcade world pace** after v0.3.2 A/B playtesting. Focus can now move from raw speed to controllable arcade racing.
+**Current playable game:** v0.4.1 (local implementation `4d4b05c`, handoff `34b6a3e`). **Current owner-approved next task:** v0.4.2 Corner Exit & Road Rhythm.
 
-## In scope now — v0.4 Arcade Handling & Rhythm
+## Now: v0.4.2
 
-**P0: steering, desktop keys and HUD**
-- At 1.75×, held steering became too sensitive. Short A/D or thumb input should permit small precise corrections; sustained input remains powerful for real corners. Do not reintroduce lane assists.
-- PC: `A/D` steer, `Space` accelerator, `Enter` brake, concurrent input and focus-safe controls. Pixel 8 touch stays as before.
-- Prominent arcade speedometer; current small lower-left speed is inadequate.
+- **P0:** Keep the newly enjoyable analog steering turn-in. Diagnose and reduce unwanted steering/yaw/slip continuation after a corner, enabling quick release and countersteer **without** automatically rotating car toward road tangent or magnetic lane centering.
+- **P1:** Much greater frequency/strength of road bends and **actual road elevation**, not just distant landscape. Use distance-authored gameplay rhythm and at least two visible climb/crest/descents in a 60–90s drive. Easy sections can be sweeping curves; avoid long lifeless straight stretches.
+- Preserve accepted **1.75× world pace**, car-left needle speedometer, bounded shoulder/off-road speed penalty, PC A/D + Space/Enter, Pixel 8 continuous touch strip/fullscreen/PWA/long-press protection, off-road recovery, original assets and working loop.
 
-**P1: expressive turning / intentional drift**
-- Decouple turn input, path and visual body slip while keeping physics/road boundaries coherent. Candidate visually obvious yaw ~20–40° in intentional high-speed drift.
-- Gentle steering should **not** squeal constantly; link tire audio to actual significant slip with stable triggering/hysteresis.
-- Steering/braking/throttle afford controllable recovery, not 360° uncontrolled spin; preserve fixed camera and speed perception.
+See `docs/V0.4.2_SPEC.md` and `docs/V0.4.2_ACCEPTANCE.md`.
 
-**P1: designed arcade road rhythm**
-User target at representative full racing pace: **6–7s easy acceleration → 3–5s stimulating turn → 6–7s breather → 3–5s stimulating turn → 2–3s dangerous turn → 3–5s recovery**; repeat with variation. Track geometry must be distance-based rather than triggering bends on timers; challenge comes from road shape, not unpleasantly twitchy controls.
+## After arcade handling/rhythm is accepted
 
-See `docs/V0.4_SPEC.md` for current scope and acceptance. The user decides if v0.4 handles right after playing.
+**Original convertible and expressive occupants:**
+- Create an original unbranded open-top sports car with visible driver and passenger in chase view, with no imitation of a Ferrari model, SEGA logos or copyrighted character likeness.
+- After proving an efficient basic model, add small readable animated reactions to curves/crests/speed (body leaning, hair/scarf flow, hands rising). Performance on actual Pixel 8 matters.
 
-## Deferred — v0.5: original open-top car and expressive occupants
+**Scenic stage transitions:**
+- Distinct backgrounds and roadside themes every ~30–45s of representative fast driving, e.g. coast → arid roads → city → alpine/snow, with coherent handoffs, no loading stutter.
+- Scene variety is a reward for continued racing; it must not cover up bad speed or road handling.
 
-- Replace closed-roof body with an attractive **unbranded convertible**, cockpit/seats/two stylized people visible from the chase view. No direct Ferrari, SEGA art or character likeness.
-- Add animated passenger reactions in incremental steps once the car model and handling are stable: joyful body leaning, hair/scarf flutter, hands lifting on crests and bigger drifts.
-- Keep performant on actual Pixel 8 with no huge art-asset system. Design the motion to reinforce speed but avoid distracting from the road.
+**Later game systems:** Rival cars/traffic, time attack, branching routes, score, detailed audio/music, more levels — only after a strong base driving loop.
 
-## Later: scenic stage transitions
+## Product rule
 
-- Visually dramatic change every ~30–45s of representative driving (coast, desert, city, mountains/forest/snow), with seamless streaming and distinct color/materials/props.
-- Stage variety is desirable, but shouldn't replace quality in pacing, steering, drift and speed.
-
-## Work philosophy
-
-Solve the actual game problem each iteration. No process overhead for its own sake, and no speculative feature expansion. **v0.4 is deliberately NOT a convertible/scenery milestone.**
+The next enhancement must improve player fun, not only produce more source code. Don't add systems before the core turn/accelerate/recover/continue loop passes a human playtest.
