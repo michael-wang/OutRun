@@ -2,9 +2,9 @@
 
 **An original arcade-driving game inspired by the feeling of SEGA's 1986 Out Run and 2003 OutRun 2.**
 
-**Status:** v0.6 *Scenic Journey* implemented for local human and Pixel 8 playtesting. See [v0.6 handoff and evidence](docs/V0.6_HANDOFF.md). Physical Pixel 8 results remain unverified.
+**Status:** v0.7A *Challenge Brick Lab* adds eight short, independently replayable candidates at `/?lab=bricks`. Play, mark KEEP / REWORK / REJECT, optionally leave a note, then export reviews JSON. Automated QA never supplies human votes. See [v0.7A handoff and evidence](docs/V0.7A_HANDOFF.md). Physical Pixel 8 results remain unverified. Stop for human review before v0.7B.
 
-v0.6 adds a continuous Azure Coast → Golden Canyon → Sunlit Coastal City route, distance-driven rolling/steering wheels, expressive occupants and wind-responsive hair. Handling, 1.75× pace and soft steering controls are preserved. [Local review gallery](http://127.0.0.1:5173/docs/evidence/v0.6/review.html) is available while the dev server runs.
+The base URL preserves the v0.6 Azure Coast → Golden Canyon → Sunlit Coastal City drive, rolling/steering wheels, expressive occupants and wind-responsive hair. Handling, 1.75× pace and soft steering controls are preserved. [Local v0.7A evidence gallery](http://127.0.0.1:5173/docs/evidence/v0.7a/review.html) is available while the dev server runs.
 
 "Project OutRun" is an **internal codename only**. **SUNSHIFT GT** is an unapproved candidate public name, not a final title. Do not use SEGA logos, the original game's music, graphics, distinctive licensed vehicles, or other protected assets. Public branding will be decided later.
 

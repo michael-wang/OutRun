@@ -23,13 +23,13 @@ test('desktop real-time driving, lifecycle, drift audio and continuous full rout
       const source='/tests/driver.ts';const {scriptedDriver,plannedSpeed}=await import(source);const driver=scriptedDriver(),g=(window as any).__drive,trace=[];
       for(let i=0;i<seconds*10;i++){const s=g.snapshot(),controls=driver(s,g.sample(s.distance).curvature,plannedSpeed(s.distance,g.sample));controls.gas=controls.gas&&s.speed<52;g.advance(.1,controls);if(i%10===9)trace.push(g.snapshot());}return trace;
     },seconds));
-    await page.screenshot({path:`docs/evidence/v0.6/regressions/v0.2/desktop-${label}.png`});
+    await page.screenshot({path:`docs/evidence/v0.7a/regressions/v0.2/desktop-${label}.png`});
   }
   for(const s of route){expect(Number.isFinite(s.distance)).toBe(true);expect(s.offRoad).toBe(false);expect(s.surfaceError).not.toBeNull();expect(Math.abs(s.surfaceError)).toBeLessThan(.15);}  const geometry=await page.evaluate(()=>{const g=(window as any).__drive;const n=300;return Array.from({length:n+1},(_,i)=>g.sample(g.snapshot().trackLength*i/n));});
   expect(Math.min(...geometry.map(p=>p.curvature))).toBeLessThan(-.001);expect(Math.max(...geometry.map(p=>p.curvature))).toBeGreaterThan(.001);expect(Math.max(...geometry.map(p=>p.position[1]))-Math.min(...geometry.map(p=>p.position[1]))).toBeGreaterThan(15);
   expect(route.at(-1).distance).toBeGreaterThan(route.at(-1).trackLength);for(let k=0;k<3;k++)expect(geometry[0].position[k]).toBeCloseTo(geometry.at(-1).position[k],8);
   await page.keyboard.up('w');await page.keyboard.down('a');await page.evaluate(()=>window.dispatchEvent(new Event('blur')));expect((await snap(page)).inputs).toEqual({gas:false,brake:false,steer:0});expect((await snap(page)).mode).toBe('paused');await page.keyboard.up('a');
-  expect(errors).toEqual([]);writeFileSync('docs/evidence/v0.6/regressions/v0.2/desktop-state.json',JSON.stringify({errors,audio,route,geometry},null,2));
+  expect(errors).toEqual([]);writeFileSync('docs/evidence/v0.7a/regressions/v0.2/desktop-state.json',JSON.stringify({errors,audio,route,geometry},null,2));
 });
 test('trusted mobile multi-touch default and swapped, persistence, cancel and portrait',async({browser})=>{
  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1});const page=await context.newPage();await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});await boot(page);
@@ -43,8 +43,8 @@ test('trusted mobile multi-touch default and swapped, persistence, cancel and po
   await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[left]});expect((await snap(page)).inputs).toEqual({gas:true,brake:false,steer:0});
   await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[gas,left]});await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[gas]});expect((await snap(page)).inputs).toEqual({gas:false,brake:false,steer:-1});
   await client.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});expect((await snap(page)).inputs).toEqual({gas:false,brake:false,steer:0});
-  await page.evaluate(()=>(window as any).__drive.manual(true));await page.keyboard.down('w');await page.evaluate(()=>(window as any).__drive.reset({distance:420,speed:40}));await page.keyboard.up('w');await page.waitForTimeout(600);await page.screenshot({path:`docs/evidence/v0.6/regressions/v0.2/mobile-${swapped?'swapped':'default'}.png`});
+  await page.evaluate(()=>(window as any).__drive.manual(true));await page.keyboard.down('w');await page.evaluate(()=>(window as any).__drive.reset({distance:420,speed:40}));await page.keyboard.up('w');await page.waitForTimeout(600);await page.screenshot({path:`docs/evidence/v0.7a/regressions/v0.2/mobile-${swapped?'swapped':'default'}.png`});
   evidence.push({swapped,gas,left,brake,both});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
- await page.setViewportSize({width:390,height:844});await expect(page.locator('#rotate')).toBeVisible();await page.screenshot({path:'docs/evidence/v0.6/regressions/v0.2/mobile-portrait.png'});expect(errors).toEqual([]);writeFileSync('docs/evidence/v0.6/regressions/v0.2/mobile-state.json',JSON.stringify({errors,evidence},null,2));await context.close();
+ await page.setViewportSize({width:390,height:844});await expect(page.locator('#rotate')).toBeVisible();await page.screenshot({path:'docs/evidence/v0.7a/regressions/v0.2/mobile-portrait.png'});expect(errors).toEqual([]);writeFileSync('docs/evidence/v0.7a/regressions/v0.2/mobile-state.json',JSON.stringify({errors,evidence},null,2));await context.close();
 });

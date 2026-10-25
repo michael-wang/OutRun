@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {scriptedDriver} from './driver';
 test('all pace selections keep framing and hands-off departure; default is 1.75',async({page})=>{
- mkdirSync('docs/evidence/v0.6/regressions/v0.3.2',{recursive:true});const results=[];
+ mkdirSync('docs/evidence/v0.7a/regressions/v0.3.2',{recursive:true});const results=[];
  await page.setViewportSize({width:960,height:432});
  for(const pace of [1,1.5,1.75,2]){
   await page.goto(`/?pace=${pace}`);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));
@@ -10,7 +10,7 @@ test('all pace selections keep framing and hands-off departure; default is 1.75'
   const data=await page.evaluate(()=>({s:(window as any).__drive.snapshot(),frame:(window as any).__drive.framing()}));
   expect(data.s.highSpeedPace).toBe(pace);expect(data.s.travelSpeed).toBe(65*pace);
   expect(data.frame.width).toBeGreaterThan(.20);expect(data.frame.width).toBeLessThan(.26);expect(data.s.camera.distance).toBe(8);expect(data.s.camera.fov).toBeCloseTo(38.741159);
-  await page.screenshot({path:`docs/evidence/v0.6/regressions/v0.3.2/phone-${pace}.png`});results.push(data);
+  await page.screenshot({path:`docs/evidence/v0.7a/regressions/v0.3.2/phone-${pace}.png`});results.push(data);
   for(const distance of [600,1300]){
    await page.evaluate(distance=>{const g=(window as any).__drive;g.reset({distance,speed:55});},distance);
    const before=await page.evaluate(()=>(window as any).__drive.snapshot());
@@ -19,8 +19,8 @@ test('all pace selections keep framing and hands-off departure; default is 1.75'
   }
  }
  await page.goto('/');await page.locator('#drive').click();expect(await page.evaluate(()=>(window as any).__drive.snapshot().highSpeedPace)).toBe(1.75);
- await page.setViewportSize({width:1280,height:720});await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:420,speed:65});});await page.screenshot({path:'docs/evidence/v0.6/regressions/v0.3.2/desktop-default.png'});
- writeFileSync('docs/evidence/v0.6/regressions/v0.3.2/framing.json',JSON.stringify(results,null,2));
+ await page.setViewportSize({width:1280,height:720});await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:420,speed:65});});await page.screenshot({path:'docs/evidence/v0.7a/regressions/v0.3.2/desktop-default.png'});
+ writeFileSync('docs/evidence/v0.7a/regressions/v0.3.2/framing.json',JSON.stringify(results,null,2));
 });
 for(const pace of [1.75,2])test(`pace ${pace} normal bend with real keyboard input remains controllable`,async({page})=>{
  await page.goto(`/?pace=${pace}`);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.reset({distance:560,speed:65}));
@@ -32,7 +32,7 @@ for(const pace of [1.75,2])test(`pace ${pace} normal bend with real keyboard inp
   for(const [key,active] of [['Space',input.gas],['Enter',input.brake],['a',input.steer<0],['d',input.steer>0]] as const){if(active)await page.keyboard.down(key);else await page.keyboard.up(key);}
   await page.waitForTimeout(50);trace.push(s);
  }
- await page.screenshot({path:`docs/evidence/v0.6/regressions/v0.3.2/keyboard-bend-${pace}.png`});writeFileSync(`docs/evidence/v0.6/regressions/v0.3.2/keyboard-bend-${pace}.json`,JSON.stringify(trace,null,2));
+ await page.screenshot({path:`docs/evidence/v0.7a/regressions/v0.3.2/keyboard-bend-${pace}.png`});writeFileSync(`docs/evidence/v0.7a/regressions/v0.3.2/keyboard-bend-${pace}.json`,JSON.stringify(trace,null,2));
  expect(trace.every(s=>!s.offRoad)).toBe(true);expect(trace.at(-1).distance).toBeGreaterThan(1000);
 });
 test('2x real 30/60 render callback consistency and clean console',async({browser})=>{
@@ -47,5 +47,5 @@ test('2x real 30/60 render callback consistency and clean console',async({browse
   runs.push({half,fps:average('fps'),mps:average('worldMetersPerSecond'),rows,errors});await context.close();
  }
  expect(runs[1].fps/runs[0].fps).toBeCloseTo(.5,1);expect(runs[1].mps/runs[0].mps).toBeCloseTo(1,1);expect(runs[1].mps).toBeGreaterThan(125);
- writeFileSync('docs/evidence/v0.6/regressions/v0.3.2/fps-audit.json',JSON.stringify(runs,null,2));
+ writeFileSync('docs/evidence/v0.7a/regressions/v0.3.2/fps-audit.json',JSON.stringify(runs,null,2));
 });

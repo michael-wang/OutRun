@@ -19,3 +19,6 @@ v0.5 adds an original procedurally sculpted roofless roadster, cockpit, two styl
 
 ## v0.6 Scenic Journey
 All new wheels, travelers/hair pivots, coast/canyon/city prop geometry, landmarks, road and palette art are original procedural local code in src/wheels.ts, src/car.ts, src/occupants.ts, src/scenery.ts and src/world.ts. No external models, textures, likenesses, audio or dependencies added. Existing Three.js MIT geometry helpers are reused. No runtime asset downloads.
+
+## v0.7A Challenge Brick Lab
+Eight authored road/elevation profiles, a crest-warning sign and the review interface reuse the existing original procedural scenery and vehicle. No external assets or new dependencies. The evidence screenshots/videos record this local application; SVG plots derive from its recorded browser telemetry.

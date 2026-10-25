@@ -19,15 +19,16 @@ export const createState=():DrivingState=>({distance:0,speed:0,lateral:0,heading
  appliedSteer:0,steerFrom:0,steerTo:0,steerTime:0});
 const clamp=(n:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,n));
 export const angleDifference=(angle:number)=>Math.atan2(Math.sin(angle),Math.cos(angle));
-export function updateFootprint(s:DrivingState){
+export function updateFootprint(s:DrivingState,roadHalfWidth=ROAD_HALF_WIDTH){
  // Collision envelope belongs to road-relative navigation, never the cinematic body pose.
  s.footprintEdge=Math.abs(s.lateral)+1.13;
- s.offRoad=s.footprintEdge>ROAD_HALF_WIDTH;
+ s.offRoad=s.footprintEdge>roadHalfWidth;
 }
 /** Arcade balance: x' = authority(v)*applied - pressure(k,v).
  * No yaw/slip/velocity integration feeds navigation. Pace affects travel only. */
-export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1){
- dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s);
+export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,roadHalfWidth=ROAD_HALF_WIDTH){
+ const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
+ dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
  const acceleration=(input.gas&&!input.brake?19*(1-s.speed/88)+6*Math.max(0,1-s.speed/20):-3.8)
   -(input.brake?34:0)-(s.offRoad?10+s.speed*.07:0);
  s.speed=clamp(s.speed+acceleration*dt,0,MAX_SPEED);
@@ -38,8 +39,8 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  const rate=steeringAuthority(s.speed)*appliedMean-curvePressure(curvature,s.speed);
  if(s.corridorSide&&s.effectiveSteer*s.corridorSide<0&&rate*s.corridorSide<0)s.corridorSide=0;
  const attempted=s.lateral+rate*dt;
- if(Math.abs(attempted)>=CORRIDOR_LIMIT)s.corridorSide=Math.sign(attempted);
- s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?s.corridorSide*CORRIDOR_LIMIT:attempted;
+ if(Math.abs(attempted)>=corridorLimit)s.corridorSide=Math.sign(attempted);
+ s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?s.corridorSide*corridorLimit:attempted;
  const ds=s.speed*effectivePace(s.speed,highSpeedPace)*dt;s.distance+=ds;
  const load=Math.sign(s.appliedSteer)===Math.sign(s.requiredSteer)?Math.min(Math.abs(s.appliedSteer),Math.abs(s.requiredSteer)):0;
  const body=bodyYawTarget(s.appliedSteer,s.requiredSteer,s.speed);
@@ -48,5 +49,5 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  s.velocityHeading=0;s.yawRate=0;
  s.worldHeading+=curvature*ds; // diagnostic tangent; renderer uses exact geometry
  s.slipAngle=s.heading;s.slip=clamp((load-.55)/.25,0,1)*Math.min(1,s.speed/50);
- s.drifting=s.slip>.2;updateFootprint(s);
+ s.drifting=s.slip>.2;updateFootprint(s,roadHalfWidth);
 }

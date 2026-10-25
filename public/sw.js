@@ -1,5 +1,5 @@
 // Minimal local PWA worker. Network first avoids silently pinning an old playtest build.
-const CACHE = 'coast-drive-v06-1';
+const CACHE = 'coast-drive-v07a-1';
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['/', '/manifest.webmanifest', '/icons/coast-192.png', '/icons/coast-512.png'])));
 });

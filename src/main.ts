@@ -12,12 +12,17 @@ import {COURSE,challengeAt,requiredSteering} from './challenges';
 import {ACTS,actWeights} from './acts';
 import {quantizeSteering} from './steering';
 import './style.css';
+import {BRICKS,BRICK_START,createBrickTrack,brickCourse} from './bricks';
+import {mountBrickLab} from './brick-lab';
+const labMode=new URLSearchParams(location.search).get('lab')==='bricks';
+const brick=labMode?(BRICKS.find(b=>b.id===new URLSearchParams(location.search).get('brick'))??BRICKS[0]):undefined;
+let labUI:ReturnType<typeof mountBrickLab>|undefined,brickCompleted=false;
 
 document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="Pause / Menu">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
-<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.6</small></section>
+<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Drive <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.7A</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button></div></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">MAKE YOURSELF AT HOME</div><h2>Controls</h2><label class="setting"><input id="swap" type="checkbox"> Steering on the right</label><p>Accelerator stays above brake on either side.</p><button id="close-settings" class="primary">Done</button></section>
 <div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="Steering position" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-label">← STEER →</span><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span><span class="steer-hint">4 LEVELS · RELEASE TO NEUTRAL</span></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
@@ -29,8 +34,8 @@ renderer.setSize(innerWidth,innerHeight); renderer.outputColorSpace=THREE.SRGBCo
 renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 $('view').append(renderer.domElement);
-const world=createWorld(); world.car.rotation.order="YXZ"; const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,.1,2200);
-const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState(); state.worldHeading=world.sample(0).roadHeading;
+const world=createWorld(brick?{track:createBrickTrack(brick),theme:brick.sceneryAct,seed:brick.seed,roadWidth:brick.roadWidth,course:brickCourse(brick),notice:brick.id==='BRK-03'?{distance:BRICK_START+brick.length*5/brick.nominalDuration,text:'LEFT BEND BEYOND'}:undefined}:{}); world.car.rotation.order="YXZ"; const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,.1,2200);
+const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;} state.worldHeading=world.sample(state.distance).roadHeading;
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
 let mode:'menu'|'playing'|'paused'='menu'; let settingsOpen=false; let muted=false; let manual=false;
 let testControls:InputState|undefined;let hardDetents=false;
@@ -46,10 +51,10 @@ const immersive=new Immersive($('app'),()=>{
 let swapped=readSwapped();
 function applyLayout(){ $('touch').classList.toggle('swapped',swapped); ($('swap') as HTMLInputElement).checked=swapped; }
 applyLayout();
-function ui(){ $('menu').hidden=mode!=='menu'||settingsOpen; $('paused').hidden=mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',mode==='playing'&&!settingsOpen); $('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu'; }
+function ui(){ labUI?.update(mode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',mode==='playing'&&!settingsOpen); $('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu'; }
 function start(){state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;void sound.unlock().catch(()=>{}); mode='playing'; settingsOpen=false; input.clear();(document.activeElement as HTMLElement)?.blur?.();ui();}
 function pause(){if(mode==='paused'){start();return;}mode='paused';input.clear();sound.pause();ui();}
-function restart(){world.car.userData.motion.reset();state=createState();state.worldHeading=world.sample(0).roadHeading; elapsed=0; initialized=false; start();}
+function restart(){world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false; start();}
 $('drive').onclick=()=>{if(mobile())void immersive.enter();start();};
 $('resume').onclick=start; $('pause').onclick=pause; $('restart').onclick=restart;
 $('fullscreen').onclick=()=>{input.clear();void immersive.toggle();};
@@ -76,12 +81,12 @@ visualViewport?.addEventListener('resize',resize);
 document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&mode==='playing'){mode='paused';sound.pause();ui();}});
 function advance(dt:number,override?:InputState){
   input.update(dt);
-  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}step(state,controls,dt,world.sample(state.distance).curvature,highSpeedPace);world.car.userData.motion.advance(state.distance-beforeDistance,state.appliedSteer,dt);elapsed+=dt;sound.update(state.speed*effectivePace(state.speed,highSpeedPace),state.slip,controls.gas&&!controls.brake,dt);}else sound.pause();
+  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}step(state,controls,dt,world.sample(state.distance).curvature,highSpeedPace,world.half);world.car.userData.motion.advance(state.distance-beforeDistance,state.appliedSteer,dt);elapsed+=dt;sound.update(state.speed*effectivePace(state.speed,highSpeedPace),state.slip,controls.gas&&!controls.brake,dt);if(brick&&state.distance>=BRICK_START+brick.length){brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();ui();}}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(lateral < -13)return THREE.MathUtils.lerp(height-.1,-5.05,Math.min(1,(-lateral-13)/14));
   if(lateral>13)return height-.12-Math.min(1,(lateral-13)/62)*2.88;
-  return height+(Math.abs(lateral)>7?-.1:0);
+  return height+(Math.abs(lateral)>world.half?-.1:0);
 }
 function render(dt:number,draw=true){
   const p=world.sample(state.distance);
@@ -100,7 +105,7 @@ function render(dt:number,draw=true){
     const offset=inspectionView==='front'?new THREE.Vector3(3,2.7,6):inspectionView==='side'?new THREE.Vector3(6,2.8,0):new THREE.Vector3(0,5.8,-2.3);
     camera.position.copy(world.car.localToWorld(offset));camera.lookAt(world.car.localToWorld(new THREE.Vector3(0,.8,0)));
   }
-  world.update(elapsed,state.speed,state.slip,state.distance);if(!draw)return;world.car.userData.motion.render();renderer.render(world.scene,camera);frames++;
+  world.update(elapsed,state.speed,state.slip,state.distance);if(!draw)return;labUI?.update(mode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);world.car.userData.motion.render();renderer.render(world.scene,camera);frames++;
   $('speed').querySelector('strong')!.textContent=Math.round(state.speed*3.6).toString().padStart(3,'0');
   $('speed-needle').setAttribute('transform',`rotate(${needleAngle(state.speed*3.6)} 100 100)`);
   $('status').textContent=state.offRoad?'OFF ROAD · STEER BACK':state.slip>.2?'CORNERING · HOLD YOUR LINE':mode==='playing'?'STEER YOUR OWN LINE':'READY FOR THE COAST';
@@ -116,6 +121,7 @@ function loop(now:number){
   else speedAudit?.reset();
   requestAnimationFrame(loop);
 }
+if(brick)labUI=mountBrickLab(brick,{play:()=>{if(mobile())void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile())void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click()});
 ui();resize();requestAnimationFrame(loop);
 function surfaceError(){const ray=new THREE.Raycaster(world.car.position.clone().add(new THREE.Vector3(0,10,0)),new THREE.Vector3(0,-1,0));const road=world.scene.getObjectByName('driving-surface');const hit=road?ray.intersectObject(road)[0]:undefined;return hit?world.car.position.y-.04-hit.point.y:null;}
 if(import.meta.env.PROD && 'serviceWorker' in navigator){
@@ -126,11 +132,13 @@ if(import.meta.env.DEV){(window as any).__drive={
     manual=true;inspectionView=view;render(1/60);
   },
   acts:()=>ACTS,
-  scenery:()=>({...world.scenery,weights:actWeights(state.distance),render:structuredClone(renderer.info.render),memory:structuredClone(renderer.info.memory)}),
+  scenery:()=>({...world.scenery,weights:world.weightsAt(state.distance),render:structuredClone(renderer.info.render),memory:structuredClone(renderer.info.memory)}),
   wheels:()=>world.car.userData.motion.inspect(),
   occupants:()=>world.car.userData.motion.occupants(),
-  challenges:()=>COURSE,
-  steering:()=>({rawSteer:input.steeringTarget,effectiveSteer:input.effectiveSteer,appliedSteer:state.appliedSteer,requiredSteer:requiredSteering(world.sample(state.distance).curvature,state.speed),roadRelativeX:state.lateral,challenge:challengeAt(state.distance)}),
+  challenges:()=>brick?brickCourse(brick):COURSE,
+  brick:()=>brick??null,
+  sceneFingerprint:()=>{const values:number[]=[];world.scene.getObjectByName('scenery')!.traverse(o=>{if(o instanceof THREE.InstancedMesh)values.push(...o.instanceMatrix.array);});let hash=2166136261;for(const n of values){hash^=Math.round(n*1000);hash=Math.imul(hash,16777619);}return {hash:hash>>>0,count:values.length};},
+  steering:()=>({rawSteer:input.steeringTarget,effectiveSteer:input.effectiveSteer,appliedSteer:state.appliedSteer,requiredSteer:requiredSteering(world.sample(state.distance).curvature,state.speed),roadRelativeX:state.lateral,challenge:world.sample(state.distance).challenge}),
   lookahead:(seconds=2)=>{
     const p=world.sample(state.distance),travel=state.speed*effectivePace(state.speed,highSpeedPace),rows=[];
     for(let t=0;t<=seconds+.001;t+=.1){const q=world.sample(state.distance+travel*t),projected=q.position.clone().project(camera);rows.push({seconds:t,position:q.position.toArray(),screenX:projected.x,screenY:projected.y,headingChange:angleDifference(q.roadHeading-p.roadHeading)});}
@@ -159,7 +167,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{
     inspectionView=undefined;world.car.userData.motion.reset();
     speedAudit?.reset();
-    state={...createState(),...initial};state.velocityHeading=state.heading;state.worldHeading=world.sample(state.distance).roadHeading+state.heading;updateFootprint(state);elapsed=0;initialized=false;mode='playing';testControls=undefined;input.clear();ui();render(1/60);
+    state={...createState(),...initial};state.velocityHeading=state.heading;state.worldHeading=world.sample(state.distance).roadHeading+state.heading;updateFootprint(state,world.half);brickCompleted=false;elapsed=0;initialized=false;mode='playing';testControls=undefined;input.clear();ui();render(1/60);
   },
   sample:(d:number)=>{const p=world.sample(d);return {position:p.position.toArray(),curvature:p.curvature,roadHeading:p.roadHeading,tangent:p.tangent.toArray(),challenge:p.challenge};}
 };}
