@@ -2,7 +2,7 @@
 
 **An original arcade-driving game inspired by the feeling of SEGA's 1986 Out Run and 2003 OutRun 2.**
 
-**Status:** v0.4.1 *Analog Arcade Steering & Rescue* implemented for local human and Pixel 8 playtesting. See [v0.4.1 handoff and evidence](docs/V0.4.1_HANDOFF.md). Physical Pixel 8 results remain unverified.
+**Status:** v0.4.2 *Gameplay-First Driving Prototype* implemented for local human and Pixel 8 playtesting. See [v0.4.2 handoff and evidence](docs/V0.4.2_HANDOFF.md). Physical Pixel 8 results remain unverified.
 
 "Project OutRun" is an **internal codename only**. **SUNSHIFT GT** is an unapproved candidate public name, not a final title. Do not use SEGA logos, the original game's music, graphics, distinctive licensed vehicles, or other protected assets. Public branding will be decided later.
 
@@ -32,7 +32,7 @@ For v0.1, the player can simply drive for at least a minute on a scenic, winding
 
 1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
 2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.4_KICKOFF.md` (Goal Mode where available).
-3. The implementation and runnable commands are below. Read the v0.4.1 handoff before planning further work.
+3. The implementation and runnable commands are below. Read the v0.4.2 handoff before planning further work.
 
 ## Run locally
 
@@ -43,7 +43,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5173/ and choose **Drive**. Hold Space to accelerate, Enter to brake, and A/D to steer. A/D moves the shared virtual steering position to full lock in 0.4 seconds; release returns it to neutral within 0.125 seconds. On touch, press or slide along the steering strip for absolute steering; lift to neutral. Brake takes precedence over gas. W/S and arrow keys remain aliases. P/Escape pauses; R restarts. Sound and Settings are in the Menu. Landscape touch controls support two thumbs; Settings swaps the hand groups and remembers the choice.
+Open http://127.0.0.1:5173/ and choose **Drive**. Hold Space to accelerate, Enter to brake, and A/D to steer. A/D moves the shared virtual steering position to full lock in 0.4 seconds; release returns it to neutral within 0.125 seconds. On touch, press or slide along the steering strip: the cursor moves continuously but driving uses four notches per direction; lift to neutral. Match the bend with one, two or three notches; brake to about 190 km/h before the Extreme right-hand bend. Brake takes precedence over gas. W/S and arrow keys remain aliases. P/Escape pauses; R restarts. Sound and Settings are in the Menu. Landscape touch controls support two thumbs; Settings swaps the hand groups and remembers the choice.
 
 ```powershell
 npm run build
@@ -63,7 +63,7 @@ One milestone at a time: **specify → autonomous implementation and self-QA →
 Shipping a small enjoyable drive matters more than a large feature list. A successful build alone is not a successful milestone.
 ## v0.2 driving and Pixel 8
 
-The car no longer follows curves automatically: steer through bends, ease off or brake before correcting a slide, and steer back after running wide. Off-road drag is progressive. The bounded shoulder keeps the road within reach; steer inward to recover. The chase camera uses a fixed FOV and offset; the route now has a pronounced climb, crest and descent.
+Arcade Lateral Balance pits each steering notch against outward curve pressure. Neutral on a straight preserves your lateral position; neutral on a bend runs wide. Brake when full steering cannot balance a bend. Off-road drag is progressive. The bounded shoulder keeps the road within reach; steer inward to recover. The chase camera uses a fixed FOV and offset; the route now has a pronounced climb, crest and descent.
 
 Mobile Drive attempts actual browser fullscreen and landscape lock. Fullscreen retries/exits are available in the Menu; rejected or unavailable APIs show guidance while the game remains playable. Two-thumb controls and the persistent hand swap remain available.
 

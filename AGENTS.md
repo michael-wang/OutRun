@@ -1,45 +1,43 @@
 # Project OutRun — Codex working agreement
 
-## ACTIVE milestone: v0.4.1 — Analog Arcade Steering & Rescue
+## ACTIVE milestone: v0.4.2 Gameplay-First Driving Prototype
 
-The product owner has NOT launched v0.4.1. They revised the steering design **before handing work to Codex**. The new, binding decision is a **continuous virtual steering-wheel position**, not two binary steering buttons or a lengthy simulated steering-inertia fix.
+**The previous v0.4.2 "Corner Exit & Road Rhythm" was designed but NOT handed off for implementation.** This revised owner-approved v0.4.2 completely supersedes that draft. DO NOT execute an older v0.4.2 Goal or merely tune the existing car yaw model.
 
-Read first:
-1. `docs/CODEX_V0.4.1_KICKOFF.md`
-2. `docs/V0.4.1_SPEC.md`
-3. `docs/V0.4.1_ACCEPTANCE.md`
-4. Earlier v0.4 and v0.3.2 handoffs for diff/regression context.
+Read in order:
+1. `docs/CODEX_V0.4.2_KICKOFF.md`
+2. `docs/V0.4.2_SPEC.md`
+3. `docs/V0.4.2_ACCEPTANCE.md`
+4. `docs/ARCADE_DESIGN_BACKLOG.md` only for later work.
 
-These new documents supersede the previous v0.4.1 draft's steering approach. Do not run an old Goal or simply reduce sensitivity.
+## Working tree protection
 
-## Local checkout safety
+- Confirm `C:\astra-dev\OutRun` and git remote `michael-wang/OutRun`. NEVER touch `C:\astra-dev\topwar`.
+- The latest playable **v0.4.1** exists on the user's LOCAL repository with implementation commit `4d4b05c` and handoff commit `34b6a3e`. As last checked, GitHub `main` contains project specifications, **not the playable app**. Do not switch/reset/merge documentation-only main over working game code.
+- Preserve unexpected local changes. Create `codex/v0.4.2-gameplay-first` from the latest playable local HEAD. Fetch `origin/main` and selectively import ONLY current `AGENTS.md`, `README.md` and `docs/V0.4.2_*.md` plus `docs/ARCADE_DESIGN_BACKLOG.md`, after checking for conflicts. Don't discard local handoffs/code.
+- For an auto-review conflict with an older "stop after v0.4.1" instruction, get explicit **ordinary chat** authorization, not a loop of rejected Goal retries. Respect sandbox approvals.
+- No push, merge, public deployment, paid services, unlicensed SEGA/Ferrari assets, or modifications outside OutRun.
 
-- Repo `michael-wang/OutRun`; authorized Windows directory `C:\astra-dev\OutRun`. NEVER modify `C:\astra-dev\topwar`.
-- Playable v0.4 exists on a LOCAL branch, with implementation commit `04a1f2b` and handoff `ba76b22`. Remote GitHub `main` is primarily product documentation; **never reset/checkout/merge its whole tree over playable source**.
-- Preserve uncommitted work. Branch from the latest playable local v0.4 HEAD as `codex/v0.4.1-analog-steering` (or a safe equivalent). Fetch `origin/main` and import **only current AGENTS.md + v0.4.1 documents**, protecting source code.
-- A prior stop-after-v0.4 limited that milestone. Explicit authorization for a new v0.4.1 in a normal chat supersedes it. Respect actual sandbox approvals; do not bypass a denial or repeatedly retry.
+## Product and engineering contract
 
-## Product contract
+**Goal: a playable, deliberately designed challenge course, not a grand system diagram.**
 
-**P0-A: continuous steering input and direct arcade response**
-- Use a single normalized steering target [-1, 1] shared by touch/keyboard, where 0 is neutral, negative left, positive right. No fake multi-revolution steering-wheel simulation.
-- On landscape Pixel 8, replace two touch steering buttons with a **horizontal absolute-position strip** on the steering-hand side. Touch at any x gives an immediate target; dragging adjusts it continuously; lifting returns to 0. Left/right control-group swap moves the entire strip. Gas/brake on the other side still works simultaneously.
-- On PC, `A/D` (optionally arrows) move a visible/inspectable virtual steering position along the same [-1, 1] axis. On key release, the virtual wheel quickly springs to 0. `Space` accelerates, `Enter` brakes.
-- Steering-wheel self-centering is **not** vehicle lane-centering. Zero steer must mean no new commanded turn, never automatically following road curvature or returning to asphalt. Minimal/damped yaw inertia: press responds promptly, release settles promptly, reversing responds promptly.
-- Preserve accepted **1.75× coherent world pace**; no speed reduction, HUD-only tricks, independent background scroll or camera speed zoom.
+- Replace the existing yaw/slip-driven core navigation with a small **Arcade Lateral Balance** road-relative model: road bend demands outward lateral drift, and player's steering level counters it. No accumulation of uncontrolled yaw/lateral inertia into the next straight. Don't simulate real tire forces or use physics engine.
+- Inputs remain continuous-looking, but effective steering is **quantized**: first experiment has neutral and four steps on each side (±0.25, ±0.50, ±0.75, ±1.00), with adjustable step count behind a simple configuration. A center dead zone and boundary hysteresis reduce annoying fingertip jitter. Mobile horizontal absolute-position strip and PC A/D virtual wheel remain, with Space gas/Enter brake and touch-hand swap.
+- Build track **from required steering demand at a reference speed**: low/mid/high and >100%-at-reference requiring braking. This is genuine inverse difficulty-to-geometry design, NOT hand drawing curvy mesh then assigning labels afterward.
+- Deliver one short playable continuous course: low, medium, high, mandatory slow-down, plus **one reversible S-curve**. Each segment's actual required steering is tested against input steps, road width and speed. The course and scenery must render in genuine Three.js 3D without holes and stay drivable when looped.
+- Preserve human-approved `1.75×` world pace, 3D car/road/frame scale, car-left analog speedometer, Pixel 8 landscape/fullscreen/PWA/long-press safeguards, bounded shoulder/off-road speed penalty, no automatic lane centering or hidden "drive the bend" helper, audio/pause.
+- Keep modules/data small; avoid new authoring editor, procedural open world, RL driver, adaptive-difficulty director, traffic, other cars, new biomes, vehicle art, or unrelated UI overhaul in this milestone.
 
-**P0-B: road never ends or has holes.** Investigate the reported missing/broken road. Prove rendered/geometry continuity across loops at 1.75× for >=120 simulated high-speed seconds. If the defect cannot be reproduced/verified, report that honestly rather than claiming fixed.
+## Definition of done
 
-**P0-C: analog needle speedometer LEFT of the car.** Real needle/dial plus digital km/h. On Pixel 8 landscape avoid the horizontal steering strip and gas/brake for both handedness layouts. Fixed camera framing stays legible.
+Codex must **run the game in a real browser**, demonstrate the five challenges with actual recorded steering+brake behavior, and show that:
+1. no-steering fails a meaningful curve;
+2. a matching discrete level balances representative low/mid/high curves near the reference speed;
+3. on the hardest curve full lock at reference speed is **insufficient**, but slowing down makes the same curve controllable;
+4. after a curve ends and steering returns neutral, lateral position doesn't keep drifting from an old input;
+5. the generated path, elevated roadway, off-road boundaries and render mesh agree across loops.
 
-**P1:** Preserve recoverable drift, bounded shoulders/off-road slowdown, non-constant tire squeal; no new aggressive drift simulation before steering quality is stable.
+Test deterministic driving logic AND real rendered browser input, including Pixel-like multitouch. Run `npm run build`, `npm run test` and `npm run test:e2e`, visually inspect screenshots/video, fix failures, and create `docs/V0.4.2_HANDOFF.md` with observed PASS/FAIL/UNVERIFIED, source changes, inverse-calibration proof, playable links and known issues.
 
-**DEFER:** new road designs, convertible/passengers, scenery transitions, traffic, racing modes and unrelated UI. Don't add process or framework complexity; remain on Three.js + TypeScript + Vite.
-
-## Delivery
-
-Develop autonomously: inspect old code/diff → build shared analog input/vehicle response → run real game with short/long/reversal controls → repair track gap → design dial → capture actual motion/screenshots → run build/unit/Playwright → fix → local commit.
-
-Write `docs/V0.4.1_HANDOFF.md` with branch/commit, input-mapping proof, previous/after steering traces, video evidence, road/loop tests, desktop/Pixel screenshots (both hands layouts), analog needle operation, actual test results, known issues and local URL. Do NOT push, merge or public deploy.
-
-**Stop after v0.4.1 and await human playtest.** This stop limits this milestone, not future user-authorized work.
+**Stop after v0.4.2 for human playtest.** This ends this milestone, not future owner-approved work.

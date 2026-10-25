@@ -1,69 +1,45 @@
-import { effectivePace } from './pace';
-export interface InputState { gas: boolean; brake: boolean; steer: number }
+import {effectivePace} from './pace';
+import {steeringAuthority,curvePressure,requiredSteering} from './challenges';
+import {quantizeSteering} from './steering';
+export interface InputState {gas:boolean;brake:boolean;steer:number;rawSteer?:number}
 export interface DrivingState {
-  distance: number; speed: number; lateral: number;
-  /** Body and velocity errors relative to road heading; positive means right. */
-  heading: number; velocityHeading: number; worldHeading: number;
-  steering: number; yawRate: number; slipAngle: number; slip: number;
-  offRoad: boolean; footprintEdge: number; curvature: number;
-  /** Boundary-only contact, released by deliberate inward steering. */
-  corridorSide: number;
-  steeringTarget:number; drifting:boolean;
+ distance:number;speed:number;lateral:number;
+ /** Rendering attitude only; never drives longitudinal or lateral navigation. */
+ heading:number;velocityHeading:number;worldHeading:number;steering:number;yawRate:number;
+ slipAngle:number;slip:number;offRoad:boolean;footprintEdge:number;curvature:number;
+ corridorSide:number;steeringTarget:number;drifting:boolean;
+ rawSteer:number;effectiveSteer:number;requiredSteer:number;lateralRate:number;
 }
-export const MAX_SPEED = 65;
-export const ROAD_HALF_WIDTH = 7;
-// Whole 2.26 x 4.7m vehicle fits outside asphalt, including its rotated footprint.
-export const CORRIDOR_LIMIT = ROAD_HALF_WIDTH + 2.6;
-export const createState = (): DrivingState => ({ distance: 0, speed: 0, lateral: 0,
-  heading: 0, velocityHeading: 0, worldHeading: 0, steering: 0, yawRate: 0,
-  slipAngle: 0, slip: 0, offRoad: false, footprintEdge: 1.13, curvature: 0, corridorSide: 0,steeringTarget:0,drifting:false });
-const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n));
-export const angleDifference = (angle: number) => Math.atan2(Math.sin(angle), Math.cos(angle));
-export const steeringRate = (speed: number) => Math.min(.65, speed * .035);
-export function updateFootprint(s: DrivingState) {
-  // Oriented footprint (2.26 wide x 4.7 long), not a lane-center threshold.
-  s.footprintEdge = Math.abs(s.lateral) + 1.13 * Math.abs(Math.cos(s.heading)) + 2.35 * Math.abs(Math.sin(s.heading));
-  s.offRoad = s.footprintEdge > ROAD_HALF_WIDTH;
+export const MAX_SPEED=65,ROAD_HALF_WIDTH=7,CORRIDOR_LIMIT=9.6;
+export const createState=():DrivingState=>({distance:0,speed:0,lateral:0,heading:0,velocityHeading:0,worldHeading:0,
+ steering:0,yawRate:0,slipAngle:0,slip:0,offRoad:false,footprintEdge:1.13,curvature:0,corridorSide:0,
+ steeringTarget:0,drifting:false,rawSteer:0,effectiveSteer:0,requiredSteer:0,lateralRate:0});
+const clamp=(n:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,n));
+export const angleDifference=(angle:number)=>Math.atan2(Math.sin(angle),Math.cos(angle));
+export function updateFootprint(s:DrivingState){
+ s.footprintEdge=Math.abs(s.lateral)+1.13*Math.abs(Math.cos(s.heading))+2.35*Math.abs(Math.sin(s.heading));
+ s.offRoad=s.footprintEdge>ROAD_HALF_WIDTH;
 }
-/** Frenet kinematics: curvature changes the reference frame, NEVER world yaw.
- * ds/dt = v cos(error)/(1-k*lateral); dl/dt = v sin(error).
- * Both heading errors subtract k*ds. No lane spring or road steering. The outer
- * shoulder alone has a positional contact constraint and outward-yaw stop.
- */
-export function step(s: DrivingState, input: InputState, dt: number, curvature: number, highSpeedPace=1): void {
-  dt = clamp(dt, 0, .05);
-  s.curvature = curvature;
-  updateFootprint(s);
-  const acceleration = (input.gas&&!input.brake ? 19 * (1 - s.speed / 88) + 6 * Math.max(0,1-s.speed/20) : -3.8) - (input.brake ? 34 : 0)
-    - (s.offRoad ? 10 + s.speed * .07 : 0);
-  s.speed = clamp(s.speed + acceleration * dt, 0, MAX_SPEED);
-  const pace=effectivePace(s.speed,highSpeedPace),travelSpeed=s.speed*pace;
-  // One shared analog target. No second hold ramp or integrated steering inertia.
-  s.steeringTarget=clamp(input.steer,-1,1);s.steering=s.steeringTarget;
-  const countersteering=s.steering*s.slipAngle<0;
-  s.drifting=s.speed>35&&Math.abs(s.steering)>.75&&!countersteering&&!s.corridorSide;
-  if (input.steer * s.corridorSide < 0) s.corridorSide = 0;
-  // Preserve player turn radius as travel rises. Zero input never adds yaw.
-  s.yawRate = s.corridorSide ? 0 : s.steering * steeringRate(s.speed)*pace;
-  s.worldHeading += s.yawRate * dt;
-  s.heading += s.yawRate * dt;
-  // Tire response lags body yaw under fast steering: velocity really slides.
-  // Strong commanded turns retain real slip. Neutral/countersteer quickly damps
-  // the velocity lag to the CURRENT body heading, never to the road tangent.
-  const grip = s.drifting?1.8:Math.abs(s.steering)<.05||countersteering?30:18;
-  s.velocityHeading += angleDifference(s.heading - s.velocityHeading) * (1 - Math.exp(-grip * pace * dt));
-  const denominator = Math.max(.3, 1 - curvature * s.lateral);
-  const attempted = s.lateral + travelSpeed * Math.sin(s.velocityHeading) * dt;
-  if (Math.abs(attempted) >= CORRIDOR_LIMIT) s.corridorSide = Math.sign(attempted);
-  s.lateral = s.corridorSide ? s.corridorSide * CORRIDOR_LIMIT : attempted;
-  // Sliding along the boundary preserves progress even when facing across it.
-  // Neither this projection nor contact changes heading or moves the car inward.
-  const forward = s.corridorSide ? Math.max(.35, Math.cos(s.velocityHeading)) : Math.cos(s.velocityHeading);
-  const ds = travelSpeed * forward / denominator * dt;
-  s.distance += ds;
-  s.heading = angleDifference(s.heading - curvature * ds);
-  s.velocityHeading = angleDifference(s.velocityHeading - curvature * ds);
-  s.slipAngle = angleDifference(s.heading - s.velocityHeading);
-  s.slip = clamp((Math.abs(s.slipAngle)-.10)/.5, 0, 1) * clamp(s.speed / 25, 0, 1);
-  updateFootprint(s);
+/** Arcade balance: x' = authority(v)*notch - pressure(k,v).
+ * No yaw/slip/velocity integration feeds navigation. Pace affects travel only. */
+export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1){
+ dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s);
+ const acceleration=(input.gas&&!input.brake?19*(1-s.speed/88)+6*Math.max(0,1-s.speed/20):-3.8)
+  -(input.brake?34:0)-(s.offRoad?10+s.speed*.07:0);
+ s.speed=clamp(s.speed+acceleration*dt,0,MAX_SPEED);
+ s.rawSteer=input.rawSteer??input.steer;s.steeringTarget=s.rawSteer;
+ s.effectiveSteer=quantizeSteering(input.steer,s.effectiveSteer);s.steering=s.effectiveSteer;
+ s.requiredSteer=requiredSteering(curvature,s.speed);
+ const rate=steeringAuthority(s.speed)*s.effectiveSteer-curvePressure(curvature,s.speed);
+ if(s.corridorSide&&s.effectiveSteer*s.corridorSide<0&&rate*s.corridorSide<0)s.corridorSide=0;
+ const attempted=s.lateral+rate*dt;
+ if(Math.abs(attempted)>=CORRIDOR_LIMIT)s.corridorSide=Math.sign(attempted);
+ s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?s.corridorSide*CORRIDOR_LIMIT:attempted;
+ const ds=s.speed*effectivePace(s.speed,highSpeedPace)*dt;s.distance+=ds;
+ const imbalance=s.effectiveSteer-s.requiredSteer;
+ const body=clamp(imbalance*.18+s.effectiveSteer*.055,-.28,.28)*Math.min(1,s.speed/20);
+ s.heading=body;s.velocityHeading=0;s.yawRate=0;
+ s.worldHeading+=curvature*ds; // diagnostic tangent; renderer uses exact geometry
+ s.slipAngle=body;s.slip=clamp((Math.abs(imbalance)-.3)*.65,0,.8)*Math.min(1,s.speed/35);
+ s.drifting=s.slip>.2;updateFootprint(s);
 }

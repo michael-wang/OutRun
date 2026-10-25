@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createCar } from './car';
 import { createTrack } from './track';
+import {COURSE,HALF_LENGTH} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 export function createWorld() {
@@ -64,6 +65,21 @@ export function createWorld() {
   instances(new THREE.BoxGeometry(.38,1.6,.3),line,markerPosts);
   instances(new THREE.BoxGeometry(.42,.3,.34),mat('#f5a53c'),markerCaps);
   instances(new THREE.BoxGeometry(.4,.35,.32),mat('#263d43'),markerStripes);
+  // Authored braking cue, outside the entire shoulder corridor. Original canvas
+  // lettering, no external art; warns before the >100% reference-demand bend.
+  const signCanvas=document.createElement('canvas');signCanvas.width=512;signCanvas.height=256;
+  const ink=signCanvas.getContext('2d')!;ink.fillStyle='#153e45';ink.fillRect(0,0,512,256);
+  ink.strokeStyle='#ffd18b';ink.lineWidth=14;ink.strokeRect(8,8,496,240);
+  ink.textAlign='center';ink.fillStyle='#fff4d9';ink.font='bold 70px sans-serif';ink.fillText('BRAKE  →',256,96);
+  ink.fillStyle='#ffd18b';ink.font='bold 104px sans-serif';ink.fillText('190',218,210);ink.font='26px sans-serif';ink.fillText('km/h',374,206);
+  const signTexture=new THREE.CanvasTexture(signCanvas);signTexture.colorSpace=THREE.SRGBColorSpace;
+  const signMaterial=new THREE.MeshBasicMaterial({map:signTexture,side:THREE.DoubleSide});
+  const extreme=COURSE.find(c=>c.id==='extreme')!;
+  for(const half of [0,HALF_LENGTH])for(const lead of [160,80]){
+    const p=sample(half+extreme.start-lead),base=p.position.clone().addScaledVector(p.right,15);
+    const board=new THREE.Mesh(new THREE.PlaneGeometry(5.2,2.6),signMaterial);board.position.copy(base).add(new THREE.Vector3(0,4,0));board.rotation.y=Math.PI-p.roadHeading;scene.add(board);
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,4,6),rail);pole.position.copy(base).add(new THREE.Vector3(0,2,0));scene.add(pole);
+  }
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
   ribbon(-29,-27,-10.9,-10.9,new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72}),0,length,10);
@@ -83,8 +99,8 @@ export function createWorld() {
   const rocks=[],ledges=[];for(let d=0,i=0;d<length;d+=65,i++){const p=sample(d),base=p.position.addScaledVector(p.right,52+rand(i)*40).add(new THREE.Vector3(0,-6,0));const yaw=rand(i)*6;
     rocks.push({p:base,s:new THREE.Vector3(27+rand(i)*20,14+rand(i+7)*24,29+rand(i+9)*24),r:new THREE.Euler(0,yaw,0)});
     ledges.push({p:base.clone().add(new THREE.Vector3(0,6,0)),s:new THREE.Vector3(22+rand(i)*15,8+rand(i+7)*13,24+rand(i+9)*18),r:new THREE.Euler(0,yaw+.2,.05)});}
-  instances(new THREE.IcosahedronGeometry(1,1),mat('#b9ae89'),rocks);
-  instances(new THREE.IcosahedronGeometry(1,1),mat('#c8bd97'),ledges);
+  instances(new THREE.IcosahedronGeometry(1,1),mat('#b9ae89'),rocks).name='inland-ridge';
+  instances(new THREE.IcosahedronGeometry(1,1),mat('#c8bd97'),ledges).name='inland-ledge';
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
   // Enclose the actual route. The former fixed (400,500)/1550m ring intersected
   // v0.4's longer loop and covered asphalt with an opaque mountain surface.

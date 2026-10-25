@@ -1,4 +1,5 @@
 import type { InputState } from './handling';
+import {quantizeSteering,STEERING_STEPS} from './steering';
 export type Control = 'left' | 'right' | 'gas' | 'brake';
 const keyControls: Record<string, Control> = { KeyA: 'left', ArrowLeft: 'left', KeyD: 'right', ArrowRight: 'right', Space:'gas', Enter:'brake', KeyW: 'gas', ArrowUp: 'gas', KeyS: 'brake', ArrowDown: 'brake' };
 export const SETTINGS_KEY = 'first-drive-controls-swapped';
@@ -10,13 +11,15 @@ export class InputLatch {
   private sources = new Map<string, Control>();
   private analogSource:string|null=null;
   steeringTarget=0;
+  effectiveSteer=0;
   press(source: string, control: Control) { this.sources.set(source, control); }
   setAnalog(source:string,value:number){
     if(this.analogSource!==null&&this.analogSource!==source)return;
-    this.analogSource=source;this.steeringTarget=Math.max(-1,Math.min(1,value));
+    this.analogSource=source;this.steeringTarget=Math.max(-1,Math.min(1,value));this.quantize();
   }
-  release(source: string) { this.sources.delete(source);if(source===this.analogSource){this.analogSource=null;this.steeringTarget=0;} }
-  clear() { this.sources.clear();this.analogSource=null;this.steeringTarget=0; }
+  release(source: string) { this.sources.delete(source);if(source===this.analogSource){this.analogSource=null;this.steeringTarget=0;this.effectiveSteer=0;} }
+  clear() { this.sources.clear();this.analogSource=null;this.steeringTarget=0;this.effectiveSteer=0; }
+  private quantize(){this.effectiveSteer=quantizeSteering(this.steeringTarget,this.effectiveSteer);}
   update(dt:number){
     if(this.analogSource!==null)return;
     const direction=Number(this.held('right'))-Number(this.held('left'));
@@ -28,10 +31,11 @@ export class InputLatch {
       this.steeringTarget=Math.max(-1,Math.min(1,this.steeringTarget+direction*2.5*remaining));
     }
     else this.steeringTarget=(Math.sign(this.steeringTarget)*Math.max(0,Math.abs(this.steeringTarget)-8*dt))||0;
+    this.quantize();
   }
   snapshot(): InputState {
     const values = [...this.sources.values()];
-    return { gas: values.includes('gas'), brake: values.includes('brake'), steer: this.steeringTarget };
+    return { gas: values.includes('gas'), brake: values.includes('brake'), steer: this.effectiveSteer };
   }
   held(control: Control) { return [...this.sources.values()].includes(control); }
 }
@@ -66,8 +70,7 @@ export class InputController extends InputLatch {
       const move=(event:PointerEvent)=>{
         if(event.pointerId!==this.steeringPointer)return;
         const box=strip.getBoundingClientRect(),raw=Math.max(-1,Math.min(1,2*(event.clientX-box.left)/box.width-1));
-        const value=Math.abs(raw)<.04?0:Math.abs(raw)>.98?Math.sign(raw):Math.sign(raw)*(Math.abs(raw)-.04)/.96;
-        this.setAnalog(`steering:${event.pointerId}`,value);this.paintSteering();
+        this.setAnalog(`steering:${event.pointerId}`,raw);this.paintSteering();
       };
       strip.addEventListener('pointerdown',event=>{
         if(!isDriving()||this.steeringPointer!==null)return;
@@ -81,7 +84,11 @@ export class InputController extends InputLatch {
     window.addEventListener('blur', () => this.clear());
     document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); });
   }
-  private paintSteering(){this.strip?.style.setProperty('--steer',String(this.steeringTarget));this.strip?.setAttribute('aria-valuenow',String(Math.round(this.steeringTarget*100)));}
+  private paintSteering(){
+    this.strip?.style.setProperty('--steer',String(this.steeringTarget));this.strip?.style.setProperty('--effective-steer',String(this.effectiveSteer));
+    this.strip?.setAttribute('aria-valuenow',String(Math.round(this.steeringTarget*100)));
+    const label=this.strip?.querySelector('.steer-label');if(label)label.textContent=this.effectiveSteer?`${this.effectiveSteer<0?'←':'→'} STEER · ${Math.abs(this.effectiveSteer)*STEERING_STEPS}/${STEERING_STEPS}`:'← STEER · NEUTRAL →';
+  }
   override update(dt:number){super.update(dt);this.paintSteering();}
   override clear() { super.clear();this.steeringPointer=null;this.paintSteering();this.buttons?.forEach(button => button.classList.remove('pressed')); }
 }

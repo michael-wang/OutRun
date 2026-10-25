@@ -1,0 +1,67 @@
+
+> first-drive@0.4.2 test:e2e
+> npm run build && playwright test
+
+
+> first-drive@0.4.2 build
+> tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 20 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.54 kB │ gzip:   0.35 kB
+dist/assets/index-pVP-Id-n.css   11.14 kB │ gzip:   2.97 kB
+dist/assets/index-B3P9cByo.js   519.29 kB │ gzip: 135.28 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 609ms
+[WebServer] (node:44176) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+
+(node:47720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\corridor.spec.ts:6:3 › pace 1 rendered boundary -1: 15s outward hold, neutral contact and inward recovery (20.8s)
+  ok  2 tests\corridor.spec.ts:6:3 › pace 1 rendered boundary 1: 15s outward hold, neutral contact and inward recovery (20.1s)
+  ok  3 tests\corridor.spec.ts:6:3 › pace 1.75 rendered boundary -1: 15s outward hold, neutral contact and inward recovery (20.2s)
+  ok  4 tests\corridor.spec.ts:6:3 › pace 1.75 rendered boundary 1: 15s outward hold, neutral contact and inward recovery (19.9s)
+  ok  5 tests\corridor.spec.ts:6:3 › pace 2 rendered boundary -1: 15s outward hold, neutral contact and inward recovery (20.7s)
+  ok  6 tests\corridor.spec.ts:6:3 › pace 2 rendered boundary 1: 15s outward hold, neutral contact and inward recovery (19.9s)
+  ok  7 tests\drive.spec.ts:8:1 › desktop real-time driving, lifecycle, drift audio and continuous full route (6.4s)
+  ok  8 tests\drive.spec.ts:34:1 › trusted mobile multi-touch default and swapped, persistence, cancel and portrait (5.1s)
+  ok  9 tests\gameplay.spec.ts:6:1 › trusted finger jitter stays inside a notch until a deliberate threshold crossing (1.0s)
+  ok 10 tests\gameplay.spec.ts:13:1 › five authored challenges: trusted touch notches, paired failures/braking and neutral exit (9.2s)
+  ok 11 tests\pace.spec.ts:4:1 › all pace selections keep framing and hands-off departure; default is 1.75 (1.8s)
+  ok 12 tests\pace.spec.ts:25:28 › pace 1.75 normal bend with real keyboard input remains controllable (5.5s)
+  ok 13 tests\pace.spec.ts:25:28 › pace 2 normal bend with real keyboard input remains controllable (5.5s)
+  ok 14 tests\pace.spec.ts:38:1 › 2x real 30/60 render callback consistency and clean console (7.4s)
+  ok 15 tests\pwa.spec.ts:3:1 › production manifest icons worker and playable build (2.2s)
+  ok 16 tests\road-continuity.spec.ts:4:1 › 120s at 30/60Hz crosses full track and loop seams with visible unobstructed asphalt (12.3s)
+  ok 17 tests\touch-hotfix.spec.ts:6:1 › mobile long holds retain independent pointers and suppress only gameplay browser defaults (31.2s)
+  ok 18 tests\v02.spec.ts:10:2 › paired right bend: no steering departs, digital steering stays, recovery (1.4s)
+  ok 19 tests\v02.spec.ts:10:2 › paired left bend: no steering departs, digital steering stays, recovery (1.5s)
+  ok 20 tests\v02.spec.ts:29:1 › matched shoulder penalty and fixed camera at idle cruise and fast (615ms)
+  ok 21 tests\v02.spec.ts:57:2 › mobile immersive success handles fullscreen and orientation without trapping play (553ms)
+  ok 22 tests\v02.spec.ts:57:2 › mobile immersive reject handles fullscreen and orientation without trapping play (460ms)
+  ok 23 tests\v02.spec.ts:57:2 › mobile immersive lock-reject handles fullscreen and orientation without trapping play (445ms)
+  ok 24 tests\v02.spec.ts:57:2 › mobile immersive unsupported handles fullscreen and orientation without trapping play (446ms)
+  ok 25 tests\v02.spec.ts:57:2 › mobile immersive installed handles fullscreen and orientation without trapping play (457ms)
+  ok 26 tests\v02.spec.ts:69:1 › Pixel-like landscape touch, safe bounds, brake+steer, both layouts (890ms)
+  ok 27 tests\v02.spec.ts:82:1 › climb crest descent camera views (842ms)
+  ok 28 tests\v041.spec.ts:6:1 › analog keyboard holds, rapid neutral/reversal, brake priority and accessible menus (548ms)
+  ok 29 tests\v041.spec.ts:18:62 › needle gauge left of car 1280x720, both hands, zero/mid/high (1.6s)
+  ok 30 tests\v041.spec.ts:18:62 › needle gauge left of car 960x432, both hands, zero/mid/high (1.4s)
+  ok 31 tests\v041.spec.ts:18:62 › needle gauge left of car 844x390, both hands, zero/mid/high (1.3s)
+  ok 32 tests\v041.spec.ts:33:1 › absolute analog strip ownership, continuous crossing, outside clamp and independent pedals (2.1s)
+  ok 33 tests\v041.spec.ts:46:1 › 150ms analog corrections stop yaw on release and swapped sliding holds survive 15 seconds (16.8s)
+  ok 34 tests\velocity-gate.spec.ts:3:1 › Velocity Gate measures wall-clock world travel and calibration is explicitly opt-in (9.1s)
+  ok 35 tests\velocity-gate.spec.ts:33:1 › real rendering at 30 versus 60 callbacks per second preserves world speed (7.5s)
+  ok 36 tests\velocity.spec.ts:4:1 › v0.3 displayed car framing, compact menu, fixed camera and both hand layouts (2.4s)
+
+  36 passed (4.4m)

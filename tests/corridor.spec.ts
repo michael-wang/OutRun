@@ -12,14 +12,14 @@ for(const pace of [1,1.75,2]) for (const [side,distance,width,height] of [[-1,74
     const outward=side<0?'a':'d',inward=side<0?'d':'a';
     await page.keyboard.down('w');await page.keyboard.down(outward);
     await expect.poll(async()=>(await snapshot()).corridorSide,{timeout:8000}).toBe(side);
-    const directory=pace===1?'docs/evidence/v0.2.1':`docs/evidence/v0.3.2/boundary-pace-${pace}`;mkdirSync(directory,{recursive:true});
+    const directory=pace===1?'docs/evidence/v0.4.2/regressions/v0.2.1':`docs/evidence/v0.4.2/regressions/v0.3.2/boundary-pace-${pace}`;mkdirSync(directory,{recursive:true});
     const trace:any[]=[];const start=await snapshot(),wallStart=Date.now();
     await page.screenshot({path:`${directory}/boundary-${side}-entry.png`});
     // Real wall-clock gameplay, not a simulated-time-only acceptance test.
     for(let i=0;i<15;i++) {
       await page.waitForTimeout(1000);const s=await snapshot();trace.push(s);
       expect(s.lateral).toBe(side*CORRIDOR_LIMIT);expect(s.offRoad).toBe(true);
-      expect(s.worldHeading).toBe(start.worldHeading);expect(s.distance).toBeGreaterThan(i?trace[i-1].distance:start.distance);
+      expect(Math.abs(s.heading)).toBeLessThanOrEqual(.28);expect(s.distance).toBeGreaterThan(i?trace[i-1].distance:start.distance);
       expect(s.inputs).toEqual({gas:true,brake:false,steer:side});
       if(i===7||i===14)await page.screenshot({path:`${directory}/boundary-${side}-${i+1}s.png`});
     }
@@ -28,7 +28,7 @@ for(const pace of [1,1.75,2]) for (const [side,distance,width,height] of [[-1,74
     expect(trace.at(-1).speed).toBeLessThan(start.speed);
     expect(trace.at(-1).distance-start.distance).toBeGreaterThan(100);
     await page.keyboard.up(outward);await page.waitForTimeout(1500);
-    const neutral=await snapshot();expect(neutral.lateral).toBe(side*CORRIDOR_LIMIT);expect(neutral.worldHeading).toBe(start.worldHeading);
+    const neutral=await snapshot();expect(neutral.lateral).toBe(side*CORRIDOR_LIMIT);expect(Math.abs(neutral.heading)).toBeLessThanOrEqual(.28);
     const recoveryStart=Date.now();await page.keyboard.down(inward);
     await expect.poll(async()=>(await snapshot()).offRoad,{timeout:6000,intervals:[50]}).toBe(false);
     await page.keyboard.up(inward);await page.keyboard.up('w');

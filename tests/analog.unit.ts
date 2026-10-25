@@ -1,35 +1,22 @@
 import {it,expect} from 'vitest';
-import {mkdirSync,writeFileSync} from 'node:fs';
 import {InputLatch} from '../src/input';
-import {createState,step} from '../src/handling';
-import {createState as oldState,step as oldStep} from './fixtures/v04-handling';
-it('one analog axis has exclusive touch ownership, independent pedals and deterministic keyboard travel',()=>{
- const input=new InputLatch();input.press('gas','gas');input.setAnalog('finger',-.5);expect(input.snapshot()).toEqual({gas:true,brake:false,steer:-.5});
- input.setAnalog('other',1);expect(input.steeringTarget).toBe(-.5);input.setAnalog('finger',.8);input.release('other');expect(input.steeringTarget).toBe(.8);input.release('finger');expect(input.snapshot()).toEqual({gas:true,brake:false,steer:0});
- for(const sign of [-1,1]){input.clear();input.press('key',sign<0?'left':'right');input.update(.15);expect(input.steeringTarget).toBeCloseTo(sign*.375);input.update(.25);expect(input.steeringTarget).toBe(sign);input.release('key');input.update(.125);expect(input.steeringTarget).toBe(0);}
- const runs=[];for(const hz of [30,60,120]){input.clear();input.press('key','right');for(let i=0;i<hz*.4;i++)input.update(1/hz);runs.push(input.steeringTarget);}expect(runs.every(v=>Math.abs(v-1)<1e-8)).toBe(true);
-});
-it('direct analog yaw stops on neutral, reverses promptly, and never points the car at the road',()=>{
+import {quantizeSteering} from '../src/steering';
+it('all nine notches, configurable counts, symmetric dead zone and hysteresis',()=>{
+ for(const n of [3,4,5])for(let i=-n;i<=n;i++)expect(quantizeSteering(i/n,0,n)).toBe(i/n||0);
  for(const sign of [-1,1]){
-  const s={...createState(),speed:65};step(s,{gas:true,brake:false,steer:sign*.5},1/120,0,1.75);expect(s.yawRate*sign).toBeGreaterThan(.5);
-  const heading=s.worldHeading;for(let i=0;i<60;i++)step(s,{gas:true,brake:false,steer:0},1/120,.003,1.75);
-  expect(s.yawRate).toBe(0);expect(s.worldHeading).toBe(heading);
-  step(s,{gas:true,brake:false,steer:-sign*.5},1/120,0,1.75);expect(s.yawRate*sign).toBeLessThan(-.5);
+  expect(quantizeSteering(sign*.09)).toBe(0);expect(quantizeSteering(sign*.11)).toBe(sign*.25);
+  let last=sign*.25;for(const x of [.36,.38,.37,.39,.375]){last=quantizeSteering(sign*x,last);expect(last).toBe(sign*.25);}
+  last=quantizeSteering(sign*.41,last);expect(last).toBe(sign*.5);
+  for(const x of [.38,.36,.37])expect(quantizeSteering(sign*x,last)).toBe(sign*.5);
+  expect(quantizeSteering(sign*.34,last)).toBe(sign*.25);expect(quantizeSteering(0,last)).toBe(0);
+  expect(quantizeSteering(-sign*.8,last)).toBe(-sign*.75);
  }
 });
-it('records matched v0.4 versus analog keyboard press/release/reversal traces',()=>{
- const experiments=[];
- for(const sign of [-1,1])for(const long of [false,true]){
-  const before={...oldState(),speed:65},after={...createState(),speed:65},input=new InputLatch(),rows=[];
-  for(let i=0;i<360;i++){
-   const t=i/120,first=long?.9:.15,second=first+.5,end=second+(long?.6:.15);
-   const direction=t<first?sign:t<second?0:t<end?-sign:0;
-   input.release('left');input.release('right');if(direction)input.press(direction<0?'left':'right',direction<0?'left':'right');input.update(1/120);
-   step(after,{gas:true,brake:false,steer:input.steeringTarget},1/120,0,1.75);oldStep(before,{gas:true,brake:false,steer:direction},1/120,0,1.75);
-   rows.push({t,target:input.steeringTarget,before:{...before},after:{...after}});
-   if(t>first+.13&&t<second)expect(after.yawRate).toBe(0);
-  }
-  experiments.push({sign,long,rows});
- }
- mkdirSync('docs/evidence/v0.4.1',{recursive:true});writeFileSync('docs/evidence/v0.4.1/handling-traces.json',JSON.stringify(experiments,null,2));
+it('exclusive analog ownership, independent pedals and continuous raw cursor with effective notches',()=>{
+ const i=new InputLatch();i.press('gas','gas');i.setAnalog('finger',-.52);expect(i.steeringTarget).toBe(-.52);expect(i.snapshot()).toEqual({gas:true,brake:false,steer:-.5});
+ i.setAnalog('other',1);expect(i.steeringTarget).toBe(-.52);i.release('other');i.release('finger');expect(i.snapshot()).toEqual({gas:true,brake:false,steer:0});
+ for(const sign of [-1,1]){i.clear();i.press('key',sign<0?'left':'right');i.update(.15);expect(i.steeringTarget).toBeCloseTo(sign*.375);expect(i.snapshot().steer).toBe(sign*.25);i.update(.25);expect(i.snapshot().steer).toBe(sign);i.release('key');i.update(.125);expect(i.snapshot().steer).toBe(0);}
+});
+it('keyboard quantization is identical at 30/60/120 Hz and reversing crosses neutral promptly',()=>{
+ for(const hz of [30,60,120]){const i=new InputLatch();i.press('right','right');for(let t=0;t<hz*.4;t++)i.update(1/hz);expect(i.snapshot().steer).toBe(1);i.release('right');i.press('left','left');for(let t=0;t<hz*.3;t++)i.update(1/hz);expect(i.snapshot().steer).toBeLessThan(0);i.clear();expect(i.steeringTarget).toBe(0);}
 });
