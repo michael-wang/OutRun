@@ -1,45 +1,34 @@
-# Project OutRun — Codex working agreement
+# Project OutRun — Codex operating agreement
 
-## ACTIVE milestone: v0.4.1 — Analog Arcade Steering & Rescue
+## Active milestone: v0.4.2 — Corner Exit & Road Rhythm
 
-The product owner has NOT launched v0.4.1. They revised the steering design **before handing work to Codex**. The new, binding decision is a **continuous virtual steering-wheel position**, not two binary steering buttons or a lengthy simulated steering-inertia fix.
+The player finished v0.4.1 playtesting and reports **corner entry is now enjoyable**, but **exiting a bend is hard: the vehicle often continues toward the opposite shoulder**. The road also has **too many long straights and not enough noticeable hills**. This is a product tuning + track-design task, **not a new steering-control rewrite**.
 
-Read first:
-1. `docs/CODEX_V0.4.1_KICKOFF.md`
-2. `docs/V0.4.1_SPEC.md`
-3. `docs/V0.4.1_ACCEPTANCE.md`
-4. Earlier v0.4 and v0.3.2 handoffs for diff/regression context.
+**Read first:** `docs/CODEX_V0.4.2_KICKOFF.md` → `docs/V0.4.2_SPEC.md` → `docs/V0.4.2_ACCEPTANCE.md`. Older specs/handoffs are historical context and regression constraints.
 
-These new documents supersede the previous v0.4.1 draft's steering approach. Do not run an old Goal or simply reduce sensitivity.
+## Repo safety / autonomy
 
-## Local checkout safety
+- Verify `C:\astra-dev\OutRun` points to `michael-wang/OutRun`. Never touch `C:\astra-dev\topwar`.
+- The **playable v0.4.1 is committed locally**, implementation `4d4b05c` + handoff `34b6a3e`. Remote `main` is primarily documentation and **must not replace** the playable game. Start a v0.4.2 feature branch from the most recent playable local HEAD, preserving uncommitted changes.
+- Fetch `origin/main` and **selectively restore only current v0.4.2 docs plus this AGENTS.md**, after inspecting conflicts. No blind merge, hard reset or fresh scaffold.
+- Independently inspect v0.4.1 source and test evidence, implement minimal changes, run actual game and record driving, inspect motion, fix, run build/unit/Playwright, commit locally. Routine Git/coding decisions belong to Codex. Respect sandbox approval rules; request normal-chat authorization if the older stop instruction blocks the current user-authorized milestone.
+- No pushing, merging, public deployment, paid services, unlicensed SEGA/Ferrari assets or unrelated repo changes.
 
-- Repo `michael-wang/OutRun`; authorized Windows directory `C:\astra-dev\OutRun`. NEVER modify `C:\astra-dev\topwar`.
-- Playable v0.4 exists on a LOCAL branch, with implementation commit `04a1f2b` and handoff `ba76b22`. Remote GitHub `main` is primarily product documentation; **never reset/checkout/merge its whole tree over playable source**.
-- Preserve uncommitted work. Branch from the latest playable local v0.4 HEAD as `codex/v0.4.1-analog-steering` (or a safe equivalent). Fetch `origin/main` and import **only current AGENTS.md + v0.4.1 documents**, protecting source code.
-- A prior stop-after-v0.4 limited that milestone. Explicit authorization for a new v0.4.1 in a normal chat supersedes it. Respect actual sandbox approvals; do not bypass a denial or repeatedly retry.
+## Product hierarchy
 
-## Product contract
+1. **P0: Corner exit control** — KEEP the continuous analog touch steering strip and shared PC A/D virtual-steering mapping. Preserve good turn-in response. Diagnose whether unwanted post-turn motion comes from commanded yaw-rate, yaw-rate smoothing, car-vs-velocity heading divergence, residual lateral slip, or track curvature. Remove unintended delay/inertia but **never align the vehicle to the road or center its lane automatically**. Countersteering must be prompt and proportionate; steering-neutral means **no new commanded turn**, not automatic course correction.
+2. **P1: Arcade track composition** — at accepted **1.75×** coherent world pace, substantially increase meaningful curve frequency and add visible climbs/crests/descents; easy sections can be fast sweeping curves instead of dead-straight roads. Track challenge must be navigable with the finalized handling, with no broken seams or unreadable impossible turns.
+3. **Regression:** Preserve analog input's absolute-touch mapping and multi-pointer controls, PC `A/D` direction + `Space` gas + `Enter` brake, 1.75× speed feeling, car-left working needle speedometer, Pixel 8 landscape/fullscreen/PWA, long-press suppression, bounded off-road penalty and quick return, nonconstant squeal, fixed camera, zero automatic road-follow, road continuity.
 
-**P0-A: continuous steering input and direct arcade response**
-- Use a single normalized steering target [-1, 1] shared by touch/keyboard, where 0 is neutral, negative left, positive right. No fake multi-revolution steering-wheel simulation.
-- On landscape Pixel 8, replace two touch steering buttons with a **horizontal absolute-position strip** on the steering-hand side. Touch at any x gives an immediate target; dragging adjusts it continuously; lifting returns to 0. Left/right control-group swap moves the entire strip. Gas/brake on the other side still works simultaneously.
-- On PC, `A/D` (optionally arrows) move a visible/inspectable virtual steering position along the same [-1, 1] axis. On key release, the virtual wheel quickly springs to 0. `Space` accelerates, `Enter` brakes.
-- Steering-wheel self-centering is **not** vehicle lane-centering. Zero steer must mean no new commanded turn, never automatically following road curvature or returning to asphalt. Minimal/damped yaw inertia: press responds promptly, release settles promptly, reversing responds promptly.
-- Preserve accepted **1.75× coherent world pace**; no speed reduction, HUD-only tricks, independent background scroll or camera speed zoom.
+**Not in scope:** convertible/passengers, scenic biomes, rivals/traffic, scoring, new art themes, extra modes, physics engine rewrite or HUD redesign.
 
-**P0-B: road never ends or has holes.** Investigate the reported missing/broken road. Prove rendered/geometry continuity across loops at 1.75× for >=120 simulated high-speed seconds. If the defect cannot be reproduced/verified, report that honestly rather than claiming fixed.
+## Handoff
 
-**P0-C: analog needle speedometer LEFT of the car.** Real needle/dial plus digital km/h. On Pixel 8 landscape avoid the horizontal steering strip and gas/brake for both handedness layouts. Fixed camera framing stays legible.
+Create `docs/V0.4.2_HANDOFF.md` with:
+- exact local branch/commit, commands and playable LAN URL;
+- source root cause(s) or honest unresolved hypotheses; before/after **steering target, vehicle heading, yaw rate, velocity heading/slip angle, lateral road position, track curvature** traces;
+- actual entry → neutral/countersteer → exit browser driving clips, plus a tight road segment and hill/crest clip;
+- track rhythm map authored by distance with estimated durations at 1.75×, and actual measured curvature/elevation distribution;
+- build/unit/E2E output, desktop/Pixel-like screenshots, known issues, physical-device status and human playtest questions.
 
-**P1:** Preserve recoverable drift, bounded shoulders/off-road slowdown, non-constant tire squeal; no new aggressive drift simulation before steering quality is stable.
-
-**DEFER:** new road designs, convertible/passengers, scenery transitions, traffic, racing modes and unrelated UI. Don't add process or framework complexity; remain on Three.js + TypeScript + Vite.
-
-## Delivery
-
-Develop autonomously: inspect old code/diff → build shared analog input/vehicle response → run real game with short/long/reversal controls → repair track gap → design dial → capture actual motion/screenshots → run build/unit/Playwright → fix → local commit.
-
-Write `docs/V0.4.1_HANDOFF.md` with branch/commit, input-mapping proof, previous/after steering traces, video evidence, road/loop tests, desktop/Pixel screenshots (both hands layouts), analog needle operation, actual test results, known issues and local URL. Do NOT push, merge or public deploy.
-
-**Stop after v0.4.1 and await human playtest.** This stop limits this milestone, not future user-authorized work.
+Stop after v0.4.2 for human review. This stop ends this work assignment only, not future user-approved milestones.
