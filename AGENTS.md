@@ -1,47 +1,32 @@
-# Project OutRun — Codex operating agreement
+# Project OutRun — Codex working agreement
 
-## ACTIVE milestone — v0.6 Scenic Journey
+## ACTIVE: v0.7A Challenge Brick Lab — explicitly authorized
 
-The user's v0.5 playtest requests: (1) obvious wheel animation failure during hard cornering/drift, (2) expressive visible occupant motion, especially long hair whipping in the wind, and (3) **the main next investment: varied roadside scenery and more varied road sequences**. Treat v0.5's existing exhilarating Arcade Lateral Balance driving as the product baseline. **Do not change core handling just to add visuals.**
+The product owner has just authorized **v0.7A ONLY**. Build eight REAL playable challenge-brick previews and a tiny human review interface. **DO NOT implement v0.7B's Pacific Road Trip, Mystery Drive, dynamic difficulty, full Stage Composer, RPG rewards, new obstacle collision/traffic, garage or economy.** Prior “stop after v0.6” ended v0.6 pending human review; this new owner request authorizes v0.7A.
 
 Read in this order:
-1. `docs/CODEX_V0.6_KICKOFF.md`
-2. `docs/V0.6_SPEC.md`
-3. `docs/V0.6_ACCEPTANCE.md`
-4. `docs/PRODUCT_VISION.md`
-5. Previous v0.5 handoff, where available (regressions only).
+1. `docs/CODEX_V0.7A_KICKOFF.md`
+2. `docs/V0.7A_SPEC.md`
+3. `docs/V0.7A_ACCEPTANCE.md`
+4. `docs/CHALLENGE_BRICK_CANDIDATES.md`
+5. `docs/PROCEDURAL_JOURNEY_STRATEGY.md` (future integration context only).
 
-Earlier stop-after-v0.5 applied to that milestone. The new user-approved v0.6 milestone supersedes it; if actual Codex permission checks need clarification, get explicit approval in a NORMAL user chat instead of retrying a blocked action.
+## Local repo safety and authorization
+- Work ONLY in `C:\astra-dev\OutRun` and verify git remote `michael-wang/OutRun`; NEVER change `C:\astra-dev\topwar`.
+- The playable v0.6 app is on the user's **LOCAL** checkout (reported code commit `6401a03`, handoff `cf83901`). GitHub `main` is largely specifications, not the playable code. **Do not merge/reset/checkout docs-only main over the playable branch.**
+- Inspect status/current HEAD; preserve user edits. Create `codex/v0.7a-brick-lab` from the most recent playable LOCAL HEAD. Fetch `origin/main` and selectively import **only** `AGENTS.md`, `docs/V0.7A_SPEC.md`, `docs/V0.7A_ACCEPTANCE.md`, `docs/CODEX_V0.7A_KICKOFF.md`, `docs/CHALLENGE_BRICK_CANDIDATES.md` as needed; do not overwrite local source, handoff, README or unrelated files.
+- Respect real sandbox approvals. If automated review refuses based on the earlier milestone stop, request a one-time **normal-chat** user authorization rather than retrying or bypassing the denial.
+- No push/merge/public deployment, paid services, secrets, other repo edits or copyrighted SEGA/Ferrari assets.
 
-## Local repo and permissions
+## Implementation principle
+- This is a **playable product experiment**. Eight actual drives, not eight written cards or eight variants of the same corner. User is the final judge of fun.
+- Keep the actual human-approved v0.6 arcade feel: Gameplay-First track/inverse-Required-Steering generation, Arcade Lateral Balance, default 1.75× world pace, soft four-detent analog strip, visual drifting, convertible/occupants, three scenic packs, off-road penalty/bounded recovery, 3D road, left-of-car needle gauge. Preserve Pixel 8 fullscreen/PWA/two-thumb/handedness/long-press and desktop A/D+Space/Enter.
+- Model a `ChallengeBrick` as a small **data-driven gameplay moment with compatible lead-in and exit**, not a mesh asset. Prefer focused typed data/adapter onto existing track generator. No general editing framework/DSL or endless procedural content pipeline.
+- Make QA reproducible with unique IDs, versions and deterministic seeds. Inspect actual rendered play, especially first-time readability, on desktop and Pixel-like landscape.
+- **AUTO_VERIFIED != HUMAN_APPROVED.** Automated tests can verify passability/geometry but must never create the owner's KEEP votes. Initially all 8 human votes are unset. Do not create a generated public journey using unapproved candidates.
+- Build `?lab=bricks` (or similarly explicit route) accessible on the actual phone, with replay/next, three decisions KEEP/REWORK/REJECT, optional short notes, local persistence and portable export. Keep ordinary v0.6 play and menu working.
 
-- Authorized repo `michael-wang/OutRun` at `C:\astra-dev\OutRun`. Never modify `C:\astra-dev\topwar` or any other repo.
-- Existing playable **v0.5 is LOCAL**, reported at implementation `645b7ed` and handoff `9a05fc3`. GitHub origin/main is mostly documentation and MUST NOT replace local playable game code.
-- Verify remote/status, preserve uncommitted files and start `codex/v0.6-scenic-journey` from newest **playable local HEAD**. Fetch origin/main and selectively restore ONLY `AGENTS.md`, `docs/V0.6_SPEC.md`, `docs/V0.6_ACCEPTANCE.md` and `docs/CODEX_V0.6_KICKOFF.md` into the new branch, checking conflicts. Don't overwrite the local app or local README. Never reset/checkout/merge origin/main wholesale over the playable branch.
-- Respect sandbox approval boundaries. No public deployment, pushing/merging to remote, paid services, secret use, copying SEGA/Ferrari cars/models/music/logos or unrelated changes.
-
-## What gets built and in what order
-
-**P0-1 — Fix wheel animation:** the car's rolling wheels are visibly frozen, especially when visual body yaw is large. Make each visible wheel roll correctly with real travel and front wheels steer correctly with input. Don't allow aliasing at speed to make wheels LOOK stationary. Validate during sharp left and right drift, standing still, acceleration and braking.
-
-**P0-2 — Scenic stage variety:** at least THREE unmistakably different stages on one continuous route: Azure Coast, Golden Canyon / arid highlands, Sunlit Coastal City. Stage visual identity must change in near, mid and distant layers; multiple distinctive landmarks and variation WITHIN each stage, not just a palette swap or hundreds of cloned palms/cubes. Two visible stage transitions during normal play, distance-based and without obvious pop/freeze. Preserve a clean, bright, inviting original art style.
-
-**P0-3 — Road composition:** stage-specific authored challenge rhythms and elevation within the existing Gameplay-First required-steer/inverse-curvature system: fast coastline sweepers + crest, canyon S bends and technical braking, city boulevard/downhill speed reward. More interesting road scenery and perspective while preserving approachable playable skill. No invisible force, impossible road, missing mesh or mountain blocking the asphalt.
-
-**P1 — Occupant animation:** BOTH occupants show small intentional body/head lean with cornering, and a visibly long-haired female occupant gets exaggerated speed-sensitive hair motion (or adapt to established occupant designs). Wind continues even on straight roads when going fast; bends add asymmetry. Keep it inexpensive and readable on Pixel 8. No elaborate skeleton/rig unless already present.
-
-**Deferred:** opponents, traffic, hazards, gameplay director/DDA, left/right route forks, scores, multiple selectable cars, new engine, full cinematic cutscenes and character customization. No unrequested change to input mapping, game rules, or camera zoom.
-
-## Preserve gameplay invariants
-
-Keep default **1.75× coherent world pace**, v0.5 4-soft-notch steering, low/mid/high/extreme/S challenges, fast left/right sweepers and braking-required Extreme, Arcade Lateral Balance without physical residual yaw, bounded off-road slowdown/recovery, expressive body drift, fixed-FOV chase view and car-left needle HUD. Maintain desktop A/D + Space gas + Enter brake, Pixel 8 20:9 landscape fullscreen/PWA, two-thumb analog strip & gas/brake handedness swap, long-press suppression, pause/mute. No scene-driven physics changes hidden on transition.
-
-## QA and evidence
-
-Work autonomously: inspect source → fix wheel issue → implement scenic stages & route → launch and drive actual browser → examine screenshots/video → optimize → if P0 passes add simple occupant reactions → run build/unit/Playwright, fix → local commit/handoff.
-
-Use Three.js efficient instancing or LOD for repeated scenery only where helpful; procedural textures and original low-cost local assets are fine. Don't create a speculative world editor, enormous asset pipeline or generic rendering engine.
-
-Deliver `docs/V0.6_HANDOFF.md` with actual branch/commit, reproducible local and Pixel URL, rendered wheel and occupant clips, labeled stage screenshots at desktop and Pixel-like landscape, actual two transitions recorded without pauses, stage-duration/distance map, road challenge table, ≥180s long-run geometry/console checks, before/after performance samples and PASS/FAIL/UNVERIFIED hardware status.
-
-**Stop after v0.6 for human playtest**, not because development is permanently forbidden.
+## Delivery and stop
+- Run build/unit/Playwright, deterministic replay/geometry checks, and real browser drives for all eight candidates; inspect screenshots and representative motion clips. Exercise phone thumb input and both handedness layouts. Fix broken or unfair candidates rather than falsely certifying them.
+- Commit locally to the v0.7A branch; write `docs/V0.7A_HANDOFF.md` with exact local + Pixel URLs, branch/commit, eight candidate status table (AUTO vs actual HUMAN votes), test results, representative screenshots/videos, limitations, and the minimal review/export workflow.
+- Leave the eight candidate votes **unreviewed until the owner reviews them**. Deliver and STOP for human KEEP/REWORK/REJECT; **do not start v0.7B**.
