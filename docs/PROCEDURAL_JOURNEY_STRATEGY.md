@@ -1,6 +1,6 @@
 # Product strategy — Infinite Road Trip
 
-**Decision status:** Long-term direction approved. **v0.7A Challenge Brick Lab is NOW AUTHORIZED**; v0.7B Pacific Road Trip, Mystery Drive and progression remain UNAUTHORIZED. This is strategy context, not a request for Codex to exceed the v0.7A scope.
+**Decision status:** Long-term direction approved. **v0.7A Brick Lab was built and personally reviewed (6 KEEP, 2 REWORK)**. **v0.7A.1 is NOW AUTHORIZED** to rework verticality and 2–8-lane real road widths before any trip composition. v0.7B Pacific Road Trip, Mystery Drive and progression remain UNAUTHORIZED. See `docs/V0.7A1_SPEC.md` and archived R1 feedback.
 
 ## North star
 
@@ -108,4 +108,4 @@ A NO means improve the brick catalog/beat grammar, not add coins or daily-login 
 - **v0.8 Mystery Drive:** reuse the generator to deliver unannounced-but-fair scene/beat combinations; improve distinctiveness, track streaming and replay/share by code. A minimal preview may fit v0.7 if quality holds, but not at cost of the five-minute guided trip.
 - **v0.9+ Progression experiment:** only if repeated generated drives win genuine enthusiasm: tiny local Garage/reward loop with one meaningful upgrade, no large economy. Traffic, road hazards, route forks and snow/volcano packs follow only when approved as individual mechanics/asset packs.
 
-**Implementation update:** the user authorized **v0.7A Brick Lab only**. Refer to `docs/CODEX_V0.7A_KICKOFF.md` for the new execution goal. **v0.7B only after human brick KEEP/REWORK/REJECT review.**
+**Implementation update:** v0.7A delivered; owner ratings archived in `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json`. Current assignment is **v0.7A.1 BRICK REFINEMENT ONLY**, see `docs/CODEX_V0.7A1_KICKOFF.md`. **v0.7B only after the changed bricks receive new human KEEP ratings and the approved catalog is adequate.**
