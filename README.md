@@ -26,15 +26,15 @@ For v0.1, the player can simply drive for at least a minute on a scenic, winding
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | Codex operating rules; repo safety and autonomy |
 | [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md) | The experience and visual direction we are pursuing |
-| [docs/V0.6_SPEC.md](docs/V0.6_SPEC.md) | What to build — and explicitly what *not* to build |
-| [docs/V0.6_ACCEPTANCE.md](docs/V0.6_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
-| [docs/CODEX_V0.6_KICKOFF.md](docs/CODEX_V0.6_KICKOFF.md) | One-shot task for a Codex development run |
+| [docs/V0.7A_SPEC.md](docs/V0.7A_SPEC.md) | What to build — and explicitly what *not* to build |
+| [docs/V0.7A_ACCEPTANCE.md](docs/V0.7A_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
+| [docs/CODEX_V0.7A_KICKOFF.md](docs/CODEX_V0.7A_KICKOFF.md) | One-shot task for a Codex development run |
 
 ### Starting a Codex implementation run
 
 1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
-2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.6_KICKOFF.md` (Goal Mode where available).
-3. The implementation and runnable commands are below. Read the v0.6 handoff before planning further work.
+2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.7A_KICKOFF.md` (Goal Mode where available).
+3. The implementation and runnable commands are below. Read the v0.7A handoff and collect human reviews before planning further work.
 
 ## Run locally
 

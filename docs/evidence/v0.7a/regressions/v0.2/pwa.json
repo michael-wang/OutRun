@@ -1,0 +1,32 @@
+{
+  "manifest": {
+    "id": "/",
+    "name": "Coast Drive Prototype",
+    "short_name": "Coast Drive",
+    "description": "An original local coastal driving prototype.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "fullscreen",
+    "orientation": "landscape",
+    "background_color": "#123e43",
+    "theme_color": "#123e43",
+    "icons": [
+      {
+        "src": "/icons/coast-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "/icons/coast-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+      }
+    ]
+  },
+  "workerControlled": true,
+  "productionDriving": true,
+  "errors": [],
+  "physicalInstall": "UNVERIFIED"
+}
