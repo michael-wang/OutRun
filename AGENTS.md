@@ -1,33 +1,37 @@
-# Project OutRun — Codex operating agreement
+# Project OutRun — Codex working agreement
 
-## Active milestone: v0.4 Arcade Handling & Rhythm
+## Active milestone: v0.4.1 — Arcade Rescue
 
-**User decision:** v0.3.2's coherent arcade world pace **1.75× is provisionally accepted**. This ends the former speed GO/NO-GO hold and authorizes work on a focused v0.4 milestone. Do not undo the accepted pace or return to v0.3.1 baseline.
+The owner rejected v0.4 gameplay feel despite green build/tests. **v0.4.1 is a regression repair**, not permission to ship extra features. The user's explicit v0.4.1 request supersedes the prior **stop-after-v0.4** condition for this new milestone only.
 
-**Read first, in order:** `docs/CODEX_V0.4_KICKOFF.md` → `docs/V0.4_SPEC.md` → `docs/V0.4_ACCEPTANCE.md` → `docs/ARCADE_DESIGN_BACKLOG.md`. Previous milestone documents remain background/regression information; do not rerun an old Goal.
+Read these current documents before development:
+1. `docs/CODEX_V0.4.1_KICKOFF.md`
+2. `docs/V0.4.1_SPEC.md`
+3. `docs/V0.4.1_ACCEPTANCE.md`
+4. `docs/ARCADE_DESIGN_BACKLOG.md` for deferred items only.
 
-## Repo safety and autonomous development
+Prior documents are background and regression constraints, not instructions to restart old milestones.
 
-- Verify actual workspace `C:\astra-dev\OutRun` and remote `michael-wang/OutRun`. Never work in `C:\astra-dev\topwar`.
-- The playable v0.3.2 source remains **LOCAL**, with implementation commit `43fba35` and handoff `cd36798`. The GitHub `main` branch is a **documentation base**, not a replacement for the live game. Do not checkout, merge, hard-reset, or clone documentation-only `main` over the v0.3.2 code.
-- Work from the newest playable local HEAD, preserving uncommitted work, on `codex/v0.4-arcade-handling`. Selectively bring in `AGENTS.md` and v0.4 docs from `origin/main`. Don't delete application source or rewrite the game.
-- User expects autonomous source work, Git branch preparation, testing, visual/auditory reasoning and local commit. Do not stop for trivial decisions. Respect actual sandbox permissions; for the earlier auto-review authorization issue, request a **direct normal-chat authorization** if necessary, not repeated retries or bypass.
-- Keep Three.js + TypeScript + Vite, existing engineering patterns, and tests. No full physics simulation, architecture theater, unnecessary framework, paid service, copied SEGA/Ferrari content or public deployment.
-- No pushing, merging to main, altering other repos, modifying secrets or creating a public website without permission.
+## Source and workspace safety
 
-## Product priorities
+- Local working project: `C:\astra-dev\OutRun`, expected git remote `michael-wang/OutRun`. Never touch `C:\astra-dev\topwar`.
+- The playable v0.4 source is on the user's LOCAL branch, with implementation `04a1f2b` and handoff `ba76b22`. The GitHub remote `main` is primarily documentation; **do not reset, check out or merge remote main over the playable app**.
+- From the latest playable LOCAL HEAD, safely create `codex/v0.4.1-arcade-rescue` (unless already on a safe feature branch). Preserve uncommitted work. Fetch `origin/main`, selectively import this `AGENTS.md` and `docs/V0.4.1_*` + `docs/CODEX_V0.4.1_KICKOFF.md` without overwriting game code. Inspect diff before committing.
+- Do not push, merge to main, public-deploy, buy services, overwrite other projects, or incorporate SEGA/Ferrari protected assets.
+- If policy asks for a new user authorization to supersede "stop after v0.4", ask once in a NORMAL chat. Respect system approval gates; don't evade them or retry endlessly.
 
-1. **P0:** Fixed default `1.75×` world pace. Re-tune high-speed steering to be controllable with held digital buttons on Pixel 8 and keyboard, **without** lane assist, automatic curve following or reducing perceived speed.
-2. **P0:** PC input mapping: `A` left, `D` right, `Space` gas, `Enter` brake (mobile controls remain unchanged). Make browser key defaults safe and never hijack menus or text input.
-3. **P0:** Prominent, polished, readable speed HUD on desktop and Pixel 8, rather than tiny low-left numbers; preserve clean forward road composition and two-thumb ergonomic layout.
-4. **P1:** Distinct intentional arcade drift with visible larger car yaw and tire squeal triggered by actual significant slip; ordinary light steering is quiet.
-5. **P1:** A deliberately composed road rhythm (acceleration/easy → fun bend → breather → fun bend → short danger bend → recovery), distance-authored using the 1.75× pace, with navigable look-ahead and predictable steering.
-6. **DEFER:** Roofless original sports car, occupants/reaction animations, scenic biomes and opponent cars. See backlog; no unrelated art scope in v0.4.
+## Product priorities / constraints
 
-## Quality and handoff
+1. **P0 gameplay:** fix v0.4's sluggish initial steering, continuing unwanted turn/overshoot after bend release, and low predictability. Diff/measure v0.3.2 → v0.4 handling to identify root cause. Preserve the owner's accepted **1.75× arcade world pace** and direct player control. Avoid both v0.3.2's twitchiness and v0.4's delayed, simulation-like inertia.
+2. **P0 correctness:** user reports road visibly breaking/ending. Reproduce and fix track topology/progress/loop/streaming/render continuity at speed. If unverified, report exactly that; never label "fixed" based only on a passing unit test.
+3. **P0 presentation:** put a distinctive **analog needle speedometer + numeric speed** visually to the **left of the car**, inspired by classic arcade gauge composition but with original artwork. Avoid Pixel 8 left steering thumb buttons and safe areas. Keep km/h and honest speed.
+4. **Preserve:** PC A/D steer, Space accelerator, Enter brake; Pixel 8 two-thumb + swap, fullscreen/landscape/PWA, no Android long-press selection, responsive pause/menu, off-road slowdown/bounded shoulders/no auto-road-follow, drift sound tied to slip, fixed FOV/chase distance.
+5. **Defer:** new dangerous road sequences, more drift/physics complexity, new vehicle/convertible/passengers, scenic themes, traffic/rivals and all new modes. Fix regression before adding content.
 
-- Implement → run real browser game → play input sequences → inspect screenshot and moving video → fix → run build/unit/Playwright → commit locally.
-- Preserve v0.3.2 phone landscape fullscreen/PWA/safe areas, independent multi-touch, Android long-press suppression, speed-pacing motion, fixed camera FOV/dolly, bounded off-road shoulder, speed penalty, drift recovery, no auto steering and pause/menu.
-- Do not pass P0 based on unit tests alone. On device-like viewport and desktop at 1.75×, compare gentle versus held steering, ordinary turn versus deliberate drift, and real straight/curved track driving.
-- Hand off `docs/V0.4_HANDOFF.md` with actual commit/branch/local URL, P0/P1 pass/fail/unverified, 1.75× speed/handling measurements, real screenshots and play clips, new keyboard tests, loudness/audio checks *only if actually heard*, real Pixel test limitations, and major issues.
-- Stop at v0.4 for human playtest. This stops the current task only; it is not a permanent prohibition on user-authorized future versions.
+## Autonomy / evidence / handoff
+
+Work autonomously: inspect source and historical diff → instrument steering and track continuity → modify minimally → run actual browser and drive → capture video/screenshots → tune/repair → run unit/build/Playwright. Use actual evidence, not just test counts.
+
+Create `docs/V0.4.1_HANDOFF.md` documenting source root causes, before/after steering response, track break reproduction/repair evidence, high-speed ≥2min continuous road test, analog HUD layout on desktop/Pixel-like landscape, PASS/FAIL/UNVERIFIED, actual local URL, commit, and physical Pixel/audio limitations.
+
+STOP after the v0.4.1 local commit and handoff for human playtest. This milestone stop does not revoke future user-authorized work.
