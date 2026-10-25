@@ -1,6 +1,6 @@
 # Challenge Brick candidates — first review batch
 
-**Status:** DESIGN CANDIDATES ONLY. None are yet automatically eligible for a production journey. These are *playable test briefs* for human approval, not claims of implemented features.
+**Status:** DESIGN CANDIDATES; the owner has authorized **v0.7A implementation of their playable previews**, but NONE has received the owner's KEEP vote yet. No candidate is currently approved for use in v0.7B generated journeys.
 
 A brick is a self-contained **driving moment**, with a clear intended operation, emotion, geometry/visibility constraints and compatible entrance/exit. Difficulty is calibrated using current Arcade Lateral Balance and the currently approved 1.75× pacing. Keep the full run/vehicle controls familiar.
 

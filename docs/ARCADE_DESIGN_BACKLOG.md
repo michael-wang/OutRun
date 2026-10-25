@@ -16,15 +16,15 @@ Read `docs/PROCEDURAL_JOURNEY_STRATEGY.md` and `docs/CHALLENGE_BRICK_CANDIDATES.
 
 ## NEXT PLAYABLE PROTOTYPE PROPOSED: v0.7 Journey Lab
 
-**Planning only — not a Codex Goal authorization.**
+**Now authorized:** build eight actual candidate previews + KEEP / REWORK / REJECT and local JSON export; wait for Michael's votes before any full journey composition.
 
 1. Brick Lab: show 8 carefully chosen candidate driving moments in a fast replayable browser view; owner uses KEEP / REWORK / REJECT. Aim for ~5–6 approved bricks, not approving arbitrary content to satisfy counts.
-2. Generate at least one **5-minute Pacific Road Trip — Intermediate** using approved bricks, current three scenic packs and existing Gameplay-First inverse-curvature engine. Save deterministic Seed + Generator Version.
+2. **v0.7B ONLY AFTER HUMAN APPROVAL:** generate one **5-minute Pacific Road Trip — Intermediate** using approved bricks, current three scenic packs and existing Gameplay-First inverse-curvature engine. Save deterministic Seed + Generator Version.
 3. Test 10 different seeds for continuity, controllability, varied challenge sequences and actual scenery variation, not just new random number IDs. Show at least three noticeably different trips in recordings for the human playtest.
 4. Mystery Drive may be introduced with the same generator if v0.7 guided proof stays good, otherwise scope separately to v0.8. No snow/volcano claims without new asset pack.
 5. Human decision: would someone voluntarily drive a second generated seed WITHOUT coins/upgrades? If no, improve the brick library and beat grammar first.
 
-Full acceptance in `docs/V0.7_PLAYABLE_PROTOTYPE_PLAN.md`.
+Current executable definition: `docs/V0.7A_SPEC.md`, `docs/V0.7A_ACCEPTANCE.md` and `docs/CODEX_V0.7A_KICKOFF.md`. The broader trip plan remains `docs/V0.7_PLAYABLE_PROTOTYPE_PLAN.md`.
 
 ## Later — ONLY after journey replayability wins human GO
 
