@@ -15,8 +15,9 @@ const segment=(id:string,label:string,demand:number,seconds:number,ramp=1):Chall
 export const CHALLENGES:Challenge[]=[
  segment('launch','Open coast',0,4),
  segment('low','Low · one notch',.25,5),segment('relief-low','Release',0,1),
- segment('medium','Medium · two notches',-.5,5),segment('relief-medium','Release',0,1),
- segment('high','High · three notches',.75,4.5),segment('brake-zone','Brake before the tight right',0,1),
+ // Equal/opposite added heading preserves v0.4.3's global pressure calibration.
+ segment('medium','Medium · fast left sweep',-.5,6),segment('relief-medium','Release',0,1),
+ segment('high','High · fast right sweep',.75,4.5+2/3),segment('brake-zone','Brake before the tight right',0,1),
  segment('extreme','Extreme · brake to 190',1.2,4.5),segment('relief-extreme','Release',0,1),
  segment('s-left','S · left',-.5,3,.6),segment('s-center','S · release',0,.4),
  segment('s-right','S · right',.5,3,.6),segment('exit','Open coast',0,1.6),

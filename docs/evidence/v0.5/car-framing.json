@@ -1,0 +1,114 @@
+[
+  {
+    "size": {
+      "width": 960,
+      "height": 432
+    },
+    "framing": {
+      "left": 0.3784318830305512,
+      "right": 0.6215681169694488,
+      "top": 0.49560308733393604,
+      "bottom": 0.9176314856187124,
+      "width": 0.2431362339388976
+    }
+  },
+  {
+    "size": {
+      "width": 1440,
+      "height": 900
+    },
+    "framing": {
+      "left": 0.37585544201799864,
+      "right": 0.6241445579820013,
+      "top": 0.5856568159436027,
+      "bottom": 0.8997252830894285,
+      "width": 0.24828911596400266
+    }
+  },
+  {
+    "peak": {
+      "state": {
+        "distance": 2768.8425925925835,
+        "speed": 65,
+        "lateral": -1.9586994328922485,
+        "heading": 0.9910354150098941,
+        "velocityHeading": 0,
+        "worldHeading": 1.5871185325853454,
+        "steering": 1,
+        "yawRate": 0,
+        "slipAngle": 0.9910354150098941,
+        "slip": 1,
+        "offRoad": false,
+        "footprintEdge": 3.0886994328922484,
+        "curvature": 0.005788576872447592,
+        "corridorSide": 0,
+        "steeringTarget": 1,
+        "drifting": true,
+        "rawSteer": 1,
+        "effectiveSteer": 1,
+        "requiredSteer": 1.2208695652173913,
+        "lateralRate": -2.696529300567107,
+        "appliedSteer": 1,
+        "steerFrom": 0,
+        "steerTo": 1,
+        "steerTime": 0.5000000000000007,
+        "highSpeedPace": 1.75,
+        "effectivePace": 1.75,
+        "travelSpeed": 113.75,
+        "mode": "playing",
+        "elapsed": 0.5000000000000007,
+        "frames": 67,
+        "inputs": {
+          "gas": false,
+          "brake": false,
+          "steer": 0
+        },
+        "audio": {
+          "contextState": "running",
+          "muted": false,
+          "active": true,
+          "engineHz": 475.5,
+          "skidLevel": 0.22,
+          "windLevel": 0.13,
+          "rms": 0.04157331354027944
+        },
+        "trackLength": 8199.074074074073,
+        "position": [
+          -301.3089716425556,
+          44.605908012341935,
+          2386.785375480536
+        ],
+        "swapped": false,
+        "surfaceError": 0.0007216474593718658,
+        "camera": {
+          "horizontalFov": 76,
+          "fov": 38.741159100630384,
+          "distance": 8,
+          "height": 2.6,
+          "lookAhead": 13.284848493623585,
+          "lookHeight": 0,
+          "position": [
+            -293.2744477243841,
+            47.080248579286106,
+            2386.4954372679726
+          ]
+        },
+        "immersive": {
+          "active": true,
+          "installed": false,
+          "lockState": "denied",
+          "pending": false,
+          "message": "Rotate your device to landscape. Automatic rotation was not allowed."
+        },
+        "rightScreenDelta": 0.15579736137362438
+      },
+      "framing": {
+        "left": 0.28966319162046006,
+        "right": 0.6842620374361766,
+        "top": 0.4870654073343575,
+        "bottom": 0.8830615954346753,
+        "width": 0.3945988458157166
+      }
+    }
+  }
+]

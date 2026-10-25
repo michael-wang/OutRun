@@ -80,6 +80,12 @@ export function createWorld() {
     const board=new THREE.Mesh(new THREE.PlaneGeometry(5.2,2.6),signMaterial);board.position.copy(base).add(new THREE.Vector3(0,4,0));board.rotation.y=Math.PI-p.roadHeading;scene.add(board);
     const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,4,6),rail);pole.position.copy(base).add(new THREE.Vector3(0,2,0));scene.add(pole);
   }
+  for(const id of ['medium','high']){
+    const c=COURSE.find(c=>c.id===id)!,canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;
+    const ink=canvas.getContext('2d')!;ink.fillStyle='#153e45';ink.fillRect(0,0,512,256);ink.strokeStyle='#9de2d5';ink.lineWidth=12;ink.strokeRect(8,8,496,240);ink.fillStyle='#fff4d9';ink.textAlign='center';ink.font='bold 52px sans-serif';ink.fillText('FAST SWEEP',256,80);ink.font='bold 122px sans-serif';ink.fillText(c.turnDirection==='left'?'←':'→',256,210);
+    const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});
+    for(const half of [0,HALF_LENGTH]){const p=sample(half+c.start-80),base=p.position.clone().addScaledVector(p.right,15);const board=new THREE.Mesh(new THREE.PlaneGeometry(5.2,2.6),material);board.position.copy(base).add(new THREE.Vector3(0,4,0));board.rotation.y=Math.PI-p.roadHeading;scene.add(board);const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,4,6),rail);pole.position.copy(base).add(new THREE.Vector3(0,2,0));scene.add(pole);}
+  }
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
   ribbon(-29,-27,-10.9,-10.9,new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72}),0,length,10);

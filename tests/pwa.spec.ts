@@ -7,5 +7,5 @@ test('production manifest icons worker and playable build',async({page,request})
  await page.goto(origin);await expect(page.locator('#drive')).toBeVisible();expect(await page.locator('link[rel=manifest]').getAttribute('href')).toBe('/manifest.webmanifest');
  await page.evaluate(async()=>{await navigator.serviceWorker.ready;});await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
  expect(await page.evaluate(()=>(window as any).__drive)).toBeUndefined();await page.locator('#drive').click();await page.keyboard.down('w');await page.waitForTimeout(1800);await page.keyboard.up('w');expect(Number(await page.locator('#speed strong').innerText())).toBeGreaterThan(0);
- expect(errors).toEqual([]);writeFileSync('docs/evidence/v0.4.3/regressions/v0.2/pwa.json',JSON.stringify({manifest,workerControlled:true,productionDriving:true,errors,physicalInstall:'UNVERIFIED'},null,2));
+ expect(errors).toEqual([]);writeFileSync('docs/evidence/v0.5/regressions/v0.2/pwa.json',JSON.stringify({manifest,workerControlled:true,productionDriving:true,errors,physicalInstall:'UNVERIFIED'},null,2));
 });

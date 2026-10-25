@@ -1,6 +1,7 @@
 import {effectivePace} from './pace';
 import {steeringAuthority,curvePressure,requiredSteering} from './challenges';
 import {quantizeSteering,actuateSteering} from './steering';
+import {bodyYawTarget} from './body-pose';
 export interface InputState {gas:boolean;brake:boolean;steer:number;rawSteer?:number}
 export interface DrivingState {
  distance:number;speed:number;lateral:number;
@@ -41,8 +42,7 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?s.corridorSide*CORRIDOR_LIMIT:attempted;
  const ds=s.speed*effectivePace(s.speed,highSpeedPace)*dt;s.distance+=ds;
  const load=Math.sign(s.appliedSteer)===Math.sign(s.requiredSteer)?Math.min(Math.abs(s.appliedSteer),Math.abs(s.requiredSteer)):0;
- const strength=clamp((load-.25)/.5,0,1),pose=strength*strength*(3-2*strength);
- const body=Math.sign(s.appliedSteer)*pose*(35+7*clamp((load-.75)/.25,0,1))*Math.PI/180*Math.min(1,s.speed/50);
+ const body=bodyYawTarget(s.appliedSteer,s.requiredSteer,s.speed);
  s.heading+=(body-s.heading)*(1-Math.exp(-dt/(body===0?.06:.08)));
  if(Math.abs(s.heading)<1e-7)s.heading=0;
  s.velocityHeading=0;s.yawRate=0;

@@ -1,0 +1,12 @@
+
+> first-drive@0.5.0 test
+> vitest run
+
+
+ RUN  v5.0.5 C:/astra-dev/outrun
+
+
+ Test Files  12 passed (12)
+      Tests  43 passed (43)
+   Start at  19:40:25
+   Duration  384ms (import 40%, tests 38%, transform 13%, worker 9%)

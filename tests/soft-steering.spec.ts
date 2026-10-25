@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.4.3';
+const root='docs/evidence/v0.5';
 test('trusted thumb soft response, two-pixel jitter, quick release and shared PC stream',async({browser})=>{
  const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({speed:230/3.6});});const touch=await touchDriver(page,context),rows=[];
  const advance=(t:number)=>page.evaluate(t=>(window as any).__drive.advance(t),t),snapshot=()=>page.evaluate(()=>(window as any).__drive.snapshot());
@@ -18,7 +18,7 @@ test('fixed-camera lookahead and expressive pose match actual curve demand',asyn
  const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.goto('/?challenge=low');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const course=await page.evaluate(()=>(window as any).__drive.challenges()),rows=[],touch=await touchDriver(page,context);
  for(const id of ['low','medium','high','extreme']){
   const c=course.find((c:any)=>c.id===id);await touch(null,false,false);await page.evaluate(d=>(window as any).__drive.reset({distance:d,speed:230/3.6}),c.start+c.transitionLength);await touch(Math.max(-1,Math.min(1,c.targetRequiredSteering)),true,false);await page.evaluate(()=>(window as any).__drive.advance(.3));await expect(page.locator('#challenge-readout')).toContainText(c.label);
-  const look=await page.evaluate(()=>(window as any).__drive.lookahead(2));const yaw=Math.abs(look.renderedBodyYaw)*180/Math.PI;if(id==='low')expect(yaw).toBeLessThan(1);if(id==='high'||id==='extreme')expect(yaw).toBeGreaterThan(25);
+  const look=await page.evaluate(()=>(window as any).__drive.lookahead(2));const yaw=Math.abs(look.renderedBodyYaw)*180/Math.PI;if(id==='low'){expect(yaw).toBeGreaterThan(3);expect(yaw).toBeLessThan(8)};if(id==='high'||id==='extreme')expect(yaw).toBeGreaterThan(25);
   await page.screenshot({path:`${root}/${id}-pose-lookahead.png`});rows.push({id,yaw,...look});
  }
  for(let i=1;i<rows.length;i++)expect(Math.abs(rows[i].rows.at(-1).headingChange)).toBeGreaterThan(Math.abs(rows[i-1].rows.at(-1).headingChange));

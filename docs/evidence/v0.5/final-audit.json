@@ -1,0 +1,228 @@
+{
+  "recordings": [
+    {
+      "name": "medium-full-gas-sweep",
+      "id": "medium",
+      "kind": "full-gas-sweep",
+      "errors": [],
+      "elapsed": 6.933700000000114,
+      "distance": 1826.24182361148,
+      "offRoad": 0,
+      "minX": 0,
+      "maxX": 1.1153367161114074,
+      "minKmh": 229.49154449584296,
+      "maxKmh": 234,
+      "maxYawDegrees": 19.999999999999986,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": true,
+      "anyBrake": false
+    },
+    {
+      "name": "high-full-gas-sweep",
+      "id": "high",
+      "kind": "full-gas-sweep",
+      "errors": [],
+      "elapsed": 6.133600000000073,
+      "distance": 2518.005883695078,
+      "offRoad": 0,
+      "minX": -1.3244974191195724,
+      "maxX": 0,
+      "minKmh": 229.771544,
+      "maxKmh": 234,
+      "maxYawDegrees": 40.17021769162188,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": true,
+      "anyBrake": false
+    },
+    {
+      "name": "low-matching",
+      "id": "low",
+      "kind": "matching",
+      "errors": [],
+      "elapsed": 2.950099999999991,
+      "distance": 894.1498339421871,
+      "offRoad": 0,
+      "minX": -0.4937217231297873,
+      "maxX": -0.09965295102454341,
+      "minKmh": 229.544456,
+      "maxKmh": 234,
+      "maxYawDegrees": 5.999999999999996,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": true,
+      "anyBrake": false
+    },
+    {
+      "name": "medium-matching",
+      "id": "medium",
+      "kind": "matching",
+      "errors": [],
+      "elapsed": 2.983599999999991,
+      "distance": 1568.7937971150452,
+      "offRoad": 0,
+      "minX": 0.10005096864813692,
+      "maxX": 0.9910002628738602,
+      "minKmh": 229.71835969676584,
+      "maxKmh": 234,
+      "maxYawDegrees": 19.999999999999986,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": true,
+      "anyBrake": false
+    },
+    {
+      "name": "high-matching",
+      "id": "high",
+      "kind": "matching",
+      "errors": [],
+      "elapsed": 2.9997999999999925,
+      "distance": 2353.276687271552,
+      "offRoad": 0,
+      "minX": -1.4865020018548198,
+      "maxX": -0.2971677011035996,
+      "minKmh": 229.547192,
+      "maxKmh": 234,
+      "maxYawDegrees": 39.99999999999997,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": true,
+      "anyBrake": false
+    },
+    {
+      "name": "extreme-fast",
+      "id": "extreme",
+      "kind": "fast",
+      "errors": [],
+      "elapsed": 5.433400000000055,
+      "distance": 3092.7126801508734,
+      "offRoad": 48,
+      "minX": -7.540049459711841,
+      "maxX": 0,
+      "minKmh": 177.15284442197864,
+      "maxKmh": 234,
+      "maxYawDegrees": 56.999999999993264,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": true,
+      "anyBrake": false
+    },
+    {
+      "name": "extreme-braked",
+      "id": "extreme",
+      "kind": "braked",
+      "errors": [],
+      "elapsed": 6.366800000000083,
+      "distance": 3091.4865283104523,
+      "offRoad": 0,
+      "minX": -1.184451748804744,
+      "maxX": 0.8179635699012023,
+      "minKmh": 182.02003876463047,
+      "maxKmh": 229.545824,
+      "maxYawDegrees": 50.58909734008071,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": false,
+      "anyBrake": true
+    },
+    {
+      "name": "s-left-s-curve",
+      "id": "s-left",
+      "kind": "s-curve",
+      "errors": [],
+      "elapsed": 7.5836000000001595,
+      "distance": 3987.2752855557433,
+      "offRoad": 0,
+      "minX": -0.5295693625073614,
+      "maxX": 0.79525184927525,
+      "minKmh": 229.7145947667755,
+      "maxKmh": 234,
+      "maxYawDegrees": 19.99999999943286,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": true,
+      "anyBrake": false
+    },
+    {
+      "name": "launch-road-loop",
+      "id": "launch",
+      "kind": "road-loop",
+      "errors": [],
+      "elapsed": 124.97040000003993,
+      "distance": 13622.877524558691,
+      "offRoad": 0,
+      "minX": -0.6466746925242215,
+      "maxX": 0.754183068165747,
+      "minKmh": 189.60802817228068,
+      "maxKmh": 230.62168019277127,
+      "maxYawDegrees": 50.54491659358793,
+      "initialPreContactSample": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "allGasAfterFirstContact": false,
+      "anyBrake": false
+    }
+  ],
+  "equivalence": [
+    {
+      "hz": 30,
+      "elapsed": 120.00000000004157,
+      "distance": 18683.332418315742,
+      "offRoad": 0
+    },
+    {
+      "hz": 60,
+      "elapsed": 120.00000000004157,
+      "distance": 18683.332418315742,
+      "offRoad": 0
+    }
+  ],
+  "frameProbe": {
+    "medianMs": 16.699999999999818,
+    "p95Ms": 16.799999999999955,
+    "frames": 181
+  },
+  "car": {
+    "meshes": 17,
+    "triangles": 7964,
+    "bounds": {
+      "min": [
+        -1.309999942779541,
+        -8.344650304081824e-9,
+        -2.4700000286102295
+      ],
+      "max": [
+        1.309999942779541,
+        1.7050000429153442,
+        2.4000000953674316
+      ]
+    }
+  }
+}

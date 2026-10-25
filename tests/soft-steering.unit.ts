@@ -4,7 +4,7 @@ import {actuateSteering} from '../src/steering';
 import {createState,step,updateFootprint} from '../src/handling';
 import {COURSE,curvatureForDemand,REFERENCE_SPEED,REFERENCE_TRAVEL} from '../src/challenges';
 import {createTrack} from '../src/track';
-const root='docs/evidence/v0.4.3';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.5';mkdirSync(root,{recursive:true});
 it('finite soft detents settle in 100ms, release in 60ms, and integrate identically at 30/60/120Hz',()=>{
  const runs=[];
  for(const hz of [30,60,120]){
@@ -33,7 +33,7 @@ it('quiet mild pose and dramatic loaded pose do not affect path, speed or collis
  for(const u of [.25,.5,.75,1]){const a={...createState(),speed:REFERENCE_SPEED},b={...a},k=curvatureForDemand(u===1?1.2:u);
   for(let i=0;i<120;i++){b.heading=-2;updateFootprint(b);for(const s of [a,b])step(s,{gas:true,brake:false,steer:u},1/120,k,1.75);}
   expect(a.distance).toBe(b.distance);expect(a.lateral).toBe(b.lateral);expect(a.speed).toBe(b.speed);expect(a.offRoad).toBe(b.offRoad);
-  const degrees=a.heading*180/Math.PI;if(u===.25){expect(degrees).toBe(0);expect(a.slip).toBe(0);}if(u>=.75){expect(degrees).toBeGreaterThan(25);expect(degrees).toBeLessThan(45);expect(a.slip).toBeGreaterThan(.45);}poses.push({u,degrees,slip:a.slip});
+  const degrees=a.heading*180/Math.PI;if(u===.25){expect(degrees).toBeGreaterThan(3);expect(degrees).toBeLessThan(8);expect(a.slip).toBe(0);}if(u>=.75){expect(degrees).toBeGreaterThan(25);expect(degrees).toBeLessThan(60);if(u===1)expect(degrees).toBeGreaterThan(50);expect(a.slip).toBeGreaterThan(.45);}poses.push({u,degrees,slip:a.slip});
  }
  writeFileSync(`${root}/body-pose.json`,JSON.stringify(poses,null,2));
 });
