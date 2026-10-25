@@ -42,4 +42,3 @@ for(const {id,kind} of scenarios){
 }
 await browser.close();
 writeFileSync(`${root}/review.html`,`<!doctype html><meta charset="utf-8"><title>Gameplay-first course evidence</title><style>body{font:16px system-ui;color:#fff4de;background:#12343b;margin:24px}video{display:block;width:min(960px,100%)}h2{margin-top:28px}</style><h1>v0.6 actual gameplay</h1><p>All challenge clips use trusted touch events, including actual throttle/brake contacts. Paired entries start at 230 indicated km/h. These four clips use actual touch input; normal play has no autopilot. Videos are silent. Human PC/Pixel playtesting decides feel.</p>${scenarios.map(({id,kind})=>`<h2>${id} · ${kind}</h2><video controls muted preload="metadata" src="${id}-${kind}.webm" poster="${id}-${kind}-end.png"></video>`).join('')}`);
-
