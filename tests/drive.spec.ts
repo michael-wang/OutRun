@@ -1,4 +1,4 @@
-import { menuAction } from './ui';
+import { menuAction,controlPoint } from './ui';
 import { scriptedDriver } from './driver';
 import { test, expect, Page } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
@@ -33,7 +33,7 @@ test('desktop real-time driving, lifecycle, drift audio and continuous full rout
 });
 test('trusted mobile multi-touch default and swapped, persistence, cancel and portrait',async({browser})=>{
  const context=await browser.newContext({viewport:{width:844,height:390},isMobile:true,hasTouch:true,deviceScaleFactor:1});const page=await context.newPage();await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});await boot(page);
- const client=await context.newCDPSession(page);const point=async(control:string,id:number)=>{const b=await page.locator(`[data-control=${control}]`).boundingBox();return {x:b!.x+b!.width/2,y:b!.y+b!.height/2,id};};
+ const client=await context.newCDPSession(page);const point=(control:string,id:number)=>controlPoint(page,control,id);
  const evidence:any[]=[];
  for(const swapped of [false,true]){
   if(swapped){await menuAction(page,'settings');await page.locator('#swap').check();await page.locator('#close-settings').click();await page.reload();await page.waitForFunction(()=>!!(window as any).__drive);expect(await page.locator('#swap').isChecked()).toBe(true);await page.locator('#drive').click();}

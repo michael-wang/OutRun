@@ -1,33 +1,45 @@
-# Project OutRun — Codex operating agreement
+# Project OutRun — Codex working agreement
 
-## Active milestone: v0.4 Arcade Handling & Rhythm
+## ACTIVE milestone: v0.4.1 — Analog Arcade Steering & Rescue
 
-**User decision:** v0.3.2's coherent arcade world pace **1.75× is provisionally accepted**. This ends the former speed GO/NO-GO hold and authorizes work on a focused v0.4 milestone. Do not undo the accepted pace or return to v0.3.1 baseline.
+The product owner has NOT launched v0.4.1. They revised the steering design **before handing work to Codex**. The new, binding decision is a **continuous virtual steering-wheel position**, not two binary steering buttons or a lengthy simulated steering-inertia fix.
 
-**Read first, in order:** `docs/CODEX_V0.4_KICKOFF.md` → `docs/V0.4_SPEC.md` → `docs/V0.4_ACCEPTANCE.md` → `docs/ARCADE_DESIGN_BACKLOG.md`. Previous milestone documents remain background/regression information; do not rerun an old Goal.
+Read first:
+1. `docs/CODEX_V0.4.1_KICKOFF.md`
+2. `docs/V0.4.1_SPEC.md`
+3. `docs/V0.4.1_ACCEPTANCE.md`
+4. Earlier v0.4 and v0.3.2 handoffs for diff/regression context.
 
-## Repo safety and autonomous development
+These new documents supersede the previous v0.4.1 draft's steering approach. Do not run an old Goal or simply reduce sensitivity.
 
-- Verify actual workspace `C:\astra-dev\OutRun` and remote `michael-wang/OutRun`. Never work in `C:\astra-dev\topwar`.
-- The playable v0.3.2 source remains **LOCAL**, with implementation commit `43fba35` and handoff `cd36798`. The GitHub `main` branch is a **documentation base**, not a replacement for the live game. Do not checkout, merge, hard-reset, or clone documentation-only `main` over the v0.3.2 code.
-- Work from the newest playable local HEAD, preserving uncommitted work, on `codex/v0.4-arcade-handling`. Selectively bring in `AGENTS.md` and v0.4 docs from `origin/main`. Don't delete application source or rewrite the game.
-- User expects autonomous source work, Git branch preparation, testing, visual/auditory reasoning and local commit. Do not stop for trivial decisions. Respect actual sandbox permissions; for the earlier auto-review authorization issue, request a **direct normal-chat authorization** if necessary, not repeated retries or bypass.
-- Keep Three.js + TypeScript + Vite, existing engineering patterns, and tests. No full physics simulation, architecture theater, unnecessary framework, paid service, copied SEGA/Ferrari content or public deployment.
-- No pushing, merging to main, altering other repos, modifying secrets or creating a public website without permission.
+## Local checkout safety
 
-## Product priorities
+- Repo `michael-wang/OutRun`; authorized Windows directory `C:\astra-dev\OutRun`. NEVER modify `C:\astra-dev\topwar`.
+- Playable v0.4 exists on a LOCAL branch, with implementation commit `04a1f2b` and handoff `ba76b22`. Remote GitHub `main` is primarily product documentation; **never reset/checkout/merge its whole tree over playable source**.
+- Preserve uncommitted work. Branch from the latest playable local v0.4 HEAD as `codex/v0.4.1-analog-steering` (or a safe equivalent). Fetch `origin/main` and import **only current AGENTS.md + v0.4.1 documents**, protecting source code.
+- A prior stop-after-v0.4 limited that milestone. Explicit authorization for a new v0.4.1 in a normal chat supersedes it. Respect actual sandbox approvals; do not bypass a denial or repeatedly retry.
 
-1. **P0:** Fixed default `1.75×` world pace. Re-tune high-speed steering to be controllable with held digital buttons on Pixel 8 and keyboard, **without** lane assist, automatic curve following or reducing perceived speed.
-2. **P0:** PC input mapping: `A` left, `D` right, `Space` gas, `Enter` brake (mobile controls remain unchanged). Make browser key defaults safe and never hijack menus or text input.
-3. **P0:** Prominent, polished, readable speed HUD on desktop and Pixel 8, rather than tiny low-left numbers; preserve clean forward road composition and two-thumb ergonomic layout.
-4. **P1:** Distinct intentional arcade drift with visible larger car yaw and tire squeal triggered by actual significant slip; ordinary light steering is quiet.
-5. **P1:** A deliberately composed road rhythm (acceleration/easy → fun bend → breather → fun bend → short danger bend → recovery), distance-authored using the 1.75× pace, with navigable look-ahead and predictable steering.
-6. **DEFER:** Roofless original sports car, occupants/reaction animations, scenic biomes and opponent cars. See backlog; no unrelated art scope in v0.4.
+## Product contract
 
-## Quality and handoff
+**P0-A: continuous steering input and direct arcade response**
+- Use a single normalized steering target [-1, 1] shared by touch/keyboard, where 0 is neutral, negative left, positive right. No fake multi-revolution steering-wheel simulation.
+- On landscape Pixel 8, replace two touch steering buttons with a **horizontal absolute-position strip** on the steering-hand side. Touch at any x gives an immediate target; dragging adjusts it continuously; lifting returns to 0. Left/right control-group swap moves the entire strip. Gas/brake on the other side still works simultaneously.
+- On PC, `A/D` (optionally arrows) move a visible/inspectable virtual steering position along the same [-1, 1] axis. On key release, the virtual wheel quickly springs to 0. `Space` accelerates, `Enter` brakes.
+- Steering-wheel self-centering is **not** vehicle lane-centering. Zero steer must mean no new commanded turn, never automatically following road curvature or returning to asphalt. Minimal/damped yaw inertia: press responds promptly, release settles promptly, reversing responds promptly.
+- Preserve accepted **1.75× coherent world pace**; no speed reduction, HUD-only tricks, independent background scroll or camera speed zoom.
 
-- Implement → run real browser game → play input sequences → inspect screenshot and moving video → fix → run build/unit/Playwright → commit locally.
-- Preserve v0.3.2 phone landscape fullscreen/PWA/safe areas, independent multi-touch, Android long-press suppression, speed-pacing motion, fixed camera FOV/dolly, bounded off-road shoulder, speed penalty, drift recovery, no auto steering and pause/menu.
-- Do not pass P0 based on unit tests alone. On device-like viewport and desktop at 1.75×, compare gentle versus held steering, ordinary turn versus deliberate drift, and real straight/curved track driving.
-- Hand off `docs/V0.4_HANDOFF.md` with actual commit/branch/local URL, P0/P1 pass/fail/unverified, 1.75× speed/handling measurements, real screenshots and play clips, new keyboard tests, loudness/audio checks *only if actually heard*, real Pixel test limitations, and major issues.
-- Stop at v0.4 for human playtest. This stops the current task only; it is not a permanent prohibition on user-authorized future versions.
+**P0-B: road never ends or has holes.** Investigate the reported missing/broken road. Prove rendered/geometry continuity across loops at 1.75× for >=120 simulated high-speed seconds. If the defect cannot be reproduced/verified, report that honestly rather than claiming fixed.
+
+**P0-C: analog needle speedometer LEFT of the car.** Real needle/dial plus digital km/h. On Pixel 8 landscape avoid the horizontal steering strip and gas/brake for both handedness layouts. Fixed camera framing stays legible.
+
+**P1:** Preserve recoverable drift, bounded shoulders/off-road slowdown, non-constant tire squeal; no new aggressive drift simulation before steering quality is stable.
+
+**DEFER:** new road designs, convertible/passengers, scenery transitions, traffic, racing modes and unrelated UI. Don't add process or framework complexity; remain on Three.js + TypeScript + Vite.
+
+## Delivery
+
+Develop autonomously: inspect old code/diff → build shared analog input/vehicle response → run real game with short/long/reversal controls → repair track gap → design dial → capture actual motion/screenshots → run build/unit/Playwright → fix → local commit.
+
+Write `docs/V0.4.1_HANDOFF.md` with branch/commit, input-mapping proof, previous/after steering traces, video evidence, road/loop tests, desktop/Pixel screenshots (both hands layouts), analog needle operation, actual test results, known issues and local URL. Do NOT push, merge or public deploy.
+
+**Stop after v0.4.1 and await human playtest.** This stop limits this milestone, not future user-authorized work.

@@ -1,4 +1,4 @@
-import { menuAction } from './ui';
+import { menuAction,controlPoint } from './ui';
 import { test,expect,Page } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
 import { scriptedDriver } from './driver';
@@ -68,7 +68,7 @@ for(const mode of ['success','reject','lock-reject','unsupported','installed'] a
 }
 test('Pixel-like landscape touch, safe bounds, brake+steer, both layouts',async({browser})=>{
  const context=await browser.newContext({viewport:{width:960,height:432},isMobile:true,hasTouch:true,deviceScaleFactor:1});const page=await context.newPage();await stubImmersion(page,'success');await boot(page);const client=await context.newCDPSession(page);
- const point=async(control:string,id:number)=>{const b=(await page.locator(`[data-control=${control}]`).boundingBox())!;expect(b.width).toBeGreaterThanOrEqual(56);expect(b.height).toBeGreaterThanOrEqual(56);expect(b.x).toBeGreaterThanOrEqual(20);expect(b.y+b.height).toBeLessThanOrEqual(432-20);return {x:b.x+b.width/2,y:b.y+b.height/2,id};};
+ const point=async(control:string,id:number)=>{const b=(await page.locator(control==='right'||control==='left'?'#steering-strip':`[data-control=${control}]`).boundingBox())!;expect(b.width).toBeGreaterThanOrEqual(56);expect(b.height).toBeGreaterThanOrEqual(56);expect(b.x).toBeGreaterThanOrEqual(20);expect(b.y+b.height).toBeLessThanOrEqual(432-20);return controlPoint(page,control,id);};
  for(const swapped of [false,true]){
   if(swapped){await menuAction(page,'settings');await page.locator('#swap').check();await page.locator('#close-settings').click();await page.locator('#resume').click();}
   await reset(page,{distance:420,speed:45});const gas=await point('gas',1),brake=await point('brake',1),right=await point('right',2);expect(gas.y).toBeLessThan(brake.y);expect(swapped?gas.x<right.x:gas.x>right.x).toBe(true);

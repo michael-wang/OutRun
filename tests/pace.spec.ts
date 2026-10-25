@@ -26,7 +26,9 @@ for(const pace of [1.75,2])test(`pace ${pace} normal bend with real keyboard inp
  await page.goto(`/?pace=${pace}`);await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.reset({distance:740,speed:65}));
  const driver=scriptedDriver(),trace:any[]=[];
  for(let i=0;i<90;i++){
-  const s=await page.evaluate(()=>(window as any).__drive.snapshot()),k=await page.evaluate(d=>(window as any).__drive.sample(d).curvature,s.distance),input=driver(s,k);
+  const s=await page.evaluate(()=>(window as any).__drive.snapshot()),k=await page.evaluate(d=>(window as any).__drive.sample(d).curvature,s.distance+s.travelSpeed*.25),input=driver(s,k);
+  // Keys move the virtual wheel, rather than directly selecting vehicle yaw.
+  input.steer=Math.abs(input.steer)<.015?0:Math.sign(input.steer-s.inputs.steer);
   for(const [key,active] of [['Space',input.gas],['Enter',input.brake],['a',input.steer<0],['d',input.steer>0]] as const){if(active)await page.keyboard.down(key);else await page.keyboard.up(key);}
   await page.waitForTimeout(50);trace.push(s);
  }

@@ -19,7 +19,7 @@ describe('arcade driving', () => {
   });});
 describe('independent inputs and settings', () => {
   it('retains gas while releasing steering and clears all on blur/cancel', () => {
-    const input = new InputLatch(); input.press('finger:1', 'gas'); input.press('finger:2', 'left'); expect(input.snapshot()).toEqual({ gas: true, brake: false, steer: -1 }); input.release('finger:2'); expect(input.snapshot().gas).toBe(true); input.press('keyboard', 'gas'); input.release('finger:1'); expect(input.snapshot().gas).toBe(true); input.clear(); expect(input.snapshot()).toEqual(idle);
+    const input = new InputLatch(); input.press('finger:1', 'gas'); input.setAnalog('finger:2', -1); expect(input.snapshot()).toEqual({ gas: true, brake: false, steer: -1 }); input.release('finger:2'); expect(input.snapshot().gas).toBe(true); input.press('keyboard', 'gas'); input.release('finger:1'); expect(input.snapshot().gas).toBe(true); input.clear(); expect(input.snapshot()).toEqual(idle);
   });
   it('persists both hand layouts and handles unavailable storage', () => {
     const data = new Map<string, string>(); const storage = { getItem: (key: string) => data.get(key) ?? null, setItem: (key: string, value: string) => { data.set(key, value); } };

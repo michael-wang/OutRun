@@ -1,4 +1,4 @@
-import { menuAction } from './ui';
+import { menuAction,controlPoint } from './ui';
 import { test, expect, Page } from '@playwright/test';
 import { mkdirSync, writeFileSync } from 'node:fs';
 const snapshot = (page: Page) => page.evaluate(() => (window as any).__drive.snapshot());
@@ -13,15 +13,12 @@ test('mobile long holds retain independent pointers and suppress only gameplay b
   await page.locator('#drive').click();
   await page.evaluate(() => {
     (window as any).controlPointers = {};
-    document.querySelectorAll<HTMLElement>('[data-control]').forEach(button => button.addEventListener('pointerdown', e => {
-      (window as any).controlPointers[button.dataset.control!] = e.pointerId;
+    document.querySelectorAll<HTMLElement>('[data-control],#steering-strip').forEach(button => button.addEventListener('pointerdown', e => {
+      (window as any).controlPointers[button.dataset.control||'steering'] = e.pointerId;
     }));
   });
   const client = await context.newCDPSession(page);
-  const point = async (control: string, id: number) => {
-    const box = (await page.locator(`[data-control=${control}]`).boundingBox())!;
-    return { x: box.x + box.width / 2, y: box.y + box.height / 2, id };
-  };
+  const point = (control: string, id: number) => controlPoint(page,control,id);
   const gas = await point('gas', 1), left = await point('left', 2);
   const trace: any[] = [];
   await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [gas] });
@@ -42,8 +39,8 @@ test('mobile long holds retain independent pointers and suppress only gameplay b
     expect(state.mode).toBe('playing');
   }
   expect(await page.evaluate(() => getSelection()?.toString())).toBe('');
-  for (const control of ['left', 'right', 'gas', 'brake']) {
-    const policies = await page.locator(`[data-control=${control}]`).evaluate(button => {
+  for (const control of ['steering', 'gas', 'brake']) {
+    const policies = await page.locator(control==='steering'?'#steering-strip':`[data-control=${control}]`).evaluate(button => {
       const style = getComputedStyle(button);
       return { touch: style.touchAction, selection: style.userSelect, webkitSelection: style.getPropertyValue('-webkit-user-select'),
         canceled: ['contextmenu', 'selectstart', 'dragstart'].map(type => !button.dispatchEvent(new Event(type, { bubbles: true, cancelable: true }))) };
@@ -63,7 +60,7 @@ test('mobile long holds retain independent pointers and suppress only gameplay b
   await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [gas, left] });
   // Activate pending capture before deliberately releasing it.
   await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [gas, { ...left, x: left.x + 1 }] });
-  await page.locator('[data-control=left]').evaluate(button => button.releasePointerCapture((window as any).controlPointers.left));
+  await page.locator('#steering-strip').evaluate(button => button.releasePointerCapture((window as any).controlPointers.steering));
   // Flush the pending lostpointercapture event with the next real pointer update.
   await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [gas, { ...left, x: left.x + 2 }] });
   expect((await snapshot(page)).inputs).toEqual({ gas: true, brake: false, steer: 0 });

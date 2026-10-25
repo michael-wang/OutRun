@@ -17,7 +17,7 @@ export function createWorld() {
     for(let i=0;i<=n;i++) { const d=start+(end-start)*i/n,p=sample(d); for(const [o,h] of [[offsetA,liftA],[offsetB,liftB]]) {const v=p.position.clone().addScaledVector(p.right,o); pos.push(v.x,o<=-27 ? (h<-10 ? -4.88 : -5.05) : v.y+h,v.z);uv.push(o/4,d/4);} }
     for(let i=0;i<n;i++){const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2);}
     const geo=new THREE.BufferGeometry(); geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2)); geo.setIndex(idx); geo.computeVertexNormals();
-    const mesh=new THREE.Mesh(geo,material); mesh.receiveShadow=true; scene.add(mesh); return mesh;
+    const mesh=new THREE.Mesh(geo,material);mesh.name=material===asphalt?'driving-surface':material===grass?'terrain':material===sand?'shoulder':'road-detail'; mesh.receiveShadow=true; scene.add(mesh); return mesh;
   }
   const grainCanvas=document.createElement('canvas');grainCanvas.width=grainCanvas.height=64;
   const grain=grainCanvas.getContext('2d')!; const pixels=grain.createImageData(64,64);
@@ -86,13 +86,21 @@ export function createWorld() {
   instances(new THREE.IcosahedronGeometry(1,1),mat('#b9ae89'),rocks);
   instances(new THREE.IcosahedronGeometry(1,1),mat('#c8bd97'),ledges);
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
+  // Enclose the actual route. The former fixed (400,500)/1550m ring intersected
+  // v0.4's longer loop and covered asphalt with an opaque mountain surface.
+  const trackBounds=new THREE.Box3();
+  for(let d=0;d<length;d+=10)trackBounds.expandByPoint(sample(d).position);
+  const ridgeCenter=trackBounds.getCenter(new THREE.Vector3());
+  let ridgeRadius=0;
+  for(let d=0;d<length;d+=10){const p=sample(d).position;ridgeRadius=Math.max(ridgeRadius,Math.hypot(p.x-ridgeCenter.x,p.z-ridgeCenter.z));}
+  ridgeRadius+=400; // includes road, shoulders, inland mesh and sampling margin
   const ridge:number[]=[],ridgeIndex:number[]=[],ridgeColors:number[]=[];
   const ridgeColor=new THREE.Color();
   for(let i=0;i<=192;i++){const angle=i/192*Math.PI*2;const crest=65+35*Math.sin(angle*7)+28*Math.sin(angle*13+.7)+15*Math.cos(angle*23);
-    for(let j=0;j<4;j++){const radius=1550+j*230;const height=j===0?-7:j===1?crest:j===2?crest*.65:-10;ridge.push(400+Math.cos(angle)*radius,height,500+Math.sin(angle)*radius);ridgeColor.set(j===1?'#81a8ac':j===0?'#9fc4c6':'#92b7bb');ridgeColors.push(ridgeColor.r,ridgeColor.g,ridgeColor.b);}
+    for(let j=0;j<4;j++){const radius=ridgeRadius+j*230;const height=j===0?-7:j===1?crest:j===2?crest*.65:-10;ridge.push(ridgeCenter.x+Math.cos(angle)*radius,height,ridgeCenter.z+Math.sin(angle)*radius);ridgeColor.set(j===1?'#81a8ac':j===0?'#9fc4c6':'#92b7bb');ridgeColors.push(ridgeColor.r,ridgeColor.g,ridgeColor.b);}
     if(i<192)for(let j=0;j<3;j++){const a=i*4+j;ridgeIndex.push(a,a+1,a+4,a+1,a+5,a+4);}}
   const ridgeGeo=new THREE.BufferGeometry();ridgeGeo.setAttribute('position',new THREE.Float32BufferAttribute(ridge,3));ridgeGeo.setAttribute('color',new THREE.Float32BufferAttribute(ridgeColors,3));ridgeGeo.setIndex(ridgeIndex);ridgeGeo.computeVertexNormals();
-  scene.add(new THREE.Mesh(ridgeGeo,new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide})));
+  const distantRidge=new THREE.Mesh(ridgeGeo,new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide}));distantRidge.name='distant-ridge';scene.add(distantRidge);
   const clouds=[];for(let i=0;i<24;i++){const angle=i*2.4;for(let j=0;j<4;j++)clouds.push({p:new THREE.Vector3(400+Math.cos(angle)*1700+j*50,280+rand(i)*170,500+Math.sin(angle)*1700),s:new THREE.Vector3(70,18+rand(j+i)*15,35),r:new THREE.Euler()});}
   instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
   // Small clusters of pastel coastal villas, shutters and terracotta roof caps.
