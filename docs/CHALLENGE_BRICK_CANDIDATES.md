@@ -1,6 +1,6 @@
 # Challenge Brick candidates — first review batch
 
-**Status:** DESIGN CANDIDATES; the owner has authorized **v0.7A implementation of their playable previews**, but NONE has received the owner's KEEP vote yet. No candidate is currently approved for use in v0.7B generated journeys.
+**Status:** Original r1 descriptions below. The owner reviewed r1: KEEP 01/02/04/06/07/08; REWORK 03/05, requesting "More radical height delta". Exact feedback is preserved in [the R1 archive](reviews/V0.7A_R1_HUMAN_REVIEWS.json). v0.7A.1 changes road geometry/markings for all eight; their new r2 votes start UNREVIEWED. No revised candidate is human-approved for v0.7B.
 
 A brick is a self-contained **driving moment**, with a clear intended operation, emotion, geometry/visibility constraints and compatible entrance/exit. Difficulty is calibrated using current Arcade Lateral Balance and the currently approved 1.75× pacing. Keep the full run/vehicle controls familiar.
 

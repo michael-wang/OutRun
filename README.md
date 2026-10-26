@@ -2,9 +2,9 @@
 
 **An original arcade-driving game inspired by the feeling of SEGA's 1986 Out Run and 2003 OutRun 2.**
 
-**Status:** v0.7A *Challenge Brick Lab* adds eight short, independently replayable candidates at `/?lab=bricks`. Play, mark KEEP / REWORK / REJECT, optionally leave a note, then export reviews JSON. Automated QA never supplies human votes. See [v0.7A handoff and evidence](docs/V0.7A_HANDOFF.md). Physical Pixel 8 results remain unverified. Stop for human review before v0.7B.
+**Status:** v0.7A.1 *Verticality & Variable Width* revises the eight playable candidates at `/?lab=bricks` with a dramatic ridge, sustained downhill and true 2/4/6/8-lane road geometry. Original R1 feedback is preserved; all revised r2 candidates need new human reviews. See [v0.7A.1 handoff and evidence](docs/V0.7A1_HANDOFF.md). Physical Pixel 8 checks remain unverified. Stop for human review before v0.7B.
 
-The base URL preserves the v0.6 Azure Coast → Golden Canyon → Sunlit Coastal City drive, rolling/steering wheels, expressive occupants and wind-responsive hair. Handling, 1.75× pace and soft steering controls are preserved. [Local v0.7A evidence gallery](http://127.0.0.1:5173/docs/evidence/v0.7a/review.html) is available while the dev server runs.
+The base URL preserves the v0.6 Azure Coast → Golden Canyon → Sunlit Coastal City drive, rolling/steering wheels, expressive occupants and wind-responsive hair. Handling, 1.75× pace and soft steering controls are preserved. [Local v0.7A.1 evidence gallery](http://127.0.0.1:5173/docs/evidence/v0.7a1/review.html) is available while the dev server runs.
 
 "Project OutRun" is an **internal codename only**. **SUNSHIFT GT** is an unapproved candidate public name, not a final title. Do not use SEGA logos, the original game's music, graphics, distinctive licensed vehicles, or other protected assets. Public branding will be decided later.
 
@@ -26,14 +26,14 @@ For v0.1, the player can simply drive for at least a minute on a scenic, winding
 | --- | --- |
 | [AGENTS.md](AGENTS.md) | Codex operating rules; repo safety and autonomy |
 | [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md) | The experience and visual direction we are pursuing |
-| [docs/V0.7A_SPEC.md](docs/V0.7A_SPEC.md) | What to build — and explicitly what *not* to build |
-| [docs/V0.7A_ACCEPTANCE.md](docs/V0.7A_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
-| [docs/CODEX_V0.7A_KICKOFF.md](docs/CODEX_V0.7A_KICKOFF.md) | One-shot task for a Codex development run |
+| [docs/V0.7A1_SPEC.md](docs/V0.7A1_SPEC.md) | What to build — and explicitly what *not* to build |
+| [docs/V0.7A1_ACCEPTANCE.md](docs/V0.7A1_ACCEPTANCE.md) | Verifiable delivery checklist and browser test matrix |
+| [docs/CODEX_V0.7A1_KICKOFF.md](docs/CODEX_V0.7A1_KICKOFF.md) | One-shot task for a Codex development run |
 
 ### Starting a Codex implementation run
 
 1. **Open the correct checkout of `michael-wang/OutRun`.** Verify the repository remote before changing files. Suggested local path: `C:\astra-dev\OutRun`. **Never run these instructions inside `C:\astra-dev\topwar`.**
-2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.7A_KICKOFF.md` (Goal Mode where available).
+2. Read `AGENTS.md`, then give Codex the task in `docs/CODEX_V0.7A1_KICKOFF.md` (Goal Mode where available).
 3. The implementation and runnable commands are below. Read the v0.7A handoff and collect human reviews before planning further work.
 
 ## Run locally

@@ -1,32 +1,30 @@
 # Project OutRun — Codex working agreement
 
-## ACTIVE: v0.7A Challenge Brick Lab — explicitly authorized
+## ACTIVE: v0.7A.1 — Verticality & Variable Width (owner-approved)
 
-The product owner has just authorized **v0.7A ONLY**. Build eight REAL playable challenge-brick previews and a tiny human review interface. **DO NOT implement v0.7B's Pacific Road Trip, Mystery Drive, dynamic difficulty, full Stage Composer, RPG rewards, new obstacle collision/traffic, garage or economy.** Prior “stop after v0.6” ended v0.6 pending human review; this new owner request authorizes v0.7A.
+**Owner has actually driven all eight v0.7A bricks.** Six original r1 bricks received KEEP and two (BRK-03, BRK-05) received REWORK, both explicitly requesting "More radical height delta". Owner also reports all roads look the same width and requests authentic **2- to 8-lane roadway changes**. Their direction: **finish making the bricks good BEFORE composing journeys**. This milestone improves the existing eight; it is NOT v0.7B.
 
-Read in this order:
-1. `docs/CODEX_V0.7A_KICKOFF.md`
-2. `docs/V0.7A_SPEC.md`
-3. `docs/V0.7A_ACCEPTANCE.md`
-4. `docs/CHALLENGE_BRICK_CANDIDATES.md`
-5. `docs/PROCEDURAL_JOURNEY_STRATEGY.md` (future integration context only).
+Read in order:
+1. `docs/CODEX_V0.7A1_KICKOFF.md`
+2. `docs/V0.7A1_SPEC.md`
+3. `docs/V0.7A1_ACCEPTANCE.md`
+4. `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json` (historical real user votes)
+5. `docs/CHALLENGE_BRICK_CANDIDATES.md` (r1 candidate descriptions).
 
-## Local repo safety and authorization
-- Work ONLY in `C:\astra-dev\OutRun` and verify git remote `michael-wang/OutRun`; NEVER change `C:\astra-dev\topwar`.
-- The playable v0.6 app is on the user's **LOCAL** checkout (reported code commit `6401a03`, handoff `cf83901`). GitHub `main` is largely specifications, not the playable code. **Do not merge/reset/checkout docs-only main over the playable branch.**
-- Inspect status/current HEAD; preserve user edits. Create `codex/v0.7a-brick-lab` from the most recent playable LOCAL HEAD. Fetch `origin/main` and selectively import **only** `AGENTS.md`, `docs/V0.7A_SPEC.md`, `docs/V0.7A_ACCEPTANCE.md`, `docs/CODEX_V0.7A_KICKOFF.md`, `docs/CHALLENGE_BRICK_CANDIDATES.md` as needed; do not overwrite local source, handoff, README or unrelated files.
-- Respect real sandbox approvals. If automated review refuses based on the earlier milestone stop, request a one-time **normal-chat** user authorization rather than retrying or bypassing the denial.
-- No push/merge/public deployment, paid services, secrets, other repo edits or copyrighted SEGA/Ferrari assets.
+The old stop-after-v0.7A was to obtain human reviews, which have now occurred. The owner has requested the NEXT revision, v0.7A.1, **not** authorization for v0.7B. If Codex authorization still blocks git actions, request explicit *normal chat* owner approval and honor actual sandbox permission denial; no repeated bypass attempts.
 
-## Implementation principle
-- This is a **playable product experiment**. Eight actual drives, not eight written cards or eight variants of the same corner. User is the final judge of fun.
-- Keep the actual human-approved v0.6 arcade feel: Gameplay-First track/inverse-Required-Steering generation, Arcade Lateral Balance, default 1.75× world pace, soft four-detent analog strip, visual drifting, convertible/occupants, three scenic packs, off-road penalty/bounded recovery, 3D road, left-of-car needle gauge. Preserve Pixel 8 fullscreen/PWA/two-thumb/handedness/long-press and desktop A/D+Space/Enter.
-- Model a `ChallengeBrick` as a small **data-driven gameplay moment with compatible lead-in and exit**, not a mesh asset. Prefer focused typed data/adapter onto existing track generator. No general editing framework/DSL or endless procedural content pipeline.
-- Make QA reproducible with unique IDs, versions and deterministic seeds. Inspect actual rendered play, especially first-time readability, on desktop and Pixel-like landscape.
-- **AUTO_VERIFIED != HUMAN_APPROVED.** Automated tests can verify passability/geometry but must never create the owner's KEEP votes. Initially all 8 human votes are unset. Do not create a generated public journey using unapproved candidates.
-- Build `?lab=bricks` (or similarly explicit route) accessible on the actual phone, with replay/next, three decisions KEEP/REWORK/REJECT, optional short notes, local persistence and portable export. Keep ordinary v0.6 play and menu working.
+## Preserve local playable app
+- Work only at `C:\astra-dev\OutRun`, expected remote `michael-wang/OutRun`. Never touch `C:\astra-dev\topwar`.
+- v0.7A is PLAYABLE on user's LOCAL checkout: code commit `b6ee7ea`, handoff `e6e80f0` on `codex/v0.7a-brick-lab` (verify actual local HEAD/status). GitHub `main` is documentation-first, NOT a replacement game branch.
+- Branch `codex/v0.7a1-vertical-width` from latest local playable v0.7A HEAD, preserve uncommitted edits, fetch origin/main and selectively import ONLY new `AGENTS.md`, `docs/V0.7A1_SPEC.md`, `docs/V0.7A1_ACCEPTANCE.md`, `docs/CODEX_V0.7A1_KICKOFF.md` and `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json` after checking conflicts. Never reset/merge/checkout docs-only origin/main over app.
+- User votes may also live in the browser's localStorage. Keep them intact across version changes; do not overwrite real R1 votes with guesses, fixture test values or R2 defaults. The R1 JSON records user feedback, not automatic proof of approval of new R2 geometry.
+- No push, merge, public deployment, paid services, SEGA/Ferrari assets, unrelated repos or new full-blown editors.
 
-## Delivery and stop
-- Run build/unit/Playwright, deterministic replay/geometry checks, and real browser drives for all eight candidates; inspect screenshots and representative motion clips. Exercise phone thumb input and both handedness layouts. Fix broken or unfair candidates rather than falsely certifying them.
-- Commit locally to the v0.7A branch; write `docs/V0.7A_HANDOFF.md` with exact local + Pixel URLs, branch/commit, eight candidate status table (AUTO vs actual HUMAN votes), test results, representative screenshots/videos, limitations, and the minimal review/export workflow.
-- Leave the eight candidate votes **unreviewed until the owner reviews them**. Deliver and STOP for human KEEP/REWORK/REJECT; **do not start v0.7B**.
+## Deliverable
+1. Real 3D **vertical road drama**: significant visible rises, crests and descents, especially BRK-03 and BRK-05. Verify at actual chase camera; not a graph-only elevation change or an artificial camera tilt. Safe roads and meaningful sightline warning.
+2. True **variable road width**: 2 / 4 / 6 / 8 TOTAL lanes across the eight bricks, and smooth playable lane-count changes along some bricks. Width must affect actual road mesh, lane lines, shoulder/offroad corridor, road-edge props and player margin, not only paint or scenery.
+3. Eight still playable/replayable deterministic `?lab=bricks` scenarios with previous distinctive gameplay. KEEP r1 votes historically intact; increment candidate revision and reset ONLY that revised candidate's human vote when its play/geometry materially changes. Technical AUTO_PASS never automatically promotes to HUMAN_APPROVED.
+4. Preserve approved v0.7A driving: Arcade Lateral Balance, inverse RequiredSteer-to-curvature, 1.75× pace, four soft detents per side, physical steering and brake semantics, full-speed sweepers + brake-required corners, convertible/wheel/hair visuals, 3 scenes, Pixel 8 full screen/PWA/two-thumb handedness, PC A/D+Space/Enter, bounded offroad.
+5. Actual real-browser visual drive and mobile/desktop screenshot comparisons of elevation and width transitions; deterministic + gameplay tests, ≥180s repeat/scene/road continuity sample, build/unit/Playwright and local commit/handoff.
+
+**Stop after v0.7A.1 for second-round human reviews. Do not compose a five-minute Pacific Road Trip or launch v0.7B yet.**

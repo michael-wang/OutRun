@@ -6,7 +6,7 @@ export const reviewId=(b:ChallengeBrick)=>`${b.id}:r${b.revision}`;
 export function readReviews(raw:string|null):Record<string,Review>{
  try {const value=JSON.parse(raw??'{}'),result:Record<string,Review>={};
   if(!value||typeof value!=='object'||Array.isArray(value))return result;
-  for(const b of BRICKS){const r=value[reviewId(b)];if(r&&VOTES.includes(r.humanVote))result[reviewId(b)]={humanVote:r.humanVote,note:cleanNote(r.note)};}return result;
+  for(const [key,r] of Object.entries(value) as [string,any][]){if(/^BRK-0[1-8]:r[1-9][0-9]*$/.test(key)&&r&&VOTES.includes(r.humanVote))result[key]={humanVote:r.humanVote,note:cleanNote(r.note)};}return result;
  }catch{return {};}
 }
 export const cleanNote=(note:unknown)=>typeof note==='string'?note.replace(/[\u0000-\u001f\u007f]/g,' ').slice(0,240):'';

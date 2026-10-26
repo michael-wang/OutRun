@@ -26,7 +26,8 @@ export function updateFootprint(s:DrivingState,roadHalfWidth=ROAD_HALF_WIDTH){
 }
 /** Arcade balance: x' = authority(v)*applied - pressure(k,v).
  * No yaw/slip/velocity integration feeds navigation. Pace affects travel only. */
-export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,roadHalfWidth=ROAD_HALF_WIDTH){
+export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH){
+ const halfAt=typeof width==='number'?()=>width:width,roadHalfWidth=halfAt(s.distance);
  const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
  const acceleration=(input.gas&&!input.brake?19*(1-s.speed/88)+6*Math.max(0,1-s.speed/20):-3.8)
@@ -38,6 +39,7 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  s.requiredSteer=requiredSteering(curvature,s.speed);
  const rate=steeringAuthority(s.speed)*appliedMean-curvePressure(curvature,s.speed);
  if(s.corridorSide&&s.effectiveSteer*s.corridorSide<0&&rate*s.corridorSide<0)s.corridorSide=0;
+ if(s.corridorSide&&Math.abs(s.lateral)<corridorLimit-1e-5)s.corridorSide=0;
  const attempted=s.lateral+rate*dt;
  if(Math.abs(attempted)>=corridorLimit)s.corridorSide=Math.sign(attempted);
  s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?s.corridorSide*corridorLimit:attempted;
@@ -49,5 +51,8 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  s.velocityHeading=0;s.yawRate=0;
  s.worldHeading+=curvature*ds; // diagnostic tangent; renderer uses exact geometry
  s.slipAngle=s.heading;s.slip=clamp((load-.55)/.25,0,1)*Math.min(1,s.speed/50);
- s.drifting=s.slip>.2;updateFootprint(s,roadHalfWidth);
+ s.drifting=s.slip>.2;
+ const nextHalf=halfAt(s.distance),nextLimit=nextHalf+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
+ if(Math.abs(s.lateral)>nextLimit){s.corridorSide=Math.sign(s.lateral);s.lateral=s.corridorSide*nextLimit;s.lateralRate=0;}
+ updateFootprint(s,nextHalf);
 }

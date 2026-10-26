@@ -1,5 +1,5 @@
 import {it,expect} from 'vitest';
-import {BRICKS,BRICK_START,createBrickTrack,brickCourse,brickElevation} from '../src/bricks';
+import {BRICKS,BRICK_START,createBrickTrack,brickCourse,brickElevation,brickWidth} from '../src/bricks';
 import {readReviews,exportReviews,reviewId} from '../src/brick-reviews';
 import {createState,step} from '../src/handling';
 import {requiredSteering} from '../src/challenges';
@@ -18,7 +18,7 @@ it('every brick has a passable four-detent path, no-steer departs, and technical
   const track=createBrickTrack(b),s=createState();s.distance=BRICK_START;s.speed=b.entrySpeed/3.6;let off=0,peak=0,min=999;const rows=[];
   while(s.distance<BRICK_START+b.length&&rows.length<6000){const k=track.sample(s.distance).curvature,need=requiredSteering(k,s.speed),upcoming=Math.max(...[0,50,100,200,300].map(d=>Math.abs(requiredSteering(track.sample(s.distance+d).curvature,230/3.6)))),limit=strategy==='careful'&&upcoming>1?180/3.6:65;
    const steer=strategy==='none'?0:Math.max(-1,Math.min(1,Math.round((need-s.lateral*.07)*4)/4));
-   for(let j=0;j<6;j++)step(s,{gas:limit===65||s.speed<limit,brake:s.speed>limit+.5,steer},1/120,track.sample(s.distance).curvature,1.75,b.roadWidth/2);
+   for(let j=0;j<6;j++)step(s,{gas:limit===65||s.speed<limit,brake:s.speed>limit+.5,steer},1/120,track.sample(s.distance).curvature,1.75,d=>brickWidth(b,d).halfWidth);
    if(s.offRoad)off++;peak=Math.max(peak,Math.abs(s.lateral));min=Math.min(min,s.speed*3.6);rows.push({d:s.distance,x:s.lateral,v:s.speed*3.6,u:s.appliedSteer,need:s.requiredSteer,y:track.sample(s.distance).position.y});
   }
   results.push({id:b.id,strategy,off,peak,min,seconds:rows.length*.05,rows});
@@ -27,10 +27,10 @@ it('every brick has a passable four-detent path, no-steer departs, and technical
   if(strategy==='full-gas'&&['BRK-04','BRK-08'].includes(b.id))expect(off,b.id).toBeGreaterThan(0);
   if(strategy==='full-gas'&&b.id==='BRK-01'){expect(off).toBe(0);expect(min).toBeGreaterThan(225);}
  }
- mkdirSync('docs/evidence/v0.7a',{recursive:true});writeFileSync('docs/evidence/v0.7a/brick-simulation.json',JSON.stringify(results,null,2));
+ mkdirSync('docs/evidence/v0.7a1',{recursive:true});writeFileSync('docs/evidence/v0.7a1/brick-simulation.json',JSON.stringify(results,null,2));
 });
 it('human review is unreviewed by default, revision scoped, validated, and independent of QA',()=>{
  expect(exportReviews({}).records.every(r=>r.humanVote==='UNREVIEWED')).toBe(true);
- const b=BRICKS[0],r=readReviews(JSON.stringify({[reviewId(b)]:{humanVote:'KEEP',note:'x'.repeat(500)},'BRK-02:r0':{humanVote:'KEEP',note:'stale'},'BRK-03:r1':{humanVote:'AUTO_VERIFIED',note:'invalid'}}));
+ const b=BRICKS[0],r=readReviews(JSON.stringify({[reviewId(b)]:{humanVote:'KEEP',note:'x'.repeat(500)},'BRK-02:r0':{humanVote:'KEEP',note:'stale'},'BRK-03:r2':{humanVote:'AUTO_VERIFIED',note:'invalid'}}));
  expect(r[reviewId(b)].note.length).toBe(240);expect(exportReviews(r).records[1].humanVote).toBe('UNREVIEWED');expect(exportReviews(r).records[2].humanVote).toBe('UNREVIEWED');expect(readReviews('{broken')).toEqual({});expect(exportReviews(r).records[0].autoQA).toBe(b.autoValidation);
 });

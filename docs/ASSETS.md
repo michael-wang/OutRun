@@ -22,3 +22,6 @@ All new wheels, travelers/hair pivots, coast/canyon/city prop geometry, landmark
 
 ## v0.7A Challenge Brick Lab
 Eight authored road/elevation profiles, a crest-warning sign and the review interface reuse the existing original procedural scenery and vehicle. No external assets or new dependencies. The evidence screenshots/videos record this local application; SVG plots derive from its recorded browser telemetry.
+
+## v0.7A.1 Verticality & Variable Width
+Lane geometry, narrowing signs and slope-following scenery foundations are original procedural code. No external art, audio, models or dependencies were added. Comparison media records the local r1 and r2 game. The archived R1 JSON contains the owner's original reviews.
