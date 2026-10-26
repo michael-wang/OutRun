@@ -1,22 +1,30 @@
-# Project OutRun — Codex collaboration status
+# Project OutRun — Codex operating agreement
 
-## No new implementation Goal authorized as of 26 October 2026
+## CURRENT USER-AUTHORIZED milestone: v0.7C — L1 Library & L2 Feedback Lab
 
-**Human milestone result:** v0.7A.1 has received second-round player feedback: all eight BRK-01..BRK-08 revision 2 bricks were **KEEP**, each with autoQA PASS. This follows v0.7A r1 (6 KEEP, 2 REWORK). The reviews are archived at `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json` and `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json`.
+The owner commissioned development after reviewing v0.7A.1: all eight original `BRK-01..08` revision 2 received KEEP and machine QA PASS. User explicitly wants **AI to create/test all basic L1 shapes without personal L1 playtests**, systematically generate varied L2 combinations, and let the human provide **instant POSITIVE and NEGATIVE feedback** during driving plus end-of-L2 KEEP/REWORK/REJECT and difficulty ratings.
 
-The next **PROPOSED** research/playable prototype is small L1 road-profile stacking across selected L2 experience bricks, with L3 world/terrain/scenery rules. See `docs/L1_STACKING_EXPERIMENT_PLAN.md`. This is **not** approval to implement that proposal or begin the previously envisioned v0.7B 5-minute Journey.
+Read `docs/CODEX_V0.7C_KICKOFF.md`, `docs/V0.7C_SPEC.md`, `docs/V0.7C_ACCEPTANCE.md`, `docs/L1_PRIMITIVE_CATALOG.md`, `docs/V0.7C_L2_COVERAGE_MATRIX.md`, and r2 ratings `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json`. Older specs are historical context, not authorization for v0.7B or giant world-generation work.
 
-## Preserve existing local game code
+### Local source protection
 
-- The playable OutRun app and its newest v0.7A.1 version are in the user's LOCAL `C:\astra-dev\OutRun` checkout; its latest implementation commit is **not confirmed in these remote planning docs**. Inspect local HEAD and any active state before making changes.
-- Remote GitHub `main` is primarily documentation and is not the playable game's source. Never merge/reset/check out docs-only main over the working app.
-- Do not change `C:\astra-dev\topwar`, push/merge/deploy, spend funds or use unlicensed SEGA/Ferrari assets without explicit user authorization.
-- Normal Brick Lab play, review votes/localStorage/exports, full-speed Arcade Lateral Balance, 1.75× travel, four soft detents, Three.js road/world/scenery, Pixel 8 fullscreen/two-thumb/PWA, PC A/D+Space/Enter and approved eight r2 challenge variants are to be preserved in any future commissioned work.
+- Work only in `C:\astra-dev\OutRun`, expected remote `michael-wang/OutRun`. GitHub `main` primarily holds specifications, **not** the playable game's source. Never merge/reset/check out remote `main` over local working gameplay.
+- Inspect current local branch, HEAD and worktree before changes. Playable v0.7A.1 has been human reviewed; the exact final code commit is not visible in remote docs. Start `codex/v0.7c-l1-l2-feedback` from latest playable LOCAL HEAD, preserve unexpected local edits, and selectively import only v0.7C docs+`AGENTS.md` after `git fetch origin`. Do not overwrite local README or historical reviews. The optional Road Profile Inspector task is NOT a precondition.
+- If another Goal actively edits the checkout, don't race it; protect work and request the owner's decision where genuinely needed.
+- No unapproved push, merge, public deployment, paid services, other project edits (never touch `C:\astra-dev\topwar`), external runtime telemetry or copyrighted SEGA/Ferrari assets.
+- If permission review is blocked by an old stop-after-v0.7A.1 instruction, ask for a clear ordinary non-/goal authorization in the existing **single OutRun Codex conversation**, and respect actual approvals. Do not repeatedly attempt denied actions.
 
-## Human-controlled review integrity
+### Deliverable (P0)
 
-- Machine QA PASS != human KEEP. The r2 KEEP votes belong to exact BRK ID + revision + geometry/content version; they must not silently authorize arbitrary changed variations or new stacked combinations.
-- For any later change to effective steering demand, height/grade, lane width, sightline or hazards, create a new explicitly labeled content revision and leave its human vote UNREVIEWED. Preserve r1/r2 history unchanged.
-- Future tasks should remain narrowly scoped: read the new authorized spec, create a feature branch from current playable LOCAL HEAD, selectively import only relevant docs, build and visibly drive in browser/Pixel-like view, run tests, hand off with PASS/FAIL/UNVERIFIED and stop for real owner evaluation.
+1. **L1 profile library:** 8 Curvature C01–C08, 6 Elevation E01–E06, 4 Width W01–W04. Audit existing code and reuse features; technical AUTO QA only. L1=local geometry profiles; L3=world surface/scenery constraint; don't blend world/snow/biome into L1.
+2. **16 systematic real playable L2:** `L2-001..016` use the fixed coverage matrix, stacked same-distance C+E+W profiles with current coast/canyon/city worlds, deterministic seeds and a simple `?lab=l2` four-batch player review UI.
+3. **Instant feedback, not only issue reports:** top-corner `✨ 讚` / `⚑ 問題`, precise snapshot BEFORE pausing, four original exact tags **超好玩! / 超刺激! / 超難! 但是過了超爽! / 風景優美**, optional notes and issue text; safely pause/resume with phone keyboard. Post-completion 'hard but rewarding' must attach to the completed L2. End-of-L2 KEEP/REWORK/REJECT + difficulty 1–5 + tags/notes. localStorage + Export Feedback JSON; no backend and no auto-KEEP.
+4. **Regression:** original BRK r2 votes and all 8 playable examples untouched; accepted Arcade Lateral Balance, 1.75× world pace, four soft steering levels each direction, 2–8 real lanes, altitude, car/drift/wheel/hair, original scenery, Pixel 8 two-thumb landscape fullscreen/PWA and PC A/D + Space/Enter.
 
-**No current instruction to start a new milestone automatically.**
+### Acceptance and handoff
+
+- Run real rendered/browser driving inspection of all 16 L2, deterministic geometry and controls, precise praise/issue anchoring, negative/positive event storage/export, end-of-L2 rating and normal play regressions.
+- Run build/unit/Playwright and honest actual outputs. Make limited, maintainable changes; no full Stage Composer, reactive AI level designer, feasibility optimizer, snow/volcano assets, traffic, RPG, or five-minute Pacific Road Trip.
+- Commit locally and write `docs/V0.7C_HANDOFF.md` with actual URL, coverage tables, ratings initially UNREVIEWED, screenshots/videos, test commands/results and limitations.
+
+**Stop after v0.7C deliverable for new L2 human ratings.** A later NEW explicitly authorized milestone may proceed; do not implement v0.7B without that authorization.

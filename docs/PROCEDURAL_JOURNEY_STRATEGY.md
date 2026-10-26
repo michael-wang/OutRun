@@ -1,111 +1,34 @@
 # Product strategy — Infinite Road Trip
 
-**Decision status:** v0.7A.1 second-round human review is COMPLETE: all eight BRK-01..08 revision 2 bricks received KEEP and autoQA PASS. The next proposed experiment is simple L1 curvature/elevation/width stacking within L2 experiential recipes and L3 world/terrain/scenery rules; it is NOT yet an authorized implementation milestone. See `docs/L1_STACKING_EXPERIMENT_PLAN.md` and the archived r2 review JSON.
+**Decision status:** Product direction approved. **ACTIVE user-authorized development is v0.7C L1 Library & L2 Feedback Lab.** Owner has approved all eight BRK-01..08 r2 experiences and explicitly wants all foundational L1 profiles prepared by AI, a systematic 16-candidate L2 combination batch, and **in-drive positive AND issue tagging plus an overall L2 rating**. See `docs/V0.7C_SPEC.md` and `docs/CODEX_V0.7C_KICKOFF.md`. v0.7B five-minute Pacific Road Trip, Mystery Drive and RPG remain NOT authorized.
 
 ## North star
 
-Turn the currently enjoyable OutRun-inspired arcade handling into a **replayable driving-adventure platform**. A player can choose a planned trip or ask for a surprise; every trip is built from **human-approved gameplay bricks** and generates a new, memorable sequence of driving challenges, sights and emotional beats.
+Deliver repeatable driving adventure and scenic surprise using AI-engineered technical primitives and human-curated enjoyable experiences.
 
-The user values *pleasure in driving and discovery* over competition/strict simulation. Do not optimize only for best lap times or build an RPG grind before diverse trips are genuinely replayable.
+### Responsibilities
 
-### Product rules
+- **L1 geometry channels (only):** curvature/Required Steering; elevation/grade; width/lane count. 8+6+4 first parameterized families, verified automatically. Avoid treating L3 world/road surface/biome as unrestricted L1 slots.
+- **L2 Experience Bricks:** three independent L1 channels STACK at the same distance to produce a driveable local challenge. Each combination has its own version/seed and is reviewed by a human for KEEP/REWORK/REJECT, subjective difficulty 1–5, instant positive highlights/issues and end-of-road opinion.
+- **L3 World/Journey:** world-specific constraints determine supported surface, terrain, scenery (near/mid/far) and long-form composition by STRINGING accepted L2 together. Terrain and props conform to actual generated road height/curvature/width. Present coast, canyon and city only; future snow/volcano require real content packs.
+- **Minimal geometry validity only:** finite continuous road, no unintended same-level asphalt self-overlap/road-object intersections; no speculative global difficulty/response-time optimization. Very hard moments may be valid and human-rated Godlike.
 
-1. **Fun is curated; arrangement is procedural.** Procedural randomness selects and varies *approved* challenges; it does not make unreviewed hazards automatically good.
-2. **Generate gameplay first.** Define Required Steering, reference speed, braking demand, width, duration, elevation, visibility and stage/landmark constraints; derive continuous Three.js geometry, roadside content and camera-readable warnings.
-3. **Two entrances, one generator.** Guided Journey and Mystery Drive produce `JourneySpec` inputs to the same pipeline. Avoid building two incompatible race engines.
-4. **The player owns the drive.** The existing v0.6 Arcade Lateral Balance, four soft steering detents, accepted 1.75× world pace, bounded off-road penalty, 3D camera, sound and Pixel 8 controls are the baseline.
-5. **Fairness and reward.** An impossible-at-full-speed curve must be readable and passable by slowing; no invisible surprise force, no mid-corner adaptive manipulation. Favor discovering new experiences over a permanent difficulty ratchet.
-6. **Seeded reproducibility.** Same seed + generator revision + chosen car/ruleset + mode/options should reconstruct the same trip, including its environment transitions and obstacles. Save/give a Journey Code for replay/debug/share.
-7. **Simple before clever.** Start with small hand-authored templates and validation, not a 3D editor, giant content model or live generative AI runtime dependency.
+### Review loop, now informed by R1/R2 human feedback
 
-## Two player-facing entrances
+1. Codex inventories existing geometry and fills the L1 primitive family gaps; automatic tests validate L1 shape and code integration.
+2. A fixed, systematically covering 16-row C/E/W matrix produces first L2 candidate drives; some simple, some intense, some scenic.
+3. While driving an L2, user can tap quick **positive** responses (**超好玩! / 超刺激! / 超難! 但是過了超爽! / 風景優美**) or log a problem with short text; the game records exact road/vehicle/profile context at the event.
+4. At L2 end, player gives independent overall KEEP/REWORK/REJECT, subjective difficulty 1–5 and optional notes/tags.
+5. Export local JSON and use comments/event location to refine offending combinations or preserve delight. Never fake player review.
+6. Only approved versioned L2 variants later become inputs for full Journey Generator. Reusing a profile with changed geometry creates a NEW unreviewed content revision.
 
-### Guided Journey: "I know what I want today"
+### Long-term player modes
 
-- Example: **Pacific Road Trip / Intermediate / 5 Minutes**.
-- User chooses theme/route label, approximate duration and a **comfort/challenge profile**, with seed optionally shown for replay.
-- Generator makes a coherent journey with local twists, not an exact preauthored fixed track. The same theme can produce many valid roads.
-- Use only current art and rules at first: **Azure Coast, Golden Canyon, Sunlit Coastal City**. Future snow/volcano/forest are content packs, NOT claimed v0.7 capability.
+**Guided Journey:** choose trip theme/comfort/duration, e.g. Pacific Road Trip / Intermediate / ~5 Minutes.  
+**Mystery Drive:** press Surprise Me to discover a generated trip whose world/challenges emerge during travel. Both share eventual approved L2 library and seeded generation; no two incompatible driving engines.
 
-### Mystery Drive: "Surprise me"
+### Beyond current task
 
-- Start with a single big **Surprise Me** option; the game selects a theme order, challenge pacing and seed from supported content.
-- Show the destination/world gradually; no need to announce all future acts. A new seed yields a meaningfully different journey, not a mere palette change.
-- Preserve player comfort, visibility and a stable selectable difficulty ceiling. "Surprise" must not mean random unwinnable difficulty.
-- Let the player replay a memorable surprise from its Journey Code later. Do not require a backend.
+Future environment packs, real hazards and opponents, earned currency/garage/vehicle upgrades, special surfaces/snow chains and progression systems only once generated roads are genuinely fun. A large visual Stage Composer should be built only if a demonstrated authoring problem warrants it.
 
-**Shared mechanics:** both modes use the same brick catalog, stitching, geometry construction, rendering, test drivers and saveable spec. Only the **intent and constraints** passed to the generator differ.
-
-## Generation pipeline (initial architecture)
-
-`JourneyIntent → Experience Beat Plan → Approved Brick Selection → Parameter Calibration → Road/Scenery Assembly → Validation → Local Play`
-
-1. **Intent**: mode, requested minutes, driving comfort profile, scene restrictions, car config, seed, generator version.
-2. **Beat Plan**: choose a deliberate rhythm — anticipation/acceleration → challenge → payoff/vista → challenge → relief, with variety and no fatigue-inducing endless maximum-load turns. Time targets convert to DISTANCE at reference progress; different drivers take different real seconds.
-3. **Brick selection**: select APPROVED bricks with roles/tags and compatibility conditions. Use a seeded PRNG, selection diversity, repeat limits and cool-downs; avoid picking independently random corners.
-4. **Calibration**: instantiate a brick against vehicle steering authority/speed and target Required Steering; infer real curvature from the SAME shared physics/gameplay calibration used in current v0.6. Reconcile width, safe speed, visibility, grade and entrance/exit.
-5. **Stitching**: smooth signed curvature, heading, centerline, lateral edges and road grade between segments, and blend scenery palette/landmarks through real distance. Do not teleport the car or change its driving force just because a scene changes.
-6. **Geometry/scenery**: generate contiguous real Three.js road and environment in bounded streaming/recycled chunks so 3–5 minute trips do not require an unbounded 3D world prebuilt in memory.
-7. **Validation**: static checks (seams, intersections/terrain occlusion, curvature/grade/look-ahead, available road margin, stage assets) + deterministic driving simulation + actual browser render/playback. Reject bad seeds and retry with a bounded count, recording rejection reasons.
-8. **Player review**: in early development, human approves brick candidates and samples of whole trips. Human-rated quality is NOT equal to automated PASS.
-
-### Compatibility rules — examples
-
-- A full-speed coastal sweeper should not cut immediately into a blind mandatory-brake hairpin without enough **preview and braking distance**.
-- Two extreme/maximum-load sections should have a breather between them unless a specifically approved advanced brick authorizes the combination.
-- A crest that hides the road needs minimum sightline/response time and cannot stack with an unannounced danger corner by accident.
-- A narrow road with obstacles must have at least one viable safe path; do not enable collision hazards until collision/traffic rules themselves are reliable.
-- Coastal landmark props never penetrate road surfaces or obscure signs; canyon cliffs and city buildings must not overhang the camera's critical road view.
-- Environmental transitions require compatible entry/exit palette and terrain profiles; screen-space sky/lighting snapping is invalid.
-
-## The brick review contract
-
-A brick is **a playable challenge-with-context**, NOT just a spline snippet or 3D prefab.
-
-Required minimal metadata:
-- `id` + revision, `status` (CANDIDATE / AUTO_VERIFIED / HUMAN_APPROVED / NEEDS_REVISION / REJECTED / RETIRED);
-- intended player action and emotion (e.g. "hold full throttle through huge scenic right sweeper");
-- supported biomes/vehicle rule range, safe steering/difficulty range, speed and braking expectations;
-- duration/road distance, curvature/width/grade/lookahead envelope, landmark/prop tags;
-- smooth entry/exit compatibility and maximum repetition frequency;
-- QA seed, pass/fail/fairness tests, human notes and acceptance revision.
-
-**Who does what**:
-- Julia + Codex design a short batch of candidate bricks and implement them as replayable isolated drives.
-- Automated tests reject impossible/visually broken variants BEFORE involving the owner.
-- Michael plays them in the existing PC/Pixel 8 browser and marks each **KEEP / REWORK / REJECT** (one click; optional short note).
-- Only explicitly **HUMAN_APPROVED** versions enter default generated journeys. A meaningful change to physics, tuning, hazard timing or visual warnings invalidates affected approvals pending re-review.
-- Do not generate thousands of candidate bricks for Michael to inspect. Start with **8 carefully differentiated candidates**, keep roughly **5–6 worthwhile bricks**, and use variants/constraints to explore breadth.
-
-Save candidate ID/seed/approved revision so one successful corner can be replayed and reused, and rejected cases can be diagnosed.
-
-## Player skill / difficulty now versus later
-
-The user does **not** want a performance-only racing game. Start with **Comfort / Intermediate / Wild** as descriptive choice envelopes, not rigid esports ladder ranks; the existing Beginner / Intermediate / Advanced / Godlike concepts can be revisited later.
-
-A good road may allow a gentle cruise OR a near-maximum-speed heroic line. Upgrades are a future pleasure layer, not needed to make basic driving feel fair.
-
-Do **NOT** implement hidden adaptive force/road changes in the current corner. Later, any adaptive variation happens at future segment/stage generation or through a visibly signposted route fork, and should honor a chosen challenge ceiling.
-
-## RPG economy intentionally deferred
-
-Long-term loop: drive new trip → earn fair currency from completed segments and mastery → improve grip/brakes/acceleration or buy original cars → unlock thematic content and new challenge packs.
-
-**Do not implement currency, store, upgrades, unlocks, snow-chain tires or balancing yet.** First prove generated roads are genuinely replayable without external incentives. An economy cannot rescue a dull generator.
-
-## Validation questions for the product owner
-
-- Did this journey have at least two **memorable** moments that differed from a previous trip?
-- Did corners and scenery behave fairly, and did visible road shape communicate steering/brake demand?
-- Does the next-segment surprise feel exciting, not random or punishing?
-- Given nothing earned, would you choose to drive another generated seed right now?
-
-A NO means improve the brick catalog/beat grammar, not add coins or daily-login rewards.
-
-## Proposed rollout (not yet a construction order)
-
-- **v0.7 Journey Lab:** build a small candidate-brick review surface, human-approve initial bricks, then produce a replayable **Pacific Road Trip / Intermediate / 5 Minutes** built exclusively from approved bricks and existing three scenes. Developer/test seeds and generation version should be visible.
-- **v0.8 Mystery Drive:** reuse the generator to deliver unannounced-but-fair scene/beat combinations; improve distinctiveness, track streaming and replay/share by code. A minimal preview may fit v0.7 if quality holds, but not at cost of the five-minute guided trip.
-- **v0.9+ Progression experiment:** only if repeated generated drives win genuine enthusiasm: tiny local Garage/reward loop with one meaningful upgrade, no large economy. Traffic, road hazards, route forks and snow/volcano packs follow only when approved as individual mechanics/asset packs.
-
-**Implementation update:** v0.7A + v0.7A.1 delivered and human-rated. R1 vote history is archived at `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json`; R2 at `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json` (8/8 KEEP). No new Codex construction Goal has been commissioned by this update; proposed first is small `docs/L1_STACKING_EXPERIMENT_PLAN.md`, then later v0.7B.
+**Implementation status:** v0.7C docs authorized; playable code remains LOCAL and Codex must implement/test via new v0.7C Goal from latest playable HEAD. No backend/cloud AI in game runtime and no online user feedback uploads.
