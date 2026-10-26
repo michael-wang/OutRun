@@ -1,33 +1,31 @@
-# Project OutRun — Roadmap: Curated Procedural Journeys
+# Project OutRun — roadmap after second-round brick approval
 
-## LAST DELIVERED: v0.7A Challenge Brick Lab — owner-reviewed
+## ACCEPTED: v0.7A.1 Brick Library r2
 
-The owner played all eight original candidate bricks. Six received **KEEP** (01,02,04,06,07,08), two received **REWORK** (03,05: "More radical height delta"), none REJECTED. Exported record: `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json`.
+**The owner reviewed ALL eight revised v0.7A.1 bricks on 26 October 2026. Result: 8 KEEP, 0 REWORK, 0 REJECT.** Each r2 record has autoQA PASS. The prior r1 result was 6 KEEP and 2 REWORK; BRK-03 Crest & Reveal and BRK-05 Downhill Acceleration moved from REWORK to KEEP.
 
-Cross-cutting critique: elevation changes too timid, roads all feel equal width. Gameplay concepts are promising, but physical 3D road vocabulary still too narrow.
+Immutable input archives:
+- `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json`
+- `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json`
 
-## ACTIVE NEXT: v0.7A.1 Verticality & Variable Width
+Approval is of these exact revision-2 experiences, **not** every future combination of their curvature, elevation, width and scenery. Existing Brick Lab records and user local review storage must not be overwritten.
 
-**Owner instruction: fix bricks first, THEN assemble them.**
+## NEXT RESEARCH / PLAYABLE EXPERIMENT PROPOSED: L1 profile stacking
 
-- Make BRK-03 ridge climb/crest/valley dramatic from real chase view, and BRK-05 a substantial, sustained steep downhill. Add only worthwhile secondary elevation beats while preserving good corner timing.
-- Actual drivable width spans **2, 4, 6, 8 TOTAL lanes**, including visible 2↔4 and 6↔8 merges/expansions; unify road mesh, lane lines, offroad bounds/penalty, shoulder, rails and props through a distance-dependent width function.
-- Retain original eight challenge identities, review UI/export, seeded replay, 1.75× world pace and accepted Arcade Lateral Balance. Treat meaningful geometry changes as **NEW CONTENT REVISIONS** requiring second-round human votes; preserve six original r1 KEEP and two REWORK as history.
-- Compare pre/post on BRK-03/05 via actual browser footage; prove 2-lane road vs 8-lane road yields different playable side margins and remains fair.
-- Only after human second-round evaluation can we promote new bricks into curated generation.
+See `docs/L1_STACKING_EXPERIMENT_PLAN.md`. **NO NEW CODEX GOAL AUTHORIZED YET.**
 
-Source of truth: `docs/V0.7A1_SPEC.md`, `docs/V0.7A1_ACCEPTANCE.md`, `docs/CODEX_V0.7A1_KICKOFF.md`.
+- Keep L1 **road-geometry profiles** focused: curvature, elevation, road width (one effective value per channel and distance).
+- Keep L2 **approved experiential recipes**: create small variants by stacking different L1 profiles. User judges both fun and *perceived difficulty*; unknown combination is UNREVIEWED.
+- L3 **world/biome and journey** chooses supported environment/surface/props, influences which L2 profiles are allowed and directs terrain/scenery generators after real road geometry exists.
+- First try BRK-01/03/06, a small set of variants, and only minimal structural validity checks (geometry/terrain overlap and continuity). Avoid speculative AAA grading, a giant editor or safety/difficulty algorithms; player can classify an extreme challenge as Godlike.
+- Make near/mid/far scenery react to terrain/roads and maintain seeded reproducibility.
 
-## WAITING (not authorized): v0.7B Pacific Road Trip / Intermediate / 5 Minutes
+## LATER: v0.7B Guided Pacific Road Trip
 
-Use ONLY HUMAN_APPROVED versioned bricks to create a deterministic approximately five-minute seeded scenic road through the existing coast/canyon/city packs. Evaluate 10 seeds, visually inspect 3 meaningfully different runs, retain replay/share code, reject unfair roads. Do not call it successful if it's repetitive. See `docs/V0.7_PLAYABLE_PROTOTYPE_PLAN.md`.
+Only after we establish whether vertical stacking yields actually distinct appealing driving moments, consider composing an approximately five-minute theme-guided trip from HUMAN-APPROVED L2 variants, with replayable seeds. Current Guided Journey and Mystery Drive are planned directions, **not** ongoing engineering tasks.
 
-## LATER (not authorized)
+## FARTHER LATER
 
-- Mystery Drive: surprise route/themes/seed using the same approved generator.
-- Broader approved challenge vocabulary: traffic, actual lane obstacles, better mountains, forest/snow/volcano, time and weather.
-- Optional simple Stage Composer when it solves a proven authoring burden.
-- RPG progression/garage: earned currency, upgrade grip, brakes, engines, new original cars, equipment for specific surfaces. Add after trips are fun without monetary rewards.
-- Player-aware challenge/route forks after the generator is validated; no silent grip manipulation.
+Scenic biome expansion (snow/forest/volcano only once real content exists), hazards/traffic and rivals, RPG earnings/upgrades/new cars, time challenges, route choices, and Stage Composer only when proven useful for editing; human fun before economy/grind.
 
-**The test of success is repeatable driving pleasure, not more random meshes or extra menu systems.**
+**Development rule:** small testable experiences, human approval, simple geometric consistency, preserve Arcade Lateral Balance and Pixel 8 quality. No public deployments or local code changes implied by this documentation update.

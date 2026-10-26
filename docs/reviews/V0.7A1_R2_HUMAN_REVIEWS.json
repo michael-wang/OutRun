@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "brick-lab-2",
+  "engineVersion": "v0.7A.1/v0.6-handling",
+  "records": [
+    {
+      "id": "BRK-01",
+      "revision": 2,
+      "seed": 7101,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    },
+    {
+      "id": "BRK-02",
+      "revision": 2,
+      "seed": 7198,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    },
+    {
+      "id": "BRK-03",
+      "revision": 2,
+      "seed": 7295,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    },
+    {
+      "id": "BRK-04",
+      "revision": 2,
+      "seed": 7392,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    },
+    {
+      "id": "BRK-05",
+      "revision": 2,
+      "seed": 7489,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    },
+    {
+      "id": "BRK-06",
+      "revision": 2,
+      "seed": 7586,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    },
+    {
+      "id": "BRK-07",
+      "revision": 2,
+      "seed": 7683,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    },
+    {
+      "id": "BRK-08",
+      "revision": 2,
+      "seed": 7780,
+      "autoQA": "PASS",
+      "humanVote": "KEEP",
+      "note": ""
+    }
+  ]
+}

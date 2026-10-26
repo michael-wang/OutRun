@@ -1,30 +1,22 @@
-# Project OutRun — Codex working agreement
+# Project OutRun — Codex collaboration status
 
-## ACTIVE: v0.7A.1 — Verticality & Variable Width (owner-approved)
+## No new implementation Goal authorized as of 26 October 2026
 
-**Owner has actually driven all eight v0.7A bricks.** Six original r1 bricks received KEEP and two (BRK-03, BRK-05) received REWORK, both explicitly requesting "More radical height delta". Owner also reports all roads look the same width and requests authentic **2- to 8-lane roadway changes**. Their direction: **finish making the bricks good BEFORE composing journeys**. This milestone improves the existing eight; it is NOT v0.7B.
+**Human milestone result:** v0.7A.1 has received second-round player feedback: all eight BRK-01..BRK-08 revision 2 bricks were **KEEP**, each with autoQA PASS. This follows v0.7A r1 (6 KEEP, 2 REWORK). The reviews are archived at `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json` and `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json`.
 
-Read in order:
-1. `docs/CODEX_V0.7A1_KICKOFF.md`
-2. `docs/V0.7A1_SPEC.md`
-3. `docs/V0.7A1_ACCEPTANCE.md`
-4. `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json` (historical real user votes)
-5. `docs/CHALLENGE_BRICK_CANDIDATES.md` (r1 candidate descriptions).
+The next **PROPOSED** research/playable prototype is small L1 road-profile stacking across selected L2 experience bricks, with L3 world/terrain/scenery rules. See `docs/L1_STACKING_EXPERIMENT_PLAN.md`. This is **not** approval to implement that proposal or begin the previously envisioned v0.7B 5-minute Journey.
 
-The old stop-after-v0.7A was to obtain human reviews, which have now occurred. The owner has requested the NEXT revision, v0.7A.1, **not** authorization for v0.7B. If Codex authorization still blocks git actions, request explicit *normal chat* owner approval and honor actual sandbox permission denial; no repeated bypass attempts.
+## Preserve existing local game code
 
-## Preserve local playable app
-- Work only at `C:\astra-dev\OutRun`, expected remote `michael-wang/OutRun`. Never touch `C:\astra-dev\topwar`.
-- v0.7A is PLAYABLE on user's LOCAL checkout: code commit `b6ee7ea`, handoff `e6e80f0` on `codex/v0.7a-brick-lab` (verify actual local HEAD/status). GitHub `main` is documentation-first, NOT a replacement game branch.
-- Branch `codex/v0.7a1-vertical-width` from latest local playable v0.7A HEAD, preserve uncommitted edits, fetch origin/main and selectively import ONLY new `AGENTS.md`, `docs/V0.7A1_SPEC.md`, `docs/V0.7A1_ACCEPTANCE.md`, `docs/CODEX_V0.7A1_KICKOFF.md` and `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json` after checking conflicts. Never reset/merge/checkout docs-only origin/main over app.
-- User votes may also live in the browser's localStorage. Keep them intact across version changes; do not overwrite real R1 votes with guesses, fixture test values or R2 defaults. The R1 JSON records user feedback, not automatic proof of approval of new R2 geometry.
-- No push, merge, public deployment, paid services, SEGA/Ferrari assets, unrelated repos or new full-blown editors.
+- The playable OutRun app and its newest v0.7A.1 version are in the user's LOCAL `C:\astra-dev\OutRun` checkout; its latest implementation commit is **not confirmed in these remote planning docs**. Inspect local HEAD and any active state before making changes.
+- Remote GitHub `main` is primarily documentation and is not the playable game's source. Never merge/reset/check out docs-only main over the working app.
+- Do not change `C:\astra-dev\topwar`, push/merge/deploy, spend funds or use unlicensed SEGA/Ferrari assets without explicit user authorization.
+- Normal Brick Lab play, review votes/localStorage/exports, full-speed Arcade Lateral Balance, 1.75× travel, four soft detents, Three.js road/world/scenery, Pixel 8 fullscreen/two-thumb/PWA, PC A/D+Space/Enter and approved eight r2 challenge variants are to be preserved in any future commissioned work.
 
-## Deliverable
-1. Real 3D **vertical road drama**: significant visible rises, crests and descents, especially BRK-03 and BRK-05. Verify at actual chase camera; not a graph-only elevation change or an artificial camera tilt. Safe roads and meaningful sightline warning.
-2. True **variable road width**: 2 / 4 / 6 / 8 TOTAL lanes across the eight bricks, and smooth playable lane-count changes along some bricks. Width must affect actual road mesh, lane lines, shoulder/offroad corridor, road-edge props and player margin, not only paint or scenery.
-3. Eight still playable/replayable deterministic `?lab=bricks` scenarios with previous distinctive gameplay. KEEP r1 votes historically intact; increment candidate revision and reset ONLY that revised candidate's human vote when its play/geometry materially changes. Technical AUTO_PASS never automatically promotes to HUMAN_APPROVED.
-4. Preserve approved v0.7A driving: Arcade Lateral Balance, inverse RequiredSteer-to-curvature, 1.75× pace, four soft detents per side, physical steering and brake semantics, full-speed sweepers + brake-required corners, convertible/wheel/hair visuals, 3 scenes, Pixel 8 full screen/PWA/two-thumb handedness, PC A/D+Space/Enter, bounded offroad.
-5. Actual real-browser visual drive and mobile/desktop screenshot comparisons of elevation and width transitions; deterministic + gameplay tests, ≥180s repeat/scene/road continuity sample, build/unit/Playwright and local commit/handoff.
+## Human-controlled review integrity
 
-**Stop after v0.7A.1 for second-round human reviews. Do not compose a five-minute Pacific Road Trip or launch v0.7B yet.**
+- Machine QA PASS != human KEEP. The r2 KEEP votes belong to exact BRK ID + revision + geometry/content version; they must not silently authorize arbitrary changed variations or new stacked combinations.
+- For any later change to effective steering demand, height/grade, lane width, sightline or hazards, create a new explicitly labeled content revision and leave its human vote UNREVIEWED. Preserve r1/r2 history unchanged.
+- Future tasks should remain narrowly scoped: read the new authorized spec, create a feature branch from current playable LOCAL HEAD, selectively import only relevant docs, build and visibly drive in browser/Pixel-like view, run tests, hand off with PASS/FAIL/UNVERIFIED and stop for real owner evaluation.
+
+**No current instruction to start a new milestone automatically.**

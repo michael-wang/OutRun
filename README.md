@@ -1,36 +1,37 @@
 # Project OutRun
 
-Original browser 3D arcade-driving game inspired by the joy of classic Out Run / OutRun 2; not a licensed SEGA remake. Use only original or appropriately licensed artwork, vehicles and sound; internal title is not a cleared public brand.
+Independent original 3D arcade-driving project inspired by the *joy* of classic Out Run / OutRun 2, not an authorized SEGA remake. Only original/license-cleared assets. Internal project name is not a cleared public title.
 
-## CURRENT OWNER-APPROVED MILESTONE: v0.7A.1 — Verticality & Variable Width
+## Human review milestone complete: v0.7A.1 — 8/8 KEEP
 
-The **playable v0.7A** Brick Lab was implemented in the user's LOCAL Windows checkout (`b6ee7ea`, `e6e80f0`). The owner personally drove and rated **all eight first-round challenge bricks**:
+The owner played all eight v0.7A.1 updated Challenge Bricks, and **BRK-01 through BRK-08 revision 2 received KEEP**; autoQA PASS for all eight. This improves the initial v0.7A review (r1: 6 KEEP, 2 REWORK, zero reject), with BRK-03 and BRK-05 moving from REWORK to KEEP. See archived reviews:
+- [R1 original human votes](docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json)
+- [R2 second-round human votes](docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json)
 
-- **KEEP (6):** BRK-01 Coastal Panorama, BRK-02 Double-S, BRK-04 Canyon Brake, BRK-06 Edge Discipline, BRK-07 City Boulevard, BRK-08 Harbor Hairpin.
-- **REWORK (2):** BRK-03 Crest & Reveal and BRK-05 Downhill Acceleration. Both have the precise note **"More radical height delta."**
-- **Global requirement:** Road width visually never changes; create REAL drivable 2-, 4-, 6- and 8-total-lane roads with smooth readable narrowing and widening.
+The core arcade driving, existing three worlds and reviews remain in the user's **LOCAL** `C:\astra-dev\OutRun` checkout. GitHub `main` is primarily planning/specification documents and must **NOT** be reset/merged over the playable local app.
 
-**Product decision:** improve bricks before composing. v0.7A.1 reworks the existing eight with true dramatic 3D elevation and variable road geometry; **v0.7B 5-minute Pacific Road Trip is NOT yet authorized**. Player reviews control the production brick catalog; changed geometry requires revisioned re-review, no fake votes.
+## Direction after the brick review
 
-### Active development and review resources
+**Curated procedural journeys**, but first validate a smaller alternative to simply chaining existing BRK-01, BRK-03, etc. The proposed design uses:
+- **L1 Primitive Profiles:** stack curvature, elevation and actual 2–8-lane width changes over the same distance interval.
+- **L2 Experience Bricks:** playable, human-rated combinations of these profiles. The eight accepted r2 bricks are verified references, not blanket approval for altered combinations.
+- **L3 Journey/World:** choose world rules, surfaces and environment families; synthesize terrain and near/mid/far scenery along the road. Do not mix fully unrestricted biome/snow materials into road-geometry primitives.
 
-| File | Purpose |
+First proposed spike: try a handful of recombinations of **BRK-01, BRK-03 and BRK-06**, with easy human KEEP/REWORK/REJECT and subjective difficulty votes, and lightweight geometry/terrain/scenery checks. See [L1 Stacking Experiment Plan](docs/L1_STACKING_EXPERIMENT_PLAN.md).
+
+The approximately 5-minute Pacific Road Trip (v0.7B), Mystery Drive, RPG economy, Stage Composer, new biomes and traffic/rivals remain later possibilities, **not currently authorized construction tasks**.
+
+## Current documents
+
+| Resource | Purpose |
 | --- | --- |
-| [AGENTS.md](AGENTS.md) | New v0.7A.1 local Codex scope / repo safety |
-| [v0.7A.1 Spec](docs/V0.7A1_SPEC.md) | BRK-03/05 hills, true 2–8-lane geometry, reviewed-brick revision scheme |
-| [v0.7A.1 Acceptance](docs/V0.7A1_ACCEPTANCE.md) | Actual slope/width/motion, review-preservation and gameplay tests |
-| [v0.7A.1 Codex Kickoff](docs/CODEX_V0.7A1_KICKOFF.md) | New autonomous Goal, normal-chat authorization and local branch prep |
-| [Actual R1 Human Votes](docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json) | Original KEEP/REWORK/REJECT decisions and notes (archived) |
-| [8 Challenge Brick Descriptions](docs/CHALLENGE_BRICK_CANDIDATES.md) | Existing tested concepts |
-| [Procedural Journey Strategy](docs/PROCEDURAL_JOURNEY_STRATEGY.md) | Later curated generation and two modes |
-| [v0.7B Direction](docs/V0.7_PLAYABLE_PROTOTYPE_PLAN.md) | Five-minute Guided Journey after revised bricks pass human review |
+| [AGENTS.md](AGENTS.md) | Current milestone status, source/review integrity |
+| [L1 Stacking Experiment Plan](docs/L1_STACKING_EXPERIMENT_PLAN.md) | Proposed simple composable road, terrain and scenery experiment |
+| [v0.7A.1 accepted reviews](docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json) | Exact eight r2 player votes |
+| [Roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Upcoming work and later procedural trip direction |
+| [v0.7A.1 Spec](docs/V0.7A1_SPEC.md) | Last delivered road height/width refinement requirements |
+| [Procedural Strategy](docs/PROCEDURAL_JOURNEY_STRATEGY.md) | Curated generated journeys long-term direction |
 
-### Protect the local code
+## Preserve the playable experience
 
-GitHub `main` is primarily docs. The real playable app is at `C:\astra-dev\OutRun` on a LOCAL feature branch, latest reported v0.7A code `b6ee7ea` and handoff `e6e80f0`. **Never merge/reset/checkout documentation-only main over source code.** Codex must branch from playable local HEAD and selectively import the four v0.7A.1 docs + archived R1 reviews.
-
-**Workflow:** FIRST send explicit authorization in an ordinary Codex chat (to avoid the old stop-after-v0.7A approval deadlock), THEN start new Goal using `docs/CODEX_V0.7A1_KICKOFF.md`. Codex owns coding, visual/video QA, browser regression, tests and local commits. Human owns R2 ratings. No public deployment, push, merge, other-repo edits or v0.7B without permission.
-
-### Protected gameplay
-
-Three.js/TypeScript/Vite; genuine 3D road/cars and three scenic biomes, Accepted Arcade Lateral Balance steering, 4 soft detents each side, 1.75× travel pace, exaggerated controlled yaw and animated occupants/wheels, car-left analog speedometer, bounded offroad, playable fast/brake turns. Pixel 8 landscape fullscreen/PWA dual touch, swappable hands and PC A/D + Space/Enter must remain.
+Three.js/TypeScript/Vite; real 3D car/road/terrain, accepted Arcade Lateral Balance and 1.75× world pace, discrete soft steering detents and bounded off-road shoulders, animated original convertible/occupants/wheels, Azure Coast/Golden Canyon/Sunlit Coastal City, Pixel 8 20:9 landscape fullscreen/PWA with hand-swappable two-thumb controls and desktop A/D + Space/Enter. Do not start any new milestone without explicit owner authorization.
