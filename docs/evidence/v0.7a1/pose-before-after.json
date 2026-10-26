@@ -1,0 +1,32 @@
+[
+  {
+    "u": 0,
+    "beforeDegrees": 0,
+    "afterDegrees": 0
+  },
+  {
+    "u": 0.1,
+    "beforeDegrees": 0,
+    "afterDegrees": 0.22959495216771844
+  },
+  {
+    "u": 0.25,
+    "beforeDegrees": 0,
+    "afterDegrees": 6
+  },
+  {
+    "u": 0.5,
+    "beforeDegrees": 17.5,
+    "afterDegrees": 20
+  },
+  {
+    "u": 0.75,
+    "beforeDegrees": 35,
+    "afterDegrees": 40
+  },
+  {
+    "u": 1,
+    "beforeDegrees": 42,
+    "afterDegrees": 57
+  }
+]

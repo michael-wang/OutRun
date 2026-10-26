@@ -1,0 +1,748 @@
+{
+  "errors": [],
+  "storage": null,
+  "runs": [
+    {
+      "brick": {
+        "id": "BRK-01",
+        "revision": 2,
+        "name": "Coastal Panorama Sweeper",
+        "intent": "Hold the throttle and follow the long ocean bend.",
+        "emotionalRole": "relaxed speed",
+        "sceneryAct": 0,
+        "seed": 7101,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            8,
+            0.75
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            5,
+            -0.5
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "nominalDuration": 23,
+        "length": 2571.5277777777774,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            10,
+            4
+          ],
+          [
+            15,
+            6
+          ],
+          [
+            23,
+            6
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            12
+          ],
+          [
+            12,
+            65
+          ],
+          [
+            23,
+            12
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "relaxed speed",
+          "coast"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 2640742598,
+        "count": 84136
+      },
+      "startVideoSeconds": 0.866,
+      "endVideoSeconds": 23.561,
+      "offRoad": 0,
+      "elapsed": 22.617599999999626
+    },
+    {
+      "brick": {
+        "id": "BRK-02",
+        "revision": 2,
+        "name": "Double-S Rhythm",
+        "intent": "Alternate left and right, then release to settle.",
+        "emotionalRole": "rhythmic skill",
+        "sceneryAct": 0,
+        "seed": 7198,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            3,
+            -0.5
+          ],
+          [
+            3,
+            0.5
+          ],
+          [
+            3,
+            -0.5
+          ],
+          [
+            3,
+            0.5
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "nominalDuration": 19,
+        "length": 2124.305555555555,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            19,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            14
+          ],
+          [
+            19,
+            14
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "rhythmic skill",
+          "coast"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 4025714570,
+        "count": 60848
+      },
+      "startVideoSeconds": 23.886,
+      "endVideoSeconds": 42.661,
+      "offRoad": 0,
+      "elapsed": 18.68399999999983
+    },
+    {
+      "brick": {
+        "id": "BRK-03",
+        "revision": 2,
+        "name": "Crest & Reveal",
+        "intent": "Climb toward the sky, then follow the revealed coast.",
+        "emotionalRole": "surprise",
+        "sceneryAct": 0,
+        "seed": 7295,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            4,
+            0
+          ],
+          [
+            5,
+            0.25
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            6,
+            -0.5
+          ],
+          [
+            5,
+            0
+          ]
+        ],
+        "nominalDuration": 23,
+        "length": 2571.5277777777774,
+        "roadWidth": 7,
+        "lanes": [
+          [
+            0,
+            2
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            12,
+            4
+          ],
+          [
+            23,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            12
+          ],
+          [
+            9,
+            172
+          ],
+          [
+            13,
+            160
+          ],
+          [
+            23,
+            18
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "CREST · BEND AHEAD"
+        },
+        "tags": [
+          "surprise",
+          "coast"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 3744700444,
+        "count": 66816
+      },
+      "startVideoSeconds": 42.986,
+      "endVideoSeconds": 65.663,
+      "offRoad": 0,
+      "elapsed": 22.61746666666627
+    },
+    {
+      "brick": {
+        "id": "BRK-04",
+        "revision": 2,
+        "name": "Canyon Brake Test",
+        "intent": "Brake before the marked right turn, then accelerate out.",
+        "emotionalRole": "mastery",
+        "sceneryAct": 1,
+        "seed": 7392,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            5,
+            0
+          ],
+          [
+            5,
+            1.2
+          ],
+          [
+            5,
+            0
+          ],
+          [
+            3,
+            -0.25
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "nominalDuration": 22,
+        "length": 2459.7222222222217,
+        "roadWidth": 7,
+        "lanes": [
+          [
+            0,
+            2
+          ],
+          [
+            22,
+            2
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            25
+          ],
+          [
+            10,
+            38
+          ],
+          [
+            22,
+            25
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "BRAKE · 180 km/h"
+        },
+        "tags": [
+          "mastery",
+          "canyon"
+        ],
+        "antiAdjacency": [
+          "technical",
+          "blind-crest"
+        ],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 4115455873,
+        "count": 46452
+      },
+      "startVideoSeconds": 66.002,
+      "endVideoSeconds": 90.331,
+      "offRoad": 0,
+      "elapsed": 24.27593333333288
+    },
+    {
+      "brick": {
+        "id": "BRK-05",
+        "revision": 2,
+        "name": "Downhill Acceleration Reward",
+        "intent": "Open the throttle through the broad downhill sweep.",
+        "emotionalRole": "release",
+        "sceneryAct": 1,
+        "seed": 7489,
+        "referenceSpeed": 230,
+        "entrySpeed": 170,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            8,
+            -0.5
+          ],
+          [
+            4,
+            0.25
+          ],
+          [
+            7,
+            0
+          ]
+        ],
+        "nominalDuration": 22,
+        "length": 2459.7222222222217,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            6,
+            4
+          ],
+          [
+            12,
+            6
+          ],
+          [
+            22,
+            6
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            210
+          ],
+          [
+            3,
+            205
+          ],
+          [
+            18,
+            25
+          ],
+          [
+            22,
+            12
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "release",
+          "canyon"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 277512937,
+        "count": 84868
+      },
+      "startVideoSeconds": 90.653,
+      "endVideoSeconds": 112.698,
+      "offRoad": 0,
+      "elapsed": 21.992433333332983
+    },
+    {
+      "brick": {
+        "id": "BRK-06",
+        "revision": 2,
+        "name": "Edge Discipline",
+        "intent": "Hold a clean line between the close canyon edges.",
+        "emotionalRole": "concentration",
+        "sceneryAct": 1,
+        "seed": 7586,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            6,
+            0.5
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            5,
+            -0.5
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "nominalDuration": 20,
+        "length": 2236.111111111111,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            12,
+            2
+          ],
+          [
+            17,
+            4
+          ],
+          [
+            20,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            25
+          ],
+          [
+            10,
+            38
+          ],
+          [
+            20,
+            25
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "concentration",
+          "canyon"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 743192539,
+        "count": 59520
+      },
+      "startVideoSeconds": 113.02,
+      "endVideoSeconds": 132.717,
+      "offRoad": 0,
+      "elapsed": 19.66736666666646
+    },
+    {
+      "brick": {
+        "id": "BRK-07",
+        "revision": 2,
+        "name": "City Boulevard Slalom",
+        "intent": "Link the spacious city bends with deliberate reversals.",
+        "emotionalRole": "urban spectacle",
+        "sceneryAct": 2,
+        "seed": 7683,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            5,
+            0.5
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            5,
+            -0.5
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            5,
+            0.5
+          ],
+          [
+            5,
+            0
+          ]
+        ],
+        "nominalDuration": 27,
+        "length": 3018.7499999999995,
+        "roadWidth": 21,
+        "lanes": [
+          [
+            0,
+            6
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            18,
+            8
+          ],
+          [
+            23,
+            6
+          ],
+          [
+            27,
+            6
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            25
+          ],
+          [
+            12,
+            20
+          ],
+          [
+            27,
+            12
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "urban spectacle",
+          "city"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 3568246303,
+        "count": 199970
+      },
+      "startVideoSeconds": 133.06,
+      "endVideoSeconds": 159.649,
+      "offRoad": 0,
+      "elapsed": 26.54263333333275
+    },
+    {
+      "brick": {
+        "id": "BRK-08",
+        "revision": 2,
+        "name": "Harbor Hairpin & Relief",
+        "intent": "Brake for the harbor turn, then enjoy the open-water exit.",
+        "emotionalRole": "tension to release",
+        "sceneryAct": 2,
+        "seed": 7780,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            5,
+            0
+          ],
+          [
+            3.8,
+            -1.25
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            6,
+            0.25
+          ],
+          [
+            8,
+            0
+          ]
+        ],
+        "nominalDuration": 24.8,
+        "length": 2772.7777777777774,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            15,
+            4
+          ],
+          [
+            24.8,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            35
+          ],
+          [
+            8.8,
+            32
+          ],
+          [
+            24.8,
+            12
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "BRAKE · 180 km/h"
+        },
+        "tags": [
+          "tension to release",
+          "city"
+        ],
+        "antiAdjacency": [
+          "technical",
+          "blind-crest"
+        ],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 2023431169,
+        "count": 156008
+      },
+      "startVideoSeconds": 159.994,
+      "endVideoSeconds": 186.767,
+      "offRoad": 0,
+      "elapsed": 26.642633333332736
+    }
+  ]
+}

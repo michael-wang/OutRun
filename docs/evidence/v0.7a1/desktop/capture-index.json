@@ -1,0 +1,394 @@
+{
+  "errors": [],
+  "storage": null,
+  "runs": [
+    {
+      "brick": {
+        "id": "BRK-03",
+        "revision": 2,
+        "name": "Crest & Reveal",
+        "intent": "Climb toward the sky, then follow the revealed coast.",
+        "emotionalRole": "surprise",
+        "sceneryAct": 0,
+        "seed": 7295,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            4,
+            0
+          ],
+          [
+            5,
+            0.25
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            6,
+            -0.5
+          ],
+          [
+            5,
+            0
+          ]
+        ],
+        "nominalDuration": 23,
+        "length": 2571.5277777777774,
+        "roadWidth": 7,
+        "lanes": [
+          [
+            0,
+            2
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            12,
+            4
+          ],
+          [
+            23,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            12
+          ],
+          [
+            9,
+            172
+          ],
+          [
+            13,
+            160
+          ],
+          [
+            23,
+            18
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "CREST · BEND AHEAD"
+        },
+        "tags": [
+          "surprise",
+          "coast"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 3744700444,
+        "count": 66816
+      },
+      "startVideoSeconds": 0.886,
+      "endVideoSeconds": 23.59,
+      "offRoad": 0,
+      "elapsed": 22.617566666666285
+    },
+    {
+      "brick": {
+        "id": "BRK-05",
+        "revision": 2,
+        "name": "Downhill Acceleration Reward",
+        "intent": "Open the throttle through the broad downhill sweep.",
+        "emotionalRole": "release",
+        "sceneryAct": 1,
+        "seed": 7489,
+        "referenceSpeed": 230,
+        "entrySpeed": 170,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            8,
+            -0.5
+          ],
+          [
+            4,
+            0.25
+          ],
+          [
+            7,
+            0
+          ]
+        ],
+        "nominalDuration": 22,
+        "length": 2459.7222222222217,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            6,
+            4
+          ],
+          [
+            12,
+            6
+          ],
+          [
+            22,
+            6
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            210
+          ],
+          [
+            3,
+            205
+          ],
+          [
+            18,
+            25
+          ],
+          [
+            22,
+            12
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "release",
+          "canyon"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 277512937,
+        "count": 84868
+      },
+      "startVideoSeconds": 24.009,
+      "endVideoSeconds": 46.073,
+      "offRoad": 0,
+      "elapsed": 21.992533333332982
+    },
+    {
+      "brick": {
+        "id": "BRK-06",
+        "revision": 2,
+        "name": "Edge Discipline",
+        "intent": "Hold a clean line between the close canyon edges.",
+        "emotionalRole": "concentration",
+        "sceneryAct": 1,
+        "seed": 7586,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            6,
+            0.5
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            5,
+            -0.5
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "nominalDuration": 20,
+        "length": 2236.111111111111,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            7,
+            2
+          ],
+          [
+            12,
+            2
+          ],
+          [
+            17,
+            4
+          ],
+          [
+            20,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            25
+          ],
+          [
+            10,
+            38
+          ],
+          [
+            20,
+            25
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "concentration",
+          "canyon"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 743192539,
+        "count": 59520
+      },
+      "startVideoSeconds": 46.375,
+      "endVideoSeconds": 66.147,
+      "offRoad": 0,
+      "elapsed": 19.667466666666463
+    },
+    {
+      "brick": {
+        "id": "BRK-07",
+        "revision": 2,
+        "name": "City Boulevard Slalom",
+        "intent": "Link the spacious city bends with deliberate reversals.",
+        "emotionalRole": "urban spectacle",
+        "sceneryAct": 2,
+        "seed": 7683,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "requiredSteerProfile": [
+          [
+            3,
+            0
+          ],
+          [
+            5,
+            0.5
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            5,
+            -0.5
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            5,
+            0.5
+          ],
+          [
+            5,
+            0
+          ]
+        ],
+        "nominalDuration": 27,
+        "length": 3018.7499999999995,
+        "roadWidth": 21,
+        "lanes": [
+          [
+            0,
+            6
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            18,
+            8
+          ],
+          [
+            23,
+            6
+          ],
+          [
+            27,
+            6
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            25
+          ],
+          [
+            12,
+            20
+          ],
+          [
+            27,
+            12
+          ]
+        ],
+        "entry": "Straight, zero grade, centered car; three or more seconds to prepare.",
+        "exit": "Straight relief, zero grade, explicit completion before the road buffer.",
+        "warning": {
+          "leadMeters": 300,
+          "text": "FOLLOW THE ROAD"
+        },
+        "tags": [
+          "urban spectacle",
+          "city"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PASS"
+      },
+      "fingerprint": {
+        "hash": 3568246303,
+        "count": 199970
+      },
+      "startVideoSeconds": 66.533,
+      "endVideoSeconds": 93.128,
+      "offRoad": 0,
+      "elapsed": 26.542533333332777
+    }
+  ]
+}
