@@ -1,0 +1,881 @@
+{
+  "schemaVersion": 2,
+  "catalogVersion": "l2-lab-1",
+  "generatorVersion": "v0.7C-r1",
+  "records": [
+    {
+      "id": "L2-001",
+      "revision": 1,
+      "seed": 9701,
+      "contentFingerprint": "bdee4ffa",
+      "world": "canyon",
+      "profiles": {
+        "curvature": {
+          "id": "C01",
+          "parameters": {
+            "effort": 0,
+            "direction": 1,
+            "start": 0.25,
+            "end": 0.75,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E02",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-002",
+      "revision": 1,
+      "seed": 9798,
+      "contentFingerprint": "e792cbeb",
+      "world": "city",
+      "profiles": {
+        "curvature": {
+          "id": "C01",
+          "parameters": {
+            "effort": 0,
+            "direction": -1,
+            "start": 0.25,
+            "end": 0.75,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E05",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 2,
+            "to": 4,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-003",
+      "revision": 1,
+      "seed": 9895,
+      "contentFingerprint": "dad16ad9",
+      "world": "coast",
+      "profiles": {
+        "curvature": {
+          "id": "C02",
+          "parameters": {
+            "effort": 0.5,
+            "direction": 1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E01",
+          "parameters": {
+            "base": 16,
+            "amplitude": 0,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 8,
+            "to": 8,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-004",
+      "revision": 1,
+      "seed": 9992,
+      "contentFingerprint": "828a0ac9",
+      "world": "city",
+      "profiles": {
+        "curvature": {
+          "id": "C02",
+          "parameters": {
+            "effort": 0.6,
+            "direction": -1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E02",
+          "parameters": {
+            "base": 210,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 6,
+            "to": 8,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-005",
+      "revision": 1,
+      "seed": 10089,
+      "contentFingerprint": "5c5161a3",
+      "world": "canyon",
+      "profiles": {
+        "curvature": {
+          "id": "C03",
+          "parameters": {
+            "effort": 1.2,
+            "direction": 1,
+            "start": 0.41000000000000003,
+            "end": 0.59,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E03",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-006",
+      "revision": 1,
+      "seed": 10186,
+      "contentFingerprint": "27fde3cb",
+      "world": "coast",
+      "profiles": {
+        "curvature": {
+          "id": "C03",
+          "parameters": {
+            "effort": 0.85,
+            "direction": -1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E04",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-007",
+      "revision": 1,
+      "seed": 10283,
+      "contentFingerprint": "c7c7cd13",
+      "world": "city",
+      "profiles": {
+        "curvature": {
+          "id": "C04",
+          "parameters": {
+            "effort": 1.15,
+            "direction": 1,
+            "start": 0.41000000000000003,
+            "end": 0.59,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E01",
+          "parameters": {
+            "base": 16,
+            "amplitude": 0,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "REWORK",
+      "difficulty": 4,
+      "overallNote": "",
+      "events": [
+        {
+          "kind": "praise",
+          "tag": "thrilling",
+          "note": "",
+          "anchor": {
+            "id": "L2-007",
+            "revision": 1,
+            "seed": 10283,
+            "contentFingerprint": "c7c7cd13",
+            "generatorVersion": "v0.7C-r1",
+            "world": "city",
+            "profiles": {
+              "curvature": {
+                "id": "C04",
+                "parameters": {
+                  "effort": 1.15,
+                  "direction": 1,
+                  "start": 0.41000000000000003,
+                  "end": 0.59,
+                  "secondary": 1
+                }
+              },
+              "elevation": {
+                "id": "E01",
+                "parameters": {
+                  "base": 16,
+                  "amplitude": 0,
+                  "direction": -1,
+                  "shelfStart": 0.32,
+                  "shelfEnd": 0.68
+                }
+              },
+              "width": {
+                "id": "W04",
+                "parameters": {
+                  "from": 4,
+                  "to": 2,
+                  "start": 0.2,
+                  "end": 0.8
+                }
+              }
+            },
+            "s": 37.5921520997552,
+            "trackDistance": 387.5921520997552,
+            "elapsedSeconds": 0.33330000000000015,
+            "timestampMs": 1793041819946,
+            "source": "drive",
+            "drive": {
+              "speedKmh": 234,
+              "steerRaw": 0.7500000000000002,
+              "steerApplied": 0.5940393518518519,
+              "roadX": 0.9303691446507483,
+              "height": 16,
+              "grade": 0,
+              "halfWidth": 7,
+              "laneCount": 4,
+              "offRoad": false,
+              "gas": true,
+              "brake": false
+            }
+          }
+        },
+        {
+          "kind": "issue",
+          "note": "彎道視線：問題測試",
+          "anchor": {
+            "id": "L2-007",
+            "revision": 1,
+            "seed": 10283,
+            "contentFingerprint": "c7c7cd13",
+            "generatorVersion": "v0.7C-r1",
+            "world": "city",
+            "profiles": {
+              "curvature": {
+                "id": "C04",
+                "parameters": {
+                  "effort": 1.15,
+                  "direction": 1,
+                  "start": 0.41000000000000003,
+                  "end": 0.59,
+                  "secondary": 1
+                }
+              },
+              "elevation": {
+                "id": "E01",
+                "parameters": {
+                  "base": 16,
+                  "amplitude": 0,
+                  "direction": -1,
+                  "shelfStart": 0.32,
+                  "shelfEnd": 0.68
+                }
+              },
+              "width": {
+                "id": "W04",
+                "parameters": {
+                  "from": 4,
+                  "to": 2,
+                  "start": 0.2,
+                  "end": 0.8
+                }
+              }
+            },
+            "s": 60.2036104330885,
+            "trackDistance": 410.2036104330885,
+            "elapsedSeconds": 0.5333000000000006,
+            "timestampMs": 1793041820046,
+            "source": "drive",
+            "drive": {
+              "speedKmh": 231.26400000000004,
+              "steerRaw": 0,
+              "steerApplied": 0,
+              "roadX": 0.9303691446507483,
+              "height": 16,
+              "grade": 0,
+              "halfWidth": 7,
+              "laneCount": 4,
+              "offRoad": false,
+              "gas": false,
+              "brake": false
+            }
+          }
+        },
+        {
+          "kind": "praise",
+          "tag": "hard_but_rewarding",
+          "note": "",
+          "anchor": {
+            "id": "L2-007",
+            "revision": 1,
+            "seed": 10283,
+            "contentFingerprint": "c7c7cd13",
+            "generatorVersion": "v0.7C-r1",
+            "world": "city",
+            "profiles": {
+              "curvature": {
+                "id": "C04",
+                "parameters": {
+                  "effort": 1.15,
+                  "direction": 1,
+                  "start": 0.41000000000000003,
+                  "end": 0.59,
+                  "secondary": 1
+                }
+              },
+              "elevation": {
+                "id": "E01",
+                "parameters": {
+                  "base": 16,
+                  "amplitude": 0,
+                  "direction": -1,
+                  "shelfStart": 0.32,
+                  "shelfEnd": 0.68
+                }
+              },
+              "width": {
+                "id": "W04",
+                "parameters": {
+                  "from": 4,
+                  "to": 2,
+                  "start": 0.2,
+                  "end": 0.8
+                }
+              }
+            },
+            "s": 4025.895833333334,
+            "trackDistance": 4375.895833333334,
+            "elapsedSeconds": 0.016666666666666666,
+            "timestampMs": 1793041820082,
+            "source": "completion",
+            "drive": {
+              "speedKmh": 234,
+              "steerRaw": 0,
+              "steerApplied": 0,
+              "roadX": 0,
+              "height": 16,
+              "grade": 0,
+              "halfWidth": 7,
+              "laneCount": 4,
+              "offRoad": false,
+              "gas": false,
+              "brake": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "L2-008",
+      "revision": 1,
+      "seed": 10380,
+      "contentFingerprint": "6cdaff06",
+      "world": "coast",
+      "profiles": {
+        "curvature": {
+          "id": "C04",
+          "parameters": {
+            "effort": 0.7,
+            "direction": -1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E06",
+          "parameters": {
+            "base": 16,
+            "amplitude": 90,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 6,
+            "to": 6,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-009",
+      "revision": 1,
+      "seed": 10477,
+      "contentFingerprint": "7a5655c2",
+      "world": "canyon",
+      "profiles": {
+        "curvature": {
+          "id": "C05",
+          "parameters": {
+            "effort": 0.7,
+            "direction": 1,
+            "start": 0.325,
+            "end": 0.675,
+            "secondary": 0.65
+          }
+        },
+        "elevation": {
+          "id": "E03",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 2,
+            "to": 4,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-010",
+      "revision": 1,
+      "seed": 10574,
+      "contentFingerprint": "812b3c0c",
+      "world": "canyon",
+      "profiles": {
+        "curvature": {
+          "id": "C05",
+          "parameters": {
+            "effort": 0.8,
+            "direction": -1,
+            "start": 0.325,
+            "end": 0.675,
+            "secondary": 0.65
+          }
+        },
+        "elevation": {
+          "id": "E05",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-011",
+      "revision": 1,
+      "seed": 10671,
+      "contentFingerprint": "193c7327",
+      "world": "canyon",
+      "profiles": {
+        "curvature": {
+          "id": "C06",
+          "parameters": {
+            "effort": 0.75,
+            "direction": 1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E04",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 4,
+            "to": 4,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-012",
+      "revision": 1,
+      "seed": 10768,
+      "contentFingerprint": "6b42a277",
+      "world": "coast",
+      "profiles": {
+        "curvature": {
+          "id": "C06",
+          "parameters": {
+            "effort": 0.65,
+            "direction": -1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E06",
+          "parameters": {
+            "base": 16,
+            "amplitude": 90,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-013",
+      "revision": 1,
+      "seed": 10865,
+      "contentFingerprint": "84d7e750",
+      "world": "city",
+      "profiles": {
+        "curvature": {
+          "id": "C07",
+          "parameters": {
+            "effort": 0.75,
+            "direction": 1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E03",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 6,
+            "to": 8,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-014",
+      "revision": 1,
+      "seed": 10962,
+      "contentFingerprint": "abdf6ab3",
+      "world": "city",
+      "profiles": {
+        "curvature": {
+          "id": "C07",
+          "parameters": {
+            "effort": 0.85,
+            "direction": -1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E02",
+          "parameters": {
+            "base": 210,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-015",
+      "revision": 1,
+      "seed": 11059,
+      "contentFingerprint": "a9f20b19",
+      "world": "canyon",
+      "profiles": {
+        "curvature": {
+          "id": "C08",
+          "parameters": {
+            "effort": 1.25,
+            "direction": 1,
+            "start": 0.4293939393939394,
+            "end": 0.5706060606060606,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E05",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 2,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    },
+    {
+      "id": "L2-016",
+      "revision": 1,
+      "seed": 11156,
+      "contentFingerprint": "f6e48aa7",
+      "world": "coast",
+      "profiles": {
+        "curvature": {
+          "id": "C08",
+          "parameters": {
+            "effort": 1.25,
+            "direction": -1,
+            "start": 0.4137037037037037,
+            "end": 0.5862962962962963,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E06",
+          "parameters": {
+            "base": 16,
+            "amplitude": 90,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 6,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "autoQA": "PASS",
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": []
+    }
+  ]
+}

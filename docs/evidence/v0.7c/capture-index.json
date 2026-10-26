@@ -1,0 +1,2341 @@
+{
+  "errors": [],
+  "runs": [
+    {
+      "candidate": {
+        "id": "L2-001",
+        "revision": 1,
+        "seed": 9701,
+        "name": "Mountain climb",
+        "intent": "Hold a clean line as the mountain road narrows.",
+        "sceneryAct": 1,
+        "world": "canyon",
+        "profiles": {
+          "curvature": {
+            "id": "C01",
+            "parameters": {
+              "effort": 0,
+              "direction": 1,
+              "start": 0.25,
+              "end": 0.75,
+              "secondary": 1
+            }
+          },
+          "elevation": {
+            "id": "E02",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": 1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W03",
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "bdee4ffa",
+        "nominalDuration": 36,
+        "length": 4024.9999999999995,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            7.2,
+            4
+          ],
+          [
+            28.8,
+            2
+          ],
+          [
+            36,
+            2
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            4.32,
+            16
+          ],
+          [
+            31.68,
+            176
+          ],
+          [
+            36,
+            176
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.25,
+            0
+          ],
+          [
+            0.75,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Mountain climb",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C01",
+          "E02",
+          "W03"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 1022341627,
+        "count": 79008
+      },
+      "batch": 1,
+      "startVideoSeconds": 1.114,
+      "endVideoSeconds": 36.535,
+      "elapsed": 35.39303333333186,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-002",
+        "revision": 1,
+        "seed": 9798,
+        "name": "Skyline shelf",
+        "intent": "Climb onto the city shelf, then descend onto the broad road.",
+        "sceneryAct": 2,
+        "world": "city",
+        "profiles": {
+          "curvature": {
+            "id": "C01",
+            "parameters": {
+              "effort": 0,
+              "direction": -1,
+              "start": 0.25,
+              "end": 0.75,
+              "secondary": 0.7
+            }
+          },
+          "elevation": {
+            "id": "E05",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W02",
+            "parameters": {
+              "from": 2,
+              "to": 4,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "e792cbeb",
+        "nominalDuration": 40,
+        "length": 4472.222222222222,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 7,
+        "lanes": [
+          [
+            0,
+            2
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            32,
+            4
+          ],
+          [
+            40,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            4,
+            16
+          ],
+          [
+            12.8,
+            176
+          ],
+          [
+            27.200000000000003,
+            176
+          ],
+          [
+            36,
+            16
+          ],
+          [
+            40,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.25,
+            0
+          ],
+          [
+            0.75,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Skyline shelf",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C01",
+          "E05",
+          "W02"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 4149599841,
+        "count": 205284
+      },
+      "batch": 1,
+      "startVideoSeconds": 37.001,
+      "endVideoSeconds": 76.451,
+      "elapsed": 39.32633333333128,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-003",
+        "revision": 1,
+        "seed": 9895,
+        "name": "Ocean sweep",
+        "intent": "Stay on the gas through the wide coastal arc.",
+        "sceneryAct": 0,
+        "world": "coast",
+        "profiles": {
+          "curvature": {
+            "id": "C02",
+            "parameters": {
+              "effort": 0.5,
+              "direction": 1,
+              "start": 0.35,
+              "end": 0.65,
+              "secondary": 1
+            }
+          },
+          "elevation": {
+            "id": "E01",
+            "parameters": {
+              "base": 16,
+              "amplitude": 0,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W01",
+            "parameters": {
+              "from": 8,
+              "to": 8,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "dad16ad9",
+        "nominalDuration": 44,
+        "length": 4919.444444444443,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 28,
+        "lanes": [
+          [
+            0,
+            8
+          ],
+          [
+            44,
+            8
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            44,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.35,
+            0
+          ],
+          [
+            0.41,
+            0.5
+          ],
+          [
+            0.5900000000000001,
+            0.5
+          ],
+          [
+            0.65,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Ocean sweep",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C02",
+          "E01",
+          "W01"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 1884251352,
+        "count": 180590
+      },
+      "batch": 1,
+      "startVideoSeconds": 76.978,
+      "endVideoSeconds": 120.32,
+      "elapsed": 43.25993333333069,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-004",
+        "revision": 1,
+        "seed": 9992,
+        "name": "Downhill expressway",
+        "intent": "Follow the descending arc as the city road opens.",
+        "sceneryAct": 2,
+        "world": "city",
+        "profiles": {
+          "curvature": {
+            "id": "C02",
+            "parameters": {
+              "effort": 0.6,
+              "direction": -1,
+              "start": 0.35,
+              "end": 0.65,
+              "secondary": 0.7
+            }
+          },
+          "elevation": {
+            "id": "E02",
+            "parameters": {
+              "base": 210,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W02",
+            "parameters": {
+              "from": 6,
+              "to": 8,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "828a0ac9",
+        "nominalDuration": 36,
+        "length": 4024.9999999999995,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 21,
+        "lanes": [
+          [
+            0,
+            6
+          ],
+          [
+            7.2,
+            6
+          ],
+          [
+            28.8,
+            8
+          ],
+          [
+            36,
+            8
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            210
+          ],
+          [
+            4.32,
+            210
+          ],
+          [
+            31.68,
+            50
+          ],
+          [
+            36,
+            50
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.35,
+            0
+          ],
+          [
+            0.41,
+            -0.6
+          ],
+          [
+            0.5900000000000001,
+            -0.6
+          ],
+          [
+            0.65,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Downhill expressway",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C02",
+          "E02",
+          "W02"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 780430651,
+        "count": 246580
+      },
+      "batch": 1,
+      "startVideoSeconds": 120.847,
+      "endVideoSeconds": 156.28,
+      "elapsed": 35.39303333333186,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-005",
+        "revision": 1,
+        "seed": 10089,
+        "name": "Tightening ridge",
+        "intent": "The ridge corner tightens while the road becomes narrower.",
+        "sceneryAct": 1,
+        "world": "canyon",
+        "profiles": {
+          "curvature": {
+            "id": "C03",
+            "parameters": {
+              "effort": 1.2,
+              "direction": 1,
+              "start": 0.41000000000000003,
+              "end": 0.59,
+              "secondary": 1
+            }
+          },
+          "elevation": {
+            "id": "E03",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W03",
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "5c5161a3",
+        "nominalDuration": 40,
+        "length": 4472.222222222222,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            32,
+            2
+          ],
+          [
+            40,
+            2
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            4.8,
+            16
+          ],
+          [
+            19.2,
+            176
+          ],
+          [
+            22,
+            172.8
+          ],
+          [
+            36,
+            16
+          ],
+          [
+            40,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.41000000000000003,
+            0
+          ],
+          [
+            0.4424,
+            0.3
+          ],
+          [
+            0.5449999999999999,
+            1.2
+          ],
+          [
+            0.5648,
+            1.2
+          ],
+          [
+            0.59,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Tightening ridge",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C03",
+          "E03",
+          "W03"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 455028001,
+        "count": 86012
+      },
+      "batch": 2,
+      "startVideoSeconds": 0.566,
+      "endVideoSeconds": 41.716,
+      "elapsed": 41.12643333333109,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-006",
+        "revision": 1,
+        "seed": 10186,
+        "name": "Valley squeeze",
+        "intent": "Adjust your line through a tightening valley bottleneck.",
+        "sceneryAct": 0,
+        "world": "coast",
+        "profiles": {
+          "curvature": {
+            "id": "C03",
+            "parameters": {
+              "effort": 0.85,
+              "direction": -1,
+              "start": 0.35,
+              "end": 0.65,
+              "secondary": 0.7
+            }
+          },
+          "elevation": {
+            "id": "E04",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W04",
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "27fde3cb",
+        "nominalDuration": 44,
+        "length": 4919.444444444443,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            8.8,
+            4
+          ],
+          [
+            17.248,
+            2
+          ],
+          [
+            25.960000000000004,
+            2
+          ],
+          [
+            35.2,
+            4
+          ],
+          [
+            44,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            176
+          ],
+          [
+            4.4,
+            176
+          ],
+          [
+            22,
+            16
+          ],
+          [
+            39.6,
+            176
+          ],
+          [
+            44,
+            176
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.35,
+            0
+          ],
+          [
+            0.40399999999999997,
+            -0.2125
+          ],
+          [
+            0.575,
+            -0.85
+          ],
+          [
+            0.608,
+            -0.85
+          ],
+          [
+            0.65,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Valley squeeze",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C03",
+          "E04",
+          "W04"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 180088085,
+        "count": 102142
+      },
+      "batch": 2,
+      "startVideoSeconds": 42.229,
+      "endVideoSeconds": 85.55,
+      "elapsed": 43.251499999997435,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-007",
+        "revision": 1,
+        "seed": 10283,
+        "name": "City release",
+        "intent": "Brake for the first demanding bend, then unwind the steering.",
+        "sceneryAct": 2,
+        "world": "city",
+        "profiles": {
+          "curvature": {
+            "id": "C04",
+            "parameters": {
+              "effort": 1.15,
+              "direction": 1,
+              "start": 0.41000000000000003,
+              "end": 0.59,
+              "secondary": 1
+            }
+          },
+          "elevation": {
+            "id": "E01",
+            "parameters": {
+              "base": 16,
+              "amplitude": 0,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W04",
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "c7c7cd13",
+        "nominalDuration": 36,
+        "length": 4024.9999999999995,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            7.2,
+            4
+          ],
+          [
+            14.112,
+            2
+          ],
+          [
+            21.240000000000002,
+            2
+          ],
+          [
+            28.8,
+            4
+          ],
+          [
+            36,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            36,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.41000000000000003,
+            0
+          ],
+          [
+            0.43520000000000003,
+            1.15
+          ],
+          [
+            0.455,
+            1.15
+          ],
+          [
+            0.5576,
+            0.2875
+          ],
+          [
+            0.59,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "City release",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C04",
+          "E01",
+          "W04"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 3654758633,
+        "count": 183760
+      },
+      "batch": 2,
+      "startVideoSeconds": 85.997,
+      "endVideoSeconds": 123.068,
+      "elapsed": 37.05136666666498,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-008",
+        "revision": 1,
+        "seed": 10380,
+        "name": "Rolling coast",
+        "intent": "Follow the easing bend over a sequence of coastal hills.",
+        "sceneryAct": 0,
+        "world": "coast",
+        "profiles": {
+          "curvature": {
+            "id": "C04",
+            "parameters": {
+              "effort": 0.7,
+              "direction": -1,
+              "start": 0.35,
+              "end": 0.65,
+              "secondary": 0.7
+            }
+          },
+          "elevation": {
+            "id": "E06",
+            "parameters": {
+              "base": 16,
+              "amplitude": 90,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W01",
+            "parameters": {
+              "from": 6,
+              "to": 6,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "6cdaff06",
+        "nominalDuration": 40,
+        "length": 4472.222222222222,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 21,
+        "lanes": [
+          [
+            0,
+            6
+          ],
+          [
+            40,
+            6
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            4,
+            16
+          ],
+          [
+            10.8,
+            106
+          ],
+          [
+            17.6,
+            20.5
+          ],
+          [
+            24.8,
+            92.5
+          ],
+          [
+            32,
+            16
+          ],
+          [
+            36,
+            38.5
+          ],
+          [
+            40,
+            38.5
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.35,
+            0
+          ],
+          [
+            0.392,
+            -0.7
+          ],
+          [
+            0.425,
+            -0.7
+          ],
+          [
+            0.596,
+            -0.175
+          ],
+          [
+            0.65,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Rolling coast",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C04",
+          "E06",
+          "W01"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 3185626932,
+        "count": 134860
+      },
+      "batch": 2,
+      "startVideoSeconds": 123.577,
+      "endVideoSeconds": 162.967,
+      "elapsed": 39.32643333333127,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-009",
+        "revision": 1,
+        "seed": 10477,
+        "name": "Twin ridge bends",
+        "intent": "Link two bends in the same direction across the ridge.",
+        "sceneryAct": 1,
+        "world": "canyon",
+        "profiles": {
+          "curvature": {
+            "id": "C05",
+            "parameters": {
+              "effort": 0.7,
+              "direction": 1,
+              "start": 0.325,
+              "end": 0.675,
+              "secondary": 0.65
+            }
+          },
+          "elevation": {
+            "id": "E03",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W02",
+            "parameters": {
+              "from": 2,
+              "to": 4,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "7a5655c2",
+        "nominalDuration": 44,
+        "length": 4919.444444444443,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 7,
+        "lanes": [
+          [
+            0,
+            2
+          ],
+          [
+            8.8,
+            2
+          ],
+          [
+            35.2,
+            4
+          ],
+          [
+            44,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            5.279999999999999,
+            16
+          ],
+          [
+            21.119999999999997,
+            176
+          ],
+          [
+            24.200000000000003,
+            172.8
+          ],
+          [
+            39.6,
+            16
+          ],
+          [
+            44,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.325,
+            0
+          ],
+          [
+            0.3775,
+            0.7
+          ],
+          [
+            0.43000000000000005,
+            0.7
+          ],
+          [
+            0.48250000000000004,
+            0.105
+          ],
+          [
+            0.5525,
+            0.45499999999999996
+          ],
+          [
+            0.6225,
+            0.45499999999999996
+          ],
+          [
+            0.675,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Twin ridge bends",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C05",
+          "E03",
+          "W02"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 1087281724,
+        "count": 94926
+      },
+      "batch": 3,
+      "startVideoSeconds": 0.61,
+      "endVideoSeconds": 43.89,
+      "elapsed": 43.25159999999722,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-010",
+        "revision": 1,
+        "seed": 10574,
+        "name": "Narrow shelf",
+        "intent": "Carry your line from one bend into the next on a high shelf.",
+        "sceneryAct": 1,
+        "world": "canyon",
+        "profiles": {
+          "curvature": {
+            "id": "C05",
+            "parameters": {
+              "effort": 0.8,
+              "direction": -1,
+              "start": 0.325,
+              "end": 0.675,
+              "secondary": 0.65
+            }
+          },
+          "elevation": {
+            "id": "E05",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W03",
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "812b3c0c",
+        "nominalDuration": 36,
+        "length": 4024.9999999999995,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            7.2,
+            4
+          ],
+          [
+            28.8,
+            2
+          ],
+          [
+            36,
+            2
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            3.6,
+            16
+          ],
+          [
+            11.52,
+            176
+          ],
+          [
+            24.48,
+            176
+          ],
+          [
+            32.4,
+            16
+          ],
+          [
+            36,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.325,
+            0
+          ],
+          [
+            0.3775,
+            -0.8
+          ],
+          [
+            0.43000000000000005,
+            -0.8
+          ],
+          [
+            0.48250000000000004,
+            -0.12
+          ],
+          [
+            0.5525,
+            -0.52
+          ],
+          [
+            0.6225,
+            -0.52
+          ],
+          [
+            0.675,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Narrow shelf",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C05",
+          "E05",
+          "W03"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 2447354261,
+        "count": 78896
+      },
+      "batch": 3,
+      "startVideoSeconds": 44.409,
+      "endVideoSeconds": 79.891,
+      "elapsed": 35.39293333333199,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-011",
+        "revision": 1,
+        "seed": 10671,
+        "name": "Valley reversal",
+        "intent": "Reverse your steering smoothly through the canyon valley.",
+        "sceneryAct": 1,
+        "world": "canyon",
+        "profiles": {
+          "curvature": {
+            "id": "C06",
+            "parameters": {
+              "effort": 0.75,
+              "direction": 1,
+              "start": 0.2,
+              "end": 0.8,
+              "secondary": 1
+            }
+          },
+          "elevation": {
+            "id": "E04",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W01",
+            "parameters": {
+              "from": 4,
+              "to": 4,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "193c7327",
+        "nominalDuration": 40,
+        "length": 4472.222222222222,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            40,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            176
+          ],
+          [
+            4,
+            176
+          ],
+          [
+            20,
+            16
+          ],
+          [
+            36,
+            176
+          ],
+          [
+            40,
+            176
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.2,
+            0
+          ],
+          [
+            0.29000000000000004,
+            0.75
+          ],
+          [
+            0.392,
+            0.75
+          ],
+          [
+            0.5,
+            0
+          ],
+          [
+            0.6080000000000001,
+            -0.75
+          ],
+          [
+            0.71,
+            -0.75
+          ],
+          [
+            0.8,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Valley reversal",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C06",
+          "E04",
+          "W01"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 1595587409,
+        "count": 98060
+      },
+      "batch": 3,
+      "startVideoSeconds": 80.361,
+      "endVideoSeconds": 119.745,
+      "elapsed": 39.32643333333128,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-012",
+        "revision": 1,
+        "seed": 10768,
+        "name": "Rolling S",
+        "intent": "Change direction while the coast rises, falls and narrows.",
+        "sceneryAct": 0,
+        "world": "coast",
+        "profiles": {
+          "curvature": {
+            "id": "C06",
+            "parameters": {
+              "effort": 0.65,
+              "direction": -1,
+              "start": 0.2,
+              "end": 0.8,
+              "secondary": 0.7
+            }
+          },
+          "elevation": {
+            "id": "E06",
+            "parameters": {
+              "base": 16,
+              "amplitude": 90,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W04",
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "6b42a277",
+        "nominalDuration": 44,
+        "length": 4919.444444444443,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            8.8,
+            4
+          ],
+          [
+            17.248,
+            2
+          ],
+          [
+            25.960000000000004,
+            2
+          ],
+          [
+            35.2,
+            4
+          ],
+          [
+            44,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            4.4,
+            16
+          ],
+          [
+            11.88,
+            106
+          ],
+          [
+            19.36,
+            20.5
+          ],
+          [
+            27.28,
+            92.5
+          ],
+          [
+            35.2,
+            16
+          ],
+          [
+            39.6,
+            38.5
+          ],
+          [
+            44,
+            38.5
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.2,
+            0
+          ],
+          [
+            0.29000000000000004,
+            -0.65
+          ],
+          [
+            0.392,
+            -0.65
+          ],
+          [
+            0.5,
+            0
+          ],
+          [
+            0.6080000000000001,
+            0.45499999999999996
+          ],
+          [
+            0.71,
+            0.45499999999999996
+          ],
+          [
+            0.8,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Rolling S",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C06",
+          "E06",
+          "W04"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 4203105616,
+        "count": 98222
+      },
+      "batch": 3,
+      "startVideoSeconds": 120.239,
+      "endVideoSeconds": 163.544,
+      "elapsed": 43.25156666666402,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-013",
+        "revision": 1,
+        "seed": 10865,
+        "name": "Skyline slalom",
+        "intent": "Link alternating bends on the widening city ridge.",
+        "sceneryAct": 2,
+        "world": "city",
+        "profiles": {
+          "curvature": {
+            "id": "C07",
+            "parameters": {
+              "effort": 0.75,
+              "direction": 1,
+              "start": 0.2,
+              "end": 0.8,
+              "secondary": 1
+            }
+          },
+          "elevation": {
+            "id": "E03",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W02",
+            "parameters": {
+              "from": 6,
+              "to": 8,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "84d7e750",
+        "nominalDuration": 36,
+        "length": 4024.9999999999995,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 21,
+        "lanes": [
+          [
+            0,
+            6
+          ],
+          [
+            7.2,
+            6
+          ],
+          [
+            28.8,
+            8
+          ],
+          [
+            36,
+            8
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            4.32,
+            16
+          ],
+          [
+            17.28,
+            176
+          ],
+          [
+            19.8,
+            172.8
+          ],
+          [
+            32.4,
+            16
+          ],
+          [
+            36,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.2,
+            0
+          ],
+          [
+            0.272,
+            0.75
+          ],
+          [
+            0.3320000000000001,
+            0
+          ],
+          [
+            0.41600000000000004,
+            -0.75
+          ],
+          [
+            0.4760000000000001,
+            0
+          ],
+          [
+            0.56,
+            0.6000000000000001
+          ],
+          [
+            0.6200000000000001,
+            0
+          ],
+          [
+            0.704,
+            -0.75
+          ],
+          [
+            0.8,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Skyline slalom",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C07",
+          "E03",
+          "W02"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 2901938570,
+        "count": 243364
+      },
+      "batch": 4,
+      "startVideoSeconds": 0.561,
+      "endVideoSeconds": 36.012,
+      "elapsed": 35.393033333332,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-014",
+        "revision": 1,
+        "seed": 10962,
+        "name": "Descending rhythm",
+        "intent": "Keep the slalom rhythm through a downhill bottleneck.",
+        "sceneryAct": 2,
+        "world": "city",
+        "profiles": {
+          "curvature": {
+            "id": "C07",
+            "parameters": {
+              "effort": 0.85,
+              "direction": -1,
+              "start": 0.2,
+              "end": 0.8,
+              "secondary": 0.7
+            }
+          },
+          "elevation": {
+            "id": "E02",
+            "parameters": {
+              "base": 210,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W04",
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "abdf6ab3",
+        "nominalDuration": 40,
+        "length": 4472.222222222222,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            15.68,
+            2
+          ],
+          [
+            23.6,
+            2
+          ],
+          [
+            32,
+            4
+          ],
+          [
+            40,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            210
+          ],
+          [
+            4.8,
+            210
+          ],
+          [
+            35.2,
+            50
+          ],
+          [
+            40,
+            50
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.2,
+            0
+          ],
+          [
+            0.272,
+            -0.85
+          ],
+          [
+            0.3320000000000001,
+            0
+          ],
+          [
+            0.41600000000000004,
+            0.595
+          ],
+          [
+            0.4760000000000001,
+            0
+          ],
+          [
+            0.56,
+            -0.68
+          ],
+          [
+            0.6200000000000001,
+            0
+          ],
+          [
+            0.704,
+            0.85
+          ],
+          [
+            0.8,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Descending rhythm",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C07",
+          "E02",
+          "W04"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 4156742563,
+        "count": 196372
+      },
+      "batch": 4,
+      "startVideoSeconds": 36.491,
+      "endVideoSeconds": 75.945,
+      "elapsed": 39.32643333333128,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-015",
+        "revision": 1,
+        "seed": 11059,
+        "name": "Shelf switchback",
+        "intent": "Brake for the mountain hairpin and accelerate onto the shelf exit.",
+        "sceneryAct": 1,
+        "world": "canyon",
+        "profiles": {
+          "curvature": {
+            "id": "C08",
+            "parameters": {
+              "effort": 1.25,
+              "direction": 1,
+              "start": 0.4293939393939394,
+              "end": 0.5706060606060606,
+              "secondary": 1
+            }
+          },
+          "elevation": {
+            "id": "E05",
+            "parameters": {
+              "base": 16,
+              "amplitude": 160,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W01",
+            "parameters": {
+              "from": 2,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "a9f20b19",
+        "nominalDuration": 44,
+        "length": 4919.444444444443,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 7,
+        "lanes": [
+          [
+            0,
+            2
+          ],
+          [
+            44,
+            2
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            4.4,
+            16
+          ],
+          [
+            14.08,
+            176
+          ],
+          [
+            29.92,
+            176
+          ],
+          [
+            39.6,
+            16
+          ],
+          [
+            44,
+            16
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.4293939393939394,
+            0
+          ],
+          [
+            0.46469696969696966,
+            1.25
+          ],
+          [
+            0.5353030303030303,
+            1.25
+          ],
+          [
+            0.5706060606060606,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Shelf switchback",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C08",
+          "E05",
+          "W01"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 3472345213,
+        "count": 71646
+      },
+      "batch": 4,
+      "startVideoSeconds": 76.39,
+      "endVideoSeconds": 122.033,
+      "elapsed": 45.584999999997024,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2-016",
+        "revision": 1,
+        "seed": 11156,
+        "name": "Cliff hairpin",
+        "intent": "A strong reversal of direction among rolling coastal cliffs.",
+        "sceneryAct": 0,
+        "world": "coast",
+        "profiles": {
+          "curvature": {
+            "id": "C08",
+            "parameters": {
+              "effort": 1.25,
+              "direction": -1,
+              "start": 0.4137037037037037,
+              "end": 0.5862962962962963,
+              "secondary": 0.7
+            }
+          },
+          "elevation": {
+            "id": "E06",
+            "parameters": {
+              "base": 16,
+              "amplitude": 90,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            }
+          },
+          "width": {
+            "id": "W03",
+            "parameters": {
+              "from": 6,
+              "to": 2,
+              "start": 0.2,
+              "end": 0.8
+            }
+          }
+        },
+        "generatorVersion": "v0.7C-r1",
+        "contentFingerprint": "f6e48aa7",
+        "nominalDuration": 36,
+        "length": 4024.9999999999995,
+        "referenceSpeed": 230,
+        "entrySpeed": 230,
+        "roadWidth": 21,
+        "lanes": [
+          [
+            0,
+            6
+          ],
+          [
+            7.2,
+            6
+          ],
+          [
+            28.8,
+            2
+          ],
+          [
+            36,
+            2
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            16
+          ],
+          [
+            3.6,
+            16
+          ],
+          [
+            9.72,
+            106
+          ],
+          [
+            15.84,
+            20.5
+          ],
+          [
+            22.32,
+            92.5
+          ],
+          [
+            28.8,
+            16
+          ],
+          [
+            32.4,
+            38.5
+          ],
+          [
+            36,
+            38.5
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            0,
+            0
+          ],
+          [
+            0.4137037037037037,
+            0
+          ],
+          [
+            0.45685185185185184,
+            -1.25
+          ],
+          [
+            0.5431481481481482,
+            -1.25
+          ],
+          [
+            0.5862962962962963,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "emotionalRole": "Cliff hairpin",
+        "entry": "Straight approach",
+        "exit": "Straight relief and explicit finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "C08",
+          "E06",
+          "W03"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 164129907,
+        "count": 96740
+      },
+      "batch": 4,
+      "startVideoSeconds": 122.492,
+      "endVideoSeconds": 160.263,
+      "elapsed": 37.71796666666487,
+      "offRoad": 0,
+      "completed": true
+    }
+  ]
+}
