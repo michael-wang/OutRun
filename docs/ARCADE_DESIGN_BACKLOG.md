@@ -1,30 +1,25 @@
-# Project OutRun — roadmap after successful v0.7A.1 human review
+# Project OutRun — Roadmap after v0.7C product NO-GO
 
-## HUMAN-ACCEPTED FOUNDATION
+## Deliberately preserve success
 
-**BRK-01..08 r2:** 8 KEEP / 0 REWORK / 0 REJECT and eight autoQA PASS. Archived first and second rounds:
-- `docs/reviews/V0.7A_R1_HUMAN_REVIEWS.json`
-- `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json`
+- Accepted arcade driving: responsive lateral balance, soft four-stage steering, 1.75× world flow, predictable bend pressure/off-road and mobile UI.
+- Eight BRK revision-2 human KEEP designs and complete review history.
+- Working L1 technical shape catalog, deterministic road generator and in-drive praise/issue feedback. No need to destroy these foundations.
 
-These eight L2 reference experiences are approved **only at their exact r2 content versions**, not arbitrary stacked variations.
+## PRIORITY A — vehicle experience request (separate task)
 
-## ACTIVE AUTHORIZED: v0.7C — L1 Library & L2 Feedback Lab
+A practical six-speed automatic gearbox with perceptible RPM rises/upshift falls, slower acceleration to an attainable 300 km/h and fuller/less shrill synthesized engine timbre. See `docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md` and `docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md`. Respect local source and no unrelated code.
 
-User requests:
-- **Complete first systematic L1 vocabulary:** eight Curvature, six Elevation, four Width parameterized shapes; Codex audits existing engine, fills gaps and auto-tests geometry. No player time spent individually rating primitives.
-- **Sixteen representative L2 mixes:** systematically cover all C/E/W types in 16 real ~30–60s drives with current coast/canyon/city scene rules, single seeded replay ID per candidate, in 4 review batches. Different combinations may have different human-rated difficulty (even Godlike) instead of prematurely enforcing a speculative AAA solver.
-- **Instant feedback (praise AND issues):** location-anchored issue text and four named player praise reactions — **超好玩!**, **超刺激!**, **超難! 但是過了超爽!**, **風景優美**. Pause/input/resume safely, allow just-completed challenge praise. End L2 KEEP/REWORK/REJECT + perceived difficulty and notes; local persistence & JSON export.
-- **Protect gameplay:** old accepted BRK history, 1.75× Arcade Lateral Balance, 4 soft detents, 2–8 real lanes, dramatic grades, three original scenic packs and phone input.
+## PRIORITY B — L2 model correction, **WAIT FOR ACTUAL REFERENCE VIDEO ANALYSIS**
 
-Source of truth: `docs/V0.7C_SPEC.md`; acceptance `docs/V0.7C_ACCEPTANCE.md`; matrix `docs/V0.7C_L2_COVERAGE_MATRIX.md`; shape library `docs/L1_PRIMITIVE_CATALOG.md`. Latest full Codex handoff `docs/CODEX_V0.7C_KICKOFF.md`.
+User reports current ~30–60s L2 are single prolonged L1 moments (one bend, one climb). Current matrix defines only C + E + W for the WHOLE road. Do not demand a fixed 3–5 L1 count; owner's earlier number was an illustrative guess. User supplied roughly 40s racing footage to guide an evidence-based event density and arrangement.
 
-## NEXT AFTER HUMAN L2 REVIEW — NOT AUTHORIZED
+First document timestamped perceptual moments and geometric L1 changes in the EXACT uploaded clip. Include overlays of simultaneous bends/grades/widths and separate visually/sonically memorable events. Actual clip access is required; no invented count.
 
-- Revise weak generated L2 and strengthen composition rules based on issue/praise *locations and tags* rather than guesses.
-- Then revisit **v0.7B Pacific Road Trip — Intermediate — 5 minutes**, using only exact approved L2 versions in a reproducible full journey.
-- Mystery Drive using same generator but unknown-to-player scene order, future world packs (snow/volcano only after actual assets/mechanics), traffic/rivals, real obstacles, and Stage Composer only where needed.
-- RPG completion-based earnings/garage/car upgrades/unlocks **after** generated journeys are fun to replay without money.
+Once analyzed, implement only **ONE** L2 pilot with multiple distance-localized L1 placements in sequence and overlap, have owner drive and approve that compositional model before expanding to 16 again. Reuse technical v0.7C L1 + feedback implementation. See `docs/V0.7C_L2_DESIGN_POSTMORTEM.md`.
 
-## Working principle
+## FURTHER — only after human L2 composition GO
 
-**AI engineers technically correct L1; human rates playable L2.** Capture both positive and negative moments while actually driving, so the game learns what to preserve as well as what to fix. Keep process/code minimal and don't confuse green tests with a fun game.
+Human-reviewed L2 archive → five-minute Pacific Road Trip (v0.7B) → Mystery Drive → environment/traffic packs → optional Stage Composer and RPG progression. None is authorized by merely having a technical L1 generator.
+
+**Product rule:** don't spend another large Codex Goal satisfying an unproven L2 interpretation. Short user-playable pilot first; then scale.
