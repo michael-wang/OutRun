@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-const root='docs/evidence/v0.7a1';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.7c';mkdirSync(root,{recursive:true});
 test('real 2/4/6/8 lane meshes, painted separators and width-aware offroad agree on both sides',async({page})=>{
  const results=[];
  for(const [id,t,lanes] of [['BRK-04',8,2],['BRK-02',8,4],['BRK-01',18,6],['BRK-07',12,8]] as const){

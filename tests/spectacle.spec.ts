@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
 test('full-gas left/right sweepers and measured high-speed peak pose use actual touch',async({browser})=>{
- const root='docs/evidence/v0.7a1';mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();
+ const root='docs/evidence/v0.7c';mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();
  await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const touch=await touchDriver(page,context),course=await page.evaluate(()=>(window as any).__drive.challenges()),runs=[];
  for(const id of ['medium','high','extreme']){
   const c=course.find((c:any)=>c.id===id);await touch(null,false,false);await page.evaluate(d=>(window as any).__drive.reset({distance:d,speed:230/3.6}),id==='extreme'?c.start+c.transitionLength:c.start-80);const rows=[];

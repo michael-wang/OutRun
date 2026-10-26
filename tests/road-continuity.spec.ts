@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
-const root='docs/evidence/v0.7a1';
+const root='docs/evidence/v0.7c';
 test('180s at 30/60Hz crosses full track and loop seams with visible unobstructed asphalt',async({page})=>{
  test.setTimeout(180000);mkdirSync(root,{recursive:true});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.setViewportSize({width:960,height:432});await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const runs=[];
  for(const hz of [30,60]){
