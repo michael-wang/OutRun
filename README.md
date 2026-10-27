@@ -1,10 +1,10 @@
 # Project OutRun
 
-An original browser arcade-driving game inspired by the joy of classic Out Run / OutRun 2, not a licensed SEGA remake. Use only original/license-cleared visual and audio assets; §Project OutRun§ is an internal name, not a cleared public brand.
+An original browser arcade-driving game inspired by the joy of classic Out Run / OutRun 2, not a licensed SEGA remake. Use only original/license-cleared visual and audio assets; `Project OutRun` is an internal name, not a cleared public brand.
 
 ## ACTIVE: v0.7D — True Multi-Placement L2 Composer + targeted car/mobile UI tweaks
 
-**Latest user-playtested build:** v0.7C.1 (LOCAL implementation §f0ec3f7§, handoff §d1fea62§). The user has accepted the newly warmed engine sound and **144 CSS px horizontal mobile steering travel**. The user now wants:
+**Latest user-playtested build:** v0.7C.1 (LOCAL implementation `f0ec3f7`, handoff `d1fea62`). The user has accepted the newly warmed engine sound and **144 CSS px horizontal mobile steering travel**. The user now wants:
 1. **More believable six-speed upshifts**: transient real engine/wheel torque interruption and corresponding physical acceleration response, so the speed may naturally pause/dip rather than shift as if uninterrupted. No artificial subtracting from displayed speed.
 2. **Smaller lower-mobile speedometer**: Current dial overlays the top-left MENU; shrink to ~20–26% screen height and move down near the left side of the car, keeping 0–300 dial and gear legible. Menu remains visible AND clickable.
 3. **Shorter-height mobile steering panel**: remove redundant title/instruction captions, slim vertical footprint near lower-left while KEEPING the already approved 144px full steering thumb travel, 9 effective detents and multi-touch.
@@ -27,9 +27,9 @@ Both tweaks and Composer are in **one SEQUENTIAL v0.7D Goal**, from latest user-
 | [Roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Future actual gameplay milestones |
 
 ### Git preservation
-Playable app is at **LOCAL §C:\astra-dev\OutRun§**, not on GitHub docs-only §main§. Branch from local current playable HEAD and selectively import latest v0.7D docs; never merge/reset/checkout docs-only main over source. Preserve already human-approved speed/bar/audio behavior and review localStorage/exports.
+Playable app is at **LOCAL `C:\astra-dev\OutRun`**, not on GitHub docs-only `main`. Branch from local current playable HEAD and selectively import latest v0.7D docs; never merge/reset/checkout docs-only main over source. Preserve already human-approved speed/bar/audio behavior and review localStorage/exports.
 
 Existing project: Three.js + TypeScript + Vite, real 3D 2–8-lane road, altitude/terrain, accepted Arcade Lateral Balance, 1.75× travel pace, 4 soft steering detents per side, original animated convertible/wheels/occupants/hair and coast/canyon/city environments, Pixel 8 landscape fullscreen PWA/two-thumb swap and PC A/D + Space/Enter.
 
 ### Handoff
-Use current v0.7D kickoff in the SAME OutRun Codex conversation: send ordinary authorization first if needed to supersede stop-after-v0.7C.1, then start a new §/goal§. Codex implements, checks real browser moving footage/phone hitboxes, unit/E2E, commits locally and produces §docs/V0.7D_HANDOFF.md§. No push/merge/public deployment, TopWar changes, runtime telemetry or automatic next version.
+Use current v0.7D kickoff in the SAME OutRun Codex conversation: send ordinary authorization first if needed to supersede stop-after-v0.7C.1, then start a new `/goal`. Codex implements, checks real browser moving footage/phone hitboxes, unit/E2E, commits locally and produces `docs/V0.7D_HANDOFF.md`. No push/merge/public deployment, TopWar changes, runtime telemetry or automatic next version.
