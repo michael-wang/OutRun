@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
+const root='docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
 test('trusted thumb soft response, two-pixel jitter, quick release and shared PC stream',async({browser})=>{
  const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({speed:230/3.6});});const touch=await touchDriver(page,context),rows=[];
  const advance=(t:number)=>page.evaluate(t=>(window as any).__drive.advance(t),t),snapshot=()=>page.evaluate(()=>(window as any).__drive.snapshot());

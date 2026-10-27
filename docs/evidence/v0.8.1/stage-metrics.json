@@ -1,0 +1,7961 @@
+[
+  {
+    "code": "S01-v0.8.1-r1-1-ALB1",
+    "fingerprint": "8dee7cb2",
+    "coverage": 0.7681481481481481,
+    "gaps": [
+      65,
+      250,
+      100,
+      130,
+      100,
+      460,
+      145,
+      200,
+      35,
+      310,
+      35,
+      340,
+      35,
+      310,
+      35
+    ],
+    "shares": {
+      "four": 0.6355555555555555,
+      "wide": 0.27814814814814814,
+      "narrow": 0,
+      "taper": 0.0862962962962963
+    },
+    "beats": [
+      {
+        "id": "S01-01",
+        "startS": 180,
+        "endS": 1576,
+        "world": "city",
+        "verticality": "gentle",
+        "role": "Departure"
+      },
+      {
+        "id": "S01-02",
+        "startS": 1726,
+        "endS": 3219,
+        "world": "city",
+        "verticality": "rolling",
+        "role": "City rhythm"
+      },
+      {
+        "id": "S01-03",
+        "startS": 3249,
+        "endS": 4774,
+        "world": "coast",
+        "verticality": "gentle",
+        "role": "Sea reveal"
+      },
+      {
+        "id": "S01-04",
+        "startS": 5134,
+        "endS": 6573,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coast sweep"
+      },
+      {
+        "id": "S01-05",
+        "startS": 6673,
+        "endS": 8278,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coastal reversal"
+      },
+      {
+        "id": "S01-06",
+        "startS": 8488,
+        "endS": 9935,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Canyon approach"
+      },
+      {
+        "id": "S01-07",
+        "startS": 10175,
+        "endS": 11632,
+        "world": "canyon",
+        "verticality": "rolling",
+        "role": "Brake challenge"
+      },
+      {
+        "id": "S01-08",
+        "startS": 11842,
+        "endS": 13200,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Ridge release"
+      }
+    ],
+    "buffers": [
+      {
+        "startS": 0,
+        "endS": 180,
+        "role": "launch"
+      },
+      {
+        "startS": 1576,
+        "endS": 1726,
+        "role": "connector"
+      },
+      {
+        "startS": 3219,
+        "endS": 3249,
+        "role": "connector"
+      },
+      {
+        "startS": 4774,
+        "endS": 5134,
+        "role": "scenic"
+      },
+      {
+        "startS": 6573,
+        "endS": 6673,
+        "role": "connector"
+      },
+      {
+        "startS": 8278,
+        "endS": 8488,
+        "role": "connector"
+      },
+      {
+        "startS": 9935,
+        "endS": 10175,
+        "role": "braking"
+      },
+      {
+        "startS": 11632,
+        "endS": 11842,
+        "role": "connector"
+      },
+      {
+        "startS": 13200,
+        "endS": 13500,
+        "role": "finish"
+      }
+    ],
+    "placements": [
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 180,
+        "endS": 1576,
+        "parameters": {
+          "base": 45,
+          "amplitude": 14.671107226517051,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 230,
+        "endS": 803,
+        "parameters": {
+          "effort": 0.401079545095563,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5649553984985687
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 868,
+        "endS": 1526,
+        "parameters": {
+          "effort": 0.5289223978668451,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8295394754735753
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 1726,
+        "endS": 3219,
+        "parameters": {
+          "base": 45,
+          "amplitude": 52.395909253973514,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 1776,
+        "endS": 2449,
+        "parameters": {
+          "effort": 0.5865324238687755,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8980869005084969
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 1826,
+        "endS": 1976,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 2549,
+        "endS": 3169,
+        "parameters": {
+          "effort": 0.5822404140979052,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6036448296741583
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 2969,
+        "endS": 3119,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 3249,
+        "endS": 4774,
+        "parameters": {
+          "base": 29.069152964977548,
+          "amplitude": 15.930847035022452,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 3299,
+        "endS": 3970,
+        "parameters": {
+          "effort": 0.5391104131191969,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8530202230787836
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 4070,
+        "endS": 4724,
+        "parameters": {
+          "effort": 0.6566007961332798,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8014067931449973
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 5134,
+        "endS": 6573,
+        "parameters": {
+          "base": 45,
+          "amplitude": 55.301758928690106,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 5184,
+        "endS": 5821,
+        "parameters": {
+          "effort": 0.6388282520323992,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5901819806662388
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 5234,
+        "endS": 5384,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 5966,
+        "endS": 6523,
+        "parameters": {
+          "effort": 0.6179795665293932,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6530665732338093
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 6323,
+        "endS": 6473,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 6673,
+        "endS": 8278,
+        "parameters": {
+          "base": 13.927483962848783,
+          "amplitude": 31.072516037151217,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 6723,
+        "endS": 7479,
+        "parameters": {
+          "effort": 0.39216410093009474,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6859244315419346
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 7514,
+        "endS": 8228,
+        "parameters": {
+          "effort": 0.4683976260572672,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6635137230041437
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 8488,
+        "endS": 9935,
+        "parameters": {
+          "base": 45,
+          "amplitude": 117.59693672508001,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 8538,
+        "endS": 9226,
+        "parameters": {
+          "effort": 0.43704208187758925,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8628909563529306
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 8588,
+        "endS": 8738,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 9261,
+        "endS": 9885,
+        "parameters": {
+          "effort": 0.3859933236241341,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7791017986135558
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 9685,
+        "endS": 9835,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 10175,
+        "endS": 11632,
+        "parameters": {
+          "base": 45,
+          "amplitude": 69.74961559288204,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 10225,
+        "endS": 10865,
+        "parameters": {
+          "effort": 0.5026145692169667,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7331328579923139
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C08",
+        "startS": 10900,
+        "endS": 11582,
+        "parameters": {
+          "effort": 1.0817759600817227,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8272694716230036
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 11842,
+        "endS": 13200,
+        "parameters": {
+          "base": 45,
+          "amplitude": 121.33457388356328,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 11892,
+        "endS": 12472,
+        "parameters": {
+          "effort": 0.5706159890443087,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8528931496199221
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 11942,
+        "endS": 12092,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 12507,
+        "endS": 13150,
+        "parameters": {
+          "effort": 0.4201947280019522,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8544191940804012
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 12950,
+        "endS": 13100,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      }
+    ],
+    "worldPhases": [
+      {
+        "startS": 0,
+        "endS": 3234,
+        "world": "city",
+        "beat": "City departure"
+      },
+      {
+        "startS": 3234,
+        "endS": 8383,
+        "world": "coast",
+        "beat": "Open coast"
+      },
+      {
+        "startS": 8383,
+        "endS": 13500,
+        "world": "canyon",
+        "beat": "Canyon payoff"
+      }
+    ],
+    "samples": [
+      {
+        "s": 0,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 300,
+        "demand": -0.07682404017246025,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 400,
+        "demand": -0.130315767534321,
+        "height": 45.39121535863279,
+        "grade": 0.014775165738165764,
+        "lanes": 4
+      },
+      {
+        "s": 500,
+        "demand": -0.25581677571733297,
+        "height": 48.087581153441235,
+        "grade": 0.03738449638835935,
+        "lanes": 4
+      },
+      {
+        "s": 600,
+        "demand": -0.37691597278402544,
+        "height": 52.390580129998284,
+        "grade": 0.04585457049942687,
+        "lanes": 4
+      },
+      {
+        "s": 700,
+        "demand": -0.401079545095563,
+        "height": 56.672767430277666,
+        "grade": 0.036981906352163404,
+        "lanes": 4
+      },
+      {
+        "s": 800,
+        "demand": -0.0013824449717790288,
+        "height": 59.31456941716894,
+        "grade": 0.01412224995583512,
+        "lanes": 4
+      },
+      {
+        "s": 900,
+        "demand": -0.1424577310688943,
+        "height": 59.519397522887225,
+        "grade": -0.0047138643811719646,
+        "lanes": 4
+      },
+      {
+        "s": 1000,
+        "demand": -0.5289223978668451,
+        "height": 58.97655798227241,
+        "grade": -0.01522430679241143,
+        "lanes": 4
+      },
+      {
+        "s": 1100,
+        "demand": -0.49805509394831227,
+        "height": 56.20146579413121,
+        "grade": -0.0383520937159379,
+        "lanes": 4
+      },
+      {
+        "s": 1200,
+        "demand": -0.3636982966574035,
+        "height": 51.823840159407006,
+        "grade": -0.04616308934134922,
+        "lanes": 4
+      },
+      {
+        "s": 1300,
+        "demand": -0.20743011814080498,
+        "height": 47.59198662629168,
+        "grade": -0.03553779279573223,
+        "lanes": 4
+      },
+      {
+        "s": 1400,
+        "demand": -0.13262814780022936,
+        "height": 45.19599329925767,
+        "grade": -0.010719660795562495,
+        "lanes": 4
+      },
+      {
+        "s": 1500,
+        "demand": -0.015109149945076103,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1800,
+        "demand": -0.08899530162969597,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1900,
+        "demand": -0.5865324238687755,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.979057580116643
+      },
+      {
+        "s": 2000,
+        "demand": -0.5640032324016855,
+        "height": 48.92324601865659,
+        "grade": 0.08060440499724032,
+        "lanes": 6
+      },
+      {
+        "s": 2100,
+        "demand": -0.4305885913297379,
+        "height": 60.23041253902845,
+        "grade": 0.13906356813944842,
+        "lanes": 6
+      },
+      {
+        "s": 2200,
+        "demand": -0.25659233619649563,
+        "height": 75.1791141312853,
+        "grade": 0.15134968206607394,
+        "lanes": 6
+      },
+      {
+        "s": 2300,
+        "demand": -0.1523333124849256,
+        "height": 88.80595784094612,
+        "grade": 0.11338340845298106,
+        "lanes": 6
+      },
+      {
+        "s": 2400,
+        "demand": -0.05164642973036296,
+        "height": 96.58644502557506,
+        "grade": 0.037770627068131196,
+        "lanes": 6
+      },
+      {
+        "s": 2500,
+        "demand": 0,
+        "height": 96.79185998191197,
+        "grade": -0.015565231075477515,
+        "lanes": 6
+      },
+      {
+        "s": 2600,
+        "demand": -0.0629757445684732,
+        "height": 95.06287996532126,
+        "grade": -0.04822256125472649,
+        "lanes": 6
+      },
+      {
+        "s": 2700,
+        "demand": -0.15881628323110547,
+        "height": 86.24944935369713,
+        "grade": -0.12270448308758859,
+        "lanes": 6
+      },
+      {
+        "s": 2800,
+        "demand": -0.2928217748259569,
+        "height": 71.97386479448934,
+        "grade": -0.15415518512673074,
+        "lanes": 6
+      },
+      {
+        "s": 2900,
+        "demand": -0.47939434296706285,
+        "height": 57.24242924740807,
+        "grade": -0.13154522461620194,
+        "lanes": 6
+      },
+      {
+        "s": 3000,
+        "demand": -0.5805516627508381,
+        "height": 47.2213079979627,
+        "grade": -0.06280368577341734,
+        "lanes": 5.796529918024197
+      },
+      {
+        "s": 3100,
+        "demand": -0.5238866064107166,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.0781368484115
+      },
+      {
+        "s": 3200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3300,
+        "demand": -0.00007385716092903898,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3400,
+        "demand": -0.4617148076044269,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3500,
+        "demand": -0.5391104131191969,
+        "height": 43.99686865754924,
+        "grade": -0.01992946384602152,
+        "lanes": 4
+      },
+      {
+        "s": 3600,
+        "demand": -0.5391104131191969,
+        "height": 41.18775089601827,
+        "grade": -0.03500554645224164,
+        "lanes": 4
+      },
+      {
+        "s": 3700,
+        "demand": -0.5391104131191969,
+        "height": 37.301177098465885,
+        "grade": -0.04100015701714131,
+        "lanes": 4
+      },
+      {
+        "s": 3800,
+        "demand": -0.5391104131191969,
+        "height": 33.34543923162814,
+        "grade": -0.036358116611632435,
+        "lanes": 4
+      },
+      {
+        "s": 3900,
+        "demand": -0.2878408156019467,
+        "height": 30.34677246339451,
+        "grade": -0.022283707540372715,
+        "lanes": 4
+      },
+      {
+        "s": 4000,
+        "demand": 0,
+        "height": 29.08311946790963,
+        "grade": -0.0024282469640051116,
+        "lanes": 4
+      },
+      {
+        "s": 4100,
+        "demand": 0.024928737854647387,
+        "height": 29.88230913263518,
+        "grade": 0.018057172551672895,
+        "lanes": 4
+      },
+      {
+        "s": 4200,
+        "demand": 0.1654675645889503,
+        "height": 32.537008068109024,
+        "grade": 0.03385802849691657,
+        "lanes": 4
+      },
+      {
+        "s": 4300,
+        "demand": 0.2663976440972382,
+        "height": 36.35850900922618,
+        "grade": 0.04087511243081693,
+        "lanes": 4
+      },
+      {
+        "s": 4400,
+        "demand": 0.46367347080503857,
+        "height": 40.35540180902657,
+        "grade": 0.03728798565105983,
+        "lanes": 4
+      },
+      {
+        "s": 4500,
+        "demand": 0.6252838605728089,
+        "height": 43.49077449520133,
+        "grade": 0.024027254728906235,
+        "lanes": 4
+      },
+      {
+        "s": 4600,
+        "demand": 0.6566007961332798,
+        "height": 44.951218843214896,
+        "grade": 0.004533144695018362,
+        "lanes": 4
+      },
+      {
+        "s": 4700,
+        "demand": 0.10516462068504473,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5200,
+        "demand": 0.06660643055252527,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5300,
+        "demand": 0.2008638787595421,
+        "height": 45.66230024013665,
+        "grade": 0.05969624969758009,
+        "lanes": 5.62523737082855
+      },
+      {
+        "s": 5400,
+        "demand": -0.35664980378730676,
+        "height": 62.93263442139826,
+        "grade": 0.256888644424064,
+        "lanes": 8
+      },
+      {
+        "s": 5500,
+        "demand": 0.07925572325896539,
+        "height": 89.0131258496547,
+        "grade": 0.22119646561471903,
+        "lanes": 8
+      },
+      {
+        "s": 5600,
+        "demand": 0.23099441209477345,
+        "height": 100.3017589286901,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 5700,
+        "demand": -0.5693524746960474,
+        "height": 100.3017589286901,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 5800,
+        "demand": -0.06461390913617038,
+        "height": 100.3017589286901,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 5900,
+        "demand": 0,
+        "height": 100.3017589286901,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 6000,
+        "demand": 0.13148304431987698,
+        "height": 100.3017589286901,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 6100,
+        "demand": 0.6179795665293932,
+        "height": 100.3017589286901,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 6200,
+        "demand": 0.6179795665293932,
+        "height": 90.52079525076448,
+        "grade": -0.20939299140167106,
+        "lanes": 8
+      },
+      {
+        "s": 6300,
+        "demand": 0.6179795665293932,
+        "height": 64.75284665024925,
+        "grade": -0.26296285266052793,
+        "lanes": 8
+      },
+      {
+        "s": 6400,
+        "demand": 0.6179795665293932,
+        "height": 46.14492650411122,
+        "grade": -0.07814151552713913,
+        "lanes": 5.916248692541601
+      },
+      {
+        "s": 6500,
+        "demand": 0.06275081042383146,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6800,
+        "demand": 0.3704458609652974,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6900,
+        "demand": -0.006701725481246882,
+        "height": 44.18463216406027,
+        "grade": -0.024305559834477394,
+        "lanes": 4
+      },
+      {
+        "s": 7000,
+        "demand": -0.2662837073231029,
+        "height": 40.12229655885802,
+        "grade": -0.05531337887182619,
+        "lanes": 4
+      },
+      {
+        "s": 7100,
+        "demand": 0.0554647975729297,
+        "height": 33.55820833876315,
+        "grade": -0.0733381626180561,
+        "lanes": 4
+      },
+      {
+        "s": 7200,
+        "demand": 0.24523120201460152,
+        "height": 26.033075931893706,
+        "grade": -0.07414917326135566,
+        "lanes": 4
+      },
+      {
+        "s": 7300,
+        "demand": -0.16639720470923758,
+        "height": 19.313181955609217,
+        "grade": -0.05755605215761036,
+        "lanes": 4
+      },
+      {
+        "s": 7400,
+        "demand": -0.286803306759925,
+        "height": 14.97580522429643,
+        "grade": -0.027453500394940978,
+        "lanes": 4
+      },
+      {
+        "s": 7500,
+        "demand": 0,
+        "height": 14.039005316344145,
+        "grade": 0.009092876926065741,
+        "lanes": 4
+      },
+      {
+        "s": 7600,
+        "demand": -0.30813647989485743,
+        "height": 16.722665856902893,
+        "grade": 0.04350499406559861,
+        "lanes": 4
+      },
+      {
+        "s": 7700,
+        "demand": -0.4683976260572672,
+        "height": 22.39688391438365,
+        "grade": 0.06770571416496118,
+        "lanes": 4
+      },
+      {
+        "s": 7800,
+        "demand": -0.4683976260572672,
+        "height": 29.729819438651624,
+        "grade": 0.07601469714135747,
+        "lanes": 4
+      },
+      {
+        "s": 7900,
+        "demand": -0.4683976260572672,
+        "height": 37.00030184420204,
+        "grade": 0.06648167668641694,
+        "lanes": 4
+      },
+      {
+        "s": 8000,
+        "demand": -0.4683976260572672,
+        "height": 42.501819404939646,
+        "grade": 0.04134422250789957,
+        "lanes": 4
+      },
+      {
+        "s": 8100,
+        "demand": -0.45609263637083675,
+        "height": 44.94306795354394,
+        "grade": 0.006502542862560537,
+        "lanes": 4
+      },
+      {
+        "s": 8200,
+        "demand": -0.04304646495717074,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8600,
+        "demand": 0.18473109193448278,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.031416838871369
+      },
+      {
+        "s": 8700,
+        "demand": 0.43704208187758925,
+        "height": 57.49856192691194,
+        "grade": 0.35767343377598776,
+        "lanes": 5.699663340513365
+      },
+      {
+        "s": 8800,
+        "demand": 0.43704208187758925,
+        "height": 108.51094465160018,
+        "grade": 0.5783960881516581,
+        "lanes": 6
+      },
+      {
+        "s": 8900,
+        "demand": 0.43704208187758925,
+        "height": 155.29441117624881,
+        "grade": 0.2800734599224363,
+        "lanes": 6
+      },
+      {
+        "s": 9000,
+        "demand": 0.43704208187758925,
+        "height": 162.59693672508,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9100,
+        "demand": 0.42942300934952704,
+        "height": 162.59693672508,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9200,
+        "demand": 0.03738369031783462,
+        "height": 162.59693672508,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9300,
+        "demand": -0.025970180215338555,
+        "height": 162.59693672508,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9400,
+        "demand": -0.10049890968218302,
+        "height": 162.59693672508,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9500,
+        "demand": -0.17804102442243513,
+        "height": 160.36008945032145,
+        "grade": -0.15852750307047134,
+        "lanes": 6
+      },
+      {
+        "s": 9600,
+        "demand": -0.3017691356448201,
+        "height": 121.57924764206126,
+        "grade": -0.5530950895719434,
+        "lanes": 6
+      },
+      {
+        "s": 9700,
+        "demand": -0.38127071372109833,
+        "height": 66.84216097819197,
+        "grade": -0.45132218734076474,
+        "lanes": 5.951056516295154
+      },
+      {
+        "s": 9800,
+        "demand": -0.38529868710741394,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.256855174522606
+      },
+      {
+        "s": 9900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10300,
+        "demand": 0.31833414345994104,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10400,
+        "demand": 0.5026145692169667,
+        "height": 46.562080744974,
+        "grade": 0.061814741103211085,
+        "lanes": 4
+      },
+      {
+        "s": 10500,
+        "demand": 0.5026145692169667,
+        "height": 58.17928160639928,
+        "grade": 0.1635415315104537,
+        "lanes": 4
+      },
+      {
+        "s": 10600,
+        "demand": 0.5026145692169667,
+        "height": 77.34955549677336,
+        "grade": 0.20833302936270104,
+        "lanes": 4
+      },
+      {
+        "s": 10700,
+        "demand": 0.5026145692169667,
+        "height": 97.39896985458009,
+        "grade": 0.18059553799684505,
+        "lanes": 4
+      },
+      {
+        "s": 10800,
+        "demand": 0.2574746741095328,
+        "height": 111.34752845821701,
+        "grade": 0.08998557812093434,
+        "lanes": 4
+      },
+      {
+        "s": 10900,
+        "demand": 0,
+        "height": 114.54315407365017,
+        "grade": -0.015258683303690672,
+        "lanes": 4
+      },
+      {
+        "s": 11000,
+        "demand": -0.6860874839387773,
+        "height": 112.99250842104222,
+        "grade": -0.03056863047294393,
+        "lanes": 4
+      },
+      {
+        "s": 11100,
+        "demand": -1.0817759600817227,
+        "height": 103.90885257557017,
+        "grade": -0.14532196374103293,
+        "lanes": 4
+      },
+      {
+        "s": 11200,
+        "demand": -1.0817759600817227,
+        "height": 85.7320034034668,
+        "grade": -0.20664390288884196,
+        "lanes": 4
+      },
+      {
+        "s": 11300,
+        "demand": -1.0817759600817227,
+        "height": 65.14515157307645,
+        "grade": -0.19198784439905803,
+        "lanes": 4
+      },
+      {
+        "s": 11400,
+        "demand": -1.0817759600817227,
+        "height": 49.717587820144864,
+        "grade": -0.10674246880735709,
+        "lanes": 4
+      },
+      {
+        "s": 11500,
+        "demand": -0.5085169452952114,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11900,
+        "demand": -0.0020568577608892544,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 12000,
+        "demand": -0.14277919656147076,
+        "height": 46.645554292227395,
+        "grade": 0.14757428391415747,
+        "lanes": 4.651427952678185
+      },
+      {
+        "s": 12100,
+        "demand": -0.2382400430143919,
+        "height": 88.5630954132377,
+        "grade": 0.6120641817984959,
+        "lanes": 6
+      },
+      {
+        "s": 12200,
+        "demand": -0.43280612028996657,
+        "height": 147.71375219849142,
+        "grade": 0.45987641787861744,
+        "lanes": 6
+      },
+      {
+        "s": 12300,
+        "demand": -0.563611394185473,
+        "height": 166.33457388356328,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12400,
+        "demand": -0.5527322983355364,
+        "height": 166.33457388356328,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12500,
+        "demand": 0,
+        "height": 166.33457388356328,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12600,
+        "demand": -0.3456252882661894,
+        "height": 166.33457388356328,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12700,
+        "demand": -0.4201947280019522,
+        "height": 166.33457388356328,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12800,
+        "demand": -0.4201947280019522,
+        "height": 162.3723239598375,
+        "grade": -0.22676770594113627,
+        "lanes": 6
+      },
+      {
+        "s": 12900,
+        "demand": -0.4201947280019522,
+        "height": 115.08338372686508,
+        "grade": -0.6302123802726305,
+        "lanes": 6
+      },
+      {
+        "s": 13000,
+        "demand": -0.4201947280019522,
+        "height": 58.30737216799841,
+        "grade": -0.3986944009088575,
+        "lanes": 5.5
+      },
+      {
+        "s": 13100,
+        "demand": -0.1381862474510297,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      }
+    ]
+  },
+  {
+    "code": "S01-v0.8.1-r1-2-ALB1",
+    "fingerprint": "ba1fa4d4",
+    "coverage": 0.7744444444444445,
+    "gaps": [
+      100,
+      250,
+      35,
+      160,
+      35,
+      460,
+      100,
+      160,
+      145,
+      200,
+      35,
+      340,
+      35,
+      310,
+      100
+    ],
+    "shares": {
+      "four": 0.6085185185185186,
+      "wide": 0.3055555555555556,
+      "narrow": 0,
+      "taper": 0.08592592592592592
+    },
+    "beats": [
+      {
+        "id": "S01-01",
+        "startS": 180,
+        "endS": 1706,
+        "world": "city",
+        "verticality": "gentle",
+        "role": "Departure"
+      },
+      {
+        "id": "S01-02",
+        "startS": 1856,
+        "endS": 3343,
+        "world": "city",
+        "verticality": "dramatic",
+        "role": "City rhythm"
+      },
+      {
+        "id": "S01-03",
+        "startS": 3403,
+        "endS": 4848,
+        "world": "city",
+        "verticality": "rolling",
+        "role": "Sea reveal"
+      },
+      {
+        "id": "S01-04",
+        "startS": 5208,
+        "endS": 6779,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coast sweep"
+      },
+      {
+        "id": "S01-05",
+        "startS": 6839,
+        "endS": 8211,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coastal reversal"
+      },
+      {
+        "id": "S01-06",
+        "startS": 8311,
+        "endS": 9883,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Canyon approach"
+      },
+      {
+        "id": "S01-07",
+        "startS": 10123,
+        "endS": 11521,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Brake challenge"
+      },
+      {
+        "id": "S01-08",
+        "startS": 11731,
+        "endS": 13200,
+        "world": "canyon",
+        "verticality": "rolling",
+        "role": "Ridge release"
+      }
+    ],
+    "buffers": [
+      {
+        "startS": 0,
+        "endS": 180,
+        "role": "launch"
+      },
+      {
+        "startS": 1706,
+        "endS": 1856,
+        "role": "connector"
+      },
+      {
+        "startS": 3343,
+        "endS": 3403,
+        "role": "connector"
+      },
+      {
+        "startS": 4848,
+        "endS": 5208,
+        "role": "scenic"
+      },
+      {
+        "startS": 6779,
+        "endS": 6839,
+        "role": "connector"
+      },
+      {
+        "startS": 8211,
+        "endS": 8311,
+        "role": "connector"
+      },
+      {
+        "startS": 9883,
+        "endS": 10123,
+        "role": "braking"
+      },
+      {
+        "startS": 11521,
+        "endS": 11731,
+        "role": "connector"
+      },
+      {
+        "startS": 13200,
+        "endS": 13500,
+        "role": "finish"
+      }
+    ],
+    "placements": [
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 180,
+        "endS": 1706,
+        "parameters": {
+          "base": 24.749521628022194,
+          "amplitude": 20.250478371977806,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 230,
+        "endS": 879,
+        "parameters": {
+          "effort": 0.35989858843386174,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5948085659067147
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 979,
+        "endS": 1656,
+        "parameters": {
+          "effort": 0.3422737804055214,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.879035873990506
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 1856,
+        "endS": 3343,
+        "parameters": {
+          "base": 45,
+          "amplitude": 115.58014758303761,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 1906,
+        "endS": 2579,
+        "parameters": {
+          "effort": 0.3705162430554629,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5702363481512294
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 1956,
+        "endS": 2106,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 2614,
+        "endS": 3293,
+        "parameters": {
+          "effort": 0.5976085426658393,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5502191424136982
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 3093,
+        "endS": 3243,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 3403,
+        "endS": 4848,
+        "parameters": {
+          "base": 45,
+          "amplitude": 65.16631015110761,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 3453,
+        "endS": 4127,
+        "parameters": {
+          "effort": 0.6046817383915186,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7059842241695151
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 4162,
+        "endS": 4798,
+        "parameters": {
+          "effort": 0.3627673640102148,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7999339543865063
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 5208,
+        "endS": 6779,
+        "parameters": {
+          "base": 45,
+          "amplitude": 68.56991974636912,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 5258,
+        "endS": 5892,
+        "parameters": {
+          "effort": 0.44000075936317445,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8659021753934213
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 5308,
+        "endS": 5458,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 5992,
+        "endS": 6729,
+        "parameters": {
+          "effort": 0.4830250126123429,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6722441104357131
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 6529,
+        "endS": 6679,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 6839,
+        "endS": 8211,
+        "parameters": {
+          "base": 45,
+          "amplitude": 50.35912520252168,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 6889,
+        "endS": 7486,
+        "parameters": {
+          "effort": 0.5467917699366809,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7684602536144667
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 7631,
+        "endS": 8161,
+        "parameters": {
+          "effort": 0.6401679600775242,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6217988811782562
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 8311,
+        "endS": 9883,
+        "parameters": {
+          "base": 45,
+          "amplitude": 47.79806189471856,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 8361,
+        "endS": 9055,
+        "parameters": {
+          "effort": 0.46623776845633985,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6966962573933415
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 8411,
+        "endS": 8561,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 9090,
+        "endS": 9833,
+        "parameters": {
+          "effort": 0.6100038067996503,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7164783518761397
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 9633,
+        "endS": 9783,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 10123,
+        "endS": 11521,
+        "parameters": {
+          "base": 45,
+          "amplitude": 122.80376904085279,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 10173,
+        "endS": 10828,
+        "parameters": {
+          "effort": 0.44454944565892224,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7780224678106606
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C08",
+        "startS": 10863,
+        "endS": 11471,
+        "parameters": {
+          "effort": 1.0661270219483414,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6157651704852469
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 11731,
+        "endS": 13200,
+        "parameters": {
+          "base": 45,
+          "amplitude": 53.36008876096457,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 11781,
+        "endS": 12461,
+        "parameters": {
+          "effort": 0.5696881975233555,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8463153963326477
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 11831,
+        "endS": 11981,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 12561,
+        "endS": 13150,
+        "parameters": {
+          "effort": 0.503536537066102,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5738278214121237
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 12950,
+        "endS": 13100,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      }
+    ],
+    "worldPhases": [
+      {
+        "startS": 0,
+        "endS": 5028,
+        "world": "city",
+        "beat": "City departure"
+      },
+      {
+        "startS": 5028,
+        "endS": 10003,
+        "world": "coast",
+        "beat": "Open coast"
+      },
+      {
+        "startS": 10003,
+        "endS": 13500,
+        "world": "canyon",
+        "beat": "Canyon payoff"
+      }
+    ],
+    "samples": [
+      {
+        "s": 0,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 300,
+        "demand": 0.35088369609501785,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 400,
+        "demand": -0.044007842459869,
+        "height": 44.39687635569494,
+        "grade": -0.017717015622916048,
+        "lanes": 4
+      },
+      {
+        "s": 500,
+        "demand": -0.08689752589974706,
+        "height": 41.46878740446247,
+        "grade": -0.039546302218957274,
+        "lanes": 4
+      },
+      {
+        "s": 600,
+        "demand": 0.25672836670792687,
+        "height": 36.832204933800426,
+        "grade": -0.05112925448017342,
+        "lanes": 4
+      },
+      {
+        "s": 700,
+        "demand": -0.025869171965113413,
+        "height": 31.688454263642754,
+        "grade": -0.04946476244701319,
+        "lanes": 4
+      },
+      {
+        "s": 800,
+        "demand": -0.3114303928726284,
+        "height": 27.370266550738435,
+        "grade": -0.03498409126722627,
+        "lanes": 4
+      },
+      {
+        "s": 900,
+        "demand": 0,
+        "height": 24.996471939609584,
+        "grade": -0.011439141623694622,
+        "lanes": 4
+      },
+      {
+        "s": 1000,
+        "demand": -0.006118373130810482,
+        "height": 25.18211385689984,
+        "grade": 0.01506965705256918,
+        "lanes": 4
+      },
+      {
+        "s": 1100,
+        "demand": -0.08555793008002228,
+        "height": 27.87909301027632,
+        "grade": 0.03767395048288458,
+        "lanes": 4
+      },
+      {
+        "s": 1200,
+        "demand": -0.12515428969238981,
+        "height": 32.38862977815656,
+        "grade": 0.050517030583468375,
+        "lanes": 4
+      },
+      {
+        "s": 1300,
+        "demand": -0.22039177048392117,
+        "height": 37.54231602055682,
+        "grade": 0.050271291858592644,
+        "lanes": 4
+      },
+      {
+        "s": 1400,
+        "demand": -0.3115722958329189,
+        "height": 42.004846302242015,
+        "grade": 0.037000404512367725,
+        "lanes": 4
+      },
+      {
+        "s": 1500,
+        "demand": -0.3422737804055214,
+        "height": 44.619991729995746,
+        "grade": 0.014142817680096984,
+        "lanes": 4
+      },
+      {
+        "s": 1600,
+        "demand": -0.21931708707806652,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 2000,
+        "demand": -0.36619995622674567,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.79080177027525
+      },
+      {
+        "s": 2100,
+        "demand": -0.3705162430554629,
+        "height": 67.55872772187377,
+        "grade": 0.43991118740340157,
+        "lanes": 7.984229402628955
+      },
+      {
+        "s": 2200,
+        "demand": -0.06151205585696412,
+        "height": 120.12803625465294,
+        "grade": 0.5294047563196316,
+        "lanes": 8
+      },
+      {
+        "s": 2300,
+        "demand": -0.17456337574762137,
+        "height": 157.89964914993243,
+        "grade": 0.16705916191317946,
+        "lanes": 8
+      },
+      {
+        "s": 2400,
+        "demand": -0.21128182937066045,
+        "height": 160.58014758303761,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2500,
+        "demand": -0.18757874356869705,
+        "height": 160.58014758303761,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2600,
+        "demand": 0,
+        "height": 160.58014758303761,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2700,
+        "demand": 0.5910981011271027,
+        "height": 160.58014758303761,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2800,
+        "demand": -0.106405123725202,
+        "height": 160.58014758303761,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2900,
+        "demand": -0.10770870445865793,
+        "height": 157.73005142987725,
+        "grade": -0.17213367143228656,
+        "lanes": 8
+      },
+      {
+        "s": 3000,
+        "demand": 0.4207544417203411,
+        "height": 119.59784017458799,
+        "grade": -0.5309792545465531,
+        "lanes": 8
+      },
+      {
+        "s": 3100,
+        "demand": -0.01848835093200861,
+        "height": 67.12044782828505,
+        "grade": -0.4366418632880608,
+        "lanes": 7.978544665925977
+      },
+      {
+        "s": 3200,
+        "demand": -0.5675661124055201,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.75770443944338
+      },
+      {
+        "s": 3300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3500,
+        "demand": -0.37854870752640296,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3600,
+        "demand": -0.0005379450598549385,
+        "height": 49.287821169843426,
+        "grade": 0.1596649572900547,
+        "lanes": 4
+      },
+      {
+        "s": 3700,
+        "demand": 0.42250318908474715,
+        "height": 75.50767737718411,
+        "grade": 0.3213435820823476,
+        "lanes": 4
+      },
+      {
+        "s": 3800,
+        "demand": -0.1611516430130902,
+        "height": 103.59477331227306,
+        "grade": 0.19391984591339026,
+        "lanes": 4
+      },
+      {
+        "s": 3900,
+        "demand": -0.14438761197743372,
+        "height": 110.16631015110761,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4000,
+        "demand": 0.5452245508496858,
+        "height": 110.16631015110761,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4100,
+        "demand": 0.0888028573132017,
+        "height": 110.16631015110761,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4200,
+        "demand": -0.18018907084529198,
+        "height": 110.16631015110761,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4300,
+        "demand": -0.0008151370531873647,
+        "height": 110.16631015110761,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4400,
+        "demand": 0.27596283756819,
+        "height": 109.83694792725808,
+        "grade": -0.045667529658981784,
+        "lanes": 4
+      },
+      {
+        "s": 4500,
+        "demand": -0.1498163336751177,
+        "height": 91.4692059382318,
+        "grade": -0.29129239398991946,
+        "lanes": 4
+      },
+      {
+        "s": 4600,
+        "demand": -0.009080841827696362,
+        "height": 60.608635983531464,
+        "grade": -0.2748509731104063,
+        "lanes": 4
+      },
+      {
+        "s": 4700,
+        "demand": 0.36154668427790343,
+        "height": 45.019488329799714,
+        "grade": -0.011135078212136836,
+        "lanes": 4
+      },
+      {
+        "s": 4800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5300,
+        "demand": 0.17989063018736706,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5400,
+        "demand": 0.44000075936317445,
+        "height": 45.006405617286475,
+        "grade": 0.003681274605659737,
+        "lanes": 5.348572047321815
+      },
+      {
+        "s": 5500,
+        "demand": 0.22683229103729913,
+        "height": 50.509824576762696,
+        "grade": 0.10354219890156617,
+        "lanes": 6
+      },
+      {
+        "s": 5600,
+        "demand": 0.19747413902615854,
+        "height": 64.66618293893387,
+        "grade": 0.17226706202911907,
+        "lanes": 6
+      },
+      {
+        "s": 5700,
+        "demand": 0.38099761470733007,
+        "height": 83.2185376934944,
+        "grade": 0.18918968570712832,
+        "lanes": 6
+      },
+      {
+        "s": 5800,
+        "demand": 0.37999958197561307,
+        "height": 100.58803057219234,
+        "grade": 0.14922128631348408,
+        "lanes": 6
+      },
+      {
+        "s": 5900,
+        "demand": 0,
+        "height": 111.55150040526577,
+        "grade": 0.06438071743178428,
+        "lanes": 6
+      },
+      {
+        "s": 6000,
+        "demand": 0.009686507165286696,
+        "height": 113.20541977657739,
+        "grade": -0.017306818005635622,
+        "lanes": 6
+      },
+      {
+        "s": 6100,
+        "demand": 0.40382869119994835,
+        "height": 111.77100621993985,
+        "grade": -0.03052638302669497,
+        "lanes": 6
+      },
+      {
+        "s": 6200,
+        "demand": -0.13417346595628513,
+        "height": 103.61307257484277,
+        "grade": -0.12816941088953057,
+        "lanes": 6
+      },
+      {
+        "s": 6300,
+        "demand": -0.12242179804008699,
+        "height": 87.50921531341203,
+        "grade": -0.185097958568942,
+        "lanes": 6
+      },
+      {
+        "s": 6400,
+        "demand": 0.2907982943382342,
+        "height": 68.57500899276502,
+        "grade": -0.18322802138488728,
+        "lanes": 6
+      },
+      {
+        "s": 6500,
+        "demand": 0.010852018973097233,
+        "height": 52.82512094015727,
+        "grade": -0.12315360628407895,
+        "lanes": 6
+      },
+      {
+        "s": 6600,
+        "demand": -0.4694113513740768,
+        "height": 45.262683342579464,
+        "grade": -0.023958038735343388,
+        "lanes": 5.083677843332316
+      },
+      {
+        "s": 6700,
+        "demand": -0.06856752096963536,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6900,
+        "demand": 0.0035038654205657308,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7000,
+        "demand": 0.1368074370286633,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7100,
+        "demand": 0.22345732268030843,
+        "height": 49.583110752141,
+        "grade": 0.09212816593997317,
+        "lanes": 4
+      },
+      {
+        "s": 7200,
+        "demand": 0.40396532774033267,
+        "height": 62.21488265694677,
+        "grade": 0.151932030889736,
+        "lanes": 4
+      },
+      {
+        "s": 7300,
+        "demand": 0.5351029868964686,
+        "height": 77.96169388019409,
+        "grade": 0.15231426769359066,
+        "lanes": 4
+      },
+      {
+        "s": 7400,
+        "demand": 0.5467917699366809,
+        "height": 90.66486178260001,
+        "grade": 0.09312538099437434,
+        "lanes": 4
+      },
+      {
+        "s": 7500,
+        "demand": 0,
+        "height": 95.35752198405085,
+        "grade": -0.0013134157940669047,
+        "lanes": 4
+      },
+      {
+        "s": 7600,
+        "demand": 0,
+        "height": 94.3303157027376,
+        "grade": -0.006757448766952803,
+        "lanes": 4
+      },
+      {
+        "s": 7700,
+        "demand": -0.613007431520937,
+        "height": 88.61110672846107,
+        "grade": -0.10351751550207264,
+        "lanes": 4
+      },
+      {
+        "s": 7800,
+        "demand": -0.6401679600775242,
+        "height": 75.07241605719625,
+        "grade": -0.15752883491773853,
+        "lanes": 4
+      },
+      {
+        "s": 7900,
+        "demand": 0.0017241649633733564,
+        "height": 59.30520154506127,
+        "grade": -0.14648681213556605,
+        "lanes": 4
+      },
+      {
+        "s": 8000,
+        "demand": 0.3980557213423711,
+        "height": 47.82071557134448,
+        "grade": -0.07495137732313432,
+        "lanes": 4
+      },
+      {
+        "s": 8100,
+        "demand": 0.3471972309067133,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8400,
+        "demand": 0.14366446865965804,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8500,
+        "demand": 0.46623776845633985,
+        "height": 45.99022009581585,
+        "grade": 0.06184432114434037,
+        "lanes": 5.289031796944472
+      },
+      {
+        "s": 8600,
+        "demand": 0.44544936846613603,
+        "height": 60.17812867368084,
+        "grade": 0.20212745095753273,
+        "lanes": 6
+      },
+      {
+        "s": 8700,
+        "demand": 0.004702164271862874,
+        "height": 81.0809183049243,
+        "grade": 0.18677739647293398,
+        "lanes": 6
+      },
+      {
+        "s": 8800,
+        "demand": -0.2722731662579224,
+        "height": 92.6039531763198,
+        "grade": 0.02761332350530838,
+        "lanes": 6
+      },
+      {
+        "s": 8900,
+        "demand": -0.3248261083389553,
+        "height": 92.79806189471856,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9000,
+        "demand": -0.1768530894176066,
+        "height": 92.79806189471856,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9100,
+        "demand": -0.013804952232071031,
+        "height": 92.79806189471856,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9200,
+        "demand": -0.6100038067996503,
+        "height": 92.79806189471856,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9300,
+        "demand": -0.6063126858152311,
+        "height": 92.79806189471856,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9400,
+        "demand": -0.519527715397233,
+        "height": 92.40315442898198,
+        "grade": -0.03930302191935369,
+        "lanes": 6
+      },
+      {
+        "s": 9500,
+        "demand": -0.3600802635064837,
+        "height": 79.94271909823175,
+        "grade": -0.1925284123873568,
+        "lanes": 6
+      },
+      {
+        "s": 9600,
+        "demand": -0.21175857352526117,
+        "height": 58.97891450630591,
+        "grade": -0.19751164304136162,
+        "lanes": 6
+      },
+      {
+        "s": 9700,
+        "demand": -0.1524894319732572,
+        "height": 45.653356491043134,
+        "grade": -0.05041574838707708,
+        "lanes": 5.1667687467161025
+      },
+      {
+        "s": 9800,
+        "demand": -0.02178513035435642,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 9900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10200,
+        "demand": 0.013771634256200357,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10300,
+        "demand": 0.11162585554493862,
+        "height": 49.379714589803186,
+        "grade": 0.2326284828804321,
+        "lanes": 4
+      },
+      {
+        "s": 10400,
+        "demand": 0.17658888111391421,
+        "height": 96.0526509652745,
+        "grade": 0.6182206480564776,
+        "lanes": 4
+      },
+      {
+        "s": 10500,
+        "demand": 0.30911407026841886,
+        "height": 152.61688775654738,
+        "grade": 0.4129472075245428,
+        "lanes": 4
+      },
+      {
+        "s": 10600,
+        "demand": 0.4207738812591296,
+        "height": 167.80376904085279,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10700,
+        "demand": 0.44454944565892224,
+        "height": 167.80376904085279,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10800,
+        "demand": 0.09466191612958841,
+        "height": 167.80376904085279,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10900,
+        "demand": -0.14842116065348523,
+        "height": 167.80376904085279,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11000,
+        "demand": -1.040713625723375,
+        "height": 167.80376904085279,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11100,
+        "demand": -1.0661270219483414,
+        "height": 165.5914021453412,
+        "grade": -0.16684253064594362,
+        "lanes": 4
+      },
+      {
+        "s": 11200,
+        "demand": -1.0661270219483414,
+        "height": 123.37556741466979,
+        "grade": -0.6027534939839769,
+        "lanes": 4
+      },
+      {
+        "s": 11300,
+        "demand": -1.0661270219483414,
+        "height": 64.93710172540563,
+        "grade": -0.46258161467501324,
+        "lanes": 4
+      },
+      {
+        "s": 11400,
+        "demand": -0.4780737340122251,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11800,
+        "demand": -0.047397378617783044,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11900,
+        "demand": -0.5696881975233555,
+        "height": 45.6133112535533,
+        "grade": 0.05528964849831007,
+        "lanes": 5.7493335328713915
+      },
+      {
+        "s": 12000,
+        "demand": -0.5443053974009138,
+        "height": 61.6878751335108,
+        "grade": 0.24047751739533454,
+        "lanes": 8
+      },
+      {
+        "s": 12100,
+        "demand": -0.0943294013333206,
+        "height": 86.48407831072501,
+        "grade": 0.21576520205983407,
+        "lanes": 8
+      },
+      {
+        "s": 12200,
+        "demand": -0.4547944960423481,
+        "height": 98.35861844434535,
+        "grade": 0.0027227835451921413,
+        "lanes": 8
+      },
+      {
+        "s": 12300,
+        "demand": -0.4821358926730103,
+        "height": 98.36008876096457,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 12400,
+        "demand": -0.3141483389113564,
+        "height": 98.36008876096457,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 12500,
+        "demand": 0,
+        "height": 98.36008876096457,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 12600,
+        "demand": 0.23040391237759997,
+        "height": 98.36008876096457,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 12700,
+        "demand": 0.503536537066102,
+        "height": 98.36008876096457,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 12800,
+        "demand": 0.4381149333756368,
+        "height": 92.4049177202802,
+        "grade": -0.16332934273928842,
+        "lanes": 8
+      },
+      {
+        "s": 12900,
+        "demand": 0.2728574510466918,
+        "height": 69.48063279681226,
+        "grade": -0.2584706409235001,
+        "lanes": 8
+      },
+      {
+        "s": 13000,
+        "demand": 0.1416502194654397,
+        "height": 48.476098632649354,
+        "grade": -0.12800650315607623,
+        "lanes": 7
+      },
+      {
+        "s": 13100,
+        "demand": 0.057335544329976604,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      }
+    ]
+  },
+  {
+    "code": "S01-v0.8.1-r1-3-ALB1",
+    "fingerprint": "51faacda",
+    "coverage": 0.7825925925925926,
+    "gaps": [
+      65,
+      250,
+      100,
+      130,
+      65,
+      460,
+      65,
+      200,
+      65,
+      130,
+      100,
+      340,
+      100,
+      250,
+      35
+    ],
+    "shares": {
+      "four": 0.554074074074074,
+      "wide": 0.30148148148148146,
+      "narrow": 0.020370370370370372,
+      "taper": 0.12407407407407407
+    },
+    "beats": [
+      {
+        "id": "S01-01",
+        "startS": 180,
+        "endS": 1709,
+        "world": "city",
+        "verticality": "rolling",
+        "role": "Departure"
+      },
+      {
+        "id": "S01-02",
+        "startS": 1859,
+        "endS": 3390,
+        "world": "city",
+        "verticality": "gentle",
+        "role": "City rhythm"
+      },
+      {
+        "id": "S01-03",
+        "startS": 3420,
+        "endS": 4851,
+        "world": "coast",
+        "verticality": "gentle",
+        "role": "Sea reveal"
+      },
+      {
+        "id": "S01-04",
+        "startS": 5211,
+        "endS": 6674,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coast sweep"
+      },
+      {
+        "id": "S01-05",
+        "startS": 6774,
+        "endS": 8325,
+        "world": "coast",
+        "verticality": "gentle",
+        "role": "Coastal reversal"
+      },
+      {
+        "id": "S01-06",
+        "startS": 8355,
+        "endS": 9797,
+        "world": "coast",
+        "verticality": "gentle",
+        "role": "Canyon approach"
+      },
+      {
+        "id": "S01-07",
+        "startS": 10037,
+        "endS": 11444,
+        "world": "canyon",
+        "verticality": "rolling",
+        "role": "Brake challenge"
+      },
+      {
+        "id": "S01-08",
+        "startS": 11594,
+        "endS": 13200,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Ridge release"
+      }
+    ],
+    "buffers": [
+      {
+        "startS": 0,
+        "endS": 180,
+        "role": "launch"
+      },
+      {
+        "startS": 1709,
+        "endS": 1859,
+        "role": "connector"
+      },
+      {
+        "startS": 3390,
+        "endS": 3420,
+        "role": "connector"
+      },
+      {
+        "startS": 4851,
+        "endS": 5211,
+        "role": "scenic"
+      },
+      {
+        "startS": 6674,
+        "endS": 6774,
+        "role": "connector"
+      },
+      {
+        "startS": 8325,
+        "endS": 8355,
+        "role": "connector"
+      },
+      {
+        "startS": 9797,
+        "endS": 10037,
+        "role": "braking"
+      },
+      {
+        "startS": 11444,
+        "endS": 11594,
+        "role": "connector"
+      },
+      {
+        "startS": 13200,
+        "endS": 13500,
+        "role": "finish"
+      }
+    ],
+    "placements": [
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 180,
+        "endS": 1709,
+        "parameters": {
+          "base": 45,
+          "amplitude": 63.08107689023018,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 230,
+        "endS": 933,
+        "parameters": {
+          "effort": 0.6061548314243556,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7389814905356616
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 998,
+        "endS": 1659,
+        "parameters": {
+          "effort": 0.6207533972710371,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6586389540927485
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 1859,
+        "endS": 3390,
+        "parameters": {
+          "base": 45,
+          "amplitude": 19.596682039787993,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 1909,
+        "endS": 2538,
+        "parameters": {
+          "effort": 0.34267386227846147,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7174082185840235
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 1959,
+        "endS": 2109,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 2638,
+        "endS": 3340,
+        "parameters": {
+          "effort": 0.532950917929411,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7887226592400112
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 3140,
+        "endS": 3290,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 3420,
+        "endS": 4851,
+        "parameters": {
+          "base": 24.043578218203038,
+          "amplitude": 20.956421781796962,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 3470,
+        "endS": 4106,
+        "parameters": {
+          "effort": 0.49896339841187004,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7498084600199946
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 4171,
+        "endS": 4801,
+        "parameters": {
+          "effort": 0.6137422218173743,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7826107727829368
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 5211,
+        "endS": 6674,
+        "parameters": {
+          "base": 45,
+          "amplitude": 50.34477951936424,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 5261,
+        "endS": 5960,
+        "parameters": {
+          "effort": 0.644836709946394,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8178093622904271
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 5311,
+        "endS": 5461,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 6025,
+        "endS": 6624,
+        "parameters": {
+          "effort": 0.3611685743927956,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7381575095350854
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 6424,
+        "endS": 6574,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 6774,
+        "endS": 8325,
+        "parameters": {
+          "base": 45,
+          "amplitude": 17.36219880450517,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 6824,
+        "endS": 7523,
+        "parameters": {
+          "effort": 0.3953588316589594,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8834154623909853
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 7588,
+        "endS": 8275,
+        "parameters": {
+          "effort": 0.5802113736420871,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8194928945857101
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 8355,
+        "endS": 9797,
+        "parameters": {
+          "base": 45,
+          "amplitude": 20.1343679681886,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 8405,
+        "endS": 9053,
+        "parameters": {
+          "effort": 0.653699304908514,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7539823712082581
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 8455,
+        "endS": 8605,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 9153,
+        "endS": 9747,
+        "parameters": {
+          "effort": 0.6441065806150437,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8347398951766081
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 9547,
+        "endS": 9697,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 10037,
+        "endS": 11444,
+        "parameters": {
+          "base": 10.884195191785693,
+          "amplitude": 34.11580480821431,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 10087,
+        "endS": 10656,
+        "parameters": {
+          "effort": 0.6219980800896883,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5671878154040315
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "width",
+        "id": "W04",
+        "startS": 10337,
+        "endS": 11144,
+        "parameters": {
+          "from": 4,
+          "to": 2,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C08",
+        "startS": 10756,
+        "endS": 11394,
+        "parameters": {
+          "effort": 1.177232314751018,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5809015317354351
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 11594,
+        "endS": 13200,
+        "parameters": {
+          "base": 45,
+          "amplitude": 121.46042896062136,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 11644,
+        "endS": 12355,
+        "parameters": {
+          "effort": 0.3416507717967034,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6052911744103767
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 11694,
+        "endS": 11844,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 12390,
+        "endS": 13150,
+        "parameters": {
+          "effort": 0.5416548651456833,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8397026030113921
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 12950,
+        "endS": 13100,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      }
+    ],
+    "worldPhases": [
+      {
+        "startS": 0,
+        "endS": 3405,
+        "world": "city",
+        "beat": "City departure"
+      },
+      {
+        "startS": 3405,
+        "endS": 9917,
+        "world": "coast",
+        "beat": "Open coast"
+      },
+      {
+        "startS": 9917,
+        "endS": 13500,
+        "world": "canyon",
+        "beat": "Canyon payoff"
+      }
+    ],
+    "samples": [
+      {
+        "s": 0,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 300,
+        "demand": -0.45226420625425134,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 400,
+        "demand": -0.6061548314243556,
+        "height": 50.99326796920087,
+        "grade": 0.1727520628029263,
+        "lanes": 4
+      },
+      {
+        "s": 500,
+        "demand": -0.2999048171981636,
+        "height": 76.2194624728088,
+        "grade": 0.2945549367145255,
+        "lanes": 4
+      },
+      {
+        "s": 600,
+        "demand": -0.20454149980858946,
+        "height": 101.70594061337106,
+        "grade": 0.17757373201629995,
+        "lanes": 4
+      },
+      {
+        "s": 700,
+        "demand": -0.44793720082136296,
+        "height": 108.08107689023018,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 800,
+        "demand": -0.44793720082136296,
+        "height": 108.08107689023018,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 900,
+        "demand": -0.09979849685363723,
+        "height": 108.08107689023018,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1000,
+        "demand": 0.0003504888337598551,
+        "height": 108.08107689023018,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1100,
+        "demand": 0.5441957056615448,
+        "height": 108.08107689023018,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1200,
+        "demand": 0.6207533972710371,
+        "height": 108.08107689023018,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1300,
+        "demand": 0.6207533972710371,
+        "height": 99.62338026248726,
+        "grade": -0.20074051968107381,
+        "lanes": 4
+      },
+      {
+        "s": 1400,
+        "demand": 0.6207533972710371,
+        "height": 72.98674746472734,
+        "grade": -0.29269438775964435,
+        "lanes": 4
+      },
+      {
+        "s": 1500,
+        "demand": 0.6207533972710371,
+        "height": 49.231032957758885,
+        "grade": -0.14737245094077528,
+        "lanes": 4
+      },
+      {
+        "s": 1600,
+        "demand": 0.2582568254341777,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 2000,
+        "demand": -0.2819429209962447,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.693158792019789
+      },
+      {
+        "s": 2100,
+        "demand": -0.34267386227846147,
+        "height": 48.11271801305162,
+        "grade": 0.06681173035412143,
+        "lanes": 7.964574501457378
+      },
+      {
+        "s": 2200,
+        "demand": -0.34267386227846147,
+        "height": 56.569761872377,
+        "grade": 0.08988530227142308,
+        "lanes": 8
+      },
+      {
+        "s": 2300,
+        "demand": -0.34267386227846147,
+        "height": 63.594258181334475,
+        "grade": 0.040268655259374245,
+        "lanes": 8
+      },
+      {
+        "s": 2400,
+        "demand": -0.34267386227846147,
+        "height": 64.59668203978799,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2500,
+        "demand": -0.07152974441466498,
+        "height": 64.59668203978799,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2600,
+        "demand": 0,
+        "height": 64.59668203978799,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2700,
+        "demand": -0.4464303882027962,
+        "height": 64.59668203978799,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2800,
+        "demand": 0.006107310281902269,
+        "height": 64.59668203978799,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 2900,
+        "demand": 0.4024846841794212,
+        "height": 64.59668203978799,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 3000,
+        "demand": -0.145802257185696,
+        "height": 60.64059534354514,
+        "grade": -0.07336882119714545,
+        "lanes": 8
+      },
+      {
+        "s": 3100,
+        "demand": -0.15938873761517525,
+        "height": 51.95988192958774,
+        "grade": -0.0874724911652089,
+        "lanes": 8
+      },
+      {
+        "s": 3200,
+        "demand": 0.43527041888007323,
+        "height": 45.57462959193985,
+        "grade": -0.030837181873965804,
+        "lanes": 6.618033988749895
+      },
+      {
+        "s": 3300,
+        "demand": 0.15008922956220866,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3500,
+        "demand": 0.12718815408757597,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3600,
+        "demand": 0.49896339841187004,
+        "height": 44.78584636966376,
+        "grade": -0.01156754214031612,
+        "lanes": 4
+      },
+      {
+        "s": 3700,
+        "demand": 0.4646488829042452,
+        "height": 42.17878908690413,
+        "grade": -0.039258104800251575,
+        "lanes": 4
+      },
+      {
+        "s": 3800,
+        "demand": 0.32846683714317737,
+        "height": 37.32252334380956,
+        "grade": -0.055416780074863815,
+        "lanes": 4
+      },
+      {
+        "s": 3900,
+        "demand": 0.18056885081029628,
+        "height": 31.643554824938967,
+        "grade": -0.05529703156075416,
+        "lanes": 4
+      },
+      {
+        "s": 4000,
+        "demand": 0.12305964673045212,
+        "height": 26.810054364254572,
+        "grade": -0.038934034832146,
+        "lanes": 4
+      },
+      {
+        "s": 4100,
+        "demand": 0.0008435490004552737,
+        "height": 24.241840449508828,
+        "grade": -0.011134344778044465,
+        "lanes": 4
+      },
+      {
+        "s": 4200,
+        "demand": -0.13190318602661724,
+        "height": 24.693314083932993,
+        "grade": 0.01993600774799969,
+        "lanes": 4
+      },
+      {
+        "s": 4300,
+        "demand": -0.6137422218173743,
+        "height": 28.031856967787125,
+        "grade": 0.04515024986238201,
+        "lanes": 4
+      },
+      {
+        "s": 4400,
+        "demand": -0.5294968078781387,
+        "height": 33.27678751280894,
+        "grade": 0.057101814130205174,
+        "lanes": 4
+      },
+      {
+        "s": 4500,
+        "demand": 0.017838178873007177,
+        "height": 38.88743153982496,
+        "grade": 0.0522799836201183,
+        "lanes": 4
+      },
+      {
+        "s": 4600,
+        "demand": 0.48032127450601186,
+        "height": 43.21568821951878,
+        "grade": 0.03210114882566051,
+        "lanes": 4
+      },
+      {
+        "s": 4700,
+        "demand": 0.48032127450601186,
+        "height": 44.99015209666114,
+        "grade": 0.0024927494844534993,
+        "lanes": 4
+      },
+      {
+        "s": 4800,
+        "demand": 0.00013269909515833955,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5300,
+        "demand": 0.1961949644152251,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5400,
+        "demand": 0.644836709946394,
+        "height": 47.15486507107134,
+        "grade": 0.09946515968217381,
+        "lanes": 6.578063593888944
+      },
+      {
+        "s": 5500,
+        "demand": 0.621534048089869,
+        "height": 65.71685554979857,
+        "grade": 0.2418217698948816,
+        "lanes": 8
+      },
+      {
+        "s": 5600,
+        "demand": 0.011017415009229481,
+        "height": 88.19723393282545,
+        "grade": 0.1715099427178557,
+        "lanes": 8
+      },
+      {
+        "s": 5700,
+        "demand": -0.4261575914578468,
+        "height": 95.34477951936424,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 5800,
+        "demand": -0.5273534985427176,
+        "height": 95.34477951936424,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 5900,
+        "demand": -0.32301035682846113,
+        "height": 95.34477951936424,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 6000,
+        "demand": 0,
+        "height": 95.34477951936424,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 6100,
+        "demand": -0.2502374177711106,
+        "height": 95.34477951936424,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 6200,
+        "demand": -0.3611685743927956,
+        "height": 95.34477951936424,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 6300,
+        "demand": -0.3611685743927956,
+        "height": 85.44091883954202,
+        "grade": -0.1953420019108867,
+        "lanes": 8
+      },
+      {
+        "s": 6400,
+        "demand": -0.3611685743927956,
+        "height": 62.1501441459109,
+        "grade": -0.23288992675915726,
+        "lanes": 8
+      },
+      {
+        "s": 6500,
+        "demand": -0.3611685743927956,
+        "height": 45.91447635923438,
+        "grade": -0.06562446020263765,
+        "lanes": 5.958115160233286
+      },
+      {
+        "s": 6600,
+        "demand": -0.034599950412057545,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6900,
+        "demand": 0.3259887231021047,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7000,
+        "demand": 0.3953588316589594,
+        "height": 45.217622233980926,
+        "grade": 0.010868023979676164,
+        "lanes": 4
+      },
+      {
+        "s": 7100,
+        "demand": 0.2493430415259899,
+        "height": 47.552659290374,
+        "grade": 0.03459415904223907,
+        "lanes": 4
+      },
+      {
+        "s": 7200,
+        "demand": -0.036854053170844774,
+        "height": 51.777138629636454,
+        "grade": 0.04765466538991548,
+        "lanes": 4
+      },
+      {
+        "s": 7300,
+        "demand": -0.3492661050803594,
+        "height": 56.58862280586105,
+        "grade": 0.046022894727464195,
+        "lanes": 4
+      },
+      {
+        "s": 7400,
+        "demand": -0.3492661050803594,
+        "height": 60.50369654861139,
+        "grade": 0.030201933717934306,
+        "lanes": 4
+      },
+      {
+        "s": 7500,
+        "demand": -0.03985277840655055,
+        "height": 62.3153143887205,
+        "grade": 0.005069498736344823,
+        "lanes": 4
+      },
+      {
+        "s": 7600,
+        "demand": -0.019197446531426132,
+        "height": 62.065479368532415,
+        "grade": -0.0035429434203673453,
+        "lanes": 4
+      },
+      {
+        "s": 7700,
+        "demand": -0.5802113736420871,
+        "height": 61.267987942109364,
+        "grade": -0.020173796063515798,
+        "lanes": 4
+      },
+      {
+        "s": 7800,
+        "demand": -0.5762332181239502,
+        "height": 58.09764382645067,
+        "grade": -0.04145344654767865,
+        "lanes": 4
+      },
+      {
+        "s": 7900,
+        "demand": -0.0874439312417501,
+        "height": 53.43239555104173,
+        "grade": -0.04923273035345213,
+        "lanes": 4
+      },
+      {
+        "s": 8000,
+        "demand": -0.4179628308465877,
+        "height": 48.7915995894463,
+        "grade": -0.040978126323496476,
+        "lanes": 4
+      },
+      {
+        "s": 8100,
+        "demand": -0.4754790980575049,
+        "height": 45.68664889879919,
+        "grade": -0.019377955706592183,
+        "lanes": 4
+      },
+      {
+        "s": 8200,
+        "demand": -0.3937244011334381,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8500,
+        "demand": 0.5460253854841913,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.824429495415053
+      },
+      {
+        "s": 8600,
+        "demand": -0.30625654905126803,
+        "height": 45.93961534345724,
+        "grade": 0.02570090529285341,
+        "lanes": 7.989043790736547
+      },
+      {
+        "s": 8700,
+        "demand": -0.0027423524887269513,
+        "height": 49.976717015748626,
+        "grade": 0.052561716069623475,
+        "lanes": 8
+      },
+      {
+        "s": 8800,
+        "demand": 0.5112356344237328,
+        "height": 55.821935718633014,
+        "grade": 0.060752779144727174,
+        "lanes": 8
+      },
+      {
+        "s": 8900,
+        "demand": -0.2821681255888665,
+        "height": 61.39906910172746,
+        "grade": 0.047364656005577585,
+        "lanes": 8
+      },
+      {
+        "s": 9000,
+        "demand": -0.3383357228128342,
+        "height": 64.72713783355445,
+        "grade": 0.017152763710393926,
+        "lanes": 8
+      },
+      {
+        "s": 9100,
+        "demand": 0,
+        "height": 64.91818616356845,
+        "grade": -0.006249453295431068,
+        "lanes": 8
+      },
+      {
+        "s": 9200,
+        "demand": 0.4766461018116949,
+        "height": 64.22130320481669,
+        "grade": -0.019496367474929648,
+        "lanes": 8
+      },
+      {
+        "s": 9300,
+        "demand": -0.04949478832358531,
+        "height": 60.640464103396745,
+        "grade": -0.04979292251951566,
+        "lanes": 8
+      },
+      {
+        "s": 9400,
+        "demand": -0.21991012240017804,
+        "height": 54.89347550334393,
+        "grade": -0.06141139256571869,
+        "lanes": 8
+      },
+      {
+        "s": 9500,
+        "demand": 0.4992104641834225,
+        "height": 49.13612051850244,
+        "grade": -0.049993512219715174,
+        "lanes": 8
+      },
+      {
+        "s": 9600,
+        "demand": -0.1989774562702295,
+        "height": 45.52807085182535,
+        "grade": -0.019822302618102076,
+        "lanes": 6.8892703583698545
+      },
+      {
+        "s": 9700,
+        "demand": -0.31651783761938546,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 9800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 9900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10100,
+        "demand": 0.006099913266732748,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10200,
+        "demand": 0.15672331035414017,
+        "height": 44.86801151137767,
+        "grade": -0.011822243106972387,
+        "lanes": 4
+      },
+      {
+        "s": 10300,
+        "demand": 0.2769900084567789,
+        "height": 41.176978544631986,
+        "grade": -0.06007153658959475,
+        "lanes": 4
+      },
+      {
+        "s": 10400,
+        "demand": 0.4941694140630977,
+        "height": 33.467989808472126,
+        "grade": -0.09008381094430938,
+        "lanes": 3.7203981302353384
+      },
+      {
+        "s": 10500,
+        "demand": 0.6199323236253681,
+        "height": 24.081404531573536,
+        "grade": -0.09274768909384419,
+        "lanes": 2.599407213798034
+      },
+      {
+        "s": 10600,
+        "demand": 0.49615318536575215,
+        "height": 15.866880721022834,
+        "grade": -0.06725444864610544,
+        "lanes": 2
+      },
+      {
+        "s": 10700,
+        "demand": 0,
+        "height": 11.318252168406715,
+        "grade": -0.02134354059689635,
+        "lanes": 2
+      },
+      {
+        "s": 10800,
+        "demand": -0.20755413008962262,
+        "height": 11.816429545055922,
+        "grade": 0.031047017886130655,
+        "lanes": 2
+      },
+      {
+        "s": 10900,
+        "demand": -1.1500135692255242,
+        "height": 17.210171999431857,
+        "grade": 0.07401206320271182,
+        "lanes": 2.0900637150850963
+      },
+      {
+        "s": 11000,
+        "demand": -1.177232314751018,
+        "height": 25.862002118837548,
+        "grade": 0.09450790781372007,
+        "lanes": 2.9691395451843983
+      },
+      {
+        "s": 11100,
+        "demand": -1.177232314751018,
+        "height": 35.14532500764082,
+        "grade": 0.0863122519173833,
+        "lanes": 3.8826166618320683
+      },
+      {
+        "s": 11200,
+        "demand": -1.177232314751018,
+        "height": 42.24183191755216,
+        "grade": 0.05191320122620181,
+        "lanes": 4
+      },
+      {
+        "s": 11300,
+        "demand": -0.7516654791844383,
+        "height": 44.99710597154766,
+        "grade": 0.0017539070403141679,
+        "lanes": 4
+      },
+      {
+        "s": 11400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11700,
+        "demand": 0.0343837484588786,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.0078852986855225
+      },
+      {
+        "s": 11800,
+        "demand": 0.08842308211537868,
+        "height": 49.88139733484727,
+        "grade": 0.2121113717086361,
+        "lanes": 5.604599114862375
+      },
+      {
+        "s": 11900,
+        "demand": 0.1434905207083048,
+        "height": 89.06661281839169,
+        "grade": 0.5192656763352564,
+        "lanes": 6
+      },
+      {
+        "s": 12000,
+        "demand": 0.23858069770595913,
+        "height": 140.58083430196257,
+        "grade": 0.44222754951558196,
+        "lanes": 6
+      },
+      {
+        "s": 12100,
+        "demand": 0.3193574703091726,
+        "height": 166.30990383559742,
+        "grade": 0.03799568499306297,
+        "lanes": 6
+      },
+      {
+        "s": 12200,
+        "demand": 0.3416507717967034,
+        "height": 166.46042896062136,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12300,
+        "demand": 0.19889473791341844,
+        "height": 166.46042896062136,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12400,
+        "demand": -0.010218860602084965,
+        "height": 166.46042896062136,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12500,
+        "demand": -0.5400111260662475,
+        "height": 166.46042896062136,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12600,
+        "demand": -0.5416548651456833,
+        "height": 166.46042896062136,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12700,
+        "demand": -0.16510583148847202,
+        "height": 165.99584726656002,
+        "grade": -0.0666650071579951,
+        "lanes": 6
+      },
+      {
+        "s": 12800,
+        "demand": -0.2372939280618213,
+        "height": 137.87914329575398,
+        "grade": -0.4581225102036941,
+        "lanes": 6
+      },
+      {
+        "s": 12900,
+        "demand": -0.4548290001966148,
+        "height": 85.97620485405152,
+        "grade": -0.510625968881167,
+        "lanes": 6
+      },
+      {
+        "s": 13000,
+        "demand": -0.4548290001966148,
+        "height": 48.688792404146156,
+        "grade": -0.1853293119634478,
+        "lanes": 5.5
+      },
+      {
+        "s": 13100,
+        "demand": -0.1838167225758397,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      }
+    ]
+  },
+  {
+    "code": "S01-v0.8.1-r1-16-ALB1",
+    "fingerprint": "11d193fa",
+    "coverage": 0.7751851851851852,
+    "gaps": [
+      35,
+      200,
+      35,
+      310,
+      100,
+      460,
+      100,
+      130,
+      100,
+      130,
+      65,
+      340,
+      100,
+      250,
+      100
+    ],
+    "shares": {
+      "four": 0.6222222222222222,
+      "wide": 0.29185185185185186,
+      "narrow": 0,
+      "taper": 0.08592592592592592
+    },
+    "beats": [
+      {
+        "id": "S01-01",
+        "startS": 180,
+        "endS": 1685,
+        "world": "city",
+        "verticality": "rolling",
+        "role": "Departure"
+      },
+      {
+        "id": "S01-02",
+        "startS": 1785,
+        "endS": 3179,
+        "world": "city",
+        "verticality": "rolling",
+        "role": "City rhythm"
+      },
+      {
+        "id": "S01-03",
+        "startS": 3389,
+        "endS": 4850,
+        "world": "city",
+        "verticality": "rolling",
+        "role": "Sea reveal"
+      },
+      {
+        "id": "S01-04",
+        "startS": 5210,
+        "endS": 6572,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coast sweep"
+      },
+      {
+        "id": "S01-05",
+        "startS": 6602,
+        "endS": 8172,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coastal reversal"
+      },
+      {
+        "id": "S01-06",
+        "startS": 8202,
+        "endS": 9807,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Canyon approach"
+      },
+      {
+        "id": "S01-07",
+        "startS": 10047,
+        "endS": 11494,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Brake challenge"
+      },
+      {
+        "id": "S01-08",
+        "startS": 11644,
+        "endS": 13200,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Ridge release"
+      }
+    ],
+    "buffers": [
+      {
+        "startS": 0,
+        "endS": 180,
+        "role": "launch"
+      },
+      {
+        "startS": 1685,
+        "endS": 1785,
+        "role": "connector"
+      },
+      {
+        "startS": 3179,
+        "endS": 3389,
+        "role": "connector"
+      },
+      {
+        "startS": 4850,
+        "endS": 5210,
+        "role": "scenic"
+      },
+      {
+        "startS": 6572,
+        "endS": 6602,
+        "role": "connector"
+      },
+      {
+        "startS": 8172,
+        "endS": 8202,
+        "role": "connector"
+      },
+      {
+        "startS": 9807,
+        "endS": 10047,
+        "role": "braking"
+      },
+      {
+        "startS": 11494,
+        "endS": 11644,
+        "role": "connector"
+      },
+      {
+        "startS": 13200,
+        "endS": 13500,
+        "role": "finish"
+      }
+    ],
+    "placements": [
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 180,
+        "endS": 1685,
+        "parameters": {
+          "base": 45,
+          "amplitude": 49.3259058939293,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 230,
+        "endS": 946,
+        "parameters": {
+          "effort": 0.5589631526172161,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.894043666543439
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 981,
+        "endS": 1635,
+        "parameters": {
+          "effort": 0.6198603726178408,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7365562250139193
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 1785,
+        "endS": 3179,
+        "parameters": {
+          "base": 45,
+          "amplitude": 62.59210818214342,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 1835,
+        "endS": 2471,
+        "parameters": {
+          "effort": 0.5954776057600975,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6962316577439197
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 1885,
+        "endS": 2035,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 2506,
+        "endS": 3129,
+        "parameters": {
+          "effort": 0.537484444603324,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8195223894203082
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 2929,
+        "endS": 3079,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 3389,
+        "endS": 4850,
+        "parameters": {
+          "base": 45,
+          "amplitude": 65.84829768165946,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 3439,
+        "endS": 4027,
+        "parameters": {
+          "effort": 0.5803355985879899,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8796538078924641
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 4127,
+        "endS": 4800,
+        "parameters": {
+          "effort": 0.6106198205798865,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7092596287257038
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 5210,
+        "endS": 6572,
+        "parameters": {
+          "base": 45,
+          "amplitude": 66.72777293017134,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 5260,
+        "endS": 5841,
+        "parameters": {
+          "effort": 0.4499321983009577,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8246469756471925
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 5310,
+        "endS": 5460,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 5941,
+        "endS": 6522,
+        "parameters": {
+          "effort": 0.6052517873793841,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8911211687372997
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 6322,
+        "endS": 6472,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 6602,
+        "endS": 8172,
+        "parameters": {
+          "base": 45,
+          "amplitude": 66.878423076123,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 6652,
+        "endS": 7323,
+        "parameters": {
+          "effort": 0.5099246264249087,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6023148210952058
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 7423,
+        "endS": 8122,
+        "parameters": {
+          "effort": 0.3879459519684315,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5873451042687521
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 8202,
+        "endS": 9807,
+        "parameters": {
+          "base": 45,
+          "amplitude": 118.59852743893862,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 8252,
+        "endS": 8948,
+        "parameters": {
+          "effort": 0.6570427511632443,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.84815420814557
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 8302,
+        "endS": 8452,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 9013,
+        "endS": 9757,
+        "parameters": {
+          "effort": 0.3574054896831513,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7479755984968506
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 9557,
+        "endS": 9707,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 10047,
+        "endS": 11494,
+        "parameters": {
+          "base": 45,
+          "amplitude": 132.37522499635816,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 10097,
+        "endS": 10755,
+        "parameters": {
+          "effort": 0.39712793543934827,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8249359797337092
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C08",
+        "startS": 10855,
+        "endS": 11444,
+        "parameters": {
+          "effort": 1.1647676762659103,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8268785794381983
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 11644,
+        "endS": 13200,
+        "parameters": {
+          "base": 45,
+          "amplitude": 138.66258576977998,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 11694,
+        "endS": 12386,
+        "parameters": {
+          "effort": 0.46188036099076274,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6157959763426334
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 11744,
+        "endS": 11894,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C02",
+        "startS": 12486,
+        "endS": 13150,
+        "parameters": {
+          "effort": 0.4901451210677624,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7652632115175948
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 12950,
+        "endS": 13100,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      }
+    ],
+    "worldPhases": [
+      {
+        "startS": 0,
+        "endS": 5030,
+        "world": "city",
+        "beat": "City departure"
+      },
+      {
+        "startS": 5030,
+        "endS": 8187,
+        "world": "coast",
+        "beat": "Open coast"
+      },
+      {
+        "startS": 8187,
+        "endS": 13500,
+        "world": "canyon",
+        "beat": "Canyon payoff"
+      }
+    ],
+    "samples": [
+      {
+        "s": 0,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 300,
+        "demand": -0.4425639548784791,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 400,
+        "demand": -0.5589631526172161,
+        "height": 45.64082509125461,
+        "grade": 0.03238758558186741,
+        "lanes": 4
+      },
+      {
+        "s": 500,
+        "demand": -0.5096049435788151,
+        "height": 52.627578337332615,
+        "grade": 0.10341023584479307,
+        "lanes": 4
+      },
+      {
+        "s": 600,
+        "demand": -0.3703891649474575,
+        "height": 65.18325183782397,
+        "grade": 0.14062773828407657,
+        "lanes": 4
+      },
+      {
+        "s": 700,
+        "demand": -0.21931133324999563,
+        "height": 79.20335443436271,
+        "grade": 0.13187356836461228,
+        "lanes": 4
+      },
+      {
+        "s": 800,
+        "demand": -0.1415583421785256,
+        "height": 90.10466825778187,
+        "grade": 0.08000949316180779,
+        "lanes": 4
+      },
+      {
+        "s": 900,
+        "demand": -0.0395109306967463,
+        "height": 94.32351779509158,
+        "grade": 0.001990050247734432,
+        "lanes": 4
+      },
+      {
+        "s": 1000,
+        "demand": 0.009748896516175285,
+        "height": 93.35250208045885,
+        "grade": -0.003369259678123177,
+        "lanes": 4
+      },
+      {
+        "s": 1100,
+        "demand": 0.15497861716219355,
+        "height": 89.77256577896797,
+        "grade": -0.07536887593489514,
+        "lanes": 4
+      },
+      {
+        "s": 1200,
+        "demand": 0.23461936607671136,
+        "height": 79.1176763984678,
+        "grade": -0.13137447138181502,
+        "lanes": 4
+      },
+      {
+        "s": 1300,
+        "demand": 0.4165049445671176,
+        "height": 65.02788874317386,
+        "grade": -0.14201831185704594,
+        "lanes": 4
+      },
+      {
+        "s": 1400,
+        "demand": 0.5789228701913105,
+        "height": 52.36820808009151,
+        "grade": -0.10362522912952472,
+        "lanes": 4
+      },
+      {
+        "s": 1500,
+        "demand": 0.6198603726178408,
+        "height": 45.50984387037684,
+        "grade": -0.029451814019183366,
+        "lanes": 4
+      },
+      {
+        "s": 1600,
+        "demand": 0.19788883131639845,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1900,
+        "demand": 0.4946433099064255,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.048943483704846
+      },
+      {
+        "s": 2000,
+        "demand": 0.5951758141505523,
+        "height": 53.925174208179236,
+        "grade": 0.22419512311897558,
+        "lanes": 5.743144825477394
+      },
+      {
+        "s": 2100,
+        "demand": 0.5077052265665056,
+        "height": 83.37076895566346,
+        "grade": 0.3122940755910871,
+        "lanes": 6
+      },
+      {
+        "s": 2200,
+        "demand": 0.32466382780469305,
+        "height": 106.01928900764801,
+        "grade": 0.10035462377662094,
+        "lanes": 6
+      },
+      {
+        "s": 2300,
+        "demand": 0.17512409311956417,
+        "height": 107.59210818214342,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 2400,
+        "demand": 0.10187847887541057,
+        "height": 107.59210818214342,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 2500,
+        "demand": 0,
+        "height": 107.59210818214342,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 2600,
+        "demand": -0.537484444603324,
+        "height": 107.59210818214342,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 2700,
+        "demand": -0.5260541917509365,
+        "height": 107.59210818214342,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 2800,
+        "demand": -0.4046100235066723,
+        "height": 100.48950214058172,
+        "grade": -0.2033661633705995,
+        "lanes": 6
+      },
+      {
+        "s": 2900,
+        "demand": -0.2328267036642575,
+        "height": 71.90563647785724,
+        "grade": -0.3174226105339022,
+        "lanes": 6
+      },
+      {
+        "s": 3000,
+        "demand": -0.13660906396458655,
+        "height": 47.53989084295357,
+        "grade": -0.12651338273583873,
+        "lanes": 5.083677843332316
+      },
+      {
+        "s": 3100,
+        "demand": -0.02097972943969509,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3500,
+        "demand": 0.5544444847550192,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3600,
+        "demand": -0.16453915920411646,
+        "height": 45.74487628676698,
+        "grade": 0.041595000772709,
+        "lanes": 4
+      },
+      {
+        "s": 3700,
+        "demand": -0.032047061200698,
+        "height": 55.2331438149767,
+        "grade": 0.14249455400578162,
+        "lanes": 4
+      },
+      {
+        "s": 3800,
+        "demand": 0.44234425627401214,
+        "height": 72.57914530794596,
+        "grade": 0.19404925470681425,
+        "lanes": 4
+      },
+      {
+        "s": 3900,
+        "demand": -0.3799188302210682,
+        "height": 91.77608358199868,
+        "grade": 0.17840607599224836,
+        "lanes": 4
+      },
+      {
+        "s": 4000,
+        "demand": -0.11016165327389854,
+        "height": 106.17619518533743,
+        "grade": 0.10098213960535628,
+        "lanes": 4
+      },
+      {
+        "s": 4100,
+        "demand": 0,
+        "height": 110.81916225609504,
+        "grade": -0.005950338298342047,
+        "lanes": 4
+      },
+      {
+        "s": 4200,
+        "demand": 0.10050805654944173,
+        "height": 109.49753998559548,
+        "grade": -0.009070024929378431,
+        "lanes": 4
+      },
+      {
+        "s": 4300,
+        "demand": 0.17299814915218797,
+        "height": 102.75246177167324,
+        "grade": -0.12156134996731698,
+        "lanes": 4
+      },
+      {
+        "s": 4400,
+        "demand": 0.308058923938092,
+        "height": 86.68612085205226,
+        "grade": -0.18959415295289372,
+        "lanes": 4
+      },
+      {
+        "s": 4500,
+        "demand": 0.4897706521386378,
+        "height": 67.17444549067304,
+        "grade": -0.18828685867629547,
+        "lanes": 4
+      },
+      {
+        "s": 4600,
+        "demand": 0.6029226468890535,
+        "height": 51.353422985847395,
+        "grade": -0.11811758268527403,
+        "lanes": 4
+      },
+      {
+        "s": 4700,
+        "demand": 0.6106198205798865,
+        "height": 45.00926152061052,
+        "grade": -0.004749270520363413,
+        "lanes": 4
+      },
+      {
+        "s": 4800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5300,
+        "demand": 0.03594605874335379,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5400,
+        "demand": 0.1219182989103082,
+        "height": 45.48194220822489,
+        "grade": 0.0362032051444188,
+        "lanes": 6.618033988749895
+      },
+      {
+        "s": 5500,
+        "demand": 0.23358237507484664,
+        "height": 55.38127113898015,
+        "grade": 0.1549633550983559,
+        "lanes": 8
+      },
+      {
+        "s": 5600,
+        "demand": 0.38498559519389197,
+        "height": 74.39716833612545,
+        "grade": 0.21225382523137615,
+        "lanes": 8
+      },
+      {
+        "s": 5700,
+        "demand": 0.4499321983009577,
+        "height": 94.98655297597776,
+        "grade": 0.18534906953531932,
+        "lanes": 8
+      },
+      {
+        "s": 5800,
+        "demand": 0.22783334520479126,
+        "height": 108.98218525711351,
+        "grade": 0.08492146095440138,
+        "lanes": 8
+      },
+      {
+        "s": 5900,
+        "demand": 0,
+        "height": 111.30591570876412,
+        "grade": -0.020446598774678,
+        "lanes": 8
+      },
+      {
+        "s": 6000,
+        "demand": -0.5706268022226044,
+        "height": 109.21263110545758,
+        "grade": -0.05738043486045092,
+        "lanes": 8
+      },
+      {
+        "s": 6100,
+        "demand": 0.1730297417508681,
+        "height": 97.28115356590772,
+        "grade": -0.17254915235652715,
+        "lanes": 8
+      },
+      {
+        "s": 6200,
+        "demand": 0.02645384635965553,
+        "height": 77.14716001149202,
+        "grade": -0.2154498034853448,
+        "lanes": 8
+      },
+      {
+        "s": 6300,
+        "demand": -0.4469189421150773,
+        "height": 57.24328985281747,
+        "grade": -0.1681144813598856,
+        "lanes": 8
+      },
+      {
+        "s": 6400,
+        "demand": 0.43403564625217206,
+        "height": 45.90580084570473,
+        "grade": -0.05036844825561983,
+        "lanes": 5.874418960941373
+      },
+      {
+        "s": 6500,
+        "demand": 0.07986016284309827,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6700,
+        "demand": -0.23647585233606183,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6800,
+        "demand": -0.5099246264249087,
+        "height": 45.04759495136223,
+        "grade": 0.009913262002617901,
+        "lanes": 4
+      },
+      {
+        "s": 6900,
+        "demand": -0.3176754203075076,
+        "height": 51.0154683579363,
+        "grade": 0.10635525641786982,
+        "lanes": 4
+      },
+      {
+        "s": 7000,
+        "demand": -0.13725558036278054,
+        "height": 65.24014209387317,
+        "grade": 0.17077557857442885,
+        "lanes": 4
+      },
+      {
+        "s": 7100,
+        "demand": -0.3071351601371585,
+        "height": 83.43882040745791,
+        "grade": 0.1837784175610615,
+        "lanes": 4
+      },
+      {
+        "s": 7200,
+        "demand": -0.3071351601371585,
+        "height": 100.13220559280789,
+        "grade": 0.1414488502936978,
+        "lanes": 4
+      },
+      {
+        "s": 7300,
+        "demand": -0.03790219808317785,
+        "height": 110.2942168778252,
+        "grade": 0.05653155508482474,
+        "lanes": 4
+      },
+      {
+        "s": 7400,
+        "demand": 0,
+        "height": 111.40828826901924,
+        "grade": -0.018254986543401457,
+        "lanes": 4
+      },
+      {
+        "s": 7500,
+        "demand": -0.3242406293274891,
+        "height": 109.90545611586522,
+        "grade": -0.03671519771207992,
+        "lanes": 4
+      },
+      {
+        "s": 7600,
+        "demand": -0.3879459519684315,
+        "height": 101.32035045291207,
+        "grade": -0.1302843301169986,
+        "lanes": 4
+      },
+      {
+        "s": 7700,
+        "demand": -0.15199279384523212,
+        "height": 85.24507042281311,
+        "grade": -0.182415860205795,
+        "lanes": 4
+      },
+      {
+        "s": 7800,
+        "demand": -0.128888787391872,
+        "height": 66.79244164634213,
+        "grade": -0.17652908629308142,
+        "lanes": 4
+      },
+      {
+        "s": 7900,
+        "demand": -0.2278581556095387,
+        "height": 51.83141775928775,
+        "grade": -0.11449632714582623,
+        "lanes": 4
+      },
+      {
+        "s": 8000,
+        "demand": -0.2278581556095387,
+        "height": 45.12042947635706,
+        "grade": -0.01604742135480537,
+        "lanes": 4
+      },
+      {
+        "s": 8100,
+        "demand": -0.023868753390779984,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8300,
+        "demand": -0.17463919030888433,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8400,
+        "demand": -0.6570427511632443,
+        "height": 48.27004448673795,
+        "grade": 0.17278151402888384,
+        "lanes": 5.463296035119861
+      },
+      {
+        "s": 8500,
+        "demand": -0.6570427511632443,
+        "height": 84.10864062154803,
+        "grade": 0.4960717030758054,
+        "lanes": 6
+      },
+      {
+        "s": 8600,
+        "demand": -0.6570427511632443,
+        "height": 134.9031787910875,
+        "grade": 0.45190321587042853,
+        "lanes": 6
+      },
+      {
+        "s": 8700,
+        "demand": -0.6570427511632443,
+        "height": 163.02826403552007,
+        "grade": 0.07299328611087065,
+        "lanes": 6
+      },
+      {
+        "s": 8800,
+        "demand": -0.6570427511632443,
+        "height": 163.59852743893862,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 8900,
+        "demand": -0.1746391903088847,
+        "height": 163.59852743893862,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9000,
+        "demand": 0,
+        "height": 163.59852743893862,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9100,
+        "demand": 0.3568306730315576,
+        "height": 163.59852743893862,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9200,
+        "demand": -0.031722311796627295,
+        "height": 163.59852743893862,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 9300,
+        "demand": -0.22591975832208394,
+        "height": 163.4963190156564,
+        "grade": -0.0309633490975104,
+        "lanes": 6
+      },
+      {
+        "s": 9400,
+        "demand": 0.1116547784517529,
+        "height": 138.86789997205477,
+        "grade": -0.4286751157450139,
+        "lanes": 6
+      },
+      {
+        "s": 9500,
+        "demand": 0.12250791945516312,
+        "height": 88.63321224095823,
+        "grade": -0.5088513535621363,
+        "lanes": 6
+      },
+      {
+        "s": 9600,
+        "demand": -0.25252825820776365,
+        "height": 50.00294883542004,
+        "grade": -0.21210255487791219,
+        "lanes": 5.62114778027831
+      },
+      {
+        "s": 9700,
+        "demand": -0.16682679033350203,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.010727667037012
+      },
+      {
+        "s": 9800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 9900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10100,
+        "demand": -0.0005089970804374128,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10200,
+        "demand": -0.3526182888501589,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10300,
+        "demand": -0.39712793543934827,
+        "height": 52.43706633272334,
+        "grade": 0.18383458492745233,
+        "lanes": 4
+      },
+      {
+        "s": 10400,
+        "demand": -0.39712793543934827,
+        "height": 80.09044702325187,
+        "grade": 0.3523674124143077,
+        "lanes": 4
+      },
+      {
+        "s": 10500,
+        "demand": -0.39712793543934827,
+        "height": 118.71555943651882,
+        "grade": 0.3965776317855638,
+        "lanes": 4
+      },
+      {
+        "s": 10600,
+        "demand": -0.39712793543934827,
+        "height": 154.6846543970997,
+        "grade": 0.3008669510767671,
+        "lanes": 4
+      },
+      {
+        "s": 10700,
+        "demand": -0.14793534562582605,
+        "height": 175.30708135244214,
+        "grade": 0.09900410437348162,
+        "lanes": 4
+      },
+      {
+        "s": 10800,
+        "demand": 0,
+        "height": 175.73454010765423,
+        "grade": -0.039863160092046865,
+        "lanes": 4
+      },
+      {
+        "s": 10900,
+        "demand": 0.24841287685926144,
+        "height": 170.69425217892638,
+        "grade": -0.13967231500314214,
+        "lanes": 4
+      },
+      {
+        "s": 11000,
+        "demand": 1.1640967881584656,
+        "height": 146.27265787448724,
+        "grade": -0.33299612068132045,
+        "lanes": 4
+      },
+      {
+        "s": 11100,
+        "demand": 1.1647676762659103,
+        "height": 108.28474858690058,
+        "grade": -0.40224194093134924,
+        "lanes": 4
+      },
+      {
+        "s": 11200,
+        "demand": 1.1647676762659103,
+        "height": 70.88523352234922,
+        "grade": -0.32160802809813827,
+        "lanes": 4
+      },
+      {
+        "s": 11300,
+        "demand": 1.1633682140798385,
+        "height": 48.009579783887546,
+        "grade": -0.12113945730467554,
+        "lanes": 4
+      },
+      {
+        "s": 11400,
+        "demand": 0.2383104602998941,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11700,
+        "demand": -0.005924224065686444,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11800,
+        "demand": -0.34737741977804326,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.612484413547897
+      },
+      {
+        "s": 11900,
+        "demand": 0.16662425940608241,
+        "height": 50.16796941323837,
+        "grade": 0.14730911567702873,
+        "lanes": 6
+      },
+      {
+        "s": 12000,
+        "demand": 0.021670251503296323,
+        "height": 73.96790795974522,
+        "grade": 0.3161470426889799,
+        "lanes": 6
+      },
+      {
+        "s": 12100,
+        "demand": -0.3613432941064626,
+        "height": 110.13442551060619,
+        "grade": 0.3881234852724874,
+        "lanes": 6
+      },
+      {
+        "s": 12200,
+        "demand": 0.054372519077205396,
+        "height": 147.58678398018913,
+        "grade": 0.3411862204707298,
+        "lanes": 6
+      },
+      {
+        "s": 12300,
+        "demand": 0.40736294966640035,
+        "height": 174.85028790446322,
+        "grade": 0.18971593995502475,
+        "lanes": 6
+      },
+      {
+        "s": 12400,
+        "demand": 0,
+        "height": 183.6148880340835,
+        "grade": -0.010399645015700319,
+        "lanes": 6
+      },
+      {
+        "s": 12500,
+        "demand": -0.013318367005743887,
+        "height": 180.889288834464,
+        "grade": -0.00045219915384250153,
+        "lanes": 6
+      },
+      {
+        "s": 12600,
+        "demand": -0.46630471521232725,
+        "height": 169.85160140464882,
+        "grade": -0.2141456365412232,
+        "lanes": 6
+      },
+      {
+        "s": 12700,
+        "demand": -0.4901451210677624,
+        "height": 140.39632694587672,
+        "grade": -0.3585321266994847,
+        "lanes": 6
+      },
+      {
+        "s": 12800,
+        "demand": -0.4901451210677624,
+        "height": 102.05648786993234,
+        "grade": -0.38688185054090474,
+        "lanes": 6
+      },
+      {
+        "s": 12900,
+        "demand": -0.4901451210677624,
+        "height": 67.24054248830629,
+        "grade": -0.2900195904613688,
+        "lanes": 6
+      },
+      {
+        "s": 13000,
+        "demand": -0.4901451210677624,
+        "height": 47.21646211374471,
+        "grade": -0.09929423433108725,
+        "lanes": 5.5
+      },
+      {
+        "s": 13100,
+        "demand": -0.15235965004675683,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      }
+    ]
+  },
+  {
+    "code": "S01-v0.8.1-r1-JQ-ALB1",
+    "fingerprint": "30df3c7e",
+    "coverage": 0.7648148148148148,
+    "gaps": [
+      35,
+      250,
+      145,
+      310,
+      100,
+      460,
+      65,
+      200,
+      65,
+      250,
+      35,
+      340,
+      145,
+      160,
+      35
+    ],
+    "shares": {
+      "four": 0.6359259259259259,
+      "wide": 0.2777777777777778,
+      "narrow": 0,
+      "taper": 0.0862962962962963
+    },
+    "beats": [
+      {
+        "id": "S01-01",
+        "startS": 180,
+        "endS": 1663,
+        "world": "city",
+        "verticality": "gentle",
+        "role": "Departure"
+      },
+      {
+        "id": "S01-02",
+        "startS": 1813,
+        "endS": 3163,
+        "world": "city",
+        "verticality": "rolling",
+        "role": "City rhythm"
+      },
+      {
+        "id": "S01-03",
+        "startS": 3373,
+        "endS": 4915,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Sea reveal"
+      },
+      {
+        "id": "S01-04",
+        "startS": 5275,
+        "endS": 6781,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Coast sweep"
+      },
+      {
+        "id": "S01-05",
+        "startS": 6881,
+        "endS": 8409,
+        "world": "coast",
+        "verticality": "dramatic",
+        "role": "Coastal reversal"
+      },
+      {
+        "id": "S01-06",
+        "startS": 8559,
+        "endS": 9968,
+        "world": "coast",
+        "verticality": "rolling",
+        "role": "Canyon approach"
+      },
+      {
+        "id": "S01-07",
+        "startS": 10208,
+        "endS": 11668,
+        "world": "canyon",
+        "verticality": "gentle",
+        "role": "Brake challenge"
+      },
+      {
+        "id": "S01-08",
+        "startS": 11728,
+        "endS": 13200,
+        "world": "canyon",
+        "verticality": "dramatic",
+        "role": "Ridge release"
+      }
+    ],
+    "buffers": [
+      {
+        "startS": 0,
+        "endS": 180,
+        "role": "launch"
+      },
+      {
+        "startS": 1663,
+        "endS": 1813,
+        "role": "connector"
+      },
+      {
+        "startS": 3163,
+        "endS": 3373,
+        "role": "connector"
+      },
+      {
+        "startS": 4915,
+        "endS": 5275,
+        "role": "scenic"
+      },
+      {
+        "startS": 6781,
+        "endS": 6881,
+        "role": "connector"
+      },
+      {
+        "startS": 8409,
+        "endS": 8559,
+        "role": "connector"
+      },
+      {
+        "startS": 9968,
+        "endS": 10208,
+        "role": "braking"
+      },
+      {
+        "startS": 11668,
+        "endS": 11728,
+        "role": "connector"
+      },
+      {
+        "startS": 13200,
+        "endS": 13500,
+        "role": "finish"
+      }
+    ],
+    "placements": [
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 180,
+        "endS": 1663,
+        "parameters": {
+          "base": 45,
+          "amplitude": 21.60804435214959,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 230,
+        "endS": 905,
+        "parameters": {
+          "effort": 0.3879313174635172,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6115221038227902
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "curvature",
+        "id": "C07",
+        "startS": 940,
+        "endS": 1613,
+        "parameters": {
+          "effort": 0.3804171193391085,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7444082267698833
+        },
+        "transition": "smooth",
+        "beat": "S01-01"
+      },
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 1813,
+        "endS": 3163,
+        "parameters": {
+          "base": 15.379682186990976,
+          "amplitude": 29.620317813009024,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 1863,
+        "endS": 2456,
+        "parameters": {
+          "effort": 0.4525688081234694,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7261903068283573
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 1913,
+        "endS": 2063,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 2601,
+        "endS": 3113,
+        "parameters": {
+          "effort": 0.37374169498682025,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8682510157348589
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 2913,
+        "endS": 3063,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-02"
+      },
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 3373,
+        "endS": 4915,
+        "parameters": {
+          "base": 17.05131458863616,
+          "amplitude": 27.94868541136384,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 3423,
+        "endS": 4085,
+        "parameters": {
+          "effort": 0.43586598455905917,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7719552454422228
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 4185,
+        "endS": 4865,
+        "parameters": {
+          "effort": 0.4084560665488243,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6465026739402675
+        },
+        "transition": "smooth",
+        "beat": "S01-03"
+      },
+      {
+        "channel": "elevation",
+        "id": "E04",
+        "startS": 5275,
+        "endS": 6781,
+        "parameters": {
+          "base": 16.33192857541144,
+          "amplitude": 28.66807142458856,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 5325,
+        "endS": 6035,
+        "parameters": {
+          "effort": 0.39710613921284676,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7431665569078177
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 5375,
+        "endS": 5525,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 6100,
+        "endS": 6731,
+        "parameters": {
+          "effort": 0.5480428943037987,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5734215868054889
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 6531,
+        "endS": 6681,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-04"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 6881,
+        "endS": 8409,
+        "parameters": {
+          "base": 45,
+          "amplitude": 118.27812109515071,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 6931,
+        "endS": 7579,
+        "parameters": {
+          "effort": 0.5944181776791811,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6818954321322963
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 7644,
+        "endS": 8359,
+        "parameters": {
+          "effort": 0.5647719974815846,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7478841071482748
+        },
+        "transition": "smooth",
+        "beat": "S01-05"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 8559,
+        "endS": 9968,
+        "parameters": {
+          "base": 45,
+          "amplitude": 49.53879330540076,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 8609,
+        "endS": 9196,
+        "parameters": {
+          "effort": 0.6206493167579175,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.897099038725719
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 8659,
+        "endS": 8809,
+        "parameters": {
+          "from": 4,
+          "to": 8,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "curvature",
+        "id": "C05",
+        "startS": 9231,
+        "endS": 9918,
+        "parameters": {
+          "effort": 0.5629301685839891,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.8072205717791803
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 9718,
+        "endS": 9868,
+        "parameters": {
+          "from": 8,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-06"
+      },
+      {
+        "channel": "elevation",
+        "id": "E03",
+        "startS": 10208,
+        "endS": 11668,
+        "parameters": {
+          "base": 45,
+          "amplitude": 17.0148929937277,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C03",
+        "startS": 10258,
+        "endS": 10842,
+        "parameters": {
+          "effort": 0.5393393602967262,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5757972077699378
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "curvature",
+        "id": "C08",
+        "startS": 10987,
+        "endS": 11618,
+        "parameters": {
+          "effort": 1.0894555453327486,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.6365286891465076
+        },
+        "transition": "smooth",
+        "beat": "S01-07"
+      },
+      {
+        "channel": "elevation",
+        "id": "E05",
+        "startS": 11728,
+        "endS": 13200,
+        "parameters": {
+          "base": 45,
+          "amplitude": 119.35075473226607,
+          "direction": 1,
+          "shelfStart": 0.32,
+          "shelfEnd": 0.68
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C06",
+        "startS": 11778,
+        "endS": 12427,
+        "parameters": {
+          "effort": 0.49321740292012695,
+          "direction": -1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.5834867247613147
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W02",
+        "startS": 11828,
+        "endS": 11978,
+        "parameters": {
+          "from": 4,
+          "to": 6,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "curvature",
+        "id": "C04",
+        "startS": 12462,
+        "endS": 13150,
+        "parameters": {
+          "effort": 0.39846916481852535,
+          "direction": 1,
+          "start": 0,
+          "end": 1,
+          "secondary": 0.7972128045978025
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      },
+      {
+        "channel": "width",
+        "id": "W03",
+        "startS": 12950,
+        "endS": 13100,
+        "parameters": {
+          "from": 6,
+          "to": 4,
+          "start": 0,
+          "end": 1
+        },
+        "transition": "smooth",
+        "beat": "S01-08"
+      }
+    ],
+    "worldPhases": [
+      {
+        "startS": 0,
+        "endS": 3268,
+        "world": "city",
+        "beat": "City departure"
+      },
+      {
+        "startS": 3268,
+        "endS": 10088,
+        "world": "coast",
+        "beat": "Open coast"
+      },
+      {
+        "startS": 10088,
+        "endS": 13500,
+        "world": "canyon",
+        "beat": "Canyon payoff"
+      }
+    ],
+    "samples": [
+      {
+        "s": 0,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 300,
+        "demand": -0.3036739689187168,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 400,
+        "demand": -0.3879313174635172,
+        "height": 47.47426293654082,
+        "grade": 0.06625358297910487,
+        "lanes": 4
+      },
+      {
+        "s": 500,
+        "demand": -0.22764744190049419,
+        "height": 56.69457422817143,
+        "grade": 0.10367907151973804,
+        "lanes": 4
+      },
+      {
+        "s": 600,
+        "demand": 0.0394740233615339,
+        "height": 65.15102890232068,
+        "grade": 0.05217551353442772,
+        "lanes": 4
+      },
+      {
+        "s": 700,
+        "demand": 0.23722857539403674,
+        "height": 66.60804435214959,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 800,
+        "demand": 0.23722857539403674,
+        "height": 66.60804435214959,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 900,
+        "demand": 0.0014245754494422724,
+        "height": 66.60804435214959,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1000,
+        "demand": 0.3216912587125562,
+        "height": 66.60804435214959,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1100,
+        "demand": -0.011073619992901124,
+        "height": 66.60804435214959,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1200,
+        "demand": -0.2374449435073167,
+        "height": 66.54117998341586,
+        "grade": -0.011556282767736736,
+        "lanes": 4
+      },
+      {
+        "s": 1300,
+        "demand": 0.16892680046135164,
+        "height": 60.951223904843054,
+        "grade": -0.0914680127163071,
+        "lanes": 4
+      },
+      {
+        "s": 1400,
+        "demand": 0.019974094187504232,
+        "height": 50.94633880244208,
+        "grade": -0.09292453430650098,
+        "lanes": 4
+      },
+      {
+        "s": 1500,
+        "demand": -0.3774324392212751,
+        "height": 45.10805303788187,
+        "grade": -0.01467653970442511,
+        "lanes": 4
+      },
+      {
+        "s": 1600,
+        "demand": -0.013517736587069562,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 1900,
+        "demand": -0.16723535040280724,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 2000,
+        "demand": -0.4525688081234694,
+        "height": 44.32743561726829,
+        "grade": -0.02567027241644087,
+        "lanes": 5.248689887164854
+      },
+      {
+        "s": 2100,
+        "demand": -0.26688936331105856,
+        "height": 39.57697844053387,
+        "grade": -0.06664386856767565,
+        "lanes": 6
+      },
+      {
+        "s": 2200,
+        "demand": 0.10355816700044448,
+        "height": 31.737924244742153,
+        "grade": -0.08569000737095658,
+        "lanes": 6
+      },
+      {
+        "s": 2300,
+        "demand": 0.3286510816321262,
+        "height": 23.38951295429775,
+        "grade": -0.07654204486896214,
+        "lanes": 6
+      },
+      {
+        "s": 2400,
+        "demand": 0.22938195521104565,
+        "height": 17.278575394432572,
+        "grade": -0.04220988372632338,
+        "lanes": 6
+      },
+      {
+        "s": 2500,
+        "demand": 0,
+        "height": 15.415758989731236,
+        "grade": 0.006010358119961296,
+        "lanes": 6
+      },
+      {
+        "s": 2600,
+        "demand": 0,
+        "height": 18.41397574754036,
+        "grade": 0.05225304562923229,
+        "lanes": 6
+      },
+      {
+        "s": 2700,
+        "demand": 0.37374169498682025,
+        "height": 25.28673926648876,
+        "grade": 0.08130320734489381,
+        "lanes": 6
+      },
+      {
+        "s": 2800,
+        "demand": 0.334760554462017,
+        "height": 33.77274281028936,
+        "grade": 0.08360263190164274,
+        "lanes": 6
+      },
+      {
+        "s": 2900,
+        "demand": 0.19620793009678367,
+        "height": 41.079884348245756,
+        "grade": 0.05839475256683583,
+        "lanes": 6
+      },
+      {
+        "s": 3000,
+        "demand": 0.09694743732269895,
+        "height": 44.80393618690864,
+        "grade": 0.013973576138488547,
+        "lanes": 4.751310112835146
+      },
+      {
+        "s": 3100,
+        "demand": 0.004512675649178136,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3500,
+        "demand": 0.3838406978098753,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 3600,
+        "demand": 0.43586598455905917,
+        "height": 44.05028456859014,
+        "grade": -0.025791455585085166,
+        "lanes": 4
+      },
+      {
+        "s": 3700,
+        "demand": 0.10442120791519066,
+        "height": 39.92797263416277,
+        "grade": -0.054864647336366826,
+        "lanes": 4
+      },
+      {
+        "s": 3800,
+        "demand": 0.24176869832745962,
+        "height": 33.545680046584636,
+        "grade": -0.07000966009277916,
+        "lanes": 4
+      },
+      {
+        "s": 3900,
+        "demand": 0.33646903309020465,
+        "height": 26.52364347688405,
+        "grade": -0.06738171476993954,
+        "lanes": 4
+      },
+      {
+        "s": 4000,
+        "demand": 0.3195436629328474,
+        "height": 20.644507797481033,
+        "grade": -0.047647953045089335,
+        "lanes": 4
+      },
+      {
+        "s": 4100,
+        "demand": 0,
+        "height": 17.400776069150222,
+        "grade": -0.015818073857159443,
+        "lanes": 4
+      },
+      {
+        "s": 4200,
+        "demand": -0.02141059482151818,
+        "height": 17.615916195486097,
+        "grade": 0.020027450645791763,
+        "lanes": 4
+      },
+      {
+        "s": 4300,
+        "demand": -0.4084560665488243,
+        "height": 21.23531176438974,
+        "grade": 0.05078871905765169,
+        "lanes": 4
+      },
+      {
+        "s": 4400,
+        "demand": -0.398588027207767,
+        "height": 27.340127208982146,
+        "grade": 0.06865654142914653,
+        "lanes": 4
+      },
+      {
+        "s": 4500,
+        "demand": -0.06345188924204127,
+        "height": 34.3805674176384,
+        "grade": 0.06909491433510256,
+        "lanes": 4
+      },
+      {
+        "s": 4600,
+        "demand": -0.24497678823511476,
+        "height": 40.56931548977507,
+        "grade": 0.051992550515014384,
+        "lanes": 4
+      },
+      {
+        "s": 4700,
+        "demand": -0.2640679392109388,
+        "height": 44.33526881036201,
+        "grade": 0.021691130743045458,
+        "lanes": 4
+      },
+      {
+        "s": 4800,
+        "demand": -0.18721893307854243,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 4900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 5400,
+        "demand": 0.3173815846601423,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4.133974596215562
+      },
+      {
+        "s": 5500,
+        "demand": 0.39710613921284676,
+        "height": 43.93448687906124,
+        "grade": -0.028282577020041687,
+        "lanes": 5.866025403784439
+      },
+      {
+        "s": 5600,
+        "demand": 0.27509934508183337,
+        "height": 39.468869271856676,
+        "grade": -0.0589963084773086,
+        "lanes": 6
+      },
+      {
+        "s": 5700,
+        "demand": -0.01747693468241208,
+        "height": 32.662850502991404,
+        "grade": -0.07402487360112299,
+        "lanes": 6
+      },
+      {
+        "s": 5800,
+        "demand": -0.2924118629319007,
+        "height": 25.3259257631571,
+        "grade": -0.0693726741955262,
+        "lanes": 6
+      },
+      {
+        "s": 5900,
+        "demand": -0.2951160022057679,
+        "height": 19.408740573922056,
+        "grade": -0.046276576148851625,
+        "lanes": 6
+      },
+      {
+        "s": 6000,
+        "demand": -0.07190230069155279,
+        "height": 16.48447868719325,
+        "grade": -0.010877067719871486,
+        "lanes": 6
+      },
+      {
+        "s": 6100,
+        "demand": 0,
+        "height": 17.330604579643122,
+        "grade": 0.027414293111569236,
+        "lanes": 6
+      },
+      {
+        "s": 6200,
+        "demand": -0.5480428943037987,
+        "height": 21.722161373381233,
+        "grade": 0.05841710049844367,
+        "lanes": 6
+      },
+      {
+        "s": 6300,
+        "demand": -0.5342063994972068,
+        "height": 28.491579426332766,
+        "grade": 0.0738887337884078,
+        "lanes": 6
+      },
+      {
+        "s": 6400,
+        "demand": -0.40879067262105495,
+        "height": 35.839094467110144,
+        "grade": 0.06971579762051963,
+        "lanes": 6
+      },
+      {
+        "s": 6500,
+        "demand": -0.23595308578787,
+        "height": 41.81124536353991,
+        "grade": 0.04700773764623679,
+        "lanes": 6
+      },
+      {
+        "s": 6600,
+        "demand": -0.13938518643820097,
+        "height": 44.8202348008967,
+        "grade": 0.011801875640423233,
+        "lanes": 5.125333233564304
+      },
+      {
+        "s": 6700,
+        "demand": -0.02367774772789749,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6800,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 6900,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7000,
+        "demand": 0.5142368307935972,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7100,
+        "demand": 0.5940232103614241,
+        "height": 55.961529850247636,
+        "grade": 0.3205330808203036,
+        "lanes": 4
+      },
+      {
+        "s": 7200,
+        "demand": 0.5083038371767417,
+        "height": 103.10006481412876,
+        "grade": 0.5526004371535111,
+        "lanes": 4
+      },
+      {
+        "s": 7300,
+        "demand": 0.3294478300927775,
+        "height": 151.08189403004155,
+        "grade": 0.33615317757400404,
+        "lanes": 4
+      },
+      {
+        "s": 7400,
+        "demand": 0.17923123209138453,
+        "height": 163.2781210951507,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7500,
+        "demand": 0.11358139144705956,
+        "height": 163.2781210951507,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7600,
+        "demand": 0,
+        "height": 163.2781210951507,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7700,
+        "demand": -0.33481226473196085,
+        "height": 163.2781210951507,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7800,
+        "demand": -0.5647719974815846,
+        "height": 163.2781210951507,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 7900,
+        "demand": -0.5283186070018112,
+        "height": 163.2781210951507,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8000,
+        "demand": -0.39598547058205297,
+        "height": 147.5204057318393,
+        "grade": -0.37562597918625334,
+        "lanes": 4
+      },
+      {
+        "s": 8100,
+        "demand": -0.23934015750708576,
+        "height": 97.58663478428356,
+        "grade": -0.549282890521824,
+        "lanes": 4
+      },
+      {
+        "s": 8200,
+        "demand": -0.14694372141450568,
+        "height": 52.97109836375377,
+        "grade": -0.27711785148245727,
+        "lanes": 4
+      },
+      {
+        "s": 8300,
+        "demand": -0.06140316447304878,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8600,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 8700,
+        "demand": -0.6206493167579175,
+        "height": 45.00001272089865,
+        "grade": 0.000254417951273661,
+        "lanes": 4.693158792019789
+      },
+      {
+        "s": 8800,
+        "demand": -0.6008481188716432,
+        "height": 56.689963137234386,
+        "grade": 0.2131812478612499,
+        "lanes": 7.964574501457378
+      },
+      {
+        "s": 8900,
+        "demand": -0.4378743975437023,
+        "height": 80.70313294412134,
+        "grade": 0.2252523385498582,
+        "lanes": 8
+      },
+      {
+        "s": 9000,
+        "demand": -0.23399093642202312,
+        "height": 94.41472272322741,
+        "grade": 0.0250945140563,
+        "lanes": 8
+      },
+      {
+        "s": 9100,
+        "demand": -0.15198420107491165,
+        "height": 94.53879330540076,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 9200,
+        "demand": 0,
+        "height": 94.53879330540076,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 9300,
+        "demand": 0.42442105970667593,
+        "height": 94.53879330540076,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 9400,
+        "demand": 0.5629301685839891,
+        "height": 94.53879330540076,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 9500,
+        "demand": 0.24237237584665183,
+        "height": 94.53879330540076,
+        "grade": 0,
+        "lanes": 8
+      },
+      {
+        "s": 9600,
+        "demand": 0.23224717651317028,
+        "height": 86.3025241973991,
+        "grade": -0.1869260203576634,
+        "lanes": 8
+      },
+      {
+        "s": 9700,
+        "demand": 0.45440881255611804,
+        "height": 62.860932048508744,
+        "grade": -0.24107167422728368,
+        "lanes": 8
+      },
+      {
+        "s": 9800,
+        "demand": 0.45440881255611804,
+        "height": 45.928377532528295,
+        "grade": -0.06808370439390056,
+        "lanes": 5.707833942875177
+      },
+      {
+        "s": 9900,
+        "demand": 0.033358761021767824,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10000,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10100,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10300,
+        "demand": -0.04649233494288496,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 10400,
+        "demand": -0.14696260379048415,
+        "height": 45.04285602285691,
+        "grade": 0.005097619708573692,
+        "lanes": 4
+      },
+      {
+        "s": 10500,
+        "demand": -0.28139264598421265,
+        "height": 46.99036438280928,
+        "grade": 0.03268595958662968,
+        "lanes": 4
+      },
+      {
+        "s": 10600,
+        "demand": -0.46185455750708576,
+        "height": 51.19769198505084,
+        "grade": 0.04894033755752197,
+        "lanes": 4
+      },
+      {
+        "s": 10700,
+        "demand": -0.5393393602967262,
+        "height": 56.20593441380697,
+        "grade": 0.04822449563535705,
+        "lanes": 4
+      },
+      {
+        "s": 10800,
+        "demand": -0.28127147196196295,
+        "height": 60.27846745405595,
+        "grade": 0.030786654315417168,
+        "lanes": 4
+      },
+      {
+        "s": 10900,
+        "demand": 0,
+        "height": 62.003127139140716,
+        "grade": 0.0026734413168471474,
+        "lanes": 4
+      },
+      {
+        "s": 11000,
+        "demand": 0.01815390689528799,
+        "height": 61.68422988806055,
+        "grade": -0.0017350506886967094,
+        "lanes": 4
+      },
+      {
+        "s": 11100,
+        "demand": 0.8870792063632578,
+        "height": 60.45737031067929,
+        "grade": -0.026667492307491374,
+        "lanes": 4
+      },
+      {
+        "s": 11200,
+        "demand": 1.0894555453327486,
+        "height": 56.651730305193674,
+        "grade": -0.047032702052273855,
+        "lanes": 4
+      },
+      {
+        "s": 11300,
+        "demand": 1.0894555453327486,
+        "height": 51.63229738268663,
+        "grade": -0.0501738601636307,
+        "lanes": 4
+      },
+      {
+        "s": 11400,
+        "demand": 1.0894555453327486,
+        "height": 47.23726003872215,
+        "grade": -0.03494062938391017,
+        "lanes": 4
+      },
+      {
+        "s": 11500,
+        "demand": 0.9275038817646163,
+        "height": 45.07614413169427,
+        "grade": -0.006911637817493258,
+        "lanes": 4
+      },
+      {
+        "s": 11600,
+        "demand": 0.034625810742641594,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11700,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11800,
+        "demand": -0.05958434814824333,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 11900,
+        "demand": -0.49321740292012695,
+        "height": 46.71874512644264,
+        "grade": 0.1379392562430605,
+        "lanes": 4.9372094804706865
+      },
+      {
+        "s": 12000,
+        "demand": -0.47515581843116084,
+        "height": 83.64749887610246,
+        "grade": 0.5417832904668994,
+        "lanes": 6
+      },
+      {
+        "s": 12100,
+        "demand": -0.0005571346463411619,
+        "height": 138.86160212085315,
+        "grade": 0.4745052939312213,
+        "lanes": 6
+      },
+      {
+        "s": 12200,
+        "demand": 0.26879702270109557,
+        "height": 164.35075473226607,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12300,
+        "demand": 0.28778580702514656,
+        "height": 164.35075473226607,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12400,
+        "demand": 0.05125219535503417,
+        "height": 164.35075473226607,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12500,
+        "demand": 0.13441384122955122,
+        "height": 164.35075473226607,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12600,
+        "demand": 0.39846916481852535,
+        "height": 164.35075473226607,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12700,
+        "demand": 0.3780651298846068,
+        "height": 164.35075473226607,
+        "grade": 0,
+        "lanes": 6
+      },
+      {
+        "s": 12800,
+        "demand": 0.2847030530900351,
+        "height": 150.7315291828225,
+        "grade": -0.36812714674495717,
+        "lanes": 6
+      },
+      {
+        "s": 12900,
+        "demand": 0.1696539115665079,
+        "height": 99.40256076521277,
+        "grade": -0.5766503935243019,
+        "lanes": 6
+      },
+      {
+        "s": 13000,
+        "demand": 0.10288658973064696,
+        "height": 52.65870988178776,
+        "grade": -0.28373199524788884,
+        "lanes": 5.5
+      },
+      {
+        "s": 13100,
+        "demand": 0.03497557487630332,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13200,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13300,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13400,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      },
+      {
+        "s": 13500,
+        "demand": 0,
+        "height": 45,
+        "grade": 0,
+        "lanes": 4
+      }
+    ]
+  }
+]

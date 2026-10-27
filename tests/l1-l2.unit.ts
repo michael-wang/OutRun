@@ -34,7 +34,7 @@ it('sixteen exact matrix compositions preserve coverage and produce distinct con
   for(let i=0;i<samples.length;i++)for(let j=i+8;j<samples.length;j++){const a=samples[i],z=samples[j],gap=Math.hypot(a.p.position.x-z.p.position.x,a.p.position.z-z.p.position.z);if(gap<a.r.halfWidth+z.r.halfWidth&&Math.abs(a.r.height-z.r.height)<5)intersections.push({id:b.id,a:a.d,b:z.d,gap});}
   rows.push({id:b.id,seed:b.seed,profiles:b.profiles,world:b.world,headingChange:track.sample(350+b.length).roadHeading-track.sample(350).roadHeading});
  }
- mkdirSync('docs/evidence/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/geometry.json',JSON.stringify({rows,intersections},null,2));expect(intersections).toEqual([]);
+ mkdirSync('docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/geometry.json',JSON.stringify({rows,intersections},null,2));expect(intersections).toEqual([]);
  for(const row of rows.slice(14))expect(Math.abs(row.headingChange)).toBeCloseTo(Math.PI,3);
 });
 it('new feedback is independent from historical brick votes and keeps exact praise labels',()=>{
