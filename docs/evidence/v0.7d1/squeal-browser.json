@@ -1,0 +1,53 @@
+[
+  {
+    "dist": 850,
+    "steer": -1,
+    "curvature": -0.0024119070301864966,
+    "slip": 0.6855071702653591,
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 157.04761484588562,
+      "engineRpm": 6875.324446139215,
+      "gear": 5,
+      "skidLevel": 0.11652172086368619,
+      "windLevel": 0.06050853033858969,
+      "rms": 0.010355423634180842
+    }
+  },
+  {
+    "dist": 2150,
+    "steer": 1,
+    "curvature": 0.0023179486152271915,
+    "slip": 0.7215545907132116,
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 157.92335630158112,
+      "engineRpm": 6923.092161904425,
+      "gear": 5,
+      "skidLevel": 0.12517310177117077,
+      "windLevel": 0.062026190049686805,
+      "rms": 0.010355423634180842
+    }
+  },
+  {
+    "dist": 500,
+    "steer": 0.1,
+    "curvature": 0,
+    "slip": 0,
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 157.04761484588562,
+      "engineRpm": 6875.324446139215,
+      "gear": 5,
+      "skidLevel": 0,
+      "windLevel": 0.06050853033858969,
+      "rms": 0.010355423634180842
+    }
+  }
+]

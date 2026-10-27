@@ -2,10 +2,10 @@ import {effectivePace,DEFAULT_PACE} from './pace';
 export const REFERENCE_KMH=230,REFERENCE_SPEED=REFERENCE_KMH/3.6;
 export const REFERENCE_TRAVEL=REFERENCE_SPEED*effectivePace(REFERENCE_SPEED,DEFAULT_PACE);
 export const AUTHORITY_AT_REFERENCE=12;
-// Preserve v0.5's shared inverse calibration; scene never changes grip or authority.
+// Keep the reference-speed calibration while reducing grip at higher speed.
 export const CURVATURE_PER_STEER=Math.PI/(REFERENCE_TRAVEL*5.825);
 export const PRESSURE_GAIN=AUTHORITY_AT_REFERENCE/(CURVATURE_PER_STEER*REFERENCE_SPEED**2);
-export const steeringAuthority=(v:number)=>AUTHORITY_AT_REFERENCE*Math.max(0,v)/REFERENCE_SPEED;
+export const steeringAuthority=(v:number)=>AUTHORITY_AT_REFERENCE*Math.max(0,v)/REFERENCE_SPEED*Math.max(.78,Math.min(1.18,1-.4*(v/REFERENCE_SPEED-1)));
 export const curvePressure=(k:number,v:number)=>PRESSURE_GAIN*k*Math.max(0,v)**2;
 export const requiredSteering=(k:number,v:number)=>v>0?curvePressure(k,v)/steeringAuthority(v):0;
 export const curvatureForDemand=(u:number)=>u*CURVATURE_PER_STEER;

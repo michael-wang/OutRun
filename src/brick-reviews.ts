@@ -1,5 +1,6 @@
 import {BRICKS,CATALOG_VERSION,ENGINE_VERSION,type ChallengeBrick,type HumanVote} from './bricks';
 export const REVIEW_KEY='outrun-brick-reviews-v1';
+export const CURRENT_REVIEW_KEY='outrun-brick-reviews-v071d1';
 export const VOTES:HumanVote[]=['UNREVIEWED','KEEP','REWORK','REJECT'];
 export interface Review {humanVote:HumanVote;note:string}
 export const reviewId=(b:ChallengeBrick)=>`${b.id}:r${b.revision}`;

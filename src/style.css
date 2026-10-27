@@ -47,3 +47,6 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
  #speed strong{font-size:18px}#speed span{font-size:7px}#status{font-size:6px}
  #steering-strip{height:52px;padding:0 8px}#steering-strip .steer-rail{top:50%}
 }
+
+#gamepad-status{position:fixed;right:12px;bottom:8px;z-index:25;background:#123e43dd;border-radius:5px;padding:4px 8px;color:#fff;font:11px sans-serif;pointer-events:none} a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffe5a2;outline-offset:3px}
+@media(pointer:coarse){.keyboard-hints{display:none}}

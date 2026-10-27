@@ -1,0 +1,23 @@
+# Codex kickoff — v0.7D.1 Driving & PC Input Quality
+
+**Authorized scope:** user accepted all three v0.7D pilots, asks immediate grade-aware acceleration/coasting, stronger 300-vs-150 drift differentiation, intermittent missing LEFT skid squeal fix, PC keyboard-only menu and ideally PS4 DualShock 4 gamepad. This is first, bounded task. After HUMAN review, a separately prepared v0.8 Procedural Stage One may start. **Do not run both goals together.**
+
+## Safe source preparation
+
+LOCAL `C:\astra-dev\OutRun`, remote `michael-wang/OutRun`. Last reported playable v0.7D code `367fe15` + handoff `4a9ec77`, verify actual HEAD, current branch and worktree; preserve any newer edits/reviews. Remote GitHub `main` has specs rather than source: **never reset/merge/checkout it over local application**.
+
+Create new LOCAL `codex/v0.7d1-driving-input` from actual playable HEAD, `git fetch origin` and selectively import only `AGENTS.md`, `docs/V0.7D1_DRIVING_INPUT_SPEC.md`, `docs/V0.7D1_ACCEPTANCE.md`, `docs/CODEX_V0.7D1_KICKOFF.md`, `docs/V0.7D_PILOT_HUMAN_REVIEW.md` and raw `docs/reviews/V0.7D_PILOT_R1_HUMAN_FEEDBACK.json`. Do not overwrite local README/source or any original review storage. Respect sandbox approvals; if a prior stop-after goal causes review blockage, request one explicit non-/goal authorization from owner in current Codex conversation.
+
+### Normal authorization message (owner sends before goal if required)
+
+`I authorize Project OutRun v0.7D.1 Driving and PC Input Quality, superseding stop-after-v0.7D only for this scoped milestone. You may branch from my latest local playable v0.7D, import the current v0.7D.1 specifications, implement realistic uphill throttle/coasting effects, noticeable speed-dependent drift, reliable left/right skid audio, keyboard-only menus and lightweight native PS4/DualShock4 gamepad support, test and commit locally. Preserve original human three-pilot KEEP reviews, BRK reviews, accepted 300km/h six-speed car, warm audio and 144px mobile steering. Do not push, merge, deploy or touch other repos, or start v0.8 first procedural Stage. I will send a separate /goal.`
+
+### Ready-to-paste v0.7D.1 Goal
+
+```text
+/goal Implement Project OutRun v0.7D.1 DRIVING AND INPUT QUALITY on EXISTING playable LOCAL v0.7D (commits 367fe15/4a9ec77 or later). Verify remote/status and branch codex/v0.7d1-driving-input from latest playable LOCAL HEAD. Fetch origin/main and selectively import ONLY AGENTS.md, docs/V0.7D1_DRIVING_INPUT_SPEC.md, docs/V0.7D1_ACCEPTANCE.md, docs/CODEX_V0.7D1_KICKOFF.md, docs/V0.7D_PILOT_HUMAN_REVIEW.md, docs/reviews/V0.7D_PILOT_R1_HUMAN_FEEDBACK.json. DO NOT merge/reset docs-only main over app. Read specs. FIRST preserve accepted 6-speed 300km/h, warm engine, 144px phone bar/compact HUD, approved Arcade Lateral Balance and positive review UI. P0 actual grade physics: use real road h(s)/slope in longitudinal acceleration with engine/drag/coasting, prove uphill full gas accelerates less and uphill GAS-release decelerates faster than flat, downhill different, no 1.75x double force. P0 speed-dependent curve slide: with SAME curvature and steering, at 300 km/h measurably harder to hold lateral line than 150, 230 baseline and happy 300 sweepers intact, no fake visual-only difficulty. P0 fix intermittent missing LEFT slide/squeal, inspect real sign/audio/cooldown/reset root cause, symmetric left/right sound at same slip and gentle quiet, without changing user-PASSED engine tone. P0 PC keyboard: P=Play Again after completed route; Tab/ShiftTab/native focused Enter activates real menu/review button, but when GAMEPLAY focused Enter stays BRAKE, Space stays GAS, no key actions in text/IME, consistent focus and Next/Previous/review/export without mouse. P1 standard browser Gamepad API support targeting PS4 DualShock4 left stick/Dpad, L2 brake, R2 gas, Cross confirm, Circle back, Options pause, safe disconnect/input arbitration; mock-test and honestly mark physical DS4 USB/BT unverified if not available. Actually drive grade/slip/skid/browser controls, inspect sound and video, run build/unit/Playwright and focused regression; preserve R1 pilot 3 KEEP votes with PENDING machine flag as imported, 8 BRK approved, old L2 export unchanged. Commit LOCALLY, write docs/V0.7D1_HANDOFF.md with actual tests and game URL. Do NOT start v0.8 procedural stage, new world packs, RPG, editor, push/merge/deploy or touch TopWar. STOP FOR USER PLAYTEST.
+```
+
+## Release gate
+
+Only after actual owner test of grade, high speed cornering, LEFT skid audio and keyboard/menu/gamepad (if connected) may Stage One be commissioned on that stable baseline.

@@ -1,11 +1,11 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
-const root='docs/evidence/v0.7d/regressions/v0.7c1/regressions/v0.7c';
+const root='docs/evidence/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
 const snap=(page:any)=>page.evaluate(()=>(window as any).__drive.snapshot());
 const advance=(page:any,seconds:number)=>page.evaluate((seconds:number)=>(window as any).__drive.advance(seconds),seconds);
 test('analog keyboard holds, rapid neutral/reversal, brake priority and accessible menus',async({page})=>{
  await page.goto('/');await page.locator('#drive').focus();await page.keyboard.press('Enter');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({speed:65});});
- await page.locator('#pause').focus();await page.keyboard.down('Space');await page.keyboard.down('Space');await page.keyboard.down('a');await advance(page,.15);
+ await page.locator('canvas').focus();await page.keyboard.down('Space');await page.keyboard.down('Space');await page.keyboard.down('a');await advance(page,.15);
  expect((await snap(page)).inputs.steer).toBe(-.25);expect((await snap(page)).lateral).toBeLessThan(-.1);
  await page.keyboard.up('a');await advance(page,.15);const released=await snap(page);expect(released.inputs.steer).toBe(0);expect(released.yawRate).toBe(0);await advance(page,.5);expect((await snap(page)).worldHeading).toBe(released.worldHeading);
  await page.keyboard.down('a');await advance(page,.4);expect((await snap(page)).inputs.steer).toBe(-1);await page.keyboard.down('d');await advance(page,.15);expect((await snap(page)).inputs.steer).toBe(0);await page.keyboard.up('a');await advance(page,.4);expect((await snap(page)).inputs.steer).toBe(1);

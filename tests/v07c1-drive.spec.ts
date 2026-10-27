@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
-const root='docs/evidence/v0.7d/regressions/v0.7c1';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.7d1/regressions/v0.7d/regressions/v0.7c1';mkdirSync(root,{recursive:true});
 test('real keyboard throttle drives six gears, reaches 300, downshifts and preserves review data',async({page})=>{
  await page.addInitScript(()=>{localStorage.setItem('outrun-brick-reviews-v1','historical-brick-test-sentinel');localStorage.setItem('outrun-l2-feedback-v1','{}');});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/?lab=l2&l2=L2-001');await page.locator('#l2-play').click();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:350,speed:0});});await page.keyboard.down('Space');
  const rows=await page.evaluate(()=>{const g=(window as any).__drive,r=[];for(let i=0;i<3300;i++){g.advance(1/120);if(i%6===0)r.push(g.snapshot());}return r;});const shifts=[];for(let i=1;i<rows.length;i++)if(rows[i].gear>rows[i-1].gear)shifts.push({from:rows[i-1].gear,to:rows[i].gear,before:rows[i-1].rpm,after:rows[Math.min(i+3,rows.length-1)].rpm});expect(shifts.map(s=>[s.from,s.to])).toEqual([[1,2],[2,3],[3,4],[4,5],[5,6]]);for(const shift of shifts)expect(shift.after).toBeLessThan(shift.before-400);

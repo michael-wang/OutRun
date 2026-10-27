@@ -1,23 +1,29 @@
-# Project OutRun — Codex operating agreement
+# Project OutRun — current Codex work agreement
 
-## ACTIVE OWNER-AUTHORIZED: v0.7D — True Multi-Placement L2 Composer + Limited v0.7C.1 Refinements
+## ACTIVE OWNER-AUTHORIZED TASK: v0.7D.1 Driving & Input Quality
 
-**Owner has played v0.7C.1.** Engine sound PASS. Compact **144 CSS-px full-left↔full-right** mobile steering travel PASS. Those achievements are FROZEN REGRESSIONS. The owner requests believable upshift torque/acceleration interruption, a smaller/lower gauge that does not overlap top-left MENU, and a slimmer lower-left steering control PANEL without redundant instructions. Proceed to the next L2 Composer fix **in the same sequential milestone**, not another independent conflicting Goal.
+The owner played **all three v0.7D multi-placement L2 pilots and gave KEEP** with human difficulty 2/3/2. Their exact exported review is archived under `docs/reviews/V0.7D_PILOT_R1_HUMAN_FEEDBACK.json`. The exported autoQA remains PENDING (separate from Codex build/test reports); old human votes/anchors are immutable.
 
-Read in order: `docs/CODEX_V0.7D_COMPOSER_KICKOFF.md`, `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md`, `docs/V0.7D_ACCEPTANCE.md`, `docs/REFERENCE_37S_DRIVE_BEATS.md`, `docs/V0.7C_L2_DESIGN_POSTMORTEM.md`, `docs/L1_PRIMITIVE_CATALOG.md`.
+### User-requested corrections
 
-## Safe working copy / permissions
-- Work ONLY in `C:\astra-dev\OutRun`, expected remote `michael-wang/OutRun`; never touch `C:\astra-dev\topwar`.
-- Current PLAYABLE v0.7C.1 lives in user's LOCAL code commits `f0ec3f7` + handoff `d1fea62` (Codex report; inspect current HEAD/status). Remote GitHub `main` is docs-first, not the game. **Never merge/reset/check out documentation-only main over source**.
-- Create `codex/v0.7d-multi-placement-l2` FROM latest playable local HEAD, preserving uncommitted source and user review localStorage; fetch origin/main, selectively import ONLY new v0.7D specs/kickoff, reference-beats doc and this AGENTS.md. Protect other local docs/README and app.
-- Prior stop-after-v0.7C.1 was to gather human playtest feedback; this was received. If auto-review still denies Git, obtain explicit ordinary-chat owner permission, don't repeatedly retry rejected action or bypass actual sandbox approvals.
-- No pushes, merges, public deployments, payment, secrets, third-party engine/audio models, licensed SEGA/Ferrari assets or unrelated project edits.
+1. On REAL upward grade, throttle gives lower acceleration and coasting decelerates faster than flat. Actual road height must be the force source.
+2. At SAME bend, 300 km/h is noticeably more demanding/slippery than 150, while ~230 reference calibration and fun Arcade Lateral Balance remain.
+3. Sometimes LEFT skid/squeal audio is absent although it later works on other maps. Investigate signed slip and audio lifecycle, no arbitrary all-the-time screech. Preserve already accepted warm engine sound.
+4. PC keyboard-only menu: P=Play Again when finished, Tab navigation, focused Enter activates a button, but Enter=brake while actually driving; focused controls and text entry must not accidentally gas/brake.
+5. Prefer native PS4/DualShock4 Gamepad API support, gracefully handle standard/nonstandard mapping and disconnect. Real hardware compatibility marked UNVERIFIED if absent.
 
-## Product work, in order
-1. **Mobile HUD/panel P0:** Oversized gauge at top-left covers MENU. Shrink dial to about 20–26% mobile landscape screen height (tune for legibility), LOWER toward car-left, keep needle/numeric speed 0–300 and gear readable, avoid road apex/pedals/controls and menu hitbox. Shorten steering panel's VERTICAL height to about 10–14% viewport, remove instructions "STEER · NEUTRAL" / "4 LEVELS · RELEASE TO NEUTRAL". Preserve actual **144px HORIZONTAL steering travel**, soft nine effective detents and comfortable touch hitbox, hand swap and two-thumb held-gas operation.
-2. **Upshift feel P0:** Genuine automatic shift torque reduction/engagement ~100–300ms causing an actual short pause/dip in longitudinal acceleration. Vehicle speed remains physically continuous and may dip slightly due to real drag, NOT a hardcoded speed subtraction. Five shift telemetry events, coherent RPM/audio already rated PASS, real 300 cap and acceptable acceleration preserved.
-3. **L2 Composer core:** The prior v0.7C 16 generated L2 were PRODUCT NO-GO because each was one C+E+W whole-route overlay, not multi-event gameplay. Implement local **placements[]** with distance start/end and multiple sequential C (and overlapping E/W). Build **exactly THREE** ~25–40s genuinely varied L2 pilots, NOT another massive 16-route batch; no arbitrary hard count like "3–5 L1". Reference ~37s screenshot beats, but image frames cannot reveal exact underlying event count or audio.
-4. **Keep L2 Lab feedback:** immediate praise/issue with spatial snapshot, end KEEP/REWORK/REJECT and difficulty, local JSON export, historical BRK r2 8 KEEP and previous v0.7C first four REJECT/twelve UNREVIEWED records preserved. New L2 pilot IDs start UNREVIEWED.
-5. **QA:** actual rendered/browser drive of three pilots, mobile 844×390 and 960×432 HUD/touch and menu tests with screenshot comparisons, longitudinal torque/RPM/speed telemetry around shifts, full build/unit/Playwright, reproducible geometry/road terrain, plus actual frame/audio behavior.
+Read `docs/CODEX_V0.7D1_KICKOFF.md`, `docs/V0.7D1_DRIVING_INPUT_SPEC.md`, `docs/V0.7D1_ACCEPTANCE.md` and `docs/V0.7D_PILOT_HUMAN_REVIEW.md`. Work from actual LOCAL playable v0.7D HEAD (`367fe15` / `4a9ec77` reported), not docs-only remote `main`.
 
-Write `docs/V0.7D_HANDOFF.md` with objective evidence, screenshots/videos, local commit(s), updated phone URL and PASS/FAIL/UNVERIFIED. STOP for human vehicle/UI and three-L2 PLAYTEST. No v0.7B, traffic, RPG, new biomes, full editor or separate parallel Goal.
+## NEXT PREPARED BUT DEPENDENT: v0.8 First Procedural Stage
+
+The owner sets the north star: generate an actually FUN, replayable FIRST LEVEL. `docs/V0.8_STAGE_ONE_SPEC.md`, `docs/V0.8_STAGE_ONE_ACCEPTANCE.md`, and `docs/CODEX_V0.8_STAGE_ONE_KICKOFF.md` are prepared, **NOT authority to start automatically**. Need v0.7D.1 completed, local commit, owner actual driving review and then new authorization. No concurrent Goals on the same checkout. Stage One reuses existing three approved L2P recipes/18 L1 as motifs, with seeded physically different Stage Codes.
+
+## Source safety & QA rules
+
+- Authorized work only within `C:\astra-dev\OutRun`, expected GitHub remote `michael-wang/OutRun`. Existing working source is LOCAL, remote `main` chiefly docs. Never reset/merge/check out docs-only main onto app code.
+- Branch `codex/v0.7d1-driving-input` from latest playable LOCAL HEAD, fetch origin and selectively import ONLY current v0.7D.1 docs/`AGENTS.md` and archived r1 pilot review file. Preserve current code/reviews/localStorage and any uncommitted edits.
+- If Codex automatic approval rejects an older stop instruction, request explicit normal-chat authorization in the SAME OutRun conversation and respect sandbox refusal.
+- Preserve real six-speed 300 km/h, 1.75× pace, 144px mobile thumb travel, compact HUD, original warm audio, 4 soft steering detents, offroad recovery, three scenic packs, animated original car, genuine 2–8 lanes and hilly road, original 8 BRK r2 and earlier v0.7C review history.
+- Actually drive tested curves/grades, inspect real sound/keyboard/optional gamepad, run build/unit/Playwright, write `docs/V0.7D1_HANDOFF.md` with PASS/FAIL/UNVERIFIED. No push, merge, public deploy, TopWar edits, user-data upload, RPG/game-economy/editor/traffic or automatic v0.8.
+
+**STOP after v0.7D.1 for human test.** Subsequent user-approved work can continue under new authorization.

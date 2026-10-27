@@ -4,8 +4,9 @@ import type {HumanVote} from './bricks';
 export const PRAISE={super_fun:'超好玩!',thrilling:'超刺激!',hard_but_rewarding:'超難! 但是過了超爽!',beautiful_scenery:'風景優美'} as const;
 export type PraiseTag=keyof typeof PRAISE;
 export const L2_STORAGE='outrun-l2-feedback-v1';
+export const CURRENT_L2_STORAGE='outrun-l2-feedback-v071d1';
 export interface FeedbackAnchor {
- id:string;revision:number;seed:number;contentFingerprint:string;generatorVersion:string;world:L2Candidate['world'];
+ id:string;revision:number;seed:number;contentFingerprint:string;generatorVersion:string;handlingVersion?:string;world:L2Candidate['world'];
  profiles:L2Candidate['profiles']|{placements:Placement[];activePlacements:Placement[];worldPhases:WorldPhase[]};s:number;trackDistance:number;elapsedSeconds:number;timestampMs:number;
  drive:{speedKmh:number;steerRaw:number;steerApplied:number;roadX:number;height:number;grade:number;halfWidth:number;laneCount:number;offRoad:boolean;gas:boolean;brake:boolean};
  source:'drive'|'completion';

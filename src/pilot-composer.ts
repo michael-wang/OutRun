@@ -11,7 +11,7 @@ export type Placement =
 export type WorldName='coast'|'canyon'|'city';
 export interface WorldPhase {startS:number;endS:number;world:WorldName;beat:string}
 export interface PilotCandidate extends ChallengeBrick {world:WorldName;generatorVersion:string;contentFingerprint:string;baseHeight:number;baseLanes:2|4|6|8;placements:Placement[];worldPhases:WorldPhase[]}
-export const PILOT_GENERATOR='v0.7D-r1',PILOT_STORAGE='outrun-l2-pilots-v1';
+export const PILOT_GENERATOR='v0.7D.1-r1',PILOT_STORAGE='outrun-l2-pilots-v071d1';
 const c=(id:CurvatureId,startS:number,endS:number,effort:number,direction:1|-1,beat:string):Placement=>({channel:'curvature',id,startS,endS,parameters:{effort,direction,start:0,end:1,secondary:.7},transition:'smooth',beat});
 const e=(id:ElevationId,startS:number,endS:number,base:number,amplitude:number,direction:1|-1,beat:string):Placement=>({channel:'elevation',id,startS,endS,parameters:{base,amplitude,direction,shelfStart:.32,shelfEnd:.68},transition:'smooth',beat});
 const w=(id:WidthId,startS:number,endS:number,from:2|4|6|8,to:2|4|6|8,beat:string):Placement=>({channel:'width',id,startS,endS,parameters:{from,to,start:0,end:1},transition:'smooth',beat});

@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-const root='docs/evidence/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
 test('real 2/4/6/8 lane meshes, painted separators and width-aware offroad agree on both sides',async({page})=>{
  const results=[];
  for(const [id,t,lanes] of [['BRK-04',8,2],['BRK-02',8,4],['BRK-01',18,6],['BRK-07',12,8]] as const){
@@ -26,7 +26,7 @@ test('R1 history remains untouched when a revised brick gets a new human verdict
  await expect(page.locator('#brick-progress')).toContainText('8 unreviewed');await expect(page.locator('#brick-lab')).toContainText('Archived r1: KEEP');
  await page.locator('[data-vote=REWORK]').click();await page.locator('#brick-note').fill('Isolated R2 test');
  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-brick-reviews-v1')!));for(const [key,value] of Object.entries(old))expect(stored[key]).toEqual(value);
- expect(stored['BRK-01:r2']).toEqual({humanVote:'REWORK',note:'Isolated R2 test'});
+ expect(stored['BRK-01:r2']).toBeUndefined();const current=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-brick-reviews-v071d1')!));expect(current['BRK-01:r2']).toEqual({humanVote:'REWORK',note:'Isolated R2 test'});
 });
 test('steep and tapered sections are continuous and visible on PC and Pixel-like displays',async({page})=>{
  const rows=[];

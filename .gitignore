@@ -13,3 +13,5 @@ playwright-report/
 /docs/evidence/v0.2/browser-*.log
 /docs/evidence/v0.2/debug-*.json
 /docs/evidence/v0.7d/regressions/
+
+/docs/evidence/v0.7d1/regressions/

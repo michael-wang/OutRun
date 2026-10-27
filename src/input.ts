@@ -51,9 +51,9 @@ export class InputController extends InputLatch {
     this.buttons = Array.from(root.querySelectorAll<HTMLElement>('[data-control]'));
     this.strip=root.querySelector<HTMLElement>('#steering-strip');
     const paint = () => this.buttons.forEach(button => button.classList.toggle('pressed', this.held(button.dataset.control as Control)));
-    const editing=(target:EventTarget|null)=>target instanceof HTMLElement&&!!target.closest('input,textarea,select,[contenteditable="true"]');
+    const editing=(target:EventTarget|null)=>target instanceof HTMLElement&&!!target.closest('input,textarea,select,button,a,[contenteditable], [role=button],[role=slider]');
     // A cleared hold must require a fresh press after a pause or feedback dialog.
-    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control&&isDriving()&&!editing(event.target)) { event.preventDefault(); if(!event.repeat)this.press(`key:${event.code}`, control); paint(); } });
+    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control&&isDriving()&&!event.isComposing&&!editing(event.target)) { event.preventDefault(); if(!event.repeat)this.press(`key:${event.code}`, control); paint(); } });
     window.addEventListener('keyup', event => { if(keyControls[event.code]&&isDriving()&&!editing(event.target))event.preventDefault();this.release(`key:${event.code}`); paint(); });
     this.buttons.forEach(button => {
       button.addEventListener('pointerdown', event => { if(!isDriving())return;event.preventDefault(); button.setPointerCapture(event.pointerId); this.press(`pointer:${event.pointerId}`, button.dataset.control as Control); paint(); });
