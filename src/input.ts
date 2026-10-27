@@ -19,7 +19,9 @@ export class InputLatch {
   }
   release(source: string) { this.sources.delete(source);if(source===this.analogSource){this.analogSource=null;this.steeringTarget=0;this.effectiveSteer=0;} }
   clear() { this.sources.clear();this.analogSource=null;this.steeringTarget=0;this.effectiveSteer=0; }
-  private quantize(){this.effectiveSteer=quantizeSteering(this.steeringTarget,this.effectiveSteer);}
+  // A 144px touch strip needs a little more normalized hysteresis to absorb
+  // 1–2px finger jitter; keyboard and vehicle calibration stay unchanged.
+  private quantize(){this.effectiveSteer=quantizeSteering(this.steeringTarget,this.effectiveSteer,STEERING_STEPS,this.analogSource===null?undefined:.035);}
   update(dt:number){
     if(this.analogSource!==null)return;
     const direction=Number(this.held('right'))-Number(this.held('left'));

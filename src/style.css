@@ -34,3 +34,10 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
 @media(max-height:410px) and (orientation:landscape){#speed{width:132px;height:132px;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 157px)}#speed strong{font-size:21px}#status{font-size:6.5px}}
 /* Continuous finger position plus a separate effective-notch pip. */
 .steer-rail:after{content:'';position:absolute;left:clamp(8px,calc(50% + var(--effective-steer,0)*50%),calc(100% - 8px));top:15px;width:5px;height:5px;background:#fff5d8;border-radius:50%;transform:translateX(-50%)}
+/* v0.7C.1: the whole capture area is the actual short-travel steering range. */
+#steering-strip{width:min(144px,32vw);min-width:0;height:88px;padding:10px 8px}
+#steering-strip .steer-label{font-size:10px;letter-spacing:.5px;white-space:nowrap}
+#steering-strip .steer-hint{font-size:7px;letter-spacing:0;white-space:nowrap}
+@media(max-width:880px){#steering-strip{width:min(144px,32vw);min-width:0;height:80px}}
+#gear{position:absolute;right:14%;top:57%;font-size:12px;color:#ffd19a;font-weight:800}
+#gear{right:-24px;top:auto;bottom:22%;padding:2px 4px;border-radius:4px;background:#12343ee8;font-size:11px}

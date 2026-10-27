@@ -1,30 +1,30 @@
 # Project OutRun — Codex operating agreement
 
-## CURRENT USER-AUTHORIZED milestone: v0.7C — L1 Library & L2 Feedback Lab
+## ACTIVE: v0.7C.1 Compact Steering + Six-Speed + 300 km/h + Warm Audio
 
-The owner commissioned development after reviewing v0.7A.1: all eight original `BRK-01..08` revision 2 received KEEP and machine QA PASS. User explicitly wants **AI to create/test all basic L1 shapes without personal L1 playtests**, systematically generate varied L2 combinations, and let the human provide **instant POSITIVE and NEGATIVE feedback** during driving plus end-of-L2 KEEP/REWORK/REJECT and difficulty ratings.
+The owner urgently requests much SHORTER horizontal steering-bar thumb travel on mobile (child and adult cannot comfortably reach far end), six actual automatic gears with audible shifts, an attainable 300 km/h with more satisfying acceleration, and a warmer, less shrill engine tone. This is TASK 1 and is owner-authorized.
 
-Read `docs/CODEX_V0.7C_KICKOFF.md`, `docs/V0.7C_SPEC.md`, `docs/V0.7C_ACCEPTANCE.md`, `docs/L1_PRIMITIVE_CATALOG.md`, `docs/V0.7C_L2_COVERAGE_MATRIX.md`, and r2 ratings `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json`. Older specs are historical context, not authorization for v0.7B or giant world-generation work.
+### TASK 2, DEPENDENT and NOT to run automatically
+v0.7D True Multi-Placement L2 Composer is PREPARED but NOT ACTIVE: must start only AFTER v0.7C.1 is locally finished, committed, **human-playtested**, and a new Codex Goal is authorized. It uses the updated car speed/controls. No concurrent Goals on the same checkout. See `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md`.
 
-### Local source protection
+## Read first
+1. `docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md`
+2. `docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md`
+3. `docs/V0.7C1_ACCEPTANCE.md`
 
-- Work only in `C:\astra-dev\OutRun`, expected remote `michael-wang/OutRun`. GitHub `main` primarily holds specifications, **not** the playable game's source. Never merge/reset/check out remote `main` over local working gameplay.
-- Inspect current local branch, HEAD and worktree before changes. Playable v0.7A.1 has been human reviewed; the exact final code commit is not visible in remote docs. Start `codex/v0.7c-l1-l2-feedback` from latest playable LOCAL HEAD, preserve unexpected local edits, and selectively import only v0.7C docs+`AGENTS.md` after `git fetch origin`. Do not overwrite local README or historical reviews. The optional Road Profile Inspector task is NOT a precondition.
-- If another Goal actively edits the checkout, don't race it; protect work and request the owner's decision where genuinely needed.
-- No unapproved push, merge, public deployment, paid services, other project edits (never touch `C:\astra-dev\topwar`), external runtime telemetry or copyrighted SEGA/Ferrari assets.
-- If permission review is blocked by an old stop-after-v0.7A.1 instruction, ask for a clear ordinary non-/goal authorization in the existing **single OutRun Codex conversation**, and respect actual approvals. Do not repeatedly attempt denied actions.
+The v0.7D docs are future-only, not permission to start a second task.
 
-### Deliverable (P0)
+## Source and permission protection
+- Work ONLY in `C:\astra-dev\OutRun`, remote expected `michael-wang/OutRun`. Last reported local playable v0.7C commits `c87860a` / `ec7f844` or later; verify actual HEAD, branch and uncommitted files.
+- Remote GitHub `main` holds primarily specifications, NOT the source tree. Never merge/reset/check it out over playable local code. Start `codex/v0.7c1-compact-steering-powertrain` from latest playable LOCAL HEAD and selectively import only current Task 1 documents / this AGENTS.md from origin/main.
+- Preserve the original 8 accepted BRK r2 challenges, R1/R2 reviews, the 18 technical L1 profiles and old v0.7C L2 feedback/rejections; new v0.7D compositions are not part of this task.
+- Prior stop-after-v0.7C was a milestone review boundary, not a permanent ban. If automated approval still blocks Git actions, seek explicit owner permission in ordinary SAME Codex chat, respect manual sandbox approvals, never bypass denied actions.
+- Do not modify TopWar or other projects; no unapproved push/merge/public deployment, paid services, remote telemetry or unlicensed SEGA/Ferrari assets.
 
-1. **L1 profile library:** 8 Curvature C01–C08, 6 Elevation E01–E06, 4 Width W01–W04. Audit existing code and reuse features; technical AUTO QA only. L1=local geometry profiles; L3=world surface/scenery constraint; don't blend world/snow/biome into L1.
-2. **16 systematic real playable L2:** `L2-001..016` use the fixed coverage matrix, stacked same-distance C+E+W profiles with current coast/canyon/city worlds, deterministic seeds and a simple `?lab=l2` four-batch player review UI.
-3. **Instant feedback, not only issue reports:** top-corner `✨ 讚` / `⚑ 問題`, precise snapshot BEFORE pausing, four original exact tags **超好玩! / 超刺激! / 超難! 但是過了超爽! / 風景優美**, optional notes and issue text; safely pause/resume with phone keyboard. Post-completion 'hard but rewarding' must attach to the completed L2. End-of-L2 KEEP/REWORK/REJECT + difficulty 1–5 + tags/notes. localStorage + Export Feedback JSON; no backend and no auto-KEEP.
-4. **Regression:** original BRK r2 votes and all 8 playable examples untouched; accepted Arcade Lateral Balance, 1.75× world pace, four soft steering levels each direction, 2–8 real lanes, altitude, car/drift/wheel/hair, original scenery, Pixel 8 two-thumb landscape fullscreen/PWA and PC A/D + Space/Enter.
+## Required v0.7C.1 work
+1. SHORTEN ACTUAL touch travel (candidate 120–160 CSS px full lock-to-lock at mobile landscape), keep full ±1 steering and four soft detents each side, accurate hysteresis, left/right hand swap and two-thumb gas/steer.
+2. Implement six real auto gears with RPM rise/drop and five shifts; slower but enjoyable acceleration to TRUE 300 km/h (benchmark old; first target 0→300 around 20–28s), preserve 1.75× world pace and approved Arcade Lateral Balance.
+3. Improve engine WebAudio harmonic timbre and shift/RPM response, gentle to ears; preserve mute/audio gestures.
+4. Real browser PC/Pixel-like touch/audio test, build/unit/Playwright, record actual old/new thumb px reach, speed/gear traces and audio, commit locally and hand off `docs/V0.7C1_HANDOFF.md`.
 
-### Acceptance and handoff
-
-- Run real rendered/browser driving inspection of all 16 L2, deterministic geometry and controls, precise praise/issue anchoring, negative/positive event storage/export, end-of-L2 rating and normal play regressions.
-- Run build/unit/Playwright and honest actual outputs. Make limited, maintainable changes; no full Stage Composer, reactive AI level designer, feasibility optimizer, snow/volcano assets, traffic, RPG, or five-minute Pacific Road Trip.
-- Commit locally and write `docs/V0.7C_HANDOFF.md` with actual URL, coverage tables, ratings initially UNREVIEWED, screenshots/videos, test commands/results and limitations.
-
-**Stop after v0.7C deliverable for new L2 human ratings.** A later NEW explicitly authorized milestone may proceed; do not implement v0.7B without that authorization.
+**STOP AFTER v0.7C.1 for actual user phone/gear/audio review. No automatic v0.7D or v0.7B.**

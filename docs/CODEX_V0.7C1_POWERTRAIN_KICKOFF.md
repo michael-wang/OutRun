@@ -1,0 +1,23 @@
+# Codex kickoff — v0.7C.1 Compact Thumb Steering + Six-Speed 300 km/h + Warm Audio
+
+**The owner requests these four immediate revisions.** This is Task 1 of a dependent two-task plan. Task 2 (`v0.7D true L2 Composer`) requires the tested v0.7C.1 vehicle baseline, so **DO NOT run tasks in parallel or automatically jump to Task 2**.
+
+## Safe source preparation
+
+- LOCAL project: `C:\astra-dev\OutRun` with remote `michael-wang/OutRun`. Last reported playable v0.7C implementation `c87860a` and handoff `ec7f844`, or a later local commit. Verify actual HEAD/branch/status/active Goal first.
+- Remote GitHub `main` is a specification repository; do NOT check out/reset/merge docs-only main over source. Branch `codex/v0.7c1-compact-steering-powertrain` from latest playable local HEAD; `git fetch origin` and selectively import only `AGENTS.md`, `docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md`, `docs/V0.7C1_ACCEPTANCE.md`, `docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md`, preserving ALL game code/local reviews and old content.
+- Previous v0.7C stopped for human playtesting. If automatic approval has a stop-after mismatch, FIRST get explicit owner's normal chat message in this SAME OutRun Codex conversation, respect real sandbox permissions, don't bypass denials.
+
+## Suggested plain message for user (before Goal if needed)
+
+`I explicitly authorize Project OutRun v0.7C.1 Compact Steering, Six-Speed 300 km/h and Warm Engine Audio development, superseding the previous stop-after-v0.7C instruction. You may create a local branch from my latest playable OutRun code, selectively import only the v0.7C.1 specs, shorten the actual phone thumb steering travel, implement six-speed automatic gearing and genuine 300 km/h acceleration, retune harsh engine audio, test and commit locally. Preserve my existing BRK/L2 source and all human ratings. Do not push, merge, deploy, modify other projects or begin v0.7D. I will send the Goal separately.`
+
+## Ready-to-paste v0.7C.1 Goal
+
+```text
+/goal Implement Project OutRun v0.7C.1 COMPACT STEERING, SIX-SPEED 300 KM/H & WARM ENGINE SOUND on the CURRENT PLAYABLE LOCAL v0.7C OutRun. Confirm C:\astra-dev\OutRun repo remote/status/HEAD (reported c87860a/ec7f844 or later); preserve all local changes and reviews, create codex/v0.7c1-compact-steering-powertrain from current playable HEAD, fetch origin/main and selectively import ONLY current AGENTS.md, docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md, docs/V0.7C1_ACCEPTANCE.md, docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md. NEVER merge/reset/check out the documentation-only remote main over app source. Read specs. FIX PHONE STEERING FIRST: actually reduce full-left-to-full-right steering thumb travel in mobile landscape to a compact ~120-160 CSS px starting target (tune based on inspected layout), not just its visual bar. Preserve 4 soft detents each side plus neutral, tiny-jitter hysteresis, full -1..+1 authority, left/right hand-swap, stable steering with gas held by another finger, fast cancel/release, no screen occlusion; test Pixel-like 844x390 and 960x432, record old/new reach distances and visual proof. THEN implement real automatic SIX forward gears, RPM/gear ratio torque and 5 noticeable upshifts with RPM/sound pitch drop, natural downshift/no hunting. Make a real attainable 300 km/h top (not only HUD) and slower than old instant 238 sprint; bench old/new 0-100/0-200/0-top, first target approx 4-6s/10-16s/20-28s and tune for arcade joy rather than simulator. Keep 1.75x travel pace and approved Arcade Lateral Balance unchanged near 230; no invisible grip boosts. REWORK engine WebAudio timbre to lower/warmer/less piercing with RPM/throttle/gear/shift load changes, audibly softer harmonics and no clipping; preserve mute/gesture/audio. Test 300km/h long straight and actual browser wheel speed/gear/RPM/audio trace plus short bar multi-touch in two handednesses; preserve 8 accepted BRK r2 scenes, 18 L1 library, previous historical rejected L2 data/feedback, three worlds and car/occupant animation. Run npm run build, npm run test, npm run test:e2e and focused unit/e2e; inspect desktop and landscape mobile videos, fix failures, commit LOCALLY and write docs/V0.7C1_HANDOFF.md with before/after acceleration, 5 shift events, bar travel in px, engine sound evidence and PASS/FAIL/UNVERIFIED incl actual Pixel hardware limitations. No push/merge/public deploy, TopWar, v0.7D composer, v0.7B 5-minute trip, money/garage/traffic/editor. STOP for human vehicle/thumb/audio playtest.
+```
+
+## After delivery
+
+Once the owner plays the new compact bar and 300-km/h six-gear driving and the local code is confirmed stable, **then** use `docs/CODEX_V0.7D_COMPOSER_KICKOFF.md` for a separate Goal. Do not spawn another Goal or work on a separate branch while v0.7C.1 is active.

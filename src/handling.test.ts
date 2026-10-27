@@ -6,7 +6,7 @@ const run = (state: ReturnType<typeof createState>, input: InputState, seconds: 
 describe('arcade driving', () => {
   it('requires gas, accelerates progressively, brakes and bounds speed', () => {
     const state = createState(); run(state, idle, 3); expect(state.distance).toBe(0);
-    run(state, { ...idle, gas: true }, 4); expect(state.speed).toBeGreaterThan(40); const speed = state.speed;
+    run(state, { ...idle, gas: true }, 4); expect(state.speed).toBeGreaterThan(22); expect(state.speed).toBeLessThan(33); const speed = state.speed;
     run(state, { ...idle, gas: true, brake: true }, 1); expect(state.speed).toBeLessThan(speed - 15);
     run(state, { ...idle, gas: true }, 30); expect(state.speed).toBeLessThanOrEqual(MAX_SPEED);
     run(state, { ...idle, brake: true }, 5); expect(state.speed).toBe(0);

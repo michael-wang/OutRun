@@ -2,8 +2,9 @@ import {effectivePace} from './pace';
 import {steeringAuthority,curvePressure,requiredSteering} from './challenges';
 import {quantizeSteering,actuateSteering} from './steering';
 import {bodyYawTarget} from './body-pose';
+import {createPowertrain,advancePowertrain,type PowertrainState} from './powertrain';
 export interface InputState {gas:boolean;brake:boolean;steer:number;rawSteer?:number}
-export interface DrivingState {
+export interface DrivingState extends PowertrainState {
  distance:number;speed:number;lateral:number;
  /** Rendering attitude only; never drives longitudinal or lateral navigation. */
  heading:number;velocityHeading:number;worldHeading:number;steering:number;yawRate:number;
@@ -12,8 +13,8 @@ export interface DrivingState {
  rawSteer:number;effectiveSteer:number;requiredSteer:number;lateralRate:number;
  appliedSteer:number;steerFrom:number;steerTo:number;steerTime:number;
 }
-export const MAX_SPEED=65,ROAD_HALF_WIDTH=7,CORRIDOR_LIMIT=9.6;
-export const createState=():DrivingState=>({distance:0,speed:0,lateral:0,heading:0,velocityHeading:0,worldHeading:0,
+export const MAX_SPEED=300/3.6,ROAD_HALF_WIDTH=7,CORRIDOR_LIMIT=9.6;
+export const createState=():DrivingState=>({...createPowertrain(),distance:0,speed:0,lateral:0,heading:0,velocityHeading:0,worldHeading:0,
  steering:0,yawRate:0,slipAngle:0,slip:0,offRoad:false,footprintEdge:1.13,curvature:0,corridorSide:0,
  steeringTarget:0,drifting:false,rawSteer:0,effectiveSteer:0,requiredSteer:0,lateralRate:0,
  appliedSteer:0,steerFrom:0,steerTo:0,steerTime:0});
@@ -30,8 +31,11 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  const halfAt=typeof width==='number'?()=>width:width,roadHalfWidth=halfAt(s.distance);
  const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
- const acceleration=(input.gas&&!input.brake?19*(1-s.speed/88)+6*Math.max(0,1-s.speed/20):-3.8)
-  -(input.brake?34:0)-(s.offRoad?10+s.speed*.07:0);
+ const driving=input.gas&&!input.brake,driveForce=advancePowertrain(s,s.speed,driving,dt);
+ const acceleration=(driving?driveForce:-3.8)
+  // The slower engine needs a proportional shoulder drag: still a strong,
+  // immediate speed loss, but enough torque remains for bounded recovery.
+  -(input.brake?34:0)-(s.offRoad?5+s.speed*.04:0);
  s.speed=clamp(s.speed+acceleration*dt,0,MAX_SPEED);
  s.rawSteer=input.rawSteer??input.steer;s.steeringTarget=s.rawSteer;
  s.effectiveSteer=quantizeSteering(input.steer,s.effectiveSteer);s.steering=s.effectiveSteer;

@@ -8,7 +8,7 @@ it('ramps smoothly from low speed to selected high pace and validates selectors'
 it('boosts actual longitudinal and lateral travel coherently without input yaw',()=>{
  for(const pace of PACE_VARIANTS){
   const s={...createState(),speed:65,heading:.1,velocityHeading:.1};step(s,{gas:true,brake:false,steer:0},1/120,0,pace);
-  expect(Math.hypot(s.distance,s.lateral)).toBeCloseTo(65*pace/120,8);expect(s.worldHeading).toBe(0);
+  expect(Math.hypot(s.distance,s.lateral)).toBeCloseTo(s.speed*pace/120,8);expect(s.worldHeading).toBe(0);
  }
 });
 it('all pace variants preserve position and steering at 30/60fps substeps',()=>{
