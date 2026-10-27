@@ -4,7 +4,7 @@ Original 3D arcade driving web game inspired by classic Out Run / OutRun 2; not 
 
 ## Latest user-validated baseline: v0.7D.1
 
-Three pilot L2P-A/B/C were personally played again and ALL received KEEP (difficulty 1/2/2), and PS4 DualShock4 controller driving received PASS. The locally playable game is in Windows §C:\astra-dev\OutRun§ (last reported code commit §30e6f54§ + handoff §710d184§; check local status). Remote GitHub §main§ is mostly DOCS, not the playable app. Never merge/reset/check out main over local game.
+Three pilot L2P-A/B/C were personally played again and ALL received KEEP (difficulty 1/2/2), and PS4 DualShock4 controller driving received PASS. The locally playable game is in Windows `C:\astra-dev\OutRun` (last reported code commit `30e6f54` + handoff `710d184`; check local status). Remote GitHub `main` is mostly DOCS, not the playable app. Never merge/reset/check out main over local game.
 
 [Original v0.7D.1 human feedback](docs/reviews/V0.7D1_PILOT_R1_HUMAN_FEEDBACK.json) · [Review summary](docs/V0.7D1_HUMAN_PLAYTEST.md). The real export has 3 KEEP and 2 completion praise tags; autoQA stays PENDING in those records. Older v0.7D, v0.7C, BRK R1/R2 reviews must remain unchanged.
 
