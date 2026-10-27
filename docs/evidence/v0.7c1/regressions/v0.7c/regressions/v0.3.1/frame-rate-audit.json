@@ -1,0 +1,252 @@
+[
+  {
+    "halveFrames": false,
+    "worldMetersPerSecond": 64.97946429370151,
+    "fps": 59.99734448377398,
+    "rows": [
+      {
+        "wallSeconds": 1.0001,
+        "simulationSeconds": 1.0000999999999982,
+        "displayedKmh": 234,
+        "gameSpeed": 64.91943908519002,
+        "effectivePace": 1,
+        "effectiveWorldSpeed": 64.91943908519002,
+        "lateralChange": -0.019837682460614126,
+        "metersPerUnit": 1,
+        "roadWidth": 14,
+        "markerSpacing": 12,
+        "worldMetersPerSecond": 64.97537351855051,
+        "roadWidthsPerSecond": 4.641098108467894,
+        "trackMetersPerSecond": 64.96967321777588,
+        "cameraMetersPerSecond": 64.9707903842352,
+        "markerPasses": 5,
+        "markerPassWallMs": [
+          480.6799624884057,
+          665.4165008074535,
+          850.058446440411,
+          1034.8875641483535,
+          1219.4252874920141
+        ],
+        "markerPassesPerSecond": 4.999500049995,
+        "fps": 59.99400059994001,
+        "medianFrameMs": 16.69999999999999,
+        "p95FrameMs": 16.799999999999955,
+        "worldPosition": [
+          0.017351780142941378,
+          11.426337628756137,
+          466.06088641147653
+        ],
+        "cameraPosition": [
+          0.01900907438265317,
+          13.913420113050247,
+          458.02506548454613
+        ],
+        "worldHeading": 0.0005010742855131712
+      },
+      {
+        "wallSeconds": 1.0000000000000002,
+        "simulationSeconds": 0.9999999999999978,
+        "displayedKmh": 234,
+        "gameSpeed": 64.90140053679133,
+        "effectivePace": 1,
+        "effectiveWorldSpeed": 64.90140053679133,
+        "lateralChange": 0.2071339083813578,
+        "metersPerUnit": 1,
+        "roadWidth": 14,
+        "markerSpacing": 12,
+        "worldMetersPerSecond": 65.00285610260616,
+        "roadWidthsPerSecond": 4.6430611501861545,
+        "trackMetersPerSecond": 64.98790258947035,
+        "cameraMetersPerSecond": 64.99599851490625,
+        "markerPasses": 6,
+        "markerPassWallMs": [
+          1404.1416257015696,
+          1588.7971100755142,
+          1773.388924725414,
+          1958.1810170624944,
+          2142.6480122350363,
+          2327.317819529928
+        ],
+        "markerPassesPerSecond": 5.999999999999999,
+        "fps": 59.999999999999986,
+        "medianFrameMs": 16.699999999999818,
+        "p95FrameMs": 16.799999999999955,
+        "worldPosition": [
+          -1.002390029703587,
+          12.396291215529967,
+          531.0336372734356
+        ],
+        "cameraPosition": [
+          -0.7812567190934063,
+          14.869995331434694,
+          522.9967294099663
+        ],
+        "worldHeading": 0.03508244718418459
+      },
+      {
+        "wallSeconds": 1.0166999999999997,
+        "simulationSeconds": 1.0166999999999962,
+        "displayedKmh": 234,
+        "gameSpeed": 64.93338083333593,
+        "effectivePace": 1,
+        "effectiveWorldSpeed": 64.93338083333593,
+        "lateralChange": 0.01620312952475647,
+        "metersPerUnit": 1,
+        "roadWidth": 14,
+        "markerSpacing": 12,
+        "worldMetersPerSecond": 64.96016325994785,
+        "roadWidthsPerSecond": 4.640011661424846,
+        "trackMetersPerSecond": 64.96820925685499,
+        "cameraMetersPerSecond": 64.95285291444533,
+        "markerPasses": 5,
+        "markerPassWallMs": [
+          2512.1846520419494,
+          2696.7365640998805,
+          2881.4864877585665,
+          3066.1629434181996,
+          3250.8004194731566
+        ],
+        "markerPassesPerSecond": 4.917871545195241,
+        "fps": 59.998032851381936,
+        "medianFrameMs": 16.699999999999818,
+        "p95FrameMs": 16.700000000000273,
+        "worldPosition": [
+          -5.878809543957097,
+          13.48928598335717,
+          596.8741677755759
+        ],
+        "cameraPosition": [
+          -5.053441601767882,
+          15.950313599971519,
+          588.8727859680212
+        ],
+        "worldHeading": 0.11300651639481679
+      }
+    ]
+  },
+  {
+    "halveFrames": true,
+    "worldMetersPerSecond": 64.98475553257076,
+    "fps": 29.998354980320304,
+    "rows": [
+      {
+        "wallSeconds": 1.0001,
+        "simulationSeconds": 1.0000999999999993,
+        "displayedKmh": 234,
+        "gameSpeed": 64.97125381529052,
+        "effectivePace": 1,
+        "effectiveWorldSpeed": 64.97125381529052,
+        "lateralChange": -0.023363286232543044,
+        "metersPerUnit": 1,
+        "roadWidth": 14,
+        "markerSpacing": 12,
+        "worldMetersPerSecond": 64.95461707235957,
+        "roadWidthsPerSecond": 4.639615505168541,
+        "trackMetersPerSecond": 64.94888593457905,
+        "cameraMetersPerSecond": 64.95004092906025,
+        "markerPasses": 5,
+        "markerPassWallMs": [
+          460.1511408969366,
+          644.7230930460358,
+          829.601365979709,
+          1014.3011643334684,
+          1198.9585320487186
+        ],
+        "markerPassesPerSecond": 4.999500049995,
+        "fps": 29.997000299970004,
+        "medianFrameMs": 33.30000000000007,
+        "p95FrameMs": 33.40000000000009,
+        "worldPosition": [
+          0.020273808566581196,
+          11.441230143208772,
+          467.1172610432621
+        ],
+        "cameraPosition": [
+          0.022469055119854427,
+          13.928088484401126,
+          459.0813708765329
+        ],
+        "worldHeading": 0.0005905634868370379
+      },
+      {
+        "wallSeconds": 1.0333999999999999,
+        "simulationSeconds": 1.0333999999999954,
+        "displayedKmh": 235,
+        "gameSpeed": 65.16978461882981,
+        "effectivePace": 1,
+        "effectiveWorldSpeed": 65.16978461882981,
+        "lateralChange": 0.17841212682623125,
+        "metersPerUnit": 1,
+        "roadWidth": 14,
+        "markerSpacing": 12,
+        "worldMetersPerSecond": 65.00560112552058,
+        "roadWidthsPerSecond": 4.64325722325147,
+        "trackMetersPerSecond": 64.9902310243394,
+        "cameraMetersPerSecond": 64.99881374466172,
+        "markerPasses": 6,
+        "markerPassWallMs": [
+          1383.7734284961005,
+          1568.3049378167905,
+          1753.103545595771,
+          1937.8072437572534,
+          2122.321353019304,
+          2307.1011190722634
+        ],
+        "markerPassesPerSecond": 5.806077027288563,
+        "fps": 29.998064640990908,
+        "medianFrameMs": 33.30000000000018,
+        "p95FrameMs": 33.40000000000009,
+        "worldPosition": [
+          -1.0898018563791254,
+          12.447278523668054,
+          534.2614067350146
+        ],
+        "cameraPosition": [
+          -0.8407646430410625,
+          14.92034050053076,
+          526.2251174840624
+        ],
+        "worldHeading": 0.038455522844150186
+      },
+      {
+        "wallSeconds": 1,
+        "simulationSeconds": 0.9999999999999964,
+        "displayedKmh": 233,
+        "gameSpeed": 64.80618700832645,
+        "effectivePace": 1,
+        "effectiveWorldSpeed": 64.80618700832645,
+        "lateralChange": -0.005001347448429644,
+        "metersPerUnit": 1,
+        "roadWidth": 14,
+        "markerSpacing": 12,
+        "worldMetersPerSecond": 64.9940483998321,
+        "roadWidthsPerSecond": 4.642432028559435,
+        "trackMetersPerSecond": 64.99830858685914,
+        "cameraMetersPerSecond": 64.98719498600367,
+        "markerPasses": 5,
+        "markerPassWallMs": [
+          2491.653983255748,
+          2676.3260475390143,
+          2861.0175550573194,
+          3045.4487483859443,
+          3230.1881138981717
+        ],
+        "markerPassesPerSecond": 5,
+        "fps": 30,
+        "medianFrameMs": 33.30000000000018,
+        "p95FrameMs": 33.40000000000009,
+        "worldPosition": [
+          -6.074364088455996,
+          13.527014244467036,
+          599.0400545909449
+        ],
+        "cameraPosition": [
+          -5.22317228842141,
+          15.987641438154656,
+          591.0412555352592
+        ],
+        "worldHeading": 0.11562819489824715
+      }
+    ]
+  }
+]

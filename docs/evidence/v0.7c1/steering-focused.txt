@@ -1,0 +1,12 @@
+[WebServer] (node:32680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:25492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\soft-steering.spec.ts:5:1 › trusted thumb soft response, two-pixel jitter, quick release and shared PC stream (2.3s)
+  ok 2 tests\soft-steering.spec.ts:17:1 › fixed-camera lookahead and expressive pose match actual curve demand (1.2s)
+  ok 3 tests\v07c1-control.spec.ts:5:1 › compact active steering travel retains nine stable notches and independent gas in both layouts (5.9s)
+
+  3 passed (11.2s)

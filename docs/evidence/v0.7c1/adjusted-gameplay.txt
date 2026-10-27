@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:9208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\gameplay.spec.ts:6:1 › trusted finger jitter stays inside a notch until a deliberate threshold crossing (1.7s)
+  ok 2 tests\gameplay.spec.ts:13:1 › five authored challenges: trusted touch notches, paired failures/braking and neutral exit (20.3s)
+  ok 3 tests\v07c1-drive.spec.ts:4:1 › real keyboard throttle drives six gears, reaches 300, downshifts and preserves review data (2.0s)
+
+  3 passed (24.8s)
