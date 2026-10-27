@@ -1,25 +1,21 @@
-# Project OutRun — Roadmap after v0.7C product NO-GO
+# Project OutRun — roadmap after v0.7C L2 design NO-GO
 
-## Deliberately preserve success
+## ACTIVE TASK 1 — v0.7C.1
 
-- Accepted arcade driving: responsive lateral balance, soft four-stage steering, 1.75× world flow, predictable bend pressure/off-road and mobile UI.
-- Eight BRK revision-2 human KEEP designs and complete review history.
-- Working L1 technical shape catalog, deterministic road generator and in-drive praise/issue feedback. No need to destroy these foundations.
+Shorten REAL phone steering travel (adult & child usability), six meaningful automatic gears, pleasurable slower acceleration toward a true 300 km/h, warmer non-shrill engine sound. Keep old accepted driving feel, real road physics/difficulty and R1/R2 user reviews. Benchmark old/new, test full steering reach with gas held and all five upshift events. After local commit and recorded tests, STOP for human phone/powertrain/audio playtest.
 
-## PRIORITY A — vehicle experience request (separate task)
+See `docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md`, `docs/V0.7C1_ACCEPTANCE.md`, `docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md`.
 
-A practical six-speed automatic gearbox with perceptible RPM rises/upshift falls, slower acceleration to an attainable 300 km/h and fuller/less shrill synthesized engine timbre. See `docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md` and `docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md`. Respect local source and no unrelated code.
+## PREPARED DEPENDENT TASK 2 — v0.7D, NOT AUTO-EXECUTED
 
-## PRIORITY B — L2 model correction, **WAIT FOR ACTUAL REFERENCE VIDEO ANALYSIS**
+Original 16 L2 batch lacked sequential timed/distance-localized events: one C + one E + one W extended over full road. Screenshotted classic ~37s reference shows many evolving bends/grades/scenic/traffic/speed beats; sampled stills cannot reveal exact count of underlying L1 nodes. See `docs/REFERENCE_37S_DRIVE_BEATS.md` and `docs/V0.7C_L2_DESIGN_POSTMORTEM.md`.
 
-User reports current ~30–60s L2 are single prolonged L1 moments (one bend, one climb). Current matrix defines only C + E + W for the WHOLE road. Do not demand a fixed 3–5 L1 count; owner's earlier number was an illustrative guess. User supplied roughly 40s racing footage to guide an evidence-based event density and arrangement.
+New L2 model: several L1 C/E/W placements with start/end distance, overlapping across channels where relevant, sequential within the same channel. Build ONLY 3 distinct ~25–40s micro-journey pilots and user-validate, before bulk generating any new 16 candidate routes.
 
-First document timestamped perceptual moments and geometric L1 changes in the EXACT uploaded clip. Include overlays of simultaneous bends/grades/widths and separate visually/sonically memorable events. Actual clip access is required; no invented count.
+Task 2 is dependent on approved car speed/gear/steering UX of Task 1. Owner must explicitly authorize later; do NOT run two Goals in parallel. See `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md` and `docs/CODEX_V0.7D_COMPOSER_KICKOFF.md`.
 
-Once analyzed, implement only **ONE** L2 pilot with multiple distance-localized L1 placements in sequence and overlap, have owner drive and approve that compositional model before expanding to 16 again. Reuse technical v0.7C L1 + feedback implementation. See `docs/V0.7C_L2_DESIGN_POSTMORTEM.md`.
+## After L2 pilot HUMAN GO
 
-## FURTHER — only after human L2 composition GO
+Revisit systematic 16-L2 batch with event timelines, then ~5-minute Pacific Road Trip, Mystery Drive, later diverse world/traffic packs and only then RPG currency/Garage/car unlocks. Reuse accepted BRK r2, 18 L1 tech family shape code and live praise/issue feedback UI. Human pleasure is validation, technical tests alone are not.
 
-Human-reviewed L2 archive → five-minute Pacific Road Trip (v0.7B) → Mystery Drive → environment/traffic packs → optional Stage Composer and RPG progression. None is authorized by merely having a technical L1 generator.
-
-**Product rule:** don't spend another large Codex Goal satisfying an unproven L2 interpretation. Short user-playable pilot first; then scale.
+No speculative massive game-engine rewrite, custom AAA constraint system, concurrent checkout modifications or public deployment without approval.
