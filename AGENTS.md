@@ -4,12 +4,12 @@
 
 **Owner has played v0.7C.1.** Engine sound PASS. Compact **144 CSS-px full-left↔full-right** mobile steering travel PASS. Those achievements are FROZEN REGRESSIONS. The owner requests believable upshift torque/acceleration interruption, a smaller/lower gauge that does not overlap top-left MENU, and a slimmer lower-left steering control PANEL without redundant instructions. Proceed to the next L2 Composer fix **in the same sequential milestone**, not another independent conflicting Goal.
 
-Read in order: §docs/CODEX_V0.7D_COMPOSER_KICKOFF.md§, §docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md§, §docs/V0.7D_ACCEPTANCE.md§, §docs/REFERENCE_37S_DRIVE_BEATS.md§, §docs/V0.7C_L2_DESIGN_POSTMORTEM.md§, §docs/L1_PRIMITIVE_CATALOG.md§.
+Read in order: `docs/CODEX_V0.7D_COMPOSER_KICKOFF.md`, `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md`, `docs/V0.7D_ACCEPTANCE.md`, `docs/REFERENCE_37S_DRIVE_BEATS.md`, `docs/V0.7C_L2_DESIGN_POSTMORTEM.md`, `docs/L1_PRIMITIVE_CATALOG.md`.
 
 ## Safe working copy / permissions
-- Work ONLY in §C:\astra-dev\OutRun§, expected remote §michael-wang/OutRun§; never touch §C:\astra-dev\topwar§.
-- Current PLAYABLE v0.7C.1 lives in user's LOCAL code commits §f0ec3f7§ + handoff §d1fea62§ (Codex report; inspect current HEAD/status). Remote GitHub §main§ is docs-first, not the game. **Never merge/reset/check out documentation-only main over source**.
-- Create §codex/v0.7d-multi-placement-l2§ FROM latest playable local HEAD, preserving uncommitted source and user review localStorage; fetch origin/main, selectively import ONLY new v0.7D specs/kickoff, reference-beats doc and this AGENTS.md. Protect other local docs/README and app.
+- Work ONLY in `C:\astra-dev\OutRun`, expected remote `michael-wang/OutRun`; never touch `C:\astra-dev\topwar`.
+- Current PLAYABLE v0.7C.1 lives in user's LOCAL code commits `f0ec3f7` + handoff `d1fea62` (Codex report; inspect current HEAD/status). Remote GitHub `main` is docs-first, not the game. **Never merge/reset/check out documentation-only main over source**.
+- Create `codex/v0.7d-multi-placement-l2` FROM latest playable local HEAD, preserving uncommitted source and user review localStorage; fetch origin/main, selectively import ONLY new v0.7D specs/kickoff, reference-beats doc and this AGENTS.md. Protect other local docs/README and app.
 - Prior stop-after-v0.7C.1 was to gather human playtest feedback; this was received. If auto-review still denies Git, obtain explicit ordinary-chat owner permission, don't repeatedly retry rejected action or bypass actual sandbox approvals.
 - No pushes, merges, public deployments, payment, secrets, third-party engine/audio models, licensed SEGA/Ferrari assets or unrelated project edits.
 
@@ -20,4 +20,4 @@ Read in order: §docs/CODEX_V0.7D_COMPOSER_KICKOFF.md§, §docs/V0.7D_TRUE_L2_CO
 4. **Keep L2 Lab feedback:** immediate praise/issue with spatial snapshot, end KEEP/REWORK/REJECT and difficulty, local JSON export, historical BRK r2 8 KEEP and previous v0.7C first four REJECT/twelve UNREVIEWED records preserved. New L2 pilot IDs start UNREVIEWED.
 5. **QA:** actual rendered/browser drive of three pilots, mobile 844×390 and 960×432 HUD/touch and menu tests with screenshot comparisons, longitudinal torque/RPM/speed telemetry around shifts, full build/unit/Playwright, reproducible geometry/road terrain, plus actual frame/audio behavior.
 
-Write §docs/V0.7D_HANDOFF.md§ with objective evidence, screenshots/videos, local commit(s), updated phone URL and PASS/FAIL/UNVERIFIED. STOP for human vehicle/UI and three-L2 PLAYTEST. No v0.7B, traffic, RPG, new biomes, full editor or separate parallel Goal.
+Write `docs/V0.7D_HANDOFF.md` with objective evidence, screenshots/videos, local commit(s), updated phone URL and PASS/FAIL/UNVERIFIED. STOP for human vehicle/UI and three-L2 PLAYTEST. No v0.7B, traffic, RPG, new biomes, full editor or separate parallel Goal.
