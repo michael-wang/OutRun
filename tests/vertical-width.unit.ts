@@ -48,5 +48,5 @@ it('records authoritative old/new elevation and lane profiles for visual compari
   for(let t=0;t<=b.nominalDuration+.001;t+=.05){const d=350+t*b.length/b.nominalDuration,p=track.sample(d),r=brickElevation(b,d),previous=brickElevation({...b,elevation:old.elevation},d);expect(p.position.y).toBe(r.height);rows.push({t,d,height:r.height,grade:r.grade,oldHeight:previous.height,oldGrade:previous.grade,...brickWidth(b,d)});}
   profiles.push({id:b.id,revision:b.revision,seed:b.seed,lanes:b.lanes,rows});
  }
- mkdirSync('docs/evidence/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.7c1/regressions/v0.7c/profile-comparison.json',JSON.stringify(profiles,null,2));
+ mkdirSync('docs/evidence/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.7d/regressions/v0.7c1/regressions/v0.7c/profile-comparison.json',JSON.stringify(profiles,null,2));
 });

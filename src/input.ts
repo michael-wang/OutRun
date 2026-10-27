@@ -90,7 +90,7 @@ export class InputController extends InputLatch {
   private paintSteering(){
     this.strip?.style.setProperty('--steer',String(this.steeringTarget));this.strip?.style.setProperty('--effective-steer',String(this.effectiveSteer));
     this.strip?.setAttribute('aria-valuenow',String(Math.round(this.steeringTarget*100)));
-    const label=this.strip?.querySelector('.steer-label');if(label)label.textContent=this.effectiveSteer?`${this.effectiveSteer<0?'←':'→'} STEER · ${Math.abs(this.effectiveSteer)*STEERING_STEPS}/${STEERING_STEPS}`:'← STEER · NEUTRAL →';
+    this.strip?.setAttribute('aria-valuetext',this.effectiveSteer?`${this.effectiveSteer<0?'Left':'Right'} ${Math.abs(this.effectiveSteer)*STEERING_STEPS} of ${STEERING_STEPS}`:'Neutral');
   }
   override update(dt:number){super.update(dt);this.paintSteering();}
   override clear() { super.clear();this.steeringPointer=null;this.paintSteering();this.buttons?.forEach(button => button.classList.remove('pressed')); }

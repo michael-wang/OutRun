@@ -2,7 +2,7 @@ import {test,expect,chromium} from '@playwright/test';
 import {readFileSync,mkdirSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
 test('production lab plays and reviews without a development driver',async({page})=>{
  await page.goto('http://127.0.0.1:4173/?lab=bricks&brick=BRK-03');
  await expect(page.locator('#brick-progress')).toContainText('8 unreviewed');

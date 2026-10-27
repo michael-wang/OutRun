@@ -32,11 +32,11 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
  const driving=input.gas&&!input.brake,driveForce=advancePowertrain(s,s.speed,driving,dt);
- const acceleration=(driving?driveForce:-3.8)
+ const acceleration=driveForce-s.roadDrag-(driving?0:3.8-s.roadDrag)
   // The slower engine needs a proportional shoulder drag: still a strong,
   // immediate speed loss, but enough torque remains for bounded recovery.
   -(input.brake?34:0)-(s.offRoad?5+s.speed*.04:0);
- s.speed=clamp(s.speed+acceleration*dt,0,MAX_SPEED);
+ s.netAcceleration=acceleration;s.speed=clamp(s.speed+acceleration*dt,0,MAX_SPEED);
  s.rawSteer=input.rawSteer??input.steer;s.steeringTarget=s.rawSteer;
  s.effectiveSteer=quantizeSteering(input.steer,s.effectiveSteer);s.steering=s.effectiveSteer;
  const appliedMean=actuateSteering(s,s.effectiveSteer,dt);
