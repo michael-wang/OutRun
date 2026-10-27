@@ -1,22 +1,27 @@
-# Project OutRun — Roadmap after human v0.7C.1 playtest
+# Project OutRun — roadmap after v0.7D pilot approval
 
-## CURRENT: v0.7D (owner authorized)
+## Proven content baseline — three L2 micro-journeys human KEEP
 
-**Accepted from v0.7C.1**: engine audio now pleasing; compact 144px mobile thumb travel. Preserve both unchanged in essence. New requests: genuine short 6-speed upshift torque/longitudinal acceleration change (vehicle km/h continuous, maybe naturally dips), downsize/lower phone speedometer away from the top-left MENU (menu remains clickable), trim the bottom-left steering panel's vertical footprint and remove redundant captions. Retain 300 km/h and 1.75× accepted world pace.
+v0.7D L2P-A / B / C are each HUMAN KEEP, perceived difficulty 2 / 3 / 2. New true distance-localized L1 placement composition works substantially better than v0.7C's single global C/E/W triple. First 3 real pilot ratings archived in `docs/reviews/V0.7D_PILOT_R1_HUMAN_FEEDBACK.json`. Machine `autoQA=PENDING` in export, regardless of separately reported Codex test suite green.
 
-**Then** implement True Multi-Placement L2 Composer with real distance-localized sequential/overlapping L1 C/E/W profiles. Only 3 ~25–40s pilots from current technical L1 library, not another wholesale 16-route batch. See `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md`, `docs/V0.7D_ACCEPTANCE.md`, `docs/CODEX_V0.7D_COMPOSER_KICKOFF.md`. Stop for human driving/review after pilot.
+## NOW owner-authorized: v0.7D.1 Driving & Input Quality
 
-Reference 37s images show multiple perceptual road/scene/traffic and speed beats but **cannot prove hidden primitive counts**. Do not mandate 3–5 L1 or any precise count. Traffic AI is not implemented and not part of current Scope.
+- Grade-aware real throttle/coast speed changes, with physical road elevation source.
+- More meaningful pressure/controllability difference at 150 vs 300 km/h.
+- Diagnose and fix missing LEFT tire squeal while preserving human-PASSED warmer engine sound.
+- Complete PC keyboard-only menu navigation, P Play Again, native focused Enter click without simultaneous brake/accelerator.
+- Prefer Gamepad API DualShock4 PS4 via standard axes/triggers/buttons and safe disconnect, with real hardware verification as available.
 
-## Historical results kept
+See `docs/V0.7D1_DRIVING_INPUT_SPEC.md` and `docs/V0.7D1_ACCEPTANCE.md`. Stop for HUMAN controls/driving/audio test.
 
-- v0.4.3 first satisfying arcade handling, 1.75× world pace and accepted car/controls.
-- v0.7A.1 eight BRK-r2 human KEEP, preserved exactly.
-- v0.7C 18-L1 shape library and positive/issue feedback tech remains. Original 16 L2 designs are DESIGN NO-GO (export specifically 4 REJECT + 12 UNREVIEWED); archived reviews must remain unchanged.
-- v0.7C.1 six-speed/real 300 reached in reported 21.46s, warm engine audio & 144px control PASSED by human; remaining shift feel and mobile layout under v0.7D.
+## NEXT prepared / NOT auto-authorized: v0.8 First Procedural Stage
 
-## After human confirms v0.7D pilot
+**North star: generate one FUN FIRST LEVEL, NOT expand test menus.** A seed-replayable nominal 100–150s Stage One using existing three human-approved L2 motifs as inspiration, but varying ACTUAL ordered curvature profiles, grades, widths, scenic landmarks and stage transitions on each Stage Code. Progress anchored to distance, no hidden racing-line assistance. A user can play start→finish, replay same code or create genuinely different Stage Code.
 
-Revisit systematically generated L2 families, then a guided five-minute Pacific Road Trip, Mystery Drive, L3 scenery/traffic content, and later car selection, Garage/RPG rewards and maybe a minimal Stage Composer.
+Acceptance: 5 seeds deterministic structurally safe, at least 3 full browser-driven captures and at least 2 different steering/road rhythms, first human playtest "would I drive another?" before more levels. See `docs/V0.8_STAGE_ONE_SPEC.md` and `docs/V0.8_STAGE_ONE_ACCEPTANCE.md`. Requires user-approved v0.7D.1 local code and a new Codex Goal.
 
-**No massive speculative procedure, no physics rewrite, no blanket safe-driving solver, no accidental source reset, no same-repo parallel Goals, no unsupported claim that green tests mean fun.**
+## Longer-term ideas only
+
+Five-minute Guided Pacific Road Trip, Mystery Drive, traffic/rivals and real obstacle L1 packs, mountains/snow/volcano biomes with sensible road surfaces, Stage Composer only if authoring burden proven, and RPG completion earnings/Garage/new cars/unlocks **AFTER enjoyable replayable procedural stages**.
+
+**Avoid process theater, fake physics difficulties, unsafe stale repo merges, bulk 16-route content with wrong L2 design, and mistaking passing tests for fun.**
