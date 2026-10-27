@@ -1,28 +1,27 @@
-# Project OutRun — current Codex instructions
+# OutRun — Current Codex working agreement
 
-## ACTIVE OWNER-COMMISSIONED: v0.8 Procedural Stage 01 + Minor Input/Scene Hints
+## ACTIVE OWNER-COMMISSIONED: v0.8.1 Powertrain Feel & Stage 01 Rhythm
 
-**v0.7D.2 completed locally** (reported implementation `71476fb`, clean worktree), and owner actually played all THREE Pilots on this build: KEEP L2P-A/B/C, difficulty 1/2/2. Owner permits the small menu/scene preferences to be incorporated with **v0.8 Stage One**; the Stage work is now the active instruction. The original complete export is archived in `docs/reviews/V0.7D2_PILOT_R1_HUMAN_FEEDBACK.json`; short human summary in `docs/V0.7D2_HUMAN_PLAYTEST.md`. Preserve both older pilot history and previous BRK R1/R2 human approvals. The owner did NOT give an explicit blanket PASS to every sound/UX subfeature, so preserve regression coverage.
+**Latest human playtest:** v0.8 Stage One `S01-v0.8-r1-1-ALB1` was **REWORK**, difficulty 2 and comment "Could use more L2 blocks." Exact original review and objective geometry metrics are in `docs/reviews/V0.8_STAGE01_SEED1_HUMAN_FEEDBACK.json` and `docs/V0.8_STAGE01_R1_POSTMORTEM.md`.
 
-**Read in order:** `docs/CODEX_V0.8_STAGE_ONE_KICKOFF.md`, `docs/V0.8_STAGE_ONE_SPEC.md`, `docs/V0.8_STAGE_ONE_ACCEPTANCE.md`, `docs/V0.8_BIOME_VERTICALITY_METADATA.md`, `docs/V0.7D2_HUMAN_PLAYTEST.md`.
+Owner's three new requests:
+1. Six-speed car still feels like speed grows linearly, not progressively weaker acceleration at higher gears. Gear shifts need a genuine real-torque interruption which may naturally create a SMALL speed dip, NOT a fake fixed km/h subtraction.
+2. Stage One L2 sections have excessive empty straight before/after their brief curve events. Stage Seed 1: each of 8 whole beats has only ONE C+ONE E+ONE W, curves occupied only 45.5% of route distance, inter-C gaps ~732–930 world units. **L2 should be a COMPACT challenge core**; L3 composes cores and adds OPTIONAL, rhythmically justified buffers/accelerate/view-release segments. Reuse original HUMAN-KEEP multi-placement L2 Pilot composition, NOT 8 one-C/E/W whole-route mini blocks.
+3. User wants 4-lane roads DOMINANT, 6–8 as secondary, scarce 2/3 for special narrow moments. Seed 1 puts `4→2` W04 bottlenecks in 4 of 8 blocks. Measure lane percentages from resolved width profile, not W count, and don't fake 3 lanes as fractional taper.
 
-### Exact additional user feedback to implement in Stage One
+**Read first:** `docs/CODEX_V0.8.1_KICKOFF.md`, `docs/V0.8.1_POWERTRAIN_STAGE_RHYTHM_SPEC.md`, `docs/V0.8.1_ACCEPTANCE.md`, `docs/V0.8_STAGE01_R1_POSTMORTEM.md` and original user archive. These define CURRENT scope. Original `docs/V0.8_STAGE_ONE_SPEC.md` remains HISTORICAL reference for Stage 01 alpha and is NOT a second active Goal.
 
-- Dramatic verticality belongs **more often to canyon/mountain**; city/coast generally mild/rolling, BUT real dramatic city viaduct/coastal cliff exceptions ARE ALLOWED. Use a tiny **L3 metadata weighting** and generate actual road grade/terrain matching biome. Mountain biome art is NOT yet implemented. Do not retroactively change user-KEEP Pilot geometry.
-- Visible PC shortcut hints embed key **inside** action word (`[P]lay`, `[R]eplay same`, `[N]ext`), not a clunky space prefix `[P] Play`. Input-aware render: keyboard keys when keyboard active, PS4 mapped glyphs when supported controller last used; touch mode compact/no PC key spam. Do not allow controller polling/noise to flicker modes.
-- During driving, keyboard sees `[G]讚 · [I]問題`, gamepad sees `L1 讚 · □ 問題`. L1 triggers praise (R1 remains working optional), **Square** triggers issue flag for later short text, D-pad select four positive labels + Cross confirms, Circle cancels. Show controller button prompts clearly. Existing retrospective ring buffer records real historical `eventAt` and distinct `reactionAt`, no made-up location.
-- Preserve exact already HUMAN-accepted 144px thumb reach, six-speed 300 km/h, 1.75× Arcade Lateral Balance, hill grade, high-speed drift, warm engine and v0.7D.2 softened tire sound; original 18 L1 types and three biome packs.
+## Local source & reviews
+- Work only in user's LOCAL `C:\astra-dev\OutRun`, remote expected `michael-wang/OutRun`, latest v0.8 handoff commit `ee86082` or newer; VERIFY HEAD/branch/status before editing. Origin `main` is DOCS-FIRST, not the source. Never checkout/reset/merge remote docs-only main onto local app.
+- Branch `codex/v0.8.1-powertrain-stage-rhythm` from latest PLAYABLE local HEAD, import ONLY newest v0.8.1 task docs, this AGENTS and original Stage 1 human review on GitHub main. Preserve all uncommitted work and browser feedback localStorage.
+- If previous stop-after-v0.8 automatically blocks Git permission, get explicit owner authorization in ordinary message in same OutRun Codex chat; do not retry denied actions.
+- Preserve human-KEEP pilot A/B/C r1 revisions (v0.7D and updated v0.7D.1/D.2), eight BRK-r2 human KEEP, prior v0.7C REJECTs, original v0.8 seed1 REWORK. Revised Stage gets NEW generator revision/fingerprint and starts UNREVIEWED, never relabel human votes.
+- Preserve USER-accepted 300km/h six gears, warm engine and softer squeal, 1.75× world pace, grade and speed-sensitive lateral balance, 144px mobile thumb range and compact HUD, PC shortcuts and actual PS4 controller with quick retrospective praise/issues, three current scenic packs. No traffic/rivals, stage editor, RPG, user tracking or new world content.
 
-### Actual Stage 01 output
+## Acceptance
+- BENCH original vs revised 0→300 speed curve, incremental 0–100 / 100–200 / 200–300, shift 1→2 ... 5→6 RPM/wheel torque/acceleration and genuine small continuous v dip/plateau as forces dictate; old shift can't be replaced by HUD-only speed changes.
+- Stage composer true L2 *multi-placement* challenge cores + L3 optional buffers, fewer repeated empty intervals; compare actual sampled C occupancy/gaps vs Seed1 baseline, and 4/6–8/2–3 **distance** shares across 5 Stage seeds.
+- Actually drive three full new Stage seeds; inspect start/finish, biome road, real 3D geometry and Pixel/PC/PS4 input, review location export. Build/unit/Playwright and 30/60fps checks.
+- Commit LOCAL and create `docs/V0.8.1_HANDOFF.md` with data/videos and exact URL. STOP for human playtest, no automatic next stage or public deploy.
 
-One genuine **procedurally generated** `Pacific Getaway` alpha, roughly 100–150s nominal, Stage Code seed/version, Replay Same and New Route, starts/finishes, staged/cross-stacked L1 profiles and L2 beats with meaningful differences across seeds: steering/braking path, grade, width and scenic reveal. DO NOT just concatenate three predefined pilot routes or randomize only decoration. Small deterministic geometric/scenic constraints; no giant AAA optimization framework. Test ≥5 seed codes deterministically; fully DRIVE/record ≥3 diverse seeds. Keep small/playable; stop after for human seed reviews.
-
-### Local repo safety / task scope
-
-- Actual playable app is LOCAL `C:\astra-dev\OutRun`, latest reported v0.7D.2 commit `71476fb` or later; expected remote `michael-wang/OutRun`. GitHub `main` is DOCUMENTATION-FIRST — NEVER merge/reset/check it out over local code. Branch `codex/v0.8-stage-one` from latest PLAYABLE LOCAL HEAD, selectively import only the current v0.8 specs, this AGENTS.md and v0.7D.2 summary when necessary.
-- If old stop-after-v0.7D.2 blocks Codex auto approvals, require user's explicit ordinary message in SAME existing Codex OutRun conversation; do not retry denied operations or bypass sandbox.
-- No push/merge/public deployment, edits to other repos `C:\astra-dev\topwar`, paid services, runtime AI/backend, online analytics, unlicensed SEGA/Ferrari art or sound.
-- Reuse current Three.js+TypeScript Vite 3D scene, mobile two-thumb/PWA/handedness, keyboard & PS4 controls and local praise/review persistence. No extra RPG/garage/traffic, new snow/volcano, giant Stage Editor, general Mystery Drive or v0.7B five-minute route.
-- Commit LOCALLY, hand off `docs/V0.8_STAGE_ONE_HANDOFF.md` with real source/QA and seed evidence, Pixel/PC URL, STOP for human replay/feedback.
-
-**Do not start Stage 02 or long-game progression automatically.**
+**No push, merge, public deployment, paid services, TopWar/other repo edits, new biomes, 3A planners, huge GUI editors or automatic Stage 02.**

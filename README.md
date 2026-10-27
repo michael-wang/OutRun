@@ -1,40 +1,42 @@
 # Project OutRun
 
-Original browser 3D arcade-driving game inspired by the fun of classic Out Run / OutRun 2; not a licensed SEGA remake. Project name is internal, game art/music must be original or appropriately licensed.
+Original browser-based 3D arcade-driving game inspired by the excitement of classic Out Run / OutRun 2, NOT a licensed SEGA recreation. Original/licensed sound, art, vehicle and title required for public distribution.
 
-## ACTIVE: v0.8 — First Procedurally Generated Stage One
+## ACTIVE: v0.8.1 — Six-Speed Car Feel + More Exciting Procedural Stage 01
 
-**Human base:** Codex delivered v0.7D.2 locally (reported `71476fb`). The owner tested **three L2 pilots and rated all KEEP (difficulty 1/2/2)**, including precise positive feedback using retrospective positions. Original user export: [v0.7D.2 review](docs/reviews/V0.7D2_PILOT_R1_HUMAN_FEEDBACK.json); [review summary](docs/V0.7D2_HUMAN_PLAYTEST.md). The export has `generatorVersion=v0.7D.1-r1` and `autoQA=PENDING`; do not change real historical values to make them look more current/passed.
+**v0.8 human playtest result:** Stage 01 first generated Seed `S01-v0.8-r1-1-ALB1` = **REWORK**, difficulty 2/5, owner comment "Could use more L2 blocks." The Stage generator works structurally and has deterministic seeds/replay, but the actual driving rhythm, straight padding and narrow-road use are not yet good enough.
 
-**The owner delegated three compact improvements to be implemented TOGETHER with v0.8**, before the Stage generator:
+[Exact owner Stage 01 feedback JSON](docs/reviews/V0.8_STAGE01_SEED1_HUMAN_FEEDBACK.json) · [Measured design postmortem](docs/V0.8_STAGE01_R1_POSTMORTEM.md)
 
-1. **L3 biome verticality preference:** dramatic cliffs/crests are more often canyon/mountain-like; city and coast prefer gentle/rolling, but are NOT prohibited from hills or exceptional dramatic passages. Present art packs are only city/coast/canyon; mountain remains future. Use seeded *soft weights*, not a sophisticated rule engine or retroactive changes to accepted pilot geometry.
-2. **Compact accelerator hints:** show `[P]lay`, `[R]eplay same`, `[N]ext`, NOT spaced prefix `[P] Play`. Use actual relevant keyboard hints when keyboard is active, controller glyphs when a connected supported PS4 controller was meaningfully used, minimal icons for touch. Handle disconnect and input switching.
-3. **In-drive mapping hints:** PC displays `[G]讚 · [I]問題`, actual gamepad displays `L1 讚 · □ 問題`. Praise on L1 (R1 remains alternate), Square for issue flag, D-pad praise choice, Cross save and Circle cancel. Preserve historical `eventAt` / `reactionAt` retrospective sampling.
+### What failed in first generated Stage
 
-### Stage 01: Pacific Getaway (placeholder)
+- Eight Stage "beats" were each **one curvature, one elevation, one width** over ~1,450 units; they did NOT faithfully reuse the richer HUMAN-KEEP multi-placement L2 pilot experience.
+- Explicit curve-profile windows occupied just **6,143 / 13,500 = 45.5%** of the road; **54.5%** was outside curvature events, with **732–930** world-unit gaps between successive active curves. Not all non-curvature windows are level roads; hills and width can still change.
+- Four of eight Width placements targeted `4→2` lane bottlenecks, matching owner's concern about too frequent narrow roads. This is a count of WIDTH EVENTS, not a measurement of actual narrow-distance fraction.
+- Vehicle's six-speed "acceleration to 300" appears too LINEAR and shifts show too little actual change in road speed/acceleration. Need proper RPM/gear force, drag and actual integrated shift torque dips; not arbitrary subtraction from the speedometer.
 
-One genuinely seed-generated and replayable **~100–150s nominal** Stage, start/finish, Stage Code, Replay Same and New Route. Integrates the existing 18 L1 families and verified multi-placement L2 beat grammar with REAL seed differences in curves, elevation, road width, scenic views and challenge/release rhythm. Current city/coast/canyon 3D scenery must reflect biome/hill preferences and actual road shape, not arbitrary pasted objects.
+### Current v0.8.1 deliverable
 
-**Technical proof:** deterministically generate at least 5 Stage Codes, FULLY drive and record 3 different seeds, run build/unit/Playwright with no steering/menu/PS4/sound/history regressions. The human then rates if the Stage is fun enough to replay without RPG coins or unlocks.
+1. **Powertrain:** realistic arcade six-gear tractive effort, nonlinear stronger low-gear vs weaker high-gear acceleration, measurable actual torque interruptions and small natural km/h dips/plateaus during shifts, true attainable 300 and preserved warm audio.
+2. **L2/L3 composition:** L2 focuses on ENGAGING driving challenge core (with local multi-curve profiles). L3 designs the overall Stage rhythm and inserts OPTIONAL short buffers/sweeping/reveal/braking approaches between challenge cores where appropriate; NO systematic long straight before/after each L2. Keep nominal 100–150sec first Stage exciting via content rather than filler.
+3. **Road width:** mostly 4 real lanes, supporting 6/8 for faster highway, rare 2/3 for bottleneck/mountain exception; count actual sampled widths by traveled distance. Three marked lanes only when real geometry/marking supports them.
+4. **Review:** old Seed 1 remains REWORK, new Stage generator version/seed candidates UNREVIEWED; preserve all historical approved BRK and L2 Pilot content and retrospective review history.
 
-### Current handoff docs
+### Authoritative docs
 
-| Document | Purpose |
+| File | Why |
 | --- | --- |
-| [AGENTS.md](AGENTS.md) | Active v0.8 boundaries and safe local Git workflow |
-| [v0.8 First Stage Specification](docs/V0.8_STAGE_ONE_SPEC.md) | Full stage product/technical requirement + compact input hints |
-| [v0.8 Acceptance](docs/V0.8_STAGE_ONE_ACCEPTANCE.md) | Actual seeded geometry, biome, UI, gamepad and feedback tests |
-| [L3 Verticality Preferences](docs/V0.8_BIOME_VERTICALITY_METADATA.md) | Soft environment-specific weighting and scenic plausibility |
-| [Codex v0.8 Kickoff](docs/CODEX_V0.8_STAGE_ONE_KICKOFF.md) | Ready-to-paste ordinary authorization + one autonomous Goal |
-| [Roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Long term toward curated infinite road trips |
+| [AGENTS.md](AGENTS.md) | Active Codex scope and safe local source workflow |
+| [v0.8.1 Specification](docs/V0.8.1_POWERTRAIN_STAGE_RHYTHM_SPEC.md) | Six-speed torque/RPM + Stage L2/L3 buffering and lane policy |
+| [v0.8.1 Acceptance](docs/V0.8.1_ACCEPTANCE.md) | Bench traces, 5-seed Stage statistics, 3 real full recorded drives |
+| [Codex v0.8.1 Kickoff](docs/CODEX_V0.8.1_KICKOFF.md) | Next one-shot Goal from latest local v0.8 |
+| [Stage 01 Postmortem](docs/V0.8_STAGE01_R1_POSTMORTEM.md) | Objective Seed1 metrics behind redesign |
+| [v0.8 Original Stage Specification](docs/V0.8_STAGE_ONE_SPEC.md) | Historical first-stage baseline |
 
-### Local code safety
+### Source warning & execution
 
-The ACTUAL playable game is only in the user's **LOCAL** `C:\astra-dev\OutRun` checkout (latest reported commit `71476fb` on `codex/v0.7d2-feedback-sfx`). GitHub `main` contains mostly specs, not game code. **DO NOT merge/reset/checkout documentation-only main over playable code.** In the SAME existing OutRun Codex chat, send a plain authorization message and THEN the separate `/goal` from kickoff, creating a NEW LOCAL feature branch from the playable HEAD. No push, merge, public deployment or changes to other projects.
+Latest PLAYABLE source is in user LOCAL Windows `C:\astra-dev\OutRun` (reported last v0.8 commit `ee86082`). Remote GitHub `main` is chiefly docs, NOT a replacement source. Do NOT reset/merge/checkout main over playable local game. In existing single Codex OutRun conversation, send ordinary v0.8.1 authorization first if required by old stop-after, then current v0.8.1 `/goal` from kickoff; local branch/commits only, STOP for new human 5-seed driving review.
 
-### Preserved game
+**Preserve:** Three.js, 1.75× world pace, 300km/h six-speed, grade-aware acceleration/coasting, Arcade Lateral Balance 150/300 sensitivity, 144px compact mobile thumb steering, warm engine and soft squeal, keyboard and user-PASSED PS4 Gamepad, original car/occupants/wheels, 18 L1 geometries and scenery city/coast/canyon, retrospective player praise/issue, same Stage Code deterministic play/replay/new route.
 
-Three.js + TypeScript + Vite; human-approved Arcade Lateral Balance, 1.75× world pace, 300km/h automatic six-speed, real grade/velocity corner response, warm engine/softer squeal, four soft mobile steering detents with 144px active horizontal thumb travel, compact analog speedometer, 2–8 actual lanes, animated original convertible/occupants/hair/wheels, Pixel 8 landscape PWA two thumbs/swappable hands, PC keyboard and tested PS4 DualShock 4, local deterministic positive/issue feedback export.
-
-**Deferred:** Stage 02, 5-minute Pacific Road Trip, full Mystery Drive, live AI generation, traffic/rivals, weather/snow/volcano, RPG coins/garage, general Stage Composer/editor. Owner will judge Stage 01 first.
+Later only: improved first Stage multi-seed review, longer Guided/Mystery trips, additional traffic/obstacle lanes, new biomes, optional Garage/RPG, Stage Editor if needed.

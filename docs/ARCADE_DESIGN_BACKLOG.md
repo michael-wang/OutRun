@@ -1,27 +1,27 @@
-# Project OutRun roadmap — ready for one REAL procedural stage
+# OutRun roadmap — Stage 01 human REWORK and next iteration
 
-## RECENT HUMAN RESULTS
+## Latest review: v0.8 Stage One needs rework
 
-- v0.7D original 3 pilots: KEEP all, difficulty 2/3/2.
-- v0.7D.1 pilot update: KEEP all, difficulty 1/2/2; physical PS4 controller PASS.
-- **v0.7D.2 current playtest:** all 3 L2P-A/B/C KEEP again, difficulty 1/2/2, positive feedback has verified *different* eventAt and reactionAt on actual Gamepad/mouse use. Source raw `docs/reviews/V0.7D2_PILOT_R1_HUMAN_FEEDBACK.json` and digest `docs/V0.7D2_HUMAN_PLAYTEST.md`. The UI/audio subfeatures were not explicitly all declared PASS; new corrections are incorporated into Stage One.
+Original seed `S01-v0.8-r1-1-ALB1`: user voted **REWORK**, difficulty **2/5**, note "Could use more L2 blocks." No Stage One KEEP. Exact archived source `docs/reviews/V0.8_STAGE01_SEED1_HUMAN_FEEDBACK.json`.
 
-## ACTIVE OWNER-COMMISSIONED: v0.8 Stage 01 Pacific Getaway
+Technical diagnosis from USER EXPORTED Stage Code:
+- 13,500-unit route, eight ~1,450-unit "beats", each ONE C + ONE E + ONE W.
+- Explicit curvature segments total 6,143 units = 45.5% of route; no explicit C in remaining 54.5% though grade/width may still vary. Inter-curve gaps 732–930 units.
+- Four of eight width profiles target 4→2 bottleneck, making narrow roads too frequent; actual drivable 2-lane distance must be measured separately from event count.
+- Six-speed speed ramp looks nearly linear and shifts don't create sufficient real acceleration/speed transients for satisfying gear progress.
 
-**ONE sequential Goal** from latest playable LOCAL v0.7D.2 code. First small UX/L3 corrections, then Stage:
+## ACTIVE: v0.8.1 Powertrain Feel & Stage One Rhythm
 
-1. **L3 world/biome metadata**: canyon very dramatic verticality weighted higher; city and coast mostly mild/rolling but occasional extreme plausible coastal headland/urban ramp allowed. Applies to real grade/height instance parameters, NOT hard bans or whole-E-shape name filters. Existing 3 scenes only; no new Alpine art pack. Terrain/props respect generated road/biome.
-2. **Keyboard/menu shortcuts**: compact embedded letter `[P]lay`, `[R]eplay same`, `[N]ext`; no spaced prefix `[P] Play`. The help labels change between meaningful keyboard use, connected active standard gamepad and mobile touch. UI must reflect real bindings and not hide control capabilities.
-3. **In-drive input legend**: gamepad `L1 讚 · □ 問題`, keyboard `[G]讚 · [I]問題`; Square button creates anchored issue flag for later note if needed. Retrospective praise and issue default to genuine earlier event snapshot, exported eventAt + reactionAt, PS4 D-pad tag / Cross confirm.
-4. **Procedural Stage One**: nominal ~100–150 second start→finish; deterministic `Stage Code`, Replay Same, New Route; actually sample several unique combinations of multi-placement L1/L2 curve+grade+width+scenery motifs and a coherent driving arc. This must NOT be the 3 static liked Pilots in a row or merely moving palm trees. No runtime model.
-5. **Verification**: ≥5 deterministic stage seeds; 3 fully recorded real-browser full Stage drives, at least 2 materially different steering/brake demands, no same-altitude impossible overlaps or props intruding the roadway, working Pixel/gamepad/keyboard input and feedback; stop for human “would I drive a NEW seed again?” assessment.
+**Car:** benchmark and refine 6 gear wheel torque/RPM/shift force, drag v², real integrated acceleration: hard early acceleration, diminishing high-gear/300 approach and small REAL shift-speed dips when force temporarily below drag (not fake km/h subtraction). Preserve warmer engine and other approved handling.
 
-Authoritative docs: `docs/V0.8_STAGE_ONE_SPEC.md`, `docs/V0.8_STAGE_ONE_ACCEPTANCE.md`, `docs/V0.8_BIOME_VERTICALITY_METADATA.md`, `docs/CODEX_V0.8_STAGE_ONE_KICKOFF.md`.
+**Composition:** L2 = compact multi-event driving challenge, not compulsory long lead-in/exit; L3 = stage director stitching L2 with **optional varied** transition buffers/reveals/brake warnings, not fixed long straight repeated between every core. Preserve Stage 01 nominal ~100–150s by filling with enjoyable driving events rather than padded emptiness. Compare after vs before in C occupancy/gaps, actual brake/steer sequences, biome scenery.
 
-## HUMAN REVIEW AFTER v0.8
+**Lane policy:** 4 lanes dominate ~55–70% of stage distance; 6–8 ~20–35%; rare 2/3 <=10–15%. These are initial content targets not inviolable rules, and 3 actual lanes deferred if current marking/mesh doesn't truly support it. Avoid repeating 4→2 W04 in 50% of Stage beats. Sample per-seed real width distance shares and keep offroad/rail width coherent.
 
-User drives multiple actual Stage Codes, rates overall KEEP/REWORK/REJECT and pleasant/surprising moments via location-aware praise/issue. Only after meaningful replayable Stage One enjoyment consider larger 3–5 minute trips, Mystery Drive discovery, more terrain/traffic/surface vocabularies and later progression/garage.
+**Acceptance:** at least five deterministic generated Stage codes and three full browser-driven recorded runs with actual mechanics, visually varying travel and mobile/PS4 regressions. HUMAN GO/REWORK only after personally replaying multiple seeds. Source of truth: `docs/V0.8.1_POWERTRAIN_STAGE_RHYTHM_SPEC.md`, `docs/V0.8.1_ACCEPTANCE.md`, `docs/CODEX_V0.8.1_KICKOFF.md`.
 
-## NOT NOW
+## Later only / NOT currently authorized
+- If v0.8.1 genuinely fun, additional Stage 01 seed variety or longer five-minute Guided Pacific Road Trip, Mystery Drive discovery, richer L3 scenery packs and later physical traffic/obstacles.
+- Reward/RPG economy, car garage, new models after fun repeat play; no unsolicited AAA constraint engine or expensive Stage Editor.
 
-No 3A optimizer, stage/world GUI editor, cold-start new engine, physical traffic/rival cars, new snow/volcano assets, full RPG economy, push/merge/public deploy or other-repo operations. Keep original approved BRK, L2P and failed v0.7C review archives immutable.
+**Archive old approvals**: Three original v0.7D Pilot L2 (KEEP), later v0.7D.1/.2 pilot reviews, BRK-r2 eight KEEP, original failed v0.7C first-four REJECT. None of those votes automatically approves Stage One or its revised new seeds. Preserve original export versions and timestamps.
