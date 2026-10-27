@@ -1,0 +1,17 @@
+{
+  "seeds": 100,
+  "totals": {
+    "city": {
+      "dramatic": 19,
+      "total": 245
+    },
+    "coast": {
+      "dramatic": 64,
+      "total": 307
+    },
+    "canyon": {
+      "dramatic": 115,
+      "total": 248
+    }
+  }
+}

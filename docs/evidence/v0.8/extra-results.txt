@@ -1,0 +1,11 @@
+[WebServer] (node:10376) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:54712) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\v08-stage.spec.ts:80:1 › same stage seed recreates road and scenery while another changes them (3.1s)
+  ok 2 tests\v08-stage.spec.ts:84:1 › generated valley has a visible descent and returns continuously (1.6s)
+
+  2 passed (6.8s)

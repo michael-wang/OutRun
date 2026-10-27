@@ -7,7 +7,7 @@ import { createTrack } from './track';
 import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[]}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),offsetAt=(d:number,o:number)=>roadOffset(o,halfAt(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
@@ -19,6 +19,13 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const asphalt=mat('#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
   function ribbon(offsetA:number|((d:number)=>number),offsetB:number|((d:number)=>number),liftA:number,liftB:number,material:THREE.Material,start=0,end=length,step=2.5) {
+    // Finite stage ribbons share a parent but retain independently culled pieces.
+    if(options.chunked&&end-start>1200){
+      const empty=new THREE.BufferGeometry();empty.setAttribute('position',new THREE.Float32BufferAttribute([],3));
+      const parent=new THREE.Mesh(empty,material);parent.name=material===asphalt?'driving-surface':material===grass?'terrain':material===sand?'shoulder':'road-detail';
+      for(let a=start;a<end;a+=1200){const piece=ribbon(offsetA,offsetB,liftA,liftB,material,a,Math.min(a+1200,end),step);scene.remove(piece);parent.add(piece);}
+      scene.add(parent);return parent;
+    }
     const pos:number[]=[],uv:number[]=[],idx:number[]=[],colors:number[]=[]; const n=Math.ceil((end-start)/step);
     for(let i=0;i<=n;i++) { const d=start+(end-start)*i/n,p=sample(d); for(const [raw,h] of [[offsetA,liftA],[offsetB,liftB]] as [number|((d:number)=>number),number][]) {const o=typeof raw==='number'?raw:raw(d),offset=offsetAt(d,o);const v=p.position.clone().addScaledVector(p.right,offset); const weights=weightsAt(d),coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h;const height=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;pos.push(v.x,height,v.z);uv.push(o/4,d/4);if(material===sand||material===grass){const color=new THREE.Color(0,0,0);weights.forEach((w,i)=>color.add(new THREE.Color(material===sand?ACTS[i].shoulder:ACTS[i].ground).multiplyScalar(w)));colors.push(color.r,color.g,color.b);}} }
     for(let i=0;i<n;i++){const a=i*2;idx.push(a,a+1,a+2,a+1,a+3,a+2);}

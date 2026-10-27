@@ -1,0 +1,40 @@
+# Codex Goal kickoff — v0.8 First Procedurally Generated Stage + Small Input UI Polish
+
+**NOW OWNER-AUTHORIZED for next implementation.** The prior v0.7D.2 retrospective praise/tire sound task was completed locally with implementation commit `71476fb`, a clean checkout and a running server, per Codex. The user played all 3 pilots under this build, rated each KEEP (difficulty 1/2/2) and specifically says the small biome/input-hint changes may be made **together with v0.8**. They want progress toward "a fun first generated stage". **Do ONE SEQUENTIAL v0.8 Goal**, not an extra UI-only milestone or parallel agents altering same branch.
+
+Read, in order:
+1. `AGENTS.md` — current job scope / local safety.
+2. `docs/V0.8_STAGE_ONE_SPEC.md` — actual Stage 01 output, small UI refinements, scenic criteria.
+3. `docs/V0.8_STAGE_ONE_ACCEPTANCE.md` — runnable, reviewable evidence.
+4. `docs/V0.8_BIOME_VERTICALITY_METADATA.md` — L3 soft verticality preference matrix; NOT a hard ban.
+5. `docs/V0.7D2_HUMAN_PLAYTEST.md` — human feedback / genuinely anchored praise.
+6. Existing local source implementation, L1, multi-placement L2 composer, gamepad/keyboard and review storage.
+
+## Local Git source / permission safety
+
+- The real playable project lives at `C:\astra-dev\OutRun`. Current latest known LOCAL v0.7D.2 implementation `71476fb` on `codex/v0.7d2-feedback-sfx`, or later; confirm actual remote `michael-wang/OutRun`, HEAD, branch, status and active Goal. Preserve all unexpected user edits.
+- **GitHub `main` is DOCUMENTATION-FIRST, not the playable app.** Do NOT checkout/reset/merge origin/main over local source. Branch `codex/v0.8-stage-one` from the latest PLAYABLE local HEAD; `git fetch origin` and selectively import ONLY current `AGENTS.md`, `docs/V0.8_STAGE_ONE_SPEC.md`, `docs/V0.8_STAGE_ONE_ACCEPTANCE.md`, `docs/V0.8_BIOME_VERTICALITY_METADATA.md`, `docs/CODEX_V0.8_STAGE_ONE_KICKOFF.md` and `docs/V0.7D2_HUMAN_PLAYTEST.md`. Raw historic JSON export is ~100 KB and already preserved remotely; import only if needed, never overwrite existing local reviews.
+- Respect real Codex sandbox and approvals. If previous stop-after-v0.7D.2 instruction still blocks branch/fetch, require one explicit ordinary chat authorization in the existing OutRun Codex conversation; no bypassing declined actions.
+- No push, merge, deployment, edits to other repositories including TopWar, new external audio/AI packages, accounts/telemetry, paid backend or copyrighted SEGA car/model/audio content.
+
+## User approval as a normal Codex chat message (if approval history needs fresh authorization)
+
+`I explicitly authorize Project OutRun v0.8 First Procedural Stage, superseding the stop-after-v0.7D.2 instruction for this one milestone. You may branch from my latest playable v0.7D.2 OutRun code, selectively import v0.8 specs, polish the small keyboard/controller UI hints, add L3 biome verticality preferences, and build/test/commit one seeded replayable Procedural Stage 01 locally. All three current pilots are KEEP. Preserve the approved handling, sound, gamepad controls, reviews and feedback history. No push, merge, public deployment, other project edits, Stage 02, traffic, RPG or editor. I will send a separate /goal instruction.`
+
+## Ready-to-paste current Goal (send AFTER the ordinary authorization when required)
+
+```text
+/goal Build Project OutRun v0.8 FIRST PROCEDURALLY GENERATED STAGE, using CURRENT PLAYABLE LOCAL v0.7D.2 app (reported commit 71476fb or later) at C:\astra-dev\OutRun. Owner has played/reviewed three current L2P pilots and marked all KEEP. Check remote/HEAD/branch/worktree; create LOCAL codex/v0.8-stage-one from playable HEAD. Fetch origin/main and selectively import ONLY AGENTS.md, docs/V0.8_STAGE_ONE_SPEC.md, docs/V0.8_STAGE_ONE_ACCEPTANCE.md, docs/V0.8_BIOME_VERTICALITY_METADATA.md, docs/CODEX_V0.8_STAGE_ONE_KICKOFF.md and docs/V0.7D2_HUMAN_PLAYTEST.md; never merge/reset/check out DOCS-ONLY remote main over source. Read all current specs and audit existing actual L1 profile, v0.7D multi-placement L2, recent-history praise, keyboard and standard PS4 Gamepad API code.
+
+FIRST, SMALL UI REFINEMENTS: menu accelerators MUST render compactly inside labels, e.g. [P]lay, [R]eplay same, [N]ext, NOT separated '[P] Play'. Show keyboard keys only when keyboard is active/no gamepad, PS4 glyphs when supported pad is active; handle meaningful last input and disconnect/keyboard swap without flicker. During driving, keyboard mode shows [G]讚 · [I]問題, PS4 mode shows L1 讚 · □ 問題. Require L1 praise (keep R1 alternative), Square (standard gamepad button[2]) ISSUES and a brief safe flag/edit-later workflow, Dpad four positive options + Cross X confirm / Circle cancel; actual retrospective eventAt/reactionAt anchors and review exports must be preserved.
+
+SECOND, BIOME META: implement simple L3 city/coast/canyon soft elevation-strength preference weights from docs/V0.8_BIOME_VERTICALITY_METADATA.md, not a AAA validation engine. Massive crests/climbs/descents more often appear in canyon and future alpine; city/coast mostly gentler BUT exceptional coastal cliff drives/urban ramps remain allowed, and original liked coast pilots are not rewritten. Real altitude strength determined by actual height/grade profile params, not shape names alone. Terrain/roadside scenery must visually suit real generated geometry and blend continuously across world changes. Test seeded distribution and exceptions.
+
+THIRD, REAL STAGE: generate one playable ~100-150-second nominal STAGE 01 'Pacific Getaway' (placeholder original name), from existing supported city/coast/canyon scene packs and 18 L1 Curvature/Elevation/Width shapes. Use v0.7D's VERIFIED multi-placement L2 approach for numerous distance-localized sequential+overlapping driving beats, but actual route must be NEW and procedural: seeded variation must change steering/braking rhythm, signed bend profiles, climb/crest/grade, 2-8 lane transitions, scenic reveal timing, and motif order—NOT merely concatenate 3 unchanged pilot routes, relabel the seed, or change palm positions. Road length is distance-based and route has start/finish, visible Stage Code (seed+generator version+vehicle profile), Replay Same and New Route. Keep genuine grade/coast dynamics and 300kmh arcade handling unchanged, no secret steering/grip fix per seed. Preserve quick praise/issue anchored to Stage+current L2 instance with original historical samples and completion review/difficulty, no overwriting older JSON/user localStorage. No backend needed.
+
+Autonomously run static deterministic generation for AT LEAST 5 seeds (including biome weighting and no invisible self-overlap/terrain intrusion), FULLY DRIVE and RECORD 3 meaningfully different Stage 01 seeds in real browser, sample desktop and Pixel-like 844x390/960x432, test keyboard/PS4 mode hint switching and Square issue + L1 praise with historical eventAt/reactionAt, test same seed replay and actual steering/braking difference among seeds, check 120s+ scene continuity/perf, build/unit/Playwright; fix failures. Preserve previous 8 approved BRK and 3 L2P versions, six gears/300kmh/warm engine/quiet skid, human-pass 144px mobile steering, PC menu, real PS4 input. Commit LOCAL and write docs/V0.8_STAGE_ONE_HANDOFF.md with branch/commits, exact PC/LAN Stage URL, 5 seed codes, 3 full run recordings/screens, all tests and honest PASS/FAIL/UNVERIFIED. No push/merge/public deployment, other projects, traffic/rival AI, new snow/volcano, RPG rewards, huge Stage Composer, generic Mystery Drive or another Stage. STOP for actual owner's multi-seed Stage One playtest.
+```
+
+## Human handoff objective
+
+A single new Stage 01 entry, a real seed/replay/new route loop, a visible variety of fun driving beats and coherent scenery. The player can play several seeds via PC/PS4 or Pixel 8 and submit contextual praise/issues. This is an ALPHA playable first level, not a proof that an infinite game or retention system is solved. Only the owner judges whether it is worth replaying.

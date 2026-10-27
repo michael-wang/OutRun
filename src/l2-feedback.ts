@@ -7,6 +7,7 @@ export const L2_STORAGE='outrun-l2-feedback-v1';
 export const CURRENT_L2_STORAGE='outrun-l2-feedback-v071d1';
 export interface FeedbackAnchor {
  id:string;revision:number;seed:number;contentFingerprint:string;generatorVersion:string;handlingVersion?:string;world:L2Candidate['world'];
+ stageCode?:string;l2InstanceId?:string;
  profiles:L2Candidate['profiles']|{placements:Placement[];activePlacements:Placement[];worldPhases:WorldPhase[]}|{course:{id:string;label:string;curvature:number}};s:number;trackDistance:number;elapsedSeconds:number;timestampMs:number;
  drive:{speedKmh:number;steerRaw:number;steerApplied:number;roadX:number;height:number;grade:number;halfWidth:number;laneCount:number;offRoad:boolean;gas:boolean;brake:boolean};
  source:'drive'|'completion';
@@ -19,7 +20,7 @@ export const emptyReview=():L2Review=>({humanVote:'UNREVIEWED',difficulty:null,o
 export const feedbackNote=(s:unknown)=>typeof s==='string'?s.slice(0,360):'';
 export function readFeedback(raw:string|null):FeedbackStore{
  try{const data=JSON.parse(raw??'{}');if(!data||typeof data!=='object'||Array.isArray(data))return {};
-  const out:FeedbackStore={};for(const [key,r] of Object.entries(data) as [string,any][]){if(!/^l2:(?:L2-\d{3}|L2P-[ABC]|BRK-0[1-8]|FREE-DRIVE):r\d+:[a-f0-9]{8}$/.test(key)||!r||!['UNREVIEWED','KEEP','REWORK','REJECT'].includes(r.humanVote))continue;
+  const out:FeedbackStore={};for(const [key,r] of Object.entries(data) as [string,any][]){if(!/^l2:(?:L2-\d{3}|L2P-[ABC]|BRK-0[1-8]|FREE-DRIVE|STAGE-01):r\d+:[a-f0-9]{8}$/.test(key)||!r||!['UNREVIEWED','KEEP','REWORK','REJECT'].includes(r.humanVote))continue;
    out[key]={humanVote:r.humanVote,difficulty:Number.isInteger(r.difficulty)&&r.difficulty>=1&&r.difficulty<=5?r.difficulty:null,overallNote:feedbackNote(r.overallNote),events:Array.isArray(r.events)?r.events.filter((e:any)=>e&&['praise','issue'].includes(e.kind)&&e.anchor&&Number.isFinite(e.anchor.s)&&(e.kind==='issue'||Object.hasOwn(PRAISE,e.tag))).map((e:any)=>({...e,note:feedbackNote(e.note)})):[]};
   }return out;
  }catch{return {};}

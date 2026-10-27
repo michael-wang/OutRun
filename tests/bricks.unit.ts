@@ -27,7 +27,7 @@ it('every brick has a passable four-detent path, no-steer departs, and technical
   if(strategy==='full-gas'&&['BRK-04','BRK-08'].includes(b.id))expect(off,b.id).toBeGreaterThan(0);
   if(strategy==='full-gas'&&b.id==='BRK-01'){expect(off).toBe(0);expect(min).toBeGreaterThan(225);}
  }
- mkdirSync('docs/evidence/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/brick-simulation.json',JSON.stringify(results,null,2));
+ mkdirSync('docs/evidence/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/brick-simulation.json',JSON.stringify(results,null,2));
 });
 it('human review is unreviewed by default, revision scoped, validated, and independent of QA',()=>{
  expect(exportReviews({}).records.every(r=>r.humanVote==='UNREVIEWED')).toBe(true);
