@@ -1,37 +1,35 @@
 # Project OutRun
 
-Independent original 3D arcade racer inspired by the fun of classic Out Run / OutRun 2. Internal project title is not cleared public branding; use original/licensed art and audio.
+An original browser arcade-driving game inspired by the joy of classic Out Run / OutRun 2, not a licensed SEGA remake. Use only original/license-cleared visual and audio assets; §Project OutRun§ is an internal name, not a cleared public brand.
 
-## ACTIVE: v0.7C.1 — Compact Mobile Steering, Six-Speed, 300 km/h & Warm Audio
+## ACTIVE: v0.7D — True Multi-Placement L2 Composer + targeted car/mobile UI tweaks
 
-Current owner needs: phone steering slider's horizontal travel is too long for both adult and child; genuine automatic six-speed shifting with pleasing acceleration; actual 300 km/h rather than 238; a warmer less piercing engine soundtrack.
+**Latest user-playtested build:** v0.7C.1 (LOCAL implementation §f0ec3f7§, handoff §d1fea62§). The user has accepted the newly warmed engine sound and **144 CSS px horizontal mobile steering travel**. The user now wants:
+1. **More believable six-speed upshifts**: transient real engine/wheel torque interruption and corresponding physical acceleration response, so the speed may naturally pause/dip rather than shift as if uninterrupted. No artificial subtracting from displayed speed.
+2. **Smaller lower-mobile speedometer**: Current dial overlays the top-left MENU; shrink to ~20–26% screen height and move down near the left side of the car, keeping 0–300 dial and gear legible. Menu remains visible AND clickable.
+3. **Shorter-height mobile steering panel**: remove redundant title/instruction captions, slim vertical footprint near lower-left while KEEPING the already approved 144px full steering thumb travel, 9 effective detents and multi-touch.
+4. **True multi-event L2 Composer**: old v0.7C batch defined one C+E+W per entire 30–60s and was a PRODUCT NO-GO. Implement distance-localized L1 instances with several changes over one 25–40s micro-journey. Deliver **THREE** testable L2 pilot routes only. Distinct road beats in sequence and overlapping channels, no arbitrary fixed primitive count.
 
-**The real playable app is LOCAL in `C:\astra-dev\OutRun`** (latest reported v0.7C commits `c87860a` / `ec7f844`). GitHub `main` is DOCUMENTATION-first — do not reset/merge it over working source. Preserve historic BRK-r2 human approvals and exact user feedback on old 16-L2 design (4 direct REJECT records + 12 UNREVIEWED), 18 L1 library and v0.7C positive/negative review interface.
+Both tweaks and Composer are in **one SEQUENTIAL v0.7D Goal**, from latest user-tested v0.7C.1; NOT two parallel Goals on one checkout. Do NOT proceed to mass generate new 16 L2 or v0.7B before new human approval.
 
-### Now: Task 1 (ready to execute)
+### Current authoritative files
 
-| Document | Purpose |
+| File | Purpose |
 | --- | --- |
-| [AGENTS.md](AGENTS.md) | Active single task and local Git rules |
-| [v0.7C.1 Specification](docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md) | Short real thumb travel, six gears, 300 km/h, warm RPM engine |
-| [v0.7C.1 Acceptance](docs/V0.7C1_ACCEPTANCE.md) | Reach/shift/acceleration/audio regression and real phone-like browser |
-| [v0.7C.1 Codex kickoff](docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md) | Normal-chat authorization and one autonomous Goal |
+| [AGENTS.md](AGENTS.md) | v0.7D scope and local safe workflow |
+| [v0.7D Specification](docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md) | Shift physics, compact mobile HUD, multi-placement L2 |
+| [v0.7D Acceptance](docs/V0.7D_ACCEPTANCE.md) | Shift and real menu/touch layout, 3 pilot routes |
+| [Codex v0.7D Kickoff](docs/CODEX_V0.7D_COMPOSER_KICKOFF.md) | Current autonomous Goal and plain-chat authorization |
+| [37s Reference Beat Analysis](docs/REFERENCE_37S_DRIVE_BEATS.md) | Grounded coarse image-based reference timing |
+| [v0.7C Root Cause](docs/V0.7C_L2_DESIGN_POSTMORTEM.md) | Wrong composition unit (whole-route triple) |
+| [18 L1 Shape Library](docs/L1_PRIMITIVE_CATALOG.md) | Reusable technical primitives |
+| [R2 Human KEEP Reviews](docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json) | Earlier 8 accepted experiences and revision integrity |
+| [Roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Future actual gameplay milestones |
 
-### Next: Task 2 (PREPARED, DEPENDENT, not auto-authorized)
+### Git preservation
+Playable app is at **LOCAL §C:\astra-dev\OutRun§**, not on GitHub docs-only §main§. Branch from local current playable HEAD and selectively import latest v0.7D docs; never merge/reset/checkout docs-only main over source. Preserve already human-approved speed/bar/audio behavior and review localStorage/exports.
 
-The old v0.7C L2 Composer used just one C + one E + one W profile across an entire road, resulting in one overlong perceptual event. New v0.7D is a distance-TIMELINE of MULTIPLE local L1 placements, in both sequence and overlapping channels; first test ONLY THREE ~25–40s playable pilot L2 micro-journeys, not another 16-route batch.
+Existing project: Three.js + TypeScript + Vite, real 3D 2–8-lane road, altitude/terrain, accepted Arcade Lateral Balance, 1.75× travel pace, 4 soft steering detents per side, original animated convertible/wheels/occupants/hair and coast/canyon/city environments, Pixel 8 landscape fullscreen PWA/two-thumb swap and PC A/D + Space/Enter.
 
-The second Task needs the newly tested 300-km/h six-gear acceleration and short phone controls from Task 1: do not run both concurrently.
-
-| Document | Purpose |
-| --- | --- |
-| [Classic 37s reference scene beats](docs/REFERENCE_37S_DRIVE_BEATS.md) | Approx sampled images, no made-up exact count of L1 nodes/audio |
-| [v0.7C product failure root cause](docs/V0.7C_L2_DESIGN_POSTMORTEM.md) | Why one C/E/W per route was wrong |
-| [v0.7D multi-placement spec](docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md) | Time-localized L1 timeline + three pilot L2 |
-| [v0.7D acceptance](docs/V0.7D_ACCEPTANCE.md) | Pilot geometry, rhythm and feedback checks |
-| [v0.7D future kickoff](docs/CODEX_V0.7D_COMPOSER_KICKOFF.md) | Use only after Task 1 is completed, owner-playtested and separately authorized |
-
-**Workflow:** In the SAME OutRun Codex conversation, send ordinary v0.7C.1 authorization first, then its `/goal`; only after that delivered and human-tested may the v0.7D Goal begin. No push, merge, public deployment, unrelated projects or backend.
-
-### Protected game baseline
-Three.js + TypeScript + Vite, actual 3D road/car/3 scenes, original convertible with animated wheels/occupants/hair, 1.75× world travel and Arcade Lateral Balance, four soft steering levels each side, bounded off-road slowdown, 2–8 real lane widths and dramatic altitude, fixed chase FOV, car-left analog needle gauge, Pixel 8 20:9 landscape fullscreen/PWA/two-thumb hand swap, PC A/D+Space accelerator+Enter brake.
+### Handoff
+Use current v0.7D kickoff in the SAME OutRun Codex conversation: send ordinary authorization first if needed to supersede stop-after-v0.7C.1, then start a new §/goal§. Codex implements, checks real browser moving footage/phone hitboxes, unit/E2E, commits locally and produces §docs/V0.7D_HANDOFF.md§. No push/merge/public deployment, TopWar changes, runtime telemetry or automatic next version.

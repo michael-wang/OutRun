@@ -1,21 +1,22 @@
-# Project OutRun — roadmap after v0.7C L2 design NO-GO
+# Project OutRun — Roadmap after human v0.7C.1 playtest
 
-## ACTIVE TASK 1 — v0.7C.1
+## CURRENT: v0.7D (owner authorized)
 
-Shorten REAL phone steering travel (adult & child usability), six meaningful automatic gears, pleasurable slower acceleration toward a true 300 km/h, warmer non-shrill engine sound. Keep old accepted driving feel, real road physics/difficulty and R1/R2 user reviews. Benchmark old/new, test full steering reach with gas held and all five upshift events. After local commit and recorded tests, STOP for human phone/powertrain/audio playtest.
+**Accepted from v0.7C.1**: engine audio now pleasing; compact 144px mobile thumb travel. Preserve both unchanged in essence. New requests: genuine short 6-speed upshift torque/longitudinal acceleration change (vehicle km/h continuous, maybe naturally dips), downsize/lower phone speedometer away from the top-left MENU (menu remains clickable), trim the bottom-left steering panel's vertical footprint and remove redundant captions. Retain 300 km/h and 1.75× accepted world pace.
 
-See `docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md`, `docs/V0.7C1_ACCEPTANCE.md`, `docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md`.
+**Then** implement True Multi-Placement L2 Composer with real distance-localized sequential/overlapping L1 C/E/W profiles. Only 3 ~25–40s pilots from current technical L1 library, not another wholesale 16-route batch. See `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md`, `docs/V0.7D_ACCEPTANCE.md`, `docs/CODEX_V0.7D_COMPOSER_KICKOFF.md`. Stop for human driving/review after pilot.
 
-## PREPARED DEPENDENT TASK 2 — v0.7D, NOT AUTO-EXECUTED
+Reference 37s images show multiple perceptual road/scene/traffic and speed beats but **cannot prove hidden primitive counts**. Do not mandate 3–5 L1 or any precise count. Traffic AI is not implemented and not part of current Scope.
 
-Original 16 L2 batch lacked sequential timed/distance-localized events: one C + one E + one W extended over full road. Screenshotted classic ~37s reference shows many evolving bends/grades/scenic/traffic/speed beats; sampled stills cannot reveal exact count of underlying L1 nodes. See `docs/REFERENCE_37S_DRIVE_BEATS.md` and `docs/V0.7C_L2_DESIGN_POSTMORTEM.md`.
+## Historical results kept
 
-New L2 model: several L1 C/E/W placements with start/end distance, overlapping across channels where relevant, sequential within the same channel. Build ONLY 3 distinct ~25–40s micro-journey pilots and user-validate, before bulk generating any new 16 candidate routes.
+- v0.4.3 first satisfying arcade handling, 1.75× world pace and accepted car/controls.
+- v0.7A.1 eight BRK-r2 human KEEP, preserved exactly.
+- v0.7C 18-L1 shape library and positive/issue feedback tech remains. Original 16 L2 designs are DESIGN NO-GO (export specifically 4 REJECT + 12 UNREVIEWED); archived reviews must remain unchanged.
+- v0.7C.1 six-speed/real 300 reached in reported 21.46s, warm engine audio & 144px control PASSED by human; remaining shift feel and mobile layout under v0.7D.
 
-Task 2 is dependent on approved car speed/gear/steering UX of Task 1. Owner must explicitly authorize later; do NOT run two Goals in parallel. See `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md` and `docs/CODEX_V0.7D_COMPOSER_KICKOFF.md`.
+## After human confirms v0.7D pilot
 
-## After L2 pilot HUMAN GO
+Revisit systematically generated L2 families, then a guided five-minute Pacific Road Trip, Mystery Drive, L3 scenery/traffic content, and later car selection, Garage/RPG rewards and maybe a minimal Stage Composer.
 
-Revisit systematic 16-L2 batch with event timelines, then ~5-minute Pacific Road Trip, Mystery Drive, later diverse world/traffic packs and only then RPG currency/Garage/car unlocks. Reuse accepted BRK r2, 18 L1 tech family shape code and live praise/issue feedback UI. Human pleasure is validation, technical tests alone are not.
-
-No speculative massive game-engine rewrite, custom AAA constraint system, concurrent checkout modifications or public deployment without approval.
+**No massive speculative procedure, no physics rewrite, no blanket safe-driving solver, no accidental source reset, no same-repo parallel Goals, no unsupported claim that green tests mean fun.**

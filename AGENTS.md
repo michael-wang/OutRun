@@ -1,30 +1,23 @@
 # Project OutRun — Codex operating agreement
 
-## ACTIVE: v0.7C.1 Compact Steering + Six-Speed + 300 km/h + Warm Audio
+## ACTIVE OWNER-AUTHORIZED: v0.7D — True Multi-Placement L2 Composer + Limited v0.7C.1 Refinements
 
-The owner urgently requests much SHORTER horizontal steering-bar thumb travel on mobile (child and adult cannot comfortably reach far end), six actual automatic gears with audible shifts, an attainable 300 km/h with more satisfying acceleration, and a warmer, less shrill engine tone. This is TASK 1 and is owner-authorized.
+**Owner has played v0.7C.1.** Engine sound PASS. Compact **144 CSS-px full-left↔full-right** mobile steering travel PASS. Those achievements are FROZEN REGRESSIONS. The owner requests believable upshift torque/acceleration interruption, a smaller/lower gauge that does not overlap top-left MENU, and a slimmer lower-left steering control PANEL without redundant instructions. Proceed to the next L2 Composer fix **in the same sequential milestone**, not another independent conflicting Goal.
 
-### TASK 2, DEPENDENT and NOT to run automatically
-v0.7D True Multi-Placement L2 Composer is PREPARED but NOT ACTIVE: must start only AFTER v0.7C.1 is locally finished, committed, **human-playtested**, and a new Codex Goal is authorized. It uses the updated car speed/controls. No concurrent Goals on the same checkout. See `docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md`.
+Read in order: §docs/CODEX_V0.7D_COMPOSER_KICKOFF.md§, §docs/V0.7D_TRUE_L2_COMPOSER_SPEC.md§, §docs/V0.7D_ACCEPTANCE.md§, §docs/REFERENCE_37S_DRIVE_BEATS.md§, §docs/V0.7C_L2_DESIGN_POSTMORTEM.md§, §docs/L1_PRIMITIVE_CATALOG.md§.
 
-## Read first
-1. `docs/CODEX_V0.7C1_POWERTRAIN_KICKOFF.md`
-2. `docs/V0.7C1_POWERTRAIN_AUDIO_SPEC.md`
-3. `docs/V0.7C1_ACCEPTANCE.md`
+## Safe working copy / permissions
+- Work ONLY in §C:\astra-dev\OutRun§, expected remote §michael-wang/OutRun§; never touch §C:\astra-dev\topwar§.
+- Current PLAYABLE v0.7C.1 lives in user's LOCAL code commits §f0ec3f7§ + handoff §d1fea62§ (Codex report; inspect current HEAD/status). Remote GitHub §main§ is docs-first, not the game. **Never merge/reset/check out documentation-only main over source**.
+- Create §codex/v0.7d-multi-placement-l2§ FROM latest playable local HEAD, preserving uncommitted source and user review localStorage; fetch origin/main, selectively import ONLY new v0.7D specs/kickoff, reference-beats doc and this AGENTS.md. Protect other local docs/README and app.
+- Prior stop-after-v0.7C.1 was to gather human playtest feedback; this was received. If auto-review still denies Git, obtain explicit ordinary-chat owner permission, don't repeatedly retry rejected action or bypass actual sandbox approvals.
+- No pushes, merges, public deployments, payment, secrets, third-party engine/audio models, licensed SEGA/Ferrari assets or unrelated project edits.
 
-The v0.7D docs are future-only, not permission to start a second task.
+## Product work, in order
+1. **Mobile HUD/panel P0:** Oversized gauge at top-left covers MENU. Shrink dial to about 20–26% mobile landscape screen height (tune for legibility), LOWER toward car-left, keep needle/numeric speed 0–300 and gear readable, avoid road apex/pedals/controls and menu hitbox. Shorten steering panel's VERTICAL height to about 10–14% viewport, remove instructions "STEER · NEUTRAL" / "4 LEVELS · RELEASE TO NEUTRAL". Preserve actual **144px HORIZONTAL steering travel**, soft nine effective detents and comfortable touch hitbox, hand swap and two-thumb held-gas operation.
+2. **Upshift feel P0:** Genuine automatic shift torque reduction/engagement ~100–300ms causing an actual short pause/dip in longitudinal acceleration. Vehicle speed remains physically continuous and may dip slightly due to real drag, NOT a hardcoded speed subtraction. Five shift telemetry events, coherent RPM/audio already rated PASS, real 300 cap and acceptable acceleration preserved.
+3. **L2 Composer core:** The prior v0.7C 16 generated L2 were PRODUCT NO-GO because each was one C+E+W whole-route overlay, not multi-event gameplay. Implement local **placements[]** with distance start/end and multiple sequential C (and overlapping E/W). Build **exactly THREE** ~25–40s genuinely varied L2 pilots, NOT another massive 16-route batch; no arbitrary hard count like "3–5 L1". Reference ~37s screenshot beats, but image frames cannot reveal exact underlying event count or audio.
+4. **Keep L2 Lab feedback:** immediate praise/issue with spatial snapshot, end KEEP/REWORK/REJECT and difficulty, local JSON export, historical BRK r2 8 KEEP and previous v0.7C first four REJECT/twelve UNREVIEWED records preserved. New L2 pilot IDs start UNREVIEWED.
+5. **QA:** actual rendered/browser drive of three pilots, mobile 844×390 and 960×432 HUD/touch and menu tests with screenshot comparisons, longitudinal torque/RPM/speed telemetry around shifts, full build/unit/Playwright, reproducible geometry/road terrain, plus actual frame/audio behavior.
 
-## Source and permission protection
-- Work ONLY in `C:\astra-dev\OutRun`, remote expected `michael-wang/OutRun`. Last reported local playable v0.7C commits `c87860a` / `ec7f844` or later; verify actual HEAD, branch and uncommitted files.
-- Remote GitHub `main` holds primarily specifications, NOT the source tree. Never merge/reset/check it out over playable local code. Start `codex/v0.7c1-compact-steering-powertrain` from latest playable LOCAL HEAD and selectively import only current Task 1 documents / this AGENTS.md from origin/main.
-- Preserve the original 8 accepted BRK r2 challenges, R1/R2 reviews, the 18 technical L1 profiles and old v0.7C L2 feedback/rejections; new v0.7D compositions are not part of this task.
-- Prior stop-after-v0.7C was a milestone review boundary, not a permanent ban. If automated approval still blocks Git actions, seek explicit owner permission in ordinary SAME Codex chat, respect manual sandbox approvals, never bypass denied actions.
-- Do not modify TopWar or other projects; no unapproved push/merge/public deployment, paid services, remote telemetry or unlicensed SEGA/Ferrari assets.
-
-## Required v0.7C.1 work
-1. SHORTEN ACTUAL touch travel (candidate 120–160 CSS px full lock-to-lock at mobile landscape), keep full ±1 steering and four soft detents each side, accurate hysteresis, left/right hand swap and two-thumb gas/steer.
-2. Implement six real auto gears with RPM rise/drop and five shifts; slower but enjoyable acceleration to TRUE 300 km/h (benchmark old; first target 0→300 around 20–28s), preserve 1.75× world pace and approved Arcade Lateral Balance.
-3. Improve engine WebAudio harmonic timbre and shift/RPM response, gentle to ears; preserve mute/audio gestures.
-4. Real browser PC/Pixel-like touch/audio test, build/unit/Playwright, record actual old/new thumb px reach, speed/gear traces and audio, commit locally and hand off `docs/V0.7C1_HANDOFF.md`.
-
-**STOP AFTER v0.7C.1 for actual user phone/gear/audio review. No automatic v0.7D or v0.7B.**
+Write §docs/V0.7D_HANDOFF.md§ with objective evidence, screenshots/videos, local commit(s), updated phone URL and PASS/FAIL/UNVERIFIED. STOP for human vehicle/UI and three-L2 PLAYTEST. No v0.7B, traffic, RPG, new biomes, full editor or separate parallel Goal.
