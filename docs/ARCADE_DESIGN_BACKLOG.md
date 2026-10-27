@@ -1,27 +1,27 @@
-# OutRun roadmap after v0.7D.1 human test — toward the first procedural stage
+# Project OutRun roadmap — ready for one REAL procedural stage
 
-## Human acceptance / facts
+## RECENT HUMAN RESULTS
 
-- v0.7D original multi-placement L2 Pilot A/B/C: 3 KEEP, difficulty 2/3/2.
-- v0.7D.1 revised grade/speed handling and PS4 Gamepad: user PASS for controller; all 3 pilots still KEEP, difficulty now **1/2/2**. The exported machine autoQA remains PENDING, independent of Codex reported green build/test.
-- Preserve raw [v0.7D.1 reviews](reviews/V0.7D1_PILOT_R1_HUMAN_FEEDBACK.json), original v0.7D pilot reviews, earlier 8 BRK-r2 KEEP and earlier L2 negatives. No fabricated events/relabels.
+- v0.7D original 3 pilots: KEEP all, difficulty 2/3/2.
+- v0.7D.1 pilot update: KEEP all, difficulty 1/2/2; physical PS4 controller PASS.
+- **v0.7D.2 current playtest:** all 3 L2P-A/B/C KEEP again, difficulty 1/2/2, positive feedback has verified *different* eventAt and reactionAt on actual Gamepad/mouse use. Source raw `docs/reviews/V0.7D2_PILOT_R1_HUMAN_FEEDBACK.json` and digest `docs/V0.7D2_HUMAN_PLAYTEST.md`. The UI/audio subfeatures were not explicitly all declared PASS; new corrections are incorporated into Stage One.
 
-## CURRENT owner-authorized: v0.7D.2 Retrospective Praise & Squeal Quality
+## ACTIVE OWNER-COMMISSIONED: v0.8 Stage 01 Pacific Getaway
 
-1. Fix false-positive low-speed squeals; simple lateral position correction ≠ sliding tire.
-2. Make squeal sound softer than now, clearly less perceptually dominant than USER-PASSED engine, consistent left/right at genuine hard corners.
-3. Display PC shortcuts on the actual menu actions, not only in a help modal: `[R]eplay same`, `[N]ext`, `[P]lay again` etc.
-4. Gamepad: either L1 or R1 to quick praise, 4 Dpad directions map to 4 exact Chinese praise tags, Cross X commits/resumes and Circle cancels, clearly visible hints. Keyboard G/I, arrows/1–4 and Enter.
-5. **Real retro-position markers**: snapshot a small last ~12–15s of simulated driving, default praise position ~2–3s BEFORE press, optional recent-time adjustment, export true eventAt and reactionAt with prior world/L1/vehicle. At completion keep buffer briefly. Preserve existing issue and review export functionality.
+**ONE sequential Goal** from latest playable LOCAL v0.7D.2 code. First small UX/L3 corrections, then Stage:
 
-Authoritative spec `docs/V0.7D2_FEEDBACK_AUDIO_SPEC.md`, acceptance `docs/V0.7D2_ACCEPTANCE.md` and kickoff `docs/CODEX_V0.7D2_KICKOFF.md`. **Stop for player SFX and controller praise playtest**.
+1. **L3 world/biome metadata**: canyon very dramatic verticality weighted higher; city and coast mostly mild/rolling but occasional extreme plausible coastal headland/urban ramp allowed. Applies to real grade/height instance parameters, NOT hard bans or whole-E-shape name filters. Existing 3 scenes only; no new Alpine art pack. Terrain/props respect generated road/biome.
+2. **Keyboard/menu shortcuts**: compact embedded letter `[P]lay`, `[R]eplay same`, `[N]ext`; no spaced prefix `[P] Play`. The help labels change between meaningful keyboard use, connected active standard gamepad and mobile touch. UI must reflect real bindings and not hide control capabilities.
+3. **In-drive input legend**: gamepad `L1 讚 · □ 問題`, keyboard `[G]讚 · [I]問題`; Square button creates anchored issue flag for later note if needed. Retrospective praise and issue default to genuine earlier event snapshot, exported eventAt + reactionAt, PS4 D-pad tag / Cross confirm.
+4. **Procedural Stage One**: nominal ~100–150 second start→finish; deterministic `Stage Code`, Replay Same, New Route; actually sample several unique combinations of multi-placement L1/L2 curve+grade+width+scenery motifs and a coherent driving arc. This must NOT be the 3 static liked Pilots in a row or merely moving palm trees. No runtime model.
+5. **Verification**: ≥5 deterministic stage seeds; 3 fully recorded real-browser full Stage drives, at least 2 materially different steering/brake demands, no same-altitude impossible overlaps or props intruding the roadway, working Pixel/gamepad/keyboard input and feedback; stop for human “would I drive a NEW seed again?” assessment.
 
-## NEXT PREPARED, NOT AUTOMATIC: v0.8 First Procedural Stage
+Authoritative docs: `docs/V0.8_STAGE_ONE_SPEC.md`, `docs/V0.8_STAGE_ONE_ACCEPTANCE.md`, `docs/V0.8_BIOME_VERTICALITY_METADATA.md`, `docs/CODEX_V0.8_STAGE_ONE_KICKOFF.md`.
 
-Once v0.7D.2 gets human GO, create Stage 01 **Pacific Getaway** (roughly 100–150s) with a reproducible seed and actual procedural variations of C/E/W and Stage beat orders using the 3 existing visual biomes. Don't merely concatenate the 3 fixed L2P pilots; generate a new continuous road and scenery with real variation in steering/braking/grades/landmarks. Keep instant positive/negative retrospective feedback throughout the longer drive. Test 5 seeds, actually play/record 3, final replay/new-route controls, honest human stage rating. See `docs/V0.8_STAGE_ONE_SPEC.md` and future kickoff.
+## HUMAN REVIEW AFTER v0.8
 
-## LATER (not yet)
+User drives multiple actual Stage Codes, rates overall KEEP/REWORK/REJECT and pleasant/surprising moments via location-aware praise/issue. Only after meaningful replayable Stage One enjoyment consider larger 3–5 minute trips, Mystery Drive discovery, more terrain/traffic/surface vocabularies and later progression/garage.
 
-Expand to full 5-min Pacific Road Trip, then Mystery Drive, broader approved obstacle/traffic vocabulary, snow/volcano, optional minimal editor, reward coins/Garage only after procedural rides are replay-fun WITHOUT currency. Avoid speculative AAA solver, overgrown engineering process, generic editors, or one-pass 16-L2 mass work.
+## NOT NOW
 
-**Principle:** joyful high-speed driving plus player-identified positive moments; no machine-generated pretend fun.
+No 3A optimizer, stage/world GUI editor, cold-start new engine, physical traffic/rival cars, new snow/volcano assets, full RPG economy, push/merge/public deploy or other-repo operations. Keep original approved BRK, L2P and failed v0.7C review archives immutable.
