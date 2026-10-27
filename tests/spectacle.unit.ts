@@ -10,7 +10,7 @@ it('earlier proportional pose stays quiet on straights and reaches a genuine loa
  for(const u of [.1,.25,1])expect(bodyYawTarget(u,0,REFERENCE_SPEED)).toBe(0);
  expect(bodyYawTarget(1,.75,REFERENCE_SPEED)*180/Math.PI).toBe(50);
  expect(bodyYawTarget(-1,-1.2,REFERENCE_SPEED)).toBe(-bodyYawTarget(1,1.2,REFERENCE_SPEED));
- mkdirSync('docs/evidence/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/pose-before-after.json',JSON.stringify(rows,null,2));
+ mkdirSync('docs/evidence/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/pose-before-after.json',JSON.stringify(rows,null,2));
 });
 it('both substantial sweepers preserve the accepted gain and pass full gas without brakes',()=>{
  expect(PRESSURE_GAIN).toBeCloseTo(.6094527155598083,12);const track=createTrack(),runs=[];
@@ -20,5 +20,5 @@ it('both substantial sweepers preserve the accepted gain and pass full gas witho
   while(s.distance<c.end+40){const k=track.sample(s.distance).curvature,steer=Math.round(requiredSteering(k,s.speed)*4)/4;for(let j=0;j<6;j++)step(s,{gas:true,brake:false,steer},1/120,track.sample(s.distance).curvature,1.75);rows.push({...s});}
   expect(rows.every(s=>!s.offRoad&&s.speed*3.6>=220)).toBe(true);runs.push({id,angle,rows});
  }
- writeFileSync('docs/evidence/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/full-gas-unit.json',JSON.stringify(runs,null,2));
+ writeFileSync('docs/evidence/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/full-gas-unit.json',JSON.stringify(runs,null,2));
 });

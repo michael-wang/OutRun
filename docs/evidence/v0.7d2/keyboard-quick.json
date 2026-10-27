@@ -1,0 +1,485 @@
+{
+  "errors": [],
+  "state": {
+    "gear": 5,
+    "rpm": 6759.749369155591,
+    "shiftRemaining": 0,
+    "shiftDirection": 0,
+    "gearInitialized": true,
+    "tractionFactor": 1,
+    "driveForce": 0,
+    "roadDrag": 0.5209260712980188,
+    "netAcceleration": -11.288492699483623,
+    "distance": 861.9111760887201,
+    "speed": 62.211941204000595,
+    "lateral": 6.7084772721160535,
+    "heading": 0,
+    "velocityHeading": 0,
+    "worldHeading": -0.3050139342285722,
+    "steering": 0,
+    "yawRate": 0,
+    "slipAngle": 0,
+    "slip": 0.6378318369075741,
+    "offRoad": true,
+    "footprintEdge": 7.838477272116053,
+    "curvature": -0.0024119070301864966,
+    "corridorSide": 0,
+    "steeringTarget": 0,
+    "drifting": true,
+    "rawSteer": 0,
+    "effectiveSteer": 0,
+    "requiredSteer": -0.48181738821678277,
+    "lateralRate": 5.68915918453787,
+    "appliedSteer": 0,
+    "steerFrom": 0,
+    "steerTo": 0,
+    "steerTime": 0.31670000000000004,
+    "grade": 0,
+    "gradeAcceleration": 0,
+    "roadHalfWidth": 7,
+    "laneCount": 4,
+    "highSpeedPace": 1.75,
+    "effectivePace": 1.75,
+    "travelSpeed": 108.87089710700104,
+    "mode": "playing",
+    "elapsed": 5.16690000000004,
+    "frames": 330,
+    "inputs": {
+      "gas": false,
+      "brake": false,
+      "steer": 0
+    },
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 151.92873843451918,
+      "engineRpm": 6759.749369155591,
+      "gear": 5,
+      "skidLevel": 0,
+      "windLevel": 0.0557326890485284,
+      "rms": 0.015034677699605934
+    },
+    "trackLength": 4300,
+    "position": [
+      14.52512962945998,
+      35.04,
+      861.9076457722596
+    ],
+    "swapped": false,
+    "surfaceError": 0,
+    "camera": {
+      "horizontalFov": 76,
+      "fov": 47.44840036542012,
+      "distance": 8,
+      "height": 2.6,
+      "lookAhead": 39.16833447425903,
+      "lookHeight": 0,
+      "position": [
+        12.361614146871615,
+        37.64,
+        854.2057498526434
+      ]
+    },
+    "immersive": {
+      "active": false,
+      "installed": false,
+      "lockState": "idle",
+      "pending": false,
+      "message": ""
+    },
+    "rightScreenDelta": 0.15671320866411684
+  },
+  "store": {
+    "l2:L2P-A:r1:8e795bc3": {
+      "humanVote": "UNREVIEWED",
+      "difficulty": null,
+      "overallNote": "",
+      "events": [
+        {
+          "kind": "praise",
+          "tag": "thrilling",
+          "note": "",
+          "anchor": {
+            "id": "L2P-A",
+            "revision": 1,
+            "seed": 17401,
+            "contentFingerprint": "8e795bc3",
+            "generatorVersion": "v0.7D.1-r1",
+            "handlingVersion": "v0.7D.1",
+            "world": "city",
+            "profiles": {
+              "placements": [
+                {
+                  "channel": "curvature",
+                  "id": "C02",
+                  "startS": 300,
+                  "endS": 1150,
+                  "parameters": {
+                    "effort": 0.5,
+                    "direction": -1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "City sweep"
+                },
+                {
+                  "channel": "elevation",
+                  "id": "E03",
+                  "startS": 650,
+                  "endS": 2200,
+                  "parameters": {
+                    "base": 35,
+                    "amplitude": 105,
+                    "direction": 1,
+                    "shelfStart": 0.32,
+                    "shelfEnd": 0.68
+                  },
+                  "transition": "smooth",
+                  "beat": "Climb, crest and descent"
+                },
+                {
+                  "channel": "width",
+                  "id": "W02",
+                  "startS": 650,
+                  "endS": 1500,
+                  "parameters": {
+                    "from": 4,
+                    "to": 6,
+                    "start": 0,
+                    "end": 1
+                  },
+                  "transition": "smooth",
+                  "beat": "Boulevard opens"
+                },
+                {
+                  "channel": "curvature",
+                  "id": "C04",
+                  "startS": 1450,
+                  "endS": 2250,
+                  "parameters": {
+                    "effort": 0.65,
+                    "direction": 1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "Counter-bend"
+                },
+                {
+                  "channel": "curvature",
+                  "id": "C02",
+                  "startS": 2550,
+                  "endS": 2950,
+                  "parameters": {
+                    "effort": 0.4,
+                    "direction": -1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "Last gentle sweep"
+                }
+              ],
+              "activePlacements": [],
+              "worldPhases": [
+                {
+                  "startS": 0,
+                  "endS": 1450,
+                  "world": "city",
+                  "beat": "City boulevard"
+                },
+                {
+                  "startS": 1450,
+                  "endS": 3350,
+                  "world": "coast",
+                  "beat": "Coast and sea reveal"
+                }
+              ]
+            },
+            "s": 258.00982400583666,
+            "trackDistance": 608.0098240058367,
+            "elapsedSeconds": 2.8083333333333256,
+            "timestampMs": 1793120323136,
+            "source": "drive",
+            "drive": {
+              "speedKmh": 207.83294476592366,
+              "steerRaw": 0,
+              "steerApplied": 0,
+              "roadX": 0,
+              "height": 35,
+              "grade": 0,
+              "halfWidth": 7,
+              "laneCount": 4,
+              "offRoad": false,
+              "gas": true,
+              "brake": false
+            }
+          },
+          "eventAt": {
+            "id": "L2P-A",
+            "revision": 1,
+            "seed": 17401,
+            "contentFingerprint": "8e795bc3",
+            "generatorVersion": "v0.7D.1-r1",
+            "handlingVersion": "v0.7D.1",
+            "world": "city",
+            "profiles": {
+              "placements": [
+                {
+                  "channel": "curvature",
+                  "id": "C02",
+                  "startS": 300,
+                  "endS": 1150,
+                  "parameters": {
+                    "effort": 0.5,
+                    "direction": -1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "City sweep"
+                },
+                {
+                  "channel": "elevation",
+                  "id": "E03",
+                  "startS": 650,
+                  "endS": 2200,
+                  "parameters": {
+                    "base": 35,
+                    "amplitude": 105,
+                    "direction": 1,
+                    "shelfStart": 0.32,
+                    "shelfEnd": 0.68
+                  },
+                  "transition": "smooth",
+                  "beat": "Climb, crest and descent"
+                },
+                {
+                  "channel": "width",
+                  "id": "W02",
+                  "startS": 650,
+                  "endS": 1500,
+                  "parameters": {
+                    "from": 4,
+                    "to": 6,
+                    "start": 0,
+                    "end": 1
+                  },
+                  "transition": "smooth",
+                  "beat": "Boulevard opens"
+                },
+                {
+                  "channel": "curvature",
+                  "id": "C04",
+                  "startS": 1450,
+                  "endS": 2250,
+                  "parameters": {
+                    "effort": 0.65,
+                    "direction": 1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "Counter-bend"
+                },
+                {
+                  "channel": "curvature",
+                  "id": "C02",
+                  "startS": 2550,
+                  "endS": 2950,
+                  "parameters": {
+                    "effort": 0.4,
+                    "direction": -1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "Last gentle sweep"
+                }
+              ],
+              "activePlacements": [],
+              "worldPhases": [
+                {
+                  "startS": 0,
+                  "endS": 1450,
+                  "world": "city",
+                  "beat": "City boulevard"
+                },
+                {
+                  "startS": 1450,
+                  "endS": 3350,
+                  "world": "coast",
+                  "beat": "Coast and sea reveal"
+                }
+              ]
+            },
+            "s": 258.00982400583666,
+            "trackDistance": 608.0098240058367,
+            "elapsedSeconds": 2.8083333333333256,
+            "timestampMs": 1793120323136,
+            "source": "drive",
+            "drive": {
+              "speedKmh": 207.83294476592366,
+              "steerRaw": 0,
+              "steerApplied": 0,
+              "roadX": 0,
+              "height": 35,
+              "grade": 0,
+              "halfWidth": 7,
+              "laneCount": 4,
+              "offRoad": false,
+              "gas": true,
+              "brake": false
+            }
+          },
+          "reactionAt": {
+            "id": "L2P-A",
+            "revision": 1,
+            "seed": 17401,
+            "contentFingerprint": "8e795bc3",
+            "generatorVersion": "v0.7D.1-r1",
+            "handlingVersion": "v0.7D.1",
+            "world": "city",
+            "profiles": {
+              "placements": [
+                {
+                  "channel": "curvature",
+                  "id": "C02",
+                  "startS": 300,
+                  "endS": 1150,
+                  "parameters": {
+                    "effort": 0.5,
+                    "direction": -1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "City sweep"
+                },
+                {
+                  "channel": "elevation",
+                  "id": "E03",
+                  "startS": 650,
+                  "endS": 2200,
+                  "parameters": {
+                    "base": 35,
+                    "amplitude": 105,
+                    "direction": 1,
+                    "shelfStart": 0.32,
+                    "shelfEnd": 0.68
+                  },
+                  "transition": "smooth",
+                  "beat": "Climb, crest and descent"
+                },
+                {
+                  "channel": "width",
+                  "id": "W02",
+                  "startS": 650,
+                  "endS": 1500,
+                  "parameters": {
+                    "from": 4,
+                    "to": 6,
+                    "start": 0,
+                    "end": 1
+                  },
+                  "transition": "smooth",
+                  "beat": "Boulevard opens"
+                },
+                {
+                  "channel": "curvature",
+                  "id": "C04",
+                  "startS": 1450,
+                  "endS": 2250,
+                  "parameters": {
+                    "effort": 0.65,
+                    "direction": 1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "Counter-bend"
+                },
+                {
+                  "channel": "curvature",
+                  "id": "C02",
+                  "startS": 2550,
+                  "endS": 2950,
+                  "parameters": {
+                    "effort": 0.4,
+                    "direction": -1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "Last gentle sweep"
+                }
+              ],
+              "activePlacements": [
+                {
+                  "channel": "curvature",
+                  "id": "C02",
+                  "startS": 300,
+                  "endS": 1150,
+                  "parameters": {
+                    "effort": 0.5,
+                    "direction": -1,
+                    "start": 0,
+                    "end": 1,
+                    "secondary": 0.7
+                  },
+                  "transition": "smooth",
+                  "beat": "City sweep"
+                }
+              ],
+              "worldPhases": [
+                {
+                  "startS": 0,
+                  "endS": 1450,
+                  "world": "city",
+                  "beat": "City boulevard"
+                },
+                {
+                  "startS": 1450,
+                  "endS": 3350,
+                  "world": "coast",
+                  "beat": "Coast and sea reveal"
+                }
+              ]
+            },
+            "s": 476.6564294404694,
+            "trackDistance": 826.6564294404694,
+            "elapsedSeconds": 4.850200000000026,
+            "timestampMs": 1793120325171,
+            "source": "drive",
+            "drive": {
+              "speedKmh": 232.13187311921632,
+              "steerRaw": 0,
+              "steerApplied": 0,
+              "roadX": 4.824567233094539,
+              "height": 35,
+              "grade": 0,
+              "halfWidth": 7,
+              "laneCount": 4,
+              "offRoad": false,
+              "gas": true,
+              "brake": false
+            }
+          },
+          "offsetSeconds": 2.0418666666667002,
+          "inputOrigin": "keyboard"
+        }
+      ]
+    }
+  }
+}

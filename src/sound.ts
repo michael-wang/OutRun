@@ -41,24 +41,29 @@ export class EngineSound {
       const air=context.createBiquadFilter();air.type='lowpass';air.frequency.value=650;
       this.windGain=context.createGain();this.windGain.gain.value=0;
       wind.connect(air);air.connect(this.windGain);this.windGain.connect(this.master);wind.start();
-      this.skid = context.createOscillator(); this.skid.type = 'triangle'; this.skid.frequency.value = 1500;
+      this.skid = context.createOscillator(); this.skid.type = 'triangle'; this.skid.frequency.value = 650;
       this.skidGain = context.createGain(); this.skidGain.gain.value = 0;
       this.skid.connect(this.skidGain); this.skidGain.connect(this.master); this.skid.start();
       // A tiny modulation makes sustained squeal less like a UI beep.
-      const wobble = context.createOscillator(); wobble.frequency.value = 31;
-      const amount = context.createGain(); amount.gain.value = 95;
+      const wobble = context.createOscillator(); wobble.frequency.value = 16;
+      const amount = context.createGain(); amount.gain.value = 35;
       wobble.connect(amount); amount.connect(this.skid.frequency); wobble.start();
     }
     await this.context.resume();
   }
   setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
-  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number}) {
-    this.slipPersistence=slip>.45&&speed>35?this.slipPersistence+dt:0;
-    this.quietPersistence=slip<.25||speed<25?this.quietPersistence+dt:0;
+  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number}) {
+    // Lateral velocity can be a deliberate lane change, not tire stress.
+    const demand=Math.abs(drivetrain?.requiredSteer??0),effort=Math.abs(drivetrain?.appliedSteer??0);
+    const curveLoad=Math.max(0,Math.min(1,(demand-.3)/.45));
+    const stress=slip*curveLoad*Math.max(0,Math.min(1,(effort-.18)/.42));
+    const speedGain=Math.max(0,Math.min(1,(speed*3.6-100)/60));
+    this.slipPersistence=stress>.20&&speedGain>0?this.slipPersistence+dt:0;
+    this.quietPersistence=stress<.12||speedGain===0?this.quietPersistence+dt:0;
     if(this.slipPersistence>.10)this.squealing=true;
     if(this.quietPersistence>.18)this.squealing=false;
     this.active = true;this.engineRpm=drivetrain?.rpm??Math.min(7200,1000+speed*85);this.engineGear=drivetrain?.gear??1;
-    this.engineHz = 28+this.engineRpm*1.1/60+(gas ? 3 : 0); this.skidLevel = this.squealing ? Math.min(.16,Math.max(0,slip-.20)*.24):0;
+    this.engineHz = 28+this.engineRpm*1.1/60+(gas ? 3 : 0); this.skidLevel = this.squealing ? Math.min(.045,Math.max(0,stress-.15)*.07)*speedGain:0;
     this.windLevel=.10*Math.min(1,(speed/(300/3.6))**2);
     if (!this.context) return;
     const now = this.context.currentTime;
@@ -66,8 +71,8 @@ export class EngineSound {
     this.undertone!.frequency.setTargetAtTime(this.engineHz*.5,now,.08);
     this.windGain!.gain.setTargetAtTime(this.windLevel,now,.12);
     this.engineGain!.gain.setTargetAtTime(gas ? (drivetrain?.shiftRemaining ? .15 : .22) : 0.11, now, 0.07);
-    this.skid!.frequency.setTargetAtTime(850 + slip * 400, now, 0.06);
-    this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.045);
+    this.skid!.frequency.setTargetAtTime(510 + stress * 250, now, 0.06);
+    this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
   pause() { this.active = false;this.squealing=false;this.slipPersistence=0;this.quietPersistence=0;this.skidLevel = 0;this.windLevel=0; if (this.context) { this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   inspect() {

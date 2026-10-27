@@ -14,7 +14,7 @@ it('real world distance scales with speed; audio follows speed and throttle',()=
  }
  expect(distances[2]/distances[0]).toBeGreaterThan(3.5);expect(notes[2]).toBeGreaterThan(notes[1]);expect(notes[1]).toBeGreaterThan(notes[0]);
  sound.update(60,0,false);expect(sound.inspect().engineHz).toBeLessThan(notes[2]);
- for(let i=0;i<20;i++)sound.update(60,.8,true);expect(sound.inspect().skidLevel).toBeGreaterThan(0);sound.pause();expect(sound.inspect().windLevel).toBe(0);
+ for(let i=0;i<20;i++)sound.update(60,.8,true,1/60,{rpm:6000,gear:4,shiftRemaining:0,requiredSteer:.9,appliedSteer:.9});expect(sound.inspect().skidLevel).toBeGreaterThan(0);sound.pause();expect(sound.inspect().windLevel).toBe(0);
 });
 it('Extreme then S sequence rewards braking with a clean exit',()=>{
  const track=createTrack(),results=[],start=COURSE.find(c=>c.id==='extreme')!.start-150,end=COURSE.find(c=>c.id==='s-right')!.end;

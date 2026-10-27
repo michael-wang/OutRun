@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';import{mkdirSync,writeFileSync}from'node:fs';
-const root='docs/evidence/v0.7d1/regressions/v0.7d';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.7d2/regressions/v0.7d1/regressions/v0.7d';mkdirSync(root,{recursive:true});
 test('real browser integration shows a force-based interruption at all five shifts',async({page})=>{
  const runs=[];for(const fps of [30,60]){const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/?lab=l2&l2=L2-001');await page.locator('#l2-play').click();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:350,speed:0});});await page.keyboard.down('Space');const rows=await page.evaluate(fps=>{const g=(window as any).__drive,r=[];for(let i=0;i<fps*29;i++){g.advance(1/fps);r.push(g.snapshot());}return r;},fps);await page.keyboard.up('Space');
  const events:any[]=[];for(let i=1;i<rows.length;i++){const a=rows[i-1],b=rows[i];expect(Math.abs(b.speed-a.speed)).toBeLessThan(.35);if(b.gear>a.gear)events.push({from:a.gear,to:b.gear,beforeRpm:a.rpm,index:i,rows:[]});const e=events.at(-1);if(e&&b.shiftRemaining>0)e.rows.push({...b,measuredAcceleration:(b.speed-a.speed)/(b.elapsed-a.elapsed)});}

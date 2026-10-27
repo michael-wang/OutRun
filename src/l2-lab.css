@@ -3,3 +3,5 @@
 .l2-heading h1{letter-spacing:-.5px}.l2-lab .primary{width:auto;flex:1;margin:0}
 #app:has(.l2-lab) #immersive-note{top:62px;left:auto;right:18px;max-width:220px}
 @media(min-width:601px) and (max-height:480px){.l2-columns>div:first-child>label:nth-child(-n+2){display:inline-block;vertical-align:top;width:28%}.l2-columns>div:first-child>label:nth-child(2){width:70%;margin-left:2%}.l2-heading h1{margin-bottom:6px}.l2-lab h2{margin:6px 0}.l2-lab p{margin:6px 0}}
+#l2-quick-tags button[aria-pressed=true]{outline:3px solid #ffd18b;background:#f4c17b;color:#153b43}#l2-quick-legend{font-size:12px;color:#ffdc9f} .l2-history{display:flex;gap:8px} .shortcut::before{content:'[' attr(data-shortcut) '] ';color:#ffdb9f;font-weight:800}@media(pointer:coarse){.shortcut::before{content:''}}
+.primary.shortcut::before{color:#173e40}@media(pointer:coarse){#l2-feedback-dialog[data-origin=touch] #l2-quick-legend{display:none}}

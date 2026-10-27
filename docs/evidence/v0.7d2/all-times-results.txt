@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:45092) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\v07d2-feedback.spec.ts:16:1 › all recent-time choices resolve to real samples (1.1s)
+
+  1 passed (1.9s)

@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
 test('all sixteen L2 scenes render real road and retain clean independent review defaults',async({page})=>{
  const errors:string[]=[],rows=[];page.on('pageerror',e=>errors.push(e.message));
  for(let i=1;i<=16;i++){
@@ -29,7 +29,7 @@ test('Pixel-like feedback controls keep two-thumb input isolated in both layouts
 test('praise and issue anchors precede clearing controls; completion feedback stays with the completed L2',async({page})=>{
  await page.goto('/?lab=l2&l2=L2-007');await page.locator('#l2-play').click();await page.evaluate(()=>(window as any).__drive.manual(true));await page.keyboard.down('Space');await page.keyboard.down('KeyD');await page.evaluate(()=>(window as any).__drive.advance(.3));
  const before=await page.evaluate(()=>(window as any).__drive.snapshot());await page.locator('#l2-praise').click();await expect(page.locator('#l2-feedback-dialog')).toBeVisible();await page.locator('[data-praise-tag=thrilling]').click();
- let data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-l2-feedback-v071d1')!));let r:any=Object.values(data)[0];expect(r.humanVote).toBe('UNREVIEWED');expect(r.events[0].anchor.trackDistance).toBe(before.distance);expect(r.events[0].anchor.drive.gas).toBe(true);expect(r.events[0].anchor.drive.steerApplied).toBe(before.appliedSteer);
+ let data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-l2-feedback-v071d2')!));let r:any=Object.values(data)[0];expect(r.humanVote).toBe('UNREVIEWED');expect(r.events[0].reactionAt.trackDistance).toBe(before.distance);expect(r.events[0].reactionAt.drive.gas).toBe(true);expect(r.events[0].reactionAt.drive.steerApplied).toBe(before.appliedSteer);
  await page.keyboard.up('Space');await page.keyboard.up('KeyD');await page.locator('#l2-feedback-resume').click();expect(await page.evaluate(()=>(window as any).__drive.snapshot().inputs)).toEqual({gas:false,brake:false,steer:0});
  await page.evaluate(()=>{window.dispatchEvent(new KeyboardEvent('keydown',{code:'Space',repeat:true}));window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyD',repeat:true}));(window as any).__drive.advance(.2);});expect(await page.evaluate(()=>(window as any).__drive.snapshot().inputs)).toEqual({gas:false,brake:false,steer:0});
  await page.locator('#l2-issue').click();await page.locator('#l2-event-note').fill('彎道視線：問題測試');await page.locator('#l2-save-issue').click();

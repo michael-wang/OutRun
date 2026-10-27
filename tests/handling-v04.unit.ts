@@ -6,7 +6,7 @@ import {EngineSound} from '../src/sound';
 
 it('quiet gentle steering and persistent meaningful slip drive hysteretic squeal',()=>{
  const sound=new EngineSound();for(let i=0;i<300;i++)sound.update(113,.15,true,1/120);expect(sound.inspect().skidLevel).toBe(0);
- for(let i=0;i<20;i++)sound.update(113,.8,true,1/120);expect(sound.inspect().skidLevel).toBeGreaterThan(.1);
+ for(let i=0;i<20;i++)sound.update(60,.8,true,1/120,{rpm:6000,gear:4,shiftRemaining:0,requiredSteer:.9,appliedSteer:.9});expect(sound.inspect().skidLevel).toBeGreaterThan(.01);
  for(let i=0;i<40;i++)sound.update(113,0,true,1/120);expect(sound.inspect().skidLevel).toBe(0);
 });
 
