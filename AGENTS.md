@@ -1,19 +1,29 @@
-# OutRun — project operating guidance (2026-10-28)
+# Project OutRun — Current Codex Work Agreement (2026-10-28)
 
-## STATUS: v0.8.4 complete locally; 10-minute streaming road trip PLANNED, NOT AUTHORIZED
+## ACTIVE OWNER-COMMISSIONED: v0.8.5 — Bounded Road/Scene Streaming Foundation
 
-Latest owner-playtested local v0.8.4: \`codex/v0.8.4-visual-captures\` with implementation \`edd7018\` and handoff \`4d2b6ad\` reported by Codex. Working tree reported clean; source is **local Windows** \`C:\astra-dev\OutRun\`. Remote GitHub \`main\` remains **documentation-first**, not the playable application. **Never checkout, merge or reset main over local game code**. Before any authorized work verify actual local playable HEAD and parallel Goals.
+The owner explicitly said **"很好，請進行"** after approving a phased path to a **10-minute richly varied procedural road trip**. Current user authorization is ONLY for **v0.8.5**, NOT permission to implement future 10-minute v0.9 or scenery-art v0.9.1 automatically. The user wants no full-route upfront geometry build and no visible scene-load hitch.
 
-**Fresh owner review after v0.8.4:** Multi-photo save works to \`C:\astra-dev\OutRun\captures\YYYY-MM-DD\`. Photo "saved" acknowledgement should be tiny during driving; menu should show dated captures folder + click to actually open that Windows folder from local PC, removing \`Recent Photos\`. Two screenshots still show visibly floating/hollow distant uphill road and unnaturally uniform/thin palms despite v0.8.4 passing automated tests.
+**Latest playable LOCAL code:** Windows `C:\astra-dev\OutRun`, reported Codex v0.8.4 on `codex/v0.8.4-visual-captures`, implementation `edd7018` and handoff `4d2b6ad`. Verify actual HEAD/branch/worktree and no concurrent Goal; user may have changed files. Remote GitHub `main` is DOCUMENTATION-FIRST, **never checkout/reset/merge it over playable source**. Start a new LOCAL `codex/v0.8.5-scene-streaming` from playable v0.8.4 HEAD and selectively import only current spec/kickoff/acceptance docs.
 
-**Override in product priorities:** Owner wants **10-minute varied scenic drive**, not further isolated art polish of current two-minute course. Startup must not load/build the full 10-minute geometry and scene switching must be **imperceptible / without lag**; CPU/GPU memory usage bounded. See **required planning docs**:
+### Required reading order
 
-1. \`docs/V0.8.4_HUMAN_FOLLOWUP_10MIN.md\` — exact new human test, two screenshots and 114.95-sec telemetry.
-2. \`docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md\` — lightweight whole-route L1/L2/L3 plan, lazy SceneChunks, near/mid/far, deterministic streaming, floating origin, GPU resource ownership, photo menu.
-3. \`docs/TEN_MINUTE_ROADTRIP_ACCEPTANCE.md\` — sequential v0.8.5 (2-min streaming parity and photo menu), v0.9 (10-min distinct route), v0.9.1 (meaningful far-road and lush vegetation art fix) gates.
+1. `docs/CODEX_V0.8.5_KICKOFF.md` — ordinary-chat authorization text and ONE bounded `/goal`.
+2. `docs/V0.8.5_STREAMING_FOUNDATION_SPEC.md` — implementation scope, performance, resource lifecycle, photo UX.
+3. `docs/V0.8.5_ACCEPTANCE.md` — exact test gates.
+4. `docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md` — product architecture context, **not carte blanche to build v0.9**.
+5. `docs/V0.8.4_HUMAN_FOLLOWUP_10MIN.md` — authentic user photo/scenery/play observations.
+6. `docs/TEN_MINUTE_ROADTRIP_ACCEPTANCE.md` — dependency gates for v0.8.5 / v0.9 / v0.9.1.
 
-**Crucial:** These are **PLANS ONLY**. Do not initiate any local development or assume a new Goal was authorized. Await an explicit ordinary ChatGPT Codex authorization and corresponding Goal. Previous stop-after-v0.8.4 remains respected. Each later goal branches from the latest completed PLAYABLE local HEAD and selectively imports only approved new specs; no push, merge, deploy, Stage 02, unrelated work.
+### One active deliverable: stream EXISTING two-minute Stage
 
-**Existing owner-approved systems to preserve by default:** Three.js + TypeScript Vite; 1.75x arcade world pace; Arcade Lateral Balance controls (not physical steering model); six real upshifts and hill-sensitive speed; stage seeded L1/L2/L3, 2–8 lanes, canyon/coast/city, performance-friendly stylized art; Pixel 8 landscape/PWA 144px thumb steering and gas/brake; keyboard and gamepad steering, feedback, Options, Touchpad photo, Share fullscreen; 1.0-sec resume freeze; private telemetry, photo archive, original owner ratings/reviews.
+- Preserve original seeded Stage Code `S01-v0.8.3-r1-1-ALB1` as used through v0.8.4, track geometry/handling/6-speed+grade physics and all historic player reviews. Plan logical road cheaply; create real road/terrain/prop GPU geometry only near the player via bounded `SceneChunk` window.
+- Prefetch road/edge/terrain safety assets before player camera sees them; no gap, popping or controls stall at Stage/chunk/biome transitions. Separate numeric CPU preparation from frame-budgeted main-thread GPU creation; use worker only if profiling demands it.
+- Track 30/60fps frame-time P95/P99/worst, chunk ready-ahead distance, renderer.info resources/draw calls, heap and 10/20-min synthetic progress; **resources bounded after warmup**; don't claim physical Pixel pass from browser emulator screenshots.
+- Minimal photo UX: in driving just tiny post-confirmation `📸 Saved`; in pause/menu show actual dated Windows captures folder and safe working **Open Folder** on localhost Windows dev, remove `Recent Photos`. Pixel LAN shows truthful PC path but can't launch PC Explorer from remote page. Photo PNG multi-save/metadata must keep working.
+- NO new 10-minute route in this goal; NO Stage difficulty change, scenic makeover of hollow ramp/palm trees, new biomes, traffic, rivals, RPG/garage, editor, cloud service or user-data upload. Visual failures reported v0.8.4 remain for eventual v0.9.1; streamer must not introduce new visible gaps.
+- Preserve Pixel 8 landscape/PWA, 144px thumb steering, keyboard, tested PS4 Touchpad screenshot/Share fullscreen/Options Play-Pause, L1 praise/Square issue and 1s resume, private JSON telemetry, all approved audio and driving.
 
-**Never claim screenshots and raw owner JSON are present on the Windows local checkout merely because they were uploaded to ChatGPT.** Their observed findings are carefully transcribed in the docs. v0.8.4 kept stageCode \`S01-v0.8.3-r1-1-ALB1\` intentionally. Do not label it as outdated solely from StageCode. Human visual and real-phone driving acceptance override green scripted test counts.
+### Repo, permissions and STOP
+
+Prior Codex stop-after-v0.8.4 may block new file operations. Owner should send the **ordinary non-/goal authorization** in existing OutRun Codex chat before the new Goal; respect permission rejections without bypass. No work in `TopWar` or other repos. No push, merge or deployment. Commit LOCALLY on new feature branch, create `docs/V0.8.5_HANDOFF.md` with real test results and STOP for owner before any new v0.9 Goal.

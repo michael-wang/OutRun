@@ -1,6 +1,6 @@
 # Roadtrip streaming — development sequence, executable acceptance
 
-**Planning document. No Codex development authorized by this commit.** Product brief \`docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md\`. Current local playable v0.8.4 reported implementation \`edd7018\` + handoff \`4d2b6ad\` on \`codex/v0.8.4-visual-captures\`. Remote \`main\` only documents the plan.
+**Owner authorized ONLY the v0.8.5 Streaming Foundation in a later user turn; future v0.9 and v0.9.1 remain planning-only, NOT automatically authorized.** Product brief \`docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md\`. Current local playable v0.8.4 reported implementation \`edd7018\` + handoff \`4d2b6ad\` on \`codex/v0.8.4-visual-captures\`. Remote \`main\` only documents the plan.
 
 ## Milestone v0.8.5 — Streaming foundation
 

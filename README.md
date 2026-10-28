@@ -1,28 +1,34 @@
 # Project OutRun
 
-An original stylized browser arcade road-trip driving game built with Three.js + TypeScript + Vite. Mobile-first for Pixel 8 and playable by keyboard and PS4-style controller. An original public title and original/license-cleared assets are required before wide release.
+Original browser 3D arcade road-trip game, Three.js + TypeScript + Vite, mobile landscape PWA, PC keyboard and PS4 controller. Internal name only; public product title/assets must be original and licensed.
 
-## Latest human review: v0.8.4 — New priority: a 10-minute procedural road trip
+## ACTIVE: v0.8.5 — Bounded Scene Streaming Foundation
 
-**Latest locally playable build** is v0.8.4, reported branch \`codex/v0.8.4-visual-captures\`, implementation \`edd7018\` and handoff \`4d2b6ad\` on the user's Windows \`C:\astra-dev\OutRun\`. Its build, 91 unit tests, 123 Playwright tests and 12 unique PNG capture audit passed. **Remote GitHub \`main\` is docs-first; do not checkout/reset/merge it over playable game code.** No game code was pushed/merged/deployed.
+The next product destination is **a varied 10-minute Road Trip with no initial full-world load and no visible scene streaming hitches**. The owner explicitly authorized proceeding with the FIRST prerequisite only: **stream-render the existing ~2-minute Stage 01 without modifying its driving content.**
 
-Human reports multiple screenshot files are now stored properly in \`C:\astra-dev\OutRun\captures\YYYY-MM-DD\`. UI refinement needed: a nonintrusive short success toast during play; single dated folder line + clickable \`Open Folder\` in pause menu; remove \`Recent Photos\`. Two new screenshots reveal hollow/floating distant road and too-regular skinny palms — **visual scenery improvement v0.8.4 NOT accepted** on these cases.
+Latest PLAYABLE implementation remains LOCAL Windows `C:\astra-dev\OutRun`, Codex reported v0.8.4 branch `codex/v0.8.4-visual-captures` with code commit `edd7018` and handoff `4d2b6ad`. **GitHub `main` contains chiefly docs, NOT the playable game source. NEVER checkout/reset/merge it over Windows app code.** No v0.8.5 code has been executed from this documentation session.
 
-**Owner's overriding goal is ~10 minutes of increasingly varied, enjoyable, continuously streamed driving**, without building all 10min of scenery at boot or hitching when terrain/biome changes. Build a **small deterministic logical route recipe once, render only a bounded sliding window of road/scene chunks**. Prioritize real drive over perfecting scenery in the existing short stage.
+### One v0.8.5 output
 
-### Approved planning documents (NOT an authorization to start Codex)
+1. Preserve deterministic `RoutePlan` for Stage 01 and make `SceneChunk` geometry/resources on demand around player progress, with ready-ahead windows, scene-boundary continuity, bounded GPU/CPU memory and release/pooling behind.
+2. Measure real frame times, streaming latency, resource counts and 10/20-min synthetic play memory; compare with v0.8.4 baseline. No new driving difficulty or stage-level seed revision.
+3. Keep 12+ unique saved photos. In gameplay show only unobtrusive saved toast. Pause menu: one dated Windows folder path and secure local-PC **Open Folder** action. Remove `Recent Photos`. Remote Pixel LAN must not launch PC Explorer.
+4. Test three existing seeded 2-min full drives, chunk seams and performance, 30/60fps and Pixel-like viewport (physical Pixel still requires owner).
+5. Commit LOCALLY; **STOP** for owner stage/performance review before any 10-minute content.
 
-- [v0.8.4 owner review and real data](docs/V0.8.4_HUMAN_FOLLOWUP_10MIN.md)
-- [10-minute road-trip architecture proposal](docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md)
-- [Phased acceptance tests for streaming, long stage and scene art](docs/TEN_MINUTE_ROADTRIP_ACCEPTANCE.md)
-- [AGENTS](AGENTS.md) — source safety and explicit authorization requirement.
+### Current documents
 
-| Planned milestone | Scope | STOP at |
-| --- | --- | --- |
-| **v0.8.5** | 2-min exact Stage01 streaming parity, bounded lazy chunks & performance diagnostics, photo menu/open-folder UX | Real Pixel/PC human review of invisible smooth streaming |
-| **v0.9** | New deterministic ~10-minute road trip from approved L1/L2 + L3 city/coast/canyon, varied beats and biomes, no prebuilt full geometry | Owner drives 2–3 route seeds and rates actual fun |
-| **v0.9.1** | Actual scenery visual correction for thin distant suspended roads, canyon/coast ground and skinny regimented palms; preserve streaming/perf | Owner visually accepts side/forward screenshot comparisons |
+- [v0.8.5 Streaming Foundation Specification](docs/V0.8.5_STREAMING_FOUNDATION_SPEC.md)
+- [v0.8.5 Acceptance](docs/V0.8.5_ACCEPTANCE.md)
+- [Codex v0.8.5 Kickoff](docs/CODEX_V0.8.5_KICKOFF.md) — normal authorization + one ready-to-paste `/goal`
+- [10-minute Roadtrip Architecture](docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md) — context/next design
+- [10-minute milestone acceptance](docs/TEN_MINUTE_ROADTRIP_ACCEPTANCE.md) — v0.8.5 then v0.9 then v0.9.1
+- [Most recent human visual review](docs/V0.8.4_HUMAN_FOLLOWUP_10MIN.md) — photo UX, hollow road, skinny palm rows
 
-Other systems to preserve: six gears/~300 km/h with grade-sensitive accelerations, nonphysically fun Arcade Lateral Balance steering, v0.8.3 gameplay stage coding retained in v0.8.4, deterministic seeds, 1.75× world pace, Pixel steering strip 144px, PS4 Touchpad photo/Share fullscreen, keyboard shortcuts, positive/issue feedback, archived historical reviews and per-0.1s private telemetry. No traffic, RPG/garage, new biomes, Stage02, photorealism, whole-world upfront mesh, cloud photo storage or unrelated project changes under this plan.
+### Future (not automatically authorized)
 
-**No local development is initiated by this documentation commit.** When separately authorized, create new branch from actual LOCAL playable v0.8.4 HEAD and selectively import plans/specs from docs-only remote main. Do not push, merge or deploy unless separately approved.
+**v0.9:** one selectable, truly seeded 8–12-min Road Trip, real varied L1/L2 challenge and city/coast/canyon scenery, using v0.8.5 streamer. No repeated canned 2-minute stage; owner evaluates 2–3 long Seeds.
+
+**v0.9.1:** art pass for genuinely supported elevated road/viaduct, richer clustered multi-frond palm/vegetation, city depth and fog; maintain streaming budget. Don't delay architecture proof by trying to perfect all art now.
+
+Preserve accepted core: six gears/~300flat/downhill overrun, 1.75x arcade world pace, Arcade Lateral Balance, variable width/grade, 144px thumb steering, 1s resume, touchpad photo/share fullscreen, screenshots to `captures/YYYY-MM-DD`, warm audio, human BRK/L2 Pilot and Stage reviews and local retrospective praise/issue telemetry. No push/merge/deploy, TopWar changes, traffic/RPG/garage/editor.
