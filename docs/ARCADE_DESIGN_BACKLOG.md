@@ -1,29 +1,24 @@
-# OutRun — Active v0.8.5, longer-term 10-minute Road Trip
+# Project OutRun — Roadmap after v0.8.5 human streaming GO
 
-## Latest human input (v0.8.4)
+## Proven so far
 
-- Owner tested real multiple saved screenshots on Windows: `captures/YYYY-MM-DD` works. Wants small **saved confirmation only during drive**, and simple **Open Folder** row in pause menu, removing redundant `Recent Photos`.
-- Two user screenshots still visibly reveal elevated distant road as thin/hollow and overly thin/evenly spaced palm tree rows. v0.8.4 green QA did NOT mean visuals were accepted.
-- The **priority is now ~10 min of varied continuous procedural driving**, no full 10-min geometry/asset build at startup, and no loading pauses/hitches during scene/biome transitions.
-- Latest owner run 114.95sec, 13,488 world units, ~93.7% GAS, only ~2.62 sec brake, zero offroad. Used same v0.8.3-r1 StageCode by design after visual-only v0.8.4; not a stale build bug.
+- Eight BRK L2-style experiences human-reviewed, v0.7D genuine multiple-placement L2 pilots human KEEP, 18 L1 geometry shapes, human-controlled issue/praise. Prior v0.7C and v0.8 Stage feedback archived; no historic vote auto-copied to modified geometry.
+- v0.8–0.8.4 seeded ~2min Stage, realistic 6-speed / grade / speed-dependent arcade steering, dual-thumb and PS4 gamepad, photo archives/telemetry. Known art defects: hollow-looking elevated road, sparse rhythmic palms, thin building rows.
+- v0.8.5 streaming foundation Codex locally delivered (reported `97cff65` + `f160929`, tests green). **Owner personally played** short Stage and did NOT notice visible hitch/pop, photo normal. This is enough human GO to start long-form content, not complete proof of physical Pixel 8 performance.
 
-## ACTIVE (owner authorized): v0.8.5 streaming FOUNDATION
+## CURRENT OWNER-AUTHORIZED: v0.9 10-Minute Road Trip
 
-**Use existing ~2-minute Stage** as unchanged reference:
-- Lightweight deterministic logical RoutePlan (full itinerary planning cheap), bounded rolling SceneChunks (road + support + props), prefetch ahead, dispose/pool behind, shared materials/instances. Approx initial 800–1000 distance units/chunk and 4–6k ahead are hypotheses, profile real engine and Pixel before fixing.
-- Stage Code, sampleRoad(s), grade/width, steering/gear physics, gamepad+Pixel controls, screenshot metadata, eventAt/reactionAt and review data preserved.
-- Per-frame CPU/GPU budget, 10/20-min simulated memory plateau, chunk seam and biome-transition screenshots from chase camera; no frame hitch or missing road.
-- Photo UI: only '📸 Saved' in game, one dated folder + working Open Folder in localhost Windows pause menu, remove Recent Photos. Dev-only fixed-path security, no cross-site arbitrary Explorer launch.
-- No actual 10-min new mode or scenery canopy beautification yet. STOP at local commits/`docs/V0.8.5_HANDOFF.md` and owner playtest.
+One selectable ~8–12min real long journey with distance-based finish/replay/new route using **cheap seeded RoutePlan and existing bounded SceneStreamer** — not prebuilding ~70k game distance units of scene at start.
 
-[Specification](V0.8.5_STREAMING_FOUNDATION_SPEC.md) · [Acceptance](V0.8.5_ACCEPTANCE.md) · [Codex kickoff](CODEX_V0.8.5_KICKOFF.md).
+- Human-perceivable arc: high-speed freedom, technical brake-worthy challenges, scenic relief, canyon big verticality, coast, city, and meaningful seed-to-seed C/E/W + L2/L3 schedule variations. No "two-minute Stage copied five times" or generic long empty straights.
+- Preserve 4-lane main roads, 6/8 secondary, rare 2/3, grade-sensitive realistic six-speed ~300, 1.75x world pace, PS4/photo/praise, Pixel/PWA and local reports. No new art packs.
+- Scene chunks at future phases ready before camera, seamless road/props/biome boundaries, bounded GPU/CPU memory, no input hitch, coordinate precision at long s. At least 5 deterministic seed codes, 3 full real-browser 10-minute drives, ≥20min memory soak and real human long playtest afterward.
+- Current Codex spec `docs/V0.9_TEN_MINUTE_ROADTRIP_SPEC.md`, acceptance `docs/V0.9_TEN_MINUTE_ACCEPTANCE.md`, kickoff `docs/CODEX_V0.9_TEN_MINUTE_KICKOFF.md`. **STOP for owner** after local commits.
 
-## NEXT separate human-authorized stages
+## After the v0.9 human drive review — NOT YET AUTHORIZED
 
-| Version | Focus | Product gate |
-| --- | --- | --- |
-| **v0.9** | Seeded ~10-min varied road trip using same bounded streamer, real L2 core rhythms + L3 transitions, city/coast/canyon scenes, no "five repeats" | Three full browser drives, two human long-seed playtests, stable memory/frame times |
-| **v0.9.1** | Visual quality at streaming camera scale — support elevated roads with land/bridges, lush organic palm crowns/clusters, skyline depth and terrain | User aligned before/after captures + 5-seed scenery continuity, no fps regression |
-| LATER | More biomes, traffic/rivals, optional RPG progression, richer L1 input vocabulary | Only if people willingly replay long drives |
+**v0.9.1 Visual Depth & Organic Scenery:** meaningful real-world camera correction of distant hollow elevated road with believable understructure/terrain, organic fuller palms/vegetation clusters and back-row city masses, all stream-safe near/mid/far LOD and no new frame hitches. Owner photo comparisons & original problem spots before/after.
 
-No blanket AAA planner or whole-world 3D loading. Local PC playable source separate from docs-only GitHub main. Each Goal must receive authorization, branch from current local playable HEAD, no push/merge/deploy.
+Later possible road-trip freedom/Mystery Drive, traffic/rivals/obstacles, future snow/mountain/volcano world packs and car/garage/RPG progression **only when player wants to replay a long route without rewards**.
+
+No automated AAA difficulty theater, parallel Goals in same local checkout, erroneous docs-only main merge/reset or out-of-scope work.
