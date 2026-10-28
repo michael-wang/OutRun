@@ -1,0 +1,223 @@
+{
+  "errors": [],
+  "humanReviewStorage": null,
+  "continuousSeconds": 186.618,
+  "results": [
+    {
+      "id": "BRK-01",
+      "seed": 7101,
+      "seconds": 22.61746666666631,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        229.087544,
+        234
+      ],
+      "heightMeters": [
+        12.04,
+        22.03956357120981
+      ],
+      "maxLateral": 1.4168239979442279,
+      "geometryCount": [
+        75,
+        75
+      ],
+      "textureCount": [
+        3,
+        3
+      ],
+      "video": [
+        0.803,
+        23.483
+      ]
+    },
+    {
+      "id": "BRK-02",
+      "seed": 7198,
+      "seconds": 18.683866666666493,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        229.543088,
+        234
+      ],
+      "heightMeters": [
+        14.04,
+        14.04
+      ],
+      "maxLateral": 0.5524091369569585,
+      "geometryCount": [
+        75,
+        75
+      ],
+      "textureCount": [
+        3,
+        3
+      ],
+      "video": [
+        23.813,
+        42.58
+      ]
+    },
+    {
+      "id": "BRK-03",
+      "seed": 7295,
+      "seconds": 22.617266666666293,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        229.772912,
+        234
+      ],
+      "heightMeters": [
+        12.040502895225751,
+        72.03990375095252
+      ],
+      "maxLateral": 0.7270765058804313,
+      "geometryCount": [
+        77,
+        77
+      ],
+      "textureCount": [
+        4,
+        4
+      ],
+      "video": [
+        42.87,
+        65.531
+      ]
+    },
+    {
+      "id": "BRK-04",
+      "seed": 7392,
+      "seconds": 24.275733333332873,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        179.5823331827299,
+        234
+      ],
+      "heightMeters": [
+        25.04,
+        38.0398992025571
+      ],
+      "maxLateral": 0.9575831565706778,
+      "geometryCount": [
+        80,
+        82
+      ],
+      "textureCount": [
+        4,
+        4
+      ],
+      "video": [
+        65.875,
+        90.184
+      ]
+    },
+    {
+      "id": "BRK-05",
+      "seed": 7489,
+      "seconds": 21.992133333332973,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        169.772912,
+        234
+      ],
+      "heightMeters": [
+        12.04,
+        110.03992487574133
+      ],
+      "maxLateral": 0.929360150493337,
+      "geometryCount": [
+        76,
+        78
+      ],
+      "textureCount": [
+        3,
+        3
+      ],
+      "video": [
+        90.505,
+        112.552
+      ]
+    },
+    {
+      "id": "BRK-06",
+      "seed": 7586,
+      "seconds": 19.667266666666443,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        229.771544,
+        234
+      ],
+      "heightMeters": [
+        25.04,
+        38.03992078905541
+      ],
+      "maxLateral": 0.7111207337649366,
+      "geometryCount": [
+        78,
+        78
+      ],
+      "textureCount": [
+        3,
+        3
+      ],
+      "video": [
+        112.838,
+        132.601
+      ]
+    },
+    {
+      "id": "BRK-07",
+      "seed": 7683,
+      "seconds": 26.54253333333275,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        229.771544,
+        234
+      ],
+      "heightMeters": [
+        12.04,
+        25.039976142053124
+      ],
+      "maxLateral": 0.657805188812703,
+      "geometryCount": [
+        73,
+        73
+      ],
+      "textureCount": [
+        3,
+        3
+      ],
+      "video": [
+        132.891,
+        159.535
+      ]
+    },
+    {
+      "id": "BRK-08",
+      "seed": 7780,
+      "seconds": 26.642533333332754,
+      "offRoadSamples": 0,
+      "speedKmh": [
+        179.55512376253938,
+        234
+      ],
+      "heightMeters": [
+        12.04,
+        35.039973062012535
+      ],
+      "maxLateral": 0.7291838735939445,
+      "geometryCount": [
+        77,
+        77
+      ],
+      "textureCount": [
+        4,
+        4
+      ],
+      "video": [
+        159.86,
+        186.618
+      ]
+    }
+  ]
+}

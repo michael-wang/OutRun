@@ -1,0 +1,1264 @@
+{
+  "delayMsPerWorkerResponse": 1000,
+  "cpuThrottle": 4,
+  "initialReadyMs": 15579,
+  "rows": [
+    {
+      "time": 0.4667000000000011,
+      "distance": 350.4257189935486,
+      "gas": true,
+      "steer": 0.75,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 0.7167000000000004,
+      "distance": 351.4127758497834,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 0.9666999999999999,
+      "distance": 352.9742114590563,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 1.216699999999999,
+      "distance": 355.1093339099548,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 1.4832999999999967,
+      "distance": 358.0172871241131,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 1.716799999999996,
+      "distance": 361.09707453742084,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 1.966699999999997,
+      "distance": 364.6174720467566,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 2.2167999999999948,
+      "distance": 368.44543686808123,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 2.466799999999994,
+      "distance": 372.9030427647574,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 2.716799999999993,
+      "distance": 378.0514926578757,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 2.966799999999992,
+      "distance": 383.6290452024406,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 3.2167999999999917,
+      "distance": 389.48569644388874,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 3.4667999999999908,
+      "distance": 395.62802817901655,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 3.71679999999999,
+      "distance": 402.0623905637593,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 3.9666999999999906,
+      "distance": 408.7921203455622,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 4.216699999999997,
+      "distance": 415.8283967814756,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 4.466800000000005,
+      "distance": 423.1770327329658,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 4.7168000000000125,
+      "distance": 430.770118795805,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 4.966700000000022,
+      "distance": 437.875514266868,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 5.2167000000000305,
+      "distance": 444.8955774892393,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 5.46680000000004,
+      "distance": 452.0260305115957,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 5.716800000000051,
+      "distance": 459.25982625852123,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 5.966800000000059,
+      "distance": 466.5982574556089,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 6.216800000000069,
+      "distance": 474.0397091018676,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 6.466800000000078,
+      "distance": 481.5824965666608,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 6.7169000000000905,
+      "distance": 489.22795600207445,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 6.9669000000000985,
+      "distance": 496.96817952447896,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 7.216900000000108,
+      "distance": 504.8043661849738,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 7.466900000000119,
+      "distance": 512.7346371855978,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 7.716900000000128,
+      "distance": 520.7570813755757,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 7.9669000000001375,
+      "distance": 528.8697609663255,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 8.216900000000134,
+      "distance": 537.0707147595938,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 8.466900000000129,
+      "distance": 545.3579650851748,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 8.716900000000123,
+      "distance": 553.7295243565047,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 8.966900000000118,
+      "distance": 562.1833975768344,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 9.216900000000113,
+      "distance": 570.717587627458,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 9.467000000000105,
+      "distance": 579.3335594175041,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 9.7169000000001,
+      "distance": 588.0189413454503,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 9.967000000000093,
+      "distance": 596.7856599170336,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 10.217000000000088,
+      "distance": 605.6212747319995,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 10.466900000000084,
+      "distance": 614.523750363454,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 10.717000000000077,
+      "distance": 623.5018854025162,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 10.96700000000007,
+      "distance": 632.5430415147828,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 11.21710000000006,
+      "distance": 641.6525646582807,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 11.467000000000057,
+      "distance": 650.8176336603631,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 11.717000000000052,
+      "distance": 660.0473811022873,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 11.967000000000045,
+      "distance": 669.3363507514007,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 12.21720000000004,
+      "distance": 678.690273925722,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 12.467200000000034,
+      "distance": 688.0924719495532,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 12.717100000000025,
+      "distance": 697.5457393136421,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 12.96710000000002,
+      "distance": 707.0580546949295,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 13.217100000000013,
+      "distance": 716.6261552285313,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 13.46700000000001,
+      "distance": 726.2466734159239,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 13.717100000000002,
+      "distance": 735.9316638700535,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 13.967099999999995,
+      "distance": 745.6699844109899,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 14.21709999999999,
+      "distance": 755.4659088916325,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 14.467199999999986,
+      "distance": 765.3237608375377,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 14.71719999999998,
+      "distance": 775.2359864520431,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 14.967199999999975,
+      "distance": 785.2067949405683,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 15.21719999999997,
+      "distance": 795.236411418562,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 15.467199999999965,
+      "distance": 805.3250032897264,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 15.71719999999996,
+      "distance": 815.4726715470537,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 15.967199999999954,
+      "distance": 825.6794488495534,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 16.21729999999994,
+      "distance": 835.9494133494009,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 16.467299999999927,
+      "distance": 846.2742293194528,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 16.733999999999913,
+      "distance": 857.3534974543418,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 16.967299999999906,
+      "distance": 867.0997977128274,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 17.217299999999895,
+      "distance": 877.599874698932,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 17.46729999999988,
+      "distance": 888.157537550506,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 17.71729999999987,
+      "distance": 898.7722061755894,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 17.96729999999986,
+      "distance": 909.4432004455999,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 18.217399999999845,
+      "distance": 920.1740356681955,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 18.467399999999834,
+      "distance": 930.9552324834843,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 18.717399999999824,
+      "distance": 941.7900689191457,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 18.967399999999813,
+      "distance": 952.6774283664699,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 19.2173999999998,
+      "distance": 963.6160848722417,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 19.46739999999979,
+      "distance": 974.6046971535358,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 19.717399999999778,
+      "distance": 985.6418163381335,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 19.95079999999977,
+      "distance": 995.9884739246156,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 20.217399999999756,
+      "distance": 1007.8552093793699,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 20.467399999999746,
+      "distance": 1019.0280299572071,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 20.717299999999742,
+      "distance": 1030.2379594948234,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 20.96749999999973,
+      "distance": 1041.5010009982036,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 21.21749999999972,
+      "distance": 1052.7925821982028,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 21.46749999999971,
+      "distance": 1064.1195099732474,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 21.7174999999997,
+      "distance": 1075.4795153007774,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 21.96739999999969,
+      "distance": 1086.8656835919041,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": true,
+      "nearRoadReady": true
+    },
+    {
+      "time": 22.217399999999675,
+      "distance": 1098.2846992095106,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 22.46739999999966,
+      "distance": 1109.7295130730781,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 22.71739999999965,
+      "distance": 1121.1975630208726,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 22.984099999999636,
+      "distance": 1133.4543472373202,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 23.217399999999625,
+      "distance": 1144.192864812478,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 23.484099999999607,
+      "distance": 1156.4848944198136,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 23.717499999999596,
+      "distance": 1167.253793674643,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 23.967499999999582,
+      "distance": 1178.79800520976,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 24.217499999999568,
+      "distance": 1190.349245517022,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 24.467499999999553,
+      "distance": 1201.9047595185027,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 24.71749999999954,
+      "distance": 1213.4618024259992,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 24.967499999999525,
+      "distance": 1225.0176500110106,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 25.21759999999951,
+      "distance": 1236.5742279127232,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 25.467499999999497,
+      "distance": 1248.115023613579,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 25.717499999999482,
+      "distance": 1259.6512920444106,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 25.967599999999468,
+      "distance": 1271.180476370156,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 26.217599999999457,
+      "distance": 1282.690879188543,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 26.467599999999443,
+      "distance": 1294.1847141242756,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 26.717599999999432,
+      "distance": 1305.6596679361994,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 26.96759999999942,
+      "distance": 1317.113519931401,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 27.217599999999408,
+      "distance": 1328.5441517941513,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 27.467599999999393,
+      "distance": 1339.9495502275277,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 27.717699999999386,
+      "distance": 1351.3323643981569,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 27.967599999999372,
+      "distance": 1362.6771769573177,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 28.217699999999358,
+      "distance": 1374.0004922685698,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 28.467699999999343,
+      "distance": 1385.2871843004812,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 28.71769999999933,
+      "distance": 1396.5403929069894,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 28.967699999999315,
+      "distance": 1407.75886096804,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 29.217699999999304,
+      "distance": 1418.9414676303347,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 29.467799999999297,
+      "distance": 1430.0916821223625,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 29.717699999999276,
+      "distance": 1441.1953107738311,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    },
+    {
+      "time": 29.96769999999926,
+      "distance": 1452.2650061529773,
+      "gas": true,
+      "steer": 1,
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "nearRoadReady": true
+    }
+  ],
+  "replay": [
+    {
+      "index": 0,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 1,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 2,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 3,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 4,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 5,
+      "road": "ready",
+      "scenery": "ready"
+    }
+  ],
+  "newStage": {
+    "code": "S01-v0.8.3-r1-2-ALB1",
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  }
+}

@@ -1,0 +1,770 @@
+[
+  {
+    "kmh": 150,
+    "gas": true,
+    "grade": -0.12,
+    "speed": 61.54977033308052,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 41.714967458858204,
+        "acceleration": 5.796095062984754,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 44.56926976346046,
+        "acceleration": 5.6281009883462065,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 47.342711621305156,
+        "acceleration": 5.468724141154757,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 50.03705628333906,
+        "acceleration": 5.311657946379645,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 52.653466609447435,
+        "acceleration": 5.1569674147733275,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 54.6016208381083,
+        "acceleration": 4.874125152286201,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 57.00032030428436,
+        "acceleration": 4.726658435496359,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 59.328078579002195,
+        "acceleration": 4.587205368714496,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      }
+    ]
+  },
+  {
+    "kmh": 150,
+    "gas": true,
+    "grade": 0,
+    "speed": 57.47004220288789,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 41.70522733707265,
+        "acceleration": 4.627280448717949,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 0.5,
+        "speed": 43.98396863749918,
+        "acceleration": 4.493323081261872,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1,
+        "speed": 46.19833192662834,
+        "acceleration": 4.366621607423451,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1.5,
+        "speed": 48.34990319758984,
+        "acceleration": 4.242098821885508,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2,
+        "speed": 50.439767050902155,
+        "acceleration": 4.119764907028033,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2.5,
+        "speed": 52.469031921747245,
+        "acceleration": 3.999673948104671,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3,
+        "speed": 54.25102505102602,
+        "acceleration": -0.4560510261220364,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3.5,
+        "speed": 55.70921373785551,
+        "acceleration": 3.6349641673562116,
+        "grade": 0,
+        "gradeAcceleration": 0
+      }
+    ]
+  },
+  {
+    "kmh": 150,
+    "gas": true,
+    "grade": 0.12,
+    "speed": 54.014730765245226,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 41.69548721528709,
+        "acceleration": 3.458465834451144,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 43.39865496511259,
+        "acceleration": 3.358464463460005,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 45.05383800152606,
+        "acceleration": 3.2641675972845103,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 46.66235507797582,
+        "acceleration": 3.1717490587678965,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 48.22513386508684,
+        "acceleration": 3.0811856623391396,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 49.74310505216824,
+        "acceleration": 2.9924892428718435,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 51.217204391531304,
+        "acceleration": 2.905668079733104,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 52.648370819550536,
+        "acceleration": 2.8207267276205172,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      }
+    ]
+  },
+  {
+    "kmh": 150,
+    "gas": false,
+    "grade": -0.12,
+    "speed": 31.141925123733166,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 41.64474012178555,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 40.329147428918866,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 39.01355473605218,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 37.69796204318549,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 36.382369350318804,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 35.06677665745212,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 33.75118396458543,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 32.43559127171874,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      }
+    ]
+  },
+  {
+    "kmh": 150,
+    "gas": false,
+    "grade": 0,
+    "speed": 26.466666666666846,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 41.635,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 0.5,
+        "speed": 39.73500000000002,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1,
+        "speed": 37.83500000000004,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1.5,
+        "speed": 35.935000000000066,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2,
+        "speed": 34.03500000000009,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2.5,
+        "speed": 32.13500000000011,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3,
+        "speed": 30.235000000000134,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3.5,
+        "speed": 28.335000000000157,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      }
+    ]
+  },
+  {
+    "kmh": 150,
+    "gas": false,
+    "grade": 0.12,
+    "speed": 21.79140820959965,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 41.62525987821444,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 39.140852571081176,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 36.65644526394791,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 34.17203795681464,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 31.687630649681346,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 29.203223342547865,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 26.718816035414385,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 24.234408728280904,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      }
+    ]
+  },
+  {
+    "kmh": 230,
+    "gas": true,
+    "grade": -0.12,
+    "speed": 78.44130493205435,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 63.92481099794296,
+        "acceleration": 4.310653086489028,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 66.04580162050497,
+        "acceleration": 4.1775326388503675,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 68.10143048474444,
+        "acceleration": 3.981119741342316,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 69.59562098349583,
+        "acceleration": 3.829111248384382,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 71.48080938078903,
+        "acceleration": 3.714141929023807,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 73.30930504701742,
+        "acceleration": 3.6021739937190196,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 75.0825258989043,
+        "acceleration": 3.492990283807482,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 76.80185565469924,
+        "acceleration": 3.38655844897325,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      }
+    ]
+  },
+  {
+    "kmh": 230,
+    "gas": true,
+    "grade": 0,
+    "speed": 74.3300748346492,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 63.9150708761574,
+        "acceleration": 3.1418384722222226,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 0.5,
+        "speed": 65.46097736168154,
+        "acceleration": 3.0448975078036087,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1,
+        "speed": 66.95975553277894,
+        "acceleration": 2.9521587082416483,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1.5,
+        "speed": 68.09167241370677,
+        "acceleration": -0.5745989575563043,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2,
+        "speed": 69.31006342498426,
+        "acceleration": 2.6773914345916756,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2.5,
+        "speed": 70.62827682614932,
+        "acceleration": 2.5971897617528037,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3,
+        "speed": 71.90694904390831,
+        "acceleration": 2.5191456135017614,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3.5,
+        "speed": 73.14712327307886,
+        "acceleration": 2.443157241487759,
+        "grade": 0,
+        "gradeAcceleration": 0
+      }
+    ]
+  },
+  {
+    "kmh": 230,
+    "gas": true,
+    "grade": 0.12,
+    "speed": 70.26158730123615,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 63.905330754371846,
+        "acceleration": 1.9730238579554178,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 64.87614332915457,
+        "acceleration": 1.9121995374919587,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 65.81741855244483,
+        "acceleration": 1.8541384275283708,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 66.73006562164798,
+        "acceleration": 1.797648831013786,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 67.61485812402366,
+        "acceleration": 1.7426897215588655,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 67.9971799364727,
+        "acceleration": 1.5898969920020987,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 68.77925579469499,
+        "acceleration": 1.5406043814031083,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 69.5378029350046,
+        "acceleration": 1.4945776477560808,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      }
+    ]
+  },
+  {
+    "kmh": 230,
+    "gas": false,
+    "grade": -0.12,
+    "speed": 53.36414734595539,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 63.866962344007774,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 62.55136965114109,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 61.2357769582744,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 59.92018426540771,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 58.604591572541025,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 57.28899887967434,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 55.97340618680765,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 54.657813493940964,
+        "acceleration": -2.631185385733195,
+        "grade": -0.12,
+        "gradeAcceleration": 1.1688146142668048
+      }
+    ]
+  },
+  {
+    "kmh": 230,
+    "gas": false,
+    "grade": 0,
+    "speed": 48.68888888888907,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 63.85722222222222,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 0.5,
+        "speed": 61.95722222222224,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1,
+        "speed": 60.057222222222265,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 1.5,
+        "speed": 58.15722222222229,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2,
+        "speed": 56.25722222222231,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 2.5,
+        "speed": 54.35722222222233,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3,
+        "speed": 52.457222222222356,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      },
+      {
+        "time": 3.5,
+        "speed": 50.55722222222238,
+        "acceleration": -3.8,
+        "grade": 0,
+        "gradeAcceleration": 0
+      }
+    ]
+  },
+  {
+    "kmh": 230,
+    "gas": false,
+    "grade": 0.12,
+    "speed": 44.01363043182275,
+    "samples": [
+      {
+        "time": 0,
+        "speed": 63.847482100436665,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 0.5,
+        "speed": 61.3630747933034,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1,
+        "speed": 58.87866748617013,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 1.5,
+        "speed": 56.39426017903686,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2,
+        "speed": 53.909852871903595,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 2.5,
+        "speed": 51.42544556477033,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3,
+        "speed": 48.94103825763706,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      },
+      {
+        "time": 3.5,
+        "speed": 46.45663095050379,
+        "acceleration": -4.968814614266805,
+        "grade": 0.12,
+        "gradeAcceleration": -1.1688146142668048
+      }
+    ]
+  }
+]

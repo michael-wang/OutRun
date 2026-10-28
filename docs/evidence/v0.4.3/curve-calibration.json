@@ -1,0 +1,30 @@
+[
+  {
+    "id": "low",
+    "k": 0.0012059535150932483,
+    "radius": 829.2193583619819,
+    "coreTwoSecondHeading": 15.45064377682403,
+    "segmentHeading": 30.90128755364806
+  },
+  {
+    "id": "medium",
+    "k": -0.0024119070301864966,
+    "radius": 414.60967918099095,
+    "coreTwoSecondHeading": 30.90128755364806,
+    "segmentHeading": -61.80257510729612
+  },
+  {
+    "id": "high",
+    "k": 0.0036178605452797446,
+    "radius": 276.40645278732734,
+    "coreTwoSecondHeading": 46.3519313304721,
+    "segmentHeading": 81.11587982832616
+  },
+  {
+    "id": "extreme",
+    "k": 0.005788576872447592,
+    "radius": 172.75403299207957,
+    "coreTwoSecondHeading": 74.16309012875537,
+    "segmentHeading": 129.78540772532187
+  }
+]

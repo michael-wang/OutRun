@@ -1,0 +1,7 @@
+import {chromium} from '@playwright/test';
+import {writeFile} from 'node:fs/promises';
+const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:960,height:540}});
+await page.goto('http://127.0.0.1:5173/?stage=1&seed=1');await page.waitForFunction(()=>window.__drive?.streaming()?.ready);await page.keyboard.press('KeyP');
+await page.evaluate(()=>{const g=window.__drive;g.manual(true);g.reset({distance:70000,speed:0});});await page.waitForFunction(()=>window.__drive.streaming().ready);
+const response=page.waitForResponse(r=>r.url().endsWith('/__outrun_capture')&&r.request().method()==='POST');await page.keyboard.press('F8');const saved=await response,body=saved.request().postDataJSON(),event=await page.evaluate(()=>window.__drive.telemetry().events.findLast(x=>x.kind==='photo'));await page.screenshot({path:'docs/evidence/v0.8.5/high-anchor.png'});
+const data={httpStatus:saved.status(),photoDistance:body.meta.distance,eventS:event?.s,stageCode:body.meta.stageCode,note:'Synthetic state beyond this finite Stage. Its sampler clamps to the end; this checks metadata only, not a playable 70k route.'};if(data.photoDistance!==70000||data.eventS!==69650)throw Error('High-progress anchor was altered');await writeFile('docs/evidence/v0.8.5/high-anchor.json',JSON.stringify(data,null,2));console.log(JSON.stringify(data));await browser.close();

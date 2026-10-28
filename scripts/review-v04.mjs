@@ -1,0 +1,6 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+const root='docs/evidence/v0.4',data=JSON.parse(readFileSync(`${root}/rhythm.json`,'utf8'));
+const edges=[0,740,1195,1935,2390,2675,3130];
+const beats=edges.slice(0,-1).map((start,i)=>{const rows=data.trace.filter(s=>s.distance>=start&&s.distance<edges[i+1]);return {beat:'ABCDEF'[i],start,end:edges[i+1],nominalSeconds:(edges[i+1]-start)/113.75,recordedSeconds:(data.trace.find(s=>s.distance>=edges[i+1])?.elapsed??data.time)-(rows[0]?.elapsed??0),offRoad:rows.filter(s=>s.offRoad).length,minSpeed:Math.min(...rows.map(s=>s.speed)),maxSpeed:Math.max(...rows.map(s=>s.speed))};});
+const summaries=['tap','hold','drift','rhythm'].map(label=>{const d=JSON.parse(readFileSync(`${root}/${label}.json`,'utf8'));return {label,errors:d.errors,time:d.time,distance:d.distance,maxSlipDegrees:d.maxSlipDegrees,maxSkid:d.maxSkid,offRoadSamples:d.offRoad,finalOffRoad:d.final.offRoad,finalLateral:d.final.lateral,renderer:d.renderer,averageFPS:d.audit.reduce((n,r)=>n+r.fps,0)/d.audit.length,fovs:[...new Set(d.trace.map(s=>s.camera.fov))]};});
+writeFileSync(`${root}/capture-summary.json`,JSON.stringify({beats,summaries},null,2));console.log(JSON.stringify({beats,summaries},null,2));

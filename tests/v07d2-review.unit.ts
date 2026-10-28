@@ -1,0 +1,2 @@
+import {it,expect} from 'vitest';import {PILOTS} from '../src/pilot-composer';import review from '../docs/reviews/V0.7D1_PILOT_R1_HUMAN_FEEDBACK.json';
+it('the accepted pilot fingerprints and original PENDING reviews remain intact',()=>{expect(review.records.map(r=>r.humanVote)).toEqual(['KEEP','KEEP','KEEP']);expect(review.records.map(r=>r.difficulty)).toEqual([1,2,2]);for(let i=0;i<3;i++){expect(PILOTS[i].contentFingerprint).toBe(review.records[i].contentFingerprint);expect(review.records[i].autoQA).toBe('PENDING');}});

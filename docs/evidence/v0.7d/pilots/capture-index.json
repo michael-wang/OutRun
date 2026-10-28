@@ -1,0 +1,474 @@
+{
+  "errors": [],
+  "runs": [
+    {
+      "candidate": {
+        "id": "L2P-A",
+        "revision": 1,
+        "seed": 17401,
+        "length": 3350,
+        "placements": [
+          {
+            "channel": "curvature",
+            "id": "C02",
+            "startS": 300,
+            "endS": 1150,
+            "parameters": {
+              "effort": 0.5,
+              "direction": -1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "City sweep"
+          },
+          {
+            "channel": "elevation",
+            "id": "E03",
+            "startS": 650,
+            "endS": 2200,
+            "parameters": {
+              "base": 35,
+              "amplitude": 105,
+              "direction": 1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            },
+            "transition": "smooth",
+            "beat": "Climb, crest and descent"
+          },
+          {
+            "channel": "width",
+            "id": "W02",
+            "startS": 650,
+            "endS": 1500,
+            "parameters": {
+              "from": 4,
+              "to": 6,
+              "start": 0,
+              "end": 1
+            },
+            "transition": "smooth",
+            "beat": "Boulevard opens"
+          },
+          {
+            "channel": "curvature",
+            "id": "C04",
+            "startS": 1450,
+            "endS": 2250,
+            "parameters": {
+              "effort": 0.65,
+              "direction": 1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "Counter-bend"
+          },
+          {
+            "channel": "curvature",
+            "id": "C02",
+            "startS": 2550,
+            "endS": 2950,
+            "parameters": {
+              "effort": 0.4,
+              "direction": -1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "Last gentle sweep"
+          }
+        ],
+        "worldPhases": [
+          {
+            "startS": 0,
+            "endS": 1450,
+            "world": "city",
+            "beat": "City boulevard"
+          },
+          {
+            "startS": 1450,
+            "endS": 3350,
+            "world": "coast",
+            "beat": "Coast and sea reveal"
+          }
+        ],
+        "baseHeight": 35,
+        "baseLanes": 4,
+        "generatorVersion": "v0.7D-r1",
+        "name": "City to Coast Ribbon",
+        "intent": "Follow the city sweep, crest toward open sea, then counter-steer into relief.",
+        "world": "city",
+        "contentFingerprint": "64f6ee4c",
+        "sceneryAct": 2,
+        "referenceSpeed": 230,
+        "entrySpeed": 180,
+        "nominalDuration": 29.962732919254663,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            29.962732919254663,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            35
+          ],
+          [
+            29.962732919254663,
+            35
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            29.962732919254663,
+            0
+          ]
+        ],
+        "emotionalRole": "micro-journey",
+        "entry": "Rolling start: 180 km/h in fourth gear",
+        "exit": "Straight relief and finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "pilot"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 679043288,
+        "count": 136672
+      },
+      "batch": 1,
+      "startVideoSeconds": 0.897,
+      "endVideoSeconds": 30.963,
+      "elapsed": 29.976233333332573,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2P-B",
+        "revision": 1,
+        "seed": 17498,
+        "length": 3100,
+        "placements": [
+          {
+            "channel": "curvature",
+            "id": "C03",
+            "startS": 350,
+            "endS": 1000,
+            "parameters": {
+              "effort": 0.9,
+              "direction": 1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "Tightening approach"
+          },
+          {
+            "channel": "width",
+            "id": "W04",
+            "startS": 500,
+            "endS": 2450,
+            "parameters": {
+              "from": 4,
+              "to": 2,
+              "start": 0,
+              "end": 1
+            },
+            "transition": "smooth",
+            "beat": "Canyon bottleneck"
+          },
+          {
+            "channel": "elevation",
+            "id": "E03",
+            "startS": 650,
+            "endS": 2450,
+            "parameters": {
+              "base": 25,
+              "amplitude": 150,
+              "direction": 1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            },
+            "transition": "smooth",
+            "beat": "Ridge and descending exit"
+          },
+          {
+            "channel": "curvature",
+            "id": "C08",
+            "startS": 1300,
+            "endS": 2050,
+            "parameters": {
+              "effort": 1.2,
+              "direction": -1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "Brake for hairpin"
+          },
+          {
+            "channel": "curvature",
+            "id": "C04",
+            "startS": 2450,
+            "endS": 2900,
+            "parameters": {
+              "effort": 0.55,
+              "direction": 1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "Unwind into relief"
+          }
+        ],
+        "worldPhases": [
+          {
+            "startS": 0,
+            "endS": 3100,
+            "world": "canyon",
+            "beat": "Canyon ridge and descent"
+          }
+        ],
+        "baseHeight": 25,
+        "baseLanes": 4,
+        "generatorVersion": "v0.7D-r1",
+        "name": "Canyon Switchback",
+        "intent": "Narrow into the ridge, brake for the hairpin, then descend to relief.",
+        "world": "canyon",
+        "contentFingerprint": "6f4d9f27",
+        "sceneryAct": 1,
+        "referenceSpeed": 230,
+        "entrySpeed": 180,
+        "nominalDuration": 27.726708074534166,
+        "roadWidth": 14,
+        "lanes": [
+          [
+            0,
+            4
+          ],
+          [
+            27.726708074534166,
+            4
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            25
+          ],
+          [
+            27.726708074534166,
+            25
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            27.726708074534166,
+            0
+          ]
+        ],
+        "emotionalRole": "micro-journey",
+        "entry": "Rolling start: 180 km/h in fourth gear",
+        "exit": "Straight relief and finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "BRAKE · 180 km/h"
+        },
+        "tags": [
+          "pilot"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 4268453248,
+        "count": 67628
+      },
+      "batch": 1,
+      "startVideoSeconds": 31.418,
+      "endVideoSeconds": 61.948,
+      "elapsed": 30.43446666666589,
+      "offRoad": 0,
+      "completed": true
+    },
+    {
+      "candidate": {
+        "id": "L2P-C",
+        "revision": 1,
+        "seed": 17595,
+        "length": 3450,
+        "placements": [
+          {
+            "channel": "elevation",
+            "id": "E02",
+            "startS": 0,
+            "endS": 950,
+            "parameters": {
+              "base": 180,
+              "amplitude": 100,
+              "direction": -1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            },
+            "transition": "smooth",
+            "beat": "Downhill acceleration"
+          },
+          {
+            "channel": "curvature",
+            "id": "C02",
+            "startS": 300,
+            "endS": 1120,
+            "parameters": {
+              "effort": 0.55,
+              "direction": 1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "Open sweeper"
+          },
+          {
+            "channel": "elevation",
+            "id": "E06",
+            "startS": 1100,
+            "endS": 2700,
+            "parameters": {
+              "base": 80,
+              "amplitude": 65,
+              "direction": 1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            },
+            "transition": "smooth",
+            "beat": "Rolling hills"
+          },
+          {
+            "channel": "curvature",
+            "id": "C06",
+            "startS": 1350,
+            "endS": 2250,
+            "parameters": {
+              "effort": 0.75,
+              "direction": -1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "S reversal"
+          },
+          {
+            "channel": "curvature",
+            "id": "C02",
+            "startS": 2600,
+            "endS": 3150,
+            "parameters": {
+              "effort": 0.5,
+              "direction": -1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7
+            },
+            "transition": "smooth",
+            "beat": "Long left and skyline"
+          }
+        ],
+        "worldPhases": [
+          {
+            "startS": 0,
+            "endS": 2650,
+            "world": "coast",
+            "beat": "Coastal descent"
+          },
+          {
+            "startS": 2650,
+            "endS": 3450,
+            "world": "city",
+            "beat": "Skyline return"
+          }
+        ],
+        "baseHeight": 180,
+        "baseLanes": 6,
+        "generatorVersion": "v0.7D-r1",
+        "name": "Coastal Rhythm",
+        "intent": "Descend into a sweeper, reverse through rolling hills, then open toward the skyline.",
+        "world": "coast",
+        "contentFingerprint": "f5e98058",
+        "sceneryAct": 0,
+        "referenceSpeed": 230,
+        "entrySpeed": 180,
+        "nominalDuration": 30.85714285714286,
+        "roadWidth": 21,
+        "lanes": [
+          [
+            0,
+            6
+          ],
+          [
+            30.85714285714286,
+            6
+          ]
+        ],
+        "elevation": [
+          [
+            0,
+            180
+          ],
+          [
+            30.85714285714286,
+            180
+          ]
+        ],
+        "requiredSteerProfile": [
+          [
+            30.85714285714286,
+            0
+          ]
+        ],
+        "emotionalRole": "micro-journey",
+        "entry": "Rolling start: 180 km/h in fourth gear",
+        "exit": "Straight relief and finish",
+        "warning": {
+          "leadMeters": 300,
+          "text": "READ THE ROAD"
+        },
+        "tags": [
+          "pilot"
+        ],
+        "antiAdjacency": [],
+        "autoValidation": "PENDING"
+      },
+      "fingerprint": {
+        "hash": 3363724419,
+        "count": 131938
+      },
+      "batch": 1,
+      "startVideoSeconds": 62.319,
+      "endVideoSeconds": 93.228,
+      "elapsed": 30.851166666665836,
+      "offRoad": 0,
+      "completed": true
+    }
+  ]
+}

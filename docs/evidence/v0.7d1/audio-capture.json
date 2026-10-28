@@ -1,0 +1,74 @@
+[
+  {
+    "pilot": "L2P-A",
+    "dist": 850,
+    "steer": -1,
+    "slip": 0.6546700491110171,
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 160.06397562930357,
+      "engineRpm": 7039.853216143831,
+      "gear": 5,
+      "skidLevel": 0.1091208117866441,
+      "windLevel": 0.06394735092129104,
+      "rms": 0.05710619788546282
+    },
+    "bytes": 14786
+  },
+  {
+    "pilot": "L2P-A",
+    "dist": 2150,
+    "steer": 1,
+    "slip": 1,
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 140.9508313496886,
+      "engineRpm": 5997.318073619379,
+      "gear": 6,
+      "skidLevel": 0.16,
+      "windLevel": 0.06733351688299787,
+      "rms": 0.05571992231130461
+    },
+    "bytes": 14786
+  },
+  {
+    "pilot": "L2P-B",
+    "dist": 1800,
+    "steer": -1,
+    "slip": 1,
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 158.4549896625549,
+      "engineRpm": 6952.090345230268,
+      "gear": 5,
+      "skidLevel": 0.16,
+      "windLevel": 0.06084180913312886,
+      "rms": 0.07957722930840068
+    },
+    "bytes": 14786
+  },
+  {
+    "pilot": "L2P-A",
+    "dist": 500,
+    "steer": 0.1,
+    "slip": 0,
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 160.06348412060518,
+      "engineRpm": 7039.826406578463,
+      "gear": 5,
+      "skidLevel": 0,
+      "windLevel": 0.06394678009740991,
+      "rms": 0.029822241394498954
+    },
+    "bytes": 14786
+  }
+]

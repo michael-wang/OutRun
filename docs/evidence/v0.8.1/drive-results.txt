@@ -1,0 +1,3 @@
+{"seed":1,"wallSeconds":129.302,"elapsed":129.22156666670767,"distance":13850.765001994876,"errors":[]}
+{"seed":2,"wallSeconds":129.291,"elapsed":128.55470000004166,"distance":13850.367406110254,"errors":[]}
+{"seed":3,"wallSeconds":129.276,"elapsed":128.97150000004117,"distance":13850.108077039267,"errors":[]}

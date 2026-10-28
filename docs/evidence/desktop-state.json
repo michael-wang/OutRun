@@ -1,0 +1,5327 @@
+{
+  "errors": [],
+  "audio": {
+    "distance": 277.0157882795924,
+    "speed": 65,
+    "lateral": 4.887208514723672,
+    "heading": 0.2950160502357288,
+    "slip": 0.9000442279593732,
+    "mode": "playing",
+    "elapsed": 7.182899999999983,
+    "frames": 78,
+    "inputs": {
+      "gas": true,
+      "brake": false,
+      "steer": 1
+    },
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 235.5,
+      "skidLevel": 0.22,
+      "rms": 0.05508779511313528
+    },
+    "trackLength": 3783.134355766818,
+    "position": [
+      35.09788591232832,
+      11.198846857014443,
+      271.8745674556971
+    ],
+    "swapped": false,
+    "surfaceError": 0.00010845103363088526,
+    "rightScreenDelta": 0.05415062369227487
+  },
+  "route": [
+    {
+      "distance": 9.009060687334529,
+      "speed": 17.11645520175605,
+      "lateral": 0,
+      "heading": 0,
+      "slip": 0,
+      "mode": "playing",
+      "elapsed": 1.0000000000000013,
+      "frames": 94,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 106.21442904474134,
+        "skidLevel": 0,
+        "rms": 0.010825661643956194
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -1.9844957369019482,
+        8.124494422199549,
+        8.784521109804144
+      ],
+      "swapped": false,
+      "surfaceError": -0.00036731485233509886,
+      "rightScreenDelta": 0.06999236762243691
+    },
+    {
+      "distance": 33.382267671003625,
+      "speed": 30.903671327674356,
+      "lateral": 0.00008124508614675648,
+      "heading": 0.000012027550343737945,
+      "slip": 0.008262567392776607,
+      "mode": "playing",
+      "elapsed": 1.9999999999999978,
+      "frames": 95,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 143.4399125847208,
+        "skidLevel": 0,
+        "rms": 0.010825661643956194
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -4.03900803297124,
+        8.322351224947969,
+        33.037236199146875
+      ],
+      "swapped": false,
+      "surfaceError": -0.0003542115533239354,
+      "rightScreenDelta": 0.05832905144344858
+    },
+    {
+      "distance": 70.13121498284515,
+      "speed": 42.00920259931757,
+      "lateral": 0.0013704847098301599,
+      "heading": 0.000025117340305845437,
+      "slip": 0.004371350889026626,
+      "mode": "playing",
+      "elapsed": 2.9999999999999942,
+      "frames": 96,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 173.42484701815744,
+        "skidLevel": 0,
+        "rms": 0.012494459675620368
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -0.8063499882826086,
+        8.574098017259791,
+        69.60404091841792
+      ],
+      "swapped": false,
+      "surfaceError": -0.0000221402513709279,
+      "rightScreenDelta": 0.05135111527666346
+    },
+    {
+      "distance": 116.84875718115501,
+      "speed": 50.95465059252005,
+      "lateral": 0.0014280101917107787,
+      "heading": 1.7613272864724373e-7,
+      "slip": 0.00002945393060466664,
+      "mode": "playing",
+      "elapsed": 3.9999999999999907,
+      "frames": 97,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 197.57755659980415,
+        "skidLevel": 0,
+        "rms": 0.012494459675620368
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        8.976167393888984,
+        8.895656129826065,
+        115.26945271138297
+      ],
+      "swapped": false,
+      "surfaceError": -0.0002102007414439555,
+      "rightScreenDelta": 0.04687089903464202
+    },
+    {
+      "distance": 171.5959509668056,
+      "speed": 58.160162678503376,
+      "lateral": 0.001428151757783577,
+      "heading": 8.235393627438607e-11,
+      "slip": 1.9845902332898582e-7,
+      "mode": "playing",
+      "elapsed": 4.999999999999988,
+      "frames": 98,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 217.03243923195913,
+        "skidLevel": 0,
+        "rms": 0.01765820874937424
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        22.98051562185041,
+        9.384421127437557,
+        168.19249573829447
+      ],
+      "swapped": false,
+      "surfaceError": -0.00014921091103481388,
+      "rightScreenDelta": 0.04384226322332298
+    },
+    {
+      "distance": 232.8109875687879,
+      "speed": 63.96416539147025,
+      "lateral": 0.0012892622716438144,
+      "heading": -0.000026603381219234903,
+      "slip": 0.01656022429536927,
+      "mode": "playing",
+      "elapsed": 5.999999999999984,
+      "frames": 99,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 232.7032465569697,
+        "skidLevel": 0,
+        "rms": 0.021492437945599692
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        36.224113946733894,
+        10.236358772841568,
+        227.9273236040357
+      ],
+      "swapped": false,
+      "surfaceError": 0.00022793360059658596,
+      "rightScreenDelta": 0.04176615543706276
+    },
+    {
+      "distance": 297.71454877244975,
+      "speed": 65,
+      "lateral": -0.08043849923608067,
+      "heading": -0.006263612347386854,
+      "slip": 0.6130411936224138,
+      "mode": "playing",
+      "elapsed": 6.9999999999999805,
+      "frames": 100,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.14817318195917242,
+        "rms": 0.021492437945599692
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        38.72774979334815,
+        11.795261381806917,
+        292.5542816480016
+      ],
+      "swapped": false,
+      "surfaceError": 0.0024582474920347153,
+      "rightScreenDelta": 0.041419527193659746
+    },
+    {
+      "distance": 362.713080637606,
+      "speed": 65,
+      "lateral": -0.25647176165454916,
+      "heading": -0.0034501721453136687,
+      "slip": 0.35400641864286725,
+      "mode": "playing",
+      "elapsed": 7.999999999999977,
+      "frames": 101,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.06528205396571753,
+        "rms": 0.02451302940170106
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        19.482614372614616,
+        14.460777601321029,
+        354.34896105997194
+      ],
+      "swapped": false,
+      "surfaceError": 0.0020761544480745187,
+      "rightScreenDelta": 0.04141989178559642
+    },
+    {
+      "distance": 427.7130065455666,
+      "speed": 65,
+      "lateral": -0.2760550130893207,
+      "heading": -0.00007003395113287076,
+      "slip": 0.00692857111332033,
+      "mode": "playing",
+      "elapsed": 9.000000000000027,
+      "frames": 103,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.02451302940170106
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -13.218836244212806,
+        17.90478502410784,
+        410.39990470663497
+      ],
+      "swapped": false,
+      "surfaceError": 0.000723528364051873,
+      "rightScreenDelta": 0.041408613149264556
+    },
+    {
+      "distance": 492.71300653304377,
+      "speed": 65,
+      "lateral": -0.27610473193629237,
+      "heading": 3.6780467907706032e-9,
+      "slip": 0.00004668434494094707,
+      "mode": "playing",
+      "elapsed": 10.000000000000076,
+      "frames": 104,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.029879773619357647
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -49.654980369856084,
+        21.54499191527159,
+        464.104268676172
+      ],
+      "swapped": false,
+      "surfaceError": -0.0005994847654982038,
+      "rightScreenDelta": 0.04138548269755846
+    },
+    {
+      "distance": 557.7130064244109,
+      "speed": 65,
+      "lateral": -0.2745549450791111,
+      "heading": 0.00022295495467885076,
+      "slip": 0.06865036527886649,
+      "mode": "playing",
+      "elapsed": 11.000000000000126,
+      "frames": 105,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.029879773619357647
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -82.76471434564256,
+        24.987565259351385,
+        519.8430794954166
+      ],
+      "swapped": false,
+      "surfaceError": -0.0016484342634903726,
+      "rightScreenDelta": 0.04141100859588892
+    },
+    {
+      "distance": 622.7129302344485,
+      "speed": 65,
+      "lateral": -0.23539909541753384,
+      "heading": 0.0005075546086993651,
+      "slip": 0.08546178168554944,
+      "mode": "playing",
+      "elapsed": 12.000000000000176,
+      "frames": 106,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.028027459721622346
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -104.9382415133783,
+        27.781258300262657,
+        580.6892579355506
+      ],
+      "swapped": false,
+      "surfaceError": -0.00035954898692480697,
+      "rightScreenDelta": 0.04125254193041802
+    },
+    {
+      "distance": 687.7129295697912,
+      "speed": 65,
+      "lateral": -0.23486008242890216,
+      "heading": 0.0000031560972489607517,
+      "slip": 0.0005758369554446465,
+      "mode": "playing",
+      "elapsed": 13.000000000000226,
+      "frames": 107,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.028027459721622346
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -121.20141926804044,
+        30.36701794804698,
+        643.5515718867028
+      ],
+      "swapped": false,
+      "surfaceError": -0.0003726298708812692,
+      "rightScreenDelta": 0.04123301919225523
+    },
+    {
+      "distance": 752.7129295697594,
+      "speed": 65,
+      "lateral": -0.23485333757650853,
+      "heading": 3.318045855230554e-8,
+      "slip": 0.00000387995888590078,
+      "mode": "playing",
+      "elapsed": 14.000000000000275,
+      "frames": 129,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.033594917962714486
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -133.53959435464284,
+        32.74966364361486,
+        707.2892695191952
+      ],
+      "swapped": false,
+      "surfaceError": -0.0003211094012272042,
+      "rightScreenDelta": 0.041310877470713596
+    },
+    {
+      "distance": 817.7129295694505,
+      "speed": 65,
+      "lateral": -0.2347654312116896,
+      "heading": 0.000016031312807187443,
+      "slip": 0.009237674425108646,
+      "mode": "playing",
+      "elapsed": 15.000000000000325,
+      "frames": 130,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.034031265186727486
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -139.4345094716258,
+        34.584361196387576,
+        771.9232960487648
+      ],
+      "swapped": false,
+      "surfaceError": 5.304046055698564e-7,
+      "rightScreenDelta": 0.0411311901169701
+    },
+    {
+      "distance": 882.712913639038,
+      "speed": 65,
+      "lateral": -0.21348413217955117,
+      "heading": 0.0014923920790233533,
+      "slip": 0.23699751713335543,
+      "mode": "playing",
+      "elapsed": 16.000000000000373,
+      "frames": 131,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.02783920548267374,
+        "rms": 0.03535854182096202
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -135.01829179003846,
+        35.37903408952002,
+        836.6140657049755
+      ],
+      "swapped": false,
+      "surfaceError": 0.0011740744819022098,
+      "rightScreenDelta": 0.041030511861080914
+    },
+    {
+      "distance": 947.712530796951,
+      "speed": 65,
+      "lateral": -0.1094883258959396,
+      "heading": 0.004114752771058582,
+      "slip": 0.43612797174303247,
+      "mode": "playing",
+      "elapsed": 17.000000000000316,
+      "frames": 133,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.0915609509577704,
+        "rms": 0.03419417537633622
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -114.81089021778104,
+        34.34583182478409,
+        898.0785770729201
+      ],
+      "swapped": false,
+      "surfaceError": 0.003487906827032816,
+      "rightScreenDelta": 0.04075978189340279
+    },
+    {
+      "distance": 1012.7123338232883,
+      "speed": 65,
+      "lateral": -0.058061866141741414,
+      "heading": 0.0007788058089774544,
+      "slip": 0.1002482627054757,
+      "mode": "playing",
+      "elapsed": 18.00000000000026,
+      "frames": 134,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03419417537633622
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -79.4407144170862,
+        31.088343790220883,
+        952.3558952771587
+      ],
+      "swapped": false,
+      "surfaceError": 0.0025486925155604467,
+      "rightScreenDelta": 0.04041125756498743
+    },
+    {
+      "distance": 1077.7123308381524,
+      "speed": 65,
+      "lateral": -0.05493134453715907,
+      "heading": 0.00001058906190824774,
+      "slip": 0.0009092615766328894,
+      "mode": "playing",
+      "elapsed": 19.000000000000203,
+      "frames": 135,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03706503116469749
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -35.72504038944106,
+        26.752964582145026,
+        1000.1952350133197
+      ],
+      "swapped": false,
+      "surfaceError": 0.0015218578878339883,
+      "rightScreenDelta": 0.040289097261421006
+    },
+    {
+      "distance": 1142.7123308378284,
+      "speed": 65,
+      "lateral": -0.05491647506189748,
+      "heading": 5.462921932455194e-8,
+      "slip": 0.000006126556311657315,
+      "mode": "playing",
+      "elapsed": 20.000000000000146,
+      "frames": 136,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04238286049787284
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        12.697653936097918,
+        22.148959791110922,
+        1043.276432546148
+      ],
+      "swapped": false,
+      "surfaceError": 0.0007167060639012846,
+      "rightScreenDelta": 0.040276394983589925
+    },
+    {
+      "distance": 1207.7123308378239,
+      "speed": 65,
+      "lateral": -0.05491640574352724,
+      "heading": 2.631426123566303e-10,
+      "slip": 4.1280411714859635e-8,
+      "mode": "playing",
+      "elapsed": 21.00000000000009,
+      "frames": 137,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04238286049787284
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        64.05584197828576,
+        17.83716452720015,
+        1082.862998794927
+      ],
+      "swapped": false,
+      "surfaceError": -0.0000063886323360407005,
+      "rightScreenDelta": 0.04034242795945061
+    },
+    {
+      "distance": 1272.7123308378193,
+      "speed": 65,
+      "lateral": -0.054916405411390756,
+      "heading": 1.2498249493180898e-12,
+      "slip": 2.7814522623515203e-10,
+      "mode": "playing",
+      "elapsed": 22.000000000000032,
+      "frames": 138,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04092320911928486
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        117.3672687558214,
+        14.40725725701665,
+        1119.877830962927
+      ],
+      "swapped": false,
+      "surfaceError": -0.0008949480430064938,
+      "rightScreenDelta": 0.04049473394975315
+    },
+    {
+      "distance": 1337.7123308378148,
+      "speed": 65,
+      "lateral": -0.05491640541024646,
+      "heading": 5.614609942664573e-15,
+      "slip": 1.8741277924210967e-12,
+      "mode": "playing",
+      "elapsed": 22.999999999999975,
+      "frames": 139,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04092320911928486
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        171.81244124960858,
+        12.175761040793446,
+        1155.3089768283949
+      ],
+      "swapped": false,
+      "surfaceError": -0.00018142821302014056,
+      "rightScreenDelta": 0.04061517281658977
+    },
+    {
+      "distance": 1402.7123308378102,
+      "speed": 65,
+      "lateral": -0.05491640541023297,
+      "heading": 7.109534255747652e-17,
+      "slip": 1.262777373484644e-14,
+      "mode": "playing",
+      "elapsed": 23.99999999999992,
+      "frames": 140,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04088166465249822
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        227.50077136639848,
+        10.529873249196244,
+        1188.7719780924963
+      ],
+      "swapped": false,
+      "surfaceError": -0.0000626811470620936,
+      "rightScreenDelta": 0.04069484030141056
+    },
+    {
+      "distance": 1467.7123308378057,
+      "speed": 65,
+      "lateral": -0.054916405410232835,
+      "heading": 8.222653143253564e-19,
+      "slip": 8.508527014183907e-17,
+      "mode": "playing",
+      "elapsed": 24.99999999999986,
+      "frames": 141,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04088166465249822
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        285.3737481277314,
+        9.381196322393,
+        1218.283623441755
+      ],
+      "swapped": false,
+      "surfaceError": -0.00006354256800911173,
+      "rightScreenDelta": 0.04078278394331912
+    },
+    {
+      "distance": 1532.7123305726027,
+      "speed": 65,
+      "lateral": -0.052482812510054336,
+      "heading": 0.0002835546005819473,
+      "slip": 0.07446912983378243,
+      "mode": "playing",
+      "elapsed": 25.999999999999805,
+      "frames": 142,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04338289033143572
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        346.2502697643258,
+        8.75694886633749,
+        1240.8641130908475
+      ],
+      "swapped": false,
+      "surfaceError": -0.00024337759484183152,
+      "rightScreenDelta": 0.0409146819863399
+    },
+    {
+      "distance": 1597.7122290407408,
+      "speed": 65,
+      "lateral": 0.0028113993763611,
+      "heading": 0.0033964381391697125,
+      "slip": 0.4105395455565177,
+      "mode": "playing",
+      "elapsed": 26.999999999999748,
+      "frames": 143,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.08337265457808567,
+        "rms": 0.04338289033143572
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        410.2356153578062,
+        8.784954243065146,
+        1251.2670058616711
+      ],
+      "swapped": false,
+      "surfaceError": -0.0008403524529221329,
+      "rightScreenDelta": 0.041156677685745796
+    },
+    {
+      "distance": 1662.7113975048314,
+      "speed": 65,
+      "lateral": 0.14611879476169576,
+      "heading": 0.003610510756549969,
+      "slip": 0.37535489612341183,
+      "mode": "playing",
+      "elapsed": 27.99999999999969,
+      "frames": 144,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.07211356675949179,
+        "rms": 0.04338289033143572
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        474.36086034120837,
+        9.699418210737532,
+        1242.362709460257
+      ],
+      "swapped": false,
+      "surfaceError": -0.001315845382608316,
+      "rightScreenDelta": 0.04120149388170685
+    },
+    {
+      "distance": 1727.7112857023208,
+      "speed": 65,
+      "lateral": 0.1803062892357938,
+      "heading": 0.00044006399049443374,
+      "slip": 0.054465735258483396,
+      "mode": "playing",
+      "elapsed": 28.999999999999634,
+      "frames": 145,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04332822115255666
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        534.5514007068723,
+        11.478918631112984,
+        1218.05406170741
+      ],
+      "swapped": false,
+      "surfaceError": -0.00096835617115687,
+      "rightScreenDelta": 0.04121021177186378
+    },
+    {
+      "distance": 1792.7112848871657,
+      "speed": 65,
+      "lateral": 0.18169633915718514,
+      "heading": 0.00000482354940812837,
+      "slip": 0.00039111313022046495,
+      "mode": "playing",
+      "elapsed": 29.999999999999577,
+      "frames": 146,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04332822115255666
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        590.382105384867,
+        13.725359608454273,
+        1184.8846218169608
+      ],
+      "swapped": false,
+      "surfaceError": -0.0007617799381218759,
+      "rightScreenDelta": 0.04123706618399899
+    },
+    {
+      "distance": 1857.7112848870952,
+      "speed": 65,
+      "lateral": 0.18170374629402444,
+      "heading": 2.9699119782297996e-8,
+      "slip": 0.0000026352995420719138,
+      "mode": "playing",
+      "elapsed": 30.99999999999952,
+      "frames": 147,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03713354079747026
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        642.0628229718301,
+        16.239441544599273,
+        1145.5604359212498
+      ],
+      "swapped": false,
+      "surfaceError": -0.0006717814570365022,
+      "rightScreenDelta": 0.04126126475938528
+    },
+    {
+      "distance": 1922.7112848870906,
+      "speed": 65,
+      "lateral": 0.18170379267668588,
+      "heading": 1.982997708366392e-10,
+      "slip": 1.775650864119481e-8,
+      "mode": "playing",
+      "elapsed": 31.999999999999464,
+      "frames": 148,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03841452355674741
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        689.4316393162392,
+        18.912775963862636,
+        1101.1446245232592
+      ],
+      "swapped": false,
+      "surfaceError": -0.000673332134919491,
+      "rightScreenDelta": 0.04128262265534667
+    },
+    {
+      "distance": 1987.711284887086,
+      "speed": 65,
+      "lateral": 0.18170379302176304,
+      "heading": 1.5755060058883837e-12,
+      "slip": 1.1964241411317413e-10,
+      "mode": "playing",
+      "elapsed": 32.99999999999941,
+      "frames": 149,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03841452355674741
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        731.6251333265907,
+        21.66392466793114,
+        1051.800023406712
+      ],
+      "swapped": false,
+      "surfaceError": -0.00079118219860419,
+      "rightScreenDelta": 0.041309112865509104
+    },
+    {
+      "distance": 2052.7112812953997,
+      "speed": 65,
+      "lateral": 0.19080208613049532,
+      "heading": 0.0005778065848474695,
+      "slip": 0.10152345932119602,
+      "mode": "playing",
+      "elapsed": 33.99999999999935,
+      "frames": 150,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03332620329358378
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        766.2346156767599,
+        24.524611387115108,
+        996.9156564798446
+      ],
+      "swapped": false,
+      "surfaceError": -0.0014894917089449677,
+      "rightScreenDelta": 0.0413758902633846
+    },
+    {
+      "distance": 2117.711277972006,
+      "speed": 65,
+      "lateral": 0.19620708303854792,
+      "heading": 0.00002871144007693603,
+      "slip": 0.0024225931933524267,
+      "mode": "playing",
+      "elapsed": 34.9999999999993,
+      "frames": 152,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03332620329358378
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        791.3519284714984,
+        27.949836586379813,
+        937.0930129564874
+      ],
+      "swapped": false,
+      "surfaceError": -0.0009573784037932853,
+      "rightScreenDelta": 0.04596903646249062
+    },
+    {
+      "distance": 2182.711277969475,
+      "speed": 65,
+      "lateral": 0.19625603522617116,
+      "heading": 1.8281550412493258e-7,
+      "slip": 0.00001632330453715391,
+      "mode": "playing",
+      "elapsed": 35.99999999999924,
+      "frames": 153,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.034021098513422526
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        808.8658713687224,
+        31.538140102783018,
+        874.6103974395701
+      ],
+      "swapped": false,
+      "surfaceError": -0.0005337564353311564,
+      "rightScreenDelta": 0.04141325823378009
+    },
+    {
+      "distance": 2247.711277969484,
+      "speed": 65,
+      "lateral": 0.19625629555053825,
+      "heading": 1.0300686326255615e-9,
+      "slip": 1.0998556082127474e-7,
+      "mode": "playing",
+      "elapsed": 36.99999999999918,
+      "frames": 154,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.034021098513422526
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        820.2904510991502,
+        34.90101218818332,
+        810.7141963284807
+      ],
+      "swapped": false,
+      "surfaceError": -0.00018257482683736725,
+      "rightScreenDelta": 0.041328480968898657
+    },
+    {
+      "distance": 2312.711277969493,
+      "speed": 65,
+      "lateral": 0.19625629704995906,
+      "heading": 6.1085341785284165e-12,
+      "slip": 7.41076879478442e-10,
+      "mode": "playing",
+      "elapsed": 37.999999999999126,
+      "frames": 179,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.040207953798870884
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        826.5098163793872,
+        37.70469319478686,
+        746.0742809578896
+      ],
+      "swapped": false,
+      "surfaceError": 0.0001503526067736516,
+      "rightScreenDelta": 0.04133757727419635
+    },
+    {
+      "distance": 2377.711277969502,
+      "speed": 65,
+      "lateral": 0.1962562970593833,
+      "heading": 3.958379759985421e-14,
+      "slip": 4.993336736173405e-12,
+      "mode": "playing",
+      "elapsed": 38.99999999999907,
+      "frames": 180,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.042641204483946024
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        827.9158263652389,
+        39.575545326052776,
+        681.1174087158162
+      ],
+      "swapped": false,
+      "surfaceError": 0.0005597987387417902,
+      "rightScreenDelta": 0.04106776928953995
+    },
+    {
+      "distance": 2442.7112779695112,
+      "speed": 65,
+      "lateral": 0.1962562970594495,
+      "heading": 3.240687234321689e-16,
+      "slip": 3.364483827692291e-14,
+      "mode": "playing",
+      "elapsed": 39.99999999999901,
+      "frames": 181,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.042641204483946024
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        824.388746195273,
+        39.981578777907046,
+        616.2178811095134
+      ],
+      "swapped": false,
+      "surfaceError": 0.0012173380572022552,
+      "rightScreenDelta": 0.04084281733302838
+    },
+    {
+      "distance": 2507.7112779695203,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 2.6006649346931682e-18,
+      "slip": 2.2669713710270927e-16,
+      "mode": "playing",
+      "elapsed": 40.999999999998956,
+      "frames": 182,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03519701780802117
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        814.068132317827,
+        38.43838318934775,
+        552.0759735446763
+      ],
+      "swapped": false,
+      "surfaceError": 0.0011144814446524265,
+      "rightScreenDelta": 0.04058905566416291
+    },
+    {
+      "distance": 2572.7112779695294,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 1.4717885621794577e-20,
+      "slip": 1.5274732946424719e-18,
+      "mode": "playing",
+      "elapsed": 41.9999999999989,
+      "frames": 183,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03519701780802117
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        797.3034118187804,
+        35.44231095379863,
+        489.35198441194484
+      ],
+      "swapped": false,
+      "surfaceError": 0.0008633481276660859,
+      "rightScreenDelta": 0.040425935268184
+    },
+    {
+      "distance": 2637.7112779695385,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 7.99863378454141e-23,
+      "slip": 1.0292034101819463e-20,
+      "mode": "playing",
+      "elapsed": 42.99999999999884,
+      "frames": 184,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03519701780802117
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        775.5354909935279,
+        31.610753143269974,
+        428.22539002937714
+      ],
+      "swapped": false,
+      "surfaceError": 0.0005653047774991649,
+      "rightScreenDelta": 0.04034292665416626
+    },
+    {
+      "distance": 2702.7112779695476,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 4.352160019063404e-25,
+      "slip": 6.934718029083995e-23,
+      "mode": "playing",
+      "elapsed": 43.999999999998785,
+      "frames": 186,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.036395405165902395
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        749.8516804225574,
+        27.46903174460807,
+        368.6562522530725
+      ],
+      "swapped": false,
+      "surfaceError": 0.00025874786353696777,
+      "rightScreenDelta": 0.04322051382662753
+    },
+    {
+      "distance": 2767.7112779695567,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 2.3807149450713857e-27,
+      "slip": 4.672576253357052e-25,
+      "mode": "playing",
+      "elapsed": 44.99999999999873,
+      "frames": 187,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.036395405165902395
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        721.0661278967749,
+        23.501850380549808,
+        310.50937439612693
+      ],
+      "swapped": false,
+      "surfaceError": -0.000060494926589882425,
+      "rightScreenDelta": 0.040395985152829134
+    },
+    {
+      "distance": 2832.711277969566,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 1.2993395274447188e-29,
+      "slip": 3.1483571144305274e-27,
+      "mode": "playing",
+      "elapsed": 45.99999999999867,
+      "frames": 188,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.036395405165902395
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        689.804333195721,
+        20.21833953428605,
+        253.6120563877931
+      ],
+      "swapped": false,
+      "surfaceError": -0.00041609473218429116,
+      "rightScreenDelta": 0.04049607207355729
+    },
+    {
+      "distance": 2897.711277969575,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 9.602436589367293e-32,
+      "slip": 2.1213463371226615e-29,
+      "mode": "playing",
+      "elapsed": 46.999999999998614,
+      "frames": 189,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03375020466966967
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        656.3335262263626,
+        17.651604302959733,
+        197.94747068070964
+      ],
+      "swapped": false,
+      "surfaceError": 0.00006232045718235213,
+      "rightScreenDelta": 0.04054782761877707
+    },
+    {
+      "distance": 2962.711277969584,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 7.346179209741023e-34,
+      "slip": 1.4293519186236633e-31,
+      "mode": "playing",
+      "elapsed": 47.99999999999856,
+      "frames": 190,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03375020466966967
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        620.391856707795,
+        15.300437067863859,
+        143.8357073895584
+      ],
+      "swapped": false,
+      "surfaceError": 0.00006950146211082142,
+      "rightScreenDelta": 0.04057768714522265
+    },
+    {
+      "distance": 3027.711277969593,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 5.8398291832392505e-36,
+      "slip": 9.630897470727397e-34,
+      "mode": "playing",
+      "elapsed": 48.9999999999985,
+      "frames": 191,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03375020466966967
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        581.6878437874677,
+        13.155531346637932,
+        91.65605249371716
+      ],
+      "swapped": false,
+      "surfaceError": 0.00007553339915489232,
+      "rightScreenDelta": 0.04060903117527369
+    },
+    {
+      "distance": 3092.711277969602,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 4.83264827455846e-38,
+      "slip": 6.489247671138767e-36,
+      "mode": "playing",
+      "elapsed": 49.999999999998444,
+      "frames": 192,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03351334923490305
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        539.7988978868377,
+        11.228230103223506,
+        41.9903475660226
+      ],
+      "swapped": false,
+      "surfaceError": 0.00007695318938694129,
+      "rightScreenDelta": 0.04064554411870759
+    },
+    {
+      "distance": 3157.7112779696113,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 4.165836171138941e-40,
+      "slip": 4.372420687207193e-38,
+      "mode": "playing",
+      "elapsed": 50.99999999999839,
+      "frames": 193,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03351334923490305
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        494.1524117489739,
+        9.550147122919293,
+        -4.249057927130273
+      ],
+      "swapped": false,
+      "surfaceError": 0.0000681789694745305,
+      "rightScreenDelta": 0.040692782850947726
+    },
+    {
+      "distance": 3222.7112779696204,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 3.739639480729237e-42,
+      "slip": 2.9461138848107e-40,
+      "mode": "playing",
+      "elapsed": 51.99999999999833,
+      "frames": 194,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03351334923490305
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        444.0286482787454,
+        8.180703263151006,
+        -45.58730309841594
+      ],
+      "swapped": false,
+      "surfaceError": 0.000037019929621351366,
+      "rightScreenDelta": 0.04074376572672309
+    },
+    {
+      "distance": 3287.7112779696295,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 1.808782077143722e-44,
+      "slip": 1.9850759209124345e-42,
+      "mode": "playing",
+      "elapsed": 52.99999999999827,
+      "frames": 195,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04011802264384882
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        389.6720592263714,
+        7.301952002070718,
+        -81.2155563235385
+      ],
+      "swapped": false,
+      "surfaceError": -0.00010974337383018451,
+      "rightScreenDelta": 0.04080472324521377
+    },
+    {
+      "distance": 3352.7112779696386,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 1.0927927221585218e-46,
+      "slip": 1.3375336344268806e-44,
+      "mode": "playing",
+      "elapsed": 53.99999999999822,
+      "frames": 196,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04011802264384882
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        332.77491707558937,
+        6.896678338014005,
+        -112.64038618049969
+      ],
+      "swapped": false,
+      "surfaceError": -0.0000723737582202233,
+      "rightScreenDelta": 0.040857490816973124
+    },
+    {
+      "distance": 3417.7112779696477,
+      "speed": 65,
+      "lateral": 0.1962562970594501,
+      "heading": 8.854343386133244e-49,
+      "slip": 9.012230738262503e-47,
+      "mode": "playing",
+      "elapsed": 54.99999999999816,
+      "frames": 198,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03723646458409513
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        273.5455420093841,
+        6.776877112024656,
+        -139.40481138737294
+      ],
+      "swapped": false,
+      "surfaceError": -0.00005635398646219869,
+      "rightScreenDelta": 0.04092855234297049
+    },
+    {
+      "distance": 3482.7112778820724,
+      "speed": 65,
+      "lateral": 0.19764875795213854,
+      "heading": 0.00019021956759408446,
+      "slip": 0.058593525136183044,
+      "mode": "playing",
+      "elapsed": 55.9999999999981,
+      "frames": 199,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03723646458409513
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        211.74183837194843,
+        6.84223697441404,
+        -159.45714846168156
+      ],
+      "swapped": false,
+      "surfaceError": -0.00005146006114919999,
+      "rightScreenDelta": 0.040986732881971244
+    },
+    {
+      "distance": 3547.710933645898,
+      "speed": 65,
+      "lateral": 0.2974185244214845,
+      "heading": 0.007842421092963505,
+      "slip": 0.7022920701453235,
+      "mode": "playing",
+      "elapsed": 56.999999999998046,
+      "frames": 200,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.1767334624465035,
+        "rms": 0.04325857799692187
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        147.3038952944144,
+        6.998839529402539,
+        -166.60174251365734
+      ],
+      "swapped": false,
+      "surfaceError": -0.000028132771445754656,
+      "rightScreenDelta": 0.04148870406273969
+    },
+    {
+      "distance": 3612.702234255499,
+      "speed": 65,
+      "lateral": 0.7850888723352589,
+      "heading": 0.015333344216921589,
+      "slip": 0.9749780985206342,
+      "mode": "playing",
+      "elapsed": 57.99999999999799,
+      "frames": 201,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.22,
+        "rms": 0.04325857799692187
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        87.2701862750008,
+        7.115730473522649,
+        -143.59148558436027
+      ],
+      "swapped": false,
+      "surfaceError": -0.0000837669894089288,
+      "rightScreenDelta": 0.041360816856860036
+    },
+    {
+      "distance": 3677.699436316628,
+      "speed": 65,
+      "lateral": 0.9851592273698063,
+      "heading": 0.0036247919246195086,
+      "slip": 0.37252448897290197,
+      "mode": "playing",
+      "elapsed": 58.99999999999793,
+      "frames": 202,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.07120783647132864,
+        "rms": 0.04325857799692187
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        43.11191598571244,
+        7.335959575139576,
+        -95.88607440059432
+      ],
+      "swapped": false,
+      "surfaceError": -0.00008234876445545325,
+      "rightScreenDelta": 0.041065117286360225
+    },
+    {
+      "distance": 3742.699299434943,
+      "speed": 65,
+      "lateral": 1.0305133659496368,
+      "heading": 0.0010991235205963313,
+      "slip": 0.1648910407736721,
+      "mode": "playing",
+      "elapsed": 59.999999999997875,
+      "frames": 203,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.00476513304757507,
+        "rms": 0.04321318562879544
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        12.19946306309767,
+        7.70292510899276,
+        -38.60174151412215
+      ],
+      "swapped": false,
+      "surfaceError": -0.00010965516369143558,
+      "rightScreenDelta": 0.04104864513666756
+    },
+    {
+      "distance": 3807.698641802347,
+      "speed": 65,
+      "lateral": 1.157039382189041,
+      "heading": 0.010251888993522092,
+      "slip": 0.7889517476901523,
+      "mode": "playing",
+      "elapsed": 60.99999999999782,
+      "frames": 204,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.20446455926084872,
+        "rms": 0.04321318562879544
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -4.944644892199072,
+        8.255113367127064,
+        24.157828034997884
+      ],
+      "swapped": false,
+      "surfaceError": -0.00007613331796463285,
+      "rightScreenDelta": 0.0412903419880809
+    },
+    {
+      "distance": 3872.6970338386827,
+      "speed": 65,
+      "lateral": 1.3003108051351213,
+      "heading": 0.0012390372929175172,
+      "slip": 0.11078661308684701,
+      "mode": "playing",
+      "elapsed": 61.99999999999776,
+      "frames": 231,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.0579953196406402
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        1.492777287560002,
+        8.70287926898847,
+        88.96987604780175
+      ],
+      "swapped": false,
+      "surfaceError": -0.00004571271457365356,
+      "rightScreenDelta": 0.04109465537746302
+    },
+    {
+      "distance": 3937.697029086941,
+      "speed": 65,
+      "lateral": 1.302233528534053,
+      "heading": 0.000003527243432574969,
+      "slip": 0.000746474327187366,
+      "mode": "playing",
+      "elapsed": 62.999999999997705,
+      "frames": 232,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.0579953196406402
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        17.35138169824743,
+        9.212376858466124,
+        152.06821012207934
+      ],
+      "swapped": false,
+      "surfaceError": -0.000053834832915100606,
+      "rightScreenDelta": 0.040967428313717136
+    },
+    {
+      "distance": 4002.6970290869253,
+      "speed": 65,
+      "lateral": 1.3022294743869551,
+      "heading": -3.846867744963774e-8,
+      "slip": 0.000005029704452766471,
+      "mode": "playing",
+      "elapsed": 63.99999999999765,
+      "frames": 233,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.050040130260060704
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        32.62263443456868,
+        10.013378973297996,
+        215.1347885989457
+      ],
+      "swapped": false,
+      "surfaceError": -0.000041793264712097766,
+      "rightScreenDelta": 0.041049788890328454
+    },
+    {
+      "distance": 4067.6969562486656,
+      "speed": 65,
+      "lateral": 1.2587893649232602,
+      "heading": -0.003733027637026328,
+      "slip": 0.4477396604249036,
+      "mode": "playing",
+      "elapsed": 64.9999999999976,
+      "frames": 234,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.09527669133596917,
+        "rms": 0.050040130260060704
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        38.52402055829932,
+        11.404070696300165,
+        279.3907082829908
+      ],
+      "swapped": false,
+      "surfaceError": 0.00009634394324109508,
+      "rightScreenDelta": 0.041353880714367935
+    },
+    {
+      "distance": 4132.695430123039,
+      "speed": 65,
+      "lateral": 1.0619783010189994,
+      "heading": -0.004935115460353772,
+      "slip": 0.4677422147708593,
+      "mode": "playing",
+      "elapsed": 65.99999999999754,
+      "frames": 235,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.10167750872667497,
+        "rms": 0.04708119159960221
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        23.662263516165808,
+        13.833211306785728,
+        341.84769309881125
+      ],
+      "swapped": false,
+      "surfaceError": 0.00016789041829312623,
+      "rightScreenDelta": 0.041483470836080255
+    },
+    {
+      "distance": 4197.695243476621,
+      "speed": 65,
+      "lateral": 1.0244804063453772,
+      "heading": -0.00020871698147945775,
+      "slip": 0.01906048788429934,
+      "mode": "playing",
+      "elapsed": 66.99999999999748,
+      "frames": 236,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04708119159960221
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -7.146810757335078,
+        17.178060032140685,
+        398.6910834795525
+      ],
+      "swapped": false,
+      "surfaceError": 0.00007998497217798217,
+      "rightScreenDelta": 0.04142765161917614
+    },
+    {
+      "distance": 4262.695243356273,
+      "speed": 65,
+      "lateral": 1.0242567746072078,
+      "heading": -3.0033529697245284e-7,
+      "slip": 0.00012842855714111998,
+      "mode": "playing",
+      "elapsed": 67.99999999999743,
+      "frames": 238,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04765747824501336
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -43.401812188511926,
+        20.811733657847967,
+        452.48076568349023
+      ],
+      "swapped": false,
+      "surfaceError": -0.000018775572371509952,
+      "rightScreenDelta": 0.04144363255828715
+    },
+    {
+      "distance": 4327.695243355561,
+      "speed": 65,
+      "lateral": 1.0243920864596616,
+      "heading": 0.00002532834506408524,
+      "slip": 0.015125044666715843,
+      "mode": "playing",
+      "elapsed": 68.99999999999737,
+      "frames": 239,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04506421327359253
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -77.83763721216266,
+        24.327913076612788,
+        507.58422547711285
+      ],
+      "swapped": false,
+      "surfaceError": -0.00007321733727039259,
+      "rightScreenDelta": 0.041437279564364216
+    },
+    {
+      "distance": 4392.695173667168,
+      "speed": 65,
+      "lateral": 1.0642802143424575,
+      "heading": 0.0017520097335949484,
+      "slip": 0.2343402905654801,
+      "mode": "playing",
+      "elapsed": 69.99999999999731,
+      "frames": 240,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.026988892980953638,
+        "rms": 0.04506421327359253
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -102.6004726021177,
+        27.262590069495186,
+        567.689717594736
+      ],
+      "swapped": false,
+      "surfaceError": -0.000028468960703520452,
+      "rightScreenDelta": 0.04123825047912393
+    },
+    {
+      "distance": 4457.695166372189,
+      "speed": 65,
+      "lateral": 1.0654932554041106,
+      "heading": 0.000008074032869164783,
+      "slip": 0.0015789724575804975,
+      "mode": "playing",
+      "elapsed": 70.99999999999726,
+      "frames": 242,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04284167879376409
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -119.42345522433388,
+        29.850009332913352,
+        630.4609700545308
+      ],
+      "swapped": false,
+      "surfaceError": -0.000012870847015733489,
+      "rightScreenDelta": 0.04278313935228546
+    },
+    {
+      "distance": 4522.695166371974,
+      "speed": 65,
+      "lateral": 1.0655099445235077,
+      "heading": 8.29417412906294e-8,
+      "slip": 0.000010639032732193145,
+      "mode": "playing",
+      "elapsed": 71.9999999999972,
+      "frames": 243,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04284167879376409
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -132.74966480919875,
+        32.299427232825394,
+        694.0968392557492
+      ],
+      "swapped": false,
+      "surfaceError": -0.000002123649458951604,
+      "rightScreenDelta": 0.04124303681378693
+    },
+    {
+      "distance": 4587.695166371956,
+      "speed": 65,
+      "lateral": 1.0655101255451287,
+      "heading": 8.826712291646064e-10,
+      "slip": 7.168523867105306e-8,
+      "mode": "playing",
+      "elapsed": 72.99999999999714,
+      "frames": 244,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04284167879376409
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -140.22083143719442,
+        34.27779065345595,
+        758.7223655720702
+      ],
+      "swapped": false,
+      "surfaceError": 0.000007542612564748197,
+      "rightScreenDelta": 0.0411736953579162
+    },
+    {
+      "distance": 4652.695160735146,
+      "speed": 65,
+      "lateral": 1.077690979267502,
+      "heading": 0.0009703323170190711,
+      "slip": 0.17608809340625062,
+      "mode": "playing",
+      "elapsed": 73.99999999999709,
+      "frames": 245,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.0083481898900002,
+        "rms": 0.04482162333369904
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -138.28624307272943,
+        35.33464557744525,
+        823.7895804487806
+      ],
+      "swapped": false,
+      "surfaceError": 0.000007184155450090657,
+      "rightScreenDelta": 0.04108166375638861
+    },
+    {
+      "distance": 4717.694890475994,
+      "speed": 65,
+      "lateral": 1.1671446596332975,
+      "heading": 0.004439953668318159,
+      "slip": 0.4766862328143694,
+      "mode": "playing",
+      "elapsed": 74.99999999999703,
+      "frames": 246,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.1045395945005982,
+        "rms": 0.0429922324670435
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -121.56314006116071,
+        34.76071036792068,
+        886.6945738121938
+      ],
+      "swapped": false,
+      "surfaceError": 0.00005934685232489301,
+      "rightScreenDelta": 0.04083576395859756
+    },
+    {
+      "distance": 4782.6945770379325,
+      "speed": 65,
+      "lateral": 1.238412850923254,
+      "heading": 0.0012403274446767666,
+      "slip": 0.15826289629129997,
+      "mode": "playing",
+      "elapsed": 75.99999999999697,
+      "frames": 247,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.0026441268132159925,
+        "rms": 0.04266348009203172
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -88.48686860962377,
+        31.86909760682568,
+        942.7262712150219
+      ],
+      "swapped": false,
+      "surfaceError": 0.00010762101949168823,
+      "rightScreenDelta": 0.04046985426402862
+    },
+    {
+      "distance": 4847.694567621975,
+      "speed": 65,
+      "lateral": 1.2454053304695176,
+      "heading": 0.000029556545968586597,
+      "slip": 0.002501392195946933,
+      "mode": "playing",
+      "elapsed": 76.99999999999692,
+      "frames": 248,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.04266348009203172
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        -45.95701228308824,
+        27.672364319310024,
+        991.860766498234
+      ],
+      "swapped": false,
+      "surfaceError": 0.00010127863920317282,
+      "rightScreenDelta": 0.040321888925670374
+    },
+    {
+      "distance": 4912.694567619398,
+      "speed": 65,
+      "lateral": 1.2454497067781358,
+      "heading": 1.6044456906181628e-7,
+      "slip": 0.000016854248040216504,
+      "mode": "playing",
+      "elapsed": 77.99999999999686,
+      "frames": 249,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.043055637246415784
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        1.7812785931933748,
+        23.073899049900213,
+        1035.8687338434197
+      ],
+      "swapped": false,
+      "surfaceError": 0.00006673969970449889,
+      "rightScreenDelta": 0.04029422287987543
+    },
+    {
+      "distance": 4977.69456761938,
+      "speed": 65,
+      "lateral": 1.2454499114715742,
+      "heading": 7.750021740175243e-10,
+      "slip": 1.1356303000441926e-7,
+      "mode": "playing",
+      "elapsed": 78.9999999999968,
+      "frames": 250,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.043055637246415784
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        52.70554045237516,
+        18.660087224825133,
+        1076.1306103616846
+      ],
+      "swapped": false,
+      "surfaceError": 1.4785641866410515e-7,
+      "rightScreenDelta": 0.040345969145373195
+    },
+    {
+      "distance": 5042.694567619362,
+      "speed": 65,
+      "lateral": 1.2454499124510798,
+      "heading": 3.705466112150583e-12,
+      "slip": 7.651816772253318e-10,
+      "mode": "playing",
+      "elapsed": 79.99999999999675,
+      "frames": 251,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.043055637246415784
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        105.72838819949281,
+        14.993063655958643,
+        1113.6347438962166
+      ],
+      "swapped": false,
+      "surfaceError": -0.00012090010128673612,
+      "rightScreenDelta": 0.04048338488693686
+    },
+    {
+      "distance": 5107.694567619344,
+      "speed": 65,
+      "lateral": 1.2454499124552503,
+      "heading": 1.421018333099647e-14,
+      "slip": 5.155753585815624e-12,
+      "mode": "playing",
+      "elapsed": 80.99999999999669,
+      "frames": 252,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.043545419456729004
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        160.02539584229712,
+        12.573825624429901,
+        1149.3360666742374
+      ],
+      "swapped": false,
+      "surfaceError": -0.00004520915754824273,
+      "rightScreenDelta": 0.04062690664740835
+    },
+    {
+      "distance": 5172.694567619325,
+      "speed": 65,
+      "lateral": 1.2454499124552811,
+      "heading": 1.7302078511328812e-16,
+      "slip": 3.473919440157061e-14,
+      "mode": "playing",
+      "elapsed": 81.99999999999663,
+      "frames": 254,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.043545419456729004
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        215.43309133950018,
+        10.821976204699352,
+        1183.3725448665502
+      ],
+      "swapped": false,
+      "surfaceError": -0.000023405948333277138,
+      "rightScreenDelta": 0.040732404627560455
+    },
+    {
+      "distance": 5237.694567619307,
+      "speed": 65,
+      "lateral": 1.2454499124552811,
+      "heading": 2.038863802933554e-18,
+      "slip": 2.3407085066871e-16,
+      "mode": "playing",
+      "elapsed": 82.99999999999658,
+      "frames": 255,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.043545419456729004
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        272.88498482246354,
+        9.573559094672627,
+        1213.9255430314702
+      ],
+      "swapped": false,
+      "surfaceError": -0.000021382578159645504,
+      "rightScreenDelta": 0.04079287747169442
+    },
+    {
+      "distance": 5302.694567601933,
+      "speed": 65,
+      "lateral": 1.246069533939603,
+      "heading": 0.00009101091443575052,
+      "slip": 0.03294355089789719,
+      "mode": "playing",
+      "elapsed": 83.99999999999652,
+      "frames": 256,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.03895210068601853
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        333.26456202245294,
+        8.836313694901945,
+        1238.3005811333035
+      ],
+      "swapped": false,
+      "surfaceError": -0.00005896483816236753,
+      "rightScreenDelta": 0.04091349052971087
+    },
+    {
+      "distance": 5367.694522581349,
+      "speed": 65,
+      "lateral": 1.2824587753047547,
+      "heading": 0.002404698376092758,
+      "slip": 0.3282317740754749,
+      "mode": "playing",
+      "elapsed": 84.99999999999646,
+      "frames": 257,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.05703416770415196,
+        "rms": 0.03895210068601853
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        396.99618627001803,
+        8.71705764270958,
+        1251.8076465672018
+      ],
+      "swapped": false,
+      "surfaceError": -0.00021069854342847805,
+      "rightScreenDelta": 0.04113260347198176
+    },
+    {
+      "distance": 5432.693749102793,
+      "speed": 65,
+      "lateral": 1.4271216423584752,
+      "heading": 0.004833995063557551,
+      "slip": 0.4710586771386398,
+      "mode": "playing",
+      "elapsed": 85.9999999999964,
+      "frames": 258,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0.10273877668436474,
+        "rms": 0.03895210068601853
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        461.9459237697158,
+        9.428610728058016,
+        1246.9924379035822
+      ],
+      "swapped": false,
+      "surfaceError": -0.0004575980744672137,
+      "rightScreenDelta": 0.04121370677503912
+    },
+    {
+      "distance": 5497.693524679618,
+      "speed": 65,
+      "lateral": 1.478563381422145,
+      "heading": 0.0007588694491595716,
+      "slip": 0.09919670534813142,
+      "mode": "playing",
+      "elapsed": 86.99999999999635,
+      "frames": 259,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.040509259350185345
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        523.2851219526804,
+        11.071857435361418,
+        1224.9995552542512
+      ],
+      "swapped": false,
+      "surfaceError": -0.00036832743343850893,
+      "rightScreenDelta": 0.04122756381896263
+    },
+    {
+      "distance": 5562.693521615186,
+      "speed": 65,
+      "lateral": 1.4820533928316506,
+      "heading": 0.000013294895706605959,
+      "slip": 0.0010753581324008088,
+      "mode": "playing",
+      "elapsed": 87.99999999999629,
+      "frames": 260,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.040509259350185345
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        580.1292512982777,
+        13.244677105213816,
+        1193.2404610056765
+      ],
+      "swapped": false,
+      "surfaceError": -0.00031117834707217185,
+      "rightScreenDelta": 0.04125920408194047
+    },
+    {
+      "distance": 5627.693521614653,
+      "speed": 65,
+      "lateral": 1.4820744837070476,
+      "heading": 8.306772557184568e-8,
+      "slip": 0.000007245706101152202,
+      "mode": "playing",
+      "elapsed": 88.99999999999623,
+      "frames": 261,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.0338250185789906
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        632.7601074066681,
+        15.715061670813537,
+        1154.957152608817
+      ],
+      "swapped": false,
+      "surfaceError": -0.0002937784951395628,
+      "rightScreenDelta": 0.04128690337434069
+    },
+    {
+      "distance": 5692.693521614635,
+      "speed": 65,
+      "lateral": 1.4820746114168961,
+      "heading": 5.395665771756108e-10,
+      "slip": 4.882118368051388e-8,
+      "mode": "playing",
+      "elapsed": 89.99999999999618,
+      "frames": 262,
+      "inputs": {
+        "gas": true,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 235.5,
+        "skidLevel": 0,
+        "rms": 0.036044851658823
+      },
+      "trackLength": 3783.134355766818,
+      "position": [
+        681.1407344862238,
+        18.362980756705806,
+        1111.4446489981374
+      ],
+      "swapped": false,
+      "surfaceError": -0.0003155417440332542,
+      "rightScreenDelta": 0.04131033135504823
+    }
+  ],
+  "geometry": [
+    {
+      "position": [
+        0,
+        8,
+        0
+      ],
+      "curvature": -0.006693104519229741
+    },
+    {
+      "position": [
+        -2.574753990942823,
+        8.11632716868625,
+        12.336952275522066
+      ],
+      "curvature": -0.00842876894559443
+    },
+    {
+      "position": [
+        -3.8257153615870503,
+        8.220267912531193,
+        24.87987392083786
+      ],
+      "curvature": -0.006870291088062357
+    },
+    {
+      "position": [
+        -3.9841117511513726,
+        8.314837335725398,
+        37.48573977581175
+      ],
+      "curvature": -0.00550930332114676
+    },
+    {
+      "position": [
+        -3.264052050087491,
+        8.403003431184862,
+        50.07331142290104
+      ],
+      "curvature": -0.0043779037276283905
+    },
+    {
+      "position": [
+        -1.847826168182836,
+        8.48744207468647,
+        62.602387752867195
+      ],
+      "curvature": -0.0034536764305100015
+    },
+    {
+      "position": [
+        0.11472441527584154,
+        8.570495048471491,
+        75.0581230428037
+      ],
+      "curvature": -0.002697340332958802
+    },
+    {
+      "position": [
+        2.501402649486205,
+        8.654208345081821,
+        87.43995831001725
+      ],
+      "curvature": -0.0020706204690047834
+    },
+    {
+      "position": [
+        5.21175210810577,
+        8.740399502882678,
+        99.75511047014376
+      ],
+      "curvature": -0.001541005768197302
+    },
+    {
+      "position": [
+        8.161775511541807,
+        8.83072869306613,
+        112.01514340927717
+      ],
+      "curvature": -0.0010823731202273107
+    },
+    {
+      "position": [
+        11.279488294177295,
+        8.926759904967986,
+        124.23368865217932
+      ],
+      "curvature": -0.000674001106417421
+    },
+    {
+      "position": [
+        14.501338845022705,
+        9.030014629693184,
+        136.42516898826477
+      ],
+      "curvature": -0.0002991363027046073
+    },
+    {
+      "position": [
+        17.769376771786153,
+        9.142021269110787,
+        148.60428657126607
+      ],
+      "curvature": 0.00005611755427728152
+    },
+    {
+      "position": [
+        21.02886105039536,
+        9.264359253436623,
+        160.78559766384453
+      ],
+      "curvature": 0.0004038772330117352
+    },
+    {
+      "position": [
+        24.22618067435255,
+        9.398701281214255,
+        172.98321970855665
+      ],
+      "curvature": 0.00075530438016113
+    },
+    {
+      "position": [
+        27.306949504871476,
+        9.546855592899131,
+        185.21058194576972
+      ],
+      "curvature": 0.0011212871498831084
+    },
+    {
+      "position": [
+        30.214146010347477,
+        9.710809063858242,
+        197.48009605100282
+      ],
+      "curvature": 0.0015130246958135942
+    },
+    {
+      "position": [
+        32.886193805922645,
+        9.892770673117194,
+        209.8026207578535
+      ],
+      "curvature": 0.001942478565532188
+    },
+    {
+      "position": [
+        35.25491465527925,
+        10.095212847716324,
+        222.18657449097512
+      ],
+      "curvature": 0.0024225893815759776
+    },
+    {
+      "position": [
+        37.243356892353106,
+        10.320906126762564,
+        234.6365895376022
+      ],
+      "curvature": 0.0029671997770270393
+    },
+    {
+      "position": [
+        38.76359633312791,
+        10.572939703889842,
+        247.15163409338516
+      ],
+      "curvature": 0.0035900033293263405
+    },
+    {
+      "position": [
+        39.71469405679123,
+        10.85469662266881,
+        259.7217280717913
+      ],
+      "curvature": 0.004302224444319217
+    },
+    {
+      "position": [
+        39.98156099435994,
+        11.169758722288318,
+        272.3235720899487
+      ],
+      "curvature": 0.005107264255515826
+    },
+    {
+      "position": [
+        39.43586857024624,
+        11.52168466506434,
+        284.9146981681148
+      ],
+      "curvature": 0.005992325103036947
+    },
+    {
+      "position": [
+        37.94093504603171,
+        11.913595958811023,
+        297.4265878607979
+      ],
+      "curvature": 0.006915174891206674
+    },
+    {
+      "position": [
+        35.44216876751078,
+        12.352098281272978,
+        309.7762647870461
+      ],
+      "curvature": 0.0054699188390479585
+    },
+    {
+      "position": [
+        32.09560930725682,
+        12.843623766032744,
+        321.9222463462888
+      ],
+      "curvature": 0.004946391511882292
+    },
+    {
+      "position": [
+        27.999346888139346,
+        13.381386894002146,
+        333.83480107769174
+      ],
+      "curvature": 0.004383968299491337
+    },
+    {
+      "position": [
+        23.25166470993378,
+        13.958344899868356,
+        345.50160969235355
+      ],
+      "curvature": 0.0038157094333000937
+    },
+    {
+      "position": [
+        17.948615041103345,
+        14.567935431526557,
+        356.9253903007928
+      ],
+      "curvature": 0.003263845797919627
+    },
+    {
+      "position": [
+        12.18012910922803,
+        15.204264118438255,
+        368.120245250659
+      ],
+      "curvature": 0.002740642299027659
+    },
+    {
+      "position": [
+        6.028338937253098,
+        15.862141829475847,
+        379.1080845921901
+      ],
+      "curvature": 0.0022509200133202178
+    },
+    {
+      "position": [
+        -0.43281902671079653,
+        16.53705614206022,
+        389.91608065796623
+      ],
+      "curvature": 0.0017944045932690256
+    },
+    {
+      "position": [
+        -7.136887365077117,
+        17.22507338905256,
+        400.57444081906465
+      ],
+      "curvature": 0.0013677920595112354
+    },
+    {
+      "position": [
+        -14.023797572727458,
+        17.922733351132514,
+        411.11502462275894
+      ],
+      "curvature": 0.0009660933895452052
+    },
+    {
+      "position": [
+        -21.038653000020638,
+        18.626948224887464,
+        421.57056051509323
+      ],
+      "curvature": 0.0005835195631259521
+    },
+    {
+      "position": [
+        -28.13028792987313,
+        19.334888329136476,
+        431.9739537685895
+      ],
+      "curvature": 0.00021398074426950484
+    },
+    {
+      "position": [
+        -35.25001913282948,
+        20.043891751178084,
+        442.35809137914833
+      ],
+      "curvature": -0.00014861428579612538
+    },
+    {
+      "position": [
+        -42.35032760386196,
+        20.75136844048963,
+        452.7556063878582
+      ],
+      "curvature": -0.0005102283532294609
+    },
+    {
+      "position": [
+        -49.3836529582451,
+        21.45471532066952,
+        463.19879198626853
+      ],
+      "curvature": -0.0008765899113694533
+    },
+    {
+      "position": [
+        -56.301178452815364,
+        22.15122888697873,
+        473.7194222515602
+      ],
+      "curvature": -0.001253072494072791
+    },
+    {
+      "position": [
+        -63.051693286988964,
+        22.83802253090415,
+        484.34853920860144
+      ],
+      "curvature": -0.001644499741780312
+    },
+    {
+      "position": [
+        -69.58043965720142,
+        23.511937178973092,
+        495.11596359694755
+      ],
+      "curvature": -0.0020547719829728164
+    },
+    {
+      "position": [
+        -75.82814749441866,
+        24.16946251460246,
+        506.04968400466646
+      ],
+      "curvature": -0.0024863380862929245
+    },
+    {
+      "position": [
+        -81.73019610303209,
+        24.806657626190855,
+        517.1747865897828
+      ],
+      "curvature": -0.0029392801276389067
+    },
+    {
+      "position": [
+        -87.2161520804704,
+        25.419088962300943,
+        528.5119535727308
+      ],
+      "curvature": -0.003410179894280766
+    },
+    {
+      "position": [
+        -92.20997693893375,
+        26.001806734440095,
+        540.0755710111471
+      ],
+      "curvature": -0.003890729242595717
+    },
+    {
+      "position": [
+        -96.63116481186489,
+        26.549376184314916,
+        551.8713693110783
+      ],
+      "curvature": -0.004366436157411321
+    },
+    {
+      "position": [
+        -100.4016733319172,
+        27.056362688907008,
+        563.8924456253441
+      ],
+      "curvature": -0.0009392087044610474
+    },
+    {
+      "position": [
+        -103.86349394306718,
+        27.551117999450977,
+        576.0083603932371
+      ],
+      "curvature": -0.00043286607663088573
+    },
+    {
+      "position": [
+        -107.2591346143385,
+        28.052023521646014,
+        588.1426797254776
+      ],
+      "curvature": -0.0005296241445882021
+    },
+    {
+      "position": [
+        -110.57366517613508,
+        28.55617290876845,
+        600.2992279542422
+      ],
+      "curvature": -0.0006220230505320165
+    },
+    {
+      "position": [
+        -113.7927733997544,
+        29.06093465750372,
+        612.4814304082099
+      ],
+      "curvature": -0.0007123779292788926
+    },
+    {
+      "position": [
+        -116.90231808578223,
+        29.563853943870214,
+        624.6920642232534
+      ],
+      "curvature": -0.0008026072956589748
+    },
+    {
+      "position": [
+        -119.88814109638027,
+        30.062603298012753,
+        636.933718445622
+      ],
+      "curvature": -0.0008943630123754443
+    },
+    {
+      "position": [
+        -122.73572987331242,
+        30.55491584799802,
+        649.2085166644964
+      ],
+      "curvature": -0.0009891423197501397
+    },
+    {
+      "position": [
+        -125.43000144633524,
+        31.038541926750046,
+        661.518188039187
+      ],
+      "curvature": -0.0010883670291700327
+    },
+    {
+      "position": [
+        -127.95508606378581,
+        31.511209362881797,
+        673.8640882773079
+      ],
+      "curvature": -0.0011934428201568507
+    },
+    {
+      "position": [
+        -130.29408524492771,
+        31.97058171747045,
+        686.2470722826959
+      ],
+      "curvature": -0.0013058190933449886
+    },
+    {
+      "position": [
+        -132.4288476958474,
+        32.41422168398781,
+        698.6674373429363
+      ],
+      "curvature": -0.0014270070246829808
+    },
+    {
+      "position": [
+        -134.3397319752581,
+        32.83955402204877,
+        711.1248259588378
+      ],
+      "curvature": -0.0015586260918441922
+    },
+    {
+      "position": [
+        -136.00534721027708,
+        33.2438255460795,
+        723.6180326490601
+      ],
+      "curvature": -0.0017024310649207087
+    },
+    {
+      "position": [
+        -137.4022920163512,
+        33.624066002463096,
+        736.1448330713831
+      ],
+      "curvature": -0.0018603016245345124
+    },
+    {
+      "position": [
+        -138.50487455735944,
+        33.97704554471361,
+        748.7017122514134
+      ],
+      "curvature": -0.0020342569507638963
+    },
+    {
+      "position": [
+        -139.28482835855743,
+        34.299230442597015,
+        761.2835134321109
+      ],
+      "curvature": -0.002226422794234787
+    },
+    {
+      "position": [
+        -139.71103856255687,
+        34.58673812341057,
+        773.8829928022209
+      ],
+      "curvature": -0.0024390334228860987
+    },
+    {
+      "position": [
+        -139.74930127812178,
+        34.835296484736475,
+        786.4904152607734
+      ],
+      "curvature": -0.002674140632821585
+    },
+    {
+      "position": [
+        -139.36214586412797,
+        35.04019909188944,
+        799.0925944730166
+      ],
+      "curvature": -0.002933607023001564
+    },
+    {
+      "position": [
+        -138.50879682589118,
+        35.196283735488414,
+        811.6723705897936
+      ],
+      "curvature": -0.0032185984036652263
+    },
+    {
+      "position": [
+        -137.14534314076417,
+        35.29792199619158,
+        824.2074951227515
+      ],
+      "curvature": -0.003529200999648071
+    },
+    {
+      "position": [
+        -135.2252243659018,
+        35.3390469524788,
+        836.6696894743523
+      ],
+      "curvature": -0.0038636807225216805
+    },
+    {
+      "position": [
+        -132.7002324752586,
+        35.31323041337044,
+        849.0233238036934
+      ],
+      "curvature": -0.004217611497178736
+    },
+    {
+      "position": [
+        -129.52209383851147,
+        35.21383586076544,
+        861.2246220793609
+      ],
+      "curvature": -0.004582969699404043
+    },
+    {
+      "position": [
+        -125.64487989967675,
+        35.03426486681079,
+        873.2208546994932
+      ],
+      "curvature": -0.004948072165526557
+    },
+    {
+      "position": [
+        -121.04156636442276,
+        34.757979098319495,
+        884.9556917257761
+      ],
+      "curvature": -0.0045819273562484825
+    },
+    {
+      "position": [
+        -115.76901020399498,
+        34.37332035497087,
+        896.4026699656474
+      ],
+      "curvature": -0.004136499510054768
+    },
+    {
+      "position": [
+        -109.90767532384533,
+        33.89452249475969,
+        907.556417014903
+      ],
+      "curvature": -0.0037303862335486843
+    },
+    {
+      "position": [
+        -103.52945164840817,
+        33.33489536243553,
+        918.419259761443
+      ],
+      "curvature": -0.0033656738538214784
+    },
+    {
+      "position": [
+        -96.69726083328989,
+        32.70632537314161,
+        928.9988935392394
+      ],
+      "curvature": -0.0030414300972928707
+    },
+    {
+      "position": [
+        -89.4657174414487,
+        32.019339462666686,
+        939.306110990285
+      ],
+      "curvature": -0.0027546204575446894
+    },
+    {
+      "position": [
+        -81.88185652924778,
+        31.283216080874134,
+        949.3535479332479
+      ],
+      "curvature": -0.0025016149665294182
+    },
+    {
+      "position": [
+        -73.98600457718007,
+        30.50612703401874,
+        959.1547626722092
+      ],
+      "curvature": -0.002278518620047033
+    },
+    {
+      "position": [
+        -65.81294187776444,
+        29.69531493614198,
+        968.7232780968488
+      ],
+      "curvature": -0.0020816616766904114
+    },
+    {
+      "position": [
+        -57.3924630022938,
+        28.8572115439767,
+        978.0725236507413
+      ],
+      "curvature": -0.0019075841513019564
+    },
+    {
+      "position": [
+        -48.750308263356004,
+        27.99758923085274,
+        987.2153518235845
+      ],
+      "curvature": -0.0017532377400220072
+    },
+    {
+      "position": [
+        -39.90879108152936,
+        27.121678024411906,
+        996.1639274157747
+      ],
+      "curvature": -0.0016159745167276622
+    },
+    {
+      "position": [
+        -30.887146699130604,
+        26.234250484022297,
+        1004.9298558663044
+      ],
+      "curvature": -0.0014934538718203115
+    },
+    {
+      "position": [
+        -21.702286013559956,
+        25.33974271541346,
+        1013.5238662722946
+      ],
+      "curvature": -0.0013837013261367914
+    },
+    {
+      "position": [
+        -12.368911031572072,
+        24.442309189881353,
+        1021.9560893502993
+      ],
+      "curvature": -0.0012849662540553178
+    },
+    {
+      "position": [
+        -2.899976995976221,
+        23.545909674921493,
+        1030.2359501373173
+      ],
+      "curvature": -0.0011957775111033208
+    },
+    {
+      "position": [
+        6.693074431596504,
+        22.654372633458244,
+        1038.3722459579271
+      ],
+      "curvature": -0.0011148503893855203
+    },
+    {
+      "position": [
+        16.40009731149011,
+        21.771457481528586,
+        1046.3732018982068
+      ],
+      "curvature": -0.0010410683462841982
+    },
+    {
+      "position": [
+        26.212049498717192,
+        20.900915962839093,
+        1054.2465210205953
+      ],
+      "curvature": -0.0009734537970085693
+    },
+    {
+      "position": [
+        36.12083027268176,
+        20.046553854443445,
+        1061.9994368542507
+      ],
+      "curvature": -0.0009111416924048671
+    },
+    {
+      "position": [
+        46.11913993789101,
+        19.212295574596563,
+        1069.638765511564
+      ],
+      "curvature": -0.0008533515307646144
+    },
+    {
+      "position": [
+        56.20040227579905,
+        18.402250812010813,
+        1077.1709910503048
+      ],
+      "curvature": -0.0007993739587278573
+    },
+    {
+      "position": [
+        66.35856207742827,
+        17.62080138057169,
+        1084.6022467607474
+      ],
+      "curvature": -0.0007485491773451204
+    },
+    {
+      "position": [
+        76.58806205969744,
+        16.872687038280816,
+        1091.9384266096313
+      ],
+      "curvature": -0.0007002156754028678
+    },
+    {
+      "position": [
+        86.88378853807124,
+        16.163114014988622,
+        1099.1852665087208
+      ],
+      "curvature": -0.0006537321001939513
+    },
+    {
+      "position": [
+        97.24091856120657,
+        15.497897068481333,
+        1106.3483587770288
+      ],
+      "curvature": -0.0006083948324631022
+    },
+    {
+      "position": [
+        107.65484632454742,
+        14.883632022637347,
+        1113.4332341271165
+      ],
+      "curvature": -0.0005634441363637525
+    },
+    {
+      "position": [
+        118.12111736133026,
+        14.327920299927207,
+        1120.4454647316522
+      ],
+      "curvature": -0.0005179378451831519
+    },
+    {
+      "position": [
+        128.6331790321018,
+        13.836858649286736,
+        1127.3935617609068
+      ],
+      "curvature": -0.00013810068434413138
+    },
+    {
+      "position": [
+        139.16646002993932,
+        13.38249042720328,
+        1134.312119700365
+      ],
+      "curvature": -0.0002488622183739052
+    },
+    {
+      "position": [
+        149.72210864544778,
+        12.953530502910327,
+        1141.1981735439417
+      ],
+      "curvature": -0.0003512209832181804
+    },
+    {
+      "position": [
+        160.30875905176524,
+        12.548277546742703,
+        1148.037880306914
+      ],
+      "curvature": -0.0004481694743884514
+    },
+    {
+      "position": [
+        170.93445543426424,
+        12.165349386099537,
+        1154.8180492478311
+      ],
+      "curvature": -0.0005420679355501499
+    },
+    {
+      "position": [
+        181.60677105825883,
+        11.803628768042945,
+        1161.525768632982
+      ],
+      "curvature": -0.0006349074822044806
+    },
+    {
+      "position": [
+        192.3329359821025,
+        11.4622216979857,
+        1168.1481172004171
+      ],
+      "curvature": -0.0007283994136118235
+    },
+    {
+      "position": [
+        203.1199196598892,
+        11.14042697997827,
+        1174.6718984155107
+      ],
+      "curvature": -0.0008241112295421585
+    },
+    {
+      "position": [
+        213.9745344711019,
+        10.837712456926598,
+        1181.0834186859952
+      ],
+      "curvature": -0.0009235373015128823
+    },
+    {
+      "position": [
+        224.90347795857878,
+        10.55369885184217,
+        1187.3682444316264
+      ],
+      "curvature": -0.0010281624284447044
+    },
+    {
+      "position": [
+        235.91336431676683,
+        10.288148229034396,
+        1193.5109593858351
+      ],
+      "curvature": -0.0011395155419225505
+    },
+    {
+      "position": [
+        247.01073971112115,
+        10.040956390927075,
+        1199.4949101907043
+      ],
+      "curvature": -0.001259217127956259
+    },
+    {
+      "position": [
+        258.20207511673095,
+        9.812148687811332,
+        1205.3019300253306
+      ],
+      "curvature": -0.0013890223069520328
+    },
+    {
+      "position": [
+        269.49372886121733,
+        9.601878822536365,
+        1210.9120313067785
+      ],
+      "curvature": -0.0015308599719916186
+    },
+    {
+      "position": [
+        280.8918728961331,
+        9.410430218793275,
+        1216.3030616483109
+      ],
+      "curvature": -0.0016868755147523998
+    },
+    {
+      "position": [
+        292.4024488784648,
+        9.238218518834778,
+        1221.4503506617177
+      ],
+      "curvature": -0.0018594385798832284
+    },
+    {
+      "position": [
+        304.0307656862226,
+        9.085800362124697,
+        1226.3261770646898
+      ],
+      "curvature": -0.0020511642294127907
+    },
+    {
+      "position": [
+        315.78160186266194,
+        8.953874937132783,
+        1230.89944698991
+      ],
+      "curvature": -0.002264924689747546
+    },
+    {
+      "position": [
+        327.6584433258231,
+        8.843296495447701,
+        1235.1350058380517
+      ],
+      "curvature": -0.002503743140788899
+    },
+    {
+      "position": [
+        339.66322189846045,
+        8.755077488583463,
+        1238.9931984562165
+      ],
+      "curvature": -0.0027706754937278956
+    },
+    {
+      "position": [
+        351.7956228962053,
+        8.690392981381128,
+        1242.429323194157
+      ],
+      "curvature": -0.0030685559276223337
+    },
+    {
+      "position": [
+        364.0518652244727,
+        8.650580064990589,
+        1245.3930915573405
+      ],
+      "curvature": -0.0033994413137945
+    },
+    {
+      "position": [
+        376.4238292018077,
+        8.637123266990686,
+        1247.8284561878131
+      ],
+      "curvature": -0.0037640261888109553
+    },
+    {
+      "position": [
+        388.89721418889485,
+        8.651626181005511,
+        1249.6736179194238
+      ],
+      "curvature": -0.004160447727193807
+    },
+    {
+      "position": [
+        401.4498922509772,
+        8.69575608251483,
+        1250.861758151569
+      ],
+      "curvature": -0.004583086209939979
+    },
+    {
+      "position": [
+        414.04975587171737,
+        8.77115422348927,
+        1251.322630545995
+      ],
+      "curvature": -0.005020555240753221
+    },
+    {
+      "position": [
+        426.6529154137429,
+        8.879303974202914,
+        1250.985455073039
+      ],
+      "curvature": -0.005454493233282351
+    },
+    {
+      "position": [
+        439.20249579769296,
+        9.021506650453968,
+        1249.7842805343453
+      ],
+      "curvature": -0.005141105456596694
+    },
+    {
+      "position": [
+        451.64607823064927,
+        9.206830378137505,
+        1247.7600248762026
+      ],
+      "curvature": -0.0044916372953127896
+    },
+    {
+      "position": [
+        463.9546049250083,
+        9.435299289304432,
+        1245.0334224355329
+      ],
+      "curvature": -0.003980951524214615
+    },
+    {
+      "position": [
+        476.1100332041825,
+        9.700891398962463,
+        1241.6917261658875
+      ],
+      "curvature": -0.0035549167675563505
+    },
+    {
+      "position": [
+        488.10282482063724,
+        9.998589687609305,
+        1237.8079344570074
+      ],
+      "curvature": -0.003199826759373253
+    },
+    {
+      "position": [
+        499.9285105487189,
+        10.324212557948034,
+        1233.4429725022007
+      ],
+      "curvature": -0.002903404398221428
+    },
+    {
+      "position": [
+        511.5856646130386,
+        10.674261997062136,
+        1228.6477447948255
+      ],
+      "curvature": -0.0026553192463649113
+    },
+    {
+      "position": [
+        523.0751486422665,
+        11.04581274114256,
+        1223.4646664103598
+      ],
+      "curvature": -0.0024472097587599374
+    },
+    {
+      "position": [
+        534.3985545180357,
+        11.436386448219546,
+        1217.9294174643544
+      ],
+      "curvature": -0.002272217039141132
+    },
+    {
+      "position": [
+        545.5582210296814,
+        11.843884683448207,
+        1212.0718945786175
+      ],
+      "curvature": -0.0021250817121574736
+    },
+    {
+      "position": [
+        556.5563410792025,
+        12.266502256212844,
+        1205.917441325122
+      ],
+      "curvature": -0.002001351386739813
+    },
+    {
+      "position": [
+        567.3951354112879,
+        12.702686854640804,
+        1199.4874217929282
+      ],
+      "curvature": -0.0018975832851250984
+    },
+    {
+      "position": [
+        578.0765219142288,
+        13.151088998425758,
+        1192.799929690562
+      ],
+      "curvature": -0.0018110719180413442
+    },
+    {
+      "position": [
+        588.6020377798917,
+        13.610527646890786,
+        1185.87027036505
+      ],
+      "curvature": -0.0017396430898877328
+    },
+    {
+      "position": [
+        598.9725808639249,
+        14.079953054019839,
+        1178.7114858158736
+      ],
+      "curvature": -0.001681590200253166
+    },
+    {
+      "position": [
+        609.1886762669791,
+        14.5584373323717,
+        1171.334458746663
+      ],
+      "curvature": -0.0016356172195920301
+    },
+    {
+      "position": [
+        619.2501189168638,
+        15.045141096758364,
+        1163.7483757050488
+      ],
+      "curvature": -0.0016007566393213214
+    },
+    {
+      "position": [
+        629.1560760045382,
+        15.539303662493323,
+        1155.9608278311318
+      ],
+      "curvature": -0.0015763110010921792
+    },
+    {
+      "position": [
+        638.9050102857543,
+        16.040227947923583,
+        1147.977984458206
+      ],
+      "curvature": -0.0015618522897515366
+    },
+    {
+      "position": [
+        648.4945717427278,
+        16.54726576192826,
+        1139.804754077266
+      ],
+      "curvature": -0.001557196920919219
+    },
+    {
+      "position": [
+        657.9215394639045,
+        17.059807488710256,
+        1131.4448657275686
+      ],
+      "curvature": -0.0015623898671855603
+    },
+    {
+      "position": [
+        667.1817599973551,
+        17.57727360415409,
+        1122.9009057408557
+      ],
+      "curvature": -0.0015777264917409119
+    },
+    {
+      "position": [
+        676.2699384971412,
+        18.099099717596882,
+        1114.174443532506
+      ],
+      "curvature": -0.001603794166669416
+    },
+    {
+      "position": [
+        685.1795416326923,
+        18.624729249167956,
+        1105.2660107083911
+      ],
+      "curvature": -0.0016414163093438445
+    },
+    {
+      "position": [
+        693.9026617232064,
+        19.153606116548435,
+        1096.1750466090225
+      ],
+      "curvature": -0.0016918815004691615
+    },
+    {
+      "position": [
+        702.429631966728,
+        19.685154392254397,
+        1086.900028399121
+      ],
+      "curvature": -0.0017567987366934282
+    },
+    {
+      "position": [
+        710.7488103920815,
+        20.21876997959257,
+        1077.4383484138925
+      ],
+      "curvature": -0.001838430102867839
+    },
+    {
+      "position": [
+        718.8461610244902,
+        20.753802836098043,
+        1067.786286277063
+      ],
+      "curvature": -0.0019397470859580427
+    },
+    {
+      "position": [
+        726.7047562497784,
+        21.289537623040644,
+        1057.9389204597176
+      ],
+      "curvature": -0.0020644889785873
+    },
+    {
+      "position": [
+        734.3040035848575,
+        21.825160434703882,
+        1047.8901756792334
+      ],
+      "curvature": -0.0022180210348597936
+    },
+    {
+      "position": [
+        741.6189315454836,
+        22.3597362101751,
+        1037.6325076960775
+      ],
+      "curvature": -0.0024071341067472456
+    },
+    {
+      "position": [
+        748.6186473914693,
+        22.892136035665235,
+        1027.1573120023784
+      ],
+      "curvature": -0.002641160885480216
+    },
+    {
+      "position": [
+        755.2517202971969,
+        23.434900411654617,
+        1016.4470710328411
+      ],
+      "curvature": -0.002956246125480203
+    },
+    {
+      "position": [
+        761.4814527734821,
+        24.013036454850965,
+        1005.4989076260472
+      ],
+      "curvature": -0.0027523537925722
+    },
+    {
+      "position": [
+        767.3266899550173,
+        24.62172092514477,
+        994.342230260906
+      ],
+      "curvature": -0.0025670848513307132
+    },
+    {
+      "position": [
+        772.807072016752,
+        25.255731551637716,
+        983.0031358849541
+      ],
+      "curvature": -0.0023993056034763674
+    },
+    {
+      "position": [
+        777.9412892101321,
+        25.91032214218835,
+        971.504344735189
+      ],
+      "curvature": -0.002247851833180243
+    },
+    {
+      "position": [
+        782.747079720468,
+        26.581190698205923,
+        959.86528166756
+      ],
+      "curvature": -0.0021112734613027103
+    },
+    {
+      "position": [
+        787.2409426229133,
+        27.264402292971855,
+        948.1029208220176
+      ],
+      "curvature": -0.0019883253288089887
+    },
+    {
+      "position": [
+        791.4382013830789,
+        27.956349842713085,
+        936.2319564652225
+      ],
+      "curvature": -0.0018777402692508574
+    },
+    {
+      "position": [
+        795.353006216202,
+        28.653707100946942,
+        924.2651293880385
+      ],
+      "curvature": -0.0017783105516632693
+    },
+    {
+      "position": [
+        798.9983332433167,
+        29.353379624156567,
+        912.2136105867032
+      ],
+      "curvature": -0.0016889532542126433
+    },
+    {
+      "position": [
+        802.3860798165515,
+        30.052474136172737,
+        900.0870965656845
+      ],
+      "curvature": -0.0016087657216633186
+    },
+    {
+      "position": [
+        805.527078649229,
+        30.74825528155173,
+        887.8941491702711
+      ],
+      "curvature": -0.0015368434005396598
+    },
+    {
+      "position": [
+        808.4311915293192,
+        31.4381206585169,
+        875.6422444319023
+      ],
+      "curvature": -0.0014724596365983627
+    },
+    {
+      "position": [
+        811.1073345996974,
+        32.1195641467325,
+        863.3380480098723
+      ],
+      "curvature": -0.0014149559103448148
+    },
+    {
+      "position": [
+        813.5635537280085,
+        32.79015299591126,
+        850.987468044457
+      ],
+      "curvature": -0.0013637571700766365
+    },
+    {
+      "position": [
+        815.8070732610711,
+        33.447502008506596,
+        838.595770245439
+      ],
+      "curvature": -0.0013183753929983263
+    },
+    {
+      "position": [
+        817.8443408162217,
+        34.089249113478445,
+        826.1676756911343
+      ],
+      "curvature": -0.0012783962706212112
+    },
+    {
+      "position": [
+        819.6810671716706,
+        34.71303183693879,
+        813.7074441131409
+      ],
+      "curvature": -0.0012434740422286746
+    },
+    {
+      "position": [
+        821.322260592048,
+        35.316464162363886,
+        801.2189452105986
+      ],
+      "curvature": -0.001213327262510901
+    },
+    {
+      "position": [
+        822.772255100114,
+        35.89711325506725,
+        788.7057203306085
+      ],
+      "curvature": -0.001187735642763205
+    },
+    {
+      "position": [
+        824.0347323022426,
+        36.452475498132564,
+        776.1710366856308
+      ],
+      "curvature": -0.0011665380815939139
+    },
+    {
+      "position": [
+        825.1127364094863,
+        36.97995124587848,
+        763.6179361665024
+      ],
+      "curvature": -0.0011496320117038623
+    },
+    {
+      "position": [
+        826.0086820788893,
+        37.47681764203186,
+        751.0492807622946
+      ],
+      "curvature": -0.0011369742201014874
+    },
+    {
+      "position": [
+        826.7243546384884,
+        37.94019876856318,
+        738.4677966269179
+      ],
+      "curvature": -0.0011285833557177292
+    },
+    {
+      "position": [
+        827.260902158121,
+        38.36703228218313,
+        725.8761189510539
+      ],
+      "curvature": -0.001124544419597195
+    },
+    {
+      "position": [
+        827.618819526625,
+        38.75403269462247,
+        713.2768006768184
+      ],
+      "curvature": -0.0011250156514319369
+    },
+    {
+      "position": [
+        827.7979190249007,
+        39.0976464937399,
+        700.6723915377868
+      ],
+      "curvature": -0.001130246159605428
+    },
+    {
+      "position": [
+        827.7972925823241,
+        39.393999503098065,
+        688.0655764542923
+      ],
+      "curvature": -0.0011405821479388144
+    },
+    {
+      "position": [
+        827.6152589247095,
+        39.63884474856867,
+        675.4588930410391
+      ],
+      "curvature": -0.0011564814248377667
+    },
+    {
+      "position": [
+        827.2492952970102,
+        39.8274793151713,
+        662.8552901694279
+      ],
+      "curvature": -0.0011785272656714475
+    },
+    {
+      "position": [
+        826.6959446088692,
+        39.95466702436178,
+        650.2577575926948
+      ],
+      "curvature": -0.001207554289875539
+    },
+    {
+      "position": [
+        825.9507016041562,
+        40.01452751435734,
+        637.6696237566432
+      ],
+      "curvature": -0.0012445907174685798
+    },
+    {
+      "position": [
+        825.0078505978977,
+        40.00040479715535,
+        625.0944425989001
+      ],
+      "curvature": -0.001631727494102071
+    },
+    {
+      "position": [
+        823.807381626301,
+        39.904808468990076,
+        612.5422621540101
+      ],
+      "curvature": -0.0019324607780066751
+    },
+    {
+      "position": [
+        822.3014539213368,
+        39.728898651244535,
+        600.0236187980969
+      ],
+      "curvature": -0.0018493337183563344
+    },
+    {
+      "position": [
+        820.5041526204856,
+        39.47833756367067,
+        587.5446914843071
+      ],
+      "curvature": -0.0017690342531103168
+    },
+    {
+      "position": [
+        818.4291613937174,
+        39.15864146177759,
+        575.110531530692
+      ],
+      "curvature": -0.0016917851548764315
+    },
+    {
+      "position": [
+        816.0896699004919,
+        38.77515778421291,
+        562.7251603099808
+      ],
+      "curvature": -0.0016176989334415572
+    },
+    {
+      "position": [
+        813.4983759514615,
+        38.333062306960755,
+        550.3919728614641
+      ],
+      "curvature": -0.0015468556488099953
+    },
+    {
+      "position": [
+        810.6674184168772,
+        37.83734887317767,
+        538.1136122635136
+      ],
+      "curvature": -0.0014792242310479595
+    },
+    {
+      "position": [
+        807.6083740682049,
+        37.29283161239767,
+        525.8921303404079
+      ],
+      "curvature": -0.0014147803466553295
+    },
+    {
+      "position": [
+        804.3322577543811,
+        36.70414988067847,
+        513.7290778442126
+      ],
+      "curvature": -0.0013534566092227548
+    },
+    {
+      "position": [
+        800.8495222656186,
+        36.07577450313967,
+        501.62555093550617
+      ],
+      "curvature": -0.0012951589269818947
+    },
+    {
+      "position": [
+        797.1700698570762,
+        35.41201714147421,
+        489.58225368481277
+      ],
+      "curvature": -0.0012397683239986355
+    },
+    {
+      "position": [
+        793.3032690377289,
+        34.71704145281237,
+        477.59955378504685
+      ],
+      "curvature": -0.0011871618251173095
+    },
+    {
+      "position": [
+        789.2579751148253,
+        33.994875587289755,
+        465.67753175416397
+      ],
+      "curvature": -0.0011372075363646917
+    },
+    {
+      "position": [
+        785.0425532645323,
+        33.24942567420917,
+        453.8160240195431
+      ],
+      "curvature": -0.001089766745547224
+    },
+    {
+      "position": [
+        780.6649031472089,
+        32.484490037377654,
+        442.0146603446492
+      ],
+      "curvature": -0.0010446969850444548
+    },
+    {
+      "position": [
+        776.1324859120912,
+        31.7037742348566,
+        430.27290019062184
+      ],
+      "curvature": -0.0010018648504836118
+    },
+    {
+      "position": [
+        771.4523461167365,
+        30.910905620929896,
+        418.59005060926506
+      ],
+      "curvature": -0.000961134565007124
+    },
+    {
+      "position": [
+        766.6311346718171,
+        30.109448567237088,
+        406.96528495911633
+      ],
+      "curvature": -0.0009223738349742815
+    },
+    {
+      "position": [
+        761.6751421774424,
+        29.302921892224596,
+        395.39768385460894
+      ],
+      "curvature": -0.000885449672520429
+    },
+    {
+      "position": [
+        756.5903178712402,
+        28.494814400301763,
+        383.88623857831396
+      ],
+      "curvature": -0.0008502377379034131
+    },
+    {
+      "position": [
+        751.3822919422618,
+        27.68860170109274,
+        372.42986313463234
+      ],
+      "curvature": -0.000816615495837445
+    },
+    {
+      "position": [
+        746.0564045772942,
+        26.887764842629366,
+        361.02742020803515
+      ],
+      "curvature": -0.0007844615408869588
+    },
+    {
+      "position": [
+        740.6177237540747,
+        26.095808097016363,
+        349.677721427382
+      ],
+      "curvature": -0.0007536652764872334
+    },
+    {
+      "position": [
+        735.0710666278021,
+        25.31627848511562,
+        338.3795360813894
+      ],
+      "curvature": -0.0007241134433730765
+    },
+    {
+      "position": [
+        729.4210118588793,
+        24.55278546315457,
+        327.13158172764696
+      ],
+      "curvature": -0.0006956954966010245
+    },
+    {
+      "position": [
+        723.6719460248238,
+        23.809026856649158,
+        315.93258228772225
+      ],
+      "curvature": -0.0006683031981143143
+    },
+    {
+      "position": [
+        717.8280596897989,
+        23.088809780890998,
+        304.7812242328668
+      ],
+      "curvature": -0.000641829069945048
+    },
+    {
+      "position": [
+        711.8933753549039,
+        22.396078411571665,
+        293.67617712000776
+      ],
+      "curvature": -0.0006161653380800723
+    },
+    {
+      "position": [
+        705.8717674267822,
+        21.73494345827409,
+        282.6160968423669
+      ],
+      "curvature": -0.000591202683140083
+    },
+    {
+      "position": [
+        699.7669569565157,
+        21.109712590175494,
+        271.5995825867277
+      ],
+      "curvature": -0.000566829361767632
+    },
+    {
+      "position": [
+        693.5826056153708,
+        20.524935247276588,
+        260.625311351693
+      ],
+      "curvature": -0.0005429429584078546
+    },
+    {
+      "position": [
+        687.3222801351354,
+        19.985422300470805,
+        249.6919469278082
+      ],
+      "curvature": -0.000584544934408625
+    },
+    {
+      "position": [
+        680.9812648883313,
+        19.473492381983327,
+        238.80379088796835
+      ],
+      "curvature": -0.0006375451785583892
+    },
+    {
+      "position": [
+        674.5527274845355,
+        18.97020996359812,
+        227.966684179162
+      ],
+      "curvature": -0.0006487650700532371
+    },
+    {
+      "position": [
+        668.0355463752499,
+        18.47534305060492,
+        217.18223886079758
+      ],
+      "curvature": -0.0006614685436731223
+    },
+    {
+      "position": [
+        661.4284527811091,
+        17.98869938605604,
+        206.45227155160055
+      ],
+      "curvature": -0.0006756970894795144
+    },
+    {
+      "position": [
+        654.7300033205242,
+        17.51012059075507,
+        195.77875840001403
+      ],
+      "curvature": -0.000691459729819807
+    },
+    {
+      "position": [
+        647.938558023854,
+        17.03947787071583,
+        185.16380849871535
+      ],
+      "curvature": -0.000708801828908321
+    },
+    {
+      "position": [
+        641.0523293561325,
+        16.576673369626697,
+        174.60975341554058
+      ],
+      "curvature": -0.0007277870675980124
+    },
+    {
+      "position": [
+        634.0693564834695,
+        16.12163667239599,
+        164.11912048091082
+      ],
+      "curvature": -0.0007484881304398079
+    },
+    {
+      "position": [
+        626.9875049528572,
+        15.674323680496348,
+        153.69465127891988
+      ],
+      "curvature": -0.0007709925863086788
+    },
+    {
+      "position": [
+        619.8044646386053,
+        15.234715783869849,
+        143.33932094433862
+      ],
+      "curvature": -0.0007954034207471653
+    },
+    {
+      "position": [
+        612.5177462718177,
+        14.802819316255631,
+        133.0563588999133
+      ],
+      "curvature": -0.0008218398190193879
+    },
+    {
+      "position": [
+        605.1246768410875,
+        14.37866528521254,
+        122.84927162811988
+      ],
+      "curvature": -0.0008504381856964049
+    },
+    {
+      "position": [
+        597.622394140428,
+        13.962309372142837,
+        112.72186805209601
+      ],
+      "curvature": -0.0008813533955570787
+    },
+    {
+      "position": [
+        590.0078407434484,
+        13.553832201310101,
+        102.67828809747371
+      ],
+      "curvature": -0.0009147602681291596
+    },
+    {
+      "position": [
+        582.2777577008043,
+        13.153339880198244,
+        92.723035016762
+      ],
+      "curvature": -0.0009508552623622054
+    },
+    {
+      "position": [
+        574.4286782915481,
+        12.760964816560588,
+        82.861012077494
+      ],
+      "curvature": -0.0009898583795812908
+    },
+    {
+      "position": [
+        566.4569222092549,
+        12.376866820101084,
+        73.09756424114936
+      ],
+      "curvature": -0.0010320152603654894
+    },
+    {
+      "position": [
+        558.358590632474,
+        12.0012344988213,
+        63.43852548825618
+      ],
+      "curvature": -0.0010775994457132474
+    },
+    {
+      "position": [
+        550.1295627183532,
+        11.634286961500285,
+        53.890272471458516
+      ],
+      "curvature": -0.001126909916491553
+    },
+    {
+      "position": [
+        541.7654780846929,
+        11.276275164120392,
+        44.45976732530316
+      ],
+      "curvature": -0.0011802749412307984
+    },
+    {
+      "position": [
+        533.2617393497214,
+        10.927484448221168,
+        35.154629965923995
+      ],
+      "curvature": -0.0012380865272968906
+    },
+    {
+      "position": [
+        524.6135796732914,
+        10.588239751921261,
+        25.983282539275045
+      ],
+      "curvature": -0.0013007412484035182
+    },
+    {
+      "position": [
+        515.8158934168226,
+        10.258901657860203,
+        16.954846098665037
+      ],
+      "curvature": -0.0013686873108595266
+    },
+    {
+      "position": [
+        506.8634941167669,
+        9.939879342446831,
+        8.079494201038433
+      ],
+      "curvature": -0.0014424041018365169
+    },
+    {
+      "position": [
+        497.7509174950618,
+        9.631626002295405,
+        -0.6316685315891561
+      ],
+      "curvature": -0.0015224454239276214
+    },
+    {
+      "position": [
+        488.4725345854449,
+        9.334646323527567,
+        -9.16639996180799
+      ],
+      "curvature": -0.0016093691650227355
+    },
+    {
+      "position": [
+        479.022599701831,
+        9.049501088947409,
+        -17.511187812053393
+      ],
+      "curvature": -0.0017037833458804343
+    },
+    {
+      "position": [
+        469.3953159359754,
+        8.776812022248574,
+        -25.65110629216239
+      ],
+      "curvature": -0.001806323733769631
+    },
+    {
+      "position": [
+        459.58490772368134,
+        8.517266372613554,
+        -33.56967516119276
+      ],
+      "curvature": -0.0019176042203258913
+    },
+    {
+      "position": [
+        449.585585709786,
+        8.271618424108393,
+        -41.248809621862165
+      ],
+      "curvature": -0.0020382971748795185
+    },
+    {
+      "position": [
+        439.39195716975985,
+        8.040701361958497,
+        -48.66843983084544
+      ],
+      "curvature": -0.002166393185878814
+    },
+    {
+      "position": [
+        429.02528205429894,
+        7.830066267663486,
+        -55.845019994161866
+      ],
+      "curvature": -0.0012988823938188771
+    },
+    {
+      "position": [
+        418.540561474092,
+        7.646801079994188,
+        -62.84908389302332
+      ],
+      "curvature": -0.0012241366531657615
+    },
+    {
+      "position": [
+        407.9484638870188,
+        7.4874723282738636,
+        -69.69044920848906
+      ],
+      "curvature": -0.0011728002970037975
+    },
+    {
+      "position": [
+        397.2560705605093,
+        7.349136438694273,
+        -76.37432280457857
+      ],
+      "curvature": -0.0011398135584333726
+    },
+    {
+      "position": [
+        386.46847850412297,
+        7.22940264277315,
+        -82.90374485396721
+      ],
+      "curvature": -0.0011219443202971325
+    },
+    {
+      "position": [
+        375.5893045819642,
+        7.126297361402665,
+        -89.27987073692708
+      ],
+      "curvature": -0.0011171096582669204
+    },
+    {
+      "position": [
+        364.62128320445936,
+        7.038169594055158,
+        -95.50200283804072
+      ],
+      "curvature": -0.0011240635978508064
+    },
+    {
+      "position": [
+        353.5660010170983,
+        6.9636158700553255,
+        -101.56797671505414
+      ],
+      "curvature": -0.0011421929918786675
+    },
+    {
+      "position": [
+        342.4243723824288,
+        6.901430914890928,
+        -107.47400019770859
+      ],
+      "curvature": -0.0011714125565810537
+    },
+    {
+      "position": [
+        331.1966135426489,
+        6.850566614731818,
+        -113.2146928358569
+      ],
+      "curvature": -0.0012121000883626126
+    },
+    {
+      "position": [
+        319.88232894844185,
+        6.810101127651236,
+        -118.78297764516826
+      ],
+      "curvature": -0.0012651017916812091
+    },
+    {
+      "position": [
+        308.4805681311412,
+        6.77921414627335,
+        -124.16991004226476
+      ],
+      "curvature": -0.0013317735782967198
+    },
+    {
+      "position": [
+        296.98987292338546,
+        6.7571665646265044,
+        -129.36442756150038
+      ],
+      "curvature": -0.001414066821112877
+    },
+    {
+      "position": [
+        285.4083305529237,
+        6.7432831547058285,
+        -134.35300068988292
+      ],
+      "curvature": -0.00151465390611711
+    },
+    {
+      "position": [
+        273.7334588574767,
+        6.736937037104076,
+        -139.11923349241965
+      ],
+      "curvature": -0.001637194910805833
+    },
+    {
+      "position": [
+        261.96265184052675,
+        6.737535393257455,
+        -143.64308088503745
+      ],
+      "curvature": -0.001786583387820208
+    },
+    {
+      "position": [
+        250.09280632237545,
+        6.744504431922297,
+        -147.90020562036344
+      ],
+      "curvature": -0.0019694827412721333
+    },
+    {
+      "position": [
+        238.1208107416196,
+        6.757273449930064,
+        -151.8607168094819
+      ],
+      "curvature": -0.0021949414317410194
+    },
+    {
+      "position": [
+        226.04366861194802,
+        6.77525582154133,
+        -155.48768999786284
+      ],
+      "curvature": -0.002475600561287501
+    },
+    {
+      "position": [
+        213.8592092726198,
+        6.797824494497002,
+        -158.73498124834666
+      ],
+      "curvature": -0.002829078323872548
+    },
+    {
+      "position": [
+        201.56652048570095,
+        6.824280081846961,
+        -161.5443875684723
+      ],
+      "curvature": -0.003280462926497459
+    },
+    {
+      "position": [
+        189.1680476831448,
+        6.853803442237525,
+        -163.84132645732316
+      ],
+      "curvature": -0.0038658995282340905
+    },
+    {
+      "position": [
+        176.67253530414848,
+        6.885386491254023,
+        -165.52896672809896
+      ],
+      "curvature": -0.004637708593298316
+    },
+    {
+      "position": [
+        164.10028261514833,
+        6.917728015953628,
+        -166.48003256140058
+      ],
+      "curvature": -0.005670922837918127
+    },
+    {
+      "position": [
+        151.49329734014634,
+        6.949073985395891,
+        -166.5257705894491
+      ],
+      "curvature": -0.007068452882036078
+    },
+    {
+      "position": [
+        138.93471777463014,
+        6.976979475918897,
+        -165.44316960475618
+      ],
+      "curvature": -0.008948909022135302
+    },
+    {
+      "position": [
+        126.58257053160337,
+        6.997998163921347,
+        -162.94689578508547
+      ],
+      "curvature": -0.011290176538914433
+    },
+    {
+      "position": [
+        114.67419799566571,
+        7.014480315263771,
+        -158.82554583412247
+      ],
+      "curvature": -0.009680886987005045
+    },
+    {
+      "position": [
+        103.35458108215819,
+        7.035611352672561,
+        -153.28322724073655
+      ],
+      "curvature": -0.008397154694888442
+    },
+    {
+      "position": [
+        92.68348996225114,
+        7.061491420805167,
+        -146.57332485590555
+      ],
+      "curvature": -0.007227977449985985
+    },
+    {
+      "position": [
+        82.66777784801414,
+        7.092062118767137,
+        -138.91738335239498
+      ],
+      "curvature": -0.006235520545852292
+    },
+    {
+      "position": [
+        73.28527107939018,
+        7.127296071049275,
+        -130.4960450888525
+      ],
+      "curvature": -0.005424319688271
+    },
+    {
+      "position": [
+        64.50128495460913,
+        7.16721959584599,
+        -121.45119426134235
+      ],
+      "curvature": -0.0047746958496320095
+    },
+    {
+      "position": [
+        56.27850007109754,
+        7.211920930880655,
+        -111.89272701925252
+      ],
+      "curvature": -0.004260699909115103
+    },
+    {
+      "position": [
+        48.58181074580304,
+        7.261555128095321,
+        -101.90534074303643
+      ],
+      "curvature": -0.003858393520774954
+    },
+    {
+      "position": [
+        41.38083029166018,
+        7.316347146311873,
+        -91.5546203746114
+      ],
+      "curvature": -0.0035481553193649554
+    },
+    {
+      "position": [
+        34.650777206984266,
+        7.37659848237432,
+        -80.89152988110331
+      ],
+      "curvature": -0.003315134030130757
+    },
+    {
+      "position": [
+        28.37293119871007,
+        7.4426962504521175,
+        -69.95599341823709
+      ],
+      "curvature": -0.0031488964193791347
+    },
+    {
+      "position": [
+        22.534815068064045,
+        7.515127727044883,
+        -58.77947452653656
+      ],
+      "curvature": -0.003043097607674382
+    },
+    {
+      "position": [
+        17.13044589920878,
+        7.594501665227879,
+        -47.386891373301395
+      ],
+      "curvature": -0.0029952587512496126
+    },
+    {
+      "position": [
+        12.160844732027662,
+        7.681578808548624,
+        -35.798092289366615
+      ],
+      "curvature": -0.003006969071144601
+    },
+    {
+      "position": [
+        7.6349538104642,
+        7.777316029294918,
+        -24.029012564367754
+      ],
+      "curvature": -0.003084816158309708
+    },
+    {
+      "position": [
+        3.5711829488475306,
+        7.882931303625991,
+        -12.092626576254347
+      ],
+      "curvature": -0.0032421579821226634
+    },
+    {
+      "position": [
+        -1.1935608676299961e-13,
+        8.000000000000005,
+        4.3861714655446986e-13
+      ],
+      "curvature": -0.006693104519230587
+    }
+  ]
+}

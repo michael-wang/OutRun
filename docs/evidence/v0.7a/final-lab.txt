@@ -1,0 +1,35 @@
+
+> first-drive@0.7.0-alpha.1 test:e2e
+> npm run build && playwright test tests/brick-lab.spec.ts
+
+
+> first-drive@0.7.0-alpha.1 build
+> tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 29 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.54 kB │ gzip:   0.35 kB
+dist/assets/index-nl-h89K6.css   13.33 kB │ gzip:   3.50 kB
+dist/assets/index-C4C6Gb73.js   544.43 kB │ gzip: 145.10 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 611ms
+[WebServer] (node:40604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:12644) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\brick-lab.spec.ts:6:1 › production lab plays and reviews without a development driver (1.4s)
+  ok 2 tests\brick-lab.spec.ts:15:1 › lab defaults, human review isolation, capped notes and portable export survive a browser restart (2.5s)
+  ok 3 tests\brick-lab.spec.ts:29:1 › all eight render continuous road, deterministic replay and unchanged human defaults (5.5s)
+  ok 4 tests\brick-lab.spec.ts:41:1 › lab mobile controls, hand swap, review pause and compact layouts (1.3s)
+
+  4 passed (12.6s)

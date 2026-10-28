@@ -1,0 +1,4962 @@
+[
+  {
+    "time": 0.5334000000000002,
+    "distance": 350.5237080837836,
+    "gas": true,
+    "steer": 0.75,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 0.7666999999999996,
+    "distance": 351.4981387543788,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 1.0166999999999988,
+    "distance": 353.09745678004896,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 1.283499999999998,
+    "distance": 355.43699077547785,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 1.5167999999999975,
+    "distance": 358.0172945723859,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 1.783399999999996,
+    "distance": 361.566161901818,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 2.0166999999999953,
+    "distance": 364.85136417030105,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 2.2667999999999946,
+    "distance": 368.7189949845664,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 2.5167999999999937,
+    "distance": 373.2205172608072,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 2.766799999999993,
+    "distance": 378.4105563132904,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 3.016799999999992,
+    "distance": 384.0061101466478,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 3.2668999999999904,
+    "distance": 389.883614700751,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 3.5168999999999895,
+    "distance": 396.04491986029706,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 3.7668999999999886,
+    "distance": 402.49865906831576,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 4.016899999999988,
+    "distance": 409.2509120757694,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 4.266900000000001,
+    "distance": 416.3074515464563,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 4.516800000000012,
+    "distance": 423.67068616183843,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 4.766900000000024,
+    "distance": 431.26021139965735,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 5.016900000000034,
+    "distance": 438.3384347100178,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 5.266900000000045,
+    "distance": 445.3654812162131,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 5.516900000000056,
+    "distance": 452.4999715786499,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 5.767000000000067,
+    "distance": 459.74345555477674,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 6.017000000000079,
+    "distance": 467.0885999945942,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 6.267000000000092,
+    "distance": 474.53665746292285,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 6.516900000000103,
+    "distance": 482.08289986957413,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 6.767000000000113,
+    "distance": 489.7347027992566,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 7.017000000000124,
+    "distance": 497.4811499682545,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 7.2669000000001365,
+    "distance": 505.3202834184679,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 7.517000000000147,
+    "distance": 513.2596917951572,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 7.767000000000159,
+    "distance": 521.2879943144402,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 8.017000000000168,
+    "distance": 529.4064052663464,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 8.267000000000163,
+    "distance": 537.6129645939315,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 8.517000000000158,
+    "distance": 545.9056922257408,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 8.767100000000152,
+    "distance": 554.2859697253431,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 9.017100000000145,
+    "distance": 562.7450960080242,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 9.26700000000014,
+    "distance": 571.2809793806807,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 9.517100000000134,
+    "distance": 579.9019190689463,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 9.76700000000013,
+    "distance": 588.5921397436719,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 10.017100000000124,
+    "distance": 597.363571185412,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 10.267100000000118,
+    "distance": 606.2037711595443,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 10.517100000000113,
+    "distance": 615.1142830613876,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 10.767100000000108,
+    "distance": 624.0931782309975,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 11.017200000000102,
+    "distance": 633.1421817689143,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 11.267100000000097,
+    "distance": 642.2485147423773,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 11.517100000000092,
+    "distance": 651.4212154321478,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 11.767100000000086,
+    "distance": 660.6548222066655,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 12.017200000000079,
+    "distance": 669.9512663516141,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 12.267200000000074,
+    "distance": 679.3013457286334,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 12.534000000000066,
+    "distance": 689.3410812870321,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 12.76720000000006,
+    "distance": 698.1676321948187,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 13.033900000000054,
+    "distance": 708.3211682871887,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 13.283900000000049,
+    "distance": 717.8966253434468,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 13.517300000000043,
+    "distance": 726.8871197007788,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 13.767300000000034,
+    "distance": 736.5719462530711,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 14.017200000000031,
+    "distance": 746.3100871022494,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 14.267300000000024,
+    "distance": 756.1136756016474,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 14.517300000000018,
+    "distance": 765.9713550892806,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 14.767200000000015,
+    "distance": 775.883380639241,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 15.017300000000008,
+    "distance": 785.861964185048,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 15.267300000000002,
+    "distance": 795.8953913262428,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 15.517299999999997,
+    "distance": 805.9878046360367,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 15.767299999999992,
+    "distance": 816.1393006513429,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 16.017299999999985,
+    "distance": 826.3499077472819,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 16.26729999999997,
+    "distance": 836.6195781754496,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 16.51739999999996,
+    "distance": 846.9523292329914,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 16.767299999999942,
+    "distance": 857.3355225185629,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 17.01739999999993,
+    "distance": 867.7854784618112,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 17.267299999999913,
+    "distance": 878.2850941146171,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 17.517399999999903,
+    "distance": 888.850688355508,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 17.76739999999989,
+    "distance": 899.4690360515102,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 18.017499999999874,
+    "distance": 910.1479423430457,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 18.267499999999863,
+    "distance": 920.878073127311,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 18.51739999999985,
+    "distance": 931.6584614239764,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 18.76739999999984,
+    "distance": 942.4967231330619,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 19.017399999999828,
+    "distance": 953.3874319424392,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 19.267499999999814,
+    "distance": 964.3337424219905,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 19.517399999999803,
+    "distance": 975.3211452820431,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 19.767399999999792,
+    "distance": 986.3613433206781,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 20.017499999999778,
+    "distance": 997.4528238599731,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 20.267499999999764,
+    "distance": 1008.5850368029904,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 20.517499999999753,
+    "distance": 1019.7606194404545,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 20.767399999999743,
+    "distance": 1030.9731840444604,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 21.01749999999973,
+    "distance": 1042.234220581077,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 21.267499999999714,
+    "distance": 1053.5281510465209,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 21.5174999999997,
+    "distance": 1064.8572835141342,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 21.767499999999686,
+    "distance": 1076.2193439055184,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 22.01749999999967,
+    "distance": 1087.6119740917454,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 22.267499999999657,
+    "distance": 1099.0327402616035,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 22.517599999999646,
+    "distance": 1110.4837222231479,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 22.767599999999632,
+    "distance": 1121.9531976370135,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 23.01759999999962,
+    "distance": 1133.44312026373,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 23.267599999999607,
+    "distance": 1144.950826120856,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 23.517599999999593,
+    "distance": 1156.4736133401832,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 23.76759999999958,
+    "distance": 1168.0087531280562,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 24.017699999999564,
+    "distance": 1179.5581172415966,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 24.26759999999955,
+    "distance": 1191.1050913664296,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 24.517599999999536,
+    "distance": 1202.6607789935656,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 24.767599999999522,
+    "distance": 1214.2178170100221,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 25.017599999999508,
+    "distance": 1225.7734828120804,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 25.267699999999493,
+    "distance": 1237.329704235988,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 25.51769999999948,
+    "distance": 1248.8745883502481,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 25.767699999999465,
+    "distance": 1260.4101565201943,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 26.01769999999945,
+    "distance": 1271.933868403083,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 26.267699999999436,
+    "distance": 1283.4432523565338,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 26.517699999999426,
+    "distance": 1294.9359148383007,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 26.76769999999941,
+    "distance": 1306.4095479900584,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 27.017699999999397,
+    "distance": 1317.8619382792826,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 27.267799999999383,
+    "distance": 1329.2955395678707,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 27.51769999999937,
+    "distance": 1340.6946476385715,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 27.767799999999355,
+    "distance": 1352.0756160812136,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 28.01769999999934,
+    "distance": 1363.4184736676389,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 28.267699999999326,
+    "distance": 1374.7352093799352,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 28.517799999999312,
+    "distance": 1386.0242676021437,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 28.767799999999298,
+    "distance": 1397.2752361670857,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 29.017799999999284,
+    "distance": 1408.4913859983305,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 29.267899999999273,
+    "distance": 1419.6760707141382,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 29.517799999999255,
+    "distance": 1430.8149242120162,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 29.76779999999924,
+    "distance": 1441.9205091036433,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "time": 30.017799999999227,
+    "distance": 1452.9876692410608,
+    "gas": true,
+    "steer": 1,
+    "queue": 0,
+    "visibleRoad": true,
+    "chunks": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "oldFirst9": {
+    "seconds": 8.9995,
+    "peak": 0.17250531911849976,
+    "rms": 0.05875911227804531,
+    "highPass1000EnergyFraction": 0.16726482631966008,
+    "clippedSamples": 0,
+    "maxAdjacentChange": 0.018881093710660934,
+    "adjacentChangesOverPoint2": 0
+  },
+  "newFirst9": {
+    "seconds": 8.9995,
+    "peak": 0.17362159490585327,
+    "rms": 0.07541528511215488,
+    "highPass1000EnergyFraction": 0.013402265903133731,
+    "clippedSamples": 0,
+    "maxAdjacentChange": 0.003002174198627472,
+    "adjacentChangesOverPoint2": 0
+  },
+  "newFull": {
+    "seconds": 27,
+    "peak": 0.17664968967437744,
+    "rms": 0.0769969348921901,
+    "highPass1000EnergyFraction": 0.016581759172236653,
+    "clippedSamples": 0,
+    "maxAdjacentChange": 0.004371426999568939,
+    "adjacentChangesOverPoint2": 0
+  },
+  "note": "First-order 1kHz high-pass energy proxy, not a subjective listening or calibrated loudness verdict.",
+  "newStereo": {
+    "leftPeak": 0.12491019815206528,
+    "rightPeak": 0.12491019815206528,
+    "clippedFrames": 0
+  }
+}

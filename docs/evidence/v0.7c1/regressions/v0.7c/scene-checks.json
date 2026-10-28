@@ -1,0 +1,197 @@
+{
+  "rows": [
+    {
+      "id": "L2-001",
+      "hits": [],
+      "fingerprint": {
+        "hash": 1022341627,
+        "count": 79008
+      },
+      "memory": {
+        "geometries": 80,
+        "textures": 4
+      }
+    },
+    {
+      "id": "L2-002",
+      "hits": [],
+      "fingerprint": {
+        "hash": 4149599841,
+        "count": 205284
+      },
+      "memory": {
+        "geometries": 73,
+        "textures": 3
+      }
+    },
+    {
+      "id": "L2-003",
+      "hits": [],
+      "fingerprint": {
+        "hash": 1884251352,
+        "count": 180590
+      },
+      "memory": {
+        "geometries": 75,
+        "textures": 3
+      }
+    },
+    {
+      "id": "L2-004",
+      "hits": [],
+      "fingerprint": {
+        "hash": 780430651,
+        "count": 246580
+      },
+      "memory": {
+        "geometries": 73,
+        "textures": 3
+      }
+    },
+    {
+      "id": "L2-005",
+      "hits": [],
+      "fingerprint": {
+        "hash": 455028001,
+        "count": 86012
+      },
+      "memory": {
+        "geometries": 83,
+        "textures": 5
+      }
+    },
+    {
+      "id": "L2-006",
+      "hits": [],
+      "fingerprint": {
+        "hash": 180088085,
+        "count": 102142
+      },
+      "memory": {
+        "geometries": 77,
+        "textures": 4
+      }
+    },
+    {
+      "id": "L2-007",
+      "hits": [],
+      "fingerprint": {
+        "hash": 3654758633,
+        "count": 183760
+      },
+      "memory": {
+        "geometries": 79,
+        "textures": 5
+      }
+    },
+    {
+      "id": "L2-008",
+      "hits": [],
+      "fingerprint": {
+        "hash": 3185626932,
+        "count": 134860
+      },
+      "memory": {
+        "geometries": 75,
+        "textures": 3
+      }
+    },
+    {
+      "id": "L2-009",
+      "hits": [],
+      "fingerprint": {
+        "hash": 1087281724,
+        "count": 94926
+      },
+      "memory": {
+        "geometries": 78,
+        "textures": 3
+      }
+    },
+    {
+      "id": "L2-010",
+      "hits": [],
+      "fingerprint": {
+        "hash": 2447354261,
+        "count": 78896
+      },
+      "memory": {
+        "geometries": 80,
+        "textures": 4
+      }
+    },
+    {
+      "id": "L2-011",
+      "hits": [],
+      "fingerprint": {
+        "hash": 1595587409,
+        "count": 98060
+      },
+      "memory": {
+        "geometries": 78,
+        "textures": 3
+      }
+    },
+    {
+      "id": "L2-012",
+      "hits": [],
+      "fingerprint": {
+        "hash": 4203105616,
+        "count": 98222
+      },
+      "memory": {
+        "geometries": 77,
+        "textures": 4
+      }
+    },
+    {
+      "id": "L2-013",
+      "hits": [],
+      "fingerprint": {
+        "hash": 2901938570,
+        "count": 243364
+      },
+      "memory": {
+        "geometries": 73,
+        "textures": 3
+      }
+    },
+    {
+      "id": "L2-014",
+      "hits": [],
+      "fingerprint": {
+        "hash": 4156742563,
+        "count": 196372
+      },
+      "memory": {
+        "geometries": 75,
+        "textures": 4
+      }
+    },
+    {
+      "id": "L2-015",
+      "hits": [],
+      "fingerprint": {
+        "hash": 3472345213,
+        "count": 71646
+      },
+      "memory": {
+        "geometries": 80,
+        "textures": 4
+      }
+    },
+    {
+      "id": "L2-016",
+      "hits": [],
+      "fingerprint": {
+        "hash": 164129907,
+        "count": 96740
+      },
+      "memory": {
+        "geometries": 81,
+        "textures": 5
+      }
+    }
+  ],
+  "errors": []
+}

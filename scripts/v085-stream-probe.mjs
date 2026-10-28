@@ -1,0 +1,11 @@
+import {chromium} from '@playwright/test';
+import {writeFile} from 'node:fs/promises';
+const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:960,height:540}}),errors=[];
+page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+const start=Date.now();await page.goto('http://127.0.0.1:5173/?stage=1&seed=1&stream=1');
+await page.waitForFunction(()=>!!window.__drive,{timeout:30000});
+await page.waitForFunction(()=>window.__drive.streaming().ready||window.__drive.streaming().error,{timeout:60000});
+const ready=Date.now()-start;let status=await page.evaluate(()=>window.__drive.streaming());
+await page.screenshot({path:'docs/evidence/v0.8.5/stream-initial.png'});await page.keyboard.press('KeyP');await page.keyboard.down('Space');await page.waitForTimeout(10000);await page.keyboard.up('Space');await page.screenshot({path:'docs/evidence/v0.8.5/stream-driving.png'});
+const data=await page.evaluate(()=>({stream:window.__drive.streaming(),snapshot:window.__drive.snapshot(),scenery:window.__drive.scenery(),contacts:window.__drive.wheelContacts()}));
+await writeFile('docs/evidence/v0.8.5/stream-probe.json',JSON.stringify({ready,status,data,errors},null,2));console.log(JSON.stringify({ready,errors,initial:status.chunks,after:data.stream.chunks,state:data.snapshot,contacts:data.contacts,memory:data.scenery.memory},null,2));await browser.close();

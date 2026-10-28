@@ -1,0 +1,195 @@
+[
+  {
+    "name": "before",
+    "t100": 4.533333333333333,
+    "t200": 10.833333333333334,
+    "t300": 21.633333333333333,
+    "intervals": [
+      4.533333333333333,
+      6.300000000000001,
+      10.799999999999999
+    ],
+    "gears": [
+      {
+        "gear": 1,
+        "meanAcceleration": 7.00493860900469
+      },
+      {
+        "gear": 2,
+        "meanAcceleration": 6.215032198190945
+      },
+      {
+        "gear": 3,
+        "meanAcceleration": 5.249079806654235
+      },
+      {
+        "gear": 4,
+        "meanAcceleration": 4.28500396968289
+      },
+      {
+        "gear": 5,
+        "meanAcceleration": 3.2856876140807425
+      },
+      {
+        "gear": 6,
+        "meanAcceleration": 2.2498459338338113
+      }
+    ],
+    "shifts": [
+      {
+        "from": 1,
+        "to": 2,
+        "start": 2,
+        "speedBefore": 50.016430805766426,
+        "minSpeed": 50.39963664063582,
+        "minAcceleration": -0.26381853860075466,
+        "minTraction": 0,
+        "rpmBefore": 6846.612673887168,
+        "rpmAfter": 4392.241982695893
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "start": 4.15,
+        "speedBefore": 95.04805469568235,
+        "minSpeed": 95.37713074516392,
+        "minAcceleration": -0.29929025504303736,
+        "minTraction": 0,
+        "rpmBefore": 7042.143520587439,
+        "rpmAfter": 5153.831658816188
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "start": 6.933333333333334,
+        "speedBefore": 145.03800575099027,
+        "minSpeed": 145.30963747484714,
+        "minAcceleration": -0.3642351858690773,
+        "minTraction": 0,
+        "rpmBefore": 7114.98703405971,
+        "rpmAfter": 5675.6206201551995
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "start": 10.316666666666666,
+        "speedBefore": 195.06388216099637,
+        "minSpeed": 195.20288373315648,
+        "minAcceleration": -0.45614537389141685,
+        "minTraction": 0,
+        "rpmBefore": 7150.7556258792165,
+        "rpmAfter": 5984.712687321055
+      },
+      {
+        "from": 5,
+        "to": 6,
+        "start": 14.683333333333334,
+        "speedBefore": 244.9913114195995,
+        "minSpeed": 245.0775274107226,
+        "minAcceleration": -0.574913024005435,
+        "minTraction": 0,
+        "rpmBefore": 7169.569474829945,
+        "rpmAfter": 5955.348872877611
+      }
+    ]
+  },
+  {
+    "name": "after",
+    "t100": 3.3666666666666667,
+    "t200": 9.283333333333333,
+    "t300": 22.816666666666666,
+    "intervals": [
+      3.3666666666666667,
+      5.916666666666666,
+      13.533333333333333
+    ],
+    "gears": [
+      {
+        "gear": 1,
+        "meanAcceleration": 9.187042401142715
+      },
+      {
+        "gear": 2,
+        "meanAcceleration": 9.114837688424108
+      },
+      {
+        "gear": 3,
+        "meanAcceleration": 6.460840568383916
+      },
+      {
+        "gear": 4,
+        "meanAcceleration": 4.316812912301402
+      },
+      {
+        "gear": 5,
+        "meanAcceleration": 2.9142678881418176
+      },
+      {
+        "gear": 6,
+        "meanAcceleration": 1.7034396703720118
+      }
+    ],
+    "shifts": [
+      {
+        "from": 1,
+        "to": 2,
+        "start": 1.5333333333333334,
+        "speedBefore": 50.16183077475644,
+        "minSpeed": 50.68146503330881,
+        "minAcceleration": -0.3400304374047873,
+        "minTraction": 0,
+        "rpmBefore": 6752.689055398504,
+        "rpmAfter": 4411.749535664748,
+        "gearRatio": 1.6842105263157894
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "start": 3.033333333333333,
+        "speedBefore": 94.79654855115844,
+        "minSpeed": 95.25435303069146,
+        "minAcceleration": -0.44096768273587506,
+        "minTraction": 0,
+        "rpmBefore": 6943.276949884943,
+        "rpmAfter": 5161.530355249614,
+        "gearRatio": 1.103448275862069
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "start": 5.333333333333333,
+        "speedBefore": 145.05943080744692,
+        "minSpeed": 145.17119299869782,
+        "minAcceleration": -0.6262133644744621,
+        "minTraction": 0,
+        "rpmBefore": 7100.377056566858,
+        "rpmAfter": 5671.49278898152,
+        "gearRatio": 0.8205128205128205
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "start": 8.7,
+        "speedBefore": 195.02980061001404,
+        "minSpeed": 194.90379471722366,
+        "minAcceleration": -0.8881978514565145,
+        "minTraction": 0,
+        "rpmBefore": 7150.630792405049,
+        "rpmAfter": 5978.147863907574,
+        "gearRatio": 0.6530612244897959
+      },
+      {
+        "from": 5,
+        "to": 6,
+        "start": 13.633333333333333,
+        "speedBefore": 244.99246706613374,
+        "minSpeed": 244.68279604928267,
+        "minAcceleration": -1.2271503329537254,
+        "minTraction": 0,
+        "rpmBefore": 7173.54079767383,
+        "rpmAfter": 5949.2444441867165,
+        "gearRatio": 0.5161290322580645
+      }
+    ]
+  }
+]

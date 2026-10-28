@@ -1,0 +1,242 @@
+[
+  {
+    "width": 844,
+    "height": 390,
+    "swapped": false,
+    "box": {
+      "x": 24,
+      "y": 286,
+      "width": 144,
+      "height": 80
+    },
+    "centerToLock": 72,
+    "fullTravel": 144,
+    "rows": [
+      {
+        "notch": -1,
+        "raw": -0.9900000095367432,
+        "applied": -1
+      },
+      {
+        "notch": -0.75,
+        "raw": -0.75,
+        "applied": -0.75
+      },
+      {
+        "notch": -0.5,
+        "raw": -0.5,
+        "applied": -0.5
+      },
+      {
+        "notch": -0.25,
+        "raw": -0.25,
+        "applied": -0.25
+      },
+      {
+        "notch": 0,
+        "raw": 0,
+        "applied": 0
+      },
+      {
+        "notch": 0.25,
+        "raw": 0.25,
+        "applied": 0.25
+      },
+      {
+        "notch": 0.5,
+        "raw": 0.5,
+        "applied": 0.5
+      },
+      {
+        "notch": 0.75,
+        "raw": 0.75,
+        "applied": 0.75
+      },
+      {
+        "notch": 1,
+        "raw": 0.98999998304579,
+        "applied": 1
+      }
+    ]
+  },
+  {
+    "width": 844,
+    "height": 390,
+    "swapped": true,
+    "box": {
+      "x": 676,
+      "y": 286,
+      "width": 144,
+      "height": 80
+    },
+    "centerToLock": 72,
+    "fullTravel": 144,
+    "rows": [
+      {
+        "notch": -1,
+        "raw": -0.9900004069010416,
+        "applied": -1
+      },
+      {
+        "notch": -0.75,
+        "raw": -0.75,
+        "applied": -0.75
+      },
+      {
+        "notch": -0.5,
+        "raw": -0.5,
+        "applied": -0.5
+      },
+      {
+        "notch": -0.25,
+        "raw": -0.25,
+        "applied": -0.25
+      },
+      {
+        "notch": 0,
+        "raw": 0,
+        "applied": 0
+      },
+      {
+        "notch": 0.25,
+        "raw": 0.25,
+        "applied": 0.25
+      },
+      {
+        "notch": 0.5,
+        "raw": 0.5,
+        "applied": 0.5
+      },
+      {
+        "notch": 0.75,
+        "raw": 0.75,
+        "applied": 0.75
+      },
+      {
+        "notch": 1,
+        "raw": 0.9900004069010417,
+        "applied": 1
+      }
+    ]
+  },
+  {
+    "width": 960,
+    "height": 432,
+    "swapped": false,
+    "box": {
+      "x": 24,
+      "y": 320,
+      "width": 144,
+      "height": 88
+    },
+    "centerToLock": 72,
+    "fullTravel": 144,
+    "rows": [
+      {
+        "notch": -1,
+        "raw": -0.9900000095367432,
+        "applied": -1
+      },
+      {
+        "notch": -0.75,
+        "raw": -0.75,
+        "applied": -0.75
+      },
+      {
+        "notch": -0.5,
+        "raw": -0.5,
+        "applied": -0.5
+      },
+      {
+        "notch": -0.25,
+        "raw": -0.25,
+        "applied": -0.25
+      },
+      {
+        "notch": 0,
+        "raw": 0,
+        "applied": 0
+      },
+      {
+        "notch": 0.25,
+        "raw": 0.25,
+        "applied": 0.25
+      },
+      {
+        "notch": 0.5,
+        "raw": 0.5,
+        "applied": 0.5
+      },
+      {
+        "notch": 0.75,
+        "raw": 0.75,
+        "applied": 0.75
+      },
+      {
+        "notch": 1,
+        "raw": 0.98999998304579,
+        "applied": 1
+      }
+    ]
+  },
+  {
+    "width": 960,
+    "height": 432,
+    "swapped": true,
+    "box": {
+      "x": 792,
+      "y": 320,
+      "width": 144,
+      "height": 88
+    },
+    "centerToLock": 72,
+    "fullTravel": 144,
+    "rows": [
+      {
+        "notch": -1,
+        "raw": -0.9900004069010416,
+        "applied": -1
+      },
+      {
+        "notch": -0.75,
+        "raw": -0.75,
+        "applied": -0.75
+      },
+      {
+        "notch": -0.5,
+        "raw": -0.5,
+        "applied": -0.5
+      },
+      {
+        "notch": -0.25,
+        "raw": -0.25,
+        "applied": -0.25
+      },
+      {
+        "notch": 0,
+        "raw": 0,
+        "applied": 0
+      },
+      {
+        "notch": 0.25,
+        "raw": 0.25,
+        "applied": 0.25
+      },
+      {
+        "notch": 0.5,
+        "raw": 0.5,
+        "applied": 0.5
+      },
+      {
+        "notch": 0.75,
+        "raw": 0.75,
+        "applied": 0.75
+      },
+      {
+        "notch": 1,
+        "raw": 0.9900004069010417,
+        "applied": 1
+      }
+    ]
+  }
+]

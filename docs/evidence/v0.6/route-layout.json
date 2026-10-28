@@ -1,0 +1,281 @@
+{
+  "acts": [
+    [
+      [
+        "launch",
+        0,
+        0
+      ],
+      [
+        "low",
+        0.25,
+        5
+      ],
+      [
+        "relief-low",
+        0,
+        1
+      ],
+      [
+        "high",
+        0.75,
+        5.166666666666667
+      ],
+      [
+        "relief-medium",
+        0,
+        1
+      ],
+      [
+        "medium",
+        -0.5,
+        6
+      ],
+      [
+        "coast-rest",
+        0,
+        1
+      ],
+      [
+        "coast-crest",
+        0.5,
+        5.516666666666667
+      ]
+    ],
+    [
+      [
+        "canyon-entry",
+        0,
+        0
+      ],
+      [
+        "brake-zone",
+        0,
+        2
+      ],
+      [
+        "extreme",
+        1.2,
+        4.5
+      ],
+      [
+        "relief-extreme",
+        0,
+        1
+      ],
+      [
+        "s-left",
+        -0.5,
+        3,
+        0.6
+      ],
+      [
+        "s-center",
+        0,
+        0.4
+      ],
+      [
+        "s-right",
+        0.5,
+        3,
+        0.6
+      ],
+      [
+        "canyon-soft",
+        -0.25,
+        2.266666666666667
+      ],
+      [
+        "canyon-left",
+        -1.2,
+        3.2
+      ],
+      [
+        "canyon-release",
+        0,
+        1
+      ],
+      [
+        "canyon-exit",
+        0.75,
+        4.52
+      ]
+    ],
+    [
+      [
+        "city-entry",
+        0,
+        0
+      ],
+      [
+        "boulevard",
+        0.5,
+        7
+      ],
+      [
+        "city-left",
+        -0.5,
+        4
+      ],
+      [
+        "city-skyline",
+        0.75,
+        4.177777777777778
+      ],
+      [
+        "city-left-low",
+        -0.25,
+        5
+      ],
+      [
+        "city-right-low",
+        0.25,
+        5
+      ],
+      [
+        "exit",
+        0,
+        2
+      ]
+    ]
+  ],
+  "slots": [
+    {
+      "after": "launch",
+      "seconds": 4,
+      "stage": 0
+    },
+    {
+      "after": "low",
+      "seconds": 0,
+      "stage": 0
+    },
+    {
+      "after": "relief-low",
+      "seconds": 0,
+      "stage": 0
+    },
+    {
+      "after": "high",
+      "seconds": 3.773703092721993,
+      "stage": 0
+    },
+    {
+      "after": "relief-medium",
+      "seconds": 3.773703092721993,
+      "stage": 0
+    },
+    {
+      "after": "medium",
+      "seconds": 0.13317521620607223,
+      "stage": 0
+    },
+    {
+      "after": "coast-rest",
+      "seconds": 0.13317521620607223,
+      "stage": 0
+    },
+    {
+      "after": "coast-crest",
+      "seconds": 3.5029100488105365,
+      "stage": 0
+    },
+    {
+      "after": "canyon-entry",
+      "seconds": 2.2155149948849924,
+      "stage": 1
+    },
+    {
+      "after": "brake-zone",
+      "seconds": 2.2155149948849924,
+      "stage": 1
+    },
+    {
+      "after": "extreme",
+      "seconds": 0.6745023169997544,
+      "stage": 1
+    },
+    {
+      "after": "relief-extreme",
+      "seconds": 0.6745023169997544,
+      "stage": 1
+    },
+    {
+      "after": "s-left",
+      "seconds": 0,
+      "stage": 1
+    },
+    {
+      "after": "s-center",
+      "seconds": 0,
+      "stage": 1
+    },
+    {
+      "after": "s-right",
+      "seconds": 0.6745023169997544,
+      "stage": 1
+    },
+    {
+      "after": "canyon-soft",
+      "seconds": 1.166928457012026,
+      "stage": 1
+    },
+    {
+      "after": "canyon-left",
+      "seconds": 3.1624697392699566,
+      "stage": 1
+    },
+    {
+      "after": "canyon-release",
+      "seconds": 3.1624697392699566,
+      "stage": 1
+    },
+    {
+      "after": "canyon-exit",
+      "seconds": 1.1669284570121468,
+      "stage": 1
+    },
+    {
+      "after": "city-entry",
+      "seconds": 4.880340969358602,
+      "stage": 2
+    },
+    {
+      "after": "boulevard",
+      "seconds": 1.0939425092060815,
+      "stage": 2
+    },
+    {
+      "after": "city-left",
+      "seconds": 2.553898552336003,
+      "stage": 2
+    },
+    {
+      "after": "city-skyline",
+      "seconds": 1.0481734962261244,
+      "stage": 2
+    },
+    {
+      "after": "city-left-low",
+      "seconds": 1.1495197026431594,
+      "stage": 2
+    },
+    {
+      "after": "city-right-low",
+      "seconds": 1.0481734962261244,
+      "stage": 2
+    },
+    {
+      "after": "exit",
+      "seconds": 1.0481734962261244,
+      "stage": 2
+    }
+  ],
+  "target": [
+    -3.703099832987568,
+    -8.753630889722226,
+    15.316666666666666,
+    15.113333333333333,
+    12.822222222222223
+  ]
+}

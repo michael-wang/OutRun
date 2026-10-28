@@ -1,0 +1,2490 @@
+{
+  "errors": [],
+  "done": "Completed · Your impressions?",
+  "final": {
+    "mode": "playing",
+    "active": "CANVAS"
+  },
+  "rows": [
+    {
+      "t": 0.004,
+      "distance": 352.8383742423437,
+      "speed": 49.87384,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.108,
+      "distance": 367.21234888268845,
+      "speed": 50.563057293982204,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.21,
+      "distance": 375.9701757459173,
+      "speed": 50.97348203744807,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.318,
+      "distance": 386.2882551909553,
+      "speed": 51.44845621094005,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.42,
+      "distance": 395.24414632350835,
+      "speed": 51.853593626044955,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.522,
+      "distance": 404.27020259911495,
+      "speed": 52.25552488940276,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.625,
+      "distance": 413.40048626484474,
+      "speed": 52.65587203547763,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.728,
+      "distance": 422.6056592202262,
+      "speed": 53.05344303553844,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.834,
+      "distance": 433.4420048147531,
+      "speed": 53.51402405902725,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 0.936,
+      "distance": 442.8309211116601,
+      "speed": 53.90687428563519,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.039,
+      "distance": 452.28504577895916,
+      "speed": 54.21833505488269,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.141,
+      "distance": 461.74673298696246,
+      "speed": 54.173277613843936,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.243,
+      "distance": 471.23981325757353,
+      "speed": 54.472482845777,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.35,
+      "distance": 482.4056583554788,
+      "speed": 54.90386024624881,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.454,
+      "distance": 492.0471326594877,
+      "speed": 55.271009937948925,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.557,
+      "distance": 501.7540463726334,
+      "speed": 55.63594526049739,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.658,
+      "distance": 511.5345475668972,
+      "speed": 55.999066449091195,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.76,
+      "distance": 521.358715443944,
+      "speed": 56.359309261159616,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.863,
+      "distance": 531.2555979873976,
+      "speed": 56.71777355959511,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 1.967,
+      "distance": 542.8842988587348,
+      "speed": 57.13340990896751,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.069,
+      "distance": 552.9162092490709,
+      "speed": 57.487273127114655,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.17,
+      "distance": 563.0098492381089,
+      "speed": 57.83902908616873,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.273,
+      "distance": 573.1648442143144,
+      "speed": 58.188687169721995,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.375,
+      "distance": 583.3808346746839,
+      "speed": 58.53625724156715,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.477,
+      "distance": 593.6574494501003,
+      "speed": 58.88174859530453,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.579,
+      "distance": 603.9943323056183,
+      "speed": 59.225171048978986,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.682,
+      "distance": 616.133194330944,
+      "speed": 59.62334161531555,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.784,
+      "distance": 626.5994338476069,
+      "speed": 59.96231319330283,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.886,
+      "distance": 637.1248000245732,
+      "speed": 60.29924592600901,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 2.99,
+      "distance": 647.7089337510312,
+      "speed": 60.634149203122185,
+      "lateral": 0,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.093,
+      "distance": 658.3621565155603,
+      "speed": 60.96736456986791,
+      "lateral": 0.000720597756514925,
+      "raw": 0,
+      "required": -0.002782326998168069,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.195,
+      "distance": 669.0521014398142,
+      "speed": 61.29790593689276,
+      "lateral": 0.009360307491102797,
+      "raw": 0,
+      "required": -0.014473619969674245,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.297,
+      "distance": 679.8104319057774,
+      "speed": 61.62677838139793,
+      "lateral": 0.03662111625302116,
+      "raw": 0,
+      "required": -0.03516992115044575,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.399,
+      "distance": 692.42705662003,
+      "speed": 62.0077296040372,
+      "lateral": 0.10586621735597465,
+      "raw": 0,
+      "required": -0.06722776021958646,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.5,
+      "distance": 703.3201096109824,
+      "speed": 62.33262437510526,
+      "lateral": 0.2086147789995179,
+      "raw": 0,
+      "required": -0.10806648391876059,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.604,
+      "distance": 714.2589176700814,
+      "speed": 62.655222599581144,
+      "lateral": 0.31845555574090795,
+      "raw": -0.25000000000000006,
+      "required": -0.1485404897609813,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.708,
+      "distance": 725.2539974826612,
+      "speed": 62.9758595737205,
+      "lateral": 0.41393494227625655,
+      "raw": 0,
+      "required": -0.20111775909125792,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.813,
+      "distance": 736.3050036403718,
+      "speed": 63.29454460275985,
+      "lateral": 0.6397867967119527,
+      "raw": -0.25000000000000006,
+      "required": -0.25268956087661587,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 3.918,
+      "distance": 749.2717891560821,
+      "speed": 63.66399450016034,
+      "lateral": 0.8352542098374333,
+      "raw": 0,
+      "required": -0.3136062419186959,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.02,
+      "distance": 760.4316215685901,
+      "speed": 63.978168440173135,
+      "lateral": 1.1971212457704667,
+      "raw": -0.24974999999999914,
+      "required": -0.360090752870082,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.123,
+      "distance": 771.6687025080237,
+      "speed": 64.29104723702693,
+      "lateral": 1.3607417026894844,
+      "raw": -0.49999999999999983,
+      "required": -0.41027723725278814,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.227,
+      "distance": 782.9491046858909,
+      "speed": 64.60169985609504,
+      "lateral": 1.5153740163872875,
+      "raw": 0,
+      "required": -0.45060203827466117,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.332,
+      "distance": 796.1704518592533,
+      "speed": 64.96151789400211,
+      "lateral": 2.096213307842623,
+      "raw": -0.29149999999999865,
+      "required": -0.48548655153785913,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.435,
+      "distance": 807.5677965162163,
+      "speed": 65.26805960243472,
+      "lateral": 2.3590697922430333,
+      "raw": -0.5414999999999984,
+      "required": -0.5074114719996934,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.539,
+      "distance": 819.0186073663319,
+      "speed": 65.57271817737134,
+      "lateral": 2.3513124943718795,
+      "raw": -0.7914999999999988,
+      "required": -0.5186024973636569,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.643,
+      "distance": 830.5225557466671,
+      "speed": 65.87550294127387,
+      "lateral": 2.2105224634465963,
+      "raw": 0,
+      "required": -0.5220405185107627,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.745,
+      "distance": 842.0793074248015,
+      "speed": 66.17642291523494,
+      "lateral": 2.654933825535983,
+      "raw": -0.25,
+      "required": -0.5254275890020178,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.85,
+      "distance": 855.6323868844742,
+      "speed": 66.52525171717072,
+      "lateral": 3.0241966902479356,
+      "raw": -0.5417499999999994,
+      "required": -0.5293701480661165,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 4.953,
+      "distance": 867.3141683828477,
+      "speed": 66.82245947993545,
+      "lateral": 3.036948052554942,
+      "raw": -0.7920000000000006,
+      "required": -0.5327431129799364,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.055,
+      "distance": 879.0360902307259,
+      "speed": 67.11753425039358,
+      "lateral": 2.9121082362014556,
+      "raw": 0,
+      "required": -0.5361045449658419,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.158,
+      "distance": 890.7976772879941,
+      "speed": 67.41049075809852,
+      "lateral": 3.379002675185708,
+      "raw": -0.24974999999999914,
+      "required": -0.5394544097020162,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.263,
+      "distance": 902.6221565127604,
+      "speed": 67.70192465916125,
+      "lateral": 3.737640698059728,
+      "raw": -0.4997499999999989,
+      "required": -0.5427993548669641,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.368,
+      "distance": 916.485576119226,
+      "speed": 68.03974334702397,
+      "lateral": 3.8027998210522664,
+      "raw": -0.7915000000000011,
+      "required": -0.5466923663790866,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.471,
+      "distance": 928.4037806311736,
+      "speed": 68.09212574431506,
+      "lateral": 3.6923525580704637,
+      "raw": 0,
+      "required": -0.5472975339933401,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.574,
+      "distance": 940.3187295990698,
+      "speed": 68.14346848697751,
+      "lateral": 4.174084156849599,
+      "raw": -0.25000000000000006,
+      "required": -0.5478910863442866,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.676,
+      "distance": 952.2698413252867,
+      "speed": 68.41757768489087,
+      "lateral": 4.5451782179814835,
+      "raw": -0.49999999999999983,
+      "required": -0.551066595482673,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.779,
+      "distance": 964.2687491369375,
+      "speed": 68.68990754615746,
+      "lateral": 4.637276226196592,
+      "raw": -0.7500000000000001,
+      "required": -0.5542326192727864,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.884,
+      "distance": 978.3315136852733,
+      "speed": 69.00557760136819,
+      "lateral": 4.3539281781935815,
+      "raw": -1,
+      "required": -0.5579164603204485,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 5.986,
+      "distance": 990.4329794889395,
+      "speed": 69.274284414538,
+      "lateral": 3.9347821120642785,
+      "raw": -0.20000000000000018,
+      "required": -0.5610641178233788,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.089,
+      "distance": 1002.5813141354247,
+      "speed": 69.54135962920354,
+      "lateral": 4.127337992937069,
+      "raw": -0.45,
+      "required": -0.5642035422294573,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.192,
+      "distance": 1014.7762333604132,
+      "speed": 69.80681593938324,
+      "lateral": 4.289349908237873,
+      "raw": -0.7000000000000003,
+      "required": -0.5673347407288065,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.293,
+      "distance": 1027.017454836631,
+      "speed": 70.07066348908498,
+      "lateral": 4.139654400815327,
+      "raw": -0.9500000000000007,
+      "required": -0.5704576918843842,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.397,
+      "distance": 1039.3046979031972,
+      "speed": 70.3329113839499,
+      "lateral": 3.8932367852275944,
+      "raw": -0.1500000000000009,
+      "required": -0.5735723631046696,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.501,
+      "distance": 1053.7017275423782,
+      "speed": 70.63694348239362,
+      "lateral": 4.341662512208779,
+      "raw": -0.2664000000000024,
+      "required": -0.577196664781305,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.604,
+      "distance": 1066.0877436115375,
+      "speed": 70.89575444688707,
+      "lateral": 4.73504080319683,
+      "raw": -0.5164000000000022,
+      "required": -0.5802932658138459,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.706,
+      "distance": 1078.5189024318354,
+      "speed": 71.15299270231893,
+      "lateral": 4.8394680041401905,
+      "raw": -0.7664000000000026,
+      "required": -0.5833814676855508,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.807,
+      "distance": 1090.994929565528,
+      "speed": 71.40866658173991,
+      "lateral": 4.628789259679362,
+      "raw": -1,
+      "required": -0.5864612326246168,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 6.912,
+      "distance": 1103.5155520347612,
+      "speed": 71.66278438008706,
+      "lateral": 4.265636935683999,
+      "raw": -0.20000000000000015,
+      "required": -0.5895325233405097,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.015,
+      "distance": 1118.1831446232377,
+      "speed": 71.9573833085369,
+      "lateral": 4.563239059279051,
+      "raw": -0.4917499999999996,
+      "required": -0.5931059555144306,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.12,
+      "distance": 1130.7994753698572,
+      "speed": 72.2081573946741,
+      "lateral": 4.711683375377886,
+      "raw": -0.74175,
+      "required": -0.5961587573277546,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.222,
+      "distance": 1143.4595464588665,
+      "speed": 72.45740146870554,
+      "lateral": 4.542601964622604,
+      "raw": -0.9917500000000005,
+      "required": -0.5992029706062364,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.325,
+      "distance": 1156.1630909155333,
+      "speed": 72.70512370153533,
+      "lateral": 4.233844287412795,
+      "raw": -0.19174999999999334,
+      "required": -0.6022385604903591,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.427,
+      "distance": 1168.9098431897394,
+      "speed": 72.95133223583805,
+      "lateral": 4.50817869113172,
+      "raw": -0.4417499999999932,
+      "required": -0.6052654927251053,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.528,
+      "distance": 1181.6995391510777,
+      "speed": 73.19603518563187,
+      "lateral": 4.754123751768289,
+      "raw": -0.6917499999999933,
+      "required": -0.6082837336555919,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.629,
+      "distance": 1194.5188851543387,
+      "speed": 73.43496617656496,
+      "lateral": 4.678906634268457,
+      "raw": -0.9414999999999928,
+      "required": -0.6112402722863489,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.736,
+      "distance": 1209.5442823323187,
+      "speed": 73.68756180356488,
+      "lateral": 4.381135658995867,
+      "raw": -0.18324999999999014,
+      "required": -0.6143761449077424,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.839,
+      "distance": 1222.4710954884486,
+      "speed": 73.88026255252765,
+      "lateral": 4.682984074251791,
+      "raw": -0.43349999999999095,
+      "required": -0.616775561480417,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 7.942,
+      "distance": 1235.4166372461,
+      "speed": 74.05108756300497,
+      "lateral": 4.945155784583816,
+      "raw": -0.6834999999999912,
+      "required": -0.6189077619661042,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.043,
+      "distance": 1248.3900657807135,
+      "speed": 74.20077838475525,
+      "lateral": 4.884131839718661,
+      "raw": -0.9334999999999917,
+      "required": -0.6207801782411992,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.145,
+      "distance": 1261.3877383373456,
+      "speed": 74.32999651059619,
+      "lateral": 4.719716570317953,
+      "raw": -0.13349999999999163,
+      "required": -0.6223995304890679,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.249,
+      "distance": 1276.5689728932668,
+      "speed": 74.45587136879871,
+      "lateral": 5.1616767943512665,
+      "raw": -0.42499999999999244,
+      "required": -0.6239796829919634,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.352,
+      "distance": 1289.6073263114718,
+      "speed": 74.54359900099979,
+      "lateral": 5.433512576095436,
+      "raw": -0.6749999999999927,
+      "required": -0.6250825376519404,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.454,
+      "distance": 1302.659348123671,
+      "speed": 74.61371910472425,
+      "lateral": 5.380011128286538,
+      "raw": -0.9249999999999932,
+      "required": -0.6259649757957332,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.556,
+      "distance": 1315.7351283015598,
+      "speed": 74.6673809429178,
+      "lateral": 5.236467852858198,
+      "raw": -0.12419999999999022,
+      "required": -0.6266408533830223,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.66,
+      "distance": 1328.8057602968051,
+      "speed": 74.70565295301276,
+      "lateral": 5.610690684301802,
+      "raw": -0.37419999999999015,
+      "required": -0.6271231917645277,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.763,
+      "distance": 1341.8817362058567,
+      "speed": 74.72983452190061,
+      "lateral": 5.965245923354959,
+      "raw": -0.6241999999999902,
+      "required": -0.6199014115432417,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.867,
+      "distance": 1357.1450399104626,
+      "speed": 74.74195675425189,
+      "lateral": 5.938418702026912,
+      "raw": -0.9159499999999879,
+      "required": -0.5889327201014196,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 8.97,
+      "distance": 1370.2117775621878,
+      "speed": 74.74007934247123,
+      "lateral": 5.7543452241422015,
+      "raw": -0.11674999999997628,
+      "required": -0.5490303274416705,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.074,
+      "distance": 1383.3033869374012,
+      "speed": 74.72829549202017,
+      "lateral": 5.993433592483869,
+      "raw": -0.36699999999997257,
+      "required": -0.4871493716721426,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.176,
+      "distance": 1396.3790289895055,
+      "speed": 74.70800571992223,
+      "lateral": 6.127430455063529,
+      "raw": -0.6169999999999727,
+      "required": -0.4193894230039874,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.278,
+      "distance": 1409.437356624459,
+      "speed": 74.6806244479772,
+      "lateral": 5.842330377076945,
+      "raw": -0.8667499999999767,
+      "required": -0.3517816292287839,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.383,
+      "distance": 1424.6848413280406,
+      "speed": 74.64150273521774,
+      "lateral": 5.298045831867172,
+      "raw": 0,
+      "required": -0.26356857902489716,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.486,
+      "distance": 1437.7435482945286,
+      "speed": 74.60346268238855,
+      "lateral": 5.445493884748027,
+      "raw": -0.25000000000000006,
+      "required": -0.1909596224029888,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.589,
+      "distance": 1450.795323706371,
+      "speed": 74.5627285633322,
+      "lateral": 5.32118012513423,
+      "raw": -0.4999999999999999,
+      "required": -0.1255499731412051,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.692,
+      "distance": 1463.8398261361638,
+      "speed": 74.5206920510746,
+      "lateral": 5.050925385879817,
+      "raw": 0,
+      "required": -0.06720771052386908,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.796,
+      "distance": 1476.8769598105575,
+      "speed": 74.47873569596247,
+      "lateral": 5.066557521449808,
+      "raw": -0.25000000000000006,
+      "required": -0.030698011718762224,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 9.9,
+      "distance": 1492.0821840808703,
+      "speed": 74.43170522488343,
+      "lateral": 4.680643919548043,
+      "raw": -0.5417500000000018,
+      "required": -0.0042979766261403134,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.007,
+      "distance": 1505.1041635463735,
+      "speed": 74.39461452271968,
+      "lateral": 4.20943419625115,
+      "raw": 0.08070312499999943,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.112,
+      "distance": 1518.1330616221546,
+      "speed": 74.36187472590541,
+      "lateral": 4.171511079516426,
+      "raw": -0.22503027343750112,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.217,
+      "distance": 1531.1307307961872,
+      "speed": 74.33490102653636,
+      "lateral": 3.866136063091238,
+      "raw": -0.4747802734375001,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.321,
+      "distance": 1546.3221339506417,
+      "speed": 74.31232914719266,
+      "lateral": 3.3706494997692755,
+      "raw": 0.08883428955078294,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.426,
+      "distance": 1559.3126916223505,
+      "speed": 74.30215487776879,
+      "lateral": 3.3388230818790268,
+      "raw": -0.22198928451537944,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.528,
+      "distance": 1572.3153775926914,
+      "speed": 74.30172365359984,
+      "lateral": 3.232373820395808,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.632,
+      "distance": 1587.490850194741,
+      "speed": 74.31518333330281,
+      "lateral": 3.1464629318756705,
+      "raw": -0.29175000000000184,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.735,
+      "distance": 1600.4981746884469,
+      "speed": 74.34002792249761,
+      "lateral": 2.971750175427655,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.838,
+      "distance": 1613.4980916313948,
+      "speed": 74.37830449179079,
+      "lateral": 2.9262097764361408,
+      "raw": -0.24974999999999914,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 10.939,
+      "distance": 1626.532111230285,
+      "speed": 74.4312233210009,
+      "lateral": 2.803227866777301,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.042,
+      "distance": 1639.5638284183692,
+      "speed": 74.49965557981928,
+      "lateral": 2.757244569917565,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.144,
+      "distance": 1652.6090717836914,
+      "speed": 74.58458571765239,
+      "lateral": 2.6345612652178763,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.247,
+      "distance": 1665.670810746758,
+      "speed": 74.68686877712737,
+      "lateral": 2.5885215386523215,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.35,
+      "distance": 1680.9388769143554,
+      "speed": 74.82918642067459,
+      "lateral": 2.37256984100823,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.453,
+      "distance": 1694.0340776855646,
+      "speed": 74.97139808611252,
+      "lateral": 2.326648716879608,
+      "raw": -0.24974999999999914,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.555,
+      "distance": 1707.1822638849073,
+      "speed": 75.13331372872969,
+      "lateral": 2.202969083944759,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.658,
+      "distance": 1720.3475116854631,
+      "speed": 75.31487527989418,
+      "lateral": 2.1567408089955276,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.76,
+      "distance": 1733.5464318081297,
+      "speed": 75.51650572960246,
+      "lateral": 2.0329772228739142,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.863,
+      "distance": 1746.7825481346854,
+      "speed": 75.73819099204654,
+      "lateral": 1.9866231292608652,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 11.967,
+      "distance": 1762.280069141656,
+      "speed": 76.01345316542076,
+      "lateral": 1.7694387417670807,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.072,
+      "distance": 1775.6055441565363,
+      "speed": 76.25851366951034,
+      "lateral": 1.722930938855799,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.176,
+      "distance": 1788.9744760550536,
+      "speed": 76.50911043113149,
+      "lateral": 1.6030160465295147,
+      "raw": 0.171875,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.28,
+      "distance": 1802.3740446597992,
+      "speed": 76.76109217969208,
+      "lateral": 1.627895756869117,
+      "raw": -0.1960390624999991,
+      "required": 0.00026673233110189183,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.384,
+      "distance": 1818.0824839767483,
+      "speed": 77.05167462146625,
+      "lateral": 1.4477233525037128,
+      "raw": 0,
+      "required": 0.047474770989345445,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.486,
+      "distance": 1831.603030048828,
+      "speed": 77.29290833207165,
+      "lateral": 1.3179295523284467,
+      "raw": 0,
+      "required": 0.15771196116618827,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.589,
+      "distance": 1845.151275082294,
+      "speed": 77.52305603719425,
+      "lateral": 1.0231662491793978,
+      "raw": 0,
+      "required": 0.30191960752398445,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.691,
+      "distance": 1858.72510052148,
+      "speed": 77.74334296961968,
+      "lateral": 0.5684486511476895,
+      "raw": 0.2497499999999991,
+      "required": 0.4524724802990964,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.792,
+      "distance": 1872.3522587843606,
+      "speed": 77.97953975739499,
+      "lateral": 0.1792088255028193,
+      "raw": 0.4997499999999989,
+      "required": 0.6152501775707606,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.894,
+      "distance": 1886.022780953317,
+      "speed": 78.23710198274559,
+      "lateral": -0.10706583029650575,
+      "raw": 0.7497499999999994,
+      "required": 0.7540958298036169,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 12.996,
+      "distance": 1899.754113078114,
+      "speed": 78.51591215121645,
+      "lateral": -0.41086362958775413,
+      "raw": 0,
+      "required": 0.8536390469538597,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.1,
+      "distance": 1915.8131305343657,
+      "speed": 78.86638468186732,
+      "lateral": -1.6379311806814971,
+      "raw": 0.25000000000000006,
+      "required": 0.8854061786539931,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.203,
+      "distance": 1929.6449648218077,
+      "speed": 79.18813881461728,
+      "lateral": -2.4959684719192605,
+      "raw": 0.49999999999999983,
+      "required": 0.8909990116363025,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.306,
+      "distance": 1943.5348827432972,
+      "speed": 79.52848842862079,
+      "lateral": -3.0550006915312875,
+      "raw": 0.7500000000000002,
+      "required": 0.8969422633380061,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.407,
+      "distance": 1957.5000208219024,
+      "speed": 79.88674443051372,
+      "lateral": -3.2861160451414233,
+      "raw": 1,
+      "required": 0.903228608326926,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.509,
+      "distance": 1971.5154428029455,
+      "speed": 80.26100377138691,
+      "lateral": -3.3643621901952376,
+      "raw": 0.19999999999999998,
+      "required": 0.9098293231089999,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.613,
+      "distance": 1985.5836887672413,
+      "speed": 80.64991978148844,
+      "lateral": -4.058660677136421,
+      "raw": 0.4497500000000035,
+      "required": 0.9167251505532388,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.717,
+      "distance": 2002.1198955800785,
+      "speed": 81.12179923248267,
+      "lateral": -4.79652975504402,
+      "raw": 0.741750000000002,
+      "required": 0.9251057039092447,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.819,
+      "distance": 2016.3412960769385,
+      "speed": 81.53837687083912,
+      "lateral": -5.067183027748681,
+      "raw": 0.9915000000000016,
+      "required": 0.9304071455503446,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 13.922,
+      "distance": 2030.6508715163354,
+      "speed": 81.96568782860471,
+      "lateral": -5.192106472329271,
+      "raw": 0.19150000000000156,
+      "required": 0.933094999872798,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.026,
+      "distance": 2045.0360730085397,
+      "speed": 82.40167644714074,
+      "lateral": -5.932100483125512,
+      "raw": 0.4415000000000014,
+      "required": 0.9321567070303431,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.129,
+      "distance": 2059.512756883954,
+      "speed": 82.84509012797275,
+      "lateral": -6.6360879180608885,
+      "raw": 0.6917500000000025,
+      "required": 0.9266417932699548,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.234,
+      "distance": 2076.47385513522,
+      "speed": 83.33333333333333,
+      "lateral": -7.0182508108597474,
+      "raw": 0.9832500000000038,
+      "required": 0.9162605923776471,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.336,
+      "distance": 2091.057188468554,
+      "speed": 83.33333333333333,
+      "lateral": -7.1818703632577465,
+      "raw": 0.1832500000000038,
+      "required": 0.8981737107546286,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.438,
+      "distance": 2105.640521801888,
+      "speed": 83.33333333333333,
+      "lateral": -7.87846445422166,
+      "raw": 0.4332500000000037,
+      "required": 0.8756182319388571,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.541,
+      "distance": 2120.2384384685556,
+      "speed": 83.33333333333333,
+      "lateral": -8.491531260478189,
+      "raw": 0.6835000000000049,
+      "required": 0.8480919556173271,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.643,
+      "distance": 2134.807188468556,
+      "speed": 83.33333333333333,
+      "lateral": -8.723332317683402,
+      "raw": 0.9332500000000044,
+      "required": 0.8201331857833282,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.747,
+      "distance": 2149.4051051352226,
+      "speed": 83.33333333333333,
+      "lateral": -8.819957716814237,
+      "raw": 0.13245000000000143,
+      "required": 0.789929895133894,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 14.851,
+      "distance": 2166.4046733078194,
+      "speed": 83.2070893065269,
+      "lateral": -9.701588288431019,
+      "raw": 0.25000000000000006,
+      "required": 0.7505878119454569,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 14.953,
+      "distance": 2180.9299458689784,
+      "speed": 82.82723414442867,
+      "lateral": -10.360624077010453,
+      "raw": 0.4999999999999999,
+      "required": 0.714557143872234,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.055,
+      "distance": 2195.3884783490344,
+      "speed": 82.44431100115672,
+      "lateral": -10.654049251373547,
+      "raw": 0.7500000000000002,
+      "required": 0.6724456155691168,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.156,
+      "distance": 2209.779570799445,
+      "speed": 82.05661162202887,
+      "lateral": -10.551247035130935,
+      "raw": 1,
+      "required": 0.6329771379895691,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.26,
+      "distance": 2224.102231751,
+      "speed": 81.6625056265044,
+      "lateral": -10.231357995197394,
+      "raw": 0.19999999999999996,
+      "required": 0.5965501865814319,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.362,
+      "distance": 2238.3694123227874,
+      "speed": 81.26003502836734,
+      "lateral": -10.469504212643422,
+      "raw": 0.4502500000000007,
+      "required": 0.5549775243203303,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.464,
+      "distance": 2252.551070518598,
+      "speed": 80.8485380296649,
+      "lateral": -10.60471688182083,
+      "raw": 0.700250000000001,
+      "required": 0.5170812068242451,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.569,
+      "distance": 2268.9945401525033,
+      "speed": 80.35501398558954,
+      "lateral": -10.274389655222427,
+      "raw": 0.9917500000000022,
+      "required": 0.4744345012711275,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.673,
+      "distance": 2283.015493478685,
+      "speed": 79.91855425706528,
+      "lateral": -9.75680685133052,
+      "raw": 0.1917500000000022,
+      "required": 0.4419733713864514,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.776,
+      "distance": 2296.95881634733,
+      "speed": 79.46872124071504,
+      "lateral": -9.797322032113673,
+      "raw": 0.44175000000000214,
+      "required": 0.4062703740442329,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.88,
+      "distance": 2310.822068986917,
+      "speed": 79.0045306921496,
+      "lateral": -9.73561792298358,
+      "raw": 0.6917500000000024,
+      "required": 0.37726374160056136,
+      "offRoad": true,
+      "mode": "playing"
+    },
+    {
+      "t": 15.984,
+      "distance": 2326.901725328357,
+      "speed": 78.64751371467288,
+      "lateral": -9.193094890303096,
+      "raw": 0.9835000000000045,
+      "required": 0.3427809601382522,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.088,
+      "distance": 2340.681046636413,
+      "speed": 78.9583338938521,
+      "lateral": -8.5126350887019,
+      "raw": 0.1843000000000219,
+      "required": 0.3231961120417916,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.191,
+      "distance": 2354.5263275152056,
+      "speed": 79.24560573203814,
+      "lateral": -8.40595015752842,
+      "raw": 0.4343000000000219,
+      "required": 0.30317446322657393,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.293,
+      "distance": 2368.4334932390802,
+      "speed": 79.50874479276644,
+      "lateral": -8.239562002390068,
+      "raw": 0.6845500000000275,
+      "required": 0.2835068772148864,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.395,
+      "distance": 2382.35649280717,
+      "speed": 79.74663469668516,
+      "lateral": -7.713584693489598,
+      "raw": 0.9343000000000223,
+      "required": 0.2690569900192581,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.499,
+      "distance": 2398.6702871679154,
+      "speed": 79.99358122499187,
+      "lateral": -6.987532662001488,
+      "raw": 0.0007000000000164652,
+      "required": 0.2524138989198045,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.602,
+      "distance": 2412.688243315698,
+      "speed": 80.1947376856654,
+      "lateral": -7.025821325904551,
+      "raw": 0.2507000000000165,
+      "required": 0.24302335952708848,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.704,
+      "distance": 2426.7553547593106,
+      "speed": 80.39483797915649,
+      "lateral": -6.996524036157772,
+      "raw": 0.5009500000000219,
+      "required": 0.23497801493880088,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.806,
+      "distance": 2440.843296009769,
+      "speed": 80.59348827573001,
+      "lateral": -6.6628272580363985,
+      "raw": 0.7509500000000221,
+      "required": 0.23080218703938607,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 16.909,
+      "distance": 2454.965883172898,
+      "speed": 80.79089566786158,
+      "lateral": -6.171146264350535,
+      "raw": 0,
+      "required": 0.22984821181559367,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.011,
+      "distance": 2469.108724769544,
+      "speed": 80.9868714493634,
+      "lateral": -6.331054501119186,
+      "raw": 0.2497499999999946,
+      "required": 0.2267931958233006,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.112,
+      "distance": 2483.314128999389,
+      "speed": 81.18200929081623,
+      "lateral": -6.290623938358967,
+      "raw": 0.4999999999999999,
+      "required": 0.21160674381393593,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.214,
+      "distance": 2497.5393575884646,
+      "speed": 81.375729428096,
+      "lateral": -5.912815509663827,
+      "raw": 0.7500000000000002,
+      "required": 0.1878896695695825,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.318,
+      "distance": 2514.182904782672,
+      "speed": 81.6002647918487,
+      "lateral": -5.177128689356061,
+      "raw": 0,
+      "required": 0.15138134841165818,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.423,
+      "distance": 2528.481079131725,
+      "speed": 81.79136038237662,
+      "lateral": -5.143391415428103,
+      "raw": 0.25000000000000006,
+      "required": 0.1159304770124694,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.525,
+      "distance": 2542.812581360501,
+      "speed": 81.98125575975219,
+      "lateral": -4.9348434160396595,
+      "raw": 0.4999999999999999,
+      "required": 0.08025043911337197,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.627,
+      "distance": 2557.177200276232,
+      "speed": 82.16995771645642,
+      "lateral": -4.611390821566937,
+      "raw": 0,
+      "required": 0.04787008039077007,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.728,
+      "distance": 2571.560316943895,
+      "speed": 82.35728628132817,
+      "lateral": -4.610515988811632,
+      "raw": 0.24975000000000366,
+      "required": 0.023896195929286854,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.83,
+      "distance": 2586.004965628142,
+      "speed": 82.54380901335192,
+      "lateral": -4.286725443984381,
+      "raw": 0.49999999999999983,
+      "required": 0.005500905927060556,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 17.935,
+      "distance": 2602.8716369532076,
+      "speed": 82.7595956636492,
+      "lateral": -3.7084878069034866,
+      "raw": -0.08078124999999835,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.04,
+      "distance": 2617.3865176581917,
+      "speed": 82.94358253667748,
+      "lateral": -3.668625431384994,
+      "raw": 0.22500585937499692,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.143,
+      "distance": 2631.9189709457182,
+      "speed": 83.12622669826673,
+      "lateral": -3.557032868056072,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.244,
+      "distance": 2646.483277715483,
+      "speed": 83.30771915715918,
+      "lateral": -3.5086525746309105,
+      "raw": 0.25,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.35,
+      "distance": 2663.501873984235,
+      "speed": 83.33333333333333,
+      "lateral": -3.379574129342109,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.452,
+      "distance": 2678.0706239842348,
+      "speed": 83.33333333333333,
+      "lateral": -3.33139702060326,
+      "raw": 0.2497500000000037,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.556,
+      "distance": 2692.653957317568,
+      "speed": 83.33333333333333,
+      "lateral": -3.2021032590114777,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.659,
+      "distance": 2707.237290650901,
+      "speed": 83.33333333333333,
+      "lateral": -3.153926150272629,
+      "raw": 0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.761,
+      "distance": 2721.835207317567,
+      "speed": 83.33333333333333,
+      "lateral": -3.0246323886808466,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.865,
+      "distance": 2738.839373984233,
+      "speed": 83.33333333333333,
+      "lateral": -2.9341136231026526,
+      "raw": 0.29149999999999643,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 18.971,
+      "distance": 2753.422707317566,
+      "speed": 83.33333333333333,
+      "lateral": -2.7496985512517353,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.074,
+      "distance": 2768.0206239842328,
+      "speed": 83.33333333333333,
+      "lateral": -2.701307131764779,
+      "raw": 0.2502500000000055,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.176,
+      "distance": 2782.589373984232,
+      "speed": 83.33333333333333,
+      "lateral": -2.5722276809211038,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.278,
+      "distance": 2797.1727073175653,
+      "speed": 83.33333333333333,
+      "lateral": -2.523836261434155,
+      "raw": 0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.38,
+      "distance": 2811.7560406508983,
+      "speed": 83.33333333333333,
+      "lateral": -2.394350840834668,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.484,
+      "distance": 2828.774790650898,
+      "speed": 83.33333333333333,
+      "lateral": -2.345959421347712,
+      "raw": 0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.586,
+      "distance": 2843.358123984231,
+      "speed": 83.33333333333333,
+      "lateral": -2.216474000748218,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.69,
+      "distance": 2857.941457317564,
+      "speed": 83.33333333333333,
+      "lateral": -2.1682968920093764,
+      "raw": 0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.791,
+      "distance": 2872.524790650897,
+      "speed": 83.33333333333333,
+      "lateral": -2.039003130417586,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.894,
+      "distance": 2887.1227073175637,
+      "speed": 83.33333333333333,
+      "lateral": -1.9906117109306298,
+      "raw": 0.2502500000000055,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 19.997,
+      "distance": 2901.7060406508967,
+      "speed": 83.33333333333333,
+      "lateral": -1.8615257622108972,
+      "raw": 0,
+      "required": -0.0006625649128367597,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.101,
+      "distance": 2918.710207317563,
+      "speed": 83.33333333333333,
+      "lateral": -1.7715483871184323,
+      "raw": 0.25000000000000006,
+      "required": -0.07659576296520137,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.204,
+      "distance": 2933.293540650896,
+      "speed": 83.33333333333333,
+      "lateral": -1.4570863150106454,
+      "raw": -0.171875,
+      "required": -0.2196497685444692,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.306,
+      "distance": 2947.876873984229,
+      "speed": 83.33333333333333,
+      "lateral": -1.0917430179003718,
+      "raw": 0,
+      "required": -0.38739595864543264,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.409,
+      "distance": 2962.460207317562,
+      "speed": 83.33333333333333,
+      "lateral": -0.513606932416572,
+      "raw": -0.25000000000000006,
+      "required": -0.5263059875862441,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.511,
+      "distance": 2977.043540650895,
+      "speed": 83.33333333333333,
+      "lateral": -0.08211290839918915,
+      "raw": -0.49999999999999994,
+      "required": -0.5920532209238561,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.616,
+      "distance": 2994.0622906508947,
+      "speed": 83.33333333333333,
+      "lateral": 0.4543862361103642,
+      "raw": 0,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.72,
+      "distance": 3008.6456239842278,
+      "speed": 83.33333333333333,
+      "lateral": 1.2228442880520443,
+      "raw": -0.25000000000000006,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.822,
+      "distance": 3023.243540650894,
+      "speed": 83.33333333333333,
+      "lateral": 1.6962418895530356,
+      "raw": -0.5002499999999963,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 20.923,
+      "distance": 3037.812290650894,
+      "speed": 83.33333333333333,
+      "lateral": 1.853837953842976,
+      "raw": -0.7500000000000003,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.026,
+      "distance": 3052.395623984227,
+      "speed": 83.33333333333333,
+      "lateral": 1.8552445473998023,
+      "raw": 0,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.13,
+      "distance": 3066.97895731756,
+      "speed": 83.33333333333333,
+      "lateral": 2.519833842035814,
+      "raw": -0.25000000000000006,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.232,
+      "distance": 3083.9977073175596,
+      "speed": 83.33333333333333,
+      "lateral": 3.0430803997760765,
+      "raw": -0.5417500000000018,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.335,
+      "distance": 3098.5810406508926,
+      "speed": 83.33333333333333,
+      "lateral": 3.143627469719363,
+      "raw": -0.7917500000000021,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.436,
+      "distance": 3113.1643739842257,
+      "speed": 83.33333333333333,
+      "lateral": 3.085813241483363,
+      "raw": 0,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.539,
+      "distance": 3127.762290650892,
+      "speed": 83.33333333333333,
+      "lateral": 3.6826005267736153,
+      "raw": -0.2502499999999964,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.641,
+      "distance": 3142.3310406508917,
+      "speed": 83.33333333333333,
+      "lateral": 4.152124500424012,
+      "raw": -0.4999999999999999,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.743,
+      "distance": 3156.9143739842248,
+      "speed": 83.33333333333333,
+      "lateral": 4.3100640089306275,
+      "raw": -0.7500000000000003,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.846,
+      "distance": 3171.497707317558,
+      "speed": 83.33333333333333,
+      "lateral": 4.124336220650855,
+      "raw": -1,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 21.951,
+      "distance": 3188.516457317557,
+      "speed": 83.33333333333333,
+      "lateral": 3.7582073615317295,
+      "raw": -0.06640000000002343,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.053,
+      "distance": 3203.09979065089,
+      "speed": 83.33333333333333,
+      "lateral": 4.123245870252395,
+      "raw": -0.31640000000002344,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.156,
+      "distance": 3217.683123984223,
+      "speed": 83.33333333333333,
+      "lateral": 4.528498446399966,
+      "raw": -0.5664000000000236,
+      "required": -0.594059405940594,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.258,
+      "distance": 3232.266457317556,
+      "speed": 83.33333333333333,
+      "lateral": 4.589489250850532,
+      "raw": -0.8164000000000239,
+      "required": -0.5602858846191446,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.362,
+      "distance": 3246.849790650889,
+      "speed": 83.33333333333333,
+      "lateral": 4.20604565986139,
+      "raw": -1,
+      "required": -0.4437401889864947,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.468,
+      "distance": 3263.853957317556,
+      "speed": 83.33333333333333,
+      "lateral": 3.3674704973579863,
+      "raw": -0.06719999999998251,
+      "required": -0.26619353330397,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.574,
+      "distance": 3278.451873984222,
+      "speed": 83.33333333333333,
+      "lateral": 3.152808667334466,
+      "raw": -0.31744999999997886,
+      "required": -0.10018942990529506,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.677,
+      "distance": 3293.035207317555,
+      "speed": 83.33333333333333,
+      "lateral": 3.0358709139138624,
+      "raw": 0,
+      "required": -0.01105603170767292,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.781,
+      "distance": 3307.618540650888,
+      "speed": 83.33333333333333,
+      "lateral": 2.9905695397843726,
+      "raw": -0.25,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.885,
+      "distance": 3324.6372906508877,
+      "speed": 83.33333333333333,
+      "lateral": 2.7640271218422177,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 22.99,
+      "distance": 3339.2206239842208,
+      "speed": 83.33333333333333,
+      "lateral": 2.7156357023552613,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.093,
+      "distance": 3353.803957317554,
+      "speed": 83.33333333333333,
+      "lateral": 2.5865562515115856,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.198,
+      "distance": 3368.3727073175537,
+      "speed": 83.33333333333333,
+      "lateral": 2.5383791427727367,
+      "raw": -0.2497500000000037,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.302,
+      "distance": 3385.4060406508866,
+      "speed": 83.33333333333333,
+      "lateral": 2.311622414082474,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.405,
+      "distance": 3399.974790650886,
+      "speed": 83.33333333333333,
+      "lateral": 2.2632309945955256,
+      "raw": -0.2497499999999946,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.509,
+      "distance": 3414.558123984219,
+      "speed": 83.33333333333333,
+      "lateral": 2.1337455739960385,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.612,
+      "distance": 3429.141457317552,
+      "speed": 83.33333333333333,
+      "lateral": 2.0855684652571966,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.719,
+      "distance": 3446.160207317552,
+      "speed": 83.33333333333333,
+      "lateral": 1.9562747036654065,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.823,
+      "distance": 3460.758123984219,
+      "speed": 83.33333333333333,
+      "lateral": 1.9076684723639894,
+      "raw": -0.25025000000000547,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 23.926,
+      "distance": 3475.3268739842188,
+      "speed": 83.33333333333333,
+      "lateral": 1.7783978635789564,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.029,
+      "distance": 3489.9102073175522,
+      "speed": 83.33333333333333,
+      "lateral": 1.730006444092,
+      "raw": -0.25,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.133,
+      "distance": 3506.928957317552,
+      "speed": 83.33333333333333,
+      "lateral": 1.6247451590625983,
+      "raw": 0.21362500000000184,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.24,
+      "distance": 3521.512290650885,
+      "speed": 83.33333333333333,
+      "lateral": 1.728746973028695,
+      "raw": -0.18324218749999946,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.341,
+      "distance": 3536.110207317551,
+      "speed": 83.33333333333333,
+      "lateral": 1.6855566549348642,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.443,
+      "distance": 3550.693540650884,
+      "speed": 83.33333333333333,
+      "lateral": 1.6369504236334553,
+      "raw": -0.25000000000000006,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.546,
+      "distance": 3565.262290650884,
+      "speed": 83.33333333333333,
+      "lateral": 1.5124712486407306,
+      "raw": 0.17162500000000364,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.652,
+      "distance": 3582.281040650884,
+      "speed": 83.33333333333333,
+      "lateral": 1.6351370819279967,
+      "raw": -0.18364843750000548,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.756,
+      "distance": 3596.864373984217,
+      "speed": 83.33333333333333,
+      "lateral": 1.5916502558951455,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.861,
+      "distance": 3611.4477073175503,
+      "speed": 83.33333333333333,
+      "lateral": 1.5432588364081894,
+      "raw": -0.25,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 24.963,
+      "distance": 3626.0310406508834,
+      "speed": 83.33333333333333,
+      "lateral": 1.4185648496010117,
+      "raw": 0.17187500000000003,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 25.068,
+      "distance": 3643.049790650883,
+      "speed": 83.33333333333333,
+      "lateral": 1.5412306828882778,
+      "raw": -0.1835703125000066,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 25.172,
+      "distance": 3657.6185406508826,
+      "speed": 83.33333333333333,
+      "lateral": 1.4977438568554267,
+      "raw": 0,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 25.275,
+      "distance": 3672.216457317549,
+      "speed": 83.33333333333333,
+      "lateral": 1.4493524373684707,
+      "raw": -0.2502500000000055,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 25.378,
+      "distance": 3686.799790650882,
+      "speed": 83.33333333333333,
+      "lateral": 1.324686104470432,
+      "raw": 0.17179687499999827,
+      "required": 0,
+      "offRoad": false,
+      "mode": "playing"
+    },
+    {
+      "t": 25.481,
+      "distance": 3700.1629850953263,
+      "speed": 83.33333333333333,
+      "lateral": 1.3589450308475157,
+      "raw": -0.17539680989583206,
+      "required": 0,
+      "offRoad": false,
+      "mode": "paused"
+    }
+  ]
+}

@@ -1,0 +1,597 @@
+{
+  "rows": [
+    {
+      "id": "L2-001",
+      "seed": 9701,
+      "profiles": {
+        "curvature": {
+          "id": "C01",
+          "parameters": {
+            "effort": 0,
+            "direction": 1,
+            "start": 0.25,
+            "end": 0.75,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E02",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "canyon",
+      "headingChange": 0
+    },
+    {
+      "id": "L2-002",
+      "seed": 9798,
+      "profiles": {
+        "curvature": {
+          "id": "C01",
+          "parameters": {
+            "effort": 0,
+            "direction": -1,
+            "start": 0.25,
+            "end": 0.75,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E05",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 2,
+            "to": 4,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "city",
+      "headingChange": 0
+    },
+    {
+      "id": "L2-003",
+      "seed": 9895,
+      "profiles": {
+        "curvature": {
+          "id": "C02",
+          "parameters": {
+            "effort": 0.5,
+            "direction": 1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E01",
+          "parameters": {
+            "base": 16,
+            "amplitude": 0,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 8,
+            "to": 8,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "coast",
+      "headingChange": 2.8476582336401437
+    },
+    {
+      "id": "L2-004",
+      "seed": 9992,
+      "profiles": {
+        "curvature": {
+          "id": "C02",
+          "parameters": {
+            "effort": 0.6,
+            "direction": -1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E02",
+          "parameters": {
+            "base": 210,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 6,
+            "to": 8,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "city",
+      "headingChange": -2.7958826246137063
+    },
+    {
+      "id": "L2-005",
+      "seed": 10089,
+      "profiles": {
+        "curvature": {
+          "id": "C03",
+          "parameters": {
+            "effort": 1.2,
+            "direction": 1,
+            "start": 0.41000000000000003,
+            "end": 0.59,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E03",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "canyon",
+      "headingChange": 2.6036657243306363
+    },
+    {
+      "id": "L2-006",
+      "seed": 10186,
+      "profiles": {
+        "curvature": {
+          "id": "C03",
+          "parameters": {
+            "effort": 0.85,
+            "direction": -1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E04",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "coast",
+      "headingChange": -3.3811492112667034
+    },
+    {
+      "id": "L2-007",
+      "seed": 10283,
+      "profiles": {
+        "curvature": {
+          "id": "C04",
+          "parameters": {
+            "effort": 1.15,
+            "direction": 1,
+            "start": 0.41000000000000003,
+            "end": 0.59,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E01",
+          "parameters": {
+            "base": 16,
+            "amplitude": 0,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "city",
+      "headingChange": 2.2456617001215013
+    },
+    {
+      "id": "L2-008",
+      "seed": 10380,
+      "profiles": {
+        "curvature": {
+          "id": "C04",
+          "parameters": {
+            "effort": 0.7,
+            "direction": -1,
+            "start": 0.35,
+            "end": 0.65,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E06",
+          "parameters": {
+            "base": 16,
+            "amplitude": 90,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 6,
+            "to": 6,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "coast",
+      "headingChange": -2.5313416472859327
+    },
+    {
+      "id": "L2-009",
+      "seed": 10477,
+      "profiles": {
+        "curvature": {
+          "id": "C05",
+          "parameters": {
+            "effort": 0.7,
+            "direction": 1,
+            "start": 0.325,
+            "end": 0.675,
+            "secondary": 0.65
+          }
+        },
+        "elevation": {
+          "id": "E03",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 2,
+            "to": 4,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "canyon",
+      "headingChange": 3.313962269398706
+    },
+    {
+      "id": "L2-010",
+      "seed": 10574,
+      "profiles": {
+        "curvature": {
+          "id": "C05",
+          "parameters": {
+            "effort": 0.8,
+            "direction": -1,
+            "start": 0.325,
+            "end": 0.675,
+            "secondary": 0.65
+          }
+        },
+        "elevation": {
+          "id": "E05",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "canyon",
+      "headingChange": -3.098769915155002
+    },
+    {
+      "id": "L2-011",
+      "seed": 10671,
+      "profiles": {
+        "curvature": {
+          "id": "C06",
+          "parameters": {
+            "effort": 0.75,
+            "direction": 1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E04",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 4,
+            "to": 4,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "canyon",
+      "headingChange": -1.7430676107750993e-16
+    },
+    {
+      "id": "L2-012",
+      "seed": 10768,
+      "profiles": {
+        "curvature": {
+          "id": "C06",
+          "parameters": {
+            "effort": 0.65,
+            "direction": -1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E06",
+          "parameters": {
+            "base": 16,
+            "amplitude": 90,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "coast",
+      "headingChange": -0.9301163704018691
+    },
+    {
+      "id": "L2-013",
+      "seed": 10865,
+      "profiles": {
+        "curvature": {
+          "id": "C07",
+          "parameters": {
+            "effort": 0.75,
+            "direction": 1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E03",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W02",
+          "parameters": {
+            "from": 6,
+            "to": 8,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "city",
+      "headingChange": -0.5591765152613934
+    },
+    {
+      "id": "L2-014",
+      "seed": 10962,
+      "profiles": {
+        "curvature": {
+          "id": "C07",
+          "parameters": {
+            "effort": 0.85,
+            "direction": -1,
+            "start": 0.2,
+            "end": 0.8,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E02",
+          "parameters": {
+            "base": 210,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W04",
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "city",
+      "headingChange": 0.30806484527562017
+    },
+    {
+      "id": "L2-015",
+      "seed": 11059,
+      "profiles": {
+        "curvature": {
+          "id": "C08",
+          "parameters": {
+            "effort": 1.25,
+            "direction": 1,
+            "start": 0.4293939393939394,
+            "end": 0.5706060606060606,
+            "secondary": 1
+          }
+        },
+        "elevation": {
+          "id": "E05",
+          "parameters": {
+            "base": 16,
+            "amplitude": 160,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W01",
+          "parameters": {
+            "from": 2,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "canyon",
+      "headingChange": 3.141592653589777
+    },
+    {
+      "id": "L2-016",
+      "seed": 11156,
+      "profiles": {
+        "curvature": {
+          "id": "C08",
+          "parameters": {
+            "effort": 1.25,
+            "direction": -1,
+            "start": 0.4137037037037037,
+            "end": 0.5862962962962963,
+            "secondary": 0.7
+          }
+        },
+        "elevation": {
+          "id": "E06",
+          "parameters": {
+            "base": 16,
+            "amplitude": 90,
+            "direction": -1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          }
+        },
+        "width": {
+          "id": "W03",
+          "parameters": {
+            "from": 6,
+            "to": 2,
+            "start": 0.2,
+            "end": 0.8
+          }
+        }
+      },
+      "world": "coast",
+      "headingChange": -3.1415926535897842
+    }
+  ],
+  "intersections": []
+}

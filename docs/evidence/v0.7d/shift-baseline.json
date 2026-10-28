@@ -1,0 +1,527 @@
+[
+  {
+    "from": 1,
+    "to": 2,
+    "rows": [
+      {
+        "t": 1.8583333333333292,
+        "gear": 1,
+        "speed": 13.022453739185684,
+        "rpm": 6457.408757311806,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 6.973735394748804
+      },
+      {
+        "t": 1.908333333333329,
+        "gear": 1,
+        "speed": 13.37098026596501,
+        "rpm": 6613.1410959065215,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 6.970530535586537
+      },
+      {
+        "t": 1.9583333333333288,
+        "gear": 1,
+        "speed": 13.719338959930095,
+        "rpm": 6768.806306530756,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 6.967173879301736
+      },
+      {
+        "t": 2.008333333333329,
+        "gear": 2,
+        "speed": 13.957450969362766,
+        "rpm": 5905.38521875891,
+        "shiftRemaining": 0.16333333333333333,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 4.7622401886534105
+      },
+      {
+        "t": 2.0583333333333287,
+        "gear": 2,
+        "speed": 14.08297496427336,
+        "rpm": 4943.059060721809,
+        "shiftRemaining": 0.11333333333333334,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.5104798982118925
+      },
+      {
+        "t": 2.1083333333333285,
+        "gear": 2,
+        "speed": 14.206867281041115,
+        "rpm": 4572.828232673342,
+        "shiftRemaining": 0.06333333333333335,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.477846335355105
+      },
+      {
+        "t": 2.1583333333333283,
+        "gear": 2,
+        "speed": 14.330054209015032,
+        "rpm": 4440.991489867451,
+        "shiftRemaining": 0.013333333333333362,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.4637385594783456
+      },
+      {
+        "t": 2.208333333333328,
+        "gear": 2,
+        "speed": 14.61978743696121,
+        "rpm": 4420.563915373627,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 5.794664558923606
+      },
+      {
+        "t": 2.258333333333328,
+        "gear": 2,
+        "speed": 14.94192664255573,
+        "rpm": 4438.33342240684,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 6.442784111890406
+      },
+      {
+        "t": 2.308333333333328,
+        "gear": 2,
+        "speed": 15.263192292371704,
+        "rpm": 4477.222657527049,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 6.4253129963195
+      },
+      {
+        "t": 2.3583333333333276,
+        "gear": 2,
+        "speed": 15.583694143945495,
+        "rpm": 4529.447024926442,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 6.410037031475847
+      }
+    ]
+  },
+  {
+    "from": 2,
+    "to": 3,
+    "rows": [
+      {
+        "t": 4.008333333333322,
+        "gear": 2,
+        "speed": 25.81516206429176,
+        "rpm": 6903.541348145126,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 6.0026492444480475
+      },
+      {
+        "t": 4.058333333333325,
+        "gear": 2,
+        "speed": 26.114655976897996,
+        "rpm": 6974.247867966341,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 5.9898782521244565
+      },
+      {
+        "t": 4.108333333333327,
+        "gear": 2,
+        "speed": 26.413509759364796,
+        "rpm": 7044.804861019108,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 5.977075649335704
+      },
+      {
+        "t": 4.15833333333333,
+        "gear": 3,
+        "speed": 26.522950001559774,
+        "rpm": 5868.098439557141,
+        "shiftRemaining": 0.13833333333333334,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.1888048438994523
+      },
+      {
+        "t": 4.208333333333332,
+        "gear": 3,
+        "speed": 26.630697191305607,
+        "rpm": 5403.986537129182,
+        "shiftRemaining": 0.08833333333333335,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.1549437949165546
+      },
+      {
+        "t": 4.258333333333335,
+        "gear": 3,
+        "speed": 26.737704088551467,
+        "rpm": 5226.865993101661,
+        "shiftRemaining": 0.03833333333333336,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.140137944917093
+      },
+      {
+        "t": 4.308333333333337,
+        "gear": 3,
+        "speed": 26.90230500384747,
+        "rpm": 5171.7178748237575,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.2920183059198886
+      },
+      {
+        "t": 4.35833333333334,
+        "gear": 3,
+        "speed": 27.182069916408064,
+        "rpm": 5167.669969136555,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 5.5952982512116085
+      },
+      {
+        "t": 4.408333333333342,
+        "gear": 3,
+        "speed": 27.46093927671757,
+        "rpm": 5180.807226445413,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 5.5773872061898615
+      },
+      {
+        "t": 4.458333333333345,
+        "gear": 3,
+        "speed": 27.738991169740462,
+        "rpm": 5204.804337805042,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 5.56103786045754
+      },
+      {
+        "t": 4.508333333333347,
+        "gear": 3,
+        "speed": 28.016274975736874,
+        "rpm": 5235.649996242722,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 5.545676119927955
+      }
+    ]
+  },
+  {
+    "from": 3,
+    "to": 4,
+    "rows": [
+      {
+        "t": 6.758333333333459,
+        "gear": 3,
+        "speed": 39.7834910853251,
+        "rpm": 7036.791724964154,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 4.932407830304339
+      },
+      {
+        "t": 6.8083333333334615,
+        "gear": 3,
+        "speed": 40.02944223162038,
+        "rpm": 7074.886879235486,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 4.919022925905279
+      },
+      {
+        "t": 6.858333333333464,
+        "gear": 3,
+        "speed": 40.274724672566514,
+        "rpm": 7112.878914604778,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 4.905648818922441
+      },
+      {
+        "t": 6.908333333333466,
+        "gear": 4,
+        "speed": 40.391448890766995,
+        "rpm": 6322.077161480065,
+        "shiftRemaining": 0.14666666666666667,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.33448436400951
+      },
+      {
+        "t": 6.958333333333469,
+        "gear": 4,
+        "speed": 40.48144934121978,
+        "rpm": 5907.825481216077,
+        "shiftRemaining": 0.09666666666666668,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.8000090090555958
+      },
+      {
+        "t": 7.008333333333471,
+        "gear": 4,
+        "speed": 40.57088673245893,
+        "rpm": 5747.057392621333,
+        "shiftRemaining": 0.04666666666666669,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.7887478247829411
+      },
+      {
+        "t": 7.058333333333474,
+        "gear": 4,
+        "speed": 40.684264695706695,
+        "rpm": 5691.226959333163,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.2675592649551684
+      },
+      {
+        "t": 7.108333333333476,
+        "gear": 4,
+        "speed": 40.91819314300014,
+        "rpm": 5683.082878531552,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 4.678568945868642
+      },
+      {
+        "t": 7.158333333333479,
+        "gear": 4,
+        "speed": 41.15133964813296,
+        "rpm": 5687.678729562974,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 4.662930102656214
+      },
+      {
+        "t": 7.208333333333481,
+        "gear": 4,
+        "speed": 41.3837530580944,
+        "rpm": 5700.329389632967,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 4.648268199228536
+      },
+      {
+        "t": 7.258333333333484,
+        "gear": 4,
+        "speed": 41.615464620604364,
+        "rpm": 5718.062721220287,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 4.634231250199061
+      }
+    ]
+  },
+  {
+    "from": 4,
+    "to": 5,
+    "rows": [
+      {
+        "t": 10.1083333333334,
+        "gear": 4,
+        "speed": 53.777652670442784,
+        "rpm": 7103.877125813804,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.9264445874895517
+      },
+      {
+        "t": 10.158333333333397,
+        "gear": 4,
+        "speed": 53.97338784532654,
+        "rpm": 7126.435288123342,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.914703497675385
+      },
+      {
+        "t": 10.208333333333394,
+        "gear": 4,
+        "speed": 54.16853712544988,
+        "rpm": 7148.926085654302,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.902985602466993
+      },
+      {
+        "t": 10.258333333333391,
+        "gear": 5,
+        "speed": 54.24036273788282,
+        "rpm": 6425.914577257375,
+        "shiftRemaining": 0.13833333333333334,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.436512248658854
+      },
+      {
+        "t": 10.308333333333389,
+        "gear": 5,
+        "speed": 54.311474601478324,
+        "rpm": 6138.505767644431,
+        "shiftRemaining": 0.08833333333333335,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.4222372719101726
+      },
+      {
+        "t": 10.358333333333386,
+        "gear": 5,
+        "speed": 54.38225198202881,
+        "rpm": 6026.569913127025,
+        "shiftRemaining": 0.03833333333333336,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.4155476110098513
+      },
+      {
+        "t": 10.408333333333383,
+        "gear": 5,
+        "speed": 54.49121025820333,
+        "rpm": 5989.714347272736,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.1791655234905067
+      },
+      {
+        "t": 10.45833333333338,
+        "gear": 5,
+        "speed": 54.67641909351245,
+        "rpm": 5983.212835178662,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.704176706182591
+      },
+      {
+        "t": 10.508333333333377,
+        "gear": 5,
+        "speed": 54.86101391657128,
+        "rpm": 5985.239792032958,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.6918964611768215
+      },
+      {
+        "t": 10.558333333333374,
+        "gear": 5,
+        "speed": 55.04502113744823,
+        "rpm": 5992.660077139158,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.6801444175392066
+      },
+      {
+        "t": 10.608333333333372,
+        "gear": 5,
+        "speed": 55.22845789806824,
+        "rpm": 6003.4844297580485,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 3.6687352124004446
+      }
+    ]
+  },
+  {
+    "from": 5,
+    "to": 6,
+    "rows": [
+      {
+        "t": 14.408333333333156,
+        "gear": 5,
+        "speed": 67.66788623089755,
+        "rpm": 7134.220922431845,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.911932305867874
+      },
+      {
+        "t": 14.458333333333153,
+        "gear": 5,
+        "speed": 67.81303070533332,
+        "rpm": 7147.538383967777,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.902889488715511
+      },
+      {
+        "t": 14.50833333333315,
+        "gear": 5,
+        "speed": 67.95772418736021,
+        "rpm": 7160.814519760221,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.893869640538065
+      },
+      {
+        "t": 14.558333333333147,
+        "gear": 6,
+        "speed": 68.08686401777489,
+        "rpm": 6993.257822403978,
+        "shiftRemaining": 0.18,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 2.5827966082935965
+      },
+      {
+        "t": 14.608333333333144,
+        "gear": 6,
+        "speed": 68.13980910882766,
+        "rpm": 6342.925279779415,
+        "shiftRemaining": 0.13,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.0589018210556025
+      },
+      {
+        "t": 14.658333333333141,
+        "gear": 6,
+        "speed": 68.19227396384035,
+        "rpm": 6083.1773204197025,
+        "shiftRemaining": 0.08000000000000002,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.0492971002537985
+      },
+      {
+        "t": 14.708333333333139,
+        "gear": 6,
+        "speed": 68.24450980094689,
+        "rpm": 5980.777572275884,
+        "shiftRemaining": 0.030000000000000027,
+        "tractionFactor": 0.38,
+        "finiteDifferenceAcceleration": 1.0447167421307906
+      },
+      {
+        "t": 14.758333333333136,
+        "gear": 6,
+        "speed": 68.33909010295967,
+        "rpm": 5948.507056574381,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 1.8916060402558452
+      },
+      {
+        "t": 14.808333333333133,
+        "gear": 6,
+        "speed": 68.4757639449283,
+        "rpm": 5939.876445810065,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.733476839372755
+      },
+      {
+        "t": 14.85833333333313,
+        "gear": 6,
+        "speed": 68.61198534067876,
+        "rpm": 5937.9872281880835,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.7244279150092283
+      },
+      {
+        "t": 14.908333333333127,
+        "gear": 6,
+        "speed": 68.74777005715694,
+        "rpm": 5940.36532216682,
+        "shiftRemaining": 0,
+        "tractionFactor": 1,
+        "finiteDifferenceAcceleration": 2.715694329563844
+      }
+    ]
+  }
+]

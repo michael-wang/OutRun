@@ -1,0 +1,3832 @@
+[
+  {
+    "seed": 1,
+    "stage": {
+      "id": "STAGE-01",
+      "revision": 4,
+      "name": "Stage 01: Pacific Getaway",
+      "intent": "City departure, coastal release and a canyon challenge.",
+      "emotionalRole": "journey",
+      "sceneryAct": 2,
+      "seed": 1,
+      "world": "city",
+      "generatorVersion": "v0.8.3-r1",
+      "contentFingerprint": "828d4e5f",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1",
+      "beats": [
+        {
+          "id": "S01-01",
+          "startS": 180,
+          "endS": 1729,
+          "world": "city",
+          "verticality": "gentle",
+          "role": "Departure"
+        },
+        {
+          "id": "S01-02",
+          "startS": 1879,
+          "endS": 3397,
+          "world": "city",
+          "verticality": "gentle",
+          "role": "City rhythm"
+        },
+        {
+          "id": "S01-03",
+          "startS": 3607,
+          "endS": 5033,
+          "world": "city",
+          "verticality": "rolling",
+          "role": "Tightening sea turn"
+        },
+        {
+          "id": "S01-04",
+          "startS": 5393,
+          "endS": 6883,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coast sweep"
+        },
+        {
+          "id": "S01-05",
+          "startS": 7093,
+          "endS": 8522,
+          "world": "coast",
+          "verticality": "gentle",
+          "role": "Coastal S reversal"
+        },
+        {
+          "id": "S01-06",
+          "startS": 8672,
+          "endS": 10136,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Canyon approach"
+        },
+        {
+          "id": "S01-07",
+          "startS": 10376,
+          "endS": 11763,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Canyon brake turn"
+        },
+        {
+          "id": "S01-08",
+          "startS": 11863,
+          "endS": 13200,
+          "world": "canyon",
+          "verticality": "rolling",
+          "role": "Ridge release"
+        }
+      ],
+      "buffers": [
+        {
+          "startS": 0,
+          "endS": 180,
+          "role": "launch"
+        },
+        {
+          "startS": 1729,
+          "endS": 1879,
+          "role": "connector"
+        },
+        {
+          "startS": 3397,
+          "endS": 3607,
+          "role": "connector"
+        },
+        {
+          "startS": 5033,
+          "endS": 5393,
+          "role": "scenic"
+        },
+        {
+          "startS": 6883,
+          "endS": 7093,
+          "role": "connector"
+        },
+        {
+          "startS": 8522,
+          "endS": 8672,
+          "role": "connector"
+        },
+        {
+          "startS": 10136,
+          "endS": 10376,
+          "role": "braking"
+        },
+        {
+          "startS": 11763,
+          "endS": 11863,
+          "role": "connector"
+        },
+        {
+          "startS": 13200,
+          "endS": 13500,
+          "role": "finish"
+        }
+      ],
+      "baseHeight": 45,
+      "baseLanes": 4,
+      "placements": [
+        {
+          "channel": "elevation",
+          "id": "E04",
+          "startS": 180,
+          "endS": 1729,
+          "parameters": {
+            "base": 30.281765568302944,
+            "amplitude": 14.718234431697056,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 230,
+          "endS": 911,
+          "parameters": {
+            "effort": 0.45148905560374264,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6108484809519723
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 946,
+          "endS": 1679,
+          "parameters": {
+            "effort": 0.5244025279581547,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8351141529041343
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 1879,
+          "endS": 3397,
+          "parameters": {
+            "base": 45,
+            "amplitude": 23.66715421504341,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 1929,
+          "endS": 2636,
+          "parameters": {
+            "effort": 0.4127930770069361,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7594505962450058
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 1979,
+          "endS": 2129,
+          "parameters": {
+            "from": 4,
+            "to": 6,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 2701,
+          "endS": 3347,
+          "parameters": {
+            "effort": 0.46195658795535566,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8742055472685024
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 3147,
+          "endS": 3297,
+          "parameters": {
+            "from": 6,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 3607,
+          "endS": 5033,
+          "parameters": {
+            "base": 45,
+            "amplitude": 64.41506816539913,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 3657,
+          "endS": 4224,
+          "parameters": {
+            "effort": 0.42788174301385884,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7012062292429619
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 4369,
+          "endS": 4983,
+          "parameters": {
+            "effort": 1.352334761749953,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6919088204624132
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 5393,
+          "endS": 6883,
+          "parameters": {
+            "base": 45,
+            "amplitude": 65.3789412858896,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C04",
+          "startS": 5443,
+          "endS": 6125,
+          "parameters": {
+            "effort": 0.43446433976292614,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6503418534994125
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 5493,
+          "endS": 5643,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 6160,
+          "endS": 6833,
+          "parameters": {
+            "effort": 0.42216498710215095,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7026587020023727
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 6633,
+          "endS": 6783,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "elevation",
+          "id": "E04",
+          "startS": 7093,
+          "endS": 8522,
+          "parameters": {
+            "base": 30.25946962670423,
+            "amplitude": 14.740530373295769,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 7143,
+          "endS": 7813,
+          "parameters": {
+            "effort": 1.4644253583066167,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.782135787466541
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 7848,
+          "endS": 8472,
+          "parameters": {
+            "effort": 0.4426250530034304,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5806789579917677
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 8672,
+          "endS": 10136,
+          "parameters": {
+            "base": 45,
+            "amplitude": 122.99383752979338,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 8722,
+          "endS": 9380,
+          "parameters": {
+            "effort": 0.5677826167643071,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.848002453998197
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 8772,
+          "endS": 8922,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 9480,
+          "endS": 10086,
+          "parameters": {
+            "effort": 0.5636702353507281,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5736488285823725
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 9886,
+          "endS": 10036,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 10376,
+          "endS": 11763,
+          "parameters": {
+            "base": 45,
+            "amplitude": 116.81320407660678,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 10426,
+          "endS": 11087,
+          "parameters": {
+            "effort": 0.41957077413797383,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8565987408626825
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "width",
+          "id": "W04",
+          "startS": 10676,
+          "endS": 11463,
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C08",
+          "startS": 11122,
+          "endS": 11713,
+          "parameters": {
+            "effort": 1.379655971825123,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7248808608856052
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 11863,
+          "endS": 13200,
+          "parameters": {
+            "base": 45,
+            "amplitude": 64.13002685876563,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 11913,
+          "endS": 12446,
+          "parameters": {
+            "effort": 0.5647516864538193,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7134050319320523
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 11963,
+          "endS": 12113,
+          "parameters": {
+            "from": 4,
+            "to": 6,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 12546,
+          "endS": 13150,
+          "parameters": {
+            "effort": 0.46621059693396094,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7551358491182327
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 12950,
+          "endS": 13100,
+          "parameters": {
+            "from": 6,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        }
+      ],
+      "worldPhases": [
+        {
+          "startS": 0,
+          "endS": 5213,
+          "world": "city",
+          "beat": "City departure"
+        },
+        {
+          "startS": 5213,
+          "endS": 8597,
+          "world": "coast",
+          "beat": "Open coast"
+        },
+        {
+          "startS": 8597,
+          "endS": 13500,
+          "world": "canyon",
+          "beat": "Canyon payoff"
+        }
+      ],
+      "referenceSpeed": 230,
+      "entrySpeed": 0,
+      "nominalDuration": 120.74534161490685,
+      "length": 13500,
+      "roadWidth": 14,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          120.74534161490685,
+          4
+        ]
+      ],
+      "elevation": [
+        [
+          0,
+          45
+        ],
+        [
+          120.74534161490685,
+          45
+        ]
+      ],
+      "requiredSteerProfile": [
+        [
+          0,
+          0
+        ]
+      ],
+      "entry": "Standing start",
+      "exit": "Canyon relief and finish",
+      "warning": {
+        "leadMeters": 300,
+        "text": "BRAKE · 180 km/h"
+      },
+      "tags": [
+        "stage"
+      ],
+      "antiAdjacency": [],
+      "autoValidation": "PENDING"
+    },
+    "road": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": 0.040325022083530296,
+      "position": [
+        3466.8884572767674,
+        36.93000194110579,
+        -3508.824512773995
+      ],
+      "curvature": -0.0012309827977168204,
+      "roadHeading": -2.8456060122078743,
+      "tangent": [
+        0.2914468633481061,
+        0.04029227560656009,
+        -0.9557380699600677
+      ],
+      "challenge": {
+        "id": "STAGE-01-19",
+        "label": "S01-05",
+        "targetRequiredSteering": -0.2551886914193448,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 5.581118012422361,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 8198,
+        "end": 8822,
+        "length": 624,
+        "offset": 228
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          3467.470047481475,
+          36.87114242948154,
+          -3507.1147830223335
+        ],
+        "surface": [
+          3467.470047481475,
+          36.87114242948154,
+          -3507.1147830223335
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          3468.29484506218,
+          36.984918133337956,
+          -3509.8195314585837
+        ],
+        "surface": [
+          3468.29484506218,
+          36.984918133337956,
+          -3509.8195314585837
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          3465.4518024294507,
+          36.871038737362184,
+          -3507.73023969018
+        ],
+        "surface": [
+          3465.4518024294507,
+          36.871038737362184,
+          -3507.73023969018
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          3466.2765969618586,
+          36.98507360271182,
+          -3510.4349781301876
+        ],
+        "surface": [
+          3466.2765969618586,
+          36.98507360271182,
+          -3510.4349781301876
+        ]
+      }
+    ],
+    "visibility": 230,
+    "support": {
+      "chunks": 13,
+      "maxSeam": 0,
+      "maxTopError": 0.000270719030233149,
+      "nonFinite": 0
+    }
+  },
+  {
+    "seed": 2,
+    "stage": {
+      "id": "STAGE-01",
+      "revision": 4,
+      "name": "Stage 01: Pacific Getaway",
+      "intent": "City departure, coastal release and a canyon challenge.",
+      "emotionalRole": "journey",
+      "sceneryAct": 2,
+      "seed": 2,
+      "world": "city",
+      "generatorVersion": "v0.8.3-r1",
+      "contentFingerprint": "d9ebd51a",
+      "stageCode": "S01-v0.8.3-r1-2-ALB1",
+      "beats": [
+        {
+          "id": "S01-01",
+          "startS": 180,
+          "endS": 1706,
+          "world": "city",
+          "verticality": "gentle",
+          "role": "Departure"
+        },
+        {
+          "id": "S01-02",
+          "startS": 1856,
+          "endS": 3343,
+          "world": "city",
+          "verticality": "dramatic",
+          "role": "City rhythm"
+        },
+        {
+          "id": "S01-03",
+          "startS": 3403,
+          "endS": 4848,
+          "world": "city",
+          "verticality": "rolling",
+          "role": "Tightening sea turn"
+        },
+        {
+          "id": "S01-04",
+          "startS": 5208,
+          "endS": 6779,
+          "world": "coast",
+          "verticality": "dramatic",
+          "role": "Coast sweep"
+        },
+        {
+          "id": "S01-05",
+          "startS": 6839,
+          "endS": 8211,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coastal S reversal"
+        },
+        {
+          "id": "S01-06",
+          "startS": 8311,
+          "endS": 9883,
+          "world": "coast",
+          "verticality": "gentle",
+          "role": "Canyon approach"
+        },
+        {
+          "id": "S01-07",
+          "startS": 10123,
+          "endS": 11521,
+          "world": "canyon",
+          "verticality": "rolling",
+          "role": "Canyon brake turn"
+        },
+        {
+          "id": "S01-08",
+          "startS": 11731,
+          "endS": 13200,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Ridge release"
+        }
+      ],
+      "buffers": [
+        {
+          "startS": 0,
+          "endS": 180,
+          "role": "launch"
+        },
+        {
+          "startS": 1706,
+          "endS": 1856,
+          "role": "connector"
+        },
+        {
+          "startS": 3343,
+          "endS": 3403,
+          "role": "connector"
+        },
+        {
+          "startS": 4848,
+          "endS": 5208,
+          "role": "scenic"
+        },
+        {
+          "startS": 6779,
+          "endS": 6839,
+          "role": "connector"
+        },
+        {
+          "startS": 8211,
+          "endS": 8311,
+          "role": "connector"
+        },
+        {
+          "startS": 9883,
+          "endS": 10123,
+          "role": "braking"
+        },
+        {
+          "startS": 11521,
+          "endS": 11731,
+          "role": "connector"
+        },
+        {
+          "startS": 13200,
+          "endS": 13500,
+          "role": "finish"
+        }
+      ],
+      "baseHeight": 45,
+      "baseLanes": 4,
+      "placements": [
+        {
+          "channel": "elevation",
+          "id": "E04",
+          "startS": 180,
+          "endS": 1706,
+          "parameters": {
+            "base": 24.749521628022194,
+            "amplitude": 20.250478371977806,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 230,
+          "endS": 879,
+          "parameters": {
+            "effort": 0.35989858843386174,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5948085659067147
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 979,
+          "endS": 1656,
+          "parameters": {
+            "effort": 0.3422737804055214,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.879035873990506
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 1856,
+          "endS": 3343,
+          "parameters": {
+            "base": 45,
+            "amplitude": 115.58014758303761,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 1906,
+          "endS": 2579,
+          "parameters": {
+            "effort": 0.3705162430554629,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5702363481512294
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 1956,
+          "endS": 2106,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 2614,
+          "endS": 3293,
+          "parameters": {
+            "effort": 0.5976085426658393,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5502191424136982
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 3093,
+          "endS": 3243,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 3403,
+          "endS": 4848,
+          "parameters": {
+            "base": 45,
+            "amplitude": 69.4008896057494,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 3453,
+          "endS": 4127,
+          "parameters": {
+            "effort": 0.6046817383915186,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7059842241695151
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 4162,
+          "endS": 4798,
+          "parameters": {
+            "effort": 1.4638606168795378,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5749018043861724
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 5208,
+          "endS": 6779,
+          "parameters": {
+            "base": 45,
+            "amplitude": 115.55344208376482,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 5258,
+          "endS": 5946,
+          "parameters": {
+            "effort": 0.5153552116453648,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.659375830553472
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 5308,
+          "endS": 5458,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 6046,
+          "endS": 6729,
+          "parameters": {
+            "effort": 0.6370741622895002,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.70643360754475
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 6529,
+          "endS": 6679,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 6839,
+          "endS": 8211,
+          "parameters": {
+            "base": 45,
+            "amplitude": 46.154189815279096,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 6889,
+          "endS": 7521,
+          "parameters": {
+            "effort": 1.401817366993055,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6224836378823966
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 7586,
+          "endS": 8161,
+          "parameters": {
+            "effort": 0.539735089018941,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7996229379437865
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 8311,
+          "endS": 9883,
+          "parameters": {
+            "base": 45,
+            "amplitude": 18.183481641113758,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 8361,
+          "endS": 9069,
+          "parameters": {
+            "effort": 0.39350696556270126,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8219398337067105
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 8411,
+          "endS": 8561,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C04",
+          "startS": 9134,
+          "endS": 9833,
+          "parameters": {
+            "effort": 0.47412229247391224,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6883312610094436
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 9633,
+          "endS": 9783,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 10123,
+          "endS": 11521,
+          "parameters": {
+            "base": 45,
+            "amplitude": 45.637014613021165,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 10173,
+          "endS": 10826,
+          "parameters": {
+            "effort": 0.5471927034854889,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6503241198137403
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C08",
+          "startS": 10861,
+          "endS": 11471,
+          "parameters": {
+            "effort": 1.389206042122096,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7780224678106606
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 11731,
+          "endS": 13200,
+          "parameters": {
+            "base": 45,
+            "amplitude": 115.5446359179914,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 11781,
+          "endS": 12376,
+          "parameters": {
+            "effort": 0.5250093919783831,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7307758596143685
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 12476,
+          "endS": 13150,
+          "parameters": {
+            "effort": 0.6109169337898492,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6988246884662659
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        }
+      ],
+      "worldPhases": [
+        {
+          "startS": 0,
+          "endS": 5028,
+          "world": "city",
+          "beat": "City departure"
+        },
+        {
+          "startS": 5028,
+          "endS": 10003,
+          "world": "coast",
+          "beat": "Open coast"
+        },
+        {
+          "startS": 10003,
+          "endS": 13500,
+          "world": "canyon",
+          "beat": "Canyon payoff"
+        }
+      ],
+      "referenceSpeed": 230,
+      "entrySpeed": 0,
+      "nominalDuration": 120.74534161490685,
+      "length": 13500,
+      "roadWidth": 14,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          120.74534161490685,
+          4
+        ]
+      ],
+      "elevation": [
+        [
+          0,
+          45
+        ],
+        [
+          120.74534161490685,
+          45
+        ]
+      ],
+      "requiredSteerProfile": [
+        [
+          0,
+          0
+        ]
+      ],
+      "entry": "Standing start",
+      "exit": "Canyon relief and finish",
+      "warning": {
+        "leadMeters": 300,
+        "text": "BRAKE · 180 km/h"
+      },
+      "tags": [
+        "stage"
+      ],
+      "antiAdjacency": [],
+      "autoValidation": "PENDING"
+    },
+    "road": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": 0,
+      "position": [
+        1787.2253121774188,
+        45,
+        62.01113379486852
+      ],
+      "curvature": 0.002080804901706233,
+      "roadHeading": -2.273500163052779,
+      "tangent": [
+        0.7630975344902888,
+        0,
+        -0.6462833379059393
+      ],
+      "challenge": {
+        "id": "STAGE-01-19",
+        "label": "S01-05",
+        "targetRequiredSteering": 0.43136092636732737,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 5.142857142857143,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 7936,
+        "end": 8511,
+        "length": 575,
+        "offset": 490
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          1786.8006496738988,
+          45.000387921684776,
+          63.75331253371939
+        ],
+        "surface": [
+          1786.8006496738988,
+          45.000387921684776,
+          63.75331253371939
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          1788.960215696506,
+          45,
+          61.924330687445575
+        ],
+        "surface": [
+          1788.960215696506,
+          45,
+          61.924330687445575
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          1785.4369918309171,
+          45.00038415346922,
+          62.14317673594488
+        ],
+        "surface": [
+          1785.4369918309171,
+          45.00038415346922,
+          62.14317673594488
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          1787.5965578535247,
+          45,
+          60.31419488967107
+        ],
+        "surface": [
+          1787.5965578535247,
+          45,
+          60.31419488967107
+        ]
+      }
+    ],
+    "visibility": 500,
+    "support": {
+      "chunks": 13,
+      "maxSeam": 0,
+      "maxTopError": 0.0002451468379834505,
+      "nonFinite": 0
+    }
+  },
+  {
+    "seed": 3,
+    "stage": {
+      "id": "STAGE-01",
+      "revision": 4,
+      "name": "Stage 01: Pacific Getaway",
+      "intent": "City departure, coastal release and a canyon challenge.",
+      "emotionalRole": "journey",
+      "sceneryAct": 2,
+      "seed": 3,
+      "world": "city",
+      "generatorVersion": "v0.8.3-r1",
+      "contentFingerprint": "e95cb1b5",
+      "stageCode": "S01-v0.8.3-r1-3-ALB1",
+      "beats": [
+        {
+          "id": "S01-01",
+          "startS": 180,
+          "endS": 1709,
+          "world": "city",
+          "verticality": "rolling",
+          "role": "Departure"
+        },
+        {
+          "id": "S01-02",
+          "startS": 1859,
+          "endS": 3390,
+          "world": "city",
+          "verticality": "gentle",
+          "role": "City rhythm"
+        },
+        {
+          "id": "S01-03",
+          "startS": 3420,
+          "endS": 4851,
+          "world": "coast",
+          "verticality": "gentle",
+          "role": "Tightening sea turn"
+        },
+        {
+          "id": "S01-04",
+          "startS": 5211,
+          "endS": 6674,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coast sweep"
+        },
+        {
+          "id": "S01-05",
+          "startS": 6774,
+          "endS": 8325,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coastal S reversal"
+        },
+        {
+          "id": "S01-06",
+          "startS": 8355,
+          "endS": 9797,
+          "world": "coast",
+          "verticality": "gentle",
+          "role": "Canyon approach"
+        },
+        {
+          "id": "S01-07",
+          "startS": 10037,
+          "endS": 11444,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Canyon brake turn"
+        },
+        {
+          "id": "S01-08",
+          "startS": 11594,
+          "endS": 13200,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Ridge release"
+        }
+      ],
+      "buffers": [
+        {
+          "startS": 0,
+          "endS": 180,
+          "role": "launch"
+        },
+        {
+          "startS": 1709,
+          "endS": 1859,
+          "role": "connector"
+        },
+        {
+          "startS": 3390,
+          "endS": 3420,
+          "role": "connector"
+        },
+        {
+          "startS": 4851,
+          "endS": 5211,
+          "role": "scenic"
+        },
+        {
+          "startS": 6674,
+          "endS": 6774,
+          "role": "connector"
+        },
+        {
+          "startS": 8325,
+          "endS": 8355,
+          "role": "connector"
+        },
+        {
+          "startS": 9797,
+          "endS": 10037,
+          "role": "braking"
+        },
+        {
+          "startS": 11444,
+          "endS": 11594,
+          "role": "connector"
+        },
+        {
+          "startS": 13200,
+          "endS": 13500,
+          "role": "finish"
+        }
+      ],
+      "baseHeight": 45,
+      "baseLanes": 4,
+      "placements": [
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 180,
+          "endS": 1709,
+          "parameters": {
+            "base": 45,
+            "amplitude": 63.08107689023018,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 230,
+          "endS": 933,
+          "parameters": {
+            "effort": 0.6061548314243556,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7389814905356616
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 998,
+          "endS": 1659,
+          "parameters": {
+            "effort": 0.6207533972710371,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6586389540927485
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 1859,
+          "endS": 3390,
+          "parameters": {
+            "base": 45,
+            "amplitude": 19.596682039787993,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 1909,
+          "endS": 2538,
+          "parameters": {
+            "effort": 0.34267386227846147,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7174082185840235
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 1959,
+          "endS": 2109,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 2638,
+          "endS": 3340,
+          "parameters": {
+            "effort": 0.532950917929411,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7887226592400112
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 3140,
+          "endS": 3290,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "elevation",
+          "id": "E04",
+          "startS": 3420,
+          "endS": 4851,
+          "parameters": {
+            "base": 28.160242242272943,
+            "amplitude": 16.839757757727057,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C04",
+          "startS": 3470,
+          "endS": 4106,
+          "parameters": {
+            "effort": 0.49896339841187004,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7498084600199946
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 4171,
+          "endS": 4801,
+          "parameters": {
+            "effort": 1.4431297277379782,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8494055551127531
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "elevation",
+          "id": "E04",
+          "startS": 5211,
+          "endS": 6674,
+          "parameters": {
+            "base": 11.075958097353578,
+            "amplitude": 33.92404190264642,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 5261,
+          "endS": 5889,
+          "parameters": {
+            "effort": 0.5566787262260914,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8834151515038684
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 5311,
+          "endS": 5461,
+          "parameters": {
+            "from": 4,
+            "to": 6,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 5989,
+          "endS": 6624,
+          "parameters": {
+            "effort": 0.358204604908824,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5731531282421202
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 6424,
+          "endS": 6574,
+          "parameters": {
+            "from": 6,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 6774,
+          "endS": 8325,
+          "parameters": {
+            "base": 45,
+            "amplitude": 63.09939096448943,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 6824,
+          "endS": 7513,
+          "parameters": {
+            "effort": 1.396932816747576,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8146729602129199
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 7578,
+          "endS": 8275,
+          "parameters": {
+            "effort": 0.6448369941860438,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.775076149776578
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 8355,
+          "endS": 9797,
+          "parameters": {
+            "base": 45,
+            "amplitude": 22.576053249416873,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 8405,
+          "endS": 9008,
+          "parameters": {
+            "effort": 0.6557235526293517,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8966075816075318
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 8455,
+          "endS": 8605,
+          "parameters": {
+            "from": 4,
+            "to": 6,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 9073,
+          "endS": 9747,
+          "parameters": {
+            "effort": 0.5264981679618359,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8602859718375839
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 9547,
+          "endS": 9697,
+          "parameters": {
+            "from": 6,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 10037,
+          "endS": 11444,
+          "parameters": {
+            "base": 45,
+            "amplitude": 115.70632072538137,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 10087,
+          "endS": 10658,
+          "parameters": {
+            "effort": 0.5151478658616543,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6397401616210119
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "width",
+          "id": "W04",
+          "startS": 10337,
+          "endS": 11144,
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C08",
+          "startS": 10803,
+          "endS": 11394,
+          "parameters": {
+            "effort": 1.4557492800336331,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5671878154040315
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 11594,
+          "endS": 13200,
+          "parameters": {
+            "base": 45,
+            "amplitude": 121.62177378311753,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 11644,
+          "endS": 12400,
+          "parameters": {
+            "effort": 0.5074782200157643,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6128425949369558
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 12435,
+          "endS": 13150,
+          "parameters": {
+            "effort": 0.3905519308894873,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7770622555050068
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        }
+      ],
+      "worldPhases": [
+        {
+          "startS": 0,
+          "endS": 3405,
+          "world": "city",
+          "beat": "City departure"
+        },
+        {
+          "startS": 3405,
+          "endS": 9917,
+          "world": "coast",
+          "beat": "Open coast"
+        },
+        {
+          "startS": 9917,
+          "endS": 13500,
+          "world": "canyon",
+          "beat": "Canyon payoff"
+        }
+      ],
+      "referenceSpeed": 230,
+      "entrySpeed": 0,
+      "nominalDuration": 120.74534161490685,
+      "length": 13500,
+      "roadWidth": 14,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          120.74534161490685,
+          4
+        ]
+      ],
+      "elevation": [
+        [
+          0,
+          45
+        ],
+        [
+          120.74534161490685,
+          45
+        ]
+      ],
+      "requiredSteerProfile": [
+        [
+          0,
+          0
+        ]
+      ],
+      "entry": "Standing start",
+      "exit": "Canyon relief and finish",
+      "warning": {
+        "leadMeters": 300,
+        "text": "BRAKE · 180 km/h"
+      },
+      "tags": [
+        "stage"
+      ],
+      "antiAdjacency": [],
+      "autoValidation": "PENDING"
+    },
+    "road": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": -0.22099183105882,
+      "position": [
+        4200.63135730846,
+        56.07405768773546,
+        4149.4405714384575
+      ],
+      "curvature": -0.0030883053097024923,
+      "roadHeading": -2.2473694138269824,
+      "tangent": [
+        0.7613533213484432,
+        -0.21578544115890172,
+        -0.6113736692527346
+      ],
+      "challenge": {
+        "id": "STAGE-01-19",
+        "label": "S01-05",
+        "targetRequiredSteering": -0.6402206368343506,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 6.234037267080746,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 7928,
+        "end": 8625,
+        "length": 697,
+        "offset": 498
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          4200.256935191337,
+          56.36725831823566,
+          4151.094280480411
+        ],
+        "surface": [
+          4200.256935191337,
+          56.36725831823566,
+          4151.094280480411
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          4202.412030704002,
+          55.759287665577496,
+          4149.363719104735
+        ],
+        "surface": [
+          4202.412030704002,
+          55.759287665577496,
+          4149.363719104735
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          4198.936047165279,
+          56.36862219510255,
+          4149.448876301049
+        ],
+        "surface": [
+          4198.936047165279,
+          56.36862219510255,
+          4149.448876301049
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": -7.105427357601002e-15,
+        "point": [
+          4201.090560136516,
+          55.75727081414724,
+          4147.718782711459
+        ],
+        "surface": [
+          4201.090560136516,
+          55.75727081414725,
+          4147.718782711459
+        ]
+      }
+    ],
+    "visibility": 500,
+    "support": {
+      "chunks": 13,
+      "maxSeam": 0,
+      "maxTopError": 0.00034154087787859316,
+      "nonFinite": 0
+    }
+  },
+  {
+    "seed": 42,
+    "stage": {
+      "id": "STAGE-01",
+      "revision": 4,
+      "name": "Stage 01: Pacific Getaway",
+      "intent": "City departure, coastal release and a canyon challenge.",
+      "emotionalRole": "journey",
+      "sceneryAct": 2,
+      "seed": 42,
+      "world": "city",
+      "generatorVersion": "v0.8.3-r1",
+      "contentFingerprint": "7a921419",
+      "stageCode": "S01-v0.8.3-r1-16-ALB1",
+      "beats": [
+        {
+          "id": "S01-01",
+          "startS": 180,
+          "endS": 1631,
+          "world": "city",
+          "verticality": "rolling",
+          "role": "Departure"
+        },
+        {
+          "id": "S01-02",
+          "startS": 1691,
+          "endS": 3113,
+          "world": "city",
+          "verticality": "rolling",
+          "role": "City rhythm"
+        },
+        {
+          "id": "S01-03",
+          "startS": 3213,
+          "endS": 4650,
+          "world": "coast",
+          "verticality": "gentle",
+          "role": "Tightening sea turn"
+        },
+        {
+          "id": "S01-04",
+          "startS": 5010,
+          "endS": 6452,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coast sweep"
+        },
+        {
+          "id": "S01-05",
+          "startS": 6602,
+          "endS": 8059,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coastal S reversal"
+        },
+        {
+          "id": "S01-06",
+          "startS": 8209,
+          "endS": 9768,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Canyon approach"
+        },
+        {
+          "id": "S01-07",
+          "startS": 10008,
+          "endS": 11598,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Canyon brake turn"
+        },
+        {
+          "id": "S01-08",
+          "startS": 11658,
+          "endS": 13200,
+          "world": "canyon",
+          "verticality": "rolling",
+          "role": "Ridge release"
+        }
+      ],
+      "buffers": [
+        {
+          "startS": 0,
+          "endS": 180,
+          "role": "launch"
+        },
+        {
+          "startS": 1631,
+          "endS": 1691,
+          "role": "connector"
+        },
+        {
+          "startS": 3113,
+          "endS": 3213,
+          "role": "connector"
+        },
+        {
+          "startS": 4650,
+          "endS": 5010,
+          "role": "scenic"
+        },
+        {
+          "startS": 6452,
+          "endS": 6602,
+          "role": "connector"
+        },
+        {
+          "startS": 8059,
+          "endS": 8209,
+          "role": "connector"
+        },
+        {
+          "startS": 9768,
+          "endS": 10008,
+          "role": "braking"
+        },
+        {
+          "startS": 11598,
+          "endS": 11658,
+          "role": "connector"
+        },
+        {
+          "startS": 13200,
+          "endS": 13500,
+          "role": "finish"
+        }
+      ],
+      "baseHeight": 45,
+      "baseLanes": 4,
+      "placements": [
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 180,
+          "endS": 1631,
+          "parameters": {
+            "base": 45,
+            "amplitude": 61.79508717497811,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 230,
+          "endS": 851,
+          "parameters": {
+            "effort": 0.6313308849930763,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5588082041474991
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 996,
+          "endS": 1581,
+          "parameters": {
+            "effort": 0.3648774848878384,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6272372114239261
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 1691,
+          "endS": 3113,
+          "parameters": {
+            "base": 45,
+            "amplitude": 57.3144832579419,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C04",
+          "startS": 1741,
+          "endS": 2301,
+          "parameters": {
+            "effort": 0.5483376870304346,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8136571830487811
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 1791,
+          "endS": 1941,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 2446,
+          "endS": 3063,
+          "parameters": {
+            "effort": 0.3421847814321518,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8607342867064289
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 2863,
+          "endS": 3013,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 3213,
+          "endS": 4650,
+          "parameters": {
+            "base": 45,
+            "amplitude": 22.8126526507549,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C04",
+          "startS": 3263,
+          "endS": 3936,
+          "parameters": {
+            "effort": 0.5342498157918454,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7573736914317124
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 4001,
+          "endS": 4600,
+          "parameters": {
+            "effort": 1.408970581786707,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6338258640957065
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 5010,
+          "endS": 6452,
+          "parameters": {
+            "base": 45,
+            "amplitude": 58.601232666987926,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 5060,
+          "endS": 5734,
+          "parameters": {
+            "effort": 0.5065300419181585,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.881356976844836
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 5110,
+          "endS": 5260,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 5769,
+          "endS": 6402,
+          "parameters": {
+            "effort": 0.5272178503125906,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8295745573937894
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 6202,
+          "endS": 6352,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "elevation",
+          "id": "E04",
+          "startS": 6602,
+          "endS": 8059,
+          "parameters": {
+            "base": 17.598236171528697,
+            "amplitude": 27.401763828471303,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 6652,
+          "endS": 7292,
+          "parameters": {
+            "effort": 1.3534871527366341,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7893020465620794
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 7392,
+          "endS": 8009,
+          "parameters": {
+            "effort": 0.3512679728120566,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6984551802626812
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 8209,
+          "endS": 9768,
+          "parameters": {
+            "base": 45,
+            "amplitude": 44.23338293796405,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 8259,
+          "endS": 8928,
+          "parameters": {
+            "effort": 0.36339651934802536,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6983468429883942
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 8309,
+          "endS": 8459,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 8963,
+          "endS": 9718,
+          "parameters": {
+            "effort": 0.4708747440576554,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8773134113755077
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 9518,
+          "endS": 9668,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 10008,
+          "endS": 11598,
+          "parameters": {
+            "base": 45,
+            "amplitude": 117.47969292104244,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 10058,
+          "endS": 10826,
+          "parameters": {
+            "effort": 0.47692951969802383,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6677674605511129
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "width",
+          "id": "W04",
+          "startS": 10308,
+          "endS": 11298,
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C08",
+          "startS": 10891,
+          "endS": 11548,
+          "parameters": {
+            "effort": 1.360256529338658,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8736046621226705
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 11658,
+          "endS": 13200,
+          "parameters": {
+            "base": 45,
+            "amplitude": 42.29182737879455,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 11708,
+          "endS": 12434,
+          "parameters": {
+            "effort": 0.5520550958812237,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.733713459444698
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 11758,
+          "endS": 11908,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 12499,
+          "endS": 13150,
+          "parameters": {
+            "effort": 0.39575023218989375,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6074512613704428
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 12950,
+          "endS": 13100,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        }
+      ],
+      "worldPhases": [
+        {
+          "startS": 0,
+          "endS": 3163,
+          "world": "city",
+          "beat": "City departure"
+        },
+        {
+          "startS": 3163,
+          "endS": 9888,
+          "world": "coast",
+          "beat": "Open coast"
+        },
+        {
+          "startS": 9888,
+          "endS": 13500,
+          "world": "canyon",
+          "beat": "Canyon payoff"
+        }
+      ],
+      "referenceSpeed": 230,
+      "entrySpeed": 0,
+      "nominalDuration": 120.74534161490685,
+      "length": 13500,
+      "roadWidth": 14,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          120.74534161490685,
+          4
+        ]
+      ],
+      "elevation": [
+        [
+          0,
+          45
+        ],
+        [
+          120.74534161490685,
+          45
+        ]
+      ],
+      "requiredSteerProfile": [
+        [
+          0,
+          0
+        ]
+      ],
+      "entry": "Standing start",
+      "exit": "Canyon relief and finish",
+      "warning": {
+        "leadMeters": 300,
+        "text": "BRAKE · 180 km/h"
+      },
+      "tags": [
+        "stage"
+      ],
+      "antiAdjacency": [],
+      "autoValidation": "PENDING"
+    },
+    "road": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": 0,
+      "position": [
+        5208.655447310993,
+        45,
+        658.2990616989894
+      ],
+      "curvature": 0,
+      "roadHeading": -0.8964528617279462,
+      "tangent": [
+        0.7811170497637526,
+        0,
+        0.624384620701352
+      ],
+      "challenge": {
+        "id": "STAGE-01-20",
+        "label": "Approach",
+        "targetRequiredSteering": 0,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 2.236024844720497,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 8359,
+        "end": 8609,
+        "length": 250,
+        "offset": 67
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          5206.864101813995,
+          45,
+          658.2177824864732
+        ],
+        "surface": [
+          5206.864101813995,
+          45,
+          658.2177824864732
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          5209.074663064826,
+          45,
+          659.984790963058
+        ],
+        "surface": [
+          5209.074663064826,
+          45,
+          659.984790963058
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          5208.181553363675,
+          45,
+          656.5696255114716
+        ],
+        "surface": [
+          5208.181553363675,
+          45,
+          656.5696255114716
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          5210.392114614507,
+          45,
+          658.3366339880565
+        ],
+        "surface": [
+          5210.392114614507,
+          45,
+          658.3366339880565
+        ]
+      }
+    ],
+    "visibility": 450,
+    "support": {
+      "chunks": 13,
+      "maxSeam": 0,
+      "maxTopError": 0.0002699793019018628,
+      "nonFinite": 0
+    }
+  },
+  {
+    "seed": 710,
+    "stage": {
+      "id": "STAGE-01",
+      "revision": 4,
+      "name": "Stage 01: Pacific Getaway",
+      "intent": "City departure, coastal release and a canyon challenge.",
+      "emotionalRole": "journey",
+      "sceneryAct": 2,
+      "seed": 710,
+      "world": "city",
+      "generatorVersion": "v0.8.3-r1",
+      "contentFingerprint": "7ed957de",
+      "stageCode": "S01-v0.8.3-r1-JQ-ALB1",
+      "beats": [
+        {
+          "id": "S01-01",
+          "startS": 180,
+          "endS": 1667,
+          "world": "city",
+          "verticality": "gentle",
+          "role": "Departure"
+        },
+        {
+          "id": "S01-02",
+          "startS": 1697,
+          "endS": 3171,
+          "world": "city",
+          "verticality": "gentle",
+          "role": "City rhythm"
+        },
+        {
+          "id": "S01-03",
+          "startS": 3201,
+          "endS": 4721,
+          "world": "city",
+          "verticality": "gentle",
+          "role": "Tightening sea turn"
+        },
+        {
+          "id": "S01-04",
+          "startS": 5081,
+          "endS": 6473,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coast sweep"
+        },
+        {
+          "id": "S01-05",
+          "startS": 6503,
+          "endS": 7889,
+          "world": "coast",
+          "verticality": "rolling",
+          "role": "Coastal S reversal"
+        },
+        {
+          "id": "S01-06",
+          "startS": 8099,
+          "endS": 9630,
+          "world": "canyon",
+          "verticality": "rolling",
+          "role": "Canyon approach"
+        },
+        {
+          "id": "S01-07",
+          "startS": 9870,
+          "endS": 11460,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Canyon brake turn"
+        },
+        {
+          "id": "S01-08",
+          "startS": 11670,
+          "endS": 13200,
+          "world": "canyon",
+          "verticality": "dramatic",
+          "role": "Ridge release"
+        }
+      ],
+      "buffers": [
+        {
+          "startS": 0,
+          "endS": 180,
+          "role": "launch"
+        },
+        {
+          "startS": 1667,
+          "endS": 1697,
+          "role": "connector"
+        },
+        {
+          "startS": 3171,
+          "endS": 3201,
+          "role": "connector"
+        },
+        {
+          "startS": 4721,
+          "endS": 5081,
+          "role": "scenic"
+        },
+        {
+          "startS": 6473,
+          "endS": 6503,
+          "role": "connector"
+        },
+        {
+          "startS": 7889,
+          "endS": 8099,
+          "role": "connector"
+        },
+        {
+          "startS": 9630,
+          "endS": 9870,
+          "role": "braking"
+        },
+        {
+          "startS": 11460,
+          "endS": 11670,
+          "role": "connector"
+        },
+        {
+          "startS": 13200,
+          "endS": 13500,
+          "role": "finish"
+        }
+      ],
+      "baseHeight": 45,
+      "baseLanes": 4,
+      "placements": [
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 180,
+          "endS": 1667,
+          "parameters": {
+            "base": 45,
+            "amplitude": 17.036888032220304,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 230,
+          "endS": 932,
+          "parameters": {
+            "effort": 0.5173457925766707,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6033394208527171
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 967,
+          "endS": 1617,
+          "parameters": {
+            "effort": 0.4470877393335104,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7206370463827625
+          },
+          "transition": "smooth",
+          "beat": "S01-01"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 1697,
+          "endS": 3171,
+          "parameters": {
+            "base": 45,
+            "amplitude": 12.456846182467416,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 1747,
+          "endS": 2400,
+          "parameters": {
+            "effort": 0.5452560378611089,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.888087016576901
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 1797,
+          "endS": 1947,
+          "parameters": {
+            "from": 4,
+            "to": 6,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 2500,
+          "endS": 3121,
+          "parameters": {
+            "effort": 0.3846376321464777,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6707240169169382
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 2921,
+          "endS": 3071,
+          "parameters": {
+            "from": 6,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-02"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 3201,
+          "endS": 4721,
+          "parameters": {
+            "base": 45,
+            "amplitude": 12.713107057614252,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 3251,
+          "endS": 3908,
+          "parameters": {
+            "effort": 0.5742641375213862,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8747724180226215
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 4053,
+          "endS": 4671,
+          "parameters": {
+            "effort": 1.4080991506017746,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6598047311534174
+          },
+          "transition": "smooth",
+          "beat": "S01-03"
+        },
+        {
+          "channel": "elevation",
+          "id": "E04",
+          "startS": 5081,
+          "endS": 6473,
+          "parameters": {
+            "base": 10.446104856207967,
+            "amplitude": 34.55389514379203,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 5131,
+          "endS": 5801,
+          "parameters": {
+            "effort": 0.5923755273967981,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6144447671365925
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 5181,
+          "endS": 5331,
+          "parameters": {
+            "from": 4,
+            "to": 6,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 5836,
+          "endS": 6423,
+          "parameters": {
+            "effort": 0.5864250618219375,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8570795253035612
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 6223,
+          "endS": 6373,
+          "parameters": {
+            "from": 6,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-04"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 6503,
+          "endS": 7889,
+          "parameters": {
+            "base": 45,
+            "amplitude": 65.8551567606628,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 6553,
+          "endS": 7106,
+          "parameters": {
+            "effort": 1.4290683029126376,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6406469636014663
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "curvature",
+          "id": "C05",
+          "startS": 7251,
+          "endS": 7839,
+          "parameters": {
+            "effort": 0.6439271627366543,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8965564426733181
+          },
+          "transition": "smooth",
+          "beat": "S01-05"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 8099,
+          "endS": 9630,
+          "parameters": {
+            "base": 45,
+            "amplitude": 42.13004561839625,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C03",
+          "startS": 8149,
+          "endS": 8849,
+          "parameters": {
+            "effort": 0.5402844023704529,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.7100755009101705
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 8199,
+          "endS": 8349,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "curvature",
+          "id": "C02",
+          "startS": 8949,
+          "endS": 9580,
+          "parameters": {
+            "effort": 0.5135586348176002,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8192380821332336
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 9380,
+          "endS": 9530,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-06"
+        },
+        {
+          "channel": "elevation",
+          "id": "E03",
+          "startS": 9870,
+          "endS": 11460,
+          "parameters": {
+            "base": 45,
+            "amplitude": 138.75024400651455,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C07",
+          "startS": 9920,
+          "endS": 10664,
+          "parameters": {
+            "effort": 0.389067754521966,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.8826521531911566
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "width",
+          "id": "W04",
+          "startS": 10170,
+          "endS": 11160,
+          "parameters": {
+            "from": 4,
+            "to": 2,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "curvature",
+          "id": "C08",
+          "startS": 10764,
+          "endS": 11410,
+          "parameters": {
+            "effort": 1.3685833899769932,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5555300047039055
+          },
+          "transition": "smooth",
+          "beat": "S01-07"
+        },
+        {
+          "channel": "elevation",
+          "id": "E05",
+          "startS": 11670,
+          "endS": 13200,
+          "parameters": {
+            "base": 45,
+            "amplitude": 119.13031177595258,
+            "direction": 1,
+            "shelfStart": 0.32,
+            "shelfEnd": 0.68
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C04",
+          "startS": 11720,
+          "endS": 12398,
+          "parameters": {
+            "effort": 0.5965810187906027,
+            "direction": -1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.6047601848375053
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "width",
+          "id": "W02",
+          "startS": 11770,
+          "endS": 11920,
+          "parameters": {
+            "from": 4,
+            "to": 8,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "curvature",
+          "id": "C06",
+          "startS": 12543,
+          "endS": 13150,
+          "parameters": {
+            "effort": 0.5513338877260685,
+            "direction": 1,
+            "start": 0,
+            "end": 1,
+            "secondary": 0.5951732452143915
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        },
+        {
+          "channel": "width",
+          "id": "W03",
+          "startS": 12950,
+          "endS": 13100,
+          "parameters": {
+            "from": 8,
+            "to": 4,
+            "start": 0,
+            "end": 1
+          },
+          "transition": "smooth",
+          "beat": "S01-08"
+        }
+      ],
+      "worldPhases": [
+        {
+          "startS": 0,
+          "endS": 4901,
+          "world": "city",
+          "beat": "City departure"
+        },
+        {
+          "startS": 4901,
+          "endS": 7994,
+          "world": "coast",
+          "beat": "Open coast"
+        },
+        {
+          "startS": 7994,
+          "endS": 13500,
+          "world": "canyon",
+          "beat": "Canyon payoff"
+        }
+      ],
+      "referenceSpeed": 230,
+      "entrySpeed": 0,
+      "nominalDuration": 120.74534161490685,
+      "length": 13500,
+      "roadWidth": 14,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          120.74534161490685,
+          4
+        ]
+      ],
+      "elevation": [
+        [
+          0,
+          45
+        ],
+        [
+          120.74534161490685,
+          45
+        ]
+      ],
+      "requiredSteerProfile": [
+        [
+          0,
+          0
+        ]
+      ],
+      "entry": "Standing start",
+      "exit": "Canyon relief and finish",
+      "warning": {
+        "leadMeters": 300,
+        "text": "BRAKE · 180 km/h"
+      },
+      "tags": [
+        "stage"
+      ],
+      "antiAdjacency": [],
+      "autoValidation": "PENDING"
+    },
+    "road": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": 0,
+      "position": [
+        -4109.04924039251,
+        45,
+        5273.405228866869
+      ],
+      "curvature": 0,
+      "roadHeading": 1.7046185638617553,
+      "tangent": [
+        -0.9910591593951797,
+        0,
+        -0.13342317107204468
+      ],
+      "challenge": {
+        "id": "STAGE-01-20",
+        "label": "Approach",
+        "targetRequiredSteering": 0,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 2.7726708074534163,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 8189,
+        "end": 8499,
+        "length": 310,
+        "offset": 237
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          -4107.471443165906,
+          45,
+          5272.5531250517615
+        ],
+        "surface": [
+          -4107.471443165906,
+          45,
+          5272.5531250517615
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          -4110.276140586994,
+          45,
+          5272.175537477628
+        ],
+        "surface": [
+          -4110.276140586994,
+          45,
+          5272.175537477628
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          -4107.752966056868,
+          45,
+          5274.644259878085
+        ],
+        "surface": [
+          -4107.752966056868,
+          45,
+          5274.644259878085
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          -4110.557663477956,
+          45,
+          5274.266672303952
+        ],
+        "surface": [
+          -4110.557663477956,
+          45,
+          5274.266672303952
+        ]
+      }
+    ],
+    "visibility": 470,
+    "support": {
+      "chunks": 13,
+      "maxSeam": 0,
+      "maxTopError": 0.000342358812282667,
+      "nonFinite": 0
+    }
+  }
+]

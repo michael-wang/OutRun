@@ -1,0 +1,605 @@
+{
+  "runtimeErrors": [],
+  "reviewStorage": null,
+  "continuousSeconds": 186.767,
+  "summaries": [
+    {
+      "id": "BRK-01",
+      "revision": 2,
+      "seed": 7101,
+      "duration": 22.617599999999626,
+      "offRoad": 0,
+      "heightRange": [
+        12,
+        65
+      ],
+      "netDrop": 0,
+      "maxUpGrade": 6.2051333157860515,
+      "maxDownGrade": -6.7692363444938755,
+      "oldHeightRange": [
+        12,
+        22
+      ],
+      "oldMaxDownGrade": -1.277214404621486,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          15,
+          6
+        ],
+        [
+          23,
+          6
+        ]
+      ],
+      "visibility": [],
+      "fps": 60.21932605794104,
+      "oldFps": 60.21968210984792,
+      "resources": {
+        "geometries": 75,
+        "textures": 3
+      },
+      "resourceVariants": [
+        "{\"geometries\":75,\"textures\":3}"
+      ]
+    },
+    {
+      "id": "BRK-02",
+      "revision": 2,
+      "seed": 7198,
+      "duration": 18.68399999999983,
+      "offRoad": 0,
+      "heightRange": [
+        14,
+        14
+      ],
+      "netDrop": 0,
+      "maxUpGrade": 0,
+      "maxDownGrade": 0,
+      "oldHeightRange": [
+        14,
+        14
+      ],
+      "oldMaxDownGrade": 0,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          19,
+          4
+        ]
+      ],
+      "visibility": [],
+      "fps": 60.21192024599088,
+      "oldFps": 60.212970542292624,
+      "resources": {
+        "geometries": 75,
+        "textures": 3
+      },
+      "resourceVariants": [
+        "{\"geometries\":75,\"textures\":3}"
+      ]
+    },
+    {
+      "id": "BRK-03",
+      "revision": 2,
+      "seed": 7295,
+      "duration": 22.61746666666627,
+      "offRoad": 0,
+      "heightRange": [
+        12,
+        172
+      ],
+      "netDrop": -6,
+      "maxUpGrade": 24.976637245931276,
+      "maxDownGrade": -19.95008900018761,
+      "oldHeightRange": [
+        12,
+        72
+      ],
+      "oldMaxDownGrade": -7.305666394434899,
+      "lanes": [
+        [
+          0,
+          2
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          23,
+          4
+        ]
+      ],
+      "visibility": [
+        {
+          "viewport": 1280,
+          "time": 3,
+          "meters": 320
+        },
+        {
+          "viewport": 1280,
+          "time": 8,
+          "meters": 90
+        },
+        {
+          "viewport": 1280,
+          "time": 14,
+          "meters": 120
+        },
+        {
+          "viewport": 960,
+          "time": 3,
+          "meters": 320
+        },
+        {
+          "viewport": 960,
+          "time": 8,
+          "meters": 90
+        },
+        {
+          "viewport": 960,
+          "time": 14,
+          "meters": 120
+        },
+        {
+          "viewport": 844,
+          "time": 3,
+          "meters": 320
+        },
+        {
+          "viewport": 844,
+          "time": 8,
+          "meters": 90
+        },
+        {
+          "viewport": 844,
+          "time": 14,
+          "meters": 120
+        }
+      ],
+      "fps": 60.08645724407685,
+      "oldFps": 60.04247662310946,
+      "resources": {
+        "geometries": 77,
+        "textures": 4
+      },
+      "resourceVariants": [
+        "{\"geometries\":77,\"textures\":4}"
+      ]
+    },
+    {
+      "id": "BRK-04",
+      "revision": 2,
+      "seed": 7392,
+      "duration": 24.27593333333288,
+      "offRoad": 0,
+      "heightRange": [
+        25,
+        38
+      ],
+      "netDrop": 0,
+      "maxUpGrade": 1.8264165986087249,
+      "maxDownGrade": -1.5220138321739374,
+      "oldHeightRange": [
+        25,
+        38
+      ],
+      "oldMaxDownGrade": -1.5220138321739374,
+      "lanes": [
+        [
+          0,
+          2
+        ],
+        [
+          22,
+          2
+        ]
+      ],
+      "visibility": [],
+      "fps": 60.0596061705726,
+      "oldFps": 60.01887956513907,
+      "resources": {
+        "geometries": 82,
+        "textures": 4
+      },
+      "resourceVariants": [
+        "{\"geometries\":80,\"textures\":4}",
+        "{\"geometries\":81,\"textures\":4}",
+        "{\"geometries\":82,\"textures\":4}"
+      ]
+    },
+    {
+      "id": "BRK-05",
+      "revision": 2,
+      "seed": 7489,
+      "duration": 21.992433333332983,
+      "offRoad": 0,
+      "heightRange": [
+        12,
+        210
+      ],
+      "netDrop": 198,
+      "maxUpGrade": 0,
+      "maxDownGrade": -16.859230141003614,
+      "oldHeightRange": [
+        12,
+        110
+      ],
+      "oldMaxDownGrade": -8.429615070501807,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          22,
+          6
+        ]
+      ],
+      "visibility": [
+        {
+          "viewport": 1280,
+          "time": 5,
+          "meters": 190
+        },
+        {
+          "viewport": 1280,
+          "time": 10.56,
+          "meters": 410
+        },
+        {
+          "viewport": 1280,
+          "time": 16,
+          "meters": 400
+        },
+        {
+          "viewport": 960,
+          "time": 5,
+          "meters": 190
+        },
+        {
+          "viewport": 960,
+          "time": 10.56,
+          "meters": 410
+        },
+        {
+          "viewport": 960,
+          "time": 16,
+          "meters": 400
+        },
+        {
+          "viewport": 844,
+          "time": 5,
+          "meters": 190
+        },
+        {
+          "viewport": 844,
+          "time": 10.56,
+          "meters": 410
+        },
+        {
+          "viewport": 844,
+          "time": 16,
+          "meters": 400
+        }
+      ],
+      "fps": 60.06625489934448,
+      "oldFps": 60.06680156416477,
+      "resources": {
+        "geometries": 78,
+        "textures": 3
+      },
+      "resourceVariants": [
+        "{\"geometries\":76,\"textures\":3}",
+        "{\"geometries\":77,\"textures\":3}",
+        "{\"geometries\":78,\"textures\":3}"
+      ]
+    },
+    {
+      "id": "BRK-06",
+      "revision": 2,
+      "seed": 7586,
+      "duration": 19.66736666666646,
+      "offRoad": 0,
+      "heightRange": [
+        25,
+        38
+      ],
+      "netDrop": 0,
+      "maxUpGrade": 1.8264165986087249,
+      "maxDownGrade": -1.8264165986087249,
+      "oldHeightRange": [
+        25,
+        38
+      ],
+      "oldMaxDownGrade": -1.8264165986087249,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          12,
+          2
+        ],
+        [
+          17,
+          4
+        ],
+        [
+          20,
+          4
+        ]
+      ],
+      "visibility": [
+        {
+          "viewport": 1280,
+          "time": 2,
+          "meters": 270
+        },
+        {
+          "viewport": 1280,
+          "time": 5,
+          "meters": 160
+        },
+        {
+          "viewport": 1280,
+          "time": 9,
+          "meters": 360
+        },
+        {
+          "viewport": 1280,
+          "time": 15,
+          "meters": 500
+        },
+        {
+          "viewport": 960,
+          "time": 2,
+          "meters": 270
+        },
+        {
+          "viewport": 960,
+          "time": 5,
+          "meters": 160
+        },
+        {
+          "viewport": 960,
+          "time": 9,
+          "meters": 360
+        },
+        {
+          "viewport": 960,
+          "time": 15,
+          "meters": 500
+        },
+        {
+          "viewport": 844,
+          "time": 2,
+          "meters": 270
+        },
+        {
+          "viewport": 844,
+          "time": 5,
+          "meters": 160
+        },
+        {
+          "viewport": 844,
+          "time": 9,
+          "meters": 360
+        },
+        {
+          "viewport": 844,
+          "time": 15,
+          "meters": 500
+        }
+      ],
+      "fps": 59.99796444565133,
+      "oldFps": 60.150937123103155,
+      "resources": {
+        "geometries": 80,
+        "textures": 4
+      },
+      "resourceVariants": [
+        "{\"geometries\":80,\"textures\":4}"
+      ]
+    },
+    {
+      "id": "BRK-07",
+      "revision": 2,
+      "seed": 7683,
+      "duration": 26.54263333333275,
+      "offRoad": 0,
+      "heightRange": [
+        12,
+        25
+      ],
+      "netDrop": 13,
+      "maxUpGrade": 0,
+      "maxDownGrade": -0.7492991173779383,
+      "oldHeightRange": [
+        12,
+        25
+      ],
+      "oldMaxDownGrade": -0.7492991173779383,
+      "lanes": [
+        [
+          0,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          18,
+          8
+        ],
+        [
+          23,
+          6
+        ],
+        [
+          27,
+          6
+        ]
+      ],
+      "visibility": [
+        {
+          "viewport": 1280,
+          "time": 3,
+          "meters": 280
+        },
+        {
+          "viewport": 1280,
+          "time": 6,
+          "meters": 370
+        },
+        {
+          "viewport": 1280,
+          "time": 12,
+          "meters": 280
+        },
+        {
+          "viewport": 1280,
+          "time": 21,
+          "meters": 500
+        },
+        {
+          "viewport": 960,
+          "time": 3,
+          "meters": 280
+        },
+        {
+          "viewport": 960,
+          "time": 6,
+          "meters": 370
+        },
+        {
+          "viewport": 960,
+          "time": 12,
+          "meters": 280
+        },
+        {
+          "viewport": 960,
+          "time": 21,
+          "meters": 500
+        },
+        {
+          "viewport": 844,
+          "time": 3,
+          "meters": 280
+        },
+        {
+          "viewport": 844,
+          "time": 6,
+          "meters": 370
+        },
+        {
+          "viewport": 844,
+          "time": 12,
+          "meters": 280
+        },
+        {
+          "viewport": 844,
+          "time": 21,
+          "meters": 500
+        }
+      ],
+      "fps": 60.05432049089762,
+      "oldFps": 60.167760987717706,
+      "resources": {
+        "geometries": 75,
+        "textures": 4
+      },
+      "resourceVariants": [
+        "{\"geometries\":75,\"textures\":4}"
+      ]
+    },
+    {
+      "id": "BRK-08",
+      "revision": 2,
+      "seed": 7780,
+      "duration": 26.642633333332736,
+      "offRoad": 0,
+      "heightRange": [
+        12,
+        35
+      ],
+      "netDrop": 23,
+      "maxUpGrade": 0,
+      "maxDownGrade": -1.756169806354543,
+      "oldHeightRange": [
+        12,
+        35
+      ],
+      "oldMaxDownGrade": -1.756169806354543,
+      "lanes": [
+        [
+          0,
+          4
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          15,
+          4
+        ],
+        [
+          24.8,
+          4
+        ]
+      ],
+      "visibility": [],
+      "fps": 60.20466579896587,
+      "oldFps": 60.204914543826085,
+      "resources": {
+        "geometries": 79,
+        "textures": 5
+      },
+      "resourceVariants": [
+        "{\"geometries\":79,\"textures\":5}"
+      ]
+    }
+  ]
+}

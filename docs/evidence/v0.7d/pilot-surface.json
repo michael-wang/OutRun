@@ -1,0 +1,29 @@
+{
+  "rows": [
+    {
+      "id": "L2P-A",
+      "hits": [],
+      "fingerprint": {
+        "hash": 679043288,
+        "count": 136672
+      }
+    },
+    {
+      "id": "L2P-B",
+      "hits": [],
+      "fingerprint": {
+        "hash": 4268453248,
+        "count": 67628
+      }
+    },
+    {
+      "id": "L2P-C",
+      "hits": [],
+      "fingerprint": {
+        "hash": 3363724419,
+        "count": 131938
+      }
+    }
+  ],
+  "errors": []
+}

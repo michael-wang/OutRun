@@ -1,0 +1,16 @@
+[WebServer] (node:23408) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:32868) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\drive.spec.ts:8:1 › desktop real-time driving, lifecycle, drift audio and continuous full route (9.6s)
+  ok 2 tests\drive.spec.ts:34:1 › trusted mobile multi-touch default and swapped, persistence, cancel and portrait (5.6s)
+  ok 3 tests\l2-lab.spec.ts:5:1 › all sixteen L2 scenes render real road and retain clean independent review defaults (21.7s)
+  ok 4 tests\l2-lab.spec.ts:14:1 › Pixel-like feedback controls keep two-thumb input isolated in both layouts and small keyboard viewports (3.6s)
+  ok 5 tests\l2-lab.spec.ts:29:1 › praise and issue anchors precede clearing controls; completion feedback stays with the completed L2 (1.6s)
+  ok 6 tests\l2-lab.spec.ts:42:1 › seeded scenery repeats, seed variants change props, and feedback makes no external requests (1.4s)
+  ok 7 tests\l2-lab.spec.ts:51:1 › production L2 lab plays, pauses for praise and exports without a development driver (1.3s)
+
+  7 passed (47.0s)

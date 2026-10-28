@@ -1,0 +1,6 @@
+import {chromium} from '@playwright/test';
+import {readFile,writeFile} from 'node:fs/promises';
+const baseline=JSON.parse(await readFile('docs/evidence/v0.8.5/baseline.json','utf8')),browser=await chromium.launch({channel:'msedge',headless:true}),rows=[];
+for(const before of baseline){const page=await browser.newPage({viewport:{width:960,height:540}});await page.goto(`http://127.0.0.1:5173/?stage=1&seed=${before.seed}`);await page.waitForFunction(()=>window.__drive?.streaming()?.ready,{timeout:60000});const after=await page.evaluate(()=>({stage:window.__drive.brick(),samples:Array.from({length:211},(_,i)=>window.__drive.sample(i*64))}));let numeric=0,compared=0,other=0;
+ const compare=(a,b)=>{if(typeof a==='number'&&typeof b==='number'){numeric=Math.max(numeric,Math.abs(a-b));compared++;}else if(a&&b&&typeof a==='object'&&typeof b==='object'){for(const k of new Set([...Object.keys(a),...Object.keys(b)]))compare(a[k],b[k]);}else if(a!==b)other++;};compare(before.stage,after.stage);compare(before.samples,after.samples);rows.push({seed:before.seed,stageCode:after.stage.stageCode,samples:after.samples.length,numbersCompared:compared,maxAbsoluteDifference:numeric,otherDifferences:other});await page.close();}
+await writeFile('docs/evidence/v0.8.5/route-comparison.json',JSON.stringify(rows,null,2));console.log(rows);await browser.close();

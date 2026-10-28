@@ -1,0 +1,30 @@
+{
+  "seconds": 124.29999999999721,
+  "off": 0,
+  "final": {
+    "distance": 13421.955646151846,
+    "speed": 63.532376353682864,
+    "lateral": 0.3332579096412193,
+    "heading": 0,
+    "velocityHeading": 0,
+    "worldHeading": 6.283215509403789,
+    "steering": 0,
+    "yawRate": 0,
+    "slipAngle": 0,
+    "slip": 0,
+    "offRoad": false,
+    "footprintEdge": 1.4632579096412193,
+    "curvature": 0,
+    "corridorSide": 0,
+    "steeringTarget": -0.026660632771297547,
+    "drifting": false,
+    "rawSteer": -0.026660632771297547,
+    "effectiveSteer": 0,
+    "requiredSteer": 0,
+    "lateralRate": 0,
+    "appliedSteer": 0,
+    "steerFrom": 0.25,
+    "steerTo": 0,
+    "steerTime": 4.500000000000013
+  }
+}

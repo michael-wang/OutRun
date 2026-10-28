@@ -1,0 +1,19 @@
+{
+  "deviceReachability": "UNVERIFIED from physical phone",
+  "checkedAt": "2026-10-25T16:47:51.7899876+08:00",
+  "listener": {
+    "LocalAddress": "0.0.0.0",
+    "LocalPort": 5173,
+    "OwningProcess": 50012
+  },
+  "http": [
+    {
+      "url": "http://127.0.0.1:5173/",
+      "status": 200
+    },
+    {
+      "url": "http://192.168.1.106:5173/",
+      "status": 200
+    }
+  ]
+}

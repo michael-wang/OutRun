@@ -1,0 +1,105 @@
+{
+  "errors": [],
+  "evidence": [
+    {
+      "swapped": false,
+      "gas": {
+        "x": 772,
+        "y": 264.5,
+        "id": 1
+      },
+      "left": {
+        "x": 60,
+        "y": 337.5,
+        "id": 2
+      },
+      "brake": {
+        "x": 772,
+        "y": 337.5,
+        "id": 3
+      },
+      "both": {
+        "distance": 4.236525252466787,
+        "speed": 11.835184475297524,
+        "lateral": -0.42444859945019925,
+        "heading": -0.05582008889024204,
+        "slip": 0,
+        "mode": "playing",
+        "elapsed": 0.7332000000000003,
+        "frames": 35,
+        "inputs": {
+          "gas": true,
+          "brake": false,
+          "steer": -1
+        },
+        "audio": {
+          "contextState": "running",
+          "muted": false,
+          "active": true,
+          "engineHz": 91.95499808330331,
+          "skidLevel": 0,
+          "rms": 0.049335408153658285
+        },
+        "trackLength": 3783.134355766818,
+        "position": [
+          -0.6128444035521188,
+          8.080636196681665,
+          4.204119253043995
+        ],
+        "swapped": false,
+        "surfaceError": -0.0003294158614153275,
+        "rightScreenDelta": 0.061616832221778266
+      }
+    },
+    {
+      "swapped": true,
+      "gas": {
+        "x": 72,
+        "y": 264.5,
+        "id": 1
+      },
+      "left": {
+        "x": 698,
+        "y": 337.5,
+        "id": 2
+      },
+      "brake": {
+        "x": 72,
+        "y": 337.5,
+        "id": 3
+      },
+      "both": {
+        "distance": 6.236128495549144,
+        "speed": 14.274693873189493,
+        "lateral": -0.6932868765324267,
+        "heading": -0.07226291889606822,
+        "slip": 0,
+        "mode": "playing",
+        "elapsed": 0.8833000000000006,
+        "frames": 39,
+        "inputs": {
+          "gas": true,
+          "brake": false,
+          "steer": -1
+        },
+        "audio": {
+          "contextState": "running",
+          "muted": false,
+          "active": true,
+          "engineHz": 98.54167345761164,
+          "skidLevel": 0,
+          "rms": 0.02085363579678576
+        },
+        "trackLength": 3783.134355766818,
+        "position": [
+          -0.7743012695558313,
+          8.099252099107785,
+          6.204689449950471
+        ],
+        "swapped": true,
+        "surfaceError": -0.0004930684138155783,
+        "rightScreenDelta": 0.05937944958132527
+      }
+    }
+  ]
+}

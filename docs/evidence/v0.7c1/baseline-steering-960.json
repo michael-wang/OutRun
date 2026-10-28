@@ -1,0 +1,17 @@
+{
+  "viewport": {
+    "width": 960,
+    "height": 432
+  },
+  "box": {
+    "x": 24,
+    "y": 320,
+    "width": 336,
+    "height": 88
+  },
+  "left": 24,
+  "center": 192,
+  "right": 360,
+  "fullTravel": 336,
+  "centerToLock": 168
+}

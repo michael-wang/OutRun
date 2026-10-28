@@ -1,0 +1,15 @@
+[WebServer] (node:24240) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:29632) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\v04.spec.ts:5:1 › v0.4 primary keys, concurrency, focus safety, menu accessibility and text entry (820ms)
+  ok 2 tests\v04.spec.ts:22:62 › v0.4 speed HUD 1280x720, both hand layouts and settings (1.2s)
+  ok 3 tests\v04.spec.ts:22:62 › v0.4 speed HUD 960x432, both hand layouts and settings (1.0s)
+  ok 4 tests\v04.spec.ts:22:62 › v0.4 speed HUD 844x390, both hand layouts and settings (1.0s)
+  ok 5 tests\v04.spec.ts:41:1 › v0.4 deliberate drift has real slip and persistent squeal, countersteering recovers (435ms)
+  ok 6 tests\v04.spec.ts:53:1 › v0.4 trusted two-thumb short taps stay precise in both hand layouts (1.1s)
+
+  6 passed (7.5s)

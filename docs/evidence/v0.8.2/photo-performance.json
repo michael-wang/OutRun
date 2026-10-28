@@ -1,0 +1,26 @@
+[
+  {
+    "capture": false,
+    "wall": 120.012,
+    "fps": 59.98566809985668,
+    "heapBefore": 60890007,
+    "heapAfter": 39365950,
+    "stageSeconds": 120.02110000003633,
+    "mode": "playing",
+    "photosStored": 0,
+    "photoEvents": 0,
+    "errors": []
+  },
+  {
+    "capture": true,
+    "wall": 120.27170000000018,
+    "fps": 60.09726311343391,
+    "heapBefore": 80530943,
+    "heapAfter": 29583091,
+    "stageSeconds": 120.27130000003618,
+    "mode": "playing",
+    "photosStored": 3,
+    "photoEvents": 12,
+    "errors": []
+  }
+]

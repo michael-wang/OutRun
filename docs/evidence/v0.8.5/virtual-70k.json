@@ -1,0 +1,102 @@
+{
+  "planLength": 81000,
+  "trackLength": 81950,
+  "rows": [
+    {
+      "s": 70000,
+      "position": [
+        0,
+        45,
+        70000.00000010266
+      ],
+      "lanes": 4,
+      "halfWidth": 7,
+      "surfaceError": 0
+    },
+    {
+      "s": 70000.25,
+      "position": [
+        0,
+        45,
+        70000.25000010266
+      ],
+      "lanes": 4,
+      "halfWidth": 7,
+      "surfaceError": 0
+    },
+    {
+      "s": 70000.5,
+      "position": [
+        0,
+        45,
+        70000.50000010266
+      ],
+      "lanes": 4,
+      "halfWidth": 7,
+      "surfaceError": 0
+    },
+    {
+      "s": 70000.75,
+      "position": [
+        0,
+        45,
+        70000.75000010266
+      ],
+      "lanes": 4,
+      "halfWidth": 7,
+      "surfaceError": 0
+    },
+    {
+      "s": 70001,
+      "position": [
+        0,
+        45,
+        70001.00000010266
+      ],
+      "lanes": 4,
+      "halfWidth": 7,
+      "surfaceError": 0
+    }
+  ],
+  "chunks": [
+    {
+      "index": 70,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 69,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 71,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 72,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 73,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 74,
+      "road": "ready",
+      "scenery": "ready"
+    },
+    {
+      "index": 75,
+      "road": "ready",
+      "scenery": "ready"
+    }
+  ],
+  "resources": {
+    "geometries": 106,
+    "textures": 2
+  }
+}

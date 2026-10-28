@@ -1,0 +1,482 @@
+{
+  "errors": [],
+  "measurements": [
+    {
+      "rows": [
+        {
+          "wallSeconds": 1.0001,
+          "simulationSeconds": 1.000099999999998,
+          "displayedKmh": 81,
+          "gameSpeed": 22.54882699453042,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 22.54882699453042,
+          "lateralChange": 0,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 22.481993143725614,
+          "roadWidthsPerSecond": 1.605856653123258,
+          "trackMetersPerSecond": 22.480205382255342,
+          "cameraMetersPerSecond": 22.480377748200098,
+          "markerPasses": 2,
+          "markerPassWallMs": [
+            707.9262092755816,
+            1241.4331246909712
+          ],
+          "markerPassesPerSecond": 1.9998000199980002,
+          "fps": 59.99400059994001,
+          "medianFrameMs": 16.699999999999932,
+          "p95FrameMs": 16.799999999999955,
+          "worldPosition": [
+            0,
+            10.842750011812708,
+            422.85052005256745
+          ],
+          "cameraPosition": [
+            0,
+            13.3391776528764,
+            414.8175972325141
+          ],
+          "worldHeading": 0
+        },
+        {
+          "wallSeconds": 1.0000000000000002,
+          "simulationSeconds": 0.9999999999999982,
+          "displayedKmh": 80,
+          "gameSpeed": 22.339611332622226,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 22.339611332622226,
+          "lateralChange": 0,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 22.46177749871762,
+          "roadWidthsPerSecond": 1.60441267847983,
+          "trackMetersPerSecond": 22.45981268849965,
+          "cameraMetersPerSecond": 22.46019225860749,
+          "markerPasses": 2,
+          "markerPassWallMs": [
+            1775.6040387507635,
+            2309.3995324273055
+          ],
+          "markerPassesPerSecond": 1.9999999999999996,
+          "fps": 59.999999999999986,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.800000000000182,
+          "worldPosition": [
+            0,
+            11.139813579110758,
+            445.3103327410684
+          ],
+          "cameraPosition": [
+            0,
+            13.631341383474737,
+            437.27588881506574
+          ],
+          "worldHeading": 0
+        },
+        {
+          "wallSeconds": 1.0001,
+          "simulationSeconds": 1.0000999999999962,
+          "displayedKmh": 81,
+          "gameSpeed": 22.43120492846137,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 22.43120492846137,
+          "lateralChange": -0.009154806942693045,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 22.478967261329196,
+          "roadWidthsPerSecond": 1.6056405186663711,
+          "trackMetersPerSecond": 22.47681041516484,
+          "cameraMetersPerSecond": 22.477414148769263,
+          "markerPasses": 1,
+          "markerPassWallMs": [
+            2842.079100133722
+          ],
+          "markerPassesPerSecond": 0.9999000099990001,
+          "fps": 59.99400059994001,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.700000000000273,
+          "worldPosition": [
+            0.005624795722108911,
+            11.450721232075903,
+            467.7893963690091
+          ],
+          "cameraPosition": [
+            0.009325057320273387,
+            13.937437066854656,
+            459.75346265442903
+          ],
+          "worldHeading": 0.0006697742170760744
+        },
+        {
+          "wallSeconds": 1.0167000000000004,
+          "simulationSeconds": 1.0166999999999997,
+          "displayedKmh": 82,
+          "gameSpeed": 22.756826164413308,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 22.756826164413308,
+          "lateralChange": -0.07296406164997428,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 22.49025870899237,
+          "roadWidthsPerSecond": 1.6064470506423123,
+          "trackMetersPerSecond": 22.48754725110459,
+          "cameraMetersPerSecond": 22.488872899978272,
+          "markerPasses": 2,
+          "markerPassWallMs": [
+            3377.21595793675,
+            3910.3914901195335
+          ],
+          "markerPassesPerSecond": 1.967148618078095,
+          "fps": 59.9980328513819,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.800000000000182,
+          "worldPosition": [
+            0.014904410720146366,
+            11.780611931453787,
+            490.65285864712575
+          ],
+          "cameraPosition": [
+            0.05493637369040763,
+            14.26253236601057,
+            482.6155414082412
+          ],
+          "worldHeading": 0.005995737297738229
+        }
+      ],
+      "state": {
+        "distance": 494.76084235336714,
+        "speed": 22.361060011139816,
+        "lateral": -0.10610684023236498,
+        "heading": 0,
+        "velocityHeading": 0,
+        "worldHeading": 0.007752309728523906,
+        "steering": 0,
+        "yawRate": 0,
+        "slipAngle": 0,
+        "slip": 0,
+        "offRoad": false,
+        "footprintEdge": 1.236106840232365,
+        "curvature": 0.000462552609427899,
+        "corridorSide": 0,
+        "steeringTarget": 0.04106902591240168,
+        "drifting": false,
+        "rawSteer": 0.04106902591240168,
+        "effectiveSteer": 0,
+        "requiredSteer": 0.03356121138006939,
+        "lateralRate": -0.14095676567888396,
+        "appliedSteer": 0,
+        "steerFrom": 0,
+        "steerTo": 0,
+        "steerTime": 4.216799999999998,
+        "roadHalfWidth": 7,
+        "laneCount": 3,
+        "highSpeedPace": 1,
+        "effectivePace": 1,
+        "travelSpeed": 22.361060011139816,
+        "mode": "playing",
+        "elapsed": 4.216799999999998,
+        "frames": 259,
+        "inputs": {
+          "gas": false,
+          "brake": false,
+          "steer": 0
+        },
+        "audio": {
+          "contextState": "running",
+          "muted": false,
+          "active": true,
+          "engineHz": 146.49981604010333,
+          "skidLevel": 0,
+          "windLevel": 0.01538513860990142,
+          "rms": 0.027991205714944227
+        },
+        "trackLength": 13416.666666666672,
+        "position": [
+          0.010535917131187164,
+          11.841330575023761,
+          494.7614543247786
+        ],
+        "swapped": false,
+        "surfaceError": 0.000003699204913942822,
+        "camera": {
+          "horizontalFov": 76,
+          "fov": 38.741159100630384,
+          "distance": 8,
+          "height": 2.6,
+          "lookAhead": 13.284848493623585,
+          "lookHeight": 0,
+          "position": [
+            0.06322846200477837,
+            14.322400192526912,
+            486.7239474321646
+          ]
+        },
+        "immersive": {
+          "active": false,
+          "installed": false,
+          "lockState": "idle",
+          "pending": false,
+          "message": ""
+        },
+        "rightScreenDelta": 0.1550504651206219
+      },
+      "frame": {
+        "left": 0.37896146833207595,
+        "right": 0.6206117067996775,
+        "top": 0.4955835028905026,
+        "bottom": 0.9177080126023736,
+        "width": 0.24165023846760153
+      }
+    },
+    {
+      "rows": [
+        {
+          "wallSeconds": 1,
+          "simulationSeconds": 0.9999999999999982,
+          "displayedKmh": 234,
+          "gameSpeed": 64.87383999999999,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 64.87383999999999,
+          "lateralChange": -0.01962467196202776,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 64.9245372119581,
+          "roadWidthsPerSecond": 4.637466943711293,
+          "trackMetersPerSecond": 64.91884261550109,
+          "cameraMetersPerSecond": 64.9199574711855,
+          "markerPasses": 5,
+          "markerPassWallMs": [
+            4741.192531682915,
+            4926.034036764592,
+            5110.889153273252,
+            5295.756112988625,
+            5480.626840996365
+          ],
+          "markerPassesPerSecond": 5,
+          "fps": 60,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.800000000000182,
+          "worldPosition": [
+            0.01717019293885425,
+            11.425438862879965,
+            465.9970670707099
+          ],
+          "cameraPosition": [
+            0.01880805822854973,
+            13.912534895252813,
+            457.9612503329319
+          ],
+          "worldHeading": 0.0004959755405232674
+        },
+        {
+          "wallSeconds": 1,
+          "simulationSeconds": 0.9999999999999978,
+          "displayedKmh": 234,
+          "gameSpeed": 64.87346000000001,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 64.87346000000001,
+          "lateralChange": 0.2627550577238504,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 64.92975463384509,
+          "roadWidthsPerSecond": 4.6378396167032205,
+          "trackMetersPerSecond": 64.91604159165814,
+          "cameraMetersPerSecond": 64.92274280726616,
+          "markerPasses": 6,
+          "markerPassWallMs": [
+            5665.486918277297,
+            5850.330274644781,
+            6035.163192797826,
+            6220.010836738046,
+            6404.871123650172,
+            6589.742593459087
+          ],
+          "markerPassesPerSecond": 6,
+          "fps": 60,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.800000000000182,
+          "worldPosition": [
+            -1.0534676122581705,
+            12.394154665697755,
+            530.8960992289095
+          ],
+          "cameraPosition": [
+            -0.8332962167594551,
+            14.867885809354718,
+            522.859173275194
+          ],
+          "worldHeading": 0.0349437224790727
+        },
+        {
+          "wallSeconds": 1.0000999999999995,
+          "simulationSeconds": 1.0000999999999958,
+          "displayedKmh": 234,
+          "gameSpeed": 64.87308,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 64.87308,
+          "lateralChange": 0.02051908682149098,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 64.90335395957571,
+          "roadWidthsPerSecond": 4.6359538542554075,
+          "trackMetersPerSecond": 64.91586030768224,
+          "cameraMetersPerSecond": 64.89602162638771,
+          "markerPasses": 5,
+          "markerPassWallMs": [
+            6774.610169387688,
+            6959.463091146795,
+            7144.302854554247,
+            7329.141686704724,
+            7513.993902564633
+          ],
+          "markerPassesPerSecond": 4.999500049995003,
+          "fps": 59.99400059994003,
+          "medianFrameMs": 16.699999999999818,
+          "p95FrameMs": 16.800000000000182,
+          "worldPosition": [
+            -5.796367803788243,
+            13.467361675125977,
+            595.6092731391731
+          ],
+          "cameraPosition": [
+            -4.983198148079148,
+            15.928623023486942,
+            587.6067143180147
+          ],
+          "worldHeading": 0.11147958208470042
+        },
+        {
+          "wallSeconds": 1.0000000000000009,
+          "simulationSeconds": 0.9999999999999991,
+          "displayedKmh": 234,
+          "gameSpeed": 64.87346,
+          "effectivePace": 1,
+          "effectiveWorldSpeed": 64.87346,
+          "lateralChange": -0.04899981146622759,
+          "metersPerUnit": 1,
+          "roadWidth": 14,
+          "markerSpacing": 12,
+          "worldMetersPerSecond": 64.90767017637259,
+          "roadWidthsPerSecond": 4.636262155455185,
+          "trackMetersPerSecond": 64.91583799260053,
+          "cameraMetersPerSecond": 64.90085298217465,
+          "markerPasses": 6,
+          "markerPassWallMs": [
+            7698.858582056303,
+            7883.732419864325,
+            8068.5968183169425,
+            8253.441495102601,
+            8438.277319934095,
+            8623.122009133655
+          ],
+          "markerPassesPerSecond": 5.999999999999995,
+          "fps": 59.99999999999995,
+          "medianFrameMs": 16.69999999999891,
+          "p95FrameMs": 16.800000000000182,
+          "worldPosition": [
+            -15.504311530811393,
+            14.637198747909046,
+            659.7594381829869
+          ],
+          "cameraPosition": [
+            -14.067213698643965,
+            17.086978018221664,
+            651.8415261256623
+          ],
+          "worldHeading": 0.18976506509710192
+        }
+      ],
+      "state": {
+        "distance": 672.657319357718,
+        "speed": 64.93654,
+        "lateral": 0.20564048084149633,
+        "heading": 0.10471975511958254,
+        "velocityHeading": 0,
+        "worldHeading": 0.204123184567427,
+        "steering": 0.25,
+        "yawRate": 0,
+        "slipAngle": 0.10471975511958254,
+        "slip": 0,
+        "offRoad": false,
+        "footprintEdge": 1.3356404808414961,
+        "curvature": 0.0012059535150932483,
+        "corridorSide": 0,
+        "steeringTarget": 0.23782875413386534,
+        "drifting": false,
+        "rawSteer": 0.23782875413386534,
+        "effectiveSteer": 0.25,
+        "requiredSteer": 0.254099504347826,
+        "lateralRate": -0.05000073709700903,
+        "appliedSteer": 0.25,
+        "steerFrom": 0,
+        "steerTo": 0.25,
+        "steerTime": 2.766799999999994,
+        "roadHalfWidth": 7,
+        "laneCount": 3,
+        "highSpeedPace": 1,
+        "effectivePace": 1,
+        "travelSpeed": 64.93654,
+        "mode": "playing",
+        "elapsed": 4.200100000000001,
+        "frames": 515,
+        "inputs": {
+          "gas": false,
+          "brake": false,
+          "steer": 0
+        },
+        "audio": {
+          "contextState": "running",
+          "muted": false,
+          "active": true,
+          "engineHz": 275.77154399999995,
+          "skidLevel": 0,
+          "windLevel": 0.12974628391297227,
+          "rms": 0.03620127189119136
+        },
+        "trackLength": 13416.666666666672,
+        "position": [
+          -17.828512696996917,
+          14.861604950000682,
+          671.4332314423025
+        ],
+        "swapped": false,
+        "surfaceError": 0.000027873339426776056,
+        "camera": {
+          "horizontalFov": 76,
+          "fov": 38.741159100630384,
+          "distance": 8,
+          "height": 2.6,
+          "lookAhead": 13.284848493623585,
+          "lookHeight": 0,
+          "position": [
+            -16.277766668358023,
+            17.30939205698196,
+            663.5361734436832
+          ]
+        },
+        "immersive": {
+          "active": false,
+          "installed": false,
+          "lockState": "idle",
+          "pending": false,
+          "message": ""
+        },
+        "rightScreenDelta": 0.15521598857808064
+      },
+      "frame": {
+        "left": 0.3602812379395741,
+        "right": 0.6022525139515448,
+        "top": 0.4954417270084158,
+        "bottom": 0.9211531411113741,
+        "width": 0.24197127601197066
+      }
+    }
+  ]
+}

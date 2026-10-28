@@ -1,0 +1,171 @@
+npm run test (Vitest)
+
+> first-drive@0.7.4 test
+> vitest run
+
+
+ RUN  v5.0.5 C:/astra-dev/outrun
+
+
+ Test Files  33 passed (33)
+      Tests  91 passed (91)
+   Start at  15:55:43
+   Duration  17.86s (tests 80%, import 8%, transform 8%, worker 3%)
+
+
+OUTRUN_BROWSER=msedge npm run test:e2e
+
+> first-drive@0.7.4 test:e2e
+> npm run build && playwright test
+
+
+> first-drive@0.7.4 build
+> tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 44 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.54 kB │ gzip:   0.36 kB
+dist/assets/index-5iFuM87M.css   18.93 kB │ gzip:   4.75 kB
+dist/assets/index-DYXqDI-c.js   608.37 kB │ gzip: 165.76 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 696ms
+[WebServer] (node:45452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 111 tests using 1 worker
+
+(node:47356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok   1 tests\brick-lab.spec.ts:6:1 › production lab plays and reviews without a development driver (1.5s)
+  ok   2 tests\brick-lab.spec.ts:15:1 › lab defaults, human review isolation, capped notes and portable export survive a browser restart (2.6s)
+  ok   3 tests\brick-lab.spec.ts:29:1 › all eight render continuous road, deterministic replay and unchanged human defaults (6.1s)
+  ok   4 tests\brick-lab.spec.ts:41:1 › lab mobile controls, hand swap, review pause and compact layouts (1.5s)
+  ok   5 tests\corridor.spec.ts:6:3 › pace 1 rendered boundary -1: 15s outward hold, neutral contact and inward recovery (20.4s)
+  ok   6 tests\corridor.spec.ts:6:3 › pace 1 rendered boundary 1: 15s outward hold, neutral contact and inward recovery (20.0s)
+  ok   7 tests\corridor.spec.ts:6:3 › pace 1.75 rendered boundary -1: 15s outward hold, neutral contact and inward recovery (20.1s)
+  ok   8 tests\corridor.spec.ts:6:3 › pace 1.75 rendered boundary 1: 15s outward hold, neutral contact and inward recovery (19.9s)
+  ok   9 tests\corridor.spec.ts:6:3 › pace 2 rendered boundary -1: 15s outward hold, neutral contact and inward recovery (20.1s)
+  ok  10 tests\corridor.spec.ts:6:3 › pace 2 rendered boundary 1: 15s outward hold, neutral contact and inward recovery (19.8s)
+  ok  11 tests\drive.spec.ts:8:1 › desktop real-time driving, lifecycle, drift audio and continuous full route (6.8s)
+  ok  12 tests\drive.spec.ts:34:1 › trusted mobile multi-touch default and swapped, persistence, cancel and portrait (5.3s)
+  ok  13 tests\gameplay.spec.ts:6:1 › trusted finger jitter stays inside a notch until a deliberate threshold crossing (1.1s)
+  ok  14 tests\gameplay.spec.ts:13:1 › five authored challenges: trusted touch notches, paired failures/braking and neutral exit (15.6s)
+  ok  15 tests\l2-lab.spec.ts:5:1 › all sixteen L2 scenes render real road and retain clean independent review defaults (19.0s)
+  ok  16 tests\l2-lab.spec.ts:14:1 › Pixel-like feedback controls keep two-thumb input isolated in both layouts and small keyboard viewports (3.3s)
+  ok  17 tests\l2-lab.spec.ts:29:1 › praise and issue anchors precede clearing controls; completion feedback stays with the completed L2 (1.3s)
+  ok  18 tests\l2-lab.spec.ts:42:1 › seeded scenery repeats, seed variants change props, and feedback makes no external requests (1.1s)
+  ok  19 tests\l2-lab.spec.ts:51:1 › production L2 lab plays, pauses for praise and exports without a development driver (1.1s)
+  ok  20 tests\pace.spec.ts:4:1 › all pace selections keep framing and hands-off departure; default is 1.75 (2.3s)
+  ok  21 tests\pace.spec.ts:25:28 › pace 1.75 normal bend with real keyboard input remains controllable (5.7s)
+  ok  22 tests\pace.spec.ts:25:28 › pace 2 normal bend with real keyboard input remains controllable (5.7s)
+  ok  23 tests\pace.spec.ts:38:1 › 2x real 30/60 render callback consistency and clean console (7.7s)
+  ok  24 tests\pwa.spec.ts:3:1 › production manifest icons worker and playable build (2.3s)
+  ok  25 tests\road-continuity.spec.ts:4:1 › 180s at 30/60Hz crosses full track and loop seams with visible unobstructed asphalt (24.9s)
+  ok  26 tests\scenic.spec.ts:3:1 › travel animates all wheels and occupants; stopping and pause freeze their motion (570ms)
+  ok  27 tests\scenic.spec.ts:22:1 › stage inspection starts are distance based and do not start autonomous controls (1.2s)
+  ok  28 tests\soft-steering.spec.ts:5:1 › trusted thumb soft response, two-pixel jitter, quick release and shared PC stream (1.7s)
+  ok  29 tests\soft-steering.spec.ts:17:1 › fixed-camera lookahead and expressive pose match actual curve demand (1.3s)
+  ok  30 tests\spectacle.spec.ts:4:1 › full-gas left/right sweepers and measured high-speed peak pose use actual touch (2.6s)
+  ok  31 tests\touch-hotfix.spec.ts:6:1 › mobile long holds retain independent pointers and suppress only gameplay browser defaults (31.5s)
+  ok  32 tests\v02.spec.ts:10:2 › paired left bend: no steering departs, digital steering stays, recovery (1.7s)
+  ok  33 tests\v02.spec.ts:10:2 › paired right bend: no steering departs, digital steering stays, recovery (1.6s)
+  ok  34 tests\v02.spec.ts:29:1 › matched shoulder penalty and fixed camera at idle cruise and fast (749ms)
+  ok  35 tests\v02.spec.ts:57:2 › mobile immersive success handles fullscreen and orientation without trapping play (678ms)
+  ok  36 tests\v02.spec.ts:57:2 › mobile immersive reject handles fullscreen and orientation without trapping play (571ms)
+  ok  37 tests\v02.spec.ts:57:2 › mobile immersive lock-reject handles fullscreen and orientation without trapping play (581ms)
+  ok  38 tests\v02.spec.ts:57:2 › mobile immersive unsupported handles fullscreen and orientation without trapping play (563ms)
+  ok  39 tests\v02.spec.ts:57:2 › mobile immersive installed handles fullscreen and orientation without trapping play (575ms)
+  ok  40 tests\v02.spec.ts:69:1 › Pixel-like landscape touch, safe bounds, brake+steer, both layouts (1.0s)
+  ok  41 tests\v02.spec.ts:82:1 › climb crest descent camera views (963ms)
+  ok  42 tests\v041.spec.ts:6:1 › analog keyboard holds, rapid neutral/reversal, brake priority and accessible menus (599ms)
+  ok  43 tests\v041.spec.ts:18:62 › needle gauge left of car 1280x720, both hands, zero/mid/high (1.6s)
+  ok  44 tests\v041.spec.ts:18:62 › needle gauge left of car 960x432, both hands, zero/mid/high (1.4s)
+  ok  45 tests\v041.spec.ts:18:62 › needle gauge left of car 844x390, both hands, zero/mid/high (1.4s)
+  ok  46 tests\v041.spec.ts:33:1 › absolute analog strip ownership, continuous crossing, outside clamp and independent pedals (2.3s)
+  ok  47 tests\v041.spec.ts:46:1 › 150ms analog corrections stop yaw on release and swapped sliding holds survive 15 seconds (17.0s)
+  ok  48 tests\v07c1-control.spec.ts:5:1 › compact active steering travel retains nine stable notches and independent gas in both layouts (6.0s)
+  ok  49 tests\v07c1-drive.spec.ts:4:1 › real keyboard throttle drives six gears, reaches high speed, downshifts and preserves review data (1.3s)
+  ok  50 tests\v07d-hud.spec.ts:3:1 › mobile gauge and compact steering stay clear of menu and pedals in both layouts (3.0s)
+  ok  51 tests\v07d-pilots.spec.ts:4:1 › three pilots render continuous driveable roads and deterministic scenery (2.2s)
+  ok  52 tests\v07d-pilots.spec.ts:5:1 › pilot feedback is anchored and independent of historical L2 feedback (1.0s)
+  ok  53 tests\v07d-pilots.spec.ts:6:1 › production pilots retain issue and completion review (667ms)
+  ok  54 tests\v07d-pilots.spec.ts:7:1 › pilot completion tags and vote attach to the completed recipe (545ms)
+  ok  55 tests\v07d-shift.spec.ts:3:1 › real browser integration shows a force-based interruption at all five shifts (3.9s)
+  ok  56 tests\v07d1-browser.spec.ts:3:1 › actual pilot grade drives longitudinal force through crest (582ms)
+  ok  57 tests\v07d1-browser.spec.ts:4:1 › keyboard starts, brakes, completes, rates, and replays without mouse (557ms)
+  ok  58 tests\v07d1-browser.spec.ts:5:1 › opposite real curves sustain matching skid state and gentle corrections stay quiet (461ms)
+  ok  59 tests\v07d1-browser.spec.ts:6:1 › standard gamepad drives and disconnect releases; nonstandard is identified (815ms)
+  ok  60 tests\v07d1-browser.spec.ts:7:1 › same rendered curve produces larger lateral error at 300 than 150 (573ms)
+  ok  61 tests\v07d1-browser.spec.ts:8:1 › left skid returns after pause, replay and changing pilots (788ms)
+  ok  62 tests\v07d1-controls.spec.ts:2:1 › menu shortcuts, native Space, navigation and text composition do not leak driving input (932ms)
+  ok  63 tests\v07d1-controls.spec.ts:3:1 › standard pad navigates, confirms, pauses, resumes and releases controls (1.4s)
+  ok  64 tests\v07d1-controls.spec.ts:4:1 › historical pilot vote stays intact and retuned handling starts unreviewed (618ms)
+  ok  65 tests\v07d1-controls.spec.ts:5:1 › focused gameplay buttons activate once without braking; settings returns focus (464ms)
+  ok  66 tests\v07d1-controls.spec.ts:6:1 › controller requires neutral after focus loss before applying held trigger (985ms)
+  ok  67 tests\v07d1-controls.spec.ts:7:1 › fullscreen shortcut and IME composition are isolated from gameplay shortcuts (415ms)
+  ok  68 tests\v07d1-controls.spec.ts:8:1 › focused steering slider cannot trigger gas or brake keys (463ms)
+  ok  69 tests\v07d1-controls.spec.ts:9:1 › legacy L2 and brick reviews remain separate and exportable after handling retune (1.5s)
+  ok  70 tests\v07d1-controls.spec.ts:10:1 › Tab and Shift+Tab traverse native menu controls (432ms)
+  ok  71 tests\v07d2-feedback.spec.ts:3:1 › keyboard selects an actual earlier snapshot, adjusts it, saves and resumes (641ms)
+  ok  72 tests\v07d2-feedback.spec.ts:4:1 › standard controller L1 and R1 choose four directions, confirm once and cancel (2.4s)
+  ok  73 tests\v07d2-feedback.spec.ts:5:1 › completion retains recent samples and prior store is unchanged (855ms)
+  ok  74 tests\v07d2-feedback.spec.ts:6:1 › free drive supports quick feedback with actual course state and local export (608ms)
+  ok  75 tests\v07d2-feedback.spec.ts:7:1 › historical selection retains the earlier world across a phase transition and resets on replay (527ms)
+  ok  76 tests\v07d2-feedback.spec.ts:8:1 › held bumper and trigger cannot reopen or continue throttle after feedback (1.5s)
+  ok  77 tests\v07d2-feedback.spec.ts:9:1 › controller can praise a completed course using retained history (1.1s)
+  ok  78 tests\v07d2-feedback.spec.ts:10:1 › issue notes and native history buttons respect focus and keep the game frozen (522ms)
+  ok  79 tests\v07d2-feedback.spec.ts:11:1 › freshly started route does not offer invented earlier history (474ms)
+  ok  80 tests\v07d2-feedback.spec.ts:12:1 › brick lab also preserves quick moments separately from human verdicts (557ms)
+  ok  81 tests\v07d2-feedback.spec.ts:13:1 › older L2 and brick review stores remain byte-identical after new moments (1.4s)
+  ok  82 tests\v07d2-feedback.spec.ts:14:1 › Cross without a chosen tag does not guess or save (1.1s)
+  ok  83 tests\v07d2-feedback.spec.ts:15:1 › new brick verdict preserves and can export the v0.7D.1 store (690ms)
+  ok  84 tests\v07d2-feedback.spec.ts:16:1 › all recent-time choices resolve to real samples (616ms)
+  ok  85 tests\v08-stage.spec.ts:5:1 › stage seed, keyboard hints and retrospective review export (2.5s)
+  ok  86 tests\v08-stage.spec.ts:17:1 › standard pad mode, Square issue and L1 praise retain real history (4.9s)
+  ok  87 tests\v08-stage.spec.ts:28:1 › seed code reload, mobile layout and phase geometry (2.2s)
+  ok  88 tests\v08-stage.spec.ts:40:1 › five stage seeds keep the driving surface clear at representative beats (4.4s)
+  ok  89 tests\v08-stage.spec.ts:46:1 › stage retains simultaneous phone steering and gas (2.9s)
+  ok  90 tests\v08-stage.spec.ts:54:1 › controller starts, pauses, resumes and chooses a new route (3.8s)
+  ok  91 tests\v08-stage.spec.ts:60:1 › dramatic coast exception and canyon crest render on their actual profiles (1.2s)
+  ok  92 tests\v08-stage.spec.ts:64:1 › retrospective feedback keeps the actual earlier beat across a boundary (1.1s)
+  ok  93 tests\v08-stage.spec.ts:71:1 › production stage starts and records feedback without development hooks (3.5s)
+  ok  94 tests\v08-stage.spec.ts:76:1 › stage geometry and renderer resources remain bounded during a long run (2.1s)
+  ok  95 tests\v08-stage.spec.ts:80:1 › same stage seed recreates road and scenery while another changes them (2.4s)
+  ok  96 tests\v08-stage.spec.ts:84:1 › generated valley has a visible descent and returns continuously (1.1s)
+  ok  97 tests\v08-stage.spec.ts:90:1 › revised routes never overwrite the original stage review or reinterpret its code (1.8s)
+  ok  98 tests\v081-stage.spec.ts:4:1 › actual stage road widths, paint and off-road boundaries agree (1.3s)
+  ok  99 tests\v082-browser.spec.ts:4:1 › stage menu, F8 photo, frozen resume and actual report export (2.6s)
+  ok 100 tests\v082-browser.spec.ts:10:1 › L1+L2 chord takes one photo while brake alone remains immediate (2.5s)
+  ok 101 tests\v082-browser.spec.ts:15:1 › mobile camera and pause-resume countdown preserve two-thumb input (2.6s)
+  ok 102 tests\v082-browser.spec.ts:16:1 › gamepad can open, navigate and close the saved-photo gallery (1.4s)
+  ok 103 tests\v082-browser.spec.ts:17:1 › resume releases stale keyboard throttle and blur safely cancels the countdown (2.6s)
+  ok 104 tests\v082-challenge.spec.ts:3:1 › braking comparison measures a real edge consequence at the same seed (2.7s)
+  ok 105 tests\v082-grade.spec.ts:2:1 › real generated downhill drives the gauge above 300 (1.2s)
+  ok 106 tests\velocity-gate.spec.ts:3:1 › Velocity Gate measures wall-clock world travel and calibration is explicitly opt-in (9.7s)
+  ok 107 tests\velocity-gate.spec.ts:33:1 › real rendering at 30 versus 60 callbacks per second preserves world speed (7.9s)
+  ok 108 tests\velocity.spec.ts:4:1 › v0.3 displayed car framing, compact menu, fixed camera and both hand layouts (2.8s)
+  ok 109 tests\vertical-width.spec.ts:4:1 › real 2/4/6/8 lane meshes, painted separators and width-aware offroad agree on both sides (967ms)
+  ok 110 tests\vertical-width.spec.ts:22:1 › R1 history remains untouched when a revised brick gets a new human verdict (612ms)
+  ok 111 tests\vertical-width.spec.ts:31:1 › steep and tapered sections are continuous and visible on PC and Pixel-like displays (6.9s)
+
+  111 passed (7.2m)
+
+30/60 fps controller chord cases
+[WebServer] (node:46772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:45464) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\v082-browser.spec.ts:20:26 › controller photo chord keeps its priority at 30 fps (2.9s)
+  ok 2 tests\v082-browser.spec.ts:20:26 › controller photo chord keeps its priority at 60 fps (2.5s)
+
+  2 passed (7.2s)

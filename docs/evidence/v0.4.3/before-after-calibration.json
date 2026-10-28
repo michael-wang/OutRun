@@ -1,0 +1,122 @@
+[
+  {
+    "id": "low",
+    "before": {
+      "id": "low",
+      "target": -0.25,
+      "k": -0.0006272035022694797,
+      "at230": -0.25,
+      "at190": -0.20652173913043478
+    },
+    "after": {
+      "id": "low",
+      "target": 0.25,
+      "k": 0.0012059535150932483,
+      "at230": 0.25,
+      "at190": 0.20652173913043478
+    },
+    "curvatureMagnitudeRatio": 1.9227467811158794,
+    "beforePressureGain": 1.171823247084953,
+    "afterPressureGain": 0.6094527155598083
+  },
+  {
+    "id": "medium",
+    "before": {
+      "id": "medium",
+      "target": 0.5,
+      "k": 0.0012544070045389594,
+      "at230": 0.5,
+      "at190": 0.41304347826086957
+    },
+    "after": {
+      "id": "medium",
+      "target": -0.5,
+      "k": -0.0024119070301864966,
+      "at230": -0.5,
+      "at190": -0.41304347826086957
+    },
+    "curvatureMagnitudeRatio": 1.9227467811158794,
+    "beforePressureGain": 1.171823247084953,
+    "afterPressureGain": 0.6094527155598083
+  },
+  {
+    "id": "high",
+    "before": {
+      "id": "high",
+      "target": 0.75,
+      "k": 0.001881610506808439,
+      "at230": 0.75,
+      "at190": 0.6195652173913043
+    },
+    "after": {
+      "id": "high",
+      "target": 0.75,
+      "k": 0.0036178605452797446,
+      "at230": 0.7499999999999999,
+      "at190": 0.6195652173913042
+    },
+    "curvatureMagnitudeRatio": 1.9227467811158794,
+    "beforePressureGain": 1.171823247084953,
+    "afterPressureGain": 0.6094527155598083
+  },
+  {
+    "id": "extreme",
+    "before": {
+      "id": "extreme",
+      "target": 1.2,
+      "k": 0.0030105768108935026,
+      "at230": 1.2,
+      "at190": 0.9913043478260868
+    },
+    "after": {
+      "id": "extreme",
+      "target": 1.2,
+      "k": 0.005788576872447592,
+      "at230": 1.2,
+      "at190": 0.9913043478260868
+    },
+    "curvatureMagnitudeRatio": 1.9227467811158794,
+    "beforePressureGain": 1.171823247084953,
+    "afterPressureGain": 0.6094527155598083
+  },
+  {
+    "id": "s-left",
+    "before": {
+      "id": "s-left",
+      "target": -0.5,
+      "k": -0.0012544070045389594,
+      "at230": -0.5,
+      "at190": -0.41304347826086957
+    },
+    "after": {
+      "id": "s-left",
+      "target": -0.5,
+      "k": -0.0024119070301864966,
+      "at230": -0.5,
+      "at190": -0.41304347826086957
+    },
+    "curvatureMagnitudeRatio": 1.9227467811158794,
+    "beforePressureGain": 1.171823247084953,
+    "afterPressureGain": 0.6094527155598083
+  },
+  {
+    "id": "s-right",
+    "before": {
+      "id": "s-right",
+      "target": 0.5,
+      "k": 0.0012544070045389594,
+      "at230": 0.5,
+      "at190": 0.41304347826086957
+    },
+    "after": {
+      "id": "s-right",
+      "target": 0.5,
+      "k": 0.0024119070301864966,
+      "at230": 0.5,
+      "at190": 0.41304347826086957
+    },
+    "curvatureMagnitudeRatio": 1.9227467811158794,
+    "beforePressureGain": 1.171823247084953,
+    "afterPressureGain": 0.6094527155598083
+  }
+]

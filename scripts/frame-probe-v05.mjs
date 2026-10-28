@@ -1,0 +1,7 @@
+import {chromium} from '@playwright/test';
+import {mkdirSync,writeFileSync} from 'node:fs';
+const root=process.env.OUTRUN_EVIDENCE_ROOT??'docs/evidence/v0.5';mkdirSync(root,{recursive:true});
+const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:960,height:432},hasTouch:true,isMobile:true});
+await page.goto('http://127.0.0.1:5173/');await page.locator('#drive').click();await page.evaluate(()=>{const g=window.__drive,c=g.challenges().find(c=>c.id==='high');g.reset({distance:c.start+c.transitionLength,speed:230/3.6});g.controls({gas:true,brake:false,steer:.75});});
+const result=await page.evaluate(()=>new Promise(resolve=>{const intervals=[],start=performance.now();let last=start;const frame=t=>{intervals.push(t-last);last=t;if(t-start<3000)requestAnimationFrame(frame);else {const sorted=intervals.slice(1).sort((a,b)=>a-b);resolve({durationMs:t-start,frames:intervals.length,medianMs:sorted[Math.floor(sorted.length*.5)],p95Ms:sorted[Math.floor(sorted.length*.95)],intervals,state:window.__drive.snapshot(),heapBytes:performance.memory?.usedJSHeapSize});}};requestAnimationFrame(frame);}));
+await page.screenshot({path:`${root}/frame-probe.png`});writeFileSync(`${root}/frame-probe.json`,JSON.stringify(result,null,2));console.log(JSON.stringify({median:result.medianMs,p95:result.p95Ms,frames:result.frames}));await browser.close();

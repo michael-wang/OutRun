@@ -1,0 +1,157 @@
+{
+  "max": {
+    "d": 9330,
+    "grade": 0.5998366431774789
+  },
+  "contacts": [
+    {
+      "name": "rear-wheel--1",
+      "gap": 2.842170943040401e-14,
+      "point": [
+        3621.969527108662,
+        118.62402261885856,
+        -4405.735496147061
+      ],
+      "surface": [
+        3621.969527108662,
+        118.62402261885853,
+        -4405.735496147061
+      ]
+    },
+    {
+      "name": "front-wheel--1",
+      "gap": 7.105427357601002e-14,
+      "point": [
+        3620.2505257499724,
+        119.97074892728702,
+        -4407.509540705991
+      ],
+      "surface": [
+        3620.2505257499724,
+        119.97074892728695,
+        -4407.509540705991
+      ]
+    },
+    {
+      "name": "rear-wheel-1",
+      "gap": 1.4210854715202004e-14,
+      "point": [
+        3620.2315721791583,
+        118.35710271461515,
+        -4404.508772920264
+      ],
+      "surface": [
+        3620.2315721791583,
+        118.35710271461514,
+        -4404.508772920264
+      ]
+    },
+    {
+      "name": "front-wheel-1",
+      "gap": 2.842170943040401e-14,
+      "point": [
+        3618.5153570478124,
+        119.71103345679346,
+        -4406.2798648791
+      ],
+      "surface": [
+        3618.5153570478124,
+        119.71103345679343,
+        -4406.2798648791
+      ]
+    }
+  ],
+  "state": {
+    "gear": 5,
+    "rpm": 6440.753080946322,
+    "shiftRemaining": 0,
+    "shiftDirection": 0,
+    "gearInitialized": true,
+    "tractionFactor": 1,
+    "gearRatio": 0.6530612244897959,
+    "engineTorque": 6.168496183781164,
+    "driveForce": 4.02840567104076,
+    "roadDrag": 1.6448787601690629,
+    "shiftDrag": 0,
+    "netAcceleration": -2.5874953767217503,
+    "distance": 9350.902586619148,
+    "speed": 59.46923205350963,
+    "lateral": 0.4653696885551949,
+    "heading": -0.29107230638370124,
+    "velocityHeading": 0,
+    "worldHeading": -3.285740841645407,
+    "steering": -1,
+    "yawRate": 0,
+    "slipAngle": -0.29107230638370124,
+    "slip": 0.6151239816272274,
+    "offRoad": false,
+    "footprintEdge": 1.595369688555195,
+    "curvature": -0.002738877769983035,
+    "corridorSide": 0,
+    "steeringTarget": -1,
+    "drifting": true,
+    "rawSteer": -1,
+    "effectiveSteer": -1,
+    "requiredSteer": -0.5142745469067087,
+    "lateralRate": -5.575619908136137,
+    "appliedSteer": -1,
+    "steerFrom": 0,
+    "steerTo": -1,
+    "steerTime": 0.19999999999999998,
+    "grade": 0.58778251591055,
+    "gradeAcceleration": -4.971022287593447,
+    "roadHalfWidth": 14,
+    "laneCount": 8,
+    "highSpeedPace": 1.75,
+    "effectivePace": 1.75,
+    "travelSpeed": 104.07115609364185,
+    "mode": "playing",
+    "elapsed": 0.19999999999999998,
+    "frames": 7,
+    "inputs": {
+      "gas": false,
+      "brake": false,
+      "steer": 0
+    },
+    "audio": {
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 149.08047315068256,
+      "engineRpm": 6440.753080946322,
+      "gear": 5,
+      "skidLevel": 0.0100030641596083,
+      "windLevel": 0.05092688967889217,
+      "rms": 0.019658654677897996
+    },
+    "trackLength": 14450,
+    "position": [
+      3620.073881265901,
+      119.31732388770268,
+      -4406.165170565705
+    ],
+    "swapped": false,
+    "surfaceError": -0.020881825285201217,
+    "camera": {
+      "horizontalFov": 76,
+      "fov": 47.44840036542012,
+      "distance": 8,
+      "height": 2.6,
+      "lookAhead": 39.16833447425903,
+      "lookHeight": 0,
+      "position": [
+        3616.4394059678575,
+        121.93935106773137,
+        -4401.291202698033
+      ]
+    },
+    "immersive": {
+      "active": false,
+      "installed": false,
+      "lockState": "idle",
+      "pending": false,
+      "message": ""
+    },
+    "rightScreenDelta": 0.08699316928166892
+  }
+}

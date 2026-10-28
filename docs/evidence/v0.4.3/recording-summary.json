@@ -1,0 +1,102 @@
+[
+  {
+    "name": "low-none",
+    "seconds": 2.999999999999992,
+    "offRoadSamples": 26,
+    "minKmh": 201.40191684713034,
+    "maxKmh": 234,
+    "maxYawDeg": 0,
+    "maxAppliedSampleDelta": 0,
+    "errors": []
+  },
+  {
+    "name": "low-matching",
+    "seconds": 2.950099999999992,
+    "offRoadSamples": 0,
+    "minKmh": 229.71971785830146,
+    "maxKmh": 234,
+    "maxYawDeg": 0,
+    "maxAppliedSampleDelta": 0.16658300000000004,
+    "errors": []
+  },
+  {
+    "name": "medium-none",
+    "seconds": 2.999999999999992,
+    "offRoadSamples": 48,
+    "minKmh": 180.59138705304773,
+    "maxKmh": 234,
+    "maxYawDeg": 0,
+    "maxAppliedSampleDelta": 0,
+    "errors": []
+  },
+  {
+    "name": "medium-matching",
+    "seconds": 2.9833999999999925,
+    "offRoadSamples": 0,
+    "minKmh": 229.71783544301212,
+    "maxKmh": 234,
+    "maxYawDeg": 17.499999999999982,
+    "maxAppliedSampleDelta": 0.3334165,
+    "errors": []
+  },
+  {
+    "name": "high-none",
+    "seconds": 2.9833999999999916,
+    "offRoadSamples": 55,
+    "minKmh": 175.05226890612764,
+    "maxKmh": 234,
+    "maxYawDeg": 0,
+    "maxAppliedSampleDelta": 0,
+    "errors": []
+  },
+  {
+    "name": "high-matching",
+    "seconds": 2.9500999999999915,
+    "offRoadSamples": 0,
+    "minKmh": 229.71835969676584,
+    "maxKmh": 234,
+    "maxYawDeg": 34.999999999996355,
+    "maxAppliedSampleDelta": 0.49974900000000017,
+    "errors": []
+  },
+  {
+    "name": "extreme-fast",
+    "seconds": 5.383500000000052,
+    "offRoadSamples": 46,
+    "minKmh": 178.69313938223544,
+    "maxKmh": 234,
+    "maxYawDeg": 41.999999999999964,
+    "maxAppliedSampleDelta": 0.23182731250000124,
+    "errors": []
+  },
+  {
+    "name": "extreme-braked",
+    "seconds": 6.350200000000078,
+    "offRoadSamples": 0,
+    "minKmh": 182.06892530286478,
+    "maxKmh": 229.772912,
+    "maxYawDeg": 41.83247325330351,
+    "maxAppliedSampleDelta": 0.23182731250000124,
+    "errors": []
+  },
+  {
+    "name": "s-left-s-curve",
+    "seconds": 7.566900000000148,
+    "offRoadSamples": 0,
+    "minKmh": 229.71835969676584,
+    "maxKmh": 234,
+    "maxYawDeg": 17.49999999936788,
+    "maxAppliedSampleDelta": 0.23217035185185436,
+    "errors": []
+  },
+  {
+    "name": "launch-road-loop",
+    "seconds": 124.9037000000395,
+    "offRoadSamples": 0,
+    "minKmh": 189.55436205665515,
+    "maxKmh": 230.61856878057816,
+    "maxYawDeg": 41.81974409310192,
+    "maxAppliedSampleDelta": 0.25,
+    "errors": []
+  }
+]
