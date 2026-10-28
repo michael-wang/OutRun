@@ -1,5 +1,5 @@
 import {test,expect} from '@playwright/test';import {mkdirSync,writeFileSync} from 'node:fs';import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d';mkdirSync(root,{recursive:true});
 test('mobile gauge and compact steering stay clear of menu and pedals in both layouts',async({browser})=>{
  const rows=[];for(const [width,height] of [[844,390],[960,432]]){const c=await browser.newContext({viewport:{width,height},isMobile:true,hasTouch:true}),p=await c.newPage();await p.goto('/');await p.locator('#drive').click();await p.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({speed:230/3.6});});
  for(const swapped of [false,true]){if(swapped){await p.locator('#pause').tap();await p.locator('#settings').tap();await p.locator('#swap').check();await p.locator('#close-settings').tap();await p.locator('#resume').tap();}

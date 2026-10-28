@@ -1,0 +1,12 @@
+import {it,expect,vi} from 'vitest';
+import {DriveTelemetry,type DriveSample} from '../src/drive-telemetry';
+it('derives time, distance, brakes and per-beat observations from bounded actual samples',()=>{
+ const d=new DriveTelemetry('test',1,'v0.8.2-r1'),base:DriveSample={t:0,s:0,speed:280,gear:6,rpm:6000,gas:true,brake:false,steer:0,rawSteer:0,curvature:.002,requiredSteer:.5,grade:0,halfWidth:7,lanes:4,active:['C02'],roadX:0,offRoad:false,world:'coast',beat:'A',input:'keyboard'};
+ const push=(s:DriveSample)=>{d.observe(s);d.record(s);};push(base);push({...base,t:.1,s:10,brake:true,gas:false,steer:1});push({...base,t:.2,s:20,speed:300,beat:'B',offRoad:true});const r=d.report();expect(r.metrics.time).toBeCloseTo(.2);expect(r.metrics.distance).toBe(20);expect(r.metrics.brakePresses).toBe(1);expect(r.metrics.brakeSeconds).toBeCloseTo(.1);expect(r.metrics.offroadEpisodes).toBe(1);expect(r.metrics.thresholds[0].distance).toBe(20);expect(r.metrics.thresholds[2].distance).toBe(10);expect(r.beats.A.brakes).toBe(1);expect(r.beats.A.curveAverageSpeed).toBe(280);expect(r.beats.B.offroad).toBeCloseTo(.1);
+});
+it('counts a brief brake tap between sample ticks and assigns it to the active beat',()=>{
+ const d=new DriveTelemetry('test',1,'v0.8.2-r1'),s:DriveSample={t:0,s:0,speed:280,gear:6,rpm:6000,gas:true,brake:false,steer:0,rawSteer:0,curvature:.002,requiredSteer:1,grade:0,halfWidth:7,lanes:4,active:['C02'],roadX:0,offRoad:false,world:'coast',beat:'A',input:'keyboard'};d.observe(s);d.record(s);d.observe({...s,t:.03,s:3,brake:true});d.observe({...s,t:.07,s:7,brake:false});d.record({...s,t:.1,s:10});const r=d.report();expect(r.metrics.brakePresses).toBe(1);expect(r.beats.A.brakes).toBe(1);expect(r.metrics.fastUnbrakedBend).toBe(0);
+});
+it('retains three distinct local runs without changing historical review storage',()=>{
+ const values=new Map<string,string>([['outrun-stage-v081','historical-review']]);const storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>values.set(key,value)};vi.stubGlobal('localStorage',storage);try{const ids:string[]=[];for(let i=0;i<4;i++){const d=new DriveTelemetry('test',1,'v0.8.2-r1');ids.push(d.runId);expect(d.save()).toBe(true);}const recent=DriveTelemetry.recent();expect(recent).toHaveLength(3);expect(recent.map((r:any)=>r.runId)).toEqual(ids.slice(1).reverse());expect(storage.getItem('outrun-stage-v081')).toBe('historical-review');}finally{vi.unstubAllGlobals();}
+});

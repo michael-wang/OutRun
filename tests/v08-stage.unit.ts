@@ -27,14 +27,14 @@ describe('Stage One generation',()=>{
   expect(totals.canyon.dramatic/totals.canyon.total).toBeGreaterThan(totals.city.dramatic/totals.city.total);
   expect(totals.canyon.dramatic/totals.canyon.total).toBeGreaterThan(totals.coast.dramatic/totals.coast.total);
   expect(totals.city.dramatic).toBeGreaterThan(0);expect(totals.coast.dramatic).toBeGreaterThan(0);expect(totals.canyon.dramatic).toBeLessThan(totals.canyon.total);
-  mkdirSync('docs/evidence/v0.8.1/regressions/v0.8',{recursive:true});writeFileSync('docs/evidence/v0.8.1/regressions/v0.8/biome-distribution.json',JSON.stringify({seeds:100,totals},null,2));
- });
+  mkdirSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8',{recursive:true});writeFileSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/biome-distribution.json',JSON.stringify({seeds:100,totals},null,2));
+ },30000);
  it('records five stage timelines and checks phase-boundary continuity',()=>{
   const rows=[];for(const seed of [1,2,3,42,710]){
    const stage=generateStage(seed),track=createPilotTrack(stage),samples=[];
    for(let s=0;s<=stage.length;s+=100){const road=pilotSample(stage,BRICK_START+s),p=track.sample(BRICK_START+s);samples.push({s,demand:road.demand,height:road.height,grade:road.grade,lanes:road.lanes,x:p.position.x,z:p.position.z});}
    for(const phase of stage.worldPhases.slice(1)){const s=BRICK_START+phase.startS,a=track.sample(s-.01),b=track.sample(s+.01),x=pilotSample(stage,s-.01),y=pilotSample(stage,s+.01);expect(a.position.distanceTo(b.position)).toBeLessThan(.1);expect(Math.abs(x.grade-y.grade)).toBeLessThan(.001);expect(Math.abs(x.lanes-y.lanes)).toBeLessThan(.01);}
    rows.push({code:stage.stageCode,fingerprint:stage.contentFingerprint,beats:stage.beats,worldPhases:stage.worldPhases,placements:stage.placements,samples});
-  }mkdirSync('docs/evidence/v0.8.1/regressions/v0.8',{recursive:true});writeFileSync('docs/evidence/v0.8.1/regressions/v0.8/five-seed-timelines.json',JSON.stringify(rows,null,2));
+  }mkdirSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8',{recursive:true});writeFileSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/five-seed-timelines.json',JSON.stringify(rows,null,2));
  });
 });

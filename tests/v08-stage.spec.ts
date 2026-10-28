@@ -1,33 +1,33 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,readFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.8.1/regressions/v0.8';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8';mkdirSync(root,{recursive:true});
 test('stage seed, keyboard hints and retrospective review export',async({page})=>{
- await page.goto('/?stage=1&seed=42');await expect(page.locator('#l2-lab')).toContainText('S01-v0.8.1-r1-16-ALB1');
+ await page.goto('/?stage=1&seed=42');await expect(page.locator('#l2-lab')).toContainText('S01-v0.8.2-r1-16-ALB1');
  const chunks=await page.evaluate(()=>(window as any).__drive.roadChunks());expect(chunks.count).toBeGreaterThan(5);expect(chunks.cullable).toBe(true);
  await expect(page.locator('#l2-play')).toHaveText('[P]lay Stage');await expect(page.locator('#l2-replay')).toHaveText('[R]eplay same');
- await expect(page.locator('.keyboard-hints')).not.toContainText('B Previous');
+ await expect(page.locator('#l2-lab .keyboard-hints')).toHaveCount(0);
  await page.screenshot({path:`${root}/stage-menu.png`});await page.keyboard.press('KeyP');
  await expect(page.locator('#l2-praise')).toHaveText('[G]讚');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.advance(8,{gas:true,brake:false,steer:0});});
  const history=await page.evaluate(()=>(window as any).__drive.recentHistory());await page.keyboard.press('KeyG');await page.keyboard.press('Digit2');await page.keyboard.press('Enter');
- const raw=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v081')!)),event:any=(Object.values(raw)[0] as any).events[0];
- expect(event.eventAt.stageCode).toBe('S01-v0.8.1-r1-16-ALB1');expect(event.eventAt.l2InstanceId).toBeTruthy();expect(event.eventAt.s).toBeLessThan(event.reactionAt.s);expect(history.some((x:any)=>x.trackDistance===event.eventAt.trackDistance)).toBe(true);
- await page.keyboard.press('KeyP');const download=page.waitForEvent('download');await page.locator('#l2-export').click();const data=JSON.parse(readFileSync((await (await download).path())!,'utf8'));expect(data.records[0].stageCode).toBe('S01-v0.8.1-r1-16-ALB1');expect(data.records[0].humanVote).toBe('UNREVIEWED');
+ const raw=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v082')!)),event:any=(Object.values(raw)[0] as any).events[0];
+ expect(event.eventAt.stageCode).toBe('S01-v0.8.2-r1-16-ALB1');expect(event.eventAt.l2InstanceId).toBeTruthy();expect(event.eventAt.s).toBeLessThan(event.reactionAt.s);expect(history.some((x:any)=>x.trackDistance===event.eventAt.trackDistance)).toBe(true);
+ await expect(page.locator('#ready-countdown')).toBeHidden({timeout:2000});await page.keyboard.press('KeyP');const download=page.waitForEvent('download');await page.locator('#l2-export').click();const data=JSON.parse(readFileSync((await (await download).path())!,'utf8'));expect(data.records[0].stageCode).toBe('S01-v0.8.2-r1-16-ALB1');expect(data.records[0].humanVote).toBe('UNREVIEWED');
 });
 test('standard pad mode, Square issue and L1 praise retain real history',async({page})=>{
  await page.addInitScript(()=>{(window as any).pad={connected:true,mapping:'standard',axes:[0,0],buttons:Array.from({length:16},()=>({pressed:false,value:0}))};Object.defineProperty(navigator,'getGamepads',{value:()=>[(window as any).pad]});});
  await page.goto('/?stage=1&seed=2');await page.bringToFront();await page.keyboard.press('KeyP');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.advance(8,{gas:true,brake:false,steer:0});});
- const pulse=async(i:number)=>{await page.evaluate(i=>{(window as any).pad.buttons[i]={pressed:true,value:1};},i);await page.waitForTimeout(120);await page.evaluate(i=>{(window as any).pad.buttons[i]={pressed:false,value:0};},i);await page.waitForTimeout(120);};
- await pulse(2);await expect(page.locator('#l2-issue')).toHaveText('□ 問題');await page.screenshot({path:`${root}/gamepad-drive.png`});let data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v081')!));let events:any=(Object.values(data)[0] as any).events;expect(events[0].kind).toBe('issue');expect(events[0].eventAt.s).toBeLessThan(events[0].reactionAt.s);
- await pulse(4);await expect(page.locator('#l2-feedback-dialog')).toBeVisible();await pulse(15);await pulse(0);await expect(page.locator('#l2-feedback-dialog')).toBeHidden();data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v081')!));events=(Object.values(data)[0] as any).events;expect(events[1].tag).toBe('thrilling');
- await page.keyboard.press('KeyP');await expect(page.locator('#l2-play')).toContainText('[P]');await page.locator('#l2-issue-list input').fill('Roadside detail');await page.locator('#l2-issue-list input').blur();
- data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v081')!));events=(Object.values(data)[0] as any).events;expect(events[0].note).toBe('Roadside detail');
+ const pulse=async(i:number)=>{await page.evaluate(i=>{(window as any).pad.buttons[i]={pressed:true,value:1};},i);await page.waitForTimeout(350);await page.evaluate(i=>{(window as any).pad.buttons[i]={pressed:false,value:0};},i);await page.waitForTimeout(120);};
+ await pulse(2);await expect(page.locator('#l2-issue')).toHaveText('□ 問題');await page.screenshot({path:`${root}/gamepad-drive.png`});let data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v082')!));let events:any=(Object.values(data)[0] as any).events;expect(events[0].kind).toBe('issue');expect(events[0].eventAt.s).toBeLessThan(events[0].reactionAt.s);
+ await expect(page.locator('#ready-countdown')).toBeHidden({timeout:2000});await pulse(4);await expect(page.locator('#l2-feedback-dialog')).toBeVisible();await pulse(15);await expect(page.locator('[data-praise-tag=thrilling]')).toHaveAttribute('aria-pressed','true');await pulse(0);await expect(page.locator('#l2-feedback-dialog')).toBeHidden();data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v082')!));events=(Object.values(data)[0] as any).events;expect(events[1].tag).toBe('thrilling');
+ await expect(page.locator('#ready-countdown')).toBeHidden({timeout:2000});await page.keyboard.press('KeyP');await expect(page.locator('#l2-play')).toContainText('[P]');await page.locator('#l2-issue-list input').fill('Roadside detail');await page.locator('#l2-issue-list input').blur();
+ data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v082')!));events=(Object.values(data)[0] as any).events;expect(events[0].note).toBe('Roadside detail');
  await page.evaluate(()=>{(window as any).pad.axes[0]=.05;});await page.waitForTimeout(250);await expect(page.locator('html')).toHaveAttribute('data-input-mode','keyboard');
  await pulse(12);await expect(page.locator('html')).toHaveAttribute('data-input-mode','gamepad');await page.evaluate(()=>{(window as any).pad.connected=false;});await expect(page.locator('html')).toHaveAttribute('data-input-mode','keyboard');
 });
 test('seed code reload, mobile layout and phase geometry',async({page})=>{
  await page.setViewportSize({width:844,height:390});await page.goto('/?stage=1&seed=42');
- await expect(page.locator('#stage-seed')).toHaveValue('S01-v0.8.1-r1-16-ALB1');
+ await expect(page.locator('#stage-seed')).toHaveValue('S01-v0.8.2-r1-16-ALB1');
  await page.screenshot({path:`${root}/stage-mobile-menu.png`});await Promise.all([page.waitForNavigation(),page.locator('#stage-load').click()]);await expect(page).toHaveURL(/seed=42/);await page.waitForFunction(()=>!!(window as any).__drive);
  const stage=await page.evaluate(()=>(window as any).__drive.brick());await page.locator('#l2-play').click();
  for(const [i,phase] of stage.worldPhases.entries()){
@@ -54,7 +54,7 @@ test('stage retains simultaneous phone steering and gas',async({browser})=>{
 test('controller starts, pauses, resumes and chooses a new route',async({page})=>{
  await page.addInitScript(()=>{(window as any).pad={connected:true,mapping:'standard',axes:[0,0],buttons:Array.from({length:16},()=>({pressed:false,value:0}))};Object.defineProperty(navigator,'getGamepads',{value:()=>[(window as any).pad]});});
  await page.goto('/?stage=1&seed=1');await page.bringToFront();const pulse=async(i:number)=>{await page.evaluate(i=>{(window as any).pad.buttons[i]={pressed:true,value:1};},i);await page.waitForTimeout(130);await page.evaluate(i=>{(window as any).pad.buttons[i]={pressed:false,value:0};},i);await page.waitForTimeout(130);};
- await pulse(0);await expect(page.locator('#l2-feedback-bar')).toBeVisible();await pulse(9);await expect(page.locator('#l2-lab')).toBeVisible();await pulse(0);await expect(page.locator('#l2-feedback-bar')).toBeVisible();await pulse(9);await page.locator('#l2-next').focus();
+ await pulse(0);await expect(page.locator('#l2-feedback-bar')).toBeVisible();await pulse(9);await expect(page.locator('#l2-lab')).toBeVisible();await pulse(0);await expect(page.locator('#ready-countdown')).toBeHidden({timeout:2000});await expect(page.locator('#l2-feedback-bar')).toBeVisible();await pulse(9);await page.locator('#l2-next').focus();
  await Promise.all([page.waitForNavigation(),pulse(0)]);await expect(page).toHaveURL(/stage=1&seed=/);expect(new URL(page.url()).searchParams.get('seed')).not.toBe('1');
 });
 test('dramatic coast exception and canyon crest render on their actual profiles',async({page})=>{
@@ -65,13 +65,13 @@ test('retrospective feedback keeps the actual earlier beat across a boundary',as
  await page.goto('/?stage=1&seed=1');await page.locator('#l2-play').click();
  await page.evaluate(()=>{const g=(window as any).__drive,b=g.brick();g.manual(true);g.reset({distance:350+b.beats[0].endS-250,speed:60});g.advance(3.5,{gas:true,brake:false,steer:0});});
  const history=await page.evaluate(()=>(window as any).__drive.recentHistory());await page.keyboard.press('KeyG');await page.keyboard.press('Digit1');await page.keyboard.press('Enter');
- const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v081')!)),event:any=(Object.values(data)[0] as any).events[0];
+ const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v082')!)),event:any=(Object.values(data)[0] as any).events[0];
  expect(event.eventAt.l2InstanceId).toBe('S01-01');expect(event.reactionAt.l2InstanceId).toBe('S01-02');expect(history.some((x:any)=>x.trackDistance===event.eventAt.trackDistance&&x.l2InstanceId===event.eventAt.l2InstanceId)).toBe(true);
 });
 test('production stage starts and records feedback without development hooks',async({page})=>{
- await page.goto('http://127.0.0.1:4173/?stage=1&seed=3');await expect(page.locator('#l2-lab')).toContainText('S01-v0.8.1-r1-3-ALB1');expect(await page.evaluate(()=>!!(window as any).__drive)).toBe(false);
+ await page.goto('http://127.0.0.1:4173/?stage=1&seed=3');await expect(page.locator('#l2-lab')).toContainText('S01-v0.8.2-r1-3-ALB1');expect(await page.evaluate(()=>!!(window as any).__drive)).toBe(false);
  await page.keyboard.press('KeyP');await expect(page.locator('#l2-feedback-bar')).toBeVisible();await page.keyboard.down('Space');await page.waitForTimeout(2500);await page.keyboard.up('Space');await page.keyboard.press('KeyG');await page.keyboard.press('Digit2');await page.keyboard.press('Enter');
- const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v081')!)),event:any=(Object.values(data)[0] as any).events[0];expect(event.eventAt.stageCode).toBe('S01-v0.8.1-r1-3-ALB1');expect(event.reactionAt.elapsedSeconds).toBeGreaterThan(event.eventAt.elapsedSeconds);
+ const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-stage-v082')!)),event:any=(Object.values(data)[0] as any).events[0];expect(event.eventAt.stageCode).toBe('S01-v0.8.2-r1-3-ALB1');expect(event.reactionAt.elapsedSeconds).toBeGreaterThan(event.eventAt.elapsedSeconds);
 });
 test('stage geometry and renderer resources remain bounded during a long run',async({page})=>{
  await page.goto('/?stage=1&seed=1');await page.locator('#l2-play').click();const result=await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);const drive=()=>{for(let i=0;i<1200;i++){const s=g.snapshot();g.advance(.2,{gas:s.speed<65,brake:false,steer:Math.max(-1,Math.min(1,s.requiredSteer-s.lateral*.1))});if(g.snapshot().mode==='paused')break;}};drive();const before=g.scenery().memory;g.reset({distance:350});drive();return {before,after:g.scenery().memory,state:g.snapshot()};});
@@ -90,5 +90,5 @@ test('generated valley has a visible descent and returns continuously',async({pa
 test('revised routes never overwrite the original stage review or reinterpret its code',async({page})=>{
  await page.goto('/?stage=1&seed=1');const old='{"l2:STAGE-01:r1:242d63e0":{"humanVote":"REWORK","difficulty":2,"overallNote":"Could use more L2 blocks.","events":[]}}';await page.evaluate(v=>localStorage.setItem('outrun-stage-v08',v),old);await page.reload();
  await expect(page.locator('#l2-progress')).toContainText('UNREVIEWED');await page.locator('#stage-seed').fill('S01-v0.8-r1-1-ALB1');await page.locator('#stage-load').click();await expect(page.locator('#l2-result')).toContainText('different route version');
- await page.locator('[data-l2-vote=KEEP]').click();expect(await page.evaluate(()=>localStorage.getItem('outrun-stage-v08'))).toBe(old);expect(await page.evaluate(()=>localStorage.getItem('outrun-stage-v081'))).toContain('KEEP');
+ await page.locator('[data-l2-vote=KEEP]').click();expect(await page.evaluate(()=>localStorage.getItem('outrun-stage-v08'))).toBe(old);expect(await page.evaluate(()=>localStorage.getItem('outrun-stage-v082'))).toContain('KEEP');
 });

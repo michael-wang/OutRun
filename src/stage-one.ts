@@ -4,7 +4,7 @@ import {createPilotTrack,validatePilot,type PilotCandidate,type Placement,type W
 import {BRICK_START} from './bricks';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
-export const STAGE_VERSION='v0.8.1-r1';
+export const STAGE_VERSION='v0.8.2-r1';
 export type Verticality='gentle'|'rolling'|'dramatic';
 export const WORLD_META:Record<WorldName,{verticalityWeights:Record<Verticality,number>}>= {
  city:{verticalityWeights:{gentle:5,rolling:4,dramatic:1}},
@@ -36,7 +36,7 @@ function candidate(seed:number,attempt:number):StageCandidate {
   const innerGap=pick([35,65,100,145]),firstStart=start+50,lastEnd=end-50,split=Math.round(firstStart+(lastEnd-firstStart-innerGap)*(.46+rng()*.08)),secondStart=split+innerGap;
   const direction=(rng()<.5?-1:1) as 1|-1,secondDirection=(rng()<.72?-direction:direction) as 1|-1;
   const choices:CurvatureId[]=['C02','C03','C04','C05','C06','C07'];
-  for(const [j,a,z,dir] of [[0,firstStart,split,direction],[1,secondStart,lastEnd,secondDirection]] as const){const id:CurvatureId=i===6&&j===1?'C08':pick(choices),effort=i===6&&j===1?1.05+rng()*.15:.34+rng()*.32;placements.push({channel:'curvature',id,startS:a,endS:z,parameters:{effort,direction:dir,start:0,end:1,secondary:.55+rng()*.35},transition:'smooth',beat});}
+  for(const [j,a,z,dir] of [[0,firstStart,split,direction],[1,secondStart,lastEnd,secondDirection]] as const){const technical=(i===2&&j===1)||(i===4&&j===0)||(i===6&&j===1),id:CurvatureId=i===6&&j===1?'C08':pick(choices),effort=technical?1.2+rng()*.18:.34+rng()*.32;placements.push({channel:'curvature',id,startS:a,endS:z,parameters:{effort,direction:dir,start:0,end:1,secondary:.55+rng()*.35},transition:'smooth',beat});}
   const eid:ElevationId=pick(verticality==='dramatic'?['E03','E05']:['E03','E04','E05']);
   // A valley starts and ends at the held road height; keep its floor above sea level.
   const amplitude=verticality==='gentle'?12+rng()*13:verticality==='rolling'?(eid==='E04'?27+rng()*8:40+rng()*30):115+rng()*(eid==='E05'?8:30);
@@ -48,7 +48,7 @@ function candidate(seed:number,attempt:number):StageCandidate {
  }
  placements.sort((a,b)=>a.startS-b.startS);const stageCode=`S01-${STAGE_VERSION}-${seed.toString(36).toUpperCase()}-ALB1`;
  const data={seed,length,placements,worldPhases,beats,buffers,baseHeight,baseLanes,generatorVersion:STAGE_VERSION};
- const stage:StageCandidate={id:'STAGE-01',revision:2,name:'Stage 01: Pacific Getaway',intent:'City departure, coastal release and a canyon challenge.',emotionalRole:'journey',sceneryAct:2,seed,world:'city',generatorVersion:STAGE_VERSION,contentFingerprint:hash(data),stageCode,beats,buffers,baseHeight,baseLanes,placements,worldPhases,referenceSpeed:230,entrySpeed:0,nominalDuration:length/REFERENCE_TRAVEL,length,roadWidth:baseLanes*LANE_WIDTH,lanes:[[0,4],[length/REFERENCE_TRAVEL,4]],elevation:[[0,baseHeight],[length/REFERENCE_TRAVEL,baseHeight]],requiredSteerProfile:[[0,0]],entry:'Standing start',exit:'Canyon relief and finish',warning:{leadMeters:300,text:'BRAKE · 180 km/h'},tags:['stage'],antiAdjacency:[],autoValidation:'PENDING'};
+ const stage:StageCandidate={id:'STAGE-01',revision:3,name:'Stage 01: Pacific Getaway',intent:'City departure, coastal release and a canyon challenge.',emotionalRole:'journey',sceneryAct:2,seed,world:'city',generatorVersion:STAGE_VERSION,contentFingerprint:hash(data),stageCode,beats,buffers,baseHeight,baseLanes,placements,worldPhases,referenceSpeed:230,entrySpeed:0,nominalDuration:length/REFERENCE_TRAVEL,length,roadWidth:baseLanes*LANE_WIDTH,lanes:[[0,4],[length/REFERENCE_TRAVEL,4]],elevation:[[0,baseHeight],[length/REFERENCE_TRAVEL,baseHeight]],requiredSteerProfile:[[0,0]],entry:'Standing start',exit:'Canyon relief and finish',warning:{leadMeters:300,text:'BRAKE · 180 km/h'},tags:['stage'],antiAdjacency:[],autoValidation:'PENDING'};
  validatePilot(stage);return stage;
 }
 /** Reject obvious same-level crossings without changing live handling or the requested seed. */

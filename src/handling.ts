@@ -13,7 +13,7 @@ export interface DrivingState extends PowertrainState {
  rawSteer:number;effectiveSteer:number;requiredSteer:number;lateralRate:number;
  appliedSteer:number;steerFrom:number;steerTo:number;steerTime:number;grade:number;gradeAcceleration:number;
 }
-export const MAX_SPEED=300/3.6,ROAD_HALF_WIDTH=7,CORRIDOR_LIMIT=9.6;
+export const MAX_SPEED=360/3.6,ROAD_HALF_WIDTH=7,CORRIDOR_LIMIT=9.6;
 export const createState=():DrivingState=>({...createPowertrain(),distance:0,speed:0,lateral:0,heading:0,velocityHeading:0,worldHeading:0,
  steering:0,yawRate:0,slipAngle:0,slip:0,offRoad:false,footprintEdge:1.13,curvature:0,corridorSide:0,
  steeringTarget:0,drifting:false,rawSteer:0,effectiveSteer:0,requiredSteer:0,lateralRate:0,
@@ -33,7 +33,7 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
  const driving=input.gas&&!input.brake,driveForce=advancePowertrain(s,s.speed,driving,dt);
  s.grade=Number.isFinite(grade)?grade:0;s.gradeAcceleration=s.speed<.001&&!driving?0:-9.81*s.grade/Math.hypot(1,s.grade);
- const acceleration=driveForce-s.roadDrag-(driving?0:3.8-s.roadDrag)+s.gradeAcceleration
+ const acceleration=driveForce-s.roadDrag-s.shiftDrag-(driving?0:3.8-s.roadDrag)+s.gradeAcceleration
   // The slower engine needs a proportional shoulder drag: still a strong,
   // immediate speed loss, but enough torque remains for bounded recovery.
   -(input.brake?34:0)-(s.offRoad?5+s.speed*.04:0);

@@ -8,7 +8,7 @@ it('inverse demand calibrates every authored core at reference and safe speed',(
  const table=COURSE.filter(c=>c.targetRequiredSteering).map(c=>({id:c.id,target:c.targetRequiredSteering,k:curvatureForDemand(c.targetRequiredSteering),at230:requiredSteering(curvatureForDemand(c.targetRequiredSteering),REFERENCE_SPEED),at190:requiredSteering(curvatureForDemand(c.targetRequiredSteering),190/3.6)}));
  for(const row of table)expect(row.at230).toBeCloseTo(row.target,10);
  expect(table.find(r=>r.id==='extreme')!.at190).toBeLessThan(1);
- mkdirSync('docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/calibration.json',JSON.stringify({course:COURSE,table},null,2));
+ mkdirSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c',{recursive:true});writeFileSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/calibration.json',JSON.stringify({course:COURSE,table},null,2));
 });
 it('normal core matching cancels drift, neutral fails and excess input moves inward',()=>{
  for(const u of [-.25,.5,.75]){
@@ -35,11 +35,11 @@ it('full course rewards deliberate notches and planned braking; continuous inver
  expect(runs[1].off).toBe(0);expect(runs[1].time).toBeGreaterThan(100);expect(runs[1].time).toBeLessThan(150);expect(runs[1].time).toBeLessThan(runs[0].time);
  for(let d=0;d<track.length;d+=5){const a=track.sample(d),b=track.sample(d+.01),delta=b.position.clone().sub(a.position).normalize();expect(delta.dot(a.tangent)).toBeGreaterThan(.99999);expect(Math.abs(a.curvature)).toBeLessThan(.008);}
  expect(track.sample(track.length-.001).position.distanceTo(track.sample(0).position)).toBeLessThan(.002);
- writeFileSync('docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/course-unit.json',JSON.stringify(runs,null,2));
+ writeFileSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/course-unit.json',JSON.stringify(runs,null,2));
 });
 it('normal stationary start completes a playable lap within the 100–150 second scenic journey target',()=>{
  const track=createTrack(),s=createState(),driver=scriptedDriver();let seconds=0,off=0;
  while(s.distance<track.length&&seconds<160){const input=driver(s,track.sample(s.distance).curvature,plannedSpeed(s.distance,track.sample));for(let i=0;i<12;i++)step(s,input,1/120,track.sample(s.distance).curvature,1.75);seconds+=.1;off+=Number(s.offRoad);}
  expect(s.distance).toBeGreaterThanOrEqual(track.length);expect(seconds).toBeGreaterThan(100);expect(seconds).toBeLessThan(150);expect(off).toBe(0);
- writeFileSync('docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/standing-start.json',JSON.stringify({seconds,off,final:s},null,2));
+ writeFileSync('docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/standing-start.json',JSON.stringify({seconds,off,final:s},null,2));
 });

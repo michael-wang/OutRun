@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
-const root='docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
+const root='docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
 const snap=(page:any)=>page.evaluate(()=>(window as any).__drive.snapshot());
 const advance=(page:any,seconds:number)=>page.evaluate((seconds:number)=>(window as any).__drive.advance(seconds),seconds);
 test('analog keyboard holds, rapid neutral/reversal, brake priority and accessible menus',async({page})=>{
@@ -20,7 +20,7 @@ for(const [width,height] of [[1280,720],[960,432],[844,390]])test(`needle gauge 
  for(const swapped of [false,true]){
   if(swapped){await page.locator('#pause').click();await page.locator('#settings').click();await page.locator('#swap').check();await page.locator('#close-settings').click();await page.locator('#resume').click();}
   for(const kmh of [0,80,150,230]){
-   await page.evaluate(kmh=>(window as any).__drive.reset({distance:850,speed:kmh/3.6}),kmh);await expect(page.locator('#speed strong')).toHaveText(String(kmh).padStart(3,'0'));const angle=-135+270*kmh/300;
+   await page.evaluate(kmh=>(window as any).__drive.reset({distance:850,speed:kmh/3.6}),kmh);await expect(page.locator('#speed strong')).toHaveText(String(kmh).padStart(3,'0'));const angle=-135+270*kmh/360;
    const transform=(await page.locator('#speed-needle').getAttribute('transform'))!;expect(Number(transform.match(/rotate\(([^ ]+)/)![1])).toBeCloseTo(angle,8);
    const gauge=(await page.locator('#speed').boundingBox())!,frame=await page.evaluate(()=>(window as any).__drive.framing());expect(gauge.x+gauge.width).toBeLessThan(frame.left*width);expect(gauge.x).toBeGreaterThanOrEqual(20);expect(gauge.y).toBeGreaterThan(60);
    for(const control of ['#steering-strip',...(width<1000?['[data-control=gas]','[data-control=brake]']:[])]){const b=(await page.locator(control).boundingBox())!;expect(gauge.x < b.x+b.width && b.x < gauge.x+gauge.width && gauge.y < b.y+b.height && b.y < gauge.y+gauge.height).toBe(false);}

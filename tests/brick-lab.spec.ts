@@ -2,7 +2,7 @@ import {test,expect,chromium} from '@playwright/test';
 import {readFileSync,mkdirSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
 test('production lab plays and reviews without a development driver',async({page})=>{
  await page.goto('http://127.0.0.1:4173/?lab=bricks&brick=BRK-03');
  await expect(page.locator('#brick-progress')).toContainText('8 unreviewed');
@@ -46,6 +46,6 @@ test('lab mobile controls, hand swap, review pause and compact layouts',async({b
   const s=await page.evaluate(()=>(window as any).__drive.snapshot());expect(s.inputs.gas).toBe(true);expect(s.inputs.steer).toBeGreaterThan(0);await expect(page.locator('#brick-lab')).toBeHidden();
   await touch(null,true,false);expect(await page.evaluate(()=>(window as any).__drive.snapshot().inputs.gas)).toBe(true);await touch(null,false,false);await page.locator('#pause').click();await expect(page.locator('#brick-lab')).toBeVisible();
  }
- await page.setViewportSize({width:844,height:390});await page.screenshot({path:`${root}/lab-844.png`});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.evaluate(async()=>{if(document.fullscreenElement)await document.exitFullscreen();});await page.setViewportSize({width:844,height:390});await page.screenshot({path:`${root}/lab-844.png`});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  await page.setViewportSize({width:1280,height:720});await page.screenshot({path:`${root}/lab-1280.png`});await page.getByRole('link',{name:'Free drive'}).click();await expect(page.locator('#drive')).toBeVisible();await expect(page.locator('#brick-lab')).toHaveCount(0);await context.close();
 });

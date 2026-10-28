@@ -1,12 +1,12 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
+const root='docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
 const snap=(p:any)=>p.evaluate(()=>(window as any).__drive.snapshot());
 test('trusted finger jitter stays inside a notch until a deliberate threshold crossing',async({browser})=>{
  const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const touch=await touchDriver(page,context),rows=[];
  for(const [raw,expected] of [[.25,.25],[.365,.25],[.385,.25],[.375,.25],[.415,.5],[.385,.5],[.365,.5],[.33,.25],[.06,.25],[.04,0],[-.76,-.75],[0,0]]){
-  await touch(raw,true,false);const s=await page.evaluate(()=>(window as any).__drive.steering());expect(s.effectiveSteer).toBe(expected);expect(s.rawSteer).toBeCloseTo(raw,3);rows.push(s);
+  await touch(raw,true,false);await expect.poll(async()=>Number((await page.evaluate(()=>(window as any).__drive.steering())).rawSteer.toFixed(3))).toBe(raw);const s=await page.evaluate(()=>(window as any).__drive.steering());expect(s.effectiveSteer).toBe(expected);expect(s.rawSteer).toBeCloseTo(raw,3);rows.push(s);
  }
  await touch(null,true,false);expect((await snap(page)).inputs).toEqual({gas:true,brake:false,steer:0});mkdirSync(root,{recursive:true});writeFileSync(`${root}/hysteresis-touch.json`,JSON.stringify(rows,null,2));await context.close();
 });
@@ -14,7 +14,7 @@ test('five authored challenges: trusted touch notches, paired failures/braking a
  mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage(),errors:string[]=[];
  page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));
  await page.goto('/?challenge=low');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const touch=await touchDriver(page,context),course=await page.evaluate(()=>(window as any).__drive.challenges()),runs=[];
- const advance=()=>page.evaluate(()=>(window as any).__drive.advance(.05));
+ const advance=()=>page.evaluate(()=>(window as any).__drive.advance(.05,undefined,false));
  for(const id of ['low','medium','high']){
   const c=course.find((c:any)=>c.id===id);
   for(const kind of ['none','matching',...(id==='high'?['weak']:[])]){
@@ -23,7 +23,7 @@ test('five authored challenges: trusted touch notches, paired failures/braking a
    for(let i=0;i<60;i++){const state=await snap(page);await touch(u,state.speed*3.6<231,false);await advance();rows.push(await snap(page));}
    if(kind==='matching'){expect(rows.every(s=>!s.offRoad)).toBe(true);expect(Math.abs(rows.at(-1).lateral)).toBeLessThan(1);}
    else expect(rows.some(s=>s.offRoad)).toBe(true);
-   await page.screenshot({path:`${root}/${id}-${kind}.png`});runs.push({id,kind,rows});
+   await page.evaluate(()=>(window as any).__drive.advance(0));await page.screenshot({path:`${root}/${id}-${kind}.png`});runs.push({id,kind,rows});
   }
  }
  const c=course.find((c:any)=>c.id==='extreme');
