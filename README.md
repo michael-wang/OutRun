@@ -1,42 +1,37 @@
 # Project OutRun
 
-Original browser-based 3D arcade-driving game inspired by the excitement of classic Out Run / OutRun 2, NOT a licensed SEGA recreation. Original/licensed sound, art, vehicle and title required for public distribution.
+Original browser 3D arcade driving game inspired by the joy of classic Out Run / OutRun 2, not a licensed SEGA remake. Project name is internal only; original/license-cleared assets required for public release.
 
-## ACTIVE: v0.8.1 — Six-Speed Car Feel + More Exciting Procedural Stage 01
+## ACTIVE — v0.8.2 Driving Evidence & Stage One Challenge
 
-**v0.8 human playtest result:** Stage 01 first generated Seed `S01-v0.8-r1-1-ALB1` = **REWORK**, difficulty 2/5, owner comment "Could use more L2 blocks." The Stage generator works structurally and has deterministic seeds/replay, but the actual driving rhythm, straight padding and narrow-road use are not yet good enough.
+**Owner's latest v0.8.1 Stage 01 playtest:** §S01-v0.8.1-r1-1-ALB1§ → **REWORK**, difficulty §2 / Moderate§, note §I want it to be more challenging!§ and on-screen finish §1:46§. See [archived review from screenshot](docs/reviews/V0.8.1_SEED1_HUMAN_PLAYTEST.md). This is one human stage review, not rejection of every other machine seed. Existing generator, original BRK and accepted L2 Pilot reviews remain preserved.
 
-[Exact owner Stage 01 feedback JSON](docs/reviews/V0.8_STAGE01_SEED1_HUMAN_FEEDBACK.json) · [Measured design postmortem](docs/V0.8_STAGE01_R1_POSTMORTEM.md)
+### New release goals
 
-### What failed in first generated Stage
+- **More believable real six-speed shift dip:** wheel-force/drag torque hole where actual car speed may naturally briefly dip, not fake subtracting displayed km/h.
+- **Grade-dependent flat top:** ~300 km/h equilibrium on flat. Strong sustained downhill can go PAST 300, uphill with full throttle loses the plateau. Actual physics, odometer, speedometer and RPM coherent above 300; maintain 1.75× arcade world travel.
+- **One-gesture screenshot:** PS4 §L1+L2§ chord; PC §F8§; Pixel safe camera button. Save nonblank 3D gameplay PNG with Stage Code, speed, curvature/grade and car pose diagnostics. User reports a visual floating-car sensation while turning; investigate only after screenshot evidence.
+- **In-game driving TELEMETRY:** compact bounded local ~5–10 Hz stage samples and brake/steer/offroad/gear events, with summary for % time+distance near 270/285/300, brake count, steering, road edge/offroad and per-L2 segments. User shares explicit JSON Export Drive Report to help design actual challenge; no online accounts/telemetry.
+- **Pause resume countdown:** 1.0 second READY overlay after returning from pause/menu/review, with world, stage time and telemetry frozen until complete.
+- **Stage menu decluttering:** remove §Original Bricks§ Stage nav link (Brick Lab remains via existing URL); remove long generic keyboard shortcut legend and §Profile details§, keep actual on-button contextual hints and key reviews/Stage controls.
+- **Difficulty tuning:** current Stage Seed easily held near 300; add a few clearly visible brake-worthy L2 challenges, preserving fast/high-scenic relief and seed variety. Let driving telemetry show what really happens. Fresh stage generator and human vote separate from original v0.8/v0.8.1 REWORK histories.
 
-- Eight Stage "beats" were each **one curvature, one elevation, one width** over ~1,450 units; they did NOT faithfully reuse the richer HUMAN-KEEP multi-placement L2 pilot experience.
-- Explicit curve-profile windows occupied just **6,143 / 13,500 = 45.5%** of the road; **54.5%** was outside curvature events, with **732–930** world-unit gaps between successive active curves. Not all non-curvature windows are level roads; hills and width can still change.
-- Four of eight Width placements targeted `4→2` lane bottlenecks, matching owner's concern about too frequent narrow roads. This is a count of WIDTH EVENTS, not a measurement of actual narrow-distance fraction.
-- Vehicle's six-speed "acceleration to 300" appears too LINEAR and shifts show too little actual change in road speed/acceleration. Need proper RPM/gear force, drag and actual integrated shift torque dips; not arbitrary subtraction from the speedometer.
+### Authoritative specs and kickoff
 
-### Current v0.8.1 deliverable
-
-1. **Powertrain:** realistic arcade six-gear tractive effort, nonlinear stronger low-gear vs weaker high-gear acceleration, measurable actual torque interruptions and small natural km/h dips/plateaus during shifts, true attainable 300 and preserved warm audio.
-2. **L2/L3 composition:** L2 focuses on ENGAGING driving challenge core (with local multi-curve profiles). L3 designs the overall Stage rhythm and inserts OPTIONAL short buffers/sweeping/reveal/braking approaches between challenge cores where appropriate; NO systematic long straight before/after each L2. Keep nominal 100–150sec first Stage exciting via content rather than filler.
-3. **Road width:** mostly 4 real lanes, supporting 6/8 for faster highway, rare 2/3 for bottleneck/mountain exception; count actual sampled widths by traveled distance. Three marked lanes only when real geometry/marking supports them.
-4. **Review:** old Seed 1 remains REWORK, new Stage generator version/seed candidates UNREVIEWED; preserve all historical approved BRK and L2 Pilot content and retrospective review history.
-
-### Authoritative docs
-
-| File | Why |
+| File | Purpose |
 | --- | --- |
-| [AGENTS.md](AGENTS.md) | Active Codex scope and safe local source workflow |
-| [v0.8.1 Specification](docs/V0.8.1_POWERTRAIN_STAGE_RHYTHM_SPEC.md) | Six-speed torque/RPM + Stage L2/L3 buffering and lane policy |
-| [v0.8.1 Acceptance](docs/V0.8.1_ACCEPTANCE.md) | Bench traces, 5-seed Stage statistics, 3 real full recorded drives |
-| [Codex v0.8.1 Kickoff](docs/CODEX_V0.8.1_KICKOFF.md) | Next one-shot Goal from latest local v0.8 |
-| [Stage 01 Postmortem](docs/V0.8_STAGE01_R1_POSTMORTEM.md) | Objective Seed1 metrics behind redesign |
-| [v0.8 Original Stage Specification](docs/V0.8_STAGE_ONE_SPEC.md) | Historical first-stage baseline |
+| [AGENTS.md](AGENTS.md) | Current Codex task and local source safety |
+| [v0.8.2 Implementation Specification](docs/V0.8.2_DRIVING_EVIDENCE_SPEC.md) | Detailed force/overspeed/screenshot/telemetry/countdown/menu and challenge requirements |
+| [v0.8.2 Acceptance](docs/V0.8.2_ACCEPTANCE.md) | Actual physics, PNG, per-Stage run JSON and five seeds |
+| [v0.8.2 Codex Kickoff](docs/CODEX_V0.8.2_KICKOFF.md) | Normal owner authorization and new autonomous Goal |
+| [v0.8.1 Human Review](docs/reviews/V0.8.1_SEED1_HUMAN_PLAYTEST.md) | Original screenshot REWORK and missing direct clip validation |
+| [Roadmap](docs/ARCADE_DESIGN_BACKLOG.md) | Future progression after first Stage genuinely fun |
 
-### Source warning & execution
+### Keep the working source safe
 
-Latest PLAYABLE source is in user LOCAL Windows `C:\astra-dev\OutRun` (reported last v0.8 commit `ee86082`). Remote GitHub `main` is chiefly docs, NOT a replacement source. Do NOT reset/merge/checkout main over playable local game. In existing single Codex OutRun conversation, send ordinary v0.8.1 authorization first if required by old stop-after, then current v0.8.1 `/goal` from kickoff; local branch/commits only, STOP for new human 5-seed driving review.
+Playable latest LOCAL v0.8.1 lives at §C:\astra-dev\OutRun§ (reported commits §fdbf575§ implementation and §db5ab4e§ handoff; inspect actual local HEAD). GitHub §main§ is DOCS-first and not a replacement working game; never reset/merge it over local source. Use existing single OutRun Codex conversation, authorize v0.8.2 as an ordinary message if needed, then launch the separate §/goal§. Local branch/tests/commits only; no push/merge/public deployment, TopWar changes or other repo edits.
 
-**Preserve:** Three.js, 1.75× world pace, 300km/h six-speed, grade-aware acceleration/coasting, Arcade Lateral Balance 150/300 sensitivity, 144px compact mobile thumb steering, warm engine and soft squeal, keyboard and user-PASSED PS4 Gamepad, original car/occupants/wheels, 18 L1 geometries and scenery city/coast/canyon, retrospective player praise/issue, same Stage Code deterministic play/replay/new route.
+### Preserved game
+Three.js/TypeScript/Vite, Arcade Lateral Balance 1.75×, real 3D car/road/scenery (coast/canyon/city), 18 technical L1 shapes, multi-placement L2 and generated Stage One, real 2–8 road widths and responsive full-hills driving, 300km/h six-speed, animated car and two occupants, human-approved warm engine, gentle tire sound, Pixel 8 landscape fullscreen/PWA/two-thumb 144px steering and hand swap, keyboard/PS4 Gamepad, direct historical praise/issue JSON exports.
 
-Later only: improved first Stage multi-seed review, longer Guided/Mystery trips, additional traffic/obstacle lanes, new biomes, optional Garage/RPG, Stage Editor if needed.
+**Deferred until owner likes Stage 01:** Stage 02, five-minute Guided/Mystery journeys, traffic/collision obstacles/rival AI, snow/volcano, expanded car garage/RPG, stage editor.
