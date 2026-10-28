@@ -15,5 +15,5 @@ it('records actual baseline acceleration, five shifts and grade/coast traces whe
   if(scenario==='flat'){expect(hit(300)).not.toBeNull();expect(shifts).toHaveLength(5);}
   runs.push({fps,scenario,t100:hit(100),t200:hit(200),t300:hit(300),shifts,rows});
  }
- mkdirSync('docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1',{recursive:true});writeFileSync(`docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/powertrain-${label}.json`,JSON.stringify(runs,null,2));
+ mkdirSync('docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1',{recursive:true});writeFileSync(`docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/powertrain-${label}.json`,JSON.stringify(runs,null,2));
 });

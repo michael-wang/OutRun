@@ -11,5 +11,5 @@ it('integrates real shift forces and grade-dependent attainable speeds at 30/60 
   if(throttle&&grade<0)expect(s.speed*3.6).toBeGreaterThan(310);
   if(throttle&&grade>0)expect(s.speed*3.6).toBeLessThan(295);
  }
- mkdirSync('docs/evidence/v0.8.3/regressions/v0.8.2',{recursive:true});writeFileSync('docs/evidence/v0.8.3/regressions/v0.8.2/grade-shift-traces.json',JSON.stringify(runs));
+ mkdirSync('docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2',{recursive:true});writeFileSync('docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/grade-shift-traces.json',JSON.stringify(runs));
 });

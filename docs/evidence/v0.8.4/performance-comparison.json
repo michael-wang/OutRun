@@ -1,0 +1,20 @@
+[
+  {
+    "version": "v0.8.3",
+    "seed": 1,
+    "viewport": "960x540",
+    "wallSeconds": 120.377,
+    "renderedFrames": 7211,
+    "approxFps": 59.90346993196375,
+    "elapsed": 119.60450000003539
+  },
+  {
+    "version": "v0.8.4",
+    "seed": 1,
+    "viewport": "960x540",
+    "wallSeconds": 120.433,
+    "renderedFrames": 7211,
+    "approxFps": 59.87561548744945,
+    "elapsed": 119.62953333336908
+  }
+]

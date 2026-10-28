@@ -1,0 +1,40 @@
+[
+  {
+    "version": "v0.8.3",
+    "viewport": "844x390 emulated mobile",
+    "wall": 15.003699999999254,
+    "fps": 59.985203649769375,
+    "heapBefore": 37322596,
+    "heapAfter": 40159676,
+    "render": {
+      "frame": 1029,
+      "calls": 138,
+      "triangles": 279478,
+      "points": 0,
+      "lines": 0
+    },
+    "memory": {
+      "geometries": 84,
+      "textures": 3
+    }
+  },
+  {
+    "version": "v0.8.4",
+    "viewport": "844x390 emulated mobile",
+    "wall": 15.003900000002234,
+    "fps": 59.98440405493678,
+    "heapBefore": 39528019,
+    "heapAfter": 36449723,
+    "render": {
+      "frame": 1031,
+      "calls": 150,
+      "triangles": 283910,
+      "points": 0,
+      "lines": 0
+    },
+    "memory": {
+      "geometries": 90,
+      "textures": 3
+    }
+  }
+]

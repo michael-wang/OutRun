@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync} from 'node:fs';
-const root='docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1';mkdirSync(root,{recursive:true});
 test('actual stage road widths, paint and off-road boundaries agree',async({page})=>{
  await page.setViewportSize({width:960,height:432});await page.goto('/?stage=1&seed=3');await page.locator('#l2-play').click();
  const stage=await page.evaluate(()=>(window as any).__drive.brick()),narrow=stage.placements.find((p:any)=>p.channel==='width'&&p.id==='W04'),wide=stage.placements.find((p:any)=>p.channel==='width'&&p.id==='W02');expect(narrow).toBeTruthy();expect(wide).toBeTruthy();

@@ -38,6 +38,15 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const texture=new THREE.CanvasTexture(grainCanvas);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;asphalt.map=texture;
   ribbon(-160,-27,-9,-9,sand,0,length,10);ribbon(-27,-13,-9,-.1,sand,0,length,10); ribbon(-13,13,-.1,-.1,sand);
   ribbon(13,75,-.12,-3,grass,0,length,10); ribbon(75,160,-3,-14,grass,0,length,10);
+  // Chunked, road-following embankment faces conceal exposed undersides on
+  // elevated sections. They start outside the shoulder, below the driving plane.
+  const supportMaterial=new THREE.MeshStandardMaterial({color:'#c8aa7d',roughness:1,side:THREE.DoubleSide});
+  const supports=new THREE.Group();supports.name='road-support';scene.add(supports);
+  for(let start=0;start<length;start+=1200){const end=Math.min(length,start+1200),n=Math.ceil((end-start)/2.5),positions:number[]=[],indices:number[]=[];
+    for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const point=p.position.clone().addScaledVector(p.right,offsetAt(d,side*13));positions.push(point.x,point.y-.1,point.z,point.x,Math.min(point.y-4,-5),point.z);}}
+    for(let i=0;i<n;i++)for(let side=0;side<2;side++){const a=i*4+side*2,b=a+4;indices.push(a,a+1,b,a+1,b+1,b);}
+    const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setIndex(indices);geometry.computeVertexNormals();const mesh=new THREE.Mesh(geometry,supportMaterial);mesh.receiveShadow=true;supports.add(mesh);
+  }
   ribbon(-7,7,0,0,asphalt).name='driving-surface'; ribbon(d=>-7+.35*7/halfAt(d),d=>-7+.51*7/halfAt(d),.025,.025,line); ribbon(d=>7-.51*7/halfAt(d),d=>7-.35*7/halfAt(d),.025,.025,line);
   const dashes:THREE.BufferGeometry[]=[];
   // Lab uses true 3.5-unit lanes; free drive retains its original markings.

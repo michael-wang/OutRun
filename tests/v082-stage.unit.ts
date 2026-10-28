@@ -19,5 +19,5 @@ it('composes reproducible multi-curve cores with distinct L3 buffers and measure
   const samples=[];for(let s=0;s<=stage.length;s+=100){const p=pilotSample(stage,BRICK_START+s);samples.push({s,demand:p.demand,height:p.height,grade:p.grade,lanes:p.lanes});}
   rows.push({code:stage.stageCode,fingerprint:stage.contentFingerprint,coverage,gaps,shares,beats:stage.beats,buffers:stage.buffers,placements:stage.placements,worldPhases:stage.worldPhases,samples});
  }
- mkdirSync('docs/evidence/v0.8.3/regressions/v0.8.2',{recursive:true});writeFileSync('docs/evidence/v0.8.3/regressions/v0.8.2/stage-metrics.json',JSON.stringify(rows,null,2));
+ mkdirSync('docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2',{recursive:true});writeFileSync('docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/stage-metrics.json',JSON.stringify(rows,null,2));
 },30000);

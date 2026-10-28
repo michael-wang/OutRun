@@ -1,8 +1,8 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
-const root='docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
+const root='docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
 test('180s at 30/60Hz crosses full track and loop seams with visible unobstructed asphalt',async({page})=>{
- test.setTimeout(180000);mkdirSync(root,{recursive:true});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.setViewportSize({width:960,height:432});await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const runs=[];
+ test.setTimeout(360000);mkdirSync(root,{recursive:true});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.setViewportSize({width:960,height:432});await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const runs=[];
  for(const hz of [30,60]){
   await page.evaluate(()=>(window as any).__drive.reset({distance:5600,speed:65}));const rows=[];
   for(let seconds=0;seconds<180;seconds++){

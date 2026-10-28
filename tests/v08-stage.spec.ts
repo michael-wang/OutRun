@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,readFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8';mkdirSync(root,{recursive:true});
 test('stage seed, keyboard hints and retrospective review export',async({page})=>{
  await page.goto('/?stage=1&seed=42');await expect(page.locator('#l2-lab')).toContainText('S01-v0.8.3-r1-16-ALB1');
  const chunks=await page.evaluate(()=>(window as any).__drive.roadChunks());expect(chunks.count).toBeGreaterThan(5);expect(chunks.cullable).toBe(true);
