@@ -1,6 +1,6 @@
 # Roadtrip streaming — development sequence, executable acceptance
 
-**STATUS UPDATED 2026-10-29:** v0.8.5 streaming foundation was delivered and owner-playtested; user **explicitly authorized v0.9 Ten-Minute Road Trip as the CURRENT scope**. v0.9.1 visual-art pass remains planning-only and is NOT authorized. Detailed v0.9 requirements are in `docs/V0.9_TEN_MINUTE_ROADTRIP_SPEC.md` / `docs/V0.9_TEN_MINUTE_ACCEPTANCE.md`. Product brief \`docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md\`. Current local playable v0.8.4 reported implementation \`edd7018\` + handoff \`4d2b6ad\` on \`codex/v0.8.4-visual-captures\`. Remote \`main\` only documents the plan.
+**STATUS UPDATED 2026-10-29:** v0.8.5 streaming foundation was delivered and owner-playtested; user **explicitly authorized v0.9 Ten-Minute Road Trip as the CURRENT scope**. v0.9.1 visual-art pass remains planning-only and is NOT authorized. Detailed v0.9 requirements are in `docs/V0.9_TEN_MINUTE_ROADTRIP_SPEC.md` / `docs/V0.9_TEN_MINUTE_ACCEPTANCE.md`. Product brief \`docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md\`. The historical original benchmark used local v0.8.4 (\`edd7018\` / \`4d2b6ad\`). Current v0.9 baseline is local playable v0.8.5 (\`97cff65\` implementation / \`f160929\` handoff), source must be verified by Codex. Remote \`main\` only documents the plan.
 
 ## Milestone v0.8.5 — Streaming foundation
 
