@@ -1,27 +1,24 @@
-# Project OutRun — product roadmap (after design paradigm shift)
+# Project OutRun — Roadmap after v0.8.5 human streaming GO
 
-## Current milestone: v0.4.2 Gameplay-First Driving Prototype
+## Proven so far
 
-Owner has explicitly replaced the old turn-physics + arbitrary-track approach with:
-- **Arcade Lateral Balance:** curvature imposes outward drift, steering applies limited opposing correction; reduce speed if curve demand exceeds available correction. Don't accumulate lateral/yaw inertia after exiting the bend.
-- **Gameplay-first geometry:** author discrete challenge segments by Required Steering at a reference speed, width, duration/distance, then derive actual curvature/3D mesh.
-- **Discrete effective control:** default neutral + four levels each direction, with continuously sliding touch/visual wheel and mobile/PC shared behavior.
-- Playtest proof: low/mid/high/too-fast requiring braking/S-curve on ONE small route. 1.75× accepted pace, off-road bounded slowdown, Pixel 8+PC support remain.
+- Eight BRK L2-style experiences human-reviewed, v0.7D genuine multiple-placement L2 pilots human KEEP, 18 L1 geometry shapes, human-controlled issue/praise. Prior v0.7C and v0.8 Stage feedback archived; no historic vote auto-copied to modified geometry.
+- v0.8–0.8.4 seeded ~2min Stage, realistic 6-speed / grade / speed-dependent arcade steering, dual-thumb and PS4 gamepad, photo archives/telemetry. Known art defects: hollow-looking elevated road, sparse rhythmic palms, thin building rows.
+- v0.8.5 streaming foundation Codex locally delivered (reported `97cff65` + `f160929`, tests green). **Owner personally played** short Stage and did NOT notice visible hitch/pop, photo normal. This is enough human GO to start long-form content, not complete proof of physical Pixel 8 performance.
 
-This is a prototype, not permission to build a track editor or adaptive director.
+## CURRENT OWNER-AUTHORIZED: v0.9 10-Minute Road Trip
 
-## AFTER the core prototype passes the human test
+One selectable ~8–12min real long journey with distance-based finish/replay/new route using **cheap seeded RoutePlan and existing bounded SceneStreamer** — not prebuilding ~70k game distance units of scene at start.
 
-### Experience Director, not just procedural roads
-Difficulty/elevation/visibility/width/obstacle profiles arranged into a designed **emotional rhythm**, using a small authored script first. Gradually explore Beginner / Intermediate / Advanced / Godlike as distinct challenge distributions. Any intentionally >100%-at-reference corner must still have at least one practical slowed-down or alternative strategy.
+- Human-perceivable arc: high-speed freedom, technical brake-worthy challenges, scenic relief, canyon big verticality, coast, city, and meaningful seed-to-seed C/E/W + L2/L3 schedule variations. No "two-minute Stage copied five times" or generic long empty straights.
+- Preserve 4-lane main roads, 6/8 secondary, rare 2/3, grade-sensitive realistic six-speed ~300, 1.75x world pace, PS4/photo/praise, Pixel/PWA and local reports. No new art packs.
+- Scene chunks at future phases ready before camera, seamless road/props/biome boundaries, bounded GPU/CPU memory, no input hitch, coordinate precision at long s. At least 5 deterministic seed codes, 3 full real-browser 10-minute drives, ≥20min memory soak and real human long playtest afterward.
+- Current Codex spec `docs/V0.9_TEN_MINUTE_ROADTRIP_SPEC.md`, acceptance `docs/V0.9_TEN_MINUTE_ACCEPTANCE.md`, kickoff `docs/CODEX_V0.9_TEN_MINUTE_KICKOFF.md`. **STOP for owner** after local commits.
 
-### Player model and branch choice
-Optional stage-boundary adaptive difficulty using average speed, off-road time, braking and correction accuracy, without secretly changing the active road mid-corner. Left/right road forks should communicate the choice and let player override any suggestion. Player skill must remain rewarded.
+## After the v0.9 human drive review — NOT YET AUTHORIZED
 
-### More features after engine fun is proven
-- Original open-top sports car and visible driver/passenger with expressive animations.
-- Scenic changes approximately every 30–45s of normal fast driving (coast, desert, city, forest/snow) and thematic stage transitions.
-- Different cars with differentiated turn authority/grip/top speed; bounded object hazards and traffic/rival cars.
-- Scores/leaderboards, routes, game music and checkpoints. No scope expansion merely because Codex can generate it.
+**v0.9.1 Visual Depth & Organic Scenery:** meaningful real-world camera correction of distant hollow elevated road with believable understructure/terrain, organic fuller palms/vegetation clusters and back-row city masses, all stream-safe near/mid/far LOD and no new frame hitches. Owner photo comparisons & original problem spots before/after.
 
-**Priority:** drive is fun first; generated challenges actually measurable second; adaptive/meta systems only when needed.
+Later possible road-trip freedom/Mystery Drive, traffic/rivals/obstacles, future snow/mountain/volcano world packs and car/garage/RPG progression **only when player wants to replay a long route without rewards**.
+
+No automated AAA difficulty theater, parallel Goals in same local checkout, erroneous docs-only main merge/reset or out-of-scope work.

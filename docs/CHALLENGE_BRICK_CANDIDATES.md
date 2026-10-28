@@ -1,6 +1,6 @@
 # Challenge Brick candidates — first review batch
 
-**Status:** Original r1 descriptions below. The owner reviewed r1: KEEP 01/02/04/06/07/08; REWORK 03/05, requesting "More radical height delta". Exact feedback is preserved in [the R1 archive](reviews/V0.7A_R1_HUMAN_REVIEWS.json). v0.7A.1 changes road geometry/markings for all eight; their new r2 votes start UNREVIEWED. No revised candidate is human-approved for v0.7B.
+**Status:** Second-round v0.7A.1 human review COMPLETE: eight exact `revision: 2` variants BRK-01..08 all received KEEP (autoQA PASS). Source: `docs/reviews/V0.7A1_R2_HUMAN_REVIEWS.json`. Prior R1 history: six KEEP, BRK-03/05 REWORK; archived separately. These accepted recipes are reference content, NOT automatic approval of any new L1-stacked variation.
 
 A brick is a self-contained **driving moment**, with a clear intended operation, emotion, geometry/visibility constraints and compatible entrance/exit. Difficulty is calibrated using current Arcade Lateral Balance and the currently approved 1.75× pacing. Keep the full run/vehicle controls familiar.
 

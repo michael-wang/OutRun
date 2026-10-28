@@ -1,8 +1,24 @@
 # Codex kickoff — implement v0.1 First Drive
 
-Copy the task below into a **Codex Goal** (where supported) or a normal long-running Codex development task while the correct repository checkout is open. This is an implementation instruction, not a request for another plan.
+## Preferred launch: Codex Goal Mode (local project)
 
----
+**Goal Mode is the intended autonomous workflow for this milestone.** The short command below is the **only thing the user needs to paste into the Codex Goal composer**; detailed requirements are already in this repo. Do not paste the rest of this document into a separate ordinary prompt and assume Goal Mode is active.
+
+1. Check that `C:\astra-dev\OutRun` is an actual checkout of `michael-wang/OutRun` and has pulled the latest specification files. If the directory is empty, clone the repo *into* it first. Never repurpose `C:\astra-dev\topwar`.
+2. In the desktop Codex app, select the OutRun project in **Local** mode (not Cloud), start a new chat on that checkout, and choose a sandboxed approval policy that allows normal work inside the project.
+3. In the composer, type `/` and choose `/goal` from the supported commands. Paste the single-line Goal below and submit it. The app should show the Goal/progress controls. Merely typing the text `/goal` as an unsupported ordinary message does **not** enable Goal Mode.
+4. Leave the machine/environment available for local execution. Goal continuation is scoped to this chat and can pause for permissions, interruption, or usage/budget limits. It does not guarantee completion within a particular wall-clock duration.
+5. Review the final local build and `docs/V0.1_HANDOFF.md` yourself. Only after human acceptance should a new v0.2 goal be created.
+
+### Copy into the Goal composer
+
+```text
+/goal Deliver a locally playable Project OutRun v0.1 First Drive in the confirmed michael-wang/OutRun checkout. Read AGENTS.md, docs/PRODUCT_VISION.md, docs/V0.1_SPEC.md, docs/V0.1_ACCEPTANCE.md, and docs/CODEX_KICKOFF.md. Implement the specified Three.js/TypeScript 3D coastal arcade drive. Independently iterate: implement, run the actual browser game, test keyboard and simultaneous two-thumb mobile controls, inspect desktop/mobile screenshots, fix defects, and rerun build/unit/Playwright tests. Finish only when the verifiable P0 acceptance criteria pass and docs/V0.1_HANDOFF.md records evidence, exact local start commands, and any remaining limits. If blocked by tools, permission or budget, stop with honest PASS/FAIL/UNVERIFIED results rather than claiming success. Keep all edits inside this repo; do not merge to main or deploy publicly. Stop after v0.1 and await human playtesting.
+```
+
+If `/goal` is missing, update Codex and check whether Goals are enabled in the Codex CLI/config (e.g. `codex features enable goals`, or `[features] goals = true` under `%USERPROFILE%\.codex\config.toml`); restart the app. Some Windows builds have had a missing slash-command UI despite enabled feature flags. Use the CLI Goal command if available; otherwise use the detailed brief below as a normal development task, understanding that it is **not guaranteed to continue autonomously across turns**.
+
+## Detailed implementation brief (reference for Codex)
 
 You are taking ownership of **Project OutRun v0.1: First Drive**.
 

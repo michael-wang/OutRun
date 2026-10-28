@@ -1,6 +1,6 @@
 # Codex v0.8.5 Kickoff — Bounded Scene Streaming & Photo-Menu Trim
 
-**OWNER HAS NOW COMMISSIONED v0.8.5.** This is the FIRST dependent step on the route to v0.9 ten-minute Road Trip. Do **NOT** automatically begin v0.9 or v0.9.1 inside this Goal. Previous ChatGPT planning documents are now approved for **v0.8.5 only**.
+**HISTORICAL v0.8.5 KICKOFF: COMPLETED, DO NOT RE-RUN.** Codex locally implemented v0.8.5 (`97cff65` + `f160929`), the owner played and confirmed smooth feel, and v0.9 is now authorized under `docs/CODEX_V0.9_TEN_MINUTE_KICKOFF.md`. The historical v0.8.5 kickoff began when **the owner had commissioned v0.8.5**. This is the FIRST dependent step on the route to v0.9 ten-minute Road Trip. Do **NOT** automatically begin v0.9 or v0.9.1 inside this Goal. Previous ChatGPT planning documents are now approved for **v0.8.5 only**.
 
 ## Ground truth / source safety (read before any operation)
 
