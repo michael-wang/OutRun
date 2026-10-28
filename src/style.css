@@ -49,5 +49,6 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
 }
 
 #gamepad-status{position:fixed;right:12px;bottom:8px;z-index:25;background:#123e43dd;border-radius:5px;padding:4px 8px;color:#fff;font:11px sans-serif;pointer-events:none} a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffe5a2;outline-offset:3px}
+html:not([data-input-mode=gamepad]) #gamepad-status{display:none}
 #photo-button{position:absolute;z-index:15;top:68px;right:18px;min-width:44px;min-height:44px;font-size:20px}#photo-status{position:absolute;z-index:20;top:118px;right:18px;background:#103b43e8;color:white;padding:6px;border-radius:6px}#ready-countdown{position:absolute;z-index:55;left:50%;top:40%;transform:translate(-50%,-50%);background:#103b43e8;color:#fff;padding:14px 24px;border-radius:12px;font:bold 28px system-ui}#photo-gallery{z-index:80;max-height:80vh;overflow:auto}#drive-report pre{max-height:200px;overflow:auto}
 @media(pointer:coarse){.keyboard-hints{display:none}}

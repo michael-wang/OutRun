@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {touchDriver} from './touch-driver';
-const root='docs/evidence/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1';mkdirSync(root,{recursive:true});
+const root='docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1';mkdirSync(root,{recursive:true});
 test('compact active steering travel retains nine stable notches and independent gas in both layouts',async({browser})=>{
  const traces=[];
  for(const [width,height] of [[844,390],[960,432]]){

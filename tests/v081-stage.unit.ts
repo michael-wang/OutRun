@@ -8,7 +8,7 @@ it('composes reproducible multi-curve cores with distinct L3 buffers and measure
  const rows=[];
  for(const seed of [1,2,3,42,710]){
   const stage=generateStage(seed);expect(generateStage(seed)).toEqual(stage);validatePilot(stage);
-  expect(stage.generatorVersion).toBe('v0.8.2-r1');expect(stage.revision).toBe(3);
+  expect(stage.generatorVersion).toBe('v0.8.3-r1');expect(stage.revision).toBe(4);
   for(const beat of stage.beats){const local=stage.placements.filter(p=>p.beat===beat.id);expect(local.filter(p=>p.channel==='curvature').length).toBeGreaterThanOrEqual(2);expect(local.some(p=>p.channel==='elevation')).toBe(true);}
   expect(new Set(stage.buffers.map(x=>x.role)).size).toBeGreaterThan(2);
   const track=createPilotTrack(stage);for(const beat of stage.beats)for(const seam of [beat.startS,beat.endS]){const a=pilotSample(stage,BRICK_START+seam-.01),b=pilotSample(stage,BRICK_START+seam+.01),pa=track.sample(BRICK_START+seam-.01),pb=track.sample(BRICK_START+seam+.01);expect(Math.abs(a.height-b.height)).toBeLessThan(.05);expect(Math.abs(a.grade-b.grade)).toBeLessThan(.001);expect(Math.abs(a.lanes-b.lanes)).toBeLessThan(.001);expect(Math.abs(a.demand-b.demand)).toBeLessThan(.001);expect(pa.position.distanceTo(pb.position)).toBeLessThan(.05);expect(Math.abs(pa.roadHeading-pb.roadHeading)).toBeLessThan(.001);}
@@ -19,5 +19,5 @@ it('composes reproducible multi-curve cores with distinct L3 buffers and measure
   const samples=[];for(let s=0;s<=stage.length;s+=100){const p=pilotSample(stage,BRICK_START+s);samples.push({s,demand:p.demand,height:p.height,grade:p.grade,lanes:p.lanes});}
   rows.push({code:stage.stageCode,fingerprint:stage.contentFingerprint,coverage,gaps,shares,beats:stage.beats,buffers:stage.buffers,placements:stage.placements,worldPhases:stage.worldPhases,samples});
  }
- mkdirSync('docs/evidence/v0.8.2/regressions/v0.8.1',{recursive:true});writeFileSync('docs/evidence/v0.8.2/regressions/v0.8.1/stage-metrics.json',JSON.stringify(rows,null,2));
+ mkdirSync('docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1',{recursive:true});writeFileSync('docs/evidence/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/stage-metrics.json',JSON.stringify(rows,null,2));
 },30000);

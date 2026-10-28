@@ -28,7 +28,7 @@ export class Immersive {
         catch { this.lockState='denied'; this.message='Rotate your device to landscape. Automatic rotation was not allowed.'; }
       }
     } catch {
-      this.message='Fullscreen unavailable. Keep playing here, or tap Fullscreen to retry. Rotate to landscape.';
+      this.message='Fullscreen unavailable. Press F or click Fullscreen to retry. Rotate to landscape if needed.';
     } finally { this.pending=false; this.changed(); }
   }
   async toggle() {
