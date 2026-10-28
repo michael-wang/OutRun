@@ -1,21 +1,32 @@
-# OutRun Roadmap — v0.8.2 Human Driving Evidence → v0.8.3
+# Project OutRun — Short practical development backlog
 
-## What human data now proves and does not prove
+## COMPLETED & currently in human visual review
 
-One actual `v0.8.2-r1` Stage One human drive (117.30sec, Stage Code `S01-v0.8.2-r1-EVMPD9-ALB1`) completed; gas held 93.2%, braking 2.7%, 9 presses, offroad 0; four of eight beats had NO brake, beat 07 five. Fast 300km/h broad turns can still be exciting, so don't globally require braking in every beat. A previous `v0.8/v0.8.1` Stage Seed 1 was human REWORK, while the latest human said the Stage is "變好玩了" but still wants more distinct challenges. No human vote was explicitly submitted for latest `v0.8.2` Stage; do not forge it. See `docs/V0.8.2_DRIVER_R1_ANALYSIS.md`.
+- v0.7A: playable eight Challenge Brick Lab; owner reviewed.
+- v0.7C: 18 L1 atomic shapes / 16 L2 challenges and praise/issue snapshot system; owner rejected initial L2 because it didn't truly combine multiple L1 placements.
+- v0.7D: three multi-placement L2 pilot routes; owner liked all three.
+- v0.7D.1 and .2: slope, speed-dependent lateral drift, gamepad, keyboard focus/shortcuts and retrospective praise/issues.
+- v0.8/0.8.1: first deterministic procedural Stage01 Pacific Getaway, tightened challenge core and 4-lane majority; owner wanted harder Stage and realistic shift dynamics.
+- v0.8.2: physical force gear shift dips/uphill/downhill overrun, Stage evidence/telemetry, screenshot controller chord (real DS4 L1+L2 failed), 1s resume. Human v0.8.2 first JSON ~117.3sec, 93% gas, 9 brakes, zero offroad.
+- v0.8.3: dedicated SHARE screenshot, OPTIONS Play/Pause, Touchpad/R3 fullscreen and stronger speed planning challenges. Codex reports local `c3c8125`+`962ec67`. Human supplied two actual screen captures: first shows wheel appearing to penetrate/hover despite pivot `surfaceGap≈0.010m` in canyon bend; second shows elevated road underside apparently empty and city backside blank. New seed1 human JSON ~114.54sec, 94.1% gas, seven brake presses, 0 offroad. No explicit formal v0.8.3 vote.
 
-**Hardware vs machine discrepancy:** Codex mock-tested PS4 `L1+L2` screenshot and reported PASS, but actual DS4 user test FAILS (L1 praise screen opens). Existing mouse PNG capture succeeds. Screenshot arbitration needs single SHARE input, measured on actual DS4. Owner provided pad photo showing SHARE and touchpad, and wants one-press controller Play/Fullscreen.
+## ACTIVE next: v0.8.4 — Visual Grounding / Capture Archive / Scenery Continuity
 
-## CURRENT ACTIVE: v0.8.3 Screenshot + Stage Challenge
+**Do these four and STOP for human review:**
 
-1. Retire screenshot chord. Prefer **SHARE** single-button screenshot; supported standard DS4 Back/Select slot candidate `buttons[8]`. Do NOT steal L1 praise or L2 brake. Keep existing real rendered PNG with diagnostic metadata and actual local download. Add small mapping diagnostic and clear current gamepad hints. Physical device retest required.
-2. **OPTIONS** one-button Play/Play Again in menu, Pause in drive, Resume via existing 1.0-second freeze. **Touchpad CLICK** toggles fullscreen when browser supplies additional button; otherwise **R3** fallback. RequestFullscreen needs browser activation and Promise success; handle rejection, not pretend enabled. Keep Cross+Focus/Dpad and keyboard shortcuts.
-3. Stage One keep existing 100–150s generated seeded scenic road, 4lane majority and coastal/canyon grade/style, but add **2–4 initial candidate** clearly differentiable speed-management/challenge moments in middle/end. The user still wants lots of high-speed fun; use optional L3 recovery and readable braking curves, not globally harder grip or 2-lane narrow traps.
-4. Compare five seeded NO BRAKE driver vs BRAKING driver and at least three full rendered Stage drives; collect per-beat telemetry and demonstrate where a no-brake driver cannot preserve lane/edge despite full steering while a controlled driver can. Preserve original saved Stage Codes/reviews and new gen revision.
-5. 673KB / 2min Telemetry is acceptable per human. No compression work, cloud upload or new analytical pipeline.
+1. **Touchpad press takes photo, SHARE toggles fullscreen**, OPTIONS Play unchanged. R3 screenshot fallback only when touchpad button unavailable. The owner can retain left thumb stick while taking snapshot; real DS4 mapping/hardware verification still needed.
+2. **Unique, persistent every-shot PNGs** on running Windows Vite dev server: `C:\astra-dev\OutRun\captures\YYYY-MM-DD\`, secure dev-only file middleware, 12 photos → 12 accessible PNGs, sidecars with frame pose/Stage metrics, capture status and failure fallback. Do not ship photo cloud backend or complex gallery.
+3. **Real four-wheel visual contact** against actual road profile/mesh, body visual pitch/roll + small suspension and shadows; arcade grip/dynamics and Stage geometry unchanged. User screenshot gap at body origin is insufficient. Test steep canyon + turns + crests + variable widths.
+4. **Procedural scenery support and depth**, lean near/mid/far bands in existing L3 scene generator: road-edge skirts/cliff/embankment/bridge supports, cheap building mass back row, coast cliff/water continuity, canyon mesas, horizon/occlusion. Fix seed1 ~s8426 visual reference and prove multiple other Seeds, no over-built AAA world or prior mountain road obstruction regression.
 
-See `docs/V0.8.3_CONTROLLER_CHALLENGE_SPEC.md`, `docs/V0.8.3_ACCEPTANCE.md`, `docs/CODEX_V0.8.3_KICKOFF.md`.
+See [v0.8.4 spec](V0.8.4_SPEC.md), [acceptance](V0.8.4_ACCEPTANCE.md), [kickoff](CODEX_V0.8.4_KICKOFF.md), [human review](V0.8.3_HUMAN_VISUAL_REVIEW.md).
 
-## FOLLOWING HUMAN acceptance, not now
+## Backlog AFTER actual v0.8.4 visual acceptance (do not start now)
 
-Review the new user screenshot of perceived hovering car through wheel-road contact, shadow, tilt and camera/vehicle alignment; only then commission any actual 3D visual correction. Continue seed variety and physical hazard/traffic L1 modules AFTER the first stage actually feels fun with varied driving choices. Longer 5min Guided Pacific Trip, Mystery Drive, new biomes, car choices, and optional RPG income/garage much later. No AAA feasibility optimizer, feature factory, auto human KEEP, unbounded Stage Editor, Stage 02 or unrelated repo edits.
+- Need additional, variety-rich meaningful driving choices in Stage01? New 114.5sec actual seed1 run still 94.1% GAS and no offroad. This observation might motivate retuning or traffic/hazards L1, but first owner must explicitly review Stage challenge. Do NOT autonomously alter difficulty this time.
+- Introduce dynamic traffic/rivals and respectful collisions after proven scenery and screenshot loop.
+- Longer 5-min Pacific road trip and Mystery Drive/other biomes based on player ratings.
+- Only after users voluntarily repeatedly drive fun roads: garage, upgrades, terrain equipment, unlocks, light in-game economy.
+- Keep original finite systematic L1 category inventory + L2 multi-placement and L3 city/coast/canyon metadata. No algorithmic 3A feasibility theater, giant track editor or full vehicle rigidbody engine. Human play remains fun gate.
+
+**Repo warning:** Remote GitHub main is docs only; local Windows checkout contains playable game. Always build from latest local playable branch, selectively import docs. No push/merge/deploy.

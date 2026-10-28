@@ -1,37 +1,31 @@
 # Project OutRun
 
-An original browser-based Three.js+TypeScript arcade driving game inspired by the joy of classic Out Run, NOT a licensed SEGA recreation. Title is internal only; use original/license-cleared assets for public release.
+An original Three.js + TypeScript arcade road-trip driving game, PWA/landscape Pixel 8 oriented, inspired by classic Out Run while using original art. Future title should be original.
 
-## ACTIVE: v0.8.3 — PS4 Screenshot & More Engaging Procedural Stage 01
+## Current NEXT milestone: v0.8.4 — Visual Grounding & Photo Capture Archive
 
-**Latest PLAYABLE local code:** v0.8.2 on Windows `C:\astra-dev\OutRun`, reported implementation `661c571`, handoff `dfa6b0f`. GitHub `main` is DOCUMENTATION-first, **never checkout/reset/merge it over the working game**. Start a local v0.8.3 branch from current playable HEAD.
+**Latest human-playtested playable source is LOCAL Windows v0.8.3**, reported `codex/v0.8.3-pad-challenge` (`c3c8125` + `962ec67`). This GitHub repository's `main` is documentation-first, **not a replacement for playable local source**. Start a new feature branch from genuine playable local HEAD and selectively import only new docs.
 
-### Human v0.8.2 results
+Human has supplied two actual v0.8.3 screenshots and a new **114.54-sec seed1** driver report. See [human screenshot review](docs/V0.8.3_HUMAN_VISUAL_REVIEW.md). The owner has **NOT formally voted** KEEP/REWORK/REJECT on this exact version; preserve historical reviews.
 
-One real Stage Code `S01-v0.8.2-r1-EVMPD9-ALB1` was completed in **117.3sec**. [Telemetry evidence summary](docs/V0.8.2_DRIVER_R1_ANALYSIS.md). Human says the first Stage is now more fun and a bit harder, but still needs **MORE distinct challenges**. They did NOT supply formal KEEP/REWORK/REJECT for this specific Stage Code. The 673KB local JSON file is acceptable; compression can wait.
+### What v0.8.4 should deliver
 
-- Gas held **93.2%**, brake only **2.7%** (9 presses), **0 offroad**, ≥270km/h 38.4%, ≥285km/h 23.3%, ≥300km/h 7.2%. Four of eight Stage beats have NO brake press (01/02/04/08), while beat 07 has 5/9. Preserve thrilling fast sweeping arcs while adding several visibly readable speed-management technical challenges.
-- Actual PS4 `L1+L2` screenshot CHORD **FAIL**: opens praise. Existing on-screen mouse screenshot **PASS**, so fix the input route, not reimplement screenshot rendering.
-- Owner points to PS4 **SHARE** small select button and **Touchpad** as better single-button candidates.
-- Need controller one-button shortcuts for **Play** and **Fullscreen**, without a mouse or D-pad focus navigation every time.
-
-### Requested v0.8.3 deliverable
-
-| Work | Product expectation |
+| Area | Owner's desired result |
 | --- | --- |
-| **Single-button Share screenshot** | DS4 SHARE → local PNG, not praise/menu. Chromium standard-mapped back/select slot often `buttons[8]`; actual physical device mapping must be verified. `F8` / mobile camera/mouse stay working. |
-| **One-button Play/Pause** | OPTIONS (`buttons[9]` standard) starts game from Stage menu; pauses while playing; resumes with 1.0s frozen countdown. |
-| **One-button Fullscreen** | DS4 Touchpad CLICK when exposed (`buttons[17]` extension on some Chrome DS4), otherwise R3 (`buttons[11]`) fallback. Verify browser requestFullscreen promise/actual result and display usable hints; never pretend rejected request succeeded. |
-| **Stage 01 more engaging** | Keep genuinely fast high-speed sweepers, add several different brake-required/speed-planning events using existing L2 challenge core + optional L3 buffers. Don't blanket narrow or globally nerf steering. |
-| **Human-style QA** | Five repeatable seeds with paired no-brake/braked scripted drivers and measurements; three full rendered Stage recordings, actual controller diagnostic/PNG, build/unit/E2E, local handoff. |
+| **PS4 controls** | Swap: **Touchpad CLICK = instant screenshot**, **SHARE = fullscreen**. R3 screenshot fallback if touchpad button absent; OPTIONS Play/Pause/Resume, L1 praise, Square issue, triggers, keyboard and Pixel camera unchanged. |
+| **Capture archive** | Every screenshot saved as unique PNG immediately into **`C:\astra-dev\OutRun\captures\YYYY-MM-DD\`** when Vite DEV server is running on Windows. 12 shots → 12 accessible files; keep metadata, no overwritten last image; secure fixed-path dev-only middleware, clear offline fallback and save status. |
+| **Four tire contacts** | Per-wheel road-height sampling and lightweight Arcade Visual Suspension/roll/pitch/shadows so visible wheels stop sinking into/floating over the actual road mesh on steep bends and crests. Do not change Arcade Lateral Balance driving physics. |
+| **Procedural L3 scenery** | Minimal reusable terrain shoulders/skirt/embankment/cliffs/bridge supports, cheap city back-row masses and horizon layers so elevated roads and roadside buildings feel embedded in city/coast/canyon. No full 3D open world, no single-seed hardpatch. |
+| **Human acceptance** | Photos taken DURING steering, 12 distinct disk PNGs, near/mid/far screenshots in 5 seeded stages, 3 complete drives, build/unit/E2E and performance; then STOP for owner's real PS4 and visual review. |
 
-Authoritative docs:
-- [AGENTS.md](AGENTS.md) — current scoped task / safe local checkout
-- [v0.8.3 Specification](docs/V0.8.3_CONTROLLER_CHALLENGE_SPEC.md) — detailed DS4 map, Fullscreen fallbacks and stage challenges
-- [v0.8.3 Acceptance](docs/V0.8.3_ACCEPTANCE.md) — hardware caveats, no-brake vs braked, prior-review regressions
-- [Codex v0.8.3 Kickoff](docs/CODEX_V0.8.3_KICKOFF.md) — ordinary authorization + autonomous Goal
-- [v0.8.2 Real Driver Analysis](docs/V0.8.2_DRIVER_R1_ANALYSIS.md) — measured player data, no fabricated review
+### Authoritative files
 
-**Preserve:** Original 3D car/occupants/wheels/hair, Arcade Lateral Balance, 1.75× world pace, 6 real gears, 300 flat/downhill overrun, warm engine & gentle skid, grade and speed-dependent cornering, actual 2–8 lanes, three original city/coast/canyon scenery packs and L3 biome verticality bias, Pixel 8 two-thumb landscape/PWA (144px horizontal steering reach), user-PASS PS4 steering/trigger/praise controls, keyboard and visible contextual hints, retrospective in-drive praise/issues, local Stage code/telemetry/export and all original human review archives.
+- [AGENTS.md](AGENTS.md) — active scoped task and local repository safety
+- [v0.8.3 Human visual/drive review](docs/V0.8.3_HUMAN_VISUAL_REVIEW.md) — real seed1 and two screenshot cases
+- [v0.8.4 specification](docs/V0.8.4_SPEC.md) — DS4, secure local photo archive, tire grounding, procedural scenery
+- [v0.8.4 acceptance criteria](docs/V0.8.4_ACCEPTANCE.md) — reproducible visual and screenshot proof
+- [Codex v0.8.4 kickoff](docs/CODEX_V0.8.4_KICKOFF.md) — ordinary authorization and independent Goal
 
-Use SAME existing OutRun Codex conversation: send ordinary authorization then separate `/goal` from kickoff; Codex branches only from latest playable local HEAD and imports new docs selectively. No push, merge, public deploy, other project changes or Stage 02. STOP for human Stage screenshot and difficulty testing.
+Prior user-approved core: genuine 3D road/car with visual speed multiplier 1.75x, Arcade Lateral Balance, 144px responsive mobile thumb steering, 2–8 lane dynamic width and variable steep grade, six gears/~300flat/downhill >300, grade-sensitive traction and power, keyboard/PS4/Pixel controls, positive/issue retrospective feedback, procedure-generated deterministic L1+L2+L3 Stage01 seeded city/coast/canyon, warm engine and quieter tire squeal, screenshot/pose metadata, private local 0.1s drive telemetry. **Do not retune Stage difficulty, change seed codes or rewrite human reviews in this milestone.**
+
+Work remains LOCAL on Windows `C:\astra-dev\OutRun`; GitHub main contains only specifications. No push/merge/deploy, Stage 02, RPG, unrelated project edit.
