@@ -1,0 +1,42 @@
+[
+  {
+    "seed": 1,
+    "code": "TRIP-v0.9-r1-1-ALB1",
+    "planMs": 1.5,
+    "trackMs": 178,
+    "logicalBytes": 43044,
+    "trackLength": 69950
+  },
+  {
+    "seed": 2,
+    "code": "TRIP-v0.9-r1-2-ALB1",
+    "planMs": 0.8000000044703484,
+    "trackMs": 184.69999999552965,
+    "logicalBytes": 43332,
+    "trackLength": 69950
+  },
+  {
+    "seed": 3,
+    "code": "TRIP-v0.9-r1-3-ALB1",
+    "planMs": 0.8999999985098839,
+    "trackMs": 175.90000000596046,
+    "logicalBytes": 43410,
+    "trackLength": 69950
+  },
+  {
+    "seed": 4,
+    "code": "TRIP-v0.9-r1-4-ALB1",
+    "planMs": 0.6000000014901161,
+    "trackMs": 178.70000000298023,
+    "logicalBytes": 43114,
+    "trackLength": 69950
+  },
+  {
+    "seed": 5,
+    "code": "TRIP-v0.9-r1-5-ALB1",
+    "planMs": 0.8000000044703484,
+    "trackMs": 176.5,
+    "logicalBytes": 43612,
+    "trackLength": 69950
+  }
+]

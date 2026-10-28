@@ -15,7 +15,7 @@ worker.onmessage=(event:MessageEvent<Request>)=>{
   if(request.generation!==generation||!stage||!track)return;
   const t=performance.now(),candidate=stage,current=track;
   if(request.type==='scenery'){
-   const scene=new THREE.Scene();addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples});
+   const scene=new THREE.Scene();addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,openRoad:candidate.id==='ROAD-TRIP-10M'});
    const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{template:string;color:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
    scene.traverse(object=>{if(!(object instanceof THREE.InstancedMesh))return;const g=object.geometry,m=object.material as THREE.MeshStandardMaterial;geometries.add(g);materials.add(m);
     if(!templates.has(g.uuid)){const attr=(name:string)=>new Float32Array(g.getAttribute(name)?.array??[]);templates.set(g.uuid,{position:attr('position'),normal:attr('normal'),uv:attr('uv'),color:attr('color'),index:new Uint32Array(g.index?.array??[])});}

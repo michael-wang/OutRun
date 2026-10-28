@@ -5,7 +5,7 @@ import type {createTrack} from './track';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[]}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:i===theme?a.landmarks:[]}));
  const random=(n:number)=>rand(n+seed);
@@ -21,7 +21,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  let base=new THREE.Vector3(),yaw=0,chunk=0;
  const roadSamples=range.roadSamples??Array.from({length:Math.ceil(length/25)},(_,i)=>sample(i*25).position);
  function anchor(d:number,offset:number){chunk=Math.floor(d/650);const p=sample(d);base=p.position.addScaledVector(p.right,roadOffset(offset,halfAt(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);yaw=-p.roadHeading;}
- function clear(radius:number){return roadSamples.every((a,i)=>{const b=roadSamples[(i+1)%roadSamples.length],dx=b.x-a.x,dz=b.z-a.z,t=THREE.MathUtils.clamp(((base.x-a.x)*dx+(base.z-a.z)*dz)/(dx*dx+dz*dz),0,1);return Math.hypot(a.x+t*dx-base.x,a.z+t*dz-base.z)>radius+halfAt(i*25)+5;});}
+ function clear(radius:number){return roadSamples.every((a,i)=>{if(range.openRoad&&i===roadSamples.length-1)return true;const b=roadSamples[(i+1)%roadSamples.length],dx=b.x-a.x,dz=b.z-a.z,t=THREE.MathUtils.clamp(((base.x-a.x)*dx+(base.z-a.z)*dz)/(dx*dx+dz*dz),0,1);return Math.hypot(a.x+t*dx-base.x,a.z+t*dz-base.z)>radius+halfAt(i*25)+5;});}
  function part(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0){
   let material=materials.get(color);if(!material){material=new THREE.MeshStandardMaterial({color,roughness:.85,vertexColors:!!g.getAttribute('color')});materials.set(color,material);}
   quaternion.setFromAxisAngle(axis,yaw);dummy.position.set(x,y,z).applyQuaternion(quaternion).add(base);dummy.rotation.set(rx,ry,rz);dummy.quaternion.premultiply(quaternion);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();

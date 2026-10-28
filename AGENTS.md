@@ -1,29 +1,29 @@
-# Project OutRun — Current Codex Work Agreement (2026-10-28)
+# Project OutRun — Codex working agreement (29 October 2026)
 
-## ACTIVE OWNER-COMMISSIONED: v0.8.5 — Bounded Road/Scene Streaming Foundation
+## ACTIVE OWNER-AUTHORIZED MILESTONE: v0.9 Ten-Minute Road Trip
 
-The owner explicitly said **"很好，請進行"** after approving a phased path to a **10-minute richly varied procedural road trip**. Current user authorization is ONLY for **v0.8.5**, NOT permission to implement future 10-minute v0.9 or scenery-art v0.9.1 automatically. The user wants no full-route upfront geometry build and no visible scene-load hitch.
+The owner **actually played v0.8.5** via existing ~2min Stage and reported NO perceptible pop-in, stutter or abrupt interruption, and photo capture NORMAL. This is a human usability GO for proceeding to a **NEW TEN-MINUTE ROAD TRIP**, not verified real Pixel 8 hardware FPS nor a claim that all seeds and memory are perfect. Codex reported v0.8.5 LOCAL implementation `97cff65` and handoff `f160929` on `codex/v0.8.5-scene-streaming`, with clean working tree. Check actual Windows HEAD/status before branching; owner may have new local edits.
 
-**Latest playable LOCAL code:** Windows `C:\astra-dev\OutRun`, reported Codex v0.8.4 on `codex/v0.8.4-visual-captures`, implementation `edd7018` and handoff `4d2b6ad`. Verify actual HEAD/branch/worktree and no concurrent Goal; user may have changed files. Remote GitHub `main` is DOCUMENTATION-FIRST, **never checkout/reset/merge it over playable source**. Start a new LOCAL `codex/v0.8.5-scene-streaming` from playable v0.8.4 HEAD and selectively import only current spec/kickoff/acceptance docs.
+**Read in order:**
+1. `docs/CODEX_V0.9_TEN_MINUTE_KICKOFF.md` (ordinary authorization and ready current Goal).
+2. `docs/V0.9_TEN_MINUTE_ROADTRIP_SPEC.md` (NEW actual ten-minute road-trip content).
+3. `docs/V0.9_TEN_MINUTE_ACCEPTANCE.md` (3 full long browser drives, 5 seeded routes, streamer/CPU/GPU/memory gates).
+4. `docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md`, `docs/TEN_MINUTE_ROADTRIP_ACCEPTANCE.md` (phased reference only: v0.8.5 done, v0.9 active, v0.9.1 future).
+5. `docs/V0.8_BIOME_VERTICALITY_METADATA.md` (L3 world elevation preference).
 
-### Required reading order
+### Actual v0.9 deliverable
 
-1. `docs/CODEX_V0.8.5_KICKOFF.md` — ordinary-chat authorization text and ONE bounded `/goal`.
-2. `docs/V0.8.5_STREAMING_FOUNDATION_SPEC.md` — implementation scope, performance, resource lifecycle, photo UX.
-3. `docs/V0.8.5_ACCEPTANCE.md` — exact test gates.
-4. `docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md` — product architecture context, **not carte blanche to build v0.9**.
-5. `docs/V0.8.4_HUMAN_FOLLOWUP_10MIN.md` — authentic user photo/scenery/play observations.
-6. `docs/TEN_MINUTE_ROADTRIP_ACCEPTANCE.md` — dependency gates for v0.8.5 / v0.9 / v0.9.1.
+- Add one new selectable **`10-Minute Road Trip`** with original title/label, dedicated distinct Trip Code + seed, start/replay same/new route/progress/finish and final player KEEP/REWORK/REJECT + difficulty; target ~8–12min actual representative driving, not wall clock freeze/timer trick. Preserve old short Stage and historic BRK/L2 Pilot/Stage codes/reviews.
+- Generate a CHEAP deterministic logical 10-minute RoutePlan of L1 curvature/grade/width, authentic multi-placement L2 challenging cores and L3 biome/scenic rhythm; do **NOT** create all the corresponding 3D geometry at launch.
+- REUSE the existing bounded v0.8.5 SceneStreamer for short rolling road/terrain/props chunks, ready ahead and dispose/pool behind, no missing road, wrong seam or observable input hitch. GPU resource count/heap bounded on 10/20min virtual progress. Preserve stable absolute s/position/eventAt with any high-coordinate rebasing.
+- The long trip must be **varied**: interesting high-speed wide bends + brake-worthy technical turns + canyon big grade/crest + city/coast changing vista + recovery, seed-varying C/E/W, L2 order/biome duration, deliberate optional L3 buffers (NOT five copies of old 2-min Stage). Four lanes generally dominate, six/eight secondary, rare true narrow.
+- Stage 01 code, v0.8.5 streamer/perf, current car and gamepad/touch/keyboard/audio/telemetry/photo flow unchanged. Human feedback still logs both absolute road L2 instance and retrospective eventAt versus reactionAt. No auto-submitted ratings.
+- Run ≥5 deterministic long codes, ≥3 FULL rendered long drives with performance and biomechanics traces, 20-min memory soak, 30/60fps/PWA viewport tests and original short-stage regression. Codex tests cannot substitute actual physical Pixel long-play. Deliver `docs/V0.9_HANDOFF.md` and stop for two+ actual user Trip Code reviews.
 
-### One active deliverable: stream EXISTING two-minute Stage
+### Local source & authorizations
 
-- Preserve original seeded Stage Code `S01-v0.8.3-r1-1-ALB1` as used through v0.8.4, track geometry/handling/6-speed+grade physics and all historic player reviews. Plan logical road cheaply; create real road/terrain/prop GPU geometry only near the player via bounded `SceneChunk` window.
-- Prefetch road/edge/terrain safety assets before player camera sees them; no gap, popping or controls stall at Stage/chunk/biome transitions. Separate numeric CPU preparation from frame-budgeted main-thread GPU creation; use worker only if profiling demands it.
-- Track 30/60fps frame-time P95/P99/worst, chunk ready-ahead distance, renderer.info resources/draw calls, heap and 10/20-min synthetic progress; **resources bounded after warmup**; don't claim physical Pixel pass from browser emulator screenshots.
-- Minimal photo UX: in driving just tiny post-confirmation `📸 Saved`; in pause/menu show actual dated Windows captures folder and safe working **Open Folder** on localhost Windows dev, remove `Recent Photos`. Pixel LAN shows truthful PC path but can't launch PC Explorer from remote page. Photo PNG multi-save/metadata must keep working.
-- NO new 10-minute route in this goal; NO Stage difficulty change, scenic makeover of hollow ramp/palm trees, new biomes, traffic, rivals, RPG/garage, editor, cloud service or user-data upload. Visual failures reported v0.8.4 remain for eventual v0.9.1; streamer must not introduce new visible gaps.
-- Preserve Pixel 8 landscape/PWA, 144px thumb steering, keyboard, tested PS4 Touchpad screenshot/Share fullscreen/Options Play-Pause, L1 praise/Square issue and 1s resume, private JSON telemetry, all approved audio and driving.
-
-### Repo, permissions and STOP
-
-Prior Codex stop-after-v0.8.4 may block new file operations. Owner should send the **ordinary non-/goal authorization** in existing OutRun Codex chat before the new Goal; respect permission rejections without bypass. No work in `TopWar` or other repos. No push, merge or deployment. Commit LOCALLY on new feature branch, create `docs/V0.8.5_HANDOFF.md` with real test results and STOP for owner before any new v0.9 Goal.
+- **Working game lives ONLY on user Windows `C:\astra-dev\OutRun`**. GitHub `michael-wang/OutRun` `main` is **primarily DOCS**, NOT current game source. **NEVER checkout/reset/rebase/merge docs-only main over live app**. Branch `codex/v0.9-ten-minute-roadtrip` from current playable LOCAL HEAD, fetch origin then selectively import approved v0.9 docs (not README/source wholesale).
+- Old stop-after-v0.8.5 was a human GO gate; owner satisfied it. If Codex permission reviewer still denies branch/fetch, request explicit plain normal (non-/goal) chat authorization in SAME unique OutRun Codex conversation, and respect denied actions.
+- Preserve existing 1.75× arcade pace, six-speed/300 flat, downhill >300, grade/velocity lateral-balance, 144px Pixel thumb bar, full scene streaming with existing original art limitations, PS4 Touchpad photo/SHARE fullscreen/OPTIONS Play-Pause, L1 praise/Square issue, 1s resume, local photo archive and review exports. Preserve saved photos and all old votes.
+- NO Stage02, v0.9.1 big scenic art pass, traffic/rivals, new snow/mountain/volcano packs, coin/RPG/garage, backend telemetry, paid services, full editor, other repos including TopWar. No push, merge, public deployment.
+- Commit LOCALLY and write real performance+human handoff. **STOP after v0.9**; next work needs new separate user approval.
