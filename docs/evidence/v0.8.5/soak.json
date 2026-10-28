@@ -1,0 +1,1212 @@
+[
+  {
+    "seconds": 0,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 3,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 28984667
+  },
+  {
+    "seconds": 10,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 3,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 31547379
+  },
+  {
+    "seconds": 20,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 34596107
+  },
+  {
+    "seconds": 30,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 37349119
+  },
+  {
+    "seconds": 40,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 39967385
+  },
+  {
+    "seconds": 50,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 44652893
+  },
+  {
+    "seconds": 60,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 46885805
+  },
+  {
+    "seconds": 70,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 37841484
+  },
+  {
+    "seconds": 80,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 40432068
+  },
+  {
+    "seconds": 90,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 40432068
+  },
+  {
+    "seconds": 100,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 42533588
+  },
+  {
+    "seconds": 110,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 42533588
+  },
+  {
+    "seconds": 120,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 42533588
+  },
+  {
+    "seconds": 130,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 53229596
+  },
+  {
+    "seconds": 140,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 20073034
+  },
+  {
+    "seconds": 150,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 20073034
+  },
+  {
+    "seconds": 160,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 24577678
+  },
+  {
+    "seconds": 170,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 27091234
+  },
+  {
+    "seconds": 180,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 29539702
+  },
+  {
+    "seconds": 190,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 31714258
+  },
+  {
+    "seconds": 200,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 34050294
+  },
+  {
+    "seconds": 210,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 36561906
+  },
+  {
+    "seconds": 220,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 36561906
+  },
+  {
+    "seconds": 230,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 38542338
+  },
+  {
+    "seconds": 240,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 38542338
+  },
+  {
+    "seconds": 250,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 38542338
+  },
+  {
+    "seconds": 260,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 36588698
+  },
+  {
+    "seconds": 270,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 38877930
+  },
+  {
+    "seconds": 280,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 41351642
+  },
+  {
+    "seconds": 290,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 43676466
+  },
+  {
+    "seconds": 300,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 46252442
+  },
+  {
+    "seconds": 310,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 49037226
+  },
+  {
+    "seconds": 320,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 40005121
+  },
+  {
+    "seconds": 330,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 42492085
+  },
+  {
+    "seconds": 340,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 45004949
+  },
+  {
+    "seconds": 350,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 45004949
+  },
+  {
+    "seconds": 360,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 46971448
+  },
+  {
+    "seconds": 370,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 46971448
+  },
+  {
+    "seconds": 380,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 46971448
+  },
+  {
+    "seconds": 390,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 57113436
+  },
+  {
+    "seconds": 400,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 59262488
+  },
+  {
+    "seconds": 410,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 50394092
+  },
+  {
+    "seconds": 420,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 22172777
+  },
+  {
+    "seconds": 430,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 24579601
+  },
+  {
+    "seconds": 440,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 27337517
+  },
+  {
+    "seconds": 450,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 29877573
+  },
+  {
+    "seconds": 460,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 32189205
+  },
+  {
+    "seconds": 470,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 34668377
+  },
+  {
+    "seconds": 480,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 34668377
+  },
+  {
+    "seconds": 490,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 36617809
+  },
+  {
+    "seconds": 500,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 36617809
+  },
+  {
+    "seconds": 510,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 36617809
+  },
+  {
+    "seconds": 520,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 46699157
+  },
+  {
+    "seconds": 530,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 48838789
+  },
+  {
+    "seconds": 540,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 51278313
+  },
+  {
+    "seconds": 550,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 53547381
+  },
+  {
+    "seconds": 560,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 55910153
+  },
+  {
+    "seconds": 570,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 58628877
+  },
+  {
+    "seconds": 580,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 61108933
+  },
+  {
+    "seconds": 590,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 63567113
+  },
+  {
+    "seconds": 600,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 19793695
+  },
+  {
+    "seconds": 610,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 19793695
+  },
+  {
+    "seconds": 620,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 21751203
+  },
+  {
+    "seconds": 630,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 21751203
+  },
+  {
+    "seconds": 640,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 21751203
+  },
+  {
+    "seconds": 650,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 31796687
+  },
+  {
+    "seconds": 660,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 33919675
+  },
+  {
+    "seconds": 670,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 36359307
+  },
+  {
+    "seconds": 680,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 38628255
+  },
+  {
+    "seconds": 690,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 40993279
+  },
+  {
+    "seconds": 700,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 43521035
+  },
+  {
+    "seconds": 710,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 45830095
+  },
+  {
+    "seconds": 720,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 48285775
+  },
+  {
+    "seconds": 730,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 50899127
+  },
+  {
+    "seconds": 740,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 50899127
+  },
+  {
+    "seconds": 750,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 52793663
+  },
+  {
+    "seconds": 760,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 52793663
+  },
+  {
+    "seconds": 770,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 52793663
+  },
+  {
+    "seconds": 780,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 62905295
+  },
+  {
+    "seconds": 790,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 64982679
+  },
+  {
+    "seconds": 800,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 67411091
+  },
+  {
+    "seconds": 810,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 20692371
+  },
+  {
+    "seconds": 820,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 23079463
+  },
+  {
+    "seconds": 830,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 25605467
+  },
+  {
+    "seconds": 840,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 27952363
+  },
+  {
+    "seconds": 850,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 30232571
+  },
+  {
+    "seconds": 860,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 32859863
+  },
+  {
+    "seconds": 870,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 32859863
+  },
+  {
+    "seconds": 880,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 34765659
+  },
+  {
+    "seconds": 890,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 34765659
+  },
+  {
+    "seconds": 900,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 34765659
+  },
+  {
+    "seconds": 910,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 44973531
+  },
+  {
+    "seconds": 920,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 47065559
+  },
+  {
+    "seconds": 930,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 49491571
+  },
+  {
+    "seconds": 940,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 51763715
+  },
+  {
+    "seconds": 950,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 54120795
+  },
+  {
+    "seconds": 960,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 56628483
+  },
+  {
+    "seconds": 970,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 58920119
+  },
+  {
+    "seconds": 980,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 61200247
+  },
+  {
+    "seconds": 990,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 63639643
+  },
+  {
+    "seconds": 1000,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 63639643
+  },
+  {
+    "seconds": 1010,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 19254039
+  },
+  {
+    "seconds": 1020,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 19254039
+  },
+  {
+    "seconds": 1030,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 19254039
+  },
+  {
+    "seconds": 1040,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 29614859
+  },
+  {
+    "seconds": 1050,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 31730431
+  },
+  {
+    "seconds": 1060,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 34170907
+  },
+  {
+    "seconds": 1070,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 36452547
+  },
+  {
+    "seconds": 1080,
+    "position": 4351.747937762376,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 191,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 38810599
+  },
+  {
+    "seconds": 1090,
+    "position": 5351.748614583334,
+    "geometries": 139,
+    "textures": 5,
+    "draws": 260,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 41314987
+  },
+  {
+    "seconds": 1100,
+    "position": 6351.748212622388,
+    "geometries": 137,
+    "textures": 5,
+    "draws": 238,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 43608799
+  },
+  {
+    "seconds": 1110,
+    "position": 7351.748614583334,
+    "geometries": 142,
+    "textures": 5,
+    "draws": 231,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 45905483
+  },
+  {
+    "seconds": 1120,
+    "position": 8351.748488303841,
+    "geometries": 160,
+    "textures": 5,
+    "draws": 235,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 48331135
+  },
+  {
+    "seconds": 1130,
+    "position": 9351.746802931904,
+    "geometries": 147,
+    "textures": 5,
+    "draws": 162,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 48331135
+  },
+  {
+    "seconds": 1140,
+    "position": 10351.748614583334,
+    "geometries": 135,
+    "textures": 5,
+    "draws": 153,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 50227723
+  },
+  {
+    "seconds": 1150,
+    "position": 11351.748277059034,
+    "geometries": 118,
+    "textures": 5,
+    "draws": 96,
+    "chunks": 5,
+    "queued": 0,
+    "heap": 50227723
+  },
+  {
+    "seconds": 1160,
+    "position": 12351.748614583334,
+    "geometries": 125,
+    "textures": 5,
+    "draws": 152,
+    "chunks": 4,
+    "queued": 0,
+    "heap": 50227723
+  },
+  {
+    "seconds": 1170,
+    "position": 351.74861458333334,
+    "geometries": 84,
+    "textures": 5,
+    "draws": 169,
+    "chunks": 6,
+    "queued": 0,
+    "heap": 60219383
+  },
+  {
+    "seconds": 1180,
+    "position": 1351.7485838770328,
+    "geometries": 96,
+    "textures": 5,
+    "draws": 134,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 62299263
+  },
+  {
+    "seconds": 1190,
+    "position": 2351.7486145833336,
+    "geometries": 126,
+    "textures": 5,
+    "draws": 309,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 64733755
+  },
+  {
+    "seconds": 1200,
+    "position": 3351.7489094394496,
+    "geometries": 130,
+    "textures": 5,
+    "draws": 284,
+    "chunks": 7,
+    "queued": 0,
+    "heap": 20664567
+  }
+]

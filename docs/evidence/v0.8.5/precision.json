@@ -1,0 +1,51 @@
+{
+  "translatedWorldUnits": 70000,
+  "totalPixels": 518400,
+  "frames": [
+    {
+      "virtualProgress": 70000,
+      "sampledStageDistance": 2000,
+      "lanes": 4,
+      "halfWidth": 7,
+      "changedPixels": 39,
+      "meanRgbDifference": 0.008927469135802469,
+      "maxWidthError": 0.007344090746199683
+    },
+    {
+      "virtualProgress": 70000.25,
+      "sampledStageDistance": 2000.25,
+      "lanes": 4,
+      "halfWidth": 7,
+      "changedPixels": 47,
+      "meanRgbDifference": 0.010758744855967077,
+      "maxWidthError": 0.007403997740954793
+    },
+    {
+      "virtualProgress": 70000.5,
+      "sampledStageDistance": 2000.5,
+      "lanes": 4,
+      "halfWidth": 7,
+      "changedPixels": 39,
+      "meanRgbDifference": 0.008927469135802469,
+      "maxWidthError": 0.007344090746199683
+    },
+    {
+      "virtualProgress": 70000.75,
+      "sampledStageDistance": 2000.75,
+      "lanes": 4,
+      "halfWidth": 7,
+      "changedPixels": 59,
+      "meanRgbDifference": 0.013505658436213992,
+      "maxWidthError": 0.007344090746199683
+    },
+    {
+      "virtualProgress": 70001,
+      "sampledStageDistance": 2001,
+      "lanes": 4,
+      "halfWidth": 7,
+      "changedPixels": 40,
+      "meanRgbDifference": 0.009156378600823046,
+      "maxWidthError": 0.007344090746199683
+    }
+  ]
+}

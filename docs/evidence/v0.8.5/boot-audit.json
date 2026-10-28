@@ -1,0 +1,55 @@
+{
+  "stageCode": "S01-v0.8.3-r1-1-ALB1",
+  "logicalLength": 14450,
+  "materializedDistance": 6000,
+  "initialChunks": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "classes": {
+    "driving-surface": {
+      "meshes": 6,
+      "geometries": 6,
+      "instances": 0
+    },
+    "shoulder": {
+      "meshes": 6,
+      "geometries": 6,
+      "instances": 0
+    },
+    "terrain": {
+      "meshes": 6,
+      "geometries": 6,
+      "instances": 0
+    },
+    "road-detail": {
+      "meshes": 54,
+      "geometries": 34,
+      "instances": 3500
+    },
+    "road-support": {
+      "meshes": 6,
+      "geometries": 6,
+      "instances": 0
+    },
+    "lane-markings": {
+      "meshes": 6,
+      "geometries": 6,
+      "instances": 0
+    },
+    "scenery": {
+      "meshes": 312,
+      "geometries": 20,
+      "instances": 10395
+    }
+  },
+  "secondWorldReadyMs": 336.1000000014901,
+  "referenceRenderer": {
+    "geometries": 84,
+    "textures": 3
+  }
+}

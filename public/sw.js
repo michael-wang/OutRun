@@ -1,5 +1,5 @@
 // Minimal local PWA worker. Network first avoids silently pinning an old playtest build.
-const CACHE = 'coast-drive-v07d-1';
+const CACHE = 'coast-drive-v085-1';
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['/', '/manifest.webmanifest', '/icons/coast-192.png', '/icons/coast-512.png'])));
 });
@@ -11,5 +11,5 @@ self.addEventListener('fetch', event => {
   event.respondWith(fetch(event.request).then(response => {
     if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request,copy)));}
     return response;
-  }).catch(async () => (await caches.match(event.request)) || (event.request.mode === 'navigate' ? await caches.match('/') : null) || Response.error()));
+  }).catch(async () => (await caches.match(event.request,{ignoreVary:true})) || (event.request.mode === 'navigate' ? await caches.match('/') : null) || Response.error()));
 });

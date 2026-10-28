@@ -6,8 +6,10 @@ import {addJourneyScenery} from './scenery';
 import { createTrack } from './track';
 import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import {StreamedScene,type SceneAnnotation} from './streamed-scene';
+import type {PilotCandidate} from './pilot-composer';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),offsetAt=(d:number,o:number)=>roadOffset(o,halfAt(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
@@ -36,11 +38,18 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const grain=grainCanvas.getContext('2d')!; const pixels=grain.createImageData(64,64);
   for(let i=0;i<64*64;i++){const c=225+Math.round((Math.sin(i*37.17)*437.1%1)*18);pixels.data.set([c,c,c,255],i*4);}grain.putImageData(pixels,0,0);
   const texture=new THREE.CanvasTexture(grainCanvas);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;asphalt.map=texture;
+  const supportMaterial=new THREE.MeshStandardMaterial({color:'#c8aa7d',roughness:1,side:THREE.DoubleSide});
+  const edgeMaterials=[line,mat('#b64b35')],surfMaterial=new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72});
+  const dummy=new THREE.Object3D();
+  function instances(geo:THREE.BufferGeometry,material:THREE.Material,poses:{p:THREE.Vector3;s?:THREE.Vector3;r?:THREE.Euler}[]) {
+    const mesh=new THREE.InstancedMesh(geo,material,poses.length);mesh.castShadow=true;mesh.receiveShadow=true;
+    poses.forEach((v,i)=>{dummy.position.copy(v.p);dummy.scale.copy(v.s??new THREE.Vector3(1,1,1));dummy.rotation.copy(v.r??new THREE.Euler());dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);}); scene.add(mesh); return mesh;
+  }
+  if(!options.streamStage){
   ribbon(-160,-27,-9,-9,sand,0,length,10);ribbon(-27,-13,-9,-.1,sand,0,length,10); ribbon(-13,13,-.1,-.1,sand);
   ribbon(13,75,-.12,-3,grass,0,length,10); ribbon(75,160,-3,-14,grass,0,length,10);
   // Chunked, road-following embankment faces conceal exposed undersides on
   // elevated sections. They start outside the shoulder, below the driving plane.
-  const supportMaterial=new THREE.MeshStandardMaterial({color:'#c8aa7d',roughness:1,side:THREE.DoubleSide});
   const supports=new THREE.Group();supports.name='road-support';scene.add(supports);
   for(let start=0;start<length;start+=1200){const end=Math.min(length,start+1200),n=Math.ceil((end-start)/2.5),positions:number[]=[],indices:number[]=[];
     for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const point=p.position.clone().addScaledVector(p.right,offsetAt(d,side*13));positions.push(point.x,point.y-.1,point.z,point.x,Math.min(point.y-4,-5),point.z);}}
@@ -55,7 +64,6 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   ribbon(-12.5,-12.3,.65,.65,rail); ribbon(-12.5,-12.3,1.12,1.12,rail);
   // Flush, high-contrast edge bands stay readable as they sweep past the car.
   // Static world geometry, not a scrolling overlay or a speed-driven texture.
-  const edgeMaterials=[line,mat('#b64b35')];
   for(let color=0;color<2;color++){
     const pieces:THREE.BufferGeometry[]=[];
     for(let d=color*3;d<length;d+=6)for(const side of [-1,1]){
@@ -66,11 +74,6 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     const band=new THREE.Mesh(mergeGeometries(pieces)!,edgeMaterials[color]);band.receiveShadow=true;scene.add(band);pieces.forEach(g=>g.dispose());
   }
   // Efficient instances keep close roadside objects plentiful on mobile.
-  const dummy=new THREE.Object3D();
-  function instances(geo:THREE.BufferGeometry,material:THREE.Material,poses:{p:THREE.Vector3;s?:THREE.Vector3;r?:THREE.Euler}[]) {
-    const mesh=new THREE.InstancedMesh(geo,material,poses.length);mesh.castShadow=true;mesh.receiveShadow=true;
-    poses.forEach((v,i)=>{dummy.position.copy(v.p);dummy.scale.copy(v.s??new THREE.Vector3(1,1,1));dummy.rotation.copy(v.r??new THREE.Euler());dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix);}); scene.add(mesh); return mesh;
-  }
   const posts=[];for(let d=0;d<length;d+=12){const p=sample(d);posts.push({p:p.position.addScaledVector(p.right,offsetAt(d,-12.4)).add(new THREE.Vector3(0,.58,0))});}
   instances(new THREE.BoxGeometry(.15,1.2,.15),rail,posts);
   // Reproducible near-field references: 12m cadence matches the center dashes.
@@ -86,6 +89,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   instances(new THREE.BoxGeometry(.38,1.6,.3),line,markerPosts);
   instances(new THREE.BoxGeometry(.42,.3,.34),mat('#f5a53c'),markerCaps);
   instances(new THREE.BoxGeometry(.4,.35,.32),mat('#263d43'),markerStripes);
+  }
   // Authored braking cue, outside the entire shoulder corridor. Original canvas
   // lettering, no external art; warns before the >100% reference-demand bend.
   const signCanvas=document.createElement('canvas');signCanvas.width=512;signCanvas.height=256;
@@ -96,6 +100,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const signTexture=new THREE.CanvasTexture(signCanvas);signTexture.colorSpace=THREE.SRGBColorSpace;
   const signMaterial=new THREE.MeshBasicMaterial({map:signTexture,side:THREE.DoubleSide});
   const leftCanvas=signCanvas.cloneNode() as HTMLCanvasElement;const leftInk=leftCanvas.getContext('2d')!;leftInk.drawImage(signCanvas,0,0);leftInk.fillStyle='#153e45';leftInk.fillRect(20,20,472,88);leftInk.fillStyle='#fff4d9';leftInk.textAlign='center';leftInk.font='bold 70px sans-serif';leftInk.fillText('← BRAKE',256,96);const leftTexture=new THREE.CanvasTexture(leftCanvas);leftTexture.colorSpace=THREE.SRGBColorSpace;const leftSign=new THREE.MeshBasicMaterial({map:leftTexture,side:THREE.DoubleSide});
+  const annotations:SceneAnnotation[]=[];
+  if(!options.streamStage){
   for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of options.track?[300,160]:[160,80]){
     const p=sample(extreme.start-lead),base=p.position.clone().addScaledVector(p.right,offsetAt(extreme.start-lead,15));
     const board=new THREE.Mesh(new THREE.PlaneGeometry(5.2,2.6),extreme.targetRequiredSteering<0?leftSign:signMaterial);board.position.copy(base).add(new THREE.Vector3(0,4,0));board.rotation.y=Math.PI-p.roadHeading;scene.add(board);
@@ -117,11 +123,19 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const p=sample(options.notice.distance),base=p.position.clone().addScaledVector(p.right,offsetAt(options.notice.distance,15)),board=new THREE.Mesh(new THREE.PlaneGeometry(6,3),new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide}));board.name='crest-warning';board.position.copy(base).add(new THREE.Vector3(0,4,0));board.rotation.y=Math.PI-p.roadHeading;scene.add(board);
     const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,4,6),rail);pole.position.copy(base).add(new THREE.Vector3(0,2,0));scene.add(pole);
   }
+  }else{
+    // Stage signs are recipes until their own road chunk is materialized.
+    const signAt=(distance:number,material:THREE.Material,width:number,height:number,name=''):SceneAnnotation=>({distance:Math.max(0,Math.min(length-1e-6,distance)),create:()=>{const p=sample(distance),base=p.position.clone().addScaledVector(p.right,offsetAt(distance,15)),board=new THREE.Mesh(new THREE.PlaneGeometry(width,height),material);board.name=name;board.position.copy(base).add(new THREE.Vector3(0,4,0));board.rotation.y=Math.PI-p.roadHeading;const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,4,6),rail);pole.position.copy(base).add(new THREE.Vector3(0,2,0));return [board,pole];}});
+    for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of [300,160])annotations.push(signAt(extreme.start-lead,extreme.targetRequiredSteering<0?leftSign:signMaterial,5.2,2.6));
+    if(options.narrowings?.length){const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#153e45';ctx.fillRect(0,0,512,256);ctx.strokeStyle='#ffd18b';ctx.lineWidth=12;ctx.strokeRect(8,8,496,240);ctx.fillStyle='#fff4d9';ctx.textAlign='center';ctx.font='bold 56px sans-serif';ctx.fillText('ROAD NARROWS',256,95);ctx.font='bold 45px sans-serif';ctx.fillText('MOVE TOWARD CENTER',256,185);const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});for(const d of options.narrowings)annotations.push(signAt(d,material,6,3,'narrowing-warning'));}
+  }
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
-  ribbon(-29,-27,-10.9,-10.9,new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72}),0,length,10);
+  if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
-  const scenery=addJourneyScenery(scene,sample,length,options.theme,options.seed,halfAt,options.weightsAt);
+  sand.vertexColors=true;grass.vertexColors=true;
+  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial},annotations):undefined;
+  const scenery=streamer?{get instances(){return streamer.sceneryStats.instances;},get draws(){return streamer.sceneryStats.draws;}}:addJourneyScenery(scene,sample,length,options.theme,options.seed,halfAt,options.weightsAt);
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
   // Enclose the actual route. The former fixed (400,500)/1550m ring intersected
   // v0.4's longer loop and covered asphalt with an opaque mountain surface.
@@ -145,5 +159,5 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const gradient=context.createRadialGradient(32,32,7,32,32,31);gradient.addColorStop(0,'rgba(18,33,30,.65)');gradient.addColorStop(.55,'rgba(18,33,30,.3)');gradient.addColorStop(1,'rgba(18,33,30,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);
   const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.1,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.025;car.add(shadow);
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
-  return {scene,sample,length,car,scenery,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
+  return {scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
 }

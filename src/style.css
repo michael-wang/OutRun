@@ -54,3 +54,4 @@ html:not([data-input-mode=gamepad]) #gamepad-status{display:none}
 @media(pointer:coarse){.keyboard-hints{display:none}}
 
 #photo-status{max-width:min(420px,65vw);overflow-wrap:anywhere;font-size:11px;pointer-events:none}
+#photo-folder{display:flex;align-items:center;flex-wrap:wrap;gap:5px}#photo-folder[hidden]{display:none}#photo-folder span{font-size:11px;overflow-wrap:anywhere}#photo-folder button{padding-inline:8px}

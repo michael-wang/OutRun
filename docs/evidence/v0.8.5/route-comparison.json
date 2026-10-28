@@ -1,0 +1,26 @@
+[
+  {
+    "seed": 1,
+    "stageCode": "S01-v0.8.3-r1-1-ALB1",
+    "samples": 211,
+    "numbersCompared": 4925,
+    "maxAbsoluteDifference": 0,
+    "otherDifferences": 0
+  },
+  {
+    "seed": 2,
+    "stageCode": "S01-v0.8.3-r1-2-ALB1",
+    "samples": 211,
+    "numbersCompared": 4907,
+    "maxAbsoluteDifference": 0,
+    "otherDifferences": 0
+  },
+  {
+    "seed": 3,
+    "stageCode": "S01-v0.8.3-r1-3-ALB1",
+    "samples": 211,
+    "numbersCompared": 4913,
+    "maxAbsoluteDifference": 0,
+    "otherDifferences": 0
+  }
+]

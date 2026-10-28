@@ -1,22 +1,29 @@
-# OutRun — Active Codex operating agreement
+# Project OutRun — Current Codex Work Agreement (2026-10-28)
 
-## ACTIVE OWNER-COMMISSIONED NEXT: v0.8.4 — Real Screenshot Archive, Wheel Contact & Scenery Continuity
+## ACTIVE OWNER-COMMISSIONED: v0.8.5 — Bounded Road/Scene Streaming Foundation
 
-**Previous v0.8.3 implementation COMPLETED locally and human-playtested.** Codex reported local branch `codex/v0.8.3-pad-challenge`, implementation `c3c8125` and handoff `962ec67` with clean working tree. VERIFY current local HEAD before branching; remote GitHub `main` is docs-only and **NEVER checkout/reset/merge it over playable local code**. Human provided two actual photos and exported `S01-v0.8.3-r1-1-ALB1` seed1, 114.54sec telemetry (saved in ChatGPT, not automatically on Windows). **There is no explicit KEEP/REWORK/REJECT for this v0.8.3 route.** Preserve all previous reviews.
+The owner explicitly said **"很好，請進行"** after approving a phased path to a **10-minute richly varied procedural road trip**. Current user authorization is ONLY for **v0.8.5**, NOT permission to implement future 10-minute v0.9 or scenery-art v0.9.1 automatically. The user wants no full-route upfront geometry build and no visible scene-load hitch.
 
-**Human's newly reported problems:**
-1. SHARE button for screenshot technically works but is awkward: removes steering thumb and loses moment. **SWAP** Touchpad CLICK = Screenshot; SHARE/Select = Fullscreen. OPTIONS Play/Pause/Resume and other pad controls untouched; R3 = Screenshot fallback only when touchpad click unsupported.
-2. Current photo flow appears to keep only latest image. Save EACH captured PNG immediately to `C:\astra-dev\OutRun\captures\YYYY-MM-DD\` under Windows Vite development server using small fixed-path **DEV-ONLY** middleware. Unique filename and (optional) metadata JSON; 12 shots → 12 PNG files. Gitignore captures; show saved path/count; clear fallback if offline/prod. No cloud/gallery project.
-3. Four tire contact visuals clip or hover during turns/grades despite reported center `surfaceGap≈0.010m`. Sample contact at **all four wheel footprints against actual road render mesh**, visually align body/wheels/suspension/shadows without changing arcade driving dynamics or building a physical vehicle simulation.
-4. Procedural scenery gaps: far road floating with unsupported underside; buildings behind first row are empty. Build cheap reusable **L3 terrain skirts/embankment/bridge supports, secondary city silhouettes and layered distant scenery**, with near/mid/far occlusion and deterministic biome compatibility. No AAA open world or handpatching one seed.
+**Latest playable LOCAL code:** Windows `C:\astra-dev\OutRun`, reported Codex v0.8.4 on `codex/v0.8.4-visual-captures`, implementation `edd7018` and handoff `4d2b6ad`. Verify actual HEAD/branch/worktree and no concurrent Goal; user may have changed files. Remote GitHub `main` is DOCUMENTATION-FIRST, **never checkout/reset/merge it over playable source**. Start a new LOCAL `codex/v0.8.5-scene-streaming` from playable v0.8.4 HEAD and selectively import only current spec/kickoff/acceptance docs.
 
-**Required reading before code:** `docs/V0.8.4_SPEC.md`, `docs/V0.8.4_ACCEPTANCE.md`, `docs/CODEX_V0.8.4_KICKOFF.md`, `docs/V0.8.3_HUMAN_VISUAL_REVIEW.md`.
+### Required reading order
 
-### Repo and scope safety
+1. `docs/CODEX_V0.8.5_KICKOFF.md` — ordinary-chat authorization text and ONE bounded `/goal`.
+2. `docs/V0.8.5_STREAMING_FOUNDATION_SPEC.md` — implementation scope, performance, resource lifecycle, photo UX.
+3. `docs/V0.8.5_ACCEPTANCE.md` — exact test gates.
+4. `docs/TEN_MINUTE_ROADTRIP_ARCHITECTURE.md` — product architecture context, **not carte blanche to build v0.9**.
+5. `docs/V0.8.4_HUMAN_FOLLOWUP_10MIN.md` — authentic user photo/scenery/play observations.
+6. `docs/TEN_MINUTE_ROADTRIP_ACCEPTANCE.md` — dependency gates for v0.8.5 / v0.9 / v0.9.1.
 
-- LOCAL playable Windows repo is `C:\astra-dev\OutRun`. Start `codex/v0.8.4-visual-captures` FROM local PLAYABLE v0.8.3 HEAD; `git fetch origin` then selectively import ONLY newest AGENTS and v0.8.4 docs plus human review from origin/main. Never erase source by switching to docs-only remote main.
-- Previous `stop-after-v0.8.3` gate might require ordinary non-`/goal` authorization in SAME OutRun Codex conversation; respect approval decisions and never loop on denied actions.
-- Preserve actual Stage `S01-v0.8.3-r1-1-ALB1` code, existing 18 L1 / L2Pilot/BRK reviews, prior Stage REWORK, algorithmic L2/L3 geometry & stage difficulty, six-speed physical speed / uphill/downhill, Arcade Lateral Balance, 1.75x world pace, soft audio, 144px Pixel8 steering, mobile/keyboard controls, PS4 left stick+R2+L2+L1+Square/OPTIONS, 1s resume, screenshot renderer and telemetry.
-- User's v0.8.3 human telemetry: **114.54sec, GAS ~94.1%, brake 3.07sec / seven presses, offroad 0**, documented. **NO Stage difficulty tuning this time**; owner only asked screenshot usability, tire contact and procedural scenery. No formal vote fabricated.
-- No new traffic, rival opponents, RPG/garage, new biomes, Stage02, AAA terrain, accounts/cloud, telemetry compression, video recorder, unrelated project (TopWar), push/merge/deployment.
-- Run build + unit + Playwright, real test PNG file count and checksums, input context switching & browser fullscreen handling, 4-wheel surface gaps over crest/turn/shoulder, 5 generated Seeds and 3 full Stage visual drives, performance comparison. Correct any problems; local commit(s), handoff `docs/V0.8.4_HANDOFF.md` and STOP for owner PS4 Touchpad screenshot / Scenery playtest. Physical hardware stays UNVERIFIED until owner checks.
+### One active deliverable: stream EXISTING two-minute Stage
+
+- Preserve original seeded Stage Code `S01-v0.8.3-r1-1-ALB1` as used through v0.8.4, track geometry/handling/6-speed+grade physics and all historic player reviews. Plan logical road cheaply; create real road/terrain/prop GPU geometry only near the player via bounded `SceneChunk` window.
+- Prefetch road/edge/terrain safety assets before player camera sees them; no gap, popping or controls stall at Stage/chunk/biome transitions. Separate numeric CPU preparation from frame-budgeted main-thread GPU creation; use worker only if profiling demands it.
+- Track 30/60fps frame-time P95/P99/worst, chunk ready-ahead distance, renderer.info resources/draw calls, heap and 10/20-min synthetic progress; **resources bounded after warmup**; don't claim physical Pixel pass from browser emulator screenshots.
+- Minimal photo UX: in driving just tiny post-confirmation `📸 Saved`; in pause/menu show actual dated Windows captures folder and safe working **Open Folder** on localhost Windows dev, remove `Recent Photos`. Pixel LAN shows truthful PC path but can't launch PC Explorer from remote page. Photo PNG multi-save/metadata must keep working.
+- NO new 10-minute route in this goal; NO Stage difficulty change, scenic makeover of hollow ramp/palm trees, new biomes, traffic, rivals, RPG/garage, editor, cloud service or user-data upload. Visual failures reported v0.8.4 remain for eventual v0.9.1; streamer must not introduce new visible gaps.
+- Preserve Pixel 8 landscape/PWA, 144px thumb steering, keyboard, tested PS4 Touchpad screenshot/Share fullscreen/Options Play-Pause, L1 praise/Square issue and 1s resume, private JSON telemetry, all approved audio and driving.
+
+### Repo, permissions and STOP
+
+Prior Codex stop-after-v0.8.4 may block new file operations. Owner should send the **ordinary non-/goal authorization** in existing OutRun Codex chat before the new Goal; respect permission rejections without bypass. No work in `TopWar` or other repos. No push, merge or deployment. Commit LOCALLY on new feature branch, create `docs/V0.8.5_HANDOFF.md` with real test results and STOP for owner before any new v0.9 Goal.

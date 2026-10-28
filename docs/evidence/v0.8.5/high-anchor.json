@@ -1,0 +1,7 @@
+{
+  "httpStatus": 200,
+  "photoDistance": 70000,
+  "eventS": 69650,
+  "stageCode": "S01-v0.8.3-r1-1-ALB1",
+  "note": "Synthetic state beyond this finite Stage. Its sampler clamps to the end; this checks metadata only, not a playable 70k route."
+}

@@ -1,0 +1,9 @@
+import {chromium} from '@playwright/test';
+import {readFile,writeFile} from 'node:fs/promises';
+import {resolve,sep} from 'node:path';
+import {createHash} from 'node:crypto';
+const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:960,height:540}}),files=[];
+await page.goto('http://127.0.0.1:5173/?stage=1&seed=1');await page.waitForFunction(()=>window.__drive?.streaming()?.ready,{timeout:60000});await page.keyboard.press('KeyP');await page.waitForFunction(()=>window.__drive.snapshot().mode==='playing');
+for(let i=0;i<12;i++){const response=page.waitForResponse(r=>r.url().endsWith('/__outrun_capture')&&r.request().method()==='POST');await page.keyboard.press('F8');const r=await response;if(!r.ok())throw Error(`capture failed: ${r.status()}`);files.push((await r.json()).path);}
+await page.reload();const details=[];for(const file of files){const path=resolve(file),root=resolve('captures')+sep;if(!path.toLowerCase().startsWith(root.toLowerCase()))throw Error('outside archive');const png=await readFile(path),meta=JSON.parse(await readFile(path.replace(/\.png$/,'.json'),'utf8'));if(png.subarray(0,8).toString('hex')!=='89504e470d0a1a0a'||meta.wheels?.length!==4||meta.seed!==1)throw Error('invalid archive');await page.evaluate(async b64=>{const img=new Image();img.src='data:image/png;base64,'+b64;await img.decode();if(!img.naturalWidth||!img.naturalHeight)throw Error('invalid PNG');},png.toString('base64'));details.push({file,sha256:createHash('sha256').update(png).digest('hex'),stageCode:meta.stageCode});}
+if(new Set(files).size!==12)throw Error('duplicate paths');await writeFile('docs/evidence/v0.8.5/photo-audit.json',JSON.stringify({count:files.length,decoded:details.length,details},null,2));console.log(JSON.stringify({count:files.length,decoded:details.length}));await browser.close();

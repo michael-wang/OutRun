@@ -1,0 +1,918 @@
+[
+  {
+    "distance": 999,
+    "sample": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": -0.03730447692769763,
+      "position": [
+        128.6396704224371,
+        37.48044811166299,
+        965.8049762989003
+      ],
+      "curvature": -0.002177899254525858,
+      "roadHeading": -0.7642248484131231,
+      "tangent": [
+        0.6914966255109923,
+        -0.03727854708532595,
+        0.7214171656081643
+      ],
+      "challenge": {
+        "id": "STAGE-01-1",
+        "label": "S01-01",
+        "targetRequiredSteering": -0.45148905560374264,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 6.090931677018634,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 580,
+        "end": 1261,
+        "length": 681,
+        "offset": 419
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          128.13145549147444,
+          37.46286091692524,
+          966.9375627435832
+        ],
+        "surface": [
+          128.13145549147444,
+          37.46286091692524,
+          966.9375627435832
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          130.09680978833956,
+          37.35780330225301,
+          968.9710930622201
+        ],
+        "surface": [
+          130.09680978833956,
+          37.35780330225301,
+          968.9710930622201
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          129.6486708941931,
+          37.463011615239196,
+          965.4712212343211
+        ],
+        "surface": [
+          129.6486708941931,
+          37.463011615239196,
+          965.4712212343211
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          131.61401426871336,
+          37.35753258353594,
+          967.5047402517289
+        ],
+        "surface": [
+          131.61401426871336,
+          37.35753258353594,
+          967.5047402517289
+        ]
+      }
+    ],
+    "visibility": 300,
+    "stream": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "working",
+        "scenery": "missing"
+      }
+    ]
+  },
+  {
+    "distance": 1001,
+    "sample": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": -0.03729430992723581,
+      "position": [
+        130.02664784585673,
+        37.40584868552689,
+        967.245908508802
+      ],
+      "curvature": -0.002177899254525858,
+      "roadHeading": -0.7685806469221749,
+      "tangent": [
+        0.6946326665776942,
+        -0.03726840126520521,
+        0.7183985835107817
+      ],
+      "challenge": {
+        "id": "STAGE-01-1",
+        "label": "S01-01",
+        "targetRequiredSteering": -0.45148905560374264,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 6.090931677018634,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 580,
+        "end": 1261,
+        "length": 681,
+        "offset": 421
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          129.42695544456268,
+          37.388032087037445,
+          968.4746765834259
+        ],
+        "surface": [
+          129.42695544456268,
+          37.388032087037445,
+          968.4746765834259
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          131.40115041982745,
+          37.28304003728551,
+          970.4996286972535
+        ],
+        "surface": [
+          131.40115041982745,
+          37.28304003728551,
+          970.4996286972535
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          130.93776719158515,
+          37.38809850590115,
+          967.0017380697516
+        ],
+        "surface": [
+          130.93776719158515,
+          37.38809850590115,
+          967.0017380697516
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          132.9119512074784,
+          37.28268534788858,
+          969.0266789424389
+        ],
+        "surface": [
+          132.9119512074784,
+          37.28268534788858,
+          969.0266789424389
+        ]
+      }
+    ],
+    "visibility": 260,
+    "stream": [
+      {
+        "index": 0,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 1,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 2,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 3,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "distance": 4999,
+    "sample": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": -0.1984148311713709,
+      "position": [
+        2979.821166997295,
+        74.94488246360558,
+        -476.89769875248425
+      ],
+      "curvature": -0.0039561873498337894,
+      "roadHeading": -1.696785660097192,
+      "tangent": [
+        0.973103943701889,
+        -0.19462085132923027,
+        -0.12325355564735863
+      ],
+      "challenge": {
+        "id": "STAGE-01-11",
+        "label": "S01-03",
+        "targetRequiredSteering": -0.8201367839472411,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 5.491677018633541,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 4719,
+        "end": 5333,
+        "length": 614,
+        "offset": 280
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          2980.5326123083673,
+          74.8320943321538,
+          -475.7501890019318
+        ],
+        "surface": [
+          2980.5326123083673,
+          74.8320943321538,
+          -475.7501890019318
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": -1.4210854715202004e-14,
+        "point": [
+          2983.284585240119,
+          74.28536985421006,
+          -476.11985301349307
+        ],
+        "surface": [
+          2983.284585240119,
+          74.28536985421007,
+          -476.11985301349307
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          2980.251979916479,
+          74.83349071992647,
+          -477.8414435386352
+        ],
+        "surface": [
+          2980.251979916479,
+          74.83349071992647,
+          -477.8414435386352
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          2983.0031825956057,
+          74.28284666435795,
+          -478.21100408454384
+        ],
+        "surface": [
+          2983.0031825956057,
+          74.28284666435795,
+          -478.21100408454384
+        ]
+      }
+    ],
+    "visibility": 160,
+    "stream": [
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 7,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 8,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 9,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 10,
+        "road": "working",
+        "scenery": "missing"
+      }
+    ]
+  },
+  {
+    "distance": 5001,
+    "sample": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": -0.19827085900145783,
+      "position": [
+        2981.8042646267554,
+        74.54819153433178,
+        -477.1571082582915
+      ],
+      "curvature": -0.004000068788373818,
+      "roadHeading": -1.704743109780496,
+      "tangent": [
+        0.9721190698794699,
+        -0.19448497551511917,
+        -0.1309965964273786
+      ],
+      "challenge": {
+        "id": "STAGE-01-11",
+        "label": "S01-03",
+        "targetRequiredSteering": -0.8292336185247821,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 5.491677018633541,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 4719,
+        "end": 5333,
+        "length": 614,
+        "offset": 282
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 1.4210854715202004e-14,
+        "point": [
+          2982.5437401249765,
+          74.4333183315299,
+          -475.8793789009006
+        ],
+        "surface": [
+          2982.5437401249765,
+          74.43331833152989,
+          -475.8793789009006
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          2985.292796978668,
+          73.88733370171404,
+          -476.27117418629683
+        ],
+        "surface": [
+          2985.292796978668,
+          73.88733370171404,
+          -476.27117418629683
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 1.4210854715202004e-14,
+        "point": [
+          2982.246154550229,
+          74.43394589109441,
+          -477.96828838701015
+        ],
+        "surface": [
+          2982.246154550229,
+          74.4339458910944,
+          -477.96828838701015
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          2984.9944320646205,
+          73.88398754683415,
+          -478.35997260105364
+        ],
+        "surface": [
+          2984.9944320646205,
+          73.88398754683415,
+          -478.35997260105364
+        ]
+      }
+    ],
+    "visibility": 160,
+    "stream": [
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 7,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 8,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 9,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 10,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "distance": 8426,
+    "sample": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": 0.040325022083530296,
+      "position": [
+        3466.8884572767674,
+        36.93000194110579,
+        -3508.824512773995
+      ],
+      "curvature": -0.0012309827977168204,
+      "roadHeading": -2.8456060122078743,
+      "tangent": [
+        0.2914468633481061,
+        0.04029227560656009,
+        -0.9557380699600677
+      ],
+      "challenge": {
+        "id": "STAGE-01-19",
+        "label": "S01-05",
+        "targetRequiredSteering": -0.2551886914193448,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 5.581118012422361,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 8198,
+        "end": 8822,
+        "length": 624,
+        "offset": 228
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          3468.0749094146977,
+          36.947692325736604,
+          -3508.9134251552337
+        ],
+        "surface": [
+          3468.0749094146977,
+          36.947692325736604,
+          -3508.9134251552337
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          3468.8934252719537,
+          37.061565626184795,
+          -3511.62007709646
+        ],
+        "surface": [
+          3468.8934252719537,
+          37.061565626184795,
+          -3511.62007709646
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          3466.0552404363875,
+          36.947652262822636,
+          -3509.524192883634
+        ],
+        "surface": [
+          3466.0552404363875,
+          36.947652262822636,
+          -3509.524192883634
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          3466.8737533150133,
+          37.061780505633976,
+          -3512.230834975184
+        ],
+        "surface": [
+          3466.8737533150133,
+          37.061780505633976,
+          -3512.230834975184
+        ]
+      }
+    ],
+    "visibility": 230,
+    "stream": [
+      {
+        "index": 7,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 8,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 9,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 10,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 11,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 12,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 13,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "distance": 9001,
+    "sample": {
+      "halfWidth": 7,
+      "lanes": 4,
+      "grade": 0,
+      "position": [
+        3616.440671662384,
+        45,
+        -4062.4632845568017
+      ],
+      "curvature": 0,
+      "roadHeading": -2.9520788968115914,
+      "tangent": [
+        0.18838137976602642,
+        0,
+        -0.982095950382369
+      ],
+      "challenge": {
+        "id": "STAGE-01-20",
+        "label": "Approach",
+        "targetRequiredSteering": 0,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 2.236024844720497,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 8822,
+        "end": 9072,
+        "length": 250,
+        "offset": 179
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          3617.560508601813,
+          45,
+          -4062.701032700263
+        ],
+        "surface": [
+          3617.560508601813,
+          45,
+          -4062.701032700263
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          3618.093627906551,
+          45,
+          -4065.480364239845
+        ],
+        "surface": [
+          3618.093627906551,
+          45,
+          -4065.480364239845
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          3615.488286146506,
+          45,
+          -4063.0985174115694
+        ],
+        "surface": [
+          3615.488286146506,
+          45,
+          -4063.0985174115694
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          3616.021405451244,
+          45,
+          -4065.8778489511515
+        ],
+        "surface": [
+          3616.021405451244,
+          45,
+          -4065.8778489511515
+        ]
+      }
+    ],
+    "visibility": 440,
+    "stream": [
+      {
+        "index": 8,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 9,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 10,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 11,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 12,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 13,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 14,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  },
+  {
+    "distance": 12500,
+    "sample": {
+      "halfWidth": 10.5,
+      "lanes": 6,
+      "grade": 0.15388379588549664,
+      "position": [
+        2317.102052561768,
+        55.332091486164956,
+        -5597.887352861708
+      ],
+      "curvature": 0.0005876173537104364,
+      "roadHeading": -5.906976376165074,
+      "tangent": [
+        -0.36312292068086033,
+        0.1520935280562014,
+        0.9192438758020741
+      ],
+      "challenge": {
+        "id": "STAGE-01-29",
+        "label": "S01-08",
+        "targetRequiredSteering": 0.12181592125153345,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 4.7672049689441,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 12263,
+        "end": 12796,
+        "length": 533,
+        "offset": 237
+      }
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": 0,
+        "point": [
+          2316.124031415241,
+          55.393188954437875,
+          -5597.847643799843
+        ],
+        "surface": [
+          2316.124031415241,
+          55.393188954437875,
+          -5597.847643799843
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          2315.093938085946,
+          55.828282947007715,
+          -5595.247932093044
+        ],
+        "surface": [
+          2315.093938085946,
+          55.828282947007715,
+          -5595.247932093044
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          2318.085673533174,
+          55.39352091456769,
+          -5597.070430699194
+        ],
+        "surface": [
+          2318.085673533174,
+          55.39352091456769,
+          -5597.070430699194
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          2317.05555558908,
+          55.82818553780103,
+          -5594.4706568704705
+        ],
+        "surface": [
+          2317.05555558908,
+          55.82818553780103,
+          -5594.4706568704705
+        ]
+      }
+    ],
+    "visibility": 210,
+    "stream": [
+      {
+        "index": 11,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 12,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 13,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 14,
+        "road": "ready",
+        "scenery": "ready"
+      }
+    ]
+  }
+]

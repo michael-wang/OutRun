@@ -2,12 +2,35 @@ import {defineConfig, type Plugin} from 'vite';
 import {mkdir, open, realpath, lstat, link, unlink} from 'node:fs/promises';
 import {join,resolve,sep} from 'node:path';
 import {randomUUID} from 'node:crypto';
+import {spawn} from 'node:child_process';
 
 /** Dev-only, same-origin screenshot archive. The client never supplies a path. */
 function captureArchive():Plugin {
  let count=0,active=0;const recent:number[]=[];
  return {name:'outrun-capture-archive',apply:'serve',configureServer(server){
   const root=resolve(server.config.root),captureRoot=join(root,'captures');
+  const day=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
+  const local=(req:import('node:http').IncomingMessage)=>{
+   const address=req.socket.remoteAddress?.replace(/^::ffff:/,'');
+   let hostname='';try{hostname=new URL(`http://${req.headers.host}`).hostname;}catch{return false;}
+   return (address==='127.0.0.1'||address==='::1')&&['localhost','127.0.0.1','[::1]'].includes(hostname);
+  };
+  server.middlewares.use('/__outrun_photo_info',(req,res)=>{
+   if(req.method!=='GET'||(req.headers['sec-fetch-site']&&req.headers['sec-fetch-site']!=='same-origin'&&req.headers['sec-fetch-site']!=='none')){res.statusCode=403;res.end();return;}
+   res.setHeader('Content-Type','application/json');res.setHeader('Cache-Control','no-store');
+   res.end(JSON.stringify({folder:process.platform==='win32'?join(captureRoot,day()):null,openAllowed:process.platform==='win32'&&local(req)}));
+  });
+  server.middlewares.use('/__outrun_open_photos',async(req,res)=>{
+   const host=req.headers.host,origin=req.headers.origin,site=req.headers['sec-fetch-site'];
+   if(req.method!=='POST'||process.platform!=='win32'||!local(req)||!host||origin!==`http://${host}`||(site&&site!=='same-origin')||Number(req.headers['content-length']||0)>0||req.headers['transfer-encoding']){res.statusCode=403;res.end();return;}
+   try{
+    await mkdir(captureRoot,{recursive:true});if((await lstat(captureRoot)).isSymbolicLink())throw Error('Invalid capture directory');
+    const actual=await realpath(captureRoot),actualRoot=await realpath(root);if(!actual.toLowerCase().startsWith((actualRoot+sep).toLowerCase()))throw Error('Invalid capture directory');
+    const folder=join(actual,day());await mkdir(folder,{recursive:true});if((await lstat(folder)).isSymbolicLink()||!(await realpath(folder)).toLowerCase().startsWith((actual+sep).toLowerCase()))throw Error('Invalid dated directory');
+    const explorer=join(process.env.SystemRoot??'C:\\Windows','explorer.exe');
+    await new Promise<void>((resolve,reject)=>{const child=spawn(explorer,[folder],{shell:false,windowsHide:false});child.once('spawn',()=>resolve());child.once('error',reject);});res.statusCode=204;res.end();
+   }catch{res.statusCode=500;res.end();}
+  });
   server.middlewares.use('/__outrun_capture',async(req,res)=>{
    const reply=(code:number,value:unknown)=>{res.statusCode=code;res.setHeader('Content-Type','application/json');res.end(JSON.stringify(value));};
    if(req.method!=='POST'){reply(405,{error:'POST required'});return;}

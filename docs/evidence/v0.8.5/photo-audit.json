@@ -1,0 +1,66 @@
+{
+  "count": 12,
+  "decoded": 12,
+  "details": [
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-048Z-a6698128-c8a8-4d96-b43c-20391879a105.png",
+      "sha256": "83c74764a29196946c878ef25551623f0c974f8073fdf735f5e2dfff9b9fe753",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-137Z-8c22a429-0d55-4280-a6e9-37acf4fef015.png",
+      "sha256": "25018dfcb5900cb43a72a277378c63523aab4b9d305f3d3bd7a1ae5318e90623",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-213Z-8049307e-c8c1-4a9a-b0fe-50f3770e4955.png",
+      "sha256": "a2637bec6230845614962b1c0b13a1992b959e11ca63c01dd007cb1ef54ea305",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-286Z-326f788a-4b16-457e-a214-ba71e9dfb1cb.png",
+      "sha256": "a2637bec6230845614962b1c0b13a1992b959e11ca63c01dd007cb1ef54ea305",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-358Z-9de8674f-b533-4947-bc51-ebc77b08288b.png",
+      "sha256": "5b55187605e832e8a77129edb2f8374e3dff3b7b59f74daf93d6d73365c45e6e",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-429Z-feda2783-edb1-44cf-9ac0-70f61907d32d.png",
+      "sha256": "04e264a7442e0159701f53e89a0de24235be835aa07371afc494d4c64f3cfb05",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-502Z-34e10931-1bf2-40ed-a00d-8fe4fbc1bafe.png",
+      "sha256": "f29796ec58f08b2207a4961b7630c5831c39dcabcb1ecafb9415f3ea4088d5f1",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-574Z-59a9894c-4ce9-4bd2-91d1-70228ec74b1d.png",
+      "sha256": "f29796ec58f08b2207a4961b7630c5831c39dcabcb1ecafb9415f3ea4088d5f1",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-646Z-66bb88db-c81a-4219-92bf-ab8ef1486611.png",
+      "sha256": "87c2219f5041dafb69f314c00453a5a4234d1a8bbade5775f53576c69426806a",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-718Z-eb721379-22bf-4fe9-9dde-dd88623eda74.png",
+      "sha256": "4776e7fe3e120be619456cc48033d33fdb1d56db68fb41171958013aa9ffb6a6",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-788Z-2130acc5-81d7-4f06-ad00-d88e151dfe32.png",
+      "sha256": "4776e7fe3e120be619456cc48033d33fdb1d56db68fb41171958013aa9ffb6a6",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    },
+    {
+      "file": "captures/2026-10-28/2026-10-28T14-38-08-862Z-0837fd96-4666-4fe1-befc-613e20171b65.png",
+      "sha256": "28595fd5b558580120076c2bb94ad23682cee70f84fc0269fd32fa1f89c48f99",
+      "stageCode": "S01-v0.8.3-r1-1-ALB1"
+    }
+  ]
+}
