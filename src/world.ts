@@ -1,5 +1,6 @@
 import {roadOffset,LANE_WIDTH} from './road-profile';
 import * as THREE from 'three';
+import {asphaltTexture} from './asphalt-texture';
 import { createCar } from './car';
 import {ACTS,actWeights} from './acts';
 import {addJourneyScenery} from './scenery';
@@ -34,10 +35,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     const geo=new THREE.BufferGeometry(); geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2)); geo.setIndex(idx);if(colors.length){geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));(material as THREE.MeshStandardMaterial).vertexColors=true;} geo.computeVertexNormals();
     const mesh=new THREE.Mesh(geo,material);mesh.name=material===asphalt?'driving-surface':material===grass?'terrain':material===sand?'shoulder':'road-detail'; mesh.receiveShadow=true; scene.add(mesh); return mesh;
   }
-  const grainCanvas=document.createElement('canvas');grainCanvas.width=grainCanvas.height=64;
-  const grain=grainCanvas.getContext('2d')!; const pixels=grain.createImageData(64,64);
-  for(let i=0;i<64*64;i++){const c=225+Math.round((Math.sin(i*37.17)*437.1%1)*18);pixels.data.set([c,c,c,255],i*4);}grain.putImageData(pixels,0,0);
-  const texture=new THREE.CanvasTexture(grainCanvas);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;asphalt.map=texture;
+  asphalt.map=asphaltTexture();
   const supportMaterial=new THREE.MeshStandardMaterial({color:'#c8aa7d',roughness:1,side:THREE.DoubleSide});
   const edgeMaterials=[line,mat('#b64b35')],surfMaterial=new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72});
   const dummy=new THREE.Object3D();
