@@ -1,3 +1,4 @@
+import {SkidFeedback} from './skid-feedback';
 /** Original synthesized audio, created only after a user gesture. */
 export class EngineSound {
   private context?: AudioContext;
@@ -16,9 +17,7 @@ export class EngineSound {
   private skidLevel = 0;
   private windLevel = 0;
   private active = false;
-  private squealing=false;
-  private slipPersistence=0;
-  private quietPersistence=0;
+  readonly skidFeedback=new SkidFeedback();
   async unlock() {
     if (!this.context) {
       const context = this.context = new AudioContext();
@@ -53,17 +52,9 @@ export class EngineSound {
   }
   setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
   update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number}) {
-    // Lateral velocity can be a deliberate lane change, not tire stress.
-    const demand=Math.abs(drivetrain?.requiredSteer??0),effort=Math.abs(drivetrain?.appliedSteer??0);
-    const curveLoad=Math.max(0,Math.min(1,(demand-.3)/.45));
-    const stress=slip*curveLoad*Math.max(0,Math.min(1,(effort-.18)/.42));
-    const speedGain=Math.max(0,Math.min(1,(speed*3.6-100)/60));
-    this.slipPersistence=stress>.20&&speedGain>0?this.slipPersistence+dt:0;
-    this.quietPersistence=stress<.12||speedGain===0?this.quietPersistence+dt:0;
-    if(this.slipPersistence>.10)this.squealing=true;
-    if(this.quietPersistence>.18)this.squealing=false;
+    const intensity=this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer);
     this.active = true;this.engineRpm=drivetrain?.rpm??Math.min(7200,1000+speed*85);this.engineGear=drivetrain?.gear??1;
-    this.engineHz = 28+this.engineRpm*1.1/60+(gas ? 3 : 0); this.skidLevel = this.squealing ? Math.min(.045,Math.max(0,stress-.15)*.07)*speedGain:0;
+    this.engineHz = 28+this.engineRpm*1.1/60+(gas ? 3 : 0); this.skidLevel = intensity*.12;
     this.windLevel=.10*Math.min(1,(speed/(300/3.6))**2);
     if (!this.context) return;
     const now = this.context.currentTime;
@@ -71,13 +62,13 @@ export class EngineSound {
     this.undertone!.frequency.setTargetAtTime(this.engineHz*.5,now,.08);
     this.windGain!.gain.setTargetAtTime(this.windLevel,now,.12);
     this.engineGain!.gain.setTargetAtTime(gas ? (drivetrain?.shiftRemaining ? .15 : .22) : 0.11, now, 0.07);
-    this.skid!.frequency.setTargetAtTime(510 + stress * 250, now, 0.06);
+    this.skid!.frequency.setTargetAtTime(510 + intensity * 250, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
-  pause() { this.active = false;this.squealing=false;this.slipPersistence=0;this.quietPersistence=0;this.skidLevel = 0;this.windLevel=0; if (this.context) { this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  pause() { this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0; if (this.context) { this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }
-    return { contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
+    return { contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
   }
 }

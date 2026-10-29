@@ -1,0 +1,155 @@
+{
+  "environment": "Edge 915x412 touch DPR 2; recording at 4x CPU slowdown, desktop GPU; not physical Pixel 8",
+  "audioRecorded": true,
+  "cases": [
+    {
+      "name": "normal",
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 138.4548423836588,
+        "engineRpm": 5861.173220926841,
+        "gear": 6,
+        "skidIntensity": 0,
+        "skidLevel": 0,
+        "windLevel": 0.06532397773162797,
+        "rms": 0.05017575295745451
+      },
+      "firstSkidFrame": -1,
+      "firstSmokeFrame": -1,
+      "firstMarkFrame": -1,
+      "effects": {
+        "emittedByWheel": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "particles": 0,
+        "segments": 0,
+        "particleCapacity": 192,
+        "segmentCapacity": 768,
+        "geometries": 2
+      }
+    },
+    {
+      "name": "light",
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 157.1224962001893,
+        "engineRpm": 6879.408883646688,
+        "gear": 5,
+        "skidIntensity": 0.15530757990333546,
+        "skidLevel": 0.018636909588400256,
+        "windLevel": 0.05979577236197986,
+        "rms": 0.05503287660144635
+      },
+      "firstSkidFrame": 13,
+      "firstSmokeFrame": 13,
+      "firstMarkFrame": 14,
+      "effects": {
+        "emittedByWheel": [
+          23,
+          23,
+          23,
+          23
+        ],
+        "particles": 92,
+        "segments": 88,
+        "particleCapacity": 192,
+        "segmentCapacity": 768,
+        "geometries": 2
+      }
+    },
+    {
+      "name": "hard",
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 160.3751139816203,
+        "engineRpm": 7056.82439899747,
+        "gear": 5,
+        "skidIntensity": 1,
+        "skidLevel": 0.12,
+        "windLevel": 0.06411261343558684,
+        "rms": 0.07774398443421547
+      },
+      "firstSkidFrame": 0,
+      "firstSmokeFrame": 0,
+      "firstMarkFrame": 0,
+      "effects": {
+        "emittedByWheel": [
+          36,
+          36,
+          36,
+          36
+        ],
+        "particles": 144,
+        "segments": 144,
+        "particleCapacity": 192,
+        "segmentCapacity": 768,
+        "geometries": 2
+      }
+    }
+  ],
+  "perf": [
+    {
+      "fps": 60,
+      "startupMs": 1006.5,
+      "raycastMs": 0.2566666670143604,
+      "renderMs": 1.8449999997392297,
+      "worldMs": 0.04500000017384688,
+      "pixelRatio": 1,
+      "shadows": false
+    },
+    {
+      "fps": 60,
+      "startupMs": 1006.5,
+      "raycastMs": 0.2566666670143604,
+      "renderMs": 1.8449999997392297,
+      "worldMs": 0.04500000017384688,
+      "pixelRatio": 1,
+      "shadows": false
+    },
+    {
+      "fps": 59.98800239952008,
+      "startupMs": 1006.5,
+      "raycastMs": 0.42666666662941377,
+      "renderMs": 3.128333333383004,
+      "worldMs": 0.026666666691501934,
+      "pixelRatio": 1,
+      "shadows": false
+    },
+    {
+      "fps": 59.98800239952008,
+      "startupMs": 1006.5,
+      "raycastMs": 0.42666666662941377,
+      "renderMs": 3.128333333383004,
+      "worldMs": 0.026666666691501934,
+      "pixelRatio": 1,
+      "shadows": false
+    },
+    {
+      "fps": 60,
+      "startupMs": 1006.5,
+      "raycastMs": 0.4150000002235174,
+      "renderMs": 2.2600000000248355,
+      "worldMs": 0.03666666677842537,
+      "pixelRatio": 1,
+      "shadows": false
+    },
+    {
+      "fps": 60,
+      "startupMs": 1006.5,
+      "raycastMs": 0.4150000002235174,
+      "renderMs": 2.2600000000248355,
+      "worldMs": 0.03666666677842537,
+      "pixelRatio": 1,
+      "shadows": false
+    }
+  ]
+}

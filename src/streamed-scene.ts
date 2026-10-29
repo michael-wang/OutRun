@@ -95,6 +95,7 @@ export class StreamedScene {
   }
   return hits.sort((a,b)=>a.distance-b.distance);
  }
+ roadReady(distance:number){return this.chunks.get(Math.floor(distance/this.chunkLength))?.road==='ready';}
  get error(){return this.errorMessage;}
  get sceneryStats(){let instances=0,draws=0;this.groups.scenery.traverse(o=>{if(o instanceof THREE.InstancedMesh){instances+=o.count;draws++;}});return {instances,draws};}
  private registerGeometry(g:THREE.BufferGeometry,index:number){for(const a of Object.values(g.attributes))this.uploadOwners.set(a.array,index);if(g.index)this.uploadOwners.set(g.index.array,index);}

@@ -1,0 +1,66 @@
+import * as THREE from 'three';
+export interface TireContact {name:string;gap:number|null;surface:number[]|null;normal?:number[];onRoad?:boolean}
+const PARTICLES=192,SEGMENTS=768,LIFE=1.8,MARK_LIFE=18;
+const CORNERS=[0,1,2,2,1,3],SMOKE_ATTRIBUTES=['center','size','alpha','age'],WHEEL_NAMES=['rear-wheel--1','rear-wheel-1','front-wheel--1','front-wheel-1'];
+/** Two fixed buffers, shared across streamed chunks; contacts come from the existing wheel rays. */
+export class TireEffects {
+ private smokeGeo=new THREE.InstancedBufferGeometry();private markGeo=new THREE.BufferGeometry();
+ private ages=new Float32Array(PARTICLES);private smokePos=new Float32Array(PARTICLES*3);private sizes=new Float32Array(PARTICLES);private opacity=new Float32Array(PARTICLES);
+ // Separate per-frame contacts from the distance-spaced skid trail anchors.
+ private velocity=new Float32Array(PARTICLES*3);private smokePrevious=Array.from({length:4},()=>new THREE.Vector3());
+ private born=new Float64Array(PARTICLES).fill(-100);private strength=new Float32Array(PARTICLES);
+ private markPos=new Float32Array(SEGMENTS*18);private colors=new Float32Array(SEGMENTS*24);private markBorn=new Float64Array(SEGMENTS).fill(-100);private markStrength=new Float32Array(SEGMENTS);
+ private smoke:THREE.Mesh;private marks:THREE.Mesh;private particle=0;private segment=0;private lastTime=0;private emission=0;private slipTime=0;
+ private previous=Array.from({length:4},()=>new THREE.Vector3());private previousNormal=Array.from({length:4},()=>new THREE.Vector3(0,1,0));private linked=[false,false,false,false];private emitted=[0,0,0,0];
+ private point=new THREE.Vector3();private normal=new THREE.Vector3();private side=new THREE.Vector3();private oldSide=new THREE.Vector3();private delta=new THREE.Vector3();private vertices=Array.from({length:4},()=>new THREE.Vector3());
+ constructor(scene:THREE.Scene){
+  // Camera-facing radial puffs. No world-space stretch: every corner has the same view depth.
+  const corners=[-1,-1,1,-1,-1,1,-1,1,1,-1,1,1],vertices:number[]=[],layers:number[]=[];
+  for(let layer=0;layer<2;layer++)for(let i=0;i<6;i++){vertices.push(corners[i*2],corners[i*2+1],0);layers.push(layer);}
+  this.smokeGeo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));this.smokeGeo.setAttribute('layer',new THREE.Float32BufferAttribute(layers,1));this.smokeGeo.instanceCount=PARTICLES;
+  for(const [name,data,width] of [['center',this.smokePos,3],['size',this.sizes,1],['alpha',this.opacity,1],['age',this.ages,1]] as const)this.smokeGeo.setAttribute(name,new THREE.InstancedBufferAttribute(data,width).setUsage(THREE.DynamicDrawUsage));
+  this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:`attribute vec3 center;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
+  void main(){
+   float haze=layer;float radius=(.55+1.05*smoothstep(.01,.09,age))*(1.+haze*.2);
+   vec3 origin=center+vec3(0.,radius*.65+haze*max(0.,age-.35)*.55,0.);
+   vec4 p=modelViewMatrix*vec4(origin,1.);
+   p.xy+=position.xy*radius;
+   gl_Position=projectionMatrix*p;smokeUV=position.xy;opacity=alpha*mix(1.,.22*smoothstep(.12,.55,age),haze);
+  }`,fragmentShader:`varying vec2 smokeUV;varying float opacity;void main(){
+   float radius=length(smokeUV);
+   float edge=1.-smoothstep(.08,1.,radius);
+   float a=edge*edge*opacity*.65;if(a<.003)discard;
+   gl_FragColor=vec4(.97,.98,1.,a);
+  }`}));
+  this.markGeo.setAttribute('position',new THREE.BufferAttribute(this.markPos,3).setUsage(THREE.DynamicDrawUsage));this.markGeo.setAttribute('color',new THREE.BufferAttribute(this.colors,4).setUsage(THREE.DynamicDrawUsage));
+  this.marks=new THREE.Mesh(this.markGeo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
+  this.smoke.name='tire-smoke';this.marks.name='tire-marks';this.smoke.frustumCulled=this.marks.frustumCulled=false;this.smoke.renderOrder=3;this.marks.renderOrder=1;scene.add(this.marks,this.smoke);this.clear();
+ }
+ clear(time=0){this.born.fill(-100);this.markBorn.fill(-100);this.opacity.fill(0);this.colors.fill(0);this.linked.fill(false);this.emitted.fill(0);this.particle=this.segment=0;this.emission=this.slipTime=0;this.lastTime=time;this.smoke.visible=this.marks.visible=false;}
+ update(time:number,speed:number,skidIntensity:number,contacts:TireContact[],scale:number){
+  const dt=Math.max(0,Math.min(.1,time-this.lastTime));if(time<this.lastTime)this.clear(time);this.lastTime=time;
+  const active=skidIntensity>0,amount=THREE.MathUtils.clamp(skidIntensity,0,1);
+  if(!active&&!this.smoke.visible&&!this.marks.visible){this.linked.fill(false);this.slipTime=this.emission=0;return;}
+  this.slipTime=active?this.slipTime+dt:0;this.emission+=active?dt:0;const emit=active&&this.emission>=.012;if(emit)this.emission=0;
+  for(let wheel=0;wheel<4;wheel++){
+   const c=contacts.find(c=>c.name===WHEEL_NAMES[wheel]);
+   if(!active||!c?.surface||!c.onRoad||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
+   this.point.fromArray(c.surface);if(c.normal)this.normal.fromArray(c.normal);else this.normal.set(0,1,0);if(this.normal.y<0)this.normal.negate();this.point.addScaledVector(this.normal,.014);
+   this.delta.subVectors(this.point,this.previous[wheel]);const distance=this.delta.length();
+   if(emit){this.emitted[wheel]++;const i=this.particle++%PARTICLES;this.smokePos[i*3]=this.point.x;this.smokePos[i*3+1]=this.point.y;this.smokePos[i*3+2]=this.point.z;this.born[i]=time;this.strength[i]=.3+.7*amount;this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));const carry=this.linked[wheel]&&dt>0&&this.delta.length()<4?.25/dt:0;for(let axis=0;axis<3;axis++)this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;this.delta.subVectors(this.point,this.previous[wheel]);}
+   if(this.linked[wheel]&&distance>.35&&distance<4){
+    this.side.crossVectors(this.delta,this.normal).normalize().multiplyScalar(.23);this.oldSide.crossVectors(this.delta,this.previousNormal[wheel]).normalize().multiplyScalar(.23);
+    const v=this.vertices;v[0].copy(this.previous[wheel]).add(this.oldSide);v[1].copy(this.previous[wheel]).sub(this.oldSide);v[2].copy(this.point).add(this.side);v[3].copy(this.point).sub(this.side);
+    const index=this.segment++%SEGMENTS;for(let j=0;j<6;j++)v[CORNERS[j]].toArray(this.markPos,index*18+j*3);this.markBorn[index]=time;this.markStrength[index]=Math.sqrt(amount);
+   }
+   this.smokePrevious[wheel].copy(this.point);if(!this.linked[wheel]||distance>.35){this.previous[wheel].copy(this.point);this.previousNormal[wheel].copy(this.normal);}this.linked[wheel]=true;
+  }
+  let smokeCount=0,markCount=0;
+  for(let i=0;i<PARTICLES;i++){const age=time-this.born[i],alive=age>=0&&age<LIFE;this.ages[i]=Math.max(0,age);this.opacity[i]=alive?.85*this.strength[i]*(1-age/LIFE):0;this.sizes[i]=alive?(1.5+age*3)*(.85+.3*((i*17%23)/22)):0;if(alive){smokeCount++;if(age>0){this.smokePos[i*3]+=this.velocity[i*3]*dt;this.smokePos[i*3+2]+=this.velocity[i*3+2]*dt;this.smokePos[i*3+1]+=this.velocity[i*3+1]*dt;}const drag=Math.exp(-dt*1.5);this.velocity[i*3]*=drag;this.velocity[i*3+2]*=drag;this.velocity[i*3+1]*=drag;this.smokePos[i*3+1]+=dt*Math.max(0,age-.45)*.35;}}
+  for(let i=0;i<SEGMENTS;i++){const age=time-this.markBorn[i],alpha=age>=0&&age<MARK_LIFE?.92*this.markStrength[i]*Math.min(1,(MARK_LIFE-age)/4):0;if(alpha>0)markCount++;for(let j=0;j<6;j++){const o=i*24+j*4;this.colors[o]=.018;this.colors[o+1]=.018;this.colors[o+2]=.018;this.colors[o+3]=alpha;}}
+  this.smoke.visible=smokeCount>0;this.marks.visible=markCount>0;void scale;
+  for(const key of SMOKE_ATTRIBUTES)this.smokeGeo.attributes[key].needsUpdate=true;this.markGeo.attributes.position.needsUpdate=true;this.markGeo.attributes.color.needsUpdate=true;
+ }
+ inspect(){return {emittedByWheel:[...this.emitted],particles:this.opacity.filter(a=>a>0).length,segments:this.markBorn.filter(t=>this.lastTime-t<MARK_LIFE).length,particleCapacity:PARTICLES,segmentCapacity:SEGMENTS,geometries:2};}
+ dispose(){this.smoke.removeFromParent();this.marks.removeFromParent();this.smokeGeo.dispose();this.markGeo.dispose();(this.smoke.material as THREE.Material).dispose();(this.marks.material as THREE.Material).dispose();}
+}
