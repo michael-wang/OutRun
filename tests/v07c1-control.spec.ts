@@ -5,7 +5,7 @@ const root='docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressio
 test('compact active steering travel retains nine stable notches and independent gas in both layouts',async({browser})=>{
  const traces=[];
  for(const [width,height] of [[844,390],[960,432]]){
-  const c=await browser.newContext({viewport:{width,height},hasTouch:true,isMobile:true}),p=await c.newPage();await p.goto('/');
+  const c=await browser.newContext({viewport:{width,height},hasTouch:true,isMobile:true}),p=await c.newPage();await p.goto('/?mode=free');
   for(const swapped of [false,true]){
    if(swapped){await p.locator('#settings').click();await p.locator('#swap').check();await p.locator('#close-settings').click();}
    await p.locator(swapped?'#resume':'#drive').click();await p.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({speed:230/3.6});});

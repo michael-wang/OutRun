@@ -29,7 +29,9 @@ import type {FeedbackAnchor} from './l2-feedback';
 const labMode=new URLSearchParams(location.search).get('lab')==='bricks';
 const l2=new URLSearchParams(location.search).get('lab')==='l2'?(L2_CANDIDATES.find(b=>b.id===new URLSearchParams(location.search).get('l2'))??L2_CANDIDATES[0]):undefined;
 const params=new URLSearchParams(location.search);
-const trip=params.get('trip')==='10m'?generateTrip(Number(params.get('seed'))||1):undefined;
+// Explicit historical and diagnostic routes keep their existing selection.
+const defaultTrip=params.get('mode')!=='free'&&!['trip','stage','lab','challenge','pace','velocity'].some(key=>params.has(key));
+const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1):undefined;
 const stage=trip??(params.get('stage')==='1'?generateStage(Number(params.get('seed'))||1):undefined);
 const pilot=stage??(params.get('lab')==='pilots'?(PILOTS.find(b=>b.id===params.get('pilot'))??PILOTS[0]):undefined);
 const brick=pilot??l2??(labMode?(BRICKS.find(b=>b.id===new URLSearchParams(location.search).get('brick'))??BRICKS[0]):undefined);
