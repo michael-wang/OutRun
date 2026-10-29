@@ -16,7 +16,7 @@ test('mobile browser performance probe',async({browser})=>{
   await page.waitForFunction(()=>(window as any).__drive.streaming().fullyReady,null,{timeout:120000});await page.waitForTimeout(5000);
   samples.push(await page.evaluate(()=>{const g=(window as any).__drive;return {state:g.snapshot(),perf:g.perf(),scenery:g.scenery(),stream:g.streaming()};}));
  }
- mkdirSync('docs/evidence/v0.9-mobile',{recursive:true});
- writeFileSync(`docs/evidence/v0.9-mobile/${process.env.OUTRUN_PERF_LABEL??'after'}.json`,JSON.stringify({environment:'Edge desktop, 915x412 touch, DPR 2.625, CDP main-thread CPU slowdown 4x; not Pixel 8 hardware or GPU',startup,samples},null,2));
+ const output=process.env.OUTRUN_PERF_DIR??'docs/evidence/v0.9-mobile';mkdirSync(output,{recursive:true});
+ writeFileSync(`${output}/${process.env.OUTRUN_PERF_LABEL??'after'}.json`,JSON.stringify({environment:'Edge desktop, 915x412 touch, DPR 2.625, CDP main-thread CPU slowdown 4x; not Pixel 8 hardware or GPU',startup,samples},null,2));
  await context.close();
 });
