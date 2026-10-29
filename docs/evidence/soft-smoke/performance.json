@@ -1,0 +1,22 @@
+{
+  "environment": "Edge mobile emulation, 915x412, DPR 2.625, 4x CPU; desktop GPU, video recording enabled; not physical Pixel 8",
+  "fps": [
+    60,
+    58.99410058994101,
+    59,
+    59,
+    58.994100589940984,
+    59,
+    59.00865460267505,
+    59.020263623844166,
+    59,
+    58.99410058994109,
+    59.01445854234283,
+    59.020263623844166,
+    58.994100589940984,
+    58.99410058994109,
+    59
+  ],
+  "streamingReady": true,
+  "errors": []
+}

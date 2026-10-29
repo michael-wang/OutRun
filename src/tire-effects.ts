@@ -5,7 +5,7 @@ const CORNERS=[0,1,2,2,1,3],SMOKE_ATTRIBUTES=['center','size','alpha','age'],WHE
 /** Two fixed buffers, shared across streamed chunks; contacts come from the existing wheel rays. */
 export class TireEffects {
  private smokeGeo=new THREE.InstancedBufferGeometry();private markGeo=new THREE.BufferGeometry();
- private ages=new Float32Array(PARTICLES);private directions=new Float32Array(PARTICLES*3);private smokePos=new Float32Array(PARTICLES*3);private sizes=new Float32Array(PARTICLES);private opacity=new Float32Array(PARTICLES);
+ private ages=new Float32Array(PARTICLES);private smokePos=new Float32Array(PARTICLES*3);private sizes=new Float32Array(PARTICLES);private opacity=new Float32Array(PARTICLES);
  // Separate per-frame contacts from the distance-spaced skid trail anchors.
  private velocity=new Float32Array(PARTICLES*3);private smokePrevious=Array.from({length:4},()=>new THREE.Vector3());
  private born=new Float64Array(PARTICLES).fill(-100);private strength=new Float32Array(PARTICLES);
@@ -14,23 +14,23 @@ export class TireEffects {
  private previous=Array.from({length:4},()=>new THREE.Vector3());private previousNormal=Array.from({length:4},()=>new THREE.Vector3(0,1,0));private linked=[false,false,false,false];private emitted=[0,0,0,0];
  private point=new THREE.Vector3();private normal=new THREE.Vector3();private side=new THREE.Vector3();private oldSide=new THREE.Vector3();private delta=new THREE.Vector3();private vertices=Array.from({length:4},()=>new THREE.Vector3());
  constructor(scene:THREE.Scene){
-  // Two stretched soft billboards per pooled element: dense ground ribbon plus delayed haze.
+  // Camera-facing radial puffs. No world-space stretch: every corner has the same view depth.
   const corners=[-1,-1,1,-1,-1,1,-1,1,1,-1,1,1],vertices:number[]=[],layers:number[]=[];
   for(let layer=0;layer<2;layer++)for(let i=0;i<6;i++){vertices.push(corners[i*2],corners[i*2+1],0);layers.push(layer);}
   this.smokeGeo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));this.smokeGeo.setAttribute('layer',new THREE.Float32BufferAttribute(layers,1));this.smokeGeo.instanceCount=PARTICLES;
-  for(const [name,data,width] of [['center',this.smokePos,3],['direction',this.directions,3],['size',this.sizes,1],['alpha',this.opacity,1],['age',this.ages,1]] as const)this.smokeGeo.setAttribute(name,new THREE.InstancedBufferAttribute(data,width).setUsage(THREE.DynamicDrawUsage));
-  this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:`attribute vec3 center;attribute vec3 direction;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
+  for(const [name,data,width] of [['center',this.smokePos,3],['size',this.sizes,1],['alpha',this.opacity,1],['age',this.ages,1]] as const)this.smokeGeo.setAttribute(name,new THREE.InstancedBufferAttribute(data,width).setUsage(THREE.DynamicDrawUsage));
+  this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:`attribute vec3 center;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
   void main(){
-   float haze=layer;vec3 origin=center+vec3(0.,.45+haze*(.3+max(0.,age-.35)*.7),0.);
-   vec4 p=modelViewMatrix*vec4(origin,1.);vec3 tangent=(modelViewMatrix*vec4(direction,0.)).xyz;
-
-
-   p.xyz+=tangent*position.x*1.4;p.x+=position.x*(1.3+size*.32);p.y+=position.y*(.48+size*.15+haze*.65);
+   float haze=layer;float radius=min(2.1,1.25+age*.7)*(1.+haze*.25);
+   vec3 origin=center+vec3(0.,radius*.65+haze*max(0.,age-.35)*.55,0.);
+   vec4 p=modelViewMatrix*vec4(origin,1.);
+   p.xy+=position.xy*radius;
    gl_Position=projectionMatrix*p;smokeUV=position.xy;opacity=alpha*mix(1.,.22*smoothstep(.12,.55,age),haze);
   }`,fragmentShader:`varying vec2 smokeUV;varying float opacity;void main(){
-   vec2 uv=smokeUV;float edge=(1.-smoothstep(.45,1.,abs(uv.x)))*(1.-smoothstep(.15,1.,abs(uv.y)));
-   float billow=.78+.22*sin(uv.x*11.+sin(uv.y*7.))*sin(uv.y*9.+uv.x*4.);
-   float a=edge*billow*opacity;if(a<.005)discard;gl_FragColor=vec4(.97,.98,1.,a);
+   float radius=length(smokeUV);
+   float edge=1.-smoothstep(.08,1.,radius);
+   float a=edge*edge*opacity*.65;if(a<.003)discard;
+   gl_FragColor=vec4(.97,.98,1.,a);
   }`}));
   this.markGeo.setAttribute('position',new THREE.BufferAttribute(this.markPos,3).setUsage(THREE.DynamicDrawUsage));this.markGeo.setAttribute('color',new THREE.BufferAttribute(this.colors,4).setUsage(THREE.DynamicDrawUsage));
   this.marks=new THREE.Mesh(this.markGeo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
@@ -47,7 +47,7 @@ export class TireEffects {
    if(!active||!c?.surface||!c.onRoad||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
    this.point.fromArray(c.surface);if(c.normal)this.normal.fromArray(c.normal);else this.normal.set(0,1,0);if(this.normal.y<0)this.normal.negate();this.point.addScaledVector(this.normal,.014);
    this.delta.subVectors(this.point,this.previous[wheel]);const distance=this.delta.length();
-   if(emit){this.emitted[wheel]++;const i=this.particle++%PARTICLES;this.smokePos[i*3]=this.point.x;this.smokePos[i*3+1]=this.point.y;this.smokePos[i*3+2]=this.point.z;this.born[i]=time;this.strength[i]=amount;this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));this.side.copy(this.delta).normalize();if(this.side.lengthSq()<.1)this.side.set(0,0,1);this.side.toArray(this.directions,i*3);this.smokeGeo.attributes.direction.needsUpdate=true;const carry=this.linked[wheel]&&dt>0&&this.delta.length()<4?-.08/dt:0;for(let axis=0;axis<3;axis++)this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;this.delta.subVectors(this.point,this.previous[wheel]);}
+   if(emit){this.emitted[wheel]++;const i=this.particle++%PARTICLES;this.smokePos[i*3]=this.point.x;this.smokePos[i*3+1]=this.point.y;this.smokePos[i*3+2]=this.point.z;this.born[i]=time;this.strength[i]=amount;this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));const carry=this.linked[wheel]&&dt>0&&this.delta.length()<4?-.08/dt:0;for(let axis=0;axis<3;axis++)this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;this.delta.subVectors(this.point,this.previous[wheel]);}
    if(this.slipTime>.06&&this.linked[wheel]&&distance>.35&&distance<4){
     this.side.crossVectors(this.delta,this.normal).normalize().multiplyScalar(.23);this.oldSide.crossVectors(this.delta,this.previousNormal[wheel]).normalize().multiplyScalar(.23);
     const v=this.vertices;v[0].copy(this.previous[wheel]).add(this.oldSide);v[1].copy(this.previous[wheel]).sub(this.oldSide);v[2].copy(this.point).add(this.side);v[3].copy(this.point).sub(this.side);
