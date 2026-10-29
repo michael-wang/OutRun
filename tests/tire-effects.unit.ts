@@ -5,7 +5,7 @@ const contacts=(z:number,road=true):TireContact[]=>['rear','front'].flatMap(axle
 describe('bounded contact-driven tire effects',()=>{
  it('keeps fresh smoke near the contact plane and drifting backward before rising',()=>{
   const scene=new THREE.Scene(),fx=new TireEffects(scene);fx.update(1/60,60,1,true,contacts(1),200);fx.update(2/60,60,1,true,contacts(2),200);
-  const smoke=scene.getObjectByName('tire-smoke') as THREE.Points,p=smoke.geometry.getAttribute('position'),z=p.getZ(4),y=p.getY(4);
+  const smoke=scene.getObjectByName('tire-smoke') as THREE.Points,p=smoke.geometry.getAttribute('center'),z=p.getZ(4),y=p.getY(4);
   fx.update(3/60,60,0,false,contacts(3),200);expect(p.getZ(4)).toBeLessThan(z);expect(p.getY(4)).toBeCloseTo(y);expect(fx.inspect().particles).toBeGreaterThan(0);fx.dispose();
  });
  it('requires meaningful slip, speed and real asphalt contact, then expires after grip returns',()=>{
