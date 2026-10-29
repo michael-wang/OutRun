@@ -1,0 +1,842 @@
+[
+  {
+    "index": 0,
+    "cpuMs": 4.400000000372529,
+    "instances": 428,
+    "draws": 11,
+    "clearance": {
+      "queries": 98,
+      "checks": 655,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 1,
+    "cpuMs": 2.3999999999068677,
+    "instances": 442,
+    "draws": 17,
+    "clearance": {
+      "queries": 102,
+      "checks": 1052,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 2,
+    "cpuMs": 2.1000000000931323,
+    "instances": 428,
+    "draws": 11,
+    "clearance": {
+      "queries": 98,
+      "checks": 1017,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 3,
+    "cpuMs": 1.7000000001862645,
+    "instances": 426,
+    "draws": 17,
+    "clearance": {
+      "queries": 96,
+      "checks": 908,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 4,
+    "cpuMs": 1.6999999997206032,
+    "instances": 440,
+    "draws": 11,
+    "clearance": {
+      "queries": 100,
+      "checks": 1051,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 5,
+    "cpuMs": 1.5,
+    "instances": 428,
+    "draws": 17,
+    "clearance": {
+      "queries": 98,
+      "checks": 971,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 6,
+    "cpuMs": 1.5,
+    "instances": 428,
+    "draws": 12,
+    "clearance": {
+      "queries": 98,
+      "checks": 945,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 7,
+    "cpuMs": 1.6000000000931323,
+    "instances": 440,
+    "draws": 16,
+    "clearance": {
+      "queries": 100,
+      "checks": 1053,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 8,
+    "cpuMs": 1.8999999999068677,
+    "instances": 426,
+    "draws": 12,
+    "clearance": {
+      "queries": 96,
+      "checks": 989,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 9,
+    "cpuMs": 1.7000000001862645,
+    "instances": 428,
+    "draws": 16,
+    "clearance": {
+      "queries": 98,
+      "checks": 1008,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 10,
+    "cpuMs": 1.7999999998137355,
+    "instances": 442,
+    "draws": 12,
+    "clearance": {
+      "queries": 102,
+      "checks": 949,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 11,
+    "cpuMs": 2.2000000001862645,
+    "instances": 1496,
+    "draws": 50,
+    "clearance": {
+      "queries": 66,
+      "checks": 669,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 12,
+    "cpuMs": 1.6999999997206032,
+    "instances": 1823,
+    "draws": 42,
+    "clearance": {
+      "queries": 55,
+      "checks": 495,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 13,
+    "cpuMs": 1.8999999999068677,
+    "instances": 1875,
+    "draws": 42,
+    "clearance": {
+      "queries": 56,
+      "checks": 481,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 14,
+    "cpuMs": 1.7000000001862645,
+    "instances": 1846,
+    "draws": 60,
+    "clearance": {
+      "queries": 55,
+      "checks": 503,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 15,
+    "cpuMs": 2,
+    "instances": 1913,
+    "draws": 42,
+    "clearance": {
+      "queries": 55,
+      "checks": 460,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 16,
+    "cpuMs": 1.6000000000931323,
+    "instances": 1818,
+    "draws": 61,
+    "clearance": {
+      "queries": 56,
+      "checks": 522,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 17,
+    "cpuMs": 2.099999999627471,
+    "instances": 1489,
+    "draws": 49,
+    "clearance": {
+      "queries": 55,
+      "checks": 558,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 18,
+    "cpuMs": 2,
+    "instances": 1907,
+    "draws": 61,
+    "clearance": {
+      "queries": 55,
+      "checks": 515,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 19,
+    "cpuMs": 1.7999999998137355,
+    "instances": 1998,
+    "draws": 42,
+    "clearance": {
+      "queries": 58,
+      "checks": 571,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 20,
+    "cpuMs": 1.6999999997206032,
+    "instances": 1900,
+    "draws": 62,
+    "clearance": {
+      "queries": 55,
+      "checks": 471,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 21,
+    "cpuMs": 1.7000000001862645,
+    "instances": 1910,
+    "draws": 41,
+    "clearance": {
+      "queries": 55,
+      "checks": 652,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 22,
+    "cpuMs": 1.8000000002793968,
+    "instances": 1974,
+    "draws": 61,
+    "clearance": {
+      "queries": 56,
+      "checks": 524,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 23,
+    "cpuMs": 2,
+    "instances": 1861,
+    "draws": 42,
+    "clearance": {
+      "queries": 55,
+      "checks": 532,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 24,
+    "cpuMs": 1.5,
+    "instances": 650,
+    "draws": 61,
+    "clearance": {
+      "queries": 70,
+      "checks": 786,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 25,
+    "cpuMs": 1.1999999997206032,
+    "instances": 485,
+    "draws": 31,
+    "clearance": {
+      "queries": 73,
+      "checks": 809,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 26,
+    "cpuMs": 1,
+    "instances": 481,
+    "draws": 33,
+    "clearance": {
+      "queries": 71,
+      "checks": 756,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 27,
+    "cpuMs": 1,
+    "instances": 489,
+    "draws": 36,
+    "clearance": {
+      "queries": 72,
+      "checks": 778,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 28,
+    "cpuMs": 1.1000000000931323,
+    "instances": 510,
+    "draws": 33,
+    "clearance": {
+      "queries": 75,
+      "checks": 912,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 29,
+    "cpuMs": 1.1000000000931323,
+    "instances": 493,
+    "draws": 46,
+    "clearance": {
+      "queries": 71,
+      "checks": 814,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 30,
+    "cpuMs": 1.099999999627471,
+    "instances": 495,
+    "draws": 34,
+    "clearance": {
+      "queries": 72,
+      "checks": 846,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 31,
+    "cpuMs": 1.2999999998137355,
+    "instances": 497,
+    "draws": 45,
+    "clearance": {
+      "queries": 73,
+      "checks": 681,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 32,
+    "cpuMs": 1.1000000000931323,
+    "instances": 493,
+    "draws": 33,
+    "clearance": {
+      "queries": 71,
+      "checks": 775,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 33,
+    "cpuMs": 1.1000000000931323,
+    "instances": 483,
+    "draws": 44,
+    "clearance": {
+      "queries": 72,
+      "checks": 861,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 34,
+    "cpuMs": 1.099999999627471,
+    "instances": 503,
+    "draws": 31,
+    "clearance": {
+      "queries": 73,
+      "checks": 865,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 35,
+    "cpuMs": 1.2000000001862645,
+    "instances": 499,
+    "draws": 44,
+    "clearance": {
+      "queries": 71,
+      "checks": 775,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 36,
+    "cpuMs": 1.2000000001862645,
+    "instances": 489,
+    "draws": 39,
+    "clearance": {
+      "queries": 74,
+      "checks": 819,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 37,
+    "cpuMs": 3,
+    "instances": 440,
+    "draws": 17,
+    "clearance": {
+      "queries": 100,
+      "checks": 1118,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 38,
+    "cpuMs": 2.8999999999068677,
+    "instances": 428,
+    "draws": 11,
+    "clearance": {
+      "queries": 98,
+      "checks": 951,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 39,
+    "cpuMs": 2.900000000372529,
+    "instances": 428,
+    "draws": 12,
+    "clearance": {
+      "queries": 98,
+      "checks": 1043,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 40,
+    "cpuMs": 3.2000000001862645,
+    "instances": 440,
+    "draws": 17,
+    "clearance": {
+      "queries": 100,
+      "checks": 995,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 41,
+    "cpuMs": 3.1000000000931323,
+    "instances": 426,
+    "draws": 11,
+    "clearance": {
+      "queries": 96,
+      "checks": 1002,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 42,
+    "cpuMs": 3.3000000002793968,
+    "instances": 428,
+    "draws": 17,
+    "clearance": {
+      "queries": 98,
+      "checks": 1002,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 43,
+    "cpuMs": 3.3999999999068677,
+    "instances": 440,
+    "draws": 11,
+    "clearance": {
+      "queries": 100,
+      "checks": 1030,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 44,
+    "cpuMs": 3.1999999997206032,
+    "instances": 428,
+    "draws": 17,
+    "clearance": {
+      "queries": 98,
+      "checks": 1015,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 45,
+    "cpuMs": 3.5,
+    "instances": 434,
+    "draws": 15,
+    "clearance": {
+      "queries": 96,
+      "checks": 955,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 46,
+    "cpuMs": 3.7000000001862645,
+    "instances": 894,
+    "draws": 46,
+    "clearance": {
+      "queries": 89,
+      "checks": 1068,
+      "rejected": 4
+    },
+    "finite": true
+  },
+  {
+    "index": 47,
+    "cpuMs": 2.3999999999068677,
+    "instances": 1855,
+    "draws": 42,
+    "clearance": {
+      "queries": 55,
+      "checks": 537,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 48,
+    "cpuMs": 2.6000000000931323,
+    "instances": 1985,
+    "draws": 59,
+    "clearance": {
+      "queries": 55,
+      "checks": 522,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 49,
+    "cpuMs": 2.6000000000931323,
+    "instances": 2004,
+    "draws": 42,
+    "clearance": {
+      "queries": 56,
+      "checks": 500,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 50,
+    "cpuMs": 2.3000000002793968,
+    "instances": 1867,
+    "draws": 52,
+    "clearance": {
+      "queries": 55,
+      "checks": 539,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 51,
+    "cpuMs": 2.3999999999068677,
+    "instances": 1964,
+    "draws": 42,
+    "clearance": {
+      "queries": 55,
+      "checks": 528,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 52,
+    "cpuMs": 2.3999999999068677,
+    "instances": 2031,
+    "draws": 42,
+    "clearance": {
+      "queries": 56,
+      "checks": 526,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 53,
+    "cpuMs": 2.6000000000931323,
+    "instances": 1861,
+    "draws": 56,
+    "clearance": {
+      "queries": 55,
+      "checks": 538,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 54,
+    "cpuMs": 2.3000000002793968,
+    "instances": 1763,
+    "draws": 42,
+    "clearance": {
+      "queries": 55,
+      "checks": 584,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 55,
+    "cpuMs": 2.3999999999068677,
+    "instances": 2016,
+    "draws": 61,
+    "clearance": {
+      "queries": 58,
+      "checks": 565,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 56,
+    "cpuMs": 2.400000000372529,
+    "instances": 1756,
+    "draws": 42,
+    "clearance": {
+      "queries": 55,
+      "checks": 437,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 57,
+    "cpuMs": 3,
+    "instances": 1809,
+    "draws": 61,
+    "clearance": {
+      "queries": 55,
+      "checks": 427,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 58,
+    "cpuMs": 1.3000000002793968,
+    "instances": 497,
+    "draws": 32,
+    "clearance": {
+      "queries": 73,
+      "checks": 826,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 59,
+    "cpuMs": 1.3000000002793968,
+    "instances": 469,
+    "draws": 46,
+    "clearance": {
+      "queries": 71,
+      "checks": 707,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 60,
+    "cpuMs": 1.3000000002793968,
+    "instances": 477,
+    "draws": 33,
+    "clearance": {
+      "queries": 72,
+      "checks": 815,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 61,
+    "cpuMs": 1.2999999998137355,
+    "instances": 503,
+    "draws": 46,
+    "clearance": {
+      "queries": 73,
+      "checks": 875,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 62,
+    "cpuMs": 1.2999999998137355,
+    "instances": 481,
+    "draws": 32,
+    "clearance": {
+      "queries": 71,
+      "checks": 783,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 63,
+    "cpuMs": 1.2999999998137355,
+    "instances": 489,
+    "draws": 47,
+    "clearance": {
+      "queries": 72,
+      "checks": 798,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 64,
+    "cpuMs": 1.3999999999068677,
+    "instances": 504,
+    "draws": 35,
+    "clearance": {
+      "queries": 75,
+      "checks": 586,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 65,
+    "cpuMs": 1.2999999998137355,
+    "instances": 487,
+    "draws": 33,
+    "clearance": {
+      "queries": 71,
+      "checks": 646,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 66,
+    "cpuMs": 1.5,
+    "instances": 501,
+    "draws": 46,
+    "clearance": {
+      "queries": 72,
+      "checks": 797,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 67,
+    "cpuMs": 1.3000000002793968,
+    "instances": 485,
+    "draws": 32,
+    "clearance": {
+      "queries": 73,
+      "checks": 804,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 68,
+    "cpuMs": 1.2999999998137355,
+    "instances": 475,
+    "draws": 46,
+    "clearance": {
+      "queries": 71,
+      "checks": 787,
+      "rejected": 0
+    },
+    "finite": true
+  },
+  {
+    "index": 69,
+    "cpuMs": 1.2999999998137355,
+    "instances": 479,
+    "draws": 34,
+    "clearance": {
+      "queries": 70,
+      "checks": 755,
+      "rejected": 0
+    },
+    "finite": true
+  }
+]
