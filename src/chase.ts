@@ -13,6 +13,7 @@ export function chaseTargets(position:THREE.Vector3, travelHeading:number, aspec
   const up=new THREE.Vector3().crossVectors(forward,new THREE.Vector3(Math.cos(travelHeading),0,Math.sin(travelHeading))).normalize();
   return {
     eye:position.clone().addScaledVector(forward,-CHASE.distance).addScaledVector(up,CHASE.height),
-    look:position.clone().addScaledVector(forward,composition.lookAhead),
+    // A small uphill-only framing bias lets the rising road read as a climb. Eye/distance stay unchanged.
+    look:position.clone().addScaledVector(forward,composition.lookAhead).add(new THREE.Vector3(0,-Math.min(1.4,Math.max(0,grade)*composition.lookAhead*.1),0)),
   };
 }

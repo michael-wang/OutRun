@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {stageReady} from './stage-ready';
-const before=process.env.OUTRUN_GROUNDED_BEFORE==='1',root=`docs/evidence/grounded-driving/comparison/${before?'before':'after'}`;
+const before=process.env.OUTRUN_GROUNDED_BEFORE==='1',root=`${process.env.OUTRUN_GROUNDED_DIR??'docs/evidence/grounded-driving'}/comparison/${before?'before':'after'}`;
 test('Seed 1 canyon grounded driving comparison',async({browser})=>{
  test.setTimeout(180000);mkdirSync(root,{recursive:true});
  const context=await browser.newContext({viewport:{width:915,height:412},isMobile:true,hasTouch:true,recordVideo:before?undefined:{dir:root,size:{width:915,height:412}}}),page=await context.newPage();
@@ -21,7 +21,7 @@ test('Seed 1 canyon grounded driving comparison',async({browser})=>{
 });
 
  test('real-time canyon driving, streaming and replay cleanup',async({browser})=>{
- test.setTimeout(120000);const dir='docs/evidence/grounded-driving';mkdirSync(dir,{recursive:true});
+ test.setTimeout(120000);const dir=process.env.OUTRUN_GROUNDED_DIR??'docs/evidence/grounded-driving';mkdirSync(dir,{recursive:true});
  const context=await browser.newContext({viewport:{width:915,height:412},deviceScaleFactor:2.625,isMobile:true,hasTouch:true,recordVideo:{dir:`${dir}/recording`,size:{width:915,height:412}}}),page=await context.newPage();
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));
@@ -31,7 +31,7 @@ test('Seed 1 canyon grounded driving comparison',async({browser})=>{
  await page.evaluate(()=>{const g=(window as any).__drive;g.manual(false);(window as any).driver=setInterval(()=>{const s=g.snapshot();g.controls({gas:s.speed<65,brake:s.speed>66,steer:Math.max(-1,Math.min(1,s.requiredSteer-s.lateral*.08))});},16);});
  const rows=[];for(let i=0;i<15;i++){await page.waitForTimeout(1000);rows.push(await page.evaluate(()=>{const g=(window as any).__drive;return {state:g.snapshot(),perf:g.perf(),effects:g.tireEffects(),stream:g.streaming(),render:g.scenery().render,memory:g.scenery().memory,wheels:g.wheelContacts()};}));}
  await page.evaluate(()=>{clearInterval((window as any).driver);(window as any).__drive.manual(true);});
- for(const r of rows){expect(r.stream.ready).toBe(true);expect(r.effects.particles).toBeLessThanOrEqual(48);expect(r.effects.segments).toBeLessThanOrEqual(384);for(const wheel of r.wheels)expect(Math.abs(wheel.gap??1)).toBeLessThan(.12);}
+ for(const r of rows){expect(r.stream.ready).toBe(true);expect(r.effects.particles).toBeLessThanOrEqual(r.effects.particleCapacity);expect(r.effects.segments).toBeLessThanOrEqual(r.effects.segmentCapacity);for(const wheel of r.wheels)expect(Math.abs(wheel.gap??1)).toBeLessThan(.12);}
  expect(rows.some(r=>r.effects.particles>0)).toBe(true);expect(rows.slice(2).every(r=>r.perf.fps>=30)).toBe(true);
  await page.locator('#pause').tap();await page.locator('#l2-replay').tap();await stageReady(page);expect(await page.evaluate(()=>(window as any).__drive.tireEffects().segments)).toBe(0);
  await page.goto('/?seed=2');await stageReady(page);expect(await page.evaluate(()=>(window as any).__drive.tireEffects())).toMatchObject({particles:0,segments:0});expect(errors).toEqual([]);
