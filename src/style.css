@@ -55,22 +55,23 @@ html:not([data-input-mode=gamepad]) #gamepad-status{display:none}
 
 #photo-status{max-width:min(420px,65vw);overflow-wrap:anywhere;font-size:11px;pointer-events:none}
 #photo-folder{display:flex;align-items:center;flex-wrap:wrap;gap:5px}#photo-folder[hidden]{display:none}#photo-folder span{font-size:11px;overflow-wrap:anywhere}#photo-folder button{padding-inline:8px}
-/* Arcade dashboard: compact layout aligned with the steering bar, mirrored with touch controls. */
-#speed{--dial-size:160px;--dial-accent:#53dcff;position:fixed;left:max(32px,env(safe-area-inset-left));bottom:calc(max(24px,env(safe-area-inset-bottom)) + 100px);width:var(--dial-size);height:var(--dial-size);pointer-events:none;text-align:center;color:#fff;isolation:isolate}
+html:not([data-qa="true"]) #l2-feedback-bar,html:not([data-qa="true"]) #photo-button{display:none}
+/* Arcade dashboard: low above steering, inset toward the car and mirrored with touch controls. */
+#speed{--dial-size:160px;--dial-accent:#53dcff;position:fixed;left:max(14vw,env(safe-area-inset-left));bottom:calc(max(24px,env(safe-area-inset-bottom)) + 100px);width:var(--dial-size);height:var(--dial-size);pointer-events:none;text-align:center;color:#fff;isolation:isolate}
 #speed svg{display:block;width:100%;height:100%;overflow:visible}
 #speed .dial-rim{stroke:var(--dial-accent)}
 #speed[data-band=fast]{--dial-accent:#ffb347}
 #speed[data-band=redline]{--dial-accent:#ff6852}
-#speed strong{position:absolute;top:54%;left:0;right:0;font:900 44px/1 Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-2px;color:#ffcc66;text-shadow:0 2px 0 #321d0c}
+#speed strong{position:absolute;top:54%;left:0;right:0;font:900 50px/1 Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-2px;color:#ffcc66;text-shadow:0 2px 0 #321d0c}
 #speed span{position:absolute;left:0;right:0;bottom:7%;font-size:11px;font-weight:800;letter-spacing:2px;color:#d1f6ff}
 #gear{position:absolute;top:33%;left:38%;width:24%;padding:2px 0;border:1px solid #4282a3;border-radius:5px;background:#081629;color:#a4f2ff;font-size:20px;line-height:1;font-weight:800}
 #status{position:absolute;top:100%;left:-10%;width:120%;margin-top:5px;font:700 8px/1.2 Arial,sans-serif;letter-spacing:.3px;color:#fff0ce;text-shadow:0 1px 3px #071323}
 @media(pointer:coarse),(max-width:1000px){
- #speed{--dial-size:clamp(104px,29dvh,124px);left:calc(max(24px,env(safe-area-inset-left)) + 72px - var(--dial-size)/2);right:auto;top:auto;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 50px)}
- #app:has(#touch.swapped) #speed{left:auto;right:calc(max(24px,env(safe-area-inset-right)) + 72px - var(--dial-size)/2)}
+ #speed{--dial-size:clamp(104px,29dvh,124px);left:calc(max(24px,env(safe-area-inset-left)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2);right:auto;top:auto;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 50px)}
+ #app:has(#touch.swapped) #speed{left:auto;right:calc(max(24px,env(safe-area-inset-right)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2)}
  #steering-strip{height:48px}
- #speed strong{font-size:36px}
- #speed span{font-size:9px;letter-spacing:1.5px}
+ #speed strong{top:50%;font-size:clamp(38px,10.2dvh,44px)}
+ #speed span{bottom:3%;font-size:9px;letter-spacing:1.5px}
  #gear{font-size:14px}
  #status{display:none}
 }
