@@ -9,7 +9,7 @@ export class TireEffects {
  // Separate per-frame contacts from the distance-spaced skid trail anchors.
  private velocity=new Float32Array(PARTICLES*3);private smokePrevious=Array.from({length:4},()=>new THREE.Vector3());
  private born=new Float64Array(PARTICLES).fill(-100);private strength=new Float32Array(PARTICLES);
- private markPos=new Float32Array(SEGMENTS*18);private colors=new Float32Array(SEGMENTS*24);private markBorn=new Float64Array(SEGMENTS).fill(-100);
+ private markPos=new Float32Array(SEGMENTS*18);private colors=new Float32Array(SEGMENTS*24);private markBorn=new Float64Array(SEGMENTS).fill(-100);private markStrength=new Float32Array(SEGMENTS);
  private smoke:THREE.Mesh;private marks:THREE.Mesh;private particle=0;private segment=0;private lastTime=0;private emission=0;private slipTime=0;
  private previous=Array.from({length:4},()=>new THREE.Vector3());private previousNormal=Array.from({length:4},()=>new THREE.Vector3(0,1,0));private linked=[false,false,false,false];private emitted=[0,0,0,0];
  private point=new THREE.Vector3();private normal=new THREE.Vector3();private side=new THREE.Vector3();private oldSide=new THREE.Vector3();private delta=new THREE.Vector3();private vertices=Array.from({length:4},()=>new THREE.Vector3());
@@ -21,7 +21,7 @@ export class TireEffects {
   for(const [name,data,width] of [['center',this.smokePos,3],['size',this.sizes,1],['alpha',this.opacity,1],['age',this.ages,1]] as const)this.smokeGeo.setAttribute(name,new THREE.InstancedBufferAttribute(data,width).setUsage(THREE.DynamicDrawUsage));
   this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:`attribute vec3 center;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
   void main(){
-   float haze=layer;float radius=min(2.1,1.25+age*.7)*(1.+haze*.25);
+   float haze=layer;float radius=(.55+1.05*smoothstep(.01,.09,age))*(1.+haze*.2);
    vec3 origin=center+vec3(0.,radius*.65+haze*max(0.,age-.35)*.55,0.);
    vec4 p=modelViewMatrix*vec4(origin,1.);
    p.xy+=position.xy*radius;
@@ -37,9 +37,9 @@ export class TireEffects {
   this.smoke.name='tire-smoke';this.marks.name='tire-marks';this.smoke.frustumCulled=this.marks.frustumCulled=false;this.smoke.renderOrder=3;this.marks.renderOrder=1;scene.add(this.marks,this.smoke);this.clear();
  }
  clear(time=0){this.born.fill(-100);this.markBorn.fill(-100);this.opacity.fill(0);this.colors.fill(0);this.linked.fill(false);this.emitted.fill(0);this.particle=this.segment=0;this.emission=this.slipTime=0;this.lastTime=time;this.smoke.visible=this.marks.visible=false;}
- update(time:number,speed:number,slip:number,drifting:boolean,contacts:TireContact[],scale:number){
+ update(time:number,speed:number,skidIntensity:number,contacts:TireContact[],scale:number){
   const dt=Math.max(0,Math.min(.1,time-this.lastTime));if(time<this.lastTime)this.clear(time);this.lastTime=time;
-  const active=drifting&&slip>.22&&speed>8,amount=(.65+.35*THREE.MathUtils.clamp((slip-.2)/.6,0,1))*Math.min(1,speed/25);
+  const active=skidIntensity>0,amount=THREE.MathUtils.clamp(skidIntensity,0,1);
   if(!active&&!this.smoke.visible&&!this.marks.visible){this.linked.fill(false);this.slipTime=this.emission=0;return;}
   this.slipTime=active?this.slipTime+dt:0;this.emission+=active?dt:0;const emit=active&&this.emission>=.012;if(emit)this.emission=0;
   for(let wheel=0;wheel<4;wheel++){
@@ -47,17 +47,17 @@ export class TireEffects {
    if(!active||!c?.surface||!c.onRoad||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
    this.point.fromArray(c.surface);if(c.normal)this.normal.fromArray(c.normal);else this.normal.set(0,1,0);if(this.normal.y<0)this.normal.negate();this.point.addScaledVector(this.normal,.014);
    this.delta.subVectors(this.point,this.previous[wheel]);const distance=this.delta.length();
-   if(emit){this.emitted[wheel]++;const i=this.particle++%PARTICLES;this.smokePos[i*3]=this.point.x;this.smokePos[i*3+1]=this.point.y;this.smokePos[i*3+2]=this.point.z;this.born[i]=time;this.strength[i]=amount;this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));const carry=this.linked[wheel]&&dt>0&&this.delta.length()<4?-.08/dt:0;for(let axis=0;axis<3;axis++)this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;this.delta.subVectors(this.point,this.previous[wheel]);}
-   if(this.slipTime>.06&&this.linked[wheel]&&distance>.35&&distance<4){
+   if(emit){this.emitted[wheel]++;const i=this.particle++%PARTICLES;this.smokePos[i*3]=this.point.x;this.smokePos[i*3+1]=this.point.y;this.smokePos[i*3+2]=this.point.z;this.born[i]=time;this.strength[i]=.3+.7*amount;this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));const carry=this.linked[wheel]&&dt>0&&this.delta.length()<4?.25/dt:0;for(let axis=0;axis<3;axis++)this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;this.delta.subVectors(this.point,this.previous[wheel]);}
+   if(this.linked[wheel]&&distance>.35&&distance<4){
     this.side.crossVectors(this.delta,this.normal).normalize().multiplyScalar(.23);this.oldSide.crossVectors(this.delta,this.previousNormal[wheel]).normalize().multiplyScalar(.23);
     const v=this.vertices;v[0].copy(this.previous[wheel]).add(this.oldSide);v[1].copy(this.previous[wheel]).sub(this.oldSide);v[2].copy(this.point).add(this.side);v[3].copy(this.point).sub(this.side);
-    const index=this.segment++%SEGMENTS;for(let j=0;j<6;j++)v[CORNERS[j]].toArray(this.markPos,index*18+j*3);this.markBorn[index]=time;
+    const index=this.segment++%SEGMENTS;for(let j=0;j<6;j++)v[CORNERS[j]].toArray(this.markPos,index*18+j*3);this.markBorn[index]=time;this.markStrength[index]=Math.sqrt(amount);
    }
    this.smokePrevious[wheel].copy(this.point);if(!this.linked[wheel]||distance>.35){this.previous[wheel].copy(this.point);this.previousNormal[wheel].copy(this.normal);}this.linked[wheel]=true;
   }
   let smokeCount=0,markCount=0;
   for(let i=0;i<PARTICLES;i++){const age=time-this.born[i],alive=age>=0&&age<LIFE;this.ages[i]=Math.max(0,age);this.opacity[i]=alive?.85*this.strength[i]*(1-age/LIFE):0;this.sizes[i]=alive?(1.5+age*3)*(.85+.3*((i*17%23)/22)):0;if(alive){smokeCount++;if(age>0){this.smokePos[i*3]+=this.velocity[i*3]*dt;this.smokePos[i*3+2]+=this.velocity[i*3+2]*dt;this.smokePos[i*3+1]+=this.velocity[i*3+1]*dt;}const drag=Math.exp(-dt*1.5);this.velocity[i*3]*=drag;this.velocity[i*3+2]*=drag;this.velocity[i*3+1]*=drag;this.smokePos[i*3+1]+=dt*Math.max(0,age-.45)*.35;}}
-  for(let i=0;i<SEGMENTS;i++){const age=time-this.markBorn[i],alpha=age>=0&&age<MARK_LIFE?.92*Math.min(1,(MARK_LIFE-age)/4):0;if(alpha>0)markCount++;for(let j=0;j<6;j++){const o=i*24+j*4;this.colors[o]=.018;this.colors[o+1]=.018;this.colors[o+2]=.018;this.colors[o+3]=alpha;}}
+  for(let i=0;i<SEGMENTS;i++){const age=time-this.markBorn[i],alpha=age>=0&&age<MARK_LIFE?.92*this.markStrength[i]*Math.min(1,(MARK_LIFE-age)/4):0;if(alpha>0)markCount++;for(let j=0;j<6;j++){const o=i*24+j*4;this.colors[o]=.018;this.colors[o+1]=.018;this.colors[o+2]=.018;this.colors[o+3]=alpha;}}
   this.smoke.visible=smokeCount>0;this.marks.visible=markCount>0;void scale;
   for(const key of SMOKE_ATTRIBUTES)this.smokeGeo.attributes[key].needsUpdate=true;this.markGeo.attributes.position.needsUpdate=true;this.markGeo.attributes.color.needsUpdate=true;
  }
