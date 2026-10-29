@@ -21,7 +21,7 @@ import {L2_CANDIDATES,createL2Track,l2Course,l2Sample} from './l2-catalog';
 import {mountL2Lab} from './l2-lab';
 import {PILOTS,createPilotTrack,pilotCourse,pilotSample,pilotWeights} from './pilot-composer';
 import {generateStage} from './stage-one';
-import {generateTrip} from './trip';
+import {generateTrip,TRIP_VERSION} from './trip';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
 import roadWorkerUrl from './road-worker.ts?worker&url';
@@ -42,6 +42,7 @@ let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof moun
 
 document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
+<div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${TRIP_VERSION}</small></div>
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="Pause / Menu">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <button id="photo-button" aria-label="Capture screenshot" hidden>📷</button><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
@@ -51,6 +52,7 @@ document.querySelector('#app')!.innerHTML = `
 <div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="Steering position" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
 <div id="rotate"><span>↻</span>Turn toward the horizon<small>Rotate your phone to landscape to drive.</small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>`;
 const $ = (id:string) => document.getElementById(id)!;
+$('route-title').textContent=brick?.name??'Coast Road';
 for(const [id,key] of Object.entries({drive:'P',resume:'P',restart:'R',sound:'M',settings:'C',fullscreen:'F'})){const node=$(id);node.classList.add('shortcut');node.dataset.shortcut=key;node.setAttribute('aria-keyshortcuts',key);}
 const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(pointer:coarse)').matches ? 1 : 1.75));
@@ -110,7 +112,7 @@ let swapped=readSwapped();
 let refreshPhotoFolder=()=>{};
 function applyLayout(){ $('touch').classList.toggle('swapped',swapped); ($('swap') as HTMLInputElement).checked=swapped; }
 applyLayout();
-function ui(){ const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=mode!=='playing'||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu';if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); }
+function ui(){ $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=mode!=='playing'||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu';if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); }
 function start(){void sound.unlock().catch(()=>{});if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;const resume=!!stage&&mode==='paused'&&elapsed>0&&!brickCompleted;mode=resume?'countdown':'playing';if(resume){readyUntil=performance.now()+1000;sound.pause();pad.neutralize();}settingsOpen=false;input.clear();ui();renderer.domElement.focus({preventScroll:true});}
 function pause(){if(l2UI?.feedbackOpen)return;if(mode==='paused'){start();return;}mode='paused';input.clear();pad.neutralize();sound.pause();ui();if(!mobile())(document.getElementById(brick?(l2||pilot?'l2-play':'brick-play'):'resume') as HTMLElement|null)?.focus();}
 function restart(){history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
@@ -217,10 +219,18 @@ function loop(now:number){
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
   if(!manual&&!wasCounting)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);advance(tick);remaining-=tick;}
   render(dt);
-  if(perfEnabled){if(!perf.startupMs&&(!world.streamer||world.streamer.ready))perf.startupMs=performance.now();perfFrames++;const span=now-perfSince;if(span>=1000){Object.assign(perf,{fps:perfFrames*1000/span,raycastMs:raycastTotal/perfFrames,renderMs:renderTotal/perfFrames,worldMs:worldTotal/perfFrames});perfFrames=0;perfSince=now;raycastTotal=renderTotal=worldTotal=0;
+  // Reuse the existing frame sample for the public FPS readout; expensive diagnostics stay opt-in.
+  perfFrames++;const span=now-perfSince;
+  if(perfEnabled&&!perf.startupMs&&(!world.streamer||world.streamer.ready))perf.startupMs=performance.now();
+  if(span>=1000){perf.fps=perfFrames*1000/span;
+   if(perfEnabled){Object.assign(perf,{raycastMs:raycastTotal/perfFrames,renderMs:renderTotal/perfFrames,worldMs:worldTotal/perfFrames});
    const stream=world.streamer?.stats,chunks=stream?.chunks.filter(c=>stream.nearby.includes(c.index))??[];perfPanel!.textContent=`FPS ${perf.fps.toFixed(1)} · ready ${(perf.startupMs/1000).toFixed(2)}s
 Near road/scenery ${chunks.map(c=>c.index+':'+(c.road==='ready'?'R':'-')+(c.scenery==='ready'?'S':'-')).join(' ')}
-Draws ${renderer.info.render.calls} · ray ${perf.raycastMs.toFixed(1)}ms · render CPU ${perf.renderMs.toFixed(1)}ms`;}}
+Draws ${renderer.info.render.calls} · ray ${perf.raycastMs.toFixed(1)}ms · render CPU ${perf.renderMs.toFixed(1)}ms`;}
+   perfFrames=0;perfSince=now;raycastTotal=renderTotal=worldTotal=0;
+  }
+  const hudText=`${Math.floor(elapsed/60)}:${String(Math.floor(elapsed%60)).padStart(2,'0')} · ${perf.fps?Math.round(perf.fps):'—'} FPS`;
+  if($('drive-hud').textContent!==hudText)$('drive-hud').textContent=hudText;
 
   if(!manual&&mode==='playing'&&!settingsOpen)speedAudit?.record({wall:now,simulated:elapsed,progress:state.distance,speed:state.speed,position:world.car.position.toArray(),camera:camera.position.toArray(),trackLength:world.length,heading:state.worldHeading,lateral:state.lateral,pace:effectivePace(state.speed,highSpeedPace)});
   else speedAudit?.reset();
