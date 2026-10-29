@@ -1,0 +1,725 @@
+{
+  "method": "Normal real-time physics with scripted steering/throttle, 15 seconds per world, mobile viewport and 4x main-thread CPU slowdown; desktop GPU, not Pixel 8",
+  "rows": [
+    {
+      "world": "canyon",
+      "second": 0,
+      "perf": {
+        "fps": 59.99400059994001,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.463333333353512,
+        "renderMs": 2.761666666669771,
+        "worldMs": 0.08333333331781129,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 1965.7881437691199,
+      "ready": true,
+      "calls": 136
+    },
+    {
+      "world": "canyon",
+      "second": 1,
+      "perf": {
+        "fps": 59.99803285138191,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.3393442622905017,
+        "renderMs": 1.72786885251856,
+        "worldMs": 0.07213114753182305,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2079.7047299934666,
+      "ready": true,
+      "calls": 131
+    },
+    {
+      "world": "canyon",
+      "second": 2,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2950000000186265,
+        "renderMs": 1.8916666666666666,
+        "worldMs": 0.053333333367481826,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2193.4861019547,
+      "ready": true,
+      "calls": 149
+    },
+    {
+      "world": "canyon",
+      "second": 3,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.3216666666790843,
+        "renderMs": 2.0566666666340705,
+        "worldMs": 0.05,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2307.155203105735,
+      "ready": true,
+      "calls": 152
+    },
+    {
+      "world": "canyon",
+      "second": 4,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.3066666666573534,
+        "renderMs": 1.8333333333566164,
+        "worldMs": 0.05666666667287548,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2422.717291149806,
+      "ready": true,
+      "calls": 153
+    },
+    {
+      "world": "canyon",
+      "second": 5,
+      "perf": {
+        "fps": 59.98800239952016,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.29000000001396986,
+        "renderMs": 1.8483333333240202,
+        "worldMs": 0.02166666667132328,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2536.437447475411,
+      "ready": true,
+      "calls": 152
+    },
+    {
+      "world": "canyon",
+      "second": 6,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2816666666418314,
+        "renderMs": 1.7583333333410944,
+        "worldMs": 0.039999999982925756,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2650.1357898782835,
+      "ready": true,
+      "calls": 148
+    },
+    {
+      "world": "canyon",
+      "second": 7,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.27333333330073706,
+        "renderMs": 1.9916666666589056,
+        "worldMs": 0.05999999999379118,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2763.733567574901,
+      "ready": true,
+      "calls": 154
+    },
+    {
+      "world": "canyon",
+      "second": 8,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2833333333566164,
+        "renderMs": 1.9899999999906868,
+        "worldMs": 0.02166666667132328,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2877.982985916587,
+      "ready": true,
+      "calls": 171
+    },
+    {
+      "world": "canyon",
+      "second": 9,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2550000000046566,
+        "renderMs": 1.5683333333193634,
+        "worldMs": 0.02000000001086543,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 2987.1494669416115,
+      "ready": true,
+      "calls": 127
+    },
+    {
+      "world": "canyon",
+      "second": 10,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2783333333597208,
+        "renderMs": 1.5816666666418313,
+        "worldMs": 0.05999999999379118,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 3094.82836457424,
+      "ready": true,
+      "calls": 119
+    },
+    {
+      "world": "canyon",
+      "second": 11,
+      "perf": {
+        "fps": 59.99400059993999,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2649999999906868,
+        "renderMs": 1.6683333332805583,
+        "worldMs": 0.02833333333643774,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 3205.1007364777183,
+      "ready": true,
+      "calls": 144
+    },
+    {
+      "world": "canyon",
+      "second": 12,
+      "perf": {
+        "fps": 59.99400059993999,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.25500000002017864,
+        "renderMs": 1.598333333331781,
+        "worldMs": 0.023333333331781128,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 3320.3271920108687,
+      "ready": true,
+      "calls": 144
+    },
+    {
+      "world": "canyon",
+      "second": 13,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.26000000004035734,
+        "renderMs": 1.5666666666123394,
+        "worldMs": 0.024999999984477956,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 3434.069544092384,
+      "ready": true,
+      "calls": 145
+    },
+    {
+      "world": "canyon",
+      "second": 14,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2349999999705081,
+        "renderMs": 1.675000000007761,
+        "worldMs": 0.03500000000931323,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 3547.684224038501,
+      "ready": true,
+      "calls": 142
+    },
+    {
+      "world": "city",
+      "second": 0,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.3649999999906868,
+        "renderMs": 2.4349999999860303,
+        "worldMs": 0.30999999997826916,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 12801.63403932679,
+      "ready": true,
+      "calls": 192
+    },
+    {
+      "world": "city",
+      "second": 1,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.34499999999534336,
+        "renderMs": 2.335000000001552,
+        "worldMs": 0.05666666665735344,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 12917.231553182846,
+      "ready": true,
+      "calls": 204
+    },
+    {
+      "world": "city",
+      "second": 2,
+      "perf": {
+        "fps": 59.994000599940094,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.31666666667442767,
+        "renderMs": 2.521666666679084,
+        "worldMs": 0.0566666666806365,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13030.94550984056,
+      "ready": true,
+      "calls": 175
+    },
+    {
+      "world": "city",
+      "second": 3,
+      "perf": {
+        "fps": 59.99400059993987,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.29000000008381904,
+        "renderMs": 2.3966666666325183,
+        "worldMs": 0.0916666666433836,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13144.631412291159,
+      "ready": true,
+      "calls": 171
+    },
+    {
+      "world": "city",
+      "second": 4,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.27833333330539367,
+        "renderMs": 2.036666666708576,
+        "worldMs": 0.04333333332712452,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13258.307714767801,
+      "ready": true,
+      "calls": 171
+    },
+    {
+      "world": "city",
+      "second": 5,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.29833333330849804,
+        "renderMs": 2.6483333333317813,
+        "worldMs": 0.03333333330228925,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13373.872941374835,
+      "ready": true,
+      "calls": 211
+    },
+    {
+      "world": "city",
+      "second": 6,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.3516666666759799,
+        "renderMs": 2.805000000012418,
+        "worldMs": 0.04666666667132328,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13489.39366306676,
+      "ready": true,
+      "calls": 219
+    },
+    {
+      "world": "city",
+      "second": 7,
+      "perf": {
+        "fps": 59.994000599940094,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.32166666665580124,
+        "renderMs": 2.1649999999906866,
+        "worldMs": 0.034999999993791185,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13603.046022217126,
+      "ready": true,
+      "calls": 220
+    },
+    {
+      "world": "city",
+      "second": 8,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.27833333327434956,
+        "renderMs": 2.208333333356616,
+        "worldMs": 0.03333333331005027,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13716.70498217024,
+      "ready": true,
+      "calls": 201
+    },
+    {
+      "world": "city",
+      "second": 9,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.31333333333022895,
+        "renderMs": 2.3166666666433837,
+        "worldMs": 0.050000000007761024,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13830.384712639077,
+      "ready": true,
+      "calls": 202
+    },
+    {
+      "world": "city",
+      "second": 10,
+      "perf": {
+        "fps": 59.99400059993987,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2966666666635623,
+        "renderMs": 2.221666666663562,
+        "worldMs": 0.030000000004656614,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 13944.053546651532,
+      "ready": true,
+      "calls": 199
+    },
+    {
+      "world": "city",
+      "second": 11,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.30499999995809046,
+        "renderMs": 2.446666666640279,
+        "worldMs": 0.08333333331781129,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 14059.629556084757,
+      "ready": true,
+      "calls": 202
+    },
+    {
+      "world": "city",
+      "second": 12,
+      "perf": {
+        "fps": 59.994000599940094,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.27999999999689557,
+        "renderMs": 1.8149999999984479,
+        "worldMs": 0.023333333316259086,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 14173.345066262793,
+      "ready": true,
+      "calls": 209
+    },
+    {
+      "world": "city",
+      "second": 13,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.27499999998447794,
+        "renderMs": 2.286666666708576,
+        "worldMs": 0.0216666666790843,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 14287.025292990136,
+      "ready": true,
+      "calls": 183
+    },
+    {
+      "world": "city",
+      "second": 14,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.22333333340939135,
+        "renderMs": 1.8199999999642993,
+        "worldMs": 0.02833333332867672,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 14400.693857393278,
+      "ready": true,
+      "calls": 175
+    },
+    {
+      "world": "coast",
+      "second": 0,
+      "perf": {
+        "fps": 59.994000599940094,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.30833333331781126,
+        "renderMs": 2.1149999999984477,
+        "worldMs": 0.2550000000046566,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 25584.351082563648,
+      "ready": true,
+      "calls": 164
+    },
+    {
+      "world": "coast",
+      "second": 1,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2883333332991848,
+        "renderMs": 1.7700000000108653,
+        "worldMs": 0.018333333334885536,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 25699.81412798867,
+      "ready": true,
+      "calls": 163
+    },
+    {
+      "world": "coast",
+      "second": 2,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.3200000000108654,
+        "renderMs": 2.0616666666309658,
+        "worldMs": 0.018333333327124515,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 25813.511227856707,
+      "ready": true,
+      "calls": 175
+    },
+    {
+      "world": "coast",
+      "second": 3,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2716666666868453,
+        "renderMs": 1.8649999999829256,
+        "worldMs": 0.02666666666821887,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 25927.239719876263,
+      "ready": true,
+      "calls": 176
+    },
+    {
+      "world": "coast",
+      "second": 4,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.3016666666682189,
+        "renderMs": 2.683333333333333,
+        "worldMs": 0.03999999999068678,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26042.859759213425,
+      "ready": true,
+      "calls": 165
+    },
+    {
+      "world": "coast",
+      "second": 5,
+      "perf": {
+        "fps": 59.994000599940094,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.26666666665890565,
+        "renderMs": 1.8283333333364378,
+        "worldMs": 0.06166666666201005,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26156.718559883997,
+      "ready": true,
+      "calls": 166
+    },
+    {
+      "world": "coast",
+      "second": 6,
+      "perf": {
+        "fps": 59.99400059993965,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.25499999995032946,
+        "renderMs": 2.155000000043462,
+        "worldMs": 0.05499999998913457,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26270.585215628584,
+      "ready": true,
+      "calls": 177
+    },
+    {
+      "world": "coast",
+      "second": 7,
+      "perf": {
+        "fps": 59.99803285138209,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.23770491800988552,
+        "renderMs": 1.8688524590545623,
+        "worldMs": 0.011475409823851507,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26384.465047811256,
+      "ready": true,
+      "calls": 176
+    },
+    {
+      "world": "coast",
+      "second": 8,
+      "perf": {
+        "fps": 60.00393468424168,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.23770491800988552,
+        "renderMs": 1.9262295082348904,
+        "worldMs": 0.01803278687150508,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26500.221843882933,
+      "ready": true,
+      "calls": 174
+    },
+    {
+      "world": "coast",
+      "second": 9,
+      "perf": {
+        "fps": 59.994000599940094,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.30333333331315465,
+        "renderMs": 2.3900000000217307,
+        "worldMs": 0.025000000007761022,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26613.985997045147,
+      "ready": true,
+      "calls": 167
+    },
+    {
+      "world": "coast",
+      "second": 10,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.28000000002017866,
+        "renderMs": 2.1333333333178115,
+        "worldMs": 0.02833333333643774,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26727.661992133395,
+      "ready": true,
+      "calls": 169
+    },
+    {
+      "world": "coast",
+      "second": 11,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2416666666821887,
+        "renderMs": 1.8133333332836628,
+        "worldMs": 0.02666666666821887,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26841.36349201423,
+      "ready": true,
+      "calls": 180
+    },
+    {
+      "world": "coast",
+      "second": 12,
+      "perf": {
+        "fps": 59.99400059993965,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.23333333333333334,
+        "renderMs": 1.8449999999720603,
+        "worldMs": 0.03666666669305414,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 26957.00421849042,
+      "ready": true,
+      "calls": 178
+    },
+    {
+      "world": "coast",
+      "second": 13,
+      "perf": {
+        "fps": 60,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.2666666666821887,
+        "renderMs": 2.0099999999705083,
+        "worldMs": 0.03500000002483527,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 27070.63655725901,
+      "ready": true,
+      "calls": 179
+    },
+    {
+      "world": "coast",
+      "second": 14,
+      "perf": {
+        "fps": 59.994000599940094,
+        "startupMs": 2304.899999999907,
+        "raycastMs": 0.28000000002017866,
+        "renderMs": 2.15,
+        "worldMs": 0.03333333331005027,
+        "pixelRatio": 1,
+        "shadows": false
+      },
+      "distance": 27184.27307315063,
+      "ready": true,
+      "calls": 189
+    }
+  ]
+}

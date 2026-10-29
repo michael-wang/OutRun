@@ -1,0 +1,16 @@
+[WebServer] (node:52428) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:42404) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 tests\v09-feedback-buffer.spec.ts:2:1 › feedback in a connector is not mislabelled as a challenge core (4.4s)
+  ok 2 tests\v09-offline.spec.ts:2:1 › production PWA opens Road Trip offline after a first online visit (4.3s)
+  ok 3 tests\v09-precision.spec.ts:4:1 › far-route physics and retrospective samples agree across 30 and 60 steps (3.1s)
+  ok 4 tests\v09-trip.spec.ts:5:1 › trip has independent code, replay, review and retrospective position (7.4s)
+  ok 5 tests\v09-trip.spec.ts:19:1 › trip on a phone-like screen keeps gas and steering independent (3.5s)
+  ok 6 tests\v09-trip.spec.ts:25:1 › trip review and telemetry do not overwrite historical Stage data (6.1s)
+  ok 7 tests\v09-trip.spec.ts:35:1 › trip cannot disable streaming and replay or a new seed replaces the old window (9.5s)
+
+  7 passed (40.1s)

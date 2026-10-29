@@ -4,7 +4,8 @@ import {roadOffset,LANE_WIDTH} from './road-profile';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
-export interface RoadMeshData {kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
+export interface RayRange {start:number;end:number;offset:number;count:number}
+export interface RoadMeshData {rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
 export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number):RoadMeshData[]{
@@ -18,7 +19,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));colors.push(color.r,color.g,color.b);}
   }}
   for(let i=0;i<n;i++){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
-  out.push({kind,positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
+  out.push({kind,...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
  };
  append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);append('sand',-13,13,-.1,-.1,start,end,2.5);
  append('grass',13,75,-.12,-3,start,end,10);append('grass',75,160,-3,-14,start,end,10);
@@ -43,9 +44,9 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  // Merge by material before upload; dashes are not individual draw calls.
  const merged:RoadMeshData[]=[];
  for(const kind of new Set(out.map(x=>x.kind))){
-  const pieces=out.filter(x=>x.kind===kind),positions=new Float32Array(pieces.reduce((n,x)=>n+x.positions.length,0)),uvs=new Float32Array(pieces.reduce((n,x)=>n+x.uvs.length,0)),colors=new Float32Array(pieces.reduce((n,x)=>n+x.colors.length,0)),indices=new Uint32Array(pieces.reduce((n,x)=>n+x.indices.length,0));let p=0,u=0,c=0,k=0;
-  for(const x of pieces){positions.set(x.positions,p);uvs.set(x.uvs,u);colors.set(x.colors,c);for(let i=0;i<x.indices.length;i++)indices[k+i]=x.indices[i]+p/3;p+=x.positions.length;u+=x.uvs.length;c+=x.colors.length;k+=x.indices.length;}
-  merged.push({kind,positions,uvs,colors,indices});
+  const pieces=out.filter(x=>x.kind===kind),positions=new Float32Array(pieces.reduce((n,x)=>n+x.positions.length,0)),uvs=new Float32Array(pieces.reduce((n,x)=>n+x.uvs.length,0)),colors=new Float32Array(pieces.reduce((n,x)=>n+x.colors.length,0)),indices=new Uint32Array(pieces.reduce((n,x)=>n+x.indices.length,0));const rayRanges:RayRange[]=[];let p=0,u=0,c=0,k=0;
+  for(const x of pieces){for(const r of x.rayRanges??[])rayRanges.push({...r,offset:r.offset+k});positions.set(x.positions,p);uvs.set(x.uvs,u);colors.set(x.colors,c);for(let i=0;i<x.indices.length;i++)indices[k+i]=x.indices[i]+p/3;p+=x.positions.length;u+=x.uvs.length;c+=x.colors.length;k+=x.indices.length;}
+  merged.push({kind,positions,uvs,colors,indices,...(rayRanges.length?{rayRanges}:{})});
  }
  return merged;
 }

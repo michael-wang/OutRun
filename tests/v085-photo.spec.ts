@@ -40,7 +40,7 @@ test('production Stage starts without exposing a PC capture path',async({page})=
  await expect(page.locator('#l2-lab')).toBeHidden({timeout:30000});await expect(page.locator('canvas')).toBeVisible();
 });
 
-test('production install can start Stage offline after only visiting free drive',async({browser})=>{
+test('production install can start Stage offline after only visiting the public entry',async({browser})=>{
  const context=await browser.newContext(),page=await context.newPage();
  await page.goto('http://127.0.0.1:4173/');await page.evaluate(()=>navigator.serviceWorker.ready);
  await page.waitForFunction(async()=>{for(const key of await caches.keys())for(const request of await (await caches.open(key)).keys())if(request.url.includes('road-worker-'))return true;return false;},null,{timeout:30000});

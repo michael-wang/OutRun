@@ -4,7 +4,7 @@ import {touchDriver} from './touch-driver';
 const root='docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';
 const snap=(p:any)=>p.evaluate(()=>(window as any).__drive.snapshot());
 test('trusted finger jitter stays inside a notch until a deliberate threshold crossing',async({browser})=>{
- const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const touch=await touchDriver(page,context),rows=[];
+ const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.goto('/?mode=free');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const touch=await touchDriver(page,context),rows=[];
  for(const [raw,expected] of [[.25,.25],[.365,.25],[.385,.25],[.375,.25],[.415,.5],[.385,.5],[.365,.5],[.33,.25],[.06,.25],[.04,0],[-.76,-.75],[0,0]]){
   await touch(raw,true,false);await expect.poll(async()=>Number((await page.evaluate(()=>(window as any).__drive.steering())).rawSteer.toFixed(3))).toBe(raw);const s=await page.evaluate(()=>(window as any).__drive.steering());expect(s.effectiveSteer).toBe(expected);expect(s.rawSteer).toBeCloseTo(raw,3);rows.push(s);
  }

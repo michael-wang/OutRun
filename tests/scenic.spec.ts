@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 
 test('travel animates all wheels and occupants; stopping and pause freeze their motion',async({page})=>{
- await page.goto('/');await page.locator('#drive').click();
+ await page.goto('/?mode=free');await page.locator('#drive').click();
  const result=await page.evaluate(()=>{
   const g=(window as any).__drive;g.manual(true);g.reset({distance:100,speed:0});g.advance(.5,{gas:false,brake:true,steer:0});const stopped=g.wheels();
   const c=g.challenges().find((c:any)=>c.id==='high');

@@ -1,0 +1,8 @@
+import {chromium} from '@playwright/test';
+import {writeFile} from 'node:fs/promises';
+const browser=await chromium.launch({channel:'msedge',headless:true}),page=await browser.newPage({viewport:{width:960,height:540}}),out=[];
+for(const seed of [1,2]){
+ await page.goto(`http://127.0.0.1:5175/?trip=10m&seed=${seed}`);await page.waitForFunction(()=>window.__drive?.streaming()?.ready,{timeout:120000});await page.keyboard.press('KeyP');await page.waitForFunction(()=>window.__drive.snapshot().mode==='playing');
+ const rows=await page.evaluate(()=>{const g=window.__drive,b=g.brick(),beat=b.beats.find(b=>b.role==='Technical approach'),curve=b.placements.find(p=>p.beat===beat.id&&p.channel==='curvature'&&p.parameters.effort>1);const start=350+curve.startS-300,end=350+curve.endS+200;const runs=[];for(const controlled of [false,true]){g.manual(true);g.reset({distance:start,speed:82,lateral:0});let peak=0,off=0,brakes=0,min=Infinity;for(let i=0;i<2000&&g.snapshot().distance<end;i++){const s=g.snapshot(),target=controlled?54:90,brake=s.speed>target+1;g.advance(.05,{gas:s.speed<target,brake,steer:Math.max(-1,Math.min(1,s.requiredSteer-s.lateral*.1))},false);const x=g.snapshot();peak=Math.max(peak,Math.abs(x.lateral));if(x.offRoad)off+=.05;if(brake)brakes+=.05;min=Math.min(min,x.speed*3.6);}runs.push({controlled,peakLateral:peak,offRoadSeconds:off,brakeSeconds:brakes,minSpeed:min,finish:g.snapshot().distance});}return {beat,curve,runs};});out.push({seed,...rows});
+}
+await writeFile('docs/evidence/v0.9/brake-comparison.json',JSON.stringify(out,null,2));console.log(JSON.stringify(out));await browser.close();

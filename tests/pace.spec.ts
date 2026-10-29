@@ -18,7 +18,7 @@ test('all pace selections keep framing and hands-off departure; default is 1.75'
    const after=await page.evaluate(()=>(window as any).__drive.snapshot());expect(after.offRoad).toBe(true);expect(Math.abs(after.lateral)).toBeGreaterThan(5);
   }
  }
- await page.goto('/');await page.locator('#drive').click();expect(await page.evaluate(()=>(window as any).__drive.snapshot().highSpeedPace)).toBe(1.75);
+ await page.goto('/?mode=free');await page.locator('#drive').click();expect(await page.evaluate(()=>(window as any).__drive.snapshot().highSpeedPace)).toBe(1.75);
  await page.setViewportSize({width:1280,height:720});await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:420,speed:65});});await page.screenshot({path:'docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/regressions/v0.3.2/desktop-default.png'});
  writeFileSync('docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/regressions/v0.3.2/framing.json',JSON.stringify(results,null,2));
 });

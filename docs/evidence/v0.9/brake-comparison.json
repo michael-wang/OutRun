@@ -1,0 +1,90 @@
+[
+  {
+    "seed": 1,
+    "beat": {
+      "id": "TRIP-02",
+      "startS": 2139,
+      "endS": 4057,
+      "world": "canyon",
+      "verticality": "dramatic",
+      "role": "Technical approach"
+    },
+    "curve": {
+      "channel": "curvature",
+      "id": "C03",
+      "startS": 3120.5,
+      "endS": 3526.25,
+      "parameters": {
+        "effort": 1.3079257249436342,
+        "direction": -1,
+        "start": 0,
+        "end": 1,
+        "secondary": 0.6561397770536133
+      },
+      "transition": "smooth",
+      "beat": "TRIP-02"
+    },
+    "runs": [
+      {
+        "controlled": false,
+        "peakLateral": 13.1,
+        "offRoadSeconds": 0.7500000000000001,
+        "brakeSeconds": 0,
+        "minSpeed": 282.5059428634414,
+        "finish": 4082.9905169990575
+      },
+      {
+        "controlled": true,
+        "peakLateral": 1.0711715811206612,
+        "offRoadSeconds": 0,
+        "brakeSeconds": 0.7500000000000001,
+        "minSpeed": 193.14000000000075,
+        "finish": 4080.8904832845433
+      }
+    ]
+  },
+  {
+    "seed": 2,
+    "beat": {
+      "id": "TRIP-01",
+      "startS": 220,
+      "endS": 2505,
+      "world": "coast",
+      "verticality": "dramatic",
+      "role": "Technical approach"
+    },
+    "curve": {
+      "channel": "curvature",
+      "id": "C08",
+      "startS": 1385,
+      "endS": 1882.5,
+      "parameters": {
+        "effort": 1.4012454270012678,
+        "direction": -1,
+        "start": 0,
+        "end": 1,
+        "secondary": 0.8783087063347921
+      },
+      "transition": "smooth",
+      "beat": "TRIP-01"
+    },
+    "runs": [
+      {
+        "controlled": false,
+        "peakLateral": 9.6,
+        "offRoadSeconds": 2.6999999999999984,
+        "brakeSeconds": 0,
+        "minSpeed": 251.89267871209088,
+        "finish": 2437.494457476875
+      },
+      {
+        "controlled": true,
+        "peakLateral": 4.428024779160857,
+        "offRoadSeconds": 0,
+        "brakeSeconds": 0.7000000000000001,
+        "minSpeed": 193.5551892333792,
+        "finish": 2433.8935619353433
+      }
+    ]
+  }
+]

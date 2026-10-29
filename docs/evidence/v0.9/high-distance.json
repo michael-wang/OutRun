@@ -1,0 +1,592 @@
+{
+  "before": {
+    "state": {
+      "gear": 5,
+      "rpm": 6687.3434934597635,
+      "shiftRemaining": 0,
+      "shiftDirection": 0,
+      "gearInitialized": true,
+      "tractionFactor": 1,
+      "gearRatio": 0.6530612244897959,
+      "engineTorque": 6.020326565829951,
+      "driveForce": 3.9316418389093553,
+      "roadDrag": 1.7659170996629447,
+      "shiftDrag": 0,
+      "netAcceleration": -2.906933973988015,
+      "distance": 68444.28723313645,
+      "speed": 62.08597260400481,
+      "lateral": -13.1,
+      "heading": 0,
+      "velocityHeading": 0,
+      "worldHeading": 1.292899753971952,
+      "steering": 0,
+      "yawRate": 0,
+      "slipAngle": 0,
+      "slip": 0,
+      "offRoad": true,
+      "footprintEdge": 14.23,
+      "curvature": 0.006897309514504415,
+      "corridorSide": -1,
+      "steeringTarget": 0,
+      "drifting": false,
+      "rawSteer": 0,
+      "effectiveSteer": 0,
+      "requiredSteer": 1.3739867089627473,
+      "lateralRate": 0,
+      "appliedSteer": 0,
+      "steerFrom": 0,
+      "steerTo": 0,
+      "steerTime": 3.9999999999999885,
+      "grade": -0.25363017922465886,
+      "gradeAcceleration": 2.4117491689170962,
+      "roadHalfWidth": 10.5,
+      "laneCount": 6,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 108.65045205700841,
+      "mode": "playing",
+      "elapsed": 3.9999999999999885,
+      "frames": 250,
+      "inputs": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 153.60129738009567,
+        "engineRpm": 6687.3434934597635,
+        "gear": 5,
+        "skidLevel": 0,
+        "windLevel": 0.05550721911626741,
+        "rms": 0.05048733943970969
+      },
+      "trackLength": 69950,
+      "position": [
+        101.01568665700276,
+        122.34563292301367,
+        61329.48472339903
+      ],
+      "swapped": false,
+      "surfaceError": null,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 47.44840036542012,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 39.16833447425903,
+        "lookHeight": 0,
+        "position": [
+          107.66701066842047,
+          126.835126299851,
+          61326.961959415916
+        ]
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.1584389277517798
+    },
+    "contacts": [
+      {
+        "name": "rear-wheel--1",
+        "gap": -1.4210854715202004e-14,
+        "point": [
+          102.02730952632173,
+          122.6160132556958,
+          61328.243558052774
+        ],
+        "surface": [
+          102.02730952632173,
+          122.61601325569582,
+          61328.243558052774
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          99.37485113216324,
+          121.9705327962939,
+          61328.99156471319
+        ],
+        "surface": [
+          99.37485113216324,
+          121.9705327962939,
+          61328.99156471319
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          102.60137311334502,
+          122.61041094881729,
+          61330.273965160486
+        ],
+        "surface": [
+          102.60137311334502,
+          122.61041094881729,
+          61330.273965160486
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          99.94699709052986,
+          121.97277443564666,
+          61331.02251260187
+        ],
+        "surface": [
+          99.94699709052986,
+          121.97277443564666,
+          61331.02251260187
+        ]
+      }
+    ],
+    "sample": {
+      "halfWidth": 10.5,
+      "lanes": 6,
+      "grade": -0.25400755080364706,
+      "position": [
+        97.46009845606021,
+        122.40563292301366,
+        61316.87648035944
+      ],
+      "curvature": 0.006897309514504415,
+      "roadHeading": 1.2959293115908286,
+      "tangent": [
+        -0.9328383604628168,
+        -0.24618962555342472,
+        0.2630651279035449
+      ],
+      "challenge": {
+        "id": "ROAD-TRIP-10M-253",
+        "label": "TRIP-32",
+        "targetRequiredSteering": 1.4298456425103359,
+        "turnDirection": "none",
+        "referenceIndicatedSpeedKmH": 230,
+        "nominalDurationAtReferenceSpeed": 3.6715527950310562,
+        "roadWidth": 14,
+        "transitionSeconds": 0,
+        "elevationProfile": "scenic-journey",
+        "act": 2,
+        "transitionLength": 0,
+        "start": 68104,
+        "end": 68514.5,
+        "length": 410.5,
+        "offset": 340.2872331364488
+      }
+    }
+  },
+  "httpStatus": 200,
+  "photo": {
+    "stageCode": "TRIP-v0.9-r1-3-ALB1",
+    "seed": 3,
+    "capturedAt": "2026-10-28T17:54:44.640Z",
+    "time": 3.9999999999999885,
+    "distance": 68444.28723313645,
+    "speed": 223.5095013744173,
+    "steer": 0,
+    "grade": -0.25363017922465886,
+    "roadX": -13.1,
+    "halfWidth": 10.5,
+    "carPosition": [
+      101.01568665700276,
+      122.34563292301367,
+      61329.48472339903
+    ],
+    "carRotation": [
+      0.2487469045201121,
+      -1.2959293115908286,
+      0
+    ],
+    "roadPosition": [
+      97.46009845606021,
+      122.40563292301366,
+      61316.87648035944
+    ],
+    "surfaceGap": null,
+    "wheels": [
+      {
+        "name": "rear-wheel--1",
+        "gap": -1.4210854715202004e-14,
+        "point": [
+          102.02730952632173,
+          122.6160132556958,
+          61328.243558052774
+        ],
+        "surface": [
+          102.02730952632173,
+          122.61601325569582,
+          61328.243558052774
+        ]
+      },
+      {
+        "name": "front-wheel--1",
+        "gap": 0,
+        "point": [
+          99.37485113216324,
+          121.9705327962939,
+          61328.99156471319
+        ],
+        "surface": [
+          99.37485113216324,
+          121.9705327962939,
+          61328.99156471319
+        ]
+      },
+      {
+        "name": "rear-wheel-1",
+        "gap": 0,
+        "point": [
+          102.60137311334502,
+          122.61041094881729,
+          61330.273965160486
+        ],
+        "surface": [
+          102.60137311334502,
+          122.61041094881729,
+          61330.273965160486
+        ]
+      },
+      {
+        "name": "front-wheel-1",
+        "gap": 0,
+        "point": [
+          99.94699709052986,
+          121.97277443564666,
+          61331.02251260187
+        ],
+        "surface": [
+          99.94699709052986,
+          121.97277443564666,
+          61331.02251260187
+        ]
+      }
+    ]
+  },
+  "feedback": {
+    "kind": "praise",
+    "tag": "thrilling",
+    "note": "",
+    "anchor": {
+      "id": "ROAD-TRIP-10M",
+      "revision": 1,
+      "seed": 3,
+      "contentFingerprint": "7a28faf1",
+      "generatorVersion": "v0.9-r1",
+      "handlingVersion": "v0.7D.1",
+      "stageCode": "TRIP-v0.9-r1-3-ALB1",
+      "tripCode": "TRIP-v0.9-r1-3-ALB1",
+      "l2InstanceId": "TRIP-32",
+      "world": "canyon",
+      "profiles": {
+        "placements": [],
+        "activePlacements": [
+          {
+            "channel": "elevation",
+            "id": "E03",
+            "startS": 66763,
+            "endS": 68700,
+            "parameters": {
+              "base": 45,
+              "amplitude": 118.59400398796424,
+              "direction": 1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            },
+            "transition": "smooth",
+            "beat": "TRIP-32"
+          },
+          {
+            "channel": "curvature",
+            "id": "C03",
+            "startS": 67754,
+            "endS": 68164.5,
+            "parameters": {
+              "effort": 1.4298456425103359,
+              "direction": 1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7519245745032095
+            },
+            "transition": "smooth",
+            "beat": "TRIP-32"
+          }
+        ],
+        "worldPhases": [
+          {
+            "startS": 0,
+            "endS": 11750,
+            "world": "coast",
+            "beat": "Departure"
+          },
+          {
+            "startS": 11750,
+            "endS": 21676,
+            "world": "city",
+            "beat": "Open horizon"
+          },
+          {
+            "startS": 21676,
+            "endS": 34894,
+            "world": "canyon",
+            "beat": "Ridge and curves"
+          },
+          {
+            "startS": 34894,
+            "endS": 46763,
+            "world": "coast",
+            "beat": "Scenic release"
+          },
+          {
+            "startS": 46763,
+            "endS": 58659,
+            "world": "city",
+            "beat": "Renewed rhythm"
+          },
+          {
+            "startS": 58659,
+            "endS": 69000,
+            "world": "canyon",
+            "beat": "Homeward run"
+          }
+        ]
+      },
+      "s": 67868.84452093812,
+      "trackDistance": 68218.84452093812,
+      "elapsedSeconds": 2.008333333333329,
+      "timestampMs": 1793210084622,
+      "source": "drive",
+      "drive": {
+        "speedKmh": 232.41539420695582,
+        "steerRaw": 0,
+        "steerApplied": 0,
+        "roadX": -3.3540982606405145,
+        "height": 160.20200451155995,
+        "grade": -0.05023515287493891,
+        "halfWidth": 10.5,
+        "laneCount": 6,
+        "offRoad": false,
+        "gas": true,
+        "brake": false
+      }
+    },
+    "eventAt": {
+      "id": "ROAD-TRIP-10M",
+      "revision": 1,
+      "seed": 3,
+      "contentFingerprint": "7a28faf1",
+      "generatorVersion": "v0.9-r1",
+      "handlingVersion": "v0.7D.1",
+      "stageCode": "TRIP-v0.9-r1-3-ALB1",
+      "tripCode": "TRIP-v0.9-r1-3-ALB1",
+      "l2InstanceId": "TRIP-32",
+      "world": "canyon",
+      "profiles": {
+        "placements": [],
+        "activePlacements": [
+          {
+            "channel": "elevation",
+            "id": "E03",
+            "startS": 66763,
+            "endS": 68700,
+            "parameters": {
+              "base": 45,
+              "amplitude": 118.59400398796424,
+              "direction": 1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            },
+            "transition": "smooth",
+            "beat": "TRIP-32"
+          },
+          {
+            "channel": "curvature",
+            "id": "C03",
+            "startS": 67754,
+            "endS": 68164.5,
+            "parameters": {
+              "effort": 1.4298456425103359,
+              "direction": 1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7519245745032095
+            },
+            "transition": "smooth",
+            "beat": "TRIP-32"
+          }
+        ],
+        "worldPhases": [
+          {
+            "startS": 0,
+            "endS": 11750,
+            "world": "coast",
+            "beat": "Departure"
+          },
+          {
+            "startS": 11750,
+            "endS": 21676,
+            "world": "city",
+            "beat": "Open horizon"
+          },
+          {
+            "startS": 21676,
+            "endS": 34894,
+            "world": "canyon",
+            "beat": "Ridge and curves"
+          },
+          {
+            "startS": 34894,
+            "endS": 46763,
+            "world": "coast",
+            "beat": "Scenic release"
+          },
+          {
+            "startS": 46763,
+            "endS": 58659,
+            "world": "city",
+            "beat": "Renewed rhythm"
+          },
+          {
+            "startS": 58659,
+            "endS": 69000,
+            "world": "canyon",
+            "beat": "Homeward run"
+          }
+        ]
+      },
+      "s": 67868.84452093812,
+      "trackDistance": 68218.84452093812,
+      "elapsedSeconds": 2.008333333333329,
+      "timestampMs": 1793210084622,
+      "source": "drive",
+      "drive": {
+        "speedKmh": 232.41539420695582,
+        "steerRaw": 0,
+        "steerApplied": 0,
+        "roadX": -3.3540982606405145,
+        "height": 160.20200451155995,
+        "grade": -0.05023515287493891,
+        "halfWidth": 10.5,
+        "laneCount": 6,
+        "offRoad": false,
+        "gas": true,
+        "brake": false
+      }
+    },
+    "reactionAt": {
+      "id": "ROAD-TRIP-10M",
+      "revision": 1,
+      "seed": 3,
+      "contentFingerprint": "7a28faf1",
+      "generatorVersion": "v0.9-r1",
+      "handlingVersion": "v0.7D.1",
+      "stageCode": "TRIP-v0.9-r1-3-ALB1",
+      "tripCode": "TRIP-v0.9-r1-3-ALB1",
+      "l2InstanceId": "TRIP-32",
+      "world": "canyon",
+      "profiles": {
+        "placements": [],
+        "activePlacements": [
+          {
+            "channel": "elevation",
+            "id": "E03",
+            "startS": 66763,
+            "endS": 68700,
+            "parameters": {
+              "base": 45,
+              "amplitude": 118.59400398796424,
+              "direction": 1,
+              "shelfStart": 0.32,
+              "shelfEnd": 0.68
+            },
+            "transition": "smooth",
+            "beat": "TRIP-32"
+          },
+          {
+            "channel": "curvature",
+            "id": "C03",
+            "startS": 67754,
+            "endS": 68164.5,
+            "parameters": {
+              "effort": 1.4298456425103359,
+              "direction": 1,
+              "start": 0,
+              "end": 1,
+              "secondary": 0.7519245745032095
+            },
+            "transition": "smooth",
+            "beat": "TRIP-32"
+          }
+        ],
+        "worldPhases": [
+          {
+            "startS": 0,
+            "endS": 11750,
+            "world": "coast",
+            "beat": "Departure"
+          },
+          {
+            "startS": 11750,
+            "endS": 21676,
+            "world": "city",
+            "beat": "Open horizon"
+          },
+          {
+            "startS": 21676,
+            "endS": 34894,
+            "world": "canyon",
+            "beat": "Ridge and curves"
+          },
+          {
+            "startS": 34894,
+            "endS": 46763,
+            "world": "coast",
+            "beat": "Scenic release"
+          },
+          {
+            "startS": 46763,
+            "endS": 58659,
+            "world": "city",
+            "beat": "Renewed rhythm"
+          },
+          {
+            "startS": 58659,
+            "endS": 69000,
+            "world": "canyon",
+            "beat": "Homeward run"
+          }
+        ]
+      },
+      "s": 68094.28723313645,
+      "trackDistance": 68444.28723313645,
+      "elapsedSeconds": 3.9999999999999885,
+      "timestampMs": 1793210084667,
+      "source": "drive",
+      "drive": {
+        "speedKmh": 223.5095013744173,
+        "steerRaw": 0,
+        "steerApplied": 0,
+        "roadX": -13.1,
+        "height": 122.40563292301366,
+        "grade": -0.25400755080364706,
+        "halfWidth": 10.5,
+        "laneCount": 6,
+        "offRoad": true,
+        "gas": true,
+        "brake": false
+      }
+    },
+    "offsetSeconds": 1.9916666666666596,
+    "inputOrigin": "keyboard"
+  }
+}

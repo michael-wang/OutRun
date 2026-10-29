@@ -4,7 +4,7 @@ const root='docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressio
 const snap=(page:any)=>page.evaluate(()=>(window as any).__drive.snapshot());
 const advance=(page:any,seconds:number)=>page.evaluate((seconds:number)=>(window as any).__drive.advance(seconds),seconds);
 test('analog keyboard holds, rapid neutral/reversal, brake priority and accessible menus',async({page})=>{
- await page.goto('/');await page.locator('#drive').focus();await page.keyboard.press('Enter');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({speed:65});});
+ await page.goto('/?mode=free');await page.locator('#drive').focus();await page.keyboard.press('Enter');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({speed:65});});
  await page.locator('canvas').focus();await page.keyboard.down('Space');await page.keyboard.down('Space');await page.keyboard.down('a');await advance(page,.15);
  expect((await snap(page)).inputs.steer).toBe(-.25);expect((await snap(page)).lateral).toBeLessThan(-.1);
  await page.keyboard.up('a');await advance(page,.15);const released=await snap(page);expect(released.inputs.steer).toBe(0);expect(released.yawRate).toBe(0);await advance(page,.5);expect((await snap(page)).worldHeading).toBe(released.worldHeading);
@@ -16,7 +16,7 @@ test('analog keyboard holds, rapid neutral/reversal, brake priority and accessib
  await page.locator('#close-settings').focus();await page.keyboard.press('Enter');await page.locator('#resume').focus();await page.keyboard.press('Enter');await page.keyboard.down('d');await advance(page,.2);await page.evaluate(()=>window.dispatchEvent(new Event('blur')));expect((await snap(page)).inputs.steer).toBe(0);
 });
 for(const [width,height] of [[1280,720],[960,432],[844,390]])test(`needle gauge left of car ${width}x${height}, both hands, zero/mid/high`,async({browser})=>{
- mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width,height},isMobile:width<1000,hasTouch:width<1000}),page=await context.newPage(),errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const rows=[];
+ mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width,height},isMobile:width<1000,hasTouch:width<1000}),page=await context.newPage(),errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));await page.goto('/?mode=free');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const rows=[];
  for(const swapped of [false,true]){
   if(swapped){await page.locator('#pause').click();await page.locator('#settings').click();await page.locator('#swap').check();await page.locator('#close-settings').click();await page.locator('#resume').click();}
   for(const kmh of [0,80,150,230]){
@@ -31,7 +31,7 @@ for(const [width,height] of [[1280,720],[960,432],[844,390]])test(`needle gauge 
  expect(errors).toEqual([]);writeFileSync(`${root}/gauge-${width}.json`,JSON.stringify({rows,errors},null,2));await context.close();
 });
 test('absolute analog strip ownership, continuous crossing, outside clamp and independent pedals',async({browser})=>{
- const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const cdp=await context.newCDPSession(page),rows=[];
+ const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));await page.goto('/?mode=free');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));const cdp=await context.newCDPSession(page),rows=[];
  for(const swapped of [false,true]){
   if(swapped){await page.locator('#pause').click();await page.locator('#settings').click();await page.locator('#swap').check();await page.locator('#close-settings').click();await page.reload();await expect(page.locator('#swap')).toBeChecked();await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));}
   await page.evaluate(()=>(window as any).__drive.reset({speed:65}));const strip=(await page.locator('#steering-strip').boundingBox())!,pedal=(await page.locator('[data-control=gas]').boundingBox())!;expect(swapped?strip.x>pedal.x:strip.x<pedal.x).toBe(true);
@@ -45,7 +45,7 @@ test('absolute analog strip ownership, continuous crossing, outside clamp and in
 
 test('150ms analog corrections stop yaw on release and swapped sliding holds survive 15 seconds',async({browser})=>{
  const context=await browser.newContext({viewport:{width:960,height:432},hasTouch:true,isMobile:true}),page=await context.newPage();
- await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));await page.goto('/');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));
+ await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));await page.goto('/?mode=free');await page.locator('#drive').click();await page.evaluate(()=>(window as any).__drive.manual(true));
  const cdp=await context.newCDPSession(page),rows=[];
  for(const x of [.25,.75]){
   await page.evaluate(()=>(window as any).__drive.reset({speed:65}));const b=(await page.locator('#steering-strip').boundingBox())!,finger={x:b.x+b.width*x,y:b.y+b.height/2,id:2};

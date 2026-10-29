@@ -30,5 +30,5 @@ playwright-report/
 
 /docs/evidence/v0.8.4/regressions/
 /docs/evidence/v0.8.5/regressions/
-*.webm
 .vite/
+*.webm
