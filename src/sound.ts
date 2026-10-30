@@ -1,6 +1,10 @@
+import {PassBy} from './pass-by';
+import type {TrafficActor} from './traffic';
 import {SkidFeedback} from './skid-feedback';
 /** Original synthesized audio, created only after a user gesture. */
 export class EngineSound {
+  readonly passes=new PassBy();
+  private passVoices:{source:AudioBufferSourceNode;high:BiquadFilterNode;low:BiquadFilterNode;gain:GainNode;pan:StereoPannerNode}[]=[];
   private context?: AudioContext;
   private master?: GainNode;
   private engine?: OscillatorNode;
@@ -50,6 +54,8 @@ export class EngineSound {
       this.thump=context.createOscillator();this.thump.type='sine';this.thump.frequency.value=65;this.crashGain=context.createGain();this.crashGain.gain.value=0;this.thump.connect(this.crashGain);this.crashGain.connect(this.master);this.thump.start();
       const crunch=context.createBufferSource();crunch.buffer=buffer;crunch.loop=true;this.crunchFilter=context.createBiquadFilter();this.crunchFilter.type='lowpass';this.crunchFilter.frequency.value=1400;this.crunchGain=context.createGain();this.crunchGain.gain.value=0;crunch.connect(this.crunchFilter);this.crunchFilter.connect(this.crunchGain);this.crunchGain.connect(this.master);crunch.start();
       const gravel=context.createBufferSource();gravel.buffer=buffer;gravel.loop=true;gravel.playbackRate.value=.71;const gravelLow=context.createBiquadFilter(),gravelHigh=context.createBiquadFilter();gravelLow.type='lowpass';gravelLow.frequency.value=700;gravelHigh.type='highpass';gravelHigh.frequency.value=85;this.gravelGain=context.createGain();this.gravelGain.gain.value=0;gravel.connect(gravelHigh);gravelHigh.connect(gravelLow);gravelLow.connect(this.gravelGain);this.gravelGain.connect(this.master);gravel.start();
+      // Two persistent, silent-by-default noise voices. No sample copying or per-pass node allocation.
+      for(let i=0;i<2;i++){const source=context.createBufferSource(),high=context.createBiquadFilter(),low=context.createBiquadFilter(),gain=context.createGain(),pan=context.createStereoPanner();source.buffer=buffer;source.loop=true;high.type='highpass';high.frequency.value=220;low.type='lowpass';low.frequency.value=3200;gain.gain.value=0;source.connect(high);high.connect(low);low.connect(gain);gain.connect(pan);pan.connect(this.master);source.start(0,i*.37);this.passVoices.push({source,high,low,gain,pan});}
       // A tiny modulation makes sustained squeal less like a UI beep.
       const wobble = context.createOscillator(); wobble.frequency.value = 16;
       const amount = context.createGain(); amount.gain.value = 35;
@@ -68,6 +74,13 @@ export class EngineSound {
     this.gravelLevel+=(target-this.gravelLevel)*(1-Math.exp(-Math.max(0,dt)/.10));
     if(this.context)this.gravelGain!.gain.setTargetAtTime(target,this.context.currentTime,.10);
   }
+  passBy(time:number,distance:number,lateral:number,extent:number,actors:readonly TrafficActor[],collisionId?:number){
+    const voices=this.passes.update(time,distance,lateral,extent,actors,collisionId),mix=voices.filter(Boolean).length>1?.6:1;
+    if(!this.context)return;const now=this.context.currentTime;
+    this.passVoices.forEach((node,i)=>{const v=voices[i];node.gain.gain.setTargetAtTime(v?v.gain*mix:0,now,v && v.gain>0 ? .015 : .02);if(v){node.pan.pan.setTargetAtTime(v.pan,now,.02);node.high.frequency.setTargetAtTime(v.type===0?220:75,now,.03);node.low.frequency.setTargetAtTime(v.cutoff,now,.02);node.source.playbackRate.setTargetAtTime(v.rate,now,.02);}});
+  }
+  resetPassBy(){this.passes.reset();this.silencePasses();}
+  private silencePasses(){this.passes.suspend();if(this.context)for(const v of this.passVoices){v.gain.gain.cancelScheduledValues(this.context.currentTime);v.gain.gain.setTargetAtTime(0,this.context.currentTime,.015);}}
   setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
   update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number},collisionSlide=0,trafficSkid=0) {
     const intensity=Math.max(trafficSkid,this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer,collisionSlide));
@@ -83,10 +96,10 @@ export class EngineSound {
     this.skid!.frequency.setTargetAtTime(510 + intensity * 250, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
-  pause() { this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  pause() { this.silencePasses();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }
-    return { gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
+    return { passBy:this.passes.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
   }
 }
