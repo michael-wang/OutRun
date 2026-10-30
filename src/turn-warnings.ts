@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import type {createTrack} from './track';
+import {roadOffset} from './road-profile';
 import type {SceneAnnotation} from './streamed-scene';
 type Sample=ReturnType<typeof createTrack>['sample'];
-export interface TurnWarning {distance:number;bendStart:number;bendEnd:number;direction:number;kind:'turn'|'hairpin'|'chevron'}
+export interface TurnWarning {offset?:number;distance:number;bendStart:number;bendEnd:number;direction:number;kind:'turn'|'hairpin'|'chevron'}
 /** Sample the actual signed curvature, including compound challenge reversals. */
 export function turnWarnings(sample:Sample,length:number):TurnWarning[]{
  const result:TurnWarning[]=[];let start=0,sign=0,peak=0,total=0;
@@ -14,5 +15,7 @@ function material(kind:TurnWarning['kind'],direction:number){
 }
 export function warningAnnotations(sample:Sample,halfAt:(d:number)=>number,warnings:TurnWarning[]):SceneAnnotation[]{
  const materials=new Map<string,THREE.Material>();const poleMaterial=new THREE.MeshStandardMaterial({color:'#777b78'});
- return warnings.map(w=>({distance:w.distance,create:()=>{const key=w.kind+w.direction;let m=materials.get(key);if(!m){m=material(w.kind,w.direction);materials.set(key,m);}const p=sample(w.distance),size=w.kind==='chevron'?2.8:4.2,side=-w.direction,base=p.position.clone().addScaledVector(p.right,side*(halfAt(w.distance)+3.6));const board=new THREE.Mesh(new THREE.PlaneGeometry(size,size),m);board.name='turn-warning-'+w.kind;board.position.copy(base).add(new THREE.Vector3(0,3.4,0));board.rotation.set(0,Math.PI-p.roadHeading,Math.atan(p.right.y),'YXZ');const pole=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,3.4,6),poleMaterial);pole.position.copy(base).add(new THREE.Vector3(0,1.7,0));return [board,pole];}}));
+ return warnings.map(w=>({distance:w.distance,create:()=>{const key=w.kind+w.direction;let m=materials.get(key);if(!m){m=material(w.kind,w.direction);materials.set(key,m);}const p=sample(w.distance),size=w.kind==='chevron'?2.8:4.2,side=-w.direction,base=p.position.clone().addScaledVector(p.right,w.offset===undefined?side*(halfAt(w.distance)+3.6):roadOffset(w.offset,halfAt(w.distance)));const board=new THREE.Mesh(new THREE.PlaneGeometry(size,size),m);board.name='turn-warning-'+w.kind;board.position.copy(base).add(new THREE.Vector3(0,3.4,0));board.rotation.set(0,Math.PI-p.roadHeading,Math.atan(p.right.y),'YXZ');const pole=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,3.4,6),poleMaterial);pole.position.copy(base).add(new THREE.Vector3(0,1.7,0));return [board,pole];}}));
 }
+/** r6 replaces one original extreme-corner event, at its original 300 m lead. */
+export function originalTurnWarnings(course:readonly {start:number;end:number;targetRequiredSteering:number}[],sample:Sample):TurnWarning[]{return course.filter(c=>Math.abs(c.targetRequiredSteering)>1).map(c=>{let angle=0;for(let d=c.start;d<c.end;d+=10)angle+=Math.abs(sample(d).curvature)*Math.min(10,c.end-d);return {distance:Math.max(0,c.start-300),bendStart:c.start,bendEnd:c.end,direction:Math.sign(c.targetRequiredSteering),kind:angle>1.6?'hairpin':'turn',offset:15};});}
