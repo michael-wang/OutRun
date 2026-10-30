@@ -5,14 +5,14 @@ import {stageReady} from './stage-ready';
 test('trip has independent code, replay, review and retrospective position',async({page})=>{
  await page.goto('/?trip=10m&seed=42');await stageReady(page);
  await expect(page.locator('#l2-lab')).toContainText('10-Minute Road Trip');
- await expect(page.locator('#stage-seed')).toHaveValue('TRIP-v0.9-r2-16-ALB2');
+ await expect(page.locator('#stage-seed')).toHaveValue('TRIP-v0.9-r3-16-ALB3');
  await expect(page.locator('#l2-progress')).toContainText('UNREVIEWED');
  await page.keyboard.press('KeyP');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:60350,speed:60});g.advance(8,{gas:true,brake:false,steer:0});});
  await page.keyboard.press('KeyG');await page.keyboard.press('Digit2');await page.keyboard.press('Enter');
  const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-trip-v09')!));const event:any=(Object.values(data)[0] as any).events[0];
- expect(event.eventAt.tripCode).toBe('TRIP-v0.9-r2-16-ALB2');expect(event.eventAt.s).toBeGreaterThan(60000);expect(event.eventAt.s).toBeLessThan(event.reactionAt.s);expect(event.eventAt.l2InstanceId).toBeTruthy();
+ expect(event.eventAt.tripCode).toBe('TRIP-v0.9-r3-16-ALB3');expect(event.eventAt.s).toBeGreaterThan(60000);expect(event.eventAt.s).toBeLessThan(event.reactionAt.s);expect(event.eventAt.l2InstanceId).toBeTruthy();
  await expect(page.locator('#ready-countdown')).toBeHidden({timeout:2000});await page.keyboard.press('KeyP');
- const download=page.waitForEvent('download');await page.locator('#l2-export').click();const report=JSON.parse(readFileSync((await (await download).path())!,'utf8'));expect(report.records[0].tripCode).toBe('TRIP-v0.9-r2-16-ALB2');expect(report.records[0].humanVote).toBe('UNREVIEWED');
+ const download=page.waitForEvent('download');await page.locator('#l2-export').click();const report=JSON.parse(readFileSync((await (await download).path())!,'utf8'));expect(report.records[0].tripCode).toBe('TRIP-v0.9-r3-16-ALB3');expect(report.records[0].humanVote).toBe('UNREVIEWED');
  await Promise.all([page.waitForURL(/trip=10m&seed=42/),page.locator('#stage-load').click()]);await stageReady(page);await expect(page.locator('#l2-events')).toContainText('1 praise');
 });
 
@@ -28,7 +28,7 @@ test('trip review and telemetry do not overwrite historical Stage data',async({p
  await page.locator('#l2-play').click();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:69345,speed:60});g.advance(.5,{gas:true,brake:false,steer:0},false);});
  await expect(page.locator('#l2-result')).toContainText('Finish');await page.locator('[data-l2-vote=KEEP]').click();
  expect(await page.evaluate(()=>localStorage.getItem('outrun-stage-v083'))).toBe(oldReview);expect(await page.evaluate(()=>localStorage.getItem('outrun-drive-reports-v082'))).toBe(oldReport);
- expect(await page.evaluate(()=>localStorage.getItem('outrun-trip-drive-reports-v09'))).toContain('TRIP-v0.9-r2-3-ALB2');
+ expect(await page.evaluate(()=>localStorage.getItem('outrun-trip-drive-reports-v09'))).toContain('TRIP-v0.9-r3-3-ALB3');
  await page.reload();await stageReady(page);await expect(page.locator('[data-l2-vote=KEEP]')).toHaveAttribute('aria-pressed','true');
 });
 
