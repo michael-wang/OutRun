@@ -1,0 +1,629 @@
+{
+  "hazard": {
+    "id": 100000,
+    "type": 0,
+    "distance": 12750,
+    "speed": 0,
+    "group": -1,
+    "stationary": true,
+    "stopSide": 1
+  },
+  "rows": [
+    {
+      "time": 0.13349999999999998,
+      "distance": 12335.17222737833,
+      "speed": 233.8958157662157,
+      "impacts": 0,
+      "fps": 59.99400059994001,
+      "ready": true
+    },
+    {
+      "time": 0.2666999999999998,
+      "distance": 12350.317420673706,
+      "speed": 233.78902636765116,
+      "impacts": 0,
+      "fps": 59.99400059994001,
+      "ready": true
+    },
+    {
+      "time": 0.4000000000000004,
+      "distance": 12365.474837989881,
+      "speed": 234.02761848719763,
+      "impacts": 0,
+      "fps": 59.99400059994001,
+      "ready": true
+    },
+    {
+      "time": 0.5332999999999998,
+      "distance": 12380.631628567084,
+      "speed": 233.9214689948167,
+      "impacts": 0,
+      "fps": 59.99400059994001,
+      "ready": true
+    },
+    {
+      "time": 0.6666999999999997,
+      "distance": 12395.804219868427,
+      "speed": 233.81765556205013,
+      "impacts": 0,
+      "fps": 59.99400059994001,
+      "ready": true
+    },
+    {
+      "time": 0.800199999999999,
+      "distance": 12410.986400695585,
+      "speed": 234.06145363553892,
+      "impacts": 0,
+      "fps": 59.99400059994001,
+      "ready": true
+    },
+    {
+      "time": 0.9332999999999979,
+      "distance": 12426.122783344517,
+      "speed": 233.95571292014057,
+      "impacts": 0,
+      "fps": 59.99400059994001,
+      "ready": true
+    },
+    {
+      "time": 1.066699999999998,
+      "distance": 12441.297600287542,
+      "speed": 233.851646428847,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    },
+    {
+      "time": 1.2000999999999973,
+      "distance": 12456.470556246812,
+      "speed": 234.09239211223607,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    },
+    {
+      "time": 1.3333999999999973,
+      "distance": 12471.631595423034,
+      "speed": 233.98782364177634,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    },
+    {
+      "time": 1.4668999999999968,
+      "distance": 12486.817127464748,
+      "speed": 233.88447935797547,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    },
+    {
+      "time": 1.6000999999999965,
+      "distance": 12501.95907745544,
+      "speed": 233.7839884431839,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    },
+    {
+      "time": 1.7334999999999967,
+      "distance": 12517.130360863486,
+      "speed": 234.02511636006037,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    },
+    {
+      "time": 1.8667999999999958,
+      "distance": 12532.28159885567,
+      "speed": 233.9235994373502,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    },
+    {
+      "time": 2.0000999999999953,
+      "distance": 12547.440059444722,
+      "speed": 233.81940899056625,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 2.133399999999995,
+      "distance": 12562.599580085522,
+      "speed": 234.06187345891396,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 2.266799999999994,
+      "distance": 12577.772881067305,
+      "speed": 233.9579911095184,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 2.400199999999994,
+      "distance": 12592.944883991633,
+      "speed": 233.85000721894434,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 2.533499999999994,
+      "distance": 12608.10630579285,
+      "speed": 234.09010298448305,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 2.6667999999999927,
+      "distance": 12623.270127868229,
+      "speed": 233.98736583121465,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 2.8000999999999925,
+      "distance": 12638.43289304856,
+      "speed": 233.88671022336894,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 2.9334999999999924,
+      "distance": 12653.60244929794,
+      "speed": 234.12566925708606,
+      "impacts": 0,
+      "fps": 59.99400059993999,
+      "ready": true
+    },
+    {
+      "time": 3.1500999999999912,
+      "distance": 12678.230993578283,
+      "speed": 233.90989637364834,
+      "impacts": 0,
+      "fps": 59.99400059994004,
+      "ready": true
+    },
+    {
+      "time": 3.283399999999991,
+      "distance": 12693.388621467873,
+      "speed": 233.80777361059572,
+      "impacts": 0,
+      "fps": 59.99400059994004,
+      "ready": true
+    },
+    {
+      "time": 3.41679999999999,
+      "distance": 12708.558788201612,
+      "speed": 234.05100428571018,
+      "impacts": 0,
+      "fps": 59.99400059994004,
+      "ready": true
+    },
+    {
+      "time": 3.55009999999999,
+      "distance": 12723.717246396285,
+      "speed": 233.94880437666694,
+      "impacts": 0,
+      "fps": 59.99400059994004,
+      "ready": true
+    },
+    {
+      "time": 3.68349999999999,
+      "distance": 12738.888904201085,
+      "speed": 233.84711491412432,
+      "impacts": 0,
+      "fps": 59.99400059994004,
+      "ready": true
+    },
+    {
+      "time": 3.8167999999999886,
+      "distance": 12754.044572544162,
+      "speed": 234.08779816160268,
+      "impacts": 0,
+      "fps": 59.99400059994004,
+      "ready": true
+    },
+    {
+      "time": 3.9501999999999877,
+      "distance": 12769.21110228072,
+      "speed": 233.9805100828686,
+      "impacts": 0,
+      "fps": 59.99400059994004,
+      "ready": true
+    },
+    {
+      "time": 4.083499999999993,
+      "distance": 12784.373215406396,
+      "speed": 233.87389743046955,
+      "impacts": 0,
+      "fps": 60.00393468424162,
+      "ready": true
+    },
+    {
+      "time": 4.2167999999999966,
+      "distance": 12799.536075919967,
+      "speed": 234.11179191215126,
+      "impacts": 0,
+      "fps": 60.00393468424162,
+      "ready": true
+    },
+    {
+      "time": 4.350200000000002,
+      "distance": 12814.706929458393,
+      "speed": 234.00596785973573,
+      "impacts": 0,
+      "fps": 60.00393468424162,
+      "ready": true
+    },
+    {
+      "time": 4.483500000000009,
+      "distance": 12829.862436569872,
+      "speed": 233.90191609822008,
+      "impacts": 0,
+      "fps": 60.00393468424162,
+      "ready": true
+    },
+    {
+      "time": 4.616800000000013,
+      "distance": 12845.0196863549,
+      "speed": 233.80189448544252,
+      "impacts": 0,
+      "fps": 60.00393468424162,
+      "ready": true
+    },
+    {
+      "time": 4.75030000000002,
+      "distance": 12860.200828209365,
+      "speed": 234.04380600400302,
+      "impacts": 0,
+      "fps": 60.00393468424162,
+      "ready": true
+    },
+    {
+      "time": 4.883500000000024,
+      "distance": 12875.350274700028,
+      "speed": 233.9407576466677,
+      "impacts": 0,
+      "fps": 60.00393468424162,
+      "ready": true
+    },
+    {
+      "time": 5.016900000000029,
+      "distance": 12890.528925175528,
+      "speed": 234.180957083443,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 5.150200000000033,
+      "distance": 12905.690332471628,
+      "speed": 234.08040712798015,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 5.283500000000038,
+      "distance": 12920.850685100062,
+      "speed": 233.97793563411682,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 5.416900000000044,
+      "distance": 12936.024084342078,
+      "speed": 233.87396264177926,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 5.550200000000047,
+      "distance": 12951.187016669395,
+      "speed": 234.11180861511986,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 5.683500000000055,
+      "distance": 12966.346551213146,
+      "speed": 234.00733780421672,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 5.81680000000006,
+      "distance": 12981.499445814961,
+      "speed": 233.90777818556447,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 5.950200000000067,
+      "distance": 12996.668293242028,
+      "speed": 233.80223477577977,
+      "impacts": 0,
+      "fps": 59.99803285138188,
+      "ready": true
+    },
+    {
+      "time": 6.083600000000076,
+      "distance": 13011.838063114532,
+      "speed": 234.04344432639317,
+      "impacts": 0,
+      "fps": 60,
+      "ready": true
+    }
+  ],
+  "impact": {
+    "traffic": {
+      "historySize": 5,
+      "historyLimit": 217,
+      "laneChanges": [
+        {
+          "id": 41,
+          "center": -1.75,
+          "from": -1.75,
+          "to": -1.75,
+          "start": 0,
+          "next": 1.4195438193157317,
+          "event": 0,
+          "silent": false,
+          "active": false
+        },
+        {
+          "id": 40,
+          "center": -1.75,
+          "from": -1.75,
+          "to": -1.75,
+          "start": 0,
+          "next": 1.9710779782384633,
+          "event": 0,
+          "silent": false,
+          "active": false
+        },
+        {
+          "id": 39,
+          "center": -5.25,
+          "from": -5.25,
+          "to": -5.25,
+          "start": 0,
+          "next": 1.1310354703105987,
+          "event": 0,
+          "silent": false,
+          "active": false
+        },
+        {
+          "id": 100000,
+          "center": 5.25,
+          "from": 5.25,
+          "to": 5.25,
+          "start": 0,
+          "next": 0.926286108698696,
+          "event": 0,
+          "silent": false,
+          "active": false
+        },
+        {
+          "id": 38,
+          "center": -5.25,
+          "from": -5.25,
+          "to": -5.25,
+          "start": 0,
+          "next": 1.843452060315758,
+          "event": 0,
+          "silent": false,
+          "active": false
+        }
+      ],
+      "indicators": 0,
+      "capacity": 12,
+      "impacts": 1,
+      "actors": [
+        {
+          "id": 41,
+          "type": 0,
+          "distance": 13368.105477786741,
+          "speed": 42.78224866850198,
+          "group": 15,
+          "nominalDistance": 13368.105477786694,
+          "cruiseSpeed": 42.78224866850198,
+          "lane": 2,
+          "lateral": -1.75,
+          "visible": true,
+          "y": 49.968851409156876,
+          "grade": 0.032396659701778345,
+          "previousDistance": 13367.748959047836,
+          "previousLateral": -1.75,
+          "previousVisible": true,
+          "signal": 0,
+          "changing": false,
+          "unsignaled": false,
+          "typeName": "car"
+        },
+        {
+          "id": 40,
+          "type": 0,
+          "distance": 13331.716840199193,
+          "speed": 38.55743308991401,
+          "group": 15,
+          "nominalDistance": 13331.716840199171,
+          "cruiseSpeed": 38.55743308991401,
+          "lane": 2,
+          "lateral": -1.75,
+          "visible": true,
+          "y": 48.823175293582175,
+          "grade": 0.030392641957546485,
+          "previousDistance": 13331.395528256777,
+          "previousLateral": -1.75,
+          "previousVisible": true,
+          "signal": 0,
+          "changing": false,
+          "unsignaled": false,
+          "typeName": "car"
+        },
+        {
+          "id": 39,
+          "type": 2,
+          "distance": 13296.704420112774,
+          "speed": 36.87332674421163,
+          "group": 15,
+          "nominalDistance": 13296.704420112796,
+          "cruiseSpeed": 36.87332674421163,
+          "lane": 1,
+          "lateral": -5.25,
+          "visible": true,
+          "y": 47.76044513986929,
+          "grade": 0.027863349357836027,
+          "previousDistance": 13296.397142389906,
+          "previousLateral": -5.25,
+          "previousVisible": true,
+          "signal": 0,
+          "changing": false,
+          "unsignaled": false,
+          "typeName": "truck"
+        },
+        {
+          "id": 100000,
+          "type": 0,
+          "distance": 12777.157933617871,
+          "speed": 0,
+          "group": -1,
+          "stationary": true,
+          "stopSide": 1,
+          "nominalDistance": 12750,
+          "cruiseSpeed": 0,
+          "lane": 2,
+          "lateral": 2.5564682499241758,
+          "visible": true,
+          "y": 45.02001431199553,
+          "grade": 0.0000022207423481093546,
+          "previousDistance": 12776.50432246135,
+          "previousLateral": 2.6083261539635365,
+          "previousVisible": true,
+          "signal": 0,
+          "changing": false,
+          "unsignaled": false,
+          "typeName": "car"
+        },
+        {
+          "id": 38,
+          "type": 2,
+          "distance": 12720.086693332669,
+          "speed": 30.585934107916223,
+          "group": 14,
+          "nominalDistance": 12720.08669333265,
+          "cruiseSpeed": 30.585934107916223,
+          "lane": 0,
+          "lateral": -5.25,
+          "visible": true,
+          "y": 45.02,
+          "grade": 0,
+          "previousDistance": 12719.831810548436,
+          "previousLateral": -5.25,
+          "previousVisible": true,
+          "signal": 0,
+          "changing": false,
+          "unsignaled": false,
+          "typeName": "truck"
+        }
+      ],
+      "geometries": 7,
+      "contactShadows": 5,
+      "shadowCasting": false,
+      "reactions": [
+        {
+          "id": 100000,
+          "offset": -2.6935317500758242,
+          "boost": 78.04948986132655,
+          "slide": 6.222948484723312,
+          "yaw": -0.37410853563237656,
+          "roll": -0.16736434488816845,
+          "touching": true,
+          "skidIntensity": 0,
+          "effects": {
+            "emittedByWheel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "particles": 0,
+            "segments": 0,
+            "particleCapacity": 192,
+            "segmentCapacity": 768,
+            "geometries": 2
+          }
+        }
+      ],
+      "lastEvent": {
+        "actorId": 100000,
+        "type": 0,
+        "kind": "rear",
+        "side": -1,
+        "distance": 12747.8,
+        "lateral": 5.25,
+        "severity": 1,
+        "relativeSpeed": 123.72953480524302
+      }
+    },
+    "impact": {
+      "velocity": -4.823107482912774,
+      "slide": 4.873698904383144,
+      "yaw": 0.2953488439202972,
+      "roll": -0.11813953756811889,
+      "event": {
+        "actorId": 100000,
+        "type": 0,
+        "kind": "rear",
+        "side": -1,
+        "distance": 12747.8,
+        "lateral": 5.25,
+        "severity": 1,
+        "relativeSpeed": 123.72953480524302
+      },
+      "sparks": {
+        "particles": 72,
+        "capacity": 96,
+        "flash": false
+      }
+    },
+    "audio": {
+      "passBy": {
+        "starts": 0,
+        "crossings": 0,
+        "active": [],
+        "tracked": 5,
+        "consumed": 1
+      },
+      "gravelLevel": 0,
+      "lastImpact": "vehicle",
+      "impactCount": 1,
+      "contextState": "running",
+      "muted": false,
+      "active": true,
+      "engineHz": 106.33913523796014,
+      "engineRpm": 4109.407376616007,
+      "gear": 5,
+      "skidIntensity": 1,
+      "skidLevel": 0.12,
+      "windLevel": 0.01672514397975647,
+      "rms": 0.053956510721187366
+    }
+  }
+}

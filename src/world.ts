@@ -1,3 +1,4 @@
+import {breakdownLayout,breakdownAnnotations} from './breakdowns';
 import {turnWarnings,warningAnnotations} from './turn-warnings';
 import type {BankStrength} from './banking';
 import {roadOffset,LANE_WIDTH} from './road-profile';
@@ -100,7 +101,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const signTexture=new THREE.CanvasTexture(signCanvas);signTexture.colorSpace=THREE.SRGBColorSpace;
   const signMaterial=new THREE.MeshBasicMaterial({map:signTexture,side:THREE.DoubleSide});
   const leftCanvas=signCanvas.cloneNode() as HTMLCanvasElement;const leftInk=leftCanvas.getContext('2d')!;leftInk.drawImage(signCanvas,0,0);leftInk.fillStyle='#153e45';leftInk.fillRect(20,20,472,88);leftInk.fillStyle='#fff4d9';leftInk.textAlign='center';leftInk.font='bold 70px sans-serif';leftInk.fillText('← BRAKE',256,96);const leftTexture=new THREE.CanvasTexture(leftCanvas);leftTexture.colorSpace=THREE.SRGBColorSpace;const leftSign=new THREE.MeshBasicMaterial({map:leftTexture,side:THREE.DoubleSide});
-  const annotations:SceneAnnotation[]=[];
+  const breakdowns=options.streamStage?.generatorVersion==='v0.9-r5'?breakdownLayout(sample,halfAt,length,options.seed??1):[];
+  const annotations:SceneAnnotation[]=breakdownAnnotations(sample,halfAt,breakdowns);
   if(!options.streamStage){
   for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of options.track?[300,160]:[160,80]){
     const p=sample(extreme.start-lead),base=p.position.clone().addScaledVector(p.right,offsetAt(extreme.start-lead,15));
@@ -160,5 +162,5 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const gradient=context.createRadialGradient(32,32,7,32,32,31);gradient.addColorStop(0,'rgba(18,33,30,.65)');gradient.addColorStop(.55,'rgba(18,33,30,.3)');gradient.addColorStop(1,'rgba(18,33,30,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);
   const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.1,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.025;car.add(shadow);
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
-  return {scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
+  return {breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
 }

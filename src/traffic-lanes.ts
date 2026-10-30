@@ -1,5 +1,5 @@
 /** Bounded presentation/traffic state, independent of impact displacement. */
-export interface LaneActor {id:number;distance:number;speed:number;lateral:number;signal?:number;changing?:boolean;unsignaled?:boolean}
+export interface LaneActor {stationary?:boolean;id:number;distance:number;speed:number;lateral:number;signal?:number;changing?:boolean;unsignaled?:boolean}
 interface Maneuver {center:number;from:number;to:number;start:number;next:number;event:number;silent:boolean;active:boolean}
 export const trafficRandom=(seed:number,id:number)=>{let x=(seed^Math.imul(id+1,0x9e3779b1))>>>0;x=Math.imul(x^(x>>>16),0x85ebca6b);x=Math.imul(x^(x>>>13),0xc2b2ae35);return ((x^(x>>>16))>>>0)/4294967296;};
 const smooth=(t:number)=>t*t*t*(t*(t*6-15)+10),clamp=(v:number,limit:number)=>Math.max(-limit,Math.min(limit,v));
@@ -17,6 +17,7 @@ export class TrafficLanes {
     if(conflict(player.distance,player.speed,player.lateral,23))return false;
     return !actors.some(b=>{if(b.id===a.id)return false;if(reacting(b.id)&&Math.abs(b.distance-a.distance)<60)return true;const other=this.states.get(b.id)!;return conflict(b.distance,b.speed,b.lateral,22)||(other.active&&conflict(b.distance,b.speed,other.to,22));});
    };
+   if(a.stationary){s.active=false;s.center=a.lateral;continue;}
    if(reacting(a.id)||Math.abs(s.to)>limit+.01){s.active=false;s.next=Math.max(s.next,time+4);s.center=clamp(s.center,limit);s.from=s.to=s.center;}
    const closing=Math.max(0,player.speed-a.speed),ahead=a.distance-player.distance;
    if(!s.active&&time>=s.next&&ahead>Math.max(80,closing*3.2+25)&&ahead<Math.max(160,closing*3.2+75)){
