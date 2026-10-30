@@ -27,3 +27,19 @@ export function authorBankFeatures(b:import('./trip').TripCandidate,sample:(d:nu
  return features.sort((a,z)=>a.start-z.start);
 }
 export function featureBank(distance:number,base:number,features:readonly BankFeature[]){const f=features.find(f=>distance>f.start&&distance<f.end);if(!f)return base;const envelope=smooth((distance-f.start)/f.ramp)*smooth((f.end-distance)/f.ramp);return base+(f.degrees*Math.PI/180-base)*envelope;}
+
+/** r4: smooth ordinary banking over distance, not frames. Two box integrations
+ * preserve flat/constant slopes and bridge short gaps without changing curvature. */
+export function seamlessBank(length:number,raw:(d:number)=>number,features:readonly BankFeature[]){
+ const step=5,n=Math.ceil(length/step)+1;let values=Array.from({length:n},(_,i)=>raw(Math.min(length,i*step)));
+ for(let pass=0;pass<2;pass++){
+  const prefix=[0];for(const v of values)prefix.push(prefix.at(-1)!+v);
+  values=values.map((_,i)=>{const lo=Math.max(0,i-25),hi=Math.min(n,i+26);return (prefix[hi]-prefix[lo])/(hi-lo);});
+ }
+ return (d:number)=>{
+  const x=Math.max(0,Math.min(n-1,d/step)),i=Math.min(n-2,Math.floor(x)),t=x-i,a=values[i],b=values[i+1];
+  const m0=(values[Math.min(n-1,i+1)]-values[Math.max(0,i-1)])/2,m1=(values[Math.min(n-1,i+2)]-values[i])/2;
+  const base=(2*t*t*t-3*t*t+1)*a+(t*t*t-2*t*t+t)*m0+(-2*t*t*t+3*t*t)*b+(t*t*t-t*t)*m1;
+  return featureBank(d,base,features);
+ };
+}

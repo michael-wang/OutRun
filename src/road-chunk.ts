@@ -6,23 +6,25 @@ import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
-export interface RoadMeshData {rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
+export interface RoadMeshData {normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number)=>{
-  if(to<=from)return;const positions:number[]=[],uvs:number[]=[],colors:number[]=[],indices:number[]=[],n=Math.ceil((to-from)/step);
+  if(to<=from)return;const positions:number[]=[],uvs:number[]=[],colors:number[]=[],indices:number[]=[],normals:number[]=[],n=Math.ceil((to-from)/step);
+  const point=(d:number,raw:Edge,h:number)=>{const p=sample(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d))),w=weightsAt(d);const coastal=h<-10?-4.88:-5.05;v.y=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;return v;};
   for(let i=0;i<=n;i++){const d=from+(to-from)*i/n,p=sample(d);for(const [raw,h] of [[a,ha],[b,hb]] as [Edge,number][]){
    const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d))),weights=weightsAt(d);
    const coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h,height=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;
    const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop,v.z);uvs.push(o/4,d/4);
+   if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));colors.push(color.r,color.g,color.b);}
   }}
   for(let i=0;i<n;i++){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
-  out.push({kind,...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
+  out.push({kind,...(seamless?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
  };
- append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);append('sand',-13,13,-.1,-.1,start,end,2.5);
+ append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}else append('sand',-13,13,-.1,-.1,start,end,2.5);
  append('grass',13,75,-.12,-3,start,end,10);append('grass',75,160,-3,-14,start,end,10);
  append('asphalt',-7,7,0,0,start,end,2.5);
  append('line',d=>-7+.35*7/halfAt(d),d=>-7+.51*7/halfAt(d),.025,.025,start,end,2.5);
@@ -47,9 +49,9 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  // Merge by material before upload; dashes are not individual draw calls.
  const merged:RoadMeshData[]=[];
  for(const kind of new Set(out.map(x=>x.kind))){
-  const pieces=out.filter(x=>x.kind===kind),positions=new Float32Array(pieces.reduce((n,x)=>n+x.positions.length,0)),uvs=new Float32Array(pieces.reduce((n,x)=>n+x.uvs.length,0)),colors=new Float32Array(pieces.reduce((n,x)=>n+x.colors.length,0)),indices=new Uint32Array(pieces.reduce((n,x)=>n+x.indices.length,0));const rayRanges:RayRange[]=[];let p=0,u=0,c=0,k=0;
-  for(const x of pieces){for(const r of x.rayRanges??[])rayRanges.push({...r,offset:r.offset+k});positions.set(x.positions,p);uvs.set(x.uvs,u);colors.set(x.colors,c);for(let i=0;i<x.indices.length;i++)indices[k+i]=x.indices[i]+p/3;p+=x.positions.length;u+=x.uvs.length;c+=x.colors.length;k+=x.indices.length;}
-  merged.push({kind,positions,uvs,colors,indices,...(rayRanges.length?{rayRanges}:{})});
+  const pieces=out.filter(x=>x.kind===kind),positions=new Float32Array(pieces.reduce((n,x)=>n+x.positions.length,0)),uvs=new Float32Array(pieces.reduce((n,x)=>n+x.uvs.length,0)),colors=new Float32Array(pieces.reduce((n,x)=>n+x.colors.length,0)),indices=new Uint32Array(pieces.reduce((n,x)=>n+x.indices.length,0));const normals=new Float32Array(pieces.reduce((n,x)=>n+(x.normals?.length??0),0));const rayRanges:RayRange[]=[];let normalOffset=0;let p=0,u=0,c=0,k=0;
+  for(const x of pieces){if(x.normals){normals.set(x.normals,normalOffset);normalOffset+=x.normals.length;}for(const r of x.rayRanges??[])rayRanges.push({...r,offset:r.offset+k});positions.set(x.positions,p);uvs.set(x.uvs,u);colors.set(x.colors,c);for(let i=0;i<x.indices.length;i++)indices[k+i]=x.indices[i]+p/3;p+=x.positions.length;u+=x.uvs.length;c+=x.colors.length;k+=x.indices.length;}
+  merged.push({kind,positions,uvs,colors,indices,...(normals.length?{normals}:{}),...(rayRanges.length?{rayRanges}:{})});
  }
  return merged;
 }

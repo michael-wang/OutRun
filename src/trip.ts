@@ -5,13 +5,13 @@ import {validatePilot,pilotSample,type Placement,type WorldName} from './pilot-c
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
-export const TRIP_VERSION='v0.9-r3';
+export const TRIP_VERSION='v0.9-r4';
 export interface TripCandidate extends StageCandidate {tripCode:string}
 function random(seed:number){let x=seed>>>0;return ()=>{x=(x+0x6d2b79f5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function hash(v:unknown){let h=2166136261;for(const c of JSON.stringify(v)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 /** Independent long-form recipe; only lightweight placement metadata is created here. */
-export function generateTrip(rawSeed:number,revision:1|2|3=3):TripCandidate {
- const version=revision===1?'v0.9-r1':revision===2?'v0.9-r2':TRIP_VERSION;
+export function generateTrip(rawSeed:number,revision:1|2|3|4=4):TripCandidate {
+ const version=revision===1?'v0.9-r1':revision===2?'v0.9-r2':revision===3?'v0.9-r3':TRIP_VERSION;
  const seed=(rawSeed>>>0)||1,rng=random(seed),pick=<T>(v:readonly T[])=>v[Math.floor(rng()*v.length)];
  const length=69000,baseHeight=45,baseLanes=4 as const,placements:Placement[]=[],beats:StageBeat[]=[],buffers:TransitionBuffer[]=[];
  const worlds:WorldName[]=['city','coast','canyon'];
@@ -43,6 +43,6 @@ export function generateTrip(rawSeed:number,revision:1|2|3=3):TripCandidate {
  buffers.push({startS:cursor,endS:length,role:'finish'});placements.sort((a,b)=>a.startS-b.startS);
  const tripCode=`TRIP-${version}-${seed.toString(36).toUpperCase()}-ALB${revision}`,data={seed,length,placements,worldPhases,beats,buffers,baseHeight,baseLanes,generatorVersion:version};
  const result:TripCandidate={id:'ROAD-TRIP-10M',revision,name:'10-Minute Road Trip',intent:'A changing journey through city, coast and canyon.',emotionalRole:'journey',sceneryAct:2,seed,world:worldPhases[0].world,generatorVersion:version,contentFingerprint:hash(data),stageCode:tripCode,tripCode,beats,buffers,baseHeight,baseLanes,placements,worldPhases,referenceSpeed:230,entrySpeed:0,nominalDuration:length/REFERENCE_TRAVEL,length,roadWidth:baseLanes*LANE_WIDTH,lanes:[[0,4],[length/REFERENCE_TRAVEL,4]],elevation:[[0,baseHeight],[length/REFERENCE_TRAVEL,baseHeight]],requiredSteerProfile:[[0,0]],entry:'Standing start',exit:'Journey finish',warning:{leadMeters:300,text:'BRAKE · 180 km/h'},tags:['trip'],antiAdjacency:[],autoValidation:'PENDING'};
- if(revision===3){result.bankFeatures=authorBankFeatures(result,d=>pilotSample(result,d));result.contentFingerprint=hash({...data,bankFeatures:result.bankFeatures});}
+ if(revision>=3){result.bankFeatures=authorBankFeatures(result,d=>pilotSample(result,d));if(revision===4)result.bankFeatures=result.bankFeatures.map(f=>({...f,start:Math.max(0,f.start-200),end:f.end+200,ramp:300}));result.contentFingerprint=hash({...data,bankFeatures:result.bankFeatures});}
  validatePilot(result);return result;
 }
