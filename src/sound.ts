@@ -55,8 +55,8 @@ export class EngineSound {
   }
   impact(strength:number){this.impactCount++;if(!this.context||!this.impactGain)return;const now=this.context.currentTime,g=this.impactGain.gain;g.cancelScheduledValues(now);g.setValueAtTime(.12+.32*strength,now);g.exponentialRampToValueAtTime(.001,now+.28);}
   setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
-  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number}) {
-    const intensity=this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer);
+  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number},collisionSlide=0,trafficSkid=0) {
+    const intensity=Math.max(trafficSkid,this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer,collisionSlide));
     this.active = true;this.engineRpm=drivetrain?.rpm??Math.min(7200,1000+speed*85);this.engineGear=drivetrain?.gear??1;
     this.engineHz = 28+this.engineRpm*1.1/60+(gas ? 3 : 0); this.skidLevel = intensity*.12;
     this.windLevel=.10*Math.min(1,(speed/(300/3.6))**2);

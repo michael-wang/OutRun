@@ -10,7 +10,7 @@ export class ImpactSparks {
  clear(){this.born.fill(-100);this.alpha.fill(0);this.cursor=this.time=this.emission=0;this.mesh.visible=false;}
  update(time:number,origin:THREE.Vector3,right:THREE.Vector3,tangent:THREE.Vector3,strength:number){
   const dt=Math.max(0,Math.min(.1,time-this.time));this.time=time;this.emission+=dt;
-  if(strength>0&&this.emission>=.012){this.emission=0;for(let n=0;n<12;n++){const i=this.cursor++%96,a=(i*2.399),v=2+(i%7)*.8;origin.toArray(this.positions,i*3);this.velocity[i*3]=-right.x*v-tangent.x*(3+i%5);this.velocity[i*3+1]=1.5+Math.sin(a)*2.5;this.velocity[i*3+2]=-right.z*v-tangent.z*(3+i%5);this.born[i]=time;}}
+  if(strength>0&&this.emission>=.012){this.emission=0;for(let n=0;n<4+Math.round(8*strength);n++){const i=this.cursor++%96,a=(i*2.399),v=2+(i%7)*.8;origin.toArray(this.positions,i*3);this.velocity[i*3]=-right.x*v-tangent.x*(3+i%5);this.velocity[i*3+1]=1.5+Math.sin(a)*2.5;this.velocity[i*3+2]=-right.z*v-tangent.z*(3+i%5);this.born[i]=time;}}
   let count=0;for(let i=0;i<96;i++){const age=time-this.born[i];this.alpha[i]=age<.55?1-age/.55:0;if(this.alpha[i]<=0)continue;count++;for(let k=0;k<3;k++)this.positions[i*3+k]+=this.velocity[i*3+k]*dt;this.velocity[i*3+1]-=9*dt;}
   this.mesh.visible=count>0;this.geometry.attributes.position.needsUpdate=true;this.geometry.attributes.alpha.needsUpdate=true;
  }
