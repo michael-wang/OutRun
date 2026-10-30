@@ -9,14 +9,19 @@ import * as THREE from 'three';
 import {RoadClearance} from './road-clearance';
 import {roadOffset} from './road-profile';
 
-type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
+type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
+type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;
 let generation=-1,stage:PilotCandidate|undefined,track:ReturnType<typeof createPilotTrack>|undefined;
 let roadSamples:THREE.Vector3[]=[];let clearance:RoadClearance;
 const worker=self as unknown as {onmessage:(event:MessageEvent<Request>)=>void;postMessage:(message:unknown,transfer?:Transferable[])=>void};
-worker.onmessage=(event:MessageEvent<Request>)=>{
+worker.onmessage=async(event:MessageEvent<Request>)=>{
  const request=event.data;
  try{
+  if(request.type==='faults'){if(import.meta.env.DEV)faults=request.faults;return;}
+  if(import.meta.env.DEV&&request.type==='init'&&request.faults)faults=request.faults;
+  if(import.meta.env.DEV&&request.type!=='init'&&request.index>=faults.fromIndex){if(faults.delayMs)await new Promise(r=>setTimeout(r,faults.delayMs));if(faults.fail)throw new Error('Injected worker preparation failure');}
+
   if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;track=createPilotTrack(stage,request.bank);rocks=(stage.generatorVersion==='v0.9-r6'||stage.generatorVersion==='v0.9-r7')?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=stage.generatorVersion==='v0.9-r7'?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
   if(request.generation!==generation||!stage||!track)return;
   const t=performance.now(),candidate=stage,current=track,shoulders=candidate.generatorVersion==='v0.9-r7'?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
@@ -43,5 +48,5 @@ worker.onmessage=(event:MessageEvent<Request>)=>{
   const prepared=meshes.map(m=>{if(m.normals)return {...m,normals:m.normals};const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));g.computeVertexNormals();const normals=new Float32Array(g.getAttribute('normal').array);g.dispose();return {...m,normals};});
   const transfer:Transferable[]=prepared.flatMap(m=>[m.positions.buffer,m.uvs.buffer,m.colors.buffer,m.indices.buffer,m.normals.buffer]);for(const a of roadside)transfer.push(a.buffer);
   worker.postMessage({type:'prepared',generation,index:request.index,meshes:prepared,roadside,cpuMs:performance.now()-t},transfer);
- }catch(error){worker.postMessage({type:'error',generation:request.generation,message:error instanceof Error?error.message:String(error)});}
+ }catch(error){worker.postMessage({type:'error',generation:request.generation,request:request.type,index:'index' in request?request.index:-1,message:error instanceof Error?error.message:String(error),stack:error instanceof Error?error.stack:undefined});}
 };
