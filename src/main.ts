@@ -30,7 +30,7 @@ import {generateTrip,TRIP_VERSION} from './trip';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
 import {TireEffects,type TireContact} from './tire-effects';
-import {Traffic} from './traffic';
+import {Traffic,trafficRecipe} from './traffic';
 import roadWorkerUrl from './road-worker.ts?worker&url';
 import type {FeedbackAnchor} from './l2-feedback';
 const labMode=new URLSearchParams(location.search).get('lab')==='bricks';
@@ -293,6 +293,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   traffic:()=>traffic?.inspect(),
   trafficClearance:()=>traffic?.clearance(state.distance,state.lateral,carBounds.x/2,carBounds.z/2,state.heading+trafficImpact.yaw+guardrail.yaw),
   trafficImpact:()=>({velocity:trafficImpact.velocity,slide:trafficImpact.slide,yaw:trafficImpact.yaw,roll:trafficImpact.roll,event:trafficImpact.event,sparks:trafficSparks.inspect()}),
+  trafficSchedule:()=>trafficRecipe(trip?.seed??1,world.length),
   trafficContacts:()=>traffic?.contactPoints().map(c=>{const ray=new THREE.Raycaster(new THREE.Vector3().fromArray(c.point).add(new THREE.Vector3(0,4,0)),down,0,8),hit=world.streamer?.raycastContacts(ray,c.distance)[0];return {...c,gap:hit?c.point[1]-hit.point.y:null};}),
   acts:()=>ACTS,
   streaming:()=>world.streamer?{ready:world.streamer.ready,error:world.streamer.error,...world.streamer.stats}:null,

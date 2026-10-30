@@ -33,11 +33,11 @@ test('arcade traffic impacts: real rendering, recovery, sound and mobile perform
 test('car bus truck and waffle impacts retain separation and clear on reset',async({page})=>{
  await page.goto('/');await stageReady(page);await page.locator('#l2-play').click();await page.evaluate(()=>(window as any).__drive.manual(true));
  for(const type of [0,1,2,3]){
-  await page.evaluate(d=>(window as any).__drive.reset({distance:d,speed:0}),type===3?1700:500);await stageReady(page);
+  await page.evaluate(type=>{const g=(window as any).__drive;g.reset({distance:g.trafficSchedule().find((a:any)=>a.type===type).distance-100,speed:0});},type);await stageReady(page);
   const actor=await page.evaluate(type=>(window as any).__drive.traffic().actors.find((a:any)=>a.type===type),type);
   await page.evaluate(a=>(window as any).__drive.reset({distance:a.distance-14,lateral:a.lateral,speed:75}),actor);await stageReady(page);
   const rows=await page.evaluate(()=>{const g=(window as any).__drive,out=[];for(let i=0;i<120;i++){const s=g.snapshot();g.advance(1/120,{gas:true,brake:false,steer:s.requiredSteer});out.push({traffic:g.traffic(),clearance:g.trafficClearance(),ready:g.streaming().ready});}return out;});
-  expect(rows.some(r=>r.traffic.lastEvent?.type===type)).toBe(true);expect(rows.at(-1)!.traffic.impacts).toBe(1);expect(rows.every(r=>r.ready&&r.clearance.every((c:any)=>c.gap>-.05))).toBe(true);
+  expect(rows.some(r=>r.traffic.lastEvent?.type===type)).toBe(true);expect(rows.filter((r,i)=>r.traffic.impacts>(i?rows[i-1].traffic.impacts:0)&&r.traffic.lastEvent?.actorId===actor.id)).toHaveLength(1);expect(rows.every(r=>r.ready&&r.clearance.every((c:any)=>c.gap>-.05))).toBe(true);
   await page.evaluate(()=>(window as any).__drive.reset({distance:12000,speed:0}));await stageReady(page);expect(await page.evaluate(()=>(window as any).__drive.traffic().reactions.length)).toBe(0);
  }
 });
