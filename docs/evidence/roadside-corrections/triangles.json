@@ -1,0 +1,3374 @@
+[
+  {
+    "t": 0.11669999999999979,
+    "distance": 12433.26804730268,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [],
+      "flying": [],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 0.2501000000000004,
+    "distance": 12448.436463452668,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [],
+      "flying": [],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 0.3667000000000002,
+    "distance": 12461.697173314262,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [],
+      "flying": [],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 0.5000000000000007,
+    "distance": 12476.8557401111,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [],
+      "flying": [],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 0.6166999999999999,
+    "distance": 12490.126396309988,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [],
+      "flying": [],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 0.7499999999999994,
+    "distance": 12505.28923497482,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [],
+      "flying": [],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 0.8666999999999987,
+    "distance": 12518.516954049608,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 1.2333999999999972,
+    "distance": 12560.218028611826,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 1.3666999999999971,
+    "distance": 12575.380400126274,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 1.4833999999999967,
+    "distance": 12588.654247820492,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 1.616799999999997,
+    "distance": 12603.81884722693,
+    "triangles": {
+      "capacity": 48,
+      "active": 3,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300000,
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 1.7333999999999963,
+    "distance": 12617.076148654027,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 1.8665999999999967,
+    "distance": 12632.221786627228,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 1.999999999999996,
+    "distance": 12647.391307353233,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 2.1166999999999954,
+    "distance": 12660.66152531482,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 2.2501999999999946,
+    "distance": 12675.843952562624,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059994004
+  },
+  {
+    "t": 2.3666999999999945,
+    "distance": 12689.087333078081,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 2.5000999999999944,
+    "distance": 12704.26002539145,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 2.6333999999999933,
+    "distance": 12719.420887337948,
+    "triangles": {
+      "capacity": 48,
+      "active": 2,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300001,
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 2.7500999999999935,
+    "distance": 12732.698348748869,
+    "triangles": {
+      "capacity": 48,
+      "active": 1,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 2.8833999999999924,
+    "distance": 12747.860552230359,
+    "triangles": {
+      "capacity": 48,
+      "active": 1,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 3.0000999999999927,
+    "distance": 12761.128745227757,
+    "triangles": {
+      "capacity": 48,
+      "active": 1,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 3.1333999999999915,
+    "distance": 12776.281014444632,
+    "triangles": {
+      "capacity": 48,
+      "active": 1,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 3.2500999999999918,
+    "distance": 12789.549741034029,
+    "triangles": {
+      "capacity": 48,
+      "active": 1,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 60
+  },
+  {
+    "t": 3.3833999999999906,
+    "distance": 12804.708350798439,
+    "triangles": {
+      "capacity": 48,
+      "active": 1,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [
+        300002
+      ],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  },
+  {
+    "t": 3.50019999999999,
+    "distance": 12817.990209425248,
+    "triangles": {
+      "capacity": 48,
+      "active": 0,
+      "hit": [
+        300000
+      ],
+      "flying": [
+        300000
+      ],
+      "shown": [],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  },
+  {
+    "t": 3.63349999999999,
+    "distance": 12833.152595935802,
+    "triangles": {
+      "capacity": 48,
+      "active": 0,
+      "hit": [
+        300000
+      ],
+      "flying": [],
+      "shown": [],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  },
+  {
+    "t": 3.75009999999999,
+    "distance": 12846.412824569119,
+    "triangles": {
+      "capacity": 48,
+      "active": 0,
+      "hit": [
+        300000
+      ],
+      "flying": [],
+      "shown": [],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  },
+  {
+    "t": 3.883499999999989,
+    "distance": 12861.580466902693,
+    "triangles": {
+      "capacity": 48,
+      "active": 0,
+      "hit": [
+        300000
+      ],
+      "flying": [],
+      "shown": [],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  },
+  {
+    "t": 4.01679999999999,
+    "distance": 12876.740505366399,
+    "triangles": {
+      "capacity": 48,
+      "active": 0,
+      "hit": [
+        300000
+      ],
+      "flying": [],
+      "shown": [],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  },
+  {
+    "t": 4.1500999999999975,
+    "distance": 12891.902850543262,
+    "triangles": {
+      "capacity": 48,
+      "active": 0,
+      "hit": [
+        300000
+      ],
+      "flying": [],
+      "shown": [],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  },
+  {
+    "t": 4.266800000000003,
+    "distance": 12905.17707748095,
+    "triangles": {
+      "capacity": 48,
+      "active": 0,
+      "hit": [
+        300000
+      ],
+      "flying": [],
+      "shown": [],
+      "recipe": [
+        {
+          "id": 300000,
+          "distance": 12510,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300001,
+          "distance": 12630,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300002,
+          "distance": 12710,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300003,
+          "distance": 29185,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300004,
+          "distance": 29305,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300005,
+          "distance": 29385,
+          "side": 1,
+          "inset": 1.75,
+          "lateral": 5.25
+        },
+        {
+          "id": 300006,
+          "distance": 42285,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300007,
+          "distance": 42405,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300008,
+          "distance": 42485,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300009,
+          "distance": 59985,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300010,
+          "distance": 60105,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        },
+        {
+          "id": 300011,
+          "distance": 60185,
+          "side": -1,
+          "inset": 1.75,
+          "lateral": -5.25
+        }
+      ]
+    },
+    "impacts": 0,
+    "ready": true,
+    "fps": 59.99400059993999
+  }
+]

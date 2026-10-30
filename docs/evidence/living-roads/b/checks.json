@@ -1,0 +1,97 @@
+{
+  "environment": "Edge 960x432 touch DPR2, 4x CPU slowdown; desktop GPU, not physical Pixel 8",
+  "picks": {
+    "car": {
+      "id": 55,
+      "type": 0,
+      "distance": 17977.569420887157,
+      "speed": 43.8531769801759,
+      "group": 21
+    },
+    "fast": {
+      "id": 49,
+      "type": 0,
+      "distance": 15970.96754223667,
+      "speed": 74.60529314250581,
+      "group": 18
+    },
+    "gap": {
+      "start": 801.3508758638054,
+      "end": 2136.0685818549246
+    },
+    "cluster": [
+      {
+        "id": 0,
+        "type": 0,
+        "distance": 698.569246167317,
+        "speed": 30.452406982981806,
+        "group": 0
+      },
+      {
+        "id": 1,
+        "type": 1,
+        "distance": 749.9600610155612,
+        "speed": 18.48380666859965,
+        "group": 0
+      },
+      {
+        "id": 2,
+        "type": 2,
+        "distance": 801.3508758638054,
+        "speed": 25.087706213299597,
+        "group": 0
+      }
+    ]
+  },
+  "results": [
+    {
+      "name": "cluster",
+      "impacts": 0,
+      "passCrossings": 1,
+      "minSettledFps": 59.99400059993999,
+      "allReady": true,
+      "minimumPlayerClearance": 0.4065011957994724,
+      "maxTrafficContactGap": 0.05982242769956514,
+      "finalPlayerSpeedKmh": 125.82513782395147
+    },
+    {
+      "name": "open",
+      "distance": 911.3508758638054,
+      "actors": 0
+    },
+    {
+      "name": "fast",
+      "impacts": 0,
+      "passCrossings": 1,
+      "minSettledFps": 59.998032851381986,
+      "allReady": true,
+      "minimumPlayerClearance": 3.006778332696872,
+      "maxTrafficContactGap": 0.03734810414669454,
+      "finalPlayerSpeedKmh": 90.3893801902932
+    },
+    {
+      "name": "overtake",
+      "impacts": 0,
+      "passCrossings": 1,
+      "recordedLeftBiasDb": 8.800308825143247,
+      "minSettledFps": 59.994000599940094,
+      "allReady": true,
+      "minimumPlayerClearance": 2.2200117158654753,
+      "maxTrafficContactGap": 0.022821932189316385,
+      "finalPlayerSpeedKmh": 216.04386508583644
+    },
+    {
+      "name": "impact",
+      "impacts": 1,
+      "passCrossings": 0,
+      "minSettledFps": 59.99400059993965,
+      "allReady": true,
+      "minimumPlayerClearance": 0.4642487810690994,
+      "maxTrafficContactGap": 0.16495186257372296,
+      "finalPlayerSpeedKmh": 193.9270613282526,
+      "forwardDisplacementBeyondCruise": 92.83837620576463,
+      "maxTrafficYawDegrees": 21.752981772131136
+    }
+  ],
+  "errors": []
+}

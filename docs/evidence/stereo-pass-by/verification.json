@@ -1,0 +1,766 @@
+{
+  "reference": "Channel-energy analysis only; not listened to. No samples copied.",
+  "environment": "Edge 915x412 touch DPR2, 4x CPU slowdown, desktop GPU; not physical Pixel 8",
+  "results": [
+    {
+      "name": "left",
+      "recordedDominantChannelDb": 7.777735880185572,
+      "starts": 1,
+      "crossings": 1,
+      "impacts": 0,
+      "allStreamingReady": true,
+      "settledFpsMinimum": 58.99410058994101,
+      "samples": [
+        {
+          "time": 0.033299999999999955,
+          "stereo": {
+            "left": 0.01001320518842742,
+            "right": 0.01001320518842742
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 40.56795131842922,
+            "startupMs": 1287.5,
+            "raycastMs": 0.2071428574799072,
+            "renderMs": 7.759523809310936,
+            "worldMs": 0.10238095248738925,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.38330000000000036,
+          "stereo": {
+            "left": 0.05487477769027898,
+            "right": 0.05444166031792817
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 0,
+            "active": [
+              {
+                "id": 0,
+                "type": 0,
+                "pan": -0.7901209593580032,
+                "gain": 0.17825596303115226,
+                "cutoff": 5350.187614478113,
+                "rate": 1.1483852284544158
+              }
+            ],
+            "tracked": 3,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 40.56795131842922,
+            "startupMs": 1287.5,
+            "raycastMs": 0.2071428574799072,
+            "renderMs": 7.759523809310936,
+            "worldMs": 0.10238095248738925,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.8332999999999992,
+          "stereo": {
+            "left": 0.05689250610607641,
+            "right": 0.05689588398541846
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 4,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 40.56795131842922,
+            "startupMs": 1287.5,
+            "raycastMs": 0.2071428574799072,
+            "renderMs": 7.759523809310936,
+            "worldMs": 0.10238095248738925,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.1666999999999978,
+          "stereo": {
+            "left": 0.056674465173348225,
+            "right": 0.056674465173348225
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 4,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 58.99410058994101,
+            "startupMs": 1287.5,
+            "raycastMs": 0.710169491563308,
+            "renderMs": 4.450847457652375,
+            "worldMs": 0.05423728818610563,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.5000999999999967,
+          "stereo": {
+            "left": 0.05439933073858611,
+            "right": 0.05439933073858611
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 58.99410058994101,
+            "startupMs": 1287.5,
+            "raycastMs": 0.710169491563308,
+            "renderMs": 4.450847457652375,
+            "worldMs": 0.05423728818610563,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.8500999999999956,
+          "stereo": {
+            "left": 0.05585934321018323,
+            "right": 0.05585934321018323
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 58.99410058994101,
+            "startupMs": 1287.5,
+            "raycastMs": 0.710169491563308,
+            "renderMs": 4.450847457652375,
+            "worldMs": 0.05423728818610563,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "right",
+      "recordedDominantChannelDb": 6.420932694996322,
+      "starts": 1,
+      "crossings": 1,
+      "impacts": 0,
+      "allStreamingReady": true,
+      "settledFpsMinimum": 59.99400059994004,
+      "samples": [
+        {
+          "time": 0.033300000000000184,
+          "stereo": {
+            "left": 0.03091131318477907,
+            "right": 0.03091131318477907
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 30.999999999999986,
+            "startupMs": 1287.5,
+            "raycastMs": 0.6387096773232183,
+            "renderMs": 4.509677419619214,
+            "worldMs": 0.022580645017085538,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.3665999999999998,
+          "stereo": {
+            "left": 0.05480371117910863,
+            "right": 0.05939556293832225
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 0,
+            "active": [
+              {
+                "id": 1,
+                "type": 1,
+                "pan": 0.8488729374819372,
+                "gain": 0.5320372448611299,
+                "cutoff": 2557.043517517472,
+                "rate": 1.0982866424572628
+              }
+            ],
+            "tracked": 3,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5100000001490116,
+            "renderMs": 3.6283333331967396,
+            "worldMs": 0.05333333338300387,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.7666999999999993,
+          "stereo": {
+            "left": 0.05599197593331478,
+            "right": 0.055994247613637055
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 4,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5100000001490116,
+            "renderMs": 3.6283333331967396,
+            "worldMs": 0.05333333338300387,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.0999999999999979,
+          "stereo": {
+            "left": 0.05535363442808156,
+            "right": 0.05535363442808156
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5100000001490116,
+            "renderMs": 3.6283333331967396,
+            "worldMs": 0.05333333338300387,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.4333999999999962,
+          "stereo": {
+            "left": 0.05552797583097076,
+            "right": 0.05552797583097076
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059994004,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5549999995157122,
+            "renderMs": 3.4633333337803682,
+            "worldMs": 0.10333333338300386,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.7666999999999955,
+          "stereo": {
+            "left": 0.05570628666408201,
+            "right": 0.05570628666408201
+          },
+          "passBy": {
+            "starts": 1,
+            "crossings": 1,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059994004,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5549999995157122,
+            "renderMs": 3.4633333337803682,
+            "worldMs": 0.10333333338300386,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "distant",
+      "starts": 0,
+      "crossings": 0,
+      "impacts": 0,
+      "allStreamingReady": true,
+      "settledFpsMinimum": 60,
+      "samples": [
+        {
+          "time": 0.03330000000000109,
+          "stereo": {
+            "left": 0.031305873874365654,
+            "right": 0.031305873874365654
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059994004,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5083333333954215,
+            "renderMs": 3.1383333330353103,
+            "worldMs": 0.041666666604578496,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.36670000000000097,
+          "stereo": {
+            "left": 0.055112361461924976,
+            "right": 0.055112361461924976
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059994004,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5083333333954215,
+            "renderMs": 3.1383333330353103,
+            "worldMs": 0.041666666604578496,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.683300000000001,
+          "stereo": {
+            "left": 0.054495281359910705,
+            "right": 0.054495281359910705
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059994004,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5083333333954215,
+            "renderMs": 3.1383333330353103,
+            "worldMs": 0.041666666604578496,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.0166999999999995,
+          "stereo": {
+            "left": 0.054910350803790364,
+            "right": 0.054910350803790364
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.4350000003973643,
+            "renderMs": 2.716666666418314,
+            "worldMs": 0.046666666865348816,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.3500999999999983,
+          "stereo": {
+            "left": 0.05457904981579274,
+            "right": 0.05457904981579274
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.4350000003973643,
+            "renderMs": 2.716666666418314,
+            "worldMs": 0.046666666865348816,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.6833999999999967,
+          "stereo": {
+            "left": 0.05751144654869719,
+            "right": 0.05751144654869719
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.4350000003973643,
+            "renderMs": 2.716666666418314,
+            "worldMs": 0.046666666865348816,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "following",
+      "starts": 0,
+      "crossings": 0,
+      "impacts": 0,
+      "allStreamingReady": true,
+      "settledFpsMinimum": 59.99400059993999,
+      "samples": [
+        {
+          "time": 0.033299999999999275,
+          "stereo": {
+            "left": 0.052085587205067486,
+            "right": 0.052085587205067486
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.4350000003973643,
+            "renderMs": 2.716666666418314,
+            "worldMs": 0.046666666865348816,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.35000000000000014,
+          "stereo": {
+            "left": 0.028634057811296378,
+            "right": 0.028634057811296378
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60.00393468424157,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5016393440424419,
+            "renderMs": 3.190163934694939,
+            "worldMs": 0.05081967191129434,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.6832999999999992,
+          "stereo": {
+            "left": 0.028256476557038314,
+            "right": 0.028256476557038314
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60.00393468424157,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5016393440424419,
+            "renderMs": 3.190163934694939,
+            "worldMs": 0.05081967191129434,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.0167,
+          "stereo": {
+            "left": 0.02658323056748958,
+            "right": 0.02658323056748958
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 60.00393468424157,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5016393440424419,
+            "renderMs": 3.190163934694939,
+            "worldMs": 0.05081967191129434,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.349999999999998,
+          "stereo": {
+            "left": 0.02670512385301292,
+            "right": 0.02670512385301292
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1287.5,
+            "raycastMs": 0.44500000023593506,
+            "renderMs": 3.486666666654249,
+            "worldMs": 0.04333333348234494,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.6832999999999965,
+          "stereo": {
+            "left": 0.025436796506211338,
+            "right": 0.025436796506211338
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1287.5,
+            "raycastMs": 0.44500000023593506,
+            "renderMs": 3.486666666654249,
+            "worldMs": 0.04333333348234494,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "collision",
+      "starts": 0,
+      "crossings": 0,
+      "impacts": 1,
+      "allStreamingReady": true,
+      "settledFpsMinimum": 60,
+      "samples": [
+        {
+          "time": 0.03320000000000073,
+          "stereo": {
+            "left": 0.0193828704294264,
+            "right": 0.0193828704294264
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1287.5,
+            "raycastMs": 0.44500000023593506,
+            "renderMs": 3.486666666654249,
+            "worldMs": 0.04333333348234494,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.3498999999999997,
+          "stereo": {
+            "left": 0.05441310722382586,
+            "right": 0.05441310722382586
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 0
+          },
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1287.5,
+            "raycastMs": 0.44500000023593506,
+            "renderMs": 3.486666666654249,
+            "worldMs": 0.04333333348234494,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 0.6999999999999997,
+          "stereo": {
+            "left": 0.04253980373781,
+            "right": 0.04253980373781
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.4300000000124176,
+            "renderMs": 3.0683333333581686,
+            "worldMs": 0.03999999991307656,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.0332999999999997,
+          "stereo": {
+            "left": 0.03742521026366846,
+            "right": 0.03742521026366846
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.4300000000124176,
+            "renderMs": 3.0683333333581686,
+            "worldMs": 0.03999999991307656,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.3665999999999978,
+          "stereo": {
+            "left": 0.05260059185008477,
+            "right": 0.05260059185008477
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5200000001738468,
+            "renderMs": 3.6016666665052375,
+            "worldMs": 0.011666666716337204,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        },
+        {
+          "time": 1.6999999999999964,
+          "stereo": {
+            "left": 0.05539671275599798,
+            "right": 0.05539671275599798
+          },
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 3,
+            "consumed": 1
+          },
+          "perf": {
+            "fps": 60,
+            "startupMs": 1287.5,
+            "raycastMs": 0.5200000001738468,
+            "renderMs": 3.6016666665052375,
+            "worldMs": 0.011666666716337204,
+            "pixelRatio": 1,
+            "shadows": false
+          }
+        }
+      ]
+    }
+  ]
+}

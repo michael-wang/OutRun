@@ -1,13 +1,15 @@
+import type {BridgeSpan} from './bridge';
+import type {RockySection} from './rocky-shoulder';
 import {canyonBend,canyonBlend} from './canyon-identity';
 import {RoadClearance} from './road-clearance';
-import {roadOffset} from './road-profile';
+import {roadOffset,roadObjectOffset,type Shoulders} from './road-profile';
 import * as THREE from 'three';
 import {ACTS,actWeights} from './acts';
 import type {createTrack} from './track';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -19,14 +21,21 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  for(let j=0;j<rings.length;j++)for(let i=0;i<=sides;i++){const a=i/sides*Math.PI*2,r=rings[j][1]*(.87+random((i%sides)+seed*12)*.22),c=new THREE.Color(['#ac6946','#bd7c50','#c98d59','#d9a26d'][Math.floor(j/2)]);positions.push(Math.cos(a)*r,rings[j][0],Math.sin(a)*r);colors.push(c.r,c.g,c.b);}
  for(let j=0;j<rings.length-1;j++)for(let i=0;i<sides;i++){const a=j*(sides+1)+i,b=a+sides+1;indices.push(a,b,a+1,a+1,b,b+1);}const top=(rings.length-1)*(sides+1);for(let i=1;i<sides-1;i++)indices.push(top,top+i+1,top+i);
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.setIndex(indices);g.computeVertexNormals();return g;});
+ const boulder=new THREE.IcosahedronGeometry(1,1);const vertices=boulder.getAttribute('position');for(let i=0;i<vertices.count;i++){const x=vertices.getX(i),y=vertices.getY(i),z=vertices.getZ(i),r=.86+rand(Math.round(x*31+y*47+z*59))*.23;vertices.setXYZ(i,x*r,y*r,z*r);}boulder.computeVertexNormals();boulder.name='roadside-rock';
  const materials=new Map<string,THREE.MeshStandardMaterial>(),buckets=new Map<string,{geometry:THREE.BufferGeometry;material:THREE.Material;matrices:THREE.Matrix4[]}>();
  const dummy=new THREE.Object3D(),quaternion=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
- let base=new THREE.Vector3(),yaw=0,chunk=0;
+ let base=new THREE.Vector3(),yaw=0,chunk=0,bridgeGap=false;
  const roadSamples=range.roadSamples??Array.from({length:Math.ceil(length/25)},(_,i)=>sample(i*25).position);
- function anchor(d:number,offset:number){chunk=Math.floor(d/650);const p=sample(d);base=p.position.addScaledVector(p.right,roadOffset(offset,halfAt(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);yaw=-p.roadHeading;}
+ function anchor(d:number,offset:number){chunk=Math.floor(d/650);bridgeGap=!!range.bridge&&d>=range.bridge.start-35&&d<=range.bridge.end+35;const p=sample(d);base=p.position.addScaledVector(p.right,roadObjectOffset(offset,halfAt(d),range.shoulders?.(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);if(range.shoulders){const q=sample(d),widths=range.shoulders(d),half=halfAt(d),x=roadObjectOffset(offset,half,widths),width=x<0?widths.left:widths.right,extra=Math.abs(x)-half,raw=Math.sign(x)*(extra<=width?7+extra*6/width:13+extra-width);base.copy(q.position).addScaledVector(q.right,x);
+   if(raw>=13)base.y-=raw<=75?.12+(raw-13)/62*2.88:3+(raw-75)/85*11;
+   else if(raw>=-13)base.y-=.1;
+   else if(raw>-27){const near=q.position.y+q.right.y*roadOffset(-13,half,widths)-.1,far=q.position.y+q.right.y*roadOffset(-27,half,widths),coast=THREE.MathUtils.lerp(-5.05,far-2-27*.015,weightsAt(d)[1]);base.y=THREE.MathUtils.lerp(near,coast,(-raw-13)/14);}
+   else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(raw)*.015,weightsAt(d)[1]);
+  }yaw=-p.roadHeading;}
  const clearance=range.clearance??new RoadClearance(roadSamples,halfAt,range.openRoad);
  function clear(radius:number){return clearance.clear(base,radius);}
  function part(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0){
+  if(bridgeGap)return;
   let material=materials.get(color);if(!material){material=new THREE.MeshStandardMaterial({color,roughness:.85,vertexColors:!!g.getAttribute('color')});materials.set(color,material);}
   quaternion.setFromAxisAngle(axis,yaw);dummy.position.set(x,y,z).applyQuaternion(quaternion).add(base);dummy.rotation.set(rx,ry,rz);dummy.quaternion.premultiply(quaternion);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();
   const key=g.uuid+color+':'+chunk;let b=buckets.get(key);if(!b){b={geometry:g,material,matrices:[]};buckets.set(key,b);}b.matrices.push(dummy.matrix.clone());
@@ -45,12 +54,20 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;
   if(family===0){anchor(d,17+random(i)*6);if(clear(4))palm(i);if(i%3===0){anchor(d,36+random(i)*10);if(clear(12))building(i,false,true);anchor(d+8,54+random(i+91)*10);if(clear(12)){const h=12+random(i+92)*15;part(boxes,['#d7c8af','#bfcfc4','#e4c5b0'][i%3],0,h/2,0,17,h,15);part(boxes,'#c9bca5',0,-1,0,22,2,20);}}}
   if(family===1&&i%7===0&&!(canyon&&canyonBend(d))){for(const side of [-1,1]){anchor(d,side*(280+random(i)*90));if(clear(110)){base.y=-8;part(mesaGeometry[i%3],'#ffffff',0,0,0,90,150+random(i)*80,80,0,random(i)*6);}}}
-  if(family===1&&!(canyon&&canyonBend(d))){for(const side of [-1,1]){anchor(d,side*(19+random(i+side)*10));if(clear(3))dryTree(i);if(i%3===0){anchor(d,side*(75+random(i)*25));if(clear(43)&&!acts[1].landmarks.some(l=>Math.abs(d-(acts[1].start+(acts[1].end-acts[1].start)*l.fraction))<180))mesa(i+side);}anchor(d,side*(halfAt(d)<7?12.5:15));part(boxes,'#bd8e62',0,.65,0,.8,1.3,12,theme===undefined?0:-Math.atan2(sample(d).tangent.y,Math.hypot(sample(d).tangent.x,sample(d).tangent.z)));}}
+  if(family===1&&!(canyon&&canyonBend(d))&&!range.rockSections?.some(s=>d>s.start-20&&d<s.end+20)){for(const side of [-1,1]){anchor(d,side*(19+random(i+side)*10));if(clear(3))dryTree(i);if(i%3===0){anchor(d,side*(75+random(i)*25));if(clear(43)&&!acts[1].landmarks.some(l=>Math.abs(d-(acts[1].start+(acts[1].end-acts[1].start)*l.fraction))<180))mesa(i+side);}anchor(d,side*(halfAt(d)<7?12.5:15));if(!range.rocky)part(boxes,'#bd8e62',0,.65,0,.8,1.3,12,theme===undefined?0:-Math.atan2(sample(d).tangent.y,Math.hypot(sample(d).tangent.x,sample(d).tangent.z)));}}
   if(family===2){for(const side of [-1,1]){anchor(d,side*17);part(cylinder,'#3d646a',0,4,0,.12,8,.12);part(boxes,'#3d646a',0,8,-.65,.16,.16,1.4);part(round,'#ffedba',0,7.85,-1.3,.45,.2,.5);if(i%2===0){anchor(d+10,side*20);part(cylinder,'#876b52',0,2.6,0,.22,5.2,.22);part(round,'#4a8256',0,5.5,0,2.3,2.6,2.3);}}
    anchor(d,32+random(i)*10);if(clear(13)&&!acts[2].landmarks.some(l=>Math.abs(d-(acts[2].start+(acts[2].end-acts[2].start)*l.fraction))<170))building(i);if(i%3===0){anchor(d,65+random(i)*18);if(clear(18)){const h=18+random(i+180)*30;part(boxes,['#b9c7bb','#d9c5ad','#b7c6c1'][i%3],0,h/2,0,18,h,16);part(boxes,'#c8bba5',0,-1,0,24,2,23);}anchor(d,140+random(i)*80);if(clear(18))building(i+100,true);}
   }
   // Coast cliffs and low green scrub also vary within the coastal act.
   if(family===0&&i%2===0){anchor(d,70+random(i)*25);if(clear(38)){part(rock,'#c3b794',0,theme===undefined?10:4,0,30,theme===undefined?28:40,26,0,random(i)*6);part(round,'#628350',-8,22,0,12,2,14);}}
+ }
+ // r5: irregular buried rock clusters outside the full reachable vehicle corridor.
+ if(range.rocky)for(let i=Math.ceil(range.start/24);i*24<Math.min(length,range.end);i++){
+  const d=i*24;if(weightsAt(d)[1]<.65||(canyon&&d>560&&d<940))continue;
+  for(const side of [-1,1]){if(random(i*7+side)<.30)continue;const radius=1.8+random(i*11+side)*3.8,h=2+random(i*13+side)*4.5;anchor(d,side*(15+radius+random(i*17)*3));
+   if(clear(radius+1.5))part(boulder,'#b58b67',0,h*.25,0,radius,h,radius*.8,0,random(i*19)*6);
+   for(let j=0;j<3;j++){const r=.25+random(i*23+j)*.6;anchor(d+j*6,side*(14.5+r+random(i*29+j)*3));if(clear(r+1.5))part(boulder,'#a98262',0,0,0,r,r*.7,r,0,random(i+j)*6);}
+  }
  }
  // Connected cut-rock ridge following the inside of this one bend. Buried skirt joins existing terrain.
  if(canyon&&range.start<900&&range.end>600){

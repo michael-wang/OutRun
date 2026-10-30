@@ -1,0 +1,136 @@
+{
+  "originalEvents": 16,
+  "originalBoards": 32,
+  "r5Boards": 350,
+  "r6Boards": 16,
+  "signs": [
+    {
+      "distance": 3170.5,
+      "bendStart": 3470.5,
+      "bendEnd": 3876.25,
+      "direction": -1,
+      "kind": "turn",
+      "offset": 15
+    },
+    {
+      "distance": 3621.25,
+      "bendStart": 3921.25,
+      "bendEnd": 4327,
+      "direction": 1,
+      "kind": "turn",
+      "offset": 15
+    },
+    {
+      "distance": 11156,
+      "bendStart": 11456,
+      "bendEnd": 11891,
+      "direction": 1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 11636,
+      "bendStart": 11936,
+      "bendEnd": 12371,
+      "direction": -1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 18976,
+      "bendStart": 19276,
+      "bendEnd": 19719,
+      "direction": 1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 19464,
+      "bendStart": 19764,
+      "bendEnd": 20207,
+      "direction": -1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 27776.5,
+      "bendStart": 28076.5,
+      "bendEnd": 28536.75,
+      "direction": -1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 28281.75,
+      "bendStart": 28581.75,
+      "bendEnd": 29042,
+      "direction": 1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 36413,
+      "bendStart": 36713,
+      "bendEnd": 37215,
+      "direction": 1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 36960,
+      "bendStart": 37260,
+      "bendEnd": 37762,
+      "direction": -1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 45733,
+      "bendStart": 46033,
+      "bendEnd": 46514,
+      "direction": -1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 46259,
+      "bendStart": 46559,
+      "bendEnd": 47040,
+      "direction": 1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 54377,
+      "bendStart": 54677,
+      "bendEnd": 55164,
+      "direction": 1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 54909,
+      "bendStart": 55209,
+      "bendEnd": 55696,
+      "direction": -1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 63157,
+      "bendStart": 63457,
+      "bendEnd": 63956,
+      "direction": 1,
+      "kind": "hairpin",
+      "offset": 15
+    },
+    {
+      "distance": 63701,
+      "bendStart": 64001,
+      "bendEnd": 64500,
+      "direction": -1,
+      "kind": "hairpin",
+      "offset": 15
+    }
+  ]
+}

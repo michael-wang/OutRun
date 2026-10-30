@@ -1,0 +1,2761 @@
+{
+  "jumps": [
+    {
+      "id": 7,
+      "time": 74.8,
+      "actual": 8947.89397205759,
+      "nominal": 8947.89397205759,
+      "speed": 74.95810513242354,
+      "visible": true,
+      "player": 8578,
+      "previous": {
+        "distance": 8493.151253722675,
+        "time": 74.6,
+        "speed": 21.46156693666449
+      }
+    },
+    {
+      "id": 7,
+      "time": 81.8,
+      "actual": 9472.600707984555,
+      "nominal": 9472.600707984555,
+      "speed": 74.95810513242354,
+      "visible": true,
+      "player": 9348,
+      "previous": {
+        "distance": 9267.584420129086,
+        "time": 81.6,
+        "speed": 37.255185176359696
+      }
+    },
+    {
+      "id": 51,
+      "time": 205.1,
+      "actual": 22877.294037130698,
+      "nominal": 22877.294037130698,
+      "speed": 30.835242117367063,
+      "visible": true,
+      "player": 22911,
+      "previous": {
+        "distance": 22827.581457099477,
+        "time": 204.9,
+        "speed": 27.460778448342655
+      }
+    },
+    {
+      "id": 33,
+      "time": 218,
+      "actual": 24387.79811538334,
+      "nominal": 24387.79811538334,
+      "speed": 59.263047239963065,
+      "visible": true,
+      "player": 24330,
+      "previous": {
+        "distance": 24244.991502160163,
+        "time": 217.8,
+        "speed": 31.3560364777813
+      }
+    },
+    {
+      "id": 55,
+      "time": 255.1,
+      "actual": 28387.186201110795,
+      "nominal": 28387.186201110795,
+      "speed": 40.806024226670466,
+      "visible": true,
+      "player": 28411,
+      "previous": {
+        "distance": 28327.781635973468,
+        "time": 254.9,
+        "speed": 37.91943602134577
+      }
+    },
+    {
+      "id": 44,
+      "time": 257.2,
+      "actual": 28788.01299760025,
+      "nominal": 28788.01299760025,
+      "speed": 56.76494872896001,
+      "visible": true,
+      "player": 28642,
+      "previous": {
+        "distance": 28558.143079427886,
+        "time": 257,
+        "speed": 27.52343506726902
+      }
+    },
+    {
+      "id": 64,
+      "time": 362.4,
+      "actual": 40333.64981994778,
+      "nominal": 40333.64981994778,
+      "speed": 50.015577635106936,
+      "visible": true,
+      "player": 40214,
+      "previous": {
+        "distance": 40134.367700501476,
+        "time": 362.2,
+        "speed": 18.757201340566905
+      }
+    },
+    {
+      "id": 72,
+      "time": 368.2,
+      "actual": 40976.6800715427,
+      "nominal": 40976.6800715427,
+      "speed": 43.832393810347035,
+      "visible": true,
+      "player": 40852,
+      "previous": {
+        "distance": 40771.255802112035,
+        "time": 368,
+        "speed": 20.955836379800502
+      }
+    },
+    {
+      "id": 93,
+      "time": 391.7,
+      "actual": 43386.49333759697,
+      "nominal": 43386.49333759697,
+      "speed": 29.11175560309655,
+      "visible": true,
+      "player": 43437,
+      "previous": {
+        "distance": 43353.00035499529,
+        "time": 391.5,
+        "speed": 21.310757819064907
+      }
+    },
+    {
+      "id": 49,
+      "time": 429.3,
+      "actual": 47999.01988831442,
+      "nominal": 47999.01988831442,
+      "speed": 74.60529314250581,
+      "visible": true,
+      "player": 47573,
+      "previous": {
+        "distance": 47491.7950926702,
+        "time": 429.1,
+        "speed": 33.09989982258735
+      }
+    },
+    {
+      "id": 104,
+      "time": 483.7,
+      "actual": 53626.517994176946,
+      "nominal": 53626.517994176946,
+      "speed": 38.79786160121309,
+      "visible": true,
+      "player": 53557,
+      "previous": {
+        "distance": 53472.93526086354,
+        "time": 483.5,
+        "speed": 28.50727507005587
+      }
+    },
+    {
+      "id": 123,
+      "time": 575.9,
+      "actual": 63653.264852740074,
+      "nominal": 63653.264852740074,
+      "speed": 36.30222877287047,
+      "visible": true,
+      "player": 63699,
+      "previous": {
+        "distance": 63612.05129024503,
+        "time": 575.7,
+        "speed": 14.913418381992313
+      }
+    },
+    {
+      "id": 134,
+      "time": 576,
+      "actual": 63668.180848728865,
+      "nominal": 63668.180848728865,
+      "speed": 31.710635205834276,
+      "visible": true,
+      "player": 63710,
+      "previous": {
+        "distance": 63629.54263208323,
+        "time": 575.8,
+        "speed": 17.680420358260527
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "id": 2,
+      "time": 0,
+      "actual": 801.3508758638054,
+      "nominal": 801.3508758638054,
+      "speed": 15.658392102664543,
+      "visible": true,
+      "player": 350,
+      "event": "enter"
+    },
+    {
+      "id": 1,
+      "time": 0,
+      "actual": 749.9600610155612,
+      "nominal": 749.9600610155612,
+      "speed": 21.26158444637743,
+      "visible": true,
+      "player": 350,
+      "event": "enter"
+    },
+    {
+      "id": 0,
+      "time": 0,
+      "actual": 698.569246167317,
+      "nominal": 698.569246167317,
+      "speed": 30.55837658175733,
+      "visible": true,
+      "player": 350,
+      "event": "enter"
+    },
+    {
+      "id": 1,
+      "time": 5.2,
+      "event": "leave",
+      "distance": 860.5203001367258,
+      "speed": 21.26158444637743
+    },
+    {
+      "id": 0,
+      "time": 5.2,
+      "event": "leave",
+      "distance": 857.4728043924551,
+      "speed": 30.55837658175733
+    },
+    {
+      "id": 2,
+      "time": 5.4,
+      "event": "leave",
+      "distance": 885.9061932181919,
+      "speed": 15.658392102664543
+    },
+    {
+      "id": 3,
+      "time": 11.9,
+      "actual": 2501.3483147554994,
+      "nominal": 2501.3483147554994,
+      "speed": 30.695775873997867,
+      "visible": true,
+      "player": 1659,
+      "event": "enter"
+    },
+    {
+      "id": 4,
+      "time": 14.4,
+      "actual": 2779.3136854404584,
+      "nominal": 2779.3136854404584,
+      "speed": 42.22592196407883,
+      "visible": true,
+      "player": 1934,
+      "event": "enter"
+    },
+    {
+      "id": 5,
+      "time": 16.2,
+      "actual": 2977.9229597514495,
+      "nominal": 2977.9229597514495,
+      "speed": 15.778388561577433,
+      "visible": true,
+      "player": 2132,
+      "event": "enter"
+    },
+    {
+      "id": 3,
+      "time": 23.3,
+      "event": "leave",
+      "distance": 2851.280159719058,
+      "speed": 30.695775873997867
+    },
+    {
+      "id": 9,
+      "time": 25,
+      "actual": 3946.334138912899,
+      "nominal": 3946.334138912899,
+      "speed": 21.413658865235952,
+      "visible": true,
+      "player": 3100,
+      "event": "enter"
+    },
+    {
+      "id": 6,
+      "time": 25.6,
+      "actual": 4011.9829059775093,
+      "nominal": 4011.9829059775093,
+      "speed": 27.575690523048657,
+      "visible": true,
+      "player": 3166,
+      "event": "enter"
+    },
+    {
+      "id": 5,
+      "time": 25.8,
+      "event": "leave",
+      "distance": 3129.3954899425735,
+      "speed": 15.778388561577433
+    },
+    {
+      "id": 4,
+      "time": 27.8,
+      "event": "leave",
+      "distance": 3345.1410397590944,
+      "speed": 42.22592196407883
+    },
+    {
+      "id": 9,
+      "time": 35.2,
+      "event": "leave",
+      "distance": 4164.75345933831,
+      "speed": 21.413658865235952
+    },
+    {
+      "id": 6,
+      "time": 36.6,
+      "event": "leave",
+      "distance": 4315.315501731014,
+      "speed": 27.575690523048657
+    },
+    {
+      "id": 10,
+      "time": 40.1,
+      "actual": 5603.543535928604,
+      "nominal": 5603.543535928604,
+      "speed": 24.600798732394146,
+      "visible": true,
+      "player": 4761,
+      "event": "enter"
+    },
+    {
+      "id": 8,
+      "time": 42.8,
+      "actual": 5902.95504126884,
+      "nominal": 5902.95504126884,
+      "speed": 59.0407676063478,
+      "visible": true,
+      "player": 5058,
+      "event": "enter"
+    },
+    {
+      "id": 13,
+      "time": 46.1,
+      "actual": 6266.975292330038,
+      "nominal": 6266.975292330038,
+      "speed": 32.46795467049297,
+      "visible": true,
+      "player": 5421,
+      "event": "enter"
+    },
+    {
+      "id": 11,
+      "time": 48.4,
+      "actual": 6518.71292196566,
+      "nominal": 6518.71292196566,
+      "speed": 38.23576563607073,
+      "visible": true,
+      "player": 5674,
+      "event": "enter"
+    },
+    {
+      "id": 10,
+      "time": 50.7,
+      "event": "leave",
+      "distance": 5864.312002491939,
+      "speed": 24.600798732394146
+    },
+    {
+      "id": 12,
+      "time": 51.6,
+      "actual": 6875.655911091715,
+      "nominal": 6875.655911091715,
+      "speed": 41.792707121931016,
+      "visible": true,
+      "player": 6026,
+      "event": "enter"
+    },
+    {
+      "id": 16,
+      "time": 54.6,
+      "actual": 7202.021521022155,
+      "nominal": 7202.021521022155,
+      "speed": 19.523048636943308,
+      "visible": true,
+      "player": 6356,
+      "event": "enter"
+    },
+    {
+      "id": 15,
+      "time": 55.2,
+      "actual": 7269.725215938563,
+      "nominal": 7269.725215938563,
+      "speed": 31.740451170804185,
+      "visible": true,
+      "player": 6422,
+      "event": "enter"
+    },
+    {
+      "id": 13,
+      "time": 57.8,
+      "event": "leave",
+      "distance": 6646.850361974794,
+      "speed": 32.46795467049297
+    },
+    {
+      "id": 14,
+      "time": 60.4,
+      "actual": 7843.454235870676,
+      "nominal": 7843.454235870676,
+      "speed": 39.24190554179303,
+      "visible": true,
+      "player": 6994,
+      "event": "enter"
+    },
+    {
+      "id": 8,
+      "time": 60.6,
+      "event": "leave",
+      "distance": 6953.880704661831,
+      "speed": 59.0407676063478
+    },
+    {
+      "id": 7,
+      "time": 61.1,
+      "actual": 7920.967931743387,
+      "nominal": 7920.967931743387,
+      "speed": 74.95810513242354,
+      "visible": true,
+      "player": 7071,
+      "event": "enter"
+    },
+    {
+      "id": 11,
+      "time": 61,
+      "event": "leave",
+      "distance": 7000.483568980177,
+      "speed": 38.23576563607073
+    },
+    {
+      "id": 21,
+      "time": 64.5,
+      "actual": 8292.389427662323,
+      "nominal": 8292.389427662323,
+      "speed": 21.46156693666449,
+      "visible": true,
+      "player": 7445,
+      "event": "enter"
+    },
+    {
+      "id": 16,
+      "time": 64.6,
+      "event": "leave",
+      "distance": 7397.252007391608,
+      "speed": 19.523048636943308
+    },
+    {
+      "id": 12,
+      "time": 65,
+      "event": "leave",
+      "distance": 7435.678186525591,
+      "speed": 41.792707121931016
+    },
+    {
+      "id": 17,
+      "time": 66.4,
+      "actual": 8499.225279704151,
+      "nominal": 8499.225279704151,
+      "speed": 34.78031765229793,
+      "visible": true,
+      "player": 7654.000000000001,
+      "event": "enter"
+    },
+    {
+      "id": 15,
+      "time": 66.8,
+      "event": "leave",
+      "distance": 7637.914449519907,
+      "speed": 31.740451170804185
+    },
+    {
+      "id": 18,
+      "time": 69.4,
+      "actual": 8829.071160977448,
+      "nominal": 8829.071160977448,
+      "speed": 37.255185176359696,
+      "visible": true,
+      "player": 7984.000000000001,
+      "event": "enter"
+    },
+    {
+      "id": 19,
+      "time": 70.9,
+      "actual": 8993.558080411387,
+      "nominal": 8993.558080411387,
+      "speed": 38.02888079727482,
+      "visible": true,
+      "player": 8149.000000000001,
+      "event": "enter"
+    },
+    {
+      "id": 22,
+      "time": 71.2,
+      "actual": 9025.399207472285,
+      "nominal": 9025.399207472285,
+      "speed": 28.977580834826867,
+      "visible": true,
+      "player": 8182,
+      "event": "enter"
+    },
+    {
+      "id": 14,
+      "time": 73.3,
+      "event": "leave",
+      "distance": 8349.674817359812,
+      "speed": 39.24190554179303
+    },
+    {
+      "id": 7,
+      "time": 74.6,
+      "event": "leave",
+      "distance": 8493.151253722675,
+      "speed": 21.46156693666449
+    },
+    {
+      "id": 7,
+      "time": 74.8,
+      "actual": 8947.89397205759,
+      "nominal": 8947.89397205759,
+      "speed": 74.95810513242354,
+      "visible": true,
+      "player": 8578,
+      "event": "reenter"
+    },
+    {
+      "id": 21,
+      "time": 74.8,
+      "event": "leave",
+      "distance": 8513.44356711001,
+      "speed": 21.46156693666449
+    },
+    {
+      "id": 23,
+      "time": 75.6,
+      "actual": 9513.917915232014,
+      "nominal": 9513.917915232014,
+      "speed": 19.011334895751336,
+      "visible": true,
+      "player": 8666,
+      "event": "enter"
+    },
+    {
+      "id": 17,
+      "time": 78.5,
+      "event": "leave",
+      "distance": 8920.067123296907,
+      "speed": 34.78031765229793
+    },
+    {
+      "id": 26,
+      "time": 80.8,
+      "actual": 10083.10561854444,
+      "nominal": 10083.10561854444,
+      "speed": 17.81048438602334,
+      "visible": true,
+      "player": 9238,
+      "event": "enter"
+    },
+    {
+      "id": 20,
+      "time": 81.1,
+      "actual": 10115.882275226628,
+      "nominal": 10115.882275226628,
+      "speed": 40.21998775295085,
+      "visible": true,
+      "player": 9271,
+      "event": "enter"
+    },
+    {
+      "id": 7,
+      "time": 81.6,
+      "event": "leave",
+      "distance": 9267.584420129086,
+      "speed": 37.255185176359696
+    },
+    {
+      "id": 7,
+      "time": 81.8,
+      "actual": 9472.600707984555,
+      "nominal": 9472.600707984555,
+      "speed": 74.95810513242354,
+      "visible": true,
+      "player": 9348,
+      "event": "reenter"
+    },
+    {
+      "id": 18,
+      "time": 81.9,
+      "event": "leave",
+      "distance": 9294.760975681995,
+      "speed": 37.255185176359696
+    },
+    {
+      "id": 22,
+      "time": 82.4,
+      "event": "leave",
+      "distance": 9349.948112822314,
+      "speed": 28.977580834826867
+    },
+    {
+      "id": 19,
+      "time": 83.5,
+      "event": "leave",
+      "distance": 9472.721978457013,
+      "speed": 38.02888079727482
+    },
+    {
+      "id": 25,
+      "time": 85.1,
+      "actual": 10552.949659045824,
+      "nominal": 10552.949659045824,
+      "speed": 27.974822339213762,
+      "visible": true,
+      "player": 9711,
+      "event": "enter"
+    },
+    {
+      "id": 23,
+      "time": 85.6,
+      "event": "leave",
+      "distance": 9704.031264189507,
+      "speed": 19.011334895751336
+    },
+    {
+      "id": 7,
+      "time": 87.2,
+      "event": "leave",
+      "distance": 9877.374475699664,
+      "speed": 74.95810513242354
+    },
+    {
+      "id": 26,
+      "time": 90.6,
+      "event": "leave",
+      "distance": 10257.648365527508,
+      "speed": 17.81048438602334
+    },
+    {
+      "id": 20,
+      "time": 94.1,
+      "event": "leave",
+      "distance": 10638.742116015015,
+      "speed": 40.21998775295085
+    },
+    {
+      "id": 25,
+      "time": 96.1,
+      "event": "leave",
+      "distance": 10860.672704777242,
+      "speed": 27.974822339213762
+    },
+    {
+      "id": 28,
+      "time": 97.6,
+      "actual": 11931.08212800055,
+      "nominal": 11931.08212800055,
+      "speed": 32.83505613475831,
+      "visible": true,
+      "player": 11086,
+      "event": "enter"
+    },
+    {
+      "id": 31,
+      "time": 103.6,
+      "actual": 12594.457958335472,
+      "nominal": 12594.457958335472,
+      "speed": 25.479233399447466,
+      "visible": true,
+      "player": 11746,
+      "event": "enter"
+    },
+    {
+      "id": 29,
+      "time": 103.7,
+      "actual": 12599.121728434176,
+      "nominal": 12599.121728434176,
+      "speed": 30.518524951508475,
+      "visible": true,
+      "player": 11757,
+      "event": "enter"
+    },
+    {
+      "id": 30,
+      "time": 107.1,
+      "actual": 12978.723816196434,
+      "nominal": 12978.723816196434,
+      "speed": 32.67290585467385,
+      "visible": true,
+      "player": 12131,
+      "event": "enter"
+    },
+    {
+      "id": 28,
+      "time": 109.3,
+      "event": "leave",
+      "distance": 12315.252284777174,
+      "speed": 32.83505613475831
+    },
+    {
+      "id": 31,
+      "time": 114.4,
+      "event": "leave",
+      "distance": 12869.633679049475,
+      "speed": 25.479233399447466
+    },
+    {
+      "id": 29,
+      "time": 115.1,
+      "event": "leave",
+      "distance": 12947.03291288142,
+      "speed": 30.518524951508475
+    },
+    {
+      "id": 35,
+      "time": 117.3,
+      "actual": 14098.917076336607,
+      "nominal": 14098.917076336607,
+      "speed": 15.875160206471467,
+      "visible": true,
+      "player": 13253,
+      "event": "enter"
+    },
+    {
+      "id": 30,
+      "time": 118.9,
+      "event": "leave",
+      "distance": 13364.264105281538,
+      "speed": 32.67290585467385
+    },
+    {
+      "id": 36,
+      "time": 125.7,
+      "actual": 15024.597209078687,
+      "nominal": 15024.597209078687,
+      "speed": 21.788996663073906,
+      "visible": true,
+      "player": 14177,
+      "event": "enter"
+    },
+    {
+      "id": 35,
+      "time": 126.9,
+      "event": "leave",
+      "distance": 14251.318614318714,
+      "speed": 15.875160206471467
+    },
+    {
+      "id": 34,
+      "time": 134.1,
+      "actual": 15950.089039714076,
+      "nominal": 15950.089039714076,
+      "speed": 28.055837434820003,
+      "visible": true,
+      "player": 15101,
+      "event": "enter"
+    },
+    {
+      "id": 27,
+      "time": 135.7,
+      "actual": 16124.843640158806,
+      "nominal": 16124.843640158806,
+      "speed": 54.82420099821562,
+      "visible": true,
+      "player": 15276.999999999998,
+      "event": "enter"
+    },
+    {
+      "id": 36,
+      "time": 136,
+      "event": "leave",
+      "distance": 15249.023874708328,
+      "speed": 21.788996663073906
+    },
+    {
+      "id": 38,
+      "time": 144.9,
+      "actual": 17135.42116459459,
+      "nominal": 17135.42116459459,
+      "speed": 30.585934107916223,
+      "visible": true,
+      "player": 16289,
+      "event": "enter"
+    },
+    {
+      "id": 34,
+      "time": 145.2,
+      "event": "leave",
+      "distance": 16261.5088352406,
+      "speed": 28.055837434820003
+    },
+    {
+      "id": 37,
+      "time": 147.7,
+      "actual": 17444.41898766866,
+      "nominal": 17444.41898766866,
+      "speed": 34.595390079387776,
+      "visible": true,
+      "player": 16597,
+      "event": "enter"
+    },
+    {
+      "id": 27,
+      "time": 152.2,
+      "event": "leave",
+      "distance": 17029.442956629497,
+      "speed": 54.82420099821562
+    },
+    {
+      "id": 48,
+      "time": 154.1,
+      "actual": 18147.337570390962,
+      "nominal": 18147.337570390962,
+      "speed": 14.372526310358403,
+      "visible": true,
+      "player": 17301,
+      "event": "enter"
+    },
+    {
+      "id": 38,
+      "time": 156.3,
+      "event": "leave",
+      "distance": 17484.10081342479,
+      "speed": 30.585934107916223
+    },
+    {
+      "id": 37,
+      "time": 159.8,
+      "event": "leave",
+      "distance": 17863.023207629198,
+      "speed": 34.595390079387776
+    },
+    {
+      "id": 48,
+      "time": 163.6,
+      "event": "leave",
+      "distance": 18283.876570339406,
+      "speed": 14.372526310358403
+    },
+    {
+      "id": 39,
+      "time": 165.2,
+      "actual": 19368.20494627011,
+      "nominal": 19368.20494627011,
+      "speed": 36.87332674421163,
+      "visible": true,
+      "player": 18522,
+      "event": "enter"
+    },
+    {
+      "id": 42,
+      "time": 169.5,
+      "actual": 19839.83819021882,
+      "nominal": 19839.83819021882,
+      "speed": 33.86755692901917,
+      "visible": true,
+      "player": 18995,
+      "event": "enter"
+    },
+    {
+      "id": 40,
+      "time": 169.6,
+      "actual": 19850.17221599155,
+      "nominal": 19850.17221599155,
+      "speed": 38.55743308991401,
+      "visible": true,
+      "player": 19006,
+      "event": "enter"
+    },
+    {
+      "id": 43,
+      "time": 171.9,
+      "actual": 20107.516838979907,
+      "nominal": 20107.516838979907,
+      "speed": 34.69365387637582,
+      "visible": true,
+      "player": 19259,
+      "event": "enter"
+    },
+    {
+      "id": 45,
+      "time": 173.7,
+      "actual": 20305.8953493429,
+      "nominal": 20305.8953493429,
+      "speed": 28.759771281814512,
+      "visible": true,
+      "player": 19457,
+      "event": "enter"
+    },
+    {
+      "id": 32,
+      "time": 175.9,
+      "actual": 20544.25056203275,
+      "nominal": 20544.25056203275,
+      "speed": 51.7908421855989,
+      "visible": true,
+      "player": 19699,
+      "event": "enter"
+    },
+    {
+      "id": 39,
+      "time": 177.6,
+      "event": "leave",
+      "distance": 19825.434197898285,
+      "speed": 36.87332674421163
+    },
+    {
+      "id": 41,
+      "time": 180.7,
+      "actual": 21075.684094156226,
+      "nominal": 21075.684094156226,
+      "speed": 42.78224866850198,
+      "visible": true,
+      "player": 20227,
+      "event": "enter"
+    },
+    {
+      "id": 42,
+      "time": 181.3,
+      "event": "leave",
+      "distance": 20230.422632061265,
+      "speed": 33.86755692901917
+    },
+    {
+      "id": 40,
+      "time": 182.3,
+      "event": "leave",
+      "distance": 20339.85161623351,
+      "speed": 38.55743308991401
+    },
+    {
+      "id": 46,
+      "time": 183.2,
+      "actual": 21347.13703986154,
+      "nominal": 21347.13703986154,
+      "speed": 29.975318375767934,
+      "visible": true,
+      "player": 20502,
+      "event": "enter"
+    },
+    {
+      "id": 43,
+      "time": 184,
+      "event": "leave",
+      "distance": 20527.310050884153,
+      "speed": 34.69365387637582
+    },
+    {
+      "id": 45,
+      "time": 184.9,
+      "event": "leave",
+      "distance": 20628.00478769917,
+      "speed": 28.759771281814512
+    },
+    {
+      "id": 57,
+      "time": 189.8,
+      "actual": 22076.307881076846,
+      "nominal": 22076.307881076846,
+      "speed": 18.407268359765617,
+      "visible": true,
+      "player": 21228,
+      "event": "enter"
+    },
+    {
+      "id": 32,
+      "time": 191.5,
+      "event": "leave",
+      "distance": 21352.187700127954,
+      "speed": 51.7908421855989
+    },
+    {
+      "id": 47,
+      "time": 192.2,
+      "actual": 22335.990784813624,
+      "nominal": 22335.990784813624,
+      "speed": 33.51662744599808,
+      "visible": true,
+      "player": 21492,
+      "event": "enter"
+    },
+    {
+      "id": 51,
+      "time": 194,
+      "actual": 22535.022849627923,
+      "nominal": 22535.022849627923,
+      "speed": 30.835242117367063,
+      "visible": true,
+      "player": 21690,
+      "event": "enter"
+    },
+    {
+      "id": 54,
+      "time": 194.1,
+      "actual": 22547.005049857427,
+      "nominal": 22547.005049857427,
+      "speed": 27.460778448342655,
+      "visible": true,
+      "player": 21701,
+      "event": "enter"
+    },
+    {
+      "id": 41,
+      "time": 194.2,
+      "event": "leave",
+      "distance": 21653.244451180828,
+      "speed": 42.78224866850198
+    },
+    {
+      "id": 50,
+      "time": 194.6,
+      "actual": 22600.658772621668,
+      "nominal": 22600.658772621668,
+      "speed": 31.349374988995905,
+      "visible": true,
+      "player": 21756,
+      "event": "enter"
+    },
+    {
+      "id": 46,
+      "time": 194.5,
+      "event": "leave",
+      "distance": 21685.858137507672,
+      "speed": 29.975318375767934
+    },
+    {
+      "id": 57,
+      "time": 199.7,
+      "event": "leave",
+      "distance": 22258.539837838565,
+      "speed": 18.407268359765617
+    },
+    {
+      "id": 33,
+      "time": 202.4,
+      "actual": 23463.29457843992,
+      "nominal": 23463.29457843992,
+      "speed": 59.263047239963065,
+      "visible": true,
+      "player": 22614,
+      "event": "enter"
+    },
+    {
+      "id": 47,
+      "time": 204,
+      "event": "leave",
+      "distance": 22731.486988676497,
+      "speed": 33.51662744599808
+    },
+    {
+      "id": 51,
+      "time": 204.9,
+      "event": "leave",
+      "distance": 22827.581457099477,
+      "speed": 27.460778448342655
+    },
+    {
+      "id": 51,
+      "time": 205.1,
+      "actual": 22877.294037130698,
+      "nominal": 22877.294037130698,
+      "speed": 30.835242117367063,
+      "visible": true,
+      "player": 22911,
+      "event": "reenter"
+    },
+    {
+      "id": 54,
+      "time": 205.1,
+      "event": "leave",
+      "distance": 22849.073612789143,
+      "speed": 27.460778448342655
+    },
+    {
+      "id": 51,
+      "time": 205.4,
+      "event": "leave",
+      "distance": 22886.544609765908,
+      "speed": 30.835242117367063
+    },
+    {
+      "id": 50,
+      "time": 206.1,
+      "event": "leave",
+      "distance": 22961.176584995213,
+      "speed": 31.349374988995905
+    },
+    {
+      "id": 58,
+      "time": 207.2,
+      "actual": 23986.95723449211,
+      "nominal": 23986.95723449211,
+      "speed": 25.852289402650463,
+      "visible": true,
+      "player": 23142,
+      "event": "enter"
+    },
+    {
+      "id": 53,
+      "time": 209.8,
+      "actual": 24272.20025776562,
+      "nominal": 24272.20025776562,
+      "speed": 33.843497858874294,
+      "visible": true,
+      "player": 23428,
+      "event": "enter"
+    },
+    {
+      "id": 56,
+      "time": 215.6,
+      "actual": 24909.357595516034,
+      "nominal": 24909.357595516034,
+      "speed": 29.566344030576552,
+      "visible": true,
+      "player": 24066,
+      "event": "enter"
+    },
+    {
+      "id": 33,
+      "time": 217.8,
+      "event": "leave",
+      "distance": 24244.991502160163,
+      "speed": 31.3560364777813
+    },
+    {
+      "id": 33,
+      "time": 218,
+      "actual": 24387.79811538334,
+      "nominal": 24387.79811538334,
+      "speed": 59.263047239963065,
+      "visible": true,
+      "player": 24330,
+      "event": "reenter"
+    },
+    {
+      "id": 58,
+      "time": 218,
+      "event": "leave",
+      "distance": 24266.161960040692,
+      "speed": 25.852289402650463
+    },
+    {
+      "id": 33,
+      "time": 220.4,
+      "event": "leave",
+      "distance": 24530.02942875923,
+      "speed": 59.263047239963065
+    },
+    {
+      "id": 52,
+      "time": 221,
+      "actual": 25504.770363129832,
+      "nominal": 25504.770363129832,
+      "speed": 40.266375589029245,
+      "visible": true,
+      "player": 24660,
+      "event": "enter"
+    },
+    {
+      "id": 24,
+      "time": 221.5,
+      "actual": 25562.094517896738,
+      "nominal": 25562.094517896738,
+      "speed": 78.7251371573398,
+      "visible": true,
+      "player": 24715,
+      "event": "enter"
+    },
+    {
+      "id": 53,
+      "time": 221.7,
+      "event": "leave",
+      "distance": 24674.937882286176,
+      "speed": 33.843497858874294
+    },
+    {
+      "id": 56,
+      "time": 226.8,
+      "event": "leave",
+      "distance": 25240.500648658446,
+      "speed": 29.566344030576552
+    },
+    {
+      "id": 52,
+      "time": 234,
+      "event": "leave",
+      "distance": 26028.23324578715,
+      "speed": 40.266375589029245
+    },
+    {
+      "id": 67,
+      "time": 234.8,
+      "actual": 27024.822599650775,
+      "nominal": 27024.822599650775,
+      "speed": 18.091943853586496,
+      "visible": true,
+      "player": 26178,
+      "event": "enter"
+    },
+    {
+      "id": 59,
+      "time": 242.5,
+      "actual": 27873.58062930889,
+      "nominal": 27873.58062930889,
+      "speed": 37.91943602134577,
+      "visible": true,
+      "player": 27025,
+      "event": "enter"
+    },
+    {
+      "id": 55,
+      "time": 242.5,
+      "actual": 27857.58062930889,
+      "nominal": 27873.030295854747,
+      "speed": 37.91943602134577,
+      "visible": true,
+      "player": 27025,
+      "event": "enter"
+    },
+    {
+      "id": 44,
+      "time": 244,
+      "actual": 28038.715674377978,
+      "nominal": 28038.715674377978,
+      "speed": 56.76494872896001,
+      "visible": true,
+      "player": 27190,
+      "event": "enter"
+    },
+    {
+      "id": 67,
+      "time": 244.7,
+      "event": "leave",
+      "distance": 27203.9328438012,
+      "speed": 18.091943853586496
+    },
+    {
+      "id": 62,
+      "time": 246.2,
+      "actual": 28276.88998070138,
+      "nominal": 28276.88998070138,
+      "speed": 27.52343506726902,
+      "visible": true,
+      "player": 27432,
+      "event": "enter"
+    },
+    {
+      "id": 71,
+      "time": 248.9,
+      "actual": 28576.688236466092,
+      "nominal": 28576.688236466092,
+      "speed": 17.142623373203808,
+      "visible": true,
+      "player": 27729,
+      "event": "enter"
+    },
+    {
+      "id": 24,
+      "time": 250.6,
+      "event": "leave",
+      "distance": 27852.996009175444,
+      "speed": 78.7251371573398
+    },
+    {
+      "id": 55,
+      "time": 254.9,
+      "event": "leave",
+      "distance": 28327.781635973468,
+      "speed": 37.91943602134577
+    },
+    {
+      "id": 55,
+      "time": 255.1,
+      "actual": 28387.186201110795,
+      "nominal": 28387.186201110795,
+      "speed": 40.806024226670466,
+      "visible": true,
+      "player": 28411,
+      "event": "reenter"
+    },
+    {
+      "id": 59,
+      "time": 255.1,
+      "event": "leave",
+      "distance": 28351.365523177734,
+      "speed": 37.91943602134577
+    },
+    {
+      "id": 63,
+      "time": 255.3,
+      "actual": 29275.750952226033,
+      "nominal": 29275.750952226033,
+      "speed": 27.87781994815709,
+      "visible": true,
+      "player": 28433,
+      "event": "enter"
+    },
+    {
+      "id": 55,
+      "time": 255.6,
+      "event": "leave",
+      "distance": 28407.589213224128,
+      "speed": 40.806024226670466
+    },
+    {
+      "id": 44,
+      "time": 257,
+      "event": "leave",
+      "distance": 28558.143079427886,
+      "speed": 27.52343506726902
+    },
+    {
+      "id": 44,
+      "time": 257.2,
+      "actual": 28788.01299760025,
+      "nominal": 28788.01299760025,
+      "speed": 56.76494872896001,
+      "visible": true,
+      "player": 28642,
+      "event": "reenter"
+    },
+    {
+      "id": 62,
+      "time": 257.2,
+      "event": "leave",
+      "distance": 28579.64776644134,
+      "speed": 27.52343506726902
+    },
+    {
+      "id": 71,
+      "time": 258.7,
+      "event": "leave",
+      "distance": 28744.685945523608,
+      "speed": 17.142623373203808
+    },
+    {
+      "id": 44,
+      "time": 261.1,
+      "event": "leave",
+      "distance": 29009.39629764314,
+      "speed": 56.76494872896001
+    },
+    {
+      "id": 63,
+      "time": 266.3,
+      "event": "leave",
+      "distance": 29582.406971655717,
+      "speed": 27.87781994815709
+    },
+    {
+      "id": 79,
+      "time": 268.8,
+      "actual": 30763.452267461766,
+      "nominal": 30763.452267461766,
+      "speed": 14.536314711181653,
+      "visible": true,
+      "player": 29918,
+      "event": "enter"
+    },
+    {
+      "id": 75,
+      "time": 275.5,
+      "actual": 31498.772262834143,
+      "nominal": 31498.772262834143,
+      "speed": 19.88514748065629,
+      "visible": true,
+      "player": 30655,
+      "event": "enter"
+    },
+    {
+      "id": 79,
+      "time": 278.3,
+      "event": "leave",
+      "distance": 30901.54725721803,
+      "speed": 14.536314711181653
+    },
+    {
+      "id": 68,
+      "time": 278.7,
+      "actual": 31851.76045291795,
+      "nominal": 31851.76045291795,
+      "speed": 29.802734427115258,
+      "visible": true,
+      "player": 31007,
+      "event": "enter"
+    },
+    {
+      "id": 61,
+      "time": 284,
+      "actual": 32434.388917688953,
+      "nominal": 32434.388917688953,
+      "speed": 43.22070876724966,
+      "visible": true,
+      "player": 31590,
+      "event": "enter"
+    },
+    {
+      "id": 75,
+      "time": 285.5,
+      "event": "leave",
+      "distance": 31697.623737640723,
+      "speed": 19.88514748065629
+    },
+    {
+      "id": 68,
+      "time": 290,
+      "event": "leave",
+      "distance": 32188.531351944464,
+      "speed": 29.802734427115258
+    },
+    {
+      "id": 80,
+      "time": 291.4,
+      "actual": 33249.816684222445,
+      "nominal": 33249.816684222445,
+      "speed": 17.638349881680266,
+      "visible": true,
+      "player": 32403.999999999996,
+      "event": "enter"
+    },
+    {
+      "id": 61,
+      "time": 297.6,
+      "event": "leave",
+      "distance": 33022.190556923546,
+      "speed": 43.22070876724966
+    },
+    {
+      "id": 80,
+      "time": 301.2,
+      "event": "leave",
+      "distance": 33422.67251306283,
+      "speed": 17.638349881680266
+    },
+    {
+      "id": 76,
+      "time": 303.2,
+      "actual": 34551.565531911896,
+      "nominal": 34551.565531911896,
+      "speed": 27.99035583577481,
+      "visible": true,
+      "player": 33702,
+      "event": "enter"
+    },
+    {
+      "id": 83,
+      "time": 308.1,
+      "actual": 35084.06727604665,
+      "nominal": 35084.06727604665,
+      "speed": 17.02175722392793,
+      "visible": true,
+      "player": 34241,
+      "event": "enter"
+    },
+    {
+      "id": 66,
+      "time": 310.8,
+      "actual": 35382.10934631332,
+      "nominal": 35382.10934631332,
+      "speed": 40.69622202498269,
+      "visible": true,
+      "player": 34538,
+      "event": "enter"
+    },
+    {
+      "id": 65,
+      "time": 311,
+      "actual": 35407.006726747524,
+      "nominal": 35407.006726747524,
+      "speed": 42.28148320334084,
+      "visible": true,
+      "player": 34560,
+      "event": "enter"
+    },
+    {
+      "id": 76,
+      "time": 314.3,
+      "event": "leave",
+      "distance": 34862.258481689176,
+      "speed": 27.99035583577481
+    },
+    {
+      "id": 70,
+      "time": 316.6,
+      "actual": 36025.849278141846,
+      "nominal": 36025.849278141846,
+      "speed": 37.119919661846424,
+      "visible": true,
+      "player": 35176,
+      "event": "enter"
+    },
+    {
+      "id": 83,
+      "time": 317.8,
+      "event": "leave",
+      "distance": 35249.17832111867,
+      "speed": 17.02175722392793
+    },
+    {
+      "id": 69,
+      "time": 323.2,
+      "actual": 36747.319856302194,
+      "nominal": 36747.319856302194,
+      "speed": 40.742723581691585,
+      "visible": true,
+      "player": 35902,
+      "event": "enter"
+    },
+    {
+      "id": 66,
+      "time": 323.9,
+      "event": "leave",
+      "distance": 35915.22985484081,
+      "speed": 40.69622202498269
+    },
+    {
+      "id": 65,
+      "time": 324.4,
+      "event": "leave",
+      "distance": 35973.57860167218,
+      "speed": 42.28148320334084
+    },
+    {
+      "id": 70,
+      "time": 329.1,
+      "event": "leave",
+      "distance": 36489.84827391503,
+      "speed": 37.119919661846424
+    },
+    {
+      "id": 88,
+      "time": 330.7,
+      "actual": 37571.50282246675,
+      "nominal": 37571.50282246675,
+      "speed": 21.218757225950764,
+      "visible": true,
+      "player": 36727,
+      "event": "enter"
+    },
+    {
+      "id": 81,
+      "time": 335.5,
+      "actual": 38103.92066561288,
+      "nominal": 38103.92066561288,
+      "speed": 29.64882468966405,
+      "visible": true,
+      "player": 37255,
+      "event": "enter"
+    },
+    {
+      "id": 94,
+      "time": 335.5,
+      "actual": 38100.29417040111,
+      "nominal": 38100.29417040111,
+      "speed": 16.609149935862256,
+      "visible": true,
+      "player": 37255,
+      "event": "enter"
+    },
+    {
+      "id": 69,
+      "time": 336.3,
+      "event": "leave",
+      "distance": 37281.04953522229,
+      "speed": 40.742723581691585
+    },
+    {
+      "id": 88,
+      "time": 340.9,
+      "event": "leave",
+      "distance": 37787.93414617136,
+      "speed": 21.218757225950764
+    },
+    {
+      "id": 86,
+      "time": 344.9,
+      "actual": 39136.39483152083,
+      "nominal": 39136.39483152083,
+      "speed": 25.165474186845433,
+      "visible": true,
+      "player": 38289,
+      "event": "enter"
+    },
+    {
+      "id": 94,
+      "time": 345.2,
+      "event": "leave",
+      "distance": 38261.40292477866,
+      "speed": 16.609149935862256
+    },
+    {
+      "id": 81,
+      "time": 346.8,
+      "event": "leave",
+      "distance": 38438.9523846059,
+      "speed": 29.64882468966405
+    },
+    {
+      "id": 99,
+      "time": 347.7,
+      "actual": 39446.16814249874,
+      "nominal": 39446.16814249874,
+      "speed": 15.829819071546403,
+      "visible": true,
+      "player": 38597,
+      "event": "enter"
+    },
+    {
+      "id": 77,
+      "time": 348.4,
+      "actual": 39519.84857255976,
+      "nominal": 39519.84857255976,
+      "speed": 38.49162864369443,
+      "visible": true,
+      "player": 38674,
+      "event": "enter"
+    },
+    {
+      "id": 64,
+      "time": 350.3,
+      "actual": 39728.46133056298,
+      "nominal": 39728.46133056298,
+      "speed": 50.015577635106936,
+      "visible": true,
+      "player": 38883,
+      "event": "enter"
+    },
+    {
+      "id": 96,
+      "time": 352.5,
+      "actual": 39968.422847498055,
+      "nominal": 39968.422847498055,
+      "speed": 18.757201340566905,
+      "visible": true,
+      "player": 39125,
+      "event": "enter"
+    },
+    {
+      "id": 98,
+      "time": 353.5,
+      "actual": 40077.2499468889,
+      "nominal": 40077.2499468889,
+      "speed": 18.718466703366072,
+      "visible": true,
+      "player": 39235,
+      "event": "enter"
+    },
+    {
+      "id": 86,
+      "time": 355.6,
+      "event": "leave",
+      "distance": 39405.66540532034,
+      "speed": 25.165474186845433
+    },
+    {
+      "id": 72,
+      "time": 357.3,
+      "actual": 40498.90697900992,
+      "nominal": 40498.90697900992,
+      "speed": 43.832393810347035,
+      "visible": true,
+      "player": 39653,
+      "event": "enter"
+    },
+    {
+      "id": 99,
+      "time": 357.4,
+      "event": "leave",
+      "distance": 39599.71738749243,
+      "speed": 15.829819071546403
+    },
+    {
+      "id": 101,
+      "time": 358.5,
+      "actual": 40631.03607267471,
+      "nominal": 40631.03607267471,
+      "speed": 16.44418204604234,
+      "visible": true,
+      "player": 39785,
+      "event": "enter"
+    },
+    {
+      "id": 107,
+      "time": 359.4,
+      "actual": 40733.089326770896,
+      "nominal": 40733.089326770896,
+      "speed": 13.970456368729678,
+      "visible": true,
+      "player": 39884,
+      "event": "enter"
+    },
+    {
+      "id": 77,
+      "time": 361.1,
+      "event": "leave",
+      "distance": 40008.69225633447,
+      "speed": 38.49162864369443
+    },
+    {
+      "id": 64,
+      "time": 362.2,
+      "event": "leave",
+      "distance": 40134.367700501476,
+      "speed": 18.757201340566905
+    },
+    {
+      "id": 64,
+      "time": 362.4,
+      "actual": 40333.64981994778,
+      "nominal": 40333.64981994778,
+      "speed": 50.015577635106936,
+      "visible": true,
+      "player": 40214,
+      "event": "reenter"
+    },
+    {
+      "id": 96,
+      "time": 362.4,
+      "event": "leave",
+      "distance": 40154.11914076959,
+      "speed": 18.757201340566905
+    },
+    {
+      "id": 98,
+      "time": 363.4,
+      "event": "leave",
+      "distance": 40262.562767252144,
+      "speed": 18.718466703366072
+    },
+    {
+      "id": 91,
+      "time": 363.6,
+      "actual": 41194.92509180191,
+      "nominal": 41194.92509180191,
+      "speed": 25.61234079087929,
+      "visible": true,
+      "player": 40346,
+      "event": "enter"
+    },
+    {
+      "id": 64,
+      "time": 365.4,
+      "event": "leave",
+      "distance": 40483.696552853085,
+      "speed": 50.015577635106936
+    },
+    {
+      "id": 87,
+      "time": 366.1,
+      "actual": 41467.48265457288,
+      "nominal": 41467.48265457288,
+      "speed": 29.942205294759738,
+      "visible": true,
+      "player": 40621,
+      "event": "enter"
+    },
+    {
+      "id": 72,
+      "time": 368,
+      "event": "leave",
+      "distance": 40771.255802112035,
+      "speed": 20.955836379800502
+    },
+    {
+      "id": 72,
+      "time": 368.2,
+      "actual": 40976.6800715427,
+      "nominal": 40976.6800715427,
+      "speed": 43.832393810347035,
+      "visible": true,
+      "player": 40852,
+      "event": "reenter"
+    },
+    {
+      "id": 101,
+      "time": 368.2,
+      "event": "leave",
+      "distance": 40790.54463852124,
+      "speed": 16.44418204604234
+    },
+    {
+      "id": 107,
+      "time": 368.9,
+      "event": "leave",
+      "distance": 40865.80866227352,
+      "speed": 13.970456368729678
+    },
+    {
+      "id": 72,
+      "time": 371,
+      "event": "leave",
+      "distance": 41099.41077421166,
+      "speed": 43.832393810347035
+    },
+    {
+      "id": 91,
+      "time": 374.4,
+      "event": "leave",
+      "distance": 41471.53837234367,
+      "speed": 25.61234079087929
+    },
+    {
+      "id": 87,
+      "time": 377.4,
+      "event": "leave",
+      "distance": 41805.829574403695,
+      "speed": 29.942205294759738
+    },
+    {
+      "id": 82,
+      "time": 377.7,
+      "actual": 42739.939406320045,
+      "nominal": 42739.939406320045,
+      "speed": 36.37646133914435,
+      "visible": true,
+      "player": 41897,
+      "event": "enter"
+    },
+    {
+      "id": 93,
+      "time": 380.6,
+      "actual": 43063.3528504026,
+      "nominal": 43063.3528504026,
+      "speed": 29.11175560309655,
+      "visible": true,
+      "player": 42216,
+      "event": "enter"
+    },
+    {
+      "id": 105,
+      "time": 381.6,
+      "actual": 43173.25492549222,
+      "nominal": 43173.25492549222,
+      "speed": 19.77226560637872,
+      "visible": true,
+      "player": 42326,
+      "event": "enter"
+    },
+    {
+      "id": 92,
+      "time": 385,
+      "actual": 43545.355024368604,
+      "nominal": 43545.355024368604,
+      "speed": 30.162355065759684,
+      "visible": true,
+      "player": 42700,
+      "event": "enter"
+    },
+    {
+      "id": 60,
+      "time": 387,
+      "actual": 43769.318756293505,
+      "nominal": 43769.318756293505,
+      "speed": 63.24367950049539,
+      "visible": true,
+      "player": 42920,
+      "event": "enter"
+    },
+    {
+      "id": 82,
+      "time": 390,
+      "event": "leave",
+      "distance": 43187.36988079146,
+      "speed": 36.37646133914435
+    },
+    {
+      "id": 93,
+      "time": 391.5,
+      "event": "leave",
+      "distance": 43353.00035499529,
+      "speed": 21.310757819064907
+    },
+    {
+      "id": 93,
+      "time": 391.7,
+      "actual": 43386.49333759697,
+      "nominal": 43386.49333759697,
+      "speed": 29.11175560309655,
+      "visible": true,
+      "player": 43437,
+      "event": "reenter"
+    },
+    {
+      "id": 105,
+      "time": 391.7,
+      "event": "leave",
+      "distance": 43370.49333759697,
+      "speed": 19.77226560637872
+    },
+    {
+      "id": 93,
+      "time": 391.8,
+      "event": "leave",
+      "distance": 43389.40451315728,
+      "speed": 29.11175560309655
+    },
+    {
+      "id": 92,
+      "time": 396.4,
+      "event": "leave",
+      "distance": 43889.20587211836,
+      "speed": 30.162355065759684
+    },
+    {
+      "id": 111,
+      "time": 398.2,
+      "actual": 44997.276057438896,
+      "nominal": 44997.276057438896,
+      "speed": 19.93307437450211,
+      "visible": true,
+      "player": 44152,
+      "event": "enter"
+    },
+    {
+      "id": 85,
+      "time": 405.9,
+      "actual": 45845.16771631286,
+      "nominal": 45845.16771631286,
+      "speed": 38.031937530225456,
+      "visible": true,
+      "player": 44999,
+      "event": "enter"
+    },
+    {
+      "id": 60,
+      "time": 406.5,
+      "event": "leave",
+      "distance": 45002.57050655307,
+      "speed": 63.24367950049539
+    },
+    {
+      "id": 111,
+      "time": 408.3,
+      "event": "leave",
+      "distance": 45198.600108621285,
+      "speed": 19.93307437450211
+    },
+    {
+      "id": 90,
+      "time": 414.5,
+      "actual": 46789.8450896998,
+      "nominal": 46789.8450896998,
+      "speed": 36.08718324071055,
+      "visible": true,
+      "player": 45945,
+      "event": "enter"
+    },
+    {
+      "id": 89,
+      "time": 415.7,
+      "actual": 46925.131577301625,
+      "nominal": 46925.131577301625,
+      "speed": 38.04427094324233,
+      "visible": true,
+      "player": 46077,
+      "event": "enter"
+    },
+    {
+      "id": 103,
+      "time": 417.1,
+      "actual": 47073.83878572538,
+      "nominal": 47073.83878572538,
+      "speed": 29.38203058632401,
+      "visible": true,
+      "player": 46231,
+      "event": "enter"
+    },
+    {
+      "id": 49,
+      "time": 417.4,
+      "actual": 47111.216899918596,
+      "nominal": 47111.216899918596,
+      "speed": 74.60529314250581,
+      "visible": true,
+      "player": 46264,
+      "event": "enter"
+    },
+    {
+      "id": 95,
+      "time": 417.5,
+      "actual": 47123.836254728056,
+      "nominal": 47123.836254728056,
+      "speed": 33.09989982258735,
+      "visible": true,
+      "player": 46275,
+      "event": "enter"
+    },
+    {
+      "id": 85,
+      "time": 418.5,
+      "event": "leave",
+      "distance": 46324.370129193645,
+      "speed": 38.031937530225456
+    },
+    {
+      "id": 116,
+      "time": 420.8,
+      "actual": 47484.29365553562,
+      "nominal": 47484.29365553562,
+      "speed": 20.18488306332276,
+      "visible": true,
+      "player": 46638,
+      "event": "enter"
+    },
+    {
+      "id": 90,
+      "time": 426.8,
+      "event": "leave",
+      "distance": 47233.71744356058,
+      "speed": 36.08718324071055
+    },
+    {
+      "id": 89,
+      "time": 428.3,
+      "event": "leave",
+      "distance": 47404.489391186624,
+      "speed": 38.04427094324233
+    },
+    {
+      "id": 103,
+      "time": 428.3,
+      "event": "leave",
+      "distance": 47402.91752829248,
+      "speed": 29.38203058632401
+    },
+    {
+      "id": 49,
+      "time": 429.1,
+      "event": "leave",
+      "distance": 47491.7950926702,
+      "speed": 33.09989982258735
+    },
+    {
+      "id": 49,
+      "time": 429.3,
+      "actual": 47999.01988831442,
+      "nominal": 47999.01988831442,
+      "speed": 74.60529314250581,
+      "visible": true,
+      "player": 47573,
+      "event": "reenter"
+    },
+    {
+      "id": 95,
+      "time": 429.3,
+      "event": "leave",
+      "distance": 47514.41507263472,
+      "speed": 33.09989982258735
+    },
+    {
+      "id": 116,
+      "time": 430.9,
+      "event": "leave",
+      "distance": 47688.160974475344,
+      "speed": 20.18488306332276
+    },
+    {
+      "id": 108,
+      "time": 435.5,
+      "actual": 49102.44505092708,
+      "nominal": 49102.44505092708,
+      "speed": 29.45908054502474,
+      "visible": true,
+      "player": 48255,
+      "event": "enter"
+    },
+    {
+      "id": 113,
+      "time": 443,
+      "actual": 49927.41969267823,
+      "nominal": 49927.41969267823,
+      "speed": 27.52550845778185,
+      "visible": true,
+      "player": 49080,
+      "event": "enter"
+    },
+    {
+      "id": 49,
+      "time": 443.1,
+      "event": "leave",
+      "distance": 49028.57293368082,
+      "speed": 74.60529314250581
+    },
+    {
+      "id": 108,
+      "time": 446.8,
+      "event": "leave",
+      "distance": 49435.3326610859,
+      "speed": 29.45908054502474
+    },
+    {
+      "id": 119,
+      "time": 447,
+      "actual": 50364.65190452989,
+      "nominal": 50364.65190452989,
+      "speed": 21.87833349065234,
+      "visible": true,
+      "player": 49520,
+      "event": "enter"
+    },
+    {
+      "id": 74,
+      "time": 447.3,
+      "actual": 50401.063486767525,
+      "nominal": 50401.063486767525,
+      "speed": 54.60568939290371,
+      "visible": true,
+      "player": 49553,
+      "event": "enter"
+    },
+    {
+      "id": 113,
+      "time": 454,
+      "event": "leave",
+      "distance": 50230.200285713654,
+      "speed": 27.52550845778185
+    },
+    {
+      "id": 119,
+      "time": 457.3,
+      "event": "leave",
+      "distance": 50589.99873948386,
+      "speed": 21.87833349065234
+    },
+    {
+      "id": 102,
+      "time": 460.5,
+      "actual": 51851.336240939774,
+      "nominal": 51851.336240939774,
+      "speed": 37.0773961395672,
+      "visible": true,
+      "player": 51005,
+      "event": "enter"
+    },
+    {
+      "id": 74,
+      "time": 463.7,
+      "event": "leave",
+      "distance": 51296.59679281141,
+      "speed": 54.60568939290371
+    },
+    {
+      "id": 133,
+      "time": 470.7,
+      "actual": 52968.91582495242,
+      "nominal": 52968.91582495242,
+      "speed": 16.18568923182061,
+      "visible": true,
+      "player": 52127,
+      "event": "enter"
+    },
+    {
+      "id": 121,
+      "time": 472.8,
+      "actual": 53205.622878658745,
+      "nominal": 53205.622878658745,
+      "speed": 26.47779272940372,
+      "visible": true,
+      "player": 52358,
+      "event": "enter"
+    },
+    {
+      "id": 104,
+      "time": 472.8,
+      "actual": 53189.622878658745,
+      "nominal": 53203.621302723725,
+      "speed": 26.47779272940372,
+      "visible": true,
+      "player": 52358,
+      "event": "enter"
+    },
+    {
+      "id": 102,
+      "time": 472.9,
+      "event": "leave",
+      "distance": 52311.09595307051,
+      "speed": 37.0773961395672
+    },
+    {
+      "id": 125,
+      "time": 476.2,
+      "actual": 53573.30818879508,
+      "nominal": 53573.30818879508,
+      "speed": 21.519139307525215,
+      "visible": true,
+      "player": 52732,
+      "event": "enter"
+    },
+    {
+      "id": 137,
+      "time": 476.4,
+      "actual": 53601.24499876673,
+      "nominal": 53601.24499876673,
+      "speed": 15.74537149992668,
+      "visible": true,
+      "player": 52754,
+      "event": "enter"
+    },
+    {
+      "id": 128,
+      "time": 477.8,
+      "actual": 53756.65323239195,
+      "nominal": 53756.65323239195,
+      "speed": 20.239657190136818,
+      "visible": true,
+      "player": 52908,
+      "event": "enter"
+    },
+    {
+      "id": 133,
+      "time": 480.3,
+      "event": "leave",
+      "distance": 53124.298441577586,
+      "speed": 16.18568923182061
+    },
+    {
+      "id": 127,
+      "time": 481.7,
+      "actual": 54186.566703229975,
+      "nominal": 54186.566703229975,
+      "speed": 21.048703990850804,
+      "visible": true,
+      "player": 53337,
+      "event": "enter"
+    },
+    {
+      "id": 104,
+      "time": 483.5,
+      "event": "leave",
+      "distance": 53472.93526086354,
+      "speed": 28.50727507005587
+    },
+    {
+      "id": 104,
+      "time": 483.7,
+      "actual": 53626.517994176946,
+      "nominal": 53626.517994176946,
+      "speed": 38.79786160121309,
+      "visible": true,
+      "player": 53557,
+      "event": "reenter"
+    },
+    {
+      "id": 109,
+      "time": 483.8,
+      "actual": 54412.02691291804,
+      "nominal": 54412.02691291804,
+      "speed": 37.38967129708423,
+      "visible": true,
+      "player": 53568,
+      "event": "enter"
+    },
+    {
+      "id": 121,
+      "time": 483.7,
+      "event": "leave",
+      "distance": 53494.23081940942,
+      "speed": 26.47779272940372
+    },
+    {
+      "id": 140,
+      "time": 483.9,
+      "actual": 54425.51489217016,
+      "nominal": 54425.51489217016,
+      "speed": 16.90184166590269,
+      "visible": true,
+      "player": 53579,
+      "event": "enter"
+    },
+    {
+      "id": 104,
+      "time": 485.5,
+      "event": "leave",
+      "distance": 53696.3541450591,
+      "speed": 38.79786160121309
+    },
+    {
+      "id": 137,
+      "time": 486,
+      "event": "leave",
+      "distance": 53752.40056516618,
+      "speed": 15.74537149992668
+    },
+    {
+      "id": 125,
+      "time": 486.4,
+      "event": "leave",
+      "distance": 53792.803409731954,
+      "speed": 21.519139307525215
+    },
+    {
+      "id": 128,
+      "time": 487.9,
+      "event": "leave",
+      "distance": 53961.073770012445,
+      "speed": 20.239657190136818
+    },
+    {
+      "id": 126,
+      "time": 488.2,
+      "actual": 54898.32937666665,
+      "nominal": 54898.32937666665,
+      "speed": 23.604274188013125,
+      "visible": true,
+      "player": 54052,
+      "event": "enter"
+    },
+    {
+      "id": 135,
+      "time": 491.7,
+      "actual": 55279.91337712148,
+      "nominal": 55279.91337712148,
+      "speed": 19.98071047451554,
+      "visible": true,
+      "player": 54437,
+      "event": "enter"
+    },
+    {
+      "id": 127,
+      "time": 491.9,
+      "event": "leave",
+      "distance": 54401.26348393677,
+      "speed": 21.048703990850804
+    },
+    {
+      "id": 140,
+      "time": 493.6,
+      "event": "leave",
+      "distance": 54589.46275632934,
+      "speed": 16.90184166590269
+    },
+    {
+      "id": 109,
+      "time": 496.3,
+      "event": "leave",
+      "distance": 54879.39780413129,
+      "speed": 37.38967129708423
+    },
+    {
+      "id": 126,
+      "time": 498.7,
+      "event": "leave",
+      "distance": 55146.17425564104,
+      "speed": 23.604274188013125
+    },
+    {
+      "id": 135,
+      "time": 501.7,
+      "event": "leave",
+      "distance": 55479.720481866745,
+      "speed": 19.98071047451554
+    },
+    {
+      "id": 122,
+      "time": 505.7,
+      "actual": 56823.07572213913,
+      "nominal": 56823.07572213913,
+      "speed": 30.680007827080164,
+      "visible": true,
+      "player": 55977,
+      "event": "enter"
+    },
+    {
+      "id": 132,
+      "time": 512.5,
+      "actual": 57572.43660462696,
+      "nominal": 57572.43660462696,
+      "speed": 24.67544019940154,
+      "visible": true,
+      "player": 56725,
+      "event": "enter"
+    },
+    {
+      "id": 150,
+      "time": 515.2,
+      "actual": 57862.6090940264,
+      "nominal": 57862.6090940264,
+      "speed": 15.552771502148566,
+      "visible": true,
+      "player": 57022.00000000001,
+      "event": "enter"
+    },
+    {
+      "id": 122,
+      "time": 517.1,
+      "event": "leave",
+      "distance": 57172.82781136805,
+      "speed": 30.680007827080164
+    },
+    {
+      "id": 130,
+      "time": 523.1,
+      "actual": 58738.85609840297,
+      "nominal": 58738.85609840297,
+      "speed": 26.54460085808144,
+      "visible": true,
+      "player": 57891,
+      "event": "enter"
+    },
+    {
+      "id": 73,
+      "time": 523.2,
+      "actual": 58748.5292049963,
+      "nominal": 58748.5292049963,
+      "speed": 63.769057292180754,
+      "visible": true,
+      "player": 57902.00000000001,
+      "event": "enter"
+    },
+    {
+      "id": 132,
+      "time": 523.1,
+      "event": "leave",
+      "distance": 57833.99627074072,
+      "speed": 24.67544019940154
+    },
+    {
+      "id": 150,
+      "time": 524.7,
+      "event": "leave",
+      "distance": 58010.3604232965,
+      "speed": 15.552771502148566
+    },
+    {
+      "id": 141,
+      "time": 530.2,
+      "actual": 59516.10820488176,
+      "nominal": 59516.10820488176,
+      "speed": 24.089974966934985,
+      "visible": true,
+      "player": 58672.00000000001,
+      "event": "enter"
+    },
+    {
+      "id": 130,
+      "time": 534,
+      "event": "leave",
+      "distance": 59028.19224775616,
+      "speed": 26.54460085808144
+    },
+    {
+      "id": 141,
+      "time": 540.7,
+      "event": "leave",
+      "distance": 59769.05294203441,
+      "speed": 24.089974966934985
+    },
+    {
+      "id": 73,
+      "time": 542.9,
+      "event": "leave",
+      "distance": 60004.77963365293,
+      "speed": 63.769057292180754
+    },
+    {
+      "id": 142,
+      "time": 546.4,
+      "actual": 61300.51876334018,
+      "nominal": 61300.51876334018,
+      "speed": 26.54738448198057,
+      "visible": true,
+      "player": 60454,
+      "event": "enter"
+    },
+    {
+      "id": 136,
+      "time": 550.5,
+      "actual": 61751.78899048088,
+      "nominal": 61751.78899048088,
+      "speed": 29.50744393650287,
+      "visible": true,
+      "player": 60905,
+      "event": "enter"
+    },
+    {
+      "id": 142,
+      "time": 557.3,
+      "event": "leave",
+      "distance": 61589.88525419359,
+      "speed": 26.54738448198057
+    },
+    {
+      "id": 129,
+      "time": 560.2,
+      "actual": 62817.935203142566,
+      "nominal": 62817.935203142566,
+      "speed": 32.13318255988674,
+      "visible": true,
+      "player": 61972.00000000001,
+      "event": "enter"
+    },
+    {
+      "id": 157,
+      "time": 561.6,
+      "actual": 62973.27366251871,
+      "nominal": 62973.27366251871,
+      "speed": 21.80600724273568,
+      "visible": true,
+      "player": 62126,
+      "event": "enter"
+    },
+    {
+      "id": 136,
+      "time": 561.8,
+      "event": "leave",
+      "distance": 62085.22310696347,
+      "speed": 29.50744393650287
+    },
+    {
+      "id": 123,
+      "time": 563.8,
+      "actual": 63214.00788458834,
+      "nominal": 63214.00788458834,
+      "speed": 36.30222877287047,
+      "visible": true,
+      "player": 62367.99999999999,
+      "event": "enter"
+    },
+    {
+      "id": 151,
+      "time": 563.8,
+      "actual": 63211.30509298337,
+      "nominal": 63211.30509298337,
+      "speed": 23.60886973813952,
+      "visible": true,
+      "player": 62367.99999999999,
+      "event": "enter"
+    },
+    {
+      "id": 145,
+      "time": 564,
+      "actual": 63237.083249872085,
+      "nominal": 63237.083249872085,
+      "speed": 26.71201817477898,
+      "visible": true,
+      "player": 62390,
+      "event": "enter"
+    },
+    {
+      "id": 134,
+      "time": 564.7,
+      "actual": 63309.85067090294,
+      "nominal": 63309.85067090294,
+      "speed": 31.710635205834276,
+      "visible": true,
+      "player": 62467.00000000001,
+      "event": "enter"
+    },
+    {
+      "id": 169,
+      "time": 566.5,
+      "actual": 63506.84784113077,
+      "nominal": 63506.84784113077,
+      "speed": 14.913418381992313,
+      "visible": true,
+      "player": 62665,
+      "event": "enter"
+    },
+    {
+      "id": 129,
+      "time": 571.8,
+      "event": "leave",
+      "distance": 63190.68012083745,
+      "speed": 32.13318255988674
+    },
+    {
+      "id": 157,
+      "time": 571.9,
+      "event": "leave",
+      "distance": 63197.87553711915,
+      "speed": 21.80600724273568
+    },
+    {
+      "id": 151,
+      "time": 574.3,
+      "event": "leave",
+      "distance": 63459.19822523394,
+      "speed": 23.60886973813952
+    },
+    {
+      "id": 145,
+      "time": 574.9,
+      "event": "leave",
+      "distance": 63528.24424797728,
+      "speed": 26.71201817477898
+    },
+    {
+      "id": 139,
+      "time": 575.1,
+      "actual": 64456.83767507819,
+      "nominal": 64456.83767507819,
+      "speed": 31.749223664842752,
+      "visible": true,
+      "player": 63611,
+      "event": "enter"
+    },
+    {
+      "id": 123,
+      "time": 575.7,
+      "event": "leave",
+      "distance": 63612.05129024503,
+      "speed": 14.913418381992313
+    },
+    {
+      "id": 123,
+      "time": 575.9,
+      "actual": 63653.264852740074,
+      "nominal": 63653.264852740074,
+      "speed": 36.30222877287047,
+      "visible": true,
+      "player": 63699,
+      "event": "reenter"
+    },
+    {
+      "id": 134,
+      "time": 575.8,
+      "event": "leave",
+      "distance": 63629.54263208323,
+      "speed": 17.680420358260527
+    },
+    {
+      "id": 134,
+      "time": 576,
+      "actual": 63668.180848728865,
+      "nominal": 63668.180848728865,
+      "speed": 31.710635205834276,
+      "visible": true,
+      "player": 63710,
+      "event": "reenter"
+    },
+    {
+      "id": 169,
+      "time": 575.9,
+      "event": "leave",
+      "distance": 63637.264852740074,
+      "speed": 14.913418381992313
+    },
+    {
+      "id": 123,
+      "time": 576,
+      "event": "leave",
+      "distance": 63652.180848728865,
+      "speed": 31.710635205834276
+    },
+    {
+      "id": 134,
+      "time": 576.2,
+      "event": "leave",
+      "distance": 63674.52297577003,
+      "speed": 31.710635205834276
+    },
+    {
+      "id": 152,
+      "time": 577.6,
+      "actual": 64734.79130113622,
+      "nominal": 64734.79130113622,
+      "speed": 25.594466495870922,
+      "visible": true,
+      "player": 63886,
+      "event": "enter"
+    },
+    {
+      "id": 100,
+      "time": 579.8,
+      "actual": 64974.75189468218,
+      "nominal": 64974.75189468218,
+      "speed": 53.46036433475092,
+      "visible": true,
+      "player": 64127.99999999999,
+      "event": "enter"
+    },
+    {
+      "id": 171,
+      "time": 586.6,
+      "actual": 65719.08235030642,
+      "nominal": 65719.08235030642,
+      "speed": 18.03917269118958,
+      "visible": true,
+      "player": 64876,
+      "event": "enter"
+    },
+    {
+      "id": 139,
+      "time": 586.7,
+      "event": "leave",
+      "distance": 64825.12866959067,
+      "speed": 31.749223664842752
+    },
+    {
+      "id": 152,
+      "time": 588.4,
+      "event": "leave",
+      "distance": 65011.211539291726,
+      "speed": 25.594466495870922
+    },
+    {
+      "id": 153,
+      "time": 591.2,
+      "actual": 66228.62531965655,
+      "nominal": 66228.62531965655,
+      "speed": 27.446540507500888,
+      "visible": true,
+      "player": 65382.00000000001,
+      "event": "enter"
+    },
+    {
+      "id": 146,
+      "time": 592.9,
+      "actual": 66411.77783088172,
+      "nominal": 66411.77783088172,
+      "speed": 30.693184330205742,
+      "visible": true,
+      "player": 65569,
+      "event": "enter"
+    },
+    {
+      "id": 100,
+      "time": 595.9,
+      "event": "leave",
+      "distance": 65835.46376047152,
+      "speed": 53.46036433475092
+    },
+    {
+      "id": 171,
+      "time": 596.4,
+      "event": "leave",
+      "distance": 65895.86624268023,
+      "speed": 18.03917269118958
+    },
+    {
+      "id": 164,
+      "time": 598.4,
+      "actual": 67015.7573530498,
+      "nominal": 67015.7573530498,
+      "speed": 22.20990904736229,
+      "visible": true,
+      "player": 66174,
+      "event": "enter"
+    },
+    {
+      "id": 124,
+      "time": 599.4,
+      "actual": 67132.10438236757,
+      "nominal": 67132.10438236757,
+      "speed": 40.603768943886585,
+      "visible": true,
+      "player": 66284,
+      "event": "enter"
+    }
+  ]
+}

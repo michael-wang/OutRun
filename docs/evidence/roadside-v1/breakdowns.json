@@ -1,0 +1,125 @@
+[
+  {
+    "seed": 1,
+    "recipes": [
+      {
+        "id": 100000,
+        "type": 0,
+        "distance": 12750,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": 1
+      },
+      {
+        "id": 100001,
+        "type": 0,
+        "distance": 29425,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": 1
+      },
+      {
+        "id": 100002,
+        "type": 0,
+        "distance": 42525,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": -1
+      },
+      {
+        "id": 100003,
+        "type": 0,
+        "distance": 60225,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": -1
+      }
+    ]
+  },
+  {
+    "seed": 2,
+    "recipes": [
+      {
+        "id": 100000,
+        "type": 0,
+        "distance": 7125,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": -1
+      },
+      {
+        "id": 100001,
+        "type": 0,
+        "distance": 28400,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": -1
+      },
+      {
+        "id": 100002,
+        "type": 0,
+        "distance": 48075,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": -1
+      },
+      {
+        "id": 100003,
+        "type": 0,
+        "distance": 64575,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": -1
+      }
+    ]
+  },
+  {
+    "seed": 7,
+    "recipes": [
+      {
+        "id": 100000,
+        "type": 0,
+        "distance": 12500,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": -1
+      },
+      {
+        "id": 100001,
+        "type": 0,
+        "distance": 29500,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": 1
+      },
+      {
+        "id": 100002,
+        "type": 0,
+        "distance": 46050,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": 1
+      },
+      {
+        "id": 100003,
+        "type": 0,
+        "distance": 62075,
+        "speed": 0,
+        "group": -1,
+        "stationary": true,
+        "stopSide": 1
+      }
+    ]
+  }
+]

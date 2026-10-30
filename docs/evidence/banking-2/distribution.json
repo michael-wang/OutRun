@@ -1,0 +1,150 @@
+[
+  {
+    "seed": 1,
+    "typicalNonCityCurveMedian": 7.1070497583348535,
+    "typicalNonCityCurveP90": 14.997223610283601,
+    "maximum": 23,
+    "meaningfulCurvesAtLeast6Degrees": 0.647883295194508,
+    "flatFraction": 0.3236231884057971,
+    "showcases": 3,
+    "bankedStraights": 2,
+    "features": [
+      {
+        "kind": "showcase",
+        "start": 3019.75,
+        "end": 3425.5,
+        "ramp": 109.55250000000001,
+        "degrees": -21
+      },
+      {
+        "kind": "showcase",
+        "start": 24672,
+        "end": 25180.5,
+        "ramp": 137.29500000000002,
+        "degrees": 23
+      },
+      {
+        "kind": "straight",
+        "start": 29122,
+        "end": 29472,
+        "ramp": 87.5,
+        "degrees": 5
+      },
+      {
+        "kind": "showcase",
+        "start": 45507,
+        "end": 45988,
+        "ramp": 129.87,
+        "degrees": -20
+      },
+      {
+        "kind": "straight",
+        "start": 64580,
+        "end": 65130,
+        "ramp": 100,
+        "degrees": -6
+      }
+    ]
+  },
+  {
+    "seed": 2,
+    "typicalNonCityCurveMedian": 7.5217706618055695,
+    "typicalNonCityCurveP90": 14.999999999999998,
+    "maximum": 24,
+    "meaningfulCurvesAtLeast6Degrees": 0.6800920598388953,
+    "flatFraction": 0.3288405797101449,
+    "showcases": 4,
+    "bankedStraights": 2,
+    "features": [
+      {
+        "kind": "showcase",
+        "start": 650,
+        "end": 1147.5,
+        "ramp": 134.32500000000002,
+        "degrees": 22
+      },
+      {
+        "kind": "showcase",
+        "start": 22161,
+        "end": 22564.5,
+        "ramp": 108.94500000000001,
+        "degrees": 24
+      },
+      {
+        "kind": "straight",
+        "start": 30369,
+        "end": 30719,
+        "ramp": 87.5,
+        "degrees": 6
+      },
+      {
+        "kind": "showcase",
+        "start": 35336,
+        "end": 35773.75,
+        "ramp": 118.19250000000001,
+        "degrees": -21
+      },
+      {
+        "kind": "showcase",
+        "start": 46823.5,
+        "end": 47244.75,
+        "ramp": 113.73750000000001,
+        "degrees": 23
+      },
+      {
+        "kind": "straight",
+        "start": 64387,
+        "end": 64937,
+        "ramp": 100,
+        "degrees": 7
+      }
+    ]
+  },
+  {
+    "seed": 7,
+    "typicalNonCityCurveMedian": 7.23018882912962,
+    "typicalNonCityCurveP90": 14.999999999999998,
+    "maximum": 24,
+    "meaningfulCurvesAtLeast6Degrees": 0.6890540154329808,
+    "flatFraction": 0.3234782608695652,
+    "showcases": 3,
+    "bankedStraights": 2,
+    "features": [
+      {
+        "kind": "showcase",
+        "start": 2651,
+        "end": 3062.25,
+        "ramp": 111.03750000000001,
+        "degrees": 22
+      },
+      {
+        "kind": "straight",
+        "start": 12324,
+        "end": 12774,
+        "ramp": 100,
+        "degrees": 7
+      },
+      {
+        "kind": "showcase",
+        "start": 20763.75,
+        "end": 21225,
+        "ramp": 124.53750000000001,
+        "degrees": 24
+      },
+      {
+        "kind": "straight",
+        "start": 45761,
+        "end": 46311,
+        "ramp": 100,
+        "degrees": -4
+      },
+      {
+        "kind": "showcase",
+        "start": 46936.25,
+        "end": 47436.5,
+        "ramp": 135.0675,
+        "degrees": -21
+      }
+    ]
+  }
+]

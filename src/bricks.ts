@@ -29,7 +29,7 @@ const laneProfiles:readonly (readonly LaneKnot[])[]=[
 // Technical evidence: docs/V0.7A1_HANDOFF.md and docs/evidence/v0.7a1/. Human votes are separate.
 export const BRICKS:ChallengeBrick[]=definitions.map(([name,intent,emotionalRole,sceneryAct,entrySpeed,roadWidth,profile,elevation],i)=>{
  const nominalDuration=profile.reduce((sum,p)=>sum+p[0],0);
- return {id:`BRK-0${i+1}`,revision:2,name,intent,emotionalRole,sceneryAct,seed:7101+i*97,referenceSpeed:REFERENCE_KMH,entrySpeed,requiredSteerProfile:profile,nominalDuration,length:nominalDuration*REFERENCE_TRAVEL,roadWidth:laneProfiles[i][0][1]*LANE_WIDTH,lanes:laneProfiles[i],elevation,
+ return {id:`BRK-0${i+1}`,revision:3,name,intent,emotionalRole,sceneryAct,seed:7101+i*97,referenceSpeed:REFERENCE_KMH,entrySpeed,requiredSteerProfile:profile,nominalDuration,length:nominalDuration*REFERENCE_TRAVEL,roadWidth:laneProfiles[i][0][1]*LANE_WIDTH,lanes:laneProfiles[i],elevation,
  entry:'Straight, zero grade, centered car; three or more seconds to prepare.',exit:'Straight relief, zero grade, explicit completion before the road buffer.',warning:{leadMeters:300,text:i===3||i===7?'BRAKE · 180 km/h':i===2?'CREST · BEND AHEAD':'FOLLOW THE ROAD'},tags:[emotionalRole,sceneryAct===0?'coast':sceneryAct===1?'canyon':'city'],antiAdjacency:i===3||i===7?['technical','blind-crest']:[],autoValidation:'PASS'};
 });
 export const BRICK_START=350;

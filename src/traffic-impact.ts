@@ -1,19 +1,19 @@
 import type {DrivingState} from './handling';
-export interface TrafficCollision {actorId:number;type:number;kind:'side'|'rear';side:number;distance:number;lateral:number;severity:number}
+export interface TrafficCollision {actorId:number;type:number;kind:'side'|'rear';side:number;distance:number;lateral:number;severity:number;relativeSpeed?:number}
 /** Short road-space impulse layered after the unchanged steering integrator. */
 export class TrafficImpact {
  velocity=0;yaw=0;roll=0;slide=0;flash=0;event?:TrafficCollision;
  reset(){this.velocity=this.yaw=this.roll=this.slide=this.flash=0;this.event=undefined;}
  kick(s:DrivingState,event:TrafficCollision){
   this.event=event;const hard=event.kind==='rear',v=event.severity;
-  s.speed*=1-(hard?.15+.35*v:.04+.14*v);
-  this.velocity=event.side*(hard?4+4*v:2.2+3*v);
+  const heavy=event.type===1||event.type===2;s.speed*=1-(hard?(.18+.4*v)*(heavy?1.08:.9):.04+.16*v);
+  this.velocity=event.side*(hard?4+6*v:2.2+3.5*v);
   this.flash=.12+.12*v;
  }
  update(s:DrivingState,dt:number,half:number){
   if(dt<=0)return;const old=s.lateral,decay=Math.exp(-dt/.4);
   if(Math.abs(this.velocity)>.001)s.lateral=Math.max(-half-1.1,Math.min(half+1.1,s.lateral+this.velocity*.4*(1-decay)));
-  this.slide=Math.abs(s.lateral-old)/dt;this.velocity*=decay;const follow=1-Math.exp(-dt/.07);this.yaw+=(-Math.max(-.24,Math.min(.24,this.velocity*.06))-this.yaw)*follow;this.roll+=(Math.max(-.12,Math.min(.12,this.velocity*.025))-this.roll)*follow;this.flash=Math.max(0,this.flash-dt);
+  this.slide=Math.abs(s.lateral-old)/dt;this.velocity*=decay;const follow=1-Math.exp(-dt/.07);this.yaw+=(-Math.max(-.30,Math.min(.30,this.velocity*.065))-this.yaw)*follow;this.roll+=(Math.max(-.12,Math.min(.12,this.velocity*.025))-this.roll)*follow;this.flash=Math.max(0,this.flash-dt);
  }
 }
 

@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {Traffic,TRAFFIC_TYPES} from '../src/traffic';
+import {Traffic,TRAFFIC_TYPES,trafficRecipe} from '../src/traffic';
 import {TrafficImpact,sweptContact} from '../src/traffic-impact';
 import {createState} from '../src/handling';
 import {SkidFeedback} from '../src/skid-feedback';
@@ -11,16 +11,16 @@ it('sweeps fast crossings and rejects clean overtakes',()=>{
 it('all four vehicle types keep real displacement, separate contact, recover and reset',()=>{
  for(let type=0;type<4;type++)for(const kind of ['side','rear']){
   const scene=new THREE.Scene(),traffic=new Traffic(scene,sample,()=>7,69000,1),motion=new TrafficImpact();
-  traffic.update(0,type===3?1700:500);const a=traffic.inspect().actors.find(a=>a.type===type)!;expect(a).toBeDefined();
+  traffic.update(0,trafficRecipe(1,69000).find(a=>a.type===type)!.distance-100);traffic.update(.001,trafficRecipe(1,69000).find(a=>a.type===type)!.distance-100);const a=traffic.inspect().actors.find(a=>a.type===type)!;expect(a).toBeDefined();
   const spec=TRAFFIC_TYPES[type],s={...createState(),speed:75,lateral:a.lateral+(kind==='side'?2:0),distance:a.distance-(kind==='side'?0:spec.length/2+2)};
   const event=traffic.hit(0,s,{distance:s.distance-(kind==='rear'?8:0),lateral:s.lateral+(kind==='side'?2:0)},.05)!;expect(event.kind).toBe(kind);motion.kick(s,event);const initialSpeed=s.speed;
-  let maxOffset=0,maxYaw=0,skid=false;const feedback=new SkidFeedback();
+  const events=[event];let maxOffset=0,maxYaw=0,skid=false;const feedback=new SkidFeedback();
   for(let i=1;i<=120;i++){
-   const previous={distance:s.distance,lateral:s.lateral};s.distance+=s.speed/60;motion.update(s,1/60,7);traffic.update(i/60,s.distance);traffic.hit(i/60,s,previous,1/60,1.55,2.8,motion.yaw);
+   const previous={distance:s.distance,lateral:s.lateral};s.distance+=s.speed/60;motion.update(s,1/60,7);traffic.update(i/60,s.distance);const next=traffic.hit(i/60,s,previous,1/60,1.55,2.8,motion.yaw);if(next){events.push(next);motion.kick(s,next);}
    const r=traffic.inspect().reactions.find(r=>r.id===a.id);if(r){maxOffset=Math.max(maxOffset,Math.abs(r.offset));maxYaw=Math.max(maxYaw,Math.abs(r.yaw));}
    skid ||= feedback.update(s.speed,0,1/60,0,0,motion.slide)>0;
   }
-  expect(initialSpeed).toBeLessThan(75);expect(maxOffset).toBeGreaterThan(.2);expect(maxYaw).toBeGreaterThan(.02);expect(traffic.inspect().impacts).toBe(1);if(kind==='rear')expect(skid).toBe(true);
+  expect(initialSpeed).toBeLessThan(75);expect(maxOffset).toBeGreaterThan(.2);expect(maxYaw).toBeGreaterThan(.02);expect(events.filter(e=>e.actorId===a.id).length,JSON.stringify(events)).toBe(1);if(kind==='rear')expect(skid).toBe(true);
   for(let i=121;i<900;i++)traffic.update(i/60,s.distance);
   expect(traffic.inspect().reactions.every(r=>Math.abs(r.offset)<.01)).toBe(true);
   traffic.update(20,12000);expect(traffic.inspect().reactions).toHaveLength(0);traffic.reset();motion.reset();expect(motion.velocity).toBe(0);expect(traffic.inspect().impacts).toBe(0);traffic.dispose();expect(scene.children).toHaveLength(0);
