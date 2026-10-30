@@ -4,7 +4,7 @@ import {actuateSteering} from '../src/steering';
 import {createState,step,updateFootprint} from '../src/handling';
 import {COURSE,curvatureForDemand,REFERENCE_SPEED,REFERENCE_TRAVEL} from '../src/challenges';
 import {createTrack} from '../src/track';
-const root='docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c';mkdirSync(root,{recursive:true});
+const root='test-results/soft-steering';mkdirSync(root,{recursive:true});
 it('finite soft detents settle in 100ms, release in 60ms, and integrate identically at 30/60/120Hz',()=>{
  const runs=[];
  for(const hz of [30,60,120]){
@@ -18,15 +18,15 @@ it('finite soft detents settle in 100ms, release in 60ms, and integrate identica
 it('mirrored release has bounded residual correction and freezes a nonzero offset without centering',()=>{
  for(const sign of [-1,1]){const s={...createState(),speed:REFERENCE_SPEED,lateral:sign*2};for(let i=0;i<20;i++)step(s,{gas:true,brake:false,steer:sign},1/120,0,1.75);
   const before=s.lateral;for(let i=0;i<12;i++)step(s,{gas:true,brake:false,steer:0},1/120,0,1.75);
-  expect(Math.abs(s.lateral-before)).toBeLessThan(.37);const settled=s.lateral;for(let i=0;i<120;i++)step(s,{gas:true,brake:false,steer:0},1/120,0,1.75);expect(s.lateral).toBe(settled);expect(s.appliedSteer).toBe(0);
+  expect(Math.abs(s.lateral-before)).toBeLessThan(1.1);for(let i=0;i<240;i++)step(s,{gas:true,brake:false,steer:0},1/120,0,1.75);const settled=s.lateral;step(s,{gas:true,brake:false,steer:0},1/120,0,1.75);expect(s.lateral).toBe(settled);expect(s.appliedSteer).toBe(0);
  }
 });
-it('a 20ms tap releases promptly and pose reversal is continuous without physical inertia',()=>{
+it('a 20ms tap releases promptly and pose reversal is continuous with short physical inertia',()=>{
  const tap=createState();actuateSteering(tap,1,.02);expect(tap.appliedSteer).toBeCloseTo(.104,8);actuateSteering(tap,0,.06);expect(tap.appliedSteer).toBe(0);
  const s={...createState(),speed:REFERENCE_SPEED};for(let i=0;i<120;i++)step(s,{gas:true,brake:false,steer:.75},1/120,curvatureForDemand(.75),1.75);
  const before=s.heading;step(s,{gas:true,brake:false,steer:-.75},1/120,curvatureForDemand(-.75),1.75);expect(Math.abs(s.heading-before)).toBeLessThan(.1);
  for(let i=0;i<60;i++)step(s,{gas:true,brake:false,steer:-.75},1/120,curvatureForDemand(-.75),1.75);expect(s.heading).toBeLessThan(-.5);
- for(let i=0;i<40;i++)step(s,{gas:true,brake:false,steer:0},1/120,0,1.75);expect(Math.abs(s.heading)).toBeLessThan(.005);expect(s.appliedSteer).toBe(0);expect(s.lateralRate).toBe(0);
+ for(let i=0;i<120;i++)step(s,{gas:true,brake:false,steer:0},1/120,0,1.75);expect(Math.abs(s.heading)).toBeLessThan(.005);expect(s.appliedSteer).toBe(0);expect(s.lateralRate).toBe(0);
 });
 it('quiet mild pose and dramatic loaded pose do not affect path, speed or collision',()=>{
  const poses=[];

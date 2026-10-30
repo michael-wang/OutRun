@@ -1,3 +1,4 @@
+import {CURVATURE_PER_STEER} from './challenges';
 import type {createTrack} from './track';
 export type BankStrength=0|4|10;
 export const BANK_SECTION={start:700,hold:860,release:1190,end:1350} as const;
@@ -8,3 +9,6 @@ export function bankPrototype(lab:string|null,id:string|undefined,value:string|n
 /** Preserve horizontal widths and centerline. The same cross-slope reaches shoulders,
  * barriers and scenery through their existing lateral sampling. No physics input changes. */
 export function bankTrack(track:ReturnType<typeof createTrack>,strength:BankStrength){if(!strength)return track;return {...track,sample:(d:number)=>{const p=track.sample(d);const angle=bankAngle(d,strength);if(angle)p.right.y=-Math.tan(angle);return p;}};}
+
+/** Authored curve intensity, not random per-chunk tilt. Gentle corrections stay flat. */
+export function generatedBank(curvature:number,weights:readonly number[]){const demand=Math.abs(curvature)/CURVATURE_PER_STEER;const cap=weights[0]*8+weights[1]*12+weights[2]*4;return Math.sign(curvature)*cap*Math.PI/180*smooth((demand-.12)/.88);}

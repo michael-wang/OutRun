@@ -2,7 +2,7 @@ import {curvatureKnots,elevationKnots,widthKnots,resolveL1,type CurvatureId,type
 import {REFERENCE_TRAVEL,CHALLENGES} from './challenges';
 import {createTrack} from './track';
 import {BRICK_START,type ChallengeBrick} from './bricks';
-export const L2_GENERATOR='v0.7C-r1',L2_CATALOG_VERSION='l2-lab-1';
+export const L2_GENERATOR='v0.7C-r2',L2_CATALOG_VERSION='l2-lab-1';
 export interface L2Candidate extends ChallengeBrick {
  world:'coast'|'canyon'|'city';contentFingerprint:string;generatorVersion:string;
  profiles:{curvature:{id:CurvatureId;parameters:CurveParameters};elevation:{id:ElevationId;parameters:ElevationParameters};width:{id:WidthId;parameters:WidthParameters}};
@@ -34,7 +34,7 @@ export const L2_CANDIDATES:L2Candidate[]=matrix.map(([c,e,w,sceneryAct,name,inte
  const to=(w==='W02'?(from===6?8:4):w==='W03'?2:w==='W04'?2:from) as 2|4|6|8;
  const profiles:L2Candidate['profiles']={curvature:{id:c,parameters:{effort,direction:i%2?-1:1,start:.5-span/2,end:.5+span/2,secondary:c==='C05'?.65:i%2?.7:1}},elevation:{id:e,parameters:{base:e==='E02'&&i!==0?210:16,amplitude:e==='E01'?0:e==='E06'?90:160,direction:i===0?1:-1,shelfStart:.32,shelfEnd:.68}},width:{id:w,parameters:{from,to,start:.2,end:.8}}};
  const cs=curvatureKnots(c,profiles.curvature.parameters),es=elevationKnots(e,profiles.elevation.parameters),ws=widthKnots(w,profiles.width.parameters);
- return {id:`L2-${String(i+1).padStart(3,'0')}`,revision:1,seed,name,intent,sceneryAct,world:['coast','canyon','city'][sceneryAct] as L2Candidate['world'],profiles,generatorVersion:L2_GENERATOR,contentFingerprint:fingerprint({profiles,seed,length,sceneryAct,generator:L2_GENERATOR}),nominalDuration,length,referenceSpeed:230,entrySpeed:230,roadWidth:from*3.5,lanes:ws.map(([t,v])=>[t*nominalDuration,v]),elevation:es.map(([t,v])=>[t*nominalDuration,v]),requiredSteerProfile:cs,emotionalRole:name,entry:'Straight approach',exit:'Straight relief and explicit finish',warning:{leadMeters:300,text:'READ THE ROAD'},tags:[c,e,w],antiAdjacency:[],autoValidation:'PASS'};
+ return {id:`L2-${String(i+1).padStart(3,'0')}`,revision:2,seed,name,intent,sceneryAct,world:['coast','canyon','city'][sceneryAct] as L2Candidate['world'],profiles,generatorVersion:L2_GENERATOR,contentFingerprint:fingerprint({profiles,seed,length,sceneryAct,generator:L2_GENERATOR}),nominalDuration,length,referenceSpeed:230,entrySpeed:230,roadWidth:from*3.5,lanes:ws.map(([t,v])=>[t*nominalDuration,v]),elevation:es.map(([t,v])=>[t*nominalDuration,v]),requiredSteerProfile:cs,emotionalRole:name,entry:'Straight approach',exit:'Straight relief and explicit finish',warning:{leadMeters:300,text:'READ THE ROAD'},tags:[c,e,w],antiAdjacency:[],autoValidation:'PASS'};
 });
 export function l2Sample(b:L2Candidate,distance:number){const p=b.profiles;return resolveL1(b.length,(distance-BRICK_START)/b.length,curvatureKnots(p.curvature.id,p.curvature.parameters),elevationKnots(p.elevation.id,p.elevation.parameters),widthKnots(p.width.id,p.width.parameters));}
 export function l2Course(b:L2Candidate){

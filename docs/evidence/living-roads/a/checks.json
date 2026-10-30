@@ -1,0 +1,67 @@
+{
+  "environment": "Edge 960x432 touch DPR2, 4x CPU slowdown, desktop GPU; not physical Pixel 8",
+  "samples": [
+    {
+      "seed": 1,
+      "distance": 3640,
+      "bank": -9.159638266107251,
+      "wheelGaps": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "trafficMaximumGap": 0.02989446801885265,
+      "seams": {
+        "chunks": 7,
+        "maxSeam": 0,
+        "maxTopError": 0.00048690769241730374,
+        "nonFinite": 0
+      }
+    },
+    {
+      "seed": 2,
+      "distance": 27360,
+      "bank": -12,
+      "wheelGaps": [
+        7.105427357601002e-15,
+        3.552713678800501e-15,
+        1.7763568394002505e-15,
+        5.329070518200751e-15
+      ],
+      "trafficMaximumGap": 0.04653093922527418,
+      "seams": {
+        "chunks": 7,
+        "maxSeam": 0,
+        "maxTopError": 0.0009767040930574713,
+        "nonFinite": 0
+      }
+    },
+    {
+      "seed": 7,
+      "distance": 15820,
+      "bank": 11.847047138644916,
+      "wheelGaps": [
+        -1.7763568394002505e-15,
+        0,
+        -1.7763568394002505e-15,
+        1.7763568394002505e-15
+      ],
+      "trafficMaximumGap": 0.02054445285443407,
+      "seams": {
+        "chunks": 7,
+        "maxSeam": 0,
+        "maxTopError": 0.0009747800833913644,
+        "nonFinite": 0
+      }
+    }
+  ],
+  "drive": {
+    "from": 3662.7397108534014,
+    "to": 4453.951927073521,
+    "minSettledFps": 59.98800239952016,
+    "maxWheelGap": 1.2789769243681803e-13,
+    "allReady": true
+  },
+  "errors": []
+}

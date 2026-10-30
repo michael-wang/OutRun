@@ -4,12 +4,13 @@ import {validatePilot,type Placement,type WorldName} from './pilot-composer';
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
-export const TRIP_VERSION='v0.9-r1';
+export const TRIP_VERSION='v0.9-r2';
 export interface TripCandidate extends StageCandidate {tripCode:string}
 function random(seed:number){let x=seed>>>0;return ()=>{x=(x+0x6d2b79f5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function hash(v:unknown){let h=2166136261;for(const c of JSON.stringify(v)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 /** Independent long-form recipe; only lightweight placement metadata is created here. */
-export function generateTrip(rawSeed:number):TripCandidate {
+export function generateTrip(rawSeed:number,revision:1|2=2):TripCandidate {
+ const version=revision===1?'v0.9-r1':TRIP_VERSION;
  const seed=(rawSeed>>>0)||1,rng=random(seed),pick=<T>(v:readonly T[])=>v[Math.floor(rng()*v.length)];
  const length=69000,baseHeight=45,baseLanes=4 as const,placements:Placement[]=[],beats:StageBeat[]=[],buffers:TransitionBuffer[]=[];
  const worlds:WorldName[]=['city','coast','canyon'];
@@ -39,7 +40,7 @@ export function generateTrip(rawSeed:number):TripCandidate {
   cursor=end;if(i<count-1){const next=cursor+gaps[i];buffers.push({startS:cursor,endS:next,role:i%8===5?'scenic':'connector'});cursor=next;}
  }
  buffers.push({startS:cursor,endS:length,role:'finish'});placements.sort((a,b)=>a.startS-b.startS);
- const tripCode=`TRIP-${TRIP_VERSION}-${seed.toString(36).toUpperCase()}-ALB1`,data={seed,length,placements,worldPhases,beats,buffers,baseHeight,baseLanes,generatorVersion:TRIP_VERSION};
- const result:TripCandidate={id:'ROAD-TRIP-10M',revision:1,name:'10-Minute Road Trip',intent:'A changing journey through city, coast and canyon.',emotionalRole:'journey',sceneryAct:2,seed,world:worldPhases[0].world,generatorVersion:TRIP_VERSION,contentFingerprint:hash(data),stageCode:tripCode,tripCode,beats,buffers,baseHeight,baseLanes,placements,worldPhases,referenceSpeed:230,entrySpeed:0,nominalDuration:length/REFERENCE_TRAVEL,length,roadWidth:baseLanes*LANE_WIDTH,lanes:[[0,4],[length/REFERENCE_TRAVEL,4]],elevation:[[0,baseHeight],[length/REFERENCE_TRAVEL,baseHeight]],requiredSteerProfile:[[0,0]],entry:'Standing start',exit:'Journey finish',warning:{leadMeters:300,text:'BRAKE · 180 km/h'},tags:['trip'],antiAdjacency:[],autoValidation:'PENDING'};
+ const tripCode=`TRIP-${version}-${seed.toString(36).toUpperCase()}-${revision===1?'ALB1':'ALB2'}`,data={seed,length,placements,worldPhases,beats,buffers,baseHeight,baseLanes,generatorVersion:version};
+ const result:TripCandidate={id:'ROAD-TRIP-10M',revision,name:'10-Minute Road Trip',intent:'A changing journey through city, coast and canyon.',emotionalRole:'journey',sceneryAct:2,seed,world:worldPhases[0].world,generatorVersion:version,contentFingerprint:hash(data),stageCode:tripCode,tripCode,beats,buffers,baseHeight,baseLanes,placements,worldPhases,referenceSpeed:230,entrySpeed:0,nominalDuration:length/REFERENCE_TRAVEL,length,roadWidth:baseLanes*LANE_WIDTH,lanes:[[0,4],[length/REFERENCE_TRAVEL,4]],elevation:[[0,baseHeight],[length/REFERENCE_TRAVEL,baseHeight]],requiredSteerProfile:[[0,0]],entry:'Standing start',exit:'Journey finish',warning:{leadMeters:300,text:'BRAKE · 180 km/h'},tags:['trip'],antiAdjacency:[],autoValidation:'PENDING'};
  validatePilot(result);return result;
 }

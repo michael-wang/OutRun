@@ -1,0 +1,18 @@
+import {test,expect} from '@playwright/test';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {stageReady} from './stage-ready';
+const root='docs/evidence/living-roads/a';
+test('generated banking multi-seed driving, inertia recovery and legacy code',async({browser})=>{
+ test.setTimeout(180000);mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width:960,height:432},deviceScaleFactor:2,isMobile:true,hasTouch:true}),page=await context.newPage(),errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true}));const cdp=await context.newCDPSession(page);await cdp.send('Emulation.setCPUThrottlingRate',{rate:4});const samples=[],rows=[];
+ for(const seed of [1,2,7]){
+ await page.goto(`/?seed=${seed}&perf=1`);await stageReady(page);await page.locator('#l2-play').tap();
+ const point=await page.evaluate(()=>{const g=(window as any).__drive,b=g.brick();for(let d=1000;d<b.length;d+=20){const p=g.sample(d),phase=b.worldPhases.find((x:any)=>d-350>=x.startS&&d-350<x.endS);if(Math.abs(p.bankDegrees)>7&&Math.abs(p.grade)<.2&&p.halfWidth>=7&&phase?.world==='canyon')return d;}return 3100;});
+ await page.evaluate(d=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:d,speed:65});},point);await stageReady(page);await page.waitForTimeout(1200);const sample=await page.evaluate(()=>{const g=(window as any).__drive;return {state:g.snapshot(),contacts:g.wheelContacts(),traffic:g.trafficContacts(),seams:g.supportAudit()};});samples.push({seed,point,...sample});await page.screenshot({path:`${root}/seed-${seed}.png`,scale:'css'});for(const w of sample.contacts)expect(Math.abs(w.gap??1)).toBeLessThan(.08);for(const w of sample.traffic??[])expect(Math.abs(w.gap??1)).toBeLessThan(.22);expect(sample.seams.maxSeam).toBeLessThan(.001);
+ if(seed!==1)continue;
+ await page.evaluate(()=>{const w=window as any;w.chunks=[];w.rec=new MediaRecorder(document.querySelector('canvas')!.captureStream(30),{mimeType:'video/webm;codecs=vp8'});w.rec.ondataavailable=(e:BlobEvent)=>w.chunks.push(e.data);w.rec.start();const g=w.__drive;g.manual(false);w.driver=setInterval(()=>{const s=g.snapshot();g.controls({gas:s.speed<65,brake:s.speed>66,steer:Math.max(-1,Math.min(1,s.requiredSteer-s.lateral*.12-s.lateralRate*.045))});},16);});
+ for(let i=0;i<40;i++){await page.waitForTimeout(200);rows.push(await page.evaluate(()=>{const g=(window as any).__drive;return {state:g.snapshot(),contacts:g.wheelContacts(),perf:g.perf(),ready:g.streaming().ready};}));}
+ const bytes=await page.evaluate(async()=>{const w=window as any;clearInterval(w.driver);w.__drive.manual(true);await new Promise<void>(r=>{w.rec.onstop=r;w.rec.stop();});return Array.from(new Uint8Array(await new Blob(w.chunks).arrayBuffer()));});writeFileSync(`${root}/drive.webm`,Buffer.from(bytes));
+ }
+ writeFileSync(`${root}/checks.json`,JSON.stringify({samples,rows,errors},null,2));for(const r of rows){expect(r.ready).toBe(true);for(const w of r.contacts)expect(Math.abs(w.gap??1)).toBeLessThan(.12);}expect(rows.slice(10).every(r=>r.perf.fps>=30)).toBe(true);
+ await page.locator('#pause').tap();await page.locator('#stage-seed').fill('TRIP-v0.9-r1-1-ALB1');await Promise.all([page.waitForURL(/revision=r1/),page.locator('#stage-load').tap()]);await stageReady(page);await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:3100,speed:65});});await stageReady(page);expect(await page.evaluate(()=>(window as any).__drive.snapshot().bankDegrees)).toBe(0);expect(errors).toEqual([]);await context.close();
+});
