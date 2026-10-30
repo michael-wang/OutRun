@@ -29,5 +29,5 @@ test('rapid window changes discard work outside the current route window',async(
  await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);for(const distance of [9500,2500,12500,350])g.reset({distance,speed:50});});
  await page.waitForFunction(()=>(window as any).__drive.streaming().ready);await page.waitForTimeout(500);
  const stream=await page.evaluate(()=>(window as any).__drive.streaming());expect(stream.error).toBe('');expect(stream.chunks.every((c:any)=>c.index<=5)).toBe(true);expect(stream.queued).toBe(0);expect(stream.retiring).toBe(0);expect(stream.history.some((e:any)=>e.kind==='dispose')).toBe(true);
- await page.goto('/?stage=1&seed=2');await page.waitForFunction(()=>(window as any).__drive?.streaming()?.ready);expect(await page.evaluate(()=>(window as any).__drive.brick().stageCode)).toBe('S01-v0.8.3-r1-2-ALB1');
+ await page.goto('/?stage=1&seed=2');await page.waitForFunction(()=>(window as any).__drive?.streaming()?.ready);expect(await page.evaluate(()=>(window as any).__drive.brick().stageCode)).toBe('S01-v0.8.3-r2-2-ALB2');
 });

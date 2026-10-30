@@ -15,7 +15,7 @@ export class StreamedScene {
  readonly chunkLength=1000;readonly ahead=5000;readonly behind=1000;
  readonly groups:Record<string,THREE.Group>={};
  readonly history:{kind:string;index:number;ms:number}[]=[];
- private worker:Worker;private chunks=new Map<number,Chunk>();private desired=new Set<number>();private work:Work[]=[];
+ private worker!:Worker;private bank?:BankStrength;private pending?:{kind:string;index:number;since:number};private retries=0;private failures:{message:string;kind:string;index:number;at:number}[]=[];private testFaults={delayMs:0,fromIndex:0,fail:false};private chunks=new Map<number,Chunk>();private desired=new Set<number>();private work:Work[]=[];
  private retiring:Work[]=[];
  private bounds='';
  private sceneryCounts=new Map<number,{instances:number;draws:number;clearance:unknown}>();
@@ -27,9 +27,32 @@ export class StreamedScene {
  constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
+  this.bank=bank;this.launch();this.update(350);
+ }
+ private launch(){
+  this.initialized=false;this.busy=true;this.pending={kind:'init',index:-1,since:performance.now()};
+  try{
   this.worker=new Worker(new URL('./road-worker.ts',import.meta.url),{type:'module'});
-  this.worker.onmessage=event=>this.receive(event.data);this.worker.onerror=event=>{this.errorMessage=event.message;};
-  this.worker.postMessage({type:'init',generation:this.generation,stage,bank});this.update(350);
+  const generation=this.generation;this.worker.onmessage=event=>{if(generation!==this.generation)return;try{this.receive(event.data);}catch(error){this.fail('Worker result failed: '+String(error));}};
+  this.worker.onerror=event=>{event.preventDefault();if(generation===this.generation)this.fail(event.message||'Worker runtime failure');};
+  this.worker.onmessageerror=()=>{if(generation===this.generation)this.fail('Worker message could not be decoded');};
+  this.worker.postMessage({type:'init',generation:this.generation,stage:this.stage,bank:this.bank,...(import.meta.env.DEV?{faults:this.testFaults}:{})});
+  }catch(error){this.fail('Worker launch failed: '+String(error));}
+ }
+ private fail(message:string){
+  if(this.errorMessage)return;const job=this.pending;this.failures.push({message,kind:job?.kind??'commit',index:job?.index??-1,at:performance.now()});if(this.failures.length>8)this.failures.shift();console.error('[road-stream]',this.failures.at(-1));
+  this.worker?.terminate();this.busy=false;this.pending=undefined;this.initialized=false;
+  if(job&&job.index>=0){const c=this.chunks.get(job.index);if(c)c[job.kind==='prepare'?'road':'scenery']='missing';}
+  if(this.retries<2){this.retries++;this.generation++;this.launch();}else this.errorMessage=message;
+ }
+ /** DEV-only worker faults run inside the worker, not just on the main thread. */
+ debugFaults(faults:{delayMs:number;fromIndex:number;fail:boolean}){if(import.meta.env.DEV){this.testFaults=faults;this.worker.postMessage({type:'faults',generation:this.generation,faults});}}
+ /** Three seconds at actual travel speed, including camera/contact behind and next tick. */
+ canDrive(distance:number,travelSpeed:number,dt=1/120){
+  if(this.errorMessage||!this.initialized)return false;
+  const from=Math.max(0,distance-80),to=Math.min(this.length-1e-6,distance+Math.max(350,Math.abs(travelSpeed)*3)+Math.abs(travelSpeed)*dt+10);
+  for(let i=Math.floor(from/this.chunkLength);i<=Math.floor(to/this.chunkLength);i++)if(!this.roadReady(i*this.chunkLength))return false;
+  return true;
  }
  private note(kind:string,index:number,ms:number){this.history.push({kind,index,ms});if(this.history.length>2000)this.history.shift();}
  private chunk(index:number){let chunk=this.chunks.get(index);if(!chunk){chunk={index,objects:[],groups:{},geometries:new Set(),road:'missing',scenery:'missing'};this.chunks.set(index,chunk);}return chunk;}
@@ -49,17 +72,20 @@ export class StreamedScene {
   this.work=this.work.filter(task=>this.desired.has(task.index));this.dispatch();
  }
  private dispatch(){
-  if(!this.initialized||this.busy)return;const current=Math.floor(this.position/this.chunkLength);
+  if(this.errorMessage||!this.initialized||this.busy)return;const current=Math.floor(this.position/this.chunkLength);
   const indices=[...this.desired].sort((a,b)=>Math.abs(a-current)-Math.abs(b-current)||a-b);
-  for(const index of indices)for(const kind of ['road','scenery'] as const){const c=this.chunk(index);if(c[kind]!=='missing')continue;c[kind]='working';this.busy=true;this.worker.postMessage({type:kind==='road'?'prepare':'scenery',generation:this.generation,index,start:index*this.chunkLength,end:Math.min(this.length,(index+1)*this.chunkLength)});return;}
+  for(const kind of ['road','scenery'] as const)for(const index of indices){const c=this.chunk(index);if(c[kind]!=='missing')continue;c[kind]='working';this.busy=true;this.pending={kind:kind==='road'?'prepare':'scenery',index,since:performance.now()};try{this.worker.postMessage({type:kind==='road'?'prepare':'scenery',generation:this.generation,index,start:index*this.chunkLength,end:Math.min(this.length,(index+1)*this.chunkLength)});}catch(error){this.fail('Worker dispatch failed: '+String(error));}return;}
  }
  private receive(data:any){
-  if(data.generation!==this.generation)return;if(data.type==='initialized'){this.note('init-cpu',-1,data.cpuMs);this.initialized=true;this.dispatch();return;}if(data.type==='error'){this.errorMessage=data.message;this.busy=false;return;}
-  this.busy=false;const c=this.chunks.get(data.index);if(!c||!this.desired.has(data.index)){this.dispatch();return;}
+  if(data.generation!==this.generation)return;if(data.type==='initialized'){this.note('init-cpu',-1,data.cpuMs);this.initialized=true;this.busy=false;this.pending=undefined;this.dispatch();return;}if(data.type==='error'){this.fail(data.message);return;}
+  if(this.pending)this.note('worker-wall',data.index,performance.now()-this.pending.since);const c=this.chunks.get(data.index);if(!c||!this.desired.has(data.index)){this.busy=false;this.pending=undefined;this.dispatch();return;}
+  if(data.type!=='prepared'&&data.type!=='sceneryPrepared')throw Error('Unexpected worker result '+data.type);
+  // Retain pending until result validation succeeds, so recovery retries this chunk.
+  if(data.type==='prepared'&&!data.meshes?.some((m:RoadData)=>m.kind==='asphalt'&&m.positions?.length&&m.indices?.length))throw Error('Worker returned no drivable road');
   const road=data.type==='prepared';if(!road)this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
   const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances);
   for(const task of tasks)this.work.push({index:c.index,priority:road?0:1,run:task});
-  this.work.push({index:c.index,priority:road?0:1,run:()=>{c[road?'road':'scenery']='ready';}});this.dispatch();
+  this.work.push({index:c.index,priority:road?0:1,run:()=>{c[road?'road':'scenery']='ready';}});this.busy=false;this.pending=undefined;this.dispatch();
  }
  private roadWork(c:Chunk,meshes:RoadData[],roadside:Float32Array[]){const tasks=meshes.map(m=>()=>{
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setAttribute('normal',new THREE.BufferAttribute(m.normals,3));if(m.uvs.length)g.setAttribute('uv',new THREE.BufferAttribute(m.uvs,2));if(m.colors.length)g.setAttribute('color',new THREE.BufferAttribute(m.colors,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));
@@ -72,8 +98,9 @@ export class StreamedScene {
   return tasks;
  }
  pump(){
-  const start=performance.now(),current=Math.floor(this.position/this.chunkLength);this.work.sort((a,b)=>Math.abs(a.index-current)-Math.abs(b.index-current)||a.priority-b.priority);
-  while((this.work.length||this.retiring.length)&&performance.now()-start<3){const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0),task=disposing?this.retiring.shift()!:this.work.shift()!;if(!disposing&&!this.desired.has(task.index))continue;const t=performance.now();task.run();this.note(disposing?'dispose':'main-commit',task.index,performance.now()-t);}
+  if(this.pending&&performance.now()-this.pending.since>30000)this.fail('Worker response timed out after 30 seconds');
+  const start=performance.now(),current=Math.floor(this.position/this.chunkLength);this.work.sort((a,b)=>a.priority-b.priority||Math.abs(a.index-current)-Math.abs(b.index-current));
+  while((this.work.length||this.retiring.length)&&performance.now()-start<3){const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0),task=disposing?this.retiring.shift()!:this.work.shift()!;if(!disposing&&!this.desired.has(task.index))continue;const t=performance.now();try{task.run();}catch(error){this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;}this.note(disposing?'dispose':'main-commit',task.index,performance.now()-t);}
   this.dispatch();
  }
  // Complete the visible neighbourhood first; the full 5 km window continues in background.
@@ -96,12 +123,12 @@ export class StreamedScene {
   }
   return hits.sort((a,b)=>a.distance-b.distance);
  }
- roadReady(distance:number){return this.chunks.get(Math.floor(distance/this.chunkLength))?.road==='ready';}
+ roadReady(distance:number){const c=this.chunks.get(Math.floor(Math.min(this.length-1e-6,Math.max(0,distance))/this.chunkLength)),g=c?.groups['driving-surface'];return c?.road==='ready'&&g?.parent===this.groups['driving-surface']&&g.children.some(o=>(o as THREE.Mesh).geometry?.getAttribute('position')?.count>0);}
  get error(){return this.errorMessage;}
  get sceneryStats(){let instances=0,draws=0;this.groups.scenery.traverse(o=>{if(o instanceof THREE.InstancedMesh){instances+=o.count;draws++;}});return {instances,draws};}
  private registerGeometry(g:THREE.BufferGeometry,index:number){for(const a of Object.values(g.attributes))this.uploadOwners.set(a.array,index);if(g.index)this.uploadOwners.set(g.index.array,index);}
  /** DEV profiling reports CPU submission time, not asynchronous GPU completion. */
  instrumentUploads(renderer:THREE.WebGLRenderer){const gl=renderer.getContext(),original=gl.bufferData.bind(gl),owner=this;gl.bufferData=((...args:unknown[])=>{const start=performance.now();try{return (original as (...args:unknown[])=>void)(...args);}finally{const data=args[1];if(data&&typeof data==='object'){const index=owner.uploadOwners.get(data);if(index!==undefined)owner.note('gpu-upload-submit',index,performance.now()-start);}}}) as typeof gl.bufferData;}
- get stats(){return {nearby:this.nearby,fullyReady:this.fullyReady,sceneryCounts:[...this.sceneryCounts].map(([index,counts])=>({index,...counts})),desired:[...this.desired],chunks:[...this.chunks.values()].map(c=>({index:c.index,road:c.road,scenery:c.scenery})),queued:this.work.length,retiring:this.retiring.length,busy:this.busy,history:[...this.history]};}
- dispose(){this.generation++;this.worker.terminate();for(const task of this.retiring)task.run();this.retiring=[];for(const c of this.chunks.values()){for(const group of Object.values(c.groups))group?.removeFromParent();for(const o of c.objects)if(o instanceof THREE.InstancedMesh)o.dispose();for(const g of c.geometries)g.dispose();}for(const m of this.materials.values())m.dispose();for(const g of this.markerGeometries)g.dispose();this.markerMaterials[2].dispose();this.markerMaterials[3].dispose();this.chunks.clear();this.work=[];}
+ get stats(){return {retries:this.retries,errors:[...this.failures],fatal:this.errorMessage,pending:this.pending?{...this.pending,ageMs:performance.now()-this.pending.since}:null,currentRoad:this.roadReady(this.position),nextRoad:this.roadReady(this.position+this.chunkLength),nearby:this.nearby,fullyReady:this.fullyReady,sceneryCounts:[...this.sceneryCounts].map(([index,counts])=>({index,...counts})),desired:[...this.desired],chunks:[...this.chunks.values()].map(c=>({index:c.index,road:c.road,scenery:c.scenery})),queued:this.work.length,retiring:this.retiring.length,busy:this.busy,history:[...this.history]};}
+ dispose(){this.generation++;this.worker?.terminate();for(const task of this.retiring)task.run();this.retiring=[];for(const c of this.chunks.values()){for(const group of Object.values(c.groups))group?.removeFromParent();for(const o of c.objects)if(o instanceof THREE.InstancedMesh)o.dispose();for(const g of c.geometries)g.dispose();}for(const m of this.materials.values())m.dispose();for(const g of this.markerGeometries)g.dispose();this.markerMaterials[2].dispose();this.markerMaterials[3].dispose();this.chunks.clear();this.work=[];}
 }

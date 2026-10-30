@@ -7,7 +7,7 @@ test('trip has independent code, replay, review and retrospective position',asyn
  await expect(page.locator('#l2-lab')).toContainText('10-Minute Road Trip');
  await expect(page.locator('#stage-seed')).toHaveValue('TRIP-v0.9-r7-16-ALB7');
  await expect(page.locator('#l2-progress')).toContainText('UNREVIEWED');
- await page.keyboard.press('KeyP');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:60350,speed:60});g.advance(8,{gas:true,brake:false,steer:0});});
+ await page.keyboard.press('KeyP');await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:60350,speed:60});});await stageReady(page);await page.evaluate(()=>{const g=(window as any).__drive;g.advance(8,{gas:true,brake:false,steer:0});});
  await page.keyboard.press('KeyG');await page.keyboard.press('Digit2');await page.keyboard.press('Enter');
  const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-trip-v09')!));const event:any=(Object.values(data)[0] as any).events[0];
  expect(event.eventAt.tripCode).toBe('TRIP-v0.9-r7-16-ALB7');expect(event.eventAt.s).toBeGreaterThan(60000);expect(event.eventAt.s).toBeLessThan(event.reactionAt.s);expect(event.eventAt.l2InstanceId).toBeTruthy();
@@ -25,7 +25,7 @@ test('trip on a phone-like screen keeps gas and steering independent',async({bro
 test('trip review and telemetry do not overwrite historical Stage data',async({page})=>{
  await page.goto('/?trip=10m&seed=3');await stageReady(page);const oldReview='{"historic":"unchanged"}',oldReport='[{"runId":"historic"}]';
  await page.evaluate(({oldReview,oldReport})=>{localStorage.setItem('outrun-stage-v083',oldReview);localStorage.setItem('outrun-drive-reports-v082',oldReport);},{oldReview,oldReport});
- await page.locator('#l2-play').click();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:69345,speed:60});g.advance(.5,{gas:true,brake:false,steer:0},false);});
+ await page.locator('#l2-play').click();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:69345,speed:60});});await stageReady(page);await page.evaluate(()=>{const g=(window as any).__drive;g.advance(.5,{gas:true,brake:false,steer:0},false);});
  await expect(page.locator('#l2-result')).toContainText('Finish');await page.locator('[data-l2-vote=KEEP]').click();
  expect(await page.evaluate(()=>localStorage.getItem('outrun-stage-v083'))).toBe(oldReview);expect(await page.evaluate(()=>localStorage.getItem('outrun-drive-reports-v082'))).toBe(oldReport);
  expect(await page.evaluate(()=>localStorage.getItem('outrun-trip-drive-reports-v09'))).toContain('TRIP-v0.9-r7-3-ALB7');

@@ -1,0 +1,104 @@
+[
+  {
+    "seed": 1,
+    "finished": true,
+    "elapsed": 694.0714999994285,
+    "wallSeconds": 694.147,
+    "distance": 69350.69644330455,
+    "peakKmh": 217.21808850609045,
+    "frames": 41641,
+    "missing": 0,
+    "unsafeAdvance": 0,
+    "frozenMutation": 0,
+    "stalls": 0,
+    "waitMs": 0,
+    "errors": [],
+    "workerErrors": [],
+    "fps": {
+      "min": 58,
+      "mean": 59.99522543631003
+    },
+    "maxQueue": 46,
+    "maxRetiring": 0,
+    "maxDrawCalls": 282,
+    "maxGeometries": 158,
+    "maxHeapMB": 57.65887928009033,
+    "lastHeapMB": 41.955705642700195,
+    "maxObservedTaskMs": {
+      "gpu-upload-submit": 0.19999999552965164,
+      "main-commit": 0.20000000298023224,
+      "dispose": 0.10000000149011612,
+      "worker-wall": 546.7999999970198,
+      "road-cpu": 546.4000000059605,
+      "scenery-cpu": 8.5
+    }
+  },
+  {
+    "seed": 2,
+    "finished": true,
+    "elapsed": 665.6123333328537,
+    "wallSeconds": 665.964,
+    "distance": 69350.97646894296,
+    "peakKmh": 252.3801899402426,
+    "frames": 39948,
+    "missing": 0,
+    "unsafeAdvance": 0,
+    "frozenMutation": 0,
+    "stalls": 0,
+    "waitMs": 0,
+    "errors": [],
+    "workerErrors": [],
+    "fps": {
+      "min": 58,
+      "mean": 59.99511651563705
+    },
+    "maxQueue": 46,
+    "maxRetiring": 0,
+    "maxDrawCalls": 285,
+    "maxGeometries": 171,
+    "maxHeapMB": 58.24147033691406,
+    "lastHeapMB": 53.7563362121582,
+    "maxObservedTaskMs": {
+      "gpu-upload-submit": 0.19999999552965164,
+      "main-commit": 0.20000000298023224,
+      "dispose": 0.30000000447034836,
+      "worker-wall": 1030.7000000029802,
+      "scenery-cpu": 9.600000001490116,
+      "road-cpu": 1030.1000000014901
+    }
+  },
+  {
+    "seed": 7,
+    "finished": true,
+    "elapsed": 618.8275333330023,
+    "wallSeconds": 619.525,
+    "distance": 69350.33875265783,
+    "peakKmh": 318.56699701998576,
+    "frames": 37160,
+    "missing": 0,
+    "unsafeAdvance": 0,
+    "frozenMutation": 0,
+    "stalls": 0,
+    "waitMs": 0,
+    "errors": [],
+    "workerErrors": [],
+    "fps": {
+      "min": 57.98840231953879,
+      "mean": 59.98835046485418
+    },
+    "maxQueue": 0,
+    "maxRetiring": 0,
+    "maxDrawCalls": 284,
+    "maxGeometries": 163,
+    "maxHeapMB": 59.81591033935547,
+    "lastHeapMB": 41.945292472839355,
+    "maxObservedTaskMs": {
+      "gpu-upload-submit": 0.19999999552965164,
+      "dispose": 0.19999999552965164,
+      "main-commit": 0.3999999985098839,
+      "worker-wall": 5606,
+      "road-cpu": 1604.7999999970198,
+      "scenery-cpu": 9.900000005960464
+    }
+  }
+]

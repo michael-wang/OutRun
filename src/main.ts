@@ -94,6 +94,12 @@ addEventListener('keydown',e=>{if(!e.isComposing)setInputMode('keyboard');},true
 addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setInputMode('touch');else if(e.pointerType==='mouse')setInputMode('keyboard');},true);
 let mode:'menu'|'playing'|'paused'|'countdown'='menu'; let settingsOpen=false; let muted=false; let manual=false;let readyUntil=0;
 let streamStartRequested=false;
+let streamHeld=false,streamHoldSince=0,streamStalls=0,streamWaitMs=0,contextLost=false;
+const roadOverlay=document.createElement('div');roadOverlay.id='road-loading';roadOverlay.setAttribute('role','status');roadOverlay.style.cssText='position:fixed;inset:35% 12% auto;z-index:150;padding:22px;background:#102a35ee;color:white;text-align:center;border:2px solid #ffd46b;border-radius:12px;pointer-events:none;font:600 18px system-ui';roadOverlay.hidden=true;document.getElementById('app')!.append(roadOverlay);
+function holdRoad(held:boolean){if(held===streamHeld)return;streamHeld=held;if(held){streamStalls++;streamHoldSince=performance.now();}else streamWaitMs+=performance.now()-streamHoldSince;}
+renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();contextLost=true;holdRoad(true);sound.pause();});
+renderer.domElement.addEventListener('webglcontextrestored',()=>{contextLost=false;});
+
 let testControls:InputState|undefined;let hardDetents=false;let lastControls:InputState={gas:false,brake:false,steer:0};let usedExternalControls=false;
 const highSpeedPace=import.meta.env.DEV?selectedPace(new URLSearchParams(location.search).get('pace')):DEFAULT_PACE;
 let bridgeInspection=false;let cameraHeading=0; let initialized=false; let elapsed=0; let frames=0;
@@ -170,6 +176,8 @@ addEventListener('resize',resize);addEventListener('orientationchange',resize);
 visualViewport?.addEventListener('resize',resize);
 document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&mode==='playing'){mode='paused';sound.pause();ui();}});
 function advance(dt:number,override?:InputState){
+  if(mode==='playing'&&!settingsOpen){world.streamer?.update(state.distance);if(contextLost||(world.streamer&&!world.streamer.canDrive(state.distance,Math.max(0,state.speed)*effectivePace(state.speed,highSpeedPace)+5,dt))){holdRoad(true);sound.pause();return false;}holdRoad(false);}
+
   input.update(dt);
   if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance,beforeLateral=state.lateral;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};lastControls={...controls};usedExternalControls=!!external;if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}const road=world.sample(state.distance);step(state,controls,dt,road.curvature,highSpeedPace,world.halfAt,road.tangent.y/Math.hypot(road.tangent.x,road.tangent.z),-Math.atan(road.right.y));trafficImpact.update(state,dt,world.halfAt(state.distance));if(cones?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2))state.speed*=.995;if(triangles?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2))state.speed*=.995;traffic?.update(elapsed+dt,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace));const collision=traffic?.hit(elapsed+dt,state,{distance:beforeDistance,lateral:beforeLateral},dt,carBounds.x/2,carBounds.z/2,state.heading+trafficImpact.yaw);if(collision){trafficImpact.kick(state,collision);sound.impact(collision.severity,'vehicle');const contact=world.sample(collision.distance);trafficSparkOrigin.copy(contact.position).addScaledVector(contact.right,collision.lateral);trafficSparkOrigin.y+=.65;trafficSparks.burst(elapsed+dt,trafficSparkOrigin,contact.right,contact.tangent,collision.severity);}const impact=guardrail.update(state,beforeDistance,beforeLateral,dt,!!trip&&trip.seed===1);if(impact)sound.impact(impact);const rockHit=rockContact.update(state,{distance:beforeDistance,lateral:beforeLateral},dt);if(rockHit)sound.impact(rockHit.severity,'vehicle');updateFootprint(state,world.halfAt(state.distance));world.car.userData.motion.advance(state.distance-beforeDistance,state.appliedSteer,dt);elapsed+=dt;if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId);if(brick&&state.distance>=BRICK_START+brick.length){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else sound.pause();
 }
@@ -234,6 +242,11 @@ const perf={fps:0,startupMs:0,raycastMs:0,renderMs:0,worldMs:0,pixelRatio:render
 let perfFrames=0,perfSince=performance.now(),raycastTotal=0,renderTotal=0,worldTotal=0;
 const perfPanel=perfEnabled?document.createElement('pre'):undefined;
 if(perfPanel){perfPanel.id='perf';perfPanel.style.cssText='position:fixed;left:8px;top:50px;z-index:100;pointer-events:none;background:#102a35dd;color:white;padding:8px;font:12px monospace';document.getElementById('app')!.append(perfPanel);}
+const streamDiagnosticMode=params.get('streamdiag')==='1',streamLog:unknown[]=[];let streamSampleAt=0;
+const diagnosticSnapshot=()=>{const stream=world.streamer?.stats;return {build:'r7-stream-hotfix-1',trip:trip?.tripCode,wall:performance.now(),elapsed,distance:state.distance,speed:state.speed,fps:perf.fps,held:streamHeld,stalls:streamStalls,waitMs:streamWaitMs+(streamHeld?performance.now()-streamHoldSince:0),contextLost,draws:renderer.info.render.calls,memory:{...renderer.info.memory,heap:(performance as any).memory?.usedJSHeapSize},stream:stream?{...stream,history:[...stream.history.filter(h=>h.kind.endsWith('-cpu')||h.kind==='worker-wall').slice(-12),...stream.history.filter(h=>!h.kind.endsWith('-cpu')&&h.kind!=='worker-wall').slice(-18)]}:null};};
+const streamPanel=streamDiagnosticMode?document.createElement('div'):undefined;
+if(streamPanel){streamPanel.id='stream-diagnostics';streamPanel.style.cssText='position:fixed;top:48px;left:8px;z-index:151;background:#102a35dd;color:white;padding:6px;font:11px monospace;max-width:70vw';const text=document.createElement('pre'),button=document.createElement('button');text.id='stream-diagnostic-text';button.textContent='Export stream log';button.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({samples:streamLog,latest:diagnosticSnapshot(),workerHistory:world.streamer?.stats.history},null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='outrun-stream-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};streamPanel.append(text,button);document.getElementById('app')!.append(streamPanel);(window as any).__streamDiagnostics={snapshot:diagnosticSnapshot};}
+function recordStreamDiagnostics(now:number){if(!streamDiagnosticMode||now-streamSampleAt<1000)return;streamSampleAt=now;const row=diagnosticSnapshot();streamLog.push(row);if(streamLog.length>900)streamLog.shift();const c=row.stream;$('stream-diagnostic-text').textContent='r7-stream-hotfix-1 · '+Math.round(row.distance)+'m · '+Math.round(row.elapsed)+'s\nRoad '+c?.currentRoad+' / next '+c?.nextRoad+' · stalls '+row.stalls+'\nqueue '+c?.queued+' / retire '+c?.retiring+' · retries '+c?.retries+'\n'+(c?.fatal||c?.pending?.kind||'ready');}
 let last=performance.now();
 function loop(now:number){
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
@@ -242,8 +255,12 @@ function loop(now:number){
   const wasCounting=mode==='countdown';if(wasCounting){$('ready-countdown').textContent=`READY ${Math.max(0,(readyUntil-now)/1000).toFixed(1)}`;if(now>=readyUntil&&!document.hidden&&document.hasFocus()){mode='playing';input.clear();pad.neutralize();ui();}}
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
-  if(!manual&&!wasCounting)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);advance(tick);remaining-=tick;}
+  if(!manual&&!wasCounting)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);if(advance(tick)===false)break;remaining-=tick;}
   render(dt);
+  roadOverlay.hidden=!(streamHeld&&mode==='playing')&&!world.streamer?.error&&!contextLost;
+  roadOverlay.textContent=contextLost?'Graphics interrupted — restoring…':world.streamer?.error?'Road loading failed. Reload to retry. '+world.streamer.error:'Preparing road…';
+  recordStreamDiagnostics(now);
+
   // Reuse the existing frame sample for the public FPS readout; expensive diagnostics stay opt-in.
   perfFrames++;const span=now-perfSince;
   if(perfEnabled&&!perf.startupMs&&(!world.streamer||world.streamer.ready))perf.startupMs=performance.now();
@@ -289,6 +306,9 @@ $('free-export').onclick=()=>l2UI?.exportCurrent();$('free-export').hidden=!!bri
 if(!mobile())requestAnimationFrame(()=>document.getElementById(pilot||l2?'l2-play':brick?'brick-play':'drive')?.focus());
 
 if(import.meta.env.DEV){(window as any).__drive={
+  driveState:()=>({...state,elapsed,mode,trackLength:world.length}),
+  streamFrame:()=>({elapsed,distance:state.distance,held:streamHeld,road:world.streamer?.roadReady(state.distance)??true,cameraRoad:world.streamer?.roadReady(Math.max(0,state.distance-40))??true,safe:world.streamer?.canDrive(state.distance,state.speed*effectivePace(state.speed,highSpeedPace))??true,contextLost}),
+  centerRoad:()=>{const p=world.sample(state.distance),ray=new THREE.Raycaster(p.position.clone().add(new THREE.Vector3(0,10,0)),down,0,20);return world.streamer?.raycastContacts(ray,state.distance).some(h=>Math.abs(h.point.y-p.position.y)<.08)??true;},
   carView:(view:'front'|'side'|'cockpit')=>{
     manual=true;inspectionView=view;render(1/60);
   },
@@ -310,6 +330,8 @@ if(import.meta.env.DEV){(window as any).__drive={
   trafficSchedule:()=>trafficRecipe(trip?.seed??1,world.length),
   trafficContacts:()=>traffic?.contactPoints().map(c=>{const ray=new THREE.Raycaster(new THREE.Vector3().fromArray(c.point).add(new THREE.Vector3(0,4,0)),down,0,8),hit=world.streamer?.raycastContacts(ray,c.distance)[0];return {...c,gap:hit?c.point[1]-hit.point.y:null};}),
   acts:()=>ACTS,
+  streamFaults:(faults:{delayMs:number;fromIndex:number;fail:boolean})=>world.streamer?.debugFaults(faults),
+  streamSafety:()=>({held:streamHeld,stalls:streamStalls,waitMs:streamWaitMs+(streamHeld?performance.now()-streamHoldSince:0),safe:!world.streamer||world.streamer.canDrive(state.distance,state.speed*effectivePace(state.speed,highSpeedPace)),contextLost}),
   streaming:()=>world.streamer?{ready:world.streamer.ready,error:world.streamer.error,...world.streamer.stats}:null,
   scenery:()=>({...world.scenery,weights:world.weightsAt(state.distance),render:structuredClone(renderer.info.render),memory:structuredClone(renderer.info.memory)}),
   wheels:()=>world.car.userData.motion.inspect(),wheelContacts:()=>wheelContacts,

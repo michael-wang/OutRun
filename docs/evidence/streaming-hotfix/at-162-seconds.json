@@ -1,0 +1,952 @@
+[
+  {
+    "seed": 1,
+    "state": {
+      "elapsed": 161.92170000001286,
+      "distance": 16378.159316368556,
+      "speed": 60.0258187127998,
+      "mode": "playing",
+      "length": 69350
+    },
+    "diagnostic": {
+      "build": "r7-stream-hotfix-1",
+      "trip": "TRIP-v0.9-r7-1-ALB7",
+      "wall": 164360.6000000015,
+      "elapsed": 161.92170000001286,
+      "distance": 16378.159316368556,
+      "speed": 60.0258187127998,
+      "fps": 59.99400059993965,
+      "held": false,
+      "stalls": 0,
+      "waitMs": 0,
+      "contextLost": false,
+      "draws": 177,
+      "memory": {
+        "geometries": 110,
+        "textures": 9,
+        "heap": 48403174
+      },
+      "stream": {
+        "retries": 0,
+        "errors": [],
+        "fatal": "",
+        "pending": null,
+        "currentRoad": true,
+        "nextRoad": true,
+        "nearby": [
+          16,
+          17
+        ],
+        "fullyReady": true,
+        "sceneryCounts": [
+          {
+            "index": 15,
+            "instances": 1913,
+            "draws": 42,
+            "clearance": {
+              "queries": 55,
+              "checks": 460,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 16,
+            "instances": 1818,
+            "draws": 61,
+            "clearance": {
+              "queries": 56,
+              "checks": 545,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 17,
+            "instances": 1489,
+            "draws": 49,
+            "clearance": {
+              "queries": 55,
+              "checks": 560,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 18,
+            "instances": 1907,
+            "draws": 61,
+            "clearance": {
+              "queries": 55,
+              "checks": 518,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 19,
+            "instances": 1998,
+            "draws": 42,
+            "clearance": {
+              "queries": 58,
+              "checks": 571,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 20,
+            "instances": 1900,
+            "draws": 62,
+            "clearance": {
+              "queries": 55,
+              "checks": 480,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 21,
+            "instances": 1910,
+            "draws": 41,
+            "clearance": {
+              "queries": 55,
+              "checks": 644,
+              "rejected": 0
+            }
+          }
+        ],
+        "desired": [
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        "chunks": [
+          {
+            "index": 15,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 16,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 17,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 18,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 19,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 20,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 21,
+            "road": "ready",
+            "scenery": "ready"
+          }
+        ],
+        "queued": 0,
+        "retiring": 0,
+        "busy": false,
+        "history": [
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0.10000000149011612
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0.09999999403953552
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "main-commit",
+            "index": 21,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0.10000000149011612
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0.09999999403953552
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          }
+        ]
+      }
+    },
+    "centerRoad": true,
+    "audit": {
+      "frames": 9712,
+      "missing": 0,
+      "unsafeAdvance": 0,
+      "frozenMutation": 0,
+      "maxSpeed": 217.21808850609045
+    }
+  },
+  {
+    "seed": 2,
+    "state": {
+      "elapsed": 161.9051000000134,
+      "distance": 15735.73378517048,
+      "speed": 70.03443544693226,
+      "mode": "playing",
+      "length": 69350
+    },
+    "diagnostic": {
+      "build": "r7-stream-hotfix-1",
+      "trip": "TRIP-v0.9-r7-2-ALB7",
+      "wall": 164364.20000000298,
+      "elapsed": 161.9051000000134,
+      "distance": 15735.73378517048,
+      "speed": 70.03443544693226,
+      "fps": 60,
+      "held": false,
+      "stalls": 0,
+      "waitMs": 0,
+      "contextLost": false,
+      "draws": 207,
+      "memory": {
+        "geometries": 125,
+        "textures": 7,
+        "heap": 52940362
+      },
+      "stream": {
+        "retries": 0,
+        "errors": [],
+        "fatal": "",
+        "pending": null,
+        "currentRoad": true,
+        "nextRoad": true,
+        "nearby": [
+          15,
+          16
+        ],
+        "fullyReady": true,
+        "sceneryCounts": [
+          {
+            "index": 14,
+            "instances": 1930,
+            "draws": 61,
+            "clearance": {
+              "queries": 55,
+              "checks": 536,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 15,
+            "instances": 1820,
+            "draws": 42,
+            "clearance": {
+              "queries": 55,
+              "checks": 516,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 16,
+            "instances": 1863,
+            "draws": 61,
+            "clearance": {
+              "queries": 56,
+              "checks": 535,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 17,
+            "instances": 1567,
+            "draws": 49,
+            "clearance": {
+              "queries": 55,
+              "checks": 504,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 18,
+            "instances": 1862,
+            "draws": 61,
+            "clearance": {
+              "queries": 55,
+              "checks": 540,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 19,
+            "instances": 2016,
+            "draws": 42,
+            "clearance": {
+              "queries": 58,
+              "checks": 511,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 20,
+            "instances": 1921,
+            "draws": 61,
+            "clearance": {
+              "queries": 55,
+              "checks": 483,
+              "rejected": 0
+            }
+          }
+        ],
+        "desired": [
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "chunks": [
+          {
+            "index": 14,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 15,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 16,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 17,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 18,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 19,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 20,
+            "road": "ready",
+            "scenery": "ready"
+          }
+        ],
+        "queued": 0,
+        "retiring": 0,
+        "busy": false,
+        "history": [
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          },
+          {
+            "kind": "gpu-upload-submit",
+            "index": 17,
+            "ms": 0
+          }
+        ]
+      }
+    },
+    "centerRoad": true,
+    "audit": {
+      "frames": 9711,
+      "missing": 0,
+      "unsafeAdvance": 0,
+      "frozenMutation": 0,
+      "maxSpeed": 252.30084827587856
+    }
+  },
+  {
+    "seed": 7,
+    "state": {
+      "elapsed": 161.90490000001375,
+      "distance": 18037.446723791756,
+      "speed": 67.5304977742149,
+      "mode": "playing",
+      "length": 69350
+    },
+    "diagnostic": {
+      "build": "r7-stream-hotfix-1",
+      "trip": "TRIP-v0.9-r7-7-ALB7",
+      "wall": 164400.6000000015,
+      "elapsed": 161.90490000001375,
+      "distance": 18037.446723791756,
+      "speed": 67.5304977742149,
+      "fps": 60.003934684241244,
+      "held": false,
+      "stalls": 0,
+      "waitMs": 0,
+      "contextLost": false,
+      "draws": 130,
+      "memory": {
+        "geometries": 132,
+        "textures": 7,
+        "heap": 53239127
+      },
+      "stream": {
+        "retries": 0,
+        "errors": [],
+        "fatal": "",
+        "pending": {
+          "kind": "scenery",
+          "index": 22,
+          "since": 161979.30000000447,
+          "ageMs": 2421.2999999970198
+        },
+        "currentRoad": true,
+        "nextRoad": true,
+        "nearby": [
+          17,
+          18,
+          19
+        ],
+        "fullyReady": false,
+        "sceneryCounts": [
+          {
+            "index": 17,
+            "instances": 436,
+            "draws": 19,
+            "clearance": {
+              "queries": 98,
+              "checks": 1032,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 18,
+            "instances": 366,
+            "draws": 12,
+            "clearance": {
+              "queries": 86,
+              "checks": 843,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 19,
+            "instances": 340,
+            "draws": 11,
+            "clearance": {
+              "queries": 80,
+              "checks": 776,
+              "rejected": 0
+            }
+          },
+          {
+            "index": 20,
+            "instances": 421,
+            "draws": 17,
+            "clearance": {
+              "queries": 96,
+              "checks": 987,
+              "rejected": 1
+            }
+          },
+          {
+            "index": 21,
+            "instances": 423,
+            "draws": 11,
+            "clearance": {
+              "queries": 98,
+              "checks": 1016,
+              "rejected": 1
+            }
+          }
+        ],
+        "desired": [
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        "chunks": [
+          {
+            "index": 17,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 18,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 19,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 20,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 21,
+            "road": "ready",
+            "scenery": "ready"
+          },
+          {
+            "index": 22,
+            "road": "ready",
+            "scenery": "working"
+          }
+        ],
+        "queued": 0,
+        "retiring": 0,
+        "busy": true,
+        "history": [
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0.09999999403953552
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0.10000000149011612
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          },
+          {
+            "kind": "dispose",
+            "index": 16,
+            "ms": 0
+          }
+        ]
+      }
+    },
+    "centerRoad": true,
+    "audit": {
+      "frames": 9711,
+      "missing": 0,
+      "unsafeAdvance": 0,
+      "frozenMutation": 0,
+      "maxSpeed": 308.4833277577867
+    }
+  }
+]

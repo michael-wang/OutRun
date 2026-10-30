@@ -1,0 +1,3216 @@
+{
+  "elapsed": 0,
+  "distance": 5900,
+  "speed": 100,
+  "steer": 0,
+  "safety": {
+    "held": true,
+    "stalls": 1,
+    "waitMs": 1545.5,
+    "safe": false,
+    "contextLost": false
+  },
+  "stream": {
+    "ready": false,
+    "error": "Injected worker preparation failure",
+    "retries": 2,
+    "errors": [
+      {
+        "message": "Injected worker preparation failure",
+        "kind": "prepare",
+        "index": 6,
+        "at": 2036.3999999985099
+      },
+      {
+        "message": "Injected worker preparation failure",
+        "kind": "prepare",
+        "index": 6,
+        "at": 2433.2999999970198
+      },
+      {
+        "message": "Injected worker preparation failure",
+        "kind": "prepare",
+        "index": 6,
+        "at": 2823.5999999940395
+      }
+    ],
+    "fatal": "Injected worker preparation failure",
+    "pending": null,
+    "currentRoad": true,
+    "nextRoad": false,
+    "nearby": [
+      5,
+      6,
+      7
+    ],
+    "fullyReady": false,
+    "sceneryCounts": [
+      {
+        "index": 4,
+        "instances": 440,
+        "draws": 11,
+        "clearance": {
+          "queries": 100,
+          "checks": 1051,
+          "rejected": 0
+        }
+      },
+      {
+        "index": 5,
+        "instances": 200,
+        "draws": 17,
+        "clearance": {
+          "queries": 50,
+          "checks": 486,
+          "rejected": 0
+        }
+      }
+    ],
+    "desired": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "chunks": [
+      {
+        "index": 4,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 5,
+        "road": "ready",
+        "scenery": "ready"
+      },
+      {
+        "index": 6,
+        "road": "missing",
+        "scenery": "missing"
+      }
+    ],
+    "queued": 0,
+    "retiring": 0,
+    "busy": false,
+    "history": [
+      {
+        "kind": "init-cpu",
+        "index": -1,
+        "ms": 368
+      },
+      {
+        "kind": "worker-wall",
+        "index": 0,
+        "ms": 95.90000000596046
+      },
+      {
+        "kind": "road-cpu",
+        "index": 0,
+        "ms": 95.5
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0.30000000447034836
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0.09999999403953552
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "worker-wall",
+        "index": 1,
+        "ms": 115.29999999701977
+      },
+      {
+        "kind": "road-cpu",
+        "index": 1,
+        "ms": 115
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "worker-wall",
+        "index": 2,
+        "ms": 132.10000000149012
+      },
+      {
+        "kind": "road-cpu",
+        "index": 2,
+        "ms": 131.5
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "worker-wall",
+        "index": 3,
+        "ms": 161.29999999701977
+      },
+      {
+        "kind": "road-cpu",
+        "index": 3,
+        "ms": 161.19999999552965
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0.5
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0.19999999552965164
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "worker-wall",
+        "index": 4,
+        "ms": 175.5
+      },
+      {
+        "kind": "road-cpu",
+        "index": 4,
+        "ms": 175
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "worker-wall",
+        "index": 5,
+        "ms": 149.10000000149012
+      },
+      {
+        "kind": "road-cpu",
+        "index": 5,
+        "ms": 148.40000000596046
+      },
+      {
+        "kind": "worker-wall",
+        "index": 0,
+        "ms": 4.399999998509884
+      },
+      {
+        "kind": "scenery-cpu",
+        "index": 0,
+        "ms": 4.299999997019768
+      },
+      {
+        "kind": "worker-wall",
+        "index": 1,
+        "ms": 2
+      },
+      {
+        "kind": "scenery-cpu",
+        "index": 1,
+        "ms": 1.8999999985098839
+      },
+      {
+        "kind": "worker-wall",
+        "index": 2,
+        "ms": 1.6999999955296516
+      },
+      {
+        "kind": "scenery-cpu",
+        "index": 2,
+        "ms": 1.6000000014901161
+      },
+      {
+        "kind": "worker-wall",
+        "index": 3,
+        "ms": 1.8000000044703484
+      },
+      {
+        "kind": "scenery-cpu",
+        "index": 3,
+        "ms": 1.8000000044703484
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0.09999999403953552
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0.09999999403953552
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0.09999999403953552
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "worker-wall",
+        "index": 4,
+        "ms": 3.5
+      },
+      {
+        "kind": "scenery-cpu",
+        "index": 4,
+        "ms": 1.7999999970197678
+      },
+      {
+        "kind": "worker-wall",
+        "index": 5,
+        "ms": 1.1999999955296516
+      },
+      {
+        "kind": "scenery-cpu",
+        "index": 5,
+        "ms": 1.1000000014901161
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 4,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "main-commit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 0,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "dispose",
+        "index": 1,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 2,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "dispose",
+        "index": 3,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0.10000000149011612
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "gpu-upload-submit",
+        "index": 5,
+        "ms": 0
+      },
+      {
+        "kind": "init-cpu",
+        "index": -1,
+        "ms": 367.40000000596046
+      },
+      {
+        "kind": "init-cpu",
+        "index": -1,
+        "ms": 363
+      }
+    ]
+  }
+}
