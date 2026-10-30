@@ -11,7 +11,7 @@ import type {createTrack} from './track';
 export const TRAFFIC_LIMIT=12;
 export const TRAFFIC_TYPES=[{name:'car',speed:34,length:4.4,width:1.8,axle:1.4},{name:'bus',speed:22,length:8.6,width:2.35,axle:3.1},{name:'truck',speed:27,length:7.6,width:2.3,axle:2.7},{name:'waffle',speed:27,length:5.2,width:2.1,axle:1.7}] as const;
 const random=(seed:number,id:number)=>{let x=(seed^Math.imul(id+1,0x9e3779b1))>>>0;x=Math.imul(x^(x>>>16),0x85ebca6b);x=Math.imul(x^(x>>>13),0xc2b2ae35);return ((x^(x>>>16))>>>0)/4294967296;};
-export interface TrafficActor {id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;cruiseSpeed?:number;group?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
+export interface TrafficActor {id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;previousDistance?:number;previousLateral?:number;previousVisible?:boolean;nominalDistance?:number;cruiseSpeed?:number;group?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
 /** One immutable recipe per seed/route; only the existing bounded window becomes meshes. */
 interface TrafficRecipe {id:number;type:number;distance:number;speed:number;group:number}
 const recipes=new Map<string,TrafficRecipe[]>();
@@ -61,6 +61,7 @@ function vehicleGeometry(type:number){
 }
 interface Reaction {offset:number;velocity:number;boost:number;yaw:number;roll:number;skid:SkidFeedback;effects:TireEffects;touching:boolean;lastHit:number;slide:number}
 export class Traffic {
+ private history=new Map<number,{distance:number;speed:number;time:number}>();
  private lanes:TrafficLanes;private indicators:THREE.InstancedMesh;private lampPose=new THREE.Object3D();
  private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
@@ -80,15 +81,25 @@ export class Traffic {
   }
   this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=false;mesh.receiveShadow=true;scene.add(mesh);return mesh;});
  }
- reset(){this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);if(this.sign)this.sign.count=0;}
+ reset(){this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0){
   if(time<this.time)this.reset();const dt=time-this.time,previous=this.actors;this.time=time;
-  this.actors=trafficLayout(this.seed,time,player,this.length);
-  for(const a of this.actors){const old=previous.find(p=>p.id===a.id);if(old){a.distance=old.distance+old.speed*dt;a.speed=old.speed+(a.speed-old.speed)*(1-Math.exp(-dt*1.8));}}
-  // Retain a vehicle slowed by its leader until it actually leaves the streamed viewing window.
-  for(const old of previous)if(!this.actors.some(a=>a.id===old.id)&&old.distance+old.speed*dt>=player-65&&old.distance+old.speed*dt<=player+850)this.actors.push({...old,distance:old.distance+old.speed*dt,speed:old.cruiseSpeed??trafficCruise(this.seed,old.id,old.type)});
+  // Actual motion is authoritative once observed. Retain only lightweight history
+  // for the finite route recipe; meshes/reactions still use the 12-actor pool.
+  const candidates:TrafficActor[]=trafficRecipe(this.seed,this.length).map(recipe=>{
+   const old=previous.find(a=>a.id===recipe.id),saved=this.history.get(recipe.id),nominalDistance=recipe.distance+recipe.speed*time;
+   if(old)return {...old,nominalDistance,distance:old.distance+old.speed*dt,speed:old.speed+(recipe.speed-old.speed)*(1-Math.exp(-dt*1.8)),...(dt>0?{previousDistance:old.distance,previousLateral:old.lateral,previousVisible:old.visible}:{})};
+   const distance=saved?saved.distance+saved.speed*(time-saved.time):nominalDistance;
+   return {...recipe,nominalDistance,distance,speed:saved?.speed??recipe.speed,cruiseSpeed:recipe.speed,lane:0,lateral:0,visible:false,y:0,grade:0,previousDistance:distance,previousLateral:0,previousVisible:false};
+  });
+  for(const a of candidates)if(previous.some(old=>old.id===a.id))this.history.set(a.id,{distance:a.distance,speed:a.speed,time});
+  const inside=candidates.filter(a=>a.distance>=player-180&&a.distance<=player+850&&a.distance<this.length-20);
+  this.actors=inside.filter(a=>previous.some(old=>old.id===a.id));
+  const entering=inside.filter(a=>!previous.some(old=>old.id===a.id)&&(time===0||Math.abs(a.distance-player)>120)).sort((a,b)=>Math.abs(a.distance-player)-Math.abs(b.distance-player));
+  for(const a of entering){if(this.actors.length>=TRAFFIC_LIMIT)break;this.actors.push(a);}
+
   for(const a of this.actors){const r=this.reactions.get(a.id);if(r){a.distance+=r.boost*.85*(1-Math.exp(-dt/.85));r.boost*=Math.exp(-dt/.85);r.offset+=r.velocity*.55*(1-Math.exp(-dt/.55));r.velocity*=Math.exp(-dt/.55);r.offset*=Math.exp(-dt*.55);const follow=1-Math.exp(-dt/.07);r.yaw+=(THREE.MathUtils.clamp(r.velocity*.075,-.38,.38)-r.yaw)*follow;r.roll+=(THREE.MathUtils.clamp(r.velocity*.03,-.17,.17)-r.roll)*follow;}}
-  this.actors=this.actors.filter(a=>a.distance>=player-65&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0];let shadowCount=0,lampCount=0;
+  this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0];let shadowCount=0,lampCount=0;
   for(const a of this.actors){const outer=Math.min(5.25,Math.max(1.75,this.halfAt(a.distance)-1.75));a.lateral=a.type===0?-1.75:a.type===1?outer:-outer;}
   this.lanes.update(time,this.actors,this.halfAt,{distance:player,lateral:playerLateral,speed:playerSpeed},id=>{const r=this.reactions.get(id);return !!r&&(r.touching||Math.abs(r.velocity)>.5||Math.abs(r.offset)>.4);});
   for(let i=0;i<this.actors.length;i++){
@@ -100,7 +111,7 @@ export class Traffic {
    // Simple headway remains active during maneuvers and impact recovery.
    for(let j=0;j<i;j++){const leader=this.actors[j];const gap=Math.max(16,(spec.length+TRAFFIC_TYPES[leader.type].length)/2+6);if(Math.abs(a.lateral-leader.lateral)<2.7&&leader.distance-a.distance<gap){a.distance=leader.distance-gap;a.speed=Math.min(a.speed,leader.speed);if(reaction)reaction.boost=Math.min(0,reaction.boost);}}
    const safeEdge=this.halfAt(a.distance)-Math.max(1.75,spec.width/2+Math.abs(reaction?.yaw??0)*spec.length/2+.12);const unclamped=a.lateral;a.lateral=THREE.MathUtils.clamp(a.lateral,-safeEdge,safeEdge);if(reaction){reaction.offset+=a.lateral-unclamped;if(dt>0){const old=previous.find(p=>p.id===a.id);reaction.slide=old?Math.abs(a.lateral-old.lateral)/dt:0;}}
-   a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2);if(!a.visible)continue;
+   this.history.set(a.id,{distance:a.distance,speed:a.speed,time});a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2)&&(time===0||!!previous.find(old=>old.id===a.id)?.visible||Math.abs(a.distance-player)>80);if(!a.visible)continue;
    const p=this.sample(a.distance),front=this.sample(Math.min(this.length,a.distance+spec.axle)),rear=this.sample(Math.max(0,a.distance-spec.axle));
    const frontY=front.position.y+front.right.y*a.lateral,rearY=rear.position.y+rear.right.y*a.lateral,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
    this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
@@ -120,17 +131,17 @@ export class Traffic {
  hit(time:number,s:DrivingState,previous:{distance:number;lateral:number},dt:number,halfWidth=1.55,halfLength=2.8,heading=0):TrafficCollision|undefined {
   let event:TrafficCollision|undefined;
   for(const a of this.actors){
-   if(!a.visible)continue;
+   if(!a.visible||!a.previousVisible)continue;
    const spec=TRAFFIC_TYPES[a.type],r=this.reactions.get(a.id);
    // Conservative yaw envelopes keep the visible bodies apart throughout the response.
    const width=halfWidth*Math.abs(Math.cos(heading))+halfLength*Math.abs(Math.sin(heading))+spec.width/2*Math.abs(Math.cos(r?.yaw??0))+spec.length/2*Math.abs(Math.sin(r?.yaw??0))+.12,length=halfLength*Math.abs(Math.cos(heading))+halfWidth*Math.abs(Math.sin(heading))+spec.length/2*Math.abs(Math.cos(r?.yaw??0))+spec.width/2*Math.abs(Math.sin(r?.yaw??0))+.12;
-   const closing=(s.distance-previous.distance)/Math.max(dt,.001)-a.speed;const x=s.lateral-a.lateral,z=s.distance-a.distance;
+   const closing=(s.distance-previous.distance-(a.distance-(a.previousDistance??a.distance)))/Math.max(dt,.001);const x=s.lateral-a.lateral,z=s.distance-a.distance;
    if(r&&(Math.abs(x)>width+.7||Math.abs(z)>length+2))r.touching=false;
-   const contact=sweptContact(previous.lateral-a.lateral,previous.distance-(a.distance-a.speed*dt),x,z,width,length);
+   const contact=sweptContact(previous.lateral-(a.previousLateral??a.lateral),previous.distance-(a.previousDistance??a.distance),x,z,width,length);
    if(!contact)continue;
    const side=Math.abs(x)>.2?Math.sign(x):(a.lateral>0?-1:1),kind=contact.kind;
    if(kind==='side')s.lateral=a.lateral+side*width;
-   else s.distance=a.distance+(previous.distance-(a.distance-a.speed*dt)>0?1:-1)*length;
+   else s.distance=a.distance+(previous.distance-(a.previousDistance??a.distance)>0?1:-1)*length;
    const edge=this.halfAt(s.distance)+1.1,rail=this.seed===1&&s.distance+halfLength>=CANYON_BEND.start&&s.distance-halfLength<CANYON_BEND.end;
    const rightEdge=rail?Math.min(edge,CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness-halfWidth*Math.abs(Math.cos(heading))-halfLength*Math.abs(Math.sin(heading))-.1):edge;
    s.lateral=THREE.MathUtils.clamp(s.lateral,-edge,rightEdge);
@@ -154,6 +165,6 @@ export class Traffic {
  get skidIntensity(){let intensity=0;for(const r of this.reactions.values())intensity=Math.max(intensity,r.skid.intensity);return intensity;}
  contactPoints(){const matrix=new THREE.Matrix4(),counts=[0,0,0,0],out:{id:number;distance:number;point:number[]}[]=[];for(const a of this.actors){if(!a.visible)continue;this.meshes[a.type].getMatrixAt(counts[a.type]++,matrix);const spec=TRAFFIC_TYPES[a.type];for(const side of [-1,1])for(const end of [-1,1])out.push({id:a.id,distance:a.distance+end*spec.axle,point:new THREE.Vector3(side*(spec.width/2-.04),0,end*spec.axle).applyMatrix4(matrix).toArray()});}return out;}
  audioActors():readonly TrafficActor[]{return this.actors;}
- inspect(){return {laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+2+(this.sign?1:0),contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
- dispose(){this.lanes.reset();this.indicators.removeFromParent();this.indicators.geometry.dispose();(this.indicators.material as THREE.Material).dispose();this.shadows.removeFromParent();this.shadows.geometry.dispose();const shadowMaterial=this.shadows.material as THREE.MeshBasicMaterial;shadowMaterial.map?.dispose();shadowMaterial.dispose();for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});this.material.dispose();}
+ inspect(){return {historySize:this.history.size,historyLimit:trafficRecipe(this.seed,this.length).length,laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+2+(this.sign?1:0),contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
+ dispose(){this.history.clear();this.lanes.reset();this.indicators.removeFromParent();this.indicators.geometry.dispose();(this.indicators.material as THREE.Material).dispose();this.shadows.removeFromParent();this.shadows.geometry.dispose();const shadowMaterial=this.shadows.material as THREE.MeshBasicMaterial;shadowMaterial.map?.dispose();shadowMaterial.dispose();for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});this.material.dispose();}
 }

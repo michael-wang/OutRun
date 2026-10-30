@@ -11,7 +11,7 @@ it('sweeps fast crossings and rejects clean overtakes',()=>{
 it('all four vehicle types keep real displacement, separate contact, recover and reset',()=>{
  for(let type=0;type<4;type++)for(const kind of ['side','rear']){
   const scene=new THREE.Scene(),traffic=new Traffic(scene,sample,()=>7,69000,1),motion=new TrafficImpact();
-  traffic.update(0,trafficRecipe(1,69000).find(a=>a.type===type)!.distance-100);const a=traffic.inspect().actors.find(a=>a.type===type)!;expect(a).toBeDefined();
+  traffic.update(0,trafficRecipe(1,69000).find(a=>a.type===type)!.distance-100);traffic.update(.001,trafficRecipe(1,69000).find(a=>a.type===type)!.distance-100);const a=traffic.inspect().actors.find(a=>a.type===type)!;expect(a).toBeDefined();
   const spec=TRAFFIC_TYPES[type],s={...createState(),speed:75,lateral:a.lateral+(kind==='side'?2:0),distance:a.distance-(kind==='side'?0:spec.length/2+2)};
   const event=traffic.hit(0,s,{distance:s.distance-(kind==='rear'?8:0),lateral:s.lateral+(kind==='side'?2:0)},.05)!;expect(event.kind).toBe(kind);motion.kick(s,event);const initialSpeed=s.speed;
   const events=[event];let maxOffset=0,maxYaw=0,skid=false;const feedback=new SkidFeedback();

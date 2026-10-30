@@ -1,0 +1,82 @@
+[
+  {
+    "id": 7,
+    "time": 87.9,
+    "player": 9150,
+    "actual": 8971.933253963938,
+    "nominal": 9929.845149292338,
+    "visible": true,
+    "expected": 8971.933253963944,
+    "error": -5.4569682106375694e-12
+  },
+  {
+    "id": 14,
+    "time": 89.2,
+    "player": 9150,
+    "actual": 8973.62111547432,
+    "nominal": 8973.621115474314,
+    "visible": true,
+    "expected": 8973.62111547432,
+    "error": 0
+  },
+  {
+    "id": 8,
+    "time": 94.8,
+    "player": 9150,
+    "actual": 8973.074956798926,
+    "nominal": 8973.074956798926,
+    "visible": true,
+    "expected": 8973.074956798926,
+    "error": 0
+  },
+  {
+    "id": 21,
+    "time": 96.1,
+    "player": 9150,
+    "actual": 8970.574942860969,
+    "nominal": 8970.57494286092,
+    "visible": true,
+    "expected": 8970.574942860969,
+    "error": 0
+  },
+  {
+    "id": 12,
+    "time": 101.8,
+    "player": 9150,
+    "actual": 8973.649808612652,
+    "nominal": 8973.649808612652,
+    "visible": true,
+    "expected": 8973.649808612652,
+    "error": 0
+  },
+  {
+    "id": 15,
+    "time": 108.8,
+    "player": 9150,
+    "actual": 8971.013398693682,
+    "nominal": 8971.013398693667,
+    "visible": true,
+    "expected": 8971.013398693682,
+    "error": 0
+  },
+  {
+    "id": 11,
+    "time": 112.6,
+    "player": 9150,
+    "actual": 8973.449075801429,
+    "nominal": 8973.4490758014,
+    "visible": true,
+    "expected": 8973.449075801429,
+    "error": 0
+  },
+  {
+    "id": 13,
+    "time": 129.4,
+    "player": 9150,
+    "actual": 8971.555916382089,
+    "nominal": 8971.555916382104,
+    "visible": true,
+    "expected": 8971.55591638209,
+    "error": -1.8189894035458565e-12
+  }
+]
