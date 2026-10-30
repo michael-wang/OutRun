@@ -1,3 +1,4 @@
+import {bridgeSpan,bridgeShoulders,onBridge,type BridgeSpan} from './bridge';
 import {rockySections,rockyAt,type RockySection} from './rocky-shoulder';
 import type {BankStrength} from './banking';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
@@ -6,21 +7,21 @@ import {prepareRoadChunk} from './road-chunk';
 import {addJourneyScenery} from './scenery';
 import * as THREE from 'three';
 import {RoadClearance} from './road-clearance';
-import {roadOffset,shoulderProfile} from './road-profile';
+import {roadOffset} from './road-profile';
 
 type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
-let rocks:RockySection[]=[];
+let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;
 let generation=-1,stage:PilotCandidate|undefined,track:ReturnType<typeof createPilotTrack>|undefined;
 let roadSamples:THREE.Vector3[]=[];let clearance:RoadClearance;
 const worker=self as unknown as {onmessage:(event:MessageEvent<Request>)=>void;postMessage:(message:unknown,transfer?:Transferable[])=>void};
 worker.onmessage=(event:MessageEvent<Request>)=>{
  const request=event.data;
  try{
-  if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;track=createPilotTrack(stage,request.bank);rocks=(stage.generatorVersion==='v0.9-r6'||stage.generatorVersion==='v0.9-r7')?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
+  if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;track=createPilotTrack(stage,request.bank);rocks=(stage.generatorVersion==='v0.9-r6'||stage.generatorVersion==='v0.9-r7')?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=stage.generatorVersion==='v0.9-r7'?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
   if(request.generation!==generation||!stage||!track)return;
-  const t=performance.now(),candidate=stage,current=track,shoulders=candidate.generatorVersion==='v0.9-r7'?(d:number)=>shoulderProfile(d,candidate.seed):undefined;
+  const t=performance.now(),candidate=stage,current=track,shoulders=candidate.generatorVersion==='v0.9-r7'?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
   if(request.type==='scenery'){
-   const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders});
+   const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge});
    const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{template:string;color:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
    scene.traverse(object=>{if(!(object instanceof THREE.InstancedMesh))return;const g=object.geometry,m=object.material as THREE.MeshStandardMaterial;geometries.add(g);materials.add(m);
     if(!templates.has(g.uuid)){const attr=(name:string)=>new Float32Array(g.getAttribute(name)?.array??[]);templates.set(g.uuid,{position:attr('position'),normal:attr('normal'),uv:attr('uv'),color:attr('color'),index:new Uint32Array(g.index?.array??[])});}
@@ -30,10 +31,10 @@ worker.onmessage=(event:MessageEvent<Request>)=>{
    for(const g of geometries)g.dispose();for(const m of materials)m.dispose();
    worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,scenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
   }
-  const meshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||candidate.generatorVersion==='v0.9-r7'))) ,rocks,shoulders);
+  const meshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||candidate.generatorVersion==='v0.9-r7'))) ,rocks,shoulders,bridge);
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
-  let markerBank=0;const record=(which:number,p:THREE.Vector3,yaw=0)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,markerBank,'YXZ');dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
-  for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;
+  let markerBank=0,markerYaw=0;const record=(which:number,p:THREE.Vector3,yaw=markerYaw)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,markerBank,'YXZ');dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
+  for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;markerYaw=shoulders?-p.roadHeading:0;if(onBridge(d,bridge))continue;
    if(candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1&&canyonBend(d)){record(0,p.position.clone().addScaledVector(p.right,roadOffset(CANYON_BEND.railOffset,width)).add(new THREE.Vector3(0,.5,0)));continue;}
    if(!rockyAt(d,-1,rocks))record(0,p.position.clone().addScaledVector(p.right,roadOffset(-12.4,width,shoulders?.(d))).add(new THREE.Vector3(0,.58,0)));
    for(const side of [-1,1]){if(rockyAt(d,side,rocks))continue;const base=p.position.clone().addScaledVector(p.right,roadOffset(side*12.4,width,shoulders?.(d)));record(1,base.clone().add(new THREE.Vector3(0,.8,0)),yaw);record(2,base.clone().add(new THREE.Vector3(0,1.45,0)),yaw);record(3,base.clone().add(new THREE.Vector3(0,1.05,0)),yaw);}

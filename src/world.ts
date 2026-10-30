@@ -1,9 +1,10 @@
+import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
 import {breakdownLayout,breakdownAnnotations} from './breakdowns';
 import {turnWarnings,originalTurnWarnings,warningAnnotations} from './turn-warnings';
 import type {BankStrength} from './banking';
-import {roadOffset,LANE_WIDTH,shoulderProfile} from './road-profile';
+import {roadObjectOffset,LANE_WIDTH} from './road-profile';
 import * as THREE from 'three';
 import {asphaltTexture} from './asphalt-texture';
 import { createCar } from './car';
@@ -16,7 +17,7 @@ import {StreamedScene,type SceneAnnotation} from './streamed-scene';
 import type {PilotCandidate} from './pilot-composer';
 
 export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength}={}) {
-  const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=options.streamStage?.generatorVersion==='v0.9-r7'?(d:number)=>shoulderProfile(d,options.seed??1):undefined,offsetAt=(d:number,o:number)=>roadOffset(o,halfAt(d),shoulders?.(d));
+  const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=options.streamStage?.generatorVersion==='v0.9-r7'?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
   scene.add(new THREE.HemisphereLight('#e3f7ff','#a09162',1.65));
@@ -24,6 +25,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   sun.castShadow=true; const shadowSize=matchMedia('(pointer:coarse)').matches?512:1024; sun.shadow.mapSize.set(shadowSize,shadowSize); Object.assign(sun.shadow.camera,{left:-36,right:36,top:36,bottom:-36,near:1,far:250});
   sun.shadow.bias=-.0004; sun.shadow.normalBias=.035; scene.add(sun.target);
   const {sample,length}=options.track??createTrack();
+  const bridge=shoulders?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const asphalt=mat('#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
   function ribbon(offsetA:number|((d:number)=>number),offsetB:number|((d:number)=>number),liftA:number,liftB:number,material:THREE.Material,start=0,end=length,step=2.5) {
@@ -141,7 +143,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
   sand.vertexColors=true;grass.vertexColors=true;
-  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial},annotations,options.bank):undefined;
+  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial,steel:mat('#b93d29',.7),deck:new THREE.MeshStandardMaterial({color:'#827b6b',roughness:1,side:THREE.DoubleSide}),water:new THREE.MeshStandardMaterial({color:'#278d9e',roughness:.55,side:THREE.DoubleSide})},annotations,options.bank):undefined;
   const scenery=streamer?{get instances(){return streamer.sceneryStats.instances;},get draws(){return streamer.sceneryStats.draws;}}:addJourneyScenery(scene,sample,length,options.theme,options.seed,halfAt,options.weightsAt);
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
   // Enclose the actual route. The former fixed (400,500)/1550m ring intersected
@@ -166,5 +168,5 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const gradient=context.createRadialGradient(32,32,7,32,32,31);gradient.addColorStop(0,'rgba(18,33,30,.65)');gradient.addColorStop(.55,'rgba(18,33,30,.3)');gradient.addColorStop(1,'rgba(18,33,30,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);
   const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.1,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.025;car.add(shadow);
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
-  return {shoulders,boundaries:shoulders?(d:number)=>{if(streamer&&!streamer.roadReady(d))return {};if(options.seed===1&&canyonBend(d))return {right:CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness};return rockyAt(d,-1,rockSections)?{}:{left:offsetAt(d,-12.3)};}:undefined,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
+  return {bridge,shoulders,boundaries:shoulders?(d:number)=>{if(streamer&&!streamer.roadReady(d))return {};if(onBridge(d,bridge))return {left:-bridgeRailEdge(halfAt(d)),right:bridgeRailEdge(halfAt(d))};if(options.seed===1&&canyonBend(d))return {right:CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness};return rockyAt(d,-1,rockSections)?{}:{left:offsetAt(d,-12.3)};}:undefined,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
 }

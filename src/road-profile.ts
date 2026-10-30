@@ -22,3 +22,5 @@ export function shoulderProfile(distance:number,seed:number):Shoulders {
  const second=phase>=2000,t=phase%2000,blend=ease(Math.min(t,1200-t)/300);
  return {left:6+((second?6.8:1.6)-6)*blend,right:6+((second?1.6:6.8)-6)*blend};
 }
+/** Fixed props outside the shoulder keep their full vehicle-clearance margin. */
+export function roadObjectOffset(offset:number,halfWidth:number,shoulders?:Shoulders){const value=roadOffset(offset,halfWidth,shoulders);return shoulders&&Math.abs(offset)>=15?Math.sign(value)*Math.max(Math.abs(value),halfWidth+6.5):value;}
