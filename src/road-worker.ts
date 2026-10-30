@@ -28,7 +28,7 @@ worker.onmessage=(event:MessageEvent<Request>)=>{
    for(const g of geometries)g.dispose();for(const m of materials)m.dispose();
    worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,scenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
   }
-  const meshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,candidate.generatorVersion==='v0.9-r4');
+  const meshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||candidate.generatorVersion==='v0.9-r5'));
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
   const record=(which:number,p:THREE.Vector3,yaw=0)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,0);dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
   for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);

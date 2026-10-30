@@ -4,7 +4,7 @@ import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
 import {prepareRoadChunk} from '../src/road-chunk';
 it('r4 has matched chunk normals, no sand crossing asphalt, and smooth full-route banking',()=>{
  for(const seed of [1,2,7]){
-  const b=generateTrip(seed),track=createPilotTrack(b),old=createPilotTrack(generateTrip(seed,3)),angle=(d:number)=>-Math.atan(track.sample(d).right.y)*180/Math.PI;
+  const b=generateTrip(seed,4),track=createPilotTrack(b),old=createPilotTrack(generateTrip(seed,3)),angle=(d:number)=>-Math.atan(track.sample(d).right.y)*180/Math.PI;
   expect(b.tripCode).toContain('r4-');let maxRate=0,maxAcceleration=0;
   for(let d=10;d<b.length;d+=10){expect(track.sample(d).position).toEqual(old.sample(d).position);maxRate=Math.max(maxRate,Math.abs(angle(d+.5)-angle(d-.5)));maxAcceleration=Math.max(maxAcceleration,Math.abs(angle(d+1)-2*angle(d)+angle(d-1)));}
   console.log({seed,maxDegreesPerMetre:maxRate,maxRateAt300Kmh:maxRate*300/3.6,maxAcceleration});expect(maxRate).toBeLessThan(.2);expect(maxAcceleration).toBeLessThan(.01);

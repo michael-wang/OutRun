@@ -1,0 +1,2452 @@
+[
+  {
+    "distance": 390,
+    "bendStart": 670,
+    "bendEnd": 830,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 530,
+    "bendStart": 670,
+    "bendEnd": 830,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 830,
+    "bendStart": 1110,
+    "bendEnd": 1260,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 970,
+    "bendStart": 1110,
+    "bendEnd": 1260,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 1270,
+    "bendStart": 1550,
+    "bendEnd": 1690,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 1410,
+    "bendStart": 1550,
+    "bendEnd": 1690,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 1700,
+    "bendStart": 1980,
+    "bendEnd": 2130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 1840,
+    "bendStart": 1980,
+    "bendEnd": 2130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 2320,
+    "bendStart": 2600,
+    "bendEnd": 2950,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 2460,
+    "bendStart": 2600,
+    "bendEnd": 2950,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 2770,
+    "bendStart": 3050,
+    "bendEnd": 3400,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 2910,
+    "bendStart": 3050,
+    "bendEnd": 3400,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 3230,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 3370,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 3540,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 3605,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 3670,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 3735,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 3800,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 3865,
+    "bendStart": 3510,
+    "bendEnd": 3870,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 3680,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 3820,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 3990,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 4055,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 4120,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 4185,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 4250,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 4315,
+    "bendStart": 3960,
+    "bendEnd": 4320,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 4500,
+    "bendStart": 4780,
+    "bendEnd": 5020,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 4640,
+    "bendStart": 4780,
+    "bendEnd": 5020,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 4920,
+    "bendStart": 5200,
+    "bendEnd": 5440,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 5060,
+    "bendStart": 5200,
+    "bendEnd": 5440,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 5250,
+    "bendStart": 5530,
+    "bendEnd": 5850,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 5390,
+    "bendStart": 5530,
+    "bendEnd": 5850,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 5670,
+    "bendStart": 5950,
+    "bendEnd": 6270,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 5810,
+    "bendStart": 5950,
+    "bendEnd": 6270,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 6270,
+    "bendStart": 6550,
+    "bendEnd": 6860,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 6410,
+    "bendStart": 6550,
+    "bendEnd": 6860,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 6680,
+    "bendStart": 6960,
+    "bendEnd": 7270,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 6820,
+    "bendStart": 6960,
+    "bendEnd": 7270,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7070,
+    "bendStart": 7350,
+    "bendEnd": 7490,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7210,
+    "bendStart": 7350,
+    "bendEnd": 7490,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7230,
+    "bendStart": 7510,
+    "bendEnd": 7680,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7370,
+    "bendStart": 7510,
+    "bendEnd": 7680,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7480,
+    "bendStart": 7760,
+    "bendEnd": 7890,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7620,
+    "bendStart": 7760,
+    "bendEnd": 7890,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7640,
+    "bendStart": 7920,
+    "bendEnd": 8080,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 7780,
+    "bendStart": 7920,
+    "bendEnd": 8080,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 8120,
+    "bendStart": 8400,
+    "bendEnd": 8770,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 8260,
+    "bendStart": 8400,
+    "bendEnd": 8770,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 8630,
+    "bendStart": 8910,
+    "bendEnd": 9270,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 8770,
+    "bendStart": 8910,
+    "bendEnd": 9270,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 9090,
+    "bendStart": 9370,
+    "bendEnd": 9760,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 9230,
+    "bendStart": 9370,
+    "bendEnd": 9760,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 9600,
+    "bendStart": 9880,
+    "bendEnd": 10270,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 9740,
+    "bendStart": 9880,
+    "bendEnd": 10270,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 10320,
+    "bendStart": 10600,
+    "bendEnd": 10910,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 10460,
+    "bendStart": 10600,
+    "bendEnd": 10910,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 10800,
+    "bendStart": 11080,
+    "bendEnd": 11390,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 10940,
+    "bendStart": 11080,
+    "bendEnd": 11390,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 11200,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 11340,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 11510,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 11575,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 11640,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 11705,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 11770,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 11835,
+    "bendStart": 11480,
+    "bendEnd": 11870,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 11680,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 11820,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 11990,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 12055,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 12120,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 12185,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 12250,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 12315,
+    "bendStart": 11960,
+    "bendEnd": 12350,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 12810,
+    "bendStart": 13090,
+    "bendEnd": 13320,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 12950,
+    "bendStart": 13090,
+    "bendEnd": 13320,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 13210,
+    "bendStart": 13490,
+    "bendEnd": 13720,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 13350,
+    "bendStart": 13490,
+    "bendEnd": 13720,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 13520,
+    "bendStart": 13800,
+    "bendEnd": 13940,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 13660,
+    "bendStart": 13800,
+    "bendEnd": 13940,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 13920,
+    "bendStart": 14200,
+    "bendEnd": 14330,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 14060,
+    "bendStart": 14200,
+    "bendEnd": 14330,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 14480,
+    "bendStart": 14760,
+    "bendEnd": 15080,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 14620,
+    "bendStart": 14760,
+    "bendEnd": 15080,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 14910,
+    "bendStart": 15190,
+    "bendEnd": 15510,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 15050,
+    "bendStart": 15190,
+    "bendEnd": 15510,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 15360,
+    "bendStart": 15640,
+    "bendEnd": 15950,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 15500,
+    "bendStart": 15640,
+    "bendEnd": 15950,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 15780,
+    "bendStart": 16060,
+    "bendEnd": 16370,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 15920,
+    "bendStart": 16060,
+    "bendEnd": 16370,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 16940,
+    "bendStart": 17220,
+    "bendEnd": 17290,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 17080,
+    "bendStart": 17220,
+    "bendEnd": 17290,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 17090,
+    "bendStart": 17370,
+    "bendEnd": 17500,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 17230,
+    "bendStart": 17370,
+    "bendEnd": 17500,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 17480,
+    "bendStart": 17760,
+    "bendEnd": 17890,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 17620,
+    "bendStart": 17760,
+    "bendEnd": 17890,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 18050,
+    "bendStart": 18330,
+    "bendEnd": 18490,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 18190,
+    "bendStart": 18330,
+    "bendEnd": 18490,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 18540,
+    "bendStart": 18820,
+    "bendEnd": 18980,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 18680,
+    "bendStart": 18820,
+    "bendEnd": 18980,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 19040,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 19180,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 19350,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19415,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19480,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19545,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19610,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19675,
+    "bendStart": 19320,
+    "bendEnd": 19710,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19520,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 19660,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 19830,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19895,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 19960,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 20025,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 20090,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 20155,
+    "bendStart": 19800,
+    "bendEnd": 20200,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 20160,
+    "bendStart": 20440,
+    "bendEnd": 20860,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 20300,
+    "bendStart": 20440,
+    "bendEnd": 20860,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 20690,
+    "bendStart": 20970,
+    "bendEnd": 21390,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 20830,
+    "bendStart": 20970,
+    "bendEnd": 21390,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 21220,
+    "bendStart": 21500,
+    "bendEnd": 21820,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 21360,
+    "bendStart": 21500,
+    "bendEnd": 21820,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 21750,
+    "bendStart": 22030,
+    "bendEnd": 22350,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 21890,
+    "bendStart": 22030,
+    "bendEnd": 22350,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 22460,
+    "bendStart": 22740,
+    "bendEnd": 23060,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 22600,
+    "bendStart": 22740,
+    "bendEnd": 23060,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 22880,
+    "bendStart": 23160,
+    "bendEnd": 23480,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 23020,
+    "bendStart": 23160,
+    "bendEnd": 23480,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 23300,
+    "bendStart": 23580,
+    "bendEnd": 23900,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 23440,
+    "bendStart": 23580,
+    "bendEnd": 23900,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 23720,
+    "bendStart": 24000,
+    "bendEnd": 24320,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 23860,
+    "bendStart": 24000,
+    "bendEnd": 24320,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 24430,
+    "bendStart": 24710,
+    "bendEnd": 25150,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 24570,
+    "bendStart": 24710,
+    "bendEnd": 25150,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 24980,
+    "bendStart": 25260,
+    "bendEnd": 25710,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 25120,
+    "bendStart": 25260,
+    "bendEnd": 25710,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 25620,
+    "bendStart": 25900,
+    "bendEnd": 26270,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 25760,
+    "bendStart": 25900,
+    "bendEnd": 26270,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 26170,
+    "bendStart": 26450,
+    "bendEnd": 26820,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 26310,
+    "bendStart": 26450,
+    "bendEnd": 26820,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 26810,
+    "bendStart": 27090,
+    "bendEnd": 27420,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 26950,
+    "bendStart": 27090,
+    "bendEnd": 27420,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 27320,
+    "bendStart": 27600,
+    "bendEnd": 27930,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 27460,
+    "bendStart": 27600,
+    "bendEnd": 27930,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 27840,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 27980,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 28150,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28215,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28280,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28345,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28410,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28475,
+    "bendStart": 28120,
+    "bendEnd": 28530,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28340,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 28480,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 28650,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28715,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28780,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28845,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28910,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 28975,
+    "bendStart": 28620,
+    "bendEnd": 29030,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 29310,
+    "bendStart": 29590,
+    "bendEnd": 29930,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 29450,
+    "bendStart": 29590,
+    "bendEnd": 29930,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 29760,
+    "bendStart": 30040,
+    "bendEnd": 30380,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 29900,
+    "bendStart": 30040,
+    "bendEnd": 30380,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 30190,
+    "bendStart": 30470,
+    "bendEnd": 30800,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 30330,
+    "bendStart": 30470,
+    "bendEnd": 30800,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 30640,
+    "bendStart": 30920,
+    "bendEnd": 31250,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 30780,
+    "bendStart": 30920,
+    "bendEnd": 31250,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 32100,
+    "bendStart": 32380,
+    "bendEnd": 32660,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 32240,
+    "bendStart": 32380,
+    "bendEnd": 32660,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 32530,
+    "bendStart": 32810,
+    "bendEnd": 33090,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 32670,
+    "bendStart": 32810,
+    "bendEnd": 33090,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 33150,
+    "bendStart": 33430,
+    "bendEnd": 33600,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 33290,
+    "bendStart": 33430,
+    "bendEnd": 33600,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 33650,
+    "bendStart": 33930,
+    "bendEnd": 34100,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 33790,
+    "bendStart": 33930,
+    "bendEnd": 34100,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34140,
+    "bendStart": 34420,
+    "bendEnd": 34490,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34280,
+    "bendStart": 34420,
+    "bendEnd": 34490,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34350,
+    "bendStart": 34630,
+    "bendEnd": 34700,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34490,
+    "bendStart": 34630,
+    "bendEnd": 34700,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34460,
+    "bendStart": 34740,
+    "bendEnd": 34830,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34600,
+    "bendStart": 34740,
+    "bendEnd": 34830,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34640,
+    "bendStart": 34920,
+    "bendEnd": 34990,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34780,
+    "bendStart": 34920,
+    "bendEnd": 34990,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34740,
+    "bendStart": 35020,
+    "bendEnd": 35090,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34880,
+    "bendStart": 35020,
+    "bendEnd": 35090,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34850,
+    "bendStart": 35130,
+    "bendEnd": 35200,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34990,
+    "bendStart": 35130,
+    "bendEnd": 35200,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 34960,
+    "bendStart": 35240,
+    "bendEnd": 35330,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 35100,
+    "bendStart": 35240,
+    "bendEnd": 35330,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 35370,
+    "bendStart": 35650,
+    "bendEnd": 35830,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 35510,
+    "bendStart": 35650,
+    "bendEnd": 35830,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 35920,
+    "bendStart": 36200,
+    "bendEnd": 36380,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 36060,
+    "bendStart": 36200,
+    "bendEnd": 36380,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 36480,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 36620,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 36790,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 36855,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 36920,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 36985,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37050,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37115,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37180,
+    "bendStart": 36760,
+    "bendEnd": 37210,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37020,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 37160,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 37330,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37395,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37460,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37525,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37590,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37655,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37720,
+    "bendStart": 37300,
+    "bendEnd": 37750,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 37840,
+    "bendStart": 38120,
+    "bendEnd": 38470,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 37980,
+    "bendStart": 38120,
+    "bendEnd": 38470,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 38380,
+    "bendStart": 38660,
+    "bendEnd": 39010,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 38520,
+    "bendStart": 38660,
+    "bendEnd": 39010,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 39050,
+    "bendStart": 39330,
+    "bendEnd": 39650,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 39190,
+    "bendStart": 39330,
+    "bendEnd": 39650,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 39590,
+    "bendStart": 39870,
+    "bendEnd": 40190,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 39730,
+    "bendStart": 39870,
+    "bendEnd": 40190,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 40190,
+    "bendStart": 40470,
+    "bendEnd": 40760,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 40330,
+    "bendStart": 40470,
+    "bendEnd": 40760,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 40690,
+    "bendStart": 40970,
+    "bendEnd": 41260,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 40830,
+    "bendStart": 40970,
+    "bendEnd": 41260,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 41190,
+    "bendStart": 41470,
+    "bendEnd": 41630,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 41330,
+    "bendStart": 41470,
+    "bendEnd": 41630,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 41690,
+    "bendStart": 41970,
+    "bendEnd": 42130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 41830,
+    "bendStart": 41970,
+    "bendEnd": 42130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 43430,
+    "bendStart": 43710,
+    "bendEnd": 44140,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 43570,
+    "bendStart": 43710,
+    "bendEnd": 44140,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 43970,
+    "bendStart": 44250,
+    "bendEnd": 44680,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 44110,
+    "bendStart": 44250,
+    "bendEnd": 44680,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 44810,
+    "bendStart": 45090,
+    "bendEnd": 45440,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 44950,
+    "bendStart": 45090,
+    "bendEnd": 45440,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 45340,
+    "bendStart": 45620,
+    "bendEnd": 45970,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 45480,
+    "bendStart": 45620,
+    "bendEnd": 45970,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 45780,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 45920,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 46090,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46155,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46220,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46285,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46350,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46415,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46480,
+    "bendStart": 46060,
+    "bendEnd": 46500,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46310,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 46450,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 46620,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46685,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46750,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46815,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46880,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 46945,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 47010,
+    "bendStart": 46590,
+    "bendEnd": 47020,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 47450,
+    "bendStart": 47730,
+    "bendEnd": 48130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 47590,
+    "bendStart": 47730,
+    "bendEnd": 48130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 47990,
+    "bendStart": 48270,
+    "bendEnd": 48680,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 48130,
+    "bendStart": 48270,
+    "bendEnd": 48680,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 48490,
+    "bendStart": 48770,
+    "bendEnd": 49110,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 48630,
+    "bendStart": 48770,
+    "bendEnd": 49110,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 49030,
+    "bendStart": 49310,
+    "bendEnd": 49660,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 49170,
+    "bendStart": 49310,
+    "bendEnd": 49660,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 49860,
+    "bendStart": 50140,
+    "bendEnd": 50440,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 50000,
+    "bendStart": 50140,
+    "bendEnd": 50440,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 50260,
+    "bendStart": 50540,
+    "bendEnd": 50840,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 50400,
+    "bendStart": 50540,
+    "bendEnd": 50840,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 50660,
+    "bendStart": 50940,
+    "bendEnd": 51240,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 50800,
+    "bendStart": 50940,
+    "bendEnd": 51240,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 51050,
+    "bendStart": 51330,
+    "bendEnd": 51630,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 51190,
+    "bendStart": 51330,
+    "bendEnd": 51630,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 51830,
+    "bendStart": 52110,
+    "bendEnd": 52180,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 51970,
+    "bendStart": 52110,
+    "bendEnd": 52180,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 53410,
+    "bendStart": 53690,
+    "bendEnd": 54080,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 53550,
+    "bendStart": 53690,
+    "bendEnd": 54080,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 53940,
+    "bendStart": 54220,
+    "bendEnd": 54620,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 54080,
+    "bendStart": 54220,
+    "bendEnd": 54620,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 54430,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 54570,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 54740,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 54805,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 54870,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 54935,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55000,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55065,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55130,
+    "bendStart": 54710,
+    "bendEnd": 55140,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 54960,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 55100,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 55270,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55335,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55400,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55465,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55530,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55595,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55660,
+    "bendStart": 55240,
+    "bendEnd": 55680,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 55700,
+    "bendStart": 55980,
+    "bendEnd": 56290,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 55840,
+    "bendStart": 55980,
+    "bendEnd": 56290,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 56130,
+    "bendStart": 56410,
+    "bendEnd": 56720,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 56270,
+    "bendStart": 56410,
+    "bendEnd": 56720,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 56620,
+    "bendStart": 56900,
+    "bendEnd": 57150,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 56760,
+    "bendStart": 56900,
+    "bendEnd": 57150,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 57050,
+    "bendStart": 57330,
+    "bendEnd": 57580,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 57190,
+    "bendStart": 57330,
+    "bendEnd": 57580,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 57680,
+    "bendStart": 57960,
+    "bendEnd": 58130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 57820,
+    "bendStart": 57960,
+    "bendEnd": 58130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 58210,
+    "bendStart": 58490,
+    "bendEnd": 58670,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 58350,
+    "bendStart": 58490,
+    "bendEnd": 58670,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 58740,
+    "bendStart": 59020,
+    "bendEnd": 59370,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 58880,
+    "bendStart": 59020,
+    "bendEnd": 59370,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 59280,
+    "bendStart": 59560,
+    "bendEnd": 59910,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 59420,
+    "bendStart": 59560,
+    "bendEnd": 59910,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 60100,
+    "bendStart": 60380,
+    "bendEnd": 60740,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 60240,
+    "bendStart": 60380,
+    "bendEnd": 60740,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 60570,
+    "bendStart": 60850,
+    "bendEnd": 61210,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 60710,
+    "bendStart": 60850,
+    "bendEnd": 61210,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 62240,
+    "bendStart": 62520,
+    "bendEnd": 62850,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 62380,
+    "bendStart": 62520,
+    "bendEnd": 62850,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 62780,
+    "bendStart": 63060,
+    "bendEnd": 63390,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 62920,
+    "bendStart": 63060,
+    "bendEnd": 63390,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 63210,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 63350,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 63520,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 63585,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 63650,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 63715,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 63780,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 63845,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 63910,
+    "bendStart": 63490,
+    "bendEnd": 63930,
+    "direction": 1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 63750,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 63890,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "hairpin"
+  },
+  {
+    "distance": 64060,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 64125,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 64190,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 64255,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 64320,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 64385,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 64450,
+    "bendStart": 64030,
+    "bendEnd": 64480,
+    "direction": -1,
+    "kind": "chevron"
+  },
+  {
+    "distance": 64970,
+    "bendStart": 65250,
+    "bendEnd": 65640,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 65110,
+    "bendStart": 65250,
+    "bendEnd": 65640,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 65470,
+    "bendStart": 65750,
+    "bendEnd": 66140,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 65610,
+    "bendStart": 65750,
+    "bendEnd": 66140,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 65960,
+    "bendStart": 66240,
+    "bendEnd": 66610,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 66100,
+    "bendStart": 66240,
+    "bendEnd": 66610,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 66460,
+    "bendStart": 66740,
+    "bendEnd": 67120,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 66600,
+    "bendStart": 66740,
+    "bendEnd": 67120,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 67120,
+    "bendStart": 67400,
+    "bendEnd": 67720,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 67260,
+    "bendStart": 67400,
+    "bendEnd": 67720,
+    "direction": -1,
+    "kind": "turn"
+  },
+  {
+    "distance": 67530,
+    "bendStart": 67810,
+    "bendEnd": 68130,
+    "direction": 1,
+    "kind": "turn"
+  },
+  {
+    "distance": 67670,
+    "bendStart": 67810,
+    "bendEnd": 68130,
+    "direction": 1,
+    "kind": "turn"
+  }
+]
