@@ -13,42 +13,42 @@ export class TireEffects {
  private smoke:THREE.Mesh;private marks:THREE.Mesh;private particle=0;private segment=0;private lastTime=0;private emission=0;private slipTime=0;
  private previous=Array.from({length:4},()=>new THREE.Vector3());private previousNormal=Array.from({length:4},()=>new THREE.Vector3(0,1,0));private linked=[false,false,false,false];private emitted=[0,0,0,0];
  private point=new THREE.Vector3();private normal=new THREE.Vector3();private side=new THREE.Vector3();private oldSide=new THREE.Vector3();private delta=new THREE.Vector3();private vertices=Array.from({length:4},()=>new THREE.Vector3());
- constructor(scene:THREE.Scene){
+ constructor(scene:THREE.Scene,private mode:'smoke'|'dust'='smoke'){
   // Camera-facing radial puffs. No world-space stretch: every corner has the same view depth.
   const corners=[-1,-1,1,-1,-1,1,-1,1,1,-1,1,1],vertices:number[]=[],layers:number[]=[];
   for(let layer=0;layer<2;layer++)for(let i=0;i<6;i++){vertices.push(corners[i*2],corners[i*2+1],0);layers.push(layer);}
   this.smokeGeo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));this.smokeGeo.setAttribute('layer',new THREE.Float32BufferAttribute(layers,1));this.smokeGeo.instanceCount=PARTICLES;
   for(const [name,data,width] of [['center',this.smokePos,3],['size',this.sizes,1],['alpha',this.opacity,1],['age',this.ages,1]] as const)this.smokeGeo.setAttribute(name,new THREE.InstancedBufferAttribute(data,width).setUsage(THREE.DynamicDrawUsage));
-  this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,vertexShader:`attribute vec3 center;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
+  this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{tint:{value:mode==='dust'?new THREE.Vector3(.8,.53,.22):new THREE.Vector3(.97,.98,1)}},vertexShader:`attribute vec3 center;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
   void main(){
    float haze=layer;float radius=(.55+1.05*smoothstep(.01,.09,age))*(1.+haze*.2);
    vec3 origin=center+vec3(0.,radius*.65+haze*max(0.,age-.35)*.55,0.);
    vec4 p=modelViewMatrix*vec4(origin,1.);
    p.xy+=position.xy*radius;
    gl_Position=projectionMatrix*p;smokeUV=position.xy;opacity=alpha*mix(1.,.22*smoothstep(.12,.55,age),haze);
-  }`,fragmentShader:`varying vec2 smokeUV;varying float opacity;void main(){
+  }`,fragmentShader:`uniform vec3 tint;varying vec2 smokeUV;varying float opacity;void main(){
    float radius=length(smokeUV);
    float edge=1.-smoothstep(.08,1.,radius);
    float a=edge*edge*opacity*.65;if(a<.003)discard;
-   gl_FragColor=vec4(.97,.98,1.,a);
+   gl_FragColor=vec4(tint,a);
   }`}));
   this.markGeo.setAttribute('position',new THREE.BufferAttribute(this.markPos,3).setUsage(THREE.DynamicDrawUsage));this.markGeo.setAttribute('color',new THREE.BufferAttribute(this.colors,4).setUsage(THREE.DynamicDrawUsage));
   this.marks=new THREE.Mesh(this.markGeo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
-  this.smoke.name='tire-smoke';this.marks.name='tire-marks';this.smoke.frustumCulled=this.marks.frustumCulled=false;this.smoke.renderOrder=3;this.marks.renderOrder=1;scene.add(this.marks,this.smoke);this.clear();
+  this.smoke.name=mode==='dust'?'tire-dust':'tire-smoke';this.marks.name=mode==='dust'?'dust-unused-marks':'tire-marks';this.smoke.frustumCulled=this.marks.frustumCulled=false;this.smoke.renderOrder=3;this.marks.renderOrder=1;scene.add(this.marks,this.smoke);this.clear();
  }
  clear(time=0){this.born.fill(-100);this.markBorn.fill(-100);this.opacity.fill(0);this.colors.fill(0);this.linked.fill(false);this.emitted.fill(0);this.particle=this.segment=0;this.emission=this.slipTime=0;this.lastTime=time;this.smoke.visible=this.marks.visible=false;}
  update(time:number,speed:number,skidIntensity:number,contacts:TireContact[],scale:number){
   const dt=Math.max(0,Math.min(.1,time-this.lastTime));if(time<this.lastTime)this.clear(time);this.lastTime=time;
-  const active=skidIntensity>0,amount=THREE.MathUtils.clamp(skidIntensity,0,1);
+  const dust=this.mode==='dust',active=dust?speed>3&&contacts.some(c=>c.onRoad===false&&!!c.surface):skidIntensity>0,amount=THREE.MathUtils.clamp(dust?speed/45:skidIntensity,0,1);
   if(!active&&!this.smoke.visible&&!this.marks.visible){this.linked.fill(false);this.slipTime=this.emission=0;return;}
   this.slipTime=active?this.slipTime+dt:0;this.emission+=active?dt:0;const emit=active&&this.emission>=.012;if(emit)this.emission=0;
   for(let wheel=0;wheel<4;wheel++){
    const c=contacts.find(c=>c.name===WHEEL_NAMES[wheel]);
-   if(!active||!c?.surface||!c.onRoad||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
+   if(!active||!c?.surface||(dust?c.onRoad!==false:!c.onRoad)||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
    this.point.fromArray(c.surface);if(c.normal)this.normal.fromArray(c.normal);else this.normal.set(0,1,0);if(this.normal.y<0)this.normal.negate();this.point.addScaledVector(this.normal,.014);
    this.delta.subVectors(this.point,this.previous[wheel]);const distance=this.delta.length();
    if(emit){this.emitted[wheel]++;const i=this.particle++%PARTICLES;this.smokePos[i*3]=this.point.x;this.smokePos[i*3+1]=this.point.y;this.smokePos[i*3+2]=this.point.z;this.born[i]=time;this.strength[i]=.3+.7*amount;this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));const carry=this.linked[wheel]&&dt>0&&this.delta.length()<4?.25/dt:0;for(let axis=0;axis<3;axis++)this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;this.delta.subVectors(this.point,this.previous[wheel]);}
-   if(this.linked[wheel]&&distance>.35&&distance<4){
+   if(!dust&&this.linked[wheel]&&distance>.35&&distance<4){
     this.side.crossVectors(this.delta,this.normal).normalize().multiplyScalar(.23);this.oldSide.crossVectors(this.delta,this.previousNormal[wheel]).normalize().multiplyScalar(.23);
     const v=this.vertices;v[0].copy(this.previous[wheel]).add(this.oldSide);v[1].copy(this.previous[wheel]).sub(this.oldSide);v[2].copy(this.point).add(this.side);v[3].copy(this.point).sub(this.side);
     const index=this.segment++%SEGMENTS;for(let j=0;j<6;j++)v[CORNERS[j]].toArray(this.markPos,index*18+j*3);this.markBorn[index]=time;this.markStrength[index]=Math.sqrt(amount);

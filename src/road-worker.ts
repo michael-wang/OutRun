@@ -1,4 +1,4 @@
-import {canyonBend} from './canyon-identity';
+import {CANYON_BEND,canyonBend} from './canyon-identity';
 import {createPilotTrack,pilotSample,pilotWeights,type PilotCandidate} from './pilot-composer';
 import {prepareRoadChunk} from './road-chunk';
 import {addJourneyScenery} from './scenery';
@@ -31,7 +31,7 @@ worker.onmessage=(event:MessageEvent<Request>)=>{
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
   const record=(which:number,p:THREE.Vector3,yaw=0)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,0);dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
   for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);
-   if(candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1&&canyonBend(d)){record(0,p.position.clone().addScaledVector(p.right,roadOffset(8.3,width)).add(new THREE.Vector3(0,.5,0)));continue;}
+   if(candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1&&canyonBend(d)){record(0,p.position.clone().addScaledVector(p.right,roadOffset(CANYON_BEND.railOffset,width)).add(new THREE.Vector3(0,.5,0)));continue;}
    record(0,p.position.clone().addScaledVector(p.right,roadOffset(-12.4,width)).add(new THREE.Vector3(0,.58,0)));
    for(const side of [-1,1]){const base=p.position.clone().addScaledVector(p.right,roadOffset(side*12.4,width));record(1,base.clone().add(new THREE.Vector3(0,.8,0)),yaw);record(2,base.clone().add(new THREE.Vector3(0,1.45,0)),yaw);record(3,base.clone().add(new THREE.Vector3(0,1.05,0)),yaw);}
   }
