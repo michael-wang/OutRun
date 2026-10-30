@@ -19,10 +19,10 @@ export class TireEffects {
   for(let layer=0;layer<2;layer++)for(let i=0;i<6;i++){vertices.push(corners[i*2],corners[i*2+1],0);layers.push(layer);}
   this.smokeGeo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));this.smokeGeo.setAttribute('layer',new THREE.Float32BufferAttribute(layers,1));this.smokeGeo.instanceCount=PARTICLES;
   for(const [name,data,width] of [['center',this.smokePos,3],['size',this.sizes,1],['alpha',this.opacity,1],['age',this.ages,1]] as const)this.smokeGeo.setAttribute(name,new THREE.InstancedBufferAttribute(data,width).setUsage(THREE.DynamicDrawUsage));
-  this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{tint:{value:mode==='dust'?new THREE.Vector3(.8,.53,.22):new THREE.Vector3(.97,.98,1)}},vertexShader:`attribute vec3 center;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
+  this.smoke=new THREE.Mesh(this.smokeGeo,new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{puffRadius:{value:mode==='dust'?1.25:1.1},tint:{value:mode==='dust'?new THREE.Vector3(.8,.53,.22):new THREE.Vector3(.97,.98,1)}},vertexShader:`uniform float puffRadius;attribute vec3 center;attribute float size;attribute float alpha;attribute float age;attribute float layer;varying vec2 smokeUV;varying float opacity;
   void main(){
-   float haze=layer;float radius=(.55+1.05*smoothstep(.01,.09,age))*(1.+haze*.2);
-   vec3 origin=center+vec3(0.,radius*.65+haze*max(0.,age-.35)*.55,0.);
+   float haze=layer;float radius=(.42+(puffRadius-.42)*smoothstep(.02,.25,age))*(1.+haze*.08);
+   vec3 origin=center+vec3(0.,radius*.48+haze*max(0.,age-.45)*.35,0.);
    vec4 p=modelViewMatrix*vec4(origin,1.);
    p.xy+=position.xy*radius;
    gl_Position=projectionMatrix*p;smokeUV=position.xy;opacity=alpha*mix(1.,.22*smoothstep(.12,.55,age),haze);
@@ -47,8 +47,14 @@ export class TireEffects {
    if(!active||!c?.surface||(dust?c.onRoad!==false:!c.onRoad)||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
    this.point.fromArray(c.surface);if(c.normal)this.normal.fromArray(c.normal);else this.normal.set(0,1,0);if(this.normal.y<0)this.normal.negate();this.point.addScaledVector(this.normal,.014);
    this.delta.subVectors(this.point,this.previous[wheel]);const distance=this.delta.length();
-   if(emit){this.emitted[wheel]++;const i=this.particle++%PARTICLES;this.smokePos[i*3]=this.point.x;this.smokePos[i*3+1]=this.point.y;this.smokePos[i*3+2]=this.point.z;this.born[i]=time;this.strength[i]=.3+.7*amount;this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));const carry=this.linked[wheel]&&dt>0&&this.delta.length()<4?.25/dt:0;for(let axis=0;axis<3;axis++)this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;this.delta.subVectors(this.point,this.previous[wheel]);}
-   if(!dust&&this.linked[wheel]&&distance>.35&&distance<4){
+    if(emit){
+     // Fill the travelled segment, not just the latest wheel position: compact puffs still overlap at arcade speeds.
+     const travel=this.point.distanceTo(this.smokePrevious[wheel]),samples=this.linked[wheel]&&travel<12?Math.min(8,Math.max(1,Math.ceil(travel/.5))):1;
+     this.delta.subVectors(this.point,this.smokePrevious[wheel]);this.delta.addScaledVector(this.normal,-this.delta.dot(this.normal));const carry=this.linked[wheel]&&dt>0&&travel<12?.25/dt:0;
+     for(let n=1;n<=samples;n++){this.emitted[wheel]++;const i=this.particle++%PARTICLES,f=n/samples;for(let axis=0;axis<3;axis++){this.smokePos[i*3+axis]=this.point.getComponent(axis)-(samples>1?this.delta.getComponent(axis)*(1-f):0);this.velocity[i*3+axis]=this.delta.getComponent(axis)*carry;}this.born[i]=time-dt*(1-f);this.strength[i]=.3+.7*amount;}
+     this.delta.subVectors(this.point,this.previous[wheel]);
+    }
+   if(!dust&&this.linked[wheel]&&distance>.35&&distance<12){
     this.side.crossVectors(this.delta,this.normal).normalize().multiplyScalar(.23);this.oldSide.crossVectors(this.delta,this.previousNormal[wheel]).normalize().multiplyScalar(.23);
     const v=this.vertices;v[0].copy(this.previous[wheel]).add(this.oldSide);v[1].copy(this.previous[wheel]).sub(this.oldSide);v[2].copy(this.point).add(this.side);v[3].copy(this.point).sub(this.side);
     const index=this.segment++%SEGMENTS;for(let j=0;j<6;j++)v[CORNERS[j]].toArray(this.markPos,index*18+j*3);this.markBorn[index]=time;this.markStrength[index]=Math.sqrt(amount);

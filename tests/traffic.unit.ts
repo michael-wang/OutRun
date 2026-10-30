@@ -1,3 +1,4 @@
+import {createState} from '../src/handling';
 import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {Traffic,trafficLayout,TRAFFIC_LIMIT,TRAFFIC_TYPES} from '../src/traffic';
@@ -19,9 +20,9 @@ describe('sparse road trip traffic',()=>{
  it('follows elevated lanes, obeys streaming readiness, bounds resources and limits contact penalties',()=>{
   const scene=new THREE.Scene();let ready=true;const traffic=new Traffic(scene,sample,()=>7,69000,1,()=>ready);
   traffic.update(0,350);const a=traffic.inspect().actors[0];expect(a.visible).toBe(true);expect(a.y).toBeCloseTo(a.distance*.1+.02);expect(a.grade).toBeCloseTo(.1);expect(Math.abs(a.lateral)+TRAFFIC_TYPES[a.type].width/2).toBeLessThan(7);
-  expect(traffic.hit(0,a.distance,a.lateral)).toBe(true);expect(traffic.hit(.2,a.distance,a.lateral)).toBe(false);expect(traffic.hit(2,a.distance+a.speed*2,a.lateral)).toBe(true);
-  ready=false;traffic.update(3,450);expect(traffic.inspect().actors.every(a=>!a.visible)).toBe(true);expect(scene.children.every(m=>(m as THREE.InstancedMesh).count===0)).toBe(true);
-  ready=true;const ids=scene.children.map(m=>(m as THREE.InstancedMesh).geometry.uuid);for(let t=4;t<600;t++)traffic.update(t,350+t*100);expect(traffic.inspect().actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);expect(scene.children.map(m=>(m as THREE.InstancedMesh).geometry.uuid)).toEqual(ids);
+  const state={...createState(),distance:a.distance,lateral:a.lateral,speed:70};expect(traffic.hit(0,state,{distance:a.distance-10,lateral:a.lateral},.05)).toBeDefined();expect(traffic.hit(.2,state,state,.05)).toBeUndefined();
+  ready=false;traffic.update(3,450);expect(traffic.inspect().actors.every(a=>!a.visible)).toBe(true);expect(scene.children.filter(m=>m.name.startsWith('traffic-')).every(m=>(m as THREE.InstancedMesh).count===0)).toBe(true);
+  ready=true;const ids=scene.children.filter(m=>m.name.startsWith('traffic-')).map(m=>(m as THREE.InstancedMesh).geometry.uuid);for(let t=4;t<600;t++)traffic.update(t,350+t*100);expect(traffic.inspect().actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);expect(scene.children.filter(m=>m.name.startsWith('traffic-')).map(m=>(m as THREE.InstancedMesh).geometry.uuid)).toEqual(ids);
   traffic.reset();expect(traffic.inspect().actors).toHaveLength(0);expect(traffic.inspect().impacts).toBe(0);traffic.dispose();expect(scene.children).toHaveLength(0);
  });
 });
