@@ -1,0 +1,632 @@
+[
+  {
+    "distance": 2365.184668999762,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 3.3852656555190452,
+      "right": 6.475406244451083
+    }
+  },
+  {
+    "distance": 2380.417021650674,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 2.9861792982944073,
+      "right": 6.547967400310108
+    }
+  },
+  {
+    "distance": 2395.708495282537,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 2.6186613217299137,
+      "right": 6.614788850594561
+    }
+  },
+  {
+    "distance": 2411.0584338173835,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 2.2971526672672926,
+      "right": 6.673244969587765
+    }
+  },
+  {
+    "distance": 2424.544292697607,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 2.062546507388136,
+      "right": 6.715900635020339
+    }
+  },
+  {
+    "distance": 2440.013676910856,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.854693969613705,
+      "right": 6.753692005524781
+    }
+  },
+  {
+    "distance": 2453.581284034115,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.7275045107704408,
+      "right": 6.776817361678101
+    }
+  },
+  {
+    "distance": 2469.144531063635,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.6407906380545727,
+      "right": 6.7925835203537135
+    }
+  },
+  {
+    "distance": 2482.8268147610265,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.607561090768983,
+      "right": 6.798625256223821
+    }
+  },
+  {
+    "distance": 2498.481492637604,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.6000056628670665,
+      "right": 6.799998970387806
+    }
+  },
+  {
+    "distance": 2512.2531752898694,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2528.0205204914814,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2541.8677769259193,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2557.732915410908,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2571.6042831126433,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2587.3367679368635,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2601.133083199996,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2616.972333188995,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2630.90863345559,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2646.956387500398,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2661.0510372660947,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2677.252096994581,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2691.5100786067965,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2707.8327749991636,
+    "fps": 59.99400059993999,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2722.125166365316,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2738.444501602615,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2752.729847086874,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2769.062895212921,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2783.326931785262,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2799.6303172686426,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2815.920620002932,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2830.177468753815,
+    "fps": 60.00393468424162,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2846.423322469664,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2860.620725873043,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2876.8060220294847,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2890.946970019143,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2907.0665432101696,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2921.151050299992,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2937.209944687497,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2951.2467284494533,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2967.2597298944943,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2981.277914090777,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 2997.2693130369776,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 3011.2582724360127,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 3027.273654887508,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 3041.302667877644,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 3057.360194517986,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 3071.4453569846924,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 3087.630350707691,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 1.5999999999999996,
+      "right": 6.8
+    }
+  },
+  {
+    "distance": 3101.8287759234954,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 1.6000098762202661,
+      "right": 6.799998204323588
+    }
+  },
+  {
+    "distance": 3118.1376300134057,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 1.6088631803557316,
+      "right": 6.798388512662594
+    }
+  },
+  {
+    "distance": 3132.425152213251,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 1.6469387819991663,
+      "right": 6.7914656760001515
+    }
+  },
+  {
+    "distance": 3148.7641035510496,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 1.745889882369692,
+      "right": 6.773474566841874
+    }
+  },
+  {
+    "distance": 3163.033817886531,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 1.8903182638753648,
+      "right": 6.747214861113569
+    }
+  },
+  {
+    "distance": 3179.3733066583427,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 2.1257296251021147,
+      "right": 6.704412795435979
+    }
+  },
+  {
+    "distance": 3193.6553119422765,
+    "fps": 59.988002399520106,
+    "ready": true,
+    "shoulders": {
+      "left": 2.390104517406272,
+      "right": 6.656344633198859
+    }
+  },
+  {
+    "distance": 3210.011537105846,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 2.751309418286974,
+      "right": 6.590671014856913
+    }
+  },
+  {
+    "distance": 3226.333043510763,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 3.159879578806344,
+      "right": 6.516385531126119
+    }
+  },
+  {
+    "distance": 3240.627059446044,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 3.542914293205522,
+      "right": 6.446742855780814
+    }
+  },
+  {
+    "distance": 3256.9705514248035,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 3.9914143739531727,
+      "right": 6.365197386553969
+    }
+  },
+  {
+    "distance": 3271.25559118345,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 4.376751000378921,
+      "right": 6.295136181749287
+    }
+  },
+  {
+    "distance": 3287.582480328537,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 4.791079872154867,
+      "right": 6.219803659608206
+    }
+  },
+  {
+    "distance": 3301.8765436519184,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 5.116931362450004,
+      "right": 6.160557934099999
+    }
+  },
+  {
+    "distance": 3318.217316934559,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 5.433357992214959,
+      "right": 6.10302581959728
+    }
+  },
+  {
+    "distance": 3332.5109593042416,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 5.6528863177181945,
+      "right": 6.063111578596692
+    }
+  },
+  {
+    "distance": 3348.8377264862797,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 5.8337783153265494,
+      "right": 6.030222124486082
+    }
+  },
+  {
+    "distance": 3363.131347167444,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 5.932645506989527,
+      "right": 6.0122462714564495
+    }
+  },
+  {
+    "distance": 3379.4595414899964,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 5.987287963989026,
+      "right": 6.002311279274722
+    }
+  },
+  {
+    "distance": 3393.76608666843,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 5.99961740870387,
+      "right": 6.000069562053842
+    }
+  },
+  {
+    "distance": 3410.0945954059544,
+    "fps": 60,
+    "ready": true,
+    "shoulders": {
+      "left": 6,
+      "right": 6
+    }
+  }
+]

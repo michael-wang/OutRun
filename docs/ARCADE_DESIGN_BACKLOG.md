@@ -22,3 +22,8 @@ One selectable ~8–12min real long journey with distance-based finish/replay/ne
 Later possible road-trip freedom/Mystery Drive, traffic/rivals/obstacles, future snow/mountain/volcano world packs and car/garage/RPG progression **only when player wants to replay a long route without rewards**.
 
 No automated AAA difficulty theater, parallel Goals in same local checkout, erroneous docs-only main merge/reset or out-of-scope work.
+## Roadside Polish — Deferred
+
+1. Traffic cones and warning triangles need collision sounds. Their launch velocity should primarily follow the player's forward momentum and impact direction, rather than always flying sideways.
+2. Rocky shoulders should eventually include recognizable individual boulders and irregular gaps, not only continuous rock walls.
+3. Cone placement needs contextual reasons: hazardous rocky shoulders, roadworks, sharp turns, or roadside obstacles.

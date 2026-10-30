@@ -2,7 +2,7 @@ import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
 import * as THREE from 'three';
 import {ACTS} from './acts';
-import {roadOffset,LANE_WIDTH} from './road-profile';
+import {roadOffset,LANE_WIDTH,type Shoulders} from './road-profile';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -10,13 +10,13 @@ export interface RayRange {start:number;end:number;offset:number;count:number}
 export interface RoadMeshData {normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[]):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number)=>{
   if(to<=from)return;const positions:number[]=[],uvs:number[]=[],colors:number[]=[],indices:number[]=[],normals:number[]=[],n=Math.ceil((to-from)/step);
-  const point=(d:number,raw:Edge,h:number)=>{const p=sample(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d))),w=weightsAt(d);const coastal=h<-10?-4.88:-5.05;v.y=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;return v;};
+  const point=(d:number,raw:Edge,h:number)=>{const p=sample(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d),shoulders?.(d))),w=weightsAt(d);const coastal=h<-10?-4.88:-5.05;v.y=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;return v;};
   for(let i=0;i<=n;i++){const d=from+(to-from)*i/n,p=sample(d);for(const [raw,h] of [[a,ha],[b,hb]] as [Edge,number][]){
-   const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d))),weights=weightsAt(d);
+   const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d),shoulders?.(d))),weights=weightsAt(d);
    const coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h,height=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;
    const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop,v.z);uvs.push(o/4,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
@@ -45,7 +45,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   if(d<0||(canyon&&canyonBend(d))||rockyAt(d,side,rocks))continue;const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
  const positions:number[]=[],indices:number[]=[],n=Math.ceil((end-start)/2.5);
- for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d)));positions.push(v.x,v.y-.1,v.z,v.x,Math.min(v.y-4,-5),v.z);}}
+ for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d),shoulders?.(d)));positions.push(v.x,v.y-.1,v.z,v.x,Math.min(v.y-4,-5),v.z);}}
  for(let i=0;i<n;i++)for(let side=0;side<2;side++){const a=i*4+side*2,b=a+4;indices.push(a,a+1,b,a+1,b+1,b);}
  out.push({kind:'support',positions:new Float32Array(positions),uvs:new Float32Array(),colors:new Float32Array(),indices:new Uint32Array(indices)});
  for(const r of rocks){const wall=rockWall(sample,halfAt,r,start,end);if(wall)out.push(wall);}

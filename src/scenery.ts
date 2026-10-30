@@ -1,14 +1,14 @@
 import type {RockySection} from './rocky-shoulder';
 import {canyonBend,canyonBlend} from './canyon-identity';
 import {RoadClearance} from './road-clearance';
-import {roadOffset} from './road-profile';
+import {roadOffset,type Shoulders} from './road-profile';
 import * as THREE from 'three';
 import {ACTS,actWeights} from './acts';
 import type {createTrack} from './track';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[]}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -25,7 +25,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  const dummy=new THREE.Object3D(),quaternion=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
  let base=new THREE.Vector3(),yaw=0,chunk=0;
  const roadSamples=range.roadSamples??Array.from({length:Math.ceil(length/25)},(_,i)=>sample(i*25).position);
- function anchor(d:number,offset:number){chunk=Math.floor(d/650);const p=sample(d);base=p.position.addScaledVector(p.right,roadOffset(offset,halfAt(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);yaw=-p.roadHeading;}
+ function anchor(d:number,offset:number){chunk=Math.floor(d/650);const p=sample(d);base=p.position.addScaledVector(p.right,roadOffset(offset,halfAt(d),range.shoulders?.(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);yaw=-p.roadHeading;}
  const clearance=range.clearance??new RoadClearance(roadSamples,halfAt,range.openRoad);
  function clear(radius:number){return clearance.clear(base,radius);}
  function part(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0){
