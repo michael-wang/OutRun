@@ -1,0 +1,1409 @@
+{
+  "environment": "Edge 915x412 touch DPR2; 4x CPU slowdown; desktop GPU, not physical Pixel 8",
+  "audioRecorded": true,
+  "results": [
+    {
+      "name": "clean",
+      "rows": [
+        {
+          "time": 0.13339999999999963,
+          "speedKmh": 270.632531608828,
+          "lateral": 3.757340014061068,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 3.13744268551123,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.2666999999999998,
+          "speedKmh": 271.5853911889995,
+          "lateral": 3.672547778647206,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 2.7626516047972447,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.4001000000000008,
+          "speedKmh": 272.50381146135214,
+          "lateral": 3.569770243057711,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 14.42649264991729,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.5333000000000007,
+          "speedKmh": 273.38056337721713,
+          "lateral": 3.490958031171017,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 28.38552959249997,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.6666999999999997,
+          "speedKmh": 274.2286224774935,
+          "lateral": 3.512499070359187,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 42.44864592207647,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.8000999999999997,
+          "speedKmh": 275.08719391521777,
+          "lateral": 3.7000180891368646,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 56.58216769663809,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.9332999999999989,
+          "speedKmh": 275.9578272572339,
+          "lateral": 3.920483142531396,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 70.76214517856606,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 1.066699999999998,
+          "speedKmh": 276.8423784439186,
+          "lateral": 4.011932077431891,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 85.02204627617715,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 1.200099999999998,
+          "speedKmh": 277.7385472675209,
+          "lateral": 4.030836110840149,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 99.33579099954223,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 1.433399999999997,
+          "speedKmh": 279.330076535521,
+          "lateral": 4.030023786270686,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 124.508275992351,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 1.5667999999999969,
+          "speedKmh": 280.2515038668866,
+          "lateral": 4.057898873344685,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 138.99053853647297,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 1.7000999999999966,
+          "speedKmh": 281.1785027597098,
+          "lateral": 4.034020661588593,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 153.62262927328632,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        }
+      ]
+    },
+    {
+      "name": "side",
+      "rows": [
+        {
+          "time": 0.13340000000000052,
+          "speedKmh": 131.32982773514445,
+          "lateral": 1.1517533716274468,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 0.45175341931116264,
+          "fps": 60,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.2501000000000003,
+          "speedKmh": 119.98165293866957,
+          "lateral": 1.0992266464866793,
+          "playerYaw": -0.06748736624979347,
+          "playerSlide": 3.3832301763042767,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 1,
+          "sparks": 43,
+          "minClearance": 0.11999999999999988,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.09959679512094478,
+              "yaw": -0.08973484978619907,
+              "slide": 3.864726450497374,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 0.5000000000000007,
+          "speedKmh": 125.57284814582123,
+          "lateral": 1.2769300230881835,
+          "playerYaw": -0.1357324407061372,
+          "playerSlide": 1.8301361979678936,
+          "skid": 0.15,
+          "squeal": 0.023711152840740865,
+          "smoke": 84,
+          "marks": 36,
+          "impacts": 1,
+          "sparks": 43,
+          "minClearance": 0.6601280745795246,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.816770175876386,
+              "yaw": -0.20536737401413305,
+              "slide": 2.0567767446477885,
+              "skid": 0.19759294033950722
+            }
+          ]
+        },
+        {
+          "time": 0.6334000000000007,
+          "speedKmh": 128.52791612449406,
+          "lateral": 1.456033154028769,
+          "playerYaw": -0.10037850395460686,
+          "playerSlide": 1.2976837267269603,
+          "skid": 0.03260690849627735,
+          "squeal": 0.007818422978035977,
+          "smoke": 148,
+          "marks": 68,
+          "impacts": 1,
+          "sparks": 43,
+          "minClearance": 3.4488210810035267,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.0421117516636942,
+              "yaw": -0.16551601647752032,
+              "slide": 1.3792273137793443,
+              "skid": 0.06515352481696648
+            }
+          ]
+        },
+        {
+          "time": 0.7666999999999995,
+          "speedKmh": 131.4312192685238,
+          "lateral": 1.631139005459275,
+          "playerYaw": -0.0723974142723326,
+          "playerSlide": 0.9395449555225779,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 43,
+          "minClearance": 6.658617209480975,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.1904480862083595,
+              "yaw": -0.1305438538383431,
+              "slide": 0.8874702787298983,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 0.9000999999999996,
+          "speedKmh": 134.28177656233763,
+          "lateral": 1.7997979541425324,
+          "playerYaw": -0.05193564356205535,
+          "playerSlide": 0.6661975216185071,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 10.111323235799441,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.2805656587422152,
+              "yaw": -0.10252500279848788,
+              "slide": 0.4978752487517076,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.0334999999999985,
+          "speedKmh": 137.07537025869385,
+          "lateral": 2.1955010684737184,
+          "playerYaw": -0.037217352890184074,
+          "playerSlide": 0.4772718313254313,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 13.747927281646245,
+          "fps": 59,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.3267611885384427,
+              "yaw": -0.08045794999674569,
+              "slide": 0.21354890143021885,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.166699999999998,
+          "speedKmh": 139.80728116731166,
+          "lateral": 2.7409214311179775,
+          "playerYaw": -0.026678349557940774,
+          "playerSlide": 0.3420942232042696,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 17.636336462872194,
+          "fps": 59,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.3402288770697142,
+              "yaw": -0.06315561338679987,
+              "slide": 0.0032560047991346363,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.3001999999999978,
+          "speedKmh": 142.50179200575027,
+          "lateral": 3.235261868084875,
+          "playerYaw": -0.01910825477724028,
+          "playerSlide": 0.2450497398944781,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 21.787026643396377,
+          "fps": 59,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.3296442537622764,
+              "yaw": -0.04954520230619341,
+              "slide": 0.1504542410398679,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.4333999999999982,
+          "speedKmh": 145.15725782368997,
+          "lateral": 3.624011133204253,
+          "playerYaw": -0.013696015082355253,
+          "playerSlide": 0.1756223947030826,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 26.178908661646258,
+          "fps": 59,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.301720189881566,
+              "yaw": -0.038888204710880135,
+              "slide": 0.2600560112934689,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.5667999999999975,
+          "speedKmh": 144.93453796954796,
+          "lateral": 3.85179989266264,
+          "playerYaw": -0.009812006450632092,
+          "playerSlide": 0.12581797324064287,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 30.70702234167713,
+          "fps": 59,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.261504997328936,
+              "yaw": -0.030512819601867906,
+              "slide": 0.33612478991035266,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.7000999999999964,
+          "speedKmh": 144.2041641137779,
+          "lateral": 3.9585380976786397,
+          "playerYaw": -0.0070311551738817596,
+          "playerSlide": 0.09016003028456351,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 35.16031656292727,
+          "fps": 59,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.21300151874047,
+              "yaw": -0.02394546594177722,
+              "slide": 0.38643713894129955,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.833399999999997,
+          "speedKmh": 146.19964956000618,
+          "lateral": 4.0183202981527755,
+          "playerYaw": -0.005038459755590179,
+          "playerSlide": 0.06527738607986212,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 39.676651093838586,
+          "fps": 59,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.1591724457215737,
+              "yaw": -0.018791695445662705,
+              "slide": 0.4170385045978874,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.9666999999999961,
+          "speedKmh": 148.43853607932826,
+          "lateral": 4.057270854945574,
+          "playerYaw": -0.0036105313054386164,
+          "playerSlide": 0.04629741859370277,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 44.40063983999988,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.1022785168808993,
+              "yaw": -0.014747220852788593,
+              "slide": 0.43337319617036596,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.1000999999999954,
+          "speedKmh": 150.67619563863565,
+          "lateral": 4.085455341701218,
+          "playerYaw": -0.0025866128631003094,
+          "playerSlide": 0.03316802155703576,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 188,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 49.339362488788495,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.0439710464622707,
+              "yaw": -0.011571034917242437,
+              "slide": 0.43853848503383436,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.2334999999999963,
+          "speedKmh": 152.90949705738765,
+          "lateral": 4.107470563760642,
+          "playerYaw": -0.001853076748700253,
+          "playerSlide": 0.023761965301552296,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 140,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 54.48993026539146,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.9855518262577193,
+              "yaw": -0.009078946750486847,
+              "slide": 0.43562300398059195,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.366699999999995,
+          "speedKmh": 155.13447631427871,
+          "lateral": 4.12591904694827,
+          "playerYaw": -0.0013282368095172195,
+          "playerSlide": 0.017208366125075474,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 76,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 59.84416861665566,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.9280266303870388,
+              "yaw": -0.007126214695377257,
+              "slide": 0.42740567594148604,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.500099999999994,
+          "speedKmh": 157.35743300624443,
+          "lateral": 4.142763126301099,
+          "playerYaw": -0.0009515732085236176,
+          "playerSlide": 0.012328278248158384,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 8,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 65.41783397300034,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.8718807925504237,
+              "yaw": -0.005591464320700235,
+              "slide": 0.41458324325653373,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.633499999999995,
+          "speedKmh": 159.57470156394405,
+          "lateral": 4.159647805266639,
+          "playerYaw": -0.0006817105510680404,
+          "playerSlide": 0.008741538506193912,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 71.20248209425401,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.8176596086576051,
+              "yaw": -0.004387182221403037,
+              "slide": 0.3982846188509086,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.7667999999999937,
+          "speedKmh": 161.78431414415832,
+          "lateral": 4.178181736671946,
+          "playerYaw": -0.0004885069266672786,
+          "playerSlide": 0.0062641080321465085,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 77.19269537250726,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.7657059720566901,
+              "yaw": -0.0034429288228393176,
+              "slide": 0.3807795893986207,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.900199999999993,
+          "speedKmh": 163.989256459832,
+          "lateral": 4.200025841121212,
+          "playerYaw": -0.0003499718239937199,
+          "playerSlide": 0.004487681533196375,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 83.39639305761936,
+          "fps": 59.99999999999994,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.7161300800148078,
+              "yaw": -0.0027014168610327008,
+              "slide": 0.36220555986388414,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 3.0334999999999934,
+          "speedKmh": 166.18587029554607,
+          "lateral": 4.226805654544077,
+          "playerYaw": -0.0002507870907914699,
+          "playerSlide": 0.003215832293720029,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 89.80294907186145,
+          "fps": 59.98800239952016,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.6691065673397298,
+              "yaw": -0.002119995680899377,
+              "slide": 0.3431586137712741,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 3.166699999999992,
+          "speedKmh": 168.37379082344023,
+          "lateral": 4.260186043249768,
+          "playerYaw": -0.00017975981459358278,
+          "playerSlide": 0.002328607012900682,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 96.41029108500555,
+          "fps": 59.98800239952016,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.6246645929634075,
+              "yaw": -0.0016640347583868995,
+              "slide": 0.32468557359814615,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 3.300099999999991,
+          "speedKmh": 170.55752232534087,
+          "lateral": 4.301927735812713,
+          "playerYaw": -0.00012878100106760514,
+          "playerSlide": 0.0016684510285189583,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 88,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 103.23163173923186,
+          "fps": 59.98800239952016,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -0.582693524165205,
+              "yaw": -0.0013056397929027646,
+              "slide": 0.30578963918858093,
+              "skid": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rear",
+      "rows": [
+        {
+          "time": 0.13339999999999966,
+          "speedKmh": 270.29164411429497,
+          "lateral": -1.7962490338663821,
+          "playerYaw": 0,
+          "playerSlide": 0,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 0,
+          "impacts": 0,
+          "sparks": 0,
+          "minClearance": 3.1674789589913797,
+          "fps": 59.98800239952016,
+          "ready": true,
+          "traffic": []
+        },
+        {
+          "time": 0.2667000000000007,
+          "speedKmh": 129.66530683265825,
+          "lateral": -0.9582275878477255,
+          "playerYaw": -0.2282415021772994,
+          "playerSlide": 7.785736661913579,
+          "skid": 1,
+          "squeal": 0.12,
+          "smoke": 4,
+          "marks": 0,
+          "impacts": 1,
+          "sparks": 72,
+          "minClearance": 0.11999999999885824,
+          "fps": 59.98800239952016,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.1543345304215646,
+              "yaw": -0.2891059027579123,
+              "slide": 10.201599232087057,
+              "skid": 1
+            }
+          ]
+        },
+        {
+          "time": 0.4667000000000011,
+          "speedKmh": 130.3780905731903,
+          "lateral": 0.333350120316953,
+          "playerYaw": -0.2958787215153326,
+          "playerSlide": 4.722287993899683,
+          "skid": 1,
+          "squeal": 0.12,
+          "smoke": 176,
+          "marks": 48,
+          "impacts": 1,
+          "sparks": 72,
+          "minClearance": 3.903352167237554,
+          "fps": 59.98800239952016,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.7450118294587202,
+              "yaw": -0.37477971391942144,
+              "slide": 6.023149218131903,
+              "skid": 1
+            }
+          ]
+        },
+        {
+          "time": 0.6000000000000001,
+          "speedKmh": 131.0156663058749,
+          "lateral": 0.9190830858286524,
+          "playerYaw": -0.2531057181164388,
+          "playerSlide": 3.4190163379692926,
+          "skid": 0.6111299597406781,
+          "squeal": 0.07333559516888137,
+          "smoke": 192,
+          "marks": 80,
+          "impacts": 1,
+          "sparks": 72,
+          "minClearance": 10.2875820979264,
+          "fps": 59.98800239952016,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.39571039416736,
+              "yaw": -0.37922254810574546,
+              "slide": 2.6488218431631423,
+              "skid": 0.3773209166745254
+            }
+          ]
+        },
+        {
+          "time": 0.733299999999999,
+          "speedKmh": 131.65710268244652,
+          "lateral": 1.3522513461625243,
+          "playerYaw": -0.18750381730202453,
+          "playerSlide": 2.4497291349430124,
+          "skid": 0.31688205882198595,
+          "squeal": 0.03802584705863831,
+          "smoke": 192,
+          "marks": 112,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 15.259507268643079,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.417132610343423,
+              "yaw": -0.369485177116626,
+              "slide": 0.7184107072905235,
+              "skid": 0.04091224457260635
+            }
+          ]
+        },
+        {
+          "time": 0.8667000000000001,
+          "speedKmh": 132.41640644975192,
+          "lateral": 1.6796606137632655,
+          "playerYaw": -0.13524124810853402,
+          "playerSlide": 1.755235242467279,
+          "skid": 0.15,
+          "squeal": 0.018,
+          "smoke": 192,
+          "marks": 144,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 18.99286981352657,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.5,
+              "yaw": -0.3065998989422178,
+              "slide": 0,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 0.999999999999999,
+          "speedKmh": 133.26323281127068,
+          "lateral": 2.1261199548281704,
+          "playerYaw": -0.09704736299018474,
+          "playerSlide": 1.2577858197681715,
+          "skid": 0.024643771300620905,
+          "squeal": 0.0029572525560745085,
+          "smoke": 192,
+          "marks": 176,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 21.633728373785086,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.5,
+              "yaw": -0.2430911153032257,
+              "slide": 0,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.1333999999999986,
+          "speedKmh": 134.09788120607925,
+          "lateral": 2.7305682234868143,
+          "playerYaw": -0.06954708390474086,
+          "playerSlide": 0.901092727222525,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 23.328001960737897,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.5,
+              "yaw": -0.19110790868775177,
+              "slide": 0,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.2666999999999995,
+          "speedKmh": 136.89903977791718,
+          "lateral": 3.2742617582504385,
+          "playerYaw": -0.049839456930927055,
+          "playerSlide": 0.639092183173841,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 24.081957478039573,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.495649344507862,
+              "yaw": -0.15003000993154036,
+              "slide": 0.16363923884940093,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.4000999999999986,
+          "speedKmh": 139.6783206036681,
+          "lateral": 3.689166531320669,
+          "playerYaw": -0.03570564771483176,
+          "playerSlide": 0.4578532443610822,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 23.910111658082386,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.4484954845372378,
+              "yaw": -0.11772502634487081,
+              "slide": 0.5165404645510224,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.5333999999999974,
+          "speedKmh": 142.42436628665843,
+          "lateral": 3.9154937268107646,
+          "playerYaw": -0.02558639684888734,
+          "playerSlide": 0.328093525212192,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 22.94739852075235,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.3616500304798236,
+              "yaw": -0.09238834683573686,
+              "slide": 0.765823549268075,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.6667999999999965,
+          "speedKmh": 145.13874163973887,
+          "lateral": 4.034995992482403,
+          "playerYaw": -0.018330687010068094,
+          "playerSlide": 0.23507948945583923,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 21.26984031475208,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.2470732878720154,
+              "yaw": -0.07249151065530113,
+              "slide": 0.9360471356071377,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.7999999999999972,
+          "speedKmh": 144.97159918957337,
+          "lateral": 4.107508951487068,
+          "playerYaw": -0.013138914650839098,
+          "playerSlide": 0.17022280016929192,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 19.070735180939934,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -3.114269823208138,
+              "yaw": -0.05689964843377372,
+              "slide": 1.0446863106927846,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 1.9333999999999967,
+          "speedKmh": 144.2931406816125,
+          "lateral": 4.160169878808918,
+          "playerYaw": -0.009412843781758592,
+          "playerSlide": 0.1206988627217617,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 16.602296172624342,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.9698541191180046,
+              "yaw": -0.044644938438842756,
+              "slide": 1.1100532106149827,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.0667999999999958,
+          "speedKmh": 146.34163475398373,
+          "lateral": 4.204518698417883,
+          "playerYaw": -0.006743457060189708,
+          "playerSlide": 0.08647010140199855,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 13.775482184915314,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.8193085389434223,
+              "yaw": -0.03502961802554036,
+              "slide": 1.1399740661158924,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.2000999999999964,
+          "speedKmh": 148.63230045149342,
+          "lateral": 4.243614330038428,
+          "playerYaw": -0.004832255984941533,
+          "playerSlide": 0.061963698517498084,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 10.488643117056547,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.6667018453883222,
+              "yaw": -0.02749002983767512,
+              "slide": 1.1444256237375259,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.333299999999995,
+          "speedKmh": 150.91738270302122,
+          "lateral": 4.279219271029769,
+          "playerYaw": -0.003463623045182293,
+          "playerSlide": 0.044873982309375185,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 6.777327985236799,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.5149460345288133,
+              "yaw": -0.021577326215427878,
+              "slide": 1.1315096939092215,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.466699999999996,
+          "speedKmh": 153.2004726103311,
+          "lateral": 4.3131364964175924,
+          "playerYaw": -0.002481394469873041,
+          "playerSlide": 0.031818526213116254,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 192,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 5.758670585322645,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.365812820551651,
+              "yaw": -0.01693024572296454,
+              "slide": 1.102731758844411,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.600099999999995,
+          "speedKmh": 155.4774153562974,
+          "lateral": 4.346990013607596,
+          "playerYaw": -0.0017776867264244765,
+          "playerSlide": 0.022795170790458723,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 128,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 5.652408208445603,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.2210309138296345,
+              "yaw": -0.013283868589887277,
+              "slide": 1.0658473998380829,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.733399999999994,
+          "speedKmh": 157.74604038207372,
+          "lateral": 4.3472886843596505,
+          "playerYaw": -0.0012738732985139354,
+          "playerSlide": 0.016334814781339073,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 68,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 5.602048145570204,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -2.0817299045484394,
+              "yaw": -0.01042478570896869,
+              "slide": 1.022748965125757,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 2.8666999999999945,
+          "speedKmh": 160.00765017022258,
+          "lateral": 4.199543957079291,
+          "playerYaw": -0.0009128664725034284,
+          "playerSlide": 0.01170538165037273,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 4,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 5.390775670034464,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.9484651534882689,
+              "yaw": -0.008181203058246014,
+              "slide": 0.9757564871765525,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 3.0000999999999935,
+          "speedKmh": 162.2635260606326,
+          "lateral": 4.0012077176800505,
+          "playerYaw": -0.0006539756483825743,
+          "playerSlide": 0.008385874687805104,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 7.124563861096986,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.821537406512058,
+              "yaw": -0.006419106229856974,
+              "slide": 0.9266017285008011,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 3.1334999999999926,
+          "speedKmh": 164.51155019998382,
+          "lateral": 3.9247052000338063,
+          "playerYaw": -0.00046851371000002377,
+          "playerSlide": 0.00600774041168623,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 12.854392152566552,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.7012386411987592,
+              "yaw": -0.005036594122347828,
+              "slide": 0.8766441902089499,
+              "skid": 0
+            }
+          ]
+        },
+        {
+          "time": 3.2667999999999915,
+          "speedKmh": 166.7496016606626,
+          "lateral": 3.9321209766439056,
+          "playerYaw": -0.0003357358658624131,
+          "playerSlide": 0.004305092855679543,
+          "skid": 0,
+          "squeal": 0,
+          "smoke": 0,
+          "marks": 192,
+          "impacts": 1,
+          "sparks": 0,
+          "minClearance": 18.889178177515596,
+          "fps": 60,
+          "ready": true,
+          "traffic": [
+            {
+              "id": 62,
+              "offset": -1.5876888027302833,
+              "yaw": -0.0039525996520664,
+              "slide": 0.8268995550296687,
+              "skid": 0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
