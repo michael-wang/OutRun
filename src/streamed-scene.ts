@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type {BankStrength} from './banking';
 import type {PilotCandidate} from './pilot-composer';
 import type {RoadMeshData} from './road-chunk';
 
@@ -23,12 +24,12 @@ export class StreamedScene {
  private markerMaterials:THREE.Material[];
  private uploadOwners=new WeakMap<object,number>();
  private generation=1;private errorMessage='';
- constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[]){
+ constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank:BankStrength=0){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
   this.worker=new Worker(new URL('./road-worker.ts',import.meta.url),{type:'module'});
   this.worker.onmessage=event=>this.receive(event.data);this.worker.onerror=event=>{this.errorMessage=event.message;};
-  this.worker.postMessage({type:'init',generation:this.generation,stage});this.update(350);
+  this.worker.postMessage({type:'init',generation:this.generation,stage,bank});this.update(350);
  }
  private note(kind:string,index:number,ms:number){this.history.push({kind,index,ms});if(this.history.length>2000)this.history.shift();}
  private chunk(index:number){let chunk=this.chunks.get(index);if(!chunk){chunk={index,objects:[],groups:{},geometries:new Set(),road:'missing',scenery:'missing'};this.chunks.set(index,chunk);}return chunk;}

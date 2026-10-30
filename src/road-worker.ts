@@ -1,3 +1,4 @@
+import type {BankStrength} from './banking';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
 import {createPilotTrack,pilotSample,pilotWeights,type PilotCandidate} from './pilot-composer';
 import {prepareRoadChunk} from './road-chunk';
@@ -6,14 +7,14 @@ import * as THREE from 'three';
 import {RoadClearance} from './road-clearance';
 import {roadOffset} from './road-profile';
 
-type Request={type:'init';generation:number;stage:PilotCandidate}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
+type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let generation=-1,stage:PilotCandidate|undefined,track:ReturnType<typeof createPilotTrack>|undefined;
 let roadSamples:THREE.Vector3[]=[];let clearance:RoadClearance;
 const worker=self as unknown as {onmessage:(event:MessageEvent<Request>)=>void;postMessage:(message:unknown,transfer?:Transferable[])=>void};
 worker.onmessage=(event:MessageEvent<Request>)=>{
  const request=event.data;
  try{
-  if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;track=createPilotTrack(stage);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
+  if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;track=createPilotTrack(stage,request.bank);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
   if(request.generation!==generation||!stage||!track)return;
   const t=performance.now(),candidate=stage,current=track;
   if(request.type==='scenery'){

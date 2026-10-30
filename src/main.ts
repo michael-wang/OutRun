@@ -1,3 +1,4 @@
+import {bankPrototype,bankAngle} from './banking';
 import {TrafficImpact} from './traffic-impact';
 import {GuardrailContact} from './guardrail-contact';
 import {ImpactSparks} from './impact-sparks';
@@ -41,6 +42,8 @@ const defaultTrip=params.get('mode')!=='free'&&!['trip','stage','lab','challenge
 const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1):undefined;
 const stage=trip??(params.get('stage')==='1'?generateStage(Number(params.get('seed'))||1):undefined);
 const pilot=stage??(params.get('lab')==='pilots'?(PILOTS.find(b=>b.id===params.get('pilot'))??PILOTS[0]):undefined);
+const banking=bankPrototype(params.get('lab'),pilot?.id,params.get('bank'));
+const bankLab=params.get('lab')==='pilots'&&pilot?.id==='L2P-B'&&params.has('bank');
 const brick=pilot??l2??(labMode?(BRICKS.find(b=>b.id===new URLSearchParams(location.search).get('brick'))??BRICKS[0]):undefined);
 function momentFingerprint(value:unknown){let h=2166136261;for(const c of JSON.stringify(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 const momentCandidate={...L2_CANDIDATES[0],...(brick??{}),id:brick?.id??'FREE-DRIVE',seed:brick?.seed??0,contentFingerprint:brick?momentFingerprint({brick,handling:'v0.7D.1'}):'00000000',generatorVersion:brick?'brick-moments-v0.7D.2':'free-drive-v0.7D.2'};
@@ -66,7 +69,7 @@ renderer.setSize(innerWidth,innerHeight); renderer.outputColorSpace=THREE.SRGBCo
 renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
 renderer.shadowMap.enabled=!matchMedia('(pointer:coarse)').matches; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.domElement.tabIndex=-1;renderer.domElement.setAttribute('aria-label','Driving surface');$('view').append(renderer.domElement);
-const world=createWorld(brick?{chunked:!!stage,streamStage:stage&&(trip||import.meta.env.PROD||params.get('stream')!=='0')?stage:undefined,track:pilot?createPilotTrack(pilot):l2?createL2Track(l2):createBrickTrack(brick),theme:brick.sceneryAct,seed:brick.seed,roadWidth:brick.roadWidth,halfAt:d=>pilot?pilotSample(pilot,d).halfWidth:brickWidth(brick,d).halfWidth,weightsAt:pilot?(d=>pilotWeights(pilot,d)):undefined,narrowings:stage?stage.placements.filter(p=>p.channel==='width'&&p.parameters.to<p.parameters.from).map(p=>Math.max(BRICK_START+30,BRICK_START+p.startS-180)):brick.lanes.flatMap((k,i)=>i&&k[1]<brick.lanes[i-1][1]?[Math.max(BRICK_START+30,BRICK_START+brick.lanes[i-1][0]*brick.length/brick.nominalDuration-180)]:[]),course:pilot?pilotCourse(pilot):l2?l2Course(l2):brickCourse(brick),notice:brick.id==='BRK-03'?{distance:BRICK_START+brick.length*5/brick.nominalDuration,text:'LEFT BEND BEYOND'}:undefined}:{}); world.car.rotation.order="YXZ"; const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,.1,matchMedia('(pointer:coarse)').matches?1400:2200);
+const world=createWorld(brick?{bank:banking,chunked:!!stage,streamStage:bankLab?pilot:stage&&(trip||import.meta.env.PROD||params.get('stream')!=='0')?stage:undefined,track:pilot?createPilotTrack(pilot,banking):l2?createL2Track(l2):createBrickTrack(brick),theme:brick.sceneryAct,seed:brick.seed,roadWidth:brick.roadWidth,halfAt:d=>pilot?pilotSample(pilot,d).halfWidth:brickWidth(brick,d).halfWidth,weightsAt:pilot?(d=>pilotWeights(pilot,d)):undefined,narrowings:stage?stage.placements.filter(p=>p.channel==='width'&&p.parameters.to<p.parameters.from).map(p=>Math.max(BRICK_START+30,BRICK_START+p.startS-180)):brick.lanes.flatMap((k,i)=>i&&k[1]<brick.lanes[i-1][1]?[Math.max(BRICK_START+30,BRICK_START+brick.lanes[i-1][0]*brick.length/brick.nominalDuration-180)]:[]),course:pilot?pilotCourse(pilot):l2?l2Course(l2):brickCourse(brick),notice:brick.id==='BRK-03'?{distance:BRICK_START+brick.length*5/brick.nominalDuration,text:'LEFT BEND BEYOND'}:undefined}:{}); world.car.rotation.order="YXZ"; const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,.1,matchMedia('(pointer:coarse)').matches?1400:2200);
 if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;} advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
@@ -174,8 +177,15 @@ function groundHeight(height:number,lateral:number){
 function render(dt:number,draw=true){
   const p=world.sample(state.distance);
   world.car.position.copy(p.position).addScaledVector(p.right,state.lateral);
-  world.car.position.y=groundHeight(p.position.y,state.lateral)+.04;
+  world.car.position.y=groundHeight(p.position.y,state.lateral)+p.right.y*state.lateral+.04;
   world.car.rotation.set(-Math.atan2(p.tangent.y*Math.cos(state.heading),Math.hypot(p.tangent.x,p.tangent.z)),-p.roadHeading-state.heading-guardrail.yaw-trafficImpact.yaw,THREE.MathUtils.clamp(-state.slipAngle*.12,-.055,.055)+guardrail.roll+trafficImpact.roll);
+  if(p.right.y!==0){
+    // Grade remains a handling input from the unchanged centerline. Only pose uses cross-slope.
+    const grade=p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),cross=p.right.y;
+    const slopeChange=(world.sample(state.distance+.5).right.y-world.sample(state.distance-.5).right.y)*state.lateral;
+    world.car.rotation.x=-Math.atan((grade+slopeChange)*Math.cos(state.heading)+cross*Math.sin(state.heading));
+    world.car.rotation.z+=Math.atan(-cross*Math.cos(state.heading));
+  }
   const travelHeading=p.roadHeading;
   if(!initialized){cameraHeading=travelHeading;initialized=true;}
   else cameraHeading+=angleDifference(travelHeading-cameraHeading)*(1-Math.exp(-dt*7));
@@ -320,7 +330,7 @@ if(import.meta.env.DEV){(window as any).__drive={
     const xs=points.map(p=>(p.x+1)/2),ys=points.map(p=>(1-p.y)/2);
     return {left:Math.min(...xs),right:Math.max(...xs),top:Math.min(...ys),bottom:Math.max(...ys),width:Math.max(...xs)-Math.min(...xs)};
   },
-  snapshot:()=>({...state,roadHalfWidth:world.halfAt(state.distance),laneCount:pilot?pilotSample(pilot,state.distance).lanes:brick?brickWidth(brick,state.distance).lanes:3,highSpeedPace,effectivePace:effectivePace(state.speed,highSpeedPace),travelSpeed:state.speed*effectivePace(state.speed,highSpeedPace),mode,elapsed,frames,inputs:input.snapshot(),audio:sound.inspect(),trackLength:world.length,position:world.car.position.toArray(),swapped,surfaceError:surfaceError(),camera:{...chaseComposition(camera.aspect),position:camera.position.toArray()},immersive:immersive.snapshot(),rightScreenDelta:world.car.position.clone().add(world.sample(state.distance).right).project(camera).x-world.car.position.clone().project(camera).x}),
+  snapshot:()=>({...state,bankDegrees:bankAngle(state.distance,banking)*180/Math.PI,roadHalfWidth:world.halfAt(state.distance),laneCount:pilot?pilotSample(pilot,state.distance).lanes:brick?brickWidth(brick,state.distance).lanes:3,highSpeedPace,effectivePace:effectivePace(state.speed,highSpeedPace),travelSpeed:state.speed*effectivePace(state.speed,highSpeedPace),mode,elapsed,frames,inputs:input.snapshot(),audio:sound.inspect(),trackLength:world.length,position:world.car.position.toArray(),swapped,surfaceError:surfaceError(),camera:{...chaseComposition(camera.aspect),position:camera.position.toArray()},immersive:immersive.snapshot(),rightScreenDelta:world.car.position.clone().add(world.sample(state.distance).right).project(camera).x-world.car.position.clone().project(camera).x}),
   manual:(value:boolean)=>{manual=value;},
   advance:(seconds:number,override?:InputState,draw=true)=>{for(let i=0;i<Math.ceil(seconds*120);i++){advance(1/120,override);render(1/120,false);}render(1/120,draw);},
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{

@@ -1,3 +1,4 @@
+import type {BankStrength} from './banking';
 import {roadOffset,LANE_WIDTH} from './road-profile';
 import * as THREE from 'three';
 import {asphaltTexture} from './asphalt-texture';
@@ -10,7 +11,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
 import type {PilotCandidate} from './pilot-composer';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),offsetAt=(d:number,o:number)=>roadOffset(o,halfAt(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
@@ -132,7 +133,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
   sand.vertexColors=true;grass.vertexColors=true;
-  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial},annotations):undefined;
+  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial},annotations,options.bank):undefined;
   const scenery=streamer?{get instances(){return streamer.sceneryStats.instances;},get draws(){return streamer.sceneryStats.draws;}}:addJourneyScenery(scene,sample,length,options.theme,options.seed,halfAt,options.weightsAt);
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
   // Enclose the actual route. The former fixed (400,500)/1550m ring intersected
