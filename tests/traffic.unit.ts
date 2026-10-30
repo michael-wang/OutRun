@@ -13,9 +13,9 @@ describe('sparse road trip traffic',()=>{
   const later=trafficLayout(1,2,350,69000);for(const a of first){const b=later.find(b=>b.id===a.id);if(b)expect(b.distance-a.distance).toBeCloseTo(a.speed*2);}
   expect(new Set(TRAFFIC_TYPES.map(t=>t.speed)).size).toBe(3);
  });
- it('keeps a continuous lane position as a four-lane road narrows to two',()=>{
+ it('keeps taper and intentional 3.5-second lane changes continuous',()=>{
   const scene=new THREE.Scene(),half=(d:number)=>7-Math.min(3.5,Math.max(0,(d-650)*.01)),traffic=new Traffic(scene,sample,half,69000,1);traffic.update(0,350);let previous=traffic.inspect().actors;
-  for(let i=1;i<200;i++){traffic.update(i/10,350+i*4);const current=traffic.inspect().actors;for(const a of current){expect(Math.abs(a.lateral)+TRAFFIC_TYPES[a.type].width/2).toBeLessThan(half(a.distance));const old=previous.find(b=>b.id===a.id);if(old)expect(Math.abs(a.lateral-old.lateral)).toBeLessThan(.15);}previous=current;}traffic.dispose();
+  for(let i=1;i<200;i++){traffic.update(i/10,350+i*4);const current=traffic.inspect().actors;for(const a of current){expect(Math.abs(a.lateral)+TRAFFIC_TYPES[a.type].width/2).toBeLessThan(half(a.distance));const old=previous.find(b=>b.id===a.id);if(old)expect(Math.abs(a.lateral-old.lateral)).toBeLessThan(.21);}previous=current;}traffic.dispose();
  });
  it('follows elevated lanes, obeys streaming readiness, bounds resources and limits contact penalties',()=>{
   const scene=new THREE.Scene();let ready=true;const traffic=new Traffic(scene,sample,()=>7,69000,1,()=>ready);

@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {stageReady} from './stage-ready';
-const root='docs/evidence/stereo-pass-by';
+const root=process.env.OUTRUN_EVIDENCE_ROOT??'docs/evidence/stereo-pass-by';
 test('actual stereo passes, exclusions, mute, pause, replay and new route',async({browser})=>{
  mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width:915,height:412},deviceScaleFactor:2,isMobile:true,hasTouch:true}),page=await context.newPage();const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{
@@ -17,7 +17,8 @@ test('actual stereo passes, exclusions, mute, pause, replay and new route',async
   };
  });
  await page.goto('/?perf=1');await stageReady(page);await page.locator('#l2-play').tap();await page.evaluate(()=>{const g=(window as any).__drive;g.manual(true);g.reset({distance:350,speed:0});});await stageReady(page);
- const actors=await page.evaluate(()=>(window as any).__drive.traffic().actors),car=actors.find((a:any)=>a.id===0),bus=actors.find((a:any)=>a.type===1);
+ // Isolated Seed 1 vehicles avoid unrelated passes/collisions from the first cluster.
+ const targets=await page.evaluate(()=>{const list=(window as any).__drive.trafficSchedule();return [62,185].map((id,i)=>({...list.find((a:any)=>a.id===id),lateral:i?5.25:-1.75}));}),[car,bus]=targets;
  const cdp=await context.newCDPSession(page);await cdp.send('Emulation.setCPUThrottlingRate',{rate:4});const results=[];
  for(const name of ['left','right','distant','following','collision']){
   const target=name==='right'?bus:car,lateral=name==='right'?.5:name==='collision'?target.lateral:3.8,gap=name==='distant'?240:name==='following'?14:45,speed=name==='following'?30:70;

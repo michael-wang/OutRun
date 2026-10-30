@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {stageReady} from './stage-ready';
-const root='docs/evidence/traffic-impact';
+const root=process.env.OUTRUN_EVIDENCE_ROOT??'docs/evidence/traffic-impact';
 test('arcade traffic impacts: real rendering, recovery, sound and mobile performance',async({browser})=>{
  mkdirSync(root,{recursive:true});const context=await browser.newContext({viewport:{width:915,height:412},deviceScaleFactor:2,isMobile:true,hasTouch:true}),page=await context.newPage();const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true});const connect=AudioNode.prototype.connect;(AudioNode.prototype as any).connect=function(destination:any,...args:any[]){if(destination instanceof AudioDestinationNode){const sink=this.context.createMediaStreamDestination();(window as any).audioCapture=sink;connect.call(this,sink);}return (connect as any).call(this,destination,...args);};});
