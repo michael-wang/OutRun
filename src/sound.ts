@@ -10,6 +10,7 @@ export class EngineSound {
   private skid?: OscillatorNode;
   private skidGain?: GainNode;
   private analyser?: AnalyserNode;
+  private impactGain?:GainNode;private impactCount=0;
   private muted = false;
   private engineHz = 42;
   private engineRpm = 1000;
@@ -43,6 +44,8 @@ export class EngineSound {
       this.skid = context.createOscillator(); this.skid.type = 'triangle'; this.skid.frequency.value = 650;
       this.skidGain = context.createGain(); this.skidGain.gain.value = 0;
       this.skid.connect(this.skidGain); this.skidGain.connect(this.master); this.skid.start();
+      this.impactGain=context.createGain();this.impactGain.gain.value=0;this.impactGain.connect(this.master);
+      for(const hz of [1370,2213]){const ring=context.createOscillator();ring.type='sine';ring.frequency.value=hz;ring.connect(this.impactGain);ring.start();}
       // A tiny modulation makes sustained squeal less like a UI beep.
       const wobble = context.createOscillator(); wobble.frequency.value = 16;
       const amount = context.createGain(); amount.gain.value = 35;
@@ -50,6 +53,7 @@ export class EngineSound {
     }
     await this.context.resume();
   }
+  impact(strength:number){this.impactCount++;if(!this.context||!this.impactGain)return;const now=this.context.currentTime,g=this.impactGain.gain;g.cancelScheduledValues(now);g.setValueAtTime(.12+.32*strength,now);g.exponentialRampToValueAtTime(.001,now+.28);}
   setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
   update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number}) {
     const intensity=this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer);
@@ -65,10 +69,10 @@ export class EngineSound {
     this.skid!.frequency.setTargetAtTime(510 + intensity * 250, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
-  pause() { this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0; if (this.context) { this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  pause() { this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0; if (this.context) { this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }
-    return { contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
+    return { impactCount:this.impactCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
   }
 }
