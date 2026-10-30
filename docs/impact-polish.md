@@ -1,0 +1,12 @@
+# Arcade impact presentation polish
+
+Baseline: `2dc34d7c0a400d0adcb828fe2eb9dc1678e40d8b`; dev only.
+
+- Smoke/dust main radii now cap at 1.1/1.25 m, with slower growth and lower birth height (previously 1.6 m, plus a 20% haze expansion). Opacity and skid activation are unchanged. Wheel-travel interpolation keeps compact puffs connected within the existing 192-particle pool, including 30 Hz at approximately 280 km/h. The visual trail's discontinuity guard now allows up to 12 m instead of 4 m so high-speed low-frame-rate skid marks are not dropped. Replay still clears trail anchors.
+- Vehicle impacts emit one severity-scaled spark burst and a 120 ms orange flash at the collision event position, drawn above smoke. They do not continuously emit at a stale contact point. Guardrail sparks retain their original contact emission.
+- Vehicle sound is a short low-frequency thump with filtered noise crunch; guardrails retain brighter metallic tones. Gritty shoulder noise uses actual off-asphalt wheel contacts and speed, independent of skid. Mute, pause, replay and locked audio were checked.
+- Shadow investigation: desktop traffic cast into a player-following directional shadow camera spanning ±36 units; entering that volume caused the close-range cutoff. Mobile disabled those maps entirely. Traffic now uses one pooled soft contact-shadow draw and a 32×32 procedural texture, without real-time traffic casting. Its world-space size is constant at 25/50/100/200 m, follows position/elevation, and works on mobile too.
+
+Collision response, steering, traffic scheduling/models (including Sunshine Waffles), road geometry and shared skid logic are unchanged. Production build, 21 focused unit tests and four browser tests passed, including clean overtaking, all four vehicle types, effect cleanup and actual 30 Hz high-speed rendering. Mobile evidence uses Edge 915×412 touch/DPR2, 4× CPU slowdown on a desktop GPU; initial sampled FPS was 48.85, then the drift/dust/impact segments stayed approximately 60 FPS with streaming ready. This is not physical Pixel 8 acceptance.
+
+Evidence: `evidence/impact-polish/comparison.png` (before left, after right), fixed-view smoke/dust/shadow screenshots, sampled performance/audio state, and `drive.mp4` with captured game audio. Recording pauses during test-position resets and streaming preparation; the driving segments use actual game rendering. Await Michael's PASS; no main merge or deployment.

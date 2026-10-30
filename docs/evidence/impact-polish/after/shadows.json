@@ -1,0 +1,66 @@
+[
+  {
+    "gap": 200,
+    "actor": {
+      "id": 0,
+      "type": 0,
+      "distance": 698.569246167317,
+      "speed": 34,
+      "lane": 1,
+      "lateral": -1.75,
+      "visible": true,
+      "y": 45.02,
+      "grade": 0,
+      "typeName": "car"
+    },
+    "contactShadows": 3
+  },
+  {
+    "gap": 100,
+    "actor": {
+      "id": 0,
+      "type": 0,
+      "distance": 698.569246167317,
+      "speed": 34,
+      "lane": 1,
+      "lateral": -1.75,
+      "visible": true,
+      "y": 45.02,
+      "grade": 0,
+      "typeName": "car"
+    },
+    "contactShadows": 3
+  },
+  {
+    "gap": 50,
+    "actor": {
+      "id": 0,
+      "type": 0,
+      "distance": 698.569246167317,
+      "speed": 34,
+      "lane": 1,
+      "lateral": -1.75,
+      "visible": true,
+      "y": 45.02,
+      "grade": 0,
+      "typeName": "car"
+    },
+    "contactShadows": 3
+  },
+  {
+    "gap": 25,
+    "actor": {
+      "id": 0,
+      "type": 0,
+      "distance": 698.569246167317,
+      "speed": 34,
+      "lane": 1,
+      "lateral": -1.75,
+      "visible": true,
+      "y": 45.02,
+      "grade": 0,
+      "typeName": "car"
+    },
+    "contactShadows": 3
+  }
+]

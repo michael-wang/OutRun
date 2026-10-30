@@ -44,9 +44,14 @@ function vehicleGeometry(type:number){
 }
 interface Reaction {offset:number;velocity:number;boost:number;yaw:number;roll:number;skid:SkidFeedback;effects:TireEffects;touching:boolean;lastHit:number;slide:number}
 export class Traffic {
- private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
+ private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
  constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true){
+  // One soft contact-shadow draw for the whole traffic pool; no player-relative shadow-map cutoff.
+  const pixels=new Uint8Array(32*32*4);for(let y=0;y<32;y++)for(let x=0;x<32;x++){const r=Math.hypot((x-15.5)/15.5,(y-15.5)/15.5),i=(y*32+x)*4;pixels[i]=18;pixels[i+1]=26;pixels[i+2]=24;pixels[i+3]=Math.round(150*Math.max(0,1-r*r)**2);}
+  const texture=new THREE.DataTexture(pixels,32,32);texture.needsUpdate=true;texture.magFilter=texture.minFilter=THREE.LinearFilter;
+  const plane=new THREE.PlaneGeometry(1,1);plane.rotateX(-Math.PI/2);
+  this.shadows=new THREE.InstancedMesh(plane,new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}),TRAFFIC_LIMIT);this.shadows.name='traffic-contact-shadows';this.shadows.count=0;this.shadows.frustumCulled=false;scene.add(this.shadows);
   if(typeof document!=='undefined'){
    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=160;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#fff0ca';ctx.fillRect(0,0,512,160);ctx.fillStyle='#503019';ctx.textAlign='center';ctx.font='bold 84px "Microsoft JhengHei", sans-serif';ctx.fillText('\u6674\u5929\u9b06\u9905',256,98);ctx.font='bold 26px sans-serif';ctx.fillText('SUNSHINE WAFFLES',256,140);
    const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
@@ -54,16 +59,16 @@ export class Traffic {
    const sides=[-1,1].map(side=>{const g=new THREE.PlaneGeometry(2.6,.72);g.rotateY(side*Math.PI/2);g.translate(side*1.065,2.1,-.9);return g;});
    const geometry=mergeGeometries([rear,...sides])!;[rear,...sides].forEach(g=>g.dispose());this.sign=new THREE.InstancedMesh(geometry,new THREE.MeshBasicMaterial({map:texture}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;scene.add(this.sign);
   }
-  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);return mesh;});
+  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=false;mesh.receiveShadow=true;scene.add(mesh);return mesh;});
  }
- reset(){this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);if(this.sign)this.sign.count=0;}
+ reset(){this.shadows.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);if(this.sign)this.sign.count=0;}
  update(time:number,player:number){
   if(time<this.time)this.reset();const dt=time-this.time,previous=this.actors;this.time=time;
   this.actors=trafficLayout(this.seed,time,player,this.length);
   for(const a of this.actors){const old=previous.find(p=>p.id===a.id);if(old)a.distance=old.distance+old.speed*dt;const r=this.reactions.get(a.id);if(r){a.distance+=r.boost*.45*(1-Math.exp(-dt/.45));r.boost*=Math.exp(-dt/.45);r.offset+=r.velocity*.4*(1-Math.exp(-dt/.4));r.velocity*=Math.exp(-dt/.4);r.offset*=Math.exp(-dt*.55);const follow=1-Math.exp(-dt/.07);r.yaw+=(THREE.MathUtils.clamp(r.velocity*.06,-.24,.24)-r.yaw)*follow;r.roll+=(THREE.MathUtils.clamp(r.velocity*.025,-.12,.12)-r.roll)*follow;}}
   // Retain a vehicle slowed by its leader until it actually leaves the streamed viewing window.
   for(const old of previous)if(!this.actors.some(a=>a.id===old.id)&&old.distance+old.speed*dt>=player-65&&old.distance+old.speed*dt<=player+850)this.actors.push({...old,distance:old.distance+old.speed*dt,speed:TRAFFIC_TYPES[old.type].speed});
-  this.actors=this.actors.filter(a=>a.distance>=player-65&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0];
+  this.actors=this.actors.filter(a=>a.distance>=player-65&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0];let shadowCount=0;
   for(let i=0;i<this.actors.length;i++){
    const a=this.actors[i],spec=TRAFFIC_TYPES[a.type];const half=this.halfAt(a.distance),lanes=Math.max(2,Math.floor(half/3.5)*2);
    // Follow a narrowing lane taper continuously rather than jumping when the lane count changes.
@@ -76,7 +81,7 @@ export class Traffic {
    a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2);if(!a.visible)continue;
    const p=this.sample(a.distance),front=this.sample(Math.min(this.length,a.distance+spec.axle)),rear=this.sample(Math.max(0,a.distance-spec.axle));
    a.grade=(front.position.y-rear.position.y)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(front.position.y+rear.position.y)/2+.02;
-   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),reaction?.roll??0,'YXZ');this.dummy.updateMatrix();if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
+   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),reaction?.roll??0,'YXZ');this.dummy.updateMatrix();this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+.035;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),0,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
    if(reaction){
     if(dt>0)reaction.skid.update(a.speed,0,dt,0,0,reaction.slide);
     const contacts:TireContact[]=[];
@@ -84,6 +89,7 @@ export class Traffic {
     reaction.effects.update(time,a.speed,reaction.skid.intensity,contacts,1);
    }
   }
+  this.shadows.count=shadowCount;this.shadows.instanceMatrix.needsUpdate=true;
   if(this.sign){this.sign.count=counts[3];this.sign.instanceMatrix.needsUpdate=true;}this.meshes.forEach((m,i)=>{m.count=counts[i];m.instanceMatrix.needsUpdate=true;});
  }
  /** Swept overlap plus persistent separation. Returns a new event only on contact entry. */
@@ -119,6 +125,6 @@ export class Traffic {
  clearance(distance:number,lateral:number,halfWidth:number,halfLength:number,heading:number){return this.actors.filter(a=>a.visible).map(a=>{const spec=TRAFFIC_TYPES[a.type],yaw=this.reactions.get(a.id)?.yaw??0;return {id:a.id,gap:Math.max(Math.abs(distance-a.distance)-halfLength*Math.abs(Math.cos(heading))-halfWidth*Math.abs(Math.sin(heading))-spec.length/2*Math.abs(Math.cos(yaw))-spec.width/2*Math.abs(Math.sin(yaw)),Math.abs(lateral-a.lateral)-halfWidth*Math.abs(Math.cos(heading))-halfLength*Math.abs(Math.sin(heading))-spec.width/2*Math.abs(Math.cos(yaw))-spec.length/2*Math.abs(Math.sin(yaw)))};});}
  get skidIntensity(){let intensity=0;for(const r of this.reactions.values())intensity=Math.max(intensity,r.skid.intensity);return intensity;}
  contactPoints(){const matrix=new THREE.Matrix4(),counts=[0,0,0,0],out:{id:number;distance:number;point:number[]}[]=[];for(const a of this.actors){if(!a.visible)continue;this.meshes[a.type].getMatrixAt(counts[a.type]++,matrix);const spec=TRAFFIC_TYPES[a.type];for(const side of [-1,1])for(const end of [-1,1])out.push({id:a.id,distance:a.distance+end*spec.axle,point:new THREE.Vector3(side*(spec.width/2-.04),0,end*spec.axle).applyMatrix4(matrix).toArray()});}return out;}
- inspect(){return {capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length,reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
- dispose(){for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});this.material.dispose();}
+ inspect(){return {capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+1,contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
+ dispose(){this.shadows.removeFromParent();this.shadows.geometry.dispose();const shadowMaterial=this.shadows.material as THREE.MeshBasicMaterial;shadowMaterial.map?.dispose();shadowMaterial.dispose();for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});this.material.dispose();}
 }
