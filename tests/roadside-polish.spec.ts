@@ -1,21 +1,21 @@
 import {test,expect} from '@playwright/test';
 import {stageReady} from './stage-ready';
 
-test('r7 rock wall responds with a visible collision, audio and a short spark burst',async({page})=>{
+test('a single r7 giant boulder responds with a visible collision, audio and a spark burst',async({page})=>{
  test.setTimeout(90000);
  await page.setViewportSize({width:960,height:432});
  await page.goto('/?qa=1&seed=1');
  await stageReady(page);await page.locator('#l2-play').click();
- const rock=await page.evaluate(()=>((window as any).__drive.rocks().sections as any[])[0]);
+ const rock=await page.evaluate(()=>((window as any).__drive.rocks().boulders as any[])[0]);
  expect(rock).toBeDefined();
  await page.evaluate(r=>{
-  const g=(window as any).__drive,d=r.start+25;
-  g.manual(true);g.reset({distance:d,lateral:r.side*(g.sample(d).halfWidth+2.3),speed:65});
+  const g=(window as any).__drive,d=r.distance-r.radiusD-5;
+  g.manual(true);g.reset({distance:d,lateral:r.lateral,speed:65});
  },rock);
  await stageReady(page);
  const result=await page.evaluate(()=>{
   const g=(window as any).__drive,initial=g.snapshot().speed;
-  g.advance(.08,{gas:true,brake:false,steer:0});
+  g.advance(.2,{gas:true,brake:false,steer:0});
   return {initial,now:g.snapshot(),rock:g.rocks().contact,particles:g.surfaceFeedback().sparks.particles,audio:g.snapshot().audio.lastImpact,stream:g.streamSafety()};
  });
  expect(result.rock.impacts).toBeGreaterThan(0);
