@@ -30,8 +30,8 @@ describe('Roadside Polish — credible terrain and physical feedback',()=>{
   expect(collision.impacts).toBe(1);
   expect(s.speed).toBeLessThan(75);
   const r6Contact=new RockContact([older],()=>7,1.55,2.8);
-  const legacy={...createState(),distance:older.start+5,lateral:11,speed:70};
-  expect(r6Contact.update(legacy,{distance:older.start+4,lateral:10},1/60)).toBeDefined();
+  const legacy={...createState(),distance:older.start+5,lateral:14,speed:70};
+  expect(r6Contact.update(legacy,{distance:older.start+4,lateral:12},1/60)).toBeDefined();
  });
  it('omits deep left cliff props without removing posts from level shoulders or canyon rock',()=>{
   const shoulders={left:1.6,right:6.8},ordinary={left:6,right:6};
