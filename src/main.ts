@@ -71,7 +71,8 @@ document.querySelector('#app')!.innerHTML = `
   <p id="player-subtitle">10-MINUTE ROAD TRIP</p>
   <button id="player-play" class="primary">Start driving</button>
   <p id="player-loading" role="status">Preparing the road…</p>
-  <div class="player-secondary"><button id="player-restart" hidden>Restart</button><button id="player-new-route" hidden>New route</button><button id="player-options">Controls</button><button id="player-sound">Sound</button></div>
+  <div class="player-secondary"><button id="player-restart" hidden>Restart</button><button id="player-new-route" hidden>New route</button><button id="player-options">Controls</button><button id="player-sound">Sound</button><button id="player-install-guide" hidden>More screen</button></div>
+  <p id="player-install-help" role="status" hidden>iPhone Safari: Share → Add to Home Screen. Open the new icon for a larger game view, then turn your phone sideways.</p>
 </section>`;
 const $ = (id:string) => document.getElementById(id)!;
 $('route-title').textContent=brick?.name??'Coast Road';
@@ -169,6 +170,7 @@ function updatePlayerUi(){
   if(play.textContent!==label)play.textContent=label;
   $('player-restart').hidden=elapsed===0&&!brickCompleted;
   $('player-new-route').hidden=!brickCompleted;
+  $('player-install-guide').hidden=!immersive.needsIPhoneHelp;
   const soundLabel=muted?'Sound off':'Sound on';
   if($('player-sound').textContent!==soundLabel)$('player-sound').textContent=soundLabel;
   const loading=$('player-loading');
@@ -185,6 +187,7 @@ $('player-restart').onclick=()=>document.getElementById('l2-replay')?.click();
 $('player-new-route').onclick=()=>document.getElementById('l2-next')?.click();
 $('player-options').onclick=()=>document.getElementById('l2-settings')?.click();
 $('player-sound').onclick=()=>document.getElementById('l2-sound')?.click();
+$('player-install-guide').onclick=()=>{$('player-install-help').hidden=!$('player-install-help').hidden;};
 $('drive').onclick=()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();start();};
 $('resume').onclick=start; $('pause').onclick=pause; $('restart').onclick=restart;
 $('fullscreen').onclick=()=>{input.clear();if(immersive.needsIPhoneHelp){const hint=$('iphone-fullscreen-hint'),labHint=document.getElementById('l2-iphone-fullscreen-hint'),show=hint.hidden&&(!labHint||labHint.hidden);hint.hidden=!show;if(labHint)labHint.hidden=!show;return;}void immersive.toggle();};
