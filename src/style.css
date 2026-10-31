@@ -178,3 +178,22 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
  html[data-player-ui="true"] #rotate{font-size:clamp(21px,5.5vw,25px)}
  html[data-player-ui="true"] #rotate small{font-size:15px}
 }
+
+
+/* Public portrait: only supported browsers get a one-tap fullscreen + landscape start. */
+@media (pointer:coarse) and (orientation:portrait){
+  html[data-player-ui="true"] #rotate #rotate-launch:not([hidden]){
+    display:inline-flex!important;align-items:center;justify-content:center;
+    pointer-events:auto;min-width:min(300px,82vw);min-height:56px;
+    margin-top:7px;padding:12px 22px;
+    border:0;border-radius:12px;background:#ffd297;color:#173e40;
+    font:800 21px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+    text-shadow:none;box-shadow:0 7px 26px #082c3880;
+    touch-action:manipulation;
+  }
+  html[data-player-ui="true"] #rotate #rotate-launch-status:not([hidden]){
+    display:block;max-width:min(345px,86vw);padding:8px 12px;
+    border-radius:8px;background:#103b43b5;
+    font-size:14px;line-height:1.55;color:#fff3dc;
+  }
+}
