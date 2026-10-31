@@ -47,8 +47,12 @@ export class RockContact {impacts=0;yaw=0;roll=0;private latched=false;private p
  const ahead=Math.min(b.section.end,b.distance+5),behind=Math.max(b.section.start,b.distance-5);
  const slope=(rockEdge(ahead,b.section)-rockEdge(behind,b.section))/Math.max(1,ahead-behind);
  const irregular=Math.min(1,Math.abs(slope)*5);
+ const normalVariation=Math.max(-.35,Math.min(.35,slope*2));
  s.speed*=1-(.08+.30*severity)*(1+.25*irregular);
- this.push=-b.side*(1.5+6*severity)*(1+.2*irregular);
+ // The irregular inner rock-face normal also changes the actual lateral kick,
+ // not just the car's rendering yaw. Recovery is still bounded and arcade-safe.
+ this.push=-b.side*(1.5+6*severity)*(1+normalVariation);
+ s.lateralRate=-b.side*(.6+2.4*severity)*(1+normalVariation);
  // Slope is measured from the same visible inner stone vertices, so nearby
  // strikes can reflect in different directions instead of repeating one yaw.
  this.yaw=Math.max(-.30,Math.min(.30,(b.side*.10-slope*1.7)*severity));
