@@ -1,6 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
-import {rockySections,rockNode,rockEdge,rockWall,RockContact} from '../src/rocky-shoulder';
+import {rockySections,rockWall} from '../src/rocky-shoulder';
+import {boulderLayout,boulderMesh,BoulderContact} from '../src/rock-boulders';
 import {RoadCones,rockyWarningCones} from '../src/road-cones';
 import {EngineSound} from '../src/sound';
 import {createState} from '../src/handling';
@@ -10,55 +11,43 @@ const sample=(d:number)=>({
  tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0,
 }) as any;
 
-describe('r7 giant outer-bend rock outcrops',()=>{
- it('places stones on the side centrifugal force would carry the driver toward',()=>{
+describe('r7 giant OUTSIDE-BEND individual rock outcrops',()=>{
+ it('chooses the actual centrifugal outside of signed curves',()=>{
   const weights=()=>[0,1,0];
   const left=rockySections(1,70000,weights,true,()=>.003);
   const right=rockySections(1,70000,weights,true,()=>-.003);
   expect(left.length).toBeGreaterThan(0);
   expect(left.every(r=>r.side===-1)).toBe(true);
   expect(right.every(r=>r.side===1)).toBe(true);
-  expect(rockySections(1,70000,weights)).toEqual(rockySections(1,70000,weights)); // legacy remains deterministic
  });
- it('r7 rock mountains have huge varied silhouettes, not uniform low retaining walls',()=>{
-  const rocks=rockySections(1,70000,()=>[0,1,0],true),rock=rocks[0];
-  const nodes=Array.from({length:Math.ceil((rock.end-rock.start)/5)+1},(_,i)=>{
-   const distance=Math.min(rock.end,rock.start+5*i);
-   return {distance,...rockNode(distance,rock),edge:rockEdge(distance,rock)};
-  });
-  const heights=nodes.map(n=>n.height);
-  expect(Math.max(...heights)).toBeGreaterThan(18);
-  expect(Math.min(...heights.slice(17,-17))).toBeLessThan(7);
-  expect(Math.max(...heights)-Math.min(...heights)).toBeGreaterThan(16);
-  const mesh=rockWall(sample,()=>7,rock,rock.start,rock.end)!;
-  expect(Math.max(...Array.from(mesh.positions).filter((_,i)=>i%3===1))).toBeGreaterThan(15);
-  // R6 uses the unaltered historic low wall profile.
+ it('builds a few tall, separated rocks rather than a continuous retaining wall',()=>{
+  const rocks=rockySections(1,70000,()=>[0,1,0],true);
+  const boulders=boulderLayout(rocks,()=>7);
+  const first=boulders.filter(b=>b.distance>=rocks[0].start&&b.distance<=rocks[0].end);
+  expect(first.length).toBeGreaterThanOrEqual(3);
+  expect(first.length).toBeLessThanOrEqual(5);
+  expect(Math.max(...first.map(b=>b.height))).toBeGreaterThan(17);
+  expect(first.some((b,i)=>i>0&&b.distance-b.radiusD>first[i-1].distance+first[i-1].radiusD+10)).toBe(true);
+  const mesh=boulderMesh(sample,boulders,rocks[0].start,rocks[0].end)!;
+  expect(mesh.positions.length).toBeGreaterThan(200);
+  // Historical r6 continuous stone wall is still independently supported.
   const legacy=rockySections(1,70000,()=>[0,1,0])[0];
-  expect(rockNode((legacy.start+legacy.end)/2,legacy).height).toBeLessThan(8);
+  expect(rockWall(sample,()=>7,legacy,legacy.start,legacy.end)).toBeDefined();
  });
- it('impact has a geometry-derived normal and two faces reflect differently',()=>{
-  const rock=rockySections(1,70000,()=>[0,1,0],true)[0];
-  const nodes=[];
-  for(let d=rock.start+90;d<rock.end-90;d+=5){
-   const slope=(rockEdge(d+5,rock)-rockEdge(d-5,rock))/10;
-   nodes.push({d,slope});
-  }
-  const max=nodes.reduce((a,b)=>a.slope>b.slope?a:b);
-  const min=nodes.reduce((a,b)=>a.slope<b.slope?a:b);
-  const hit=(d:number)=>{
-   const wall=new RockContact([rock],()=>7,1.3,2.8);
-   const s={...createState(),distance:d,lateral:rock.side*(7+2.4),speed:70};
-   const event=wall.update(s,{distance:d-1,lateral:rock.side*(7+1.3)},1/60);
-   return {event,yaw:wall.yaw,lateralRate:s.lateralRate,loss:70-s.speed};
+ it('reflections differ when striking different sides of one boulder',()=>{
+  const boulders=boulderLayout(rockySections(1,70000,()=>[0,1,0],true),()=>7);
+  const b=boulders[0];
+  const hit=(offset:number)=>{
+   const contact=new BoulderContact(boulders,1.3,2.8),s={...createState(),distance:b.distance,lateral:b.lateral+offset,speed:70};
+   const event=contact.update(s,{distance:b.distance-b.radiusD-12,lateral:s.lateral},1/60);
+   return {event,contact,s};
   };
-  const a=hit(max.d),b=hit(min.d);
-  expect(a.event).toBeDefined();expect(b.event).toBeDefined();
-  expect(a.event!.normalSlope).not.toBeCloseTo(b.event!.normalSlope,2);
-  expect(Math.abs(a.yaw-b.yaw)).toBeGreaterThan(.01);
-  expect(a.loss).toBeGreaterThan(1);
-  expect(b.loss).toBeGreaterThan(1);
-  expect(a.lateralRate*rock.side).toBeLessThan(0);
-  expect(b.lateralRate*rock.side).toBeLessThan(0);
+  const center=hit(0),offset=hit(-b.radiusX*.53);
+  expect(center.event?.boulderId).toBe(b.id);
+  expect(offset.event?.boulderId).toBe(b.id);
+  expect(center.event?.normal).not.toEqual(offset.event?.normal);
+  expect(center.contact.yaw).not.toBeCloseTo(offset.contact.yaw,2);
+  expect(center.s.speed).toBeLessThan(70);
  });
 });
 
