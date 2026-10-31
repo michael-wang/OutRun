@@ -59,21 +59,21 @@ let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof moun
 document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??TRIP_VERSION}</small></div>
-<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="Pause / Menu">Ⅱ Menu</button></nav></header>
+<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <button id="photo-button" aria-label="Capture screenshot" hidden>📷</button><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
 <section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><p><a href="/?trip=10m">10-Minute Road Trip ↗</a></p><p><a href="/?stage=1">Stage 01: Pacific Getaway ↗</a></p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div><p id="iphone-fullscreen-hint" role="status" hidden>On iPhone, open this site in Safari. Tap Share → Add to Home Screen, then launch the icon to hide Safari browser bars. Rotate the phone to landscape to drive.</p></section>
-<section id="preferences" class="panel" hidden><div class="eyebrow">MAKE YOURSELF AT HOME</div><h2>Controls</h2><label class="setting"><input id="swap" type="checkbox"> Steering on the right</label><p>Accelerator stays above brake on either side.</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">Done</button></section>
-<div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="Steering position" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
-<div id="rotate"><span>↻</span>Turn toward the horizon<small>Rotate your phone to landscape to drive.</small><small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>
+<section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
+<div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span></div><div class="pedals"><button data-control="gas">${playerUi?'油門':'GAS'}</button><button data-control="brake">${playerUi?'煞車':'BRAKE'}</button></div></div>
+<div id="rotate"><span>↻</span>${playerUi?'橫放手機，準備出發！':'Turn toward the horizon'}<small>${playerUi?'請將手機轉為橫向，即可開始駕駛。':'Rotate your phone to landscape to drive.'}</small><small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>
 <section id="player-start" aria-label="Start driving" hidden>
-  <div id="player-title" class="player-title">FIRST DRIVE</div>
-  <p id="player-subtitle">10-MINUTE ROAD TRIP</p>
-  <button id="player-play" class="primary">Start driving</button>
-  <p id="player-loading" role="status">Preparing the road…</p><button id="player-retry" hidden>Retry loading</button>
-  <div class="player-secondary"><button id="player-restart" hidden>Restart</button><button id="player-new-route" hidden>New route</button><button id="player-options">Controls</button><button id="player-sound">Sound</button><button id="player-install-guide" hidden>More screen</button></div>
-  <p id="player-install-help" role="status" hidden>iPhone Safari: Share → Add to Home Screen. Open the new icon for a larger game view, then turn your phone sideways.</p>
+  <div id="player-title" class="player-title">極速漫遊</div>
+  <p id="player-subtitle">公路冒險</p>
+  <button id="player-play" class="primary">開始駕駛</button>
+  <p id="player-loading" role="status">道路準備中…</p><button id="player-retry" hidden>重試載入</button>
+  <div class="player-secondary"><button id="player-restart" hidden>重新開始</button><button id="player-new-route" hidden>新路線</button><button id="player-options">操作設定</button><button id="player-sound">音效開</button><button id="player-install-guide" hidden>更多畫面空間</button></div>
+  <p id="player-install-help" role="status" hidden>iPhone Safari：分享 → 加入主畫面，再從主畫面開啟遊戲，即可減少瀏覽器工具列。</p>
 </section>`;
 const startupArt=document.getElementById('startup-art')!;
 document.getElementById('app')!.prepend(startupArt);
@@ -173,16 +173,16 @@ function updatePlayerUi(){
   panel.hidden=!show;
   startupArt.hidden=mode==='playing'||mode==='countdown'||(elapsed>0&&world.streamer?.ready!==false);
   if(!show)return;
-  const title=brickCompleted?'JOURNEY COMPLETE':elapsed>0?'PAUSED':'FIRST DRIVE';
-  const subtitle=brickCompleted?'THE ROAD IS YOURS':elapsed>0?'READY WHEN YOU ARE':'10-MINUTE ROAD TRIP';
+  const title=brickCompleted?'旅程完成':elapsed>0?'暫停中':'極速漫遊';
+  const subtitle=brickCompleted?'下一段旅程，等你出發':elapsed>0?'準備好了就繼續出發':'公路冒險';
   if($('player-title').textContent!==title)$('player-title').textContent=title;
   if($('player-subtitle').textContent!==subtitle)$('player-subtitle').textContent=subtitle;
-  const play=$('player-play'),label=streamStartRequested?'Starting…':brickCompleted?'Play again':elapsed>0?'Resume':'Start driving';
+  const play=$('player-play'),label=streamStartRequested?'即將出發…':brickCompleted?'再跑一次':elapsed>0?'繼續駕駛':'開始駕駛';
   if(play.textContent!==label)play.textContent=label;
   $('player-restart').hidden=elapsed===0&&!brickCompleted;
   $('player-new-route').hidden=!brickCompleted;
   $('player-install-guide').hidden=true;
-  const soundLabel=muted?'Sound off':'Sound on';
+  const soundLabel=muted?'音效關':'音效開';
   if($('player-sound').textContent!==soundLabel)$('player-sound').textContent=soundLabel;
   const loading=$('player-loading');
   const preparing=!!world.streamer&&!world.streamer.ready;
@@ -191,7 +191,7 @@ function updatePlayerUi(){
   (play as HTMLButtonElement).disabled=preparing;
   $('player-retry').hidden=!slow&&!world.streamer?.error;
   loading.hidden=!preparing&&!world.streamer?.error;
-  if(!loading.hidden){const message=world.streamer?.error?'The road could not load. Please try again.':slow?'The road is taking longer than expected. You can wait or retry.':'Preparing the road…';if(loading.textContent!==message)loading.textContent=message;}
+  if(!loading.hidden){const message=world.streamer?.error?'道路載入失敗，請重試。':slow?'道路準備時間較長，請稍候或重新載入。':'道路準備中…';if(loading.textContent!==message)loading.textContent=message;}
 }
 function ui(){ $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=mode!=='playing'||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu';if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); updatePlayerUi(); }
 function start(){void sound.unlock().catch(()=>{});if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;const resume=!!stage&&mode==='paused'&&elapsed>0&&!brickCompleted;mode=resume?'countdown':'playing';if(resume){readyUntil=performance.now()+1000;sound.pause();pad.neutralize();}settingsOpen=false;input.clear();ui();renderer.domElement.focus({preventScroll:true});}
