@@ -1,0 +1,11 @@
+import {readFileSync,writeFileSync,existsSync} from 'node:fs';
+const root='docs/evidence/streaming-s2a',j=JSON.parse(readFileSync(root+'/worker-benchmark.json'));
+const stats=a=>{const s=[...a].sort((a,b)=>a-b),q=p=>s[Math.ceil(s.length*p)-1];return {count:s.length,mean:s.reduce((n,x)=>n+x,0)/s.length,p50:q(.5),p95:q(.95),p99:q(.99),worst:q(1)};};
+const seeds=[1,2,7].map(seed=>{const runs=j.runs.filter(r=>r.seed===seed),rows=runs.flatMap(r=>r.rows),bands=[[0,5],[6,10],[11,20]].map(([start,end])=>{const subset=rows.filter(r=>r.index>=start&&r.index<=end),before=stats(subset.map(r=>r.beforeMs)),after=stats(subset.map(r=>r.afterMs));return {start,end,before,after,speedup:before.mean/after.mean};});
+ const chunks=Array.from({length:21},(_,index)=>{const r=rows.filter(r=>r.index===index);return {index,before:stats(r.map(r=>r.beforeMs)),after:stats(r.map(r=>r.afterMs))};});
+ const slope=key=>{const mx=10,my=chunks.reduce((n,r)=>n+r[key].mean,0)/21;return chunks.reduce((n,r)=>n+(r.index-mx)*(r[key].mean-my),0)/chunks.reduce((n,r)=>n+(r.index-mx)**2,0);};
+ return {seed,bands,chunks,growthLateOverEarly:{before:bands[2].before.mean/bands[0].before.mean,after:bands[2].after.mean/bands[0].after.mean},slopeMsPerChunk:{before:slope('before'),after:slope('after')},initialization:{before:stats(runs.map(r=>r.initMs.before)),after:stats(runs.map(r=>r.initMs.after))}};
+});
+const geometry=existsSync(root+'/geometry-equivalence.json')?JSON.parse(readFileSync(root+'/geometry-equivalence.json')):null;
+writeFileSync(root+'/benchmark-summary.json',JSON.stringify({conditions:j.conditions,browser:j.browser,seeds,lateRoute:geometry?.runs.filter(r=>r.revision===7).map(r=>({seed:r.seed,bands:[[0,5],[21,49],[50,69]].map(([start,end])=>{const rows=r.rows.filter(x=>x.index>=start&&x.index<=end);return {start,end,before:stats(rows.map(x=>x.beforeMs)),after:stats(rows.map(x=>x.afterMs))};})})),geometry:geometry?{cases:geometry.runs.length,chunks:geometry.runs.reduce((n,r)=>n+r.rows.length,0),bytesCompared:geometry.runs.reduce((n,r)=>n+r.checkedBytes,0)}:null},null,2));
+for(const r of seeds){console.log('Seed',r.seed,'growth',r.growthLateOverEarly,'slope',r.slopeMsPerChunk);for(const b of r.bands)console.log(b.start+'–'+b.end,b.before.mean.toFixed(2),b.after.mean.toFixed(2),b.speedup.toFixed(2)+'x');}
