@@ -81,3 +81,7 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #route-name{position:fixed;top:calc(max(16px,env(safe-area-inset-top)) + 48px);left:max(24px,env(safe-area-inset-left));max-width:29vw;font:11px/1.3 system-ui;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #release-version{display:block;margin-top:3px;font:10px/1.2 system-ui;color:#e1e8e8;text-shadow:0 1px 2px #071323;pointer-events:none}
 #app #l2-hud{top:calc(max(16px,env(safe-area-inset-top)) + 96px);left:max(24px,env(safe-area-inset-left));max-width:calc(100vw - 48px);font-size:10px}
+
+/* iPhone Safari: keep rotation and home-screen guidance readable without hiding gameplay. */
+#rotate-iphone-hint,#rotate-immersive-error{max-width:min(440px,84vw);line-height:1.5}
+#iphone-fullscreen-hint,#l2-iphone-fullscreen-hint{font-size:13px;line-height:1.45;max-width:56ch}
