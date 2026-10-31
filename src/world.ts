@@ -105,7 +105,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const signTexture=new THREE.CanvasTexture(signCanvas);signTexture.colorSpace=THREE.SRGBColorSpace;
   const signMaterial=new THREE.MeshBasicMaterial({map:signTexture,side:THREE.DoubleSide});
   const leftCanvas=signCanvas.cloneNode() as HTMLCanvasElement;const leftInk=leftCanvas.getContext('2d')!;leftInk.drawImage(signCanvas,0,0);leftInk.fillStyle='#153e45';leftInk.fillRect(20,20,472,88);leftInk.fillStyle='#fff4d9';leftInk.textAlign='center';leftInk.font='bold 70px sans-serif';leftInk.fillText('← BRAKE',256,96);const leftTexture=new THREE.CanvasTexture(leftCanvas);leftTexture.colorSpace=THREE.SRGBColorSpace;const leftSign=new THREE.MeshBasicMaterial({map:leftTexture,side:THREE.DoubleSide});
-  const rockSections=(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7')?rockySections(options.seed??1,length,weightsAt):[];
+  const rockSections=(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7')?rockySections(options.seed??1,length,weightsAt,options.streamStage?.generatorVersion==='v0.9-r7'):[];
   const breakdowns=(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7'))?breakdownLayout(sample,halfAt,length,options.seed??1):[];
   const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7')?[]:breakdownAnnotations(sample,halfAt,breakdowns);
   if(!options.streamStage){
