@@ -50,3 +50,22 @@ test('QA mode retains full authoring controls and does not show player menu',asy
  await expect(page.locator('#l2-export')).toBeVisible();
  await expect(page.locator('#player-start')).toBeHidden();
 });
+
+test('public iPhone fallback offers Home Screen help without an inert fullscreen button',async({browser})=>{
+ const ua='Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1';
+ const context=await browser.newContext({viewport:{width:896,height:414},isMobile:true,hasTouch:true,userAgent:ua});
+ await context.addInitScript(()=>{
+  Object.defineProperty(document,'fullscreenEnabled',{configurable:true,value:false});
+  Object.defineProperty(Element.prototype,'requestFullscreen',{configurable:true,value:undefined});
+ });
+ try{
+  const page=await context.newPage();
+  await page.goto('/?seed=1&playerui=1');
+  await expect(page.locator('#player-start')).toBeVisible();
+  await expect(page.locator('#player-install-guide')).toBeVisible();
+  await page.locator('#player-install-guide').tap();
+  await expect(page.locator('#player-install-help')).toBeVisible();
+  await expect(page.locator('#player-install-help')).toContainText('Add to Home Screen');
+  await expect(page.locator('#l2-fullscreen')).toBeHidden();
+ }finally{await context.close();}
+});
