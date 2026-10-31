@@ -32,6 +32,8 @@ describe('discrete boulders replace continuous r7 rock wall',()=>{
   expect(head).toBeDefined();
   expect(head.kind).toBe('grass');
   expect(head.positions.length).toBeGreaterThan(150);
+  expect(head.normals?.length).toBe(head.positions.length);
+  expect([...head.positions,...head.normals!].every(Number.isFinite)).toBe(true);
   const next=bs.filter(b=>b.distance>first.distance)[0];
   expect(next).toBeDefined();
   const gapStart=first.distance+2,gapEnd=next.distance-2;
