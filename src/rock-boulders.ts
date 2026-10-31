@@ -153,7 +153,7 @@ export class BoulderContact {
   this.yaw=Math.max(-.33,Math.min(.33,(nx*.22+nz*.14)*severity));
   this.roll=inward*(.07+.10*Math.abs(nx))*severity;
   s.corridorSide=0;
-  return {boulderId:b.id,distance:b.distance,lateral:b.lateral,side:b.side,severity,normal:[nx,nz] as [number,number]};
+  return {boulderId:b.id,distance:b.distance+nz*b.radiusD*.94,lateral:b.lateral+nx*b.radiusX*.96,side:b.side,severity,normal:[nx,nz] as [number,number]};
  }
  inspect(){return {impacts:this.impacts,yaw:this.yaw,roll:this.roll,touchingId:this.touchingId,boulders:this.boulders.length};}
 }
