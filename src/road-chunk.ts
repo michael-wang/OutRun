@@ -3,7 +3,7 @@ import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
 import * as THREE from 'three';
 import {ACTS} from './acts';
-import {roadOffset,LANE_WIDTH,type Shoulders} from './road-profile';
+import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarrierRawOffset,type Shoulders} from './road-profile';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -58,9 +58,26 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  append('asphalt',-7,7,0,0,start,end,2.5);
  append('line',d=>-7+.35*7/halfAt(d),d=>-7+.51*7/halfAt(d),.025,.025,start,end,2.5);
  append('line',d=>7-.51*7/halfAt(d),d=>7-.35*7/halfAt(d),.025,.025,start,end,2.5);
- let railRanges=canyon?[[start,Math.min(end,CANYON_BEND.start)],[Math.max(start,CANYON_BEND.end),end]]:[[start,end]];
- for(const r of rocks.filter(r=>r.side<0))railRanges=railRanges.flatMap(([a,b])=>b<=r.start||a>=r.end?[[a,b]]:[[a,Math.min(b,r.start)],[Math.max(a,r.end),b]].filter(([x,y])=>y>x));
- for(const [a,b] of railRanges){append('rail',-12.5,-12.3,.65,.65,a,b,2.5);append('rail',-12.5,-12.3,1.12,1.12,a,b,2.5);}
+ if(shoulders){
+  // r7: continuous visible rails flank each row of roadside markers.
+  // Placement is measured in physical meters beyond asphalt, not shoulder-scaled
+  // legacy offsets. Bridges, the authored canyon and rock walls remain special.
+  for(const side of [-1,1] as const){
+   let ranges:number[][]=canyon?[[start,Math.min(end,CANYON_BEND.start)],[Math.max(start,CANYON_BEND.end),end]]:[[start,end]];
+   for(const rock of rocks.filter(r=>r.side===side))ranges=ranges.flatMap(([a,b])=>b<=rock.start||a>=rock.end?[[a,b]]:[[a,Math.min(b,rock.start)],[Math.max(a,rock.end),b]].filter(([x,y])=>y>x));
+   const inner=(d:number)=>tripBarrierRawOffset(side,TRIP_BARRIER_INNER_M,cachedShoulders(d)!);
+   const outer=(d:number)=>tripBarrierRawOffset(side,TRIP_BARRIER_OUTER_M,cachedShoulders(d)!);
+   for(const [a,b] of ranges){
+    append('rail',inner,outer,.65,.65,a,b,2.5);
+    append('rail',inner,outer,1.12,1.12,a,b,2.5);
+   }
+  }
+ }else{
+  // Previous revisions retain their unchanged left coastal guardrail.
+  let railRanges=canyon?[[start,Math.min(end,CANYON_BEND.start)],[Math.max(start,CANYON_BEND.end),end]]:[[start,end]];
+  for(const rock of rocks.filter(r=>r.side<0))railRanges=railRanges.flatMap(([a,b])=>b<=rock.start||a>=rock.end?[[a,b]]:[[a,Math.min(b,rock.start)],[Math.max(a,rock.end),b]].filter(([x,y])=>y>x));
+  for(const [a,b] of railRanges){append('rail',-12.5,-12.3,.65,.65,a,b,2.5);append('rail',-12.5,-12.3,1.12,1.12,a,b,2.5);}
+ }
  if(canyon){const a=Math.max(start,CANYON_BEND.start),b=Math.min(end,CANYON_BEND.end);append('rail',CANYON_BEND.railOffset,CANYON_BEND.railOffset,.6,1.05,a,b,2.5);append('rail',CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness,CANYON_BEND.railOffset+CANYON_BEND.railHalfThickness,1.05,1.05,a,b,2.5);}
  append('surf',-29,-27,-10.9,-10.9,start,end,10);
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
