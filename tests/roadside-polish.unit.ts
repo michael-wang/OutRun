@@ -1,6 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {rockySections,rockEdge,rockWall,RockContact} from '../src/rocky-shoulder';
+import {boulderLayout,BoulderContact} from '../src/rock-boulders';
 import {coastalCliffDropAtLateral} from '../src/road-profile';
 import {breakdownLayout} from '../src/breakdowns';
 import {Traffic} from '../src/traffic';
@@ -13,31 +14,24 @@ const flat=(d:number)=>({
  tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0,
 }) as any;
 describe('Roadside Polish — credible terrain and physical feedback',()=>{
- it('r7 rock contact matches the actual 5m wall base and enters before the old invisible corridor; r6 untouched',()=>{
+ it('r7 rock collision targets an independent giant stone, while r6 wall remains historic',()=>{
   const older=rockySections(1,70000,()=>[0,1,0])[0];
   const r7=rockySections(1,70000,()=>[0,1,0],true)[0];
   expect(r7.start).toBe(older.start);
-  expect(rockEdge(r7.start,r7)).toBeCloseTo(3.4,6);
   expect(rockEdge(older.start,older)).toBeCloseTo(6.5,6);
-  const wall=rockWall(flat,()=>7,r7,r7.start,r7.end)!;
-  for(let d=r7.start;d<=r7.end;d+=5){
-   const x=7+rockEdge(d,r7),z=d;
-   let found=false;
-   for(let k=0;k<wall.positions.length;k+=3){
-    if(Math.abs(wall.positions[k]-x)<.002&&Math.abs(wall.positions[k+2]-z)<.002){found=true;break;}
-   }
-   expect(found,`visible rock wall base at ${d}`).toBe(true);
-  }
-  const contact=new RockContact([r7],()=>7,1.55,2.8);
-  const s={...createState(),distance:r7.start+5,lateral:9.25,speed:75};
-  const hit=contact.update(s,{distance:r7.start+4,lateral:8},1/60);
-  expect(hit).toBeDefined();
+  expect(rockWall(flat,()=>7,older,older.start,older.end)).toBeDefined();
+  const boulders=boulderLayout([r7],()=>7);
+  expect(boulders.length).toBeGreaterThanOrEqual(3);
+  const rock=boulders[0],collision=new BoulderContact(boulders,1.55,2.8);
+  const s={...createState(),distance:rock.distance,lateral:rock.lateral,speed:75};
+  const hit=collision.update(s,{distance:rock.distance-rock.radiusD-10,lateral:s.lateral},1/60);
+  expect(hit?.boulderId).toBe(rock.id);
   expect(hit!.severity).toBeGreaterThan(0);
-  expect(contact.impacts).toBe(1);
+  expect(collision.impacts).toBe(1);
   expect(s.speed).toBeLessThan(75);
-  expect(s.lateral).toBeLessThan(9.6);
-  for(let n=0;n<15;n++)contact.update(s,{distance:s.distance,lateral:s.lateral},1/60);
-  expect(contact.impacts).toBe(1);
+  const r6Contact=new RockContact([older],()=>7,1.55,2.8);
+  const legacy={...createState(),distance:older.start+5,lateral:11,speed:70};
+  expect(r6Contact.update(legacy,{distance:older.start+4,lateral:10},1/60)).toBeDefined();
  });
  it('omits deep left cliff props without removing posts from level shoulders or canyon rock',()=>{
   const shoulders={left:1.6,right:6.8},ordinary={left:6,right:6};
