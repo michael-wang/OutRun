@@ -24,3 +24,21 @@ export function shoulderProfile(distance:number,seed:number):Shoulders {
 }
 /** Fixed props outside the shoulder keep their full vehicle-clearance margin. */
 export function roadObjectOffset(offset:number,halfWidth:number,shoulders?:Shoulders){const value=roadOffset(offset,halfWidth,shoulders);return shoulders&&Math.abs(offset)>=15?Math.sign(value)*Math.max(Math.abs(value),halfWidth+6.5):value;}
+
+
+/**
+ * r7 roadside visibility boundary: a continuous low rail and its 12 m markers
+ * share one distance from the asphalt edge. Keeps the ordinary offroad corridor
+ * behind a VISIBLE obstacle, without changing road width or ALB steering.
+ */
+export const TRIP_BARRIER_INNER_M=3.6;
+export const TRIP_BARRIER_OUTER_M=3.82;
+export const TRIP_MARKER_CENTER_M=3.82;
+
+/** Convert edge clearance (meters) into the raw legacy scenery offset.
+ * On tapered shoulders the raw value is nonlinear; never assume width=6. */
+export function tripBarrierRawOffset(side:-1|1,clearanceM:number,shoulders:Shoulders):number{
+ const width=side<0?shoulders.left:shoulders.right;
+ const rawExtra=clearanceM<=width?clearanceM*6/width:6+clearanceM-width;
+ return side*(7+rawExtra);
+}
