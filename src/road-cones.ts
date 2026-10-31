@@ -20,7 +20,7 @@ export function coneLayout(seed:number,length:number):ConeRecipe[]{
 
 /** Sparse cones on the outer edge before each dangerous rock formation. */
 export function rockyWarningCones(sections:readonly RockySection[],halfAt:(d:number)=>number):ConeRecipe[]{
- return sections.filter(r=>r.r7).flatMap((r,i)=>[125,95,65,35].map((lead,j)=>{
+ return sections.filter(r=>r.r7).flatMap((r,i)=>[260,190,130,70].map((lead,j)=>{
   const d=r.start-lead,inside=.25+(j%2)*.38;
   return {id:300000+i*10+j,distance:d,side:r.side,inset:inside,lateral:r.side*(halfAt(d)-inside),rockWarning:true};
  }).filter(c=>c.distance>=350));
