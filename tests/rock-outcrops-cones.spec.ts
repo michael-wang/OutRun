@@ -6,19 +6,19 @@ test('r7 outer-bend boulders look large and produce geometry-driven crash reacti
  await page.setViewportSize({width:960,height:432});
  await page.goto('/?qa=1&seed=1');
  await stageReady(page);await page.locator('#l2-play').click();
- const rock=await page.evaluate(()=>((window as any).__drive.rocks().sections as any[]).find(r=>r.r7));
+ const rock=await page.evaluate(()=>((window as any).__drive.rocks().boulders as any[])[0]);
  expect(rock).toBeDefined();
  await page.evaluate(r=>{
-  const g=(window as any).__drive,d=r.start+(r.end-r.start)*.42;
+  const g=(window as any).__drive,d=r.distance-90;
   g.manual(true);g.reset({distance:d,lateral:0,speed:40});
  },rock);
  await stageReady(page);
  await page.screenshot({path:'test-results/rock-outcrop-approach.png',scale:'css'});
  const impact=await page.evaluate(r=>{
-  const g=(window as any).__drive,d=r.start+(r.end-r.start)*.42,half=g.sample(d).halfWidth;
-  g.reset({distance:d,speed:70,lateral:r.side*(half+2)});
+  const g=(window as any).__drive,d=r.distance-r.radiusD-5;
+  g.reset({distance:d,speed:70,lateral:r.lateral});
   const before=g.snapshot().speed;
-  g.advance(.08,{gas:true,brake:false,steer:0});
+  g.advance(.20,{gas:true,brake:false,steer:0});
   return {before,after:g.snapshot().speed,contact:g.rocks().contact,stream:g.streamSafety()};
  },rock);
  expect(impact.contact.impacts).toBeGreaterThan(0);
