@@ -81,3 +81,119 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #route-name{position:fixed;top:calc(max(16px,env(safe-area-inset-top)) + 48px);left:max(24px,env(safe-area-inset-left));max-width:29vw;font:11px/1.3 system-ui;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #release-version{display:block;margin-top:3px;font:10px/1.2 system-ui;color:#e1e8e8;text-shadow:0 1px 2px #071323;pointer-events:none}
 #app #l2-hud{top:calc(max(16px,env(safe-area-inset-top)) + 96px);left:max(24px,env(safe-area-inset-left));max-width:calc(100vw - 48px);font-size:10px}
+
+/* iPhone Safari: keep rotation and home-screen guidance readable without hiding gameplay. */
+#rotate-iphone-hint,#rotate-immersive-error{max-width:min(440px,84vw);line-height:1.5}
+#iphone-fullscreen-hint,#l2-iphone-fullscreen-hint{font-size:13px;line-height:1.45;max-width:56ch}
+
+
+/* Public Road Trip entry over the approved splash artwork. */
+html[data-player-ui="true"] .l2-lab{display:none!important}
+html[data-player-ui="true"] #player-start{
+ position:fixed;z-index:32;top:max(20px,env(safe-area-inset-top));left:50%;
+ transform:translateX(-50%);width:min(92vw,620px);padding:8px 10px;
+ display:flex;flex-direction:column;align-items:center;gap:7px;
+ text-align:center;color:#fff5db;pointer-events:none;
+ text-shadow:0 2px 10px #082c38,0 1px 2px #082c38
+}
+html[data-player-ui="true"] #player-start[hidden]{display:none!important}
+html[data-player-ui="true"] #player-start button{pointer-events:auto;text-shadow:none}
+html[data-player-ui="true"] .player-title{font:900 clamp(23px,4vw,42px)/1.05 Arial,sans-serif;letter-spacing:.12em}
+html[data-player-ui="true"] #player-subtitle{margin:0;color:#fff2d4;font:700 clamp(10px,1.5vw,15px)/1.5 Arial,sans-serif;letter-spacing:.16em}
+html[data-player-ui="true"] #player-play{
+ display:block;width:auto;min-width:190px;margin:7px 0 0;padding:11px 35px;
+ border-radius:12px;background:#ffd297;color:#173e40;font-size:21px;
+ box-shadow:0 6px 28px #061f2870
+}
+html[data-player-ui="true"] .player-secondary{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+html[data-player-ui="true"] .player-secondary button{padding:7px 14px;min-height:36px;font-size:12px;background:#103b43bf}
+html[data-player-ui="true"] #player-loading{
+ margin:0;padding:5px 13px;border-radius:12px;background:#103b43ac;
+ color:#fff2d4;font:600 12px/1.4 Arial,sans-serif
+}
+html[data-player-ui="true"][data-drive-mode="menu"] header,
+html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
+html[data-player-ui="true"][data-drive-mode="menu"] #speed,
+html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
+/* Portrait: a short transparent rotation cue leaves the artwork visible. */
+@media (orientation:portrait) and (pointer:coarse){
+ html[data-player-ui="true"] #player-start{display:none!important}
+ html[data-player-ui="true"] #rotate{
+  z-index:65;justify-content:flex-start;gap:11px;
+  padding:max(100px,12dvh) 24px 24px;
+  background:linear-gradient(180deg,#082f3d8c 0%,#123e431a 43%,transparent 75%);
+  text-shadow:0 2px 12px #082c38;pointer-events:none;
+ }
+ html[data-player-ui="true"] #rotate span{font-size:46px}
+ html[data-player-ui="true"] #rotate small{font-size:14px;line-height:1.5;max-width:min(310px,82vw);color:#fff3dc}
+ html[data-player-ui="true"] #rotate button{display:none!important}
+}
+@media (orientation:landscape) and (max-height:500px){
+ html[data-player-ui="true"] #player-start{top:max(8px,env(safe-area-inset-top));gap:3px}
+ html[data-player-ui="true"] .player-title{font-size:25px}
+ html[data-player-ui="true"] #player-play{min-height:44px;font-size:16px;padding:9px 25px;margin:3px 0 0}
+ html[data-player-ui="true"] .player-secondary button{min-height:32px;padding:5px 12px;font-size:11px}
+}
+
+/* Route revision and QA metadata never appear on the public driving screen. */
+html[data-player-ui="true"] #route-name{display:none!important}
+html[data-player-ui="true"] #player-install-help{margin:2px auto 0;padding:7px 12px;max-width:min(520px,90vw);border-radius:8px;background:#103b43c7;color:#fff3dd;font:12px/1.5 Arial,sans-serif}
+/* Approved art stays behind menus and controls, and leaves with the first driving frame. */
+html[data-player-ui="true"] #preferences{z-index:40}
+html[data-player-ui="true"] #preferences p:has(#gamepad-diagnostic),
+html[data-player-ui="true"] #rotate-iphone-hint,
+html[data-player-ui="true"] #rotate-immersive-error,
+html[data-player-ui="true"] #gamepad-status{display:none!important}
+html[data-player-ui="true"] #player-start{top:max(6dvh,env(safe-area-inset-top));gap:10px}
+html[data-player-ui="true"] .player-title{font-size:clamp(32px,4.5vw,64px);font-style:italic;letter-spacing:.09em}
+html[data-player-ui="true"] #player-play{border-radius:6px;min-height:48px;min-width:220px}
+html[data-player-ui="true"] #player-play:disabled{cursor:wait;opacity:.65}
+html[data-player-ui="true"] #player-loading{max-width:90vw}
+html[data-player-ui="true"] #rotate{background:linear-gradient(180deg,#082f3d55,transparent 50%)}
+@media (orientation:portrait) and (pointer:coarse){
+ html[data-player-ui="true"] #rotate{padding-top:max(15dvh,env(safe-area-inset-top));font-size:24px}
+ html[data-player-ui="true"] #rotate span{display:none}
+}
+@media (orientation:landscape) and (max-height:500px){
+ html[data-player-ui="true"] #player-start{top:max(12px,env(safe-area-inset-top));gap:4px}
+ html[data-player-ui="true"] .player-title{font-size:30px}
+ html[data-player-ui="true"] #player-play{min-height:44px;margin-top:3px}
+}
+@media (orientation:portrait){#startup-art img{object-position:25% 75%}}
+@media (orientation:portrait) and (pointer:coarse){
+ html[data-player-ui="true"] #player-start:has(#player-retry:not([hidden])){display:flex!important;top:30dvh}
+ html[data-player-ui="true"] #player-start:has(#player-retry:not([hidden])) :is(.player-title,#player-subtitle,#player-play,.player-secondary){display:none}
+}
+
+
+/* Traditional-Chinese arcade copy: preserve the approved splash and responsive layout. */
+html[data-player-ui="true"] :is(.player-title,#rotate,#player-play,#player-subtitle,#player-loading,#player-start button){
+ font-family:system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html[data-player-ui="true"] .player-title{letter-spacing:.12em}
+html[data-player-ui="true"] #player-subtitle{letter-spacing:.18em}
+html[data-player-ui="true"] #player-play{font-size:clamp(19px,2.5vw,24px)}
+html[data-player-ui="true"] #touch [data-control]{font-size:16px}
+@media (orientation:portrait) and (pointer:coarse){
+ html[data-player-ui="true"] #rotate{font-size:clamp(21px,5.5vw,25px)}
+ html[data-player-ui="true"] #rotate small{font-size:15px}
+}
+
+
+/* Public portrait: only supported browsers get a one-tap fullscreen + landscape start. */
+@media (pointer:coarse) and (orientation:portrait){
+  html[data-player-ui="true"] #rotate #rotate-launch:not([hidden]){
+    display:inline-flex!important;align-items:center;justify-content:center;
+    pointer-events:auto;min-width:min(300px,82vw);min-height:56px;
+    margin-top:7px;padding:12px 22px;
+    border:0;border-radius:12px;background:#ffd297;color:#173e40;
+    font:800 21px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+    text-shadow:none;box-shadow:0 7px 26px #082c3880;
+    touch-action:manipulation;
+  }
+  html[data-player-ui="true"] #rotate #rotate-launch-status:not([hidden]){
+    display:block;max-width:min(345px,86vw);padding:8px 12px;
+    border-radius:8px;background:#103b43b5;
+    font-size:14px;line-height:1.55;color:#fff3dc;
+  }
+}

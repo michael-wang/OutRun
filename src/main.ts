@@ -33,6 +33,8 @@ import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
 import {TireEffects,type TireContact} from './tire-effects';
 import {Traffic,trafficRecipe} from './traffic';
+import type {BrakeLightController} from './car';
+import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import roadWorkerUrl from './road-worker.ts?worker&url';
 import type {FeedbackAnchor} from './l2-feedback';
 const labMode=new URLSearchParams(location.search).get('lab')==='bricks';
@@ -42,6 +44,9 @@ document.documentElement.dataset.qa=String(params.get('qa')==='1');
 // Explicit historical and diagnostic routes keep their existing selection.
 const defaultTrip=params.get('mode')!=='free'&&!['trip','stage','lab','challenge','pace','velocity'].some(key=>params.has(key));
 const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:7):undefined;
+// Production visitors see the game; internal QA tools remain available through ?qa=1.
+const playerUi=!!trip&&params.get('qa')!=='1'&&(import.meta.env.PROD||params.get('playerui')==='1');
+document.documentElement.dataset.playerUi=String(playerUi);
 const stage=trip??(params.get('stage')==='1'?generateStage(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:2):undefined);
 const pilot=stage??(params.get('lab')==='pilots'?(PILOTS.find(b=>b.id===params.get('pilot'))??PILOTS[0]):undefined);
 const banking=bankPrototype(params.get('lab'),pilot?.id,params.get('bank'));
@@ -54,14 +59,26 @@ let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof moun
 document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??TRIP_VERSION}</small></div>
-<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="Pause / Menu">Ⅱ Menu</button></nav></header>
+<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <button id="photo-button" aria-label="Capture screenshot" hidden>📷</button><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
 <section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><p><a href="/?trip=10m">10-Minute Road Trip ↗</a></p><p><a href="/?stage=1">Stage 01: Pacific Getaway ↗</a></p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
-<section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div></section>
-<section id="preferences" class="panel" hidden><div class="eyebrow">MAKE YOURSELF AT HOME</div><h2>Controls</h2><label class="setting"><input id="swap" type="checkbox"> Steering on the right</label><p>Accelerator stays above brake on either side.</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">Done</button></section>
-<div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="Steering position" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span></div><div class="pedals"><button data-control="gas">GAS</button><button data-control="brake">BRAKE</button></div></div>
-<div id="rotate"><span>↻</span>Turn toward the horizon<small>Rotate your phone to landscape to drive.</small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>`;
+<section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div><p id="iphone-fullscreen-hint" role="status" hidden>On iPhone, open this site in Safari. Tap Share → Add to Home Screen, then launch the icon to hide Safari browser bars. Rotate the phone to landscape to drive.</p></section>
+<section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
+<div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span></div><div class="pedals"><button data-control="gas">${playerUi?'油門':'GAS'}</button><button data-control="brake">${playerUi?'煞車':'BRAKE'}</button></div></div>
+<div id="rotate"><span>↻</span>${playerUi?'橫放手機，準備出發！':'Turn toward the horizon'}<small id="rotate-instruction">${playerUi?'請將手機轉為橫向，即可開始駕駛。':'Rotate your phone to landscape to drive.'}</small><small id="rotate-launch-status" role="status" hidden></small><button id="rotate-launch" type="button" hidden>全螢幕出發！</button><small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>
+<section id="player-start" aria-label="Start driving" hidden>
+  <div id="player-title" class="player-title">極速漫遊</div>
+  <p id="player-subtitle">公路冒險</p>
+  <button id="player-play" class="primary">開始駕駛</button>
+  <p id="player-loading" role="status">道路準備中…</p><button id="player-retry" hidden>重試載入</button>
+  <div class="player-secondary"><button id="player-restart" hidden>重新開始</button><button id="player-new-route" hidden>新路線</button><button id="player-options">操作設定</button><button id="player-sound">音效開</button><button id="player-install-guide" hidden>更多畫面空間</button></div>
+  <p id="player-install-help" role="status" hidden>iPhone Safari：分享 → 加入主畫面，再從主畫面開啟遊戲，即可減少瀏覽器工具列。</p>
+</section>`;
+const startupArt=document.getElementById('startup-art')!;
+document.getElementById('app')!.prepend(startupArt);
+startupArt.hidden=!playerUi;
+document.getElementById('startup-fallback')!.hidden=true;
 const $ = (id:string) => document.getElementById(id)!;
 $('route-title').textContent=brick?.name??'Coast Road';
 for(const [id,key] of Object.entries({drive:'P',resume:'P',restart:'R',sound:'M',settings:'C',fullscreen:'F'})){const node=$(id);node.classList.add('shortcut');node.dataset.shortcut=key;node.setAttribute('aria-keyshortcuts',key);}
@@ -93,7 +110,10 @@ function setInputMode(next:typeof inputMode){if(inputMode!==next){inputMode=next
 addEventListener('keydown',e=>{if(!e.isComposing)setInputMode('keyboard');},true);
 addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setInputMode('touch');else if(e.pointerType==='mouse')setInputMode('keyboard');},true);
 let mode:'menu'|'playing'|'paused'|'countdown'='menu'; let settingsOpen=false; let muted=false; let manual=false;let readyUntil=0;
+// One tap in portrait arms a launch; driving starts only after landscape AND safe road readiness.
+let autoLaunchArmed=false,autoLaunchNeedsManual=false;
 let streamStartRequested=false;
+let preparationSince=performance.now();
 const streamStallEvents:{start:number;end?:number;durationMs?:number;distance:number;reason:string}[]=[];
 let streamHeld=false,streamHoldSince=0,streamStalls=0,streamWaitMs=0,contextLost=false;
 const roadOverlay=document.createElement('div');roadOverlay.id='road-loading';roadOverlay.setAttribute('role','status');roadOverlay.style.cssText='position:fixed;inset:35% 12% auto;z-index:150;padding:22px;background:#102a35ee;color:white;text-align:center;border:2px solid #ffd46b;border-radius:12px;pointer-events:none;font:600 18px system-ui';roadOverlay.hidden=true;document.getElementById('app')!.append(roadOverlay);
@@ -110,6 +130,9 @@ let inspectionView:'front'|'side'|'cockpit'|undefined;
 let wheelContacts:(TireContact & {point:number[]})[]=[];
 const tireEffects=new TireEffects(world.scene),dustEffects=new TireEffects(world.scene,'dust'),impactSparks=new ImpactSparks(world.scene);
 const carBounds=new THREE.Box3().setFromObject(world.car).getSize(new THREE.Vector3()),guardrail=new GuardrailContact(carBounds.x/2,carBounds.z/2,world.boundaries),sparkOrigin=new THREE.Vector3(),trafficImpact=new TrafficImpact(),trafficSparks=new ImpactSparks(world.scene,true),trafficSparkOrigin=new THREE.Vector3();
+const brakeLights=world.car.userData.brakeLights as BrakeLightController;
+const exhaustEffects=new ExhaustEffects(world.car);
+let pendingExhaustRpm=0;
 const rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.roadReady(d)??true);
 const cones=trip&&trip.revision>=5?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,d=>world.streamer?.roadReady(d)??true):undefined;
 const triangles=trip&&trip.revision>=6?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,d=>world.streamer?.roadReady(d)??true,world.breakdowns):undefined;
@@ -127,27 +150,103 @@ function groundWheels(){
 }
 
 const speedAudit=import.meta.env.DEV?new SpeedAudit():undefined;
-const immersive=new Immersive($('app'),()=>{
-  $('fullscreen').textContent=immersive.active?'Exit fullscreen':immersive.installed?'PWA fullscreen':'Fullscreen';
+function refreshImmersiveUI(){
+  const help=immersive.needsIPhoneHelp,installedIPhone=immersive.isIPhone&&immersive.installed;
+  $('fullscreen').textContent=help?'Fullscreen help':immersive.active?'Exit fullscreen':installedIPhone?'App mode':'Fullscreen';
+  $('fullscreen').hidden=installedIPhone;
+  const labButton=document.getElementById('l2-fullscreen');
+  if(labButton){labButton.textContent=help?'Fullscreen help':'Fullscreen';labButton.hidden=installedIPhone;}
+  $('rotate-fullscreen').hidden=help||installedIPhone;
+  $('rotate-iphone-hint').hidden=!help;
+  $('rotate-immersive-error').textContent=immersive.message;
+  $('rotate-immersive-error').hidden=!immersive.message||help;
   $('immersive-note').textContent=immersive.message;
-  $('immersive-note').hidden=!immersive.message;
-});
+  $('immersive-note').hidden=!immersive.message||help;
+}
+const immersive=new Immersive($('app'),refreshImmersiveUI);
 let swapped=readSwapped();
 let refreshPhotoFolder=()=>{};
 function applyLayout(){ $('touch').classList.toggle('swapped',swapped); ($('swap') as HTMLInputElement).checked=swapped; }
 applyLayout();
-function ui(){ $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=mode!=='playing'||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu';if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); }
+function landscapeReady(){return matchMedia('(orientation:landscape)').matches;}
+function refreshPortraitLaunchUi(){
+  if(!playerUi)return;
+  const available=immersive.canAutoLandscape;
+  const button=$('rotate-launch') as HTMLButtonElement;
+  button.hidden=!available||autoLaunchArmed||brickCompleted;
+  button.disabled=autoLaunchArmed;
+  const instruction=$('rotate-instruction');
+  instruction.hidden=autoLaunchArmed;
+  const hint=available?'點擊下方按鈕，即可切換橫向並開始駕駛。':'請將手機轉為橫向，即可開始駕駛。';
+  if(instruction.textContent!==hint)instruction.textContent=hint;
+  const status=$('rotate-launch-status');
+  status.hidden=!autoLaunchArmed;
+  if(autoLaunchArmed){
+    const message=autoLaunchNeedsManual?'無法自動旋轉，請手動橫放手機，準備好就會自動出發。':
+      world.streamer&&!world.streamer.ready?'道路準備中，完成後自動出發…':'正在切換成橫向…';
+    if(status.textContent!==message)status.textContent=message;
+  }
+}
+function updatePlayerUi(){
+  if(!playerUi)return;
+  refreshPortraitLaunchUi();
+  const panel=$('player-start'),show=mode!=='playing'&&mode!=='countdown'&&!settingsOpen;
+  document.documentElement.dataset.driveMode=mode;
+  panel.hidden=!show;
+  startupArt.hidden=mode==='playing'||mode==='countdown'||(elapsed>0&&world.streamer?.ready!==false);
+  if(!show)return;
+  const title=brickCompleted?'旅程完成':elapsed>0?'暫停中':'極速漫遊';
+  const subtitle=brickCompleted?'下一段旅程，等你出發':elapsed>0?'準備好了就繼續出發':'公路冒險';
+  if($('player-title').textContent!==title)$('player-title').textContent=title;
+  if($('player-subtitle').textContent!==subtitle)$('player-subtitle').textContent=subtitle;
+  const play=$('player-play'),label=autoLaunchArmed||streamStartRequested?'即將出發…':brickCompleted?'再跑一次':elapsed>0?'繼續駕駛':'開始駕駛';
+  if(play.textContent!==label)play.textContent=label;
+  $('player-restart').hidden=elapsed===0&&!brickCompleted;
+  $('player-new-route').hidden=!brickCompleted;
+  $('player-install-guide').hidden=true;
+  const soundLabel=muted?'音效關':'音效開';
+  if($('player-sound').textContent!==soundLabel)$('player-sound').textContent=soundLabel;
+  const loading=$('player-loading');
+  const preparing=!!world.streamer&&!world.streamer.ready;
+  if(!preparing)preparationSince=performance.now();
+  const slow=preparing&&performance.now()-preparationSince>45000;
+  (play as HTMLButtonElement).disabled=preparing||autoLaunchArmed;
+  $('player-retry').hidden=!slow&&!world.streamer?.error;
+  loading.hidden=!preparing&&!world.streamer?.error;
+  if(!loading.hidden){const message=world.streamer?.error?'道路載入失敗，請重試。':slow?'道路準備時間較長，請稍候或重新載入。':'道路準備中…';if(loading.textContent!==message)loading.textContent=message;}
+}
+function ui(){ $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=mode!=='playing'||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=playerUi?(mode==='playing'?'Ⅱ 暫停':'☰ 選單'):(mode==='playing'?'Ⅱ Menu':'☰ Menu');if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); updatePlayerUi(); }
 function start(){void sound.unlock().catch(()=>{});if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;const resume=!!stage&&mode==='paused'&&elapsed>0&&!brickCompleted;mode=resume?'countdown':'playing';if(resume){readyUntil=performance.now()+1000;sound.pause();pad.neutralize();}settingsOpen=false;input.clear();ui();renderer.domElement.focus({preventScroll:true});}
-function pause(){if(l2UI?.feedbackOpen)return;if(mode==='paused'){start();return;}mode='paused';input.clear();pad.neutralize();sound.pause();ui();if(!mobile())(document.getElementById(brick?(l2||pilot?'l2-play':'brick-play'):'resume') as HTMLElement|null)?.focus();}
-function restart(){sound.pause();sound.resetPassBy();traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
-$('drive').onclick=()=>{if(mobile())void immersive.enter();start();};
+function pause(){if(l2UI?.feedbackOpen)return;if(mode==='paused'){start();return;}mode='paused';input.clear();pad.neutralize();sound.pause();ui();if(!mobile())(document.getElementById(playerUi?'player-play':brick?(l2||pilot?'l2-play':'brick-play'):'resume') as HTMLElement|null)?.focus();}
+function restart(){preparationSince=performance.now();sound.pause();sound.resetPassBy();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
+$('player-retry').onclick=()=>location.reload();
+$('player-play').onclick=()=>document.getElementById('l2-play')?.click();
+$('player-restart').onclick=()=>document.getElementById('l2-replay')?.click();
+$('player-new-route').onclick=()=>document.getElementById('l2-next')?.click();
+$('player-options').onclick=()=>document.getElementById('l2-settings')?.click();
+$('player-sound').onclick=()=>document.getElementById('l2-sound')?.click();
+$('player-install-guide').onclick=()=>{$('player-install-help').hidden=!$('player-install-help').hidden;};
+$('drive').onclick=()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();start();};
 $('resume').onclick=start; $('pause').onclick=pause; $('restart').onclick=restart;
-$('fullscreen').onclick=()=>{input.clear();void immersive.toggle();};
+$('fullscreen').onclick=()=>{input.clear();if(immersive.needsIPhoneHelp){const hint=$('iphone-fullscreen-hint'),labHint=document.getElementById('l2-iphone-fullscreen-hint'),show=hint.hidden&&(!labHint||labHint.hidden);hint.hidden=!show;if(labHint)labHint.hidden=!show;return;}void immersive.toggle();};
+$('rotate-launch').onclick=()=>{
+  if(!playerUi||autoLaunchArmed||!immersive.canAutoLandscape||brickCompleted)return;
+  autoLaunchArmed=true;autoLaunchNeedsManual=false;
+  // Both calls happen synchronously in the real tap handler, before any await.
+  // Fullscreen requires transient user activation; loading finishes separately.
+  void sound.unlock().catch(()=>{});
+  void immersive.enter().then(()=>{
+    if(autoLaunchArmed&&!landscapeReady()){autoLaunchNeedsManual=true;refreshPortraitLaunchUi();}
+  }).catch(()=>{
+    if(autoLaunchArmed){autoLaunchNeedsManual=true;refreshPortraitLaunchUi();}
+  });
+  refreshPortraitLaunchUi();
+};
 $('rotate-fullscreen').onclick=()=>{input.clear();void immersive.enter();};
 $('rotate-pause').onclick=()=>{if(mode==='menu')start();else pause();};
-$('sound').onclick=()=>{muted=!muted;void sound.unlock().catch(()=>{});sound.setMuted(muted);$('sound').textContent=muted?'Sound off':'Sound on';$('sound').setAttribute('aria-pressed',String(!muted));};
+$('sound').onclick=()=>{muted=!muted;void sound.unlock().catch(()=>{});sound.setMuted(muted);$('sound').textContent=playerUi?(muted?'音效關':'音效開'):(muted?'Sound off':'Sound on');$('sound').setAttribute('aria-pressed',String(!muted));};
 $('settings').onclick=()=>{if(mode==='playing')mode='paused';settingsOpen=true;input.clear();sound.pause();ui();if(!mobile())$('close-settings').focus();};
-$('close-settings').onclick=()=>{settingsOpen=false;ui();if(!mobile())document.getElementById(pilot||l2?'l2-settings':brick?'brick-settings':'settings')?.focus();};
+$('close-settings').onclick=()=>{settingsOpen=false;ui();if(!mobile())document.getElementById(playerUi?'player-options':pilot||l2?'l2-settings':brick?'brick-settings':'settings')?.focus();};
 $('swap').onchange=()=>{swapped=($('swap') as HTMLInputElement).checked;saveSwapped(swapped);applyLayout();};
 addEventListener('keydown',e=>{
   if(e.isComposing||e.repeat||l2UI?.feedbackOpen)return;
@@ -159,7 +258,7 @@ addEventListener('keydown',e=>{
   if((mode==='playing'||brickCompleted)&&l2UI&&(e.code==='KeyG'||e.code==='KeyI')){e.preventDefault();l2UI.openQuick(e.code==='KeyG'?'praise':'issue','keyboard');return;}
   if(mode==='playing'){if(e.code==='KeyP'){e.preventDefault();pause();}else if(e.code==='KeyR'){e.preventDefault();restart();}return;}
   const prefix=pilot||l2?'l2':brick?'brick':'';
-  const action:Record<string,string>={KeyP:prefix?`${prefix}-play`:mode==='menu'?'drive':'resume',KeyR:prefix?`${prefix}-replay`:'restart',KeyN:`${prefix}-next`,KeyB:`${prefix}-prev`,KeyC:prefix?`${prefix}-settings`:'settings',KeyM:prefix?`${prefix}-sound`:'sound',KeyF:prefix?`${prefix}-fullscreen`:'fullscreen',KeyE:`${prefix}-export`};
+  const action:Record<string,string>={KeyP:playerUi?'player-play':prefix?`${prefix}-play`:mode==='menu'?'drive':'resume',KeyR:playerUi?'player-restart':prefix?`${prefix}-replay`:'restart',KeyN:playerUi?'player-new-route':`${prefix}-next`,KeyB:`${prefix}-prev`,KeyC:playerUi?'player-options':prefix?`${prefix}-settings`:'settings',KeyM:playerUi?'player-sound':prefix?`${prefix}-sound`:'sound',KeyF:prefix?`${prefix}-fullscreen`:'fullscreen',KeyE:`${prefix}-export`};
   const vote:Record<string,string>={KeyK:'KEEP',KeyW:'REWORK',KeyX:'REJECT'};
   const button=vote[e.code]?document.querySelector<HTMLButtonElement>(prefix==='l2'?`[data-l2-vote="${vote[e.code]}"]`:`[data-vote="${vote[e.code]}"]`):document.getElementById(action[e.code]);
   if(button&&button.offsetParent!==null){e.preventDefault();button.click();return;}
@@ -180,7 +279,7 @@ function advance(dt:number,override?:InputState){
   if(mode==='playing'&&!settingsOpen){world.streamer?.update(state.distance);if(contextLost||(world.streamer&&!world.streamer.canDrive(state.distance,Math.max(0,state.speed)*effectivePace(state.speed,highSpeedPace)+5,dt))){holdRoad(true);sound.pause();return false;}holdRoad(false);}
 
   input.update(dt);
-  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance,beforeLateral=state.lateral;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};lastControls={...controls};usedExternalControls=!!external;if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}const road=world.sample(state.distance);step(state,controls,dt,road.curvature,highSpeedPace,world.halfAt,road.tangent.y/Math.hypot(road.tangent.x,road.tangent.z),-Math.atan(road.right.y));trafficImpact.update(state,dt,world.halfAt(state.distance));if(cones?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2))state.speed*=.995;if(triangles?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2))state.speed*=.995;traffic?.update(elapsed+dt,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace));const collision=traffic?.hit(elapsed+dt,state,{distance:beforeDistance,lateral:beforeLateral},dt,carBounds.x/2,carBounds.z/2,state.heading+trafficImpact.yaw);if(collision){trafficImpact.kick(state,collision);sound.impact(collision.severity,'vehicle');const contact=world.sample(collision.distance);trafficSparkOrigin.copy(contact.position).addScaledVector(contact.right,collision.lateral);trafficSparkOrigin.y+=.65;trafficSparks.burst(elapsed+dt,trafficSparkOrigin,contact.right,contact.tangent,collision.severity);}const impact=guardrail.update(state,beforeDistance,beforeLateral,dt,!!trip&&trip.seed===1);if(impact)sound.impact(impact);const rockHit=rockContact.update(state,{distance:beforeDistance,lateral:beforeLateral},dt);if(rockHit)sound.impact(rockHit.severity,'vehicle');updateFootprint(state,world.halfAt(state.distance));world.car.userData.motion.advance(state.distance-beforeDistance,state.appliedSteer,dt);elapsed+=dt;if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId);if(brick&&state.distance>=BRICK_START+brick.length){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else sound.pause();
+  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance,beforeLateral=state.lateral;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};lastControls={...controls};usedExternalControls=!!external;if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}const road=world.sample(state.distance),previousGear=state.gear,previousRpm=state.rpm;step(state,controls,dt,road.curvature,highSpeedPace,world.halfAt,road.tangent.y/Math.hypot(road.tangent.x,road.tangent.z),-Math.atan(road.right.y));if(isHighRevUpshift(previousGear,state.gear,controls.gas,controls.brake,previousRpm))pendingExhaustRpm=Math.max(pendingExhaustRpm,previousRpm);trafficImpact.update(state,dt,world.halfAt(state.distance));if(cones?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2))state.speed*=.995;if(triangles?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2))state.speed*=.995;traffic?.update(elapsed+dt,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace));const collision=traffic?.hit(elapsed+dt,state,{distance:beforeDistance,lateral:beforeLateral},dt,carBounds.x/2,carBounds.z/2,state.heading+trafficImpact.yaw);if(collision){trafficImpact.kick(state,collision);sound.impact(collision.severity,'vehicle');const contact=world.sample(collision.distance);trafficSparkOrigin.copy(contact.position).addScaledVector(contact.right,collision.lateral);trafficSparkOrigin.y+=.65;trafficSparks.burst(elapsed+dt,trafficSparkOrigin,contact.right,contact.tangent,collision.severity);}const impact=guardrail.update(state,beforeDistance,beforeLateral,dt,!!trip&&trip.seed===1);if(impact)sound.impact(impact);const rockHit=rockContact.update(state,{distance:beforeDistance,lateral:beforeLateral},dt);if(rockHit)sound.impact(rockHit.severity,'vehicle');updateFootprint(state,world.halfAt(state.distance));world.car.userData.motion.advance(state.distance-beforeDistance,state.appliedSteer,dt);elapsed+=dt;if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId);if(brick&&state.distance>=BRICK_START+brick.length){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(brick)return height+(Math.abs(lateral)>world.halfAt(state.distance)?-.1:0);
@@ -213,11 +312,11 @@ function render(dt:number,draw=true){
     camera.position.copy(world.car.localToWorld(offset));camera.lookAt(world.car.localToWorld(new THREE.Vector3(0,.8,0)));
   }
   if(import.meta.env.DEV&&bridgeInspection){const q=world.sample(state.distance);camera.position.copy(q.position).addScaledVector(q.right,140).addScaledVector(q.tangent,-100).add(new THREE.Vector3(0,18,0));camera.lookAt(q.position.clone().add(new THREE.Vector3(0,-7,0)));}
-  const worldStart=perfEnabled?performance.now():0;world.update(elapsed,state.speed,state.slip,state.distance);if(perfEnabled)worldTotal+=performance.now()-worldStart;if(!draw)return;cones?.update(elapsed,state.distance,state.lateral,state.speed);triangles?.update(elapsed,state.distance,state.lateral,state.speed);traffic?.update(elapsed,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace));const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);refreshHints();world.car.userData.motion.render();const rayStart=perfEnabled?performance.now():0;groundWheels();sound.surface(state.speed,mode==='playing'?wheelContacts.filter(c=>c.onRoad===false&&c.surface&&c.gap!==null&&Math.abs(c.gap)<.12).length:0,dt);tireEffects.update(elapsed,state.speed,sound.skidFeedback.intensity,wheelContacts,renderer.domElement.height*camera.projectionMatrix.elements[5]/2);dustEffects.update(elapsed,state.speed,0,wheelContacts,1);sparkOrigin.copy(p.position).addScaledVector(p.right,world.boundaries?guardrail.contactEdge:CANYON_BEND.railOffset);sparkOrigin.y+=.9;impactSparks.update(elapsed,sparkOrigin,p.right,p.tangent,guardrail.flash>0?guardrail.strength:0);trafficSparks.update(elapsed,trafficSparkOrigin,p.right,p.tangent,trafficImpact.flash>0?(trafficImpact.event?.severity??0):0);const renderStart=perfEnabled?performance.now():0;if(perfEnabled)raycastTotal+=renderStart-rayStart;renderer.render(world.scene,camera);if(perfEnabled)renderTotal+=performance.now()-renderStart;frames++;
+  const worldStart=perfEnabled?performance.now():0;world.update(elapsed,state.speed,state.slip,state.distance);if(perfEnabled)worldTotal+=performance.now()-worldStart;if(!draw)return;cones?.update(elapsed,state.distance,state.lateral,state.speed);triangles?.update(elapsed,state.distance,state.lateral,state.speed);traffic?.update(elapsed,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace));const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);refreshHints();world.car.userData.motion.render();const rayStart=perfEnabled?performance.now():0;groundWheels();sound.surface(state.speed,mode==='playing'?wheelContacts.filter(c=>c.onRoad===false&&c.surface&&c.gap!==null&&Math.abs(c.gap)<.12).length:0,dt);tireEffects.update(elapsed,state.speed,sound.skidFeedback.intensity,wheelContacts,renderer.domElement.height*camera.projectionMatrix.elements[5]/2);dustEffects.update(elapsed,state.speed,0,wheelContacts,1);sparkOrigin.copy(p.position).addScaledVector(p.right,world.boundaries?guardrail.contactEdge:CANYON_BEND.railOffset);sparkOrigin.y+=.9;impactSparks.update(elapsed,sparkOrigin,p.right,p.tangent,guardrail.flash>0?guardrail.strength:0);trafficSparks.update(elapsed,trafficSparkOrigin,p.right,p.tangent,trafficImpact.flash>0?(trafficImpact.event?.severity??0):0);brakeLights.set(mode==='playing'&&lastControls.brake);if(pendingExhaustRpm>0&&mode==='playing')exhaustEffects.burst(elapsed,pendingExhaustRpm);pendingExhaustRpm=0;exhaustEffects.update(elapsed,mode==='playing');const renderStart=perfEnabled?performance.now():0;if(perfEnabled)raycastTotal+=renderStart-rayStart;renderer.render(world.scene,camera);if(perfEnabled)renderTotal+=performance.now()-renderStart;frames++;
   $('speed').querySelector('strong')!.textContent=Math.round(state.speed*3.6).toString().padStart(3,'0');
   const speedBand=state.speed*3.6>=300?'redline':state.speed*3.6>=240?'fast':'cruise';if($('speed').dataset.band!==speedBand)$('speed').dataset.band=speedBand;
   $('speed-needle').setAttribute('transform',`rotate(${needleAngle(state.speed*3.6)} 100 100)`);$('gear').textContent=`G${state.gear}`;
-  $('status').textContent=state.offRoad?'OFF ROAD · STEER BACK':state.slip>.2?'CORNERING · HOLD YOUR LINE':mode==='playing'?'STEER YOUR OWN LINE':'READY FOR THE COAST';
+  $('status').textContent=playerUi?(state.offRoad?'偏離路面 · 請回正':state.slip>.2?'過彎中 · 穩住方向':mode==='playing'?'保持路線':'準備出發'):(state.offRoad?'OFF ROAD · STEER BACK':state.slip>.2?'CORNERING · HOLD YOUR LINE':mode==='playing'?'STEER YOUR OWN LINE':'READY FOR THE COAST');
 }
 let photoStatusTimer=0;
 const photos=new PhotoCapture(renderer.domElement,()=>render(0),()=>{const p=world.sample(state.distance);return {stageCode:stage?.stageCode??'FREE',seed:stage?.seed??0,capturedAt:new Date().toISOString(),time:elapsed,distance:state.distance,speed:state.speed*3.6,steer:state.appliedSteer,grade:state.grade,roadX:state.lateral,halfWidth:world.halfAt(state.distance),carPosition:world.car.position.toArray(),carRotation:[world.car.rotation.x,world.car.rotation.y,world.car.rotation.z],roadPosition:p.position.toArray(),surfaceGap:surfaceError(),wheels:wheelContacts};},message=>{$('photo-status').textContent=message;$('photo-status').hidden=false;clearTimeout(photoStatusTimer);photoStatusTimer=window.setTimeout(()=>{$('photo-status').hidden=true;},message==='📸 Saved'?2000:7000);});
@@ -232,18 +331,18 @@ const pad=new GamepadInput(input,action=>{
  if(action==='pause'){if(settingsOpen||l2UI?.feedbackOpen||mode==='countdown')return;if(mode==='menu'||brickCompleted)restart();else pause();return;}
  if(action==='back'){if(l2UI?.feedbackOpen)document.getElementById('l2-feedback-cancel')?.click();else if(settingsOpen)$('close-settings').click();else if(mode==='playing')pause();return;}
  if(mode==='playing')return;
- const scope=(l2UI?.feedbackOpen?document.getElementById('l2-feedback-dialog'):settingsOpen?$('preferences'):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
+ const scope=(l2UI?.feedbackOpen?document.getElementById('l2-feedback-dialog'):settingsOpen?$('preferences'):playerUi?$('player-start'):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
  if(!scope)return;
  const items=Array.from(scope.querySelectorAll<HTMLElement>('button,a,input,select')).filter(x=>x.offsetParent!==null&&!x.hasAttribute('disabled'));
  if(action==='confirm'){const active=document.activeElement as HTMLElement;if(items.includes(active))active.click();else items[0]?.focus();return;}
  const index=items.indexOf(document.activeElement as HTMLElement),delta=action==='up'?-1:1;items[(index<0?0:(index+delta+items.length)%items.length)]?.focus();
 },()=>setInputMode('gamepad'),()=>{if(inputMode==='gamepad')setInputMode(mobile()?'touch':'keyboard');});
-const perfEnabled=import.meta.env.DEV&&params.get('perf')==='1';
+const perfEnabled=import.meta.env.DEV&&params.get('perf')==='1'&&!playerUi;
 const perf={fps:0,startupMs:0,raycastMs:0,renderMs:0,worldMs:0,pixelRatio:renderer.getPixelRatio(),shadows:renderer.shadowMap.enabled};
 let perfFrames=0,perfSince=performance.now(),raycastTotal=0,renderTotal=0,worldTotal=0;
 const perfPanel=perfEnabled?document.createElement('pre'):undefined;
 if(perfPanel){perfPanel.id='perf';perfPanel.style.cssText='position:fixed;left:8px;top:50px;z-index:100;pointer-events:none;background:#102a35dd;color:white;padding:8px;font:12px monospace';document.getElementById('app')!.append(perfPanel);}
-const streamDiagnosticMode=params.get('streamdiag')==='1',streamLog:unknown[]=[];let streamSampleAt=0,streamSampleDistance=state.distance;let observedWorldTravelSpeedMps:number|null=null;
+const streamDiagnosticMode=params.get('streamdiag')==='1'&&!playerUi,streamLog:unknown[]=[];let streamSampleAt=0,streamSampleDistance=state.distance;let observedWorldTravelSpeedMps:number|null=null;
 const diagnosticSnapshot=()=>{const started=performance.now(),stream=world.streamer?.stats;const row={build:'S1-stream-diagnostics',schemaVersion:2,observedWorldTravelSpeedMps,travelSampleAt:streamSampleAt,unheldTravelSpeedMps:state.speed*effectivePace(state.speed,highSpeedPace),trip:trip?.tripCode,wall:performance.now(),elapsed,distance:state.distance,speed:state.speed,fps:perf.fps,held:streamHeld,stalls:streamStalls,waitMs:streamWaitMs+(streamHeld?performance.now()-streamHoldSince:0),contextLost,stallEvents:streamStallEvents.map(e=>({...e,durationMs:e.durationMs??performance.now()-e.start})),lifecycle:world.streamer?.diagnosticsSnapshot(state.speed*effectivePace(state.speed,highSpeedPace)),draws:renderer.info.render.calls,triangles:renderer.info.render.triangles,programs:renderer.info.programs?.length??null,gpuMemoryBytes:null,memory:{...renderer.info.memory,heap:(performance as any).memory?.usedJSHeapSize??null},stream:stream?{...stream,history:[...stream.history.filter(h=>h.kind.endsWith('-cpu')||h.kind==='worker-wall').slice(-12),...stream.history.filter(h=>!h.kind.endsWith('-cpu')&&h.kind!=='worker-wall').slice(-18)]}:null};return {...row,snapshotCpuMs:performance.now()-started};};
 const streamPanel=streamDiagnosticMode?document.createElement('div'):undefined;
 if(streamPanel){streamPanel.id='stream-diagnostics';streamPanel.style.cssText='position:fixed;top:48px;left:8px;z-index:151;background:#102a35dd;color:white;padding:6px;font:11px monospace;max-width:70vw';const text=document.createElement('pre'),button=document.createElement('button');text.id='stream-diagnostic-text';button.textContent='Export stream log';button.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({samples:streamLog,latest:diagnosticSnapshot(),workerHistory:world.streamer?.stats.history},null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='outrun-stream-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};streamPanel.append(text,button);document.getElementById('app')!.append(streamPanel);(window as any).__streamDiagnostics={snapshot:diagnosticSnapshot};}
@@ -251,15 +350,22 @@ function recordStreamDiagnostics(now:number){if(!streamDiagnosticMode||now-strea
 let last=performance.now();
 function loop(now:number){
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
+  if(autoLaunchArmed&&(mode==='playing'||mode==='countdown'))autoLaunchArmed=false;
+  if(autoLaunchArmed&&!document.hidden&&landscapeReady()&&!settingsOpen&&(!world.streamer||world.streamer.ready)){
+    autoLaunchArmed=false;autoLaunchNeedsManual=false;
+    // Same start/restart behavior as the existing Play button, minus a second tap.
+    if(mode==='menu'||brickCompleted)restart();else start();
+  }
   pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen);
   const dt=Math.min((now-last)/1000,.25);last=now;
-  const wasCounting=mode==='countdown';if(wasCounting){$('ready-countdown').textContent=`READY ${Math.max(0,(readyUntil-now)/1000).toFixed(1)}`;if(now>=readyUntil&&!document.hidden&&document.hasFocus()){mode='playing';input.clear();pad.neutralize();ui();}}
+  const wasCounting=mode==='countdown';if(wasCounting){$('ready-countdown').textContent=`${playerUi?'準備':'READY'} ${Math.max(0,(readyUntil-now)/1000).toFixed(1)}`;if(now>=readyUntil&&!document.hidden&&document.hasFocus()){mode='playing';input.clear();pad.neutralize();ui();}}
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
   if(!manual&&!wasCounting)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);if(advance(tick)===false)break;remaining-=tick;}
   render(dt);
-  roadOverlay.hidden=!(streamHeld&&mode==='playing')&&!world.streamer?.error&&!contextLost;
-  roadOverlay.textContent=contextLost?'Graphics interrupted — restoring…':world.streamer?.error?'Road loading failed. Reload to retry. '+world.streamer.error:'Preparing road…';
+  updatePlayerUi();
+  roadOverlay.hidden=(playerUi&&mode!=='playing')||!(streamHeld&&mode==='playing')&&!world.streamer?.error&&!contextLost;
+  roadOverlay.textContent=playerUi?(contextLost?'畫面暫時中斷，正在恢復…':world.streamer?.error?'道路載入失敗，請重新載入。':'道路載入中…'):(contextLost?'Graphics interrupted — restoring…':world.streamer?.error?'Road loading failed. Reload to retry. '+world.streamer.error:'Preparing road…');
   recordStreamDiagnostics(now);
 
   // Reuse the existing frame sample for the public FPS readout; expensive diagnostics stay opt-in.
@@ -272,18 +378,19 @@ Near road/scenery ${chunks.map(c=>c.index+':'+(c.road==='ready'?'R':'-')+(c.scen
 Draws ${renderer.info.render.calls} · ray ${perf.raycastMs.toFixed(1)}ms · render CPU ${perf.renderMs.toFixed(1)}ms`;}
    perfFrames=0;perfSince=now;raycastTotal=renderTotal=worldTotal=0;
   }
-  const hudText=`${Math.floor(elapsed/60)}:${String(Math.floor(elapsed%60)).padStart(2,'0')} · ${perf.fps?Math.round(perf.fps):'—'} FPS`;
+  const hudText=playerUi?`${Math.floor(elapsed/60)}:${String(Math.floor(elapsed%60)).padStart(2,'0')}`:`${Math.floor(elapsed/60)}:${String(Math.floor(elapsed%60)).padStart(2,'0')} · ${perf.fps?Math.round(perf.fps):'—'} FPS`;
   if($('drive-hud').textContent!==hudText)$('drive-hud').textContent=hudText;
 
   if(!manual&&mode==='playing'&&!settingsOpen)speedAudit?.record({wall:now,simulated:elapsed,progress:state.distance,speed:state.speed,position:world.car.position.toArray(),camera:camera.position.toArray(),trackLength:world.length,heading:state.worldHeading,lateral:state.lateral,pace:effectivePace(state.speed,highSpeedPace)});
   else speedAudit?.reset();
   requestAnimationFrame(loop);
 }
-if(brick&&!l2&&!pilot)labUI=mountBrickLab(brick,{play:()=>{if(mobile())void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile())void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),exportMoments:()=>l2UI?.exportCurrent()});
+if(brick&&!l2&&!pilot)labUI=mountBrickLab(brick,{play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),exportMoments:()=>l2UI?.exportCurrent()});
 ui();resize();requestAnimationFrame(loop);
 function surfaceError(){const ray=new THREE.Raycaster(world.car.position.clone().add(new THREE.Vector3(0,10,0)),new THREE.Vector3(0,-1,0));const road=world.scene.getObjectByName('driving-surface');const hit=road?ray.intersectObject(road)[0]:undefined;return hit?world.car.position.y-.04-hit.point.y:null;}
 if(import.meta.env.PROD && 'serviceWorker' in navigator){
-  addEventListener('load',()=>{void navigator.serviceWorker.register('/sw.js').then(async()=>{await navigator.serviceWorker.ready;const cache=await caches.open('coast-drive-v09-mobile-1'),assets=[roadWorkerUrl,...Array.from(document.querySelectorAll<HTMLScriptElement>('script[type="module"][src]'),x=>x.src),...Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href]'),x=>x.href)];await cache.addAll([...new Set(assets)].filter(url=>new URL(url,location.href).origin===location.origin));}).catch(()=>{});});
+  const registerOffline=()=>{void navigator.serviceWorker.register('/sw.js').then(async()=>{await navigator.serviceWorker.ready;const cache=await caches.open('coast-drive-v09-mobile-1'),assets=[import.meta.url,roadWorkerUrl,...Array.from(startupArt.querySelectorAll<HTMLImageElement>('img'),x=>x.currentSrc||x.src),...Array.from(document.querySelectorAll<HTMLScriptElement>('script[type="module"][src]'),x=>x.src),...Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href]'),x=>x.href)];await cache.addAll([...new Set(assets)].filter(url=>new URL(url,location.href).origin===location.origin));}).catch(()=>{});};
+  if(document.readyState==='complete')registerOffline();else addEventListener('load',registerOffline,{once:true});
 }
 
 function feedbackAnchor():FeedbackAnchor{
@@ -291,7 +398,10 @@ function feedbackAnchor():FeedbackAnchor{
  if(!pilot&&!l2){const p=world.sample(state.distance),weights=world.weightsAt(state.distance);return {id:momentCandidate.id,revision:momentCandidate.revision,seed:momentCandidate.seed,contentFingerprint:momentCandidate.contentFingerprint,generatorVersion:momentCandidate.generatorVersion,handlingVersion:'ALB2',world:(['coast','canyon','city'] as const)[weights.indexOf(Math.max(...weights))],profiles:{course:{id:p.challenge.id,label:p.challenge.label,curvature:p.curvature}},s:brick?state.distance-BRICK_START:state.distance%world.length,trackDistance:state.distance,elapsedSeconds:elapsed,timestampMs:Date.now(),source:'drive',drive:{speedKmh:state.speed*3.6,steerRaw:rawSteer,steerApplied:state.appliedSteer,roadX:state.lateral,height:p.position.y,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),halfWidth:world.halfAt(state.distance),laneCount:brick?brickWidth(brick,state.distance).lanes:3,offRoad:state.offRoad,gas:controls.gas,brake:controls.brake}};}
  const b=(pilot??l2)!,road=pilot?pilotSample(pilot,state.distance):l2Sample(l2!,state.distance);return {id:b.id,revision:b.revision,seed:b.seed,contentFingerprint:b.contentFingerprint,generatorVersion:b.generatorVersion,handlingVersion:'ALB2',...(stage?{stageCode:stage.stageCode,...(trip?{tripCode:trip.tripCode}:{}),l2InstanceId:trip?trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id:(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats[stage.beats.length-1].id),...(trip?{bufferRole:trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role}:{})}:{}),world:pilot?(['coast','canyon','city'] as const)[pilotWeights(pilot,state.distance).indexOf(Math.max(...pilotWeights(pilot,state.distance)))]:b.world,profiles:pilot?structuredClone({placements:trip?[]:pilot.placements,activePlacements:pilotSample(pilot,state.distance).active,worldPhases:pilot.worldPhases}):structuredClone(l2!.profiles),s:state.distance-BRICK_START,trackDistance:state.distance,elapsedSeconds:elapsed,timestampMs:Date.now(),source:'drive',drive:{speedKmh:state.speed*3.6,steerRaw:rawSteer,steerApplied:state.appliedSteer,roadX:state.lateral,height:road.height,grade:road.grade,halfWidth:road.halfWidth,laneCount:road.lanes,offRoad:state.offRoad,gas:controls.gas,brake:controls.brake}};
 }
-l2UI=mountL2Lab((pilot??l2??momentCandidate)!,{play:()=>{if(mobile())void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile())void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),capture:feedbackAnchor,history,freeze:()=>{mode='paused';input.clear();testControls=undefined;sound.pause();ui();},resume:start,onFeedback:data=>{telemetry?.mark('feedback',elapsed,state.distance-BRICK_START,data);if(brickCompleted&&telemetry){telemetry.save();showDriveReport();}}},!pilot&&!l2);
+l2UI=mountL2Lab((pilot??l2??momentCandidate)!,{play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),capture:feedbackAnchor,history,freeze:()=>{mode='paused';input.clear();testControls=undefined;sound.pause();ui();},resume:start,onFeedback:data=>{telemetry?.mark('feedback',elapsed,state.distance-BRICK_START,data);if(brickCompleted&&telemetry){telemetry.save();showDriveReport();}}},!pilot&&!l2);
+const labFullscreen=document.getElementById('l2-fullscreen');
+if(labFullscreen){const hint=document.createElement('p');hint.id='l2-iphone-fullscreen-hint';hint.setAttribute('role','status');hint.textContent=$('iphone-fullscreen-hint').textContent;hint.hidden=true;labFullscreen.closest('.l2-actions')?.after(hint);}
+refreshImmersiveUI();
 if(world.streamer){const status=document.createElement('p');status.id='stream-status';status.setAttribute('role','status');document.getElementById('l2-play')!.after(status);}
 const reportArea=document.createElement('section');reportArea.id='drive-report';reportArea.hidden=true;
 if(stage){document.getElementById('l2-events')!.after(reportArea);const recent=document.createElement('button');recent.id='drive-recent';recent.textContent='Last drive report';recent.onclick=()=>{const saved=DriveTelemetry.recent(trip?'outrun-trip-drive-reports-v09':undefined)[0];if(saved)renderDriveReport(saved);};document.getElementById('l2-export')!.after(recent);}
@@ -304,7 +414,7 @@ if(import.meta.env.DEV){
 function renderDriveReport(report:ReturnType<DriveTelemetry['report']>){const m=report.metrics;reportArea.hidden=false;reportArea.replaceChildren();const heading=document.createElement('h3');heading.textContent='Drive summary · '+report.stageCode;const summary=document.createElement('p');const pct=(x:number,total:number)=>total?(100*x/total).toFixed(1):'0.0';summary.textContent=`${m.time.toFixed(1)} s · peak ${m.peakSpeed.toFixed(0)} km/h · gas ${pct(m.gasSeconds,m.time)}% · braking ${m.brakePresses} / ${m.brakeSeconds.toFixed(1)} s · off road ${m.offroadEpisodes} / ${m.offroadSeconds.toFixed(1)} s · high steer ${pct(m.highSteerSeconds,m.time)}%`;const thresholds=document.createElement('p');thresholds.textContent=m.thresholds.map(x=>`≥${x.speed}: ${pct(x.time,m.time)}% time, ${pct(x.distance,m.distance)}% distance`).join(' · ')+` · fast unbraked bends ${pct(m.fastUnbrakedBend,m.bendDistance)}%`;const detail=document.createElement('pre');detail.textContent=Object.entries(report.beats).map(([id,b])=>`${id}: avg ${b.averageSpeed.toFixed(0)}, min ${b.minSpeed.toFixed(0)}, max ${b.maxSpeed.toFixed(0)} km/h · curve avg ${b.curveAverageSpeed?.toFixed(0)??"—"} · brakes ${b.brakes} · offroad ${b.offroad.toFixed(1)}s`).join('\n');const button=document.createElement('button');button.textContent='Export Drive Report JSON';button.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`outrun-drive-${report.runId}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};reportArea.append(heading,summary,thresholds,button,detail);}
 function showDriveReport(){if(telemetry)renderDriveReport(telemetry.report());}
 $('free-export').onclick=()=>l2UI?.exportCurrent();$('free-export').hidden=!!brick;
-if(!mobile())requestAnimationFrame(()=>document.getElementById(pilot||l2?'l2-play':brick?'brick-play':'drive')?.focus());
+if(!mobile())requestAnimationFrame(()=>document.getElementById(playerUi?'player-play':pilot||l2?'l2-play':brick?'brick-play':'drive')?.focus());
 
 if(import.meta.env.DEV){(window as any).__drive={
   driveState:()=>({...state,elapsed,mode,trackLength:world.length}),
@@ -337,6 +447,8 @@ if(import.meta.env.DEV){(window as any).__drive={
   scenery:()=>({...world.scenery,weights:world.weightsAt(state.distance),render:structuredClone(renderer.info.render),memory:structuredClone(renderer.info.memory)}),
   wheels:()=>world.car.userData.motion.inspect(),wheelContacts:()=>wheelContacts,
   occupants:()=>world.car.userData.motion.occupants(),
+  brakeLights:()=>brakeLights.inspect(),
+  exhaust:()=>exhaustEffects.inspect(),
   challenges:()=>pilot?pilotCourse(pilot):l2?l2Course(l2):brick?brickCourse(brick):COURSE,
   supportAudit:()=>{const group=world.scene.getObjectByName('road-support')!,children=(world.streamer?group.children.flatMap(c=>c.children):group.children).filter((o):o is THREE.Mesh=>o instanceof THREE.Mesh).sort((a,b)=>(a.userData.chunkIndex??0)-(b.userData.chunkIndex??0));let maxSeam=0,nonFinite=0,maxTopError=0;for(let i=0;i<children.length;i++){const pos=children[i].geometry.getAttribute('position'),index=children[i].userData.chunkIndex??i,span=world.streamer?.chunkLength??1200,start=index*span,end=Math.min(world.length,start+span),n=pos.count/4-1;for(let row=0;row<=n;row++){const d=start+(end-start)*row/n,p=world.sample(d),width=world.halfAt(d);for(let side=0;side<2;side++){const expected=p.position.clone().addScaledVector(p.right,(side?1:-1)*(width+(world.shoulders?(side?world.shoulders(d).right:world.shoulders(d).left):6)));expected.y-=.1;maxTopError=Math.max(maxTopError,expected.distanceTo(new THREE.Vector3().fromBufferAttribute(pos,row*4+side*2)));}} for(let j=0;j<pos.count;j++)if(!Number.isFinite(pos.getX(j)+pos.getY(j)+pos.getZ(j)))nonFinite++;if(i&&(!world.streamer||index===children[i-1].userData.chunkIndex+1)){const prev=children[i-1].geometry.getAttribute('position');for(let j=0;j<4;j++){const a=new THREE.Vector3().fromBufferAttribute(prev,prev.count-4+j),b=new THREE.Vector3().fromBufferAttribute(pos,j);maxSeam=Math.max(maxSeam,a.distanceTo(b));}}}return{chunks:children.length,maxSeam,maxTopError,nonFinite};},
   roadChunks:()=>{const road=world.scene.getObjectByName('driving-surface')!;return {count:road.children.length,cullable:road.children.every(o=>o.frustumCulled)};},
@@ -372,7 +484,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   manual:(value:boolean)=>{manual=value;},
   advance:(seconds:number,override?:InputState,draw=true)=>{for(let i=0;i<Math.ceil(seconds*120);i++){advance(1/120,override);render(1/120,false);}render(1/120,draw);},
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{
-    inspectionView=undefined;sound.pause();sound.resetPassBy();traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();history.clear();usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};world.car.userData.motion.reset();
+    inspectionView=undefined;sound.pause();sound.resetPassBy();traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();history.clear();usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;world.car.userData.motion.reset();
     speedAudit?.reset();
     state={...createState(),...initial};advancePowertrain(state,state.speed,false,0);state.velocityHeading=state.heading;state.worldHeading=world.sample(state.distance).roadHeading+state.heading;updateFootprint(state,world.halfAt(state.distance));brickCompleted=false;elapsed=0;initialized=false;mode='playing';testControls=undefined;input.clear();ui();render(1/60);
   },

@@ -1,3 +1,4 @@
+type AppleNavigator = Navigator & { standalone?: boolean };
 type LockableOrientation = ScreenOrientation & { lock?: (orientation: string) => Promise<void> };
 export class Immersive {
   message = '';
@@ -8,10 +9,24 @@ export class Immersive {
     matchMedia('(display-mode: fullscreen)').addEventListener('change', () => this.changed());
     matchMedia('(display-mode: standalone)').addEventListener('change', () => this.changed());
   }
-  get installed() { return matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches; }
+  get isIPhone() { return /iPhone|iPod/.test(navigator.userAgent); }
+  get installed() { return (navigator as AppleNavigator).standalone===true || matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches; }
+  get needsIPhoneHelp() { return this.isIPhone && !this.installed && (!this.root.requestFullscreen || document.fullscreenEnabled===false); }
+  /** Only offer one-tap landscape when this browser exposes both required APIs. */
+  get canAutoLandscape() {
+    const orientation=screen.orientation as LockableOrientation | undefined;
+    return !this.isIPhone && typeof orientation?.lock==='function' &&
+      (this.installed || (document.fullscreenEnabled!==false && typeof this.root.requestFullscreen==='function'));
+  }
   get active() { return document.fullscreenElement === this.root; }
   async enter() {
     if(this.pending) return;
+    if(this.needsIPhoneHelp) {
+      this.lockState='unsupported';
+      this.message='On iPhone, rotate manually. For more screen space, open this site in Safari, tap Share → Add to Home Screen, then launch from the Home Screen icon.';
+      this.changed();
+      return;
+    }
     this.pending=true; this.message=''; this.changed();
     try {
       if(!this.installed && !this.active) {

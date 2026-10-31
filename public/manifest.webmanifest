@@ -1,6 +1,6 @@
 {
-  "id": "/", "name": "Coast Drive Prototype", "short_name": "Coast Drive",
-  "description": "An original local coastal driving prototype.",
+  "id": "/", "name": "極速漫遊", "short_name": "極速漫遊",
+  "description": "沿著世界的公路，享受自由自在的極速旅程。",
   "start_url": "/", "scope": "/", "display": "fullscreen", "orientation": "landscape",
   "background_color": "#123e43", "theme_color": "#123e43",
   "icons": [

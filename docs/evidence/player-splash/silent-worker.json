@@ -1,0 +1,41 @@
+{
+  "ready": false,
+  "error": "",
+  "retries": 1,
+  "errors": [
+    {
+      "message": "Worker response timed out after 30 seconds",
+      "kind": "init",
+      "index": -1,
+      "at": 46286.699999999255
+    }
+  ],
+  "fatal": "",
+  "pending": {
+    "kind": "init",
+    "index": -1,
+    "since": 46287.199999999255,
+    "ageMs": 22.5
+  },
+  "currentRoad": false,
+  "nextRoad": false,
+  "nearby": [
+    0,
+    1
+  ],
+  "fullyReady": false,
+  "sceneryCounts": [],
+  "desired": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "chunks": [],
+  "queued": 0,
+  "retiring": 0,
+  "busy": true,
+  "history": []
+}

@@ -1,0 +1,48 @@
+{
+  "ready": false,
+  "error": "Worker launch failed: Error: Injected worker launch failure",
+  "retries": 2,
+  "errors": [
+    {
+      "message": "Worker launch failed: Error: Injected worker launch failure",
+      "kind": "init",
+      "index": -1,
+      "at": 162.70000000298023
+    },
+    {
+      "message": "Worker launch failed: Error: Injected worker launch failure",
+      "kind": "init",
+      "index": -1,
+      "at": 162.90000000223517
+    },
+    {
+      "message": "Worker launch failed: Error: Injected worker launch failure",
+      "kind": "init",
+      "index": -1,
+      "at": 163
+    }
+  ],
+  "fatal": "Worker launch failed: Error: Injected worker launch failure",
+  "pending": null,
+  "currentRoad": false,
+  "nextRoad": false,
+  "nearby": [
+    0,
+    1
+  ],
+  "fullyReady": false,
+  "sceneryCounts": [],
+  "desired": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "chunks": [],
+  "queued": 0,
+  "retiring": 0,
+  "busy": false,
+  "history": []
+}

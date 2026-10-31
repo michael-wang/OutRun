@@ -3,6 +3,12 @@ import {createRoadWheel} from './wheels';
 import {createOccupantMotion} from './occupants';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
+export interface BrakeLightController {
+  set(braking:boolean):void;
+  reset():void;
+  inspect():{braking:boolean;emissiveIntensity:number};
+}
+
 /** Original roofless coastal roadster. +Z nose; unchanged wheelbase and ground contact. */
 export function createCar() {
   const car=new THREE.Group();car.name='coastal-roadster';
@@ -83,7 +89,9 @@ export function createCar() {
     travelers.push({body:person,head,arms,locks});
   }
   box(1.74,.12,.12,dark,0,.34,2.34);box(1.92,.17,.13,dark,0,.36,-2.29);
-  const rear=material('#b51e22',.3);rear.emissive.set('#d62717');rear.emissiveIntensity=.55;
+  const rear=material('#b51e22',.3);rear.emissive.set('#d62717');
+  const tailIdle=.35,tailBraking=3.0;let braking=false;
+  rear.emissiveIntensity=tailIdle;
   const lamp=material('#fff2cf',.3);lamp.emissive.set('#fff3bf');lamp.emissiveIntensity=.6;
   for(const side of [-1,1]){
     box(.74,.14,.065,dark,side*.55,.7,-2.34);box(.63,.075,.07,rear,side*.55,.71,-2.38);
@@ -94,6 +102,13 @@ export function createCar() {
   for(let i=0;i<4;i++)box(.78,.025,.045,dark,0,.92-i*.025,-1.4-i*.13);
   box(1.87,.06,.15,paint,0,.91,-2.02);
   batch(car);
+  // Both original tail lamps share one material after batching; change its uniform only.
+  const brakeLights:BrakeLightController={
+    set(active){if(active===braking)return;braking=active;rear.emissiveIntensity=active?tailBraking:tailIdle;},
+    reset(){braking=false;rear.emissiveIntensity=tailIdle;},
+    inspect:()=>({braking,emissiveIntensity:rear.emissiveIntensity}),
+  };
+  car.userData.brakeLights=brakeLights;
   const people=createOccupantMotion(travelers,wheel);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;
