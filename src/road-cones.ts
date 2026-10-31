@@ -50,7 +50,7 @@ export class RoadCones {
  private shown:number[]=[];
  constructor(
   private sample:Sample,private halfAt:(d:number)=>number,scene:THREE.Scene,
-  seed:number,length:number,private ready:(d:number)=>boolean=()=>true,
+  seed:number,private length:number,private ready:(d:number)=>boolean=()=>true,
   private triangles?:readonly Breakdown[],rockSections:readonly RockySection[]=[],
  ){
   this.recipe=triangles
@@ -96,7 +96,7 @@ export class RoadCones {
    // These small props should really spray FORWARD on impact, then tumble away.
    const forward=f?f.forward*.72*(1-Math.exp(-age/.72)):0;
    const sideways=f?f.sideways*.42*(1-Math.exp(-age/.42)):0;
-   const d=Math.min(this.sampleLength,c.distance+forward),p=this.sample(d);
+   const d=Math.min(this.length-.001,c.distance+forward),p=this.sample(d);
    this.pose.position.copy(p.position).addScaledVector(p.right,x+sideways);
    this.pose.position.y+=f?Math.max(0,f.up*age-8*age*age):this.triangles?.06:.03;
    this.pose.rotation.set(
@@ -110,7 +110,6 @@ export class RoadCones {
   this.mesh.count=count;this.mesh.instanceMatrix.needsUpdate=true;
   return hits;
  }
- private get sampleLength(){return Math.max(...[...this.recipe.slice(-2).map(c=>c.distance+100),1]);}
  reset(){this.hit.clear();this.flying.clear();this.mesh.count=0;this.shown=[];}
  inspect(){return {capacity:48,active:this.mesh.count,hit:[...this.hit],flying:[...this.flying.keys()],trajectories:[...this.flying].map(([id,f])=>({id,forward:f.forward,sideways:f.sideways,up:f.up,spin:f.spin})),shown:this.shown,recipe:this.recipe};}
  dispose(){this.mesh.removeFromParent();this.mesh.geometry.dispose();(this.mesh.material as THREE.Material).dispose();this.mesh.dispose();this.reset();}
