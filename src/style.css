@@ -137,3 +137,4 @@ html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
 
 /* Route revision and QA metadata never appear on the public driving screen. */
 html[data-player-ui="true"] #route-name{display:none!important}
+html[data-player-ui="true"] #player-install-help{margin:2px auto 0;padding:7px 12px;max-width:min(520px,90vw);border-radius:8px;background:#103b43c7;color:#fff3dd;font:12px/1.5 Arial,sans-serif}
