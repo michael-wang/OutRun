@@ -164,8 +164,10 @@ function updatePlayerUi(){
   document.documentElement.dataset.driveMode=mode;
   panel.hidden=!show;
   if(!show)return;
-  $('player-title').textContent=brickCompleted?'JOURNEY COMPLETE':elapsed>0?'PAUSED':'FIRST DRIVE';
-  $('player-subtitle').textContent=brickCompleted?'THE ROAD IS YOURS':elapsed>0?'READY WHEN YOU ARE':'10-MINUTE ROAD TRIP';
+  const title=brickCompleted?'JOURNEY COMPLETE':elapsed>0?'PAUSED':'FIRST DRIVE';
+  const subtitle=brickCompleted?'THE ROAD IS YOURS':elapsed>0?'READY WHEN YOU ARE':'10-MINUTE ROAD TRIP';
+  if($('player-title').textContent!==title)$('player-title').textContent=title;
+  if($('player-subtitle').textContent!==subtitle)$('player-subtitle').textContent=subtitle;
   const play=$('player-play'),label=streamStartRequested?'Starting…':brickCompleted?'Play again':elapsed>0?'Resume':'Start driving';
   if(play.textContent!==label)play.textContent=label;
   $('player-restart').hidden=elapsed===0&&!brickCompleted;
@@ -176,7 +178,7 @@ function updatePlayerUi(){
   const loading=$('player-loading');
   const preparing=!!world.streamer&&!world.streamer.ready;
   loading.hidden=!preparing&&!world.streamer?.error;
-  if(!loading.hidden)loading.textContent=world.streamer?.error?'Road loading failed — reload to retry':'Preparing the road…';
+  if(!loading.hidden){const message=world.streamer?.error?'Road loading failed — reload to retry':'Preparing the road…';if(loading.textContent!==message)loading.textContent=message;}
 }
 function ui(){ $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=mode!=='playing'||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=mode==='playing'?'Ⅱ Menu':'☰ Menu';if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); updatePlayerUi(); }
 function start(){void sound.unlock().catch(()=>{});if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;const resume=!!stage&&mode==='paused'&&elapsed>0&&!brickCompleted;mode=resume?'countdown':'playing';if(resume){readyUntil=performance.now()+1000;sound.pause();pad.neutralize();}settingsOpen=false;input.clear();ui();renderer.domElement.focus({preventScroll:true});}
