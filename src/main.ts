@@ -36,6 +36,7 @@ import {Traffic,trafficRecipe} from './traffic';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import roadWorkerUrl from './road-worker.ts?worker&url';
+import {StreamHealthHud} from './stream-health-hud';
 import type {FeedbackAnchor} from './l2-feedback';
 const labMode=new URLSearchParams(location.search).get('lab')==='bricks';
 const l2=new URLSearchParams(location.search).get('lab')==='l2'?(L2_CANDIDATES.find(b=>b.id===new URLSearchParams(location.search).get('l2'))??L2_CANDIDATES[0]):undefined;
@@ -342,11 +343,53 @@ const perf={fps:0,startupMs:0,raycastMs:0,renderMs:0,worldMs:0,pixelRatio:render
 let perfFrames=0,perfSince=performance.now(),raycastTotal=0,renderTotal=0,worldTotal=0;
 const perfPanel=perfEnabled?document.createElement('pre'):undefined;
 if(perfPanel){perfPanel.id='perf';perfPanel.style.cssText='position:fixed;left:8px;top:50px;z-index:100;pointer-events:none;background:#102a35dd;color:white;padding:8px;font:12px monospace';document.getElementById('app')!.append(perfPanel);}
-const streamDiagnosticMode=params.get('streamdiag')==='1'&&!playerUi,streamLog:unknown[]=[];let streamSampleAt=0,streamSampleDistance=state.distance;let observedWorldTravelSpeedMps:number|null=null;
-const diagnosticSnapshot=()=>{const started=performance.now(),stream=world.streamer?.stats;const row={build:'S1-stream-diagnostics',schemaVersion:2,observedWorldTravelSpeedMps,travelSampleAt:streamSampleAt,unheldTravelSpeedMps:state.speed*effectivePace(state.speed,highSpeedPace),trip:trip?.tripCode,wall:performance.now(),elapsed,distance:state.distance,speed:state.speed,fps:perf.fps,held:streamHeld,stalls:streamStalls,waitMs:streamWaitMs+(streamHeld?performance.now()-streamHoldSince:0),contextLost,stallEvents:streamStallEvents.map(e=>({...e,durationMs:e.durationMs??performance.now()-e.start})),lifecycle:world.streamer?.diagnosticsSnapshot(state.speed*effectivePace(state.speed,highSpeedPace)),draws:renderer.info.render.calls,triangles:renderer.info.render.triangles,programs:renderer.info.programs?.length??null,gpuMemoryBytes:null,memory:{...renderer.info.memory,heap:(performance as any).memory?.usedJSHeapSize??null},stream:stream?{...stream,history:[...stream.history.filter(h=>h.kind.endsWith('-cpu')||h.kind==='worker-wall').slice(-12),...stream.history.filter(h=>!h.kind.endsWith('-cpu')&&h.kind!=='worker-wall').slice(-18)]}:null};return {...row,snapshotCpuMs:performance.now()-started};};
-const streamPanel=streamDiagnosticMode?document.createElement('div'):undefined;
-if(streamPanel){streamPanel.id='stream-diagnostics';streamPanel.style.cssText='position:fixed;top:48px;left:8px;z-index:151;background:#102a35dd;color:white;padding:6px;font:11px monospace;max-width:70vw';const text=document.createElement('pre'),button=document.createElement('button');text.id='stream-diagnostic-text';button.textContent='Export stream log';button.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({samples:streamLog,latest:diagnosticSnapshot(),workerHistory:world.streamer?.stats.history},null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='outrun-stream-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};streamPanel.append(text,button);document.getElementById('app')!.append(streamPanel);(window as any).__streamDiagnostics={snapshot:diagnosticSnapshot};}
-function recordStreamDiagnostics(now:number){if(!streamDiagnosticMode||now-streamSampleAt<1000)return;observedWorldTravelSpeedMps=streamSampleAt&&state.distance>=streamSampleDistance?(state.distance-streamSampleDistance)*1000/(now-streamSampleAt):null;streamSampleAt=now;streamSampleDistance=state.distance;const row=diagnosticSnapshot();const {records:omittedRecords,...sampleLifecycle}=row.lifecycle??{};streamLog.push({...row,lifecycle:sampleLifecycle});if(streamLog.length>900)streamLog.shift();const c=row.stream;$('stream-diagnostic-text').textContent='S1 · '+Math.round(row.distance)+'m · '+Math.round(row.elapsed)+'s\nRoad '+c?.currentRoad+' / next '+c?.nextRoad+' · stalls '+row.stalls+'\nqueue '+c?.queued+' / retire '+c?.retiring+' · retries '+c?.retries+'\n'+(c?.fatal||c?.pending?.kind||'ready');}
+const streamHudEnabled=params.get('streamhud')==='1'&&!playerUi&&(import.meta.env.DEV||params.get('qa')==='1');
+const streamDiagnosticMode=(params.get('streamdiag')==='1'||streamHudEnabled)&&!playerUi;
+const streamLog:unknown[]=[];
+let streamSampleAt=0,streamSampleDistance=state.distance;let observedWorldTravelSpeedMps:number|null=null;
+const diagnosticSnapshot=()=>{const started=performance.now(),stream=world.streamer?.stats;const row={build:'S1-stream-diagnostics',schemaVersion:2,observedWorldTravelSpeedMps,travelSampleAt:streamSampleAt,unheldTravelSpeedMps:state.speed*effectivePace(state.speed,highSpeedPace),trip:trip?.tripCode,wall:performance.now(),elapsed,distance:state.distance,speed:state.speed,fps:perf.fps,held:streamHeld,stalls:streamStalls,waitMs:streamWaitMs+(streamHeld?performance.now()-streamHoldSince:0),contextLost,stallEvents:streamStallEvents.map(e=>({...e,durationMs:e.durationMs??performance.now()-e.start})),lifecycle:world.streamer?.diagnosticsSnapshot(state.speed*effectivePace(state.speed,highSpeedPace)),draws:renderer.info.render.calls,triangles:renderer.info.render.triangles,programs:renderer.info.programs?.length??null,gpuMemoryBytes:null,memory:{...renderer.info.memory,heap:(performance as any).memory?.usedJSHeapSize??null,heapLimit:(performance as any).memory?.jsHeapSizeLimit??null},stream:stream?{...stream,history:[...stream.history.filter(h=>h.kind.endsWith('-cpu')||h.kind==='worker-wall').slice(-12),...stream.history.filter(h=>!h.kind.endsWith('-cpu')&&h.kind!=='worker-wall').slice(-18)]}:null};return {...row,snapshotCpuMs:performance.now()-started};};
+const exportStreamLog=()=>{
+  const payload={samples:streamLog,latest:diagnosticSnapshot(),workerHistory:world.streamer?.stats.history};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
+  const link=document.createElement('a');link.href=url;link.download='outrun-stream-diagnostics.json';
+  link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+const streamPanel=streamDiagnosticMode&&!streamHudEnabled?document.createElement('div'):undefined;
+if(streamPanel){
+  streamPanel.id='stream-diagnostics';
+  streamPanel.style.cssText='position:fixed;top:48px;left:8px;z-index:151;background:#102a35dd;color:white;padding:6px;font:11px monospace;max-width:70vw';
+  const text=document.createElement('pre'),button=document.createElement('button');
+  text.id='stream-diagnostic-text';button.textContent='Export stream log';button.onclick=exportStreamLog;
+  streamPanel.append(text,button);document.getElementById('app')!.append(streamPanel);
+}
+const streamHud=streamHudEnabled?new StreamHealthHud($('app'),exportStreamLog):undefined;
+if(streamDiagnosticMode)(window as any).__streamDiagnostics={snapshot:diagnosticSnapshot,exportJson:exportStreamLog};
+function recordStreamDiagnostics(now:number){if(!streamDiagnosticMode||now-streamSampleAt<1000)return;observedWorldTravelSpeedMps=streamSampleAt&&state.distance>=streamSampleDistance?(state.distance-streamSampleDistance)*1000/(now-streamSampleAt):null;streamSampleAt=now;streamSampleDistance=state.distance;const row=diagnosticSnapshot();const {records:omittedRecords,...sampleLifecycle}=row.lifecycle??{};streamLog.push({...row,lifecycle:sampleLifecycle});if(streamLog.length>900)streamLog.shift();const c=row.stream;
+  if(streamPanel)$('stream-diagnostic-text').textContent='S1 · '+Math.round(row.distance)+'m · '+Math.round(row.elapsed)+'s\nRoad '+c?.currentRoad+' / next '+c?.nextRoad+' · stalls '+row.stalls+'\nqueue '+c?.queued+' / retire '+c?.retiring+' · retries '+c?.retries+'\n'+(c?.fatal||c?.pending?.kind||'ready');
+  if(streamHud){
+    const lifecycle=row.lifecycle,desired=new Set(c?.desired??[]),near=lifecycle?.nearby??[];
+    streamHud.update({
+      roadReady:c?.chunks.filter(chunk=>desired.has(chunk.index)&&chunk.road==='ready').length??0,
+      roadDesired:desired.size,
+      sceneryReady:near.filter(chunk=>chunk.scenery==='ready').length,
+      sceneryNearby:near.length,
+      roadAheadM:lifecycle?.roadAheadM??0,
+      roadHeadroomSeconds:lifecycle?.roadHeadroomSeconds??null,
+      atRouteEnd:world.length-row.distance<=(lifecycle?.roadAheadM??0)+1,
+      roadP95Ms:lifecycle?.distributions?.road?.workerCpuMs?.p95??null,
+      roadSampleCount:lifecycle?.distributions?.road?.workerCpuMs?.count??0,
+      workerPending:c?.pending?.kind??null,
+      workerAgeMs:c?.pending?.ageMs??null,
+      roadsUnrequested:lifecycle?.queues?.roadUnrequested??0,
+      sceneryUnrequested:lifecycle?.queues?.sceneryUnrequested??0,
+      commitQueue:(lifecycle?.queues?.road??0)+(lifecycle?.queues?.scenery??0),
+      retireQueue:lifecycle?.queues?.retirement??0,
+      heapUsedBytes:row.memory.heap,heapLimitBytes:row.memory.heapLimit,
+      geometries:row.memory.geometries,textures:row.memory.textures,
+      fps:row.fps,stalls:row.stalls,
+    });
+  }
+}
 let last=performance.now();
 function loop(now:number){
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
