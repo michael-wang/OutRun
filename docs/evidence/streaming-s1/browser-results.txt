@@ -1,0 +1,29 @@
+[WebServer] (node:29444) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:46800) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 18 tests using 1 worker
+
+(node:46452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 tests\road-expansion.spec.ts:2:1 › r7 asymmetric shoulders in normal chase view with banked contacts (4.4s)
+  ok  2 tests\road-expansion.spec.ts:3:1 › shoulder transition driving and mobile sample (17.3s)
+  ok  3 tests\road-expansion.spec.ts:4:1 › bridge normal approach, deck, exit and structural side view (8.7s)
+  ok  4 tests\road-expansion.spec.ts:5:1 › normal chase bridge crossing with traffic and mobile performance (37.8s)
+  ok  5 tests\road-expansion.spec.ts:6:1 › r7 Seeds 2 and 7 retain roadside content and grounded bridge traffic (12.4s)
+  ok  6 tests\road-expansion.spec.ts:7:1 › actual bridge guardrails stop both sides without penetrating the visible rail (5.9s)
+  ok  7 tests\stream-diagnostics.spec.ts:5:1 › delayed preparation distinguishes absent scenery from attached road (17.8s)
+  ok  8 tests\stream-diagnostics.spec.ts:24:1 › diagnostic overhead at a fixed streamed view, alternating off/on (1.8m)
+  ok  9 tests\stream-diagnostics.spec.ts:38:1 › capture standard V8 Worker CPU profile for late-route preparation (8.8s)
+  ok 10 tests\stream-diagnostics.spec.ts:52:1 › production export preserves bounded lifecycle evidence without debug controls (2.1s)
+  ok 11 tests\stream-reliability.spec.ts:2:35 › slow worker freezes time and resumes on attached road (6.7s)
+  ok 12 tests\stream-reliability.spec.ts:2:35 › worker failure blocks after bounded retries (5.4s)
+  ok 13 tests\stream-reliability.spec.ts:3:1 › production stream diagnostic is available without gameplay debug hooks (1.2s)
+  ok 14 tests\stream-reliability.spec.ts:5:1 › WebGL context interruption freezes travel and restores without reset (2.8s)
+  ok 15 tests\v085-road-worker.spec.ts:3:1 › worker prepares identical transferred road buffers in either order (1.7s)
+  ok 16 tests\v085-stream-browser.spec.ts:3:1 › experimental streamer replaces past chunks and maintains tire contact at boundaries (1.2s)
+  ok 17 tests\v085-stream-browser.spec.ts:17:1 › early Play and replay wait for the correct window before the clock advances (1.5s)
+  ok 18 tests\v085-stream-browser.spec.ts:27:1 › rapid window changes discard work outside the current route window (1.7s)
+
+  18 passed (4.1m)

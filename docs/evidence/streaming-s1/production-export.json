@@ -1,0 +1,2104 @@
+{
+  "samples": [
+    {
+      "build": "S1-stream-diagnostics",
+      "schemaVersion": 2,
+      "observedWorldTravelSpeedMps": null,
+      "travelSampleAt": 1001.3,
+      "unheldTravelSpeedMps": 0,
+      "trip": "TRIP-v0.9-r7-1-ALB7",
+      "wall": 1002.6999999997206,
+      "elapsed": 0,
+      "distance": 350,
+      "speed": 0,
+      "fps": 0,
+      "held": false,
+      "stalls": 0,
+      "waitMs": 0,
+      "contextLost": false,
+      "stallEvents": [],
+      "lifecycle": {
+        "enabled": true,
+        "recordLimit": 256,
+        "distributions": {
+          "road": {
+            "workerCpuMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "responseMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "commitCpuMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "commitWallMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "readyLatencyMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            }
+          },
+          "scenery": {
+            "workerCpuMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "responseMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "commitCpuMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "commitWallMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            },
+            "readyLatencyMs": {
+              "count": 0,
+              "p50": null,
+              "p95": null,
+              "p99": null,
+              "worst": null
+            }
+          }
+        },
+        "distributionScope": "retained requests; incomplete requests excluded from ready latency",
+        "roadAheadM": 0,
+        "roadHeadroomSeconds": null,
+        "travelSpeedMps": 0,
+        "nearby": [
+          {
+            "index": 0,
+            "start": 0,
+            "end": 1000,
+            "road": "working",
+            "scenery": "missing",
+            "generatedInstances": null,
+            "attachedInstances": 0,
+            "attachedDraws": 0,
+            "recentSubmittedInstances": 0
+          }
+        ],
+        "chunks": [
+          {
+            "index": 0,
+            "start": 0,
+            "end": 1000,
+            "road": "working",
+            "scenery": "missing",
+            "generatedInstances": null,
+            "attachedInstances": 0,
+            "attachedDraws": 0,
+            "recentSubmittedInstances": 0
+          }
+        ],
+        "queues": {
+          "road": 0,
+          "scenery": 0,
+          "retirement": 0,
+          "workerPending": 1,
+          "roadUnrequested": 5,
+          "sceneryUnrequested": 6
+        },
+        "discardedResponses": 0,
+        "discardedTasks": 0,
+        "gpuCompletion": null,
+        "visiblePixelCount": null,
+        "submissionMeaning": "Instances in meshes submitted within 250ms; not GPU completion, per-instance visibility or occlusion"
+      },
+      "draws": 53,
+      "triangles": 19466,
+      "programs": 15,
+      "gpuMemoryBytes": null,
+      "memory": {
+        "geometries": 61,
+        "textures": 4,
+        "heap": 21846028
+      },
+      "stream": {
+        "retries": 0,
+        "errors": [],
+        "fatal": "",
+        "pending": {
+          "kind": "prepare",
+          "index": 0,
+          "since": 947.6999999997206,
+          "ageMs": 55
+        },
+        "currentRoad": false,
+        "nextRoad": false,
+        "nearby": [
+          0,
+          1
+        ],
+        "fullyReady": false,
+        "sceneryCounts": [],
+        "desired": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "chunks": [
+          {
+            "index": 0,
+            "road": "working",
+            "scenery": "missing"
+          }
+        ],
+        "queued": 0,
+        "retiring": 0,
+        "busy": true,
+        "history": [
+          {
+            "kind": "init-cpu",
+            "index": -1,
+            "ms": 376.29999999981374
+          }
+        ]
+      },
+      "snapshotCpuMs": 0
+    }
+  ],
+  "latest": {
+    "build": "S1-stream-diagnostics",
+    "schemaVersion": 2,
+    "observedWorldTravelSpeedMps": null,
+    "travelSampleAt": 1001.3,
+    "unheldTravelSpeedMps": 0,
+    "trip": "TRIP-v0.9-r7-1-ALB7",
+    "wall": 1839.8999999999069,
+    "elapsed": 0,
+    "distance": 350,
+    "speed": 0,
+    "fps": 55.81580783413177,
+    "held": false,
+    "stalls": 0,
+    "waitMs": 0,
+    "contextLost": false,
+    "stallEvents": [],
+    "lifecycle": {
+      "enabled": true,
+      "recordLimit": 256,
+      "records": [
+        {
+          "index": 0,
+          "start": 0,
+          "end": 1000,
+          "kind": "road",
+          "generation": 1,
+          "requestedAt": 947.6999999997206,
+          "commitCpuMs": 0.599999999627471,
+          "attachedInstances": 0,
+          "discardedTasks": 0,
+          "responseAt": 1037.2999999998137,
+          "responseMs": 89.60000000009313,
+          "workerCpuMs": 89.29999999981374,
+          "commitStart": 1051.6000000000931,
+          "commitEnd": 1052.1999999997206,
+          "readyAt": 1052.1999999997206,
+          "commitWallMs": 0.599999999627471,
+          "readyLatencyMs": 104.5
+        },
+        {
+          "index": 1,
+          "start": 1000,
+          "end": 2000,
+          "kind": "road",
+          "generation": 1,
+          "requestedAt": 1037.5,
+          "commitCpuMs": 0.09999999962747097,
+          "attachedInstances": 0,
+          "discardedTasks": 0,
+          "responseAt": 1148.1999999997206,
+          "responseMs": 110.6999999997206,
+          "workerCpuMs": 110.60000000009313,
+          "commitStart": 1151.6000000000931,
+          "commitEnd": 1151.6999999997206,
+          "readyAt": 1151.6999999997206,
+          "commitWallMs": 0.09999999962747097,
+          "readyLatencyMs": 114.1999999997206
+        },
+        {
+          "index": 2,
+          "start": 2000,
+          "end": 3000,
+          "kind": "road",
+          "generation": 1,
+          "requestedAt": 1148.2999999998137,
+          "commitCpuMs": 0.10000000009313226,
+          "attachedInstances": 0,
+          "discardedTasks": 0,
+          "responseAt": 1278.1000000000931,
+          "responseMs": 129.8000000002794,
+          "workerCpuMs": 129.60000000009313,
+          "commitStart": 1284.8999999999069,
+          "commitEnd": 1285,
+          "readyAt": 1285,
+          "commitWallMs": 0.10000000009313226,
+          "readyLatencyMs": 136.70000000018626
+        },
+        {
+          "index": 3,
+          "start": 3000,
+          "end": 4000,
+          "kind": "road",
+          "generation": 1,
+          "requestedAt": 1278.1000000000931,
+          "commitCpuMs": 0.7999999998137355,
+          "attachedInstances": 0,
+          "discardedTasks": 0,
+          "responseAt": 1437.6000000000931,
+          "responseMs": 159.5,
+          "workerCpuMs": 159.29999999981374,
+          "commitStart": 1451.5,
+          "commitEnd": 1452.2999999998137,
+          "readyAt": 1452.2999999998137,
+          "commitWallMs": 0.7999999998137355,
+          "readyLatencyMs": 174.1999999997206
+        },
+        {
+          "index": 4,
+          "start": 4000,
+          "end": 5000,
+          "kind": "road",
+          "generation": 1,
+          "requestedAt": 1437.6999999997206,
+          "commitCpuMs": 0.20000000018626451,
+          "attachedInstances": 0,
+          "discardedTasks": 0,
+          "responseAt": 1603.7999999998137,
+          "responseMs": 166.10000000009313,
+          "workerCpuMs": 165,
+          "commitStart": 1618.1999999997206,
+          "commitEnd": 1618.5,
+          "readyAt": 1618.5,
+          "commitWallMs": 0.3000000002793968,
+          "readyLatencyMs": 180.8000000002794
+        },
+        {
+          "index": 5,
+          "start": 5000,
+          "end": 6000,
+          "kind": "road",
+          "generation": 1,
+          "requestedAt": 1603.7999999998137,
+          "commitCpuMs": 0.10000000009313226,
+          "attachedInstances": 0,
+          "discardedTasks": 0,
+          "responseAt": 1769.3999999999069,
+          "responseMs": 165.60000000009313,
+          "workerCpuMs": 164.79999999981374,
+          "commitStart": 1784.8999999999069,
+          "commitEnd": 1785,
+          "readyAt": 1785,
+          "commitWallMs": 0.10000000009313226,
+          "readyLatencyMs": 181.20000000018626
+        },
+        {
+          "index": 0,
+          "start": 0,
+          "end": 1000,
+          "kind": "scenery",
+          "generation": 1,
+          "requestedAt": 1769.3999999999069,
+          "commitCpuMs": 0.19999999972060323,
+          "attachedInstances": 301,
+          "discardedTasks": 0,
+          "responseAt": 1773.8999999999069,
+          "responseMs": 4.5,
+          "workerCpuMs": 4.2999999998137355,
+          "generatedInstances": 301,
+          "commitStart": 1785,
+          "commitEnd": 1785.1999999997206,
+          "readyAt": 1785.1999999997206,
+          "commitWallMs": 0.19999999972060323,
+          "readyLatencyMs": 15.799999999813735
+        },
+        {
+          "index": 1,
+          "start": 1000,
+          "end": 2000,
+          "kind": "scenery",
+          "generation": 1,
+          "requestedAt": 1773.8999999999069,
+          "commitCpuMs": 0.10000000009313226,
+          "attachedInstances": 314,
+          "discardedTasks": 0,
+          "responseAt": 1776.1000000000931,
+          "responseMs": 2.2000000001862645,
+          "workerCpuMs": 2,
+          "generatedInstances": 314,
+          "commitStart": 1785.1999999997206,
+          "commitEnd": 1785.2999999998137,
+          "readyAt": 1785.2999999998137,
+          "commitWallMs": 0.10000000009313226,
+          "readyLatencyMs": 11.399999999906868
+        },
+        {
+          "index": 2,
+          "start": 2000,
+          "end": 3000,
+          "kind": "scenery",
+          "generation": 1,
+          "requestedAt": 1776.1000000000931,
+          "commitCpuMs": 0.10000000009313226,
+          "attachedInstances": 378,
+          "discardedTasks": 0,
+          "responseAt": 1777.7999999998137,
+          "responseMs": 1.6999999997206032,
+          "workerCpuMs": 1.599999999627471,
+          "generatedInstances": 378,
+          "commitStart": 1785.2999999998137,
+          "commitEnd": 1785.3999999999069,
+          "readyAt": 1785.3999999999069,
+          "commitWallMs": 0.10000000009313226,
+          "readyLatencyMs": 9.299999999813735
+        },
+        {
+          "index": 3,
+          "start": 3000,
+          "end": 4000,
+          "kind": "scenery",
+          "generation": 1,
+          "requestedAt": 1777.7999999998137,
+          "commitCpuMs": 0,
+          "attachedInstances": 426,
+          "discardedTasks": 0,
+          "responseAt": 1779.6000000000931,
+          "responseMs": 1.8000000002793968,
+          "workerCpuMs": 1.8000000002793968,
+          "generatedInstances": 426,
+          "commitStart": 1785.3999999999069,
+          "commitEnd": 1785.3999999999069,
+          "readyAt": 1785.3999999999069,
+          "commitWallMs": 0,
+          "readyLatencyMs": 7.600000000093132
+        },
+        {
+          "index": 4,
+          "start": 4000,
+          "end": 5000,
+          "kind": "scenery",
+          "generation": 1,
+          "requestedAt": 1779.6999999997206,
+          "commitCpuMs": 0.10000000009313226,
+          "attachedInstances": 440,
+          "discardedTasks": 0,
+          "responseAt": 1781.8999999999069,
+          "responseMs": 2.2000000001862645,
+          "workerCpuMs": 1.7999999998137355,
+          "generatedInstances": 440,
+          "commitStart": 1785.3999999999069,
+          "commitEnd": 1785.5,
+          "readyAt": 1785.5,
+          "commitWallMs": 0.10000000009313226,
+          "readyLatencyMs": 5.800000000279397
+        },
+        {
+          "index": 5,
+          "start": 5000,
+          "end": 6000,
+          "kind": "scenery",
+          "generation": 1,
+          "requestedAt": 1781.8999999999069,
+          "commitCpuMs": 0,
+          "attachedInstances": 200,
+          "discardedTasks": 0,
+          "responseAt": 1783.1000000000931,
+          "responseMs": 1.2000000001862645,
+          "workerCpuMs": 1,
+          "generatedInstances": 200,
+          "commitStart": 1785.5,
+          "commitEnd": 1785.5,
+          "readyAt": 1785.5,
+          "commitWallMs": 0,
+          "readyLatencyMs": 3.6000000000931323
+        }
+      ],
+      "distributions": {
+        "road": {
+          "workerCpuMs": {
+            "count": 6,
+            "p50": 129.60000000009313,
+            "p95": 165,
+            "p99": 165,
+            "worst": 165
+          },
+          "responseMs": {
+            "count": 6,
+            "p50": 129.8000000002794,
+            "p95": 166.10000000009313,
+            "p99": 166.10000000009313,
+            "worst": 166.10000000009313
+          },
+          "commitCpuMs": {
+            "count": 6,
+            "p50": 0.10000000009313226,
+            "p95": 0.7999999998137355,
+            "p99": 0.7999999998137355,
+            "worst": 0.7999999998137355
+          },
+          "commitWallMs": {
+            "count": 6,
+            "p50": 0.10000000009313226,
+            "p95": 0.7999999998137355,
+            "p99": 0.7999999998137355,
+            "worst": 0.7999999998137355
+          },
+          "readyLatencyMs": {
+            "count": 6,
+            "p50": 136.70000000018626,
+            "p95": 181.20000000018626,
+            "p99": 181.20000000018626,
+            "worst": 181.20000000018626
+          }
+        },
+        "scenery": {
+          "workerCpuMs": {
+            "count": 6,
+            "p50": 1.7999999998137355,
+            "p95": 4.2999999998137355,
+            "p99": 4.2999999998137355,
+            "worst": 4.2999999998137355
+          },
+          "responseMs": {
+            "count": 6,
+            "p50": 1.8000000002793968,
+            "p95": 4.5,
+            "p99": 4.5,
+            "worst": 4.5
+          },
+          "commitCpuMs": {
+            "count": 6,
+            "p50": 0.10000000009313226,
+            "p95": 0.19999999972060323,
+            "p99": 0.19999999972060323,
+            "worst": 0.19999999972060323
+          },
+          "commitWallMs": {
+            "count": 6,
+            "p50": 0.10000000009313226,
+            "p95": 0.19999999972060323,
+            "p99": 0.19999999972060323,
+            "worst": 0.19999999972060323
+          },
+          "readyLatencyMs": {
+            "count": 6,
+            "p50": 7.600000000093132,
+            "p95": 15.799999999813735,
+            "p99": 15.799999999813735,
+            "worst": 15.799999999813735
+          }
+        }
+      },
+      "distributionScope": "retained requests; incomplete requests excluded from ready latency",
+      "roadAheadM": 5650,
+      "roadHeadroomSeconds": null,
+      "travelSpeedMps": 0,
+      "nearby": [
+        {
+          "index": 0,
+          "start": 0,
+          "end": 1000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 301,
+          "attachedInstances": 301,
+          "attachedDraws": 13,
+          "recentSubmittedInstances": 301
+        },
+        {
+          "index": 1,
+          "start": 1000,
+          "end": 2000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 314,
+          "attachedInstances": 314,
+          "attachedDraws": 12,
+          "recentSubmittedInstances": 314
+        }
+      ],
+      "chunks": [
+        {
+          "index": 0,
+          "start": 0,
+          "end": 1000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 301,
+          "attachedInstances": 301,
+          "attachedDraws": 13,
+          "recentSubmittedInstances": 301
+        },
+        {
+          "index": 1,
+          "start": 1000,
+          "end": 2000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 314,
+          "attachedInstances": 314,
+          "attachedDraws": 12,
+          "recentSubmittedInstances": 314
+        },
+        {
+          "index": 2,
+          "start": 2000,
+          "end": 3000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 378,
+          "attachedInstances": 378,
+          "attachedDraws": 11,
+          "recentSubmittedInstances": 222
+        },
+        {
+          "index": 3,
+          "start": 3000,
+          "end": 4000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 426,
+          "attachedInstances": 426,
+          "attachedDraws": 17,
+          "recentSubmittedInstances": 24
+        },
+        {
+          "index": 4,
+          "start": 4000,
+          "end": 5000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 440,
+          "attachedInstances": 440,
+          "attachedDraws": 11,
+          "recentSubmittedInstances": 8
+        },
+        {
+          "index": 5,
+          "start": 5000,
+          "end": 6000,
+          "road": "ready",
+          "scenery": "ready",
+          "generatedInstances": 200,
+          "attachedInstances": 200,
+          "attachedDraws": 17,
+          "recentSubmittedInstances": 0
+        }
+      ],
+      "queues": {
+        "road": 0,
+        "scenery": 0,
+        "retirement": 0,
+        "workerPending": 0,
+        "roadUnrequested": 0,
+        "sceneryUnrequested": 0
+      },
+      "discardedResponses": 0,
+      "discardedTasks": 0,
+      "gpuCompletion": null,
+      "visiblePixelCount": null,
+      "submissionMeaning": "Instances in meshes submitted within 250ms; not GPU completion, per-instance visibility or occlusion"
+    },
+    "draws": 138,
+    "triangles": 137284,
+    "programs": 20,
+    "gpuMemoryBytes": null,
+    "memory": {
+      "geometries": 119,
+      "textures": 5,
+      "heap": 32776115
+    },
+    "stream": {
+      "retries": 0,
+      "errors": [],
+      "fatal": "",
+      "pending": null,
+      "currentRoad": true,
+      "nextRoad": true,
+      "nearby": [
+        0,
+        1
+      ],
+      "fullyReady": true,
+      "sceneryCounts": [
+        {
+          "index": 0,
+          "instances": 301,
+          "draws": 13,
+          "clearance": {
+            "queries": 70,
+            "checks": 437,
+            "rejected": 0
+          }
+        },
+        {
+          "index": 1,
+          "instances": 314,
+          "draws": 12,
+          "clearance": {
+            "queries": 74,
+            "checks": 769,
+            "rejected": 0
+          }
+        },
+        {
+          "index": 2,
+          "instances": 378,
+          "draws": 11,
+          "clearance": {
+            "queries": 88,
+            "checks": 938,
+            "rejected": 0
+          }
+        },
+        {
+          "index": 3,
+          "instances": 426,
+          "draws": 17,
+          "clearance": {
+            "queries": 96,
+            "checks": 899,
+            "rejected": 0
+          }
+        },
+        {
+          "index": 4,
+          "instances": 440,
+          "draws": 11,
+          "clearance": {
+            "queries": 100,
+            "checks": 1051,
+            "rejected": 0
+          }
+        },
+        {
+          "index": 5,
+          "instances": 200,
+          "draws": 17,
+          "clearance": {
+            "queries": 50,
+            "checks": 486,
+            "rejected": 0
+          }
+        }
+      ],
+      "desired": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "chunks": [
+        {
+          "index": 0,
+          "road": "ready",
+          "scenery": "ready"
+        },
+        {
+          "index": 1,
+          "road": "ready",
+          "scenery": "ready"
+        },
+        {
+          "index": 2,
+          "road": "ready",
+          "scenery": "ready"
+        },
+        {
+          "index": 3,
+          "road": "ready",
+          "scenery": "ready"
+        },
+        {
+          "index": 4,
+          "road": "ready",
+          "scenery": "ready"
+        },
+        {
+          "index": 5,
+          "road": "ready",
+          "scenery": "ready"
+        }
+      ],
+      "queued": 0,
+      "retiring": 0,
+      "busy": false,
+      "history": [
+        {
+          "kind": "worker-wall",
+          "index": 0,
+          "ms": 4.5
+        },
+        {
+          "kind": "scenery-cpu",
+          "index": 0,
+          "ms": 4.2999999998137355
+        },
+        {
+          "kind": "worker-wall",
+          "index": 1,
+          "ms": 2.2000000001862645
+        },
+        {
+          "kind": "scenery-cpu",
+          "index": 1,
+          "ms": 2
+        },
+        {
+          "kind": "worker-wall",
+          "index": 2,
+          "ms": 1.6999999997206032
+        },
+        {
+          "kind": "scenery-cpu",
+          "index": 2,
+          "ms": 1.599999999627471
+        },
+        {
+          "kind": "worker-wall",
+          "index": 3,
+          "ms": 1.8000000002793968
+        },
+        {
+          "kind": "scenery-cpu",
+          "index": 3,
+          "ms": 1.8000000002793968
+        },
+        {
+          "kind": "worker-wall",
+          "index": 4,
+          "ms": 2.2000000001862645
+        },
+        {
+          "kind": "scenery-cpu",
+          "index": 4,
+          "ms": 1.7999999998137355
+        },
+        {
+          "kind": "worker-wall",
+          "index": 5,
+          "ms": 1.2000000001862645
+        },
+        {
+          "kind": "scenery-cpu",
+          "index": 5,
+          "ms": 1
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        },
+        {
+          "kind": "main-commit",
+          "index": 5,
+          "ms": 0
+        }
+      ]
+    },
+    "snapshotCpuMs": 0
+  },
+  "workerHistory": [
+    {
+      "kind": "init-cpu",
+      "index": -1,
+      "ms": 376.29999999981374
+    },
+    {
+      "kind": "worker-wall",
+      "index": 0,
+      "ms": 89.60000000009313
+    },
+    {
+      "kind": "road-cpu",
+      "index": 0,
+      "ms": 89.29999999981374
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0.2999999998137355
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0.09999999962747097
+    },
+    {
+      "kind": "worker-wall",
+      "index": 1,
+      "ms": 110.6999999997206
+    },
+    {
+      "kind": "road-cpu",
+      "index": 1,
+      "ms": 110.60000000009313
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0.09999999962747097
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "worker-wall",
+      "index": 2,
+      "ms": 129.8000000002794
+    },
+    {
+      "kind": "road-cpu",
+      "index": 2,
+      "ms": 129.60000000009313
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "worker-wall",
+      "index": 3,
+      "ms": 159.5
+    },
+    {
+      "kind": "road-cpu",
+      "index": 3,
+      "ms": 159.29999999981374
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0.09999999962747097
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0.5
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "worker-wall",
+      "index": 4,
+      "ms": 166.10000000009313
+    },
+    {
+      "kind": "road-cpu",
+      "index": 4,
+      "ms": 165
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "worker-wall",
+      "index": 5,
+      "ms": 165.60000000009313
+    },
+    {
+      "kind": "road-cpu",
+      "index": 5,
+      "ms": 164.79999999981374
+    },
+    {
+      "kind": "worker-wall",
+      "index": 0,
+      "ms": 4.5
+    },
+    {
+      "kind": "scenery-cpu",
+      "index": 0,
+      "ms": 4.2999999998137355
+    },
+    {
+      "kind": "worker-wall",
+      "index": 1,
+      "ms": 2.2000000001862645
+    },
+    {
+      "kind": "scenery-cpu",
+      "index": 1,
+      "ms": 2
+    },
+    {
+      "kind": "worker-wall",
+      "index": 2,
+      "ms": 1.6999999997206032
+    },
+    {
+      "kind": "scenery-cpu",
+      "index": 2,
+      "ms": 1.599999999627471
+    },
+    {
+      "kind": "worker-wall",
+      "index": 3,
+      "ms": 1.8000000002793968
+    },
+    {
+      "kind": "scenery-cpu",
+      "index": 3,
+      "ms": 1.8000000002793968
+    },
+    {
+      "kind": "worker-wall",
+      "index": 4,
+      "ms": 2.2000000001862645
+    },
+    {
+      "kind": "scenery-cpu",
+      "index": 4,
+      "ms": 1.7999999998137355
+    },
+    {
+      "kind": "worker-wall",
+      "index": 5,
+      "ms": 1.2000000001862645
+    },
+    {
+      "kind": "scenery-cpu",
+      "index": 5,
+      "ms": 1
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0.09999999962747097
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 0,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 1,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 2,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 3,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0.10000000009313226
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 4,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    },
+    {
+      "kind": "main-commit",
+      "index": 5,
+      "ms": 0
+    }
+  ]
+}

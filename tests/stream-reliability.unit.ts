@@ -10,3 +10,25 @@ it('hung worker watchdog starts bounded recovery',()=>{const s=setup(),since=s.s
 it('malformed worker results retry the affected chunk instead of leaving working forever',()=>{const s=setup(),w=FakeWorker.all[0];road(w,0);for(let i=0;i<5;i++)s.pump();w.send({type:'prepared',index:1,cpuMs:1,meshes:null,roadside:[]});const replacement=FakeWorker.all[1];expect(replacement).toBeDefined();replacement.send({type:'initialized',cpuMs:1});expect(replacement.requests.at(-1)).toMatchObject({type:'prepare',index:1});s.dispose();});
 it('worker construction failures are bounded and leave a blocking error',()=>{vi.stubGlobal('Worker',class {constructor(){throw Error('worker unavailable');}});const s=new StreamedScene(new THREE.Scene(),{} as any,10000,{} as any);expect(s.stats.retries).toBe(2);expect(s.error).toContain('worker unavailable');expect(s.canDrive(350,100)).toBe(false);s.dispose();});
 it('dispatch exceptions retry the same chunk',()=>{const s=setup(),w=FakeWorker.all[0];w.postMessage=()=>{throw Error('dispatch failed');};road(w,0);expect(s.stats.errors[0].index).toBe(1);const replacement=FakeWorker.all[1];replacement.send({type:'initialized',cpuMs:1});expect(replacement.requests.at(-1)).toMatchObject({type:'prepare',index:1});s.dispose();});
+
+it('diagnostic quantiles report counts and empty measurements honestly',async()=>{
+ const {latencyDistribution}=await import('../src/streamed-scene');
+ expect(latencyDistribution([])).toEqual({count:0,p50:null,p95:null,p99:null,worst:null});
+ expect(latencyDistribution([4,1,3,2])).toEqual({count:4,p50:2,p95:4,p99:4,worst:4});
+});
+it('records response versus CPU attachment and bounds retained requests',()=>{
+ vi.stubGlobal('location',{search:'?streamdiag=1'});const s=setup(),w=FakeWorker.all[0];
+ road(w,0);let d=s.diagnosticsSnapshot(100);expect(d.records[0].readyAt).toBeUndefined();expect(d.records[0].responseMs).toBeGreaterThanOrEqual(0);expect(d.roadAheadM).toBe(0);
+ for(let i=0;i<5;i++)s.pump();d=s.diagnosticsSnapshot(100);expect(d.records[0].readyAt).toBeDefined();expect(d.roadAheadM).toBe(650);expect(d.roadHeadroomSeconds).toBe(6.5);expect(d.gpuCompletion).toBeNull();
+ for(let index=1;index<6;index++){road(w,index);for(let i=0;i<5;i++)s.pump();}
+ const request=w.requests.at(-1);expect(request.type).toBe('scenery');
+ w.send({type:'sceneryPrepared',index:request.index,cpuMs:2,scenery:{instances:1,draws:1},definitions:[{id:'test',position:new Float32Array([0,0,0]),normal:new Float32Array(),uv:new Float32Array(),color:new Float32Array(),index:new Uint32Array()}],instances:[{template:'test',color:0xffffff,vertexColors:false,matrices:new Float32Array(new THREE.Matrix4().elements)}]});
+ d=s.diagnosticsSnapshot(100);expect(d.chunks.find(c=>c.index===0)?.attachedInstances).toBe(0);
+ for(let i=0;i<5;i++)s.pump();d=s.diagnosticsSnapshot(100);expect(d.chunks.find(c=>c.index===0)).toMatchObject({generatedInstances:1,attachedInstances:1,recentSubmittedInstances:0,scenery:'ready'});
+ // Exercise the same request recorder without allocating hundreds of scene chunks.
+ for(let i=0;i<300;i++)(s as any).recordRequest(i,'road',performance.now());expect(s.diagnosticsSnapshot(0).records).toHaveLength(256);expect(s.diagnosticsSnapshot(0).roadHeadroomSeconds).toBeNull();
+ s.update(9000);expect(s.diagnosticsSnapshot(100).discardedTasks).toBeGreaterThanOrEqual(0);s.dispose();
+});
+it('discarded worker results are counted and never attached',()=>{
+ vi.stubGlobal('location',{search:'?streamdiag=1'});const s=setup(),w=FakeWorker.all[0];s.update(9000);road(w,0);const d=s.diagnosticsSnapshot(100);expect(d.discardedResponses).toBe(1);expect(d.records[0].error).toContain('discarded');expect(d.chunks.some(c=>c.index===0)).toBe(false);s.dispose();
+});

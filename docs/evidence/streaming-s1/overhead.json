@@ -1,0 +1,1511 @@
+{
+  "conditions": "Edge, 960x432 DPR2 touch, fixed Seed 2 14000m, 20s per run after ready and 2s warmup; off/on/on/off; perf=1 both; no gameplay or Worker load during measured view",
+  "runs": [
+    {
+      "enabled": false,
+      "rows": [
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.16666666662786156,
+            "renderMs": 0.6783333333286767,
+            "worldMs": 0.015000000006208818,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.15166666669150194,
+            "renderMs": 0.6399999999906868,
+            "worldMs": 0.008333333325572312,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059994004,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.14833333329297602,
+            "renderMs": 0.6750000000465661,
+            "worldMs": 0.011666666677532097,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.15166666669150194,
+            "renderMs": 0.7233333333240201,
+            "worldMs": 0.013333333345750967,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.15333333333643775,
+            "renderMs": 0.6816666666883975,
+            "worldMs": 0.008333333333333333,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.14333333334264656,
+            "renderMs": 0.6833333333022893,
+            "worldMs": 0.011666666677532097,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.1450000000651926,
+            "renderMs": 0.6383333332759018,
+            "worldMs": 0.016666666658905645,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.13666666665424904,
+            "renderMs": 0.6666666666589056,
+            "worldMs": 0.013333333330228925,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.14666666665580125,
+            "renderMs": 0.7050000000201787,
+            "worldMs": 0.0066666666728754835,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.1416666666045785,
+            "renderMs": 0.6650000000217309,
+            "worldMs": 0.014999999990686774,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60.00393468424168,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.13114754099124035,
+            "renderMs": 0.675409836076261,
+            "worldMs": 0.0114754098314853,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.1516666666759799,
+            "renderMs": 0.651666666691502,
+            "worldMs": 0.013333333330228925,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.15499999998913458,
+            "renderMs": 0.75,
+            "worldMs": 0.0066666666728754835,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993987,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.1499999999611949,
+            "renderMs": 0.6899999999829257,
+            "worldMs": 0.010000000009313226,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.13833333329918485,
+            "renderMs": 0.7066666666961585,
+            "worldMs": 0.016666666666666666,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.16166666669305413,
+            "renderMs": 0.6850000000170743,
+            "worldMs": 0.010000000009313226,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99803285138188,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.16557377045516108,
+            "renderMs": 0.7065573770354395,
+            "worldMs": 0.00491803278383173,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.1533333333286767,
+            "renderMs": 0.7183333333116024,
+            "worldMs": 0.0066666666728754835,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.13166666670391958,
+            "renderMs": 0.6750000000310441,
+            "worldMs": 0.013333333330228925,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993987,
+            "startupMs": 1875.3999999999069,
+            "raycastMs": 0.15166666665269682,
+            "renderMs": 0.674999999992239,
+            "worldMs": 0.004999999996895591,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        }
+      ],
+      "snapshotCosts": []
+    },
+    {
+      "enabled": true,
+      "rows": [
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1666666666821887,
+            "renderMs": 0.6666666666744276,
+            "worldMs": 0.009999999993791182,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.13333333329452823,
+            "renderMs": 0.6316666667116806,
+            "worldMs": 0.0033333333364377418,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.14833333333954216,
+            "renderMs": 0.6083333333488554,
+            "worldMs": 0.011666666669771075,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.13833333334575096,
+            "renderMs": 0.6766666666294138,
+            "worldMs": 0.0033333333364377418,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.14833333330073703,
+            "renderMs": 0.6400000000062088,
+            "worldMs": 0.011666666662010054,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1283333333209157,
+            "renderMs": 0.6349999999627471,
+            "worldMs": 0.013333333337989946,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.13833333333798994,
+            "renderMs": 0.6783333333209157,
+            "worldMs": 0.013333333322467904,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.11833333332712452,
+            "renderMs": 0.6500000000388051,
+            "worldMs": 0.008333333310050269,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1566666666728755,
+            "renderMs": 0.6066666666883975,
+            "worldMs": 0.010000000009313226,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1466666666480402,
+            "renderMs": 0.6583333333410943,
+            "worldMs": 0.014999999998447795,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99999999999989,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.15833333327124516,
+            "renderMs": 0.6316666666961586,
+            "worldMs": 0.009999999986030161,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.15166666666821887,
+            "renderMs": 0.6366666666775321,
+            "worldMs": 0.009999999986030161,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.15666666661078732,
+            "renderMs": 0.6849999999937911,
+            "worldMs": 0.011666666669771075,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.150000000007761,
+            "renderMs": 0.749999999976717,
+            "worldMs": 0.024999999984477956,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.15,
+            "renderMs": 0.6566666666495924,
+            "worldMs": 0.010000000009313226,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.14666666670236736,
+            "renderMs": 0.6566666666263093,
+            "worldMs": 0.009999999993791182,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1533333333286767,
+            "renderMs": 0.6766666666294138,
+            "worldMs": 0.0066666666728754835,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1583333332867672,
+            "renderMs": 0.6833333333566164,
+            "worldMs": 0.011666666669771075,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1366666666775321,
+            "renderMs": 0.6416666666589056,
+            "worldMs": 0.008333333325572312,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993987,
+            "startupMs": 1849.7999999998137,
+            "raycastMs": 0.1466666666480402,
+            "renderMs": 0.6850000000015523,
+            "worldMs": 0.010000000001552205,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        }
+      ],
+      "snapshotCosts": [
+        0.10000000009313226,
+        0,
+        0.19999999972060323,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0.09999999962747097,
+        0,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.09999999962747097,
+        0,
+        0.10000000009313226,
+        0.20000000018626451,
+        0,
+        0,
+        0.10000000009313226,
+        0.09999999962747097,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.09999999962747097,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0.09999999962747097,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.20000000018626451,
+        0,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0.20000000018626451,
+        0,
+        0,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0.09999999962747097,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0,
+        0.20000000018626451,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0,
+        0.19999999972060323,
+        0
+      ]
+    },
+    {
+      "enabled": true,
+      "rows": [
+        {
+          "perf": {
+            "fps": 59.998032851381936,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.1688524590515089,
+            "renderMs": 0.6770491803095477,
+            "worldMs": 0.014754098336227605,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60.00393468424157,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.15409836063894336,
+            "renderMs": 0.6918032787068457,
+            "worldMs": 0.014754098374396563,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.17000000004967053,
+            "renderMs": 0.7083333333488554,
+            "worldMs": 0.016666666658905645,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.14166666668218872,
+            "renderMs": 0.6833333333410944,
+            "worldMs": 0.014999999998447795,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.1366666666775321,
+            "renderMs": 0.6733333333007371,
+            "worldMs": 0.013333333337989946,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.998032851381986,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.14262295083799323,
+            "renderMs": 0.6524590163445864,
+            "worldMs": 0.00983606556766346,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.12999999998137354,
+            "renderMs": 0.6450000000108654,
+            "worldMs": 0.013333333330228925,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.14333333333488554,
+            "renderMs": 0.651666666683741,
+            "worldMs": 0.009999999986030161,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.13833333333798994,
+            "renderMs": 0.6716666666713232,
+            "worldMs": 0.014999999990686774,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.14166666666666666,
+            "renderMs": 0.625000000007761,
+            "worldMs": 0.013333333337989946,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.15833333330228924,
+            "renderMs": 0.6750000000465661,
+            "worldMs": 0.010000000009313226,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.1399999999674037,
+            "renderMs": 0.6983333333861083,
+            "worldMs": 0.015000000006208818,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.15333333330539364,
+            "renderMs": 0.661666666677532,
+            "worldMs": 0.013333333330228925,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.14166666663562258,
+            "renderMs": 0.6899999999984477,
+            "worldMs": 0.011666666646488012,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.1533333332821106,
+            "renderMs": 0.6716666666790843,
+            "worldMs": 0.005000000004656613,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993987,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.13666666663096597,
+            "renderMs": 0.6250000000310441,
+            "worldMs": 0.0033333333364377418,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60.00393468424168,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.12950819669688335,
+            "renderMs": 0.6409836065512701,
+            "worldMs": 0.006557377055287361,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.12333333333954215,
+            "renderMs": 0.6416666666511446,
+            "worldMs": 0.010000000001552205,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.15499999998913458,
+            "renderMs": 0.636666666654249,
+            "worldMs": 0.013333333337989946,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993987,
+            "startupMs": 1877.7999999998137,
+            "raycastMs": 0.12666666659836967,
+            "renderMs": 0.7083333333876605,
+            "worldMs": 0.004999999996895591,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        }
+      ],
+      "snapshotCosts": [
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.09999999962747097,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0,
+        0.20000000018626451,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.19999999972060323,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0.09999999962747097,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.19999999972060323,
+        0,
+        0.10000000009313226,
+        0,
+        0.2999999998137355,
+        0.10000000009313226,
+        0.10000000009313226,
+        0.10000000009313226,
+        0.10000000009313226,
+        0.09999999962747097,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0.09999999962747097,
+        0,
+        0.10000000009313226,
+        0,
+        0.10000000009313226,
+        0,
+        0,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0,
+        0.09999999962747097,
+        0.10000000009313226,
+        0.10000000009313226,
+        0,
+        0,
+        0.20000000018626451,
+        0,
+        0
+      ]
+    },
+    {
+      "enabled": false,
+      "rows": [
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.15666666666511447,
+            "renderMs": 0.7449999999953434,
+            "worldMs": 0.00999999997826914,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.16333333331470687,
+            "renderMs": 0.6983333333628252,
+            "worldMs": 0.011666666669771075,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.14666666670236736,
+            "renderMs": 0.6833333333333333,
+            "worldMs": 0.008333333341094354,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.15000000002328306,
+            "renderMs": 0.6649999999674037,
+            "worldMs": 0.010000000001552205,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993999,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.16166666669305413,
+            "renderMs": 0.6466666666635622,
+            "worldMs": 0.013333333314706881,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.14166666667442768,
+            "renderMs": 0.6333333333255723,
+            "worldMs": 0.013333333337989946,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.15,
+            "renderMs": 0.6283333333131547,
+            "worldMs": 0.011666666677532097,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.1450000000341485,
+            "renderMs": 0.6116666666232049,
+            "worldMs": 0.011666666677532097,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99803285138188,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.15573770492566658,
+            "renderMs": 0.6426229508608946,
+            "worldMs": 0.02131147541441634,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.13833333332246792,
+            "renderMs": 0.7283333333131546,
+            "worldMs": 0.010000000001552205,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.15000000001552205,
+            "renderMs": 0.6949999999953433,
+            "worldMs": 0.008333333333333333,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.994000599940094,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.14500000001086544,
+            "renderMs": 0.6833333333410944,
+            "worldMs": 0.014999999998447795,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.16166666669305413,
+            "renderMs": 0.6750000000077611,
+            "worldMs": 0.013333333345750967,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.15333333333643775,
+            "renderMs": 0.7349999999705081,
+            "worldMs": 0.009999999993791182,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.14333333333488554,
+            "renderMs": 0.6266666666449358,
+            "worldMs": 0.011666666669771075,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 59.99400059993987,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.13499999999379117,
+            "renderMs": 0.6516666666526968,
+            "worldMs": 0.013333333322467904,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.1533333332821106,
+            "renderMs": 0.626666666714785,
+            "worldMs": 0.011666666662010054,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.14500000002638747,
+            "renderMs": 0.6133333333147069,
+            "worldMs": 0.0016666666682188709,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.14333333331160247,
+            "renderMs": 0.6650000000062088,
+            "worldMs": 0.009999999993791182,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        },
+        {
+          "perf": {
+            "fps": 60,
+            "startupMs": 1845.8999999999069,
+            "raycastMs": 0.1566666666728755,
+            "renderMs": 0.6683333333736906,
+            "worldMs": 0.008333333341094354,
+            "pixelRatio": 1,
+            "shadows": false
+          },
+          "memory": {
+            "geometries": 114,
+            "textures": 5
+          },
+          "draws": 202
+        }
+      ],
+      "snapshotCosts": []
+    }
+  ]
+}

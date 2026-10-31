@@ -1,0 +1,461 @@
+[
+  {
+    "seed": 1,
+    "finished": true,
+    "wallSeconds": 692.702,
+    "elapsed": 691.6629333327696,
+    "peakKmh": 217.2318373293895,
+    "frames": 41545,
+    "missingRoad": 0,
+    "unsafeAdvance": 0,
+    "frozenMutation": 0,
+    "stalls": 0,
+    "waitMs": 0,
+    "errors": [],
+    "workerErrors": [],
+    "distributions": {
+      "road": {
+        "workerCpuMs": {
+          "count": 70,
+          "p50": 612.2000000001863,
+          "p95": 1201.3999999999069,
+          "p99": 1317.2999999998137,
+          "worst": 1317.2999999998137
+        },
+        "responseMs": {
+          "count": 70,
+          "p50": 612.6999999997206,
+          "p95": 1201.9000000003725,
+          "p99": 1318.3999999999069,
+          "worst": 1318.3999999999069
+        },
+        "commitCpuMs": {
+          "count": 70,
+          "p50": 0.19999999995343387,
+          "p95": 0.4000000001396984,
+          "p99": 1.0000000002328306,
+          "worst": 1.0000000002328306
+        },
+        "commitWallMs": {
+          "count": 70,
+          "p50": 0.19999999995343387,
+          "p95": 0.6999999999534339,
+          "p99": 1.1000000000931323,
+          "worst": 1.1000000000931323
+        },
+        "readyLatencyMs": {
+          "count": 70,
+          "p50": 618.2999999998137,
+          "p95": 1217.3000000002794,
+          "p99": 1333.8999999999069,
+          "worst": 1333.8999999999069
+        }
+      },
+      "scenery": {
+        "workerCpuMs": {
+          "count": 70,
+          "p50": 3.6000000000931323,
+          "p95": 7,
+          "p99": 7.900000000372529,
+          "worst": 7.900000000372529
+        },
+        "responseMs": {
+          "count": 70,
+          "p50": 3.800000000046566,
+          "p95": 7.7000000001862645,
+          "p99": 18.200000000186265,
+          "worst": 18.200000000186265
+        },
+        "commitCpuMs": {
+          "count": 70,
+          "p50": 0.19999999995343387,
+          "p95": 0.40000000037252903,
+          "p99": 0.7000000001862645,
+          "worst": 0.7000000001862645
+        },
+        "commitWallMs": {
+          "count": 70,
+          "p50": 0.19999999995343387,
+          "p95": 0.5,
+          "p99": 0.7000000001862645,
+          "worst": 0.7000000001862645
+        },
+        "readyLatencyMs": {
+          "count": 70,
+          "p50": 12,
+          "p95": 21.199999999720603,
+          "p99": 24.100000000093132,
+          "worst": 24.100000000093132
+        }
+      }
+    },
+    "roadHeadroomAllSamples": {
+      "min": 5.707129804631721,
+      "mean": 58.0172132363754,
+      "max": 614.3326259101968
+    },
+    "roadHeadroomBeforeFinalWindow": {
+      "min": 46.594789210840524,
+      "mean": 59.526620903041135,
+      "max": 614.3326259101968
+    },
+    "roadHeadroomSeconds": {
+      "min": 15.877725998659256,
+      "mean": 58.806426820557114,
+      "max": 614.3326259101968
+    },
+    "roadAheadM": {
+      "min": 1667.6599265250697,
+      "mean": 5329.795602910447,
+      "max": 5968.8467183992725
+    },
+    "fps": {
+      "min": 55,
+      "mean": 59.98337560803662,
+      "max": 60.00983767830792
+    },
+    "queuePeaks": {
+      "road": 0,
+      "scenery": 0,
+      "retirement": 0,
+      "workerPending": 1,
+      "roadUnrequested": 0,
+      "sceneryUnrequested": 1
+    },
+    "nearbyNotReadySamples": 0,
+    "currentNotReadySamples": 0,
+    "firstNearbyNotReady": null,
+    "readyCountMismatches": [],
+    "draws": {
+      "min": 101,
+      "mean": 171.7873900293255,
+      "max": 294
+    },
+    "geometries": {
+      "min": 103,
+      "mean": 130.9560117302053,
+      "max": 159
+    },
+    "heapMiB": {
+      "min": 26.39512062072754,
+      "mean": 47.48820329761225,
+      "max": 70.0905294418335
+    },
+    "lastHeapMiB": 44.70016860961914,
+    "discardedResponses": 0,
+    "discardedTasks": 0,
+    "near162": {
+      "elapsed": 161.7717000000132,
+      "distance": 16362.311725392385,
+      "speed": 59.98157894901036,
+      "mode": "playing",
+      "length": 69350
+    }
+  },
+  {
+    "seed": 2,
+    "finished": true,
+    "wallSeconds": 661.087,
+    "elapsed": 660.0868666662052,
+    "peakKmh": 252.93255838485027,
+    "frames": 39647,
+    "missingRoad": 0,
+    "unsafeAdvance": 0,
+    "frozenMutation": 0,
+    "stalls": 0,
+    "waitMs": 0,
+    "errors": [],
+    "workerErrors": [],
+    "distributions": {
+      "road": {
+        "workerCpuMs": {
+          "count": 70,
+          "p50": 640.0999999998603,
+          "p95": 1213,
+          "p99": 1378.6000000000931,
+          "worst": 1378.6000000000931
+        },
+        "responseMs": {
+          "count": 70,
+          "p50": 640.4000000001397,
+          "p95": 1213.3000000002794,
+          "p99": 1378.7999999998137,
+          "worst": 1378.7999999998137
+        },
+        "commitCpuMs": {
+          "count": 70,
+          "p50": 0.19999999995343387,
+          "p95": 0.5,
+          "p99": 0.8000000000465661,
+          "worst": 0.8000000000465661
+        },
+        "commitWallMs": {
+          "count": 70,
+          "p50": 0.20000000018626451,
+          "p95": 0.5,
+          "p99": 0.8000000000465661,
+          "worst": 0.8000000000465661
+        },
+        "readyLatencyMs": {
+          "count": 70,
+          "p50": 650.5,
+          "p95": 1217.7000000001863,
+          "p99": 1384.1000000000931,
+          "worst": 1384.1000000000931
+        }
+      },
+      "scenery": {
+        "workerCpuMs": {
+          "count": 70,
+          "p50": 4.300000000046566,
+          "p95": 8.600000000093132,
+          "p99": 10.799999999813735,
+          "worst": 10.799999999813735
+        },
+        "responseMs": {
+          "count": 70,
+          "p50": 4.7000000001862645,
+          "p95": 8.799999999813735,
+          "p99": 12.800000000279397,
+          "worst": 12.800000000279397
+        },
+        "commitCpuMs": {
+          "count": 70,
+          "p50": 0.19999999995343387,
+          "p95": 0.4000000001396984,
+          "p99": 0.5,
+          "worst": 0.5
+        },
+        "commitWallMs": {
+          "count": 70,
+          "p50": 0.20000000018626451,
+          "p95": 0.4000000001396984,
+          "p99": 0.5,
+          "worst": 0.5
+        },
+        "readyLatencyMs": {
+          "count": 70,
+          "p50": 14.399999999906868,
+          "p95": 22.59999999962747,
+          "p99": 25.399999999906868,
+          "worst": 25.399999999906868
+        }
+      }
+    },
+    "roadHeadroomAllSamples": {
+      "min": 5.654566940947119,
+      "mean": 57.40782578072522,
+      "max": 614.3326175683087
+    },
+    "roadHeadroomBeforeFinalWindow": {
+      "min": 39.72672588345662,
+      "mean": 59.597066906036176,
+      "max": 614.3326175683087
+    },
+    "roadHeadroomSeconds": {
+      "min": 13.635228541120512,
+      "mean": 58.259935263621344,
+      "max": 614.3326175683087
+    },
+    "roadAheadM": {
+      "min": 1670.0474966117035,
+      "mean": 5317.190903952465,
+      "max": 5982.444476246739
+    },
+    "fps": {
+      "min": 55,
+      "mean": 59.98126253373607,
+      "max": 60.00983767830792
+    },
+    "queuePeaks": {
+      "road": 16,
+      "scenery": 23,
+      "retirement": 0,
+      "workerPending": 1,
+      "roadUnrequested": 0,
+      "sceneryUnrequested": 1
+    },
+    "nearbyNotReadySamples": 0,
+    "currentNotReadySamples": 0,
+    "firstNearbyNotReady": null,
+    "readyCountMismatches": [],
+    "draws": {
+      "min": 90,
+      "mean": 171.37173579109063,
+      "max": 265
+    },
+    "geometries": {
+      "min": 107,
+      "mean": 133.59293394777265,
+      "max": 171
+    },
+    "heapMiB": {
+      "min": 27.517619132995605,
+      "mean": 47.02845219203404,
+      "max": 67.62069606781006
+    },
+    "lastHeapMiB": 57.5283145904541,
+    "discardedResponses": 0,
+    "discardedTasks": 0,
+    "near162": {
+      "elapsed": 161.75500000001318,
+      "distance": 15993.02471705397,
+      "speed": 69.9760264580944,
+      "mode": "playing",
+      "length": 69350
+    }
+  },
+  {
+    "seed": 7,
+    "finished": true,
+    "wallSeconds": 632.506,
+    "elapsed": 631.7776333329596,
+    "peakKmh": 318.5683383969279,
+    "frames": 37932,
+    "missingRoad": 0,
+    "unsafeAdvance": 0,
+    "frozenMutation": 0,
+    "stalls": 0,
+    "waitMs": 0,
+    "errors": [],
+    "workerErrors": [],
+    "distributions": {
+      "road": {
+        "workerCpuMs": {
+          "count": 70,
+          "p50": 652.1999999999534,
+          "p95": 1116,
+          "p99": 1532.7999999998137,
+          "worst": 1532.7999999998137
+        },
+        "responseMs": {
+          "count": 70,
+          "p50": 4654.100000000093,
+          "p95": 5117.5,
+          "p99": 5533.700000000186,
+          "worst": 5533.700000000186
+        },
+        "commitCpuMs": {
+          "count": 70,
+          "p50": 0.20000000018626451,
+          "p95": 0.5,
+          "p99": 0.6999999999534339,
+          "worst": 0.6999999999534339
+        },
+        "commitWallMs": {
+          "count": 70,
+          "p50": 0.20000000018626451,
+          "p95": 0.5,
+          "p99": 0.6999999999534339,
+          "worst": 0.6999999999534339
+        },
+        "readyLatencyMs": {
+          "count": 70,
+          "p50": 4667.199999999953,
+          "p95": 5129.4000000003725,
+          "p99": 5548.5,
+          "worst": 5548.5
+        }
+      },
+      "scenery": {
+        "workerCpuMs": {
+          "count": 70,
+          "p50": 4.5,
+          "p95": 8,
+          "p99": 9.099999999627471,
+          "worst": 9.099999999627471
+        },
+        "responseMs": {
+          "count": 70,
+          "p50": 4005.600000000093,
+          "p95": 4009.399999999907,
+          "p99": 4015.4000000003725,
+          "worst": 4015.4000000003725
+        },
+        "commitCpuMs": {
+          "count": 70,
+          "p50": 0.20000000018626451,
+          "p95": 0.5,
+          "p99": 0.5999999998603016,
+          "worst": 0.5999999998603016
+        },
+        "commitWallMs": {
+          "count": 70,
+          "p50": 0.2999999998137355,
+          "p95": 0.5,
+          "p99": 0.5999999998603016,
+          "worst": 0.5999999998603016
+        },
+        "readyLatencyMs": {
+          "count": 70,
+          "p50": 4013.2999999998137,
+          "p95": 4024,
+          "p99": 4028.7000000001863,
+          "worst": 4028.7000000001863
+        }
+      }
+    },
+    "roadHeadroomAllSamples": {
+      "min": 7.017582617938332,
+      "mean": 50.7812047325634,
+      "max": 614.3326153742023
+    },
+    "roadHeadroomBeforeFinalWindow": {
+      "min": 25.86320422664818,
+      "mean": 51.74681419100264,
+      "max": 614.3326153742023
+    },
+    "roadHeadroomSeconds": {
+      "min": 14.167254816683878,
+      "mean": 51.51574843064744,
+      "max": 614.3326153742023
+    },
+    "roadAheadM": {
+      "min": 1651.9144649394875,
+      "mean": 4753.1709714319795,
+      "max": 5950.030668401167
+    },
+    "fps": {
+      "min": 55,
+      "mean": 59.98360380147024,
+      "max": 60.00983767830792
+    },
+    "queuePeaks": {
+      "road": 14,
+      "scenery": 0,
+      "retirement": 0,
+      "workerPending": 1,
+      "roadUnrequested": 1,
+      "sceneryUnrequested": 2
+    },
+    "nearbyNotReadySamples": 0,
+    "currentNotReadySamples": 0,
+    "firstNearbyNotReady": null,
+    "readyCountMismatches": [],
+    "draws": {
+      "min": 99,
+      "mean": 172.41252006420547,
+      "max": 283
+    },
+    "geometries": {
+      "min": 97,
+      "mean": 132.7078651685393,
+      "max": 163
+    },
+    "heapMiB": {
+      "min": 26.781875610351562,
+      "mean": 46.06204276750788,
+      "max": 68.02315998077393
+    },
+    "lastHeapMiB": 41.19307804107666,
+    "discardedResponses": 0,
+    "discardedTasks": 0,
+    "near162": {
+      "elapsed": 161.70500000001266,
+      "distance": 18014.416067821745,
+      "speed": 68.08668511645104,
+      "mode": "playing",
+      "length": 69350
+    }
+  }
+]
