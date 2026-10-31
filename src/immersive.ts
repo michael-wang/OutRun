@@ -12,6 +12,12 @@ export class Immersive {
   get isIPhone() { return /iPhone|iPod/.test(navigator.userAgent); }
   get installed() { return (navigator as AppleNavigator).standalone===true || matchMedia('(display-mode: fullscreen)').matches || matchMedia('(display-mode: standalone)').matches; }
   get needsIPhoneHelp() { return this.isIPhone && !this.installed && (!this.root.requestFullscreen || document.fullscreenEnabled===false); }
+  /** Only offer one-tap landscape when this browser exposes both required APIs. */
+  get canAutoLandscape() {
+    const orientation=screen.orientation as LockableOrientation | undefined;
+    return !this.isIPhone && typeof orientation?.lock==='function' &&
+      (this.installed || (document.fullscreenEnabled!==false && typeof this.root.requestFullscreen==='function'));
+  }
   get active() { return document.fullscreenElement === this.root; }
   async enter() {
     if(this.pending) return;
