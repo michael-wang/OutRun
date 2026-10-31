@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 
-test('player-first Trip opening keeps the game scene visible and QA hidden',async({browser})=>{
+test('player-first Trip opening uses approved artwork and QA hidden',async({browser})=>{
  const context=await browser.newContext({viewport:{width:896,height:414},isMobile:true,hasTouch:true});
  try{
   const page=await context.newPage();
@@ -23,7 +23,7 @@ test('player-first Trip opening keeps the game scene visible and QA hidden',asyn
  }finally{await context.close();}
 });
 
-test('portrait shows transparent rotation cue over canvas, not QA or opaque screen',async({browser})=>{
+test('portrait shows transparent rotation cue over artwork, not QA or opaque screen',async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  try{
   const page=await context.newPage();
@@ -51,7 +51,7 @@ test('QA mode retains full authoring controls and does not show player menu',asy
  await expect(page.locator('#player-start')).toBeHidden();
 });
 
-test('public iPhone fallback offers Home Screen help without an inert fullscreen button',async({browser})=>{
+test('public iPhone entry stays minimal without an inert fullscreen button',async({browser})=>{
  const ua='Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1';
  const context=await browser.newContext({viewport:{width:896,height:414},isMobile:true,hasTouch:true,userAgent:ua});
  await context.addInitScript(()=>{
@@ -62,10 +62,8 @@ test('public iPhone fallback offers Home Screen help without an inert fullscreen
   const page=await context.newPage();
   await page.goto('/?seed=1&playerui=1');
   await expect(page.locator('#player-start')).toBeVisible();
-  await expect(page.locator('#player-install-guide')).toBeVisible();
-  await page.locator('#player-install-guide').tap();
-  await expect(page.locator('#player-install-help')).toBeVisible();
-  await expect(page.locator('#player-install-help')).toContainText('Add to Home Screen');
+  await expect(page.locator('#player-install-guide')).toBeHidden();
+  await expect(page.locator('#player-install-help')).toBeHidden();
   await expect(page.locator('#l2-fullscreen')).toBeHidden();
  }finally{await context.close();}
 });

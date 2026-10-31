@@ -1,0 +1,32 @@
+
+[WebServer] (node:15140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 1 worker
+
+
+(node:45656) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[1/21] tests\ios-immersive.spec.ts:17:1 › iPhone Safari: explain manual rotation and Home Screen instead of dead fullscreen
+[2/21] tests\ios-immersive.spec.ts:34:1 › iPhone standalone Web App: do not offer browser fullscreen or install hints
+[3/21] tests\ios-immersive.spec.ts:43:1 › other touch browsers retain the existing fullscreen entry point
+[4/21] tests\player-first-start.spec.ts:3:1 › player-first Trip opening uses approved artwork and QA hidden
+[5/21] tests\player-first-start.spec.ts:26:1 › portrait shows transparent rotation cue over artwork, not QA or opaque screen
+[6/21] tests\player-first-start.spec.ts:46:1 › QA mode retains full authoring controls and does not show player menu
+[7/21] tests\player-first-start.spec.ts:54:1 › public iPhone entry stays minimal without an inert fullscreen button
+[8/21] tests\player-splash.spec.ts:6:2 › desktop: approved image, minimal public UI and natural rotation
+[9/21] tests\player-splash.spec.ts:6:2 › portrait: approved image, minimal public UI and natural rotation
+[10/21] tests\player-splash.spec.ts:6:2 › landscape: approved image, minimal public UI and natural rotation
+[11/21] tests\player-splash.spec.ts:32:1 › artwork appears before the game module loads
+[12/21] tests\player-splash.spec.ts:39:1 › failed Worker preparation provides retry and never starts on absent road
+[13/21] tests\player-splash.spec.ts:45:1 › delayed Worker stays on splash then permits a safe start
+[14/21] tests\player-splash.spec.ts:50:1 › missing title ID reproduces the pre-fix startup exception
+[15/21] tests\player-splash.spec.ts:57:1 › production QA retains tools and excludes splash
+[16/21] tests\player-splash.spec.ts:62:1 › silent Worker exposes slow-loading retry instead of waiting indefinitely
+[17/21] tests\stream-reliability.spec.ts:2:35 › slow worker freezes time and resumes on attached road
+[18/21] tests\stream-reliability.spec.ts:2:35 › worker failure blocks after bounded retries
+[19/21] tests\stream-reliability.spec.ts:3:1 › production stream diagnostic is available without gameplay debug hooks
+[20/21] tests\stream-reliability.spec.ts:5:1 › WebGL context interruption freezes travel and restores without reset
+[21/21] tests\v09-offline.spec.ts:2:1 › production PWA opens Road Trip offline after a first online visit
+  21 passed (49.1s)

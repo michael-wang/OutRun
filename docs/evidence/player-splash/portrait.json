@@ -1,0 +1,13 @@
+{
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "browser": "156.0.8078.4",
+  "readyMs": 725.9000000022352,
+  "images": [
+    "http://127.0.0.1:4173/ui/start-portrait.png"
+  ],
+  "errors": [],
+  "physicalDevice": false
+}

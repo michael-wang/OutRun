@@ -1,0 +1,7 @@
+{
+  "mutation": "Restore missing player-title ID from 83eaa8f",
+  "message": "The game could not start. Please try again.\n\nRetry loading",
+  "errors": [
+    "Game startup failed TypeError: Cannot read properties of null (reading 'textContent')\n    at updatePlayerUi (http://127.0.0.1:5173/src/main.ts:299:24)\n    at ui (http://127.0.0.1:5173/src/main.ts:333:3)\n    at http://127.0.0.1:5173/src/main.ts:892:1"
+  ]
+}

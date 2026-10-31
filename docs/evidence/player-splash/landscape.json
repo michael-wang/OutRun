@@ -1,0 +1,13 @@
+{
+  "viewport": {
+    "width": 844,
+    "height": 390
+  },
+  "browser": "156.0.8078.4",
+  "readyMs": 723.6000000014901,
+  "images": [
+    "http://127.0.0.1:4173/ui/start-landscape.png"
+  ],
+  "errors": [],
+  "physicalDevice": false
+}
