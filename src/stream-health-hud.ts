@@ -46,6 +46,7 @@ export class StreamHealthHud {
   private root:HTMLElement;
   private cells:Record<Channel,{card:HTMLElement,fill:HTMLElement,value:HTMLElement}>;
   private details:HTMLElement;
+  private peakHeapBytes:number|null=null;
 
   constructor(container:HTMLElement,exportJson:()=>void){
     const root=document.createElement('aside');
@@ -72,19 +73,20 @@ export class StreamHealthHud {
   }
 
   update(sample:StreamHealthSample){
+    if(sample.heapUsedBytes!==null&&Number.isFinite(sample.heapUsedBytes))this.peakHeapBytes=Math.max(this.peakHeapBytes??0,sample.heapUsedBytes);
     const summarized=summarizeStreamHealth(sample);
     this.fill('road',summarized.roadRatio,summarized.roadLevel,`${sample.roadReady}/${sample.roadDesired}`);
     this.fill('scenery',summarized.sceneryRatio,summarized.sceneryLevel,`${sample.sceneryReady}/${sample.sceneryNearby}`);
     this.fill('memory',summarized.memoryRatio,'unknown',fmtBytes(sample.heapUsedBytes));
     const roadAhead=sample.atRouteEnd?'終點':`${Math.round(sample.roadAheadM)}m / ${fmtTime(sample.roadHeadroomSeconds)}`;
-    const p95=sample.roadP95Ms===null?'—':`${Math.round(sample.roadP95Ms)}ms (n=${sample.roadSampleCount})`;
+    const p95=sample.roadP95Ms===null?'—':`${Math.round(sample.roadP95Ms)}ms (n=${sample.roadSampleCount}${sample.roadSampleCount<20?', preliminary':''})`;
     const pending=sample.workerPending?sample.workerPending+' '+(sample.workerAgeMs===null?'—':(sample.workerAgeMs/1000).toFixed(1)+'s'):'—';
     const rows=[
       `Road ahead ${roadAhead}`,
       `Road Worker P95 ${p95}`,
       `待處理 R${sample.roadsUnrequested} / S${sample.sceneryUnrequested} · Commit ${sample.commitQueue} · 回收 ${sample.retireQueue}`,
       `Worker ${pending} · Stall ${sample.stalls} · FPS ${Math.round(sample.fps)}`,
-      `Geometry ${sample.geometries} · Texture ${sample.textures}`
+      `JS ${fmtBytes(sample.heapUsedBytes)} / peak ${fmtBytes(this.peakHeapBytes)} · Geometry ${sample.geometries} · Texture ${sample.textures}`
     ];
     const text=rows.join('\n');
     if(this.details.textContent!==text)this.details.textContent=text;
