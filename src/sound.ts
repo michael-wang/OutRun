@@ -53,7 +53,7 @@ export class EngineSound {
       for(const hz of [1370,2213]){const ring=context.createOscillator();ring.type='sine';ring.frequency.value=hz;ring.connect(this.impactGain);ring.start();}
       this.thump=context.createOscillator();this.thump.type='sine';this.thump.frequency.value=65;this.crashGain=context.createGain();this.crashGain.gain.value=0;this.thump.connect(this.crashGain);this.crashGain.connect(this.master);this.thump.start();
       const crunch=context.createBufferSource();crunch.buffer=buffer;crunch.loop=true;this.crunchFilter=context.createBiquadFilter();this.crunchFilter.type='lowpass';this.crunchFilter.frequency.value=1400;this.crunchGain=context.createGain();this.crunchGain.gain.value=0;crunch.connect(this.crunchFilter);this.crunchFilter.connect(this.crunchGain);this.crunchGain.connect(this.master);crunch.start();
-      const gravel=context.createBufferSource();gravel.buffer=buffer;gravel.loop=true;gravel.playbackRate.value=.71;const gravelLow=context.createBiquadFilter(),gravelHigh=context.createBiquadFilter();gravelLow.type='lowpass';gravelLow.frequency.value=700;gravelHigh.type='highpass';gravelHigh.frequency.value=85;this.gravelGain=context.createGain();this.gravelGain.gain.value=0;gravel.connect(gravelHigh);gravelHigh.connect(gravelLow);gravelLow.connect(this.gravelGain);this.gravelGain.connect(this.master);gravel.start();
+      const gravel=context.createBufferSource();gravel.buffer=buffer;gravel.loop=true;gravel.playbackRate.value=.71;const gravelLow=context.createBiquadFilter(),gravelHigh=context.createBiquadFilter();gravelLow.type='lowpass';gravelLow.frequency.value=1250;gravelHigh.type='highpass';gravelHigh.frequency.value=125;this.gravelGain=context.createGain();this.gravelGain.gain.value=0;gravel.connect(gravelHigh);gravelHigh.connect(gravelLow);gravelLow.connect(this.gravelGain);this.gravelGain.connect(this.master);gravel.start();
       // Two persistent, silent-by-default noise voices. No sample copying or per-pass node allocation.
       for(let i=0;i<2;i++){const source=context.createBufferSource(),high=context.createBiquadFilter(),low=context.createBiquadFilter(),gain=context.createGain(),pan=context.createStereoPanner();source.buffer=buffer;source.loop=true;high.type='highpass';high.frequency.value=220;low.type='lowpass';low.frequency.value=3200;gain.gain.value=0;source.connect(high);high.connect(low);low.connect(gain);gain.connect(pan);pan.connect(this.master);source.start(0,i*.37);this.passVoices.push({source,high,low,gain,pan});}
       // A tiny modulation makes sustained squeal less like a UI beep.
@@ -70,9 +70,9 @@ export class EngineSound {
     else {this.thump!.frequency.cancelScheduledValues(now);this.thump!.frequency.setValueAtTime(115+25*strength,now);this.thump!.frequency.exponentialRampToValueAtTime(42,now+.16);this.crunchFilter!.frequency.setValueAtTime(900+1700*strength,now);envelope(this.crashGain!,.5+.7*strength,.20);envelope(this.crunchGain!,.35+.7*strength,.12+.10*strength);}
   }
   surface(speed:number,offRoadWheels:number,dt:number){
-    const target=this.active&&speed>3?Math.min(1,offRoadWheels/4)*Math.min(1,speed/45)*.32:0;
-    this.gravelLevel+=(target-this.gravelLevel)*(1-Math.exp(-Math.max(0,dt)/.10));
-    if(this.context)this.gravelGain!.gain.setTargetAtTime(target,this.context.currentTime,.10);
+    const target=this.active&&speed>3?Math.min(1,offRoadWheels/2)*Math.min(1,speed/42)*.64:0;
+    this.gravelLevel+=(target-this.gravelLevel)*(1-Math.exp(-Math.max(0,dt)/.055));
+    if(this.context)this.gravelGain!.gain.setTargetAtTime(target,this.context.currentTime,.055);
   }
   passBy(time:number,distance:number,lateral:number,extent:number,actors:readonly TrafficActor[],collisionId?:number){
     const voices=this.passes.update(time,distance,lateral,extent,actors,collisionId),mix=voices.filter(Boolean).length>1?.6:1;
