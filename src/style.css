@@ -164,3 +164,17 @@ html[data-player-ui="true"] #rotate{background:linear-gradient(180deg,#082f3d55,
  html[data-player-ui="true"] #player-start:has(#player-retry:not([hidden])){display:flex!important;top:30dvh}
  html[data-player-ui="true"] #player-start:has(#player-retry:not([hidden])) :is(.player-title,#player-subtitle,#player-play,.player-secondary){display:none}
 }
+
+
+/* Traditional-Chinese arcade copy: preserve the approved splash and responsive layout. */
+html[data-player-ui="true"] :is(.player-title,#rotate,#player-play,#player-subtitle,#player-loading,#player-start button){
+ font-family:system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html[data-player-ui="true"] .player-title{letter-spacing:.12em}
+html[data-player-ui="true"] #player-subtitle{letter-spacing:.18em}
+html[data-player-ui="true"] #player-play{font-size:clamp(19px,2.5vw,24px)}
+html[data-player-ui="true"] #touch [data-control]{font-size:16px}
+@media (orientation:portrait) and (pointer:coarse){
+ html[data-player-ui="true"] #rotate{font-size:clamp(21px,5.5vw,25px)}
+ html[data-player-ui="true"] #rotate small{font-size:15px}
+}
