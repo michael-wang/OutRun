@@ -21,7 +21,7 @@ export class StreamedScene {
  readonly history:{kind:string;index:number;ms:number}[]=[];
  private worker!:Worker;private bank?:BankStrength;private pending?:{kind:string;index:number;since:number};private retries=0;private failures:{message:string;kind:string;index:number;at:number}[]=[];private testFaults={delayMs:0,fromIndex:0,fail:false};private chunks=new Map<number,Chunk>();private desired=new Set<number>();private work:Work[]=[];
  private retiring:Work[]=[];
- private diagnostics=typeof location!=='undefined'&&new URLSearchParams(location.search).get('streamdiag')==='1';
+ private diagnostics=typeof location!=='undefined'&&(()=>{const p=new URLSearchParams(location.search);return p.get('streamdiag')==='1'||(p.get('streamhud')==='1'&&(import.meta.env.DEV||p.get('qa')==='1'));})();
  private lifecycle:Lifecycle[]=[];private activeRecord?:Lifecycle;private discardedResponses=0;private discardedTasks=0;
  // Scalar records only: never retain geometry or transferable buffers.
  private recordRequest(index:number,kind:Phase,since:number){if(!this.diagnostics)return;const r:Lifecycle={index,start:index*this.chunkLength,end:Math.min(this.length,(index+1)*this.chunkLength),kind,generation:this.generation,requestedAt:since,commitCpuMs:0,attachedInstances:0,discardedTasks:0};this.lifecycle.push(r);if(this.lifecycle.length>256)this.lifecycle.shift();this.activeRecord=r;}
