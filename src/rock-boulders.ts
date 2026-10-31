@@ -91,7 +91,17 @@ export function boulderMesh(sample:Sample,boulders:readonly RockBoulder[],start:
   }
  }
  unit.dispose();
- return {kind:'grass' as const,positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)};
+ // Existing seamless grass chunks already provide normals before material
+ // merging. Boulder normals MUST be the same length or the merged mesh renders
+ // with missing/invalid lighting attributes on some GPUs.
+ const normalsGeometry=new THREE.BufferGeometry();
+ const vertexArray=new Float32Array(positions),indexArray=new Uint32Array(indices);
+ normalsGeometry.setAttribute('position',new THREE.BufferAttribute(vertexArray,3));
+ normalsGeometry.setIndex(new THREE.BufferAttribute(indexArray,1));
+ normalsGeometry.computeVertexNormals();
+ const normals=new Float32Array(normalsGeometry.getAttribute('normal').array);
+ normalsGeometry.dispose();
+ return {kind:'grass' as const,positions:vertexArray,uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:indexArray,normals};
 }
 
 interface Contact {
