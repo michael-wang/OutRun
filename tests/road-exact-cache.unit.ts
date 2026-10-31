@@ -13,10 +13,11 @@ describe('S2B temporary exact-distance memoization',()=>{
    const trip=generateTrip(seed),track=createPilotTrack(trip);
    const half=(d:number)=>pilotSample(trip,d).halfWidth;
    const weights=(d:number)=>pilotWeights(trip,d);
-   const rocks=rockySections(seed,track.length,weights);
+   const rocks=rockySections(seed,track.length,weights,true);
    const bridge=bridgeSpan(track.sample,half,weights,track.length);
    const shoulders=(d:number)=>bridgeShoulders(d,seed,bridge);
-   for(const index of indices){
+   const checked=[...new Set([...indices,...rocks.slice(0,2).flatMap(r=>[Math.floor(r.start/1000),Math.floor(r.end/1000)])])].filter(i=>i>=0&&i*1000<track.length);
+   for(const index of checked){
     const start=index*1000,end=Math.min(track.length,(index+1)*1000);
     const build=(cache:boolean)=>prepareRoadChunk(
      track.sample,half,weights,start,end,track.length,seed===1,true,rocks,shoulders,bridge,cache,
