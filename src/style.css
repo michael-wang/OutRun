@@ -219,7 +219,7 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
 #stream-health-hud .sh-card[data-state="ok"] .sh-meter i{background:#7ade9f}
 #stream-health-hud .sh-card[data-state="warn"] .sh-meter i{background:#f4c16d}
 #stream-health-hud .sh-card[data-state="bad"] .sh-meter i{background:#f07671}
-#stream-health-hud .sh-details{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font:10px/1.4 inherit}
+#stream-health-hud .sh-details{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font:10px/1.4 ui-monospace,Consolas,monospace}
 #stream-health-hud .sh-foot{display:flex;gap:5px;align-items:center;justify-content:space-between;margin-top:6px;border-top:1px solid #a2c9c34c;padding-top:5px}
 #stream-health-hud .sh-foot small{max-width:165px;font-size:9px;color:#c8d5d2}
 #stream-health-hud .sh-export{pointer-events:auto;min-width:65px;min-height:27px;padding:3px 6px;border-radius:5px;font-size:10px}
