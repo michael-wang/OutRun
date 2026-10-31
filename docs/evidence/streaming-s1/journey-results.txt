@@ -1,0 +1,84 @@
+[WebServer] (node:40652) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:41816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 3 workers
+
+(node:5468) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30552) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Seed 2: 1s / 355m; FPS 57, stalls 0, missing 0
+Seed 1: 1s / 355m; FPS 57, stalls 0, missing 0
+Seed 7: 1s / 355m; FPS 58, stalls 0, missing 0
+Seed 1: 31s / 3022m; FPS 60, stalls 0, missing 0
+Seed 2: 31s / 2288m; FPS 60, stalls 0, missing 0
+Seed 7: 31s / 3155m; FPS 60, stalls 0, missing 0
+Seed 7: 62s / 6426m; FPS 60, stalls 0, missing 0
+Seed 2: 62s / 5073m; FPS 60, stalls 0, missing 0
+Seed 1: 62s / 6184m; FPS 60, stalls 0, missing 0
+Seed 1: 92s / 9344m; FPS 60, stalls 0, missing 0
+Seed 2: 92s / 7847m; FPS 60, stalls 0, missing 0
+Seed 7: 92s / 9768m; FPS 60, stalls 0, missing 0
+Seed 7: 122s / 13442m; FPS 60, stalls 0, missing 0
+Seed 2: 122s / 11545m; FPS 60, stalls 0, missing 0
+Seed 1: 122s / 12522m; FPS 60, stalls 0, missing 0
+Seed 7: 152s / 17015m; FPS 60, stalls 0, missing 0
+Seed 2: 152s / 14875m; FPS 60, stalls 0, missing 0
+Seed 1: 152s / 15383m; FPS 60, stalls 0, missing 0
+Seed 2: 183s / 18376m; FPS 60, stalls 0, missing 0
+Seed 7: 183s / 20355m; FPS 60, stalls 0, missing 0
+Seed 1: 183s / 18595m; FPS 60, stalls 0, missing 0
+Seed 2: 213s / 20876m; FPS 60, stalls 0, missing 0
+Seed 1: 213s / 21510m; FPS 60, stalls 0, missing 0
+Seed 7: 213s / 23507m; FPS 60, stalls 0, missing 0
+Seed 2: 244s / 24180m; FPS 60, stalls 0, missing 0
+Seed 7: 244s / 27396m; FPS 60, stalls 0, missing 0
+Seed 1: 244s / 24413m; FPS 60, stalls 0, missing 0
+Seed 1: 274s / 27599m; FPS 60, stalls 0, missing 0
+Seed 2: 274s / 27898m; FPS 60, stalls 0, missing 0
+Seed 7: 274s / 30988m; FPS 60, stalls 0, missing 0
+Seed 1: 305s / 30787m; FPS 60, stalls 0, missing 0
+Seed 2: 305s / 31567m; FPS 60, stalls 0, missing 0
+Seed 7: 305s / 34358m; FPS 60, stalls 0, missing 0
+Seed 1: 335s / 33977m; FPS 60, stalls 0, missing 0
+Seed 2: 335s / 34249m; FPS 60, stalls 0, missing 0
+Seed 7: 335s / 37465m; FPS 60, stalls 0, missing 0
+Seed 1: 365s / 37170m; FPS 60, stalls 0, missing 0
+Seed 2: 365s / 37541m; FPS 60, stalls 0, missing 0
+Seed 7: 365s / 40972m; FPS 60, stalls 0, missing 0
+Seed 1: 396s / 40020m; FPS 60, stalls 0, missing 0
+Seed 2: 396s / 40760m; FPS 60, stalls 0, missing 0
+Seed 7: 396s / 44595m; FPS 60, stalls 0, missing 0
+Seed 1: 426s / 43223m; FPS 60, stalls 0, missing 0
+Seed 2: 426s / 43948m; FPS 60, stalls 0, missing 0
+Seed 7: 426s / 48274m; FPS 60, stalls 0, missing 0
+Seed 1: 457s / 46412m; FPS 60, stalls 0, missing 0
+Seed 2: 457s / 46803m; FPS 60, stalls 0, missing 0
+Seed 7: 457s / 51314m; FPS 60, stalls 0, missing 0
+Seed 2: 487s / 50470m; FPS 60, stalls 0, missing 0
+Seed 7: 487s / 54911m; FPS 60, stalls 0, missing 0
+Seed 1: 487s / 49116m; FPS 60, stalls 0, missing 0
+Seed 2: 518s / 53823m; FPS 60, stalls 0, missing 0
+Seed 1: 518s / 52085m; FPS 60, stalls 0, missing 0
+Seed 7: 518s / 58363m; FPS 60, stalls 0, missing 0
+Seed 1: 549s / 55225m; FPS 60, stalls 0, missing 0
+Seed 2: 549s / 57007m; FPS 60, stalls 0, missing 0
+Seed 7: 549s / 61100m; FPS 60, stalls 0, missing 0
+Seed 1: 579s / 57887m; FPS 60, stalls 0, missing 0
+Seed 2: 579s / 60746m; FPS 60, stalls 0, missing 0
+Seed 7: 579s / 64676m; FPS 60, stalls 0, missing 0
+Seed 1: 610s / 61098m; FPS 60, stalls 0, missing 0
+Seed 2: 610s / 64125m; FPS 60, stalls 0, missing 0
+Seed 7: 610s / 67338m; FPS 60, stalls 0, missing 0
+  ok 2 tests\stream-journey.spec.ts:4:27 › continuous full journey Seed 7 maximum throttle + delayed Worker (10.6m)
+Seed 1: 641s / 64317m; FPS 60, stalls 0, missing 0
+Seed 2: 641s / 67393m; FPS 60, stalls 0, missing 0
+  ok 3 tests\stream-journey.spec.ts:4:27 › continuous full journey Seed 2 (11.1m)
+Seed 1: 671s / 67203m; FPS 60, stalls 0, missing 0
+  ok 1 tests\stream-journey.spec.ts:4:27 › continuous full journey Seed 1 (11.6m)
+
+  3 passed (11.6m)

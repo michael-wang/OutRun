@@ -28,7 +28,48 @@ const cache=new WeakMap<Placement,readonly Knot[]>();
 function knots(p:Placement){let k=cache.get(p);if(!k){k=p.channel==='curvature'?curvatureKnots(p.id,p.parameters):p.channel==='elevation'?elevationKnots(p.id,p.parameters):widthKnots(p.id,p.parameters);cache.set(p,k);}return k;}
 /** Same-channel placements never overlap; E/W hold their last endpoint between events. */
 export function validatePilot(b:PilotCandidate){for(const channel of ['curvature','elevation','width'] as const){const ps=b.placements.filter(p=>p.channel===channel).sort((a,z)=>a.startS-z.startS);let previousEnd=0,held=channel==='elevation'?b.baseHeight:channel==='width'?b.baseLanes:0;for(const p of ps){if(p.startS<previousEnd||p.startS<0||p.endS<=p.startS||p.endS>b.length)throw Error(`${b.id}: invalid ${channel} placement`);const a=profile(knots(p),0).value,z=profile(knots(p),1).value;if(Math.abs(a-held)>1e-6)throw Error(`${b.id}: discontinuous ${channel} entry`);held=channel==='curvature'?0:z;previousEnd=p.endS;}}}
-export function pilotSample(b:PilotCandidate,distance:number){const s=Math.max(0,Math.min(b.length,distance-BRICK_START));let demand=0,height=b.baseHeight,grade=0,lanes:number=b.baseLanes;const active:Placement[]=[];for(const p of b.placements){if(s<p.startS)continue;const inRange=s<=p.endS;if(inRange)active.push(p);if(p.channel==='curvature'&&!inRange)continue;const t=Math.min(1,(s-p.startS)/(p.endS-p.startS)),q=profile(knots(p),t);if(p.channel==='curvature')demand=q.value;else if(p.channel==='elevation'){height=q.value;grade=inRange?q.derivative/(p.endS-p.startS):0;}else lanes=q.value;}return {demand,height,grade,lanes,halfWidth:lanes*LANE_WIDTH/2,active};}
+type IndexedPlacement={placement:Placement;held:number};
+type ProfileState={active:Placement[];curvature?:IndexedPlacement;elevation?:IndexedPlacement;width?:IndexedPlacement};
+type ProfileBoundary={distance:number;at:ProfileState;after:ProfileState};
+const emptyProfile:ProfileState={active:[]};
+// Like the existing knot cache, this indexes immutable authored placements. New
+// placement arrays get a new index; an observed length change rebuilds it too.
+// Boundary edits must replace the array rather than mutate cached entries.
+const profileIndexes=new WeakMap<Placement[],{count:number;boundaries:ProfileBoundary[]}>();
+function profileIndex(placements:Placement[]){
+ let index=profileIndexes.get(placements);
+ if(index&&index.count===placements.length)return index.boundaries;
+ const entries=placements.map(placement=>({placement,held:profile(knots(placement),1).value}));
+ const distances=[...new Set(placements.flatMap(p=>[p.startS,p.endS]))].sort((a,b)=>a-b);
+ const stateAt=(distance:number,after:boolean):ProfileState=>{
+  const state:ProfileState={active:[]};
+  // Only index construction scans the recipe. Input order is significant: the
+  // old loop's last eligible assignment wins, even for unordered placements.
+  for(const entry of entries){
+   const p=entry.placement;if(distance<p.startS)continue;
+   const active=after?distance<p.endS:distance<=p.endS;
+   if(active)state.active.push(p);
+   if(p.channel!=='curvature'||active)state[p.channel]=entry;
+  }
+  return state;
+ };
+ const boundaries=distances.map(distance=>({distance,at:stateAt(distance,false),after:stateAt(distance,true)}));
+ profileIndexes.set(placements,{count:placements.length,boundaries});return boundaries;
+}
+export function pilotSample(b:PilotCandidate,distance:number){
+ const s=Math.max(0,Math.min(b.length,distance-BRICK_START)),boundaries=profileIndex(b.placements);
+ let lo=0,hi=boundaries.length;
+ while(lo<hi){const mid=(lo+hi)>>>1;if(boundaries[mid].distance<=s)lo=mid+1;else hi=mid;}
+ const boundary=boundaries[lo-1],state=boundary?(s===boundary.distance?boundary.at:boundary.after):emptyProfile;
+ let demand=0,height=b.baseHeight,grade=0,lanes:number=b.baseLanes;
+ if(state.curvature){const p=state.curvature.placement;demand=profile(knots(p),Math.min(1,(s-p.startS)/(p.endS-p.startS))).value;}
+ if(state.elevation){const {placement:p,held}=state.elevation;
+  if(s<=p.endS){const q=profile(knots(p),Math.min(1,(s-p.startS)/(p.endS-p.startS)));height=q.value;grade=q.derivative/(p.endS-p.startS);}else height=held;
+ }
+ if(state.width){const {placement:p,held}=state.width;lanes=s<=p.endS?profile(knots(p),Math.min(1,(s-p.startS)/(p.endS-p.startS))).value:held;}
+ // Return a fresh array, retaining original placement identity and input order.
+ return {demand,height,grade,lanes,halfWidth:lanes*LANE_WIDTH/2,active:state.active.slice()};
+}
 export function pilotWeights(b:PilotCandidate,distance:number){const s=Math.max(0,Math.min(b.length,distance-BRICK_START)),phases=b.worldPhases;const weights=[0,0,0];let i=phases.findIndex(p=>s<p.endS);if(i<0)i=phases.length-1;weights[worldIndex(phases[i].world)]=1;if(i>0){const boundary=phases[i].startS,t=Math.max(0,Math.min(1,(s-boundary)/350));const smooth=t*t*(3-2*t);weights[worldIndex(phases[i-1].world)]=1-smooth;weights[worldIndex(phases[i].world)]=smooth;}return weights;}
 export function pilotCourse(b:PilotCandidate){const template={...CHALLENGES[0],label:b.name,act:b.sceneryAct,roadWidth:b.roadWidth,transitionLength:0,transitionSeconds:0},curves=b.placements.filter(p=>p.channel==='curvature');let cursor=0;const course:typeof COURSE=[];function add(end:number,u:number,label:string){if(end<=cursor)return;const start=cursor,length=end-start;course.push({...template,id:`${b.id}-${course.length}`,label,start,end,length,nominalDurationAtReferenceSpeed:length/REFERENCE_TRAVEL,targetRequiredSteering:u});cursor=end;}for(const p of curves){add(BRICK_START+p.startS,0,'Approach');add(BRICK_START+p.endS,p.parameters.effort*p.parameters.direction,p.beat);}add(BRICK_START+b.length+600,0,'Relief');return course;}
 export function createPilotTrack(b:PilotCandidate,bank?:BankStrength){validatePilot(b);const legacy=(b.id==='ROAD-TRIP-10M'&&b.generatorVersion==='v0.9-r1')||(b.id==='STAGE-01'&&b.generatorVersion==='v0.8.3-r1');const course=pilotCourse(b),bank4=(b.generatorVersion==='v0.9-r4'||b.generatorVersion==='v0.9-r5'||(b.generatorVersion==='v0.9-r6'||b.generatorVersion==='v0.9-r7'))?seamlessBank(course.at(-1)!.end,d=>generatedBank(curvatureForDemand(pilotSample(b,d).demand),pilotWeights(b,d),3),b.bankFeatures??[]):undefined;return bankTrack(createTrack({course,heightAt:d=>pilotSample(b,d),demandAt:d=>pilotSample(b,d).demand,loop:false,banking:bank===undefined&&!legacy,bankWeights:d=>pilotWeights(b,d),smoothBank:!!bank4,bankAt:bank4??(b.generatorVersion==='v0.9-r3'?(d,k)=>featureBank(d,generatedBank(k,pilotWeights(b,d),3),b.bankFeatures??[]):undefined)}),b.id==='L2P-B'?(bank??0):0);}

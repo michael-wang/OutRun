@@ -1,0 +1,216 @@
+{
+  "comparison": "Object.is for all numeric fields; exact placement identity/order; forward and reverse queries; route recipes deep-equal",
+  "rows": [
+    {
+      "id": "L2P-A",
+      "seed": 17401,
+      "revision": "v0.7D.1-r2",
+      "fingerprint": "a7b08917",
+      "samples": 3616
+    },
+    {
+      "id": "L2P-B",
+      "seed": 17498,
+      "revision": "v0.7D.1-r2",
+      "fingerprint": "53614372",
+      "samples": 3438
+    },
+    {
+      "id": "L2P-C",
+      "seed": 17595,
+      "revision": "v0.7D.1-r2",
+      "fingerprint": "58543601",
+      "samples": 3762
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 1,
+      "revision": "v0.9-r1",
+      "fingerprint": "1ffb9613",
+      "samples": 64888
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 1,
+      "revision": "v0.9-r2",
+      "fingerprint": "b71633aa",
+      "samples": 64888
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 1,
+      "revision": "v0.9-r3",
+      "fingerprint": "bbc1657f",
+      "samples": 64888
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 1,
+      "revision": "v0.9-r4",
+      "fingerprint": "1091eda3",
+      "samples": 64888
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 1,
+      "revision": "v0.9-r5",
+      "fingerprint": "72cd6952",
+      "samples": 64888
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 1,
+      "revision": "v0.9-r6",
+      "fingerprint": "ea591835",
+      "samples": 64888
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 1,
+      "revision": "v0.9-r7",
+      "fingerprint": "ec30421c",
+      "samples": 64888
+    },
+    {
+      "id": "STAGE-01",
+      "seed": 1,
+      "revision": "v0.8.3-r1",
+      "fingerprint": "828d4e5f",
+      "samples": 13200
+    },
+    {
+      "id": "STAGE-01",
+      "seed": 1,
+      "revision": "v0.8.3-r2",
+      "fingerprint": "19088836",
+      "samples": 13200
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 2,
+      "revision": "v0.9-r1",
+      "fingerprint": "01a51425",
+      "samples": 65194
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 2,
+      "revision": "v0.9-r2",
+      "fingerprint": "44586df8",
+      "samples": 65194
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 2,
+      "revision": "v0.9-r3",
+      "fingerprint": "37fb51a4",
+      "samples": 65194
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 2,
+      "revision": "v0.9-r4",
+      "fingerprint": "c1072004",
+      "samples": 65194
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 2,
+      "revision": "v0.9-r5",
+      "fingerprint": "2add7199",
+      "samples": 65194
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 2,
+      "revision": "v0.9-r6",
+      "fingerprint": "be5ff462",
+      "samples": 65194
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 2,
+      "revision": "v0.9-r7",
+      "fingerprint": "6988b0ef",
+      "samples": 65194
+    },
+    {
+      "id": "STAGE-01",
+      "seed": 2,
+      "revision": "v0.8.3-r1",
+      "fingerprint": "d9ebd51a",
+      "samples": 13242
+    },
+    {
+      "id": "STAGE-01",
+      "seed": 2,
+      "revision": "v0.8.3-r2",
+      "fingerprint": "43709b43",
+      "samples": 13242
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 7,
+      "revision": "v0.9-r1",
+      "fingerprint": "586b225d",
+      "samples": 65282
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 7,
+      "revision": "v0.9-r2",
+      "fingerprint": "9bbddff0",
+      "samples": 65282
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 7,
+      "revision": "v0.9-r3",
+      "fingerprint": "f700bf3c",
+      "samples": 65282
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 7,
+      "revision": "v0.9-r4",
+      "fingerprint": "e6e4e43c",
+      "samples": 65282
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 7,
+      "revision": "v0.9-r5",
+      "fingerprint": "318bc4cf",
+      "samples": 65282
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 7,
+      "revision": "v0.9-r6",
+      "fingerprint": "27daedb2",
+      "samples": 65282
+    },
+    {
+      "id": "ROAD-TRIP-10M",
+      "seed": 7,
+      "revision": "v0.9-r7",
+      "fingerprint": "86b5b565",
+      "samples": 65282
+    },
+    {
+      "id": "STAGE-01",
+      "seed": 7,
+      "revision": "v0.8.3-r1",
+      "fingerprint": "752726ea",
+      "samples": 13102
+    },
+    {
+      "id": "STAGE-01",
+      "seed": 7,
+      "revision": "v0.8.3-r2",
+      "fingerprint": "de0e1c53",
+      "samples": 13102
+    }
+  ],
+  "totalSamples": 1457452
+}

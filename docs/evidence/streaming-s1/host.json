@@ -1,0 +1,11 @@
+{
+  "platform": "win32",
+  "release": "10.0.26300",
+  "architecture": "x64",
+  "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor          ",
+  "logicalCPUs": 32,
+  "totalMemoryGiB": 61.647281646728516,
+  "node": "v24.21.0",
+  "conditions": "Edge headless desktop GPU, 3 concurrent contexts, 960x432 CSS pixels, DPR2, isMobile and hasTouch true; no CPU throttle. Seed 1 cap 60m/s; Seed2 cap70m/s; Seed7 full gas with 4s Worker delay from chunk8; default pace unchanged. Unit suite ran concurrently during early journey section. Not a physical Pixel 8.",
+  "edge": "156.0.4314.50"
+}

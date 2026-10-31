@@ -1,0 +1,88 @@
+[WebServer] (node:34788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:43600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+benchmark 0 1 {
+  index: 20,
+  beforeMs: 327.59999999962747,
+  afterMs: 58,
+  sha256: '7c50df45a309dd4148f518bd29a508880ed519aca36f7f193f9a2653d79c6e48'
+}
+benchmark 0 2 {
+  index: 20,
+  beforeMs: 412.20000000018626,
+  afterMs: 71.29999999981374,
+  sha256: 'fcebdb29205a039a9ee8744578d86dff1d7bd57cabe4a79158b4416a4bbd4832'
+}
+benchmark 0 7 {
+  index: 20,
+  beforeMs: 403.1000000005588,
+  afterMs: 67.90000000037253,
+  sha256: 'a742e7b1e485659f1d56e94be578536050c137090a0946aeb36d67d6c282f35e'
+}
+benchmark 1 1 {
+  index: 20,
+  beforeMs: 398.6000000005588,
+  afterMs: 64.20000000018626,
+  sha256: '7c50df45a309dd4148f518bd29a508880ed519aca36f7f193f9a2653d79c6e48'
+}
+benchmark 1 2 {
+  index: 20,
+  beforeMs: 369,
+  afterMs: 67.20000000018626,
+  sha256: 'fcebdb29205a039a9ee8744578d86dff1d7bd57cabe4a79158b4416a4bbd4832'
+}
+benchmark 1 7 {
+  index: 20,
+  beforeMs: 329.29999999981374,
+  afterMs: 65.3999999994412,
+  sha256: 'a742e7b1e485659f1d56e94be578536050c137090a0946aeb36d67d6c282f35e'
+}
+benchmark 2 1 {
+  index: 20,
+  beforeMs: 387.5,
+  afterMs: 60.799999999813735,
+  sha256: '7c50df45a309dd4148f518bd29a508880ed519aca36f7f193f9a2653d79c6e48'
+}
+benchmark 2 2 {
+  index: 20,
+  beforeMs: 348,
+  afterMs: 77.70000000018626,
+  sha256: 'fcebdb29205a039a9ee8744578d86dff1d7bd57cabe4a79158b4416a4bbd4832'
+}
+benchmark 2 7 {
+  index: 20,
+  beforeMs: 349.8999999994412,
+  afterMs: 68.30000000074506,
+  sha256: 'a742e7b1e485659f1d56e94be578536050c137090a0946aeb36d67d6c282f35e'
+}
+  ok 1 tests\profile-index.spec.ts:27:1 › matched before and after road Worker benchmark by chunk index (1.1m)
+geometry 1 1 70 chunks 47364928 bytes identical
+geometry 1 2 70 chunks 47560384 bytes identical
+geometry 1 7 70 chunks 47528048 bytes identical
+geometry 2 1 70 chunks 47364928 bytes identical
+geometry 2 2 70 chunks 47560384 bytes identical
+geometry 2 7 70 chunks 47528048 bytes identical
+geometry 3 1 70 chunks 47364928 bytes identical
+geometry 3 2 70 chunks 47560384 bytes identical
+geometry 3 7 70 chunks 47528048 bytes identical
+geometry 4 1 70 chunks 53644768 bytes identical
+geometry 4 2 70 chunks 53840224 bytes identical
+geometry 4 7 70 chunks 53807888 bytes identical
+geometry 5 1 70 chunks 53644768 bytes identical
+geometry 5 2 70 chunks 53840224 bytes identical
+geometry 5 7 70 chunks 53807888 bytes identical
+geometry 6 1 70 chunks 54245552 bytes identical
+geometry 6 2 70 chunks 54326568 bytes identical
+geometry 6 7 70 chunks 54321928 bytes identical
+geometry 7 1 70 chunks 54568392 bytes identical
+geometry 7 2 70 chunks 54650336 bytes identical
+geometry 7 7 70 chunks 54646000 bytes identical
+  ok 2 tests\profile-index.spec.ts:32:1 › all road geometry bytes match S1 on every chunk and historical trip revision (9.9m)
+
+  Slow test file: tests\profile-index.spec.ts (11.1m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  2 passed (11.1m)

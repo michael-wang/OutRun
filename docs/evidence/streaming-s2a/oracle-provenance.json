@@ -1,0 +1,31 @@
+{
+  "base": "1457b3d984bcc4e58312481302027d8375918faa",
+  "rows": [
+    {
+      "name": "pilot-composer",
+      "referenceSha256": "a579fc136ae689ead2eca111a815c239f4847ea289d212bcf7b0af84846951bb",
+      "onlyImportsAndHeaderChanged": true
+    },
+    {
+      "name": "road-worker",
+      "referenceSha256": "49477f71985094db5ab5920ce578ae7886900a52cbabccebe39469c099b8e003",
+      "onlyImportsAndHeaderChanged": true
+    },
+    {
+      "name": "trip",
+      "referenceSha256": "b57167b8876b0ac420133a5737a100c6cb3d0d521f9f5837471a16f256dca7e6",
+      "onlyImportsAndHeaderChanged": true
+    },
+    {
+      "name": "stage-one",
+      "referenceSha256": "d421e9e8ee725d6ef58d48ec7f41f3ef181fb63a5846b4eeaf674f3fefbe8f3c",
+      "onlyImportsAndHeaderChanged": true
+    }
+  ],
+  "host": {
+    "os": "10.0.26300",
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor          ",
+    "logicalCPUs": 32,
+    "node": "v24.21.0"
+  }
+}
