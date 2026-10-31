@@ -66,7 +66,7 @@ document.querySelector('#app')!.innerHTML = `
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div><p id="iphone-fullscreen-hint" role="status" hidden>On iPhone, open this site in Safari. Tap Share → Add to Home Screen, then launch the icon to hide Safari browser bars. Rotate the phone to landscape to drive.</p></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
 <div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span></div><div class="pedals"><button data-control="gas">${playerUi?'油門':'GAS'}</button><button data-control="brake">${playerUi?'煞車':'BRAKE'}</button></div></div>
-<div id="rotate"><span>↻</span>${playerUi?'橫放手機，準備出發！':'Turn toward the horizon'}<small>${playerUi?'請將手機轉為橫向，即可開始駕駛。':'Rotate your phone to landscape to drive.'}</small><small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>
+<div id="rotate"><span>↻</span>${playerUi?'橫放手機，準備出發！':'Turn toward the horizon'}<small id="rotate-instruction">${playerUi?'請將手機轉為橫向，即可開始駕駛。':'Rotate your phone to landscape to drive.'}</small><small id="rotate-launch-status" role="status" hidden></small><button id="rotate-launch" type="button" hidden>全螢幕出發！</button><small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>
 <section id="player-start" aria-label="Start driving" hidden>
   <div id="player-title" class="player-title">極速漫遊</div>
   <p id="player-subtitle">公路冒險</p>
@@ -110,6 +110,8 @@ function setInputMode(next:typeof inputMode){if(inputMode!==next){inputMode=next
 addEventListener('keydown',e=>{if(!e.isComposing)setInputMode('keyboard');},true);
 addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setInputMode('touch');else if(e.pointerType==='mouse')setInputMode('keyboard');},true);
 let mode:'menu'|'playing'|'paused'|'countdown'='menu'; let settingsOpen=false; let muted=false; let manual=false;let readyUntil=0;
+// One tap in portrait arms a launch; driving starts only after landscape AND safe road readiness.
+let autoLaunchArmed=false,autoLaunchNeedsManual=false;
 let streamStartRequested=false;
 let preparationSince=performance.now();
 const streamStallEvents:{start:number;end?:number;durationMs?:number;distance:number;reason:string}[]=[];
@@ -166,8 +168,28 @@ let swapped=readSwapped();
 let refreshPhotoFolder=()=>{};
 function applyLayout(){ $('touch').classList.toggle('swapped',swapped); ($('swap') as HTMLInputElement).checked=swapped; }
 applyLayout();
+function landscapeReady(){return matchMedia('(orientation:landscape)').matches;}
+function refreshPortraitLaunchUi(){
+  if(!playerUi)return;
+  const available=immersive.canAutoLandscape;
+  const button=$('rotate-launch') as HTMLButtonElement;
+  button.hidden=!available||autoLaunchArmed||brickCompleted;
+  button.disabled=autoLaunchArmed;
+  const instruction=$('rotate-instruction');
+  instruction.hidden=autoLaunchArmed;
+  const hint=available?'點擊下方按鈕，即可切換橫向並開始駕駛。':'請將手機轉為橫向，即可開始駕駛。';
+  if(instruction.textContent!==hint)instruction.textContent=hint;
+  const status=$('rotate-launch-status');
+  status.hidden=!autoLaunchArmed;
+  if(autoLaunchArmed){
+    const message=autoLaunchNeedsManual?'無法自動旋轉，請手動橫放手機，準備好就會自動出發。':
+      world.streamer&&!world.streamer.ready?'道路準備中，完成後自動出發…':'正在切換成橫向…';
+    if(status.textContent!==message)status.textContent=message;
+  }
+}
 function updatePlayerUi(){
   if(!playerUi)return;
+  refreshPortraitLaunchUi();
   const panel=$('player-start'),show=mode!=='playing'&&mode!=='countdown'&&!settingsOpen;
   document.documentElement.dataset.driveMode=mode;
   panel.hidden=!show;
@@ -177,7 +199,7 @@ function updatePlayerUi(){
   const subtitle=brickCompleted?'下一段旅程，等你出發':elapsed>0?'準備好了就繼續出發':'公路冒險';
   if($('player-title').textContent!==title)$('player-title').textContent=title;
   if($('player-subtitle').textContent!==subtitle)$('player-subtitle').textContent=subtitle;
-  const play=$('player-play'),label=streamStartRequested?'即將出發…':brickCompleted?'再跑一次':elapsed>0?'繼續駕駛':'開始駕駛';
+  const play=$('player-play'),label=autoLaunchArmed||streamStartRequested?'即將出發…':brickCompleted?'再跑一次':elapsed>0?'繼續駕駛':'開始駕駛';
   if(play.textContent!==label)play.textContent=label;
   $('player-restart').hidden=elapsed===0&&!brickCompleted;
   $('player-new-route').hidden=!brickCompleted;
@@ -188,7 +210,7 @@ function updatePlayerUi(){
   const preparing=!!world.streamer&&!world.streamer.ready;
   if(!preparing)preparationSince=performance.now();
   const slow=preparing&&performance.now()-preparationSince>45000;
-  (play as HTMLButtonElement).disabled=preparing;
+  (play as HTMLButtonElement).disabled=preparing||autoLaunchArmed;
   $('player-retry').hidden=!slow&&!world.streamer?.error;
   loading.hidden=!preparing&&!world.streamer?.error;
   if(!loading.hidden){const message=world.streamer?.error?'道路載入失敗，請重試。':slow?'道路準備時間較長，請稍候或重新載入。':'道路準備中…';if(loading.textContent!==message)loading.textContent=message;}
@@ -207,6 +229,19 @@ $('player-install-guide').onclick=()=>{$('player-install-help').hidden=!$('playe
 $('drive').onclick=()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();start();};
 $('resume').onclick=start; $('pause').onclick=pause; $('restart').onclick=restart;
 $('fullscreen').onclick=()=>{input.clear();if(immersive.needsIPhoneHelp){const hint=$('iphone-fullscreen-hint'),labHint=document.getElementById('l2-iphone-fullscreen-hint'),show=hint.hidden&&(!labHint||labHint.hidden);hint.hidden=!show;if(labHint)labHint.hidden=!show;return;}void immersive.toggle();};
+$('rotate-launch').onclick=()=>{
+  if(!playerUi||autoLaunchArmed||!immersive.canAutoLandscape||brickCompleted)return;
+  autoLaunchArmed=true;autoLaunchNeedsManual=false;
+  // Both calls happen synchronously in the real tap handler, before any await.
+  // Fullscreen requires transient user activation; loading finishes separately.
+  void sound.unlock().catch(()=>{});
+  void immersive.enter().then(()=>{
+    if(autoLaunchArmed&&!landscapeReady()){autoLaunchNeedsManual=true;refreshPortraitLaunchUi();}
+  }).catch(()=>{
+    if(autoLaunchArmed){autoLaunchNeedsManual=true;refreshPortraitLaunchUi();}
+  });
+  refreshPortraitLaunchUi();
+};
 $('rotate-fullscreen').onclick=()=>{input.clear();void immersive.enter();};
 $('rotate-pause').onclick=()=>{if(mode==='menu')start();else pause();};
 $('sound').onclick=()=>{muted=!muted;void sound.unlock().catch(()=>{});sound.setMuted(muted);$('sound').textContent=playerUi?(muted?'音效關':'音效開'):(muted?'Sound off':'Sound on');$('sound').setAttribute('aria-pressed',String(!muted));};
@@ -315,6 +350,12 @@ function recordStreamDiagnostics(now:number){if(!streamDiagnosticMode||now-strea
 let last=performance.now();
 function loop(now:number){
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
+  if(autoLaunchArmed&&(mode==='playing'||mode==='countdown'))autoLaunchArmed=false;
+  if(autoLaunchArmed&&!document.hidden&&landscapeReady()&&!settingsOpen&&(!world.streamer||world.streamer.ready)){
+    autoLaunchArmed=false;autoLaunchNeedsManual=false;
+    // Same start/restart behavior as the existing Play button, minus a second tap.
+    if(mode==='menu'||brickCompleted)restart();else start();
+  }
   pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen);
   const dt=Math.min((now-last)/1000,.25);last=now;
   const wasCounting=mode==='countdown';if(wasCounting){$('ready-countdown').textContent=`${playerUi?'準備':'READY'} ${Math.max(0,(readyUntil-now)/1000).toFixed(1)}`;if(now>=readyUntil&&!document.hidden&&document.hasFocus()){mode='playing';input.clear();pad.neutralize();ui();}}
