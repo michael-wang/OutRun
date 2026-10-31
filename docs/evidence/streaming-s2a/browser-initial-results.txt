@@ -33,7 +33,7 @@ Running 22 tests using 1 worker
   ok 22 tests\v09-trip.spec.ts:35:1 › trip cannot disable streaming and replay or a new seed replaces the old window (2.3s)
 
 
-  1) tests\stream-diagnostics.spec.ts:52:1 › production export preserves bounded lifecycle evidence without debug controls 
+  1) tests\stream-diagnostics.spec.ts:52:1 › production export preserves bounded lifecycle evidence without debug controls
 
     Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/?seed=1&streamdiag=1
     Call log:
@@ -51,7 +51,7 @@ Running 22 tests using 1 worker
 
     Error Context: test-results\stream-diagnostics-product-e166e-ence-without-debug-controls\error-context.md
 
-  2) tests\stream-reliability.spec.ts:3:1 › production stream diagnostic is available without gameplay debug hooks 
+  2) tests\stream-reliability.spec.ts:3:1 › production stream diagnostic is available without gameplay debug hooks
 
     Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:4173/?streamdiag=1
     Call log:
@@ -70,6 +70,6 @@ Running 22 tests using 1 worker
     Error Context: test-results\stream-reliability-product-c2207-ithout-gameplay-debug-hooks\error-context.md
 
   2 failed
-    tests\stream-diagnostics.spec.ts:52:1 › production export preserves bounded lifecycle evidence without debug controls 
-    tests\stream-reliability.spec.ts:3:1 › production stream diagnostic is available without gameplay debug hooks 
+    tests\stream-diagnostics.spec.ts:52:1 › production export preserves bounded lifecycle evidence without debug controls
+    tests\stream-reliability.spec.ts:3:1 › production stream diagnostic is available without gameplay debug hooks
   20 passed (1.7m)
