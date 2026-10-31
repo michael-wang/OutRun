@@ -15,7 +15,7 @@ export class EngineSound {
   private skidGain?: GainNode;
   private analyser?: AnalyserNode;
   private impactGain?:GainNode;private impactCount=0;
-  private crashGain?:GainNode;private crunchGain?:GainNode;private gravelGain?:GainNode;private thump?:OscillatorNode;private crunchFilter?:BiquadFilterNode;private gravelLevel=0;private lastImpact:'vehicle'|'guardrail'|undefined;
+  private crashGain?:GainNode;private crunchGain?:GainNode;private gravelGain?:GainNode;private thump?:OscillatorNode;private crunchFilter?:BiquadFilterNode;private gravelLevel=0;private coneHitCount=0;private lastImpact:'vehicle'|'guardrail'|'cone'|undefined;
   private muted = false;
   private engineHz = 42;
   private engineRpm = 1000;
@@ -69,6 +69,21 @@ export class EngineSound {
     if(kind==='guardrail')envelope(this.impactGain!,.12+.32*strength,.28);
     else {this.thump!.frequency.cancelScheduledValues(now);this.thump!.frequency.setValueAtTime(115+25*strength,now);this.thump!.frequency.exponentialRampToValueAtTime(42,now+.16);this.crunchFilter!.frequency.setValueAtTime(900+1700*strength,now);envelope(this.crashGain!,.5+.7*strength,.20);envelope(this.crunchGain!,.35+.7*strength,.12+.10*strength);}
   }
+  /** Short plastic clatter; reuse the already-running noise and low thump voices. */
+  coneHit(speed:number){
+    this.coneHitCount++;this.lastImpact='cone';
+    if(!this.context)return;
+    const now=this.context.currentTime,p=Math.max(.2,Math.min(1,speed/75));
+    const crack=this.crunchGain!.gain,thud=this.crashGain!.gain;
+    this.crunchFilter!.frequency.setValueAtTime(2300+1400*p,now);
+    crack.cancelScheduledValues(now);crack.setValueAtTime(.3+.5*p,now);
+    crack.exponentialRampToValueAtTime(.001,now+.13);crack.setValueAtTime(0,now+.145);
+    this.thump!.frequency.cancelScheduledValues(now);
+    this.thump!.frequency.setValueAtTime(140+60*p,now);
+    this.thump!.frequency.exponentialRampToValueAtTime(64,now+.13);
+    thud.cancelScheduledValues(now);thud.setValueAtTime(.09+.18*p,now);
+    thud.exponentialRampToValueAtTime(.001,now+.12);thud.setValueAtTime(0,now+.13);
+  }
   surface(speed:number,offRoadWheels:number,dt:number){
     const target=this.active&&speed>3?Math.min(1,offRoadWheels/2)*Math.min(1,speed/42)*.64:0;
     this.gravelLevel+=(target-this.gravelLevel)*(1-Math.exp(-Math.max(0,dt)/.055));
@@ -100,6 +115,6 @@ export class EngineSound {
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }
-    return { passBy:this.passes.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
+    return { passBy:this.passes.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,coneHitCount:this.coneHitCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
   }
 }
