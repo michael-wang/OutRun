@@ -1,5 +1,6 @@
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
+import {boulderLayout} from './rock-boulders';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
 import {breakdownLayout,breakdownAnnotations} from './breakdowns';
 import {turnWarnings,originalTurnWarnings,warningAnnotations} from './turn-warnings';
@@ -106,6 +107,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const signMaterial=new THREE.MeshBasicMaterial({map:signTexture,side:THREE.DoubleSide});
   const leftCanvas=signCanvas.cloneNode() as HTMLCanvasElement;const leftInk=leftCanvas.getContext('2d')!;leftInk.drawImage(signCanvas,0,0);leftInk.fillStyle='#153e45';leftInk.fillRect(20,20,472,88);leftInk.fillStyle='#fff4d9';leftInk.textAlign='center';leftInk.font='bold 70px sans-serif';leftInk.fillText('← BRAKE',256,96);const leftTexture=new THREE.CanvasTexture(leftCanvas);leftTexture.colorSpace=THREE.SRGBColorSpace;const leftSign=new THREE.MeshBasicMaterial({map:leftTexture,side:THREE.DoubleSide});
   const rockSections=(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7')?rockySections(options.seed??1,length,weightsAt,options.streamStage?.generatorVersion==='v0.9-r7',d=>sample(d).curvature):[];
+  const rockBoulders=boulderLayout(rockSections,halfAt);
   const breakdowns=(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7'))?breakdownLayout(sample,halfAt,length,options.seed??1):[];
   const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7')?[]:breakdownAnnotations(sample,halfAt,breakdowns);
   if(!options.streamStage){
@@ -179,5 +181,5 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
       right:rockyAt(d,1,rockSections)?undefined:halfAt(d)+TRIP_BARRIER_INNER_M,
     };
   }:undefined;
-  return {bridge,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
+  return {bridge,shoulders,boundaries,rockSections,rockBoulders,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
 }
