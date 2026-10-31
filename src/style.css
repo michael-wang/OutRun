@@ -85,3 +85,52 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 /* iPhone Safari: keep rotation and home-screen guidance readable without hiding gameplay. */
 #rotate-iphone-hint,#rotate-immersive-error{max-width:min(440px,84vw);line-height:1.5}
 #iphone-fullscreen-hint,#l2-iphone-fullscreen-hint{font-size:13px;line-height:1.45;max-width:56ch}
+
+
+/* Public Road Trip entry: the 3D car and actual scenery remain the background. */
+html[data-player-ui="true"] .l2-lab{display:none!important}
+html[data-player-ui="true"] #player-start{
+ position:fixed;z-index:32;top:max(20px,env(safe-area-inset-top));left:50%;
+ transform:translateX(-50%);width:min(92vw,620px);padding:8px 10px;
+ display:flex;flex-direction:column;align-items:center;gap:7px;
+ text-align:center;color:#fff5db;pointer-events:none;
+ text-shadow:0 2px 10px #082c38,0 1px 2px #082c38
+}
+html[data-player-ui="true"] #player-start[hidden]{display:none!important}
+html[data-player-ui="true"] #player-start button{pointer-events:auto;text-shadow:none}
+html[data-player-ui="true"] .player-title{font:900 clamp(23px,4vw,42px)/1.05 Arial,sans-serif;letter-spacing:.12em}
+html[data-player-ui="true"] #player-subtitle{margin:0;color:#fff2d4;font:700 clamp(10px,1.5vw,15px)/1.5 Arial,sans-serif;letter-spacing:.16em}
+html[data-player-ui="true"] #player-play{
+ display:block;width:auto;min-width:190px;margin:7px 0 0;padding:11px 35px;
+ border-radius:12px;background:#ffd297;color:#173e40;font-size:21px;
+ box-shadow:0 6px 28px #061f2870
+}
+html[data-player-ui="true"] .player-secondary{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+html[data-player-ui="true"] .player-secondary button{padding:7px 14px;min-height:36px;font-size:12px;background:#103b43bf}
+html[data-player-ui="true"] #player-loading{
+ margin:0;padding:5px 13px;border-radius:12px;background:#103b43ac;
+ color:#fff2d4;font:600 12px/1.4 Arial,sans-serif
+}
+html[data-player-ui="true"][data-drive-mode="menu"] header,
+html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
+html[data-player-ui="true"][data-drive-mode="menu"] #speed,
+html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
+/* Portrait: real Three.js road remains visible; only the short rotation cue overlays it. */
+@media (orientation:portrait) and (pointer:coarse){
+ html[data-player-ui="true"] #player-start{display:none!important}
+ html[data-player-ui="true"] #rotate{
+  z-index:65;justify-content:flex-start;gap:11px;
+  padding:max(100px,12dvh) 24px 24px;
+  background:linear-gradient(180deg,#082f3d8c 0%,#123e431a 43%,transparent 75%);
+  text-shadow:0 2px 12px #082c38;pointer-events:none;
+ }
+ html[data-player-ui="true"] #rotate span{font-size:46px}
+ html[data-player-ui="true"] #rotate small{font-size:14px;line-height:1.5;max-width:min(310px,82vw);color:#fff3dc}
+ html[data-player-ui="true"] #rotate button{display:none!important}
+}
+@media (orientation:landscape) and (max-height:500px){
+ html[data-player-ui="true"] #player-start{top:max(8px,env(safe-area-inset-top));gap:3px}
+ html[data-player-ui="true"] .player-title{font-size:25px}
+ html[data-player-ui="true"] #player-play{min-height:44px;font-size:16px;padding:9px 25px;margin:3px 0 0}
+ html[data-player-ui="true"] .player-secondary button{min-height:32px;padding:5px 12px;font-size:11px}
+}
