@@ -11,16 +11,40 @@ export interface RayRange {start:number;end:number;offset:number;count:number}
 export interface RoadMeshData {normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true):RoadMeshData[]{
  const out:RoadMeshData[]=[];
+ // S2B experiment: repeated absolute-distance queries across ribbons and markings.
+ // Reuse exact values within this chunk only; no interpolation or global retention.
+ // Passing false keeps the uncached lookup path for byte-equivalence tests.
+ const frameCache=cacheExactSamples?new Map<number,ReturnType<Sample>>():undefined;
+ const widthCache=cacheExactSamples?new Map<number,number>():undefined;
+ const weightsCache=cacheExactSamples?new Map<number,number[]>():undefined;
+ const shoulderCache=cacheExactSamples&&shoulders?new Map<number,Shoulders>():undefined;
+ const sampled=(d:number)=>{
+  const found=frameCache?.get(d);if(found)return found;
+  const result=sample(d);frameCache?.set(d,result);return result;
+ };
+ const cachedWidth=(d:number)=>{
+  if(widthCache?.has(d))return widthCache.get(d)!;
+  const result=halfAt(d);widthCache?.set(d,result);return result;
+ };
+ const cachedWeights=(d:number)=>{
+  const found=weightsCache?.get(d);if(found)return found;
+  const result=weightsAt(d);weightsCache?.set(d,result);return result;
+ };
+ const cachedShoulders=(d:number)=>{
+  if(!shoulders)return undefined;
+  const found=shoulderCache?.get(d);if(found)return found;
+  const result=shoulders(d);shoulderCache?.set(d,result);return result;
+ };
  const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number)=>{
   if(to<=from)return;
   const outer=kind==='rail'||kind==='surf'||((kind==='sand'||kind==='grass')&&typeof a==='number'&&typeof b==='number'&&(a>=13||b<=-13));
   if(bridge&&outer&&from<bridge.end&&to>bridge.start){if(from<bridge.start)append(kind,a,b,ha,hb,from,bridge.start,step);if(to>bridge.end)append(kind,a,b,ha,hb,bridge.end,to,step);return;}
   const positions:number[]=[],uvs:number[]=[],colors:number[]=[],indices:number[]=[],normals:number[]=[],n=Math.ceil((to-from)/step);
-  const point=(d:number,raw:Edge,h:number)=>{const p=sample(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d),shoulders?.(d))),w=weightsAt(d);const coastal=h<-10?-4.88:-5.05;v.y=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;return v;};
-  for(let i=0;i<=n;i++){const d=from+(to-from)*i/n,p=sample(d);for(const [raw,h] of [[a,ha],[b,hb]] as [Edge,number][]){
-   const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,halfAt(d),shoulders?.(d))),weights=weightsAt(d);
+  const point=(d:number,raw:Edge,h:number)=>{const p=sampled(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),w=cachedWeights(d);const coastal=h<-10?-4.88:-5.05;v.y=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;return v;};
+  for(let i=0;i<=n;i++){const d=from+(to-from)*i/n,p=sampled(d);for(const [raw,h] of [[a,ha],[b,hb]] as [Edge,number][]){
+   const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),weights=cachedWeights(d);
    const coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h,height=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;
    const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop,v.z);uvs.push(o/4,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
