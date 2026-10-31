@@ -7,7 +7,7 @@ import {prepareRoadChunk} from './road-chunk';
 import {addJourneyScenery} from './scenery';
 import * as THREE from 'three';
 import {RoadClearance} from './road-clearance';
-import {roadOffset,TRIP_MARKER_CENTER_M,tripBarrierRawOffset} from './road-profile';
+import {roadOffset,TRIP_MARKER_CENTER_M,tripBarrierRawOffset,coastalCliffDropAtLateral} from './road-profile';
 
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
 type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
@@ -44,9 +44,12 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    const markerOffset=(side:-1|1)=>shoulderWidth
      ?roadOffset(tripBarrierRawOffset(side,TRIP_MARKER_CENTER_M,shoulderWidth),width,shoulderWidth)
      :roadOffset(side*12.4,width);
+   const cliffLeft=!!shoulderWidth&&coastalCliffDropAtLateral(
+     p.position.y,p.right.y,markerOffset(-1),width,shoulderWidth,pilotWeights(candidate,d)[1],
+   )>3;
    if(candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1&&canyonBend(d)){record(0,p.position.clone().addScaledVector(p.right,roadOffset(CANYON_BEND.railOffset,width)).add(new THREE.Vector3(0,.5,0)));continue;}
-   if(!rockyAt(d,-1,rocks))record(0,p.position.clone().addScaledVector(p.right,markerOffset(-1)).add(new THREE.Vector3(0,.58,0)));
-   for(const side of [-1,1] as const){if(rockyAt(d,side,rocks))continue;const base=p.position.clone().addScaledVector(p.right,markerOffset(side));record(1,base.clone().add(new THREE.Vector3(0,.8,0)),yaw);record(2,base.clone().add(new THREE.Vector3(0,1.45,0)),yaw);record(3,base.clone().add(new THREE.Vector3(0,1.05,0)),yaw);}
+   if(!rockyAt(d,-1,rocks)&&!cliffLeft)record(0,p.position.clone().addScaledVector(p.right,markerOffset(-1)).add(new THREE.Vector3(0,.58,0)));
+   for(const side of [-1,1] as const){if(rockyAt(d,side,rocks)||(side===-1&&cliffLeft))continue;const base=p.position.clone().addScaledVector(p.right,markerOffset(side));record(1,base.clone().add(new THREE.Vector3(0,.8,0)),yaw);record(2,base.clone().add(new THREE.Vector3(0,1.45,0)),yaw);record(3,base.clone().add(new THREE.Vector3(0,1.05,0)),yaw);}
   }
   const roadside=matrices.map(x=>new Float32Array(x));
   const prepared=meshes.map(m=>{if(m.normals)return {...m,normals:m.normals};const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));g.computeVertexNormals();const normals=new Float32Array(g.getAttribute('normal').array);g.dispose();return {...m,normals};});
