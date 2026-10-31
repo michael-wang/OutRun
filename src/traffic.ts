@@ -42,7 +42,7 @@ export function trafficLayout(seed:number,time:number,player:number,length:numbe
 }
 
 function vehicleGeometry(type:number){
- const parts:THREE.BufferGeometry[]=[],spec=TRAFFIC_TYPES[type],body=type===0?'#318ed4':type===1?'#f3b443':'#e8e4d8',glass='#244954',rubber='#182426';
+ const parts:THREE.BufferGeometry[]=[],spec=TRAFFIC_TYPES[type],body=type===0?'#ffffff':type===1?'#f3b443':'#e8e4d8',glass='#244954',rubber='#182426';
  const add=(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number)=>{const raw=g.toNonIndexed();g.dispose();raw.deleteAttribute('uv');raw.translate(x,y,z);const c=new THREE.Color(color),colors=new Float32Array(raw.getAttribute('position').count*3);for(let i=0;i<colors.length;i+=3){colors[i]=c.r;colors[i+1]=c.g;colors[i+2]=c.b;}raw.setAttribute('color',new THREE.BufferAttribute(colors,3));parts.push(raw);};
  const box=(w:number,h:number,l:number,color:string,x:number,y:number,z:number)=>add(new THREE.BoxGeometry(w,h,l),color,x,y,z);
  if(type===0){box(1.8,.65,4.4,body,0,.73,0);box(1.55,.65,2.25,body,0,1.32,-.2);box(1.4,.43,.03,glass,0,1.38,.94);box(1.4,.4,.03,glass,0,1.38,-1.34);for(const side of [-1,1]){box(.025,.42,1.88,glass,side*.785,1.38,-.2);box(.04,.48,.09,body,side*.8,1.38,-.2);}}
