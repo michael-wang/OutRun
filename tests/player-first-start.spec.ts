@@ -9,7 +9,7 @@ test('player-first Trip opening uses approved artwork and QA hidden',async({brow
   await expect(page.locator('#player-start')).toBeVisible();
   await expect(page.locator('#l2-lab')).toBeHidden();
   await expect(page.locator('#player-play')).toBeVisible();
-  await expect(page.locator('#player-play')).toContainText('Start driving');
+  await expect(page.locator('#player-play')).toContainText('開始駕駛');
   await expect(page.locator('#stage-seed')).toBeHidden();
   await expect(page.locator('#l2-export')).toBeHidden();
   await expect(page.locator('#l2-difficulty')).toBeHidden();
