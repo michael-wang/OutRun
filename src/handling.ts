@@ -29,7 +29,7 @@ export function updateFootprint(s:DrivingState,roadHalfWidth=ROAD_HALF_WIDTH){
  * speed-dependent interval. Banking relieves pressure without automatic steering. */
 export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH,grade=0,bank=0,corridorExtra:number|((distance:number)=>number)=0){
  const halfAt=typeof width==='number'?()=>width:width,roadHalfWidth=halfAt(s.distance);
- const marginAt=typeof corridorExtra==='number'?()=>corridorExtra:corridorExtra;
+ const marginAt=(distance:number)=>typeof corridorExtra==='number'?corridorExtra:corridorExtra(distance);
  const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH)+Math.max(0,marginAt(s.distance));
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
  const driving=input.gas&&!input.brake,driveForce=advancePowertrain(s,s.speed,driving,dt);
