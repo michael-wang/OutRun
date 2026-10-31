@@ -27,9 +27,10 @@ export function updateFootprint(s:DrivingState,roadHalfWidth=ROAD_HALF_WIDTH){
 }
 /** Arcade balance remains the target; grip converges lateral velocity over a brief
  * speed-dependent interval. Banking relieves pressure without automatic steering. */
-export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH,grade=0,bank=0){
+export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH,grade=0,bank=0,corridorExtra:number|((distance:number)=>number)=0){
  const halfAt=typeof width==='number'?()=>width:width,roadHalfWidth=halfAt(s.distance);
- const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
+ const marginAt=typeof corridorExtra==='number'?()=>corridorExtra:corridorExtra;
+ const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH)+Math.max(0,marginAt(s.distance));
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
  const driving=input.gas&&!input.brake,driveForce=advancePowertrain(s,s.speed,driving,dt);
  s.grade=Number.isFinite(grade)?grade:0;s.gradeAcceleration=s.speed<.001&&!driving?0:-9.81*s.grade/Math.hypot(1,s.grade);
@@ -65,7 +66,7 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  s.worldHeading+=curvature*ds; // diagnostic tangent; renderer uses exact geometry
  s.slipAngle=s.heading;s.slip=Math.max(clamp((load-.55)/.25,0,1),clamp((Math.abs(s.lateralRate)-2.5)/5,0,1))*Math.min(1,s.speed/50);
  s.drifting=s.slip>.2;
- const nextHalf=halfAt(s.distance),nextLimit=nextHalf+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
+ const nextHalf=halfAt(s.distance),nextLimit=nextHalf+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH)+Math.max(0,marginAt(s.distance));
  if(Math.abs(s.lateral)>nextLimit){s.corridorSide=Math.sign(s.lateral);s.lateral=s.corridorSide*nextLimit;s.lateralRate=0;}
  updateFootprint(s,nextHalf);
 }
