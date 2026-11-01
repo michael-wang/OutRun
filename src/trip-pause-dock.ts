@@ -34,6 +34,15 @@ export class TripPauseDock {
   this.resumeButton=button('tp-resume');this.moreButton=button('tp-more');
   this.reviewButton=button('tp-review');this.options=element.querySelector('#tp-actions')!;
   this.reviewButton.hidden=!reviewAvailable;
+  // Only show keys that actually work. PS4 ✕ means confirm the focused control.
+  for(const [id,keyboard,pad] of [
+   ['tp-resume','P','OPTIONS'],['tp-more','↵','✕'],
+   ['tp-replay','R','✕'],['tp-new-route','N','✕'],
+   ['tp-settings','C','✕'],['tp-sound','M','✕'],
+   ['tp-fullscreen','F','SHARE'],['tp-review','V','✕'],
+  ]){const node=button(id);node.dataset.keyHint=keyboard;node.dataset.padHint=pad;
+   if(keyboard!=='↵')node.setAttribute('aria-keyshortcuts',keyboard);
+  }
   this.resumeButton.onclick=actions.resume;
   this.moreButton.onclick=()=>{if(this.reviewOpen)actions.review();else this.setExpanded(!this.expanded);};
   button('tp-replay').onclick=actions.replay;
