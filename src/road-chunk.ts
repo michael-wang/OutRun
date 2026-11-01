@@ -1,6 +1,5 @@
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
-import {boulderLayout,boulderMesh} from './rock-boulders';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
 import * as THREE from 'three';
 import {ACTS} from './acts';
@@ -94,19 +93,8 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d),shoulders?.(d)));positions.push(v.x,v.y-.1,v.z,v.x,onBridge(d,bridge)?v.y-1.2:Math.min(v.y-4,-5),v.z);}}
  for(let i=0;i<n;i++)for(let side=0;side<2;side++){const a=i*4+side*2,b=a+4;indices.push(a,a+1,b,a+1,b+1,b);}
  out.push({kind:'support',positions:new Float32Array(positions),uvs:new Float32Array(),colors:new Float32Array(),indices:new Uint32Array(indices)});
- // r7 boulders are individual obstacles, NOT a continuous visual rock wall.
- // Older r6 rock strips retain their original geometry and contact handling.
- for(const r of rocks.filter(r=>!r.r7)){
-  const wall=rockWall(sample,halfAt,r,start,end);
-  if(wall)out.push(wall);
- }
- const localRocks=rocks.filter(r=>r.r7&&r.end>start-30&&r.start<end+30);
- if(localRocks.length){
-  // Use full section order for stable IDs/placement across chunk boundaries.
-  const stones=boulderLayout(rocks,halfAt);
-  const mesh=boulderMesh(sample,stones,start,end);
-  if(mesh)out.push(mesh);
- }
+ // Historic r6 rock walls only. Current r7 generates no near-road rock sections.
+ for(const r of rocks){const wall=rockWall(sample,halfAt,r,start,end);if(wall)out.push(wall);}
  if(bridge)out.push(...bridgeMeshes(sample,halfAt,bridge,start,end));
  // Merge by material before upload; dashes are not individual draw calls.
  const merged:RoadMeshData[]=[];
