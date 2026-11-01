@@ -10,7 +10,7 @@ import {asphaltTexture} from './asphalt-texture';
 import { createCar } from './car';
 import {ACTS,actWeights} from './acts';
 import {addJourneyScenery} from './scenery';
-import {selectRoadInterchange,interchangeRailOpening,RAMP_WIDTH} from './road-interchange';
+import {selectRoadInterchange,interchangeRailOpening,interchangeWallVisible,RAMP_RETAINING_WALL_OFFSET,RAMP_WIDTH} from './road-interchange';
 import { createTrack } from './track';
 import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -187,7 +187,13 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
   // One authoritative contact edge for the same r7 rails and marker rows emitted
   // by the Worker. Do not add invisible collision in bridge/canyon/rock overrides.
-  const interchangeRailOpeningAt=(d:number)=>junction&&interchangeRailOpening(junction,d,1)?halfAt(d)+TRIP_BARRIER_INNER_M+RAMP_WIDTH+7:halfAt(d)+TRIP_BARRIER_INNER_M;
+  const interchangeRailOpeningAt=(d:number)=>{
+   if(junction&&interchangeWallVisible(junction,d))
+    return halfAt(d)+RAMP_RETAINING_WALL_OFFSET;
+   return junction&&interchangeRailOpening(junction,d,1)
+    ?halfAt(d)+TRIP_BARRIER_INNER_M+RAMP_WIDTH+7
+    :halfAt(d)+TRIP_BARRIER_INNER_M;
+  };
   const boundaries=shoulders?(d:number)=>{
     if(streamer&&!streamer.roadReady(d))return {};
     if(onBridge(d,bridge))return {left:-bridgeRailEdge(halfAt(d)),right:bridgeRailEdge(halfAt(d))};
