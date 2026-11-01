@@ -35,6 +35,7 @@ import {TireEffects,type TireContact} from './tire-effects';
 import {Traffic,trafficRecipe} from './traffic';
 import {planJourneyLandmarks,CLOCK_COMPANION_COLOR,CLOCK_DISTRICT_COMPANIONS} from './scenery';
 import {SceneInspector,type InspectorStop} from './scene-inspector';
+import {ROAD_FEATURE_LABELS} from './road-features';
 import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
@@ -630,6 +631,17 @@ if(import.meta.env.DEV&&new URLSearchParams(location.search).has('stage')){const
 /* Opt-in QA Scene Inspector: exact route/biome sites, not a second world generator. */
 if(params.get('qa')==='1'&&trip){
  const stops:InspectorStop[]=[];
+ // Road Feature Analysis is already complete in generateTrip(). Only turn
+ // immutable recipe metadata into opt-in QA destinations; no per-frame
+ // classification, no Worker changes and no new scenery generation.
+ for(const feature of trip.roadFeatures??[]){
+  const lead=feature.kind==='merge'||feature.kind==='exit'?220:
+   feature.kind==='u-turn'?230:feature.kind==='long-straight'?80:160;
+  stops.push({id:feature.id,kind:'road-feature',
+   label:`${ROAD_FEATURE_LABELS[feature.kind]} · ${Math.round(feature.start)}–${Math.round(feature.end)}m`,
+   distance:Math.max(350,feature.start-lead),landmarkDistance:feature.start,
+   roadFeature:feature});
+ }
  const landmarks=planJourneyLandmarks(world.length,d=>world.weightsAt(d),world.bridge);
  for(const site of landmarks){
   const name=site.kind==='clock'?'鐘塔街區':site.kind==='lighthouse'?'海岸燈塔':'右側巨型砂岩拱門';
