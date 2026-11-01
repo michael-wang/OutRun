@@ -33,9 +33,9 @@ export function selectRoadInterchange(stage:PilotCandidate,bridge?:BridgeSpan):R
  // within an existing six-lane phrase still works if a seed has no easy site.
  return pairs.sort((a,b)=>{
   const rating=(site:RoadInterchange)=>{
-   const d=site.entry.start,beat=stage.beats.find(x=>x.id===site.beat);
+   const d=site.entry.start,phase=stage.worldPhases.find(p=>d-BRICK_START<p.endS)??stage.worldPhases.at(-1);
    const grade=Math.abs(pilotSample(stage,d).grade),demand=Math.abs(pilotSample(stage,d).demand);
-   return (beat?.world==='city'?0:beat?.world==='coast'?3:30)+grade*90+demand*5;
+   return (phase?.world==='city'?0:phase?.world==='coast'?3:30)+grade*90+demand*5;
   };
   return rating(a)-rating(b)||a.entry.start-b.entry.start;
  })[0];
