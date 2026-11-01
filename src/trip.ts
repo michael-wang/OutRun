@@ -39,11 +39,9 @@ export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7=7):TripCandid
   // Cities need modest grades, not canyon-sized hills. Preserve the original
   // random draw, historical r1–r6 routes and dramatic canyon verticality.
   const cityScale=verticality==='gentle'?.55:verticality==='rolling'?(eid==='E04'?.55:.32):.16;
-  // A mountain beat may straddle the biome boundary. If at least a quarter of
-  // that hill would run through city streets, soften the whole smooth profile.
-  const cityOverlap=worldPhases.filter(p=>p.world==='city')
-   .reduce((sum,p)=>sum+Math.max(0,Math.min(end,p.endS)-Math.max(start,p.startS)),0);
-  const amplitude=revision===7&&cityOverlap>=(end-start)*.25?rawAmplitude*cityScale:rawAmplitude;
+  // Keep the original mountain/coast profiles and banking choices stable;
+  // only a beat authored as city receives the lower urban amplitude.
+  const amplitude=revision===7&&phase.world==='city'?rawAmplitude*cityScale:rawAmplitude;
   placements.push({channel:'elevation',id:eid,startS:start,endS:end,parameters:{base:eid==='E04'?baseHeight-amplitude:baseHeight,amplitude,direction:1,shelfStart:.32,shelfEnd:.68},transition:'smooth',beat});
   if(i%5===1||i%8===4){const wide=pick([6,8] as const);placements.push({channel:'width',id:'W02',startS:start+100,endS:start+250,parameters:{from:4,to:wide,start:0,end:1},transition:'smooth',beat},{channel:'width',id:'W03',startS:end-250,endS:end-100,parameters:{from:wide,to:4,start:0,end:1},transition:'smooth',beat});}
   else if(technical&&rng()<.25)placements.push({channel:'width',id:'W04',startS:start+200,endS:end-200,parameters:{from:4,to:2,start:0,end:1},transition:'smooth',beat});
