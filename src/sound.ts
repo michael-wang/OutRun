@@ -15,7 +15,7 @@ export class EngineSound {
   private skidGain?: GainNode;
   private analyser?: AnalyserNode;
   private impactGain?:GainNode;private impactCount=0;
-  private crashGain?:GainNode;private crunchGain?:GainNode;private gravelGain?:GainNode;private thump?:OscillatorNode;private crunchFilter?:BiquadFilterNode;private gravelLevel=0;private lastImpact:'vehicle'|'guardrail'|undefined;
+  private crashGain?:GainNode;private crunchGain?:GainNode;private gravelGain?:GainNode;private thump?:OscillatorNode;private crunchFilter?:BiquadFilterNode;private gravelLevel=0;private coneHitCount=0;private lastImpact:'vehicle'|'guardrail'|'cone'|undefined;
   private muted = false;
   private engineHz = 42;
   private engineRpm = 1000;
@@ -53,7 +53,7 @@ export class EngineSound {
       for(const hz of [1370,2213]){const ring=context.createOscillator();ring.type='sine';ring.frequency.value=hz;ring.connect(this.impactGain);ring.start();}
       this.thump=context.createOscillator();this.thump.type='sine';this.thump.frequency.value=65;this.crashGain=context.createGain();this.crashGain.gain.value=0;this.thump.connect(this.crashGain);this.crashGain.connect(this.master);this.thump.start();
       const crunch=context.createBufferSource();crunch.buffer=buffer;crunch.loop=true;this.crunchFilter=context.createBiquadFilter();this.crunchFilter.type='lowpass';this.crunchFilter.frequency.value=1400;this.crunchGain=context.createGain();this.crunchGain.gain.value=0;crunch.connect(this.crunchFilter);this.crunchFilter.connect(this.crunchGain);this.crunchGain.connect(this.master);crunch.start();
-      const gravel=context.createBufferSource();gravel.buffer=buffer;gravel.loop=true;gravel.playbackRate.value=.71;const gravelLow=context.createBiquadFilter(),gravelHigh=context.createBiquadFilter();gravelLow.type='lowpass';gravelLow.frequency.value=700;gravelHigh.type='highpass';gravelHigh.frequency.value=85;this.gravelGain=context.createGain();this.gravelGain.gain.value=0;gravel.connect(gravelHigh);gravelHigh.connect(gravelLow);gravelLow.connect(this.gravelGain);this.gravelGain.connect(this.master);gravel.start();
+      const gravel=context.createBufferSource();gravel.buffer=buffer;gravel.loop=true;gravel.playbackRate.value=.71;const gravelLow=context.createBiquadFilter(),gravelHigh=context.createBiquadFilter();gravelLow.type='lowpass';gravelLow.frequency.value=1250;gravelHigh.type='highpass';gravelHigh.frequency.value=125;this.gravelGain=context.createGain();this.gravelGain.gain.value=0;gravel.connect(gravelHigh);gravelHigh.connect(gravelLow);gravelLow.connect(this.gravelGain);this.gravelGain.connect(this.master);gravel.start();
       // Two persistent, silent-by-default noise voices. No sample copying or per-pass node allocation.
       for(let i=0;i<2;i++){const source=context.createBufferSource(),high=context.createBiquadFilter(),low=context.createBiquadFilter(),gain=context.createGain(),pan=context.createStereoPanner();source.buffer=buffer;source.loop=true;high.type='highpass';high.frequency.value=220;low.type='lowpass';low.frequency.value=3200;gain.gain.value=0;source.connect(high);high.connect(low);low.connect(gain);gain.connect(pan);pan.connect(this.master);source.start(0,i*.37);this.passVoices.push({source,high,low,gain,pan});}
       // A tiny modulation makes sustained squeal less like a UI beep.
@@ -69,10 +69,25 @@ export class EngineSound {
     if(kind==='guardrail')envelope(this.impactGain!,.12+.32*strength,.28);
     else {this.thump!.frequency.cancelScheduledValues(now);this.thump!.frequency.setValueAtTime(115+25*strength,now);this.thump!.frequency.exponentialRampToValueAtTime(42,now+.16);this.crunchFilter!.frequency.setValueAtTime(900+1700*strength,now);envelope(this.crashGain!,.5+.7*strength,.20);envelope(this.crunchGain!,.35+.7*strength,.12+.10*strength);}
   }
+  /** Short plastic clatter; reuse the already-running noise and low thump voices. */
+  coneHit(speed:number){
+    this.coneHitCount++;this.lastImpact='cone';
+    if(!this.context)return;
+    const now=this.context.currentTime,p=Math.max(.2,Math.min(1,speed/75));
+    const crack=this.crunchGain!.gain,thud=this.crashGain!.gain;
+    this.crunchFilter!.frequency.setValueAtTime(2300+1400*p,now);
+    crack.cancelScheduledValues(now);crack.setValueAtTime(.3+.5*p,now);
+    crack.exponentialRampToValueAtTime(.001,now+.13);crack.setValueAtTime(0,now+.145);
+    this.thump!.frequency.cancelScheduledValues(now);
+    this.thump!.frequency.setValueAtTime(140+60*p,now);
+    this.thump!.frequency.exponentialRampToValueAtTime(64,now+.13);
+    thud.cancelScheduledValues(now);thud.setValueAtTime(.09+.18*p,now);
+    thud.exponentialRampToValueAtTime(.001,now+.12);thud.setValueAtTime(0,now+.13);
+  }
   surface(speed:number,offRoadWheels:number,dt:number){
-    const target=this.active&&speed>3?Math.min(1,offRoadWheels/4)*Math.min(1,speed/45)*.32:0;
-    this.gravelLevel+=(target-this.gravelLevel)*(1-Math.exp(-Math.max(0,dt)/.10));
-    if(this.context)this.gravelGain!.gain.setTargetAtTime(target,this.context.currentTime,.10);
+    const target=this.active&&speed>3?Math.min(1,offRoadWheels/2)*Math.min(1,speed/42)*.64:0;
+    this.gravelLevel+=(target-this.gravelLevel)*(1-Math.exp(-Math.max(0,dt)/.055));
+    if(this.context)this.gravelGain!.gain.setTargetAtTime(target,this.context.currentTime,.055);
   }
   passBy(time:number,distance:number,lateral:number,extent:number,actors:readonly TrafficActor[],collisionId?:number){
     const voices=this.passes.update(time,distance,lateral,extent,actors,collisionId),mix=voices.filter(Boolean).length>1?.6:1;
@@ -100,6 +115,6 @@ export class EngineSound {
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }
-    return { passBy:this.passes.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
+    return { passBy:this.passes.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,coneHitCount:this.coneHitCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
   }
 }

@@ -197,3 +197,35 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
     font-size:14px;line-height:1.55;color:#fff3dc;
   }
 }
+
+
+/* Opt-in streaming health instrument panel. Never enabled for normal public play. */
+#stream-health-hud{
+ position:fixed;top:max(6px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));
+ z-index:155;width:min(258px,42vw);padding:7px 9px;
+ color:#eaf5f1;background:#102a35d9;border:1px solid #9db6b882;
+ border-radius:8px;box-shadow:0 2px 12px #07132375;
+ font:11px/1.32 ui-monospace,Consolas,monospace;
+ pointer-events:none;user-select:none;font-variant-numeric:tabular-nums;
+}
+#stream-health-hud .sh-title{font-weight:800;letter-spacing:.07em;display:flex;justify-content:space-between;align-items:baseline}
+#stream-health-hud .sh-title span{font-size:9px;color:#c5d7d5}
+#stream-health-hud .sh-channels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:5px}
+#stream-health-hud .sh-card{display:grid;grid-template-columns:15px 16px 1fr;align-items:end;gap:4px;min-width:0}
+#stream-health-hud .sh-card b{align-self:start;font-size:14px}
+#stream-health-hud .sh-card small{font-size:9px;overflow:hidden;white-space:nowrap}
+#stream-health-hud .sh-meter{width:15px;height:42px;border:1px solid #c4d5d29c;background:#152b35c9;display:flex;align-items:flex-end;padding:1px}
+#stream-health-hud .sh-meter i{display:block;width:100%;background:#7da5ae;transition:height .2s linear}
+#stream-health-hud .sh-card[data-state="ok"] .sh-meter i{background:#7ade9f}
+#stream-health-hud .sh-card[data-state="warn"] .sh-meter i{background:#f4c16d}
+#stream-health-hud .sh-card[data-state="bad"] .sh-meter i{background:#f07671}
+#stream-health-hud .sh-details{margin:6px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;font:10px/1.4 ui-monospace,Consolas,monospace}
+#stream-health-hud .sh-foot{display:flex;gap:5px;align-items:center;justify-content:space-between;margin-top:6px;border-top:1px solid #a2c9c34c;padding-top:5px}
+#stream-health-hud .sh-foot small{max-width:165px;font-size:9px;color:#c8d5d2}
+#stream-health-hud .sh-export{pointer-events:auto;min-width:65px;min-height:27px;padding:3px 6px;border-radius:5px;font-size:10px}
+@media (max-height:430px){
+ #stream-health-hud{width:min(242px,42vw);padding:5px 7px;font-size:10px}
+ #stream-health-hud .sh-meter{height:32px}
+ #stream-health-hud .sh-details{margin-top:4px;font-size:9px}
+ #stream-health-hud .sh-foot{margin-top:4px;padding-top:3px}
+}

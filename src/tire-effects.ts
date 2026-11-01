@@ -36,6 +36,13 @@ export class TireEffects {
   this.marks=new THREE.Mesh(this.markGeo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
   this.smoke.name=mode==='dust'?'tire-dust':'tire-smoke';this.marks.name=mode==='dust'?'dust-unused-marks':'tire-marks';this.smoke.frustumCulled=this.marks.frustumCulled=false;this.smoke.renderOrder=3;this.marks.renderOrder=1;scene.add(this.marks,this.smoke);this.clear();
  }
+ /** Terrain-matched dust tint. White coastal sand must not emit canyon-brown puffs. */
+ setDustTint(weights:readonly number[]){
+  if(this.mode!=='dust')return;
+  const w0=weights[0]??0,w1=weights[1]??0,w2=weights[2]??0,total=Math.max(.00001,w0+w1+w2);
+  const tint=(this.smoke.material as THREE.ShaderMaterial).uniforms.tint.value as THREE.Vector3;
+  tint.set((.95*w0+.80*w1+.86*w2)/total,(.95*w0+.53*w1+.84*w2)/total,(.92*w0+.22*w1+.79*w2)/total);
+ }
  clear(time=0){this.born.fill(-100);this.markBorn.fill(-100);this.opacity.fill(0);this.colors.fill(0);this.linked.fill(false);this.emitted.fill(0);this.particle=this.segment=0;this.emission=this.slipTime=0;this.lastTime=time;this.smoke.visible=this.marks.visible=false;}
  update(time:number,speed:number,skidIntensity:number,contacts:TireContact[],scale:number){
   const dt=Math.max(0,Math.min(.1,time-this.lastTime));if(time<this.lastTime)this.clear(time);this.lastTime=time;
@@ -67,6 +74,6 @@ export class TireEffects {
   this.smoke.visible=smokeCount>0;this.marks.visible=markCount>0;void scale;
   for(const key of SMOKE_ATTRIBUTES)this.smokeGeo.attributes[key].needsUpdate=true;this.markGeo.attributes.position.needsUpdate=true;this.markGeo.attributes.color.needsUpdate=true;
  }
- inspect(){return {emittedByWheel:[...this.emitted],particles:this.opacity.filter(a=>a>0).length,segments:this.markBorn.filter(t=>this.lastTime-t<MARK_LIFE).length,particleCapacity:PARTICLES,segmentCapacity:SEGMENTS,geometries:2};}
+ inspect(){return {emittedByWheel:[...this.emitted],particles:this.opacity.filter(a=>a>0).length,segments:this.markBorn.filter(t=>this.lastTime-t<MARK_LIFE).length,particleCapacity:PARTICLES,segmentCapacity:SEGMENTS,geometries:2,tint:((this.smoke.material as THREE.ShaderMaterial).uniforms.tint.value as THREE.Vector3).toArray()};}
  dispose(){this.smoke.removeFromParent();this.marks.removeFromParent();this.smokeGeo.dispose();this.markGeo.dispose();(this.smoke.material as THREE.Material).dispose();(this.marks.material as THREE.Material).dispose();}
 }
