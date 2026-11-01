@@ -12,6 +12,7 @@ export class TripPauseDock {
  readonly reviewButton:HTMLButtonElement;
  private readonly options:HTMLElement;
  private expanded=false;
+ private reviewOpen=false;
  constructor(root:HTMLElement,actions:TripPauseActions,reviewAvailable:boolean){
   const element=document.createElement('aside');this.element=element;
   element.id='trip-pause-dock';element.hidden=true;element.setAttribute('aria-label','暫停操作');
@@ -34,7 +35,7 @@ export class TripPauseDock {
   this.reviewButton=button('tp-review');this.options=element.querySelector('#tp-actions')!;
   this.reviewButton.hidden=!reviewAvailable;
   this.resumeButton.onclick=actions.resume;
-  this.moreButton.onclick=()=>this.setExpanded(!this.expanded);
+  this.moreButton.onclick=()=>{if(this.reviewOpen)actions.review();else this.setExpanded(!this.expanded);};
   button('tp-replay').onclick=actions.replay;
   button('tp-new-route').onclick=actions.newRoute;
   button('tp-settings').onclick=actions.settings;
@@ -51,9 +52,12 @@ export class TripPauseDock {
  get isExpanded(){return this.expanded;}
  focusResume(){this.resumeButton.focus();}
  update(paused:boolean,muted:boolean,reviewOpen=false){
-  this.element.hidden=!paused;if(!paused)this.collapse();
+  this.element.hidden=!paused;this.reviewOpen=reviewOpen;
+  if(!paused||reviewOpen)this.collapse();
   (this.element.querySelector('#tp-sound') as HTMLButtonElement).textContent=muted?'音效關':'音效開';
-  this.reviewButton.textContent=reviewOpen?'收起評分':'評分／匯出';
+  this.moreButton.textContent=reviewOpen?'收起評分':this.expanded?'收起':'☰ 功能';
+  this.moreButton.setAttribute('aria-expanded',String(reviewOpen||this.expanded));
+  this.reviewButton.textContent='評分／匯出';
   this.reviewButton.setAttribute('aria-expanded',String(reviewOpen));
  }
 }
