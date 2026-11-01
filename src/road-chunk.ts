@@ -95,8 +95,11 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    const wall=interchangeWallSpan(interchange,kind);
    const a=Math.max(start,wall.from),b=Math.min(end,wall.to);
    if(b<=a)continue;
-   const right=(d:number)=>tripBarrierRawOffset(1,RAMP_RETAINING_WALL_OFFSET,cachedShoulders(d)!);
-   append('deck',right,right,-15,0,a,b,2.5,d=>interchangeWallTop(interchange,kind,d)??-4);
+   const topEdge=(d:number)=>tripBarrierRawOffset(1,RAMP_RETAINING_WALL_OFFSET,cachedShoulders(d)!);
+   const footEdge=(d:number)=>tripBarrierRawOffset(1,RAMP_RETAINING_WALL_OFFSET+3.2,cachedShoulders(d)!);
+   // Sloped concrete face, as on a real highway cutting. The broad buried
+   // foot supports the wall and screens the ramp's hidden lower alignment.
+   append('deck',topEdge,footEdge,0,-15,a,b,2.5,d=>interchangeWallTop(interchange,kind,d)??-4);
   }
  }
  append('line',d=>-7+.35*7/halfAt(d),d=>-7+.51*7/halfAt(d),.025,.025,start,end,2.5);
