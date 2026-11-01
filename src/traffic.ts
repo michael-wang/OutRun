@@ -1,7 +1,7 @@
 import {TrafficLanes} from './traffic-lanes';
 import {TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR,TRAFFIC_CREST_RISK_COLOR,roadHidesVehicle,trafficOutlineGeometry,trafficOutlineHeight,trafficOutlineRadius,trafficOutlineStrength} from './traffic-outline';
 import {CANYON_BEND} from './canyon-identity';
-import {interchangeCenterOffset,interchangeTrafficShift,type RoadInterchange} from './road-interchange';
+import {INTERCHANGE_DEMO_CAR_ID,interchangeCenterOffset,interchangeTrafficShift,interchangeDemoCarLateral,interchangeRampElevation,type RoadInterchange} from './road-interchange';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {TireEffects,type TireContact} from './tire-effects';
@@ -75,6 +75,7 @@ export class Traffic {
  private hintCache=new Map<number,boolean>();private nextHintCheck=0;
  private breakdownSmoke:THREE.InstancedMesh;private smokePose=new THREE.Object3D();private smokePoint=new THREE.Vector3();
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
+ private rampDemoStartedAt?:number;private rampDemoFinished=false;
  constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange){
   this.schedule=[...trafficRecipe(seed,length),...stopped];
   this.lanes=new TrafficLanes(seed);this.indicators=new THREE.InstancedMesh(new THREE.BoxGeometry(.46,.25,.08),new THREE.MeshBasicMaterial({color:'#ffb000',toneMapped:false}),TRAFFIC_LIMIT*4);this.indicators.name='traffic-turn-signals';this.indicators.count=0;this.indicators.frustumCulled=false;scene.add(this.indicators);
@@ -132,7 +133,7 @@ export class Traffic {
   this.breakdownSmoke.frustumCulled=false;this.breakdownSmoke.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(this.breakdownSmoke);
  }
- reset(){this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
+ reset(){this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
   if(time<this.time)this.reset();const dt=time-this.time,previous=this.actors;this.time=time;
   // Actual motion is authoritative once observed. Retain only lightweight history
@@ -143,10 +144,29 @@ export class Traffic {
    const distance=saved?saved.distance+saved.speed*(time-saved.time):nominalDistance;
    return {...recipe,nominalDistance,distance,speed:saved?.speed??recipe.speed,cruiseSpeed:recipe.speed,lane:0,lateral:0,visible:false,y:0,grade:0,previousDistance:distance,previousLateral:0,previousVisible:false};
   });
+  // One staged feeder car appears only as the player approaches THIS merge.
+  // Its clock starts on arrival so QA jumps and normal ten-minute journeys
+  // both show the same safe "coming up from the side road" moment.
+  if(this.junction&&!this.rampDemoFinished){
+   const entry=this.junction.entry;
+   if(this.rampDemoStartedAt===undefined&&player>=entry.start-520&&player<=entry.start+40)this.rampDemoStartedAt=time;
+   if(this.rampDemoStartedAt!==undefined){
+    const distance=entry.start-170+27*Math.max(0,time-this.rampDemoStartedAt);
+    if(distance<=entry.end+340){
+     const old=previous.find(a=>a.id===INTERCHANGE_DEMO_CAR_ID);
+     candidates.push({
+      id:INTERCHANGE_DEMO_CAR_ID,type:0,group:-1,distance,speed:27,cruiseSpeed:27,
+      lane:0,lateral:0,visible:old?.visible??false,y:0,grade:0,nominalDistance:distance,
+      previousDistance:old?.distance??distance,previousLateral:old?.lateral??0,
+      previousVisible:old?.visible??false,
+     });
+    }else this.rampDemoFinished=true;
+   }
+  }
   for(const a of candidates)if(previous.some(old=>old.id===a.id))this.history.set(a.id,{distance:a.distance,speed:a.speed,time});
   const inside=candidates.filter(a=>a.distance>=player-180&&a.distance<=player+850&&a.distance<this.length-20);
   this.actors=inside.filter(a=>previous.some(old=>old.id===a.id));
-  const entering=inside.filter(a=>!previous.some(old=>old.id===a.id)&&(time===0||Math.abs(a.distance-player)>120)).sort((a,b)=>Math.abs(a.distance-player)-Math.abs(b.distance-player));
+  const entering=inside.filter(a=>!previous.some(old=>old.id===a.id)&&(time===0||a.id===INTERCHANGE_DEMO_CAR_ID||Math.abs(a.distance-player)>120)).sort((a,b)=>Math.abs(a.distance-player)-Math.abs(b.distance-player));
   for(const a of entering){if(this.actors.length>=TRAFFIC_LIMIT)break;this.actors.push(a);}
 
   for(const a of this.actors){const r=this.reactions.get(a.id);if(r){a.distance+=r.boost*.85*(1-Math.exp(-dt/.85));r.boost*=Math.exp(-dt/.85);r.offset+=r.velocity*.55*(1-Math.exp(-dt/.55));r.velocity*=Math.exp(-dt/.55);r.offset*=Math.exp(-dt*.55);const follow=1-Math.exp(-dt/.07);r.yaw+=(THREE.MathUtils.clamp(r.velocity*.075,-.38,.38)-r.yaw)*follow;r.roll+=(THREE.MathUtils.clamp(r.velocity*.03,-.17,.17)-r.roll)*follow;}}
