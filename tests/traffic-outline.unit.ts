@@ -1,7 +1,7 @@
 import {expect,it} from 'vitest';
 import * as THREE from 'three';
 import {Traffic,trafficRecipe,TRAFFIC_LIMIT} from '../src/traffic';
-import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE} from '../src/traffic-outline';
+import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLORS} from '../src/traffic-outline';
 
 const eye=new THREE.Vector3(0,3.6,-8),aim=new THREE.Vector3(0,1.5,220);
 const road=(height:(d:number)=>number,x=0)=>(d:number)=>({position:new THREE.Vector3(x,height(d),d),right:new THREE.Vector3(1,0,0)});
@@ -97,5 +97,26 @@ it('near-outline cutoff never interrupts the driving loop or hill warning checks
  }
  expect(sawFar).toBe(true);
  expect(sawNear).toBe(true);
+ traffic.dispose();
+});
+
+it('A/B switches the shared outline color without changing the approved crest hint',()=>{
+ const scene=new THREE.Scene();
+ const sample=(d:number)=>({...road(()=>0)(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
+ const traffic=new Traffic(scene,sample as any,()=>7,69000,1);
+ const outline=scene.getObjectByName('vehicle-outline-car') as THREE.InstancedMesh;
+ const crest=scene.getObjectByName('vehicle-crest-hint-0') as THREE.LineSegments;
+ const material=outline.material as THREE.MeshBasicMaterial;
+ const crestColor=(crest.material as THREE.LineBasicMaterial).color.getHexString();
+ expect(traffic.outlineColor).toBe('yellow');
+ expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.yellow.slice(1));
+ traffic.setOutlineColor('chartreuse');
+ expect(traffic.outlineColor).toBe('chartreuse');
+ expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.chartreuse.slice(1));
+ expect((crest.material as THREE.LineBasicMaterial).color.getHexString()).toBe(crestColor);
+ traffic.reset();
+ expect(traffic.outlineColor).toBe('chartreuse');
+ traffic.setOutlineColor('yellow');
+ expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.yellow.slice(1));
  traffic.dispose();
 });
