@@ -142,9 +142,13 @@ it('near-outline cutoff never interrupts the driving loop or hill warning checks
   expect(report.crestHints).toBeLessThanOrEqual(
    report.actors.filter(a=>a.visible&&a.distance-player>TRAFFIC_OUTLINE.crestNear&&a.distance-player<=TRAFFIC_OUTLINE.crestFar).length
   );
-  expect(report.outlineInstances.reduce((sum,n)=>sum+n,0)).toBe(
-   report.actors.filter(a=>a.visible&&trafficOutlineStrength(a.distance-player)>0).length
-  );
+  // A car with a red crest warning does not also occupy the green pool.
+  const green=report.outlineInstances.reduce((sum,n)=>sum+n,0);
+  const red=report.crestRimInstances.reduce((sum,n)=>sum+n,0);
+  const candidates=report.actors.filter(a=>a.visible&&trafficOutlineStrength(a.distance-player)>0).length;
+  expect(green+red).toBeGreaterThanOrEqual(candidates);
+  expect(green+red).toBeLessThanOrEqual(report.actors.filter(a=>a.visible).length);
+  expect(red).toBe(report.crestHints);
   if(car?.visible){
    if(car.distance-player>=TRAFFIC_OUTLINE.fullStrengthMeters)sawFar=true;
    if(car.distance-player<=TRAFFIC_OUTLINE.nearCutoffMeters)sawNear=true;
