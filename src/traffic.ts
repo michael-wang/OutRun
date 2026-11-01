@@ -149,10 +149,11 @@ export class Traffic {
    const p=this.sample(a.distance),front=this.sample(Math.min(this.length,a.distance+spec.axle)),rear=this.sample(Math.max(0,a.distance-spec.axle));
    const frontY=front.position.y+front.right.y*a.lateral,rearY=rear.position.y+rear.right.y*a.lateral,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
    this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
-   const outlineStrength=trafficOutlineStrength(a.distance-player);
+   // The crest hint also needs the height even after the near-distance outline disappears.
+   const height=trafficOutlineHeight(a.type),outlineStrength=trafficOutlineStrength(a.distance-player);
    if(outlineStrength>0){
     const viewDistance=camera?camera.position.distanceTo(this.dummy.position):Math.max(1,a.distance-player);
-    const rim=trafficOutlineRadius(viewDistance,camera?.fov??47,viewportHeight)*outlineStrength,height=trafficOutlineHeight(a.type);
+    const rim=trafficOutlineRadius(viewDistance,camera?.fov??47,viewportHeight)*outlineStrength;
     const sx=1+rim/(spec.width*.5),sy=1+rim/(height*.5),sz=1+rim/(spec.length*.5);
     // The expanded back-face hull smoothly vanishes before the driver reaches the car.
     this.outlineShift.set(0,height*.5*(1-sy),0).applyQuaternion(this.dummy.quaternion);
