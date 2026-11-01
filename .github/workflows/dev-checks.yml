@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# A milestone is often several GitHub file commits; verify only its latest tip.
+concurrency:
+  group: outrun-dev-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
