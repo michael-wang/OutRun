@@ -14,14 +14,42 @@ export function bridgeApproachAllowsBuilding(d:number,bridge?:BridgeSpan){
  // Leave landings clear until the cut-out coastline has fully resumed beyond the bridge.
  return !bridge||d<bridge.start-280||d>bridge.end+1000;
 }
-/** Small authored landmark cadence: city clock plazas and isolated coastal lighthouses.
- * Selection is a pure function of route location, so streamed chunks replay identically. */
-export const JOURNEY_LANDMARK_STEP=4800;
-export function roadTripLandmarkKind(distance:number,length:number,weights:readonly number[],bridge?:BridgeSpan){
- if(distance<900||distance>=length-400||!bridgeApproachAllowsBuilding(distance,bridge))return null;
- if((weights[2]??0)>=.82)return 'clock' as const;
- if((weights[0]??0)>=.82)return 'lighthouse' as const;
- return null;
+/** Biome-driven landmarks. Shared by Worker scenery generation and QA navigation. */
+export type JourneyLandmarkKind='clock'|'lighthouse'|'canyon-arch';
+export interface JourneyLandmark {distance:number;kind:JourneyLandmarkKind;companions:number}
+export const CLOCK_DISTRICT_COMPANIONS=3;
+export const CLOCK_COMPANION_COLOR='#bda98e';
+const LANDMARK_SPACING:Record<JourneyLandmarkKind,number>={
+ clock:1350,lighthouse:2500,'canyon-arch':3200,
+};
+function landmarkBiome(weights:readonly number[]):JourneyLandmarkKind|null{
+ const strongest=Math.max(...weights),index=weights.indexOf(strongest);
+ if(strongest<.78)return null;return index===2?'clock':index===0?'lighthouse':index===1?'canyon-arch':null;
+}
+export function planJourneyLandmarks(length:number,weightsAt:(d:number)=>readonly number[],bridge?:BridgeSpan):JourneyLandmark[]{
+ // Find contiguous environment runs first. Distances position landmarks *within*
+ // each biome, instead of deciding which structures belong in the world.
+ const step=200,runs:{start:number;end:number;kind:JourneyLandmarkKind|null}[]=[];
+ for(let start=0;start<length;start+=step){
+  const end=Math.min(length,start+step),kind=landmarkBiome(weightsAt((start+end)/2)),last=runs.at(-1);
+  if(last?.kind===kind)last.end=end;
+  else runs.push({start,end,kind});
+ }
+ const sites:JourneyLandmark[]=[];
+ for(const run of runs){
+  if(!run.kind)continue;
+  const padding=run.kind==='clock'?280:run.kind==='lighthouse'?500:650;
+  const usable=run.end-run.start-2*padding;
+  if(usable<350)continue;
+  const count=Math.max(1,Math.round(usable/LANDMARK_SPACING[run.kind]));
+  for(let i=0;i<count;i++){
+   const distance=Math.round((run.start+padding+(i+.5)*usable/count)/25)*25;
+   if(distance<900||distance>length-400||!bridgeApproachAllowsBuilding(distance,bridge))continue;
+   if(landmarkBiome(weightsAt(distance))!==run.kind)continue;
+   sites.push({distance,kind:run.kind,companions:run.kind==='clock'?CLOCK_DISTRICT_COMPANIONS:0});
+  }
+ }
+ return sites.sort((a,b)=>a.distance-b.distance);
 }
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
 export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan}={start:0,end:length}){
@@ -81,12 +109,16 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   part(boxes,'#375a63',0,37.7,-4.72,.18,1.7,.18);
   part(boxes,'#375a63',.7,37,-4.72,1.5,.18,.18);
  }
- function clockDistrict(seed:number,d:number,offset=52){
-  anchor(d,offset);if(!clear(28))return;
+ function clockDistrict(seed:number,d:number,offset=75){
+  anchor(d,offset);
   clockTower();
-  for(const [i,dd,off] of [[0,-48,offset+18],[1,43,offset+13],[2,84,offset-4]]){
-   anchor(d+dd,off);
-   if(clear(13))building(seed*7+i+50);
+  // Three entire buildings are authored WITH each clock, not separately sampled
+  // and cleared. A tower can never appear without its neighborhood.
+  for(const [i,x,z,w,h] of [[0,-21,-16,12,23],[1,19,15,15,18],[2,-2,37,11,26]]){
+   part(boxes,CLOCK_COMPANION_COLOR,x,h/2,z,w,h,12);
+   part(boxes,'#f3e6cd',x,h+.35,z,w+.8,.7,12.8);
+   for(let floor=0;floor<Math.floor(h/4);floor++)
+    for(const side of [-1,1])part(boxes,'#426d77',x+side*w*.24,3.1+floor*4,z-6.08,w*.15,1.6,.12);
   }
  }
   function building(seed:number,far=false,coastal=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=7+random(seed)*6,h=coastal?5+random(seed+1)*4:(far?28:9)+random(seed+1)*(far?42:18),depth=8+random(seed+2)*5,color=['#eed6b4','#e6a48b','#a9c9bf','#e3c286','#d7b9bf'][Math.floor(random(seed+4)*5)];
@@ -95,14 +127,20 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(!coastal&&seed%3===0){part(cylinder,'#8eb4b4',w*.12,h+5.5,0,w*.28,3,w*.28);part(round,'#719d9f',w*.12,h+7,0,w*.3,1.8,w*.3);}else if(!coastal&&seed%3===1){for(let fin=0;fin<3;fin++)part(boxes,'#ede5c9',w*.12+(fin-1)*w*.2,h+5,0,.35,2.2,depth*.7);}else if(coastal){part(cone,'#bd7d59',w*.12,h+4.8,0,w*.46,2,depth*.46,0,Math.PI/4);}
   if(!far){part(boxes,'#347f78',0,3,-depth/2-.8,w*.8,.18,1.8, .08);part(boxes,'#e5d7b9',0,.15,-depth/2-1.5,w+2,.3,3);}
  }
- // Repeated route landmarks add identity without new shaders or draw families.
- // The regular city scenery fills in around each tower; lighthouses remain isolated.
- if(range.openRoad)for(let d=Math.ceil(Math.max(900,range.start)/JOURNEY_LANDMARK_STEP)*JOURNEY_LANDMARK_STEP;d<Math.min(length-400,range.end);d+=JOURNEY_LANDMARK_STEP){
-  const kind=roadTripLandmarkKind(d,length,weightsAt(d),range.bridge),index=Math.round(d/JOURNEY_LANDMARK_STEP);
+ // The same deterministic list powers scenery, QA jumps and lone-clock audits.
+ if(range.openRoad)for(const site of planJourneyLandmarks(length,weightsAt,range.bridge)){
+  if(site.distance<range.start||site.distance>=range.end)continue;
+  const {distance:d,kind}=site;
+  const index=Math.round(d/25);
   if(kind==='clock')clockDistrict(index,d);
   else if(kind==='lighthouse'){
-   anchor(d,-(51+random(index)*9));
-   if(clear(30))lighthouse(index);
+   anchor(d,-(56+random(index)*8));lighthouse(index);
+  }else if(kind==='canyon-arch'){
+   // An isolated natural arch, not an inappropriate lighthouse in the mountains.
+   anchor(d,95+random(index)*15);
+   part(rock,'#b48a63',-13,9,0,5,18,6);
+   part(rock,'#bc926b',13,9,0,5,18,6);
+   part(arch,'#d1a16f',0,19,0,14,16,6);
   }
  }
   // Overlap prop families deterministically at each boundary; nothing spawns per frame.
@@ -142,7 +180,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    if(d<range.start||d>=range.end)continue;anchor(d,offset);if(clear(w+5)){base.y=sample(d).position.y-50;part(mesaGeometry[1],'#b9ad9d',0,0,0,w,h,w*.75);}
   }
  }
- for(const act of acts)for(let index=0;index<act.landmarks.length;index++){
+ if(!range.openRoad)for(const act of acts)for(let index=0;index<act.landmarks.length;index++){
   const landmark=act.landmarks[index],d=act.start+(act.end-act.start)*landmark.fraction;if(d<range.start||d>=range.end||!bridgeApproachAllowsBuilding(d,range.bridge))continue;anchor(d,landmark.offset);
   if(act.id==='coast'&&index===0){base.y=sample(d).position.y-1;part(rock,'#c3b794',0,-(base.y+5)/2,0,13,base.y+5,12);part(cylinder,'#ede4c7',0,9,0,3.3,18,3.3);part(cylinder,'#b65d43',0,14,0,3.38,1.8,3.38);part(cylinder,'#f4e9cc',0,18,0,4.3,1,4.3);part(cylinder,'#416e79',0,20,0,2.3,3,2.3);part(cone,'#bd6848',0,22.5,0,3.9,2.5,3.9);part(boxes,'#eee0b9',5,2,0,6,4,5);}
   if(act.id==='coast'&&index===1){base.y=-3;for(const dx of [-16,16]){part(boxes,'#f4e7c8',dx,0,0,14,2,4);part(cylinder,'#705b4a',dx,10,0,.15,20,.15);part(cone,'#fff0d0',dx+3,10,0,6,17,.25,0,0,-.18);}}
