@@ -19,6 +19,6 @@ it('requires an actual visible clock face and all three physically rendered comp
 });
 it('offers only environment and scenery QA categories, not the already-approved red hazard test',()=>{
  expect(INSPECTOR_CATEGORIES.map(x=>x.kind)).toEqual([
-  'clock','lighthouse','canyon-arch','city-grade','bridge','breakdown','junction',
+  'clock','lighthouse','canyon-arch','city-grade','bridge','breakdown','junction','road-feature',
  ]);
 });
