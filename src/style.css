@@ -229,3 +229,32 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
  #stream-health-hud .sh-details{margin-top:4px;font-size:9px}
  #stream-health-hud .sh-foot{margin-top:4px;padding-top:3px}
 }
+
+/* Temporary in-game A/B control for traffic silhouette visibility. */
+#outline-color-toggle{
+ position:fixed;z-index:18;
+ top:max(16px,env(safe-area-inset-top));
+ right:max(24px,env(safe-area-inset-right));
+ display:inline-flex;align-items:center;gap:7px;
+ min-height:44px;padding:8px 12px;
+ border:1px solid #f0ecd1a8;border-radius:9px;
+ background:#163c43c9;color:#fff7e8;
+ font:700 12px/1.2 system-ui;white-space:nowrap;
+ touch-action:manipulation;user-select:none;
+}
+#outline-color-toggle .outline-color-swatch{
+ display:inline-block;flex:none;width:16px;height:16px;
+ background:var(--outline-swatch,#ffea38);
+ border:1px solid #162e35;border-radius:4px;
+ box-shadow:0 0 0 1px #fff9df88;
+}
+@media(pointer:coarse),(max-width:1000px){
+ #outline-color-toggle{top:max(12px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));padding:8px 10px}
+}
+@media(pointer:coarse) and (orientation:portrait){
+ #outline-color-toggle{display:none!important}
+}
+/* Keep the A/B control away from the opt-in streaming diagnostics. */
+#app:has(#stream-health-hud) #outline-color-toggle{
+ top:calc(max(8px,env(safe-area-inset-top)) + 165px);
+}
