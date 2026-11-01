@@ -4,7 +4,7 @@ import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
 import * as THREE from 'three';
 import {ACTS} from './acts';
 import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarrierRawOffset,type Shoulders} from './road-profile';
-import {interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeRampAt,interchangeRampSpan,type RoadInterchange} from './road-interchange';
+import {interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,interchangeWallSpan,interchangeWallTop,RAMP_RETAINING_WALL_OFFSET,type RoadInterchange} from './road-interchange';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -38,16 +38,16 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   const found=shoulderCache?.get(d);if(found)return found;
   const result=shoulders(d);shoulderCache?.set(d,result);return result;
  };
- const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number)=>{
+ const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number,vertical?:(d:number)=>number)=>{
   if(to<=from)return;
   const outer=kind==='rail'||kind==='surf'||((kind==='sand'||kind==='grass')&&typeof a==='number'&&typeof b==='number'&&(a>=13||b<=-13));
   if(bridge&&outer&&from<bridge.end&&to>bridge.start){if(from<bridge.start)append(kind,a,b,ha,hb,from,bridge.start,step);if(to>bridge.end)append(kind,a,b,ha,hb,bridge.end,to,step);return;}
   const positions:number[]=[],uvs:number[]=[],colors:number[]=[],indices:number[]=[],normals:number[]=[],n=Math.ceil((to-from)/step);
-  const point=(d:number,raw:Edge,h:number)=>{const p=sampled(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),w=cachedWeights(d);const coastal=h<-10?-4.88:-5.05;v.y=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;return v;};
+  const point=(d:number,raw:Edge,h:number)=>{const p=sampled(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),w=cachedWeights(d);const coastal=h<-10?-4.88:-5.05;v.y=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;if(vertical)v.y+=vertical(d);return v;};
   for(let i=0;i<=n;i++){const d=from+(to-from)*i/n,p=sampled(d);for(const [raw,h] of [[a,ha],[b,hb]] as [Edge,number][]){
    const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),weights=cachedWeights(d);
    const coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h,height=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;
-   const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop,v.z);uvs.push(o/4,d/4);
+   const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop+(vertical?vertical(d):0),v.z);uvs.push(o/4,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));const rocky=rockyAt(d,Math.sign(o),rocks);if(rocky&&Math.abs(o)>7)color.lerp(new THREE.Color('#927658'),rockNode(d,rocky).blend);colors.push(color.r,color.g,color.b);}
   }}
@@ -74,10 +74,10 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
      tripBarrierRawOffset(1,offset,cachedShoulders(d)!);
    };
    const inner=(d:number)=>raw(d,false),outer=(d:number)=>raw(d,true);
-   append('asphalt',inner,outer,.045,.045,a,b,2.5);
+   append('asphalt',inner,outer,.045,.045,a,b,2.5,d=>interchangeRampElevation(interchange,kind,d));
    // A short side retaining face prevents the feeder from levitating over
    // an elevated roadside embankment. No new material/draw family.
-   append('support',outer,outer,-.08,-3.5,a,b,2.5);
+   append('support',outer,outer,-.08,-3.5,a,b,2.5,d=>interchangeRampElevation(interchange,kind,d));
    // Spaced painted chevrons in the physical triangular gore between the
    // separated ramp and the mainline: the join/split has a readable cause.
    for(let d=Math.ceil(a/18)*18;d<b;d+=18){
@@ -86,6 +86,17 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
     const near=(x:number)=>(z:number)=>tripBarrierRawOffset(1,(interchangeRampAt(interchange,kind,z)?.gap??0)*x,cachedShoulders(z)!);
     append('line',near(.2),near(.8),.035,.035,d,Math.min(d+3,b),1.5);
    }
+  }
+  // Reuse the existing grey double-sided deck material for two short concrete
+  // retaining walls. Their tops dive beneath nearby terrain at both ends.
+  // The walls start before the ramp begins (entry) or after the split (exit)
+  // so no vertical wall blocks a drivable merge lane.
+  for(const kind of ['entry','exit'] as const){
+   const wall=interchangeWallSpan(interchange,kind);
+   const a=Math.max(start,wall.from),b=Math.min(end,wall.to);
+   if(b<=a)continue;
+   const right=(d:number)=>tripBarrierRawOffset(1,RAMP_RETAINING_WALL_OFFSET,cachedShoulders(d)!);
+   append('deck',right,right,-15,0,a,b,2.5,d=>interchangeWallTop(interchange,kind,d)??-4);
   }
  }
  append('line',d=>-7+.35*7/halfAt(d),d=>-7+.51*7/halfAt(d),.025,.025,start,end,2.5);
