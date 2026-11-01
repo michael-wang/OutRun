@@ -344,3 +344,17 @@ html[data-qa="true"]:has(#scene-inspector:not([hidden])) #stream-health-hud{
   right:calc(max(18px,env(safe-area-inset-right)) + 357px);
  }
 }
+
+/* Scenic Director R0: optional, compact filter inside the QA inspector.
+ * Seven small chips share one existing panel; nothing overlays the road. */
+#scene-inspector .si-feature-filters{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:5px;margin-top:7px;padding-top:7px;border-top:1px solid #d2e3d442;
+}
+#scene-inspector .si-feature-filters[hidden]{display:none}
+#scene-inspector .si-feature-filters button{min-width:0;white-space:normal;
+ min-height:32px;padding:5px 4px;font-size:11px;line-height:1.25}
+@media(max-height:450px){
+ #scene-inspector .si-feature-filters{gap:3px;margin-top:5px;padding-top:5px}
+ #scene-inspector .si-feature-filters button{min-height:29px;padding:4px 2px;font-size:10px}
+}
