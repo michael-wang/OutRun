@@ -9,6 +9,13 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await page.locator('[data-si-category="clock"]').click();
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  await expect(page.locator('#si-audit')).toContainText('✓ 通過');
+ const chaseCamera=await page.evaluate(()=>(window as any).__drive.snapshot().camera.position);
+ await panel.locator('[data-si="view-side"]').click();
+ await expect(panel.locator('[data-si="view-side"]')).toHaveAttribute('aria-pressed','true');
+ await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().camera.position)).not.toEqual(chaseCamera);
+ await panel.locator('[data-si="view-road"]').click();
+ await expect(panel.locator('[data-si="view-road"]')).toHaveAttribute('aria-pressed','true');
+ await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().camera.position)).toEqual(chaseCamera);
  const before=await page.evaluate(()=>(window as any).__drive.snapshot().distance);
  await panel.locator('[data-si="back"]').click();
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().distance)).toBeCloseTo(before-100,0);
@@ -62,6 +69,16 @@ test('PS4 X / O and D-pad can navigate QA without affecting ordinary menu mappin
  await page.locator('#scene-inspector-launcher').focus();
  await pulse(0); // X -> reopen
  await expect(page.locator('#scene-inspector')).toBeVisible();
+ // The additional camera control must also work through standard PS4 X.
+ const chase=await page.evaluate(()=>(window as any).__drive.snapshot().camera.position);
+ await page.locator('[data-si="view-side"]').focus();
+ await pulse(0);
+ await expect(page.locator('[data-si="view-side"]')).toHaveAttribute('aria-pressed','true');
+ await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().camera.position)).not.toEqual(chase);
+ await pulse(1); // O closes QA and restores normal driving camera
+ await expect(page.locator('#scene-inspector')).toBeHidden();
+ await page.locator('#scene-inspector-launcher').click();
+ await expect(page.locator('[data-si="view-road"]')).toHaveAttribute('aria-pressed','true');
 });
 test('public play never includes the QA inspector even on the same seed',async({page})=>{
  await page.goto('/?seed=1');
