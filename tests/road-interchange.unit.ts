@@ -4,7 +4,7 @@ import {generateTrip} from '../src/trip';
 import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
 import {bridgeSpan,bridgeShoulders} from '../src/bridge';
 import {prepareRoadChunk} from '../src/road-chunk';
-import {selectRoadInterchange,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,
+import {selectRoadInterchange,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,interchangeTrafficShift,
  interchangeWallSpan,interchangeWallTop,interchangeWallVisible,interchangeDemoCarLateral,
  interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeSceneryClear,
  INTERCHANGE_DEMO_CAR_ID,RAMP_DROP,RAMP_WIDTH,type RoadInterchange} from '../src/road-interchange';
