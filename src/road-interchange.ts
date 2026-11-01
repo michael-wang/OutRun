@@ -13,7 +13,7 @@ export type RampKind='entry'|'exit';
 export const RAMP_WIDTH=3.5;
 export const RAMP_DROP={entry:11,exit:14} as const;
 export const RAMP_RETAINING_WALL_OFFSET=4.2;
-const wallSmooth=(t:number)=>smooth(t);
+
 /** Only one proof-of-concept interchange per r7 trip, never retroactively
  * changing its accepted lane/curve/elevation placements or historical seeds. */
 export function selectRoadInterchange(stage:PilotCandidate,bridge?:BridgeSpan):RoadInterchange|undefined{
@@ -104,11 +104,13 @@ export function interchangeWallTop(site:RoadInterchange,kind:RampKind,d:number){
  const span=interchangeWallSpan(site,kind);
  if(d<span.from||d>span.to)return null;
  const ramp=interchangeRampAt(site,kind,d);
- const separation=(ramp?.gap??0)-(ramp?.overlap??0);
+ const separation=ramp?ramp.gap-ramp.overlap:
+  kind==='entry'&&d<interchangeRampSpan(site,kind).from?13:
+  kind==='exit'&&d>interchangeRampSpan(site,kind).to?18:0;
  // A retaining wall may never cross the throat where a driver can enter
  // or leave the highway. On the outside, the wall rises above camera height.
  const safe=smooth((separation-4.4)/2.8);
- const enter=wallSmooth((d-span.from)/85),leave=wallSmooth((span.to-d)/105);
+ const enter=smooth((d-span.from)/85),leave=smooth((span.to-d)/105);
  const top=-4+11*enter*leave*safe;
  return top;
 }
