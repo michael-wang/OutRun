@@ -60,8 +60,8 @@ export function interchangeLaneBoundaries(site:RoadInterchange|undefined,d:numbe
 }
 export function interchangeRampSpan(site:RoadInterchange,kind:RampKind){
  return kind==='entry'?
-  {from:site.entry.start-250,to:site.entry.end+85}:
-  {from:site.exit.start-90,to:site.exit.end+240};
+  {from:site.entry.start-310,to:site.entry.end+12}:
+  {from:site.exit.start-12,to:site.exit.end+310};
 }
 /** Right-side slip road is separate at its remote end and narrows smoothly to
  * a clear merge nose. Distances are physical meters beyond mainline asphalt. */
@@ -69,17 +69,19 @@ export function interchangeRampAt(site:RoadInterchange,kind:RampKind,d:number){
  const span=interchangeRampSpan(site,kind);
  if(d<span.from||d>span.to)return null;
  const t=(d-span.from)/(span.to-span.from);
- const nearEnd=kind==='entry'?(span.to-d)/85:(d-span.from)/85;
- const farEnd=kind==='entry'?(d-span.from)/65:(span.to-d)/65;
- const width=RAMP_WIDTH*smooth(nearEnd)*smooth(farEnd);
- const gap=kind==='entry'?15*(1-smooth(t)):15*smooth(t);
- return {gap,width};
+ const width=RAMP_WIDTH*smooth(kind==='entry'?(d-span.from)/65:(span.to-d)/65);
+ const gap=kind==='entry'?13*(1-smooth(t)):13*smooth(t);
+ // The ramp overlays the fifth (rightmost) lane at the merge/split throat.
+ // Afterward that lane *is* the mainline lane; it does not appear as a
+ // disconnected accessory beside the highway.
+ const overlap=RAMP_WIDTH*(kind==='entry'?smooth((d-site.entry.start)/(site.entry.end-site.entry.start)):
+   1-smooth((d-site.exit.start)/(site.exit.end-site.exit.start)));
+ return {gap,width,overlap};
 }
 export function interchangeRailOpening(site:RoadInterchange,d:number,side:-1|1){
- return side===1&&(
-  d>=site.entry.start+10&&d<=site.entry.end+75||
-  d>=site.exit.start-75&&d<=site.exit.end-10
- );
+ if(side!==1)return false;
+ const entry=interchangeRampSpan(site,'entry'),exit=interchangeRampSpan(site,'exit');
+ return d>=entry.from&&d<=entry.to||d>=exit.from&&d<=exit.to;
 }
 export function interchangeSceneryClear(site:RoadInterchange,d:number,side:-1|1){
  if(side!==1)return false;
