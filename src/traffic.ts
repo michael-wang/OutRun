@@ -1,5 +1,5 @@
 import {TrafficLanes} from './traffic-lanes';
-import {TRAFFIC_OUTLINE,roadHidesVehicle,trafficOutlineGeometry,trafficOutlineHeight,trafficOutlineRadius} from './traffic-outline';
+import {TRAFFIC_OUTLINE,roadHidesVehicle,trafficOutlineGeometry,trafficOutlineHeight,trafficOutlineRadius,trafficOutlineStrength} from './traffic-outline';
 import {CANYON_BEND} from './canyon-identity';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
@@ -67,7 +67,7 @@ export class Traffic {
  private lanes:TrafficLanes;private indicators:THREE.InstancedMesh;private lampPose=new THREE.Object3D();
  private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
  private outlineMeshes:THREE.InstancedMesh[];private outlineEdges:THREE.EdgesGeometry[];private crestHints:THREE.LineSegments[];
- private outlineMaterial=new THREE.MeshBasicMaterial({color:'#0b2933',side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
+ private outlineMaterial=new THREE.MeshBasicMaterial({color:'#ffea38',side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
  private crestMaterial=new THREE.LineBasicMaterial({color:'#ffe6a3',transparent:true,opacity:.38,depthTest:true,depthWrite:false,depthFunc:THREE.GreaterDepth,fog:false,toneMapped:false});
  private outlinePose=new THREE.Object3D();private outlineShift=new THREE.Vector3();private visionAim=new THREE.Vector3();
  private hintCache=new Map<number,boolean>();private nextHintCheck=0;
@@ -131,7 +131,7 @@ export class Traffic {
   for(const a of entering){if(this.actors.length>=TRAFFIC_LIMIT)break;this.actors.push(a);}
 
   for(const a of this.actors){const r=this.reactions.get(a.id);if(r){a.distance+=r.boost*.85*(1-Math.exp(-dt/.85));r.boost*=Math.exp(-dt/.85);r.offset+=r.velocity*.55*(1-Math.exp(-dt/.55));r.velocity*=Math.exp(-dt/.55);r.offset*=Math.exp(-dt*.55);const follow=1-Math.exp(-dt/.07);r.yaw+=(THREE.MathUtils.clamp(r.velocity*.075,-.38,.38)-r.yaw)*follow;r.roll+=(THREE.MathUtils.clamp(r.velocity*.03,-.17,.17)-r.roll)*follow;}}
-  this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0];let shadowCount=0,lampCount=0,smokeCount=0;
+  this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0],outlineCounts=[0,0,0,0];let shadowCount=0,lampCount=0,smokeCount=0;
   if(camera&&(time===0||time>=this.nextHintCheck)){this.hintCache.clear();this.nextHintCheck=time+TRAFFIC_OUTLINE.crestRefreshSeconds;}
   this.crestHints.forEach(h=>h.visible=false);let crestCount=0;
   for(const a of this.actors){const outer=Math.min(5.25,Math.max(1.75,this.halfAt(a.distance)-1.75));a.lateral=a.stationary?(a.stopSide??1)*(this.halfAt(a.distance)-1.75):a.type===0?-1.75:a.type===1?outer:-outer;}
@@ -149,14 +149,17 @@ export class Traffic {
    const p=this.sample(a.distance),front=this.sample(Math.min(this.length,a.distance+spec.axle)),rear=this.sample(Math.max(0,a.distance-spec.axle));
    const frontY=front.position.y+front.right.y*a.lateral,rearY=rear.position.y+rear.right.y*a.lateral,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
    this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
-   const viewDistance=camera?camera.position.distanceTo(this.dummy.position):Math.max(1,a.distance-player);
-   const rim=trafficOutlineRadius(viewDistance,camera?.fov??47,viewportHeight),height=trafficOutlineHeight(a.type);
-   const sx=1+rim/(spec.width*.5),sy=1+rim/(height*.5),sz=1+rim/(spec.length*.5);
-   // Grow around the center of the car, not around the wheels or road surface.
-   this.outlineShift.set(0,height*.5*(1-sy),0).applyQuaternion(this.dummy.quaternion);
-   this.outlinePose.position.copy(this.dummy.position).add(this.outlineShift);
-   this.outlinePose.quaternion.copy(this.dummy.quaternion);this.outlinePose.scale.set(sx,sy,sz);this.outlinePose.updateMatrix();
-   this.outlineMeshes[a.type].setMatrixAt(counts[a.type]-1,this.outlinePose.matrix);
+   const outlineStrength=trafficOutlineStrength(a.distance-player);
+   if(outlineStrength>0){
+    const viewDistance=camera?camera.position.distanceTo(this.dummy.position):Math.max(1,a.distance-player);
+    const rim=trafficOutlineRadius(viewDistance,camera?.fov??47,viewportHeight)*outlineStrength,height=trafficOutlineHeight(a.type);
+    const sx=1+rim/(spec.width*.5),sy=1+rim/(height*.5),sz=1+rim/(spec.length*.5);
+    // The expanded back-face hull smoothly vanishes before the driver reaches the car.
+    this.outlineShift.set(0,height*.5*(1-sy),0).applyQuaternion(this.dummy.quaternion);
+    this.outlinePose.position.copy(this.dummy.position).add(this.outlineShift);
+    this.outlinePose.quaternion.copy(this.dummy.quaternion);this.outlinePose.scale.set(sx,sy,sz);this.outlinePose.updateMatrix();
+    this.outlineMeshes[a.type].setMatrixAt(outlineCounts[a.type]++,this.outlinePose.matrix);
+   }
    if(camera&&a.distance>player+TRAFFIC_OUTLINE.crestNear&&a.distance<player+TRAFFIC_OUTLINE.crestFar){
     if(!this.hintCache.has(a.id)){
      this.visionAim.copy(this.dummy.position);this.visionAim.y+=height*.63;
@@ -190,7 +193,7 @@ export class Traffic {
   }
   this.indicators.count=lampCount;this.indicators.instanceMatrix.needsUpdate=true;
   this.shadows.count=shadowCount;this.shadows.instanceMatrix.needsUpdate=true;this.breakdownSmoke.count=smokeCount;this.breakdownSmoke.instanceMatrix.needsUpdate=true;
-  if(this.sign){this.sign.count=counts[3];this.sign.instanceMatrix.needsUpdate=true;}this.meshes.forEach((m,i)=>{m.count=counts[i];m.instanceMatrix.needsUpdate=true;});this.outlineMeshes.forEach((m,i)=>{m.count=counts[i];m.instanceMatrix.needsUpdate=true;});
+  if(this.sign){this.sign.count=counts[3];this.sign.instanceMatrix.needsUpdate=true;}this.meshes.forEach((m,i)=>{m.count=counts[i];m.instanceMatrix.needsUpdate=true;});this.outlineMeshes.forEach((m,i)=>{m.count=outlineCounts[i];m.instanceMatrix.needsUpdate=true;});
  }
  /** Swept overlap plus persistent separation. Returns a new event only on contact entry. */
  hit(time:number,s:DrivingState,previous:{distance:number;lateral:number},dt:number,halfWidth=1.55,halfLength=2.8,heading=0):TrafficCollision|undefined {
