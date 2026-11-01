@@ -1,7 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import {generateTrip} from '../src/trip';
 import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
-import {rockySections} from '../src/rocky-shoulder';
 import {bridgeSpan,bridgeShoulders} from '../src/bridge';
 import {prepareRoadChunk} from '../src/road-chunk';
 
@@ -13,10 +12,10 @@ describe('S2B temporary exact-distance memoization',()=>{
    const trip=generateTrip(seed),track=createPilotTrack(trip);
    const half=(d:number)=>pilotSample(trip,d).halfWidth;
    const weights=(d:number)=>pilotWeights(trip,d);
-   const rocks=rockySections(seed,track.length,weights,true,d=>track.sample(d).curvature);
+   const rocks=[]; // r7 no longer includes experimental near-road rock walls.
    const bridge=bridgeSpan(track.sample,half,weights,track.length);
    const shoulders=(d:number)=>bridgeShoulders(d,seed,bridge);
-   const checked=[...new Set([...indices,...rocks.slice(0,2).flatMap(r=>[Math.floor(r.start/1000),Math.floor(r.end/1000)])])].filter(i=>i>=0&&i*1000<track.length);
+   const checked=indices.filter(i=>i*1000<track.length);
    for(const index of checked){
     const start=index*1000,end=Math.min(track.length,(index+1)*1000);
     const build=(cache:boolean)=>prepareRoadChunk(
