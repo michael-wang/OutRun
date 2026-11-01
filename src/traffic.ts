@@ -112,11 +112,20 @@ export class Traffic {
    line.name=`vehicle-crest-hint-${i}`;line.visible=false;line.frustumCulled=false;
    line.matrixAutoUpdate=false;line.renderOrder=4;scene.add(line);return line;
   });
-  // Four faint drifting puffs per visible broken-down vehicle; one shared draw.
+  // One pooled draw of camera-facing, soft-edged charcoal plumes for stalled vehicles.
+  // A small generated texture avoids hard-edged polygon "rocks" and external assets.
+  const smokePixels=new Uint8Array(48*48*4);
+  for(let y=0;y<48;y++)for(let x=0;x<48;x++){
+   const radius=Math.hypot((x-23.5)/23.5,(y-23.5)/23.5),fade=Math.max(0,1-radius),index=(y*48+x)*4;
+   smokePixels[index]=smokePixels[index+1]=smokePixels[index+2]=255;
+   smokePixels[index+3]=Math.round(228*Math.pow(fade,1.65));
+  }
+  const smokeTexture=new THREE.DataTexture(smokePixels,48,48,THREE.RGBAFormat);
+  smokeTexture.needsUpdate=true;smokeTexture.magFilter=smokeTexture.minFilter=THREE.LinearFilter;
   this.breakdownSmoke=new THREE.InstancedMesh(
-   new THREE.IcosahedronGeometry(1,1),
-   new THREE.MeshBasicMaterial({color:'#b5bab8',transparent:true,opacity:.22,depthWrite:false}),
-   TRAFFIC_LIMIT*4,
+   new THREE.PlaneGeometry(1,1),
+   new THREE.MeshBasicMaterial({color:'#747c7a',map:smokeTexture,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide,toneMapped:false}),
+   TRAFFIC_LIMIT*7,
   );
   this.breakdownSmoke.name='breakdown-engine-smoke';this.breakdownSmoke.count=0;
   this.breakdownSmoke.frustumCulled=false;this.breakdownSmoke.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -188,12 +197,12 @@ export class Traffic {
    if(a.stationary){
     const z=a.type===1?-spec.length*.38:spec.length*.32;
     const engineY=a.type===1?2.2:a.type===2?2.5:a.type===3?2.2:1.45;
-    for(let i=0;i<4;i++){
-     const phase=(time*.45+i*.24+(a.id%11)*.13)%1;
-     this.smokePoint.set(Math.sin(time*1.7+i*2.4+a.id)*.32,engineY+.12+phase*2.1,z-.12*phase);
+    for(let i=0;i<7;i++){
+     const phase=(time*.62+i/7+(a.id%11)*.11)%1;
+     this.smokePoint.set(Math.sin(time*1.5+i*2.4+a.id)*(.28+phase*.8),engineY+.2+phase*3.9,z-.15-phase*.6);
      this.smokePose.position.copy(this.smokePoint.applyMatrix4(this.dummy.matrix));
-     this.smokePose.quaternion.identity();
-     const size=.35+phase*1.2;this.smokePose.scale.set(size,size*.82,size);
+     if(camera)this.smokePose.quaternion.copy(camera.quaternion);else this.smokePose.quaternion.identity();
+     const size=.65+phase*1.85;this.smokePose.scale.set(size*1.15,size*1.55,1);
      this.smokePose.updateMatrix();
      this.breakdownSmoke.setMatrixAt(smokeCount++,this.smokePose.matrix);
     }
@@ -248,10 +257,10 @@ export class Traffic {
  get skidIntensity(){let intensity=0;for(const r of this.reactions.values())intensity=Math.max(intensity,r.skid.intensity);return intensity;}
  contactPoints(){const matrix=new THREE.Matrix4(),counts=[0,0,0,0],out:{id:number;distance:number;point:number[]}[]=[];for(const a of this.actors){if(!a.visible)continue;this.meshes[a.type].getMatrixAt(counts[a.type]++,matrix);const spec=TRAFFIC_TYPES[a.type];for(const side of [-1,1])for(const end of [-1,1])out.push({id:a.id,distance:a.distance+end*spec.axle,point:new THREE.Vector3(side*(spec.width/2-.04),0,end*spec.axle).applyMatrix4(matrix).toArray()});}return out;}
  audioActors():readonly TrafficActor[]{return this.actors;}
- inspect(){return {historySize:this.history.size,historyLimit:this.schedule.length,laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+3+(this.sign?1:0),outlineColor:TRAFFIC_OUTLINE_COLOR,outlineInstances:this.outlineMeshes.map(m=>m.count),crestRimInstances:this.crestRims.map(m=>m.count),crestHints:this.crestHints.filter(h=>h.visible).length,breakdownSmoke:this.breakdownSmoke.count,smokeCapacity:TRAFFIC_LIMIT*4,contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
+ inspect(){return {historySize:this.history.size,historyLimit:this.schedule.length,laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+3+(this.sign?1:0),outlineColor:TRAFFIC_OUTLINE_COLOR,outlineInstances:this.outlineMeshes.map(m=>m.count),crestRimInstances:this.crestRims.map(m=>m.count),crestHints:this.crestHints.filter(h=>h.visible).length,breakdownSmoke:this.breakdownSmoke.count,smokeCapacity:TRAFFIC_LIMIT*7,contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
  dispose(){this.history.clear();this.lanes.reset();this.indicators.removeFromParent();this.indicators.geometry.dispose();(this.indicators.material as THREE.Material).dispose();this.shadows.removeFromParent();this.shadows.geometry.dispose();const shadowMaterial=this.shadows.material as THREE.MeshBasicMaterial;shadowMaterial.map?.dispose();shadowMaterial.dispose();for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});
   this.crestHints.forEach(h=>h.removeFromParent());this.outlineEdges.forEach(g=>g.dispose());
   this.crestRims.forEach(m=>{m.removeFromParent();m.dispose();});this.outlineMeshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();m.dispose();});
   this.outlineMaterial.dispose();this.crestRimMaterial.dispose();this.crestMaterial.dispose();this.hintCache.clear();
-  this.breakdownSmoke.removeFromParent();this.breakdownSmoke.geometry.dispose();(this.breakdownSmoke.material as THREE.Material).dispose();this.breakdownSmoke.dispose();this.material.dispose();}
+  this.breakdownSmoke.removeFromParent();this.breakdownSmoke.geometry.dispose();const smokeMaterial=this.breakdownSmoke.material as THREE.MeshBasicMaterial;smokeMaterial.map?.dispose();smokeMaterial.dispose();this.breakdownSmoke.dispose();this.material.dispose();}
 }
