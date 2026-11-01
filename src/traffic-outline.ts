@@ -12,11 +12,12 @@ export const TRAFFIC_OUTLINE = Object.freeze({
  crestNear:20,
  // Independent of the 90m visible-outline cutoff: this needs enough time for a blind-crest dodge.
  crestFar:150,
- crestStep:18,
+ crestStep:12,
  crestRefreshSeconds:.12,
 });
-/** Final user-approved vehicle highlight. The hill-crest warning uses its own material. */
+/** Final user-approved vehicle highlight. Crest-risk vehicles use a separate red contour. */
 export const TRAFFIC_OUTLINE_COLOR='#d7ff00';
+export const TRAFFIC_CREST_RISK_COLOR='#ff4b40';
 const HEIGHTS=[1.65,2.95,2.9,3.1] as const;
 export function trafficOutlineHeight(type:number){return HEIGHTS[type]??HEIGHTS[0];}
 
