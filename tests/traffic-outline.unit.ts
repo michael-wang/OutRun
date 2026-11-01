@@ -31,10 +31,10 @@ it('traffic reuses four outline instances and resets all optional crest hints',(
  const scene=new THREE.Scene(),flat=road(()=>0),traffic=new Traffic(scene,flat as any,()=>7,69000,1);
  const camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);camera.position.set(0,3.6,492);
  traffic.update(0,500,0,0,camera,412);
- const outlines=scene.children.filter(o=>o.name.startsWith('traffic-outline-')) as THREE.InstancedMesh[];
+ const outlines=scene.children.filter(o=>o.name.startsWith('vehicle-outline-')) as THREE.InstancedMesh[];
  expect(outlines).toHaveLength(4);
  expect(outlines.reduce((sum,m)=>sum+m.count,0)).toBeGreaterThan(0);
- expect(scene.children.filter(o=>o.name.startsWith('traffic-crest-hint')&&o.visible)).toHaveLength(0);
+ expect(scene.children.filter(o=>o.name.startsWith('vehicle-crest-hint')&&o.visible)).toHaveLength(0);
  traffic.reset();expect(outlines.every(m=>m.count===0)).toBe(true);
  traffic.dispose();expect(outlines.every(m=>m.parent===null)).toBe(true);
 });
