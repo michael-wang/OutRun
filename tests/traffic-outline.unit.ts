@@ -1,6 +1,6 @@
 import {expect,it} from 'vitest';
 import * as THREE from 'three';
-import {Traffic} from '../src/traffic';
+import {Traffic,trafficRecipe,TRAFFIC_LIMIT} from '../src/traffic';
 import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE} from '../src/traffic-outline';
 
 const eye=new THREE.Vector3(0,3.6,-8),aim=new THREE.Vector3(0,1.5,220);
@@ -68,5 +68,34 @@ it('crest hint pool activates behind a hill and uses the road depth buffer',()=>
  expect(active).toHaveLength(traffic.inspect().crestHints);
  expect((active[0].material as THREE.LineBasicMaterial).depthFunc).toBe(THREE.GreaterDepth);
  traffic.reset();expect(active.every(l=>!l.visible)).toBe(true);
+ traffic.dispose();
+});
+
+it('near-outline cutoff never interrupts the driving loop or hill warning checks',()=>{
+ const scene=new THREE.Scene(),sample=(d:number)=>({
+  ...road(q=>9*Math.exp(-(((q-570)/25)**2)))(d),
+  tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0,
+ });
+ const traffic=new Traffic(scene,sample as any,()=>7,69000,1);
+ const camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
+ const first=trafficRecipe(1,69000)[0].distance;
+ let sawFar=false,sawNear=false;
+ // The first traffic group passes through both outline distances and the 300m crest window.
+ for(let frame=0;frame<240;frame++){
+  const time=frame/20,player=first-270+time*60;
+  camera.position.set(0,3.6,player-8);
+  expect(()=>traffic.update(time,player,0,60,camera,412)).not.toThrow();
+  const report=traffic.inspect(),car=report.actors.find(a=>a.id===0);
+  expect(report.actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);
+  expect(report.outlineInstances.reduce((sum,n)=>sum+n,0)).toBe(
+   report.actors.filter(a=>a.visible&&trafficOutlineStrength(a.distance-player)>0).length
+  );
+  if(car?.visible){
+   if(car.distance-player>=TRAFFIC_OUTLINE.fullStrengthMeters)sawFar=true;
+   if(car.distance-player<=TRAFFIC_OUTLINE.nearCutoffMeters)sawNear=true;
+  }
+ }
+ expect(sawFar).toBe(true);
+ expect(sawNear).toBe(true);
  traffic.dispose();
 });
