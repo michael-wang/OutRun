@@ -38,7 +38,7 @@ export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7=7):TripCandid
   const rawAmplitude=verticality==='gentle'?12+rng()*13:verticality==='rolling'?(eid==='E04'?27+rng()*8:40+rng()*30):115+rng()*30;
   // Cities need modest grades, not canyon-sized hills. Preserve the original
   // random draw, historical r1–r6 routes and dramatic canyon verticality.
-  const cityScale=verticality==='gentle'?.65:verticality==='rolling'?(eid==='E04'?.70:.40):.22;
+  const cityScale=verticality==='gentle'?.55:verticality==='rolling'?(eid==='E04'?.55:.32):.16;
   const amplitude=revision===7&&phase.world==='city'?rawAmplitude*cityScale:rawAmplitude;
   placements.push({channel:'elevation',id:eid,startS:start,endS:end,parameters:{base:eid==='E04'?baseHeight-amplitude:baseHeight,amplitude,direction:1,shelfStart:.32,shelfEnd:.68},transition:'smooth',beat});
   if(i%5===1||i%8===4){const wide=pick([6,8] as const);placements.push({channel:'width',id:'W02',startS:start+100,endS:start+250,parameters:{from:4,to:wide,start:0,end:1},transition:'smooth',beat},{channel:'width',id:'W03',startS:end-250,endS:end-100,parameters:{from:wide,to:4,start:0,end:1},transition:'smooth',beat});}
