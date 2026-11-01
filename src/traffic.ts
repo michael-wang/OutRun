@@ -1,7 +1,7 @@
 import {TrafficLanes} from './traffic-lanes';
 import {TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR,TRAFFIC_CREST_RISK_COLOR,roadHidesVehicle,trafficOutlineGeometry,trafficOutlineHeight,trafficOutlineRadius,trafficOutlineStrength} from './traffic-outline';
 import {CANYON_BEND} from './canyon-identity';
-import {interchangeTrafficShift,type RoadInterchange} from './road-interchange';
+import {interchangeCenterOffset,interchangeTrafficShift,type RoadInterchange} from './road-interchange';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {TireEffects,type TireContact} from './tire-effects';
@@ -156,10 +156,15 @@ export class Traffic {
   for(const a of this.actors){const outer=Math.min(5.25,Math.max(1.75,this.halfAt(a.distance)-1.75));a.lateral=a.stationary?(a.stopSide??1)*(this.halfAt(a.distance)-1.75):a.type===0?-1.75:a.type===1?outer:-outer;}
   this.lanes.update(time,this.actors,this.halfAt,{distance:player,lateral:playerLateral,speed:playerSpeed},id=>{const r=this.reactions.get(id);return !!r&&(r.touching||Math.abs(r.velocity)>.5||Math.abs(r.offset)>.4);});
   for(let i=0;i<this.actors.length;i++){
-   const a=this.actors[i],spec=TRAFFIC_TYPES[a.type];const half=this.halfAt(a.distance),lanes=Math.max(2,Math.floor(half/3.5)*2);
+   const a=this.actors[i],spec=TRAFFIC_TYPES[a.type];const half=this.halfAt(a.distance),lanes=Math.max(2,Math.round(half*2/3.5));
    // Only at the one authored interchange, right-lane buses use the newly
    // available outside lane. The shift eases in AFTER the width is open and
    // eases out BEFORE the exit taper; the baseline maneuver AI stays intact.
+   if(this.junction&&!a.stationary){
+    // Preserve the original four physical lanes while the authoritative road
+    // frame shifts 1.75m to the right for the joining fifth lane.
+    a.lateral-=interchangeCenterOffset(this.junction,a.distance);
+   }
    if(this.junction&&!a.stationary&&a.type===1){
     const shift=interchangeTrafficShift(this.junction,a.distance);
     if(shift>0){
