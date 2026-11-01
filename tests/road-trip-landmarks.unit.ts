@@ -1,7 +1,7 @@
 import {expect,it} from 'vitest';
 import * as THREE from 'three';
 import {addJourneyScenery,bridgeApproachAllowsBuilding,CLOCK_COMPANION_COLOR,
- CLOCK_DISTRICT_COMPANIONS,CLOCK_TOWER_SHAFT_HEIGHT,LIGHTHOUSE_MIN_HEIGHT,lighthouseProfile,planJourneyLandmarks} from '../src/scenery';
+ CLOCK_DISTRICT_COMPANIONS,CLOCK_TOWER_SHAFT_HEIGHT,LIGHTHOUSE_MIN_HEIGHT,CANYON_ARCH,lighthouseProfile,planJourneyLandmarks} from '../src/scenery';
 import {generateTrip} from '../src/trip';
 import {pilotWeights} from '../src/pilot-composer';
 import {BRICK_START} from '../src/bricks';
@@ -66,7 +66,7 @@ it('renders coast lighthouse alone and canyon arch only in their biomes',()=>{
  expect(coast).toContain('f5eddc');
  expect(coast).toContain('cd573e');
  expect(coast).not.toContain(CLOCK_COMPANION_COLOR.slice(1));
- expect(canyon).toContain('d1a16f');
+ expect(canyon).toContain(CANYON_ARCH.crown.slice(1));
  expect(canyon).not.toContain('f5eddc');
 },20000);
 
