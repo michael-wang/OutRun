@@ -35,6 +35,7 @@ import {TireEffects,type TireContact} from './tire-effects';
 import {Traffic,trafficRecipe} from './traffic';
 import {planJourneyLandmarks,CLOCK_COMPANION_COLOR,CLOCK_DISTRICT_COMPANIONS} from './scenery';
 import {SceneInspector,type InspectorStop} from './scene-inspector';
+import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {TripPauseDock} from './trip-pause-dock';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
@@ -627,11 +628,12 @@ if(params.get('qa')==='1'&&trip){
  const landmarks=planJourneyLandmarks(world.length,d=>world.weightsAt(d),world.bridge);
  for(const site of landmarks){
   const name=site.kind==='clock'?'鐘塔街區':site.kind==='lighthouse'?'海岸燈塔':'右側巨型砂岩拱門';
-  // Give the big canyon silhouette a longer approach so it reads in the
-  // normal forward camera, even through winding sections.
-  const approach=site.kind==='canyon-arch'?210:140;
+  // The route may crest or turn sharply. Choose an actual chase-camera view
+  // for each giant arch rather than blindly stopping a fixed distance away.
+  const inspectionDistance=site.kind==='canyon-arch'?
+   canyonArchInspectionDistance(world.sample,site.distance):Math.max(350,site.distance-140);
   stops.push({id:`${site.kind}-${site.distance}`,kind:site.kind,label:`${name} · ${site.distance}m`,
-   distance:Math.max(350,site.distance-approach),landmarkDistance:site.distance,companions:site.companions});
+   distance:inspectionDistance,landmarkDistance:site.distance,companions:site.companions});
  }
  // Sample grade inside actual city beats, avoiding a list of authored but invisible hills.
  for(const beat of trip.beats.filter(b=>b.world==='city')){
