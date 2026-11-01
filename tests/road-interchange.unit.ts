@@ -4,8 +4,10 @@ import {generateTrip} from '../src/trip';
 import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
 import {bridgeSpan,bridgeShoulders} from '../src/bridge';
 import {prepareRoadChunk} from '../src/road-chunk';
-import {selectRoadInterchange,interchangeRampAt,interchangeRampSpan,interchangeTrafficShift,
- interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeSceneryClear,RAMP_WIDTH,type RoadInterchange} from '../src/road-interchange';
+import {selectRoadInterchange,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,
+ interchangeWallSpan,interchangeWallTop,interchangeWallVisible,interchangeDemoCarLateral,
+ interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeSceneryClear,
+ INTERCHANGE_DEMO_CAR_ID,RAMP_DROP,RAMP_WIDTH,type RoadInterchange} from '../src/road-interchange';
 import {Traffic} from '../src/traffic';
 
 const fixture=(seed:number)=>{
@@ -70,6 +72,96 @@ describe('Road Credibility R1 — one real merge/exit',()=>{
   expect(interchangeSceneryClear(j,j.entry.start-150,-1)).toBe(false);
   expect(interchangeSceneryClear(j,(j.entry.end+j.exit.start)/2,1)).toBe(false);
  });
+ it('hides both remote ramp endpoints below the road, not in mid-air or against a building',()=>{
+  for(const seed of [1,2,7]){
+   const j=fixture(seed).site!;
+   const inSpan=interchangeRampSpan(j,'entry'),outSpan=interchangeRampSpan(j,'exit');
+   expect(interchangeRampElevation(j,'entry',inSpan.from)).toBeCloseTo(-RAMP_DROP.entry);
+   expect(interchangeRampElevation(j,'entry',j.entry.start+45)).toBeCloseTo(0);
+   expect(interchangeRampElevation(j,'entry',inSpan.to)).toBeCloseTo(0);
+   expect(interchangeRampElevation(j,'exit',outSpan.from)).toBeCloseTo(0);
+   expect(interchangeRampElevation(j,'exit',j.exit.end+190)).toBeCloseTo(-RAMP_DROP.exit);
+   expect(interchangeRampElevation(j,'exit',outSpan.to)).toBeCloseTo(-RAMP_DROP.exit);
+   let prevIn=-Infinity,prevOut=Infinity;
+   for(let d=inSpan.from;d<=inSpan.to;d+=5){
+    const v=interchangeRampElevation(j,'entry',d);
+    expect(v).toBeGreaterThanOrEqual(prevIn-1e-9);prevIn=v;
+   }
+   for(let d=outSpan.from;d<=outSpan.to;d+=5){
+    const v=interchangeRampElevation(j,'exit',d);
+    expect(v).toBeLessThanOrEqual(prevOut+1e-9);prevOut=v;
+   }
+  }
+ });
+ it('grounds concrete retaining walls beyond both branches and preserves the merge throat',()=>{
+  for(const seed of [1,2,7]){
+   const j=fixture(seed).site!;
+   for(const kind of ['entry','exit'] as const){
+    const wall=interchangeWallSpan(j,kind),span=interchangeRampSpan(j,kind);
+    if(kind==='entry')expect(wall.from).toBeLessThan(span.from-100);
+    else expect(wall.to).toBeGreaterThan(span.to);
+    expect(interchangeWallTop(j,kind,wall.from)).toBeCloseTo(-4);
+    expect(interchangeWallTop(j,kind,wall.to)).toBeCloseTo(-4);
+    const midpoint=(wall.from+wall.to)/2;
+    expect(interchangeWallTop(j,kind,midpoint)).toBeGreaterThan(1);
+    expect(interchangeWallVisible(j,midpoint)).toBe(true);
+    expect(interchangeSceneryClear(j,wall.from+15,1)).toBe(true);
+    expect(interchangeSceneryClear(j,wall.to-15,1)).toBe(true);
+    expect(interchangeSceneryClear(j,midpoint,-1)).toBe(false);
+    // There must be no concrete obstacle across the drivable split/merge nose.
+    const throat=kind==='entry'?j.entry.end:j.exit.start;
+    expect(interchangeWallVisible(j,throat)).toBe(false);
+   }
+  }
+ });
+ it('renders sloped concrete screen walls and rising/falling asphalt in shared mesh batches',()=>{
+  const {trip,track,bridge,site,half,weights}=fixture(1),j=site!;
+  const shoulders=(d:number)=>bridgeShoulders(d,trip.seed,bridge);
+  for(const kind of ['entry','exit'] as const){
+   const wall=interchangeWallSpan(j,kind),mid=(wall.from+wall.to)/2;
+   const start=mid-2.5,end=mid+2.5;
+   const meshes=prepareRoadChunk(track.sample,half,weights,start,end,track.length,false,true,[],shoulders,bridge,true,j);
+   const grey=meshes.find(m=>m.kind==='deck');
+   expect(grey,`${kind} must include one concrete retaining wall`).toBeDefined();
+   expect(grey!.normals?.length).toBe(grey!.positions.length);
+   const elevations=Array.from(grey!.positions).filter((_,i)=>i%3===1);
+   const middleHeight=track.sample(mid).position.y;
+   expect(Math.max(...elevations)).toBeGreaterThan(middleHeight+.5);
+   expect(Math.min(...elevations)).toBeLessThan(middleHeight-7);
+   // The wall has an outside foot, i.e. isn't a zero-thickness face.
+   const pos=grey!.positions;
+   expect(Math.hypot(pos[0]-pos[3],pos[2]-pos[5])).toBeGreaterThan(2);
+   const asphalt=meshes.find(m=>m.kind==='asphalt')!;
+   expect(asphalt.rayRanges?.length).toBeGreaterThan(1);
+  }
+ },30000);
+ it('stages one visible feeder vehicle below the highway and joins at the fifth lane',()=>{
+  const {trip,site}=fixture(1),j=site!;
+  const flat=(d:number)=>({position:new THREE.Vector3(0,45,d),right:new THREE.Vector3(1,0,0),
+   tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
+  const half=(d:number)=>pilotSample(trip,d).halfWidth;
+  const scene=new THREE.Scene(),traffic=new Traffic(scene,flat as any,half,trip.length+350,trip.seed,()=>true,[],j);
+  const player=j.entry.start-220;
+  traffic.update(0,player,0,0);
+  const actor=traffic.inspect().actors.find(a=>a.id===INTERCHANGE_DEMO_CAR_ID)!;
+  expect(actor).toBeDefined();
+  expect(actor.type).toBe(0);
+  expect(actor.visible).toBe(true);
+  expect(actor.distance).toBeCloseTo(j.entry.start-170);
+  expect(actor.lateral).toBeCloseTo(interchangeDemoCarLateral(j,actor.distance,half(actor.distance)));
+  expect(actor.lateral).toBeGreaterThan(half(actor.distance));
+  expect(actor.y).toBeLessThan(45-3);
+  traffic.update(12,j.entry.start+150,0,60);
+  const merged=traffic.inspect().actors.find(a=>a.id===INTERCHANGE_DEMO_CAR_ID)!;
+  expect(merged).toBeDefined();
+  expect(merged.distance).toBeGreaterThan(j.entry.end);
+  expect(merged.y).toBeCloseTo(45.02,1);
+  expect(merged.lateral).toBeLessThanOrEqual(half(merged.distance)-1.75);
+  expect(merged.lateral).toBeGreaterThan(half(merged.distance)-2.1);
+  traffic.reset();
+  expect(traffic.inspect().actors).toHaveLength(0);
+  traffic.dispose();
+ },30000);
  it('streams the feeder asphalt and its supports in existing material batches, preserving mainline vertices',()=>{
   const {trip,track,bridge,site,half,weights}=fixture(1),j=site!;
   const shoulders=(d:number)=>bridgeShoulders(d,trip.seed,bridge);
