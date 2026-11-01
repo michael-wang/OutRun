@@ -129,7 +129,24 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await page.locator('[data-si="next"]').click();
  await expect(page.locator('#si-info')).toContainText('右側出口分岔');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ // R0 is built from the same seed BEFORE gameplay, and QA merely navigates
+ // the fixed inventory. The six feature kinds share one compact category.
+ await page.locator('[data-si-category="road-feature"]').click();
+ await expect(page.locator('#si-feature-filters')).toBeVisible();
+ await expect(page.locator('[data-si-feature="long-curve"]')).toBeEnabled();
+ await page.locator('[data-si-feature="long-curve"]').click();
+ await expect(page.locator('[data-si-feature="long-curve"]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#si-audit')).toContainText('R0 已辨識：長距離彎道');
+ await expect(page.locator('#si-info')).toContainText('長距離彎道');
+ await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ await page.locator('[data-si-feature="merge"]').click();
+ await expect(page.locator('#si-audit')).toContainText('4→5 車道');
+ await expect(page.locator('#si-info')).toContainText('車道匯入');
+ await page.locator('[data-si-feature="exit"]').click();
+ await expect(page.locator('#si-audit')).toContainText('5→4 車道');
+ await expect(page.locator('#si-info')).toContainText('車道匯出');
  await page.locator('[data-si-category="city-grade"]').click();
+ await expect(page.locator('#si-feature-filters')).toBeHidden();
  await expect(page.locator('#si-info')).toContainText('坡度');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  await page.locator('[data-si-category="canyon-arch"]').click();
