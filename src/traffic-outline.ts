@@ -11,8 +11,10 @@ export const TRAFFIC_OUTLINE = Object.freeze({
  maximumMeters:.52,
  crestNear:20,
  // Independent of the 90m visible-outline cutoff: this needs enough time for a blind-crest dodge.
- crestFar:150,
+ crestFar:220,
  crestStep:12,
+ // Dangerous crest vehicles alone get a heavier rim; normal chartreuse stays at 1px.
+ crestRimScale:1.65,
  crestRefreshSeconds:.12,
 });
 /** Final user-approved vehicle highlight. Crest-risk vehicles use a separate red contour. */
