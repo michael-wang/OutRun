@@ -49,6 +49,16 @@ test('PS4 X / O and D-pad can navigate QA without affecting ordinary menu mappin
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  const original=await page.locator('#si-info').textContent();
  await pulse(15); // Right -> next actual clock site while QA panel has focus
+ console.log('PS4 QA DIAGNOSTIC',JSON.stringify(await page.evaluate(()=>({
+   focused:document.hasFocus(),hidden:document.hidden,
+   pad:navigator.getGamepads?.()?.[0]?.id,
+   padState:(window as any).pad.buttons[15],
+   gamepadDiagnostic:document.querySelector('#gamepad-diagnostic')?.textContent,
+   gamepadStatus:document.querySelector('#gamepad-status')?.textContent,
+   inputMode:document.documentElement.dataset.inputMode,
+   inspectorHidden:(document.querySelector('#scene-inspector') as HTMLElement).hidden,
+   mode:(window as any).__drive.snapshot().mode,
+ }))));
  await expect(page.locator('#si-info')).not.toHaveText(original??'');
  await pulse(14); // Left -> original clock site
  await expect(page.locator('#si-info')).toHaveText(original??'');
