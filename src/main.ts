@@ -254,15 +254,29 @@ $('sound').onclick=()=>{muted=!muted;void sound.unlock().catch(()=>{});sound.set
 $('settings').onclick=()=>{if(mode==='playing')mode='paused';l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();settingsOpen=true;input.clear();sound.pause();ui();if(!mobile())$('close-settings').focus();};
 $('close-settings').onclick=()=>{settingsOpen=false;ui();if(!mobile())(trip&&mode==='paused'?tripPauseDock?.moreButton:document.getElementById(playerUi?'player-options':pilot||l2?'l2-settings':brick?'brick-settings':'settings'))?.focus();};
 $('swap').onchange=()=>{swapped=($('swap') as HTMLInputElement).checked;saveSwapped(swapped);applyLayout();};
+function toggleSceneQa(){
+ if(!sceneInspector||l2UI?.feedbackOpen)return;
+ if(sceneInspector.isOpen)sceneInspector.close();
+ else{tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);settingsOpen=false;sceneInspector.open();}
+ ui();
+}
 addEventListener('keydown',e=>{
   if(e.isComposing||e.repeat||l2UI?.feedbackOpen)return;
   if(settingsOpen&&e.code==='Escape'){e.preventDefault();$('close-settings').click();return;}
   if(e.target instanceof HTMLElement&&e.target.closest('input,textarea,select,[contenteditable]'))return;
+  if(e.code==='KeyQ'&&sceneInspector){e.preventDefault();toggleSceneQa();return;}
+  if(e.code==='Escape'&&sceneInspector?.isOpen){e.preventDefault();toggleSceneQa();return;}
+  if(e.code==='Escape'&&mode==='paused'&&l2UI?.reviewExpanded){e.preventDefault();l2UI.setReviewExpanded(false);ui();tripPauseDock?.moreButton.focus();return;}
+  if(e.code==='Escape'&&mode==='paused'&&tripPauseDock?.isExpanded){e.preventDefault();tripPauseDock.collapse();ui();return;}
   if(e.code==='F8'&&mode==='playing'&&!settingsOpen){e.preventDefault();capturePhoto();return;}
   if(e.code==='Escape'){e.preventDefault();if(settingsOpen){$('close-settings').click();return;}pause();return;}
   if(settingsOpen)return;
   if((mode==='playing'||brickCompleted)&&l2UI&&(e.code==='KeyG'||e.code==='KeyI')){e.preventDefault();l2UI.openQuick(e.code==='KeyG'?'praise':'issue','keyboard');return;}
   if(mode==='playing'){if(e.code==='KeyP'){e.preventDefault();pause();}else if(e.code==='KeyR'){e.preventDefault();restart();}return;}
+  if(trip&&mode==='paused'){
+   const direct:Record<string,()=>void>={KeyP:start,KeyR:restart,KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{l2UI?.exportCurrent();}};
+   if(direct[e.code]){e.preventDefault();direct[e.code]();return;}
+  }
   const prefix=pilot||l2?'l2':brick?'brick':'';
   const action:Record<string,string>={KeyP:playerUi?'player-play':prefix?`${prefix}-play`:mode==='menu'?'drive':'resume',KeyR:playerUi?'player-restart':prefix?`${prefix}-replay`:'restart',KeyN:playerUi?'player-new-route':`${prefix}-next`,KeyB:`${prefix}-prev`,KeyC:playerUi?'player-options':prefix?`${prefix}-settings`:'settings',KeyM:playerUi?'player-sound':prefix?`${prefix}-sound`:'sound',KeyF:prefix?`${prefix}-fullscreen`:'fullscreen',KeyE:`${prefix}-export`};
   const vote:Record<string,string>={KeyK:'KEEP',KeyW:'REWORK',KeyX:'REJECT'};
@@ -329,6 +343,8 @@ const photos=new PhotoCapture(renderer.domElement,()=>render(0),()=>{const p=wor
 function capturePhoto(){if(settingsOpen||l2UI?.feedbackOpen||mode==='countdown')return;const meta=photos.capture();if(meta){telemetry?.mark('photo',elapsed,state.distance-BRICK_START,meta);}}
 $('photo-button').onclick=capturePhoto;
 const pad=new GamepadInput(input,action=>{
+ if(action==='qa'){toggleSceneQa();return;}
+ if(trip&&mode==='paused'&&l2UI?.reviewExpanded&&action==='back'){l2UI.setReviewExpanded(false);ui();tripPauseDock?.moreButton.focus();return;}
  if(sceneInspector?.isOpen&&['confirm','back','pause','up','down','left','right'].includes(action)&&sceneInspector.control(action as 'confirm'|'back'|'pause'|'up'|'down'|'left'|'right'))return;
  if(action==='fullscreen'){void immersive.toggle();return;}
  if(l2UI?.feedbackOpen){l2UI.control(action);return;}
@@ -338,7 +354,7 @@ const pad=new GamepadInput(input,action=>{
  if(action==='pause'){if(settingsOpen||l2UI?.feedbackOpen||mode==='countdown')return;if(mode==='menu'||brickCompleted)restart();else {const wasDriving=mode==='playing';pause();if(wasDriving&&sceneInspector)sceneInspector.toggle.focus();}return;}
  if(action==='back'){if(l2UI?.feedbackOpen)document.getElementById('l2-feedback-cancel')?.click();else if(settingsOpen)$('close-settings').click();else if(mode==='playing')pause();return;}
  if(mode==='playing')return;
- const scope=(l2UI?.feedbackOpen?document.getElementById('l2-feedback-dialog'):settingsOpen?$('preferences'):playerUi?$('player-start'):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
+ const scope=(l2UI?.feedbackOpen?document.getElementById('l2-feedback-dialog'):settingsOpen?$('preferences'):trip&&mode==='paused'&&!brickCompleted?(l2UI?.reviewExpanded?document.getElementById('l2-lab'):tripPauseDock?.element):playerUi?$('player-start'):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
  if(!scope)return;
  const items=Array.from(scope.querySelectorAll<HTMLElement>('button,a,input,select')).filter(x=>x.offsetParent!==null&&!x.hasAttribute('disabled'));
  if(sceneInspector&&!settingsOpen)items.unshift(sceneInspector.toggle);
@@ -406,7 +422,7 @@ function loop(now:number){
     // Same start/restart behavior as the existing Play button, minus a second tap.
     if(mode==='menu'||brickCompleted)restart();else start();
   }
-  pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen,sceneInspector?.isOpen??false);
+  pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen,sceneInspector?.isOpen??false,!!sceneInspector);
   const dt=Math.min((now-last)/1000,.25);last=now;
   const wasCounting=mode==='countdown';if(wasCounting){$('ready-countdown').textContent=`${playerUi?'準備':'READY'} ${Math.max(0,(readyUntil-now)/1000).toFixed(1)}`;if(now>=readyUntil&&!document.hidden&&document.hasFocus()){mode='playing';input.clear();pad.neutralize();ui();}}
   // Integrate elapsed time in bounded physics steps; slow rendering must not
@@ -450,6 +466,16 @@ function feedbackAnchor():FeedbackAnchor{
  const b=(pilot??l2)!,road=pilot?pilotSample(pilot,state.distance):l2Sample(l2!,state.distance);return {id:b.id,revision:b.revision,seed:b.seed,contentFingerprint:b.contentFingerprint,generatorVersion:b.generatorVersion,handlingVersion:'ALB2',...(stage?{stageCode:stage.stageCode,...(trip?{tripCode:trip.tripCode}:{}),l2InstanceId:trip?trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id:(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats[stage.beats.length-1].id),...(trip?{bufferRole:trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role}:{})}:{}),world:pilot?(['coast','canyon','city'] as const)[pilotWeights(pilot,state.distance).indexOf(Math.max(...pilotWeights(pilot,state.distance)))]:b.world,profiles:pilot?structuredClone({placements:trip?[]:pilot.placements,activePlacements:pilotSample(pilot,state.distance).active,worldPhases:pilot.worldPhases}):structuredClone(l2!.profiles),s:state.distance-BRICK_START,trackDistance:state.distance,elapsedSeconds:elapsed,timestampMs:Date.now(),source:'drive',drive:{speedKmh:state.speed*3.6,steerRaw:rawSteer,steerApplied:state.appliedSteer,roadX:state.lateral,height:road.height,grade:road.grade,halfWidth:road.halfWidth,laneCount:road.lanes,offRoad:state.offRoad,gas:controls.gas,brake:controls.brake}};
 }
 l2UI=mountL2Lab((pilot??l2??momentCandidate)!,{play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),capture:feedbackAnchor,history,freeze:()=>{mode='paused';input.clear();testControls=undefined;sound.pause();ui();},resume:start,onFeedback:data=>{telemetry?.mark('feedback',elapsed,state.distance-BRICK_START,data);if(brickCompleted&&telemetry){telemetry.save();showDriveReport();}}},!pilot&&!l2);
+if(trip)tripPauseDock=new TripPauseDock($('app'),{
+ resume:start,replay:restart,newRoute:()=>{$('l2-next').click();},
+ settings:()=>{$('settings').click();},sound:()=>{$('sound').click();},
+ fullscreen:()=>{$('fullscreen').click();},
+ review:()=>{
+  const opening=!l2UI?.reviewExpanded;
+  l2UI?.setReviewExpanded(opening);tripPauseDock?.collapse();ui();
+  if(!mobile())(opening?document.getElementById('l2-play'):tripPauseDock?.moreButton)?.focus();
+ },
+},!playerUi);
 const labFullscreen=document.getElementById('l2-fullscreen');
 if(labFullscreen){const hint=document.createElement('p');hint.id='l2-iphone-fullscreen-hint';hint.setAttribute('role','status');hint.textContent=$('iphone-fullscreen-hint').textContent;hint.hidden=true;labFullscreen.closest('.l2-actions')?.after(hint);}
 refreshImmersiveUI();
@@ -604,7 +630,7 @@ if(params.get('qa')==='1'&&trip){
    distance:Math.max(350,vehicle.distance-120)});
  }
  const pauseForQa=()=>{
-  mode='paused';settingsOpen=false;input.clear();pad.neutralize();sound.pause();ui();
+  mode='paused';settingsOpen=false;tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);input.clear();pad.neutralize();sound.pause();ui();
  };
  const jumpForQa=(distance:number)=>{
   pauseForQa();
