@@ -8,6 +8,9 @@ it('keeps city buildings off the water cutout at bridge approaches but permits t
  expect(bridgeApproachAllowsBuilding(bridge.start+100,bridge)).toBe(false);
  expect(bridgeApproachAllowsBuilding(bridge.end+100,bridge)).toBe(false);
  expect(bridgeApproachAllowsBuilding(bridge.end+400,bridge)).toBe(false);
- expect(bridgeApproachAllowsBuilding(bridge.end+600,bridge)).toBe(true);
+ expect(bridgeApproachAllowsBuilding(bridge.end+600,bridge)).toBe(false);
+ expect(bridgeApproachAllowsBuilding(bridge.end+1100,bridge)).toBe(true);
  expect(bridgeApproachAllowsBuilding(bridge.end+100)).toBe(true);
+ expect(bridgeApproachAllowsBuilding(bridge.start-280,bridge)).toBe(false);
+ expect(bridgeApproachAllowsBuilding(bridge.start-281,bridge)).toBe(true);
 });
