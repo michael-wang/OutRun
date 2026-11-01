@@ -11,6 +11,9 @@ export interface RoadInterchange {
 const smooth=(t:number)=>{const x=Math.max(0,Math.min(1,t));return x*x*(3-2*x);};
 export type RampKind='entry'|'exit';
 export const RAMP_WIDTH=3.5;
+export const RAMP_DROP={entry:11,exit:14} as const;
+export const RAMP_RETAINING_WALL_OFFSET=4.2;
+const wallSmooth=(t:number)=>smooth(t);
 /** Only one proof-of-concept interchange per r7 trip, never retroactively
  * changing its accepted lane/curve/elevation placements or historical seeds. */
 export function selectRoadInterchange(stage:PilotCandidate,bridge?:BridgeSpan):RoadInterchange|undefined{
@@ -70,13 +73,47 @@ export function interchangeRampAt(site:RoadInterchange,kind:RampKind,d:number){
  if(d<span.from||d>span.to)return null;
  const t=(d-span.from)/(span.to-span.from);
  const width=RAMP_WIDTH*smooth(kind==='entry'?(d-span.from)/65:(span.to-d)/65);
- const gap=kind==='entry'?13*(1-smooth(t)):13*smooth(t);
+ const gap=kind==='entry'?13*(1-smooth(t)):18*smooth(t);
  // The ramp overlays the fifth (rightmost) lane at the merge/split throat.
  // Afterward that lane *is* the mainline lane; it does not appear as a
  // disconnected accessory beside the highway.
  const overlap=RAMP_WIDTH*(kind==='entry'?smooth((d-site.entry.start)/(site.entry.end-site.entry.start)):
    1-smooth((d-site.exit.start)/(site.exit.end-site.exit.start)));
  return {gap,width,overlap};
+}
+/** At the far end, each ramp is lower than the highway and disappears
+ * beneath ordinary graded terrain. All transitions meet the original
+ * road surface before the merge/split (zero gap in vertical continuity). */
+export function interchangeRampElevation(site:RoadInterchange,kind:RampKind,d:number){
+ if(kind==='entry'){
+  const start=site.entry.start;
+  return -RAMP_DROP.entry*(1-smooth((d-(start-220))/260));
+ }
+ const start=site.exit.start;
+ return -RAMP_DROP.exit*smooth((d-(start+45))/230);
+}
+/** Wall begins before the incoming road first appears, or AFTER the outgoing
+ * lane has separated. Both ends sink into the terrain rather than ending at
+ * a vertical cut. The position is 4.2m outside the mainline asphalt. */
+export function interchangeWallSpan(site:RoadInterchange,kind:RampKind){
+ return kind==='entry'
+  ?{from:site.entry.start-450,to:site.entry.start+10}
+  :{from:site.exit.start+75,to:site.exit.end+330};
+}
+export function interchangeWallTop(site:RoadInterchange,kind:RampKind,d:number){
+ const span=interchangeWallSpan(site,kind);
+ if(d<span.from||d>span.to)return null;
+ const ramp=interchangeRampAt(site,kind,d);
+ const separation=(ramp?.gap??0)-(ramp?.overlap??0);
+ // A retaining wall may never cross the throat where a driver can enter
+ // or leave the highway. On the outside, the wall rises above camera height.
+ const safe=smooth((separation-4.4)/2.8);
+ const enter=wallSmooth((d-span.from)/85),leave=wallSmooth((span.to-d)/105);
+ const top=-4+11*enter*leave*safe;
+ return top;
+}
+export function interchangeWallVisible(site:RoadInterchange,d:number){
+ return (['entry','exit'] as const).some(kind=>(interchangeWallTop(site,kind,d)??-Infinity)>1);
 }
 export function interchangeRailOpening(site:RoadInterchange,d:number,side:-1|1){
  if(side!==1)return false;
@@ -86,7 +123,9 @@ export function interchangeRailOpening(site:RoadInterchange,d:number,side:-1|1){
 export function interchangeSceneryClear(site:RoadInterchange,d:number,side:-1|1){
  if(side!==1)return false;
  const entry=interchangeRampSpan(site,'entry'),exit=interchangeRampSpan(site,'exit');
- return d>=entry.from-18&&d<=entry.to+18||d>=exit.from-18&&d<=exit.to+18;
+ const inWall=interchangeWallSpan(site,'entry'),outWall=interchangeWallSpan(site,'exit');
+ return d>=Math.min(entry.from-18,inWall.from-35)&&d<=Math.max(entry.to+18,inWall.to+35)||
+  d>=Math.min(exit.from-18,outWall.from-35)&&d<=Math.max(exit.to+18,outWall.to+35);
 }
 /** Buses (the current right-hand traffic type) use the extra lane while it
  * actually exists, then signal and rejoin well BEFORE the six-to-four taper.
