@@ -10,7 +10,8 @@ export const TRAFFIC_OUTLINE = Object.freeze({
  minimumMeters:.035,
  maximumMeters:.52,
  crestNear:20,
- crestFar:300,
+ // Crest hints only bridge the final blind approach; match the end of the visible rim.
+
  crestStep:18,
  crestRefreshSeconds:.12,
 });
@@ -55,7 +56,7 @@ export function roadHidesVehicle(
  eye:THREE.Vector3,aim:THREE.Vector3,
 ):boolean{
  const ahead=vehicle-player;
- if(ahead<TRAFFIC_OUTLINE.crestNear||ahead>TRAFFIC_OUTLINE.crestFar)return false;
+ if(ahead<TRAFFIC_OUTLINE.crestNear||ahead>TRAFFIC_OUTLINE.nearCutoffMeters)return false;
  const dx=aim.x-eye.x,dz=aim.z-eye.z,segmentSquared=dx*dx+dz*dz;
  if(segmentSquared<9)return false;
  for(let d=player+TRAFFIC_OUTLINE.crestStep;d<vehicle-9;d+=TRAFFIC_OUTLINE.crestStep){
