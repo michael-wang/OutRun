@@ -20,8 +20,11 @@ describe('long trip recipe',()=>{
     const placement=elevation[i],before=oldElevation[i],beat=trip.beats.find(b=>b.id===placement.beat)!;
     expect(placement.startS).toBe(before.startS);
     expect(placement.endS).toBe(before.endS);
-    if(beat.world==='city'){
-     city++;
+    const cityOverlap=trip.worldPhases.filter(p=>p.world==='city')
+     .reduce((sum,p)=>sum+Math.max(0,Math.min(placement.endS,p.endS)-Math.max(placement.startS,p.startS)),0);
+    const softened=cityOverlap>=(placement.endS-placement.startS)*.25;
+    if(beat.world==='city')city++;
+    if(softened){
      expect(placement.parameters.amplitude).toBeLessThan(24);
      expect(placement.parameters.amplitude).toBeLessThan(before.parameters.amplitude);
      for(const frac of [.12,.25,.48,.68,.85]){
