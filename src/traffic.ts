@@ -94,13 +94,13 @@ export class Traffic {
   this.outlineEdges=hulls.map(h=>new THREE.EdgesGeometry(h,28));
   this.outlineMeshes=hulls.map((h,i)=>{
    const mesh=new THREE.InstancedMesh(h,this.outlineMaterial,TRAFFIC_LIMIT);
-   mesh.name=`traffic-outline-${TRAFFIC_TYPES[i].name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+   mesh.name=`vehicle-outline-${TRAFFIC_TYPES[i].name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
    mesh.count=0;mesh.renderOrder=3;mesh.frustumCulled=false;scene.add(mesh);return mesh;
   });
   // The road-depth test reveals only truly occluded line fragments, never a filled X-ray car.
   this.crestHints=Array.from({length:TRAFFIC_LIMIT},(_,i)=>{
    const line=new THREE.LineSegments(this.outlineEdges[0],this.crestMaterial);
-   line.name=`traffic-crest-hint-${i}`;line.visible=false;line.frustumCulled=false;
+   line.name=`vehicle-crest-hint-${i}`;line.visible=false;line.frustumCulled=false;
    line.matrixAutoUpdate=false;line.renderOrder=4;scene.add(line);return line;
   });
   // Four faint drifting puffs per visible broken-down vehicle; one shared draw.
