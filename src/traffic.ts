@@ -185,7 +185,7 @@ export class Traffic {
    const outlineStrength=crestRisk?1:trafficOutlineStrength(ahead);
    if(outlineStrength>0){
     const viewDistance=camera?camera.position.distanceTo(this.dummy.position):Math.max(1,ahead);
-    const rim=trafficOutlineRadius(viewDistance,camera?.fov??47,viewportHeight)*outlineStrength;
+    const rim=trafficOutlineRadius(viewDistance,camera?.fov??47,viewportHeight)*outlineStrength*(crestRisk?TRAFFIC_OUTLINE.crestRimScale:1);
     const sx=1+rim/(spec.width*.5),sy=1+rim/(height*.5),sz=1+rim/(spec.length*.5);
     // Red replaces green on a crest hazard, even inside the 90m normal-rim cutoff.
     this.outlineShift.set(0,height*.5*(1-sy),0).applyQuaternion(this.dummy.quaternion);
