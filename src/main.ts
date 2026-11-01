@@ -327,7 +327,7 @@ const photos=new PhotoCapture(renderer.domElement,()=>render(0),()=>{const p=wor
 function capturePhoto(){if(settingsOpen||l2UI?.feedbackOpen||mode==='countdown')return;const meta=photos.capture();if(meta){telemetry?.mark('photo',elapsed,state.distance-BRICK_START,meta);}}
 $('photo-button').onclick=capturePhoto;
 const pad=new GamepadInput(input,action=>{
- if(sceneInspector?.isOpen&&sceneInspector.control(action as 'confirm'|'back'|'pause'|'up'|'down'|'left'|'right'))return;
+ if(sceneInspector?.isOpen&&['confirm','back','pause','up','down','left','right'].includes(action)&&sceneInspector.control(action as 'confirm'|'back'|'pause'|'up'|'down'|'left'|'right'))return;
  if(action==='fullscreen'){void immersive.toggle();return;}
  if(l2UI?.feedbackOpen){l2UI.control(action);return;}
  if(action==='photo'){capturePhoto();return;}
@@ -572,3 +572,78 @@ if(import.meta.env.DEV&&new URLSearchParams(location.search).has('velocity')){
 }
 
 if(import.meta.env.DEV&&new URLSearchParams(location.search).has('stage')){const id=new URLSearchParams(location.search).get('stage'),act=ACTS.find(a=>a.id===id);if(act)state.distance=act.start+700;}
+
+/* Opt-in QA Scene Inspector: exact route/biome sites, not a second world generator. */
+if(params.get('qa')==='1'&&trip){
+ const stops:InspectorStop[]=[];
+ const landmarks=planJourneyLandmarks(world.length,d=>world.weightsAt(d),world.bridge);
+ for(const site of landmarks){
+  const name=site.kind==='clock'?'鐘塔街區':site.kind==='lighthouse'?'海岸燈塔':'山區拱門';
+  stops.push({id:`${site.kind}-${site.distance}`,kind:site.kind,label:`${name} · ${site.distance}m`,
+   distance:Math.max(350,site.distance-140),landmarkDistance:site.distance,companions:site.companions});
+ }
+ // Sample grade inside actual city beats, avoiding a list of authored but invisible hills.
+ for(const beat of trip.beats.filter(b=>b.world==='city')){
+  let best=BRICK_START+beat.startS+100,maxGrade=0;
+  for(let d=beat.startS+50;d<beat.endS-50;d+=30){
+   const grade=Math.abs(pilotSample(trip,BRICK_START+d).grade);
+   if(grade>maxGrade){maxGrade=grade;best=BRICK_START+d;}
+  }
+  stops.push({id:`grade-${beat.id}`,kind:'city-grade',label:`${beat.id} · 坡度 ${(maxGrade*100).toFixed(1)}%`,
+   distance:Math.max(350,best-100)});
+ }
+ if(world.bridge){
+  const b=world.bridge;
+  for(const [name,d] of [['橋頭',b.start-180],['橋尾',b.end-160],['橋後 300m',b.end+300],['橋後 750m',b.end+750]] as [string,number][])
+   stops.push({id:`bridge-${name}`,kind:'bridge',label:name,distance:Math.min(world.length-30,Math.max(350,d))});
+ }
+ for(const vehicle of world.breakdowns){
+  stops.push({id:`broken-${vehicle.id}`,kind:'breakdown',label:`故障車 · ${Math.round(vehicle.distance)}m`,
+   distance:Math.max(350,vehicle.distance-120)});
+ }
+ const pauseForQa=()=>{
+  mode='paused';settingsOpen=false;input.clear();pad.neutralize();sound.pause();ui();
+ };
+ const jumpForQa=(distance:number)=>{
+  pauseForQa();
+  inspectionView=undefined;bridgeInspection=false;streamStartRequested=false;
+  sound.resetPassBy();traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();
+  impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();
+  history.clear();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;world.car.userData.motion.reset();
+  state={...createState(),distance,speed:0,lateral:0};
+  state.worldHeading=world.sample(distance).roadHeading;state.velocityHeading=state.worldHeading;
+  advancePowertrain(state,0,false,0);updateFootprint(state,world.halfAt(distance));
+  elapsed=0;initialized=false;brickCompleted=false;testControls=undefined;manual=false;
+  world.streamer?.update(distance);ui();
+ };
+ const auditClock=(stop:InspectorStop)=>{
+  const target=world.sample(stop.landmarkDistance??stop.distance).position;
+  let faces=0,companions=0;
+  world.scene.getObjectByName('scenery')?.traverse(object=>{
+   if(!(object instanceof THREE.InstancedMesh))return;
+   const color=(object.material as THREE.MeshStandardMaterial).color?.getHexString();
+   if(color!=='eee6ce'&&color!==CLOCK_COMPANION_COLOR.slice(1))return;
+   const matrices=object.instanceMatrix.array;
+   for(let i=0;i<object.count;i++){
+    const start=i*16,dx=matrices[start+12]-target.x,dz=matrices[start+14]-target.z;
+    if(dx*dx+dz*dz>160*160)continue;
+    if(color==='eee6ce')faces++;else companions++;
+   }
+  });
+  return {faces,companions,expected:stop.companions??CLOCK_DISTRICT_COMPANIONS};
+ };
+ sceneInspector=new SceneInspector($('app'),stops,world.length,{
+  pause:pauseForQa,jump:jumpForQa,
+  current:()=>state.distance,
+  roadExists:d=>world.streamer?.roadReady(d)??true,
+  ready:()=>!world.streamer||world.streamer.ready,
+  clockAudit:auditClock,
+  drive:()=>{state.speed=170/3.6;advancePowertrain(state,state.speed,false,0);manual=false;start();},
+ },trip.seed);
+ // Shareable QA coordinates, including when a particular building is missed.
+ const target=Number(params.get('at'));
+ if(params.has('at')&&Number.isFinite(target)&&target>=350&&target<world.length-20){
+  sceneInspector.open();sceneInspector.jumpTo(target);
+ }
+}
+
