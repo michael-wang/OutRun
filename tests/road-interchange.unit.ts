@@ -53,8 +53,10 @@ describe('Road Credibility R1 — one real merge/exit',()=>{
    const span=interchangeRampSpan(j,kind);
    expect(span.to-span.from).toBeGreaterThan(250);
    const a=interchangeRampAt(j,kind,span.from)!,middle=interchangeRampAt(j,kind,(span.from+span.to)/2)!,b=interchangeRampAt(j,kind,span.to)!;
-   expect(a.width).toBeCloseTo(0);
-   expect(b.width).toBeCloseTo(0);
+   // The incoming lane grows into a full fifth mainline lane; the outgoing
+   // lane begins full-width and only then tapers into its own exit road.
+   expect(a.width).toBeCloseTo(kind==='entry'?0:RAMP_WIDTH);
+   expect(b.width).toBeCloseTo(kind==='exit'?0:RAMP_WIDTH);
    expect(middle.width).toBeGreaterThan(2);
    expect(middle.width).toBeLessThanOrEqual(RAMP_WIDTH);
    expect(middle.gap).toBeGreaterThan(1);
