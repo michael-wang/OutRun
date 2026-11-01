@@ -33,6 +33,10 @@ jobs:
           --exclude tests/v07d2-review.unit.ts
           --exclude tests/v081-stage.unit.ts
           --exclude tests/vertical-width.unit.ts
+      - name: Install Chromium for QA browser checks
+        run: npx playwright install --with-deps chromium
+      - name: Scene Inspector UI and PS4 controller smoke
+        run: npx playwright test tests/scene-inspector.spec.ts
       - name: Historical archive compatibility (informational)
         continue-on-error: true
         run: >-
