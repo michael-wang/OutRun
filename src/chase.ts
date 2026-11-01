@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+// Keep a near plane large enough to separate asphalt from its 10cm-deep sand bed at the far crest.
+export const CHASE_NEAR=1;
 export const CHASE = Object.freeze({horizontalFov:76, fov:47.44840036542012, distance:8, height:2.6, lookAhead:39.168,lookHeight:0});
 /** Aspect alone selects the composition. No speed-dependent camera parameters. */
 export function chaseComposition(aspect:number) {
