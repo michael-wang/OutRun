@@ -4,7 +4,7 @@ import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
 import * as THREE from 'three';
 import {ACTS} from './acts';
 import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarrierRawOffset,type Shoulders} from './road-profile';
-import {interchangeRailOpening,interchangeRampAt,interchangeRampSpan,type RoadInterchange} from './road-interchange';
+import {interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeRampAt,interchangeRampSpan,type RoadInterchange} from './road-interchange';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -57,9 +57,9 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}else append('sand',-13,13,-.1,-.1,start,end,2.5);
  append('grass',13,75,-.12,-3,start,end,10);append('grass',75,160,-3,-14,start,end,10);
  append('asphalt',-7,7,0,0,start,end,2.5);
- // P1: one visible real asphalt feeder and departure road from the EXISTING
- // 4→6→4 width phrase. Geometry follows absolute-distance road bank/grade and
- // is merged into the same material batches as the main road.
+ // The off-ramp takes away the mainline's last (fifth) lane; the on-ramp
+ // supplies that exact lane. Render feeder geometry until it overlaps the
+ // existing mainline surface at the Y, instead of placing a disconnected road.
  if(interchange&&shoulders){
   for(const kind of ['entry','exit'] as const){
    const span=interchangeRampSpan(interchange,kind);
@@ -67,8 +67,11 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    if(b<=a)continue;
    const raw=(d:number,outer:boolean)=>{
     const r=interchangeRampAt(interchange,kind,d);
-    const physical=Math.max(0,(r?.gap??0)+(outer?(r?.width??0):0));
-    return tripBarrierRawOffset(1,physical,cachedShoulders(d)!);
+    const offset=(r?.gap??0)-(r?.overlap??0)+(outer?(r?.width??0):0);
+    // Negative clearance means inside the newly-created fifth lane. Scale
+    // through the same 14m reference coordinates as all other road ribbons.
+    return offset<0?(cachedWidth(d)+offset)*7/cachedWidth(d):
+     tripBarrierRawOffset(1,offset,cachedShoulders(d)!);
    };
    const inner=(d:number)=>raw(d,false),outer=(d:number)=>raw(d,true);
    append('asphalt',inner,outer,.045,.045,a,b,2.5);
@@ -99,10 +102,8 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    if(side===1&&interchange){
     // Physical rail opening only at each actual merge throat; far-away
     // separated ramp retains the main road's protective rail.
-    const mouths=[
-     [interchange.entry.start+10,interchange.entry.end+75],
-     [interchange.exit.start-75,interchange.exit.end-10],
-    ];
+    const entry=interchangeRampSpan(interchange,'entry'),exit=interchangeRampSpan(interchange,'exit');
+    const mouths=[[entry.from,entry.to],[exit.from,exit.to]];
     for(const [lo,hi] of mouths)ranges=ranges.flatMap(([r0,r1])=>
      r1<=lo||r0>=hi?[[r0,r1]]:[[r0,Math.min(r1,lo)],[Math.max(r0,hi),r1]].filter(([x,y])=>y>x));
    }
@@ -121,9 +122,24 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  append('surf',-29,-27,-10.9,-10.9,start,end,10);
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
- for(let d=Math.floor(start/6)*6;d<end;d+=6)for(const lane of [-3,-2,-1,0,1,2,3].map(n=>n*LANE_WIDTH)){
-  if(d<0||Math.abs(lane)+.5>=Math.min(halfAt(d),halfAt(Math.min(d+3,length))))continue;
-  const at=(delta:number)=>(s:number)=>(lane+delta)*7/halfAt(s);append('line',at(-.14),at(.14),.03,.03,Math.max(start,d),Math.min(end,d+3,length),1.5);
+ for(let d=Math.floor(start/6)*6;d<end;d+=6){
+  if(d<0)continue;
+  const junctionLanes=interchangeLaneBoundaries(interchange,d,halfAt(d));
+  if(junctionLanes){
+   // Four original lanes remain exactly where they were; only the rightmost
+   // additional separator is painted after the merge lane reaches full width.
+   for(const lane of junctionLanes){
+    const originalX=lane*halfAt(d)/7+interchangeCenterOffset(interchange,d);
+    const at=(delta:number)=>(s:number)=>(originalX-interchangeCenterOffset(interchange,s)+delta)*7/halfAt(s);
+    append('line',at(-.14),at(.14),.03,.03,Math.max(start,d),Math.min(end,d+3,length),1.5);
+   }
+  }else{
+   for(const lane of [-3,-2,-1,0,1,2,3].map(n=>n*LANE_WIDTH)){
+    if(Math.abs(lane)+.5>=Math.min(halfAt(d),halfAt(Math.min(d+3,length))))continue;
+    const at=(delta:number)=>(s:number)=>(lane+delta)*7/halfAt(s);
+    append('line',at(-.14),at(.14),.03,.03,Math.max(start,d),Math.min(end,d+3,length),1.5);
+   }
+  }
  }
  for(let color=0;color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
   if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
