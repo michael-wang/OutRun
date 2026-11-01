@@ -5,7 +5,7 @@ export type WidthId='W01'|'W02'|'W03'|'W04';
 export type Knot=readonly [number,number];
 export interface CurveParameters {effort:number;direction:1|-1;start:number;end:number;secondary:number}
 export interface ElevationParameters {base:number;amplitude:number;direction:1|-1;shelfStart:number;shelfEnd:number}
-export interface WidthParameters {from:2|4|6|8;to:2|4|6|8;start:number;end:number}
+export interface WidthParameters {from:2|4|5|6|8;to:2|4|5|6|8;start:number;end:number}
 /** Reuse the accepted cosine knot interpolation, exposing its exact derivative. */
 export function profile(knots:readonly Knot[],t:number){
  // Full-length shapes can share an endpoint with the approach/exit knot.
