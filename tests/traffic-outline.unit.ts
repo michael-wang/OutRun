@@ -23,8 +23,8 @@ it('outline rim grows with viewing distance without an unbounded world-space hal
 it('crest hint requires an actual on-road obstruction in front of a nearby vehicle',()=>{
  const half=()=>7;
  expect(roadHidesVehicle(road(()=>0),half,0,220,eye,aim)).toBe(false);
- expect(roadHidesVehicle(road(d=>8*Math.exp(-((d-110)/30)**2)),half,0,220,eye,aim)).toBe(true);
- expect(roadHidesVehicle(road(d=>8*Math.exp(-((d-110)/30)**2),55),half,0,220,eye,aim)).toBe(false);
+ expect(roadHidesVehicle(road(d=>8*Math.exp(-(((d-110)/30)**2))),half,0,220,eye,aim)).toBe(true);
+ expect(roadHidesVehicle(road(d=>8*Math.exp(-(((d-110)/30)**2)),55),half,0,220,eye,aim)).toBe(false);
  expect(roadHidesVehicle(road(()=>10),half,0,400,eye,new THREE.Vector3(0,11.5,400))).toBe(false);
 });
 it('traffic reuses four outline instances and resets all optional crest hints',()=>{
