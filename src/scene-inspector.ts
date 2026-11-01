@@ -128,11 +128,12 @@ export class SceneInspector {
   this.info.textContent=site?`${site.label} · ${this.currentIndex+1}/${entries.length} · 目前 ${distance}m`:`目前 ${distance}m · 無此類場景`;
   if(this.scanSummary){this.audit.textContent=this.scanSummary;return;}
   if(site?.kind==='clock'){
-   const report=ready?this.callbacks.clockAudit(site):null;
+   const atClock=Math.abs(distance-(site.landmarkDistance??site.distance))<300;
+   const report=ready&&atClock?this.callbacks.clockAudit(site):null;
    const completed=this.byKind('clock').length;
    this.audit.textContent=report?
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
-    `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。載入後檢查實際模型。`;
+    `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
   }else this.audit.textContent='';
  }
  /** Automatically visits every generated clock; checks instances actually attached
