@@ -1,6 +1,7 @@
 import {TrafficLanes} from './traffic-lanes';
 import {TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR,TRAFFIC_CREST_RISK_COLOR,roadHidesVehicle,trafficOutlineGeometry,trafficOutlineHeight,trafficOutlineRadius,trafficOutlineStrength} from './traffic-outline';
 import {CANYON_BEND} from './canyon-identity';
+import {interchangeTrafficShift,type RoadInterchange} from './road-interchange';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {TireEffects,type TireContact} from './tire-effects';
@@ -74,7 +75,7 @@ export class Traffic {
  private hintCache=new Map<number,boolean>();private nextHintCheck=0;
  private breakdownSmoke:THREE.InstancedMesh;private smokePose=new THREE.Object3D();private smokePoint=new THREE.Vector3();
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
- constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[]){
+ constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange){
   this.schedule=[...trafficRecipe(seed,length),...stopped];
   this.lanes=new TrafficLanes(seed);this.indicators=new THREE.InstancedMesh(new THREE.BoxGeometry(.46,.25,.08),new THREE.MeshBasicMaterial({color:'#ffb000',toneMapped:false}),TRAFFIC_LIMIT*4);this.indicators.name='traffic-turn-signals';this.indicators.count=0;this.indicators.frustumCulled=false;scene.add(this.indicators);
   // One soft contact-shadow draw for the whole traffic pool; no player-relative shadow-map cutoff.
@@ -156,8 +157,21 @@ export class Traffic {
   this.lanes.update(time,this.actors,this.halfAt,{distance:player,lateral:playerLateral,speed:playerSpeed},id=>{const r=this.reactions.get(id);return !!r&&(r.touching||Math.abs(r.velocity)>.5||Math.abs(r.offset)>.4);});
   for(let i=0;i<this.actors.length;i++){
    const a=this.actors[i],spec=TRAFFIC_TYPES[a.type];const half=this.halfAt(a.distance),lanes=Math.max(2,Math.floor(half/3.5)*2);
+   // Only at the one authored interchange, right-lane buses use the newly
+   // available outside lane. The shift eases in AFTER the width is open and
+   // eases out BEFORE the exit taper; the baseline maneuver AI stays intact.
+   if(this.junction&&!a.stationary&&a.type===1){
+    const shift=interchangeTrafficShift(this.junction,a.distance);
+    if(shift>0){
+     const next=interchangeTrafficShift(this.junction,a.distance+5);
+     a.lateral=Math.min(this.halfAt(a.distance)-1.75,a.lateral+shift);
+     if(Math.abs(next-shift)>.006){
+      a.changing=true;a.unsignaled=false;
+      a.signal=Math.floor(time/.34)%2===0?Math.sign(next-shift):0;
+     }
+    }
+   }
    // Follow a narrowing lane taper continuously rather than jumping when the lane count changes.
-
    const reaction=this.reactions.get(a.id);if(reaction)a.lateral+=reaction.offset;
    a.lane=Math.max(0,Math.min(lanes-1,Math.round(a.lateral/3.5+(lanes-1)/2)));
    // Simple headway remains active during maneuvers and impact recovery.
