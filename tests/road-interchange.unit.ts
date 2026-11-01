@@ -5,7 +5,7 @@ import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
 import {bridgeSpan,bridgeShoulders} from '../src/bridge';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {selectRoadInterchange,interchangeRampAt,interchangeRampSpan,interchangeTrafficShift,
- interchangeRailOpening,interchangeSceneryClear,RAMP_WIDTH,type RoadInterchange} from '../src/road-interchange';
+ interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeSceneryClear,RAMP_WIDTH,type RoadInterchange} from '../src/road-interchange';
 import {Traffic} from '../src/traffic';
 
 const fixture=(seed:number)=>{
@@ -17,19 +17,32 @@ const fixture=(seed:number)=>{
 };
 
 describe('Road Credibility R1 — one real merge/exit',()=>{
- it('selects a deterministic, valid existing 4→6→4 phrase without changing historic r7 road',()=>{
+ it('selects a deterministic real 4→5→4 lane topology while keeping the original four lanes fixed',()=>{
   for(const seed of [1,2,7]){
-   const {trip,bridge,site,half}=fixture(seed);
+   const {trip,track,bridge,site,half}=fixture(seed);
    expect(site,`seed ${seed} must contain a testable interchange`).toBeDefined();
    expect(selectRoadInterchange(trip,bridge)).toEqual(site);
    const j=site!;
-   expect(j.lanes).toEqual({before:4,wide:6,after:4});
+   expect(j.lanes).toEqual({before:4,wide:5,after:4});
    expect(j.entry.start).toBeLessThan(j.entry.end);
    expect(j.entry.end+250).toBeLessThan(j.exit.start);
    expect(j.exit.start).toBeLessThan(j.exit.end);
    expect(half(j.entry.start-20)).toBeCloseTo(7,3);
-   expect(half(j.entry.end+90)).toBeCloseTo(10.5,3);
+   expect(half(j.entry.end+90)).toBeCloseTo(8.75,3);
    expect(half(j.exit.end+50)).toBeCloseTo(7,3);
+   // In world space, the LEFT EDGE and existing lane separators are unmoved.
+   // Only the right side grows one physical 3.5m lane.
+   const t=track.sample(j.entry.end+90),old=createPilotTrack(generateTrip(seed,6)).sample(j.entry.end+90);
+   const oldLeft=old.position.clone().addScaledVector(old.right,-7);
+   const newLeft=t.position.clone().addScaledVector(t.right,-8.75);
+   const oldRight=old.position.clone().addScaledVector(old.right,7);
+   const newRight=t.position.clone().addScaledVector(t.right,8.75);
+   expect(Math.hypot(newLeft.x-oldLeft.x,newLeft.z-oldLeft.z)).toBeLessThan(.02);
+   expect(Math.hypot(newRight.x-oldRight.x,newRight.z-oldRight.z)).toBeCloseTo(RAMP_WIDTH,1);
+   const offset=interchangeCenterOffset(j,j.entry.end+90);
+   expect(offset).toBeCloseTo(1.75);
+   const boundaries=interchangeLaneBoundaries(j,j.entry.end+90,8.75)!;
+   expect(boundaries.map(x=>x*8.75/7+offset)).toEqual([-3.5,0,3.5,7]);
    if(bridge)expect(j.exit.end+300<bridge.start-250||j.entry.start-300>bridge.end+250).toBe(true);
    expect(selectRoadInterchange(generateTrip(seed,6))).toBeUndefined();
   }
@@ -50,7 +63,7 @@ describe('Road Credibility R1 — one real merge/exit',()=>{
   expect(interchangeRailOpening(j,j.entry.end,1)).toBe(true);
   expect(interchangeRailOpening(j,j.exit.start,1)).toBe(true);
   expect(interchangeRailOpening(j,j.entry.end,-1)).toBe(false);
-  expect(interchangeRailOpening(j,j.entry.start-190,1)).toBe(false);
+  expect(interchangeRailOpening(j,j.entry.start-340,1)).toBe(false);
   expect(interchangeSceneryClear(j,j.entry.start-150,1)).toBe(true);
   expect(interchangeSceneryClear(j,j.entry.start-150,-1)).toBe(false);
   expect(interchangeSceneryClear(j,(j.entry.end+j.exit.start)/2,1)).toBe(false);
@@ -97,7 +110,7 @@ describe('Road Credibility R1 — one real merge/exit',()=>{
   traffic.update(0,middle-250,0,60);
   const actor=traffic.inspect().actors.find(a=>a.id===bus.id)!;
   expect(actor.visible).toBe(true);
-  expect(actor.lateral).toBeGreaterThan(7.5);
+  expect(actor.lateral).toBeGreaterThan(6.8);
   expect(actor.lateral).toBeLessThanOrEqual(half(actor.distance)-1.75);
   traffic.dispose();
  },30000);
