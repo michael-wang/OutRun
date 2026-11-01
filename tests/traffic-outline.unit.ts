@@ -28,7 +28,7 @@ it('crest hint requires an actual on-road obstruction in front of a nearby vehic
  expect(roadHidesVehicle(road(()=>10),half,0,400,eye,new THREE.Vector3(0,11.5,400))).toBe(false);
 });
 it('traffic reuses four outline instances and resets all optional crest hints',()=>{
- const scene=new THREE.Scene(),flat=road(()=>0),traffic=new Traffic(scene,flat as any,()=>7,69000,1);
+ const scene=new THREE.Scene(),flat=(d:number)=>({...road(()=>0)(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0}),traffic=new Traffic(scene,flat as any,()=>7,69000,1);
  const camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);camera.position.set(0,3.6,492);
  traffic.update(0,500,0,0,camera,412);
  const outlines=scene.children.filter(o=>o.name.startsWith('vehicle-outline-')) as THREE.InstancedMesh[];
@@ -37,4 +37,17 @@ it('traffic reuses four outline instances and resets all optional crest hints',(
  expect(scene.children.filter(o=>o.name.startsWith('vehicle-crest-hint')&&o.visible)).toHaveLength(0);
  traffic.reset();expect(outlines.every(m=>m.count===0)).toBe(true);
  traffic.dispose();expect(outlines.every(m=>m.parent===null)).toBe(true);
+});
+
+it('crest hint pool activates behind a hill and uses the road depth buffer',()=>{
+ const scene=new THREE.Scene();
+ const sample=(d:number)=>({...road(q=>9*Math.exp(-(((q-570)/22)**2)))(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
+ const traffic=new Traffic(scene,sample as any,()=>7,69000,1),camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
+ camera.position.set(0,3.6,492);traffic.update(0,500,0,0,camera,412);
+ expect(traffic.inspect().crestHints).toBeGreaterThan(0);
+ const active=scene.children.filter(o=>o.name.startsWith('vehicle-crest-hint')&&o.visible) as THREE.LineSegments[];
+ expect(active).toHaveLength(traffic.inspect().crestHints);
+ expect((active[0].material as THREE.LineBasicMaterial).depthFunc).toBe(THREE.GreaterDepth);
+ traffic.reset();expect(active.every(l=>!l.visible)).toBe(true);
+ traffic.dispose();
 });
