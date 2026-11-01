@@ -16,6 +16,7 @@ export interface ClockAudit {faces:number;companions:number;expected:number}
 export function clockAuditPass(report:ClockAudit){return report.faces===1&&report.companions>=report.expected;}
 export interface InspectorCallbacks {
  pause():void;jump(distance:number):void;drive():void;
+ view(mode:'road'|'side'):void;
  current():number;ready():boolean;roadExists(d:number):boolean;
  clockAudit(stop:InspectorStop):ClockAudit;
 }
@@ -28,6 +29,7 @@ export class SceneInspector {
  private readonly driveButton:HTMLButtonElement;
  private readonly categoryButtons=new Map<InspectorKind,HTMLButtonElement>();
  private kind:InspectorKind='clock';
+ private viewMode:'road'|'side'='road';
  private currentIndex=0;
  private previousReady=false;private lastRenderKey='';
  private scanToken=0;private scanSummary='';private scanning=false;
@@ -47,6 +49,9 @@ export class SceneInspector {
    </div>
    <div class="si-row">
     <button type="button" data-si="back">−100m</button><button type="button" data-si="forward">+100m</button>
+   </div>
+   <div class="si-row" aria-label="觀察視角">
+    <button type="button" data-si="view-road" aria-pressed="true">正常視角</button><button type="button" data-si="view-side" aria-pressed="false">側面觀察</button>
    </div>
    <div class="si-status" id="si-status" role="status"></div>
    <div class="si-audit" id="si-audit"></div>
@@ -70,6 +75,7 @@ export class SceneInspector {
   for(const [action,fn] of Object.entries({
    prev:()=>this.step(-1),next:()=>this.step(1),
    back:()=>this.move(-100),forward:()=>this.move(100),
+   'view-road':()=>this.setView('road'),'view-side':()=>this.setView('side'),
    scan:()=>{void this.scanAllClocks();},
    link:()=>{void this.copyPosition();},
    drive:()=>{if(this.callbacks.ready()){this.close();this.callbacks.drive();}},
@@ -86,8 +92,14 @@ export class SceneInspector {
  private byKind(kind:InspectorKind){return this.stops.filter(s=>s.kind===kind);}
  private selected(){return this.byKind(this.kind)[this.currentIndex];}
  get isOpen(){return !this.panel.hidden;}
- open(){this.callbacks.pause();this.panel.hidden=false;this.toggle.setAttribute('aria-expanded','true');this.refresh(true);this.categoryButtons.get(this.kind)?.focus();}
- close(){this.scanToken++;this.scanning=false;this.panel.hidden=true;this.toggle.setAttribute('aria-expanded','false');this.toggle.focus();}
+ open(){this.callbacks.pause();this.panel.hidden=false;this.toggle.setAttribute('aria-expanded','true');this.setView('road');this.refresh(true);this.categoryButtons.get(this.kind)?.focus();}
+ close(){this.scanToken++;this.scanning=false;this.setView('road');this.panel.hidden=true;this.toggle.setAttribute('aria-expanded','false');this.toggle.focus();}
+ private setView(mode:'road'|'side'){
+  this.viewMode=mode;
+  this.button('view-road').setAttribute('aria-pressed',String(mode==='road'));
+  this.button('view-side').setAttribute('aria-pressed',String(mode==='side'));
+  this.callbacks.view(mode);
+ }
  private setCategory(kind:InspectorKind,jump=true){
   this.scanToken++;this.scanning=false;this.scanSummary='';this.kind=kind;this.currentIndex=0;
   for(const [k,button] of this.categoryButtons)button.setAttribute('aria-pressed',String(k===kind));
@@ -112,6 +124,7 @@ export class SceneInspector {
  jumpTo(distance:number){
   if(!Number.isFinite(distance)||distance<0||distance>=this.length)return;
   this.callbacks.pause();this.callbacks.jump(Math.round(distance));
+  this.callbacks.view(this.viewMode);
   this.previousReady=false;this.refresh(true);
  }
  refresh(force=false){
