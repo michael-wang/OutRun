@@ -39,11 +39,18 @@ test('trip pause stays visually minimal, with full controls and review only on d
  await expect(page.locator('#scene-inspector')).toBeHidden();
  await page.keyboard.press('KeyP');
  await expect(dock).toBeHidden();
+ // Q must also interrupt active driving and restore an unobscured paused road.
+ await page.keyboard.press('KeyQ');
+ await expect(page.locator('#scene-inspector')).toBeVisible();
+ await expect(dock).toBeVisible();
+ await expect(review).toBeHidden();
+ await page.keyboard.press('KeyQ');
+ await expect(page.locator('#scene-inspector')).toBeHidden();
  expect(errors).toEqual([]);
 });
 
 test('public trip pause keeps scenery visible without any QA controls',async({page})=>{
- await page.goto('/?seed=1');await page.waitForFunction(()=>(window as any).__drive?.streaming()?.fullyReady,null,{timeout:45000});
+ await page.goto('/?seed=1&playerui=1');await page.waitForFunction(()=>(window as any).__drive?.streaming()?.fullyReady,null,{timeout:45000});
  await page.locator('#player-play').click();
  await page.keyboard.press('KeyP');
  await expect(page.locator('#trip-pause-dock')).toBeVisible();
