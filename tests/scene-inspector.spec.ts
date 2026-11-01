@@ -1,5 +1,29 @@
 import {test,expect} from '@playwright/test';
 
+test('QA camera and inspector actions share a tidy upper-right dock without overlap',async({page})=>{
+ test.setTimeout(90000);
+ await page.goto('/?qa=1&seed=1');
+ await page.waitForFunction(()=>(window as any).__drive?.streaming()?.fullyReady,null,{timeout:45000});
+ await page.locator('#l2-play').click();
+ const tools=page.locator('#qa-tools'),qa=page.locator('#scene-inspector-launcher'),photo=page.locator('#photo-button');
+ await expect(tools).toBeVisible();await expect(qa).toBeVisible();await expect(photo).toBeVisible();
+ for(const size of [{width:1705,height:863},{width:915,height:412}]){
+  await page.setViewportSize(size);
+  const shell=await tools.boundingBox(),a=await qa.boundingBox(),b=await photo.boundingBox();
+  expect(shell).not.toBeNull();expect(a).not.toBeNull();expect(b).not.toBeNull();
+  expect(a!.x).toBeGreaterThan(shell!.x-1);
+  expect(b!.x).toBeGreaterThan(shell!.x-1);
+  expect(b!.y).toBeGreaterThan(a!.y+a!.height+3);
+  expect(Math.abs(a!.x-b!.x)).toBeLessThan(2);
+  expect(a!.x).toBeGreaterThan(size.width-185);
+  expect(a!.x+a!.width).toBeLessThanOrEqual(size.width);
+  const hud=page.locator('#stream-health-hud');
+  if(await hud.isVisible()){
+   const diagnostics=await hud.boundingBox();
+   expect(diagnostics!.x+diagnostics!.width).toBeLessThanOrEqual(shell!.x+1);
+  }
+ }
+});
 test('trip pause stays visually minimal, with full controls and review only on demand',async({page})=>{
  test.setTimeout(110000);
  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
