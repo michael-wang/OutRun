@@ -20,6 +20,17 @@ export interface JourneyLandmark {distance:number;kind:JourneyLandmarkKind;compa
 export const CLOCK_DISTRICT_COMPANIONS=3;
 export const CLOCK_TOWER_SHAFT_HEIGHT=58;
 export const LIGHTHOUSE_MIN_HEIGHT=38;
+/** A natural roadside sandstone arch must read clearly from the chase camera.
+ * The near pillar stays well outside the protective rail, even on a wide road. */
+export const CANYON_ARCH=Object.freeze({
+ offset:48,span:38,springHeight:29,rise:29,footingDepth:19,
+ stone:'#b47b53',crown:'#e3ac76',
+});
+export function canyonArchProfile(roadHeight:number){
+ return {foot:roadHeight-CANYON_ARCH.footingDepth,
+  spring:roadHeight+CANYON_ARCH.springHeight,
+  crown:roadHeight+CANYON_ARCH.springHeight+CANYON_ARCH.rise};
+}
 /** Guaranteed high ground and a continuous rock column to below sea level.
  * Local lighthouse parts are placed relative to the coastal anchor's sunk Y. */
 export function lighthouseProfile(roadHeight:number,variation=0){
@@ -156,11 +167,21 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   else if(kind==='lighthouse'){
    anchor(d,-(52+random(index)*8));lighthouse(index,d);
   }else if(kind==='canyon-arch'){
-   // An isolated natural arch, not an inappropriate lighthouse in the mountains.
-   anchor(d,95+random(index)*15);
-   part(rock,'#b48a63',-13,9,0,5,18,6);
-   part(rock,'#bc926b',13,9,0,5,18,6);
-   part(arch,'#d1a16f',0,19,0,14,16,6);
+   // The original small arch was 95–110m off the road and almost invisible.
+   // Move the silhouette nearer the roadside, and bury its two massive feet
+   // into the rising canyon terrain. Keep the gap open, never block the road.
+   anchor(d,CANYON_ARCH.offset);
+   const profile=canyonArchProfile(sample(d).position.y);
+   const foot=profile.foot-base.y,spring=profile.spring-base.y;
+   const legHeight=profile.spring-profile.foot,halfSpan=CANYON_ARCH.span/2;
+   for(const side of [-1,1]){
+    const x=side*halfSpan;
+    part(rock,CANYON_ARCH.stone,x,foot+legHeight/2,0,11,legHeight,13);
+    // Uneven lower rock shoulders make this look like sandstone, not a gate.
+    part(rock,'#97674a',x+side*3.7,foot+legHeight*.33,3,9,legHeight*.65,13);
+   }
+   // A genuine 3-D open half-arch, brighter than the background canyon.
+   part(arch,CANYON_ARCH.crown,0,spring,0,halfSpan,CANYON_ARCH.rise,16);
   }
  }
   // Overlap prop families deterministically at each boundary; nothing spawns per frame.
