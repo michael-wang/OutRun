@@ -10,14 +10,13 @@ export const TRAFFIC_OUTLINE = Object.freeze({
  minimumMeters:.035,
  maximumMeters:.52,
  crestNear:20,
- // Crest hints only bridge the final blind approach; match the end of the visible rim.
-
+ // Independent of the 90m visible-outline cutoff: this needs enough time for a blind-crest dodge.
+ crestFar:150,
  crestStep:18,
  crestRefreshSeconds:.12,
 });
-/** Two deliberate A/B options. The hill-crest warning has a separate fixed material. */
-export const TRAFFIC_OUTLINE_COLORS=Object.freeze({yellow:'#ffea38',chartreuse:'#d7ff00'} as const);
-export type TrafficOutlineColor=keyof typeof TRAFFIC_OUTLINE_COLORS;
+/** Final user-approved vehicle highlight. The hill-crest warning uses its own material. */
+export const TRAFFIC_OUTLINE_COLOR='#d7ff00';
 const HEIGHTS=[1.65,2.95,2.9,3.1] as const;
 export function trafficOutlineHeight(type:number){return HEIGHTS[type]??HEIGHTS[0];}
 
@@ -36,7 +35,6 @@ export function trafficOutlineGeometry(type:number):THREE.BufferGeometry{
  return merged;
 }
 
-/** Expanding a back-face-only hull in world units gives an approximately fixed screen-pixel rim. */
 /** Only far-ahead traffic is highlighted; the rim gently shrinks away on approach. */
 export function trafficOutlineStrength(distanceAhead:number){
  const span=TRAFFIC_OUTLINE.fullStrengthMeters-TRAFFIC_OUTLINE.nearCutoffMeters;
@@ -44,6 +42,7 @@ export function trafficOutlineStrength(distanceAhead:number){
  return t*t*(3-2*t);
 }
 
+/** Expand a back-face-only hull in world units for an approximately fixed-pixel rim. */
 export function trafficOutlineRadius(distance:number,fovDegrees:number,viewportHeight:number){
  const unitsPerPixel=2*Math.tan(fovDegrees*Math.PI/360)*Math.max(1,distance)/Math.max(1,viewportHeight);
  return THREE.MathUtils.clamp(unitsPerPixel*TRAFFIC_OUTLINE.pixels,TRAFFIC_OUTLINE.minimumMeters,TRAFFIC_OUTLINE.maximumMeters);
@@ -56,7 +55,7 @@ export function roadHidesVehicle(
  eye:THREE.Vector3,aim:THREE.Vector3,
 ):boolean{
  const ahead=vehicle-player;
- if(ahead<TRAFFIC_OUTLINE.crestNear||ahead>TRAFFIC_OUTLINE.nearCutoffMeters)return false;
+ if(ahead<TRAFFIC_OUTLINE.crestNear||ahead>TRAFFIC_OUTLINE.crestFar)return false;
  const dx=aim.x-eye.x,dz=aim.z-eye.z,segmentSquared=dx*dx+dz*dz;
  if(segmentSquared<9)return false;
  for(let d=player+TRAFFIC_OUTLINE.crestStep;d<vehicle-9;d+=TRAFFIC_OUTLINE.crestStep){
