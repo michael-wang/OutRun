@@ -14,6 +14,9 @@ export const TRAFFIC_OUTLINE = Object.freeze({
  crestStep:18,
  crestRefreshSeconds:.12,
 });
+/** Two deliberate A/B options. The hill-crest warning has a separate fixed material. */
+export const TRAFFIC_OUTLINE_COLORS=Object.freeze({yellow:'#ffea38',chartreuse:'#d7ff00'} as const);
+export type TrafficOutlineColor=keyof typeof TRAFFIC_OUTLINE_COLORS;
 const HEIGHTS=[1.65,2.95,2.9,3.1] as const;
 export function trafficOutlineHeight(type:number){return HEIGHTS[type]??HEIGHTS[0];}
 
