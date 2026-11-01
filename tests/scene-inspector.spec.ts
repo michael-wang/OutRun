@@ -33,6 +33,9 @@ test('trip pause stays visually minimal, with full controls and review only on d
  await expect(dock).toBeVisible();
  await page.keyboard.press('KeyQ');
  await expect(page.locator('#scene-inspector')).toBeVisible();
+ await expect(page.locator('#scene-inspector-launcher')).toHaveAttribute('data-key-hint','Q');
+ expect(await page.locator('#scene-inspector-launcher').evaluate(e=>getComputedStyle(e,'::after').content)).toContain('Q');
+ await expect(dock.locator('#tp-resume')).toHaveAttribute('data-key-hint','P');
  await expect(review).toBeHidden();
  await expect(page.locator('#tp-actions')).toBeHidden();
  await page.keyboard.press('KeyQ');
@@ -120,6 +123,10 @@ test('PS4 X / O and D-pad can navigate QA without affecting ordinary menu mappin
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  const original=await page.locator('#si-info').textContent();
  await pulse(15); // Right -> next actual clock site while QA panel has focus
+ await expect(page.locator('html')).toHaveAttribute('data-input-mode','gamepad');
+ await expect(page.locator('#scene-inspector-launcher')).toHaveAttribute('data-pad-hint','△');
+ expect(await page.locator('#scene-inspector-launcher').evaluate(e=>getComputedStyle(e,'::after').content)).toContain('△');
+ await expect(page.locator('#tp-resume')).toHaveAttribute('data-pad-hint','OPTIONS');
 
  await expect(page.locator('#si-info')).not.toHaveText(original??'');
  await pulse(14); // Left -> original clock site
@@ -153,6 +160,9 @@ test('PS4 X / O and D-pad can navigate QA without affecting ordinary menu mappin
  const dockFocus=await page.evaluate(()=>document.activeElement?.id);
  expect(['tp-resume','tp-more','scene-inspector-launcher']).toContain(dockFocus);
  await page.locator('#tp-more').click(); // Expand ordinary pause commands
+ await expect(page.locator('#tp-more')).toHaveAttribute('data-pad-hint','✕');
+ await expect(page.locator('#tp-new-route')).toHaveAttribute('data-key-hint','N');
+ await expect(page.locator('#tp-review')).toHaveAttribute('data-key-hint','V');
  await expect(page.locator('#tp-actions')).toBeVisible();
  await pulse(1); // PS4 O collapses extras without restarting or leaving pause
  await expect(page.locator('#tp-actions')).toBeHidden();
