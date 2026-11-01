@@ -93,6 +93,13 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await page.locator('[data-si-category="lighthouse"]').click();
  await expect(page.locator('#si-info')).toContainText('海岸燈塔');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ await page.locator('[data-si-category="junction"]').click();
+ await expect(page.locator('[data-si-category="junction"]')).toContainText('匯入／出口 (2)');
+ await expect(page.locator('#si-info')).toContainText('右側匯入道路');
+ await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ await page.locator('[data-si="next"]').click();
+ await expect(page.locator('#si-info')).toContainText('右側出口分岔');
+ await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  await page.locator('[data-si-category="city-grade"]').click();
  await expect(page.locator('#si-info')).toContainText('坡度');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
