@@ -34,12 +34,17 @@ it('distant outline rim fades to zero before the car becomes a near obstacle',()
  expect(trafficOutlineStrength(TRAFFIC_OUTLINE.fullStrengthMeters)).toBe(1);
  expect(trafficOutlineStrength(1000)).toBe(1);
 });
-it('crest hint requires an actual on-road obstruction in front of a nearby vehicle',()=>{
+it('crest hint only reveals nearby road-hidden cars, never the traffic far past a hill',()=>{
  const half=()=>7;
- expect(roadHidesVehicle(road(()=>0),half,0,220,eye,aim)).toBe(false);
- expect(roadHidesVehicle(road(d=>8*Math.exp(-(((d-110)/30)**2))),half,0,220,eye,aim)).toBe(true);
- expect(roadHidesVehicle(road(d=>8*Math.exp(-(((d-110)/30)**2)),55),half,0,220,eye,aim)).toBe(false);
- expect(roadHidesVehicle(road(()=>10),half,0,400,eye,new THREE.Vector3(0,11.5,400))).toBe(false);
+ const nearAim=new THREE.Vector3(0,1.5,70),hill=(d:number)=>8*Math.exp(-(((d-35)/12)**2));
+ expect(TRAFFIC_OUTLINE.nearCutoffMeters).toBe(90);
+ expect(roadHidesVehicle(road(()=>0),half,0,70,eye,nearAim)).toBe(false);
+ expect(roadHidesVehicle(road(hill),half,0,70,eye,nearAim)).toBe(true);
+ expect(roadHidesVehicle(road(hill,55),half,0,70,eye,nearAim)).toBe(false);
+ // Even when a road crest hides the car, do not reveal anything beyond the 90m rim cutoff.
+ expect(roadHidesVehicle(road(hill),half,0,91,eye,new THREE.Vector3(0,1.5,91))).toBe(false);
+ expect(roadHidesVehicle(road(hill),half,0,220,eye,aim)).toBe(false);
+ expect(roadHidesVehicle(road(hill),half,0,19,eye,new THREE.Vector3(0,1.5,19))).toBe(false);
 });
 it('traffic reuses four outline instances and resets all optional crest hints',()=>{
  const scene=new THREE.Scene(),flat=(d:number)=>({...road(()=>0)(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0}),traffic=new Traffic(scene,flat as any,()=>7,69000,1);
@@ -65,11 +70,16 @@ it('traffic reuses four outline instances and resets all optional crest hints',(
  traffic.dispose();expect(outlines.every(m=>m.parent===null)).toBe(true);
 });
 
-it('crest hint pool activates behind a hill and uses the road depth buffer',()=>{
- const scene=new THREE.Scene();
- const sample=(d:number)=>({...road(q=>9*Math.exp(-(((q-570)/22)**2)))(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
+it('crest hint pool stays silent at long range then reveals a hidden car within 90m',()=>{
+ const scene=new THREE.Scene(),first=trafficRecipe(1,69000)[0];
+ const humpAt=first.distance-35;
+ const sample=(d:number)=>({...road(q=>9*Math.exp(-(((q-humpAt)/14)**2)))(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
  const traffic=new Traffic(scene,sample as any,()=>7,69000,1),camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
- camera.position.set(0,3.6,492);traffic.update(0,500,0,0,camera,412);
+ const farPlayer=first.distance-140;
+ camera.position.set(0,3.6,farPlayer-8);traffic.update(0,farPlayer,0,0,camera,412);
+ expect(traffic.inspect().crestHints).toBe(0);
+ const nearPlayer=first.distance+first.speed*.2-70;
+ camera.position.set(0,3.6,nearPlayer-8);traffic.update(.2,nearPlayer,0,0,camera,412);
  expect(traffic.inspect().crestHints).toBeGreaterThan(0);
  const active=scene.children.filter(o=>o.name.startsWith('vehicle-crest-hint')&&o.visible) as THREE.LineSegments[];
  expect(active).toHaveLength(traffic.inspect().crestHints);
@@ -87,13 +97,16 @@ it('near-outline cutoff never interrupts the driving loop or hill warning checks
  const camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
  const first=trafficRecipe(1,69000)[0].distance;
  let sawFar=false,sawNear=false;
- // The first traffic group passes through both outline distances and the 300m crest window.
+ // The first traffic group passes through both outline distances and the short 90m crest window.
  for(let frame=0;frame<240;frame++){
   const time=frame/20,player=first-270+time*60;
   camera.position.set(0,3.6,player-8);
   expect(()=>traffic.update(time,player,0,60,camera,412)).not.toThrow();
   const report=traffic.inspect(),car=report.actors.find(a=>a.id===0);
   expect(report.actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);
+  expect(report.crestHints).toBeLessThanOrEqual(
+   report.actors.filter(a=>a.visible&&a.distance-player>TRAFFIC_OUTLINE.crestNear&&a.distance-player<=TRAFFIC_OUTLINE.nearCutoffMeters).length
+  );
   expect(report.outlineInstances.reduce((sum,n)=>sum+n,0)).toBe(
    report.actors.filter(a=>a.visible&&trafficOutlineStrength(a.distance-player)>0).length
   );
