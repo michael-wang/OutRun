@@ -6,7 +6,7 @@ export const TRAFFIC_OUTLINE = Object.freeze({
  pixels:1.25,
  minimumMeters:.035,
  maximumMeters:.65,
- crestNear:65,
+ crestNear:20,
  crestFar:300,
  crestStep:18,
  crestRefreshSeconds:.12,
