@@ -167,7 +167,7 @@ export class Traffic {
     this.outlinePose.quaternion.copy(this.dummy.quaternion);this.outlinePose.scale.set(sx,sy,sz);this.outlinePose.updateMatrix();
     this.outlineMeshes[a.type].setMatrixAt(outlineCounts[a.type]++,this.outlinePose.matrix);
    }
-   if(camera&&a.distance>player+TRAFFIC_OUTLINE.crestNear&&a.distance<player+TRAFFIC_OUTLINE.crestFar){
+   if(camera&&a.distance>player+TRAFFIC_OUTLINE.crestNear&&a.distance<=player+TRAFFIC_OUTLINE.nearCutoffMeters){
     if(!this.hintCache.has(a.id)){
      this.visionAim.copy(this.dummy.position);this.visionAim.y+=height*.63;
      this.hintCache.set(a.id,roadHidesVehicle(this.sample,this.halfAt,player,a.distance,camera.position,this.visionAim));
