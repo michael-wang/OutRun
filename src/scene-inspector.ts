@@ -52,7 +52,7 @@ export class SceneInspector {
    <div class="si-audit" id="si-audit"></div>
    <div class="si-row"><button type="button" data-si="scan">掃描全部鐘塔配套</button></div>
    <div class="si-row">
-    <button type="button" data-si="drive">▶ 試駕</button><button type="button" data-si="close">關閉</button>
+    <button type="button" data-si="link">複製檢查網址</button><button type="button" data-si="drive">▶ 試駕</button><button type="button" data-si="close">關閉</button>
    </div>
    <small>搖桿：十字鍵移動／切換地點、✕ 確認、○ 返回。倒退僅限已載入道路。</small>`;
   root.append(this.panel);
@@ -71,6 +71,7 @@ export class SceneInspector {
    prev:()=>this.step(-1),next:()=>this.step(1),
    back:()=>this.move(-100),forward:()=>this.move(100),
    scan:()=>{void this.scanAllClocks();},
+   link:()=>{void this.copyPosition();},
    drive:()=>{if(this.callbacks.ready()){this.close();this.callbacks.drive();}},
    close:()=>this.close(),
   }))this.button(action).addEventListener('click',fn);
@@ -135,6 +136,14 @@ export class SceneInspector {
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
   }else this.audit.textContent='';
+ }
+ private async copyPosition(){
+  const url=new URL(location.href);
+  url.searchParams.set('qa','1');url.searchParams.set('seed',String(this.seed));
+  url.searchParams.set('at',String(Math.round(this.callbacks.current())));
+  try{await navigator.clipboard.writeText(url.toString());
+   this.status.textContent='已複製可重現的場景網址。';
+  }catch{this.status.textContent='目前無法複製網址：'+url.toString();}
  }
  /** Automatically visits every generated clock; checks instances actually attached
   * by the streaming worker rather than trusting the landmark plan alone. */
