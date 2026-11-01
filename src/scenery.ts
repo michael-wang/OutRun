@@ -18,6 +18,15 @@ export function bridgeApproachAllowsBuilding(d:number,bridge?:BridgeSpan){
 export type JourneyLandmarkKind='clock'|'lighthouse'|'canyon-arch';
 export interface JourneyLandmark {distance:number;kind:JourneyLandmarkKind;companions:number}
 export const CLOCK_DISTRICT_COMPANIONS=3;
+export const CLOCK_TOWER_SHAFT_HEIGHT=58;
+export const LIGHTHOUSE_MIN_HEIGHT=38;
+/** Guaranteed high ground and a continuous rock column to below sea level.
+ * Local lighthouse parts are placed relative to the coastal anchor's sunk Y. */
+export function lighthouseProfile(roadHeight:number,variation=0){
+ const rockTop=roadHeight+10,rockBottom=Math.min(-12,rockTop-26);
+ const towerHeight=LIGHTHOUSE_MIN_HEIGHT+variation*5;
+ return {rockTop,rockBottom,towerHeight,roofTop:rockTop+towerHeight+7.5};
+}
 export const CLOCK_COMPANION_COLOR='#bda98e';
 const LANDMARK_SPACING:Record<JourneyLandmarkKind,number>={
  clock:1350,lighthouse:2500,'canyon-arch':3200,
@@ -69,6 +78,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  const dummy=new THREE.Object3D(),quaternion=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
  let base=new THREE.Vector3(),yaw=0,chunk=0,bridgeGap=false,roadsideDrop=0,anchorDistance=0;
  const roadSamples=range.roadSamples??Array.from({length:Math.ceil(length/25)},(_,i)=>sample(i*25).position);
+ const landmarkSites=range.openRoad?planJourneyLandmarks(length,weightsAt,range.bridge):[];
+ // Only nearby ordinary buildings are kept low: the three authored clock companions remain.
+ const nearClock=(d:number)=>landmarkSites.some(site=>site.kind==='clock'&&Math.abs(site.distance-d)<145);
  function anchor(d:number,offset:number){anchorDistance=d;roadsideDrop=0;chunk=Math.floor(d/650);bridgeGap=!!range.bridge&&d>=range.bridge.start-35&&d<=range.bridge.end+35;const p=sample(d);base=p.position.addScaledVector(p.right,roadObjectOffset(offset,halfAt(d),range.shoulders?.(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);if(range.shoulders){const q=sample(d),widths=range.shoulders(d),half=halfAt(d),x=roadObjectOffset(offset,half,widths),width=x<0?widths.left:widths.right,extra=Math.abs(x)-half,raw=Math.sign(x)*(extra<=width?7+extra*6/width:13+extra-width);base.copy(q.position).addScaledVector(q.right,x);
    roadsideDrop=coastalCliffDropAtLateral(q.position.y,q.right.y,x,half,widths,weightsAt(d)[1]);
    if(raw>=13)base.y-=raw<=75?.12+(raw-13)/62*2.88:3+(raw-75)/85*11;
@@ -87,27 +99,35 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  function palm(seed:number){const h=7+random(seed)*4;part(cylinder,'#aa8960',0,h/2,0,.23,h,.23,0,0,-.035);for(let j=0;j<7;j++){const a=j*Math.PI*2/7;part(round,'#287b52',Math.sin(a)*1.7,h,Math.cos(a)*1.7,.7,.24,3.3,.15,a,0);}}
  function dryTree(seed:number){const h=4+random(seed)*2;part(cylinder,'#82634a',0,h/2,0,.22,h,.22);for(const side of [-1,1]){part(cylinder,'#82634a',side*.75,h*.75,0,.13,h*.65,.13,0,0,-side*.55);part(round,'#8d9254',side*1.4,h,0,1.2,.6,1);}}
  function mesa(seed:number,large=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=(large?32:18)+random(seed)*15,h=(large?65:30)+random(seed+1)*30;part(mesaGeometry[Math.abs(seed)%3],'#ffffff',0,0,0,w,h,w*.8,0,random(seed)*6);}
- function lighthouse(seed:number){
-  // The rock plinth is continuous down into the coastal ground; the tower stands alone.
-  const height=21+random(seed)*6;
-  part(rock,'#aba28d',0,1.6,0,19,8,17);
-  part(cylinder,'#f5eddc',0,5+height/2,0,2.7,height,2.7);
-  part(cylinder,'#cd573e',0,11,0,2.75,3.1,2.75);
-  part(cylinder,'#e7e7d4',0,5+height,0,3.2,.7,3.2);
-  part(cylinder,'#355763',0,7+height,0,2.1,3.2,2.1);
-  part(round,'#ffe6a3',0,7+height,0,1.8,1.3,1.8);
-  part(cone,'#d76e48',0,10+height,0,3.5,2.7,3.5);
+ function lighthouse(seed:number,d:number){
+  // The coastal anchor lies down by the sea; a visible lighthouse needs an
+  // elevated PROMONTORY connected all the way down to the sea floor.
+  const profile=lighthouseProfile(sample(d).position.y,random(seed));
+  const rockHeight=profile.rockTop-profile.rockBottom;
+  const rockCenter=(profile.rockTop+profile.rockBottom)/2-base.y;
+  const foot=profile.rockTop-base.y,h=profile.towerHeight;
+  part(rock,'#aba28d',0,rockCenter,0,30,rockHeight,27);
+  part(rock,'#a89b83',-10,rockCenter-3,11,19,Math.max(12,rockHeight-6),22);
+  // At least ten storeys of visible tower ABOVE the elevated cliff plateau.
+  part(cylinder,'#f5eddc',0,foot+h/2,0,3.25,h,3.25);
+  part(cylinder,'#cd573e',0,foot+12,0,3.3,4,3.3);
+  part(cylinder,'#cd573e',0,foot+h-4,0,3.3,2,3.3);
+  part(cylinder,'#e7e7d4',0,foot+h+.45,0,4.2,.9,4.2);
+  part(cylinder,'#355763',0,foot+h+2.2,0,2.5,3.3,2.5);
+  part(round,'#ffe6a3',0,foot+h+2.2,0,2.2,1.5,2.2);
+  part(cone,'#d76e48',0,foot+h+5.8,0,4.1,3.5,4.1);
  }
  function clockTower(){
-  // A clock is a district landmark: neighboring blocks are placed beside it below.
-  part(boxes,'#d8c7a9',0,-4,0,13,8,13);
-  part(boxes,'#eed7ac',0,21,0,9,42,9);
-  part(boxes,'#d49969',0,42,0,10.5,1,10.5);
-  part(cylinder,'#f2e3bf',0,45,0,4.5,5,4.5);
-  part(round,'#548e92',0,48,0,5,3,5);
-  part(cylinder,'#eee6ce',0,37,-4.6,2.6,.15,2.6,Math.PI/2);
-  part(boxes,'#375a63',0,37.7,-4.72,.18,1.7,.18);
-  part(boxes,'#375a63',.7,37,-4.72,1.5,.18,.18);
+  // A prominent civic tower rises above its deliberately low surrounding district.
+  const h=CLOCK_TOWER_SHAFT_HEIGHT,face=h-7;
+  part(boxes,'#d8c7a9',0,-5,0,16,10,16);
+  part(boxes,'#eed7ac',0,h/2,0,11,h,11);
+  part(boxes,'#d49969',0,h,0,12,1.4,12);
+  part(cylinder,'#f2e3bf',0,h+3,0,5.2,5,5.2);
+  part(round,'#548e92',0,h+6.3,0,5.6,3.6,5.6);
+  part(cylinder,'#eee6ce',0,face,-5.65,3.1,.2,3.1,Math.PI/2);
+  part(boxes,'#375a63',0,face+.8,-5.79,.2,1.9,.2);
+  part(boxes,'#375a63',.75,face,-5.79,1.6,.2,.2);
  }
  function clockDistrict(seed:number,d:number,offset=75){
   anchor(d,offset);
@@ -121,20 +141,20 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     for(const side of [-1,1])part(boxes,'#426d77',x+side*w*.24,3.1+floor*4,z-6.08,w*.15,1.6,.12);
   }
  }
-  function building(seed:number,far=false,coastal=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=7+random(seed)*6,h=coastal?5+random(seed+1)*4:(far?28:9)+random(seed+1)*(far?42:18),depth=8+random(seed+2)*5,color=['#eed6b4','#e6a48b','#a9c9bf','#e3c286','#d7b9bf'][Math.floor(random(seed+4)*5)];
+  function building(seed:number,far=false,coastal=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=7+random(seed)*6,rawH=coastal?5+random(seed+1)*4:(far?28:9)+random(seed+1)*(far?42:18),h=nearClock(anchorDistance)?Math.min(rawH,far?17:12):rawH,depth=8+random(seed+2)*5,color=['#eed6b4','#e6a48b','#a9c9bf','#e3c286','#d7b9bf'][Math.floor(random(seed+4)*5)];
   if(theme!==undefined)part(boxes,color,0,-4,0,w,8,depth);part(boxes,color,0,h/2,0,w,h,depth);part(boxes,'#f3e6cd',0,h+.25,0,w+.7,.5,depth+.7);part(boxes,color,w*.12,h+2,0,w*.65,4,depth*.7);part(boxes,'#bb7960',w*.12,h+4.1,0,w*.7,.25,depth*.75);
   for(let floor=0;floor<Math.floor(h/3.2);floor++)for(const x of [-.3,0,.3]){part(boxes,'#426d77',x*w,2+floor*3.2,-depth/2-.035,w*.13,1.35,.07);if(!far&&floor%2===1)part(boxes,'#eee1bd',x*w,1.2+floor*3.2,-depth/2-.35,w*.2,.16,.8);}
   if(!coastal&&seed%3===0){part(cylinder,'#8eb4b4',w*.12,h+5.5,0,w*.28,3,w*.28);part(round,'#719d9f',w*.12,h+7,0,w*.3,1.8,w*.3);}else if(!coastal&&seed%3===1){for(let fin=0;fin<3;fin++)part(boxes,'#ede5c9',w*.12+(fin-1)*w*.2,h+5,0,.35,2.2,depth*.7);}else if(coastal){part(cone,'#bd7d59',w*.12,h+4.8,0,w*.46,2,depth*.46,0,Math.PI/4);}
   if(!far){part(boxes,'#347f78',0,3,-depth/2-.8,w*.8,.18,1.8, .08);part(boxes,'#e5d7b9',0,.15,-depth/2-1.5,w+2,.3,3);}
  }
  // The same deterministic list powers scenery, QA jumps and lone-clock audits.
- if(range.openRoad)for(const site of planJourneyLandmarks(length,weightsAt,range.bridge)){
+ if(range.openRoad)for(const site of landmarkSites){
   if(site.distance<range.start||site.distance>=range.end)continue;
   const {distance:d,kind}=site;
   const index=Math.round(d/25);
   if(kind==='clock')clockDistrict(index,d);
   else if(kind==='lighthouse'){
-   anchor(d,-(56+random(index)*8));lighthouse(index);
+   anchor(d,-(52+random(index)*8));lighthouse(index,d);
   }else if(kind==='canyon-arch'){
    // An isolated natural arch, not an inappropriate lighthouse in the mountains.
    anchor(d,95+random(index)*15);
@@ -150,7 +170,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(family===1&&i%7===0&&bridgeApproachAllowsBuilding(d,range.bridge)&&!(canyon&&canyonBend(d))){for(const side of [-1,1]){anchor(d,side*(280+random(i)*90));if(clear(110)){base.y=-8;part(mesaGeometry[i%3],'#ffffff',0,0,0,90,150+random(i)*80,80,0,random(i)*6);}}}
   if(family===1&&!(canyon&&canyonBend(d))&&!range.rockSections?.some(s=>d>s.start-20&&d<s.end+20)){for(const side of [-1,1]){anchor(d,side*(19+random(i+side)*10));if(roadsideDrop<3&&clear(3))dryTree(i);if(i%3===0){anchor(d,side*(75+random(i)*25));if(bridgeApproachAllowsBuilding(d,range.bridge)&&clear(43)&&!acts[1].landmarks.some(l=>Math.abs(d-(acts[1].start+(acts[1].end-acts[1].start)*l.fraction))<180))mesa(i+side);}anchor(d,side*(halfAt(d)<7?12.5:15));if(!range.rocky&&roadsideDrop<3)part(boxes,'#bd8e62',0,.65,0,.8,1.3,12,theme===undefined?0:-Math.atan2(sample(d).tangent.y,Math.hypot(sample(d).tangent.x,sample(d).tangent.z)));}}
   if(family===2){for(const side of [-1,1]){anchor(d,side*17);if(roadsideDrop<3){part(cylinder,'#3d646a',0,4,0,.12,8,.12);part(boxes,'#3d646a',0,8,-.65,.16,.16,1.4);part(round,'#ffedba',0,7.85,-1.3,.45,.2,.5);}if(i%2===0){anchor(d+10,side*20);if(roadsideDrop<3){part(cylinder,'#876b52',0,2.6,0,.22,5.2,.22);part(round,'#4a8256',0,5.5,0,2.3,2.6,2.3);}}}
-   anchor(d,32+random(i)*10);if(clear(13)&&!acts[2].landmarks.some(l=>Math.abs(d-(acts[2].start+(acts[2].end-acts[2].start)*l.fraction))<170))building(i);if(i%3===0){anchor(d,65+random(i)*18);if(bridgeApproachAllowsBuilding(d,range.bridge)&&clear(18)){const h=18+random(i+180)*30;part(boxes,['#b9c7bb','#d9c5ad','#b7c6c1'][i%3],0,h/2,0,18,h,16);part(boxes,'#c8bba5',0,-5,0,24,10,23);}anchor(d,140+random(i)*80);if(clear(18))building(i+100,true);}
+   anchor(d,32+random(i)*10);if(clear(13)&&!acts[2].landmarks.some(l=>Math.abs(d-(acts[2].start+(acts[2].end-acts[2].start)*l.fraction))<170))building(i);if(i%3===0){anchor(d,65+random(i)*18);if(bridgeApproachAllowsBuilding(d,range.bridge)&&clear(18)){const rawH=18+random(i+180)*30,h=nearClock(d)?Math.min(rawH,14):rawH;part(boxes,['#b9c7bb','#d9c5ad','#b7c6c1'][i%3],0,h/2,0,18,h,16);part(boxes,'#c8bba5',0,-5,0,24,10,23);}anchor(d,140+random(i)*80);if(clear(18))building(i+100,true);}
   }
   // Coast cliffs and low green scrub also vary within the coastal act.
   if(family===0&&i%2===0&&bridgeApproachAllowsBuilding(d,range.bridge)){anchor(d,70+random(i)*25);if(clear(38)){part(rock,'#c3b794',0,theme===undefined?10:4,0,30,theme===undefined?28:40,26,0,random(i)*6);part(round,'#628350',-8,22,0,12,2,14);}}
