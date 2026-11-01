@@ -2,6 +2,7 @@ import {REFERENCE_TRAVEL} from './challenges';
 import {LANE_WIDTH} from './road-profile';
 import {authorBankFeatures} from './banking';
 import {validatePilot,pilotSample,type Placement,type WorldName} from './pilot-composer';
+import {selectRoadInterchange} from './road-interchange';
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
@@ -50,6 +51,17 @@ export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7=7):TripCandid
  buffers.push({startS:cursor,endS:length,role:'finish'});placements.sort((a,b)=>a.startS-b.startS);
  const tripCode=`TRIP-${version}-${seed.toString(36).toUpperCase()}-ALB${revision}`,data={seed,length,placements,worldPhases,beats,buffers,baseHeight,baseLanes,generatorVersion:version};
  const result:TripCandidate={id:'ROAD-TRIP-10M',revision,name:'10-Minute Road Trip',intent:'A changing journey through city, coast and canyon.',emotionalRole:'journey',sceneryAct:2,seed,world:worldPhases[0].world,generatorVersion:version,contentFingerprint:hash(data),stageCode:tripCode,tripCode,beats,buffers,baseHeight,baseLanes,placements,worldPhases,referenceSpeed:230,entrySpeed:0,nominalDuration:length/REFERENCE_TRAVEL,length,roadWidth:baseLanes*LANE_WIDTH,lanes:[[0,4],[length/REFERENCE_TRAVEL,4]],elevation:[[0,baseHeight],[length/REFERENCE_TRAVEL,baseHeight]],requiredSteerProfile:[[0,0]],entry:'Standing start',exit:'Journey finish',warning:{leadMeters:300,text:'BRAKE · 180 km/h'},tags:['trip'],antiAdjacency:[],autoValidation:'PENDING'};
+ if(revision===7){
+  // Road Credibility R2: ONLY the selected 4→6→4 pair becomes a genuine
+  // 4→5→4 right-hand lane merge/exit. All other authored width phrases stay.
+  const site=selectRoadInterchange(result);
+  if(site){
+   const entry=result.placements.find(p=>p.channel==='width'&&p.startS===site.entry.start-350&&p.id==='W02');
+   const exit=result.placements.find(p=>p.channel==='width'&&p.startS===site.exit.start-350&&p.id==='W03');
+   if(entry?.channel!=='width'||exit?.channel!=='width')throw new Error('Missing paired interchange width profiles');
+   entry.parameters.to=5;exit.parameters.from=5;
+  }
+ }
  if(revision>=3){
   if(revision===7){
    // City verticality was adjusted for r7; preserve the previously accepted
