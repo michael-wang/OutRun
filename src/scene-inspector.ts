@@ -37,6 +37,7 @@ export class SceneInspector {
   private callbacks:InspectorCallbacks,private seed:number) {
   this.toggle=document.createElement('button');this.toggle.id='scene-inspector-launcher';
   this.toggle.type='button';this.toggle.textContent='🔎 場景 QA';
+  this.toggle.title='鍵盤 Q／PS4 △：開關場景檢查';this.toggle.setAttribute('aria-keyshortcuts','Q');
   this.toggle.addEventListener('click',()=>this.isOpen?this.close():this.open());
   root.append(this.toggle);
   this.panel=document.createElement('section');this.panel.id='scene-inspector';this.panel.hidden=true;
@@ -59,7 +60,7 @@ export class SceneInspector {
    <div class="si-row">
     <button type="button" data-si="link">複製檢查網址</button><button type="button" data-si="drive">▶ 試駕</button><button type="button" data-si="close">關閉</button>
    </div>
-   <small>搖桿：十字鍵移動／切換地點、✕ 確認、○ 返回。倒退僅限已載入道路。</small>`;
+   <small>快捷鍵：Q／PS4 △ 開關 QA。十字鍵切換、✕ 確認、○ 返回；倒退僅限已載入道路。</small>`;
   root.append(this.panel);
   this.info=this.panel.querySelector('#si-info')!;
   this.status=this.panel.querySelector('#si-status')!;
