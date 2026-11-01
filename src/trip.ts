@@ -50,6 +50,16 @@ export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7=7):TripCandid
  buffers.push({startS:cursor,endS:length,role:'finish'});placements.sort((a,b)=>a.startS-b.startS);
  const tripCode=`TRIP-${version}-${seed.toString(36).toUpperCase()}-ALB${revision}`,data={seed,length,placements,worldPhases,beats,buffers,baseHeight,baseLanes,generatorVersion:version};
  const result:TripCandidate={id:'ROAD-TRIP-10M',revision,name:'10-Minute Road Trip',intent:'A changing journey through city, coast and canyon.',emotionalRole:'journey',sceneryAct:2,seed,world:worldPhases[0].world,generatorVersion:version,contentFingerprint:hash(data),stageCode:tripCode,tripCode,beats,buffers,baseHeight,baseLanes,placements,worldPhases,referenceSpeed:230,entrySpeed:0,nominalDuration:length/REFERENCE_TRAVEL,length,roadWidth:baseLanes*LANE_WIDTH,lanes:[[0,4],[length/REFERENCE_TRAVEL,4]],elevation:[[0,baseHeight],[length/REFERENCE_TRAVEL,baseHeight]],requiredSteerProfile:[[0,0]],entry:'Standing start',exit:'Journey finish',warning:{leadMeters:300,text:'BRAKE · 180 km/h'},tags:['trip'],antiAdjacency:[],autoValidation:'PENDING'};
- if(revision>=3){result.bankFeatures=authorBankFeatures(result,d=>pilotSample(result,d));if(revision>=4)result.bankFeatures=result.bankFeatures.map(f=>({...f,start:Math.max(0,f.start-200),end:f.end+200,ramp:300}));result.contentFingerprint=hash({...data,bankFeatures:result.bankFeatures});}
+ if(revision>=3){
+  if(revision===7){
+   // City verticality was adjusted for r7; preserve the previously accepted
+   // curve-banking placements instead of re-selecting them from changed grades.
+   result.bankFeatures=generateTrip(seed,6).bankFeatures?.map(f=>({...f}))??[];
+  }else{
+   result.bankFeatures=authorBankFeatures(result,d=>pilotSample(result,d));
+   if(revision>=4)result.bankFeatures=result.bankFeatures.map(f=>({...f,start:Math.max(0,f.start-200),end:f.end+200,ramp:300}));
+  }
+  result.contentFingerprint=hash({...data,bankFeatures:result.bankFeatures});
+ }
  validatePilot(result);return result;
 }
