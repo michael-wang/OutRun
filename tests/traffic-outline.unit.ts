@@ -1,7 +1,7 @@
 import {expect,it} from 'vitest';
 import * as THREE from 'three';
 import {Traffic,trafficRecipe,TRAFFIC_LIMIT} from '../src/traffic';
-import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLORS} from '../src/traffic-outline';
+import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR} from '../src/traffic-outline';
 
 const eye=new THREE.Vector3(0,3.6,-8),aim=new THREE.Vector3(0,1.5,220);
 const road=(height:(d:number)=>number,x=0)=>(d:number)=>({position:new THREE.Vector3(x,height(d),d),right:new THREE.Vector3(1,0,0)});
@@ -34,17 +34,20 @@ it('distant outline rim fades to zero before the car becomes a near obstacle',()
  expect(trafficOutlineStrength(TRAFFIC_OUTLINE.fullStrengthMeters)).toBe(1);
  expect(trafficOutlineStrength(1000)).toBe(1);
 });
-it('crest hint only reveals nearby road-hidden cars, never the traffic far past a hill',()=>{
+it('crest hints cover only 20–150m of road-hidden traffic, not distant vehicles',()=>{
  const half=()=>7;
- const nearAim=new THREE.Vector3(0,1.5,70),hill=(d:number)=>8*Math.exp(-(((d-35)/12)**2));
- expect(TRAFFIC_OUTLINE.nearCutoffMeters).toBe(90);
- expect(roadHidesVehicle(road(()=>0),half,0,70,eye,nearAim)).toBe(false);
- expect(roadHidesVehicle(road(hill),half,0,70,eye,nearAim)).toBe(true);
- expect(roadHidesVehicle(road(hill,55),half,0,70,eye,nearAim)).toBe(false);
- // Even when a road crest hides the car, do not reveal anything beyond the 90m rim cutoff.
- expect(roadHidesVehicle(road(hill),half,0,91,eye,new THREE.Vector3(0,1.5,91))).toBe(false);
- expect(roadHidesVehicle(road(hill),half,0,220,eye,aim)).toBe(false);
- expect(roadHidesVehicle(road(hill),half,0,19,eye,new THREE.Vector3(0,1.5,19))).toBe(false);
+ const hill=(d:number)=>8*Math.exp(-(((d-35)/12)**2));
+ const target=(d:number)=>new THREE.Vector3(0,1.5,d);
+ expect(TRAFFIC_OUTLINE.crestFar).toBe(150);
+ expect(TRAFFIC_OUTLINE.nearCutoffMeters).toBe(90); // visible rim still disappears at 90m
+ expect(roadHidesVehicle(road(()=>0),half,0,140,eye,target(140))).toBe(false);
+ for(const distance of [70,90,91,130,149,150]){
+  expect(roadHidesVehicle(road(hill),half,0,distance,eye,target(distance))).toBe(true);
+ }
+ expect(roadHidesVehicle(road(hill,55),half,0,130,eye,target(130))).toBe(false);
+ for(const distance of [19,151,220]){
+  expect(roadHidesVehicle(road(hill),half,0,distance,eye,target(distance))).toBe(false);
+ }
 });
 it('traffic reuses four outline instances and resets all optional crest hints',()=>{
  const scene=new THREE.Scene(),flat=(d:number)=>({...road(()=>0)(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0}),traffic=new Traffic(scene,flat as any,()=>7,69000,1);
@@ -70,15 +73,15 @@ it('traffic reuses four outline instances and resets all optional crest hints',(
  traffic.dispose();expect(outlines.every(m=>m.parent===null)).toBe(true);
 });
 
-it('crest hint pool stays silent at long range then reveals a hidden car within 90m',()=>{
+it('crest hint pool stays silent beyond 150m then reveals a hidden car at 130m',()=>{
  const scene=new THREE.Scene(),first=trafficRecipe(1,69000)[0];
  const humpAt=first.distance-35;
  const sample=(d:number)=>({...road(q=>9*Math.exp(-(((q-humpAt)/14)**2)))(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
  const traffic=new Traffic(scene,sample as any,()=>7,69000,1),camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
- const farPlayer=first.distance-140;
+ const farPlayer=first.distance-170;
  camera.position.set(0,3.6,farPlayer-8);traffic.update(0,farPlayer,0,0,camera,412);
  expect(traffic.inspect().crestHints).toBe(0);
- const nearPlayer=first.distance+first.speed*.2-70;
+ const nearPlayer=first.distance+first.speed*.2-130;
  camera.position.set(0,3.6,nearPlayer-8);traffic.update(.2,nearPlayer,0,0,camera,412);
  expect(traffic.inspect().crestHints).toBeGreaterThan(0);
  const active=scene.children.filter(o=>o.name.startsWith('vehicle-crest-hint')&&o.visible) as THREE.LineSegments[];
@@ -87,7 +90,6 @@ it('crest hint pool stays silent at long range then reveals a hidden car within 
  traffic.reset();expect(active.every(l=>!l.visible)).toBe(true);
  traffic.dispose();
 });
-
 it('near-outline cutoff never interrupts the driving loop or hill warning checks',()=>{
  const scene=new THREE.Scene(),sample=(d:number)=>({
   ...road(q=>9*Math.exp(-(((q-570)/25)**2)))(d),
@@ -97,7 +99,7 @@ it('near-outline cutoff never interrupts the driving loop or hill warning checks
  const camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
  const first=trafficRecipe(1,69000)[0].distance;
  let sawFar=false,sawNear=false;
- // The first traffic group passes through both outline distances and the short 90m crest window.
+ // The first traffic group passes through the visible-outline range and the 150m crest window.
  for(let frame=0;frame<240;frame++){
   const time=frame/20,player=first-270+time*60;
   camera.position.set(0,3.6,player-8);
@@ -105,7 +107,7 @@ it('near-outline cutoff never interrupts the driving loop or hill warning checks
   const report=traffic.inspect(),car=report.actors.find(a=>a.id===0);
   expect(report.actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);
   expect(report.crestHints).toBeLessThanOrEqual(
-   report.actors.filter(a=>a.visible&&a.distance-player>TRAFFIC_OUTLINE.crestNear&&a.distance-player<=TRAFFIC_OUTLINE.nearCutoffMeters).length
+   report.actors.filter(a=>a.visible&&a.distance-player>TRAFFIC_OUTLINE.crestNear&&a.distance-player<=TRAFFIC_OUTLINE.crestFar).length
   );
   expect(report.outlineInstances.reduce((sum,n)=>sum+n,0)).toBe(
    report.actors.filter(a=>a.visible&&trafficOutlineStrength(a.distance-player)>0).length
@@ -120,7 +122,7 @@ it('near-outline cutoff never interrupts the driving loop or hill warning checks
  traffic.dispose();
 });
 
-it('A/B switches the shared outline color without changing the approved crest hint',()=>{
+it('uses permanent chartreuse silhouette and leaves the separate crest material unchanged',()=>{
  const scene=new THREE.Scene();
  const sample=(d:number)=>({...road(()=>0)(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
  const traffic=new Traffic(scene,sample as any,()=>7,69000,1);
@@ -128,15 +130,11 @@ it('A/B switches the shared outline color without changing the approved crest hi
  const crest=scene.getObjectByName('vehicle-crest-hint-0') as THREE.LineSegments;
  const material=outline.material as THREE.MeshBasicMaterial;
  const crestColor=(crest.material as THREE.LineBasicMaterial).color.getHexString();
- expect(traffic.outlineColor).toBe('chartreuse');
- expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.chartreuse.slice(1));
- traffic.setOutlineColor('yellow');
- expect(traffic.outlineColor).toBe('yellow');
- expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.yellow.slice(1));
- expect((crest.material as THREE.LineBasicMaterial).color.getHexString()).toBe(crestColor);
+ expect(TRAFFIC_OUTLINE_COLOR).toBe('#d7ff00');
+ expect(material.color.getHexString()).toBe('d7ff00');
+ expect(traffic.inspect().outlineColor).toBe('#d7ff00');
  traffic.reset();
- expect(traffic.outlineColor).toBe('yellow');
- traffic.setOutlineColor('chartreuse');
- expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.chartreuse.slice(1));
+ expect(material.color.getHexString()).toBe('d7ff00');
+ expect((crest.material as THREE.LineBasicMaterial).color.getHexString()).toBe(crestColor);
  traffic.dispose();
 });
