@@ -3,10 +3,9 @@ import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {createTrack} from './track';
 import {trafficRandom} from './traffic-lanes';
-import type {RockySection} from './rocky-shoulder';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
-export interface ConeRecipe {lateral?:number;id:number;distance:number;side:number;inset:number;rockWarning?:boolean}
+export interface ConeRecipe {lateral?:number;id:number;distance:number;side:number;inset:number}
 type Flight={time:number;forward:number;sideways:number;up:number;spin:number;tilt:number};
 
 export function coneLayout(seed:number,length:number):ConeRecipe[]{
@@ -16,14 +15,6 @@ export function coneLayout(seed:number,length:number):ConeRecipe[]{
   for(let i=0;i<7;i++)out.push({id:group*7+i,distance:start+i*(11+trafficRandom(seed,group+600)*4),side,inset:.15+Math.sin(i/6*Math.PI)*.55});
  }
  return out;
-}
-
-/** Sparse cones on the outer edge before each dangerous rock formation. */
-export function rockyWarningCones(sections:readonly RockySection[],halfAt:(d:number)=>number):ConeRecipe[]{
- return sections.filter(r=>r.r7).flatMap((r,i)=>[260,190,130,70].map((lead,j)=>{
-  const d=r.start-lead,inside=.25+(j%2)*.38;
-  return {id:300000+i*10+j,distance:d,side:r.side,inset:inside,lateral:r.side*(halfAt(d)-inside),rockWarning:true};
- }).filter(c=>c.distance>=350));
 }
 
 function geometry(){
@@ -51,11 +42,11 @@ export class RoadCones {
  constructor(
   private sample:Sample,private halfAt:(d:number)=>number,scene:THREE.Scene,
   seed:number,private length:number,private ready:(d:number)=>boolean=()=>true,
-  private triangles?:readonly Breakdown[],rockSections:readonly RockySection[]=[],
+  private triangles?:readonly Breakdown[],
  ){
   this.recipe=triangles
    ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:h.stopSide*(this.halfAt(h.distance)-1.75)})))
-   :[...coneLayout(seed,length),...rockyWarningCones(rockSections,halfAt)];
+   :coneLayout(seed,length);
   const g=triangles?warningTriangleGeometry():geometry();
   if(triangles)g.rotateY(Math.PI);
   this.mesh=new THREE.InstancedMesh(g,triangles
