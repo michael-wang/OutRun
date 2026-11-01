@@ -97,10 +97,11 @@ if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;} advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
 let inputMode:'keyboard'|'gamepad'|'touch'=mobile()?'touch':'keyboard';
+document.documentElement.dataset.inputMode=inputMode;
 function refreshHints(){
  document.documentElement.dataset.inputMode=inputMode;
  document.querySelectorAll<HTMLElement>('.shortcut').forEach(node=>{
-  const key=node.dataset.shortcut;if(!key||node.id==='l2-praise'||node.id==='l2-issue')return;
+  const key=node.dataset.shortcut;if(!key||node.dataset.keyHint||node.id==='l2-praise'||node.id==='l2-issue')return;
   const first=Array.from(node.childNodes).find(n=>n.nodeType===Node.TEXT_NODE);if(!first)return;
   const raw=(first.textContent??'').replace(/\[([^\]]+)\]/g,'$1');
   if(inputMode==='keyboard'){const i=raw.toUpperCase().indexOf(key);first.textContent=i<0?`[${key}] ${raw}`:raw.slice(0,i)+`[${raw[i]}]`+raw.slice(i+1);}else first.textContent=raw;
@@ -274,7 +275,7 @@ addEventListener('keydown',e=>{
   if((mode==='playing'||brickCompleted)&&l2UI&&(e.code==='KeyG'||e.code==='KeyI')){e.preventDefault();l2UI.openQuick(e.code==='KeyG'?'praise':'issue','keyboard');return;}
   if(mode==='playing'){if(e.code==='KeyP'){e.preventDefault();pause();}else if(e.code==='KeyR'){e.preventDefault();restart();}return;}
   if(trip&&mode==='paused'){
-   const direct:Record<string,()=>void>={KeyP:start,KeyR:restart,KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{l2UI?.exportCurrent();}};
+   const direct:Record<string,()=>void>={KeyP:start,KeyR:restart,KeyN:()=>{$('l2-next').click();},KeyV:()=>{if(tripPauseDock&&!tripPauseDock.reviewButton.hidden)tripPauseDock.reviewButton.click();},KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{l2UI?.exportCurrent();}};
    if(direct[e.code]){e.preventDefault();direct[e.code]();return;}
   }
   const prefix=pilot||l2?'l2':brick?'brick':'';
@@ -477,6 +478,24 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
   if(!mobile())(opening?document.getElementById('l2-play'):tripPauseDock?.moreButton)?.focus();
  },
 },!playerUi);
+// Render a legible keycap on the action itself, following the last active input mode.
+// Existing L2 shortcut text is replaced by the same badge rather than doubled.
+for(const [id,key,pad] of [
+ ['pause','P','OPTIONS'],['player-play','P','OPTIONS'],
+ ['player-restart','R','✕'],['player-new-route','N','✕'],
+ ['player-options','C','✕'],['player-sound','M','✕'],
+ ['l2-play','P','OPTIONS'],['l2-replay','R','✕'],
+ ['l2-next','N','✕'],['l2-settings','C','✕'],
+ ['l2-sound','M','✕'],['l2-fullscreen','F','SHARE'],
+ ['l2-export','E','✕'],['close-settings','Esc','○'],
+]){
+ const node=document.getElementById(id);
+ if(node){node.dataset.keyHint=key;node.dataset.padHint=pad;}
+}
+for(const vote of document.querySelectorAll<HTMLButtonElement>('#l2-lab [data-l2-vote]')){
+ vote.dataset.keyHint=({KEEP:'K',REWORK:'W',REJECT:'X'} as Record<string,string>)[vote.dataset.l2Vote!]??'';
+ vote.dataset.padHint='✕';
+}
 const labFullscreen=document.getElementById('l2-fullscreen');
 if(labFullscreen){const hint=document.createElement('p');hint.id='l2-iphone-fullscreen-hint';hint.setAttribute('role','status');hint.textContent=$('iphone-fullscreen-hint').textContent;hint.hidden=true;labFullscreen.closest('.l2-actions')?.after(hint);}
 refreshImmersiveUI();
