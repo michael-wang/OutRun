@@ -638,6 +638,7 @@ if(params.get('qa')==='1'&&trip){
   roadExists:d=>world.streamer?.roadReady(d)??true,
   ready:()=>!world.streamer||world.streamer.ready,
   clockAudit:auditClock,
+  view:view=>{inspectionView=view==='side'?'side':undefined;bridgeInspection=false;},
   drive:()=>{state.speed=170/3.6;advancePowertrain(state,state.speed,false,0);manual=false;start();},
  },trip.seed);
  // Shareable QA coordinates, including when a particular building is missed.
