@@ -1,7 +1,7 @@
 import {expect,it} from 'vitest';
 import * as THREE from 'three';
 import {Traffic,trafficRecipe,TRAFFIC_LIMIT} from '../src/traffic';
-import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR} from '../src/traffic-outline';
+import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR,TRAFFIC_CREST_RISK_COLOR} from '../src/traffic-outline';
 
 const eye=new THREE.Vector3(0,3.6,-8),aim=new THREE.Vector3(0,1.5,220);
 const road=(height:(d:number)=>number,x=0)=>(d:number)=>({position:new THREE.Vector3(x,height(d),d),right:new THREE.Vector3(1,0,0)});
@@ -49,6 +49,32 @@ it('crest hints cover only 20–150m of road-hidden traffic, not distant vehicle
   expect(roadHidesVehicle(road(hill),half,0,distance,eye,target(distance))).toBe(false);
  }
 });
+it('red crest hazard triggers when the roof is visible but the lower car is still hidden',()=>{
+ const hill=(d:number)=>2.5*Math.exp(-(((d-75)/15)**2));
+ const sample=road(hill),low=new THREE.Vector3(0,.45,130),roof=new THREE.Vector3(0,2.65,130);
+ expect(TRAFFIC_OUTLINE.crestStep).toBe(12);
+ expect(roadHidesVehicle(sample,()=>7,0,130,eye,roof)).toBe(false);
+ expect(roadHidesVehicle(sample,()=>7,0,130,eye,low)).toBe(true);
+ const scene=new THREE.Scene(),recipe=trafficRecipe(1,69000)[0],player=recipe.distance-130;
+ const hillCenter=player+75;
+ const track=(d:number)=>({...road(q=>2.5*Math.exp(-(((q-hillCenter)/15)**2)))(d),
+  tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
+ const traffic=new Traffic(scene,track as any,()=>7,69000,1);
+ const camera=new THREE.PerspectiveCamera(47,915/412,1,1400);
+ camera.position.set(0,3.6,player-8);
+ traffic.update(0,player,0,0,camera,412);
+ const state=traffic.inspect();
+ expect(state.crestHints).toBeGreaterThan(0);
+ expect(state.crestRimInstances.reduce((n,count)=>n+count,0)).toBe(state.crestHints);
+ const visibleRed=scene.getObjectByName('vehicle-crest-rim-car') as THREE.InstancedMesh;
+ expect((visibleRed.material as THREE.MeshBasicMaterial).color.getHexString()).toBe(TRAFFIC_CREST_RISK_COLOR.slice(1));
+ expect((scene.getObjectByName('vehicle-crest-hint-0') as THREE.LineSegments).visible).toBe(true);
+ expect((scene.getObjectByName('vehicle-crest-hint-0') as THREE.LineSegments).material).toBeDefined();
+ traffic.reset();
+ expect(traffic.inspect().crestRimInstances.every(count=>count===0)).toBe(true);
+ traffic.dispose();
+});
+
 it('traffic reuses four outline instances and resets all optional crest hints',()=>{
  const scene=new THREE.Scene(),flat=(d:number)=>({...road(()=>0)(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0}),traffic=new Traffic(scene,flat as any,()=>7,69000,1);
  const camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);camera.position.set(0,3.6,492);
