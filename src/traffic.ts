@@ -173,14 +173,25 @@ export class Traffic {
   this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0],outlineCounts=[0,0,0,0],crestRimCounts=[0,0,0,0];let shadowCount=0,lampCount=0,smokeCount=0;
   if(camera&&(time===0||time>=this.nextHintCheck)){this.hintCache.clear();this.nextHintCheck=time+TRAFFIC_OUTLINE.crestRefreshSeconds;}
   this.crestHints.forEach(h=>h.visible=false);let crestCount=0;
-  for(const a of this.actors){const outer=Math.min(5.25,Math.max(1.75,this.halfAt(a.distance)-1.75));a.lateral=a.stationary?(a.stopSide??1)*(this.halfAt(a.distance)-1.75):a.type===0?-1.75:a.type===1?outer:-outer;}
+  for(const a of this.actors){
+   const outer=Math.min(5.25,Math.max(1.75,this.halfAt(a.distance)-1.75));
+   a.lateral=a.id===INTERCHANGE_DEMO_CAR_ID&&this.junction?
+    interchangeDemoCarLateral(this.junction,a.distance,this.halfAt(a.distance)):
+    a.stationary?(a.stopSide??1)*(this.halfAt(a.distance)-1.75):a.type===0?-1.75:a.type===1?outer:-outer;
+  }
   this.lanes.update(time,this.actors,this.halfAt,{distance:player,lateral:playerLateral,speed:playerSpeed},id=>{const r=this.reactions.get(id);return !!r&&(r.touching||Math.abs(r.velocity)>.5||Math.abs(r.offset)>.4);});
   for(let i=0;i<this.actors.length;i++){
    const a=this.actors[i],spec=TRAFFIC_TYPES[a.type];const half=this.halfAt(a.distance),lanes=Math.max(2,Math.round(half*2/3.5));
+   const enteringFromRamp=a.id===INTERCHANGE_DEMO_CAR_ID&&!!this.junction;
+   if(enteringFromRamp&&this.junction){
+    a.lateral=interchangeDemoCarLateral(this.junction,a.distance,half);
+    a.changing=a.distance<this.junction.entry.end;
+    a.signal=a.changing&&Math.floor(time/.34)%2===0?-1:0;
+   }
    // Only at the one authored interchange, right-lane buses use the newly
    // available outside lane. The shift eases in AFTER the width is open and
    // eases out BEFORE the exit taper; the baseline maneuver AI stays intact.
-   if(this.junction&&!a.stationary){
+   if(this.junction&&!a.stationary&&!enteringFromRamp){
     // Preserve the original four physical lanes while the authoritative road
     // frame shifts 1.75m to the right for the joining fifth lane.
     a.lateral-=interchangeCenterOffset(this.junction,a.distance);
@@ -201,14 +212,18 @@ export class Traffic {
    a.lane=Math.max(0,Math.min(lanes-1,Math.round(a.lateral/3.5+(lanes-1)/2)));
    // Simple headway remains active during maneuvers and impact recovery.
    for(let j=0;!a.stationary&&j<i;j++){const leader=this.actors[j];const gap=Math.max(16,(spec.length+TRAFFIC_TYPES[leader.type].length)/2+6);if(Math.abs(a.lateral-leader.lateral)<2.7&&leader.distance-a.distance<gap){a.distance=leader.distance-gap;a.speed=Math.min(a.speed,leader.speed);if(reaction)reaction.boost=Math.min(0,reaction.boost);}}
-   const safeEdge=this.halfAt(a.distance)-Math.max(1.75,spec.width/2+Math.abs(reaction?.yaw??0)*spec.length/2+.12);const unclamped=a.lateral;a.lateral=THREE.MathUtils.clamp(a.lateral,-safeEdge,safeEdge);if(reaction){reaction.offset+=a.lateral-unclamped;if(dt>0){const old=previous.find(p=>p.id===a.id);reaction.slide=old?Math.abs(a.lateral-old.lateral)/dt:0;}}
+   const safeEdge=this.halfAt(a.distance)-Math.max(1.75,spec.width/2+Math.abs(reaction?.yaw??0)*spec.length/2+.12);const unclamped=a.lateral;
+   if(!enteringFromRamp||!this.junction||a.distance>=this.junction.entry.end)
+    a.lateral=THREE.MathUtils.clamp(a.lateral,-safeEdge,safeEdge);if(reaction){reaction.offset+=a.lateral-unclamped;if(dt>0){const old=previous.find(p=>p.id===a.id);reaction.slide=old?Math.abs(a.lateral-old.lateral)/dt:0;}}
    this.history.set(a.id,{distance:a.distance,speed:a.speed,time});a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2)&&(time===0||!!previous.find(old=>old.id===a.id)?.visible||Math.abs(a.distance-player)>80);if(!a.visible)continue;
    const p=this.sample(a.distance),front=this.sample(Math.min(this.length,a.distance+spec.axle)),rear=this.sample(Math.max(0,a.distance-spec.axle));
-   const frontY=front.position.y+front.right.y*a.lateral,rearY=rear.position.y+rear.right.y*a.lateral,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
-   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
+   const frontDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance+spec.axle):0;
+   const rearDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance-spec.axle):0;
+   const frontY=front.position.y+front.right.y*a.lateral+frontDrop,rearY=rear.position.y+rear.right.y*a.lateral+rearDrop,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
+   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035+(frontDrop+rearDrop)/2;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
    const height=trafficOutlineHeight(a.type),ahead=a.distance-player;
    let crestRisk=false;
-   if(camera&&ahead>TRAFFIC_OUTLINE.crestNear&&ahead<=TRAFFIC_OUTLINE.crestFar){
+   if(camera&&!enteringFromRamp&&ahead>TRAFFIC_OUTLINE.crestNear&&ahead<=TRAFFIC_OUTLINE.crestFar){
     if(!this.hintCache.has(a.id)){
      // Test sight to the LOWER body: the roof can already be visible on the crest
      // while the rear bumper and wheels are still hidden by the near road surface.
@@ -262,7 +277,7 @@ export class Traffic {
  hit(time:number,s:DrivingState,previous:{distance:number;lateral:number},dt:number,halfWidth=1.55,halfLength=2.8,heading=0):TrafficCollision|undefined {
   let event:TrafficCollision|undefined;
   for(const a of this.actors){
-   if(!a.visible||!a.previousVisible)continue;
+   if(!a.visible||!a.previousVisible||(this.junction&&a.id===INTERCHANGE_DEMO_CAR_ID&&a.distance<this.junction.entry.end))continue;
    const spec=TRAFFIC_TYPES[a.type],r=this.reactions.get(a.id);
    // Conservative yaw envelopes keep the visible bodies apart throughout the response.
    const width=halfWidth*Math.abs(Math.cos(heading))+halfLength*Math.abs(Math.sin(heading))+spec.width/2*Math.abs(Math.cos(r?.yaw??0))+spec.length/2*Math.abs(Math.sin(r?.yaw??0))+.12,length=halfLength*Math.abs(Math.cos(heading))+halfWidth*Math.abs(Math.sin(heading))+spec.length/2*Math.abs(Math.cos(r?.yaw??0))+spec.width/2*Math.abs(Math.sin(r?.yaw??0))+.12;
