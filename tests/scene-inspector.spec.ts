@@ -37,11 +37,12 @@ test('PS4 X / O and D-pad can navigate QA without affecting ordinary menu mappin
   Object.defineProperty(navigator,'getGamepads',{value:()=>[(window as any).pad]});
  });
  await page.goto('/?qa=1&seed=1');await page.bringToFront();
+ // Wait for actual controller polls; software-rendered QA frames may exceed 170ms.
  const pulse=async(i:number)=>{
   await page.evaluate(i=>(window as any).pad.buttons[i]={pressed:true,value:1},i);
-  await page.waitForTimeout(170);
+  await expect.poll(()=>page.evaluate(()=>document.querySelector('#gamepad-diagnostic')?.textContent),{timeout:15000}).toContain(`changed: ${i}:down`);
   await page.evaluate(i=>(window as any).pad.buttons[i]={pressed:false,value:0},i);
-  await page.waitForTimeout(170);
+  await expect.poll(()=>page.evaluate(()=>document.querySelector('#gamepad-diagnostic')?.textContent),{timeout:15000}).toContain(`changed: ${i}:up`);
  };
  await page.locator('#scene-inspector-launcher').click();
  await expect(page.locator('#scene-inspector')).toBeVisible();
@@ -49,16 +50,7 @@ test('PS4 X / O and D-pad can navigate QA without affecting ordinary menu mappin
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  const original=await page.locator('#si-info').textContent();
  await pulse(15); // Right -> next actual clock site while QA panel has focus
- console.log('PS4 QA DIAGNOSTIC',JSON.stringify(await page.evaluate(()=>({
-   focused:document.hasFocus(),hidden:document.hidden,
-   pad:navigator.getGamepads?.()?.[0]?.id,
-   padState:(window as any).pad.buttons[15],
-   gamepadDiagnostic:document.querySelector('#gamepad-diagnostic')?.textContent,
-   gamepadStatus:document.querySelector('#gamepad-status')?.textContent,
-   inputMode:document.documentElement.dataset.inputMode,
-   inspectorHidden:(document.querySelector('#scene-inspector') as HTMLElement).hidden,
-   mode:(window as any).__drive.snapshot().mode,
- }))));
+
  await expect(page.locator('#si-info')).not.toHaveText(original??'');
  await pulse(14); // Left -> original clock site
  await expect(page.locator('#si-info')).toHaveText(original??'');
