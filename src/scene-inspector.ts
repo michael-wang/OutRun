@@ -1,5 +1,5 @@
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
-export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown';
+export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction';
 export interface InspectorStop {
  id:string;kind:InspectorKind;label:string;distance:number;
  landmarkDistance?:number;companions?:number;
@@ -8,6 +8,7 @@ export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'clock',label:'鐘塔街區'},{kind:'lighthouse',label:'海岸燈塔'},
  {kind:'canyon-arch',label:'山區地標'},{kind:'city-grade',label:'城市坡度'},
  {kind:'bridge',label:'橋梁兩端'},{kind:'breakdown',label:'故障車'},
+ {kind:'junction',label:'匯入／出口'},
 ];
 export function canStepBack(distance:number,roadExists:(distance:number)=>boolean,length:number){
  return Number.isFinite(distance)&&distance>=0&&distance<length&&roadExists(distance);
