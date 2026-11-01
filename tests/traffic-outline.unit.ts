@@ -27,6 +27,12 @@ it('keeps the thin rim proportional and bounded on mobile',()=>{
  expect(trafficOutlineRadius(200,47,412)).toBeCloseTo(expected);
  expect(trafficOutlineRadius(600,47,412)).toBe(.52);
 });
+it('red risk rims are wider than ordinary chartreuse without changing green thickness',()=>{
+ const distant=trafficOutlineRadius(190,47,412);
+ expect(TRAFFIC_OUTLINE.pixels).toBe(1);
+ expect(TRAFFIC_OUTLINE.crestRimScale).toBeGreaterThan(1);
+ expect(distant*TRAFFIC_OUTLINE.crestRimScale).toBeGreaterThan(distant*1.5);
+});
 it('distant outline rim fades to zero before the car becomes a near obstacle',()=>{
  expect(trafficOutlineStrength(-10)).toBe(0);
  expect(trafficOutlineStrength(TRAFFIC_OUTLINE.nearCutoffMeters)).toBe(0);
@@ -34,18 +40,19 @@ it('distant outline rim fades to zero before the car becomes a near obstacle',()
  expect(trafficOutlineStrength(TRAFFIC_OUTLINE.fullStrengthMeters)).toBe(1);
  expect(trafficOutlineStrength(1000)).toBe(1);
 });
-it('crest hints cover only 20–150m of road-hidden traffic, not distant vehicles',()=>{
+it('crest hints cover only 20–220m of road-hidden traffic, not distant vehicles',()=>{
  const half=()=>7;
  const hill=(d:number)=>8*Math.exp(-(((d-35)/12)**2));
  const target=(d:number)=>new THREE.Vector3(0,1.5,d);
- expect(TRAFFIC_OUTLINE.crestFar).toBe(150);
+ expect(TRAFFIC_OUTLINE.crestFar).toBe(220);
+ expect(TRAFFIC_OUTLINE.crestRimScale).toBe(1.65);
  expect(TRAFFIC_OUTLINE.nearCutoffMeters).toBe(90); // visible rim still disappears at 90m
  expect(roadHidesVehicle(road(()=>0),half,0,140,eye,target(140))).toBe(false);
- for(const distance of [70,90,91,130,149,150]){
+ for(const distance of [70,90,91,130,149,150,180,200,219,220]){
   expect(roadHidesVehicle(road(hill),half,0,distance,eye,target(distance))).toBe(true);
  }
  expect(roadHidesVehicle(road(hill,55),half,0,130,eye,target(130))).toBe(false);
- for(const distance of [19,151,220]){
+ for(const distance of [19,221,300]){
   expect(roadHidesVehicle(road(hill),half,0,distance,eye,target(distance))).toBe(false);
  }
 });
@@ -99,15 +106,15 @@ it('traffic reuses four outline instances and resets all optional crest hints',(
  traffic.dispose();expect(outlines.every(m=>m.parent===null)).toBe(true);
 });
 
-it('crest hint pool stays silent beyond 150m then reveals a hidden car at 130m',()=>{
+it('crest hint pool stays silent beyond 220m then reveals a hidden car at 190m',()=>{
  const scene=new THREE.Scene(),first=trafficRecipe(1,69000)[0];
  const humpAt=first.distance-35;
  const sample=(d:number)=>({...road(q=>9*Math.exp(-(((q-humpAt)/14)**2)))(d),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
  const traffic=new Traffic(scene,sample as any,()=>7,69000,1),camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
- const farPlayer=first.distance-170;
+ const farPlayer=first.distance-245;
  camera.position.set(0,3.6,farPlayer-8);traffic.update(0,farPlayer,0,0,camera,412);
  expect(traffic.inspect().crestHints).toBe(0);
- const nearPlayer=first.distance+first.speed*.2-130;
+ const nearPlayer=first.distance+first.speed*.2-190;
  camera.position.set(0,3.6,nearPlayer-8);traffic.update(.2,nearPlayer,0,0,camera,412);
  expect(traffic.inspect().crestHints).toBeGreaterThan(0);
  const active=scene.children.filter(o=>o.name.startsWith('vehicle-crest-hint')&&o.visible) as THREE.LineSegments[];
@@ -125,7 +132,7 @@ it('near-outline cutoff never interrupts the driving loop or hill warning checks
  const camera=new THREE.PerspectiveCamera(47,915/412,.1,1400);
  const first=trafficRecipe(1,69000)[0].distance;
  let sawFar=false,sawNear=false;
- // The first traffic group passes through the visible-outline range and the 150m crest window.
+ // The first traffic group passes through the visible-outline range and the 220m crest window.
  for(let frame=0;frame<240;frame++){
   const time=frame/20,player=first-270+time*60;
   camera.position.set(0,3.6,player-8);
