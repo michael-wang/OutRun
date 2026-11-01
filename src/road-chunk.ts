@@ -52,7 +52,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));const rocky=rockyAt(d,Math.sign(o),rocks);if(rocky&&Math.abs(o)>7)color.lerp(new THREE.Color('#927658'),rockNode(d,rocky).blend);colors.push(color.r,color.g,color.b);}
   }}
   for(let i=0;i<n;i++){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
-  out.push({kind,...(seamless?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
+  out.push({kind,...(seamless&&kind!=='support'?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
  };
  append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}else append('sand',-13,13,-.1,-.1,start,end,2.5);
  append('grass',13,75,-.12,-3,start,end,10);append('grass',75,160,-3,-14,start,end,10);
