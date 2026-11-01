@@ -4,6 +4,9 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 // A roughly one-pixel silhouette at Pixel 8 rendering resolution. No post-processing pass.
 export const TRAFFIC_OUTLINE = Object.freeze({
  pixels:1.25,
+ // Gameplay distance along the road: near traffic should keep its natural silhouette.
+ nearCutoffMeters:90,
+ fullStrengthMeters:160,
  minimumMeters:.035,
  maximumMeters:.65,
  crestNear:20,
@@ -30,6 +33,13 @@ export function trafficOutlineGeometry(type:number):THREE.BufferGeometry{
 }
 
 /** Expanding a back-face-only hull in world units gives an approximately fixed screen-pixel rim. */
+/** Only far-ahead traffic is highlighted; the rim gently shrinks away on approach. */
+export function trafficOutlineStrength(distanceAhead:number){
+ const span=TRAFFIC_OUTLINE.fullStrengthMeters-TRAFFIC_OUTLINE.nearCutoffMeters;
+ const t=THREE.MathUtils.clamp((distanceAhead-TRAFFIC_OUTLINE.nearCutoffMeters)/span,0,1);
+ return t*t*(3-2*t);
+}
+
 export function trafficOutlineRadius(distance:number,fovDegrees:number,viewportHeight:number){
  const unitsPerPixel=2*Math.tan(fovDegrees*Math.PI/360)*Math.max(1,distance)/Math.max(1,viewportHeight);
  return THREE.MathUtils.clamp(unitsPerPixel*TRAFFIC_OUTLINE.pixels,TRAFFIC_OUTLINE.minimumMeters,TRAFFIC_OUTLINE.maximumMeters);
