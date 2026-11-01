@@ -3,18 +3,7 @@ import * as THREE from 'three';
 import {addJourneyScenery,CANYON_ARCH,canyonArchProfile,planJourneyLandmarks} from '../src/scenery';
 import {generateTrip} from '../src/trip';
 import {createPilotTrack,pilotWeights} from '../src/pilot-composer';
-import {chaseComposition,chaseTargets} from '../src/chase';
-
-const sight=(sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3;roadHeading:number;tangent:THREE.Vector3},site:number)=>{
- const stop=site-210,pose=sample(stop),arch=sample(site);
- const aspect=1705/863,camera=new THREE.PerspectiveCamera(chaseComposition(aspect).fov,aspect,1,2200);
- const grade=pose.tangent.y/Math.hypot(pose.tangent.x,pose.tangent.z);
- const targets=chaseTargets(pose.position,pose.roadHeading,aspect,grade);
- camera.position.copy(targets.eye);camera.lookAt(targets.look);camera.updateMatrixWorld(true);
- const target=arch.position.clone().addScaledVector(arch.right,CANYON_ARCH.offset);
- target.y=arch.position.y+CANYON_ARCH.springHeight+CANYON_ARCH.rise*.5;
- return target.project(camera);
-};
+import {canyonArchInspectionDistance,canyonArchProjection} from '../src/canyon-arch-preview';
 
 it('large canyon arch is on tall grounded feet with an identifiable open crown',()=>{
  expect(CANYON_ARCH.offset).toBeLessThan(58);
@@ -55,7 +44,10 @@ it('actual mountain landmarks are projected ahead, not off-screen at the QA stop
   const sites=planJourneyLandmarks(track.length,d=>pilotWeights(trip,d)).filter(s=>s.kind==='canyon-arch');
   expect(sites.length).toBeGreaterThanOrEqual(2);
   for(const site of sites){
-   const projected=sight(track.sample,site.distance);
+   const from=canyonArchInspectionDistance(track.sample,site.distance);
+   const projected=canyonArchProjection(track.sample,site.distance,from);
+   expect(from).toBeGreaterThanOrEqual(site.distance-400);
+   expect(from).toBeLessThanOrEqual(site.distance-140);
    expect(projected.z).toBeLessThan(1);
    expect(projected.x, `seed ${seed} arch ${site.distance}m x=${projected.x.toFixed(2)}`).toBeGreaterThan(-.95);
    expect(projected.x, `seed ${seed} arch ${site.distance}m x=${projected.x.toFixed(2)}`).toBeLessThan(.95);
