@@ -1,14 +1,15 @@
+import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,type RoadFeature,type RoadFeatureKind} from './road-features';
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
-export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction';
+export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature';
 export interface InspectorStop {
  id:string;kind:InspectorKind;label:string;distance:number;
- landmarkDistance?:number;companions?:number;
+ landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;
 }
 export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'clock',label:'鐘塔街區'},{kind:'lighthouse',label:'海岸燈塔'},
  {kind:'canyon-arch',label:'山區地標'},{kind:'city-grade',label:'城市坡度'},
  {kind:'bridge',label:'橋梁兩端'},{kind:'breakdown',label:'故障車'},
- {kind:'junction',label:'匯入／出口'},
+ {kind:'junction',label:'匯入／出口'},{kind:'road-feature',label:'道路特徵'},
 ];
 export function canStepBack(distance:number,roadExists:(distance:number)=>boolean,length:number){
  return Number.isFinite(distance)&&distance>=0&&distance<length&&roadExists(distance);
@@ -29,6 +30,8 @@ export class SceneInspector {
  private readonly audit:HTMLElement;
  private readonly driveButton:HTMLButtonElement;
  private readonly categoryButtons=new Map<InspectorKind,HTMLButtonElement>();
+ private readonly featureButtons=new Map<'all'|RoadFeatureKind,HTMLButtonElement>();
+ private featureFilter:'all'|RoadFeatureKind='all';
  private kind:InspectorKind='clock';
  private viewMode:'road'|'side'='road';
  private currentIndex=0;
@@ -46,6 +49,7 @@ export class SceneInspector {
   this.panel.setAttribute('role','dialog');this.panel.setAttribute('aria-label','場景檢查');
   this.panel.innerHTML=`<h2>場景檢查 <small>僅 QA</small></h2>
    <div class="si-categories" id="si-categories"></div>
+    <div class="si-feature-filters" id="si-feature-filters" aria-label="道路特徵種類" hidden></div>
    <div class="si-info" id="si-info"></div>
    <div class="si-row">
     <button type="button" data-si="prev">◀ 上一處</button><button type="button" data-si="next">下一處 ▶</button>
@@ -75,7 +79,17 @@ export class SceneInspector {
    button.addEventListener('click',()=>this.setCategory(kind));
    this.panel.querySelector('#si-categories')!.append(button);this.categoryButtons.set(kind,button);
   }
-  // The left/right controls have real global QA shortcuts; close uses Esc/○.
+  // A compact filter is only shown when Road Features is selected.
+   for(const kind of ['all',...ROAD_FEATURE_KINDS] as ('all'|RoadFeatureKind)[]){
+    const count=this.stops.filter(s=>s.kind==='road-feature'&&(kind==='all'||s.roadFeature?.kind===kind)).length;
+    const button=document.createElement('button');
+    button.type='button';button.dataset.siFeature=kind;
+    button.textContent=`${kind==='all'?'全部':ROAD_FEATURE_LABELS[kind]} (${count})`;
+    button.disabled=count===0;button.setAttribute('aria-pressed',String(kind==='all'));
+    button.addEventListener('click',()=>this.setFeatureFilter(kind));
+    this.panel.querySelector('#si-feature-filters')!.append(button);this.featureButtons.set(kind,button);
+   }
+   // The left/right controls have real global QA shortcuts; close uses Esc/○.
   for(const [action,key,pad] of [
    ['prev','←','◀'],['next','→','▶'],['close','Esc','○'],
   ]){const button=this.button(action);button.dataset.keyHint=key;button.dataset.padHint=pad;}
@@ -96,7 +110,8 @@ export class SceneInspector {
   this.setCategory('clock',false);
  }
  private button(name:string){return this.panel.querySelector<HTMLButtonElement>(`[data-si="${name}"]`)!;}
- private byKind(kind:InspectorKind){return this.stops.filter(s=>s.kind===kind);}
+ private byKind(kind:InspectorKind){return this.stops.filter(s=>s.kind===kind&&
+  (kind!=='road-feature'||this.featureFilter==='all'||s.roadFeature?.kind===this.featureFilter));}
  private selected(){return this.byKind(this.kind)[this.currentIndex];}
  get isOpen(){return !this.panel.hidden;}
  open(){this.callbacks.pause();this.panel.hidden=false;this.toggle.setAttribute('aria-expanded','true');this.setView('road');this.refresh(true);this.categoryButtons.get(this.kind)?.focus();}
@@ -107,9 +122,16 @@ export class SceneInspector {
   this.button('view-side').setAttribute('aria-pressed',String(mode==='side'));
   this.callbacks.view(mode);
  }
+ private setFeatureFilter(filter:'all'|RoadFeatureKind){
+  this.featureFilter=filter;this.currentIndex=0;
+  for(const [kind,button] of this.featureButtons)button.setAttribute('aria-pressed',String(kind===filter));
+  const first=this.selected();
+  if(first)this.jumpTo(first.distance);else this.refresh(true);
+ }
  private setCategory(kind:InspectorKind,jump=true){
   this.scanToken++;this.scanning=false;this.scanSummary='';this.kind=kind;this.currentIndex=0;
   for(const [k,button] of this.categoryButtons)button.setAttribute('aria-pressed',String(k===kind));
+  this.panel.querySelector<HTMLElement>('#si-feature-filters')!.hidden=kind!=='road-feature';
   const site=this.selected();if(site&&jump)this.jumpTo(site.distance);
   else this.refresh(true);
  }
@@ -138,7 +160,7 @@ export class SceneInspector {
   if(!this.isOpen&&!force)return;
   const ready=this.callbacks.ready(),site=this.selected(),entries=this.byKind(this.kind);
   const distance=Math.round(this.callbacks.current());
-  const key=`${ready}:${site?.id??'none'}:${distance}:${this.scanSummary}`;
+  const key=`${ready}:${site?.id??'none'}:${distance}:${this.featureFilter}:${this.scanSummary}`;
   if(!force&&key===this.lastRenderKey)return;
   this.lastRenderKey=key;
   if(force||ready!==this.previousReady){
@@ -155,7 +177,14 @@ export class SceneInspector {
    this.audit.textContent=report?
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
-  }else this.audit.textContent='';
+  }else if(site?.kind==='road-feature'&&site.roadFeature){
+    const f=site.roadFeature,scene={city:'城市',coast:'海岸',canyon:'山區'}[f.biome];
+    const bearing=f.direction?({'left':'左','right':'右'} as const)[f.direction]:'';
+    const detail=f.kind==='merge'||f.kind==='exit'?` · ${f.lanesBefore}→${f.lanesAfter} 車道`:
+     f.kind==='s-bends'?` · ${f.turns} 個轉向（${f.pattern}）`:
+     f.turnDegrees?` · ${bearing}轉約 ${f.turnDegrees}°`:'';
+    this.audit.textContent=`R0 已辨識：${ROAD_FEATURE_LABELS[f.kind]} · ${scene} · ${Math.round(f.start)}–${Math.round(f.end)}m${detail}。僅分類，不修改風景。`;
+   }else this.audit.textContent='';
  }
  private async copyPosition(){
   const url=new URL(location.href);
