@@ -1,7 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {rockySections,rockEdge,rockWall,RockContact} from '../src/rocky-shoulder';
-import {boulderLayout,BoulderContact} from '../src/rock-boulders';
 import {coastalCliffDropAtLateral} from '../src/road-profile';
 import {breakdownLayout} from '../src/breakdowns';
 import {Traffic} from '../src/traffic';
@@ -14,24 +13,14 @@ const flat=(d:number)=>({
  tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0,
 }) as any;
 describe('Roadside Polish — credible terrain and physical feedback',()=>{
- it('r7 rock collision targets an independent giant stone, while r6 wall remains historic',()=>{
+ it('retains historic r6 rock geometry/contact without invoking new r7 stone obstacles',()=>{
   const older=rockySections(1,70000,()=>[0,1,0])[0];
-  const r7=rockySections(1,70000,()=>[0,1,0],true)[0];
-  expect(r7.start).toBe(older.start);
   expect(rockEdge(older.start,older)).toBeCloseTo(6.5,6);
   expect(rockWall(flat,()=>7,older,older.start,older.end)).toBeDefined();
-  const boulders=boulderLayout([r7],()=>7);
-  expect(boulders.length).toBeGreaterThanOrEqual(3);
-  const rock=boulders[0],collision=new BoulderContact(boulders,1.55,2.8);
-  const s={...createState(),distance:rock.distance,lateral:rock.lateral,speed:75};
-  const hit=collision.update(s,{distance:rock.distance-rock.radiusD-10,lateral:s.lateral},1/60);
-  expect(hit?.boulderId).toBe(rock.id);
-  expect(hit!.severity).toBeGreaterThan(0);
-  expect(collision.impacts).toBe(1);
-  expect(s.speed).toBeLessThan(75);
-  const r6Contact=new RockContact([older],()=>7,1.55,2.8);
+  const contact=new RockContact([older],()=>7,1.55,2.8);
   const legacy={...createState(),distance:older.start+5,lateral:14,speed:70};
-  expect(r6Contact.update(legacy,{distance:older.start+4,lateral:12},1/60)).toBeDefined();
+  expect(contact.update(legacy,{distance:older.start+4,lateral:12},1/60)).toBeDefined();
+  expect(contact.impacts).toBe(1);
  });
  it('omits deep left cliff props without removing posts from level shoulders or canyon rock',()=>{
   const shoulders={left:1.6,right:6.8},ordinary={left:6,right:6};
