@@ -96,6 +96,14 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await page.locator('[data-si-category="city-grade"]').click();
  await expect(page.locator('#si-info')).toContainText('坡度');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ await page.locator('[data-si-category="canyon-arch"]').click();
+ await expect(page.locator('#si-info')).toContainText('右側巨型砂岩拱門');
+ await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ const text=await page.locator('#si-info').textContent();
+ const match=/拱門 · (\d+)m.*目前 (\d+)m/.exec(text??'');
+ expect(match).not.toBeNull();
+ expect(Number(match![1])-Number(match![2])).toBeGreaterThanOrEqual(140);
+ expect(Number(match![1])-Number(match![2])).toBeLessThanOrEqual(400);
  await page.locator('[data-si="drive"]').click();
  await expect(panel).toBeHidden();
  expect(await page.evaluate(()=>(window as any).__drive.snapshot().mode)).toBe('playing');
