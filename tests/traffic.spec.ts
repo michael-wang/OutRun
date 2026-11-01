@@ -31,3 +31,30 @@ test('traffic seed/replay, contact slowdown, streamed geometry and historical ro
  writeFileSync(`${root}/contacts.json`,JSON.stringify(contactRows,null,2));
  await page.goto('/?stage=1');await stageReady(page);expect(await inspect()).toBeUndefined();
 });
+
+test('mobile A/B outline color button switches live and stays out of menus',async({browser})=>{
+ test.setTimeout(90000);
+ const context=await browser.newContext({viewport:{width:915,height:412},deviceScaleFactor:2.625,isMobile:true,hasTouch:true,serviceWorkers:'block'});
+ try{
+  const page=await context.newPage(),button=page.locator('#outline-color-toggle');
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('/?seed=1&playerui=1');await expect(button).toBeHidden();
+  await stageReady(page);
+  await page.locator('#player-play').tap();
+  await expect(button).toBeVisible();
+  await expect(button).toHaveAttribute('data-color','yellow');
+  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('yellow');
+  const box=await button.boundingBox();
+  expect(box).not.toBeNull();expect(box!.x).toBeGreaterThan(600);
+  await button.tap();
+  await expect(button).toHaveAttribute('data-color','chartreuse');
+  await expect(button).toContainText('黃綠');
+  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('chartreuse');
+  expect(await page.evaluate(()=>(window as any).__drive.snapshot().mode)).toBe('playing');
+  await button.tap();
+  await expect(button).toHaveAttribute('data-color','yellow');
+  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('yellow');
+  await page.locator('#pause').tap();await expect(button).toBeHidden();
+  expect(errors).toEqual([]);
+ }finally{await context.close();}
+});
