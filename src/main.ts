@@ -626,9 +626,12 @@ if(params.get('qa')==='1'&&trip){
  const stops:InspectorStop[]=[];
  const landmarks=planJourneyLandmarks(world.length,d=>world.weightsAt(d),world.bridge);
  for(const site of landmarks){
-  const name=site.kind==='clock'?'鐘塔街區':site.kind==='lighthouse'?'海岸燈塔':'山區拱門';
+  const name=site.kind==='clock'?'鐘塔街區':site.kind==='lighthouse'?'海岸燈塔':'右側巨型砂岩拱門';
+  // Give the big canyon silhouette a longer approach so it reads in the
+  // normal forward camera, even through winding sections.
+  const approach=site.kind==='canyon-arch'?210:140;
   stops.push({id:`${site.kind}-${site.distance}`,kind:site.kind,label:`${name} · ${site.distance}m`,
-   distance:Math.max(350,site.distance-140),landmarkDistance:site.distance,companions:site.companions});
+   distance:Math.max(350,site.distance-approach),landmarkDistance:site.distance,companions:site.companions});
  }
  // Sample grade inside actual city beats, avoiding a list of authored but invisible hills.
  for(const beat of trip.beats.filter(b=>b.world==='city')){
