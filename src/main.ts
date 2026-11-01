@@ -492,7 +492,7 @@ for(const [id,key,pad] of [
  const node=document.getElementById(id);
  if(node){node.dataset.keyHint=key;node.dataset.padHint=pad;}
 }
-for(const vote of document.querySelectorAll<HTMLButtonElement>('#l2-lab [data-l2-vote]')){
+for(const vote of Array.from(document.querySelectorAll<HTMLButtonElement>('#l2-lab [data-l2-vote]'))){
  vote.dataset.keyHint=({KEEP:'K',REWORK:'W',REJECT:'X'} as Record<string,string>)[vote.dataset.l2Vote!]??'';
  vote.dataset.padHint='✕';
 }
