@@ -652,8 +652,8 @@ if(params.get('qa')==='1'&&trip){
  }
  if(world.junction){
   const j=world.junction;
-  stops.push({id:'junction-entry',kind:'junction',label:'右側匯入道路 · 4→6 車道',distance:Math.max(350,j.entry.start-220),landmarkDistance:j.entry.start});
-  stops.push({id:'junction-exit',kind:'junction',label:'右側出口分岔 · 6→4 車道',distance:Math.max(350,j.exit.start-220),landmarkDistance:j.exit.start});
+  stops.push({id:'junction-entry',kind:'junction',label:'右側匯入道路 · 4→5 車道',distance:Math.max(350,j.entry.start-220),landmarkDistance:j.entry.start});
+  stops.push({id:'junction-exit',kind:'junction',label:'右側出口分岔 · 5→4 車道',distance:Math.max(350,j.exit.start-220),landmarkDistance:j.exit.start});
  }
  if(world.bridge){
   const b=world.bridge;
