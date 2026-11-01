@@ -117,6 +117,15 @@ export function interchangeWallTop(site:RoadInterchange,kind:RampKind,d:number){
 export function interchangeWallVisible(site:RoadInterchange,d:number){
  return (['entry','exit'] as const).some(kind=>(interchangeWallTop(site,kind,d)??-Infinity)>1);
 }
+/** A single reproducible safe demonstration car: the vehicle starts on the
+ * lower feeder, rises along its center and joins the actual rightmost lane.
+ * There is no new lane-change AI, and it cannot collide before reaching
+ * the highway proper. */
+export const INTERCHANGE_DEMO_CAR_ID=-17240;
+export function interchangeDemoCarLateral(site:RoadInterchange,d:number,half:number){
+ const r=interchangeRampAt(site,'entry',d);
+ return r?half+r.gap-r.overlap+r.width*.5:half-RAMP_WIDTH/2;
+}
 export function interchangeRailOpening(site:RoadInterchange,d:number,side:-1|1){
  if(side!==1)return false;
  const entry=interchangeRampSpan(site,'entry'),exit=interchangeRampSpan(site,'exit');
