@@ -29,7 +29,8 @@ export class SceneInspector {
  private readonly categoryButtons=new Map<InspectorKind,HTMLButtonElement>();
  private kind:InspectorKind='clock';
  private currentIndex=0;
- private previousReady=false;
+ private previousReady=false;private lastRenderKey='';
+ private scanToken=0;private scanSummary='';private scanning=false;
  constructor(private root:HTMLElement,private stops:InspectorStop[],private length:number,
   private callbacks:InspectorCallbacks,private seed:number) {
   this.toggle=document.createElement('button');this.toggle.id='scene-inspector-launcher';
@@ -49,6 +50,7 @@ export class SceneInspector {
    </div>
    <div class="si-status" id="si-status" role="status"></div>
    <div class="si-audit" id="si-audit"></div>
+   <div class="si-row"><button type="button" data-si="scan">掃描全部鐘塔配套</button></div>
    <div class="si-row">
     <button type="button" data-si="drive">▶ 試駕</button><button type="button" data-si="close">關閉</button>
    </div>
@@ -68,6 +70,7 @@ export class SceneInspector {
   for(const [action,fn] of Object.entries({
    prev:()=>this.step(-1),next:()=>this.step(1),
    back:()=>this.move(-100),forward:()=>this.move(100),
+   scan:()=>{void this.scanAllClocks();},
    drive:()=>{if(this.callbacks.ready()){this.close();this.callbacks.drive();}},
    close:()=>this.close(),
   }))this.button(action).addEventListener('click',fn);
@@ -83,9 +86,9 @@ export class SceneInspector {
  private selected(){return this.byKind(this.kind)[this.currentIndex];}
  get isOpen(){return !this.panel.hidden;}
  open(){this.callbacks.pause();this.panel.hidden=false;this.toggle.setAttribute('aria-expanded','true');this.refresh(true);this.categoryButtons.get(this.kind)?.focus();}
- close(){this.panel.hidden=true;this.toggle.setAttribute('aria-expanded','false');this.toggle.focus();}
+ close(){this.scanToken++;this.scanning=false;this.panel.hidden=true;this.toggle.setAttribute('aria-expanded','false');this.toggle.focus();}
  private setCategory(kind:InspectorKind,jump=true){
-  this.kind=kind;this.currentIndex=0;
+  this.scanToken++;this.scanning=false;this.scanSummary='';this.kind=kind;this.currentIndex=0;
   for(const [k,button] of this.categoryButtons)button.setAttribute('aria-pressed',String(k===kind));
   const site=this.selected();if(site&&jump)this.jumpTo(site.distance);
   else this.refresh(true);
@@ -113,13 +116,17 @@ export class SceneInspector {
  refresh(force=false){
   if(!this.isOpen&&!force)return;
   const ready=this.callbacks.ready(),site=this.selected(),entries=this.byKind(this.kind);
+  const distance=Math.round(this.callbacks.current());
+  const key=`${ready}:${site?.id??'none'}:${distance}:${this.scanSummary}`;
+  if(!force&&key===this.lastRenderKey)return;
+  this.lastRenderKey=key;
   if(force||ready!==this.previousReady){
    this.status.textContent=ready?'✓ 道路與風景已載入，可以試駕。':'正在載入目標道路與風景…';
    this.previousReady=ready;
   }
   this.driveButton.disabled=!ready;
-  const distance=Math.round(this.callbacks.current());
   this.info.textContent=site?`${site.label} · ${this.currentIndex+1}/${entries.length} · 目前 ${distance}m`:`目前 ${distance}m · 無此類場景`;
+  if(this.scanSummary){this.audit.textContent=this.scanSummary;return;}
   if(site?.kind==='clock'){
    const report=ready?this.callbacks.clockAudit(site):null;
    const completed=this.byKind('clock').length;
@@ -127,6 +134,33 @@ export class SceneInspector {
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。載入後檢查實際模型。`;
   }else this.audit.textContent='';
+ }
+ /** Automatically visits every generated clock; checks instances actually attached
+  * by the streaming worker rather than trusting the landmark plan alone. */
+ async scanAllClocks(){
+  if(this.scanning)return;
+  const clocks=this.byKind('clock'),token=++this.scanToken,failures:string[]=[];
+  this.scanning=true;this.kind='clock';this.scanSummary='';this.currentIndex=0;
+  for(let i=0;i<clocks.length;i++){
+   if(token!==this.scanToken||!this.isOpen)break;
+   this.currentIndex=i;
+   this.jumpTo(clocks[i].distance);
+   this.scanSummary=`正在檢查鐘塔 ${i+1}/${clocks.length}…`;
+   this.refresh(true);
+   let frames=0;
+   while(token===this.scanToken&&!this.callbacks.ready()&&frames<500){
+    await new Promise<void>(resolve=>setTimeout(resolve,60));frames++;
+   }
+   if(token!==this.scanToken||!this.isOpen)break;
+   const result=this.callbacks.ready()?this.callbacks.clockAudit(clocks[i]):null;
+   if(!result||!clockAuditPass(result))failures.push(`${clocks[i].landmarkDistance??clocks[i].distance}m`);
+  }
+  if(token!==this.scanToken)return;
+  this.scanning=false;
+  this.scanSummary=failures.length?
+   `⚠ ${clocks.length} 座鐘塔有 ${failures.length} 處未通過：${failures.join('、')}。可用上一處／下一處查看。`:
+   `✓ ${clocks.length} 座鐘塔已逐一載入，鐘面與每座 3 棟配套建築均通過。`;
+  this.refresh(true);
  }
  /** Routed from the existing standard PS4 controller mapping. */
  control(action:'confirm'|'back'|'pause'|'up'|'down'|'left'|'right'){
