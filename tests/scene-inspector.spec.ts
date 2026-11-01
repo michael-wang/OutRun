@@ -152,6 +152,11 @@ test('PS4 X / O and D-pad can navigate QA without affecting ordinary menu mappin
  await pulse(13); // Down through ordinary paused-menu focus
  const dockFocus=await page.evaluate(()=>document.activeElement?.id);
  expect(['tp-resume','tp-more','scene-inspector-launcher']).toContain(dockFocus);
+ await page.locator('#tp-more').click(); // Expand ordinary pause commands
+ await expect(page.locator('#tp-actions')).toBeVisible();
+ await pulse(1); // PS4 O collapses extras without restarting or leaving pause
+ await expect(page.locator('#tp-actions')).toBeHidden();
+ await expect(page.locator('#trip-pause-dock')).toBeVisible();
 });
 test('public play never includes the QA inspector even on the same seed',async({page})=>{
  await page.goto('/?seed=1');
