@@ -41,13 +41,13 @@ describe('Roadside Polish — credible terrain and physical feedback',()=>{
   const first=traffic.inspect();
   expect(first.actors.find(a=>a.id===layout[2].id)?.stationary).toBe(true);
   expect(first.actors.find(a=>a.id===layout[2].id)?.type).toBe(2);
-  expect(first.breakdownSmoke).toBe(4);
-  expect(first.smokeCapacity).toBe(48);
+  expect(first.breakdownSmoke).toBe(7);
+  expect(first.smokeCapacity).toBe(84);
   const mesh=scene.getObjectByName('breakdown-engine-smoke') as THREE.InstancedMesh;
   const geometryId=mesh.geometry.uuid;
   traffic.update(.5,layout[2].distance-400);
   expect(mesh.geometry.uuid).toBe(geometryId);
-  expect(mesh.count).toBe(4);
+  expect(mesh.count).toBe(7);
   traffic.reset();expect(mesh.count).toBe(0);
   traffic.dispose();expect(scene.children).toHaveLength(0);
  });

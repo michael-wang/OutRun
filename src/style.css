@@ -229,3 +229,57 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
  #stream-health-hud .sh-details{margin-top:4px;font-size:9px}
  #stream-health-hud .sh-foot{margin-top:4px;padding-top:3px}
 }
+
+/* Explicit ?qa=1 only: scene inspection never enters the public driving HUD. */
+#scene-inspector-launcher{
+ position:fixed;z-index:98;top:max(12px,env(safe-area-inset-top));
+ right:max(20px,env(safe-area-inset-right));
+ min-height:44px;padding:9px 13px;
+ border:1px solid #ffe0a2c9;border-radius:9px;background:#143c47ec;color:#fff1d4;
+ font:700 13px system-ui;
+}
+#scene-inspector{
+ position:fixed;z-index:100;top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));
+ width:min(360px,92vw);max-height:calc(100dvh - 20px);overflow:auto;
+ padding:13px 15px;background:#102d39f2;color:#f5f5e8;
+ border:1px solid #cfdfd8a6;border-radius:12px;box-shadow:0 12px 40px #0c1b2399;
+ font:12px/1.4 system-ui;
+}
+#scene-inspector h2{font-size:17px;line-height:1.2;margin:0 0 9px}
+#scene-inspector h2 small{font-size:10px;font-weight:400;color:#d5e1dc}
+#scene-inspector button{padding:8px 9px;font-size:12px;min-height:38px;flex:1}
+#scene-inspector button[aria-pressed="true"]{border-color:#ffe392;background:#f5d59d;color:#17333c}
+#scene-inspector button:disabled{opacity:.4;cursor:default}
+#scene-inspector .si-categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+#scene-inspector .si-row{display:flex;gap:6px;margin-top:7px}
+#scene-inspector .si-info,#scene-inspector .si-status,#scene-inspector .si-audit{
+ margin-top:7px;padding:5px 7px;border-radius:6px;background:#ffffff12;
+}
+#scene-inspector .si-status{color:#ffdb97}
+#scene-inspector .si-audit{color:#d2f5cf}
+#scene-inspector small{display:block;margin-top:7px;color:#c6d1d2;line-height:1.35}
+@media(max-height:450px){
+ #scene-inspector{width:min(345px,62vw);padding:7px 10px;font-size:11px}
+ #scene-inspector h2{font-size:14px;margin:0 0 5px}
+ #scene-inspector button{min-height:32px;padding:5px 7px;font-size:11px}
+ #scene-inspector .si-row{margin-top:4px}
+ #scene-inspector .si-info,#scene-inspector .si-status,#scene-inspector .si-audit{margin-top:4px;padding:3px 5px}
+}
+
+/* Compact keycaps follow the last active controller; no floating instructional overlay. */
+#app button[data-key-hint]::after,#app button[data-pad-hint]::after{
+ display:none;vertical-align:middle;margin-left:6px;padding:2px 5px;
+ min-width:17px;border-radius:4px;border:1px solid currentColor;
+ font:750 10px/1.15 system-ui,"PingFang TC",sans-serif;letter-spacing:0;
+ white-space:nowrap;opacity:.95;background:#ffffff14;
+}
+html[data-input-mode="keyboard"] #app button[data-key-hint]::after{
+ display:inline-flex;align-items:center;justify-content:center;content:attr(data-key-hint);
+}
+html[data-input-mode="gamepad"] #app button[data-pad-hint]::after{
+ display:inline-flex;align-items:center;justify-content:center;content:attr(data-pad-hint);
+}
+/* Replaces the legacy gamepad focus suffix when a real button label is available. */
+html[data-input-mode="gamepad"] #app .l2-lab button[data-pad-hint]:focus-visible::after{
+ content:attr(data-pad-hint);color:inherit;
+}

@@ -12,6 +12,9 @@ test('trip has independent code, replay, review and retrospective position',asyn
  const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('outrun-trip-v09')!));const event:any=(Object.values(data)[0] as any).events[0];
  expect(event.eventAt.tripCode).toBe('TRIP-v0.9-r7-16-ALB7');expect(event.eventAt.s).toBeGreaterThan(60000);expect(event.eventAt.s).toBeLessThan(event.reactionAt.s);expect(event.eventAt.l2InstanceId).toBeTruthy();
  await expect(page.locator('#ready-countdown')).toBeHidden({timeout:2000});await page.keyboard.press('KeyP');
+ await expect(page.locator('#trip-pause-dock')).toBeVisible();
+ await page.locator('#tp-more').click();await page.locator('#tp-review').click();
+ await expect(page.locator('#l2-lab')).toBeVisible();
  const download=page.waitForEvent('download');await page.locator('#l2-export').click();const report=JSON.parse(readFileSync((await (await download).path())!,'utf8'));expect(report.records[0].tripCode).toBe('TRIP-v0.9-r7-16-ALB7');expect(report.records[0].humanVote).toBe('UNREVIEWED');
  await Promise.all([page.waitForURL(/trip=10m&seed=42/),page.locator('#stage-load').click()]);await stageReady(page);await expect(page.locator('#l2-events')).toContainText('1 praise');
 });

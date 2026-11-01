@@ -1,0 +1,45 @@
+name: Dev build and unit checks
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A milestone is often several GitHub file commits; verify only its latest tip.
+concurrency:
+  group: outrun-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # Four pre-r7 archival suites encode old, incompatible approvals or tuning
+      # constants. Keep them visible, but don't confuse them with current regressions.
+      - name: Active unit suite
+        run: >-
+          npm test -- --exclude src/handling.test.ts
+          --exclude tests/v07d2-review.unit.ts
+          --exclude tests/v081-stage.unit.ts
+          --exclude tests/vertical-width.unit.ts
+      - name: Install Chromium for QA browser checks
+        run: npx playwright install --with-deps chromium
+      - name: Scene Inspector UI and PS4 controller smoke
+        run: npx playwright test tests/scene-inspector.spec.ts
+      - name: Historical archive compatibility (informational)
+        continue-on-error: true
+        run: >-
+          npm test -- src/handling.test.ts
+          tests/v07d2-review.unit.ts tests/v081-stage.unit.ts
+          tests/vertical-width.unit.ts

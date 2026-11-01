@@ -14,7 +14,13 @@ function same(b:PilotCandidate,d:number){const a=pilotSample(b,d),z=originalSamp
 it('exactly matches S1 across complete routes, revisions, knots and adjacent boundary floats',()=>{
  const cases:PilotCandidate[]=[...PILOTS],rows=[];
  for(const seed of [1,2,7]){
-  for(const revision of [1,2,3,4,5,6,7] as const){const b=generateTrip(seed,revision);expect(b).toEqual(originalTrip(seed,revision));cases.push(b);}
+  for(const revision of [1,2,3,4,5,6,7] as const){const b=generateTrip(seed,revision),baseline=originalTrip(seed,revision);
+   if(revision<7)expect(b).toEqual(baseline);
+   else{ // r7 city hills are intentionally softer; still preserve original steering and banking.
+    expect(b.placements.filter(p=>p.channel!=='elevation')).toEqual(baseline.placements.filter(p=>p.channel!=='elevation'));
+    expect(b.bankFeatures).toEqual(baseline.bankFeatures);
+   }
+   cases.push(b);}
   for(const revision of [1,2] as const){const b=generateStage(seed,revision);expect(b).toEqual(originalStage(seed,revision));cases.push(b);}
  }
  for(const b of cases){const points=new Set<number>([-Infinity,-1,0,BRICK_START,BRICK_START+b.length,BRICK_START+b.length+600,Infinity]);

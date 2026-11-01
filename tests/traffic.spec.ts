@@ -31,3 +31,22 @@ test('traffic seed/replay, contact slowdown, streamed geometry and historical ro
  writeFileSync(`${root}/contacts.json`,JSON.stringify(contactRows,null,2));
  await page.goto('/?stage=1');await stageReady(page);expect(await inspect()).toBeUndefined();
 });
+
+test('mobile gameplay keeps the approved chartreuse traffic outline without A/B UI',async({browser})=>{
+ test.setTimeout(90000);
+ const context=await browser.newContext({viewport:{width:915,height:412},deviceScaleFactor:2.625,isMobile:true,hasTouch:true,serviceWorkers:'block'});
+ try{
+  const page=await context.newPage();
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('/?seed=1&playerui=1');
+  await expect(page.locator('#outline-color-toggle')).toHaveCount(0);
+  await stageReady(page);
+  await page.locator('#player-play').tap();
+  await expect(page.locator('#outline-color-toggle')).toHaveCount(0);
+  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('#d7ff00');
+  expect(await page.evaluate(()=>(window as any).__drive.snapshot().mode)).toBe('playing');
+  await page.locator('#pause').tap();
+  await expect(page.locator('#outline-color-toggle')).toHaveCount(0);
+  expect(errors).toEqual([]);
+ }finally{await context.close();}
+});
