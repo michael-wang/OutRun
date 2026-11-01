@@ -38,6 +38,7 @@ export class SceneInspector {
   this.toggle=document.createElement('button');this.toggle.id='scene-inspector-launcher';
   this.toggle.type='button';this.toggle.textContent='🔎 場景 QA';
   this.toggle.title='鍵盤 Q／PS4 △：開關場景檢查';this.toggle.setAttribute('aria-keyshortcuts','Q');
+  this.toggle.dataset.keyHint='Q';this.toggle.dataset.padHint='△';
   this.toggle.addEventListener('click',()=>this.isOpen?this.close():this.open());
   root.append(this.toggle);
   this.panel=document.createElement('section');this.panel.id='scene-inspector';this.panel.hidden=true;
@@ -73,6 +74,10 @@ export class SceneInspector {
    button.addEventListener('click',()=>this.setCategory(kind));
    this.panel.querySelector('#si-categories')!.append(button);this.categoryButtons.set(kind,button);
   }
+  // The left/right controls have real global QA shortcuts; close uses Esc/○.
+  for(const [action,key,pad] of [
+   ['prev','←','◀'],['next','→','▶'],['close','Esc','○'],
+  ]){const button=this.button(action);button.dataset.keyHint=key;button.dataset.padHint=pad;}
   for(const [action,fn] of Object.entries({
    prev:()=>this.step(-1),next:()=>this.step(1),
    back:()=>this.move(-100),forward:()=>this.move(100),
