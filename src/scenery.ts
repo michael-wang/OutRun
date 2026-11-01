@@ -164,7 +164,12 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(site.distance<range.start||site.distance>=range.end)continue;
   const {distance:d,kind}=site;
   const index=Math.round(d/25);
-  if(kind==='clock')clockDistrict(index,d);
+  if(kind==='clock'){
+   // A landmark can stay in the city, but must not stand at an outgoing
+   // off-ramp's hidden endpoint. Put that district on the opposite roadside.
+   const obstructed=!!range.junction&&interchangeSceneryClear(range.junction,d,1);
+   clockDistrict(index,d,obstructed?-75:75);
+  }
   else if(kind==='lighthouse'){
    anchor(d,-(52+random(index)*8));lighthouse(index,d);
   }else if(kind==='canyon-arch'){
@@ -185,7 +190,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    part(arch,CANYON_ARCH.crown,0,spring,0,halfSpan,CANYON_ARCH.rise,16);
   }
  }
-  // Keep the ramp mouths clear of roadside trees and buildings; authored special landmarks are unaffected.
+  // Keep the ramp mouths AND the screen walls free of roadside trees and buildings.
  ordinaryProps=true;
  // Overlap prop families deterministically at each boundary; nothing spawns per frame.
  for(let i=Math.max(0,Math.ceil((range.start-16)/30)),d=16+i*30;d<Math.min(length,range.end);d+=30,i++){
