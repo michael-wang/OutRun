@@ -125,7 +125,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   if(d<0||Math.abs(lane)+.5>=Math.min(halfAt(d),halfAt(Math.min(d+3,length))))continue;
   const at=(delta:number)=>(s:number)=>(lane+delta)*7/halfAt(s);append('line',at(-.14),at(.14),.03,.03,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
- for(let color=0;color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1]){
+ for(let color=0;color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
   if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
  const positions:number[]=[],indices:number[]=[],n=Math.ceil((end-start)/2.5);
