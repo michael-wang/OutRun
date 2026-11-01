@@ -332,3 +332,15 @@ html[data-qa="true"] #stream-health-hud{
  }
  #app #photo-status{top:calc(max(12px,env(safe-area-inset-top)) + 101px)}
 }
+
+
+/* When the full inspector opens, move the streaming diagnostics LEFT of the
+ * 360px drawer as well; two QA panels must never cover each other's controls. */
+html[data-qa="true"]:has(#scene-inspector:not([hidden])) #stream-health-hud{
+ right:calc(max(18px,env(safe-area-inset-right)) + 375px);
+}
+@media(max-width:1000px),(max-height:470px){
+ html[data-qa="true"]:has(#scene-inspector:not([hidden])) #stream-health-hud{
+  right:calc(max(18px,env(safe-area-inset-right)) + 357px);
+ }
+}
