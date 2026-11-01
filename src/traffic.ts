@@ -67,10 +67,10 @@ export class Traffic {
  private lanes:TrafficLanes;private indicators:THREE.InstancedMesh;private lampPose=new THREE.Object3D();
  private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
  private outlineMeshes:THREE.InstancedMesh[];private outlineEdges:THREE.EdgesGeometry[];private crestHints:THREE.LineSegments[];
- private outlineMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_OUTLINE_COLORS.yellow,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
+ private outlineMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_OUTLINE_COLORS.chartreuse,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
  private crestMaterial=new THREE.LineBasicMaterial({color:'#ffe6a3',transparent:true,opacity:.38,depthTest:true,depthWrite:false,depthFunc:THREE.GreaterDepth,fog:false,toneMapped:false});
  private outlinePose=new THREE.Object3D();private outlineShift=new THREE.Vector3();private visionAim=new THREE.Vector3();
- private hintCache=new Map<number,boolean>();private nextHintCheck=0;private selectedOutlineColor:TrafficOutlineColor='yellow';
+ private hintCache=new Map<number,boolean>();private nextHintCheck=0;private selectedOutlineColor:TrafficOutlineColor='chartreuse';
  private breakdownSmoke:THREE.InstancedMesh;private smokePose=new THREE.Object3D();private smokePoint=new THREE.Vector3();
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
  constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[]){
