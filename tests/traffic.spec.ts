@@ -42,18 +42,18 @@ test('mobile A/B outline color button switches live and stays out of menus',asyn
   await stageReady(page);
   await page.locator('#player-play').tap();
   await expect(button).toBeVisible();
-  await expect(button).toHaveAttribute('data-color','yellow');
-  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('yellow');
-  const box=await button.boundingBox();
-  expect(box).not.toBeNull();expect(box!.x).toBeGreaterThan(600);
-  await button.tap();
   await expect(button).toHaveAttribute('data-color','chartreuse');
   await expect(button).toContainText('黃綠');
   expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('chartreuse');
-  expect(await page.evaluate(()=>(window as any).__drive.snapshot().mode)).toBe('playing');
+  const box=await button.boundingBox();
+  expect(box).not.toBeNull();expect(box!.x).toBeGreaterThan(600);
   await button.tap();
   await expect(button).toHaveAttribute('data-color','yellow');
   expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('yellow');
+  expect(await page.evaluate(()=>(window as any).__drive.snapshot().mode)).toBe('playing');
+  await button.tap();
+  await expect(button).toHaveAttribute('data-color','chartreuse');
+  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('chartreuse');
   await page.locator('#pause').tap();await expect(button).toBeHidden();
   expect(errors).toEqual([]);
  }finally{await context.close();}
