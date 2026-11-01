@@ -32,29 +32,21 @@ test('traffic seed/replay, contact slowdown, streamed geometry and historical ro
  await page.goto('/?stage=1');await stageReady(page);expect(await inspect()).toBeUndefined();
 });
 
-test('mobile A/B outline color button switches live and stays out of menus',async({browser})=>{
+test('mobile gameplay keeps the approved chartreuse traffic outline without A/B UI',async({browser})=>{
  test.setTimeout(90000);
  const context=await browser.newContext({viewport:{width:915,height:412},deviceScaleFactor:2.625,isMobile:true,hasTouch:true,serviceWorkers:'block'});
  try{
-  const page=await context.newPage(),button=page.locator('#outline-color-toggle');
+  const page=await context.newPage();
   const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('/?seed=1&playerui=1');await expect(button).toBeHidden();
+  await page.goto('/?seed=1&playerui=1');
+  await expect(page.locator('#outline-color-toggle')).toHaveCount(0);
   await stageReady(page);
   await page.locator('#player-play').tap();
-  await expect(button).toBeVisible();
-  await expect(button).toHaveAttribute('data-color','chartreuse');
-  await expect(button).toContainText('黃綠');
-  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('chartreuse');
-  const box=await button.boundingBox();
-  expect(box).not.toBeNull();expect(box!.x).toBeGreaterThan(600);
-  await button.tap();
-  await expect(button).toHaveAttribute('data-color','yellow');
-  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('yellow');
+  await expect(page.locator('#outline-color-toggle')).toHaveCount(0);
+  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('#d7ff00');
   expect(await page.evaluate(()=>(window as any).__drive.snapshot().mode)).toBe('playing');
-  await button.tap();
-  await expect(button).toHaveAttribute('data-color','chartreuse');
-  expect(await page.evaluate(()=>(window as any).__drive.traffic().outlineColor)).toBe('chartreuse');
-  await page.locator('#pause').tap();await expect(button).toBeHidden();
+  await page.locator('#pause').tap();
+  await expect(page.locator('#outline-color-toggle')).toHaveCount(0);
   expect(errors).toEqual([]);
  }finally{await context.close();}
 });
