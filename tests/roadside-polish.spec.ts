@@ -1,28 +1,28 @@
 import {test,expect} from '@playwright/test';
 import {stageReady} from './stage-ready';
 
-test('a single r7 giant boulder responds with a visible collision, audio and a spark burst',async({page})=>{
+test('r7 omits all experimental near-road stone obstacles while preserving a drivable route',async({page})=>{
  test.setTimeout(90000);
  await page.setViewportSize({width:960,height:432});
  await page.goto('/?qa=1&seed=1');
  await stageReady(page);await page.locator('#l2-play').click();
- const rock=await page.evaluate(()=>((window as any).__drive.rocks().boulders as any[])[0]);
- expect(rock).toBeDefined();
- await page.evaluate(r=>{
-  const g=(window as any).__drive,d=r.distance-r.radiusD-5;
-  g.manual(true);g.reset({distance:d,lateral:r.lateral,speed:65});
- },rock);
- await stageReady(page);
  const result=await page.evaluate(()=>{
-  const g=(window as any).__drive,initial=g.snapshot().speed;
-  g.advance(.2,{gas:true,brake:false,steer:0});
-  return {initial,now:g.snapshot(),rock:g.rocks().contact,particles:g.surfaceFeedback().sparks.particles,audio:g.snapshot().audio.lastImpact,stream:g.streamSafety()};
+  const g=(window as any).__drive;
+  g.manual(true);
+  g.reset({distance:1850,lateral:0,speed:65});
+  return {rocks:g.rocks(),cones:g.cones(),ready:g.streaming().ready};
  });
- expect(result.rock.impacts).toBeGreaterThan(0);
- expect(result.now.speed).toBeLessThan(result.initial);
- expect(result.particles).toBeGreaterThan(0);
- expect(result.audio).toBe('vehicle');
- expect(result.stream.stalls).toBe(0);
+ expect(result.rocks.sections).toHaveLength(0);
+ expect(result.rocks.contact.impacts).toBe(0);
+ expect(result.cones.recipe.some((c:any)=>c.rockWarning)).toBe(false);
+ await stageReady(page);
+ const driving=await page.evaluate(()=>{
+  const g=(window as any).__drive;
+  g.advance(.2,{gas:true,brake:false,steer:0});
+  return {distance:g.snapshot().distance,stalls:g.streamSafety().stalls};
+ });
+ expect(driving.distance).toBeGreaterThan(1850);
+ expect(driving.stalls).toBe(0);
 });
 
 test('broken-down non-car traffic emits pooled smoke and remains stationary',async({page})=>{
