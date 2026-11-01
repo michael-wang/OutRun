@@ -1,7 +1,7 @@
 import {expect,it} from 'vitest';
 import * as THREE from 'three';
 import {Traffic} from '../src/traffic';
-import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,TRAFFIC_OUTLINE} from '../src/traffic-outline';
+import {roadHidesVehicle,trafficOutlineGeometry,trafficOutlineRadius,trafficOutlineStrength,TRAFFIC_OUTLINE} from '../src/traffic-outline';
 
 const eye=new THREE.Vector3(0,3.6,-8),aim=new THREE.Vector3(0,1.5,220);
 const road=(height:(d:number)=>number,x=0)=>(d:number)=>({position:new THREE.Vector3(x,height(d),d),right:new THREE.Vector3(1,0,0)});
@@ -20,6 +20,13 @@ it('outline rim grows with viewing distance without an unbounded world-space hal
  expect(trafficOutlineRadius(1000,47,412)).toBe(TRAFFIC_OUTLINE.maximumMeters);
  expect(trafficOutlineRadius(1,47,412)).toBe(TRAFFIC_OUTLINE.minimumMeters);
 });
+it('distant yellow rim fades to zero before the car becomes a near obstacle',()=>{
+ expect(trafficOutlineStrength(-10)).toBe(0);
+ expect(trafficOutlineStrength(TRAFFIC_OUTLINE.nearCutoffMeters)).toBe(0);
+ expect(trafficOutlineStrength((TRAFFIC_OUTLINE.nearCutoffMeters+TRAFFIC_OUTLINE.fullStrengthMeters)/2)).toBeCloseTo(.5);
+ expect(trafficOutlineStrength(TRAFFIC_OUTLINE.fullStrengthMeters)).toBe(1);
+ expect(trafficOutlineStrength(1000)).toBe(1);
+});
 it('crest hint requires an actual on-road obstruction in front of a nearby vehicle',()=>{
  const half=()=>7;
  expect(roadHidesVehicle(road(()=>0),half,0,220,eye,aim)).toBe(false);
@@ -33,7 +40,19 @@ it('traffic reuses four outline instances and resets all optional crest hints',(
  traffic.update(0,500,0,0,camera,412);
  const outlines=scene.children.filter(o=>o.name.startsWith('vehicle-outline-')) as THREE.InstancedMesh[];
  expect(outlines).toHaveLength(4);
+ expect((outlines[0].material as THREE.MeshBasicMaterial).color.getHexString()).toBe('ffea38');
  expect(outlines.reduce((sum,m)=>sum+m.count,0)).toBeGreaterThan(0);
+ const initial=traffic.inspect();
+ expect(outlines.reduce((sum,m)=>sum+m.count,0)).toBe(
+  initial.actors.filter(a=>a.visible&&trafficOutlineStrength(a.distance-500)>0).length
+ );
+ // Near traffic keeps its unmodified model, while farther cars remain highlighted.
+ camera.position.set(0,3.6,742);traffic.update(.1,750,0,0,camera,412);
+ const approaching=traffic.inspect();
+ expect(approaching.actors.some(a=>a.visible&&a.distance-750<=TRAFFIC_OUTLINE.nearCutoffMeters)).toBe(true);
+ expect(approaching.outlineInstances.reduce((sum,n)=>sum+n,0)).toBe(
+  approaching.actors.filter(a=>a.visible&&trafficOutlineStrength(a.distance-750)>0).length
+ );
  expect(scene.children.filter(o=>o.name.startsWith('vehicle-crest-hint')&&o.visible)).toHaveLength(0);
  traffic.reset();expect(outlines.every(m=>m.count===0)).toBe(true);
  traffic.dispose();expect(outlines.every(m=>m.parent===null)).toBe(true);
