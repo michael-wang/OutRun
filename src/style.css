@@ -265,3 +265,21 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
  #scene-inspector .si-row{margin-top:4px}
  #scene-inspector .si-info,#scene-inspector .si-status,#scene-inspector .si-audit{margin-top:4px;padding:3px 5px}
 }
+
+/* Compact keycaps follow the last active controller; no floating instructional overlay. */
+#app button[data-key-hint]::after,#app button[data-pad-hint]::after{
+ display:none;vertical-align:middle;margin-left:6px;padding:2px 5px;
+ min-width:17px;border-radius:4px;border:1px solid currentColor;
+ font:750 10px/1.15 system-ui,"PingFang TC",sans-serif;letter-spacing:0;
+ white-space:nowrap;opacity:.95;background:#ffffff14;
+}
+html[data-input-mode="keyboard"] #app button[data-key-hint]::after{
+ display:inline-flex;align-items:center;justify-content:center;content:attr(data-key-hint);
+}
+html[data-input-mode="gamepad"] #app button[data-pad-hint]::after{
+ display:inline-flex;align-items:center;justify-content:center;content:attr(data-pad-hint);
+}
+/* Replaces the legacy gamepad focus suffix when a real button label is available. */
+html[data-input-mode="gamepad"] #app .l2-lab button[data-pad-hint]:focus-visible::after{
+ content:attr(data-pad-hint);color:inherit;
+}
