@@ -14,6 +14,15 @@ export function bridgeApproachAllowsBuilding(d:number,bridge?:BridgeSpan){
  // Leave landings clear until the cut-out coastline has fully resumed beyond the bridge.
  return !bridge||d<bridge.start-280||d>bridge.end+1000;
 }
+/** Small authored landmark cadence: city clock plazas and isolated coastal lighthouses.
+ * Selection is a pure function of route location, so streamed chunks replay identically. */
+export const JOURNEY_LANDMARK_STEP=4800;
+export function roadTripLandmarkKind(distance:number,length:number,weights:readonly number[],bridge?:BridgeSpan){
+ if(distance<900||distance>=length-400||!bridgeApproachAllowsBuilding(distance,bridge))return null;
+ if((weights[2]??0)>=.82)return 'clock' as const;
+ if((weights[0]??0)>=.82)return 'lighthouse' as const;
+ return null;
+}
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
 export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
@@ -50,13 +59,53 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  function palm(seed:number){const h=7+random(seed)*4;part(cylinder,'#aa8960',0,h/2,0,.23,h,.23,0,0,-.035);for(let j=0;j<7;j++){const a=j*Math.PI*2/7;part(round,'#287b52',Math.sin(a)*1.7,h,Math.cos(a)*1.7,.7,.24,3.3,.15,a,0);}}
  function dryTree(seed:number){const h=4+random(seed)*2;part(cylinder,'#82634a',0,h/2,0,.22,h,.22);for(const side of [-1,1]){part(cylinder,'#82634a',side*.75,h*.75,0,.13,h*.65,.13,0,0,-side*.55);part(round,'#8d9254',side*1.4,h,0,1.2,.6,1);}}
  function mesa(seed:number,large=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=(large?32:18)+random(seed)*15,h=(large?65:30)+random(seed+1)*30;part(mesaGeometry[Math.abs(seed)%3],'#ffffff',0,0,0,w,h,w*.8,0,random(seed)*6);}
- function building(seed:number,far=false,coastal=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=7+random(seed)*6,h=coastal?5+random(seed+1)*4:(far?28:9)+random(seed+1)*(far?42:18),depth=8+random(seed+2)*5,color=['#eed6b4','#e6a48b','#a9c9bf','#e3c286','#d7b9bf'][Math.floor(random(seed+4)*5)];
+ function lighthouse(seed:number){
+  // The rock plinth is continuous down into the coastal ground; the tower stands alone.
+  const height=21+random(seed)*6;
+  part(rock,'#aba28d',0,1.6,0,19,8,17);
+  part(cylinder,'#f5eddc',0,5+height/2,0,2.7,height,2.7);
+  part(cylinder,'#cd573e',0,11,0,2.75,3.1,2.75);
+  part(cylinder,'#e7e7d4',0,5+height,0,3.2,.7,3.2);
+  part(cylinder,'#355763',0,7+height,0,2.1,3.2,2.1);
+  part(round,'#ffe6a3',0,7+height,0,1.8,1.3,1.8);
+  part(cone,'#d76e48',0,10+height,0,3.5,2.7,3.5);
+ }
+ function clockTower(){
+  // A clock is a district landmark: neighboring blocks are placed beside it below.
+  part(boxes,'#d8c7a9',0,-4,0,13,8,13);
+  part(boxes,'#eed7ac',0,21,0,9,42,9);
+  part(boxes,'#d49969',0,42,0,10.5,1,10.5);
+  part(cylinder,'#f2e3bf',0,45,0,4.5,5,4.5);
+  part(round,'#548e92',0,48,0,5,3,5);
+  part(cylinder,'#eee6ce',0,37,-4.6,2.6,.15,2.6,Math.PI/2);
+  part(boxes,'#375a63',0,37.7,-4.72,.18,1.7,.18);
+  part(boxes,'#375a63',.7,37,-4.72,1.5,.18,.18);
+ }
+ function clockDistrict(seed:number,d:number,offset=52){
+  anchor(d,offset);if(!clear(28))return;
+  clockTower();
+  for(const [i,dd,off] of [[0,-48,offset+18],[1,43,offset+13],[2,84,offset-4]]){
+   anchor(d+dd,off);
+   if(clear(13))building(seed*7+i+50);
+  }
+ }
+  function building(seed:number,far=false,coastal=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=7+random(seed)*6,h=coastal?5+random(seed+1)*4:(far?28:9)+random(seed+1)*(far?42:18),depth=8+random(seed+2)*5,color=['#eed6b4','#e6a48b','#a9c9bf','#e3c286','#d7b9bf'][Math.floor(random(seed+4)*5)];
   if(theme!==undefined)part(boxes,color,0,-4,0,w,8,depth);part(boxes,color,0,h/2,0,w,h,depth);part(boxes,'#f3e6cd',0,h+.25,0,w+.7,.5,depth+.7);part(boxes,color,w*.12,h+2,0,w*.65,4,depth*.7);part(boxes,'#bb7960',w*.12,h+4.1,0,w*.7,.25,depth*.75);
   for(let floor=0;floor<Math.floor(h/3.2);floor++)for(const x of [-.3,0,.3]){part(boxes,'#426d77',x*w,2+floor*3.2,-depth/2-.035,w*.13,1.35,.07);if(!far&&floor%2===1)part(boxes,'#eee1bd',x*w,1.2+floor*3.2,-depth/2-.35,w*.2,.16,.8);}
   if(!coastal&&seed%3===0){part(cylinder,'#8eb4b4',w*.12,h+5.5,0,w*.28,3,w*.28);part(round,'#719d9f',w*.12,h+7,0,w*.3,1.8,w*.3);}else if(!coastal&&seed%3===1){for(let fin=0;fin<3;fin++)part(boxes,'#ede5c9',w*.12+(fin-1)*w*.2,h+5,0,.35,2.2,depth*.7);}else if(coastal){part(cone,'#bd7d59',w*.12,h+4.8,0,w*.46,2,depth*.46,0,Math.PI/4);}
   if(!far){part(boxes,'#347f78',0,3,-depth/2-.8,w*.8,.18,1.8, .08);part(boxes,'#e5d7b9',0,.15,-depth/2-1.5,w+2,.3,3);}
  }
- // Overlap prop families deterministically at each boundary; nothing spawns per frame.
+ // Repeated route landmarks add identity without new shaders or draw families.
+ // The regular city scenery fills in around each tower; lighthouses remain isolated.
+ if(range.openRoad)for(let d=Math.ceil(Math.max(900,range.start)/JOURNEY_LANDMARK_STEP)*JOURNEY_LANDMARK_STEP;d<Math.min(length-400,range.end);d+=JOURNEY_LANDMARK_STEP){
+  const kind=roadTripLandmarkKind(d,length,weightsAt(d),range.bridge),index=Math.round(d/JOURNEY_LANDMARK_STEP);
+  if(kind==='clock')clockDistrict(index,d);
+  else if(kind==='lighthouse'){
+   anchor(d,-(51+random(index)*9));
+   if(clear(30))lighthouse(index);
+  }
+ }
+  // Overlap prop families deterministically at each boundary; nothing spawns per frame.
  for(let i=Math.max(0,Math.ceil((range.start-16)/30)),d=16+i*30;d<Math.min(length,range.end);d+=30,i++){
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;
   if(family===0){anchor(d,17+random(i)*6);if(clear(4))palm(i);if(i%3===0){anchor(d,36+random(i)*10);if(clear(12))building(i,false,true);anchor(d+8,54+random(i+91)*10);if(bridgeApproachAllowsBuilding(d+8,range.bridge)&&clear(12)){const h=12+random(i+92)*15;part(boxes,['#d7c8af','#bfcfc4','#e4c5b0'][i%3],0,h/2,0,17,h,15);part(boxes,'#c9bca5',0,-1,0,22,2,20);}}}
@@ -99,7 +148,10 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(act.id==='coast'&&index===1){base.y=-3;for(const dx of [-16,16]){part(boxes,'#f4e7c8',dx,0,0,14,2,4);part(cylinder,'#705b4a',dx,10,0,.15,20,.15);part(cone,'#fff0d0',dx+3,10,0,6,17,.25,0,0,-.18);}}
   if(act.id==='canyon'&&index===0){for(const x of [-18,18])part(rock,'#c88754',x,16,0,6,32,7);part(arch,'#cf955e',0,29,0,18,18,18);part(rock,'#dfad73',-21,5,2,12,10,12);}
   if(act.id==='canyon'&&index===1){mesa(77,true);const original=base.clone();base.x+=38;mesa(91,true);base.copy(original);}
-  if(act.id==='city'&&index===0){base.y=sample(d).position.y-.15;part(boxes,'#c6b995',0,-(base.y+5)/2,0,18,base.y+5,20);part(boxes,'#eed7ac',0,22,0,9,44,9);part(boxes,'#d49969',0,44,0,11,1,11);part(cylinder,'#f2e3bf',0,47,0,4.5,5,4.5);part(round,'#548e92',0,50,0,5,3,5);part(cylinder,'#eee6ce',0,39,-4.6,2.6,.15,2.6,Math.PI/2);part(boxes,'#375a63',0,39.7,-4.72,.18,1.7,.18);part(boxes,'#375a63',.7,39,-4.72,1.5,.18,.18);}
+  if(act.id==='city'&&index===0){base.y=sample(d).position.y-.15;part(boxes,'#c6b995',0,-(base.y+5)/2,0,18,base.y+5,20);part(boxes,'#eed7ac',0,22,0,9,44,9);part(boxes,'#d49969',0,44,0,11,1,11);part(cylinder,'#f2e3bf',0,47,0,4.5,5,4.5);part(round,'#548e92',0,50,0,5,3,5);part(cylinder,'#eee6ce',0,39,-4.6,2.6,.15,2.6,Math.PI/2);part(boxes,'#375a63',0,39.7,-4.72,.18,1.7,.18);part(boxes,'#375a63',.7,39,-4.72,1.5,.18,.18);
+   // Even the original clock landmark now sits among neighboring city buildings.
+   for(const [j,dd] of [-42,40,78].entries()){anchor(d+dd,landmark.offset+14);if(clear(13))building(index*31+j+seed+40);}
+  }
   if(act.id==='city'&&index===1){for(const x of [-20,20]){part(boxes,'#4b8090',x,19,0,2,38,2);part(boxes,'#dfb65c',x-10,37,0,36,1.2,1.2);part(cylinder,'#647a7b',x-25,24,0,.07,25,.07);part(boxes,'#d38e6a',x,2,6,14,4,6);}}
  }
  for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;group.add(mesh);}
