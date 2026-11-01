@@ -10,6 +10,7 @@ import {asphaltTexture} from './asphalt-texture';
 import { createCar } from './car';
 import {ACTS,actWeights} from './acts';
 import {addJourneyScenery} from './scenery';
+import {selectRoadInterchange,interchangeRailOpening,RAMP_WIDTH} from './road-interchange';
 import { createTrack } from './track';
 import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -26,6 +27,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   sun.shadow.bias=-.0004; sun.shadow.normalBias=.035; scene.add(sun.target);
   const {sample,length}=options.track??createTrack();
   const bridge=shoulders?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
+  const junction=options.streamStage?selectRoadInterchange(options.streamStage,bridge):undefined;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const asphalt=mat('#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
   function ribbon(offsetA:number|((d:number)=>number),offsetB:number|((d:number)=>number),liftA:number,liftB:number,material:THREE.Material,start=0,end=length,step=2.5) {
@@ -138,6 +140,20 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     else if(options.streamStage.generatorVersion==='v0.9-r5')annotations.push(...warningAnnotations(sample,halfAt,turnWarnings(sample,length)));
     else for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of [300,160])annotations.push(signAt(extreme.start-lead,extreme.targetRequiredSteering<0?leftSign:signMaterial,5.2,2.6));
     if(options.narrowings?.length){const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#153e45';ctx.fillRect(0,0,512,256);ctx.strokeStyle='#ffd18b';ctx.lineWidth=12;ctx.strokeRect(8,8,496,240);ctx.fillStyle='#fff4d9';ctx.textAlign='center';ctx.font='bold 56px sans-serif';ctx.fillText('ROAD NARROWS',256,95);ctx.font='bold 45px sans-serif';ctx.fillText('MOVE TOWARD CENTER',256,185);const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});for(const d of options.narrowings)annotations.push(signAt(d,material,6,3,'narrowing-warning'));}
+    if(junction)for(const [which,d,label,sub] of [
+     ['merge',junction.entry.start-335,'右側匯入','MERGE AHEAD'],
+     ['exit',junction.exit.start-300,'右側出口','EXIT AHEAD'],
+    ] as const){
+     const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;
+     const ctx=canvas.getContext('2d')!;ctx.fillStyle='#146459';ctx.fillRect(0,0,512,256);
+     ctx.strokeStyle='#f5e5bd';ctx.lineWidth=13;ctx.strokeRect(9,9,494,238);
+     ctx.fillStyle='#fff8e4';ctx.textAlign='center';
+     ctx.font='bold 80px "Microsoft JhengHei",sans-serif';ctx.fillText(label,256,111);
+     ctx.font='bold 55px sans-serif';ctx.fillText(sub,256,200);
+     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
+     const material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});
+     annotations.push(signAt(d,material,5.2,2.6,'road-junction-'+which));
+    }
   }
   const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
@@ -171,14 +187,15 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
   // One authoritative contact edge for the same r7 rails and marker rows emitted
   // by the Worker. Do not add invisible collision in bridge/canyon/rock overrides.
+  const interchangeRailOpeningAt=(d:number)=>junction&&interchangeRailOpening(junction,d,1)?halfAt(d)+TRIP_BARRIER_INNER_M+RAMP_WIDTH+7:halfAt(d)+TRIP_BARRIER_INNER_M;
   const boundaries=shoulders?(d:number)=>{
     if(streamer&&!streamer.roadReady(d))return {};
     if(onBridge(d,bridge))return {left:-bridgeRailEdge(halfAt(d)),right:bridgeRailEdge(halfAt(d))};
     if(options.seed===1&&canyonBend(d))return {right:CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness};
     return {
       left:rockyAt(d,-1,rockSections)?undefined:-(halfAt(d)+TRIP_BARRIER_INNER_M),
-      right:rockyAt(d,1,rockSections)?undefined:halfAt(d)+TRIP_BARRIER_INNER_M,
+      right:rockyAt(d,1,rockSections)?undefined:interchangeRailOpeningAt(d),
     };
   }:undefined;
-  return {bridge,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
+  return {bridge,junction,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
 }
