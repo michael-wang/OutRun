@@ -17,7 +17,21 @@ it('exactly matches S1 across complete routes, revisions, knots and adjacent bou
   for(const revision of [1,2,3,4,5,6,7] as const){const b=generateTrip(seed,revision),baseline=originalTrip(seed,revision);
    if(revision<7)expect(b).toEqual(baseline);
    else{ // r7 city hills are intentionally softer; still preserve original steering and banking.
-    expect(b.placements.filter(p=>p.channel!=='elevation')).toEqual(baseline.placements.filter(p=>p.channel!=='elevation'));
+    expect(b.placements.filter(p=>p.channel==='curvature')).toEqual(baseline.placements.filter(p=>p.channel==='curvature'));
+    // The one approved junction exception converts 4→6→4 into 4→5→4.
+    // All other widths are preserved; height amplitude is separately tuned.
+    const changed=b.placements.filter(p=>p.channel==='width');
+    const oldWidths=baseline.placements.filter(p=>p.channel==='width');
+    expect(changed).toHaveLength(oldWidths.length);
+    let altered=0;
+    for(let i=0;i<changed.length;i++){
+     const p=changed[i],q=oldWidths[i];
+     if(p.channel!=='width'||q.channel!=='width')continue;
+     if(p.parameters.to===5&&q.parameters.to===6||p.parameters.from===5&&q.parameters.from===6){
+      altered++;expect(p.startS).toBe(q.startS);expect(p.endS).toBe(q.endS);
+     }else expect(p).toEqual(q);
+    }
+    expect(altered).toBe(2);
     expect(b.bankFeatures).toEqual(baseline.bankFeatures);
    }
    cases.push(b);}
