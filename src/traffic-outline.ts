@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
-// A roughly one-pixel silhouette at Pixel 8 rendering resolution. No post-processing pass.
+// A subtle, roughly one-pixel silhouette at Pixel 8 rendering resolution. No post-processing pass.
 export const TRAFFIC_OUTLINE = Object.freeze({
- pixels:1.25,
+ pixels:1.0,
  // Gameplay distance along the road: near traffic should keep its natural silhouette.
  nearCutoffMeters:90,
  fullStrengthMeters:160,
  minimumMeters:.035,
- maximumMeters:.65,
+ maximumMeters:.52,
  crestNear:20,
  crestFar:300,
  crestStep:18,
