@@ -4,6 +4,7 @@ import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
 import * as THREE from 'three';
 import {ACTS} from './acts';
 import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarrierRawOffset,type Shoulders} from './road-profile';
+import {interchangeRailOpening,interchangeRampAt,interchangeRampSpan,type RoadInterchange} from './road-interchange';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -11,7 +12,7 @@ export interface RayRange {start:number;end:number;offset:number;count:number}
 export interface RoadMeshData {normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  // S2B experiment: repeated absolute-distance queries across ribbons and markings.
  // Reuse exact values within this chunk only; no interpolation or global retention.
@@ -56,6 +57,34 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}else append('sand',-13,13,-.1,-.1,start,end,2.5);
  append('grass',13,75,-.12,-3,start,end,10);append('grass',75,160,-3,-14,start,end,10);
  append('asphalt',-7,7,0,0,start,end,2.5);
+ // P1: one visible real asphalt feeder and departure road from the EXISTING
+ // 4→6→4 width phrase. Geometry follows absolute-distance road bank/grade and
+ // is merged into the same material batches as the main road.
+ if(interchange&&shoulders){
+  for(const kind of ['entry','exit'] as const){
+   const span=interchangeRampSpan(interchange,kind);
+   const a=Math.max(start,span.from),b=Math.min(end,span.to);
+   if(b<=a)continue;
+   const raw=(d:number,outer:boolean)=>{
+    const r=interchangeRampAt(interchange,kind,d);
+    const physical=Math.max(0,(r?.gap??0)+(outer?(r?.width??0):0));
+    return tripBarrierRawOffset(1,physical,cachedShoulders(d)!);
+   };
+   const inner=(d:number)=>raw(d,false),outer=(d:number)=>raw(d,true);
+   append('asphalt',inner,outer,.045,.045,a,b,2.5);
+   // A short side retaining face prevents the feeder from levitating over
+   // an elevated roadside embankment. No new material/draw family.
+   append('support',outer,outer,-.08,-3.5,a,b,2.5);
+   // Spaced painted chevrons in the physical triangular gore between the
+   // separated ramp and the mainline: the join/split has a readable cause.
+   for(let d=Math.ceil(a/18)*18;d<b;d+=18){
+    const r=interchangeRampAt(interchange,kind,d);
+    if(!r||r.gap<2||r.width<1)continue;
+    const near=(x:number)=>(z:number)=>tripBarrierRawOffset(1,(interchangeRampAt(interchange,kind,z)?.gap??0)*x,cachedShoulders(z)!);
+    append('line',near(.2),near(.8),.035,.035,d,Math.min(d+3,b),1.5);
+   }
+  }
+ }
  append('line',d=>-7+.35*7/halfAt(d),d=>-7+.51*7/halfAt(d),.025,.025,start,end,2.5);
  append('line',d=>7-.51*7/halfAt(d),d=>7-.35*7/halfAt(d),.025,.025,start,end,2.5);
  if(shoulders){
@@ -67,6 +96,16 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    for(const rock of rocks.filter(r=>r.side===side))ranges=ranges.flatMap(([a,b])=>b<=rock.start||a>=rock.end?[[a,b]]:[[a,Math.min(b,rock.start)],[Math.max(a,rock.end),b]].filter(([x,y])=>y>x));
    const inner=(d:number)=>tripBarrierRawOffset(side,TRIP_BARRIER_INNER_M,cachedShoulders(d)!);
    const outer=(d:number)=>tripBarrierRawOffset(side,TRIP_BARRIER_OUTER_M,cachedShoulders(d)!);
+   if(side===1&&interchange){
+    // Physical rail opening only at each actual merge throat; far-away
+    // separated ramp retains the main road's protective rail.
+    const mouths=[
+     [interchange.entry.start+10,interchange.entry.end+75],
+     [interchange.exit.start-75,interchange.exit.end-10],
+    ];
+    for(const [lo,hi] of mouths)ranges=ranges.flatMap(([r0,r1])=>
+     r1<=lo||r0>=hi?[[r0,r1]]:[[r0,Math.min(r1,lo)],[Math.max(r0,hi),r1]].filter(([x,y])=>y>x));
+   }
    for(const [a,b] of ranges){
     append('rail',inner,outer,.65,.65,a,b,2.5);
     append('rail',inner,outer,1.12,1.12,a,b,2.5);
@@ -87,7 +126,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   const at=(delta:number)=>(s:number)=>(lane+delta)*7/halfAt(s);append('line',at(-.14),at(.14),.03,.03,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
  for(let color=0;color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1]){
-  if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks))continue;const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
+  if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
  const positions:number[]=[],indices:number[]=[],n=Math.ceil((end-start)/2.5);
  for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d),shoulders?.(d)));positions.push(v.x,v.y-.1,v.z,v.x,onBridge(d,bridge)?v.y-1.2:Math.min(v.y-4,-5),v.z);}}
