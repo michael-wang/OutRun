@@ -20,7 +20,14 @@ it('outline rim grows with viewing distance without an unbounded world-space hal
  expect(trafficOutlineRadius(1000,47,412)).toBe(TRAFFIC_OUTLINE.maximumMeters);
  expect(trafficOutlineRadius(1,47,412)).toBe(TRAFFIC_OUTLINE.minimumMeters);
 });
-it('distant yellow rim fades to zero before the car becomes a near obstacle',()=>{
+it('keeps the thin rim proportional and bounded on mobile',()=>{
+ expect(TRAFFIC_OUTLINE.pixels).toBe(1.0);
+ expect(TRAFFIC_OUTLINE.maximumMeters).toBe(.52);
+ const expected=2*Math.tan(47*Math.PI/360)*200/412*TRAFFIC_OUTLINE.pixels;
+ expect(trafficOutlineRadius(200,47,412)).toBeCloseTo(expected);
+ expect(trafficOutlineRadius(600,47,412)).toBe(.52);
+});
+it('distant outline rim fades to zero before the car becomes a near obstacle',()=>{
  expect(trafficOutlineStrength(-10)).toBe(0);
  expect(trafficOutlineStrength(TRAFFIC_OUTLINE.nearCutoffMeters)).toBe(0);
  expect(trafficOutlineStrength((TRAFFIC_OUTLINE.nearCutoffMeters+TRAFFIC_OUTLINE.fullStrengthMeters)/2)).toBeCloseTo(.5);
@@ -40,7 +47,7 @@ it('traffic reuses four outline instances and resets all optional crest hints',(
  traffic.update(0,500,0,0,camera,412);
  const outlines=scene.children.filter(o=>o.name.startsWith('vehicle-outline-')) as THREE.InstancedMesh[];
  expect(outlines).toHaveLength(4);
- expect((outlines[0].material as THREE.MeshBasicMaterial).color.getHexString()).toBe('ffea38');
+ expect((outlines[0].material as THREE.MeshBasicMaterial).color.getHexString()).toBe('d7ff00');
  expect(outlines.reduce((sum,m)=>sum+m.count,0)).toBeGreaterThan(0);
  const initial=traffic.inspect();
  expect(outlines.reduce((sum,m)=>sum+m.count,0)).toBe(
@@ -108,15 +115,15 @@ it('A/B switches the shared outline color without changing the approved crest hi
  const crest=scene.getObjectByName('vehicle-crest-hint-0') as THREE.LineSegments;
  const material=outline.material as THREE.MeshBasicMaterial;
  const crestColor=(crest.material as THREE.LineBasicMaterial).color.getHexString();
- expect(traffic.outlineColor).toBe('yellow');
- expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.yellow.slice(1));
- traffic.setOutlineColor('chartreuse');
  expect(traffic.outlineColor).toBe('chartreuse');
  expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.chartreuse.slice(1));
+ traffic.setOutlineColor('yellow');
+ expect(traffic.outlineColor).toBe('yellow');
+ expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.yellow.slice(1));
  expect((crest.material as THREE.LineBasicMaterial).color.getHexString()).toBe(crestColor);
  traffic.reset();
- expect(traffic.outlineColor).toBe('chartreuse');
- traffic.setOutlineColor('yellow');
- expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.yellow.slice(1));
+ expect(traffic.outlineColor).toBe('yellow');
+ traffic.setOutlineColor('chartreuse');
+ expect(material.color.getHexString()).toBe(TRAFFIC_OUTLINE_COLORS.chartreuse.slice(1));
  traffic.dispose();
 });
