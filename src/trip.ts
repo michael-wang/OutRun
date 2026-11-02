@@ -12,9 +12,10 @@ import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type
 import type {CurvatureId,ElevationId} from './l1-profiles';
 import {planGrandCanyonScene,type GrandCanyonScene} from './grand-canyon-scene';
 import {planCanyonVista} from './canyon-vista';
+import type {DesignerCut} from './designer-canyon';
 
 export const TRIP_VERSION='v0.9-r12';
-export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[];scenicCues?:readonly ScenicCue[];scenicLandmarks?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];canyonPrototype?:GrandCanyonScene}
+export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[];scenicCues?:readonly ScenicCue[];scenicLandmarks?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut}
 function random(seed:number){let x=seed>>>0;return ()=>{x=(x+0x6d2b79f5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function hash(v:unknown){let h=2166136261;for(const c of JSON.stringify(v)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 /** Independent long-form recipe; only lightweight placement metadata is created here. */

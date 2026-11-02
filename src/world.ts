@@ -17,7 +17,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
 import type {PilotCandidate} from './pilot-composer';
 
-const hasModernShoulders=(v?:string)=>v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
+const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
 export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
@@ -28,7 +28,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   sun.castShadow=true; const shadowSize=matchMedia('(pointer:coarse)').matches?512:1024; sun.shadow.mapSize.set(shadowSize,shadowSize); Object.assign(sun.shadow.camera,{left:-36,right:36,top:36,bottom:-36,near:1,far:250});
   sun.shadow.bias=-.0004; sun.shadow.normalBias=.035; scene.add(sun.target);
   const {sample,length}=options.track??createTrack();
-  const bridge=shoulders?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
+  const bridge=shoulders&&options.streamStage?.generatorVersion!=='designer-canyon-v1'?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
   const junction=options.streamStage?selectRoadInterchange(options.streamStage,bridge):undefined;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const asphalt=mat('#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
@@ -157,7 +157,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
      annotations.push(signAt(d,material,5.2,2.6,'road-junction-'+which));
     }
   }
-  const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;scene.add(sea);
+  const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;sea.visible=options.streamStage?.generatorVersion!=='designer-canyon-v1';scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
   if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};

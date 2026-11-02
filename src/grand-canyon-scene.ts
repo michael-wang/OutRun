@@ -19,7 +19,7 @@ export interface CanyonVista {
 }
 export interface GrandCanyonScene {
  readonly id:'grand-canyon-river-bend';
- readonly title:'大峽谷河灣';
+ readonly title:string;
  readonly beat:string;
  /** Absolute track meters, as used by the road Worker and Scene Inspector. */
  readonly start:number;
@@ -30,6 +30,8 @@ export interface GrandCanyonScene {
  readonly riverWidth:number;
  readonly seed:number;
  readonly vista?:CanyonVista;
+ /** Fully authored level only; not set by the old seeded canyon composer. */
+ readonly authored?:true;
 }
 const smooth=(t:number)=>{const x=Math.max(0,Math.min(1,t));return x*x*(3-2*x);};
 const lerp=(a:number,b:number,t:number)=>a+(b-a)*t;
@@ -83,6 +85,19 @@ export function canyonGroundY(scene:GrandCanyonScene,d:number,raw:number,
  if(blend===0||Math.abs(raw)<13)return ordinaryY;
  const x=Math.abs(raw),floor=scene.riverY;
  const valley=raw*scene.valleySide>0;
+ if(scene.authored){
+  const target=valley?altitude([
+   [13,roadY-.1],[27,roadY-2],[38,roadY-10],[52,roadY-20],
+   [70,floor+24],[90,floor+9],[102,floor-2],[129,floor-2],
+   [145,floor+6],[175,floor+20],[240,floor+38],[310,floor+50],
+   [450,floor+68],
+  ],x):altitude([
+   [13,roadY-.1],[25,roadY+2],[38,roadY+11],
+   [62,roadY+23],[100,roadY+32],[160,roadY+39],
+   [260,roadY+44],[450,roadY+55],
+  ],x);
+  return lerp(ordinaryY,target,blend);
+ }
  const target=valley?altitude([
   [13,roadY-.1],[27,roadY-3],[45,roadY-12],
   [70,floor+22],[88,floor+7],[96,floor-2],

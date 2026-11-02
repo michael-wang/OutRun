@@ -83,7 +83,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
      const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);
      color.lerp(new THREE.Color(o<0?'#b98459':'#a8754d'),Math.max(0,blend)*.83);
     }
-    if(grandCanyon?.vista&&Math.abs(o)>14){
+    if((grandCanyon?.vista||grandCanyon?.authored)&&Math.abs(o)>14){
      const visibility=canyonSceneEnvelope(grandCanyon,d);
      if(visibility>.01)color.lerp(
       new THREE.Color(canyonStratumColor(grandCanyon,d,o,height)),
@@ -237,7 +237,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;
   // Canyon road edges are dusty and deliberately not painted like a racetrack.
   // Keep white readable markings but drop the alternating red curb tiles.
-  if(color&&grandCanyon?.vista&&canyonSceneEnvelope(grandCanyon,d)>.35)continue;
+  if(color&&(grandCanyon?.vista||grandCanyon?.authored)&&canyonSceneEnvelope(grandCanyon,d)>.35)continue;
   const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];
   append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
