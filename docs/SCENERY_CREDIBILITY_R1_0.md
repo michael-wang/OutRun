@@ -27,14 +27,14 @@ cities and floating objects.
 - Buildings gain short buried plinths to cover local uneven ground.
   Left city has a near street-wall row (60m cadence) and sparse rear skyline
   (120m cadence). Waterfront cliffs receive no floating city row.
-- Keep all historical r1–r7 generated roads, scenery, fingerprints and seed
-  replay intact via `?revision=r7`. R1.0 attaches new scenery-section
-  metadata only to r8, with its own content fingerprint.
+- Keep historical r1–r8 generated roads, scenery, fingerprints and seeds
+  replayable via `?revision=r7` or `?revision=r8`. R1.0 is **v0.9-r9** with
+  new section metadata and its own content fingerprint.
 - Restrict extra detail to existing geometry/instance materials and worker
   batches; nothing is generated per frame.
 
 ## QA
-Use `?qa=1&seed=1` and select **場景橫斷面 (32)** to see the left/right
+Use `?qa=1&seed=1` (r9) and select **場景橫斷面 (32)** to see the left/right
 roles. Inspect urban-both, hillsides and both seafront directions; verify
 that the ground below skyline buildings and mesas is physically continuous.
 Use `?qa=1&seed=1&revision=r7` for the unchanged prior version.

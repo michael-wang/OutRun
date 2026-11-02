@@ -11,7 +11,7 @@ import {RoadClearance} from './road-clearance';
 import {roadOffset,TRIP_MARKER_CENTER_M,tripBarrierRawOffset,coastalCliffDropAtLateral} from './road-profile';
 import {selectRoadInterchange,interchangeSceneryClear,type RoadInterchange} from './road-interchange';
 
-const hasModernShoulders=(v:string)=>v==='v0.9-r7'||v==='v0.9-r8';
+const hasModernShoulders=(v:string)=>v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
 type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;let junction:RoadInterchange|undefined;

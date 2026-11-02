@@ -17,7 +17,7 @@ export const RAMP_RETAINING_WALL_OFFSET=4.2;
 /** Only one proof-of-concept interchange per r7 trip, never retroactively
  * changing its accepted lane/curve/elevation placements or historical seeds. */
 export function selectRoadInterchange(stage:PilotCandidate,bridge?:BridgeSpan):RoadInterchange|undefined{
- if(stage.id!=='ROAD-TRIP-10M'||(stage.generatorVersion!=='v0.9-r7'&&stage.generatorVersion!=='v0.9-r8'))return undefined;
+ if(stage.id!=='ROAD-TRIP-10M'||(stage.generatorVersion!=='v0.9-r7'&&stage.generatorVersion!=='v0.9-r8'&&stage.generatorVersion!=='v0.9-r9'))return undefined;
  const widths=stage.placements.filter(p=>p.channel==='width');
  const pairs:RoadInterchange[]=[];
  for(const p of widths){
