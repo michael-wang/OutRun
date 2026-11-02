@@ -1,10 +1,11 @@
 import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,ROAD_FEATURE_REFERENCE,type RoadFeature,type RoadFeatureKind} from './road-features';
 import type {ScenicCue} from './scenic-director';
+import {SECTION_LABELS,SIDE_LABELS,type ScenerySection} from './scenery-cross-section';
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
-export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat';
+export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat'|'scenery-section';
 export interface InspectorStop {
  id:string;kind:InspectorKind;label:string;distance:number;
- landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;
+ landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;scenerySection?:ScenerySection;
 }
 export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'clock',label:'鐘塔街區'},{kind:'lighthouse',label:'海岸燈塔'},
@@ -12,6 +13,7 @@ export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'bridge',label:'橋梁兩端'},{kind:'breakdown',label:'故障車'},
  {kind:'junction',label:'匯入／出口'},{kind:'road-feature',label:'道路特徵'},
  {kind:'scenic-beat',label:'導演節奏'},
+ {kind:'scenery-section',label:'場景橫斷面'},
 ];
 export function canStepBack(distance:number,roadExists:(distance:number)=>boolean,length:number){
  return Number.isFinite(distance)&&distance>=0&&distance<length&&roadExists(distance);
@@ -179,6 +181,11 @@ export class SceneInspector {
    this.audit.textContent=report?
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
+  }else if(site?.kind==='scenery-section'&&site.scenerySection){
+   const c=site.scenerySection;
+   this.audit.textContent='Scenery Credibility R1.0 · '+SECTION_LABELS[c.kind]+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
+    '左側：'+SIDE_LABELS[c.left]+'；右側：'+SIDE_LABELS[c.right]+'。\n'+
+    '左右地形與建築共用落地高度；180m 漸變避免突然切換海岸與城市。';
   }else if(site?.kind==='scenic-beat'&&site.scenicCue){
    const c=site.scenicCue,[low,high]=c.targetIntensity;
    this.audit.textContent='Scenic Director R1 · '+c.title+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+

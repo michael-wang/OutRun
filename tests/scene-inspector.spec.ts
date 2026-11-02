@@ -129,6 +129,12 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await page.locator('[data-si="next"]').click();
  await expect(page.locator('#si-info')).toContainText('右側出口分岔');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ // Scenery R1.0 exposes both landscape roles at the exact streamed road.
+ await page.locator('[data-si-category="scenery-section"]').click();
+ await expect(page.locator('[data-si-category="scenery-section"]')).toContainText('(32)');
+ await expect(page.locator('#si-audit')).toContainText('Scenery Credibility R1.0');
+ await expect(page.locator('#si-audit')).toContainText('左側：');
+ await expect(page.locator('#si-audit')).toContainText('右側：');
  // The director's signed curvature and measured intensity are planned before QA.
  await page.locator('[data-si-category="scenic-beat"]').click();
  await expect(page.locator('[data-si-category="scenic-beat"]')).toContainText('(32)');

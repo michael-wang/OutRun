@@ -5,13 +5,14 @@ import {validatePilot,pilotSample,pilotWeights,type Placement,type WorldName} fr
 import {selectRoadInterchange} from './road-interchange';
 import {analyzeRoadFeatures,type RoadFeature} from './road-features';
 import {planScenicRoad,scoreScenicRoad,placeScenicLandmarks,type ScenicCue} from './scenic-director';
+import {planScenerySections,type ScenerySection} from './scenery-cross-section';
 import {planJourneyLandmarks,type JourneyLandmark} from './scenery';
 import {BRICK_START} from './bricks';
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
 export const TRIP_VERSION='v0.9-r8';
-export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[];scenicCues?:readonly ScenicCue[];scenicLandmarks?:readonly JourneyLandmark[]}
+export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[];scenicCues?:readonly ScenicCue[];scenicLandmarks?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[]}
 function random(seed:number){let x=seed>>>0;return ()=>{x=(x+0x6d2b79f5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function hash(v:unknown){let h=2166136261;for(const c of JSON.stringify(v)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 /** Independent long-form recipe; only lightweight placement metadata is created here. */
@@ -35,12 +36,15 @@ export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7|8=8):TripCand
   // banking for the newly composed curves while retaining the same bank system.
   stage.bankFeatures=authorBankFeatures(stage,d=>pilotSample(stage,d));
   stage.scenicLandmarks=placeScenicLandmarks(stage,nominalLandmarks);
+  // Scenery Credibility R1.0: stage-wide cross-sections reuse the already
+  // generated beats, so each seed and Worker chunk sees identical land roles.
+  stage.scenerySections=planScenerySections(stage.beats);
   stage.contentFingerprint=hash({
    seed:stage.seed,length:stage.length,placements:stage.placements,
    worldPhases:stage.worldPhases,beats:stage.beats,buffers:stage.buffers,
    baseHeight:stage.baseHeight,baseLanes:stage.baseLanes,
    generatorVersion:stage.generatorVersion,bankFeatures:stage.bankFeatures,
-   scenicLandmarks:stage.scenicLandmarks,
+   scenicLandmarks:stage.scenicLandmarks,scenerySections:stage.scenerySections,
   });
   validatePilot(stage);
   stage.roadFeatures=analyzeRoadFeatures(stage);

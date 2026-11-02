@@ -36,6 +36,7 @@ import {Traffic,trafficRecipe} from './traffic';
 import {planJourneyLandmarks,CLOCK_COMPANION_COLOR,CLOCK_DISTRICT_COMPANIONS} from './scenery';
 import {SceneInspector,type InspectorStop} from './scene-inspector';
 import {ROAD_FEATURE_LABELS} from './road-features';
+import {SECTION_LABELS} from './scenery-cross-section';
 import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
@@ -631,6 +632,11 @@ if(import.meta.env.DEV&&new URLSearchParams(location.search).has('stage')){const
 /* Opt-in QA Scene Inspector: exact route/biome sites, not a second world generator. */
 if(params.get('qa')==='1'&&trip){
  const stops:InspectorStop[]=[];
+ for(const section of trip.scenerySections??[]){
+  stops.push({id:section.id,kind:'scenery-section',
+   label:SECTION_LABELS[section.kind]+' · '+Math.round(section.start)+'–'+Math.round(section.end)+'m',
+   distance:Math.max(350,section.start-120),landmarkDistance:section.start,scenerySection:section});
+ }
  for(const cue of trip.scenicCues??[]){
   stops.push({id:cue.id,kind:'scenic-beat',
    label:cue.title+' · 張力 '+cue.intensity+'/10 · '+Math.round(cue.start)+'–'+Math.round(cue.end)+'m',

@@ -7,6 +7,7 @@ import {roadOffset,roadObjectOffset,coastalCliffDropAtLateral,type Shoulders} fr
 import * as THREE from 'three';
 import {ACTS,actWeights} from './acts';
 import type {createTrack} from './track';
+import {sceneryGroundMixAt,sceneryGroundY,scenerySectionAt,type ScenerySection} from './scenery-cross-section';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 /** No freestanding city blocks over the water cut-out and unsupported bridge approaches.
@@ -73,7 +74,7 @@ export function planJourneyLandmarks(length:number,weightsAt:(d:number)=>readonl
  return sites.sort((a,b)=>a.distance-b.distance);
 }
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[]}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[]}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:!range.openRoad&&i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -99,7 +100,17 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    else if(raw>=-13)base.y-=.1;
    else if(raw>-27){const near=q.position.y+q.right.y*roadOffset(-13,half,widths)-.1,far=q.position.y+q.right.y*roadOffset(-27,half,widths),coast=THREE.MathUtils.lerp(-5.05,far-2-27*.015,weightsAt(d)[1]);base.y=THREE.MathUtils.lerp(near,coast,(-raw-13)/14);}
    else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(raw)*.015,weightsAt(d)[1]);
-  }yaw=-p.roadHeading;}
+  }
+  if(range.scenerySections){
+   // Use the same absolute-distance terrain function as Road Worker meshes.
+   // This keeps far buildings and canyon mesas rooted in their actual shelf.
+   const half=halfAt(d),widths=range.shoulders?.(d),mix=sceneryGroundMixAt(range.scenerySections,d);
+   const physical=(o:number)=>roadObjectOffset(o,half,widths);
+   base.y=sceneryGroundY(offset,p.position.y,p.right.y,physical,weightsAt(d)[1],mix);
+   const projected=p.position.y+p.right.y*physical(offset);
+   roadsideDrop=Math.max(0,projected-base.y);
+  }
+  yaw=-p.roadHeading;}
  const clearance=range.clearance??new RoadClearance(roadSamples,halfAt,range.openRoad);
  function clear(radius:number){return clearance.clear(base,radius);}
  function part(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0){
@@ -154,7 +165,12 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
  }
   function building(seed:number,far=false,coastal=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=7+random(seed)*6,rawH=coastal?5+random(seed+1)*4:(far?28:9)+random(seed+1)*(far?42:18),h=nearClock(anchorDistance)?Math.min(rawH,far?17:12):rawH,depth=8+random(seed+2)*5,color=['#eed6b4','#e6a48b','#a9c9bf','#e3c286','#d7b9bf'][Math.floor(random(seed+4)*5)];
-  if(theme!==undefined)part(boxes,color,0,-4,0,w,8,depth);part(boxes,color,0,h/2,0,w,h,depth);part(boxes,'#f3e6cd',0,h+.25,0,w+.7,.5,depth+.7);part(boxes,color,w*.12,h+2,0,w*.65,4,depth*.7);part(boxes,'#bb7960',w*.12,h+4.1,0,w*.7,.25,depth*.75);
+  if(range.scenerySections){
+   // A buried plinth is visible only where a steep street shelf exposes its
+   // foot; the roof and windows remain identical to the accepted city assets.
+   part(boxes,'#b5b1a1',0,-2.8,0,w+2,5.8,depth+2);
+  }else if(theme!==undefined)part(boxes,color,0,-4,0,w,8,depth);
+  part(boxes,color,0,h/2,0,w,h,depth);part(boxes,'#f3e6cd',0,h+.25,0,w+.7,.5,depth+.7);part(boxes,color,w*.12,h+2,0,w*.65,4,depth*.7);part(boxes,'#bb7960',w*.12,h+4.1,0,w*.7,.25,depth*.75);
   for(let floor=0;floor<Math.floor(h/3.2);floor++)for(const x of [-.3,0,.3]){part(boxes,'#426d77',x*w,2+floor*3.2,-depth/2-.035,w*.13,1.35,.07);if(!far&&floor%2===1)part(boxes,'#eee1bd',x*w,1.2+floor*3.2,-depth/2-.35,w*.2,.16,.8);}
   if(!coastal&&seed%3===0){part(cylinder,'#8eb4b4',w*.12,h+5.5,0,w*.28,3,w*.28);part(round,'#719d9f',w*.12,h+7,0,w*.3,1.8,w*.3);}else if(!coastal&&seed%3===1){for(let fin=0;fin<3;fin++)part(boxes,'#ede5c9',w*.12+(fin-1)*w*.2,h+5,0,.35,2.2,depth*.7);}else if(coastal){part(cone,'#bd7d59',w*.12,h+4.8,0,w*.46,2,depth*.46,0,Math.PI/4);}
   if(!far){part(boxes,'#347f78',0,3,-depth/2-.8,w*.8,.18,1.8, .08);part(boxes,'#e5d7b9',0,.15,-depth/2-1.5,w+2,.3,3);}
@@ -168,7 +184,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    // A landmark can stay in the city, but must not stand at an outgoing
    // off-ramp's hidden endpoint. Put that district on the opposite roadside.
    const obstructed=!!range.junction&&interchangeSceneryClear(range.junction,d,1);
-   clockDistrict(index,d,obstructed?-75:75);
+   const seaRight=range.scenerySections?sceneryGroundMixAt(range.scenerySections,d).rightSea:0;
+   clockDistrict(index,d,obstructed||seaRight>.5?-75:75);
   }
   else if(kind==='lighthouse'){
    anchor(d,-(52+random(index)*8));lighthouse(index,d);
@@ -198,8 +215,44 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(family===0){anchor(d,17+random(i)*6);if(clear(4))palm(i);if(i%3===0){anchor(d,36+random(i)*10);if(clear(12))building(i,false,true);anchor(d+8,54+random(i+91)*10);if(bridgeApproachAllowsBuilding(d+8,range.bridge)&&clear(12)){const h=12+random(i+92)*15;part(boxes,['#d7c8af','#bfcfc4','#e4c5b0'][i%3],0,h/2,0,17,h,15);part(boxes,'#c9bca5',0,-1,0,22,2,20);}}}
   if(family===1&&i%7===0&&bridgeApproachAllowsBuilding(d,range.bridge)&&!(canyon&&canyonBend(d))){for(const side of [-1,1]){anchor(d,side*(280+random(i)*90));if(clear(110)){base.y=-8;part(mesaGeometry[i%3],'#ffffff',0,0,0,90,150+random(i)*80,80,0,random(i)*6);}}}
   if(family===1&&!(canyon&&canyonBend(d))&&!range.rockSections?.some(s=>d>s.start-20&&d<s.end+20)){for(const side of [-1,1]){anchor(d,side*(19+random(i+side)*10));if(roadsideDrop<3&&clear(3))dryTree(i);if(i%3===0){anchor(d,side*(75+random(i)*25));if(bridgeApproachAllowsBuilding(d,range.bridge)&&clear(43)&&!acts[1].landmarks.some(l=>Math.abs(d-(acts[1].start+(acts[1].end-acts[1].start)*l.fraction))<180))mesa(i+side);}anchor(d,side*(halfAt(d)<7?12.5:15));if(!range.rocky&&roadsideDrop<3)part(boxes,'#bd8e62',0,.65,0,.8,1.3,12,theme===undefined?0:-Math.atan2(sample(d).tangent.y,Math.hypot(sample(d).tangent.x,sample(d).tangent.z)));}}
-  if(family===2){for(const side of [-1,1]){anchor(d,side*17);if(roadsideDrop<3){part(cylinder,'#3d646a',0,4,0,.12,8,.12);part(boxes,'#3d646a',0,8,-.65,.16,.16,1.4);part(round,'#ffedba',0,7.85,-1.3,.45,.2,.5);}if(i%2===0){anchor(d+10,side*20);if(roadsideDrop<3){part(cylinder,'#876b52',0,2.6,0,.22,5.2,.22);part(round,'#4a8256',0,5.5,0,2.3,2.6,2.3);}}}
-   anchor(d,32+random(i)*10);if(clear(13)&&!acts[2].landmarks.some(l=>Math.abs(d-(acts[2].start+(acts[2].end-acts[2].start)*l.fraction))<170))building(i);if(i%3===0){anchor(d,65+random(i)*18);if(bridgeApproachAllowsBuilding(d,range.bridge)&&clear(18)){const rawH=18+random(i+180)*30,h=nearClock(d)?Math.min(rawH,14):rawH;part(boxes,['#b9c7bb','#d9c5ad','#b7c6c1'][i%3],0,h/2,0,18,h,16);part(boxes,'#c8bba5',0,-5,0,24,10,23);}anchor(d,140+random(i)*80);if(clear(18))building(i+100,true);}
+  if(family===2){
+   const mix=range.scenerySections?sceneryGroundMixAt(range.scenerySections,d):{leftLand:0,rightSea:0};
+   const section=range.scenerySections?scenerySectionAt(range.scenerySections,d):undefined;
+   for(const side of [-1,1]){
+    anchor(d,side*17);
+    if(roadsideDrop<3){part(cylinder,'#3d646a',0,4,0,.12,8,.12);part(boxes,'#3d646a',0,8,-.65,.16,.16,1.4);part(round,'#ffedba',0,7.85,-1.3,.45,.2,.5);}
+    if(i%2===0){anchor(d+10,side*20);if(roadsideDrop<3){part(cylinder,'#876b52',0,2.6,0,.22,5.2,.22);part(round,'#4a8256',0,5.5,0,2.3,2.6,2.3);}}
+   }
+   if(mix.rightSea<.25){
+    anchor(d,32+random(i)*10);
+    if(clear(13)&&!acts[2].landmarks.some(l=>Math.abs(d-(acts[2].start+(acts[2].end-acts[2].start)*l.fraction))<170))building(i);
+    if(i%3===0){
+     anchor(d,65+random(i)*18);
+     if(bridgeApproachAllowsBuilding(d,range.bridge)&&clear(18)){
+      const rawH=18+random(i+180)*30,h=nearClock(d)?Math.min(rawH,14):rawH;
+      part(boxes,['#b9c7bb','#d9c5ad','#b7c6c1'][i%3],0,h/2,0,18,h,16);
+      part(boxes,'#c8bba5',0,-5,0,24,10,23);
+     }
+     anchor(d,140+random(i)*80);if(clear(18))building(i+100,true);
+    }
+   }
+   // City isn't a row of props on a seafront: alternating near and far
+   // blocks make an actual two-sided street wall. Left cliffs stay ocean in
+   // dedicated waterfront beats, with no invented floating towers.
+   if(mix.leftLand>.65){
+    if(i%2===0){
+     anchor(d,-(34+random(i+701)*11));
+     if(clear(15))building(i+700,false);
+    }
+    if(i%4===0){
+     anchor(d,-(86+random(i+703)*55));
+     if(clear(19))building(i+900,true);
+    }
+    if(section?.kind==='urban-hillside'&&i%5===0){
+     anchor(d,-(200+random(i+704)*45));
+     if(clear(35))mesa(i+300);
+    }
+   }
   }
   // Coast cliffs and low green scrub also vary within the coastal act.
   if(family===0&&i%2===0&&bridgeApproachAllowsBuilding(d,range.bridge)){anchor(d,70+random(i)*25);if(clear(38)){part(rock,'#c3b794',0,theme===undefined?10:4,0,30,theme===undefined?28:40,26,0,random(i)*6);part(round,'#628350',-8,22,0,12,2,14);}}
