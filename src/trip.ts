@@ -4,16 +4,42 @@ import {authorBankFeatures} from './banking';
 import {validatePilot,pilotSample,type Placement,type WorldName} from './pilot-composer';
 import {selectRoadInterchange} from './road-interchange';
 import {analyzeRoadFeatures,type RoadFeature} from './road-features';
+import {planScenicRoad,scoreScenicRoad,type ScenicCue} from './scenic-director';
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
-export const TRIP_VERSION='v0.9-r7';
-export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[]}
+export const TRIP_VERSION='v0.9-r8';
+export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[];scenicCues?:readonly ScenicCue[]}
 function random(seed:number){let x=seed>>>0;return ()=>{x=(x+0x6d2b79f5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function hash(v:unknown){let h=2166136261;for(const c of JSON.stringify(v)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 /** Independent long-form recipe; only lightweight placement metadata is created here. */
-export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7=7):TripCandidate {
- const version=revision===1?'v0.9-r1':revision===2?'v0.9-r2':revision===3?'v0.9-r3':revision===4?'v0.9-r4':revision===5?'v0.9-r5':revision===6?'v0.9-r6':TRIP_VERSION;
+export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7|8=8):TripCandidate {
+ if(revision===8){
+  // R1 is a new reproducible content revision. Start with the exact accepted
+  // r7 biome/grade/width/interchange plan; compose curvature ONLY.
+  // ?revision=r7 and all older historical seeds remain byte-for-byte stable.
+  const previous=generateTrip(rawSeed,7),{curves,cues}=planScenicRoad(previous.beats,previous.seed);
+  const placements=[...previous.placements.filter(p=>p.channel!=='curvature'),...curves]
+   .sort((a,b)=>a.startS-b.startS);
+  const beats=previous.beats.map((beat,i)=>({...beat,role:cues[i].title}));
+  const tripCode='TRIP-'+TRIP_VERSION+'-'+previous.seed.toString(36).toUpperCase()+'-ALB8';
+  const stage:TripCandidate={...previous,revision:8,generatorVersion:TRIP_VERSION,
+   tripCode,stageCode:tripCode,placements,beats,roadFeatures:undefined,scenicCues:undefined};
+  // R7 bank showcase positions were tuned for obsolete turns. Re-author sparse
+  // banking for the newly composed curves while retaining the same bank system.
+  stage.bankFeatures=authorBankFeatures(stage,d=>pilotSample(stage,d));
+  stage.contentFingerprint=hash({
+   seed:stage.seed,length:stage.length,placements:stage.placements,
+   worldPhases:stage.worldPhases,beats:stage.beats,buffers:stage.buffers,
+   baseHeight:stage.baseHeight,baseLanes:stage.baseLanes,
+   generatorVersion:stage.generatorVersion,bankFeatures:stage.bankFeatures,
+  });
+  validatePilot(stage);
+  stage.roadFeatures=analyzeRoadFeatures(stage);
+  stage.scenicCues=scoreScenicRoad(stage,cues,stage.roadFeatures);
+  return stage;
+ }
+ const version=revision===1?'v0.9-r1':revision===2?'v0.9-r2':revision===3?'v0.9-r3':revision===4?'v0.9-r4':revision===5?'v0.9-r5':revision===6?'v0.9-r6':'v0.9-r7';
  const seed=(rawSeed>>>0)||1,rng=random(seed),pick=<T>(v:readonly T[])=>v[Math.floor(rng()*v.length)];
  const length=69000,baseHeight=45,baseLanes=4 as const,placements:Placement[]=[],beats:StageBeat[]=[],buffers:TransitionBuffer[]=[];
  const worlds:WorldName[]=['city','coast','canyon'];

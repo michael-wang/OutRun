@@ -129,6 +129,13 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await page.locator('[data-si="next"]').click();
  await expect(page.locator('#si-info')).toContainText('右側出口分岔');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ // The director's signed curvature and measured intensity are planned before QA.
+ await page.locator('[data-si-category="scenic-beat"]').click();
+ await expect(page.locator('[data-si-category="scenic-beat"]')).toContainText('(32)');
+ await expect(page.locator('#si-audit')).toContainText('Scenic Director R1');
+ await expect(page.locator('#si-audit')).toContainText('目標張力');
+ await expect(page.locator('#si-audit')).toContainText('實測');
+ await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  // R0 is built from the same seed BEFORE gameplay, and QA merely navigates
  // the fixed inventory. The six feature kinds share one compact category.
  await page.locator('[data-si-category="road-feature"]').click();

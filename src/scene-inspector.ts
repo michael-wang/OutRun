@@ -1,15 +1,17 @@
 import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,ROAD_FEATURE_REFERENCE,type RoadFeature,type RoadFeatureKind} from './road-features';
+import type {ScenicCue} from './scenic-director';
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
-export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature';
+export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat';
 export interface InspectorStop {
  id:string;kind:InspectorKind;label:string;distance:number;
- landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;
+ landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;
 }
 export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'clock',label:'鐘塔街區'},{kind:'lighthouse',label:'海岸燈塔'},
  {kind:'canyon-arch',label:'山區地標'},{kind:'city-grade',label:'城市坡度'},
  {kind:'bridge',label:'橋梁兩端'},{kind:'breakdown',label:'故障車'},
  {kind:'junction',label:'匯入／出口'},{kind:'road-feature',label:'道路特徵'},
+ {kind:'scenic-beat',label:'導演節奏'},
 ];
 export function canStepBack(distance:number,roadExists:(distance:number)=>boolean,length:number){
  return Number.isFinite(distance)&&distance>=0&&distance<length&&roadExists(distance);
@@ -177,6 +179,13 @@ export class SceneInspector {
    this.audit.textContent=report?
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
+  }else if(site?.kind==='scenic-beat'&&site.scenicCue){
+   const c=site.scenicCue,[low,high]=c.targetIntensity;
+   this.audit.textContent='Scenic Director R1 · '+c.title+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
+    '目標張力 '+low+'–'+high+'／10，實測 '+c.intensity+'／10；有效轉向 '+c.effectiveTurnSeconds.toFixed(1)+' 秒；'+
+    '峰值／平均 '+Math.round(c.peakSteer*100)+'%／'+Math.round(c.meanSteer*100)+'%；'+
+    '累積轉角 '+c.totalTurnDegrees+'°；有效反向 '+c.reversals+' 次。\n'+
+    '實測分數不會因目標而強制修正；可用「試駕」驗收節奏。';
   }else if(site?.kind==='road-feature'&&site.roadFeature){
     const f=site.roadFeature,scene={city:'城市',coast:'海岸',canyon:'山區'}[f.biome];
     const bearing=f.direction?({'left':'左','right':'右'} as const)[f.direction]:'';

@@ -17,8 +17,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
 import type {PilotCandidate} from './pilot-composer';
 
+const hasModernShoulders=(v?:string)=>v==='v0.9-r7'||v==='v0.9-r8';
+
 export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength}={}) {
-  const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=options.streamStage?.generatorVersion==='v0.9-r7'?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
+  const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
   scene.add(new THREE.HemisphereLight('#e3f7ff','#a09162',1.65));
@@ -109,8 +111,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const leftCanvas=signCanvas.cloneNode() as HTMLCanvasElement;const leftInk=leftCanvas.getContext('2d')!;leftInk.drawImage(signCanvas,0,0);leftInk.fillStyle='#153e45';leftInk.fillRect(20,20,472,88);leftInk.fillStyle='#fff4d9';leftInk.textAlign='center';leftInk.font='bold 70px sans-serif';leftInk.fillText('← BRAKE',256,96);const leftTexture=new THREE.CanvasTexture(leftCanvas);leftTexture.colorSpace=THREE.SRGBColorSpace;const leftSign=new THREE.MeshBasicMaterial({map:leftTexture,side:THREE.DoubleSide});
   // No experimental near-road rock walls/boulders in r7. Preserve historic r6 rock content.
   const rockSections=options.streamStage?.generatorVersion==='v0.9-r6'?rockySections(options.seed??1,length,weightsAt):[];
-  const breakdowns=(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7'))?breakdownLayout(sample,halfAt,length,options.seed??1):[];
-  const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||options.streamStage?.generatorVersion==='v0.9-r7')?[]:breakdownAnnotations(sample,halfAt,breakdowns);
+  const breakdowns=(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion)))?breakdownLayout(sample,halfAt,length,options.seed??1):[];
+  const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion))?[]:breakdownAnnotations(sample,halfAt,breakdowns);
   if(!options.streamStage){
   for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of options.track?[300,160]:[160,80]){
     const p=sample(extreme.start-lead),base=p.position.clone().addScaledVector(p.right,offsetAt(extreme.start-lead,15));
@@ -136,7 +138,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   }else{
     // Stage signs are recipes until their own road chunk is materialized.
     const signAt=(distance:number,material:THREE.Material,width:number,height:number,name=''):SceneAnnotation=>({distance:Math.max(0,Math.min(length-1e-6,distance)),create:()=>{const p=sample(distance),base=p.position.clone().addScaledVector(p.right,offsetAt(distance,15)),board=new THREE.Mesh(new THREE.PlaneGeometry(width,height),material);board.name=name;board.position.copy(base).add(new THREE.Vector3(0,4,0));board.rotation.y=Math.PI-p.roadHeading;const pole=new THREE.Mesh(new THREE.CylinderGeometry(.12,.12,4,6),rail);pole.position.copy(base).add(new THREE.Vector3(0,2,0));return [board,pole];}});
-    if((options.streamStage.generatorVersion==='v0.9-r6'||options.streamStage.generatorVersion==='v0.9-r7'))annotations.push(...warningAnnotations(sample,halfAt,originalTurnWarnings(course,sample),shoulders));
+    if((options.streamStage.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage.generatorVersion)))annotations.push(...warningAnnotations(sample,halfAt,originalTurnWarnings(course,sample),shoulders));
     else if(options.streamStage.generatorVersion==='v0.9-r5')annotations.push(...warningAnnotations(sample,halfAt,turnWarnings(sample,length)));
     else for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of [300,160])annotations.push(signAt(extreme.start-lead,extreme.targetRequiredSteering<0?leftSign:signMaterial,5.2,2.6));
     if(options.narrowings?.length){const canvas=document.createElement('canvas');canvas.width=512;canvas.height=256;const ctx=canvas.getContext('2d')!;ctx.fillStyle='#153e45';ctx.fillRect(0,0,512,256);ctx.strokeStyle='#ffd18b';ctx.lineWidth=12;ctx.strokeRect(8,8,496,240);ctx.fillStyle='#fff4d9';ctx.textAlign='center';ctx.font='bold 56px sans-serif';ctx.fillText('ROAD NARROWS',256,95);ctx.font='bold 45px sans-serif';ctx.fillText('MOVE TOWARD CENTER',256,185);const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});for(const d of options.narrowings)annotations.push(signAt(d,material,6,3,'narrowing-warning'));}

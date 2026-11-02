@@ -50,7 +50,7 @@ const params=new URLSearchParams(location.search);
 document.documentElement.dataset.qa=String(params.get('qa')==='1');
 // Explicit historical and diagnostic routes keep their existing selection.
 const defaultTrip=params.get('mode')!=='free'&&!['trip','stage','lab','challenge','pace','velocity'].some(key=>params.has(key));
-const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:7):undefined;
+const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:params.get('revision')==='r7'?7:8):undefined;
 // Production visitors see the game; internal QA tools remain available through ?qa=1.
 const playerUi=!!trip&&params.get('qa')!=='1'&&(import.meta.env.PROD||params.get('playerui')==='1');
 document.documentElement.dataset.playerUi=String(playerUi);
@@ -631,6 +631,11 @@ if(import.meta.env.DEV&&new URLSearchParams(location.search).has('stage')){const
 /* Opt-in QA Scene Inspector: exact route/biome sites, not a second world generator. */
 if(params.get('qa')==='1'&&trip){
  const stops:InspectorStop[]=[];
+ for(const cue of trip.scenicCues??[]){
+  stops.push({id:cue.id,kind:'scenic-beat',
+   label:cue.title+' · 張力 '+cue.intensity+'/10 · '+Math.round(cue.start)+'–'+Math.round(cue.end)+'m',
+   distance:Math.max(350,cue.start-140),landmarkDistance:cue.start,scenicCue:cue});
+ }
  // Road Feature Analysis is already complete in generateTrip(). Only turn
  // immutable recipe metadata into opt-in QA destinations; no per-frame
  // classification, no Worker changes and no new scenery generation.
