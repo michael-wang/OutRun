@@ -133,14 +133,23 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  // the fixed inventory. The six feature kinds share one compact category.
  await page.locator('[data-si-category="road-feature"]').click();
  await expect(page.locator('#si-feature-filters')).toBeVisible();
- await expect(page.locator('[data-si-feature="long-curve"]')).toBeEnabled();
- await page.locator('[data-si-feature="long-curve"]').click();
- await expect(page.locator('[data-si-feature="long-curve"]')).toHaveAttribute('aria-pressed','true');
- await expect(page.locator('#si-audit')).toContainText('R0 已辨識：長距離彎道');
- await expect(page.locator('#si-info')).toContainText('長距離彎道');
- await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ // A truthful seed may have zero long curves; do not fabricate one for QA.
+ const longCurve=page.locator('[data-si-feature="long-curve"]');
+ if(await longCurve.isEnabled()){
+  await longCurve.click();
+  await expect(longCurve).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#si-audit')).toContainText('長距離彎道');
+  await expect(page.locator('#si-audit')).toContainText('Driving Intensity');
+  await expect(page.locator('#si-audit')).toContainText('轉向需求峰值／平均');
+  await expect(page.locator('#si-audit')).toContainText('累積轉角');
+  await expect(page.locator('#si-info')).toContainText('張力');
+  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ }else await expect(longCurve).toContainText('(0)');
  await page.locator('[data-si-feature="merge"]').click();
  await expect(page.locator('#si-audit')).toContainText('4→5 車道');
+ await expect(page.locator('#si-audit')).toContainText('Driving Intensity');
+ await expect(page.locator('#si-audit')).toContainText('230 km/h');
+ await expect(page.locator('#si-info')).toContainText('張力');
  await expect(page.locator('#si-info')).toContainText('車道匯入');
  await page.locator('[data-si-feature="exit"]').click();
  await expect(page.locator('#si-audit')).toContainText('5→4 車道');

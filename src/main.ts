@@ -638,7 +638,7 @@ if(params.get('qa')==='1'&&trip){
   const lead=feature.kind==='merge'||feature.kind==='exit'?220:
    feature.kind==='u-turn'?230:feature.kind==='long-straight'?80:160;
   stops.push({id:feature.id,kind:'road-feature',
-   label:`${ROAD_FEATURE_LABELS[feature.kind]} · ${Math.round(feature.start)}–${Math.round(feature.end)}m`,
+   label:`${ROAD_FEATURE_LABELS[feature.kind]} · 張力 ${feature.intensity}/10 · ${Math.round(feature.start)}–${Math.round(feature.end)}m`,
    distance:Math.max(350,feature.start-lead),landmarkDistance:feature.start,
    roadFeature:feature});
  }

@@ -1,4 +1,4 @@
-import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,type RoadFeature,type RoadFeatureKind} from './road-features';
+import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,ROAD_FEATURE_REFERENCE,type RoadFeature,type RoadFeatureKind} from './road-features';
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
 export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature';
 export interface InspectorStop {
@@ -183,7 +183,11 @@ export class SceneInspector {
     const detail=f.kind==='merge'||f.kind==='exit'?` · ${f.lanesBefore}→${f.lanesAfter} 車道`:
      f.kind==='s-bends'?` · ${f.turns} 個轉向（${f.pattern}）`:
      f.turnDegrees?` · ${bearing}轉約 ${f.turnDegrees}°`:'';
-    this.audit.textContent=`R0 已辨識：${ROAD_FEATURE_LABELS[f.kind]} · ${scene} · ${Math.round(f.start)}–${Math.round(f.end)}m${detail}。僅分類，不修改風景。`;
+    const m=f.analysis,pct=(n:number)=>`${Math.round(n*100)}%`;
+    const tooFast=m.peakSteer>1?' · ⚠ 參考速度下需減速':'';
+    this.audit.textContent=`R0.1 Driving Intensity ${f.intensity}/10 · ${ROAD_FEATURE_LABELS[f.kind]} · ${scene} · ${Math.round(f.start)}–${Math.round(f.end)}m${detail}。\n`+
+     `以 ${ROAD_FEATURE_REFERENCE.speedKmh} km/h、${ROAD_FEATURE_REFERENCE.pace}× 估算：${m.durationSeconds.toFixed(1)} 秒；`+
+     `轉向需求峰值／平均 ${pct(m.peakSteer)}／${pct(m.meanSteer)}；累積轉角 ${m.totalTurnDegrees}°；反向 ${m.reversals} 次${tooFast}。`;
    }else this.audit.textContent='';
  }
  private async copyPosition(){
