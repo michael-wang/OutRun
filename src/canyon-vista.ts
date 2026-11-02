@@ -38,38 +38,49 @@ export function canyonVistaProjection(
 /** Runs once at seed planning. Scores three travel positions against one
  * fixed river / canyon-rim vista so the showcase survives motion. */
 export function planCanyonVista(stage:PilotCandidate,scene:GrandCanyonScene):CanyonVista{
- const track=createPilotTrack(stage),sample=track.sample;
- let best:undefined|CanyonVista,bestScore=-Infinity;
- for(let center=scene.start+300;center<=scene.end-350;center+=35){
-  for(let lead=215;lead<=365;lead+=30){
+ const track=createPilotTrack(stage),cached=new Map<number,ReturnType<typeof track.sample>>();
+ const sample=(d:number)=>{
+  const key=Math.round(d*1000);
+  const found=cached.get(key);if(found)return found;
+  const frame=track.sample(d);cached.set(key,frame);return frame;
+ };
+ const rough:{center:number;focus:number;score:number}[]=[];
+ // Pass 1: only ~20 frustum probes per seed, not hundreds.
+ for(let center=scene.start+290;center<=scene.end-345;center+=75){
+  for(const lead of [240,320,385]){
    const focus=center+lead;
-   if(focus>scene.end-125)continue;
-   let riverHits=0,rimHits=0,score=0;
-   const frustum=canyonVistaProjection(stage,scene,center,focus,1705/863,sample);
-   for(const delta of [-70,0,70]){
-    const from=center+delta;
-    const p=delta===0?frustum:canyonVistaProjection(stage,scene,from,focus,1705/863,sample);
-    if(p.riverVisible)riverHits++;
-    if(p.rimVisible)rimHits++;
-    score+=p.riverVisible?60:0;
-    score+=p.rimVisible?23:0;
-    if(p.riverVisible)score+=Math.max(0,1-Math.abs(p.riverX+.25)) * 5;
-    if(p.rimVisible)score+=Math.max(0,1-Math.abs(p.rimX+.25)) * 3;
-   }
-   // A curved approach naturally sweeps the canyon into view; the river
-   // should enter before the viewer reaches the bend's exit.
-   score+=Math.min(7,Math.abs(pilotSample(stage,center).demand)*7);
-   if(score<=bestScore)continue;
-   bestScore=score;
-   best=Object.freeze({approachDistance:Math.round(center-175),
-    revealDistance:Math.round(center),focusDistance:Math.round(focus),
-    riverInFrameSamples:riverHits,rimInFrameSamples:rimHits,
-    riverScreenX:frustum.riverX,riverScreenY:frustum.riverY,
-    rimScreenX:frustum.rimX,rimScreenY:frustum.rimY,
-    // Only after this check may QA claim the forward view actually frames it.
-    sightlineConfirmed:riverHits>=2&&rimHits>=2,
-   });
+   if(focus>scene.end-105)continue;
+   const p=canyonVistaProjection(stage,scene,center,focus,1705/863,sample);
+   const score=(p.riverVisible?100:0)+(p.rimVisible?36:0)
+    -(Math.abs(p.riverX+.22)+Math.abs(p.rimX+.22))*4
+    +Math.min(5,Math.abs(pilotSample(stage,center).demand)*5);
+   rough.push({center,focus,score});
   }
+ }
+ rough.sort((a,b)=>b.score-a.score||a.center-b.center);
+ let best:undefined|CanyonVista,bestScore=-Infinity;
+ // Pass 2: validate a fixed world-space focal point from three
+ // successive natural driving positions. A limited finalist set keeps
+ // start-up fast, while a genuine reveal must survive forward motion.
+ for(const candidate of rough.slice(0,5)){
+  let riverHits=0,rimHits=0,score=candidate.score;
+  const frustum=canyonVistaProjection(stage,scene,candidate.center,candidate.focus,1705/863,sample);
+  for(const delta of [-80,0,80]){
+   const p=delta===0?frustum:canyonVistaProjection(
+    stage,scene,candidate.center+delta,candidate.focus,1705/863,sample);
+   if(p.riverVisible)riverHits++;
+   if(p.rimVisible)rimHits++;
+  }
+  score+=riverHits*38+rimHits*21;
+  if(score<=bestScore)continue;
+  bestScore=score;
+  best=Object.freeze({approachDistance:Math.round(candidate.center-170),
+   revealDistance:Math.round(candidate.center),focusDistance:Math.round(candidate.focus),
+   riverInFrameSamples:riverHits,rimInFrameSamples:rimHits,
+   riverScreenX:frustum.riverX,riverScreenY:frustum.riverY,
+   rimScreenX:frustum.rimX,rimScreenY:frustum.rimY,
+   sightlineConfirmed:riverHits>=2&&rimHits>=2,
+  });
  }
  if(!best)throw new Error('No safe canyon vista candidates for '+scene.seed);
  return best;
