@@ -647,7 +647,7 @@ if(params.get('qa')==='1'&&trip){
    distance:Math.max(350,feature.start-lead),landmarkDistance:feature.start,
    roadFeature:feature});
  }
- const landmarks=planJourneyLandmarks(world.length,d=>world.weightsAt(d),world.bridge);
+ const landmarks=trip.scenicLandmarks??planJourneyLandmarks(world.length,d=>world.weightsAt(d),world.bridge);
  for(const site of landmarks){
   const name=site.kind==='clock'?'鐘塔街區':site.kind==='lighthouse'?'海岸燈塔':'右側巨型砂岩拱門';
   // The route may crest or turn sharply. Choose an actual chase-camera view

@@ -1,7 +1,8 @@
 import {BRICK_START} from './bricks';
 import {REFERENCE_SPEED,REFERENCE_TRAVEL,CURVATURE_PER_STEER,requiredSteering} from './challenges';
 import {drivingIntensity,ROAD_FEATURE_RULES,type RoadFeature} from './road-features';
-import {pilotSample,type Placement,type PilotCandidate,type WorldName} from './pilot-composer';
+import {pilotSample,pilotWeights,type Placement,type PilotCandidate,type WorldName} from './pilot-composer';
+import type {JourneyLandmark} from './scenery';
 import type {StageBeat} from './stage-one';
 
 export type ScenicRole='flow'|'rhythm'|'sweep'|'reveal'|'technical';
@@ -112,4 +113,34 @@ export function scoreScenicRoad(stage:PilotCandidate,cues:readonly ScenicCuePlan
   return Object.freeze({...cue,intensity,peakSteer:round2(peakSteer),meanSteer:round2(meanSteer),
    effectiveTurnSeconds:round2(activeMeters/REFERENCE_TRAVEL),totalTurnDegrees,reversals});
  }));
+}
+
+/** Give fixed landmark types a genuinely readable camera approach.
+ * Reuse the same final list in QA and Worker scenery; the small candidate
+ * search runs once per seed, never per streamed chunk or rendered frame.
+ * Existing r7 landmarks and all other landmark kinds remain untouched. */
+export function placeScenicLandmarks(stage:PilotCandidate,
+ nominal:readonly JourneyLandmark[]):readonly JourneyLandmark[]{
+ const chosen:JourneyLandmark[]=[];
+ for(const site of nominal){
+  if(site.kind!=='canyon-arch'){chosen.push(Object.freeze({...site}));continue;}
+  let best=site.distance,bestScore=Infinity;
+  for(let offset=-1800;offset<=1800;offset+=100){
+   const d=site.distance+offset;
+   if(d<BRICK_START+550||d>BRICK_START+stage.length-450)continue;
+   if(pilotWeights(stage,d)[1]<.9)continue;
+   if(chosen.some(p=>p.kind==='canyon-arch'&&Math.abs(p.distance-d)<1500))continue;
+   let maximum=0,sum=0,count=0;
+   // A long, calm approach avoids an arch suddenly disappearing around a bend.
+   // 400m is the existing chase-camera inspection distance range.
+   for(let ahead=0;ahead<=420;ahead+=35){
+    const turn=Math.abs(pilotSample(stage,d-ahead).demand);
+    maximum=Math.max(maximum,turn);sum+=turn;count++;
+   }
+   const score=maximum*100+sum/count*45+Math.abs(offset)*.003;
+   if(score<bestScore){best=d;bestScore=score;}
+  }
+  chosen.push(Object.freeze({...site,distance:best}));
+ }
+ return Object.freeze(chosen.sort((a,b)=>a.distance-b.distance));
 }

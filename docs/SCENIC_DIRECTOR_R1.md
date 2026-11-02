@@ -51,3 +51,11 @@ canyon switchback. Check that the longer curve really requires >5 seconds
 of meaningful steering, the straight feels like a payoff, the mountain
 switchback remains physically navigable, and scenery still has believable
 continuity. This milestone does not claim human playtest approval.
+
+### Landmark staging
+R1 now precomputes the final canyon-arch anchors, preferring a low-steering
+400m approach instead of hiding an arch behind a technical turn. The very same
+`scenicLandmarks` array is shared by Inspector and Worker-built chunk scenery,
+so both systems point to the **actual** visible object. Historic r7 landmark
+positions, clock towers and lighthouses are unaffected. Anchors participate
+in the new r8 content fingerprint.

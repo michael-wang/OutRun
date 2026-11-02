@@ -41,7 +41,7 @@ it('large canyon arch is on tall grounded feet with an identifiable open crown',
 it('actual mountain landmarks are projected ahead, not off-screen at the QA stop',()=>{
  for(const seed of [1,2,7]){
   const trip=generateTrip(seed),track=createPilotTrack(trip);
-  const sites=planJourneyLandmarks(track.length,d=>pilotWeights(trip,d)).filter(s=>s.kind==='canyon-arch');
+  const sites=(trip.scenicLandmarks??planJourneyLandmarks(track.length,d=>pilotWeights(trip,d))).filter(s=>s.kind==='canyon-arch');
   expect(sites.length).toBeGreaterThanOrEqual(2);
   for(const site of sites){
    const from=canyonArchInspectionDistance(track.sample,site.distance);

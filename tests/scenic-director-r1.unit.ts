@@ -18,6 +18,8 @@ describe('Scenic Director R1 — curated tension without runtime choreography',(
    expect(now.contentFingerprint).not.toBe(old.contentFingerprint);
    expect(now.length).toBe(old.length);
    expect(now.worldPhases).toEqual(old.worldPhases);
+   expect(now.scenicLandmarks).toBeDefined();
+   expect(Object.isFrozen(now.scenicLandmarks)).toBe(true);
    expect(now.buffers).toEqual(old.buffers);
    expect(now.placements.filter(p=>p.channel!=='curvature'))
     .toEqual(old.placements.filter(p=>p.channel!=='curvature'));
