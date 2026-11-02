@@ -64,8 +64,6 @@ describe('R2.1: canyon-specific scenery and natural chase-camera reveal',()=>{
    expect(new Set(slots.map(p=>p.kind)).size).toBeGreaterThanOrEqual(2);
    expect(slots.filter(p=>p.offset>0).length).toBeGreaterThan(0);
    expect(slots.filter(p=>p.offset<0).length).toBeGreaterThan(0);
-   const gaps=slots.filter(p=>p.kind==='talus').map(p=>p.distance).sort((a,b)=>a-b)
-    .slice(1).map((d,i,a)=>d-a[i-1]);
    // The sampler must not produce a regularly mirrored 30m avenue.
    expect(slots.length).toBeLessThan((scene.end-scene.start)/15);
    const y=100,d=(scene.start+scene.end)/2;
