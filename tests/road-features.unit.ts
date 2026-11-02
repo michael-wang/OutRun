@@ -77,13 +77,13 @@ describe('Scenic Director R0.1 — measured driving intensity',()=>{
    curve(1540,1940,1,1.1),curve(1970,2370,-1,1.1),
   ]));
   const straight=result.find(f=>f.kind==='long-straight')!;
-  const curve=result.find(f=>f.kind==='long-curve')!;
+  const longCurve=result.find(f=>f.kind==='long-curve')!;
   const rhythm=result.find(f=>f.kind==='s-bends')!;
   const hairpin=result.find(f=>f.kind==='u-turn')!;
-  expect(straight.intensity).toBeLessThan(curve.intensity);
+  expect(straight.intensity).toBeLessThan(longCurve.intensity);
   expect(rhythm.intensity).toBeGreaterThan(straight.intensity);
   expect(hairpin.intensity).toBeGreaterThan(straight.intensity);
-  expect([straight,curve,rhythm,hairpin].every(f=>f.intensity===drivingIntensity(f.analysis))).toBe(true);
+  expect([straight,longCurve,rhythm,hairpin].every(f=>f.intensity===drivingIntensity(f.analysis))).toBe(true);
   expect(ROAD_FEATURE_REFERENCE.speedKmh).toBe(230);
   expect(ROAD_FEATURE_RULES.minCurveMeters).toBeCloseTo(5*ROAD_FEATURE_REFERENCE.metersPerSecond);
  });
