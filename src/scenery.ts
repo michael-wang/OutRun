@@ -9,6 +9,7 @@ import {ACTS,actWeights} from './acts';
 import type {createTrack} from './track';
 import {canyonSceneEnvelope,canyonGroundY,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonPropSlots,type CanyonPropSlot} from './canyon-language';
+import type {DesignedProp,DesignerCut} from './designer-canyon';
 import {sceneryGroundMixAt,sceneryGroundY,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
@@ -76,7 +77,7 @@ export function planJourneyLandmarks(length:number,weightsAt:(d:number)=>readonl
  return sites.sort((a,b)=>a.distance-b.distance);
 }
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:!range.openRoad&&i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -246,6 +247,51 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boxes,'#436b74',front,y,z,.18,2,depth*.18);
   }
  }
+
+/** Authored scene props: each distance/side/size is chosen by the designer,
+ * not sampled from a biome RNG. The existing instanced materials still carry
+ * the rendering cost; no meshes are allocated during the game loop. */
+ function designedProp(p:DesignedProp){
+  anchor(p.at,p.offset);
+  if(!bridgeApproachAllowsBuilding(p.at,range.bridge)||!clear(Math.min(40,p.width*.34+3)))return;
+  const w=p.width,h=p.height,z=p.depth;
+  switch(p.kind){
+   case 'cliff':
+    // Low wide sandstone layers; continuous landscape is the actual terrain.
+    part(mesaGeometry[0],'#ad7450',0,-8,0,w,h,z,0,.05,0);
+    part(boxes,'#d39b6a',0,h*.68,-z*.12,w*.8,2,z*.67);
+    break;
+   case 'rim':
+    part(mesaGeometry[1],'#ac8061',0,-4,0,w,h,z,0,.08,0);
+    part(boxes,'#d9a978',0,h*.67,0,w*.8,1.6,z*.7);
+    break;
+   case 'terrace':
+    part(mesaGeometry[2],'#bb8a5e',0,-3,0,w,h,z,0,.1,0);
+    part(boxes,'#e5bc87',0,h*.61,0,w*.7,1.2,z*.65);
+    break;
+   case 'talus':
+    for(const [dx,dz,mult] of [[0,0,1],[w*.4,z*.32,.57],[-w*.46,-z*.18,.43]]){
+     part(boulder,'#aa7857',dx,1.1*mult,dz,w*.45*mult,h*.75*mult,z*.52*mult,0,.13,0);
+    }
+    break;
+   case 'rock-garden':
+    for(const [dx,dz,mult] of [[0,0,1],[w*.35,z*.35,.7],[-w*.32,-z*.24,.52]]){
+     part(boulder,'#b8845e',dx,1.3*mult,dz,w*.32*mult,h*.7*mult,z*.38*mult);
+    }
+    break;
+   case 'scrub':
+    part(round,'#8c935e',0,h*.48,0,w*.52,h*.42,z*.54);
+    part(round,'#a0a470',w*.4,h*.3,z*.15,w*.27,h*.3,z*.34);
+    break;
+   case 'lookout':
+    // One low overlook on the inside bank, not a new collision obstacle.
+    part(boxes,'#a08463',0,.35,0,w,.7,z);
+    part(boxes,'#826a4c',-w*.38,1.8,-z*.32,.4,3.4,.4);
+    part(boxes,'#826a4c',w*.38,1.8,-z*.32,.4,3.4,.4);
+    part(boxes,'#d5bd8e',0,3.3,-z*.32,w*.85,.45,.3);
+    break;
+  }
+ }
  // The same deterministic list powers scenery, QA jumps and lone-clock audits.
  if(range.openRoad)for(const site of landmarkSites){
   if(site.distance<range.start||site.distance>=range.end)continue;
@@ -280,8 +326,14 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  }
   // Keep the ramp mouths AND the screen walls free of roadside trees and buildings.
  ordinaryProps=true;
+ if(range.designerCut)for(const prop of range.designerCut.props){
+  // A strict half-open authored distance interval guarantees that a
+  // streaming chunk cannot duplicate one fixed landmark at its seam.
+  if(prop.at>=range.start&&prop.at<range.end)designedProp(prop);
+ }
  // Overlap prop families deterministically at each boundary; nothing spawns per frame.
  for(let i=Math.max(0,Math.ceil((range.start-16)/30)),d=16+i*30;d<Math.min(length,range.end);d+=30,i++){
+  if(range.designerCut)continue;
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;
   if(canyonR21(d)){
    // Sparse, irregular talus and shrubs. Neither city roadside rows nor
