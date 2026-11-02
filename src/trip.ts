@@ -1,10 +1,12 @@
 import {REFERENCE_TRAVEL} from './challenges';
 import {LANE_WIDTH} from './road-profile';
 import {authorBankFeatures} from './banking';
-import {validatePilot,pilotSample,type Placement,type WorldName} from './pilot-composer';
+import {validatePilot,pilotSample,pilotWeights,type Placement,type WorldName} from './pilot-composer';
 import {selectRoadInterchange} from './road-interchange';
 import {analyzeRoadFeatures,type RoadFeature} from './road-features';
 import {planScenicRoad,scoreScenicRoad,type ScenicCue} from './scenic-director';
+import {planJourneyLandmarks} from './scenery';
+import {BRICK_START} from './bricks';
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
@@ -18,7 +20,10 @@ export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7|8=8):TripCand
   // R1 is a new reproducible content revision. Start with the exact accepted
   // r7 biome/grade/width/interchange plan; compose curvature ONLY.
   // ?revision=r7 and all older historical seeds remain byte-for-byte stable.
-  const previous=generateTrip(rawSeed,7),{curves,cues}=planScenicRoad(previous.beats,previous.seed);
+  const previous=generateTrip(rawSeed,7);
+  const arches=planJourneyLandmarks(BRICK_START+previous.length+600,
+   d=>pilotWeights(previous,d)).filter(x=>x.kind==='canyon-arch').map(x=>x.distance);
+  const {curves,cues}=planScenicRoad(previous.beats,previous.seed,arches);
   const placements=[...previous.placements.filter(p=>p.channel!=='curvature'),...curves]
    .sort((a,b)=>a.startS-b.startS);
   const beats=previous.beats.map((beat,i)=>({...beat,role:cues[i].title}));

@@ -42,14 +42,20 @@ const round2=(v:number)=>Math.round(v*100)/100;
  * interchange, driving and worker data remain the same as the source route.
  * Each paired L/R phrase integrates to zero final heading (but not position),
  * so world travel remains forward rather than accidentally making loops. */
-export function planScenicRoad(beats:readonly StageBeat[],seed:number):{
+export function planScenicRoad(beats:readonly StageBeat[],seed:number,
+ protectedLandmarks:readonly number[]=[]):{
  curves:Placement[];cues:readonly ScenicCuePlan[];
 }{
  // One technical landmark in the canyon, never in an urban neighborhood and
  // never interrupting the essential rhythm -> long curve -> straight phrase.
  const canyonCandidates=beats.map((beat,i)=>({beat,i}))
   .filter(x=>x.i>=4&&x.beat.world==='canyon'&&[0,4,5].includes(x.i%8));
- const technicalIndex=canyonCandidates[Math.floor(canyonCandidates.length/2)]?.i??
+ // A landmark is a visual payoff, not something to hide around a 170°
+ // switchback. Prefer canyon beats >420m from all established arch anchors.
+ const distant=canyonCandidates.filter(({beat})=>protectedLandmarks.every(d=>
+  d<BRICK_START+beat.startS-420||d>BRICK_START+beat.endS+420));
+ const candidates=distant.length?distant:canyonCandidates;
+ const technicalIndex=candidates[Math.floor(candidates.length/2)]?.i??
   beats.findIndex((b,i)=>i>=4&&b.world==='canyon'&&[0,4,5].includes(i%8));
  const curves:Placement[]=[],cues:ScenicCuePlan[]=[];
  for(let i=0;i<beats.length;i++){
