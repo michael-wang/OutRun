@@ -94,7 +94,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  const landmarkSites=range.openRoad?(range.landmarkSites??planJourneyLandmarks(length,weightsAt,range.bridge)):[];
  // Only nearby ordinary buildings are kept low: the three authored clock companions remain.
  const nearClock=(d:number)=>landmarkSites.some(site=>site.kind==='clock'&&Math.abs(site.distance-d)<145);
- function anchor(d:number,offset:number){anchorDistance=d;anchorRight=offset>0;roadsideDrop=0;chunk=Math.floor(d/650);bridgeGap=!!range.bridge&&d>=range.bridge.start-35&&d<=range.bridge.end+35;const p=sample(d);base=p.position.addScaledVector(p.right,roadObjectOffset(offset,halfAt(d),range.shoulders?.(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);if(range.shoulders){const q=sample(d),widths=range.shoulders(d),half=halfAt(d),x=roadObjectOffset(offset,half,widths),width=x<0?widths.left:widths.right,extra=Math.abs(x)-half,raw=Math.sign(x)*(extra<=width?7+extra*6/width:13+extra-width);base.copy(q.position).addScaledVector(q.right,x);
+ function anchor(d:number,offset:number){anchorDistance=d;anchorRight=offset>0;roadsideDrop=0;chunk=Math.floor(d/650);bridgeGap=!!range.bridge&&d>=range.bridge.start-35&&d<=range.bridge.end+35;const p=sample(d),roadY=p.position.y;base=p.position.addScaledVector(p.right,roadObjectOffset(offset,halfAt(d),range.shoulders?.(d)));if(offset>13)base.y-=offset<=75?.12+(offset-13)/62*2.88:3+(offset-75)/85*11;else if(offset>=-13)base.y-=.1;else if(offset>-27)base.y-=.1;else base.y=THREE.MathUtils.lerp(-5.05,base.y-2-Math.abs(offset)*.015,weightsAt(d)[1]);if(range.shoulders){const q=sample(d),widths=range.shoulders(d),half=halfAt(d),x=roadObjectOffset(offset,half,widths),width=x<0?widths.left:widths.right,extra=Math.abs(x)-half,raw=Math.sign(x)*(extra<=width?7+extra*6/width:13+extra-width);base.copy(q.position).addScaledVector(q.right,x);
    roadsideDrop=coastalCliffDropAtLateral(q.position.y,q.right.y,x,half,widths,weightsAt(d)[1]);
    if(raw>=13)base.y-=raw<=75?.12+(raw-13)/62*2.88:3+(raw-75)/85*11;
    else if(raw>=-13)base.y-=.1;
@@ -106,8 +106,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    // This keeps far buildings and canyon mesas rooted in their actual shelf.
    const half=halfAt(d),widths=range.shoulders?.(d),mix=sceneryGroundMixAt(range.scenerySections,d);
    const physical=(o:number)=>roadObjectOffset(o,half,widths);
-   base.y=sceneryGroundY(offset,p.position.y,p.right.y,physical,weightsAt(d)[1],mix);
-   const projected=p.position.y+p.right.y*physical(offset);
+   base.y=sceneryGroundY(offset,roadY,p.right.y,physical,weightsAt(d)[1],mix);
+   const projected=roadY+p.right.y*physical(offset);
    roadsideDrop=Math.max(0,projected-base.y);
   }
   yaw=-p.roadHeading;}
