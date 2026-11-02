@@ -43,7 +43,7 @@ describe('Scenic Director R0.1 — measured driving intensity',()=>{
   expect(rhythms[0].intensity).toBeGreaterThan(5);
   const sweeping=a.filter(f=>f.kind==='long-curve');
   expect(sweeping.length).toBeGreaterThan(0);
-  expect(sweeping.every(f=>f.analysis.durationSeconds>=5)).toBe(true);
+  expect(sweeping.every(f=>f.analysis.activeTurnSeconds>=5)).toBe(true);
   expect(a.some(f=>f.kind==='long-straight'&&f.end-f.start>1000)).toBe(true);
   expect(a.some(f=>f.kind==='merge'||f.kind==='exit')).toBe(false);
   expect(a.find(f=>f.kind==='long-straight'&&f.end>BRICK_START+2800)?.biome).toBe('canyon');
@@ -70,6 +70,21 @@ describe('Scenic Director R0.1 — measured driving intensity',()=>{
   const wide=analyzeRoadFeatures(synthetic([curve(300,2600,1,.5,'C08')],3200));
   expect(wide.some(f=>f.kind==='u-turn')).toBe(false);
   expect(wide.some(f=>f.kind==='long-curve')).toBe(true);
+ });
+ it('keeps equal near-threshold left/right hairpins symmetric across 20m sample offsets',()=>{
+  const out=analyzeRoadFeatures(synthetic([
+   curve(313,953,1,1.12,'C08'),curve(1024,1664,-1,1.12,'C08'),
+  ],2700));
+  const turns=out.filter(f=>f.kind==='u-turn');
+  expect(turns).toHaveLength(2);
+  expect(turns[0].turnDegrees).toBeGreaterThanOrEqual(ROAD_FEATURE_RULES.uTurnDegrees);
+  expect(Math.abs(turns[0].turnDegrees!-turns[1].turnDegrees!)).toBeLessThanOrEqual(1);
+ });
+ it('does not stitch separate short curves into a false sustained five-second curve',()=>{
+  const out=analyzeRoadFeatures(synthetic([
+   curve(300,780,1,.65),curve(940,1420,1,.65),
+  ],2100));
+  expect(out.some(f=>f.kind==='long-curve')).toBe(false);
  });
  it('scores physical work, not names: straight < curve < reversals < tight hairpin',()=>{
   const result=analyzeRoadFeatures(synthetic([
@@ -109,6 +124,7 @@ describe('Scenic Director R0.1 — measured driving intensity',()=>{
     expect(f.intensity).toBeLessThanOrEqual(10);
     expect(f.intensity).toBe(drivingIntensity(f.analysis));
     expect(f.analysis.durationSeconds).toBeCloseTo((f.end-f.start)/ROAD_FEATURE_REFERENCE.metersPerSecond,1);
+    expect(f.analysis.activeTurnSeconds).toBeLessThanOrEqual(f.analysis.durationSeconds);
     expect(Number.isFinite(f.analysis.peakSteer)).toBe(true);
    }
    // Lack of any high-intensity features is honest data, not a regression.

@@ -10,6 +10,8 @@ export type RoadTurn='left'|'right';
 export interface RoadFeatureAnalysis {
  /** Approximate time at 230 km/h indicated with the accepted default pace. */
  readonly durationSeconds:number;
+ /** Time under a meaningful turn load (|demand| >= 0.15). */
+ readonly activeTurnSeconds:number;
  /** Normalized steering required at reference speed; values >1 require slowing. */
  readonly peakSteer:number;
  readonly meanSteer:number;
@@ -56,6 +58,8 @@ export const ROAD_FEATURE_RULES=Object.freeze({
  straightMaxDemand:.085,
  minStraightMeters:350,
  turnMinDemand:.15,
+ /** Near-zero signed curvature preserves the full bend angle at its eased tails. */
+ minSignedDemand:.006,
  minCurveSeconds:5,
  minCurveMeters:REFERENCE_TRAVEL*5,
  minCurveDegrees:30,
@@ -70,7 +74,7 @@ export const ROAD_FEATURE_RULES=Object.freeze({
  maxRhythmGapMeters:90,
  minRhythmTurns:2,
 });
-type TurnRun={start:number;end:number;sign:1|-1;angle:number;peakSteer:number;steerMeters:number};
+type TurnRun={start:number;end:number;sign:1|-1;angle:number;peakSteer:number;steerMeters:number;activeMeters:number};
 type RoadSample={from:number;to:number;demand:number;steer:number};
 const positive=(n:number):RoadTurn=>n>=0?'left':'right';
 const degrees=(rad:number)=>Math.abs(rad)*180/Math.PI;
@@ -118,12 +122,16 @@ export function analyzeRoadFeatures(stage:PilotCandidate):readonly RoadFeature[]
   if(magnitude<=ROAD_FEATURE_RULES.straightMaxDemand){
    if(straightStart===undefined)straightStart=from;
   }else flushStraight(from);
-  if(magnitude>=ROAD_FEATURE_RULES.turnMinDemand){
+  // Signed-angle packets include the eased shoulders of each bend. The
+  // previous .15 cutoff shaved ~1.5° off 146° hairpins asymmetrically.
+  // Count meaningful (> .15) steering DISTANCE separately for long curves.
+  if(magnitude>=ROAD_FEATURE_RULES.minSignedDemand){
    if(turn&&turn.sign!==sign)flushTurn();
-   if(!turn)turn={start:from,end:to,sign,angle:0,peakSteer:0,steerMeters:0};
+   if(!turn)turn={start:from,end:to,sign,angle:0,peakSteer:0,steerMeters:0,activeMeters:0};
    turn.end=to;turn.angle+=demand*CURVATURE_PER_STEER*(to-from);
    turn.peakSteer=Math.max(turn.peakSteer,steer);
    turn.steerMeters+=steer*(to-from);
+   if(magnitude>=ROAD_FEATURE_RULES.turnMinDemand)turn.activeMeters+=to-from;
   }else flushTurn();
  }
  flushStraight(length);flushTurn();
@@ -135,6 +143,7 @@ export function analyzeRoadFeatures(stage:PilotCandidate):readonly RoadFeature[]
    last.end=run.end;last.angle+=run.angle;
    last.peakSteer=Math.max(last.peakSteer,run.peakSteer);
    last.steerMeters+=run.steerMeters;
+   last.activeMeters+=run.activeMeters;
   }else merged.push({...run});
  }
  const strong=(run:TurnRun)=>run.end-run.start>=ROAD_FEATURE_RULES.minRhythmTurnMeters&&
@@ -147,7 +156,7 @@ export function analyzeRoadFeatures(stage:PilotCandidate):readonly RoadFeature[]
   if(angle>=ROAD_FEATURE_RULES.uTurnDegrees&&run.peakSteer>=ROAD_FEATURE_RULES.minUTurnPeakSteer){
    add({kind:'u-turn',start,end,direction:positive(run.sign),turnDegrees:Math.round(angle)});
   }
-  if(lengthMeters>=ROAD_FEATURE_RULES.minCurveMeters&&angle>=ROAD_FEATURE_RULES.minCurveDegrees&&
+  if(run.activeMeters>=ROAD_FEATURE_RULES.minCurveMeters&&angle>=ROAD_FEATURE_RULES.minCurveDegrees&&
    run.peakSteer>=ROAD_FEATURE_RULES.minCurvePeakSteer&&
    run.steerMeters/lengthMeters>=ROAD_FEATURE_RULES.minCurveMeanSteer){
    add({kind:'long-curve',start,end,direction:positive(run.sign),turnDegrees:Math.round(angle)});
@@ -182,7 +191,7 @@ export function analyzeRoadFeatures(stage:PilotCandidate):readonly RoadFeature[]
  }
  const assess=(feature:typeof sources[number]):Readonly<RoadFeatureAnalysis>=>{
   const from=feature.start-BRICK_START,to=feature.end-BRICK_START,span=to-from;
-  let peakSteer=0,steerMeters=0,absoluteTurn=0;
+  let peakSteer=0,steerMeters=0,absoluteTurn=0,activeMeters=0;
   for(const s of samples){
    if(s.to<=from)continue;
    if(s.from>=to)break;
@@ -190,6 +199,7 @@ export function analyzeRoadFeatures(stage:PilotCandidate):readonly RoadFeature[]
    if(overlap<=0)continue;
    peakSteer=Math.max(peakSteer,s.steer);
    steerMeters+=s.steer*overlap;
+   if(Math.abs(s.demand)>=ROAD_FEATURE_RULES.turnMinDemand)activeMeters+=overlap;
    absoluteTurn+=Math.abs(s.demand)*CURVATURE_PER_STEER*overlap;
   }
   let reversals=0,previousSign=0;
@@ -201,6 +211,7 @@ export function analyzeRoadFeatures(stage:PilotCandidate):readonly RoadFeature[]
   }
   return Object.freeze({
    durationSeconds:round2(span/REFERENCE_TRAVEL),
+   activeTurnSeconds:round2(activeMeters/REFERENCE_TRAVEL),
    peakSteer:round2(peakSteer),
    meanSteer:round2(steerMeters/span),
    totalTurnDegrees:Math.round(degrees(absoluteTurn)),

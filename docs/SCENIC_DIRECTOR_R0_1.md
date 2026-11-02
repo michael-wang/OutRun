@@ -51,3 +51,15 @@ Tests cover soft-versus-sharp alternations, >=5s curve classification,
 wide-versus-tight U-turn, stable seed outputs, immutable scores and
 unchanged interchange/route identities. Browser UI smoke additionally
 checks the visible analysis fields.
+
+## R0.1.1 — classification correction
+- A signed turn now integrates its eased low-curvature shoulders down to
+  0.006 steering demand instead of discarding everything under 0.15.
+  Opposite turns with equal geometry but different 20m grid alignments no longer
+  land on opposite sides of the 145° U-turn cutoff.
+- The five-second **long curve** threshold applies to distance with meaningful
+  steering demand (>=0.15), not to nearly-straight tails and soft gaps.
+- Scene Inspector reports both section duration and effective turning duration;
+  adjacent sub-five-second bends are not glued together just to invent long curves.
+- The user-approved S-bend force thresholds and all authored r7 placements
+  remain unchanged. No background or per-frame analysis is added.

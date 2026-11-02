@@ -186,7 +186,7 @@ export class SceneInspector {
     const m=f.analysis,pct=(n:number)=>`${Math.round(n*100)}%`;
     const tooFast=m.peakSteer>1?' · ⚠ 參考速度下需減速':'';
     this.audit.textContent=`R0.1 Driving Intensity ${f.intensity}/10 · ${ROAD_FEATURE_LABELS[f.kind]} · ${scene} · ${Math.round(f.start)}–${Math.round(f.end)}m${detail}。\n`+
-     `以 ${ROAD_FEATURE_REFERENCE.speedKmh} km/h、${ROAD_FEATURE_REFERENCE.pace}× 估算：${m.durationSeconds.toFixed(1)} 秒；`+
+     `以 ${ROAD_FEATURE_REFERENCE.speedKmh} km/h、${ROAD_FEATURE_REFERENCE.pace}× 估算：區段 ${m.durationSeconds.toFixed(1)} 秒／有效過彎 ${m.activeTurnSeconds.toFixed(1)} 秒；`+
      `轉向需求峰值／平均 ${pct(m.peakSteer)}／${pct(m.meanSteer)}；累積轉角 ${m.totalTurnDegrees}°；反向 ${m.reversals} 次${tooFast}。`;
    }else this.audit.textContent='';
  }
