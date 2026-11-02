@@ -20,7 +20,9 @@ export function canyonArchProjection(sample:Sample,at:number,from:number,aspect=
 export function canyonArchInspectionDistance(sample:Sample,site:number,aspect=1705/863){
  let chosen=Math.max(350,site-210),best=-Infinity;
  // A few route samples once at QA setup, never in the driving/render loop.
- for(let ahead=140;ahead<=400;ahead+=20){
+ // New R1 switchbacks can hide landmarks behind an earlier bend. Search a
+ // wider, still strictly forward-only observation window at QA setup time.
+ for(let ahead=80;ahead<=720;ahead+=10){
   const from=Math.max(350,site-ahead);
   if(from>=site-40)continue;
   const p=canyonArchProjection(sample,site,from,aspect);

@@ -34,7 +34,10 @@ describe('Road Credibility R1 — one real merge/exit',()=>{
    expect(half(j.exit.end+50)).toBeCloseTo(7,3);
    // In world space, the LEFT EDGE and existing lane separators are unmoved.
    // Only the right side grows one physical 3.5m lane.
-   const t=track.sample(j.entry.end+90),old=createPilotTrack(generateTrip(seed,6)).sample(j.entry.end+90);
+   // R8 intentionally changes the route's curvature. Compare the fifth lane
+   // against the SAME new road without the interchange shift, never against
+   // the unrelated historical r6 centerline.
+   const t=track.sample(j.entry.end+90),old=createPilotTrack({...trip,generatorVersion:'v0.9-r6'}).sample(j.entry.end+90);
    const oldLeft=old.position.clone().addScaledVector(old.right,-7);
    const newLeft=t.position.clone().addScaledVector(t.right,-8.75);
    const oldRight=old.position.clone().addScaledVector(old.right,7);

@@ -46,9 +46,10 @@ it('actual mountain landmarks are projected ahead, not off-screen at the QA stop
   for(const site of sites){
    const from=canyonArchInspectionDistance(track.sample,site.distance);
    const projected=canyonArchProjection(track.sample,site.distance,from);
-   expect(from).toBeGreaterThanOrEqual(site.distance-400);
-   expect(from).toBeLessThanOrEqual(site.distance-140);
+   expect(from).toBeGreaterThanOrEqual(site.distance-720);
+   expect(from).toBeLessThanOrEqual(site.distance-80);
    expect(projected.z).toBeLessThan(1);
+   expect(projected.z).toBeGreaterThan(-1);
    expect(projected.x, `seed ${seed} arch ${site.distance}m x=${projected.x.toFixed(2)}`).toBeGreaterThan(-.95);
    expect(projected.x, `seed ${seed} arch ${site.distance}m x=${projected.x.toFixed(2)}`).toBeLessThan(.95);
    expect(projected.y, `seed ${seed} arch ${site.distance}m y=${projected.y.toFixed(2)}`).toBeGreaterThan(-.95);
