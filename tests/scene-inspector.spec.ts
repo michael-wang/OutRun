@@ -263,3 +263,18 @@ test('public play never includes the QA inspector even on the same seed',async({
  await expect(page.locator('#scene-inspector-launcher')).toHaveCount(0);
  await expect(page.locator('#scene-inspector')).toHaveCount(0);
 });
+
+
+test('Designer’s Cut opens the fixed canyon without changing procedural 10m routes',async({page})=>{
+ test.setTimeout(90000);
+ const failures:string[]=[];page.on('pageerror',error=>failures.push(error.message));
+ await page.goto('/?showcase=canyon&qa=1');
+ await expect(page.locator('#stage-seed')).toHaveValue('CUT-CANYON-01');
+ await expect(page.locator('#route-title')).toContainText('Grand Canyon');
+ await page.waitForFunction(()=>(window as any).__drive?.streaming()?.fullyReady,null,{timeout:45000});
+ await page.locator('#scene-inspector-launcher').click();
+ await page.locator('[data-si-category="canyon-prototype"]').click();
+ await expect(page.locator('#si-audit')).toContainText('Grand Canyon');
+ await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ expect(failures).toEqual([]);
+});
