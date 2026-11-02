@@ -51,7 +51,7 @@ const params=new URLSearchParams(location.search);
 document.documentElement.dataset.qa=String(params.get('qa')==='1');
 // Explicit historical and diagnostic routes keep their existing selection.
 const defaultTrip=params.get('mode')!=='free'&&!['trip','stage','lab','challenge','pace','velocity'].some(key=>params.has(key));
-const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:params.get('revision')==='r7'?7:params.get('revision')==='r8'?8:9):undefined;
+const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:params.get('revision')==='r7'?7:params.get('revision')==='r8'?8:params.get('revision')==='r9'?9:10):undefined;
 // Production visitors see the game; internal QA tools remain available through ?qa=1.
 const playerUi=!!trip&&params.get('qa')!=='1'&&(import.meta.env.PROD||params.get('playerui')==='1');
 document.documentElement.dataset.playerUi=String(playerUi);

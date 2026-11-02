@@ -74,7 +74,7 @@ export function planJourneyLandmarks(length:number,weightsAt:(d:number)=>readonl
  return sites.sort((a,b)=>a.distance-b.distance);
 }
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[]}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:!range.openRoad&&i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -176,6 +176,33 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(!coastal&&seed%3===0){part(cylinder,'#8eb4b4',w*.12,h+5.5,0,w*.28,3,w*.28);part(round,'#719d9f',w*.12,h+7,0,w*.3,1.8,w*.3);}else if(!coastal&&seed%3===1){for(let fin=0;fin<3;fin++)part(boxes,'#ede5c9',w*.12+(fin-1)*w*.2,h+5,0,.35,2.2,depth*.7);}else if(coastal){part(cone,'#bd7d59',w*.12,h+4.8,0,w*.46,2,depth*.46,0,Math.PI/4);}
   if(!far){part(boxes,'#347f78',0,3,-depth/2-.8,w*.8,.18,1.8, .08);part(boxes,'#e5d7b9',0,.15,-depth/2-1.5,w+2,.3,3);}
  }
+
+ /** Low-cost road-facing buildings: wide, connected street-wall silhouettes.
+  * Created as instances from the existing box material. No new draw calls per
+  * building and no expansion to an imaginary distant skyline. */
+ function cityBlock(seed:number,side:-1|1,back=false){
+  if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;
+  const width=(back?26:22)+random(seed+2)*(back?10:9);
+  const depth=(back?18:14)+random(seed+3)*6;
+  const rawHeight=(back?17:22)+random(seed+5)*(back?24:20);
+  const height=nearClock(anchorDistance)?Math.min(rawHeight,back?19:23):rawHeight;
+  const color=['#e6c5a0','#dba98c','#b9c7b8','#e5c8b6','#c8b6aa','#d4c49e'][Math.floor(random(seed+7)*6)];
+  part(boxes,'#b7afa0',0,-1.8,0,width+1.6,3.6,depth+1.6);
+  part(boxes,color,0,height/2,0,width,height,depth);
+  part(boxes,'#f2e7d5',0,height+.28,0,width+.8,.56,depth+.8);
+  // Shops and continuous facade rhythm sit on the actual street-facing side.
+  const front=side*(width/2+.09);
+  if(!back){
+   part(boxes,'#406f73',front,3,0,.2,4.6,depth*.8);
+   part(boxes,'#e1d2ab',front+side*.14,5.4,0,.48,.38,depth*.85);
+  }
+  const floors=Math.min(back?4:7,Math.floor((height-6)/4.5));
+  for(let floor=0;floor<floors;floor++){
+   const y=8.5+floor*4.5;
+   for(const z of [-depth*.28,depth*.28])
+    part(boxes,'#436b74',front,y,z,.18,2,depth*.18);
+  }
+ }
  // The same deterministic list powers scenery, QA jumps and lone-clock audits.
  if(range.openRoad)for(const site of landmarkSites){
   if(site.distance<range.start||site.distance>=range.end)continue;
@@ -224,6 +251,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     if(roadsideDrop<3){part(cylinder,'#3d646a',0,4,0,.12,8,.12);part(boxes,'#3d646a',0,8,-.65,.16,.16,1.4);part(round,'#ffedba',0,7.85,-1.3,.45,.2,.5);}
     if(i%2===0){anchor(d+10,side*20);if(roadsideDrop<3){part(cylinder,'#876b52',0,2.6,0,.22,5.2,.22);part(round,'#4a8256',0,5.5,0,2.3,2.6,2.3);}}
    }
+   if(!range.denseCity){
    if(mix.rightSea<.25){
     anchor(d,32+random(i)*10);
     if(clear(13)&&!acts[2].landmarks.some(l=>Math.abs(d-(acts[2].start+(acts[2].end-acts[2].start)*l.fraction))<170))building(i);
@@ -253,6 +281,26 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     if(section?.kind==='urban-hillside'&&i%5===0){
      const far=200+random(i+704)*45;
      if(farSupported(d,far)){anchor(d,-far);if(clear(35))mesa(i+300);}
+    }
+   }
+   }else if((mix.urban??0)>.6){
+    // Equal frontage opportunity on BOTH sides, with opposing stagger.
+    // 2/3 × 30m cadence ~45m per side; 22–31m facade widths plus trees
+    // form street walls rather than isolated skinny towers.
+    for(const side of [-1,1] as const){
+     const bias=side===1?0:1;
+     if((i+bias)%3!==0){
+      const raw=side*(30+random(i+side*97)*7);
+      anchor(d,raw);
+      if(clear(12))cityBlock(i+side*1203,side);
+     }
+     if((i+(side===1?0:2))%4===0){
+      const raw=side*(91+random(i+side*107)*29);
+      if(farSupported(d,raw)){
+       anchor(d,raw);
+       if(clear(17))cityBlock(i+side*1703,side,true);
+      }
+     }
     }
    }
   }

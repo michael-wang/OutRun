@@ -183,9 +183,9 @@ export class SceneInspector {
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
   }else if(site?.kind==='scenery-section'&&site.scenerySection){
    const c=site.scenerySection;
-   this.audit.textContent='Scenery Credibility R1.0 · '+SECTION_LABELS[c.kind]+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
+   this.audit.textContent='Scenery Credibility '+(c.urbanCore?'R1.1':'R1.0')+' · '+SECTION_LABELS[c.kind]+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
     '左側：'+SIDE_LABELS[c.left]+'；右側：'+SIDE_LABELS[c.right]+'。\n'+
-    '左右地形與建築共用落地高度；180m 漸變避免突然切換海岸與城市。';
+    (c.urbanCore?'城市街廓雙側密度相近，外側城市地表更平緩；':'左右地形與建築共用落地高度；')+'180m 漸變避免突然切換海岸與城市。';
   }else if(site?.kind==='scenic-beat'&&site.scenicCue){
    const c=site.scenicCue,[low,high]=c.targetIntensity;
    this.audit.textContent='Scenic Director R1 · '+c.title+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+

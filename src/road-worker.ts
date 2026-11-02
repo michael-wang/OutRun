@@ -11,7 +11,7 @@ import {RoadClearance} from './road-clearance';
 import {roadOffset,TRIP_MARKER_CENTER_M,tripBarrierRawOffset,coastalCliffDropAtLateral} from './road-profile';
 import {selectRoadInterchange,interchangeSceneryClear,type RoadInterchange} from './road-interchange';
 
-const hasModernShoulders=(v:string)=>v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9';
+const hasModernShoulders=(v:string)=>v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
 type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;let junction:RoadInterchange|undefined;
@@ -29,7 +29,8 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   if(request.generation!==generation||!stage||!track)return;
   const t=performance.now(),candidate=stage,current=track,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
   if(request.type==='scenery'){
-   const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:(candidate as TripCandidate).scenicLandmarks,scenerySections:(candidate as TripCandidate).scenerySections});
+   const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:(candidate as TripCandidate).scenicLandmarks,scenerySections:(candidate as TripCandidate).scenerySections,
+    denseCity:candidate.generatorVersion==='v0.9-r10'});
    const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{template:string;color:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
    scene.traverse(object=>{if(!(object instanceof THREE.InstancedMesh))return;const g=object.geometry,m=object.material as THREE.MeshStandardMaterial;geometries.add(g);materials.add(m);
     if(!templates.has(g.uuid)){const attr=(name:string)=>new Float32Array(g.getAttribute(name)?.array??[]);templates.set(g.uuid,{position:attr('position'),normal:attr('normal'),uv:attr('uv'),color:attr('color'),index:new Uint32Array(g.index?.array??[])});}

@@ -5,27 +5,47 @@ import {validatePilot,pilotSample,pilotWeights,type Placement,type WorldName} fr
 import {selectRoadInterchange} from './road-interchange';
 import {analyzeRoadFeatures,type RoadFeature} from './road-features';
 import {planScenicRoad,scoreScenicRoad,placeScenicLandmarks,type ScenicCue} from './scenic-director';
-import {planScenerySections,type ScenerySection} from './scenery-cross-section';
+import {planScenerySections,planUrbanEnclosureSections,type ScenerySection} from './scenery-cross-section';
 import {planJourneyLandmarks,type JourneyLandmark} from './scenery';
 import {BRICK_START} from './bricks';
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 
-export const TRIP_VERSION='v0.9-r9';
+export const TRIP_VERSION='v0.9-r10';
 export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[];scenicCues?:readonly ScenicCue[];scenicLandmarks?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[]}
 function random(seed:number){let x=seed>>>0;return ()=>{x=(x+0x6d2b79f5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function hash(v:unknown){let h=2166136261;for(const c of JSON.stringify(v)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 /** Independent long-form recipe; only lightweight placement metadata is created here. */
-export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7|8|9=9):TripCandidate {
+export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7|8|9|10=10):TripCandidate {
+ if(revision===10){
+  // R1.1 changes ONLY city elevation and scenery. Keep the r9 route's
+  // signed curvature, bank settings, width, driving model and landmarks.
+  const previous=generateTrip(rawSeed,9),cityBeats=new Set(previous.beats
+   .filter(b=>b.world==='city').map(b=>b.id));
+  const placements=previous.placements.map(p=>{
+   if(p.channel!=='elevation'||!cityBeats.has(p.beat))return p;
+   const amplitude=Math.min(p.parameters.amplitude,3.5);
+   return {...p,parameters:{...p.parameters,amplitude,
+    base:p.id==='E04'?previous.baseHeight-amplitude:previous.baseHeight}};
+  });
+  const scenerySections=planUrbanEnclosureSections(previous.beats);
+  const tripCode='TRIP-'+TRIP_VERSION+'-'+previous.seed.toString(36).toUpperCase()+'-ALB10';
+  const next:TripCandidate={...previous,revision:10,generatorVersion:TRIP_VERSION,
+   tripCode,stageCode:tripCode,placements,scenerySections,
+   contentFingerprint:hash({base:previous.contentFingerprint,version:TRIP_VERSION,
+    placements,scenerySections})};
+  validatePilot(next);
+  return next;
+ }
  if(revision===9){
   // New scenery-only content revision. The r8 signed road geometry, camera,
   // landmarks and driving features remain fully replayable via ?revision=r8.
   const previous=generateTrip(rawSeed,8);
   const scenerySections=planScenerySections(previous.beats);
-  const tripCode='TRIP-'+TRIP_VERSION+'-'+previous.seed.toString(36).toUpperCase()+'-ALB9';
-  return {...previous,revision:9,generatorVersion:TRIP_VERSION,
+  const version='v0.9-r9',tripCode='TRIP-'+version+'-'+previous.seed.toString(36).toUpperCase()+'-ALB9';
+  return {...previous,revision:9,generatorVersion:version,
    tripCode,stageCode:tripCode,scenerySections,
-   contentFingerprint:hash({base:previous.contentFingerprint,version:TRIP_VERSION,scenerySections})};
+   contentFingerprint:hash({base:previous.contentFingerprint,version,scenerySections})};
  }
  if(revision===8){
   // R1 is a new reproducible content revision. Start with the exact accepted
