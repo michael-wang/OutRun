@@ -33,6 +33,12 @@ const sides:Record<ScenerySectionKind,readonly [ScenerySide,ScenerySide]>={
 };
 const smooth=(v:number)=>{const t=Math.max(0,Math.min(1,v));return t*t*(3-2*t);};
 const lerp=(a:number,b:number,t:number)=>a+(b-a)*t;
+/** Keep outer terrain outside tight hairpins. A full 450m urban/canyon
+ * shelf is suitable for straights, but would overlap nearby switchbacks. */
+export function sceneryFarReach(curvature:number){
+ const k=Math.abs(Number.isFinite(curvature)?curvature:.003);
+ return 160+290*Math.max(0,Math.min(1,(.003-k)/.0018));
+}
 /** Beat-scoped environment roles. Nothing changes the driven geometry or
  * route/world boundaries. A fixed city sequence guarantees genuinely
  * enclosed stretches without removing scenic waterfront exceptions. */

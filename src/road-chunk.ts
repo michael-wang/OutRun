@@ -6,7 +6,7 @@ import {ACTS} from './acts';
 import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarrierRawOffset,type Shoulders} from './road-profile';
 import {interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,interchangeWallSpan,interchangeWallTop,RAMP_RETAINING_WALL_OFFSET,type RoadInterchange} from './road-interchange';
 import type {createTrack} from './track';
-import {sceneryGroundMixAt,sceneryGroundY,type ScenerySection} from './scenery-cross-section';
+import {sceneryGroundMixAt,sceneryGroundY,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
@@ -60,9 +60,9 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   }
   return ground;
  };
- const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number,vertical?:(d:number)=>number)=>{
+ const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number,vertical?:(d:number)=>number,extraOuter=false)=>{
   if(to<=from)return;
-  const outer=kind==='rail'||kind==='surf'||((kind==='sand'||kind==='grass')&&typeof a==='number'&&typeof b==='number'&&(a>=13||b<=-13));
+  const outer=extraOuter||kind==='rail'||kind==='surf'||((kind==='sand'||kind==='grass')&&typeof a==='number'&&typeof b==='number'&&(a>=13||b<=-13));
   if(bridge&&outer&&from<bridge.end&&to>bridge.start){if(from<bridge.start)append(kind,a,b,ha,hb,from,bridge.start,step);if(to>bridge.end)append(kind,a,b,ha,hb,bridge.end,to,step);return;}
   const positions:number[]=[],uvs:number[]=[],colors:number[]=[],indices:number[]=[],normals:number[]=[],n=Math.ceil((to-from)/step);
   const point=(d:number,raw:Edge,h:number)=>{const p=sampled(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),w=cachedWeights(d);v.y=surfaceY(d,o,h,kind);if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;if(vertical)v.y+=vertical(d);return v;};
@@ -80,10 +80,10 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   for(let i=0;i<n;i++){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
   out.push({kind,...(seamless&&kind!=='support'?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
  };
- if(scenerySections)append('sand',-450,-160,-12,-9,start,end,10);
+ if(scenerySections)append('sand',d=>-sceneryFarReach(sampled(d).curvature),-160,-12,-9,start,end,10,undefined,true);
  append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}else append('sand',-13,13,-.1,-.1,start,end,2.5);
  append('grass',13,75,-.12,-3,start,end,10);append('grass',75,160,-3,-14,start,end,10);
- if(scenerySections)append('grass',160,450,-14,-48,start,end,10);
+ if(scenerySections)append('grass',160,d=>sceneryFarReach(sampled(d).curvature),-14,-48,start,end,10,undefined,true);
  append('asphalt',-7,7,0,0,start,end,2.5);
  // The off-ramp takes away the mainline's last (fifth) lane; the on-ramp
  // supplies that exact lane. Render feeder geometry until it overlaps the

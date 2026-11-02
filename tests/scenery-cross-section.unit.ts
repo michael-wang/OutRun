@@ -5,7 +5,7 @@ import {BRICK_START} from '../src/bricks';
 import {addJourneyScenery} from '../src/scenery';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {planScenerySections,scenerySectionAt,sceneryGroundMixAt,
- sceneryGroundY,type ScenerySection,SECTION_LABELS} from '../src/scenery-cross-section';
+ sceneryGroundY,sceneryFarReach,type ScenerySection,SECTION_LABELS} from '../src/scenery-cross-section';
 
 const fakeStageSection=(kind:ScenerySection['kind'],left:ScenerySection['left'],right:ScenerySection['right']):readonly ScenerySection[]=>[
  {id:'test-section',kind,start:0,end:1500,left,right},
@@ -96,6 +96,11 @@ describe('Scenery Credibility R1.0 — city cross-section and physical grounding
   expect(sceneryGroundY(160,45,0,physical,0,flipped)).toBeCloseTo(-5.05);
   expect(sceneryGroundY(-13,45,0,physical,0,flipped)).toBeCloseTo(44.9);
   expect(sceneryGroundY(13,45,0,physical,0,flipped)).toBeCloseTo(44.9);
+ });
+ it('avoids extending far terrain across tight hairpins',()=>{
+  expect(sceneryFarReach(0)).toBe(450);
+  expect(sceneryFarReach(.0016)).toBeGreaterThan(300);
+  expect(sceneryFarReach(.005)).toBe(160);
  });
  it('streams extra land to 450m on both sides with identical 100m chunk seams',()=>{
   const sections=fakeStageSection('urban-both','city','city');

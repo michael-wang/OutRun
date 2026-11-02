@@ -43,3 +43,10 @@ Use `?qa=1&seed=1&revision=r7` for the unchanged prior version.
 Build, unit, Scene Inspector browser test, deterministic cross-sections and
 mesh/prop grounding tests, chunk seam equality, and Seeds 1/2/7.
 Physical-device beauty/playability remains a separate human acceptance.
+
+### Sharp-turn terrain safety
+Far scenic shelves span up to 450m from the road only on gentle curves and
+straights. The same curvature-dependent reach (minimum 160m) is applied to
+both Worker terrain ribbons and distant prop placement, to keep the wider
+urban surface from wrapping through tight switchbacks. The original 160m
+near-terrain and drivable road remain unchanged.
