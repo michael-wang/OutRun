@@ -199,7 +199,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   if(start<cutFrom)append('surf',-29,-27,-10.9,-10.9,start,cutFrom,10);
   if(cutTo<end)append('surf',-29,-27,-10.9,-10.9,cutTo,end,10);
  }else append('surf',-29,-27,-10.9,-10.9,start,end,10);
- if(scenerySections)append('surf',75,77,-10.9,-10.9,start,end,10);
+ if(scenerySections){
+  if(active){
+   if(start<cutFrom)append('surf',75,77,-10.9,-10.9,start,cutFrom,10);
+   if(cutTo<end)append('surf',75,77,-10.9,-10.9,cutTo,end,10);
+  }else append('surf',75,77,-10.9,-10.9,start,end,10);
+ }
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
  for(let d=Math.floor(start/6)*6;d<end;d+=6){
