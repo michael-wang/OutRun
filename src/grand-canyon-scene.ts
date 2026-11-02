@@ -4,6 +4,19 @@ import type {StageBeat} from './stage-one';
 
 /** R2.0's single authored landscape template, chosen once per seed.
  * No landscape selection or earthwork is performed in the driving loop. */
+export interface CanyonVista {
+ readonly approachDistance:number;
+ readonly revealDistance:number;
+ readonly focusDistance:number;
+ readonly riverInFrameSamples:number;
+ readonly rimInFrameSamples:number;
+ readonly riverScreenX:number;
+ readonly riverScreenY:number;
+ readonly rimScreenX:number;
+ readonly rimScreenY:number;
+ /** Frustum only; does not substitute for an occlusion or physical playtest. */
+ readonly sightlineConfirmed:boolean;
+}
 export interface GrandCanyonScene {
  readonly id:'grand-canyon-river-bend';
  readonly title:'大峽谷河灣';
@@ -16,6 +29,7 @@ export interface GrandCanyonScene {
  readonly riverY:number;
  readonly riverWidth:number;
  readonly seed:number;
+ readonly vista?:CanyonVista;
 }
 const smooth=(t:number)=>{const x=Math.max(0,Math.min(1,t));return x*x*(3-2*x);};
 const lerp=(a:number,b:number,t:number)=>a+(b-a)*t;
