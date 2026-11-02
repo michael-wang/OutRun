@@ -1,11 +1,12 @@
 import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,ROAD_FEATURE_REFERENCE,type RoadFeature,type RoadFeatureKind} from './road-features';
 import type {ScenicCue} from './scenic-director';
 import {SECTION_LABELS,SIDE_LABELS,type ScenerySection} from './scenery-cross-section';
+import type {GrandCanyonScene} from './grand-canyon-scene';
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
-export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat'|'scenery-section';
+export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat'|'scenery-section'|'canyon-prototype';
 export interface InspectorStop {
  id:string;kind:InspectorKind;label:string;distance:number;
- landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;scenerySection?:ScenerySection;
+ landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;scenerySection?:ScenerySection;canyonPrototype?:GrandCanyonScene;
 }
 export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'clock',label:'鐘塔街區'},{kind:'lighthouse',label:'海岸燈塔'},
@@ -14,6 +15,7 @@ export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'junction',label:'匯入／出口'},{kind:'road-feature',label:'道路特徵'},
  {kind:'scenic-beat',label:'導演節奏'},
  {kind:'scenery-section',label:'場景橫斷面'},
+ {kind:'canyon-prototype',label:'大峽谷河灣 R2'},
 ];
 export function canStepBack(distance:number,roadExists:(distance:number)=>boolean,length:number){
  return Number.isFinite(distance)&&distance>=0&&distance<length&&roadExists(distance);
@@ -181,6 +183,11 @@ export class SceneInspector {
    this.audit.textContent=report?
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
+  }else if(site?.kind==='canyon-prototype'&&site.canyonPrototype){
+   const c=site.canyonPrototype;
+   this.audit.textContent='Scenery Foundation R2.0 · 大峽谷河灣原型 · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
+    '谷底河流：固定世界高度 '+c.riverY.toFixed(1)+'m；河流寬度 '+c.riverWidth+'m；沿路內側切坡、外側谷地。\n'+
+    '前進到場景開始位置試駕；此為一段地形原型，非全路線替換。';
   }else if(site?.kind==='scenery-section'&&site.scenerySection){
    const c=site.scenerySection;
    this.audit.textContent='Scenery Credibility '+(this.stops.some(s=>s.scenerySection?.urbanCore)?'R1.1':'R1.0')+' · '+SECTION_LABELS[c.kind]+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
