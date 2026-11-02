@@ -7,13 +7,14 @@ import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarr
 import {interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,interchangeWallSpan,interchangeWallTop,RAMP_RETAINING_WALL_OFFSET,type RoadInterchange} from './road-interchange';
 import type {createTrack} from './track';
 import {sceneryGroundMixAt,sceneryGroundY,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
+import {canyonGroundY,canyonRiverRaw,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
 export interface RoadMeshData {normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[]):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  // S2B experiment: repeated absolute-distance queries across ribbons and markings.
  // Reuse exact values within this chunk only; no interpolation or global retention.
@@ -58,7 +59,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    if(raw<0)return THREE.MathUtils.lerp(legacy,ground-3,mix.leftLand);
    return THREE.MathUtils.lerp(ground-3,-4.92,mix.rightSea);
   }
-  return ground;
+  return grandCanyon&&kind!=='surf'?canyonGroundY(grandCanyon,d,raw,pose.position.y,ground):ground;
  };
  const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number,vertical?:(d:number)=>number,extraOuter=false)=>{
   if(to<=from)return;
@@ -77,6 +78,10 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop+(vertical?vertical(d):0),v.z);uvs.push(o/4,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));
+    if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
+     const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);
+     color.lerp(new THREE.Color(o<0?'#b98459':'#a8754d'),Math.max(0,blend)*.83);
+    }
     if(scenerySections&&kind==='grass'&&o>13){
      color.lerp(new THREE.Color('#83bdc5'),
       mixedAt(d).rightSea*Math.max(0,Math.min(1,(o-13)/62)));
@@ -85,9 +90,33 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   for(let i=0;i<n;i++){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
   out.push({kind,...(seamless&&kind!=='support'?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
  };
+ // Only the 1.5km demonstration corridor gets additional cross-section
+ // vertices. Existing r10 sections and the complete asphalt mesh are untouched.
+ const cutFrom=grandCanyon?Math.max(start,grandCanyon.start):end;
+ const cutTo=grandCanyon?Math.min(end,grandCanyon.end):start;
+ const active=!!grandCanyon&&cutTo>cutFrom;
  if(scenerySections)append('sand',d=>-sceneryFarReach(sampled(d).curvature),-160,-12,-9,start,end,10,undefined,true);
- append('sand',-160,-27,-9,-9,start,end,10);append('sand',-27,-13,-9,-.1,start,end,10);if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}else append('sand',-13,13,-.1,-.1,start,end,2.5);
- append('grass',13,75,-.12,-3,start,end,10);append('grass',75,160,-3,-14,start,end,10);
+ if(active){
+  if(start<cutFrom)append('sand',-160,-27,-9,-9,start,cutFrom,10);
+  const strips=[-160,...GRAND_CANYON_VALLEY_STRIPS.filter(x=>x>-160&&x<-27),-27];
+  for(let i=1;i<strips.length;i++)append('sand',strips[i-1],strips[i],-9,-9,cutFrom,cutTo,15);
+  if(cutTo<end)append('sand',-160,-27,-9,-9,cutTo,end,10);
+ }else append('sand',-160,-27,-9,-9,start,end,10);
+ append('sand',-27,-13,-9,-.1,start,end,10);
+ if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}
+ else append('sand',-13,13,-.1,-.1,start,end,2.5);
+ if(active){
+  for(const [a,b,ha,hb] of [[13,75,-.12,-3],[75,160,-3,-14]]){
+   if(start<cutFrom)append('grass',a,b,ha,hb,start,cutFrom,10);
+   if(cutTo<end)append('grass',a,b,ha,hb,cutTo,end,10);
+  }
+  const strips=GRAND_CANYON_RIDGE_STRIPS;
+  for(let i=1;i<strips.length;i++)if(strips[i-1]<160)
+   append('grass',strips[i-1],Math.min(160,strips[i]),-.12,-.12,cutFrom,cutTo,15);
+ }else{
+  append('grass',13,75,-.12,-3,start,end,10);
+  append('grass',75,160,-3,-14,start,end,10);
+ }
  if(scenerySections)append('grass',160,d=>sceneryFarReach(sampled(d).curvature),-14,-48,start,end,10,undefined,true);
  append('asphalt',-7,7,0,0,start,end,2.5);
  // The off-ramp takes away the mainline's last (fifth) lane; the on-ramp
@@ -166,7 +195,10 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   for(const [a,b] of railRanges){append('rail',-12.5,-12.3,.65,.65,a,b,2.5);append('rail',-12.5,-12.3,1.12,1.12,a,b,2.5);}
  }
  if(canyon){const a=Math.max(start,CANYON_BEND.start),b=Math.min(end,CANYON_BEND.end);append('rail',CANYON_BEND.railOffset,CANYON_BEND.railOffset,.6,1.05,a,b,2.5);append('rail',CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness,CANYON_BEND.railOffset+CANYON_BEND.railHalfThickness,1.05,1.05,a,b,2.5);}
- append('surf',-29,-27,-10.9,-10.9,start,end,10);
+ if(active){
+  if(start<cutFrom)append('surf',-29,-27,-10.9,-10.9,start,cutFrom,10);
+  if(cutTo<end)append('surf',-29,-27,-10.9,-10.9,cutTo,end,10);
+ }else append('surf',-29,-27,-10.9,-10.9,start,end,10);
  if(scenerySections)append('surf',75,77,-10.9,-10.9,start,end,10);
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
@@ -196,6 +228,27 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d),shoulders?.(d)));positions.push(v.x,v.y-.1,v.z,v.x,onBridge(d,bridge)?v.y-1.2:Math.min(v.y-4,-5),v.z);}}
  for(let i=0;i<n;i++)for(let side=0;side<2;side++){const a=i*4+side*2,b=a+4;indices.push(a,a+1,b,a+1,b+1,b);}
  out.push({kind:'support',positions:new Float32Array(positions),uvs:new Float32Array(),colors:new Float32Array(),indices:new Uint32Array(indices)});
+ // The fixed-world-Y river follows the canyon floor but never follows
+ // the road's vertical grade. It joins exactly at absolute chunk endpoints.
+ if(active&&grandCanyon){
+  const from=Math.max(start,grandCanyon.start+195),to=Math.min(end,grandCanyon.end-195);
+  if(to>from){
+   const p:number[]=[],uv:number[]=[],ix:number[]=[],n=Math.ceil((to-from)/12);
+   for(let i=0;i<=n;i++){
+    const d=from+(to-from)*i/n,frame=sampled(d);
+    const middle=canyonRiverRaw(grandCanyon,d);
+    const envelope=Math.min(1,(d-(grandCanyon.start+195))/35,(grandCanyon.end-195-d)/35);
+    const half=grandCanyon.riverWidth*.5*Math.max(0,envelope);
+    for(const raw of [middle-half,middle+half]){
+     const v=frame.position.clone().addScaledVector(frame.right,roadOffset(raw,cachedWidth(d),cachedShoulders(d)));
+     p.push(v.x,grandCanyon.riverY,v.z);uv.push(raw/12,d/12);
+    }
+    if(i<n){const a=i*2;ix.push(a,a+1,a+2,a+1,a+3,a+2);}
+   }
+   out.push({kind:'water',positions:new Float32Array(p),uvs:new Float32Array(uv),
+    colors:new Float32Array(),indices:new Uint32Array(ix)});
+  }
+ }
  // Historic r6 rock walls only. Current r7 generates no near-road rock sections.
  for(const r of rocks){const wall=rockWall(sample,halfAt,r,start,end);if(wall)out.push(wall);}
  if(bridge)out.push(...bridgeMeshes(sample,halfAt,bridge,start,end));
