@@ -129,6 +129,12 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await page.locator('[data-si="next"]').click();
  await expect(page.locator('#si-info')).toContainText('右側出口分岔');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
+ // R2.0: the authored canyon river bend has a reproducible inspector stop.
+ await page.locator('[data-si-category="canyon-prototype"]').click();
+ await expect(page.locator('[data-si-category="canyon-prototype"]')).toContainText('(1)');
+ await expect(page.locator('#si-audit')).toContainText('Scenery Foundation R2.0');
+ await expect(page.locator('#si-audit')).toContainText('固定世界高度');
+ await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  // Scenery R1.0 exposes both landscape roles at the exact streamed road.
  await page.locator('[data-si-category="scenery-section"]').click();
  await expect(page.locator('[data-si-category="scenery-section"]')).toContainText('(32)');
