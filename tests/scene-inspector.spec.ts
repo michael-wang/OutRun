@@ -274,7 +274,7 @@ test('Designer’s Cut opens the fixed canyon without changing procedural 10m ro
  await page.waitForFunction(()=>(window as any).__drive?.streaming()?.fullyReady,null,{timeout:45000});
  await page.locator('#scene-inspector-launcher').click();
  await page.locator('[data-si-category="canyon-prototype"]').click();
- await expect(page.locator('#si-audit')).toContainText('Grand Canyon');
+ await expect(page.locator('#si-audit')).toContainText('大峽谷');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  expect(failures).toEqual([]);
 });

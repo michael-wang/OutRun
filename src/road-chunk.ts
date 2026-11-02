@@ -202,15 +202,18 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   for(const [a,b] of railRanges){append('rail',-12.5,-12.3,.65,.65,a,b,2.5);append('rail',-12.5,-12.3,1.12,1.12,a,b,2.5);}
  }
  if(canyon){const a=Math.max(start,CANYON_BEND.start),b=Math.min(end,CANYON_BEND.end);append('rail',CANYON_BEND.railOffset,CANYON_BEND.railOffset,.6,1.05,a,b,2.5);append('rail',CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness,CANYON_BEND.railOffset+CANYON_BEND.railHalfThickness,1.05,1.05,a,b,2.5);}
- if(active){
-  if(start<cutFrom)append('surf',-29,-27,-10.9,-10.9,start,cutFrom,10);
-  if(cutTo<end)append('surf',-29,-27,-10.9,-10.9,cutTo,end,10);
- }else append('surf',-29,-27,-10.9,-10.9,start,end,10);
- if(scenerySections){
+ // The Designer's Cut has no ocean shoreline — only its actual river.
+ if(!grandCanyon?.authored){
   if(active){
-   if(start<cutFrom)append('surf',75,77,-10.9,-10.9,start,cutFrom,10);
-   if(cutTo<end)append('surf',75,77,-10.9,-10.9,cutTo,end,10);
-  }else append('surf',75,77,-10.9,-10.9,start,end,10);
+   if(start<cutFrom)append('surf',-29,-27,-10.9,-10.9,start,cutFrom,10);
+   if(cutTo<end)append('surf',-29,-27,-10.9,-10.9,cutTo,end,10);
+  }else append('surf',-29,-27,-10.9,-10.9,start,end,10);
+  if(scenerySections){
+   if(active){
+    if(start<cutFrom)append('surf',75,77,-10.9,-10.9,start,cutFrom,10);
+    if(cutTo<end)append('surf',75,77,-10.9,-10.9,cutTo,end,10);
+   }else append('surf',75,77,-10.9,-10.9,start,end,10);
+  }
  }
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
