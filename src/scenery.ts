@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import {ACTS,actWeights} from './acts';
 import type {createTrack} from './track';
 import {canyonSceneEnvelope,canyonGroundY,type GrandCanyonScene} from './grand-canyon-scene';
+import {canyonPropSlots,type CanyonPropSlot} from './canyon-language';
 import {sceneryGroundMixAt,sceneryGroundY,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
@@ -121,6 +122,41 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  function clear(radius:number){return clearance.clear(base,radius);}
  function farSupported(d:number,raw:number){return !range.scenerySections||Math.abs(raw)<sceneryFarReach(sample(d).curvature)-12;}
  const insideCanyonPrototype=(d:number)=>!!range.canyonPrototype&&canyonSceneEnvelope(range.canyonPrototype,d)>.35;
+ const canyonR21=(d:number)=>!!range.canyonPrototype?.vista&&canyonSceneEnvelope(range.canyonPrototype,d)>.33;
+ function canyonScatter(site:CanyonPropSlot){
+  const scale=site.scale;
+  anchor(site.distance,site.offset);
+  const safe=(r:number)=>bridgeApproachAllowsBuilding(site.distance,range.bridge)&&clear(r);
+  switch(site.kind){
+   case 'talus':
+    if(!safe(5*scale))break;
+    part(boulder,'#a76d4e',0,1.2*scale,0,5*scale,3.1*scale,4.2*scale,
+     0,random(Math.round(site.distance))*Math.PI,0);
+    part(boulder,'#ce9b70',3*scale,.45*scale,2*scale,2.4*scale,1.2*scale,2.1*scale);
+    break;
+   case 'sage':
+    if(!safe(3*scale))break;
+    part(round,'#80845a',0,.6*scale,0,2.5*scale,1.15*scale,2.15*scale);
+    part(round,'#a2a271',1.9*scale,.42*scale,1.2*scale,1.6*scale,.8*scale,1.8*scale);
+    break;
+   case 'scree-bank':
+    if(!safe(13*scale))break;
+    part(mesaGeometry[Math.abs(Math.round(site.distance/30))%3],
+     '#b88765',0,-3.5*scale,0,15*scale,10*scale,22*scale);
+    break;
+   case 'road-post':
+    if(!safe(1.8))break;
+    part(boxes,'#82684c',0,.55*scale,0,.45,1.1*scale,.48);
+    part(boxes,'#d8bc86',0,1.04*scale,0,.55,.16,.58);
+    break;
+   case 'low-terrace':
+    if(!safe(35*scale))break;
+    // Broad, low-slung bank anchored below terrain, not a vertical column.
+    part(mesaGeometry[Math.abs(Math.round(site.distance/30)+3)%3],
+     '#a88a72',0,-6*scale,0,40*scale,13*scale,65*scale);
+    break;
+  }
+ }
  function part(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0){
   if(bridgeGap||(ordinaryProps&&anchorRight&&range.junction&&interchangeSceneryClear(range.junction,anchorDistance,1)))return;
   let material=materials.get(color);if(!material){material=new THREE.MeshStandardMaterial({color,roughness:.85,vertexColors:!!g.getAttribute('color')});materials.set(color,material);}
@@ -247,6 +283,12 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  // Overlap prop families deterministically at each boundary; nothing spawns per frame.
  for(let i=Math.max(0,Math.ceil((range.start-16)/30)),d=16+i*30;d<Math.min(length,range.end);d+=30,i++){
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;
+  if(canyonR21(d)){
+   // Sparse, irregular talus and shrubs. Neither city roadside rows nor
+   // deterministic towers can overwrite the panorama's open sightline.
+   for(const slot of canyonPropSlots(range.canyonPrototype!,d))canyonScatter(slot);
+   continue;
+  }
   if(family===0){anchor(d,17+random(i)*6);if(clear(4))palm(i);if(i%3===0){anchor(d,36+random(i)*10);if(clear(12))building(i,false,true);anchor(d+8,54+random(i+91)*10);if(bridgeApproachAllowsBuilding(d+8,range.bridge)&&clear(12)){const h=12+random(i+92)*15;part(boxes,['#d7c8af','#bfcfc4','#e4c5b0'][i%3],0,h/2,0,17,h,15);part(boxes,'#c9bca5',0,-1,0,22,2,20);}}}
   if(family===1&&i%7===0&&!insideCanyonPrototype(d)&&bridgeApproachAllowsBuilding(d,range.bridge)&&!(canyon&&canyonBend(d))&&farSupported(d,350)){for(const side of [-1,1]){anchor(d,side*(280+random(i)*90));if(clear(110)){base.y=-8;part(mesaGeometry[i%3],'#ffffff',0,0,0,90,150+random(i)*80,80,0,random(i)*6);}}}
   if(family===1&&!(canyon&&canyonBend(d))&&!range.rockSections?.some(s=>d>s.start-20&&d<s.end+20)){for(const side of [-1,1]){anchor(d,side*(19+random(i+side)*10));if(roadsideDrop<3&&clear(3))dryTree(i);if(i%3===0&&!insideCanyonPrototype(d)){anchor(d,side*(75+random(i)*25));if(bridgeApproachAllowsBuilding(d,range.bridge)&&clear(43)&&!acts[1].landmarks.some(l=>Math.abs(d-(acts[1].start+(acts[1].end-acts[1].start)*l.fraction))<180))mesa(i+side);}anchor(d,side*(halfAt(d)<7?12.5:15));if(!range.rocky&&roadsideDrop<3)part(boxes,'#bd8e62',0,.65,0,.8,1.3,12,theme===undefined?0:-Math.atan2(sample(d).tangent.y,Math.hypot(sample(d).tangent.x,sample(d).tangent.z)));}}
@@ -314,7 +356,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   // R2.0 authored but seeded canyon overlooks. Ground heights are taken from
   // the SAME landscape function that shapes terrain in the road Worker.
   // Far rocks are not collidable; keep existing rails as the road boundary.
-  if(insideCanyonPrototype(d)&&i%7===0&&weightsAt(d)[1]>.8){
+  if(insideCanyonPrototype(d)&&!range.canyonPrototype?.vista&&i%7===0&&weightsAt(d)[1]>.8){
    for(const side of [-1,1] as const){
     const offset=side<0?-(215+random(i+72)*16):(106+random(i+37)*24);
     if(!farSupported(d,offset))continue;

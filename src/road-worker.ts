@@ -2,6 +2,7 @@ import {bridgeSpan,bridgeShoulders,onBridge,type BridgeSpan} from './bridge';
 import {rockySections,rockyAt,type RockySection} from './rocky-shoulder';
 import type {BankStrength} from './banking';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
+import {canyonSceneEnvelope} from './grand-canyon-scene';
 import {createPilotTrack,pilotSample,pilotWeights,type PilotCandidate} from './pilot-composer';
 import type {TripCandidate} from './trip';
 import {prepareRoadChunk} from './road-chunk';
@@ -45,6 +46,11 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
   let markerBank=0,markerYaw=0;const record=(which:number,p:THREE.Vector3,yaw=markerYaw)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,markerBank,'YXZ');dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
   for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;markerYaw=shoulders?-p.roadHeading:0;if(onBridge(d,bridge))continue;
+   // R2.1 removes city-style black/yellow posts from the authored canyon.
+   // Sparse wooden markers live in the scenery batch instead; guardrails and
+   // their existing collision boundaries remain in place.
+   const canyonScene=(candidate as TripCandidate).canyonPrototype;
+   if(canyonScene?.vista&&canyonSceneEnvelope(canyonScene,d)>.35)continue;
    const shoulderWidth=shoulders?.(d);
    const markerOffset=(side:-1|1)=>shoulderWidth
      ?roadOffset(tripBarrierRawOffset(side,TRIP_MARKER_CENTER_M,shoulderWidth),width,shoulderWidth)

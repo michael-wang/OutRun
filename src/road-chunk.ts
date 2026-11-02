@@ -7,7 +7,8 @@ import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarr
 import {interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,interchangeWallSpan,interchangeWallTop,RAMP_RETAINING_WALL_OFFSET,type RoadInterchange} from './road-interchange';
 import type {createTrack} from './track';
 import {sceneryGroundMixAt,sceneryGroundY,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
-import {canyonGroundY,canyonRiverRaw,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
+import {canyonGroundY,canyonRiverRaw,canyonSceneEnvelope,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
+import {canyonStratumColor} from './canyon-language';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
@@ -81,6 +82,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
      const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);
      color.lerp(new THREE.Color(o<0?'#b98459':'#a8754d'),Math.max(0,blend)*.83);
+    }
+    if(grandCanyon?.vista&&Math.abs(o)>14){
+     const visibility=canyonSceneEnvelope(grandCanyon,d);
+     if(visibility>.01)color.lerp(
+      new THREE.Color(canyonStratumColor(grandCanyon,d,o,height)),
+      visibility*.87);
     }
     if(scenerySections&&kind==='grass'&&o>13){
      color.lerp(new THREE.Color('#83bdc5'),
@@ -227,7 +234,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   }
  }
  for(let color=0;color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
-  if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
+  if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;
+  // Canyon road edges are dusty and deliberately not painted like a racetrack.
+  // Keep white readable markings but drop the alternating red curb tiles.
+  if(color&&grandCanyon?.vista&&canyonSceneEnvelope(grandCanyon,d)>.35)continue;
+  const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];
+  append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
  const positions:number[]=[],indices:number[]=[],n=Math.ceil((end-start)/2.5);
  for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d),shoulders?.(d)));positions.push(v.x,v.y-.1,v.z,v.x,onBridge(d,bridge)?v.y-1.2:Math.min(v.y-4,-5),v.z);}}
