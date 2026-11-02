@@ -50,7 +50,7 @@ export const DESIGNER_CANYON_PROPS:readonly DesignedProp[]=Object.freeze([
  {kind:'scrub',at:BRICK_START+2470,offset:42,width:3.5,height:1.8,depth:4},
  {kind:'terrace',at:BRICK_START+2650,offset:-255,width:200,height:37,depth:185},
  {kind:'rock-garden',at:BRICK_START+2820,offset:70,width:23,height:5,depth:25},
-].map(Object.freeze));
+]);
 
 export const DESIGNER_CUT:DesignerCut=Object.freeze({
  id:'canyon-designer-cut-01',name:'Grand Canyon · Designer’s Cut',
