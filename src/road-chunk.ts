@@ -59,7 +59,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    if(raw<0)return THREE.MathUtils.lerp(legacy,ground-3,mix.leftLand);
    return THREE.MathUtils.lerp(ground-3,-4.92,mix.rightSea);
   }
-  return grandCanyon&&kind!=='surf'?canyonGroundY(grandCanyon,d,raw,pose.position.y,ground):ground;
+  return grandCanyon?canyonGroundY(grandCanyon,d,raw,pose.position.y,ground):ground;
  };
  const append=(kind:RoadMeshData['kind'],a:Edge,b:Edge,ha:number,hb:number,from:number,to:number,step:number,vertical?:(d:number)=>number,extraOuter=false)=>{
   if(to<=from)return;
