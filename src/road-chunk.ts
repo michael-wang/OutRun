@@ -65,10 +65,15 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   const outer=extraOuter||kind==='rail'||kind==='surf'||((kind==='sand'||kind==='grass')&&typeof a==='number'&&typeof b==='number'&&(a>=13||b<=-13));
   if(bridge&&outer&&from<bridge.end&&to>bridge.start){if(from<bridge.start)append(kind,a,b,ha,hb,from,bridge.start,step);if(to>bridge.end)append(kind,a,b,ha,hb,bridge.end,to,step);return;}
   const positions:number[]=[],uvs:number[]=[],colors:number[]=[],indices:number[]=[],normals:number[]=[],n=Math.ceil((to-from)/step);
-  const point=(d:number,raw:Edge,h:number)=>{const p=sampled(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),w=cachedWeights(d);v.y=surfaceY(d,o,h,kind);if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;if(vertical)v.y+=vertical(d);return v;};
+  const sectionGround=!!scenerySections&&(kind==='sand'||kind==='grass'||kind==='surf');
+  const point=(d:number,raw:Edge,h:number)=>{const p=sampled(d),o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),w=cachedWeights(d),coastal=h<-10?-4.88:-5.05;
+   v.y=sectionGround?surfaceY(d,o,h,kind):o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;
+   if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;if(vertical)v.y+=vertical(d);return v;};
   for(let i=0;i<=n;i++){const d=from+(to-from)*i/n,p=sampled(d);for(const [raw,h] of [[a,ha],[b,hb]] as [Edge,number][]){
    const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),weights=cachedWeights(d);
-   const height=surfaceY(d,o,h,kind);
+   const coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h;
+   const legacyHeight=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;
+   const height=sectionGround?surfaceY(d,o,h,kind):legacyHeight;
    const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop+(vertical?vertical(d):0),v.z);uvs.push(o/4,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));
