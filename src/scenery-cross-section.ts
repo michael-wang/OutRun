@@ -120,7 +120,7 @@ export function sceneryGroundY(
  if(raw<=13)return projected(raw)-.1;
  const land=raw<=75?projected(raw)-(.12+(raw-13)*2.88/62):
   projected(raw)-3-(raw-75)*11/85;
- if(!mix.rightSea)return land;
+ if(!mix.rightSea&&!(mix.urban??0))return land;
  const seaside=raw<=75?lerp(projected(13)-.12,-5.05,(raw-13)/62):-5.05;
  const historic=lerp(land,seaside,mix.rightSea);
  const cityShelf=projected(raw)-.12-Math.max(0,raw-13)*.012;
