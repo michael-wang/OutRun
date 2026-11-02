@@ -187,7 +187,10 @@ export class SceneInspector {
    const c=site.canyonPrototype;
    this.audit.textContent='Scenery Foundation R2.0 · 大峽谷河灣原型 · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
     '谷底河流：固定世界高度 '+c.riverY.toFixed(1)+'m；河流寬度 '+c.riverWidth+'m；沿路內側切坡、外側谷地。\n'+
-    '前進到場景開始位置試駕；此為一段地形原型，非全路線替換。';
+    (c.vista?'R2.1 Vista Reveal：正常追尾鏡頭預估主景展示點 '+Math.round(c.vista.revealDistance)+'m，'+
+     '河流 '+c.vista.riverInFrameSamples+'/3、對岸岩層 '+c.vista.rimInFrameSamples+'/3 個視角取樣在畫面內'+
+     (c.vista.sightlineConfirmed?' ✓':' ⚠ 尚未完整通過取景')+'。':'R2.0 地形原型，尚無視線分析。')+
+    '\\n沿路段試駕，留意地形層次與自然視線；投影數據不能代替遮擋及手機實玩驗收。';
   }else if(site?.kind==='scenery-section'&&site.scenerySection){
    const c=site.scenerySection;
    this.audit.textContent='Scenery Credibility '+(this.stops.some(s=>s.scenerySection?.urbanCore)?'R1.1':'R1.0')+' · '+SECTION_LABELS[c.kind]+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+

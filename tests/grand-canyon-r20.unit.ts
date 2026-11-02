@@ -30,13 +30,13 @@ describe('Scenery Foundation R2.0 — Grand Canyon River Bend',()=>{
    expect(site!.start).toBeGreaterThanOrEqual(BRICK_START+beat.startS);
    expect(site!.end).toBeLessThanOrEqual(BRICK_START+beat.endS);
    expect(planGrandCanyonScene(now)).toEqual(site);
-   expect(generateTrip(seed)).toEqual(now);
+   expect(generateTrip(seed,11)).toEqual(now);
    expect(generateTrip(seed,10)).toEqual(before);
   }
  },30000);
  it('keeps a fixed world river datum below every meter of the canyon road',()=>{
   for(const seed of [1,2,7]){
-   const trip=generateTrip(seed),site=trip.canyonPrototype!;
+   const trip=generateTrip(seed,11),site=trip.canyonPrototype!;
    for(let d=site.start;d<=site.end;d+=20){
     const q=pilotSample(trip,d);
     expect(q.height-site.riverY).toBeGreaterThanOrEqual(49.9);
@@ -50,7 +50,7 @@ describe('Scenery Foundation R2.0 — Grand Canyon River Bend',()=>{
   }
  },30000);
  it('builds a physically recessed river channel, high inner cliff and softly reverting earthwork',()=>{
-  const site=generateTrip(1).canyonPrototype!,d=(site.start+site.end)/2,roadY=110;
+  const site=generateTrip(1,11).canyonPrototype!,d=(site.start+site.end)/2,roadY=110;
   const ordinary=roadY-4;
   expect(canyonGroundY(site,d,-112,roadY,ordinary)).toBeLessThan(site.riverY);
   expect(canyonGroundY(site,d,-88,roadY,ordinary)).toBeGreaterThan(site.riverY+5);
@@ -65,7 +65,7 @@ describe('Scenery Foundation R2.0 — Grand Canyon River Bend',()=>{
   }
  });
  it('streams a continuous WORLD-Y river across a 1km chunk seam without altering drivable asphalt',()=>{
-  const trip=generateTrip(1),old=generateTrip(1,10),site=trip.canyonPrototype!;
+  const trip=generateTrip(1,11),old=generateTrip(1,10),site=trip.canyonPrototype!;
   const track=createPilotTrack(trip),original=createPilotTrack(old);
   const boundary=Math.ceil((site.start+195)/1000)*1000;
   expect(boundary).toBeLessThan(site.end-195);

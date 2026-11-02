@@ -51,7 +51,7 @@ const params=new URLSearchParams(location.search);
 document.documentElement.dataset.qa=String(params.get('qa')==='1');
 // Explicit historical and diagnostic routes keep their existing selection.
 const defaultTrip=params.get('mode')!=='free'&&!['trip','stage','lab','challenge','pace','velocity'].some(key=>params.has(key));
-const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:params.get('revision')==='r7'?7:params.get('revision')==='r8'?8:params.get('revision')==='r9'?9:params.get('revision')==='r10'?10:11):undefined;
+const trip=(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:params.get('revision')==='r7'?7:params.get('revision')==='r8'?8:params.get('revision')==='r9'?9:params.get('revision')==='r10'?10:params.get('revision')==='r11'?11:12):undefined;
 // Production visitors see the game; internal QA tools remain available through ?qa=1.
 const playerUi=!!trip&&params.get('qa')!=='1'&&(import.meta.env.PROD||params.get('playerui')==='1');
 document.documentElement.dataset.playerUi=String(playerUi);
@@ -635,7 +635,8 @@ if(params.get('qa')==='1'&&trip){
  if(trip.canyonPrototype){
   const scene=trip.canyonPrototype;
   stops.push({id:scene.id,kind:'canyon-prototype',label:scene.title+' · '+Math.round(scene.start)+'–'+Math.round(scene.end)+'m',
-   distance:Math.max(350,scene.start-200),landmarkDistance:scene.start,canyonPrototype:scene});
+   distance:Math.max(350,scene.vista?.approachDistance??scene.start-200),
+   landmarkDistance:scene.vista?.revealDistance??scene.start,canyonPrototype:scene});
  }
  for(const section of trip.scenerySections??[]){
   stops.push({id:section.id,kind:'scenery-section',

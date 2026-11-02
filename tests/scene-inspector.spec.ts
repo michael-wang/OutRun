@@ -134,6 +134,7 @@ test('QA scene inspector navigates biome landmarks, checks clock companions and 
  await expect(page.locator('[data-si-category="canyon-prototype"]')).toContainText('(1)');
  await expect(page.locator('#si-audit')).toContainText('Scenery Foundation R2.0');
  await expect(page.locator('#si-audit')).toContainText('固定世界高度');
+ await expect(page.locator('#si-audit')).toContainText('Vista Reveal');
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  // Scenery R1.0 exposes both landscape roles at the exact streamed road.
  await page.locator('[data-si-category="scenery-section"]').click();

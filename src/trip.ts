@@ -11,20 +11,33 @@ import {BRICK_START} from './bricks';
 import {WORLD_META,type StageCandidate,type StageBeat,type TransitionBuffer,type Verticality} from './stage-one';
 import type {CurvatureId,ElevationId} from './l1-profiles';
 import {planGrandCanyonScene,type GrandCanyonScene} from './grand-canyon-scene';
+import {planCanyonVista} from './canyon-vista';
 
-export const TRIP_VERSION='v0.9-r11';
+export const TRIP_VERSION='v0.9-r12';
 export interface TripCandidate extends StageCandidate {tripCode:string;roadFeatures?:readonly RoadFeature[];scenicCues?:readonly ScenicCue[];scenicLandmarks?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];canyonPrototype?:GrandCanyonScene}
 function random(seed:number){let x=seed>>>0;return ()=>{x=(x+0x6d2b79f5)>>>0;let t=x;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};}
 function hash(v:unknown){let h=2166136261;for(const c of JSON.stringify(v)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 /** Independent long-form recipe; only lightweight placement metadata is created here. */
-export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7|8|9|10|11=11):TripCandidate {
+export function generateTrip(rawSeed:number,revision:1|2|3|4|5|6|7|8|9|10|11|12=12):TripCandidate {
+ if(revision===12){
+  // R2.1 changes scene language and visibility only, never the road.
+  // r10 city and r11 canyon snapshots remain reproducible by URL.
+  const previous=generateTrip(rawSeed,11),site=previous.canyonPrototype;
+  if(!site)throw new Error('Cannot plan canyon reveal without a canyon scene');
+  const canyonPrototype=Object.freeze({...site,vista:planCanyonVista(previous,site)});
+  const tripCode='TRIP-'+TRIP_VERSION+'-'+previous.seed.toString(36).toUpperCase()+'-ALB12';
+  return {...previous,revision:12,generatorVersion:TRIP_VERSION,tripCode,
+   stageCode:tripCode,canyonPrototype,contentFingerprint:hash({
+    base:previous.contentFingerprint,version:TRIP_VERSION,canyonPrototype,
+   })};
+ }
  if(revision===11){
   const previous=generateTrip(rawSeed,10);
   const canyonPrototype=planGrandCanyonScene(previous);
-  const tripCode='TRIP-'+TRIP_VERSION+'-'+previous.seed.toString(36).toUpperCase()+'-ALB11';
-  return {...previous,revision:11,generatorVersion:TRIP_VERSION,tripCode,stageCode:tripCode,
+  const version='v0.9-r11',tripCode='TRIP-'+version+'-'+previous.seed.toString(36).toUpperCase()+'-ALB11';
+  return {...previous,revision:11,generatorVersion:version,tripCode,stageCode:tripCode,
    canyonPrototype,contentFingerprint:hash({
-    base:previous.contentFingerprint,version:TRIP_VERSION,canyonPrototype,
+    base:previous.contentFingerprint,version,canyonPrototype,
    })};
  }
  if(revision===10){
