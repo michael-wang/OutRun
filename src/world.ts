@@ -19,10 +19,12 @@ import type {PilotCandidate} from './pilot-composer';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength;blenderArt?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
+  // The existing v2 backdrop reaches beyond 1km. Change haze, not chase optics.
+  if(options.blenderArt){scene.fog.near=450;scene.fog.far=2400;}
   scene.add(new THREE.HemisphereLight('#e3f7ff','#a09162',1.65));
   const sun=new THREE.DirectionalLight('#fff0c9',2.8); sun.position.set(-180,280,-100); scene.add(sun);
   sun.castShadow=true; const shadowSize=matchMedia('(pointer:coarse)').matches?512:1024; sun.shadow.mapSize.set(shadowSize,shadowSize); Object.assign(sun.shadow.camera,{left:-36,right:36,top:36,bottom:-36,near:1,far:250});
@@ -162,7 +164,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
   sand.vertexColors=true;grass.vertexColors=true;
-  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial,steel:mat('#b93d29',.7),deck:new THREE.MeshStandardMaterial({color:'#827b6b',roughness:1,side:THREE.DoubleSide}),water:new THREE.MeshStandardMaterial({color:'#278d9e',roughness:.55,side:THREE.DoubleSide})},annotations,options.bank):undefined;
+  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,'center-line':mat('#c4a564'),rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial,steel:mat('#b93d29',.7),deck:new THREE.MeshStandardMaterial({color:'#827b6b',roughness:1,side:THREE.DoubleSide}),water:new THREE.MeshStandardMaterial({color:'#278d9e',roughness:.55,side:THREE.DoubleSide})},annotations,options.bank,options.blenderArt):undefined;
   const scenery=streamer?{get instances(){return streamer.sceneryStats.instances;},get draws(){return streamer.sceneryStats.draws;}}:addJourneyScenery(scene,sample,length,options.theme,options.seed,halfAt,options.weightsAt);
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
   // Enclose the actual route. The former fixed (400,500)/1550m ring intersected

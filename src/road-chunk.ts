@@ -12,10 +12,10 @@ import {canyonStratumColor} from './canyon-language';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
-export interface RoadMeshData {normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
+export interface RoadMeshData {artContactOnly?:boolean;artVisualOnly?:boolean;normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'center-line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  // S2B experiment: repeated absolute-distance queries across ribbons and markings.
  // Reuse exact values within this chunk only; no interpolation or global retention.
@@ -217,7 +217,8 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  }
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
- for(let d=Math.floor(start/6)*6;d<end;d+=6){
+ if(blenderPaint)for(const [a,b] of [[-.24,-.14],[.14,.24]])append('center-line',a,b,.03,.03,start,end,2.5);
+ for(let d=Math.floor(start/6)*6;!blenderPaint&&d<end;d+=6){
   if(d<0)continue;
   const junctionLanes=interchangeLaneBoundaries(interchange,d,halfAt(d));
   if(junctionLanes){
@@ -236,7 +237,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    }
   }
  }
- for(let color=0;color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
+ for(let color=0;!blenderPaint&&color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
   if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;
   // Canyon road edges are dusty and deliberately not painted like a racetrack.
   // Keep white readable markings but drop the alternating red curb tiles.

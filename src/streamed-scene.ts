@@ -33,7 +33,7 @@ export class StreamedScene {
  private markerMaterials:THREE.Material[];
  private uploadOwners=new WeakMap<object,number>();
  private generation=1;private errorMessage='';
- constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength){
+ constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
   this.bank=bank;this.launch();this.update(350);
@@ -45,7 +45,7 @@ export class StreamedScene {
   const generation=this.generation;this.worker.onmessage=event=>{if(generation!==this.generation)return;try{this.receive(event.data);}catch(error){this.fail('Worker result failed: '+String(error));}};
   this.worker.onerror=event=>{event.preventDefault();if(generation===this.generation)this.fail(event.message||'Worker runtime failure');};
   this.worker.onmessageerror=()=>{if(generation===this.generation)this.fail('Worker message could not be decoded');};
-  this.worker.postMessage({type:'init',generation:this.generation,stage:this.stage,bank:this.bank,...(import.meta.env.DEV?{faults:this.testFaults}:{})});
+  this.worker.postMessage({type:'init',generation:this.generation,stage:this.stage,bank:this.bank,blenderArt:this.blenderArt,...(import.meta.env.DEV?{faults:this.testFaults}:{})});
   }catch(error){this.fail('Worker launch failed: '+String(error));}
  }
  private fail(message:string){
@@ -101,7 +101,7 @@ export class StreamedScene {
  }
  private roadWork(c:Chunk,meshes:RoadData[],roadside:Float32Array[]){const tasks=meshes.map(m=>()=>{
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setAttribute('normal',new THREE.BufferAttribute(m.normals,3));if(m.uvs.length)g.setAttribute('uv',new THREE.BufferAttribute(m.uvs,2));if(m.colors.length)g.setAttribute('color',new THREE.BufferAttribute(m.colors,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));
-  this.registerGeometry(g,c.index);const mesh=new THREE.Mesh(g,this.roadMaterials[m.kind]);mesh.userData.chunkIndex=c.index;mesh.userData.roadKind=m.kind;mesh.userData.rayRanges=m.rayRanges;mesh.receiveShadow=true;const name=m.kind==='asphalt'?'driving-surface':m.kind==='sand'?'shoulder':m.kind==='grass'?'terrain':m.kind==='support'?'road-support':m.kind==='line'?'lane-markings':'road-detail';mesh.name=name;this.attach(c,name,mesh);c.geometries.add(g);
+  this.registerGeometry(g,c.index);const mesh=new THREE.Mesh(g,this.roadMaterials[m.kind]);mesh.userData.chunkIndex=c.index;mesh.userData.roadKind=m.kind;mesh.userData.rayRanges=m.rayRanges;mesh.userData.artVisualOnly=m.artVisualOnly;mesh.visible=!m.artContactOnly;mesh.receiveShadow=true;const name=m.kind==='asphalt'?'driving-surface':m.kind==='sand'?'shoulder':m.kind==='grass'?'terrain':m.kind==='support'?'road-support':(m.kind==='line'||m.kind==='center-line')?'lane-markings':'road-detail';mesh.name=name;this.attach(c,name,mesh);c.geometries.add(g);
  });for(let i=0;i<roadside.length;i++)tasks.push(()=>{const matrices=roadside[i],mesh=new THREE.InstancedMesh(this.markerGeometries[i],this.markerMaterials[i],matrices.length/16);mesh.instanceMatrix.array.set(matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.castShadow=true;mesh.receiveShadow=true;this.attach(c,'road-detail',mesh);});for(const annotation of this.annotations)if(Math.floor(annotation.distance/this.chunkLength)===c.index)tasks.push(()=>{for(const mesh of annotation.create()){this.registerGeometry(mesh.geometry,c.index);this.attach(c,'road-detail',mesh);c.geometries.add(mesh.geometry);}});return tasks;}
  private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[]){
   const templates=new Map<string,THREE.BufferGeometry>(),tasks:(()=>void)[]=[];
@@ -125,6 +125,7 @@ export class StreamedScene {
  raycastContacts(ray:THREE.Raycaster,distance:number){
   const hits:THREE.Intersection[]=[];
   for(const group of this.contactSurfaces(distance))for(const object of group.children){
+   if(object.userData.artVisualOnly)continue;
    const mesh=object as THREE.Mesh,geometry=mesh.geometry,ranges=mesh.userData.rayRanges as RoadMeshData['rayRanges'];
    if(!ranges){ray.intersectObject(mesh,false,hits);continue;}
    const saved={...geometry.drawRange};

@@ -6,6 +6,8 @@ import {canyonSceneEnvelope} from './grand-canyon-scene';
 import {createPilotTrack,pilotSample,pilotWeights,type PilotCandidate} from './pilot-composer';
 import type {TripCandidate} from './trip';
 import {prepareRoadChunk} from './road-chunk';
+import {blenderRoadVisuals} from './blender-road-visuals';
+import {insideBlenderFootprint} from './blender-art-coverage';
 import {addJourneyScenery} from './scenery';
 import * as THREE from 'three';
 import {RoadClearance} from './road-clearance';
@@ -14,7 +16,8 @@ import {selectRoadInterchange,interchangeSceneryClear,type RoadInterchange} from
 
 const hasModernShoulders=(v:string)=>v==='designer-canyon-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
-type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
+type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
+let blenderArt=false;
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;let junction:RoadInterchange|undefined;
 let generation=-1,stage:PilotCandidate|undefined,track:ReturnType<typeof createPilotTrack>|undefined;
 let roadSamples:THREE.Vector3[]=[];let clearance:RoadClearance;
@@ -26,7 +29,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   if(import.meta.env.DEV&&request.type==='init'&&request.faults)faults=request.faults;
   if(import.meta.env.DEV&&request.type!=='init'&&request.index>=faults.fromIndex){if(faults.delayMs)await new Promise(r=>setTimeout(r,faults.delayMs));if(faults.fail)throw new Error('Injected worker preparation failure');}
 
-  if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;track=createPilotTrack(stage,request.bank);rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=hasModernShoulders(stage.generatorVersion)&&stage.generatorVersion!=='designer-canyon-v1'?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;junction=selectRoadInterchange(stage,bridge);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
+  if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;blenderArt=!!request.blenderArt&&stage.generatorVersion==='designer-canyon-v1';track=createPilotTrack(stage,request.bank);rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=hasModernShoulders(stage.generatorVersion)&&stage.generatorVersion!=='designer-canyon-v1'?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;junction=selectRoadInterchange(stage,bridge);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
   if(request.generation!==generation||!stage||!track)return;
   const t=performance.now(),candidate=stage,current=track,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
   if(request.type==='scenery'){
@@ -36,13 +39,17 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{template:string;color:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
    scene.traverse(object=>{if(!(object instanceof THREE.InstancedMesh))return;const g=object.geometry,m=object.material as THREE.MeshStandardMaterial;geometries.add(g);materials.add(m);
     if(!templates.has(g.uuid)){const attr=(name:string)=>new Float32Array(g.getAttribute(name)?.array??[]);templates.set(g.uuid,{position:attr('position'),normal:attr('normal'),uv:attr('uv'),color:attr('color'),index:new Uint32Array(g.index?.array??[])});}
-    instances.push({template:g.uuid,color:m.color.getHex(),vertexColors:m.vertexColors,matrices:new Float32Array(object.instanceMatrix.array)});
+    let matrices=new Float32Array(object.instanceMatrix.array);
+    if(blenderArt){g.computeBoundingSphere();const kept:number[]=[];const pose=new THREE.Matrix4(),scale=new THREE.Vector3();for(let i=0;i<object.count;i++){object.getMatrixAt(i,pose);scale.setFromMatrixScale(pose);const radius=(g.boundingSphere?.radius??0)*Math.max(scale.x,scale.y,scale.z);if(!insideBlenderFootprint(pose.elements[12],pose.elements[14],radius))kept.push(...pose.elements);}matrices=new Float32Array(kept);}
+    if(matrices.length)instances.push({template:g.uuid,color:m.color.getHex(),vertexColors:m.vertexColors,matrices});
    });
    const definitions=[...templates].map(([id,data])=>({id,...data})),transfer:Transferable[]=[];for(const x of definitions)transfer.push(x.position.buffer,x.normal.buffer,x.uv.buffer,x.color.buffer,x.index.buffer);for(const x of instances)transfer.push(x.matrices.buffer);
    for(const g of geometries)g.dispose();for(const m of materials)m.dispose();
-   worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,scenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
+   const visibleScenery=blenderArt?{...scenery,instances:instances.reduce((n,i)=>n+i.matrices.length/16,0),draws:instances.length}:scenery;
+   worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,scenery:visibleScenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
   }
-  const meshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||hasModernShoulders(candidate.generatorVersion)))) ,rocks,shoulders,bridge,true,junction,(candidate as TripCandidate).scenerySections,(candidate as TripCandidate).canyonPrototype);
+  const rawMeshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||hasModernShoulders(candidate.generatorVersion)))) ,rocks,shoulders,bridge,true,junction,(candidate as TripCandidate).scenerySections,(candidate as TripCandidate).canyonPrototype,blenderArt);
+  const meshes=blenderArt?blenderRoadVisuals(rawMeshes,request.start,request.end):rawMeshes;
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
   let markerBank=0,markerYaw=0;const record=(which:number,p:THREE.Vector3,yaw=markerYaw)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,markerBank,'YXZ');dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
   for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;markerYaw=shoulders?-p.roadHeading:0;if(onBridge(d,bridge))continue;

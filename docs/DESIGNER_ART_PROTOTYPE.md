@@ -162,3 +162,133 @@ thin in the normal chase view, the sheer depth is less convincing than the
 authored height difference, and the silhouettes/strata retain a strong faceted
 blockout character. The road still occupies much of the lower frame. No further
 major revision or game integration is implied by this delivery.
+
+## Blender v2 driving integration — 2026-11-03
+
+The owner subsequently authorized a local integration test of the existing v2
+asset, without a third art revision. The opt-in test is playable, but **the
+entry/exit art transition is not visually accepted**. The continuous drive
+exposes a downstream foundation intersection that the three offline cameras
+could not reveal.
+
+Run `npm run dev` and open:
+
+- Original: `http://127.0.0.1:5173/?showcase=canyon`
+- Blender: `http://127.0.0.1:5173/?showcase=canyon&art=blender`
+
+`npm run build` followed by `npm run preview -- --port 4173 --strictPort`
+also supports the local asset. The Vite middleware serves only
+`art-prototype/output/canyon_art_only.glb` at
+`/__local_art/canyon_art_only.glb`. It does not copy the asset into `dist`.
+Another checkout must have the ignored GLB installed locally. A missing GLB
+shows an explicit error; it does not silently substitute the original scenery.
+
+### Implementation and geometry limits
+
+- GLTFLoader uses the existing world coordinates: root translation `[0,0,0]`,
+  scale `[1,1,1]`, quaternion `[0,0,0,1]`. The loaded art has 6,020 triangles
+  and 67 material-split Three.js meshes. No reference road is imported.
+- The original asphalt, road centerline, slopes, width, rails, wheel contact
+  geometry, controls and normal chase camera remain unchanged. The 69km route
+  ignores `art=blender`. Only the Designer's Cut mode enables this handoff.
+- Double yellow center lines replace the four-lane dashed paint in Blender
+  mode; red/white curb tiles are suppressed. Physical width and traffic remain
+  unchanged, so this is a paint treatment, not a two-lane driving conversion.
+- Existing terrain/water/rock visuals are masked against the fixed authored
+  foundation footprint. Near-road shoulders/support are visually suppressed
+  from 1,340–1,940m. Exact original shoulder meshes remain invisible and
+  raycastable; trimmed visual copies never affect wheel contacts. No new
+  terrain generation or art geometry is introduced.
+- Eight existing rock/gravel base colors are restored by material name because
+  the Blender weathering nodes omitted their GLB base-color factors. Water and
+  sage retain their exported materials. Haze changes to 450–2,400m to expose the
+  backdrop; chase optics and near/far clipping settings are unchanged.
+- The Blender reference asphalt has a deliberate 3cm lift and 5m sampling;
+  the real road samples at 2.5m. Comparing reference-edge midpoints against the
+  production sampler found maximum horizontal/vertical differences of
+  0.00617m / 0.03313m. The real road was not changed to match the reference.
+
+The tested GLB is 360,116 bytes, SHA-256
+`D1112D56C8DCF2A1C537618D074AD3DC1F58CA74400CB1ED8DBAD33A359A24DE`.
+Neither the GLB nor the `.blend` was edited during this integration.
+
+### Continuous driving evidence
+
+Playwright ran real Chrome/WebGL on the local RTX 5070 Ti. Each drive reset once
+at 1,000m, then used ordinary steering/throttle inputs through the existing RAF
+physics to at least 2,450m. There was no teleporting or diagnostic camera during
+the drive. Steering was automated, not a human steering assessment. Both
+desktop variants recorded the canvas to keep recording overhead comparable.
+
+| Local Chrome run | Ready from navigation | GLB fetch + parse | Median FPS | 5th-percentile FPS |
+| --- | ---: | ---: | ---: | ---: |
+| Desktop original | 449ms | — | 60.0 | 60.0 |
+| Desktop Blender | 456ms | 10.3ms | 60.0 | 60.0 |
+| Mobile emulation original | 644ms | — | 60.0 | 56.0 |
+| Mobile emulation Blender | 619ms | 10.0ms | 60.0 | 56.0 |
+
+All four runs reported zero missing road/camera-road frames, unsafe streaming
+frames, streaming stalls and JavaScript errors. These are individual local
+runs, not a statistical performance benchmark. Desktop viewport was
+1920×1080; mobile emulation was 960×432 with touch/mobile settings and the
+game's existing render-ratio cap. **No physical Pixel 8 was connected or tested.**
+The owner's 57–60 FPS physical-device baseline remains unverified for Blender.
+
+Ignored evidence lives in `art-prototype/output/integration/`:
+
+- `desktop-blender-00_Before.png`: approximately 1,200m, exposed entry edges.
+- `desktop-blender-01_Approach.png`: approximately 1,365m.
+- `desktop-blender-02_Reveal.png`: approximately 1,470m.
+- `desktop-blender-03_Exit.png`: approximately 1,585m, corresponding to the
+  offline reference exit camera; this is still inside the hero segment.
+- `desktop-blender-04_AfterHero.png`: approximately 2,050m, actual downstream
+  exit with the foundation obstructing the view.
+- `desktop-blender-05_Departure.png`: approximately 2,350m.
+- `desktop-blender-drive.webm`: continuous 1,000–2,450m normal-chase drive.
+- Matching original/mobile PNGs and JSON traces, plus
+  `desktop-original-drive.webm` and `road-reference-comparison.json`.
+
+### Visual findings requiring owner review
+
+The main hero view shows the river, opposing layered wall and large backdrop,
+but the river remains thin. Game lighting/ACES differs from Blender's lighting
+and AgX; weathering is not baked. Cars, HUD, traffic cones and existing safety
+rails are still game objects. Mobile retains the original 1,400m far clip, so
+its distant backdrop can differ from desktop's 2,200m clip. Visible narrow
+Blender shoulders also do not redefine the original off-road contact surface.
+
+Vertical probes every 10m at lateral offsets -6.5/0/+6.5m found no art at or
+above pavement within 1,340–1,940m. This sampled check is not an exhaustive
+intersection proof. The full 1,000–2,450m check found **94 probe locations** with
+art above the road, first at 2,040m on the right edge. The existing mesh
+`GROUND_|_continuous_canyon_foundation_-_no_sky_seams` rises through the continuing
+road: at 2,050m its centerline surface is about 3.11m above the road, obscuring
+the chase view; at 2,350m it is about 30.84m above. Art is non-colliding, so the
+car continues underneath. This is an existing v2 foundation problem, not a
+loader coordinate adjustment or overlapping legacy terrain.
+
+Before the hero segment, open cutting ends and slab undersides are also
+visible. Simple caps cannot solve the downstream foundation intersection.
+No caps, mesh carving, arbitrary repositioning, road changes or third art
+revision were made to conceal these findings. Driving/streaming verification
+passed; entry/exit visual acceptance remains unresolved.
+
+### Checks
+
+`npm run build` passed (existing large-chunk warning remains). The active CI
+unit suite passed: 77 files / 242 tests, including exact road/contact
+preservation and visual masking checks. The command retains the repository's
+existing historical-test exclusions:
+
+```powershell
+npm test -- --exclude src/handling.test.ts --exclude tests/v07d2-review.unit.ts --exclude tests/v081-stage.unit.ts --exclude tests/vertical-width.unit.ts
+$env:OUTRUN_BROWSER = 'chrome'
+npx playwright test tests/blender-canyon.spec.ts --reporter=line
+```
+
+Browser checks cover original/Blender desktop and mobile continuous drives,
+missing-asset handling, isolation from the 69km route, and a built production
+preview. All seven cases passed across the initial comparison run and final
+Blender/production rerun. GLB-dependent cases skip when the intentionally
+untracked local asset is absent. Output captures, videos, scene files and logs
+remain ignored; only integration code, tests and this report belong in Git.

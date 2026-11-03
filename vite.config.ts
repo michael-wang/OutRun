@@ -3,6 +3,23 @@ import {mkdir, open, realpath, lstat, link, unlink} from 'node:fs/promises';
 import {join,resolve,sep} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {spawn} from 'node:child_process';
+import {createReadStream} from 'node:fs';
+
+/** Local-only asset handoff: never copies the GLB into a build or Git. */
+function localBlenderArt():Plugin {
+ const install=(server:{middlewares:import('vite').Connect.Server})=>{
+  server.middlewares.use('/__local_art/canyon_art_only.glb',async(req,res)=>{
+   if(req.method!=='GET'&&req.method!=='HEAD'){res.statusCode=405;res.end();return;}
+   const file=resolve('art-prototype/output/canyon_art_only.glb');
+   try{const info=await lstat(file);if(!info.isFile())throw Error('Not a file');
+    res.setHeader('Content-Type','model/gltf-binary');res.setHeader('Content-Length',info.size);res.setHeader('Cache-Control','no-store');
+    if(req.method==='HEAD'){res.end();return;}
+    const stream=createReadStream(file);stream.on('error',()=>res.destroy());stream.pipe(res);
+   }catch{res.statusCode=404;res.end('Local Blender GLB not found');}
+  });
+ };
+ return {name:'outrun-local-blender-art',configureServer:install,configurePreviewServer:install};
+}
 
 /** Dev-only, same-origin screenshot archive. The client never supplies a path. */
 function captureArchive():Plugin {
@@ -50,4 +67,4 @@ function captureArchive():Plugin {
   });
  }};
 }
-export default defineConfig({plugins:[captureArchive()],server:{watch:{ignored:['**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});
+export default defineConfig({plugins:[captureArchive(),localBlenderArt()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});
