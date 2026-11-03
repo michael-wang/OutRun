@@ -28,3 +28,12 @@ export const COAST_ROCKS=[
  {d:3250,r:4.8,out:2},{d:3295,r:3.1,out:6},
 ] as const;
 export const coastRockX=(rock:typeof COAST_ROCKS[number])=>coastBeachX(-26,rock.d)-rock.out;
+
+export const COAST_DISTRICTS=[
+ {start:620,end:1040,kind:'homes'},
+ {start:1330,end:1640,kind:'market'},
+ {start:2040,end:2400,kind:'homes'},
+ {start:2720,end:3110,kind:'market'},
+] as const;
+export const coastDistrictAt=(d:number)=>COAST_DISTRICTS.find(s=>d>=s.start&&d<s.end);
+export const COAST_LAMPS=Array.from({length:52},(_,i)=>380+i*64);

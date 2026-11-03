@@ -1,3 +1,4 @@
+import {addCoastDusk,COAST_SUN} from './coast-dusk';
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
@@ -26,7 +27,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
   // Authored canyon backdrops reach beyond 1km. Change haze, not chase optics.
   if(options.blenderArt){scene.fog.near=450;scene.fog.far=2400;}
-  scene.add(new THREE.HemisphereLight('#e3f7ff','#a09162',1.65));
+  const hemisphere=new THREE.HemisphereLight('#e3f7ff','#a09162',1.65);scene.add(hemisphere);
   const sun=new THREE.DirectionalLight('#fff0c9',2.8); sun.position.set(-180,280,-100); scene.add(sun);
   sun.castShadow=true; const shadowSize=matchMedia('(pointer:coarse)').matches?512:1024; sun.shadow.mapSize.set(shadowSize,shadowSize); Object.assign(sun.shadow.camera,{left:-36,right:36,top:36,bottom:-36,near:1,far:250});
   sun.shadow.bias=-.0004; sun.shadow.normalBias=.035; scene.add(sun.target);
@@ -36,6 +37,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
   const coastUltra=(options.streamStage as TripCandidate|undefined)?.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false;
+  const dusk=coastUltra?addCoastDusk(scene,sample):undefined;
+  if(dusk){hemisphere.color.set('#aab1da');hemisphere.groundColor.set('#66534b');hemisphere.intensity=1.25;sun.color.set('#ffc080');sun.intensity=1.8;scene.fog!.color.set('#a8796e');scene.fog!.near=250;scene.fog!.far=1450;}
   const asphalt=mat(mountainRoad?'#56534d':'#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
   asphalt.vertexColors=mountainRoad;
   function ribbon(offsetA:number|((d:number)=>number),offsetB:number|((d:number)=>number),liftA:number,liftB:number,material:THREE.Material,start=0,end=length,step=2.5) {
@@ -188,7 +191,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const distantRidge=new THREE.Mesh(ridgeGeo,new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide}));distantRidge.name='distant-ridge';distantRidge.visible=!coastUltra;scene.add(distantRidge);
   const clouds=[];for(let i=0;i<24;i++){const angle=i*2.4;for(let j=0;j<4;j++)clouds.push({p:new THREE.Vector3(400+Math.cos(angle)*1700+j*50,280+rand(i)*170,500+Math.sin(angle)*1700),s:new THREE.Vector3(70,18+rand(j+i)*15,35),r:new THREE.Euler()});}
   // These old low-altitude cloud blobs intersect the new high plateau vistas.
-  if(!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
+  if(!coastUltra&&!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
   const car=createCar();scene.add(car);
   const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=64;const context=shadowCanvas.getContext('2d')!;
   const gradient=context.createRadialGradient(32,32,7,32,32,31);gradient.addColorStop(0,'rgba(18,33,30,.65)');gradient.addColorStop(.55,'rgba(18,33,30,.3)');gradient.addColorStop(1,'rgba(18,33,30,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);
@@ -212,5 +215,5 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
       right:rockyAt(d,1,rockSections)?undefined:interchangeRailOpeningAt(d),
     };
   }:undefined;
-  return {bridge,junction,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(new THREE.Vector3(-60,95,-45));}};
+  return {bridge,junction,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(dusk?COAST_SUN.clone().multiplyScalar(120):new THREE.Vector3(-60,95,-45));if(dusk){scene.fog!.color.set('#a8796e');dusk.update(distance);}}};
 }

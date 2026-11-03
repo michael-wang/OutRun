@@ -1,3 +1,4 @@
+import {COAST_SUN,COAST_SKY_GLSL} from './coast-dusk';
 import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {bakeCoastShore} from './coast-shore';
@@ -90,6 +91,7 @@ void main(){
 
 const fragment=/* glsl */`
 precision highp float;
+${COAST_SKY_GLSL}
 ${shoreGLSL}
 uniform sampler2D uSlope0;
 uniform sampler2D uSlope1;
@@ -129,9 +131,9 @@ void main(){
  float nv=clamp(dot(normal,viewDir),0.0,1.0);
  float fresnel=.025+.975*pow(1.0-nv,5.0);
  // Ocean-body absorption and an open-sky reflection (no costly scene mirror).
- vec3 deep=vec3(.009,.125,.20);
- vec3 shallow=vec3(.025,.44,.43);
- vec3 shallows=mix(vec3(.47,.48,.29),shallow,smoothstep(0.0,3.8,depth));
+ vec3 deep=vec3(.012,.055,.075);
+ vec3 shallow=vec3(.035,.22,.22);
+ vec3 shallows=mix(vec3(.28,.25,.16),shallow,smoothstep(0.0,3.8,depth));
  // Analytic shallow-water light pattern (not a refraction/depth render pass).
  if(depth<5.0){
   vec2 p=vWorld.xz*1.35+vec2(sin(uTime*.31),cos(uTime*.27))*.27;
@@ -140,13 +142,13 @@ void main(){
   shallows+=vec3(.12,.19,.12)*light*(1.0-smoothstep(1.0,5.0,depth))*smoothstep(.05,.4,depth);
  }
  vec3 body=mix(shallows,deep,smoothstep(3.0,12.0,depth));
- vec3 sky=mix(vec3(.52,.77,.88),vec3(.08,.35,.62),clamp(reflected.y*.6+.25,0.0,1.0));
- vec3 color=mix(body,sky,clamp(.20+fresnel*.75,0.0,1.0));
+ vec3 sky=coastSky(reflected,sunDir);
+ vec3 color=mix(body,sky,clamp(.35+fresnel*.60,0.0,1.0));
  vec3 halfVec=normalize(viewDir+sunDir);
- float sunGlitter=pow(max(dot(normal,halfVec),0.0),180.0)*max(dot(normal,sunDir),0.0);
+ float sunGlitter=pow(max(dot(normal,halfVec),0.0),95.0)*(.3+max(dot(normal,sunDir),0.0));
  float spark=hash12(floor(vWorld.xz*2.4+uTime*.13));
  sunGlitter*=.65+.7*spark;
- color+=vec3(1.0,.82,.53)*sunGlitter*2.8;
+ color+=vec3(1.0,.63,.27)*sunGlitter*3.8;
  float foam=(1.0-smoothstep(.48,.93,vChurn))*.4*nearshore;
  foam*=.82+.18*hash12(floor(vWorld.xz*.9+uTime*.4));
  // Breaking crests advance toward the beach, losing energy on the wet sand.
@@ -167,10 +169,10 @@ void main(){
   float pulse=.35+.65*pow(.5+.5*sin(uTime*1.4+uRocks[i].w),3.0);
   foam=max(foam,wash*pulse*(.6+.4*lace));
  }
- color=mix(color,vec3(.88,.97,.94),clamp(foam,0.0,.94));
+ color=mix(color,vec3(.64,.64,.57),clamp(foam,0.0,.94));
  // The parent game uses a bright coastal horizon; blend distant water into it.
  float fog=1.0-exp(-vDistance*.00038);
- color=mix(color,vec3(.62,.79,.88),clamp(fog,0.0,.94));
+ color=mix(color,vec3(.52,.38,.36),clamp(fog,0.0,.94));
  outColor=vec4(color,1.0);
 }`;
 
@@ -201,7 +203,7 @@ export class UltraCoastOcean {
    uDisp0:{value:null},uDisp1:{value:null},uDisp2:{value:null},
    uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
    uSpacing:{value:2*Math.PI/(this.mobile?128:192)},
-   uSun:{value:new THREE.Vector3(.35,.84,-.4).normalize()},
+   uSun:{value:COAST_SUN.clone()},
    uTime:{value:0},uRocks:{value:rockPositions},
    uShore:{value:shore.texture},uShoreBounds:{value:shore.bounds},
   };

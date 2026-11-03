@@ -74,3 +74,24 @@ missing road frames, unsafe streaming frames, stalls or console/shader errors.
 Basic-water fallback also loaded without errors. Build and 11 focused tests
 passed; no CI or physical Pixel 8 testing. Captures and telemetry remain local
 under `art-prototype/output/coast-beach-life/`.
+
+## 2026-11-04 dusk neighbourhoods / R3
+
+The coastal trial now uses a fixed golden-hour sky and matching water reflection,
+low warm sunlight and cool ambient fill. Two residential stretches alternate
+with two dense night-market strips and open beach/green sections. Balconies,
+selected lit windows, counters, cooking pots, lanterns, menu panels, bulb strings
+and posed crowds give the inland side distinct neighbourhoods. No road geometry,
+handling, camera or non-coastal lighting changes.
+
+Emissive scenery properties survive the existing Worker/instance transfer.
+Streetlight fixtures extend toward the road; only the four nearest point lights
+illuminate geometry, with no extra shadow maps or bloom pipeline. The sky and
+water share one world-space sun direction. This remains stylized art: crowds are
+static, shops have simplified signs/interiors and there is no day/night cycle.
+
+Desktop Chrome 1920x1080 full 34.67s drive with automatic inputs and original
+physics/chase camera: warmed FPS 59.99-60.00, local readiness ~1.98s, no missing
+road frames, unsafe streaming frames, stalls or browser/shader errors. Basic
+water fallback also loads. Build and 22 relevant tests pass; no CI or physical
+Pixel 8 testing. Local screenshots/video/telemetry: `art-prototype/output/coast-dusk/`.
