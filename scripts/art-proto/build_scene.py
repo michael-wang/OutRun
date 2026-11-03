@@ -133,14 +133,14 @@ def ground_height(frame, raw, sign):
         for offset, datum, value in profile:
             if abs(raw - offset) < .01:
                 if datum == "road":
-                    return frame["center"][1] + value
+                    return frame["center"][1] + frame["right"][1] * raw + value
                 return river_level + value + (
                     along_sculpt(u, LEFT_RIM) if raw < -175 else 0
                 )
     else:
         for offset, datum, value in RIGHT_PROFILE:
             if abs(raw - offset) < .01:
-                return frame["center"][1] + value + (
+                return frame["center"][1] + frame["right"][1] * raw + value + (
                     along_sculpt(u, RIGHT_WALL) * max(0, min(1, (raw - 33) / 70))
                 )
     raise ValueError("Unknown authored terrain offset: %r" % raw)
@@ -182,9 +182,9 @@ flat_strip("RIVER | authored channel, fixed world height",
 # Grey road and shoulders are EXPORTED ONLY AS VIEWPORT REFERENCES.
 # The actual runtime road will remain authoritative for driving/collision.
 flat_strip("REFERENCE | asphalt (not exported)", [-7, 7],
-           lambda f, r: f["center"][1] + .03, asphalt, road_ref)
+           lambda f, r: f["center"][1] + f["right"][1] * r + .03, asphalt, road_ref)
 flat_strip("REFERENCE | left shoulder", [-20, -7],
-           lambda f, r: f["center"][1] - .1, shoulder, road_ref)
+           lambda f, r: f["center"][1] + f["right"][1] * r - .1, shoulder, road_ref)
 flat_strip("REFERENCE | right shoulder", [7, 20],
            lambda f, r: f["center"][1] - .1, shoulder, road_ref)
 
@@ -268,7 +268,8 @@ for spec in road["cameras"]:
     obj.rotation_euler = (target - obj.location).to_track_quat("-Z", "Y").to_euler()
     data.type = "PERSP"
     data.lens_unit = "FOV"
-    data.angle = math.radians(spec["verticalFov"])
+    data.sensor_fit = "HORIZONTAL"
+    data.angle = math.radians(spec["horizontalFov"])
     data.clip_start = .5
     data.clip_end = 2500
 
