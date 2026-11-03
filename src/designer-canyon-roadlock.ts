@@ -20,7 +20,7 @@ export const CANYON_ROADLOCK_MOMENTS:readonly RoadLockMoment[]=Object.freeze([
  {id:'L04',name:'岩壁夾道與轉場',startS:3600,endS:4250,role:'connector'},
  {id:'H03',name:'Hero 3 · 觀景長彎',startS:4250,endS:5000,role:'hero'},
  {id:'L05',name:'舒展出場',startS:5000,endS:CANYON_ROADLOCK_LENGTH,role:'connector'},
-].map(moment=>Object.freeze(moment)));
+].map(moment=>Object.freeze({...moment,role:moment.role as RoadLockMoment['role']})));
 
 const curve=(id:'C02'|'C08',a:number,b:number,effort:number,direction:1|-1,beat:string):Placement=>({
  channel:'curvature',id,startS:a,endS:b,
