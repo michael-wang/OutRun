@@ -10,10 +10,11 @@ const palette:Record<string,string>={
  'V2 | sunlit ochre sandstone':'#BB7449','V2 | distant mauve sandstone':'#9C7978',
 };
 
-export async function loadBlenderCanyon(roadLock=false){
+export async function loadBlenderCanyon(roadLock=false,data?:ArrayBuffer){
  const started=performance.now();
  const asset=roadLock?'canyon_cliff_pass_r4.glb':'canyon_art_only.glb';
- const gltf=await new GLTFLoader().loadAsync('/__local_art/'+asset);
+ const loader=new GLTFLoader();
+ const gltf=data?await loader.parseAsync(data,'/__local_art/'):await loader.loadAsync('/__local_art/'+asset);
  const root=gltf.scene;root.name=roadLock?'blender-canyon-cliff-pass-r4':'blender-canyon-v2';
  // glTF is already meters/Y-up in the production track's world coordinates.
  // Do not recenter, rotate or normalize the model.

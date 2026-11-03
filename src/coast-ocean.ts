@@ -248,6 +248,12 @@ export class UltraCoastOcean {
   });
   const spray=new THREE.Points(sprayGeometry,sprayMaterial);spray.name='coast-rock-spray';spray.frustumCulled=false;scene.add(spray);
  }
+ dispose(){
+  // Release the upstream simulator's owned targets/materials; its fullscreen
+  // triangle is shared and must remain alive for a later replay.
+  for(const rt of [this.sim.h0RT,this.sim.ping,this.sim.pong,...this.sim.out.flat()])rt.dispose();
+  for(const m of [this.sim.initMat,this.sim.evolveMat,this.sim.fftMat,this.sim.assembleMat])m.dispose();
+ }
  update(camera:THREE.Camera,dt:number){
   this.mesh.position.x=camera.position.x;
   this.mesh.position.z=camera.position.z;
