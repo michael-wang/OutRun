@@ -19,3 +19,20 @@ export function chaseTargets(position:THREE.Vector3, travelHeading:number, aspec
     look:position.clone().addScaledVector(forward,composition.lookAhead).add(new THREE.Vector3(0,-Math.min(1.4,Math.max(0,grade)*composition.lookAhead*.1),0)),
   };
 }
+
+export interface ScenicCameraZone {start:number;end:number;ramp:number;leftMeters:number;yawDegrees:number;downDegrees:number}
+/** Distance-authored scenic offsets, limited to explicit road-local zones.
+ * Translation and gaze are independent; car banking never rolls the camera.
+ */
+export function applyScenicCamera(targets:{eye:THREE.Vector3;look:THREE.Vector3},roadRight:THREE.Vector3,distance:number,zones:readonly ScenicCameraZone[]){
+ const smooth=(v:number)=>{const t=THREE.MathUtils.clamp(v,0,1);return t*t*t*(t*(t*6-15)+10);};
+ const zone=zones.find(z=>distance>z.start&&distance<z.end);if(!zone)return 0;
+ const weight=smooth((distance-zone.start)/zone.ramp)*smooth((zone.end-distance)/zone.ramp);
+ const right=new THREE.Vector3(roadRight.x,0,roadRight.z).normalize();
+ // Translate BOTH points first: the left shift does not implicitly aim right.
+ const shift=right.multiplyScalar(-zone.leftMeters*weight);targets.eye.add(shift);targets.look.add(shift);
+ const gaze=targets.look.clone().sub(targets.eye);
+ gaze.applyAxisAngle(new THREE.Vector3(0,1,0),-THREE.MathUtils.degToRad(zone.yawDegrees)*weight);
+ gaze.y-=Math.hypot(gaze.x,gaze.z)*Math.tan(THREE.MathUtils.degToRad(zone.downDegrees)*weight);
+ targets.look.copy(targets.eye).add(gaze);return weight;
+}

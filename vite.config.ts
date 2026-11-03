@@ -8,7 +8,7 @@ import {createReadStream} from 'node:fs';
 /** Local-only asset handoff: never copies the GLB into a build or Git. */
 function localBlenderArt():Plugin {
  const install=(server:{middlewares:import('vite').Connect.Server})=>{
-  for(const [asset,local] of [['canyon_art_only.glb','canyon_art_only.glb'],['canyon_roadlock_art.glb','roadlock/canyon_roadlock_art.glb'],['grand_canyon_final.glb','grand_canyon_final.glb'],['canyon_terrain_first.glb','terrain-first/canyon_terrain_first.glb']])server.middlewares.use('/__local_art/'+asset,async(req,res)=>{
+  for(const [asset,local] of [['canyon_art_only.glb','canyon_art_only.glb'],['canyon_roadlock_art.glb','roadlock/canyon_roadlock_art.glb'],['grand_canyon_final.glb','grand_canyon_final.glb'],['canyon_terrain_first.glb','terrain-first/canyon_terrain_first.glb'],['canyon_rim_pass_r1.glb','rim-pass-r1/canyon_rim_pass_r1.glb']])server.middlewares.use('/__local_art/'+asset,async(req,res)=>{
    if(req.method!=='GET'&&req.method!=='HEAD'){res.statusCode=405;res.end();return;}
    const file=resolve('art-prototype/output',local);
    try{const info=await lstat(file);if(!info.isFile())throw Error('Not a file');

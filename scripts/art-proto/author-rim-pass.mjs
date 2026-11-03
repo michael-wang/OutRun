@@ -1,0 +1,49 @@
+// R1: fixed single-bank road laid on the existing terrain. No terrain generator.
+import fs from 'node:fs';
+import * as THREE from 'three';
+const root='art-prototype/output/rim-pass-r1';
+const controls=[[-410,2600],[-440,2350],[-420,2100],[-490,1850],[-550,1600],[-535,1350],[-490,1150],[-490,1020],[-340,900],[-285,820],[-285,730],[-300,680],[-400,600],[-450,480],[-420,250],[-390,60],[-400,-180],[-420,-400]];
+const cp=[controls[0],controls[0],...controls,controls.at(-1),controls.at(-1)],raw=[];
+for(let i=0;i<cp.length-3;i++)for(let j=0;j<500;j++){
+ const t=j/500,w=[(1-t)**3/6,(3*t**3-6*t*t+4)/6,(-3*t**3+3*t*t+3*t+1)/6,t**3/6];
+ const p=new THREE.Vector2();for(let k=0;k<4;k++)p.addScaledVector(new THREE.Vector2(...cp[i+k]),w[k]);
+ if(!raw.length||p.distanceTo(raw.at(-1))>.00001)raw.push(p);
+}
+const ds=[0];for(let i=1;i<raw.length;i++)ds.push(ds.at(-1)+raw[i].distanceTo(raw[i-1]));
+const routeLength=Math.floor(ds.at(-1)/2.5)*2.5;
+function at(d){d=Math.max(0,Math.min(ds.at(-1),d));let lo=0,hi=ds.length-1;while(hi-lo>1){const m=(lo+hi)>>1;if(ds[m]<=d)lo=m;else hi=m;}return raw[lo].clone().lerp(raw[hi],(d-ds[lo])/(ds[hi]-ds[lo]));}
+const frames=[];let heading,old;
+for(let d=0;d<=routeLength;d+=2.5){const p=at(d),v=at(d+4).sub(at(d-4)),h=Math.atan2(-v.x,v.y);heading=heading===undefined?h:heading+Math.atan2(Math.sin(h-old),Math.cos(h-old));old=h;frames.push([350+d,p.x,300,p.y,heading,0]);}
+const nearest=(x,z)=>frames.reduce((a,p)=>Math.hypot(p[1]-x,p[3]-z)<Math.hypot(a[1]-x,a[3]-z)?p:a,frames[0])[0];
+const scenicZones=[
+ {start:nearest(-550,1700),end:nearest(-450,1080),ramp:140,leftMeters:1.8,yawDegrees:7,downDegrees:1},
+ {start:nearest(-420,500),end:nearest(-395,-150),ramp:140,leftMeters:1.8,yawDegrees:7,downDegrees:1},
+];
+if(process.argv.includes('--final')){
+ const heights=JSON.parse(fs.readFileSync(root+'/surface-profile.json'));
+ if(heights.length!==frames.length)throw Error('Refresh the terrain surface profile for this road layout');
+ // Offline elevation fitting on this road only: remove the rock-scale bumps
+ // before baking the road. Runtime interpolation never smooths the car globally.
+ let y=heights;
+ for(let pass=0;pass<2;pass++)y=y.map((_,i)=>{let sum=0,w=0;for(let j=Math.max(0,i-20);j<=Math.min(y.length-1,i+20);j++){const a=21-Math.abs(j-i);sum+=y[j]*a;w+=a;}return sum/w;});
+ // Keep fills low; negotiate the narrows by a local cut instead of a tall ramp.
+ y=y.map((v,i)=>Math.min(v,heights[i]+3));
+ for(let i=1;i<y.length;i++)y[i]=Math.min(y[i],y[i-1]+.30*2.5);
+ for(let i=y.length-2;i>=0;i--)y[i]=Math.min(y[i],y[i+1]+.30*2.5);
+ y=y.map((_,i)=>{let sum=0,n=0;for(let j=Math.max(0,i-4);j<=Math.min(y.length-1,i+4);j++){sum+=y[j];n++;}return sum/n;});
+ const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*t*(t*(t*6-15)+10);};
+ for(let i=0;i<frames.length;i++){
+  const p=frames[i],a=frames[Math.max(0,i-12)],b=frames[Math.min(frames.length-1,i+12)],k=(b[4]-a[4])/(b[0]-a[0]);
+  p[2]=y[i]+.2;p[5]=Math.max(-.21,Math.min(.21,k*24));
+  for(const z of scenicZones){const w=smooth((p[0]-z.start)/z.ramp)*smooth((z.end-p[0])/z.ramp);p[5]+=(6*Math.PI/180-p[5])*w;}
+ }
+ const start=frames[0],end=frames.at(-1),padded=[];
+ for(let d=0;d<350;d+=2.5){const t=d-350;padded.push([d,start[1]-Math.sin(start[4])*t,start[2],start[3]+Math.cos(start[4])*t,start[4],start[5]]);}
+ padded.push(...frames);
+ for(let t=2.5;t<=600;t+=2.5)padded.push([end[0]+t,end[1]-Math.sin(end[4])*t,end[2],end[3]+Math.cos(end[4])*t,end[4],end[5]]);
+ const cameras=scenicZones.flatMap((z,i)=>[[`H${i+1}_Approach`,z.start],[`H${i+1}_Reveal`,(z.start+z.end)/2],[`H${i+1}_Exit`,z.end]]);
+ const file='src/terrain-first-road.json',temporary=file+'.tmp';
+ fs.writeFileSync(temporary,JSON.stringify({routeLength,bridge:[],scenicZones,cameras,controls,frames:padded.map(r=>r.map(v=>+v.toFixed(6)))}));
+ fs.renameSync(temporary,file);
+ console.log(JSON.stringify({routeLength,scenicZones,heightFitMax:Math.max(...y.map((v,i)=>Math.abs(v-heights[i]))),maxGrade:Math.max(...frames.slice(1).map((p,i)=>Math.abs((p[2]-frames[i][2])/2.5)))}));
+}else{fs.writeFileSync(root+'/road-layout.json',JSON.stringify({routeLength,controls,scenicZones,frames}));console.log({routeLength,scenicZones});}

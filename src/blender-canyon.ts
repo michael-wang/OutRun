@@ -12,9 +12,9 @@ const palette:Record<string,string>={
 
 export async function loadBlenderCanyon(roadLock=false){
  const started=performance.now();
- const asset=roadLock?'canyon_terrain_first.glb':'canyon_art_only.glb';
+ const asset=roadLock?'canyon_rim_pass_r1.glb':'canyon_art_only.glb';
  const gltf=await new GLTFLoader().loadAsync('/__local_art/'+asset);
- const root=gltf.scene;root.name=roadLock?'blender-canyon-terrain-first':'blender-canyon-v2';
+ const root=gltf.scene;root.name=roadLock?'blender-canyon-rim-pass-r1':'blender-canyon-v2';
  // glTF is already meters/Y-up in the production track's world coordinates.
  // Do not recenter, rotate or normalize the model.
  root.updateMatrixWorld(true);

@@ -8,25 +8,26 @@ import type {TripCandidate} from './trip';
 // authored Blender canyon; the original 5.65 km path is not used.
 export const CANYON_ROADLOCK_VERSION='canyon-roadlock-v1';
 export const CANYON_ROADLOCK_LENGTH=road.routeLength;
+export const CANYON_SCENIC_ZONES=road.scenicZones;
 export interface RoadLockMoment {readonly id:string;readonly name:string;readonly startS:number;readonly endS:number;readonly role:'hero'|'challenge'}
 export const CANYON_ROADLOCK_MOMENTS:readonly RoadLockMoment[]=[
- {id:'ENTRY',name:'Cut-rock entrance',startS:0,endS:500,role:'challenge'},
- {id:'H1',name:'Canyon Rim Reveal',startS:500,endS:1000,role:'hero'},
- {id:'BRIDGE',name:'Natural narrows crossing',startS:1000,endS:1600,role:'challenge'},
- {id:'H2',name:'Opposite Rim',startS:1600,endS:2450,role:'hero'},
- {id:'EXIT',name:'Downstream farewell',startS:2450,endS:road.routeLength,role:'challenge'},
+ {id:'ENTRY',name:'Upper rim approach',startS:0,endS:850,role:'challenge'},
+ {id:'H1',name:'Right-side basin overlook',startS:850,endS:1550,role:'hero'},
+ {id:'NARROWS',name:'Same-bank narrows sweep',startS:1550,endS:2250,role:'challenge'},
+ {id:'H2',name:'Downstream cliff cut',startS:2250,endS:2950,role:'hero'},
+ {id:'EXIT',name:'Rim farewell',startS:2950,endS:road.routeLength,role:'challenge'},
 ];
 const duration=road.routeLength/REFERENCE_TRAVEL;
 export const CANYON_ROADLOCK_STAGE:TripCandidate={
- ...DESIGNER_CANYON_STAGE,revision:15,name:'Grand Canyon · Terrain First',
- intent:'An eroded river canyon first; a fixed four-lane road follows its ledges and natural narrows.',
- emotionalRole:'terrain-first-prototype',generatorVersion:CANYON_ROADLOCK_VERSION,
- contentFingerprint:'terrain-first-02',stageCode:'CANYON-TERRAIN-FIRST-01',tripCode:'CANYON-TERRAIN-FIRST-01',
+ ...DESIGNER_CANYON_STAGE,revision:16,name:'Grand Canyon · Rim Pass R1',
+ intent:'A continuous same-bank cliff road with two optional right-side scenic camera zones.',
+ emotionalRole:'rim-pass-prototype',generatorVersion:CANYON_ROADLOCK_VERSION,
+ contentFingerprint:'canyon-rim-pass-r1-01',stageCode:'CANYON-RIM-PASS-R1',tripCode:'CANYON-RIM-PASS-R1',
  length:road.routeLength,baseHeight:road.frames[0][2],baseLanes:4,roadWidth:14,
  fixedRoad:road.frames,placements:[],bankFeatures:[],
  beats:CANYON_ROADLOCK_MOMENTS.map(p=>({id:p.id,startS:p.startS,endS:p.endS,world:'canyon',verticality:'rolling',role:p.name})),
  buffers:[{startS:0,endS:100,role:'launch'},{startS:road.routeLength-100,endS:road.routeLength,role:'finish'}],
- worldPhases:[{startS:0,endS:road.routeLength,world:'canyon',beat:'Confinement, rim, narrows bridge, opposite rim, open exit'}],
+ worldPhases:[{startS:0,endS:road.routeLength,world:'canyon',beat:'Upper rim, basin overlook, same-bank narrows, downstream cliff cut'}],
  canyonPrototype:undefined,designerCut:undefined,scenicCues:undefined,roadFeatures:undefined,scenicLandmarks:[],
  scenerySections:[{id:'terrain-first',kind:'canyon',start:BRICK_START,end:BRICK_START+road.routeLength,left:'canyon',right:'canyon'}],
  nominalDuration:duration,entrySpeed:180,referenceSpeed:230,lanes:[[0,4],[duration,4]],
