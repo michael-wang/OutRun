@@ -1,0 +1,9 @@
+{
+  "canyon": {
+    "path": "/generated/canyon-cliff-pass-r4-594e48389270.glb",
+    "url": "https://github.com/michael-wang/OutRun/releases/download/art-assets-canyon-r4-v1/canyon_cliff_pass_r4.glb",
+    "sha256": "594e483892706405ec9e16f5f0833c5c4cca9c993d4f75f234d0578aba055f1c",
+    "bytes": 31706244,
+    "local": "art-prototype/output/cliff-pass-r4/canyon_cliff_pass_r4.glb"
+  }
+}

@@ -123,7 +123,7 @@ let blenderAsset=blenderMode?await (async()=>{
  await loadingStep(30,'正在載入峽谷地形','下載場景模型與岩壁材質，請稍候。');
  const status=document.createElement('p');status.id='blender-art-status';status.setAttribute('role','status');status.style.cssText='position:fixed;top:12px;left:12px;z-index:300;background:#17343d;color:white;padding:12px';status.textContent='Blender 峽谷美術載入中…';document.body.append(status);
  try{const asset=await (await import('./blender-canyon')).loadBlenderCanyon(roadLockMode);status.remove();return asset;}
- catch(error){status.textContent=roadLockMode?'Blender 地形載入失敗：請確認本機 cliff-pass-r4/canyon_cliff_pass_r4.glb。道路入口：?showcase=canyon&road=lock':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。原版入口：?showcase=canyon';throw error;}
+ catch(error){status.textContent=roadLockMode?'峽谷場景載入失敗，請確認網路連線後重新載入。':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。原版入口：?showcase=canyon';throw error;}
 })():undefined;
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const initialBrick=brick,initialPilot=pilot;

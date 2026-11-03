@@ -13,8 +13,9 @@
     "art:blockout": "node scripts/art-proto/make.mjs",
     "art:roadlock": "node scripts/art-proto/export-road.mjs --roadlock --output art-prototype/output/roadlock-road-reference.json",
     "coast:shore": "node scripts/bake-coast-shore.mjs",
-    "predev": "npm run coast:shore",
-    "prebuild": "npm run coast:shore"
+    "art:prepare": "node scripts/prepare-runtime-art.mjs",
+    "predev": "npm run coast:shore && npm run art:prepare",
+    "prebuild": "npm run coast:shore && npm run art:prepare"
   },
   "dependencies": {
     "three": "^0.180.0"

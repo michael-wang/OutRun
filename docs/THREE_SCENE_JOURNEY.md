@@ -29,10 +29,32 @@ if that reserve is exhausted, the existing safety hold keeps the car on valid
 road until preparation succeeds. This is a finite loading reserve, not a claim
 of uninterrupted driving when the server or GLB is unavailable.
 
-The local canyon asset remains required:
-`art-prototype/output/cliff-pass-r4/canyon_cliff_pass_r4.glb`.
-Vite dev/preview serve it locally; the static build does not bundle it.
-No CI, public deployment or main promotion is part of this milestone.
+Production artwork delivery (2026-11-04 release correction):
+
+`src/runtime-art.json` pins the approved Canyon R4 GLB by release URL, byte size
+and SHA-256. `npm run build` and `npm run dev` prepare the asset automatically:
+reuse a verified generated/local file or download the public GitHub Release
+attachment. A missing/corrupt download fails the build. No GitHub token is needed
+on Netlify. Large GLB and editable Blender files remain outside Git history.
+
+The resulting `public/generated/canyon-cliff-pass-r4-594e48389270.glb` is copied
+into `dist` and served on the same origin as the game. Its versioned URL permits
+immutable caching. The default three-scene journey no longer requests local-only
+Vite middleware. `netlify.toml` sets `npm run build`, `dist` and Node 22.
+
+Release attachment: https://github.com/michael-wang/OutRun/releases/tag/art-assets-canyon-r4-v1
+
+The editable source remains at
+`art-prototype/output/cliff-pass-r4/canyon_cliff_pass_r4.glb`. The historical
+Blender v2 diagnostic entry still uses local-only artwork and is not the default
+published route. No GitHub Actions workflow was run for this correction.
+
+Deployment checks: a clean source copy with no local Blender output downloaded
+the public attachment and built successfully. A plain static server serving only
+that `dist` launched the coast and rendered/drived Canyon R4 with HTTP 200 for the
+GLB, no page errors and no development hooks. A corrupt cache/local/download
+fixture failed with the expected SHA-256 mismatch instead of producing a build.
+Local evidence: `art-prototype/output/netlify-release/`.
 
 Current validation and captures are under the ignored local folder
 `art-prototype/output/seamless-journey/`. Physical Pixel 8 performance is not

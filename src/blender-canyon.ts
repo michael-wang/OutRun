@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import runtimeArt from './runtime-art.json';
 
 // The v2 .blend's existing sRGB palette. Its linked weathering nodes exported
 // without baseColorFactor; restore only those colors, not geometry or shaders.
@@ -14,7 +15,8 @@ export async function loadBlenderCanyon(roadLock=false,data?:ArrayBuffer){
  const started=performance.now();
  const asset=roadLock?'canyon_cliff_pass_r4.glb':'canyon_art_only.glb';
  const loader=new GLTFLoader();
- const gltf=data?await loader.parseAsync(data,'/__local_art/'):await loader.loadAsync('/__local_art/'+asset);
+ const url=roadLock?runtimeArt.canyon.path:'/__local_art/'+asset;
+ const gltf=data?await loader.parseAsync(data,''):await loader.loadAsync(url);
  const root=gltf.scene;root.name=roadLock?'blender-canyon-cliff-pass-r4':'blender-canyon-v2';
  // glTF is already meters/Y-up in the production track's world coordinates.
  // Do not recenter, rotate or normalize the model.
