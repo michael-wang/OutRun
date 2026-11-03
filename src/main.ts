@@ -119,9 +119,9 @@ const world=createWorld(brick?{blenderArt:!!blenderAsset,bank:bankLab?banking:un
 if(blenderAsset)world.scene.add(blenderAsset.root);
 // Load the FFT code only for the explicit coastal water trial. Everything
 // else (main trip, canyon, city) stays on the regular Three.js render path.
-await loadingStep(48,coastUltraWater?'正在準備海岸':'正在準備光影',coastUltraWater?'計算沙灘與海水交界，讓浪花留在岸邊。':'準備場景光線與畫面效果。');
+await loadingStep(48,coastUltraWater?'正在準備海岸':'正在準備光影',coastUltraWater?'載入已準備好的海岸資料與海浪效果。':'準備場景光線與畫面效果。');
 const ultraOcean=coastUltraWater?await import('./coast-ocean')
- .then(({UltraCoastOcean})=>UltraCoastOcean.create(renderer,world.scene,world,p=>loadingProgress(48+p*30,'正在準備海岸',`海岸交界已完成 ${Math.round(p*100)}%，接著準備海浪與夕陽。`)))
+ .then(({UltraCoastOcean})=>UltraCoastOcean.create(renderer,world.scene,world,p=>loadingProgress(48+p*30,'正在準備海岸','載入海岸資料，接著準備海浪與夕陽。')))
  .catch(error=>{console.error('Ultra-Water unavailable; using basic sea',error);return null;}):null;
 if(ultraOcean){const originalSea=world.scene.getObjectByName('default-coast-water');if(originalSea)originalSea.visible=false;}
 await loadingStep(82,'正在準備出發路段','載入前方公路與沿途景物，剩餘路段會隨旅程準備。');

@@ -4,7 +4,8 @@ import * as THREE from 'three';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastBeachHeight,COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
-import {bakeCoastShore,bakeCoastShoreAsync} from '../src/coast-shore';
+import {bakeCoastShore} from '../src/coast-shore';
+import {packCoastShore,unpackCoastShore} from '../src/coast-shore-asset';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
@@ -18,20 +19,19 @@ function field(x:number,z:number){
  return THREE.MathUtils.lerp(THREE.MathUtils.lerp(at(i,j),at(i+1,j),tx),THREE.MathUtils.lerp(at(i,j+1),at(i+1,j+1),tx),tz);
 }
 describe('coastal road stays above a real beach',()=>{
- it('yields during loading without changing the shoreline texture',async()=>{
-  const progress:number[]=[];let timerRan=false;
-  const timer=setTimeout(()=>{timerRan=true;},0);
-  const asyncShore=await bakeCoastShoreAsync(track.sample,track.length,p=>progress.push(p));
+ it('loads the precomputed mask losslessly and rejects stale or truncated data',()=>{
+  const packed=packCoastShore(shore),loaded=unpackCoastShore(packed);
   try{
-   expect(timerRan).toBe(true);
-   expect(progress.length).toBeGreaterThan(1);
-   expect(progress.at(-1)).toBe(1);
-   expect(progress.every((p,i)=>i===0||p>=progress[i-1])).toBe(true);
-   const a=shore.texture.image.data as Uint16Array,b=asyncShore.texture.image.data as Uint16Array;
+   const a=shore.texture.image.data as Uint16Array,b=loaded.texture.image.data as Uint16Array;
    expect(b.length).toBe(a.length);
    expect(b.every((v,i)=>v===a[i])).toBe(true);
-  }finally{clearTimeout(timer);asyncShore.texture.dispose();}
- },15000);
+   expect(loaded.bounds.toArray()).toEqual(shore.bounds.toArray());
+   expect(()=>unpackCoastShore(packed.subarray(0,packed.length-1))).toThrow('Invalid coast mask data');
+   const stale=packed.slice(),keyOffset=new TextDecoder().decode(stale.subarray(0,256)).indexOf('"key":"')+7;
+   stale[keyOffset]^=1;
+   expect(()=>unpackCoastShore(stale)).toThrow('Coast mask is out of date');
+  }finally{loaded.texture.dispose();}
+ });
  it('keeps dry sand beside the complete road and a continuous sand-to-seabed slope',()=>{
   for(let d=350;d<=350+stage.length;d+=10){
    const p=track.sample(d);

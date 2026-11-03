@@ -37,3 +37,6 @@ docs/evidence/
 # Blender blockout exports, previews and editable working files stay local.
 /art-prototype/output/
 __pycache__/
+
+# Fixed coast mask is baked before dev/build; phones only load the compressed result.
+/public/generated/coast-shore.shore

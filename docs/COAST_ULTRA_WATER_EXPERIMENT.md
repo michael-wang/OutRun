@@ -178,3 +178,30 @@ retry recovery and Play. At 4x CPU slowdown the real coast calculation continued
 producing animation frames and progress updates. This is desktop mobile emulation,
 not a physical Pixel 8 measurement. Local captures and a loading preview are in
 `art-prototype/output/mobile-loading/`; no media is committed and no CI was run.
+
+## 2026-11-04 remove phone-side coast baking
+
+The reported 48-78% wait was the full coastline mask, not road streaming or an
+Ultra-Water engine replacement. The short R4 stage used 786x1024 texels and 215
+sampled road segments; the long stage uses 855x3232 texels and 548 segments.
+The denser full-route preparation was incorrectly left on every player's device.
+The prior responsive batches improved feedback but did not remove that cost.
+
+The fixed coast mask is now baked on the developer machine by `npm run coast:shore`,
+automatically invoked before `npm run dev` and `npm run build`. A lossless
+channel-delta/gzip asset is 1,300,739 bytes (1.24 MiB), rather than the raw 22.1 MB.
+Phones download and decode it; they do not bake coast geometry. Every channel and
+all bounds match the previous mask. A route/layout key rejects stale data.
+Missing or invalid assets use the existing basic-water fallback, never a surprise
+phone-side bake. The generated `public/generated/coast-shore.shore` is ignored by
+Git and copied into dist by the normal build. When editing the fixed route or
+shore code during a running dev session, rerun `npm run coast:shore`.
+
+Comparable local desktop Chrome mobile viewport with 4x CPU slowdown:
+coast phase 12.77s before -> 0.33s after; total startup 14.45s -> 2.04s.
+Built-version local cold start 1.68s and repeat load 1.17s. These are local-network
+emulation measurements, not physical Pixel 8 results or internet download promises.
+Ultra mode confirmed in development; the sunset bay screenshot remains intact.
+Build and 21 relevant tests pass, including lossless decode and rejection of stale
+or truncated data. Missing-asset fallback was checked in Chrome. Evidence stays
+local in `art-prototype/output/loading-performance/`. No CI or main changes.
