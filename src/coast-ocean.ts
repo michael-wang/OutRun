@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {bakeCoastShore} from './coast-shore';
+import {COAST_SEA_LEVEL} from './scenery-cross-section';
 // The upstream, MIT-licensed simulation is intentionally left untouched.
 // @ts-ignore - vendored upstream JavaScript has no TypeScript declarations.
 import {OceanSim, defaultOceanParams} from './ultra-water/water/OceanSim.js';
@@ -34,7 +36,15 @@ function polarGrid(segments:number){
  return g;
 }
 
+const shoreGLSL=/* glsl */`
+uniform sampler2D uShore;
+uniform vec4 uShoreBounds;
+uniform float uTime;
+vec4 shoreAt(vec2 xz){return texture(uShore,(xz-uShoreBounds.xy)/uShoreBounds.zw);}
+float shorePhase(float d,vec2 xz){return d*.62+uTime*1.35+sin(xz.x*.011+xz.y*.008)*.4;}
+`;
 const vertex=/* glsl */`
+${shoreGLSL}
 uniform sampler2D uDisp0;
 uniform sampler2D uDisp1;
 uniform sampler2D uDisp2;
@@ -54,7 +64,14 @@ void main(){
  vec4 d1=textureLod(uDisp1,world.xz/85.0,l1);
  vec4 d2=textureLod(uDisp2,world.xz/12.0,l2);
  float fade=1.0-smoothstep(1300.0,2300.0,ring);
- world+=vec3(d0.xyz+d1.xyz+d2.xyz)*fade;
+ vec4 shore=shoreAt(world.xz);
+ float nearshore=smoothstep(0.0,55.0,shore.x);
+ vec3 disp=d0.xyz+d1.xyz+d2.xyz;
+ // Keep deep-water FFT energy offshore. Bounded waves cannot reach the road.
+ disp.y=disp.y/(1.0+abs(disp.y)/.9);
+ disp.xz=disp.xz/(1.0+length(disp.xz)/1.2);
+ world+=disp*fade*nearshore;
+ world.y+=sin(shorePhase(shore.x,world.xz))*.18*exp(-max(0.0,shore.x)/24.0)*smoothstep(-2.0,1.0,shore.x);
  vWorld=world;
  vChurn=min(d0.w,min(d1.w,d2.w));
  vDistance=ring;
@@ -63,12 +80,12 @@ void main(){
 
 const fragment=/* glsl */`
 precision highp float;
+${shoreGLSL}
 uniform sampler2D uSlope0;
 uniform sampler2D uSlope1;
 uniform sampler2D uSlope2;
 uniform sampler2D uSlope3;
 uniform vec3 uSun;
-uniform float uTime;
 in vec3 vWorld;
 in float vChurn;
 in float vDistance;
@@ -81,12 +98,19 @@ float hash12(vec2 p){
 }
 
 void main(){
+ vec4 shore=shoreAt(vWorld.xz);
+ // Actual coast mask: water never renders through dry sand, asphalt or inland.
+ if(shore.x< -1.5||vWorld.y<shore.y+.015)discard;
+ float nearshore=smoothstep(0.0,55.0,shore.x);
+ float depth=max(0.0,vWorld.y-shore.y);
  // FFT slopes from the original four independent wavelength cascades.
  vec2 slope=
    texture(uSlope0,vWorld.xz/600.0).xy+
    texture(uSlope1,vWorld.xz/85.0).xy+
    texture(uSlope2,vWorld.xz/12.0).xy+
    texture(uSlope3,vWorld.xz/2.1).xy*.24;
+ slope*=mix(.12,1.0,nearshore);
+ slope+=shore.zw*cos(shorePhase(shore.x,vWorld.xz))*.11*exp(-max(0.0,shore.x)/24.0);
  vec3 normal=normalize(vec3(-slope.x,1.0,-slope.y));
  vec3 viewDir=normalize(cameraPosition-vWorld);
  vec3 sunDir=normalize(uSun);
@@ -96,7 +120,8 @@ void main(){
  // Ocean-body absorption and an open-sky reflection (no costly scene mirror).
  vec3 deep=vec3(.009,.125,.20);
  vec3 shallow=vec3(.012,.29,.38);
- vec3 body=mix(deep,shallow,clamp(normal.y*.78+.1,0.0,1.0));
+ vec3 shallows=mix(vec3(.32,.36,.23),shallow,smoothstep(0.0,2.5,depth));
+ vec3 body=mix(shallows,deep,smoothstep(3.0,12.0,depth));
  vec3 sky=mix(vec3(.52,.77,.88),vec3(.08,.35,.62),clamp(reflected.y*.6+.25,0.0,1.0));
  vec3 color=mix(body,sky,clamp(.20+fresnel*.75,0.0,1.0));
  vec3 halfVec=normalize(viewDir+sunDir);
@@ -104,8 +129,13 @@ void main(){
  float spark=hash12(floor(vWorld.xz*2.4+uTime*.13));
  sunGlitter*=.65+.7*spark;
  color+=vec3(1.0,.82,.53)*sunGlitter*2.8;
- float foam=(1.0-smoothstep(.48,.93,vChurn))*.67;
+ float foam=(1.0-smoothstep(.48,.93,vChurn))*.4*nearshore;
  foam*=.82+.18*hash12(floor(vWorld.xz*.9+uTime*.4));
+ // Breaking crests advance toward the beach, losing energy on the wet sand.
+ float crest=pow(.5+.5*sin(shorePhase(shore.x,vWorld.xz)),12.0);
+ float lace=.55+.45*hash12(floor(vWorld.xz*3.0+uTime*.45));
+ foam=max(foam,crest*(1.0-smoothstep(12.0,35.0,shore.x))*lace*.9);
+ foam=max(foam,(1.0-smoothstep(.02,.20,depth))*lace*.8);
  color=mix(color,vec3(.75,.91,.92),clamp(foam,0.0,.75));
  // The parent game uses a bright coastal horizon; blend distant water into it.
  float fog=1.0-exp(-vDistance*.00038);
@@ -122,21 +152,23 @@ export class UltraCoastOcean {
  private readonly mobile:boolean;
  private readonly renderer:THREE.WebGLRenderer;
 
- constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,level=-5){
+ constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},level=COAST_SEA_LEVEL){
   if(!renderer.capabilities.isWebGL2)throw new Error('Ultra-Water experiment requires WebGL2');
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
   const oceanParams=defaultOceanParams();
-  oceanParams.windSpeed=8.5;
-  oceanParams.waveScale=.85;
-  oceanParams.swellScale=.7;
+  oceanParams.windSpeed=6;
+  oceanParams.waveScale=.55;
+  oceanParams.swellScale=.3;
   this.sim=new OceanSim(renderer,oceanParams);
+  const shore=bakeCoastShore(coast.sample,coast.length);
   this.uniforms={
    uDisp0:{value:null},uDisp1:{value:null},uDisp2:{value:null},
    uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
    uSpacing:{value:2*Math.PI/(this.mobile?128:192)},
    uSun:{value:new THREE.Vector3(.35,.84,-.4).normalize()},
    uTime:{value:0},
+   uShore:{value:shore.texture},uShoreBounds:{value:shore.bounds},
   };
   const material=new THREE.ShaderMaterial({
    uniforms:this.uniforms,vertexShader:vertex,fragmentShader:fragment,

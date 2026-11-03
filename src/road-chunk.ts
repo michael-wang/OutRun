@@ -81,6 +81,10 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop+(vertical?vertical(d):0),v.z);uvs.push(o/4,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));
+    if(coastUltra&&kind==='sand'){
+     const x=roadOffset(o,cachedWidth(d),cachedShoulders(d));
+     color.set('#dfc894').lerp(new THREE.Color('#a58e68'),Math.max(0,Math.min(1,(-x-15)/11)));
+    }
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
      const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);
      color.lerp(new THREE.Color(o<0?'#b98459':'#a8754d'),Math.max(0,blend)*.83);
@@ -111,10 +115,10 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  const cutTo=grandCanyon?Math.min(end,grandCanyon.end):start;
  const active=!!grandCanyon&&cutTo>cutFrom;
  if(coastUltra){
-  // No broad beach polygon: it can break through FFT wave troughs. A narrow
-  // road edge drops to a submerged -11m seabed; the rest is pure ocean.
-  append('sand',-17,-10,-9,-.25,start,end,2.5);
-  append('sand',-10,-7,-.25,-.1,start,end,2.5);
+  // Physical beach stations survive the variable-width shoulder conversion.
+  const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-metres-cachedWidth(d),cachedShoulders(d)!);
+  for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11],[-11,-7]])
+   append('sand',rawAt(a),rawAt(b),0,0,start,end,2.5);
   append('sand',-7,7,-.1,-.1,start,end,2.5);
   append('sand',7,13,-.1,-.1,start,end,2.5);
  }else{

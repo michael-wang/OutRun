@@ -115,7 +115,7 @@ if(blenderAsset)world.scene.add(blenderAsset.root);
 // Load the FFT code only for the explicit coastal water trial. Everything
 // else (main trip, canyon, city) stays on the regular Three.js render path.
 const ultraOcean=coastUltraWater?await import('./coast-ocean')
- .then(({UltraCoastOcean})=>new UltraCoastOcean(renderer,world.scene))
+ .then(({UltraCoastOcean})=>new UltraCoastOcean(renderer,world.scene,world))
  .catch(error=>{console.error('Ultra-Water unavailable; using basic sea',error);return null;}):null;
 if(ultraOcean){const originalSea=world.scene.getObjectByName('default-coast-water');if(originalSea)originalSea.visible=false;}
 if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
@@ -559,6 +559,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   },
   perf:()=>({...perf}),
   blenderArt:()=>blenderAsset?.stats??{status:'disabled'},
+  coastWater:()=>({mode:ultraOcean?'ultra':coastUltraMode?'basic':'disabled'}),
   artProbe:(distance:number,lateral=0)=>{if(!blenderAsset)return [];world.scene.updateMatrixWorld(true);const p=world.sample(distance).position.addScaledVector(world.sample(distance).right,lateral);return new THREE.Raycaster(p.clone().add(new THREE.Vector3(0,500,0)),down,0,1000).intersectObject(blenderAsset.root,true).map(h=>({name:h.object.name,gap:h.point.y-p.y}));},
   tireEffects:()=>tireEffects.inspect(),
   railClearance:()=>{const p=world.sample(state.distance),v=new THREE.Vector3();let edge=-Infinity;world.car.updateMatrixWorld(true);world.car.traverse(o=>{if(!(o instanceof THREE.Mesh))return;const a=o.geometry.getAttribute('position');for(let i=0;i<a.count;i++){v.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld).sub(p.position);edge=Math.max(edge,v.dot(p.right));}});return CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness-edge;},

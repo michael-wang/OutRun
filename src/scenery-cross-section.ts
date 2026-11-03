@@ -98,21 +98,27 @@ export function sceneryGroundMixAt(sections:readonly ScenerySection[],distance:n
  * raw = legacy road-relative offset; physical converts it through the current
  * variable-width shoulders. The original coastal/canyon height is retained
  * when both mix values are zero. The inner road/shoulder remains untouched. */
-/** Coastal experiment: no intertidal sand table poking through FFT troughs.
- * The sea drops away just a few metres beyond the asphalt, while the inland
- * side gently rises. Shared by both visual road chunks and prop anchors. */
+export const COAST_SEA_LEVEL=-5;
+export const COAST_SHORE_OFFSET=-26;
+/** Physical metres, shared by the beach mesh and the ocean's shore mask.
+ * Keep a dry shoulder, a sloping wet-sand band and a submerged sand bottom.
+ * Do not extend road banking indefinitely across inland terrain. */
+export function coastBeachHeight(x:number,roadY:number,rightY:number):number{
+ const dry=roadY+rightY*-11-.2;
+ if(x<=-100)return COAST_SEA_LEVEL-15;
+ if(x<-46)return lerp(COAST_SEA_LEVEL-15,COAST_SEA_LEVEL-3,(x+100)/54);
+ if(x<COAST_SHORE_OFFSET)return lerp(COAST_SEA_LEVEL-3,COAST_SEA_LEVEL,(x+46)/20);
+ if(x<-18)return lerp(COAST_SEA_LEVEL,COAST_SEA_LEVEL+.8,(x+26)/8);
+ if(x<-11)return lerp(COAST_SEA_LEVEL+.8,dry,(x+18)/7);
+ if(x<-7)return lerp(dry,roadY+rightY*-7-.1,(x+11)/4);
+ if(x<=13)return roadY+rightY*x-.1;
+ return roadY+rightY*13-.1+(x-13)*.038;
+}
+/** Shared by the coastal trial's Worker meshes and prop anchors only. */
 export function coastUltraGroundY(
  raw:number,roadY:number,rightY:number,physical:(offset:number)=>number,
 ):number{
- const projected=(o:number)=>roadY+rightY*physical(o);
- if(raw<=-17)return -11;
- if(raw<-10){
-  const t=(-raw-10)/7;
-  return (projected(-10)-.25)*(1-t)+(-11)*t;
- }
- if(raw<-7)return projected(raw)-.1-(Math.abs(raw)-7)*.05;
- if(raw<=13)return projected(raw)-.1;
- return projected(raw)-.1+(raw-13)*.038;
+ return coastBeachHeight(physical(raw),roadY,rightY);
 }
 
 export function sceneryGroundY(
