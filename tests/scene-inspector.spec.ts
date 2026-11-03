@@ -278,3 +278,23 @@ test('Designer’s Cut opens the fixed canyon without changing procedural 10m ro
  await expect(page.locator('#si-status')).toContainText('已載入',{timeout:45000});
  expect(failures).toEqual([]);
 });
+
+test('Canyon Road Lock: eight manual beats, four lanes, no runtime Blender dependency',async({page})=>{
+ test.setTimeout(90000);
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ let askedForBlender=false;page.on('request',r=>{if(r.url().includes('/__local_art/'))askedForBlender=true;});
+ await page.goto('/?showcase=canyon&road=lock&qa=1');
+ await expect(page.locator('#stage-seed')).toHaveValue('CUT-CANYON-ROADLOCK-01');
+ await page.waitForFunction(()=>(window as any).__drive?.streaming()?.ready,null,{timeout:45000});
+ await expect(page.locator('[data-si-category="road-lock"]')).toHaveCount(1);
+ await page.locator('[data-si-category="road-lock"]').click();
+ await expect(page.locator('[data-si-category="road-lock"]')).toContainText('(8)');
+ await expect(page.locator('#si-audit')).toContainText('Grand Canyon Road Lock');
+ await expect(page.locator('#si-audit')).toContainText('四線道');
+ const state=await page.evaluate(()=>({length:(window as any).__drive.brick().length,
+  art:(window as any).__drive.blenderArt().status}));
+ expect(state.length).toBe(5650);
+ expect(state.art).toBe('disabled');
+ expect(askedForBlender).toBe(false);
+ expect(errors).toEqual([]);
+});
