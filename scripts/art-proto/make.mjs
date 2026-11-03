@@ -1,5 +1,6 @@
 // Run once to create editable Blender assets from the actual road data.
 import {spawnSync} from 'node:child_process';
+import {statSync} from 'node:fs';
 import {resolve} from 'node:path';
 const run=(label,cmd,args)=>{
  console.log('\n['+label+'] '+cmd+' '+args.join(' ')+'\n');
@@ -14,8 +15,16 @@ const relative='art-prototype/output';
 run('exact road',process.execPath,['scripts/art-proto/export-road.mjs',
  '--output',resolve(relative,'road-reference.json')]);
 run('Blender artwork',process.env.BLENDER_BIN||'blender',[
- '--background','--python','scripts/art-proto/build_scene.py','--',
+ '--background','--factory-startup','--python-exit-code','1',
+ '--python','scripts/art-proto/build_scene.py','--',
  '--input',resolve(relative,'road-reference.json'),
  '--outdir',resolve(relative)]);
+for(const file of ['Grand_Canyon_Art_Prototype.blend','canyon_art_only.glb',
+ '01_Approach.png','02_Reveal.png','03_Exit.png']){
+ const output=resolve(relative,file);
+ const stat=statSync(output);
+ if(!stat.isFile()||stat.size===0)throw Error('Missing or empty blockout output: '+output);
+ console.log('Verified '+file+' ('+stat.size+' bytes)');
+}
 console.log('\nOpen art-prototype/output/Grand_Canyon_Art_Prototype.blend');
 console.log('Review 01_Approach.png, 02_Reveal.png and 03_Exit.png before game integration.');

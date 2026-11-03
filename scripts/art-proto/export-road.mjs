@@ -9,6 +9,8 @@ const arg=process.argv.indexOf('--output');
 const output=resolve(arg>=0&&process.argv[arg+1]?process.argv[arg+1]:'art-prototype/output/road-reference.json');
 const server=await createServer({
  configFile:false,server:{middlewareMode:true},appType:'custom',logLevel:'error',
+ // This SSR-only exporter does not need a background scan of browser entries.
+ optimizeDeps:{noDiscovery:true,include:[]},
 });
 const vec=p=>[Number(p.x.toFixed(5)),Number(p.y.toFixed(5)),Number(p.z.toFixed(5))];
 try{

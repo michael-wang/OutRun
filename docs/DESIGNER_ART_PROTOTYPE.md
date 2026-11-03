@@ -66,3 +66,35 @@ Keep a copy of your artistic edits.
 
 Maximum two major visual revision rounds before a go / stop decision.
 Do not add more procedural scenery systems as a workaround.
+
+## Local execution verification — 2026-11-03
+
+On the Windows development machine, Blender 4.5.13 LTS is available at:
+
+```powershell
+$env:BLENDER_BIN = 'C:\astra-dev\tools\blender-4.5.13-windows-x64\blender.exe'
+npm run art:blockout
+```
+
+The initial Blender run rendered the PNGs but failed before GLB export because
+the active object was assigned to the scene's view-layer collection. The script
+now uses the current view layer. The launcher starts with factory settings,
+propagates Python errors as a nonzero exit, and checks all five output files.
+The SSR road exporter also disables unnecessary browser dependency discovery.
+
+The corrected command completed with Blender EEVEE and produced the `.blend`,
+art-only GLB and three 1280 x 720 PNGs. Reopening the saved scene verified all
+three camera positions, directions and horizontal/vertical FOVs against the
+production chase-camera export (76 degrees / approximately 47.4484 degrees).
+The GLB contains five art meshes and excludes the reference road and cameras.
+`npm run build` and the CI active unit suite passed (76 files, 239 tests).
+Local logs are `art-prototype/output/blockout-verified.log` and
+`art-prototype/output/verification.log`; outputs and logs remain ignored by Git.
+
+Visual inspection of all three renders found that the river and near/far banks
+are not clearly readable in `02_Reveal`; the frames are dominated by the proxy
+road and shoulders. File generation and camera matching passed, but the visual
+acceptance gate has **not** passed. These are the initial authored blockout
+renders for Julia and the owner to review; no artistic revision round or game
+integration was performed. This is an offline Blender result, not browser or
+physical-device gameplay validation.

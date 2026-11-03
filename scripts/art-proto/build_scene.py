@@ -291,7 +291,7 @@ bpy.ops.object.select_all(action="DESELECT")
 for collection in (terrain_art, scenic_art):
     for obj in collection.objects:
         obj.select_set(True)
-scene.view_layers.objects.active = next(iter(terrain_art.objects))
+bpy.context.view_layer.objects.active = next(iter(terrain_art.objects))
 glb_file = os.path.abspath(os.path.join(opt.outdir, "canyon_art_only.glb"))
 bpy.ops.export_scene.gltf(
     filepath=glb_file, export_format="GLB",
