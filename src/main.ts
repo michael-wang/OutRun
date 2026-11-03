@@ -158,7 +158,7 @@ let pendingExhaustRpm=0;
 const rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.roadReady(d)??true);
 const cones=trip&&!roadLockMode&&trip.revision>=5?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,d=>world.streamer?.roadReady(d)??true):undefined;
 const triangles=trip&&!roadLockMode&&trip.revision>=6?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,d=>world.streamer?.roadReady(d)??true,world.breakdowns):undefined;
-const traffic=trip?new Traffic(world.scene,world.sample,world.halfAt,world.length,trip.seed,d=>world.streamer?.roadReady(d)??true,world.breakdowns,world.junction):undefined;
+const traffic=trip&&!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,trip.seed,d=>world.streamer?.roadReady(d)??true,world.breakdowns,world.junction):undefined;
 const contactRay=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),contactShadows=Array.from({length:4},()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(.34,16),new THREE.MeshBasicMaterial({color:0x172d28,transparent:true,opacity:.24,depthWrite:false}));m.visible=false;world.scene.add(m);return m;});
 function tireBottom(p:THREE.Group){const center=p.getWorldPosition(new THREE.Vector3()),axis=new THREE.Vector3(1,0,0).transformDirection(p.matrixWorld),vertical=new THREE.Vector3(0,1,0).addScaledVector(axis,-axis.y).normalize();return center.addScaledVector(vertical,-.46).addScaledVector(axis,-Math.sign(axis.y)*.135);}
 const wheelSurfaces=world.scene.children.filter(o=>o.name==='driving-surface'||o.name==='shoulder');let surfacesReady=false;

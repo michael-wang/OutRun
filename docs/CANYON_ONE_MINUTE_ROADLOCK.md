@@ -25,6 +25,8 @@ The two prior test URLs remain untouched.
 
 - **Four physical lanes** across all beats: 14m asphalt, two each way.
 - No simulated lane closures, no under-specified 2-lane narrowing.
+- This first road-only playtest disables ordinary traffic, breakdown vehicles,
+  cone rows and warning triangles. Reintroduce traffic after the road passes.
 - Mountain pavement is darker, softly worn, with simple white edge lines,
   a **double yellow center** and dashed separators within each direction.
   No red-and-white racetrack curbs or orange cone avenues.
