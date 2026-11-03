@@ -93,7 +93,7 @@ document.getElementById('app')!.prepend(startupArt);
 startupArt.hidden=!playerUi;
 document.getElementById('startup-fallback')!.hidden=true;
 const $ = (id:string) => document.getElementById(id)!;
-$('route-title').textContent=blenderMode?(roadLockMode?'Grand Canyon · Full Terrain':'Grand Canyon · Blender v2'):brick?.name??'Coast Road';
+$('route-title').textContent=blenderMode?(roadLockMode?'Grand Canyon · Final Attempt':'Grand Canyon · Blender v2'):brick?.name??'Coast Road';
 for(const [id,key] of Object.entries({drive:'P',resume:'P',restart:'R',sound:'M',settings:'C',fullscreen:'F'})){const node=$(id);node.classList.add('shortcut');node.dataset.shortcut=key;node.setAttribute('aria-keyshortcuts',key);}
 const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(pointer:coarse)').matches ? 1 : 1.75));
@@ -104,7 +104,7 @@ renderer.domElement.tabIndex=-1;renderer.domElement.setAttribute('aria-label','D
 const blenderAsset=blenderMode?await (async()=>{
  const status=document.createElement('p');status.id='blender-art-status';status.setAttribute('role','status');status.style.cssText='position:fixed;top:12px;left:12px;z-index:300;background:#17343d;color:white;padding:12px';status.textContent='Blender 峽谷美術載入中…';document.body.append(status);
  try{const asset=await (await import('./blender-canyon')).loadBlenderCanyon(roadLockMode);status.remove();return asset;}
- catch(error){status.textContent=roadLockMode?'Blender 完整地形載入失敗：請確認本機 roadlock/canyon_roadlock_art.glb。道路入口：?showcase=canyon&road=lock':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。原版入口：?showcase=canyon';throw error;}
+ catch(error){status.textContent=roadLockMode?'Blender 地形載入失敗：請確認本機 grand_canyon_final.glb。道路入口：?showcase=canyon&road=lock':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。原版入口：?showcase=canyon';throw error;}
 })():undefined;
 const world=createWorld(brick?{blenderArt:!!blenderAsset,bank:bankLab?banking:undefined,chunked:!!stage,streamStage:bankLab?pilot:stage&&(blenderMode||trip||import.meta.env.PROD||params.get('stream')!=='0')?stage:undefined,track:pilot?createPilotTrack(pilot,bankLab?banking:undefined):l2?createL2Track(l2):createBrickTrack(brick),theme:brick.sceneryAct,seed:brick.seed,roadWidth:brick.roadWidth,halfAt:d=>pilot?pilotSample(pilot,d).halfWidth:brickWidth(brick,d).halfWidth,weightsAt:pilot?(d=>pilotWeights(pilot,d)):undefined,narrowings:stage?stage.placements.filter(p=>p.channel==='width'&&p.parameters.to<p.parameters.from).map(p=>Math.max(BRICK_START+30,BRICK_START+p.startS-180)):brick.lanes.flatMap((k,i)=>i&&k[1]<brick.lanes[i-1][1]?[Math.max(BRICK_START+30,BRICK_START+brick.lanes[i-1][0]*brick.length/brick.nominalDuration-180)]:[]),course:pilot?pilotCourse(pilot):l2?l2Course(l2):brickCourse(brick),notice:brick.id==='BRK-03'?{distance:BRICK_START+brick.length*5/brick.nominalDuration,text:'LEFT BEND BEYOND'}:undefined}:{}); world.car.rotation.order="YXZ"; const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,CHASE_NEAR,matchMedia('(pointer:coarse)').matches?1400:2200);
 if(blenderAsset)world.scene.add(blenderAsset.root);

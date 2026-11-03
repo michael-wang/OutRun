@@ -1,5 +1,10 @@
 # Grand Canyon · Grand Curves v3 → Blender terrain pass
 
+**Current local handoff: Final Attempt, below. Visual acceptance FAILED.**
+The earlier terrain handoff is retained as history; the roadlock Blender URL
+now loads `grand_canyon_final.glb`. This last attempt starts from an empty
+Blender scene, superseding the earlier permission to reuse v2 rock meshes.
+
 ## Road is the source of truth
 
 Play at `?showcase=canyon&road=lock`. This **overwrites** the prior Road
@@ -175,3 +180,96 @@ thin safety rails and turn signs can also read as floating above the reshaped
 shoulders; their placement and collision were deliberately not changed.
 Driving clearance is not a claim that polished canyon art or the visual
 acceptance gate is complete.
+
+## Final Attempt — 2026-11-03 — visual gate failed
+
+This experiment produced a new editable scene and actual driving evidence,
+but did **not** achieve the requested believable Grand Canyon experience.
+No previous terrain geometry or GLB was loaded as its base. Fresh
+`npm run art:roadlock` data from dev `a37f238` was the only geometric input.
+The original four-lane road, banking, handling and chase camera remain intact.
+
+### Local artifacts and inspection entry
+
+All paths below are relative to ignored `art-prototype/output/`:
+
+- `Grand_Canyon_Final_Attempt.blend`: editable newly constructed scene.
+- `grand_canyon_final.glb`: art only, 1,892,404 bytes.
+- `final-attempt/H{1,2,3}_{Approach,Reveal,Exit}.png`: nine 1920×1080
+  Cycles renders using the exported original camera positions, targets and FOV.
+- `final-attempt/drive-H{1,2,3}_{Approach,Reveal,Exit}.png`: actual gameplay.
+- `final-attempt/Grand_Canyon_Final_Drive.webm`: continuous normal-chase drive.
+- `final-attempt/review.html`: local Blender/game image and video gallery.
+- `final-attempt/structure-check.json`, `driving-report.json`, `summary.json`:
+  measurements and limitations, not aesthetic approval.
+
+Run `npm run dev`, then open
+`http://127.0.0.1:5173/?showcase=canyon&road=lock&art=blender`.
+The loader uses original world coordinates, identity scale/rotation/translation,
+and the existing scenery suppression. The GLB remains local and outside `dist`.
+The original `?showcase=canyon&road=lock` comparison is unchanged.
+
+Edit collections `10_FINAL_SHARED_TERRAIN`, `20_FINAL_ESCARPMENTS`, and
+`30_FINAL_ROAD_SUPPORT`. The `00_LOCKED_REFERENCE_NO_EXPORT` road and
+`90_ORIGINAL_CHASE_CAMERAS` are reference only. The .blend embeds the source
+JSON and its SHA-256. The local one-off mesh-authoring and clearance scripts
+are archived alongside the outputs; no runtime terrain system was added.
+
+Export the edited scene without rebuilding it:
+
+```powershell
+$env:BLENDER_BIN = 'C:\astra-dev\tools\blender-4.5.13-windows-x64\blender.exe'
+& $env:BLENDER_BIN --background art-prototype/output/Grand_Canyon_Final_Attempt.blend --python-exit-code 1 --python scripts/art-proto/export-final-scene.py
+```
+
+Append `-- --render` to refresh the nine static renders.
+
+### Structural changes and remaining failures
+
+The fresh mesh uses one shared constrained terrain surface around all road
+levels, five connected escarpment masses, talus feet, and a low dry-wash/water
+corridor. This avoids independently extruding overlapping hills along each
+switchback. At the two XZ road crossings, the upper section uses a concrete
+viaduct with banked crossheads and piers instead of a solid rock roof over the
+lower road. Its approach was moved back to reduce the first hero's blocking
+support mound. Abutment overlap fixes two measured support gaps (up to 3.67m).
+
+Final sampled clearance: 1,131 road frames × seven lateral positions = 7,917
+upward rays from 0.05m to 80m above pavement, zero art hits. Downward support
+rays across five pavement offsets found no gaps above 1m; maximum was 0.201m.
+This is a sampled check, not a watertight collision proof or a structural
+engineering assessment. The bridge structure exists only as visual art.
+
+Gate A remains failed. H1 is dominated by the upper viaduct and its support
+forms rather than a readable deep valley. H2's main view is mostly banked
+road and sky. H3 shows layered opposing rims, but they read as faceted walls,
+not a convincing panoramic canyon. The other slopes are continuous but too
+smooth and artificial. Large landform transitions and some shoulder shapes
+remain angular. Existing signs and thin safety rails still look under-supported.
+The river is not reliably visible. Blender lighting, shadowing and far clip
+also differ from the game's fog/lighting, so game captures are authoritative.
+The terminal view points toward an oversized distant cliff and reads like a
+dead end; the finish composition is also failed, even though the playable
+route reaches its existing finish without entering that cliff.
+
+The current mesh-authoring approach did not deliver sufficient natural
+sculpting or composition control under the fixed camera constraints. This is
+an execution/artist-capability limit, not evidence that the road must change.
+Integration and driving proceeded solely to deliver an inspectable failed
+candidate. No extra decoration or increasing rule complexity was used to
+claim an artistic pass. Further art iterations stop here per the brief.
+
+Local `npm run build` passed. No CI or additional test suite was run. The full
+drive uses automated steering/throttle/braking through the existing input
+hook and real Chrome/WebGL/RAF physics, beginning at rest at 350m and ending
+at 6,000m, with no intermediate teleports or camera changes. These are desktop
+results; Pixel 8 performance and human handling approval were not measured.
+
+The final recording is 89.876 seconds at 1920×1080, canvas-captured at 30fps.
+GLB fetch/parse measured 10.9ms, startup ready 1.061s, with 56 art meshes and
+69,602 triangles. Warm-run median / 5th-percentile FPS were 60.0 / 59.99
+(first ten 200ms samples excluded). Across 5,395 driving frames: zero missing
+road frames, unsafe streaming frames, stalls or browser errors; maximum
+lateral deviation 0.489m. The video was decoded at seven points including
+start and finish; all nine static/game images were inspected. This verifies
+playability of the recorded run, not the failed scenic-quality requirements.
