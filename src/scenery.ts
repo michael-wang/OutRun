@@ -10,7 +10,7 @@ import type {createTrack} from './track';
 import {canyonSceneEnvelope,canyonGroundY,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonPropSlots,type CanyonPropSlot} from './canyon-language';
 import type {DesignedProp,DesignerCut} from './designer-canyon';
-import {sceneryGroundMixAt,sceneryGroundY,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
+import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 /** No freestanding city blocks over the water cut-out and unsupported bridge approaches.
@@ -77,7 +77,7 @@ export function planJourneyLandmarks(length:number,weightsAt:(d:number)=>readonl
  return sites.sort((a,b)=>a.distance-b.distance);
 }
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut;coastUltra?:boolean}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:!range.openRoad&&i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -111,6 +111,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const physical=(o:number)=>roadObjectOffset(o,half,widths);
    base.y=sceneryGroundY(offset,roadY,p.right.y,physical,weightsAt(d)[1],mix);
    const projected=roadY+p.right.y*physical(offset);
+   if(range.coastUltra)base.y=coastUltraGroundY(offset,roadY,p.right.y,physical);
    roadsideDrop=Math.max(0,projected-base.y);
   }
   if(range.canyonPrototype){
@@ -334,6 +335,12 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  // Overlap prop families deterministically at each boundary; nothing spawns per frame.
  for(let i=Math.max(0,Math.ceil((range.start-16)/30)),d=16+i*30;d<Math.min(length,range.end);d+=30,i++){
   if(range.designerCut)continue;
+  if(range.coastUltra){
+   // Let the water be the hero. Just a sparse line of palms and stones inland.
+   if(i%3===0){anchor(d,27+random(i)*10);if(clear(5))palm(i);}
+   if(i%10===0){anchor(d,84+random(i+51)*25);if(clear(28))part(boulder,'#9eaa91',0,4,0,20,12,19);}
+   continue;
+  }
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;
   if(canyonR21(d)){
    // Sparse, irregular talus and shrubs. Neither city roadside rows nor

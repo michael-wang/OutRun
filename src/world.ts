@@ -16,6 +16,7 @@ import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
 import type {PilotCandidate} from './pilot-composer';
+import type {TripCandidate} from './trip';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
@@ -34,6 +35,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const junction=options.streamStage?selectRoadInterchange(options.streamStage,bridge):undefined;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
+  const coastUltra=(options.streamStage as TripCandidate|undefined)?.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false;
   const asphalt=mat(mountainRoad?'#56534d':'#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
   asphalt.vertexColors=mountainRoad;
   function ribbon(offsetA:number|((d:number)=>number),offsetB:number|((d:number)=>number),liftA:number,liftB:number,material:THREE.Material,start=0,end=length,step=2.5) {
@@ -183,7 +185,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     for(let j=0;j<4;j++){const radius=ridgeRadius+j*230;const height=j===0?-7:j===1?crest:j===2?crest*.65:-10;ridge.push(ridgeCenter.x+Math.cos(angle)*radius,height,ridgeCenter.z+Math.sin(angle)*radius);ridgeColor.set(j===1?'#81a8ac':j===0?'#9fc4c6':'#92b7bb');ridgeColors.push(ridgeColor.r,ridgeColor.g,ridgeColor.b);}
     if(i<192)for(let j=0;j<3;j++){const a=i*4+j;ridgeIndex.push(a,a+1,a+4,a+1,a+5,a+4);}}
   const ridgeGeo=new THREE.BufferGeometry();ridgeGeo.setAttribute('position',new THREE.Float32BufferAttribute(ridge,3));ridgeGeo.setAttribute('color',new THREE.Float32BufferAttribute(ridgeColors,3));ridgeGeo.setIndex(ridgeIndex);ridgeGeo.computeVertexNormals();
-  const distantRidge=new THREE.Mesh(ridgeGeo,new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide}));distantRidge.name='distant-ridge';scene.add(distantRidge);
+  const distantRidge=new THREE.Mesh(ridgeGeo,new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide}));distantRidge.name='distant-ridge';distantRidge.visible=!coastUltra;scene.add(distantRidge);
   const clouds=[];for(let i=0;i<24;i++){const angle=i*2.4;for(let j=0;j<4;j++)clouds.push({p:new THREE.Vector3(400+Math.cos(angle)*1700+j*50,280+rand(i)*170,500+Math.sin(angle)*1700),s:new THREE.Vector3(70,18+rand(j+i)*15,35),r:new THREE.Euler()});}
   // These old low-altitude cloud blobs intersect the new high plateau vistas.
   if(!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);

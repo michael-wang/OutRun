@@ -274,10 +274,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   const offsets=side<0?[-7.7,-7.02]:[7.02,7.7];
   append(color?'edge-red':'edge-white',offsets[0],offsets[1],-.065,-.065,Math.max(start,d),Math.min(end,d+3,length),1.5);
  }
+ if(!coastUltra){
  const positions:number[]=[],indices:number[]=[],n=Math.ceil((end-start)/2.5);
  for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d),shoulders?.(d)));positions.push(v.x,v.y-.1,v.z,v.x,onBridge(d,bridge)?v.y-1.2:Math.min(v.y-4,-5),v.z);}}
  for(let i=0;i<n;i++)for(let side=0;side<2;side++){const a=i*4+side*2,b=a+4;indices.push(a,a+1,b,a+1,b+1,b);}
- if(!coastUltra)out.push({kind:'support',positions:new Float32Array(positions),uvs:new Float32Array(),colors:new Float32Array(),indices:new Uint32Array(indices)});
+ out.push({kind:'support',positions:new Float32Array(positions),uvs:new Float32Array(),colors:new Float32Array(),indices:new Uint32Array(indices)});
+ }
  // The fixed-world-Y river follows the canyon floor but never follows
  // the road's vertical grade. It joins exactly at absolute chunk endpoints.
  if(active&&grandCanyon){
