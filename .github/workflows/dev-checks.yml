@@ -1,8 +1,7 @@
 name: Dev build and unit checks
 
+# Fast driving-only iteration. Checks remain available manually.
 on:
-  push:
-    branches: [dev]
   workflow_dispatch:
 
 permissions:

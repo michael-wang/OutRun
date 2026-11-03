@@ -224,13 +224,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
  if(blenderPaint)for(const [a,b] of [[-.24,-.14],[.14,.24]])append('center-line',a,b,.03,.03,start,end,2.5);
- if(mountainPaint)for(const [a,b] of [[-.23,-.13],[.13,.23]])append('center-line',a,b,.035,.035,start,end,2.5);
+ // One-way four-lane road: no double-yellow centerline.
  for(let d=Math.floor(start/6)*6;!blenderPaint&&d<end;d+=6){
   if(d<0)continue;
   if(mountainPaint){
-   // Four physical lanes: two each direction, solid double yellow center,
-   // simple dashed same-direction lane dividers, no racetrack chevrons.
-   for(const lane of [-LANE_WIDTH,LANE_WIDTH]){
+   // One-way four-lane course: all three separators are dashed white.
+   for(const lane of [-LANE_WIDTH,0,LANE_WIDTH]){
     const raw=lane*7/halfAt(d);
     append('line',raw-.14,raw+.14,.03,.03,Math.max(start,d),
      Math.min(end,d+3,length),1.5);
