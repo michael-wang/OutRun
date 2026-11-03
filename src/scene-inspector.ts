@@ -188,7 +188,7 @@ export class SceneInspector {
   }else if(site?.kind==='road-lock'&&site.roadLockMoment){
    const p=site.roadLockMoment;
    this.audit.textContent='Grand Canyon Road Lock · '+p.name+'。\\n'+
-    '相對里程 '+p.startS+'–'+p.endS+'m · '+(p.role==='hero'?'英雄段':'連接路段')+
+    '相對里程 '+p.startS+'–'+p.endS+'m · '+(p.role==='hero'?'英雄段':'操控段')+
     '。\\n單向四線道；三個必煞大型髮夾彎最高約 36° banking；高差約 310m。'+
     '\\n地形僅為粗模佔位，這次優先測試煞車、轉向、坡度及高速節奏。';
   }else if(site?.kind==='canyon-prototype'&&site.canyonPrototype){
