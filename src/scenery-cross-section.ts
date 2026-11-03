@@ -98,6 +98,23 @@ export function sceneryGroundMixAt(sections:readonly ScenerySection[],distance:n
  * raw = legacy road-relative offset; physical converts it through the current
  * variable-width shoulders. The original coastal/canyon height is retained
  * when both mix values are zero. The inner road/shoulder remains untouched. */
+/** Coastal experiment: no intertidal sand table poking through FFT troughs.
+ * The sea drops away just a few metres beyond the asphalt, while the inland
+ * side gently rises. Shared by both visual road chunks and prop anchors. */
+export function coastUltraGroundY(
+ raw:number,roadY:number,rightY:number,physical:(offset:number)=>number,
+):number{
+ const projected=(o:number)=>roadY+rightY*physical(o);
+ if(raw<=-17)return -11;
+ if(raw<-10){
+  const t=(-raw-10)/7;
+  return (projected(-10)-.25)*(1-t)+(-11)*t;
+ }
+ if(raw<-7)return projected(raw)-.1-(Math.abs(raw)-7)*.05;
+ if(raw<=13)return projected(raw)-.1;
+ return projected(raw)-.1+(raw-13)*.038;
+}
+
 export function sceneryGroundY(
  raw:number,roadY:number,rightY:number,physical:(offset:number)=>number,
  canyonWeight:number,mix:SceneryGroundMix,

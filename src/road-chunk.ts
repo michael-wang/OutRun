@@ -6,7 +6,7 @@ import {ACTS} from './acts';
 import {roadOffset,LANE_WIDTH,TRIP_BARRIER_INNER_M,TRIP_BARRIER_OUTER_M,tripBarrierRawOffset,type Shoulders} from './road-profile';
 import {interchangeCenterOffset,interchangeLaneBoundaries,interchangeRailOpening,interchangeRampAt,interchangeRampSpan,interchangeRampElevation,interchangeWallSpan,interchangeWallTop,RAMP_RETAINING_WALL_OFFSET,type RoadInterchange} from './road-interchange';
 import type {createTrack} from './track';
-import {sceneryGroundMixAt,sceneryGroundY,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
+import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 import {canyonGroundY,canyonRiverRaw,canyonSceneEnvelope,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonStratumColor} from './canyon-language';
 
@@ -17,6 +17,7 @@ type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
 export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false,mountainPaint=false):RoadMeshData[]{
  const out:RoadMeshData[]=[];
+ const coastUltra=!!scenerySections?.some(s=>s.id==='coast-ultra-left-sea');
  // S2B experiment: repeated absolute-distance queries across ribbons and markings.
  // Reuse exact values within this chunk only; no interpolation or global retention.
  // Passing false keeps the uncached lookup path for byte-equivalence tests.
@@ -53,6 +54,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   const projected=pose.position.y+pose.right.y*physical(raw);
   const legacy=raw<=-27?THREE.MathUtils.lerp(h<-10?-4.88:-5.05,
    projected-2-Math.abs(raw)*.015,cachedWeights(d)[1]):projected+h;
+  if(coastUltra&&['sand','grass','surf'].includes(kind))return coastUltraGroundY(raw,pose.position.y,pose.right.y,physical);
   if(!scenerySections||!['sand','grass','surf'].includes(kind))return legacy;
   const mix=mixedAt(d),ground=sceneryGroundY(raw,pose.position.y,pose.right.y,
    physical,cachedWeights(d)[1],mix);
@@ -108,16 +110,25 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  const cutFrom=grandCanyon?Math.max(start,grandCanyon.start):end;
  const cutTo=grandCanyon?Math.min(end,grandCanyon.end):start;
  const active=!!grandCanyon&&cutTo>cutFrom;
- if(scenerySections)append('sand',d=>-sceneryFarReach(sampled(d).curvature),-160,-12,-9,start,end,10,undefined,true);
- if(active){
-  if(start<cutFrom)append('sand',-160,-27,-9,-9,start,cutFrom,10);
-  const strips=[-160,...GRAND_CANYON_VALLEY_STRIPS.filter(x=>x>-160&&x<-27),-27];
-  for(let i=1;i<strips.length;i++)append('sand',strips[i-1],strips[i],-9,-9,cutFrom,cutTo,15);
-  if(cutTo<end)append('sand',-160,-27,-9,-9,cutTo,end,10);
- }else append('sand',-160,-27,-9,-9,start,end,10);
- append('sand',-27,-13,-9,-.1,start,end,10);
- if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}
- else append('sand',-13,13,-.1,-.1,start,end,2.5);
+ if(coastUltra){
+  // No broad beach polygon: it can break through FFT wave troughs. A narrow
+  // road edge drops to a submerged -11m seabed; the rest is pure ocean.
+  append('sand',-17,-10,-9,-.25,start,end,2.5);
+  append('sand',-10,-7,-.25,-.1,start,end,2.5);
+  append('sand',-7,7,-.1,-.1,start,end,2.5);
+  append('sand',7,13,-.1,-.1,start,end,2.5);
+ }else{
+  if(scenerySections)append('sand',d=>-sceneryFarReach(sampled(d).curvature),-160,-12,-9,start,end,10,undefined,true);
+  if(active){
+   if(start<cutFrom)append('sand',-160,-27,-9,-9,start,cutFrom,10);
+   const strips=[-160,...GRAND_CANYON_VALLEY_STRIPS.filter(x=>x>-160&&x<-27),-27];
+   for(let i=1;i<strips.length;i++)append('sand',strips[i-1],strips[i],-9,-9,cutFrom,cutTo,15);
+   if(cutTo<end)append('sand',-160,-27,-9,-9,cutTo,end,10);
+  }else append('sand',-160,-27,-9,-9,start,end,10);
+  append('sand',-27,-13,-9,-.1,start,end,10);
+  if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}
+  else append('sand',-13,13,-.1,-.1,start,end,2.5);
+ }
  if(active){
   for(const [a,b,ha,hb] of [[13,75,-.12,-3],[75,160,-3,-14]]){
    if(start<cutFrom)append('grass',a,b,ha,hb,start,cutFrom,10);
@@ -184,6 +195,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   // Placement is measured in physical meters beyond asphalt, not shoulder-scaled
   // legacy offsets. Bridges, the authored canyon and rock walls remain special.
   for(const side of [-1,1] as const){
+   if(coastUltra&&side===-1)continue; // unobstructed ocean-side visibility
    let ranges:number[][]=canyon?[[start,Math.min(end,CANYON_BEND.start)],[Math.max(start,CANYON_BEND.end),end]]:[[start,end]];
    for(const rock of rocks.filter(r=>r.side===side))ranges=ranges.flatMap(([a,b])=>b<=rock.start||a>=rock.end?[[a,b]]:[[a,Math.min(b,rock.start)],[Math.max(a,rock.end),b]].filter(([x,y])=>y>x));
    const inner=(d:number)=>tripBarrierRawOffset(side,TRIP_BARRIER_INNER_M,cachedShoulders(d)!);
@@ -209,7 +221,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  }
  if(canyon){const a=Math.max(start,CANYON_BEND.start),b=Math.min(end,CANYON_BEND.end);append('rail',CANYON_BEND.railOffset,CANYON_BEND.railOffset,.6,1.05,a,b,2.5);append('rail',CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness,CANYON_BEND.railOffset+CANYON_BEND.railHalfThickness,1.05,1.05,a,b,2.5);}
  // The Designer's Cut has no ocean shoreline — only its actual river.
- if(!grandCanyon?.authored&&!mountainPaint){
+ if(!coastUltra&&!grandCanyon?.authored&&!mountainPaint){
   if(active){
    if(start<cutFrom)append('surf',-29,-27,-10.9,-10.9,start,cutFrom,10);
    if(cutTo<end)append('surf',-29,-27,-10.9,-10.9,cutTo,end,10);
@@ -265,7 +277,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  const positions:number[]=[],indices:number[]=[],n=Math.ceil((end-start)/2.5);
  for(let i=0;i<=n;i++){const d=start+(end-start)*i/n,p=sample(d);for(const side of [-1,1]){const v=p.position.clone().addScaledVector(p.right,roadOffset(side*13,halfAt(d),shoulders?.(d)));positions.push(v.x,v.y-.1,v.z,v.x,onBridge(d,bridge)?v.y-1.2:Math.min(v.y-4,-5),v.z);}}
  for(let i=0;i<n;i++)for(let side=0;side<2;side++){const a=i*4+side*2,b=a+4;indices.push(a,a+1,b,a+1,b+1,b);}
- out.push({kind:'support',positions:new Float32Array(positions),uvs:new Float32Array(),colors:new Float32Array(),indices:new Uint32Array(indices)});
+ if(!coastUltra)out.push({kind:'support',positions:new Float32Array(positions),uvs:new Float32Array(),colors:new Float32Array(),indices:new Uint32Array(indices)});
  // The fixed-world-Y river follows the canyon floor but never follows
  // the road's vertical grade. It joins exactly at absolute chunk endpoints.
  if(active&&grandCanyon){
