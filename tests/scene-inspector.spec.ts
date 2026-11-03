@@ -287,6 +287,7 @@ test('Canyon Road Lock: eight manual beats, four lanes, no runtime Blender depen
  await expect(page.locator('#stage-seed')).toHaveValue('CUT-CANYON-ROADLOCK-01');
  await page.waitForFunction(()=>(window as any).__drive?.streaming()?.ready,null,{timeout:45000});
  await expect(page.locator('[data-si-category="road-lock"]')).toHaveCount(1);
+ await page.locator('#scene-inspector-launcher').click();
  await page.locator('[data-si-category="road-lock"]').click();
  await expect(page.locator('[data-si-category="road-lock"]')).toContainText('(8)');
  await expect(page.locator('#si-audit')).toContainText('Grand Canyon Road Lock');
