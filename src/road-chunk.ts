@@ -1,3 +1,4 @@
+import {coastBeachX,coastProfileX} from './coast-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
@@ -54,7 +55,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   const projected=pose.position.y+pose.right.y*physical(raw);
   const legacy=raw<=-27?THREE.MathUtils.lerp(h<-10?-4.88:-5.05,
    projected-2-Math.abs(raw)*.015,cachedWeights(d)[1]):projected+h;
-  if(coastUltra&&['sand','grass','surf'].includes(kind))return coastUltraGroundY(raw,pose.position.y,pose.right.y,physical);
+  if(coastUltra&&['sand','grass','surf'].includes(kind))return coastUltraGroundY(raw,pose.position.y,pose.right.y,physical,d);
   if(!scenerySections||!['sand','grass','surf'].includes(kind))return legacy;
   const mix=mixedAt(d),ground=sceneryGroundY(raw,pose.position.y,pose.right.y,
    physical,cachedWeights(d)[1],mix);
@@ -82,7 +83,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));
     if(coastUltra&&kind==='sand'){
-     const x=roadOffset(o,cachedWidth(d),cachedShoulders(d));
+     const x=coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d);
      color.set('#dfc894').lerp(new THREE.Color('#a58e68'),Math.max(0,Math.min(1,(-x-15)/11)));
     }
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
@@ -116,7 +117,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  const active=!!grandCanyon&&cutTo>cutFrom;
  if(coastUltra){
   // Physical beach stations survive the variable-width shoulder conversion.
-  const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-metres-cachedWidth(d),cachedShoulders(d)!);
+  const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-coastBeachX(metres,d)-cachedWidth(d),cachedShoulders(d)!);
   for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11],[-11,-7]])
    append('sand',rawAt(a),rawAt(b),0,0,start,end,2.5);
   append('sand',-7,7,-.1,-.1,start,end,2.5);

@@ -1,3 +1,4 @@
+import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
 import {canyonBend,canyonBlend} from './canyon-identity';
@@ -10,7 +11,7 @@ import type {createTrack} from './track';
 import {canyonSceneEnvelope,canyonGroundY,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonPropSlots,type CanyonPropSlot} from './canyon-language';
 import type {DesignedProp,DesignerCut} from './designer-canyon';
-import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
+import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,coastBeachHeight,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 /** No freestanding city blocks over the water cut-out and unsupported bridge approaches.
@@ -111,7 +112,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const physical=(o:number)=>roadObjectOffset(o,half,widths);
    base.y=sceneryGroundY(offset,roadY,p.right.y,physical,weightsAt(d)[1],mix);
    const projected=roadY+p.right.y*physical(offset);
-   if(range.coastUltra)base.y=coastUltraGroundY(offset,roadY,p.right.y,physical);
+   if(range.coastUltra)base.y=coastUltraGroundY(offset,roadY,p.right.y,physical,d);
    roadsideDrop=Math.max(0,projected-base.y);
   }
   if(range.canyonPrototype){
@@ -166,6 +167,99 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   const key=g.uuid+color+':'+chunk;let b=buckets.get(key);if(!b){b={geometry:g,material,matrices:[]};buckets.set(key,b);}b.matrices.push(dummy.matrix.clone());
  }
  function palm(seed:number){const h=7+random(seed)*4;part(cylinder,'#aa8960',0,h/2,0,.23,h,.23,0,0,-.035);for(let j=0;j<7;j++){const a=j*Math.PI*2/7;part(round,'#287b52',Math.sin(a)*1.7,h,Math.cos(a)*1.7,.7,.24,3.3,.15,a,0);}}
+ // Coast-only props still use the existing Worker/instance buckets and clearance.
+ function beachAnchor(d:number,x:number){
+  anchor(d,x);const p=sample(d);base.copy(p.position).addScaledVector(p.right,x);
+  base.y=coastBeachHeight(x,p.position.y,p.right.y,d);
+ }
+ function coastTree(key:number){
+  yaw+=random(key+81)*6.28;
+  const h=4+random(key+12)*5,type=Math.floor(random(key+19)*3);
+  if(type===0){
+   const lean=.4+random(key)*.8;
+   part(cylinder,'#aa8960',lean*.3,h*.3,0,.22,h*.6,.22,0,0,-.1);
+   part(cylinder,'#aa8960',lean*.7,h*.78,0,.16,h*.4,.16,0,0,-.14);
+   for(let j=0;j<7;j++){
+    const a=j*6.283/7+random(key)*2;
+    part(round,'#287b52',lean+Math.sin(a)*1.25,h,Math.cos(a)*1.25,.38,.15,1.8,-.22,a);
+    part(round,'#287b52',lean+Math.sin(a)*2.6,h-.65,Math.cos(a)*2.6,.26,.11,1.4,.45,a);
+   }
+   return;
+  }
+  part(cylinder,'#aa8960',0,h*.4,0,.23,h*.8,.23,0,0,.07);
+  if(type===1){ // Windswept broadleaf, with an off-centre, uneven crown.
+   for(let j=0;j<3;j++)part(round,'#527849',(j-1)*1.5,h*.78+random(key+j)*1.2,random(key+j+7)-.5,2.3,1.4,2.1);
+  }else{ // Coastal pine silhouette rather than another round crown.
+   for(let j=0;j<3;j++)part(cone,'#3f6854',.2*j,h*.55+j*1.35,0,2.6-j*.55,3.8-j*.6,2.3-j*.5);
+  }
+ }
+ function beachPerson(key:number,playing=false){
+  const shirt=['#e76f51','#36a8b1','#edc969'][Math.abs(key)%3];
+  part(round,'#bd8d68',0,1.58,0,.21,.25,.21);
+  part(boxes,shirt,0,1.05,0,.48,.65,.28);
+  for(const side of [-1,1]){
+   part(cylinder,'#bd8d68',side*.13,.38,0,.085,.72,.085,0,0,side*.1);
+   part(cylinder,'#bd8d68',side*.36,playing?1.42:1.05,0,.07,.6,.07,0,0,side*(playing?.85:.22));
+  }
+ }
+ if(range.coastUltra){
+  // Alternating fabric panels make umbrellas and balls readable at driving speed.
+  const canopy=new THREE.ConeGeometry(1,.38,12,1,true).toNonIndexed();
+  const ball=new THREE.SphereGeometry(1,12,8).toNonIndexed();
+  for(const g of [canopy,ball]){
+   const p=g.getAttribute('position'),c:number[]=[];
+   for(let i=0;i<p.count;i++){
+    const face=Math.floor(i/3)*3,angle=Math.atan2(p.getZ(face),p.getX(face));
+    const sector=Math.floor((angle+Math.PI)*6/Math.PI);
+    const color=new THREE.Color(['#fff3d5','#ef7956','#fff3d5','#3caeb5'][sector%4]);c.push(color.r,color.g,color.b);
+   }
+   g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
+  }
+  const inChunk=(d:number)=>d>=range.start&&d<Math.min(length,range.end);
+  for(const bay of COAST_BEACHES){
+   // Loose pockets, never a repeating row along the whole highway.
+   for(let j=0;j<9;j++){
+    const d=bay.distance-115+j*27+rand(j+bay.distance)*12;
+    if(!inChunk(d))continue;
+    const x=-19-rand(j*11+bay.distance)*15;
+    beachAnchor(d,x);if(!clear(4)||base.y<-4.05)continue;
+    yaw+=rand(d)*1.8;
+    part(cylinder,'#aa8960',0,1.6,0,.055,3.2,.055);
+    part(canopy,'#fffdf4',0,3.2,0,2.45,2.45,2.45);
+    for(const side of [-1,1]){
+     const x=side*1.2;
+     part(boxes,'#fff0d3',x,.36,.5,.7,.12,1.5);
+     part(boxes,'#36a8b1',x,.8,-.45,.7,.12,1.05,.9);
+     for(const z of [-.05,1])part(boxes,'#aa8960',x,.18,z,.65,.36,.08);
+    }
+    part(boxes,'#e76f51',2.8,.05,1,1.2,.05,2.1);
+    if(j%2===0)part(ball,'#fffdf4',2.9,.4,-1.5,.4,.4,.4);
+    beachAnchor(d+5,x-1);if(base.y>-4.2&&clear(2)){yaw+=rand(j)*5;beachPerson(j,j%3===0);}
+    if(j%3===0){beachAnchor(d+8,x-3);if(base.y>-4.2&&clear(2))beachPerson(j+1,true);}
+   }
+   const d=bay.distance-55;
+   if(inChunk(d)){
+    beachAnchor(d,-16.8);if(clear(4)){
+     part(boxes,'#fff0d3',0,.6,0,3.7,1.2,2.6);
+     part(boxes,'#36a8b1',0,1.25,-1.4,3.9,.18,.8);
+     for(const x of [-1.65,1.65])for(const z of [-1.3,1.3])part(cylinder,'#aa8960',x,2.1,z,.06,2.2,.06);
+     for(let j=0;j<6;j++)part(boxes,j%2?'#fff0d3':'#e76f51',-1.65+j*.66,3.25,0,.66,.14,3.8,.08);
+     part(boxes,'#edc969',0,2.75,1.35,2.3,.45,.15);
+     part(round,'#bd8d68',0,1.9,0,.22,.25,.22);
+     part(boxes,'#e76f51',0,1.5,0,.5,.5,.3);
+    }
+   }
+  }
+  for(const site of COAST_ROCKS){
+   if(!inChunk(site.d))continue;
+   beachAnchor(site.d,coastRockX(site));
+   if(clear(site.r+2)){
+    // Buried below the sand; the water mask uses the same footprint.
+    part(boulder,'#8d9185',0,site.r*.34,0,site.r,site.r*.94,site.r*.85,.13,rand(site.d)*6,.1);
+    part(boulder,'#a5a48f',site.r*.5,0,site.r*.65,site.r*.48,site.r*.44,site.r*.42);
+   }
+  }
+ }
  function dryTree(seed:number){const h=4+random(seed)*2;part(cylinder,'#82634a',0,h/2,0,.22,h,.22);for(const side of [-1,1]){part(cylinder,'#82634a',side*.75,h*.75,0,.13,h*.65,.13,0,0,-side*.55);part(round,'#8d9254',side*1.4,h,0,1.2,.6,1);}}
  function mesa(seed:number,large=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=(large?32:18)+random(seed)*15,h=(large?65:30)+random(seed+1)*30;part(mesaGeometry[Math.abs(seed)%3],'#ffffff',0,0,0,w,h,w*.8,0,random(seed)*6);}
  function lighthouse(seed:number,d:number){
@@ -336,9 +430,13 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  for(let i=Math.max(0,Math.ceil((range.start-16)/30)),d=16+i*30;d<Math.min(length,range.end);d+=30,i++){
   if(range.designerCut)continue;
   if(range.coastUltra){
-   // Let the water be the hero. Just a sparse line of palms and stones inland.
-   if(i%3===0){anchor(d,27+random(i)*10);if(clear(5))palm(i);}
-   if(i%10===0){anchor(d,84+random(i+51)*25);if(clear(28))part(boulder,'#9eaa91',0,4,0,20,12,19);}
+   // Sparse irregular groves: mixed species, heights, depth and deliberate gaps.
+   if(random(i+73)>.23)for(let j=0;j<1+Math.floor(random(i+18)*3);j++){
+    const at=d+(random(i*9+j)-.5)*21;
+    if(at<range.start||at>=range.end)continue;
+    beachAnchor(at,21+random(i*13+j)*43);if(clear(5))coastTree(i*7+j);
+   }
+   if(i%9===0){beachAnchor(d,82+random(i+51)*27);if(clear(24))part(boulder,'#9eaa91',0,3,0,15,9,13);}
    continue;
   }
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;

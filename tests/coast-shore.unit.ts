@@ -1,3 +1,4 @@
+import {coastBeachX} from '../src/coast-layout';
 import {afterAll,describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
@@ -21,11 +22,12 @@ describe('coastal road stays above a real beach',()=>{
   for(let d=350;d<=3700;d+=10){
    const p=track.sample(d);
    // Dry shoulder stays >1m above mean sea even on the banked bends;
-   // the local swash is bounded to 0.18m and clipped at the wet-sand line.
-   expect(coastBeachHeight(-11,p.position.y,p.right.y)).toBeGreaterThan(COAST_SEA_LEVEL+1);
-   expect(coastBeachHeight(COAST_SHORE_OFFSET,p.position.y,p.right.y)).toBe(COAST_SEA_LEVEL);
-   for(const x of [-100,-46,-26,-18,-11,-7,13])
-    expect(Math.abs(coastBeachHeight(x-.0001,p.position.y,p.right.y)-coastBeachHeight(x+.0001,p.position.y,p.right.y))).toBeLessThan(.001);
+   // nearshore waves stay below 0.42m and are clipped at the wet-sand line.
+   expect(coastBeachHeight(-11,p.position.y,p.right.y,d)).toBeGreaterThan(COAST_SEA_LEVEL+1);
+   expect(coastBeachHeight(coastBeachX(COAST_SHORE_OFFSET,d),p.position.y,p.right.y,d)).toBeCloseTo(COAST_SEA_LEVEL,8);
+   for(const station of [-100,-46,-26,-18,-11,-7,13]){const x=coastBeachX(station,d);
+    expect(Math.abs(coastBeachHeight(x-.0001,p.position.y,p.right.y,d)-coastBeachHeight(x+.0001,p.position.y,p.right.y,d))).toBeLessThan(.001);
+   }
   }
  });
  it('excludes every lane and the inland terrain from water on bends as well as straights',()=>{
@@ -35,7 +37,7 @@ describe('coastal road stays above a real beach',()=>{
     const v=p.position.clone().addScaledVector(p.right,x);
     expect(field(v.x,v.z)).toBeLessThan(-15);
    }
-   const sea=p.position.clone().addScaledVector(p.right,-40);
+   const sea=p.position.clone().addScaledVector(p.right,coastBeachX(-45,d));
    expect(field(sea.x,sea.z)).toBeGreaterThan(10);
   }
  });

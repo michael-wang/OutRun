@@ -52,3 +52,25 @@ No physical Pixel 8 result. Coast mask/clearance and mesh seam regressions pass.
 Screenshots, source-video samples, recording and telemetry are ignored under
 `art-prototype/output/coast-beach-fix/`. Foam is still more regular and shallow
 water shading simpler than the full Ultra-Water gallery.
+
+## 2026-11-04 beach life / R2
+
+The same driven road now passes three broad sandy coves with narrower, scalloped
+rock shores between them. The beach mesh, prop foundations and water mask share
+one fixed coast layout. The inner dry shoulder and asphalt are unchanged.
+Umbrellas, reclining chairs, towels, beach balls, three small kiosks and posed
+beachgoers use the existing instanced scenery/Worker pipeline. Mixed palms,
+broadleaf trees and coastal pines form uneven groves with gaps.
+
+The FFT adapter adds shallow turquoise absorption, an analytic light pattern,
+fragmented crest/foam trails and ten shared rock footprints with wash and a
+single 320-point spray batch. These are stylized visual approximations: no
+physical rock/wave interaction, overturning breakers, true refracted caustics or
+animated beachgoers. It does not reproduce the reference demo's full fidelity.
+
+Desktop Chrome, 1920x1080: 34.67s full drive using automatic inputs, original
+physics and chase camera. Warmed FPS 59.99-60.00, local readiness ~1.55s; zero
+missing road frames, unsafe streaming frames, stalls or console/shader errors.
+Basic-water fallback also loaded without errors. Build and 11 focused tests
+passed; no CI or physical Pixel 8 testing. Captures and telemetry remain local
+under `art-prototype/output/coast-beach-life/`.

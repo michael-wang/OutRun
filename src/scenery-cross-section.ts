@@ -1,3 +1,4 @@
+import {coastProfileX} from './coast-layout';
 import {BRICK_START} from './bricks';
 import type {StageBeat} from './stage-one';
 
@@ -103,7 +104,8 @@ export const COAST_SHORE_OFFSET=-26;
 /** Physical metres, shared by the beach mesh and the ocean's shore mask.
  * Keep a dry shoulder, a sloping wet-sand band and a submerged sand bottom.
  * Do not extend road banking indefinitely across inland terrain. */
-export function coastBeachHeight(x:number,roadY:number,rightY:number):number{
+export function coastBeachHeight(x:number,roadY:number,rightY:number,distance?:number):number{
+ if(distance!==undefined)x=coastProfileX(x,distance);
  const dry=roadY+rightY*-11-.2;
  if(x<=-100)return COAST_SEA_LEVEL-15;
  if(x<-46)return lerp(COAST_SEA_LEVEL-15,COAST_SEA_LEVEL-3,(x+100)/54);
@@ -116,9 +118,9 @@ export function coastBeachHeight(x:number,roadY:number,rightY:number):number{
 }
 /** Shared by the coastal trial's Worker meshes and prop anchors only. */
 export function coastUltraGroundY(
- raw:number,roadY:number,rightY:number,physical:(offset:number)=>number,
+ raw:number,roadY:number,rightY:number,physical:(offset:number)=>number,distance?:number,
 ):number{
- return coastBeachHeight(physical(raw),roadY,rightY);
+ return coastBeachHeight(physical(raw),roadY,rightY,distance);
 }
 
 export function sceneryGroundY(

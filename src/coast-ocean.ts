@@ -1,3 +1,4 @@
+import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {bakeCoastShore} from './coast-shore';
 import {COAST_SEA_LEVEL} from './scenery-cross-section';
@@ -41,7 +42,16 @@ uniform sampler2D uShore;
 uniform vec4 uShoreBounds;
 uniform float uTime;
 vec4 shoreAt(vec2 xz){return texture(uShore,(xz-uShoreBounds.xy)/uShoreBounds.zw);}
-float shorePhase(float d,vec2 xz){return d*.62+uTime*1.35+sin(xz.x*.011+xz.y*.008)*.4;}
+float hash21(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float noise2(vec2 p){
+ vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);
+ return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+1.0),f.x),f.y);
+}
+float shorePhase(float d,vec2 xz){return d*.46+uTime*1.4+noise2(xz*.035)*1.7+sin(xz.x*.018+xz.y*.012)*.5;}
+float shoreWave(float d,vec2 xz){
+ float p=shorePhase(d,xz);
+ return (sin(p)+.3*sin(2.0*p-.6))*.32*exp(-max(0.0,d)/38.0)*smoothstep(-2.0,2.0,d);
+}
 `;
 const vertex=/* glsl */`
 ${shoreGLSL}
@@ -71,7 +81,7 @@ void main(){
  disp.y=disp.y/(1.0+abs(disp.y)/.9);
  disp.xz=disp.xz/(1.0+length(disp.xz)/1.2);
  world+=disp*fade*nearshore;
- world.y+=sin(shorePhase(shore.x,world.xz))*.18*exp(-max(0.0,shore.x)/24.0)*smoothstep(-2.0,1.0,shore.x);
+ world.y+=shoreWave(shore.x,world.xz);
  vWorld=world;
  vChurn=min(d0.w,min(d1.w,d2.w));
  vDistance=ring;
@@ -86,6 +96,7 @@ uniform sampler2D uSlope1;
 uniform sampler2D uSlope2;
 uniform sampler2D uSlope3;
 uniform vec3 uSun;
+uniform vec4 uRocks[10];
 in vec3 vWorld;
 in float vChurn;
 in float vDistance;
@@ -110,7 +121,7 @@ void main(){
    texture(uSlope2,vWorld.xz/12.0).xy+
    texture(uSlope3,vWorld.xz/2.1).xy*.24;
  slope*=mix(.12,1.0,nearshore);
- slope+=shore.zw*cos(shorePhase(shore.x,vWorld.xz))*.11*exp(-max(0.0,shore.x)/24.0);
+ slope+=shore.zw*(cos(shorePhase(shore.x,vWorld.xz))+.6*cos(2.0*shorePhase(shore.x,vWorld.xz)-.6))*.15*exp(-max(0.0,shore.x)/38.0);
  vec3 normal=normalize(vec3(-slope.x,1.0,-slope.y));
  vec3 viewDir=normalize(cameraPosition-vWorld);
  vec3 sunDir=normalize(uSun);
@@ -119,8 +130,15 @@ void main(){
  float fresnel=.025+.975*pow(1.0-nv,5.0);
  // Ocean-body absorption and an open-sky reflection (no costly scene mirror).
  vec3 deep=vec3(.009,.125,.20);
- vec3 shallow=vec3(.012,.29,.38);
- vec3 shallows=mix(vec3(.32,.36,.23),shallow,smoothstep(0.0,2.5,depth));
+ vec3 shallow=vec3(.025,.44,.43);
+ vec3 shallows=mix(vec3(.47,.48,.29),shallow,smoothstep(0.0,3.8,depth));
+ // Analytic shallow-water light pattern (not a refraction/depth render pass).
+ if(depth<5.0){
+  vec2 p=vWorld.xz*1.35+vec2(sin(uTime*.31),cos(uTime*.27))*.27;
+  p+=vec2(noise2(p*.48+uTime*.12),noise2(p*.51-uTime*.1))*.65;
+  float light=pow(1.0-abs(sin(p.x+sin(p.y*1.1)) * sin(p.y+sin(p.x*.9))),16.0);
+  shallows+=vec3(.12,.19,.12)*light*(1.0-smoothstep(1.0,5.0,depth))*smoothstep(.05,.4,depth);
+ }
  vec3 body=mix(shallows,deep,smoothstep(3.0,12.0,depth));
  vec3 sky=mix(vec3(.52,.77,.88),vec3(.08,.35,.62),clamp(reflected.y*.6+.25,0.0,1.0));
  vec3 color=mix(body,sky,clamp(.20+fresnel*.75,0.0,1.0));
@@ -132,11 +150,24 @@ void main(){
  float foam=(1.0-smoothstep(.48,.93,vChurn))*.4*nearshore;
  foam*=.82+.18*hash12(floor(vWorld.xz*.9+uTime*.4));
  // Breaking crests advance toward the beach, losing energy on the wet sand.
- float crest=pow(.5+.5*sin(shorePhase(shore.x,vWorld.xz)),12.0);
- float lace=.55+.45*hash12(floor(vWorld.xz*3.0+uTime*.45));
- foam=max(foam,crest*(1.0-smoothstep(12.0,35.0,shore.x))*lace*.9);
- foam=max(foam,(1.0-smoothstep(.02,.20,depth))*lace*.8);
- color=mix(color,vec3(.75,.91,.92),clamp(foam,0.0,.75));
+ float phase=shorePhase(shore.x,vWorld.xz);
+ float breakup=noise2(vWorld.xz*.65+vec2(uTime*.14,-uTime*.19));
+ float crest=smoothstep(.35,.93,sin(phase)+breakup*.35);
+ float trail=smoothstep(-.45,.8,sin(phase-.65))*.28;
+ float lace=smoothstep(.22,.72,noise2(vWorld.xz*3.2+uTime*.23));
+ float surf=(crest+trail)*(1.0-smoothstep(15.0,42.0,shore.x));
+ foam=max(foam,surf*(.4+.6*lace)*(.55+.45*breakup));
+ foam=max(foam,(1.0-smoothstep(.03,.34,depth))*(.45+.5*lace));
+ // Fixed rock footprints: exclude the solid core, wrap wash around the edges.
+ for(int i=0;i<10;i++){
+  vec2 delta=vWorld.xz-uRocks[i].xy;
+  float r=uRocks[i].z,dist=length(delta);
+  if(dist<r*.52)discard;
+  float wash=exp(-pow((dist-r*.85)/1.5,2.0));
+  float pulse=.35+.65*pow(.5+.5*sin(uTime*1.4+uRocks[i].w),3.0);
+  foam=max(foam,wash*pulse*(.6+.4*lace));
+ }
+ color=mix(color,vec3(.88,.97,.94),clamp(foam,0.0,.94));
  // The parent game uses a bright coastal horizon; blend distant water into it.
  float fog=1.0-exp(-vDistance*.00038);
  color=mix(color,vec3(.62,.79,.88),clamp(fog,0.0,.94));
@@ -162,12 +193,16 @@ export class UltraCoastOcean {
   oceanParams.swellScale=.3;
   this.sim=new OceanSim(renderer,oceanParams);
   const shore=bakeCoastShore(coast.sample,coast.length);
+  const rockPositions=COAST_ROCKS.map(r=>{
+   const p=coast.sample(r.d),v=p.position.clone().addScaledVector(p.right,coastRockX(r));
+   return new THREE.Vector4(v.x,v.z,r.r,r.d*.017);
+  });
   this.uniforms={
    uDisp0:{value:null},uDisp1:{value:null},uDisp2:{value:null},
    uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
    uSpacing:{value:2*Math.PI/(this.mobile?128:192)},
    uSun:{value:new THREE.Vector3(.35,.84,-.4).normalize()},
-   uTime:{value:0},
+   uTime:{value:0},uRocks:{value:rockPositions},
    uShore:{value:shore.texture},uShoreBounds:{value:shore.bounds},
   };
   const material=new THREE.ShaderMaterial({
@@ -180,6 +215,32 @@ export class UltraCoastOcean {
   this.mesh.frustumCulled=false;
   this.mesh.renderOrder=1;
   scene.add(this.mesh);
+  // A single small point batch for local spray; illustrative wave impacts, no fluid solver.
+  const sprayPositions:number[]=[],seeds:number[]=[];
+  for(const [i,r] of rockPositions.entries())for(let j=0;j<32;j++){
+   sprayPositions.push(r.x,level+.12,r.y);seeds.push((j+.5)/32,r.z,r.w,i*.73+j*2.39996);
+  }
+  const sprayGeometry=new THREE.BufferGeometry();
+  sprayGeometry.setAttribute('position',new THREE.Float32BufferAttribute(sprayPositions,3));
+  sprayGeometry.setAttribute('seed',new THREE.Float32BufferAttribute(seeds,4));
+  const sprayMaterial=new THREE.ShaderMaterial({
+   uniforms:{uTime:this.uniforms.uTime},transparent:true,depthWrite:false,
+   vertexShader:`
+    uniform float uTime;attribute vec4 seed;varying float alpha;
+    void main(){
+     float cycle=fract((uTime*1.4+seed.z)/6.28318+seed.x*.17);
+     float t=clamp(cycle/.33,0.0,1.0),angle=seed.w;
+     vec3 p=position;
+     p.xz+=vec2(cos(angle),sin(angle))*(seed.y*.86+t*1.6);
+     p.y+=sin(t*3.14159)*(1.4+seed.x*1.8);
+     vec4 mv=modelViewMatrix*vec4(p,1.0);
+     gl_Position=projectionMatrix*mv;
+     gl_PointSize=clamp(190.0/(-mv.z),1.0,9.0);
+     alpha=sin(t*3.14159)*.65*(1.0-smoothstep(150.0,450.0,-mv.z));
+    }`,
+   fragmentShader:`varying float alpha;void main(){float a=alpha*(1.0-smoothstep(.12,.5,length(gl_PointCoord-.5)));gl_FragColor=vec4(.88,.96,.96,a);}`,
+  });
+  const spray=new THREE.Points(sprayGeometry,sprayMaterial);spray.name='coast-rock-spray';spray.frustumCulled=false;scene.add(spray);
  }
  update(camera:THREE.Camera,dt:number){
   this.mesh.position.x=camera.position.x;

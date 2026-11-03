@@ -25,11 +25,11 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:18,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ revision:19,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
  name:'Azure Coast · Ultra-Water Experiment',
- intent:'Dry oceanfront road beside a sandy beach, wet shoreline and breaking waves.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-ultra-beach-r1-804',
- stageCode:'COAST-ULTRA-R1',tripCode:'COAST-ULTRA-R1',
+ intent:'Dry oceanfront road with sandy coves, rock surf and small beach gatherings.',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-ultra-beach-life-r2-804',
+ stageCode:'COAST-ULTRA-R2',tripCode:'COAST-ULTRA-R2',
  length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:4,roadWidth:4*LANE_WIDTH,
  placements:[
   gentleRise,
