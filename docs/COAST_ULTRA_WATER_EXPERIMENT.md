@@ -3,12 +3,12 @@
 **URL:** `http://localhost:5173/?showcase=coast`
 
 **A/B control:** `http://localhost:5173/?showcase=coast&water=basic`
-keeps the *same* procedural 3.35km course but uses the original flat sea.
+keeps the *same* authored 10km course but uses the original flat sea.
 The coast branch is isolated; city, canyon and normal 10-minute play are unchanged.
 
 ## Scope
 
-- New authored procedural TripCandidate: four wide sweeping/compound bends,
+- Authored coastal TripCandidate: broad sweeping bends and a gentle S bend,
   one gentle long climb, coastal-left environment, no Blender dependency.
 - The original MIT-licensed Ultra-Water OceanSim and fullscreen helper are
   imported in `src/ultra-water/` with upstream LICENSE and notices.
@@ -117,3 +117,40 @@ no missing road/unsafe streaming frames, stalls or browser errors. Build and 22
 relevant tests pass. No CI or physical phone testing. Reference-video samples,
 new screenshots, telemetry and recording remain ignored in
 `art-prototype/output/coast-dusk-r4/`.
+
+## 2026-11-04 sunset journey / R5
+
+Extended this isolated coast trial from 3.35km to 10km using the existing road
+composer and streaming path. Four lanes, handling and normal chase camera are
+unchanged. Scene timing now alternates a populated left beach (around 1.22km),
+right-side homes (2.21-3.70km), quiet shoreline/hills, a broad approach and left
+turn, then the main beach/market (7.58-8.71km) and a calm exit. Distances here are
+from the playable start; the coast-layout constants include the 350m lead-in.
+
+The postcard is authored through road direction. The reveal turn finishes at
+about -0.47 radians, putting the existing fixed world-space sun about 14 degrees
+left of the car's forward view. The broad left bay and right market share this
+view for several seconds. Neither the camera nor the sun rotates to manufacture
+the shot. The complete drive's postcard capture occurs around 83 seconds.
+
+The longer coastline retains metre-scale mask texels. Exact nearest-segment
+search now rejects segments using a sorted per-row distance lower bound. A
+one-off full-mask comparison found zero differences across 11,053,440 channel
+values; bake time fell from about 4.49s to 1.30s on this desktop. No new runtime
+terrain or scenery framework was introduced.
+
+Desktop Chrome 1920x1080: complete recorded drive 109.87s (game elapsed 109.78s),
+warmed FPS 59.99-60.01, zero missing road frames, unsafe stream frames, stalls,
+off-road samples or console/shader errors. Normal physics and chase camera with
+automatic control inputs; the simple controller incurred eight traffic impacts,
+so this is not a clean human speed run or a guarantee of every player's duration.
+The video is canvas-only and silent. Optimized local readiness 2.35s with Ultra
+water, 0.52s with the basic fallback; both loaded without errors. The complete
+drive preceded the pixel-identical mask optimization; final loading and postcard
+captures were repeated afterwards. No physical Pixel 8 test or CI.
+
+Build and 22 relevant tests pass. All previews, drive screenshots, recording,
+telemetry and mask comparison remain ignored in
+`art-prototype/output/coast-journey/`. Existing visual limits remain: low-poly
+buildings/hills, static beachgoers and stylized shore foam. This milestone changes
+composition and pacing rather than upgrading the art asset fidelity.

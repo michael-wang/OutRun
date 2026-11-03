@@ -319,10 +319,10 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   for(const bay of COAST_BEACHES){
    // Loose pockets, never a repeating row along the whole highway.
-   for(let j=0;j<9;j++){
-    const d=bay.distance-115+j*27+rand(j+bay.distance)*12;
+   for(let j=0;j<23;j++){
+    const d=bay.distance-370+j*33+rand(j+bay.distance)*15;
     if(!inChunk(d))continue;
-    const x=-19-rand(j*11+bay.distance)*15;
+    const x=-19-rand(j*11+bay.distance)*17;
     beachAnchor(d,x);if(!clear(4)||base.y<-4.05)continue;
     yaw+=rand(d)*1.8;
     part(cylinder,'#aa8960',0,1.6,0,.055,3.2,.055);
@@ -533,12 +533,12 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(range.designerCut)continue;
   if(range.coastUltra){
    // Sparse irregular groves: mixed species, heights, depth and deliberate gaps.
-   if(!coastDistrictAt(d)&&random(i+73)>.23)for(let j=0;j<1+Math.floor(random(i+18)*3);j++){
+   if(!coastDistrictAt(d)&&random(i+73)>(d>4150&&d<6900?.65:.35))for(let j=0;j<1+Math.floor(random(i+18)*3);j++){
     const at=d+(random(i*9+j)-.5)*21;
     if(at<range.start||at>=range.end)continue;
     beachAnchor(at,21+random(i*13+j)*43);if(clear(5))coastTree(i*7+j);
    }
-   if(!coastDistrictAt(d)&&i%9===0){beachAnchor(d,82+random(i+51)*27);if(clear(24))part(boulder,'#9eaa91',0,3,0,15,9,13);}
+   if(!coastDistrictAt(d)&&i%13===0){beachAnchor(d,92+random(i+51)*24);if(clear(38))part(boulder,'#9eaa91',0,1,0,34,7,39);}
    continue;
   }
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;

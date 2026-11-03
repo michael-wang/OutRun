@@ -12,16 +12,26 @@ export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
  points.push(sample(length));
  const minX=Math.min(...points.map(p=>p.position.x))-180,minZ=Math.min(...points.map(p=>p.position.z))-180;
  const sx=Math.max(...points.map(p=>p.position.x))+180-minX,sz=Math.max(...points.map(p=>p.position.z))+180-minZ;
- const width=Math.max(128,Math.ceil(1024*sx/Math.max(sx,sz))),height=Math.max(128,Math.ceil(1024*sz/Math.max(sx,sz)));
+ // Preserve metre-scale shore clipping when the authored route grows.
+ const resolution=Math.max(1024,Math.min(4096,Math.ceil(Math.max(sx,sz)/3)));
+ const width=Math.max(128,Math.ceil(resolution*sx/Math.max(sx,sz))),height=Math.max(128,Math.ceil(resolution*sz/Math.max(sx,sz)));
  const segments=points.slice(1).map((b,i)=>{
   const a=points[i],dx=b.position.x-a.position.x,dz=b.position.z-a.position.z;
-  return {a,b,d:Math.min(i*20,length),end:Math.min((i+1)*20,length),dx,dz,inv:1/(dx*dx+dz*dz),lo:i===0?-200:0,hi:i===points.length-2?200:1};
+  const lo=i===0?-200:0,hi=i===points.length-2?200:1;
+  return {a,b,d:Math.min(i*20,length),end:Math.min((i+1)*20,length),dx,dz,inv:1/(dx*dx+dz*dz),lo,hi,
+   minZ:Math.min(a.position.z+dz*lo,a.position.z+dz*hi),maxZ:Math.max(a.position.z+dz*lo,a.position.z+dz*hi)};
  });
  const data=new Uint16Array(width*height*4);
- for(let j=0;j<height;j++)for(let i=0;i<width;i++){
-  const x=minX+(i+.5)*sx/width,z=minZ+(j+.5)*sz/height;
+ for(let j=0;j<height;j++){
+  const z=minZ+(j+.5)*sz/height;
+  // Exact nearest-segment search: a row's Z separation is a lower bound on
+  // world distance. Stop once no remaining segment can improve the result.
+  const row=segments.map(seg=>({seg,bound:Math.max(seg.minZ-z,0,z-seg.maxZ)**2})).sort((a,b)=>a.bound-b.bound);
+  for(let i=0;i<width;i++){
+  const x=minX+(i+.5)*sx/width;
   let best=Infinity,chosen=segments[0],fraction=0;
-  for(const seg of segments){
+  for(const {seg,bound} of row){
+   if(bound>best)break;
    const t=Math.max(seg.lo,Math.min(seg.hi,((x-seg.a.position.x)*seg.dx+(z-seg.a.position.z)*seg.dz)*seg.inv));
    const dx=x-seg.a.position.x-seg.dx*t,dz=z-seg.a.position.z-seg.dz*t,dist=dx*dx+dz*dz;
    if(dist<best){best=dist;chosen=seg;fraction=t;}
@@ -35,6 +45,7 @@ export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
   data[k]=THREE.DataUtils.toHalfFloat(-lateral+coastBeachX(COAST_SHORE_OFFSET,distance));
   data[k+1]=THREE.DataUtils.toHalfFloat(y);
   data[k+2]=THREE.DataUtils.toHalfFloat(-rx/n);data[k+3]=THREE.DataUtils.toHalfFloat(-rz/n);
+  }
  }
  const texture=new THREE.DataTexture(data,width,height,THREE.RGBAFormat,THREE.HalfFloatType);
  texture.minFilter=texture.magFilter=THREE.LinearFilter;texture.generateMipmaps=false;texture.needsUpdate=true;

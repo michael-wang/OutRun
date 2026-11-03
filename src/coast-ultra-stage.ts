@@ -7,7 +7,7 @@ import type {TripCandidate} from './trip';
 
 /** Isolated procedural coastal driving test — no edits to the canyon/city modes.
  * Initial direction follows the existing coastal-left road/terrain system. */
-export const COAST_ULTRA_LENGTH=3350;
+export const COAST_ULTRA_LENGTH=10000;
 const duration=COAST_ULTRA_LENGTH/REFERENCE_TRAVEL;
 const c=(a:number,b:number,effort:number,direction:1|-1,beat:string):Placement=>({
  channel:'curvature',id:'C02',startS:a,endS:b,
@@ -25,32 +25,41 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:21,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
- name:'Azure Coast · Dusk & Night Market',
- intent:'Golden-hour coastal road with beach coves, lit homes and lively night markets.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-dusk-neighbourhood-r4-804',
- stageCode:'COAST-DUSK-R4',tripCode:'COAST-DUSK-R4',
+ revision:22,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ name:'Azure Coast · Sunset Postcard',
+ intent:'A paced sunset journey: beach, neighbourhood, quiet coast, then a postcard bay and night-market reveal.',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-sunset-journey-r5-804',
+ stageCode:'COAST-SUNSET-R5',tripCode:'COAST-SUNSET-R5',
  length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:4,roadWidth:4*LANE_WIDTH,
  placements:[
   gentleRise,
-  c(160,780,.56,-1,'Ocean reveal'),
-  c(880,1550,.63,1,'Cliffside sweeper'),
-  s(1610,2280,.54,-1,'Sea-breeze S'),
-  c(2370,3140,.67,-1,'Lighthouse bend'),
+  c(160,780,.56,-1,'Beach approach'),
+  c(1000,1720,.48,1,'Family beach'),
+  c(2200,2820,.4,1,'Neighbourhood arrival'),
+  c(3180,3800,.4,-1,'Leave the village'),
+  s(4200,5400,.3,1,'Quiet coast S'),
+  c(6000,6600,.42,1,'Headland approach'),
+  // End heading ~-0.47 rad places the fixed COAST_SUN left of the chase view.
+  // The beach/market open after this turn; the camera and sun never pivot for it.
+  c(6800,7750,.44,-1,'Sunset reveal'),
+  c(8500,9200,.28,1,'Golden-water farewell'),
  ].sort((a,b)=>a.startS-b.startS),
  bankFeatures:[],fixedRoad:undefined,
- worldPhases:[{startS:0,endS:COAST_ULTRA_LENGTH,world:'coast',beat:'Sunlit ocean road'}],
+ worldPhases:[{startS:0,endS:COAST_ULTRA_LENGTH,world:'coast',beat:'Sunset coast journey'}],
  beats:[
-  {id:'COAST-ENTRY',startS:0,endS:700,world:'coast',verticality:'gentle',role:'Sea reveal'},
-  {id:'COAST-SWEEP',startS:700,endS:1590,world:'coast',verticality:'rolling',role:'Long seaside sweeps'},
-  {id:'COAST-S',startS:1590,endS:2350,world:'coast',verticality:'rolling',role:'Sea-breeze S'},
-  {id:'COAST-FINALE',startS:2350,endS:COAST_ULTRA_LENGTH,world:'coast',verticality:'gentle',role:'Ocean lookout'},
+  {id:'COAST-ENTRY',startS:0,endS:900,world:'coast',verticality:'gentle',role:'Settle into the coast'},
+  {id:'COAST-BEACH',startS:900,endS:2100,world:'coast',verticality:'gentle',role:'Left beach and visitors; quiet inland'},
+  {id:'COAST-HOMES',startS:2100,endS:3800,world:'coast',verticality:'gentle',role:'Right neighbourhood; calm water'},
+  {id:'COAST-QUIET',startS:3800,endS:6000,world:'coast',verticality:'gentle',role:'Open sea and low coastal hills'},
+  {id:'COAST-TURN',startS:6000,endS:7450,world:'coast',verticality:'gentle',role:'Long bend toward the setting sun'},
+  {id:'COAST-POSTCARD',startS:7450,endS:8750,world:'coast',verticality:'gentle',role:'Sun path, wide beach and night market'},
+  {id:'COAST-EXIT',startS:8750,endS:10000,world:'coast',verticality:'gentle',role:'Quiet golden-water farewell'},
  ],
  buffers:[{startS:0,endS:100,role:'launch'},{startS:COAST_ULTRA_LENGTH-80,endS:COAST_ULTRA_LENGTH,role:'finish'}],
  scenerySections:[{id:'coast-ultra-left-sea',kind:'coastal-left',start:BRICK_START,end:BRICK_START+COAST_ULTRA_LENGTH,left:'sea',right:'coastal-land'}],
  canyonPrototype:undefined,designerCut:undefined,scenicCues:undefined,roadFeatures:undefined,scenicLandmarks:[],
  nominalDuration:duration,entrySpeed:140,referenceSpeed:230,
  lanes:[[0,4],[duration,4]],elevation:[[0,-1.8],[duration,-.8]],requiredSteerProfile:[[0,0]],
- entry:'Sunlit Pacific cliff road',exit:'Blue horizon',warning:{leadMeters:250,text:'COASTAL SWEEPER · HOLD YOUR LINE'},
+ entry:'Quiet dusk shoreline',exit:'Golden-water farewell',warning:{leadMeters:250,text:'COASTAL SWEEPER · HOLD YOUR LINE'},
  tags:['coast','ultra-water','prototype'],autoValidation:'PENDING',
 };

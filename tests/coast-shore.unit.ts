@@ -19,7 +19,7 @@ function field(x:number,z:number){
 }
 describe('coastal road stays above a real beach',()=>{
  it('keeps dry sand beside the complete road and a continuous sand-to-seabed slope',()=>{
-  for(let d=350;d<=3700;d+=10){
+  for(let d=350;d<=350+stage.length;d+=10){
    const p=track.sample(d);
    // Dry shoulder stays >1m above mean sea even on the banked bends;
    // nearshore waves stay below 0.42m and are clipped at the wet-sand line.
@@ -31,7 +31,7 @@ describe('coastal road stays above a real beach',()=>{
   }
  });
  it('excludes every lane and the inland terrain from water on bends as well as straights',()=>{
-  for(let d=350;d<=3700;d+=10){
+  for(let d=350;d<=350+stage.length;d+=10){
    const p=track.sample(d);
    for(const x of [-7,0,7,30,80]){
     const v=p.position.clone().addScaledVector(p.right,x);
