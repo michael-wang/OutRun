@@ -10,10 +10,10 @@ const palette:Record<string,string>={
  'V2 | sunlit ochre sandstone':'#BB7449','V2 | distant mauve sandstone':'#9C7978',
 };
 
-export async function loadBlenderCanyon(){
+export async function loadBlenderCanyon(roadLock=false){
  const started=performance.now();
- const gltf=await new GLTFLoader().loadAsync('/__local_art/canyon_art_only.glb');
- const root=gltf.scene;root.name='blender-canyon-v2';
+ const gltf=await new GLTFLoader().loadAsync('/__local_art/'+(roadLock?'canyon_roadlock_art.glb':'canyon_art_only.glb'));
+ const root=gltf.scene;root.name=roadLock?'blender-canyon-full-route':'blender-canyon-v2';
  // glTF is already meters/Y-up in the production track's world coordinates.
  // Do not recenter, rotate or normalize the model.
  root.updateMatrixWorld(true);
@@ -28,7 +28,7 @@ export async function loadBlenderCanyon(){
  }});
  if(!meshes)throw Error('GLB contains no artwork');
  const box=new THREE.Box3().setFromObject(root);
- if(box.min.y>57||box.max.y<300)throw Error('Unexpected canyon world bounds; check the GLB coordinate export');
+ if(!roadLock&&(box.min.y>57||box.max.y<300))throw Error('Unexpected canyon world bounds; check the GLB coordinate export');
  return {root,stats:{status:'ready',loadMs:performance.now()-started,meshes,triangles,
   position:root.position.toArray(),scale:root.scale.toArray(),quaternion:root.quaternion.toArray(),
   bounds:{min:box.min.toArray(),max:box.max.toArray()}}};

@@ -71,3 +71,107 @@ nine hero viewpoint images and one continuous playable roadlock recording.**
 Don't spend time adding more generative rules, new editor architecture or
 realistic physics. The only success criterion is the driving experience
 *with* terrain.
+
+## Local full-route terrain handoff — 2026-11-03
+
+The full-route graybox uses road revision `2c7c8d2` and the fresh
+`npm run art:roadlock` export: 566 road frames, 1,131 protection frames and
+nine original chase poses. The road, banking, four one-way white-marked lanes,
+vehicle handling and chase-camera code were not edited.
+
+Open `http://127.0.0.1:5173/?showcase=canyon&road=lock&art=blender` with
+`npm run dev` running. Remove `&art=blender` for the road-only comparison.
+The existing 400m v2 scene and its old Blender URL remain separate.
+
+### Editable local assets
+
+All large outputs stay ignored under `art-prototype/output/roadlock/`:
+
+- `Grand_Canyon_Full_Route.blend`: editable full-route terrain, reference road,
+  original nine cameras, materials, source JSON embedded as a text block.
+- `canyon_roadlock_art.glb`: art only, 2,807,820 bytes; world translation zero,
+  scale one, no corrective rotation. The reference road is excluded.
+- `H1_Approach.png` through `H3_Exit.png`: nine offline Blender composition
+  renders; the reference-only paint is simplified. Real gameplay captures below
+  use the unchanged four-lane dashed white markings.
+- `drive-H1_Approach.png`, `drive-H1_Reveal.png`, `drive-H1_Exit.png`;
+  corresponding `drive-H2_*` and `drive-H3_*`: nine 1920×1080 gameplay captures.
+- `Grand_Canyon_Full_Drive.webm`: continuous start-to-finish normal-chase drive.
+- `driving-report.json`, `art-clearance.json`, `finalize.log`, `drive-final.log`:
+  local driving, art-clearance and export evidence.
+
+The GLB SHA-256 is
+`3684F3D5E0330FE72E8E35C7BB32B39243FEDE8297DBDE2C192B397E660D0F4F`.
+The scene contains a shared terrain mesh, a finite upper stone saddle, two river
+meshes and nine deliberately placed large escarpment/mesa masses. No trees or
+small-rock scattering were added. These are baked editable Blender meshes;
+the local one-off mesh authoring record is not a runtime generation system.
+
+Hero 1 has a lowered basin and southern opposing temple; Hero 2 uses an outer
+river gorge, inner mountain spur and tall northern/western escarpments; Hero 3
+looks towards the northern crown and distant tableland. The remaining route
+uses the same connected slope field, with large exit rims and close cuts.
+
+The road crosses itself twice in plan (around game distances 930/2,850m and
+1,160/2,640m), with about 157m vertical separation. The shared lower terrain and
+separate upper rock saddle preserve both levels rather than filling the lower
+road with a solid mountain. Heights and coverage were adjusted in Blender;
+the actual road was never moved to accommodate terrain.
+
+### Integration and authoring workflow
+
+The existing loader selects the new GLB only for `road=lock&art=blender`.
+The local Vite/preview asset endpoint serves the ignored file without adding it
+to `dist`. In that mode, the worker suppresses old placeholder scenery and
+visible terrain/water/support meshes. Original asphalt, lane markings, rails,
+shoulder contact meshes and collision behavior are retained. The original
+shoulders remain invisible contact surfaces. Low cloud blobs that intersect
+the high plateau views are hidden only in this mode.
+
+After editing the saved scene, export existing art without rebuilding it:
+
+```powershell
+$env:BLENDER_BIN = 'C:\astra-dev\tools\blender-4.5.13-windows-x64\blender.exe'
+& $env:BLENDER_BIN --background art-prototype/output/roadlock/Grand_Canyon_Full_Route.blend --python-exit-code 1 --python scripts/art-proto/export-roadlock-scene.py
+```
+
+Append `-- --render` to refresh the nine Blender renders. Edit collections
+`10_EDIT_FULL_ROUTE_LANDSCAPE` and `20_EDIT_THREE_HERO_MASSING`; the `00` road
+reference collection and `90` chase-camera collection remain authoritative.
+Do not rerun the original `art:blockout` command over this scene.
+
+### Verification scope and remaining visual limits
+
+`npm run build` passed locally. No CI, unit-test suite, road redesign or new
+procedural scenery system was run or added. The export helper was exercised
+against the saved scene. An art-only clearance pass sampled all 1,131 exported
+road frames at seven lateral positions (-10/-7/-3.5/0/3.5/7/10m), checking from
+0.3m below pavement to 80m above: **7,917 samples, zero art intersections**.
+This checks the new art against the locked road; it is not a new road audit or
+an exhaustive geometric proof.
+
+The recording uses real Chrome/WebGL and the normal RAF driving physics on the
+local desktop. Automated steering/throttle/braking drives from game distance
+350m to 6,000m, starting at rest, without teleporting between viewpoints.
+This is a driving/visual capture, not human handling approval or a physical
+phone performance result. Final measured results are recorded below.
+
+The final desktop run completed all 5.65km in **89.89 seconds**. GLB fetch/parse
+took **15.2ms**, ready time was **830ms**, and warm-run median / 5th-percentile
+FPS were **60.0 / 59.99** (first ten 200ms samples excluded). There were zero
+missing road frames, unsafe streaming frames, stalls or JavaScript errors;
+maximum lateral offset was 0.51m. All nine hero captures were taken during this
+continuous drive. The 1920×1080, 30fps WebM is 59,962,213 bytes and was opened
+and decoded at its midpoint. `review.html` provides a local nine-image/video
+gallery. The compiled local preview also returned the GLB with HTTP 200 and
+entered normal play without browser errors. These are desktop results only.
+
+This remains a coarse visual review candidate. The 34–36° banked pavement and
+steep climbs occupy much of the fixed hero frames; the river is not reliably
+readable at all nine stops. The first hero's rock saddle and some steep terrain
+joins remain angular, and the three scenic peaks are not equally strong yet.
+Blender lighting differs from the game's lighting/fog. The original road's
+thin safety rails and turn signs can also read as floating above the reshaped
+shoulders; their placement and collision were deliberately not changed.
+Driving clearance is not a claim that polished canyon art or the visual
+acceptance gate is complete.

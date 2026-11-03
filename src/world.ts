@@ -23,7 +23,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
-  // The existing v2 backdrop reaches beyond 1km. Change haze, not chase optics.
+  // Authored canyon backdrops reach beyond 1km. Change haze, not chase optics.
   if(options.blenderArt){scene.fog.near=450;scene.fog.far=2400;}
   scene.add(new THREE.HemisphereLight('#e3f7ff','#a09162',1.65));
   const sun=new THREE.DirectionalLight('#fff0c9',2.8); sun.position.set(-180,280,-100); scene.add(sun);
@@ -185,7 +185,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const ridgeGeo=new THREE.BufferGeometry();ridgeGeo.setAttribute('position',new THREE.Float32BufferAttribute(ridge,3));ridgeGeo.setAttribute('color',new THREE.Float32BufferAttribute(ridgeColors,3));ridgeGeo.setIndex(ridgeIndex);ridgeGeo.computeVertexNormals();
   const distantRidge=new THREE.Mesh(ridgeGeo,new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide}));distantRidge.name='distant-ridge';scene.add(distantRidge);
   const clouds=[];for(let i=0;i<24;i++){const angle=i*2.4;for(let j=0;j<4;j++)clouds.push({p:new THREE.Vector3(400+Math.cos(angle)*1700+j*50,280+rand(i)*170,500+Math.sin(angle)*1700),s:new THREE.Vector3(70,18+rand(j+i)*15,35),r:new THREE.Euler()});}
-  instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
+  // These old low-altitude cloud blobs intersect the new high plateau vistas.
+  if(!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
   const car=createCar();scene.add(car);
   const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=64;const context=shadowCanvas.getContext('2d')!;
   const gradient=context.createRadialGradient(32,32,7,32,32,31);gradient.addColorStop(0,'rgba(18,33,30,.65)');gradient.addColorStop(.55,'rgba(18,33,30,.3)');gradient.addColorStop(1,'rgba(18,33,30,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);

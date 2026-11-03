@@ -8,9 +8,9 @@ import {createReadStream} from 'node:fs';
 /** Local-only asset handoff: never copies the GLB into a build or Git. */
 function localBlenderArt():Plugin {
  const install=(server:{middlewares:import('vite').Connect.Server})=>{
-  server.middlewares.use('/__local_art/canyon_art_only.glb',async(req,res)=>{
+  for(const [asset,local] of [['canyon_art_only.glb','canyon_art_only.glb'],['canyon_roadlock_art.glb','roadlock/canyon_roadlock_art.glb']])server.middlewares.use('/__local_art/'+asset,async(req,res)=>{
    if(req.method!=='GET'&&req.method!=='HEAD'){res.statusCode=405;res.end();return;}
-   const file=resolve('art-prototype/output/canyon_art_only.glb');
+   const file=resolve('art-prototype/output',local);
    try{const info=await lstat(file);if(!info.isFile())throw Error('Not a file');
     res.setHeader('Content-Type','model/gltf-binary');res.setHeader('Content-Length',info.size);res.setHeader('Cache-Control','no-store');
     if(req.method==='HEAD'){res.end();return;}
