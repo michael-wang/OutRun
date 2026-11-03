@@ -4,6 +4,7 @@ import {LANE_WIDTH} from './road-profile';
 import {curvatureForDemand,REFERENCE_TRAVEL,CHALLENGES,COURSE} from './challenges';
 import {BRICK_START,type ChallengeBrick} from './bricks';
 import {createTrack} from './track';
+import {createFixedRoad,fixedRoadPose,type FixedRoadFrame} from './fixed-road';
 import {bankTrack,seamlessBank,generatedBank,featureBank,type BankFeature,type BankStrength} from './banking';
 
 export type Placement =
@@ -12,7 +13,7 @@ export type Placement =
  | {channel:'width';id:WidthId;startS:number;endS:number;parameters:WidthParameters;transition:'smooth';beat:string};
 export type WorldName='coast'|'canyon'|'city';
 export interface WorldPhase {startS:number;endS:number;world:WorldName;beat:string}
-export interface PilotCandidate extends ChallengeBrick {bankFeatures?:BankFeature[];world:WorldName;generatorVersion:string;contentFingerprint:string;baseHeight:number;baseLanes:2|4|6|8;placements:Placement[];worldPhases:WorldPhase[]}
+export interface PilotCandidate extends ChallengeBrick {fixedRoad?:readonly FixedRoadFrame[];bankFeatures?:BankFeature[];world:WorldName;generatorVersion:string;contentFingerprint:string;baseHeight:number;baseLanes:2|4|6|8;placements:Placement[];worldPhases:WorldPhase[]}
 export const PILOT_GENERATOR='v0.7D.1-r2',PILOT_STORAGE='outrun-l2-pilots-v071d1';
 const c=(id:CurvatureId,startS:number,endS:number,effort:number,direction:1|-1,beat:string):Placement=>({channel:'curvature',id,startS,endS,parameters:{effort,direction,start:0,end:1,secondary:.7},transition:'smooth',beat});
 const e=(id:ElevationId,startS:number,endS:number,base:number,amplitude:number,direction:1|-1,beat:string):Placement=>({channel:'elevation',id,startS,endS,parameters:{base,amplitude,direction,shelfStart:.32,shelfEnd:.68},transition:'smooth',beat});
@@ -58,6 +59,7 @@ function profileIndex(placements:Placement[]){
  profileIndexes.set(placements,{count:placements.length,boundaries});return boundaries;
 }
 export function pilotSample(b:PilotCandidate,distance:number){
+ if(b.fixedRoad){const p=fixedRoadPose(b.fixedRoad,distance);return {demand:p.curvature/curvatureForDemand(1),height:p.height,grade:p.grade,lanes:b.baseLanes,halfWidth:b.baseLanes*LANE_WIDTH/2,active:[] as Placement[]};}
  const s=Math.max(0,Math.min(b.length,distance-BRICK_START)),boundaries=profileIndex(b.placements);
  let lo=0,hi=boundaries.length;
  while(lo<hi){const mid=(lo+hi)>>>1;if(boundaries[mid].distance<=s)lo=mid+1;else hi=mid;}
@@ -73,7 +75,7 @@ export function pilotSample(b:PilotCandidate,distance:number){
 }
 export function pilotWeights(b:PilotCandidate,distance:number){const s=Math.max(0,Math.min(b.length,distance-BRICK_START)),phases=b.worldPhases;const weights=[0,0,0];let i=phases.findIndex(p=>s<p.endS);if(i<0)i=phases.length-1;weights[worldIndex(phases[i].world)]=1;if(i>0){const boundary=phases[i].startS,t=Math.max(0,Math.min(1,(s-boundary)/350));const smooth=t*t*(3-2*t);weights[worldIndex(phases[i-1].world)]=1-smooth;weights[worldIndex(phases[i].world)]=smooth;}return weights;}
 export function pilotCourse(b:PilotCandidate){const template={...CHALLENGES[0],label:b.name,act:b.sceneryAct,roadWidth:b.roadWidth,transitionLength:0,transitionSeconds:0},curves=b.placements.filter(p=>p.channel==='curvature');let cursor=0;const course:typeof COURSE=[];function add(end:number,u:number,label:string){if(end<=cursor)return;const start=cursor,length=end-start;course.push({...template,id:`${b.id}-${course.length}`,label,start,end,length,nominalDurationAtReferenceSpeed:length/REFERENCE_TRAVEL,targetRequiredSteering:u});cursor=end;}for(const p of curves){add(BRICK_START+p.startS,0,'Approach');add(BRICK_START+p.endS,p.parameters.effort*p.parameters.direction,p.beat);}add(BRICK_START+b.length+600,0,'Relief');return course;}
-export function createPilotTrack(b:PilotCandidate,bank?:BankStrength){validatePilot(b);const legacy=(b.id==='ROAD-TRIP-10M'&&b.generatorVersion==='v0.9-r1')||(b.id==='STAGE-01'&&b.generatorVersion==='v0.8.3-r1');const course=pilotCourse(b),bank4=(b.generatorVersion==='v0.9-r4'||b.generatorVersion==='v0.9-r5'||(b.generatorVersion==='v0.9-r6'||(b.generatorVersion==='v0.9-r7'||(b.generatorVersion==='v0.9-r8'||b.generatorVersion==='v0.9-r9'||b.generatorVersion==='v0.9-r10'||b.generatorVersion==='v0.9-r11'||b.generatorVersion==='v0.9-r12'||b.generatorVersion==='designer-canyon-v1'||b.generatorVersion==='canyon-roadlock-v1'))))?seamlessBank(course.at(-1)!.end,d=>generatedBank(curvatureForDemand(pilotSample(b,d).demand),pilotWeights(b,d),3),b.bankFeatures??[]):undefined;const track=bankTrack(createTrack({course,heightAt:d=>pilotSample(b,d),demandAt:d=>pilotSample(b,d).demand,loop:false,banking:bank===undefined&&!legacy,bankWeights:d=>pilotWeights(b,d),smoothBank:!!bank4,bankAt:bank4??(b.generatorVersion==='v0.9-r3'?(d,k)=>featureBank(d,generatedBank(k,pilotWeights(b,d),3),b.bankFeatures??[]):undefined)}),b.id==='L2P-B'?(bank??0):0);
+export function createPilotTrack(b:PilotCandidate,bank?:BankStrength){if(b.fixedRoad)return createFixedRoad(b.fixedRoad,b.name);validatePilot(b);const legacy=(b.id==='ROAD-TRIP-10M'&&b.generatorVersion==='v0.9-r1')||(b.id==='STAGE-01'&&b.generatorVersion==='v0.8.3-r1');const course=pilotCourse(b),bank4=(b.generatorVersion==='v0.9-r4'||b.generatorVersion==='v0.9-r5'||(b.generatorVersion==='v0.9-r6'||(b.generatorVersion==='v0.9-r7'||(b.generatorVersion==='v0.9-r8'||b.generatorVersion==='v0.9-r9'||b.generatorVersion==='v0.9-r10'||b.generatorVersion==='v0.9-r11'||b.generatorVersion==='v0.9-r12'||b.generatorVersion==='designer-canyon-v1'||b.generatorVersion==='canyon-roadlock-v1'))))?seamlessBank(course.at(-1)!.end,d=>generatedBank(curvatureForDemand(pilotSample(b,d).demand),pilotWeights(b,d),3),b.bankFeatures??[]):undefined;const track=bankTrack(createTrack({course,heightAt:d=>pilotSample(b,d),demandAt:d=>pilotSample(b,d).demand,loop:false,banking:bank===undefined&&!legacy,bankWeights:d=>pilotWeights(b,d),smoothBank:!!bank4,bankAt:bank4??(b.generatorVersion==='v0.9-r3'?(d,k)=>featureBank(d,generatedBank(k,pilotWeights(b,d),3),b.bankFeatures??[]):undefined)}),b.id==='L2P-B'?(bank??0):0);
  const interchange=selectRoadInterchange(b);
  if(!interchange||interchange.lanes.wide!==5)return track;
  // All consumers (Road Worker, player camera, traffic, roadside and collisions)

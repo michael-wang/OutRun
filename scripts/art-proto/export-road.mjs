@@ -1,12 +1,12 @@
-// Exact road-reference export for the 400m art blockout OR the full 5.65km
-// Road Lock. Both modes use game geometry and normal chase camera poses.
+// Exact road-reference export for the old 400m art blockout or the current
+// terrain-first fixed road. Both use game geometry and normal chase poses.
 // Runs on the developer machine after npm ci, not inside the game loop.
 import {createServer} from 'vite';
 import {writeFile, mkdir} from 'node:fs/promises';
 import {dirname, resolve} from 'node:path';
 
 const roadlock=process.argv.includes('--roadlock');
-const name=roadlock?'grand-canyon-roadlock-terrain-v3':'grand-canyon-blockout-v1';
+const name=roadlock?'grand-canyon-terrain-first':'grand-canyon-blockout-v1';
 const arg=process.argv.indexOf('--output');
 const output=resolve(arg>=0&&process.argv[arg+1]?process.argv[arg+1]:'art-prototype/output/road-reference.json');
 const server=await createServer({
@@ -28,7 +28,8 @@ try{
  const start=roadlock?BRICK_START:BRICK_START+990;
  const end=roadlock?BRICK_START+stage.length:start+400,step=roadlock?10:5,aspect=16/9;
  const frames=[];
- for(let distance=start;distance<=end;distance+=step){
+ for(let i=0;i<=Math.ceil((end-start)/step);i++){
+  const distance=Math.min(end,start+i*step);
   const p=track.sample(distance),drive=pilotSample(stage,distance);
   frames.push({
    distance,center:vec(p.position),right:vec(p.right),heading:p.roadHeading,
@@ -37,11 +38,7 @@ try{
  }
  // Fixed hero cameras are for composition in Blender. Road geometry remains
  // authoritative; the artist can hide unfinished gaps behind close rock walls.
- const cameraStops=roadlock?[
-  ['H1_Approach',420],['H1_Reveal',670],['H1_Exit',970],
-  ['H2_Approach',1530],['H2_Reveal',1730],['H2_Exit',2090],
-  ['H3_Approach',2740],['H3_Reveal',2920],['H3_Exit',3290],
- ]:[['01_Approach',1015],['02_Reveal',1120],['03_Exit',1235]];
+ const cameraStops=roadlock?(await import('../../src/terrain-first-road.json',{with:{type:'json'}})).default.cameras.map(([name,d])=>[name,d-BRICK_START]):[['01_Approach',1015],['02_Reveal',1120],['03_Exit',1235]];
  const cameras=cameraStops.map(([cameraName,relative])=>{
   const distance=BRICK_START+Number(relative),pose=track.sample(distance),drive=pilotSample(stage,distance);
   const t=chaseTargets(pose.position,pose.roadHeading,aspect,drive.grade);
@@ -54,7 +51,8 @@ try{
  // procedural carving. Road/handling never consume this additional data.
  const protectionStart=BRICK_START,protectionEnd=BRICK_START+stage.length;
  const protectionStep=5,protectionFrames=[];
- for(let d=protectionStart;d<=protectionEnd;d+=protectionStep){
+ for(let i=0;i<=Math.ceil((protectionEnd-protectionStart)/protectionStep);i++){
+  const d=Math.min(protectionEnd,protectionStart+i*protectionStep);
   const p=track.sample(d),drive=pilotSample(stage,d);
   protectionFrames.push({
    distance:d,center:vec(p.position),right:vec(p.right),
@@ -75,11 +73,7 @@ try{
   start,end,step,riverY:stage.canyonPrototype?.riverY??null,
   worldUp:[0,1,0],frames,cameras,roadProtection,
   // Fixed editorial markers. These are NOT fed back into the road generator.
-  landmarks:roadlock?[
-   {name:'hero_1_deep_valley',distance:BRICK_START+670,offset:-260},
-   {name:'hero_2_opposite_rim',distance:BRICK_START+1730,offset:260},
-   {name:'hero_3_high_plateau',distance:BRICK_START+2920,offset:-300},
-  ]:[
+  landmarks:roadlock?[]:[
    {name:'far_rim_center',distance:BRICK_START+1310,offset:-235},
    {name:'right_cliff',distance:BRICK_START+1190,offset:140},
    {name:'river_bend',distance:BRICK_START+1290,offset:-115},

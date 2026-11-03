@@ -1,9 +1,10 @@
 # Grand Canyon · Grand Curves v3 → Blender terrain pass
 
-**Current local handoff: Final Attempt, below. Visual acceptance FAILED.**
-The earlier terrain handoff is retained as history; the roadlock Blender URL
-now loads `grand_canyon_final.glb`. This last attempt starts from an empty
-Blender scene, superseding the earlier permission to reuse v2 rock meshes.
+**Current local handoff: Terrain First, below — BLOCKED after two visual
+revisions.** The same roadlock Blender URL now loads `canyon_terrain_first.glb`
+and a new 2,817.5m fixed road. The older 5.65km road-lock specifications and
+failed handoffs below are historical, superseded for this experiment by the
+owner's terrain-first brief. No old terrain was imported as the new base.
 
 ## Road is the source of truth
 
@@ -273,3 +274,122 @@ road frames, unsafe streaming frames, stalls or browser errors; maximum
 lateral deviation 0.489m. The video was decoded at seven points including
 start and finish; all nine static/game images were inspected. This verifies
 playability of the recorded run, not the failed scenic-quality requirements.
+
+## Terrain First — 2026-11-03 — BLOCKED, visual iteration limit reached
+
+The new experiment is playable and has all requested evidence, but its visual
+requirements remain unmet. Two major visual revisions were used; no further
+art iteration or feature expansion is authorized within this experiment.
+Engineering checks do not override this failed visual gate.
+
+### Terrain-first sequence and actual tools
+
+An empty Blender scene was used to build one connected canyon surface,
+continuous river, two widening basins, stepped sedimentary rims and a natural
+narrows at world Z≈780m. `GateA_Terrain.blend` preserves this pre-road baseline.
+The original terrain-only overview images were inspected before road controls
+were authored. No Road Lock coordinates, previous .blend terrain or GLB were
+read by the new terrain authoring script.
+
+Tools actually used: Blender Clouds texture with an applied Displace modifier,
+Smooth modifier, local BMesh subdivision near the road interface, direct local
+vertex deformation for two basin openings, interpolated vertex sediment
+colors, and Noise-to-Bump shader nodes. Sculpt Mode brushes, Voxel Remesh and
+Geometry Nodes were **not** used. No third-party models/textures were used.
+The GLB carries displaced geometry and vertex colors; the Blender procedural
+bump shading is not exported, and game lighting/fog differs from Cycles.
+
+The road is an offline-authored cubic B-spline following the eastern bench,
+descending through Hero 1, climbing to the narrow crossing, looping around
+the opposite rim, then exiting downstream. Its sampled frames are checked
+into `src/terrain-first-road.json`; the tiny fixed-road adapter interpolates
+those frames for both game and worker. Terrain is entirely static GLB data.
+Existing four-lane white markings, input/handling, chase-camera code, streaming
+and collision logic are retained. The old 5.65km road is replaced at this
+experimental entry, as authorized. The 69km trip generator is not changed.
+
+The final road is 2,817.5m, with a 180km/h rolling start, up to approximately
+12° banking, maximum grade 0.499, and a tight opposite-rim hairpin requiring
+heavy braking. The bridge spans about 285m of road over the existing narrows;
+its deck and piers are art only, with the original game pavement above it.
+
+### Two revisions and the remaining failure
+
+1. Initial views revealed deep road trenches. Revision 1 moved the road toward
+   higher benches, shortened the entry, and replaced per-face color steps with
+   blended vertex colors. A full drive completed in 34.8s, but neither main
+   view presented the river effectively.
+2. Revision 2 opened two local basin sightlines, moved the descending rim
+   approach and opposite-rim viewpoint, widened the river within its existing
+   bed, grounded the bridge piers, and combined the edge posts into one draw.
+
+Final six game views still fail the brief: Hero 1 is dominated by pavement,
+the next climb and the bridge. Hero 2 shows the opposite bank and earlier
+road but not a strong, readable river/deep-valley composition. The river is
+clear in the plan view and remains largely obscured from normal driving.
+The plateau surfaces are overly rounded; cliff streaks look stretched and
+repetitive. Road fitting creates ribbon-like raised retaining slopes and
+artificial cut faces, visible in the oblique overview. These do not satisfy
+the requested natural road/terrain relationship, despite support checks.
+The bridge and tall piers remain crude and visually oversized. This is an
+artist/execution limitation, not a reason to modify the normal camera or
+claim the terrain-first method itself cannot work.
+
+### Saved artifacts and use
+
+All large files remain ignored in `art-prototype/output/terrain-first/`:
+
+- `Grand_Canyon_Terrain_First.blend`: editable final failed candidate.
+- `GateA_Terrain.blend`: original canyon before fitting the road.
+- `canyon_terrain_first.glb`: art-only export, approximately 16.9MB.
+- `A01_Canyon_Plan.png`, `A02_Canyon_Section.png`, `A03_Hero_Basins.png`:
+  final terrain overviews with the reference pavement/bridge hidden.
+- `baseline-A01_Canyon_Plan.png`, `baseline-A02_Canyon_Section.png`,
+  `baseline-A03_Hero_Basins.png`: preserved terrain-only Gate A views before
+  road fitting, rerendered unchanged from `GateA_Terrain.blend`.
+- `H1_Approach.png`, `H1_Reveal.png`, `H1_Exit.png`, and the corresponding
+  `H2_*.png`: six 1920×1080 Cycles renders using original game chase poses.
+- `drive-H1_*.png`, `drive-H2_*.png`: six 1920×1080 actual game captures.
+- `Terrain_First_Drive.webm`: complete continuous 1920×1080/30fps recording.
+- `review.html`: local gallery/video; `manifest.json`, `summary.json`,
+  `structure-check.json`, `driving-report.json`: evidence and measurements.
+
+With `npm run dev` running, open
+`http://127.0.0.1:5173/?showcase=canyon&road=lock&art=blender`.
+The local Vite/preview endpoint serves only the art file, without copying it
+into `dist` or applying any scene translation/rotation/scale correction.
+
+Edit the saved mesh collections `10_CANYON_SCULPT`, `20_RIVER`, and
+`30_BRIDGE_AND_ROAD_EDGES`. Reference pavement is in
+`00_REFERENCE_DO_NOT_EXPORT`; normal game cameras are in `91_GAME_CHASE`.
+Do not rerun the base/fit scripts over manual scene edits. Export existing art:
+
+```powershell
+$env:BLENDER_BIN = 'C:\astra-dev\tools\blender-4.5.13-windows-x64\blender.exe'
+& $env:BLENDER_BIN --background art-prototype/output/terrain-first/Grand_Canyon_Terrain_First.blend --python-exit-code 1 --python scripts/art-proto/export-terrain-first.py
+```
+
+Append `-- --render` for the six chase renders. The authoring scripts are
+offline experiment recipes, not runtime scenery or a new terrain editor.
+
+### Final verification
+
+`npm run build` passed locally. No CI was run and no QA system was added.
+The full real Chrome/WebGL drive used automated steering/throttle/braking
+through the existing input hook, normal RAF physics and normal chase camera.
+It ran continuously from 350m to 3,167.5m with no intermediate reset/teleport.
+Elapsed gameplay: **42.843s**. Video decoded at seven points: **42.839s**.
+
+GLB fetch/parse: **36.1ms**; startup ready: **728ms**; art: **6 meshes,
+559,410 triangles**. Warm-run median / 5th-percentile FPS: **60.0 / 59.99**
+(first ten 200ms samples excluded). Across 2,571 frames: zero missing roads,
+unsafe streaming frames, stalls or JavaScript errors. Maximum lateral
+deviation was 0.323m. These are local desktop results, not physical Pixel 8
+measurements or human approval of handling.
+
+An art-only BVH check covered 565 road frames including the exact endpoint,
+seven lateral offsets (-10/-7/-3.5/0/3.5/7/10m), 3,955 upward rays from 5cm to
+80m above pavement: zero terrain hits. Five downward support offsets per
+frame found no gaps over 1m, maximum 0.248m. This is sampled structural
+evidence, not an exhaustive collision proof, naturalness check, or aesthetic
+pass. Main remains untouched; only dev code/data and this record are pushed.
