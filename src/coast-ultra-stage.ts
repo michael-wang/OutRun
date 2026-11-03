@@ -25,11 +25,11 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:20,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ revision:21,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
  name:'Azure Coast · Dusk & Night Market',
  intent:'Golden-hour coastal road with beach coves, lit homes and lively night markets.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-dusk-market-r3-804',
- stageCode:'COAST-DUSK-R3',tripCode:'COAST-DUSK-R3',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-dusk-neighbourhood-r4-804',
+ stageCode:'COAST-DUSK-R4',tripCode:'COAST-DUSK-R4',
  length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:4,roadWidth:4*LANE_WIDTH,
  placements:[
   gentleRise,

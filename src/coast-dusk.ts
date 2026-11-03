@@ -28,11 +28,38 @@ export function addCoastDusk(scene:THREE.Scene,sample:(d:number)=>{position:THRE
   fragmentShader:`varying vec3 ray;uniform vec3 sun;${COAST_SKY_GLSL}void main(){gl_FragColor=vec4(coastSky(normalize(ray),sun),1.0);}`,
  }));
  sky.name='coast-dusk-sky';sky.frustumCulled=false;sky.renderOrder=-10;scene.add(sky);
- // Only four nearby lamps illuminate geometry; distant fixtures remain emissive instances.
- const positions=COAST_LAMPS.map(d=>{const p=sample(d),v=p.position.clone().addScaledVector(p.right,10);v.y=coastBeachHeight(14,p.position.y,p.right.y,d)+7.1;return v;});
- const lights=Array.from({length:4},()=>{const light=new THREE.PointLight('#ffc981',115,30,2);scene.add(light);return light;});
- return {update(distance:number){
-  const first=Math.floor((distance-COAST_LAMPS[0])/64)-1;
-  lights.forEach((light,i)=>{const index=first+i;light.intensity=index>=0&&index<positions.length?115:0;if(light.intensity)light.position.copy(positions[index]);});
- }};
+ // All fixtures and ground pools are fixed, always-on coastal art. No distance gate.
+ const poleGeo=new THREE.CylinderGeometry(.055,.085,11.5,8),boxGeo=new THREE.BoxGeometry(1,1,1);
+ const poles=new THREE.InstancedMesh(poleGeo,new THREE.MeshStandardMaterial({color:'#454955'}),COAST_LAMPS.length);
+ const arms=new THREE.InstancedMesh(boxGeo,new THREE.MeshStandardMaterial({color:'#454955'}),COAST_LAMPS.length);
+ const heads=new THREE.InstancedMesh(boxGeo,new THREE.MeshStandardMaterial({color:'#ffe5b6',emissive:'#ffd298',emissiveIntensity:2.5}),COAST_LAMPS.length);
+ const dummy=new THREE.Object3D(),positions:number[]=[],uvs:number[]=[],indices:number[]=[],bulbs:number[]=[];
+ for(const [index,d] of COAST_LAMPS.entries()){
+  const p=sample(d),base=p.position.clone().addScaledVector(p.right,14),ground=coastBeachHeight(14,p.position.y,p.right.y,d);
+  const yaw=Math.atan2(p.right.z,-p.right.x);
+  dummy.rotation.set(0,yaw,0);dummy.scale.set(1,1,1);dummy.position.set(base.x,ground+5.75,base.z);dummy.updateMatrix();poles.setMatrixAt(index,dummy.matrix);
+  const head=p.position.clone().addScaledVector(p.right,12.2);
+  dummy.position.set((base.x+head.x)/2,ground+11.5,(base.z+head.z)/2);dummy.scale.set(1.9,.085,.10);dummy.updateMatrix();arms.setMatrixAt(index,dummy.matrix);
+  dummy.position.set(head.x,ground+11.43,head.z);dummy.scale.set(.75,.12,.33);dummy.updateMatrix();heads.setMatrixAt(index,dummy.matrix);
+  bulbs.push(head.x,ground+11.36,head.z);
+  const first=positions.length/3,xs=[-3,0,4,7,7.7,11,15,20,24];
+  for(let row=0;row<=16;row++){
+   const at=d-18+row*36/16,q=sample(at);
+   for(const x of xs){const v=q.position.clone().addScaledVector(q.right,x);v.y=(Math.abs(x)<=7?q.position.y+q.right.y*x:coastBeachHeight(x,q.position.y,q.right.y,at))+.055;positions.push(v.x,v.y,v.z);uvs.push((x-10)/14,(at-d)/18);}
+  }
+  for(let row=0;row<16;row++)for(let col=0;col<xs.length-1;col++){const a=first+row*xs.length+col,b=a+xs.length;indices.push(a,b,a+1,a+1,b,b+1);}
+ }
+ for(const mesh of [poles,arms,heads]){mesh.name='coast-permanent-streetlights';scene.add(mesh);}
+ const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));geometry.setIndex(indices);
+ const pool=new THREE.Mesh(geometry,new THREE.ShaderMaterial({
+  transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,
+  vertexShader:`varying vec2 spot;varying float distanceToEye;void main(){spot=uv;vec4 v=modelViewMatrix*vec4(position,1.0);distanceToEye=-v.z;gl_Position=projectionMatrix*v;}`,
+  fragmentShader:`varying vec2 spot;varying float distanceToEye;void main(){float a=exp(-dot(spot,spot)*3.7)*(1.0-smoothstep(.65,1.0,length(spot)))*(1.0-smoothstep(250.0,1450.0,distanceToEye));gl_FragColor=vec4(.95,.57,.22,a*.24);}`,
+ }));pool.name='coast-fixed-lamp-pools';scene.add(pool);
+ const haloGeometry=new THREE.BufferGeometry();haloGeometry.setAttribute('position',new THREE.Float32BufferAttribute(bulbs,3));
+ const halos=new THREE.Points(haloGeometry,new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  vertexShader:`varying float fade;void main(){vec4 v=modelViewMatrix*vec4(position,1.0);gl_Position=projectionMatrix*v;gl_PointSize=clamp(250.0/-v.z,2.5,18.0);fade=1.0-smoothstep(250.0,1450.0,-v.z);}`,
+  fragmentShader:`varying float fade;void main(){float r=length(gl_PointCoord-.5)*2.0;gl_FragColor=vec4(1.0,.73,.38,(1.0-smoothstep(0.0,1.0,r))*fade*.65);}`,
+ }));halos.name='coast-permanent-lamp-glow';scene.add(halos);
+ return {};
 }

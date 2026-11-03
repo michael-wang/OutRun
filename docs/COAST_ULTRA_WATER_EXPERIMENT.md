@@ -95,3 +95,25 @@ physics/chase camera: warmed FPS 59.99-60.00, local readiness ~1.98s, no missing
 road frames, unsafe streaming frames, stalls or browser/shader errors. Basic
 water fallback also loads. Build and 22 relevant tests pass; no CI or physical
 Pixel 8 testing. Local screenshots/video/telemetry: `art-prototype/output/coast-dusk/`.
+
+## 2026-11-04 always-lit neighbourhood polish / R4
+
+Removed the four moving/proximity-selected PointLights. All 52 street fixtures
+are now permanent instanced art with 11.5m slender poles, short arms, emissive
+heads and small halos. Fixed additive ground pools follow the road/sand surface;
+they stay on regardless of car distance (ordinary distance haze still applies).
+These are inexpensive static lighting approximations, not dynamic illumination
+of passing cars. No lights switch on as the car approaches.
+
+Homes mix four height/roof families, varied setbacks, slight rotations and gaps.
+Window occupancy varies by household and room, including fully dark houses and
+several window colour temperatures. Night-market counters now distinguish hot
+food, drinks, produce and clothing, with roof/stock silhouettes and irregular
+spacing/setbacks. Bulb strings span the changed gaps. Beach kiosks gain three
+warm pendant lamps and illuminated signs. Driving geometry/handling unchanged.
+
+Full desktop Chrome 1080p drive: about 60 FPS after warmup, ~1.68s local readiness,
+no missing road/unsafe streaming frames, stalls or browser errors. Build and 22
+relevant tests pass. No CI or physical phone testing. Reference-video samples,
+new screenshots, telemetry and recording remain ignored in
+`art-prototype/output/coast-dusk-r4/`.

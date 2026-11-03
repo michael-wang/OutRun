@@ -1,4 +1,4 @@
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,COAST_DISTRICTS,COAST_LAMPS,coastDistrictAt} from './coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastRockX,COAST_DISTRICTS,coastDistrictAt} from './coast-layout';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
 import {canyonBend,canyonBlend} from './canyon-identity';
@@ -206,18 +206,32 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   part(g,color,x,y,z,sx,sy,sz,0,0,0,2.2);
  }
  function coastHome(key:number,shop=false){
-  yaw+=Math.PI; // Local -X faces the road; the sampler's right vector is -X.
-  const h=shop?8:6+Math.floor(random(key)*3)*2.8,w=9+random(key+2)*3;
-  part(boxes,['#c8b49f','#b5bcc1','#bd9180'][Math.abs(key)%3],0,h/2,0,9,h,w);
-  part(boxes,'#6e5d62',0,h+.25,0,9.8,.5,w+.8);
-  // Road-facing balconies, illuminated rooms and dark neighbouring windows.
-  for(let floor=0;floor<Math.floor(h/2.8);floor++)for(const z of [-w*.28,w*.28]){
+  yaw+=Math.PI+(random(key+94)-.5)*.22;
+  const type=Math.floor(random(key+330)*4),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
+  const wall=['#c8b49f','#b5bcc1','#bd9180','#b7bb9e','#d2baab'][Math.floor(random(key+8)*5)];
+  part(boxes,wall,0,h/2-.15,0,9,h+.3,w);
+  if(type<2&&!shop){
+   part(cone,type?'#795a51':'#676674',0,h+1,0,7,2.2,w*.77,0,Math.PI/4);
+   if(type===0){part(boxes,wall,-4.7,1.6,w*.25,1.7,3.2,2.9);part(boxes,'#6e5d62',-5.2,3.3,w*.25,2.7,.25,3.6);}
+  }else{
+   part(boxes,'#6e5d62',0,h+.2,0,9.6,.4,w+.6);
+   if(type===3){part(cylinder,'#9ba3a4',1.8,h+1.2,-w*.22,1.2,2,1.2);part(boxes,wall,1,h+.75,w*.24,3,1.5,2.6);}
+  }
+  // Different households have different occupancy; some homes are entirely dark.
+  const occupancy=random(key+201)<.23?0:.16+random(key+213)*.43;
+  for(let floor=0;floor<Math.floor(h/2.8);floor++)for(const [column,z] of [-w*.28,w*.28].entries()){
    const y=1.5+floor*2.8;
-   part(boxes,'#524c58',-4.56,y,z,.12,1.65,2.1);
-   if(random(key+floor*7+z)>.28)glow(boxes,'#ffd298',-4.64,y,z,.07,1.4,1.85);
-   if(floor){part(boxes,'#c8b49f',-5,y-.9,z,1.4,.18,2.8);part(boxes,'#665d61',-5.6,y-.45,z,.1,.75,2.8);}
+   part(boxes,'#293643',-4.56,y,z,.12,1.65,1.9);
+   if(random(key*31+floor*7+column*17+923)<occupancy){
+    const color=['#ffca83','#dfbd8e','#b7cbd1'][(key+column+floor)%3];
+    part(boxes,color,-4.64,y,z,.07,1.35,1.65,0,0,0,.65+random(key+floor+column)*.75);
+    part(boxes,'#665d61',-4.7,y,z,.07,1.4,.06);
+   }
+   if(floor&&type%2===0){part(boxes,wall,-5,y-.9,z,1.4,.18,2.6);part(boxes,'#665d61',-5.6,y-.45,z,.1,.75,2.6);}
+   else if(floor)part(boxes,'#6e5d62',-4.8,y+.92,z,.65,.14,2.3);
   }
   part(boxes,'#665d61',-4.65,1.15,0,.12,2.3,1.1);
+  if(random(key+77)>.65)glow(round,'#ffd298',-4.9,2.65,.9,.13,.18,.13);
   if(shop){
    part(boxes,'#315e66',-4.7,1.4,0,.15,2.6,w*.88);
    glow(boxes,'#ffc582',-4.81,2.9,0,.12,.65,w*.9);
@@ -226,19 +240,33 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
  }
  function nightStall(key:number){
-  yaw+=Math.PI;
+  yaw+=Math.PI+(random(key+73)-.5)*.24;
+  const type=key%4;
   const tint=['#ae534a','#317f87','#ba8745'][key%3];
   part(boxes,'#6c5045',0,.55,0,4,1.1,5.6);
   part(boxes,'#d3b691',-2.15,1.15,0,.85,.18,5.8);
   for(const x of [-2,2])for(const z of [-2.7,2.7])part(cylinder,'#665d61',x,1.95,z,.075,3.9,.075);
-  for(let j=0;j<6;j++)part(boxes,j%2?tint:'#d0c1a4',0,3.8,-2.5+j,5.7,.18,1,.04,0,-.08);
+  if(type===2){for(const side of [-1,1])part(boxes,tint,side*1.4,3.85,0,2.95,.18,6,0,0,-side*.24);}
+  else if(type===3){part(boxes,'#6e5d62',1.5,2,0,1,4,5.6);part(boxes,tint,0,4.05,0,5.7,.2,6);}
+  else for(let j=0;j<6;j++)part(boxes,j%2?tint:'#d0c1a4',0,3.8,-2.5+j,5.7,.18,1,.04,0,-.08);
   part(boxes,tint,-2.55,3.5,0,.16,.55,6);
   glow(boxes,'#ffcc82',-2.65,3.18,0,.10,.14,5.4);
   // Backlit menu blocks and trays/pots instead of identical empty boxes.
   glow(boxes,key%2?'#ff9a72':'#a8d9c6',-2.68,2.75,1.8,.1,.8,1.1);
-  for(let j=0;j<3;j++){
-   part(cylinder,'#434650',-2,1.45,-1.5+j*1.3,.38,.44,.38);
-   part(round,'#dfac67',-2,1.72,-1.5+j*1.3,.32,.10,.32);
+  if(type===0){ // Noodle pots and a glowing grill.
+   for(let j=0;j<3;j++){part(cylinder,'#434650',-2,1.45,-1.5+j*1.3,.38,.44,.38);part(round,'#dfac67',-2,1.72,-1.5+j*1.3,.32,.10,.32);}
+   glow(boxes,'#ff7952',-2.57,.9,-1,.05,.12,1.5);
+  }else if(type===1){ // Drinks cart: tall chillers, bottles and stacked cups.
+   part(boxes,'#315e66',1,1.6,-1.8,1.2,3.2,1.5);glow(boxes,'#a8d9c6',.35,2,-1.8,.06,1.6,1.2);
+   for(let j=0;j<6;j++){part(cylinder,j%2?'#36a8b1':'#edc969',-2,1.5,-2+j*.7,.14,.5,.14);part(cylinder,'#fff0d3',-2,1.81,-2+j*.7,.07,.15,.07);}
+  }else if(type===2){ // Fruit/flower stand: open crates and bright produce heaps.
+   for(let j=0;j<3;j++){
+    part(boxes,'#aa8960',-2,1.4,-1.6+j*1.5,.9,.3,1.25);
+    for(let k=0;k<4;k++)part(round,['#e76f51','#edc969','#527849'][j],-2+(k%2)*.23,1.66,-1.9+j*1.5+Math.floor(k/2)*.38,.2,.18,.2);
+   }
+  }else{ // Clothing/accessories kiosk, with hanging garments instead of cookware.
+   part(boxes,'#aa8960',-.4,2.8,0,.08,.08,4.8);
+   for(let j=0;j<4;j++){const z=-1.7+j*1.1,col=['#e76f51','#36a8b1','#edc969','#c8b49f'][j];part(boxes,col,-.4,2.3,z,.18,.9,.65);part(boxes,col,-.4,2.65,z,.18,.26,1);}
   }
   for(const z of [-2.6,2.6]){
    part(cylinder,'#665d61',-2.8,3.05,z,.025,.9,.025);
@@ -263,37 +291,31 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   const inChunk=(d:number)=>d>=range.start&&d<Math.min(length,range.end);
   for(const district of COAST_DISTRICTS){
    const market=district.kind==='market',step=market?13:25;
-   for(let d=district.start+10,key=0;d<district.end-8;d+=step,key++){
-    if(!inChunk(d))continue;
+   for(let nominal=district.start+10,slot=0;nominal<district.end-8;nominal+=step,slot++){
+    const key=slot+Math.round(district.start),d=nominal+(random(key+21)-.5)*(market?5:10);
+    if(!inChunk(d)||(!market&&random(key+417)<.13))continue;
     if(market){
-     beachAnchor(d,23+random(key+10)*2);if(clear(5))nightStall(key);
+     beachAnchor(d,22+random(key+10)*5);if(clear(5))nightStall(key);
      // A second, higher street frontage gives the stalls a neighbourhood context.
-     if(key%3===0){beachAnchor(d,43);if(clear(9))coastHome(key,true);}
+     if(key%3===0){beachAnchor(d+3,44+random(key+55)*6);if(clear(9))coastHome(key,true);}
      for(let j=0;j<3;j++){
       beachAnchor(d-4+j*3.1+random(key*17+j)*2,17+random(key*7+j)*3.2);if(clear(1)){yaw+=random(key+j)*6;beachPerson(key+j,random(key*3+j)>.84);}
      }
      // Sagging bulb strings follow the pedestrian strip, outside the road.
      beachAnchor(d,18.5);
      part(cylinder,'#665d61',0,2.5,0,.045,5,.045);
-     for(let j=0;j<5;j++){
+     const span=nominal+step+(random(key+22)-.5)*5-d;
+     for(let j=0;j<5&&nominal+step<district.end-8;j++){
       const y=4.9-Math.sin(j/5*Math.PI)*.6,next=4.9-Math.sin((j+1)/5*Math.PI)*.6;
-      part(boxes,'#665d61',0,(y+next)/2,j*2.6+1.3,.025,.025,Math.hypot(2.6,next-y),-Math.atan2(next-y,2.6));
-      glow(round,'#ffd298',0,y-.11,j*2.6,.10,.13,.10);
+      part(boxes,'#665d61',0,(y+next)/2,(j+.5)*span/5,.025,.025,Math.hypot(span/5,next-y),-Math.atan2(next-y,span/5));
+      glow(round,'#ffd298',0,y-.11,j*span/5,.10,.13,.10);
      }
     }else{
-     beachAnchor(d,29+random(key+19)*4);if(clear(10))coastHome(key);
-     if(key%2===0){beachAnchor(d+8,53);if(clear(10))coastHome(key+7);}
+     beachAnchor(d,27+random(key+19)*12);if(clear(10))coastHome(key);
+     if(key%2===0){beachAnchor(d+6+random(key+31)*9,55+random(key+33)*8);if(clear(10))coastHome(key+7);}
      beachAnchor(d-8,18);if(clear(3)){part(boxes,'#c0aa91',0,.35,0,2,.7,4);part(round,'#527849',0,1.05,0,1.2,.7,2.1);}
     }
    }
-  }
-  for(const d of COAST_LAMPS){
-   if(!inChunk(d))continue;
-   beachAnchor(d,14);yaw+=Math.PI;
-   part(cylinder,'#454955',0,3.55,0,.10,7.1,.10);
-   part(boxes,'#454955',-2,7.1,0,4.1,.14,.16);
-   part(boxes,'#454955',-4,7.1,0,1,.22,.55);
-   glow(boxes,'#ffdcaa',-4,6.96,0,.85,.08,.45);
   }
   for(const bay of COAST_BEACHES){
    // Loose pockets, never a repeating row along the whole highway.
@@ -323,7 +345,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
      part(boxes,'#36a8b1',0,1.25,-1.4,3.9,.18,.8);
      for(const x of [-1.65,1.65])for(const z of [-1.3,1.3])part(cylinder,'#aa8960',x,2.1,z,.06,2.2,.06);
      for(let j=0;j<6;j++)part(boxes,j%2?'#fff0d3':'#e76f51',-1.65+j*.66,3.25,0,.66,.14,3.8,.08);
-     part(boxes,'#edc969',0,2.75,1.35,2.3,.45,.15);
+     glow(boxes,'#ffd298',0,2.75,1.35,2.3,.45,.15);
+     for(const x of [-1.4,0,1.4]){part(cylinder,'#665d61',x,2.85,-1.65,.02,.5,.02);glow(round,'#ffca83',x,2.57,-1.65,.14,.20,.14);}
      part(round,'#bd8d68',0,1.9,0,.22,.25,.22);
      part(boxes,'#e76f51',0,1.5,0,.5,.5,.3);
     }
