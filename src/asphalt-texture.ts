@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 
+let asphaltCanvas:HTMLCanvasElement|undefined;
+
 /** One small repeating texture; no extra road geometry or material passes. */
 export function asphaltTexture(){
+ if(!asphaltCanvas){
  const canvas=document.createElement('canvas');canvas.width=256;canvas.height=512;
  const ctx=canvas.getContext('2d')!,pixels=ctx.createImageData(256,512);let seed=7127;
  const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
@@ -16,6 +19,9 @@ export function asphaltTexture(){
   ctx.fillStyle=`rgba(65,70,72,${.12+random()*.12})`;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+w*.8,y-2);ctx.lineTo(x+w,y+h*.3);ctx.lineTo(x+w-3,y+h);ctx.lineTo(x+2,y+h-3);ctx.closePath();ctx.fill();
   if(i%3===0){ctx.strokeStyle='rgba(52,56,57,.24)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(x,y+h+2);ctx.lineTo(x+w*.4,y+h+4);ctx.lineTo(x+w,y+h+1);ctx.stroke();}
  }
- const texture=new THREE.CanvasTexture(canvas);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
+ asphaltCanvas=canvas;
+ }
+ // Share immutable pixels, but keep each scene's GPU texture/disposal independent.
+ const texture=new THREE.CanvasTexture(asphaltCanvas);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
  texture.repeat.set(1/3.5,1/16);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;return texture;
 }

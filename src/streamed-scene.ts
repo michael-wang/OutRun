@@ -28,6 +28,12 @@ export class StreamedScene {
 
  private bounds='';
  private annotationMaterials=new Set<THREE.Material>();
+ private clippingPlanes:THREE.Plane[]=[];
+ private environmentOpacity=1;private clippedMaterials=new Set<THREE.Material>();
+ setEnvironmentOpacity(value:number){this.environmentOpacity=value;for(const m of this.clippedMaterials)m.opacity=m.userData.journeyBaseOpacity*value;}
+ setClippingPlanes(planes:THREE.Plane[]){this.clippingPlanes=planes;for(const group of Object.values(this.groups))group.traverse(o=>this.clipMaterial(o));}
+ private clipMaterial(o:THREE.Object3D){if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m.clippingPlanes!==this.clippingPlanes){m.clippingPlanes=this.clippingPlanes;m.clipShadows=true;m.userData.journeyBaseOpacity??=m.opacity;m.alphaHash=true;m.opacity=m.userData.journeyBaseOpacity*this.environmentOpacity;this.clippedMaterials.add(m);m.needsUpdate=true;}}
+
  private sceneryCounts=new Map<number,{instances:number;draws:number;clearance:unknown}>();
  private busy=false;private initialized=false;private position=0;private materials=new Map<string,THREE.MeshStandardMaterial>();
  private markerGeometries=[new THREE.BoxGeometry(.15,1.2,.15),new THREE.BoxGeometry(.38,1.6,.3),new THREE.BoxGeometry(.42,.3,.34),new THREE.BoxGeometry(.4,.35,.32)];
@@ -66,7 +72,7 @@ export class StreamedScene {
  }
  private note(kind:string,index:number,ms:number){this.history.push({kind,index,ms});if(this.history.length>2000)this.history.shift();}
  private chunk(index:number){let chunk=this.chunks.get(index);if(!chunk){chunk={index,objects:[],groups:{},geometries:new Set(),road:'missing',scenery:'missing'};this.chunks.set(index,chunk);}return chunk;}
- private attach(c:Chunk,name:string,object:THREE.Object3D){let group=c.groups[name];if(!group){group=new THREE.Group();group.name=`chunk-${c.index}-${name}`;group.userData.chunkIndex=c.index;c.groups[name]=group;this.groups[name].add(group);}group.add(object);c.objects.push(object);}
+ private attach(c:Chunk,name:string,object:THREE.Object3D){if(this.clippingPlanes.length)this.clipMaterial(object);let group=c.groups[name];if(!group){group=new THREE.Group();group.name=`chunk-${c.index}-${name}`;group.userData.chunkIndex=c.index;c.groups[name]=group;this.groups[name].add(group);}group.add(object);c.objects.push(object);}
  update(distance:number){
   this.position=Math.max(0,Math.min(this.length,distance));const first=Math.floor(Math.max(0,this.position-this.behind)/this.chunkLength),last=Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((this.position+this.ahead)/this.chunkLength));
   const bounds=`${first}:${last}`;if(bounds===this.bounds){this.dispatch();return;}this.bounds=bounds;

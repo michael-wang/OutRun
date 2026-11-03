@@ -1,4 +1,73 @@
-# Default three-scene journey — 2026-11-04
+# Default continuous coastal journey — 2026-11-04
+
+Open the bare `/` URL: sunset coast → daytime Urban Jungle → dawn canyon.
+The accepted scenic routes retain their native geometry. Two new four-lane
+highways connect their endpoints; controls, gear, speed and the chase camera
+continue through the joins. There is no chapter card, blackout or countdown.
+
+Each connector has a 6.5 m outward-sloping retaining wall, a setback verge,
+low guardrails and slim lamps. This replaces the rejected 26 m vertical walls
+and leaves a broad sky visible. The sky, sun direction, fog and illumination
+blend during driving. Native scenery dissolves behind the walls before the
+coordinate rebase and emerges gradually on the far side.
+
+The middle of each connector is identical in both scenes. A rigid coordinate
+rebase preserves road-relative vehicle state and camera heading. It does not
+rescale or reposition Blender artwork to disguise a road mismatch. Static
+pavement, stripe, wall, texture and lamp repetition agree at the rebase.
+
+Preparation starts 4.5 km before the scenic endpoint. The existing road worker
+prepares the next road; models, shaders and GPU buffers are prepared in the
+background. GPU uploads are spread across animation frames. Numeric road
+tracks and immutable asphalt pixels are cached during startup. Scene-owned
+textures and outgoing worker/GPU allocations are still disposed independently.
+The same player car is carried forward rather than rebuilt for each scene.
+
+Normal connections remain drivable while loading. An unusually slow/failed
+asset request retries while the car traverses the longer reserved highway;
+if that reserve is exhausted, the existing safety hold keeps the car on valid
+road until preparation succeeds. This is a finite loading reserve, not a claim
+of uninterrupted driving when the server or GLB is unavailable.
+
+The local canyon asset remains required:
+`art-prototype/output/cliff-pass-r4/canyon_cliff_pass_r4.glb`.
+Vite dev/preview serve it locally; the static build does not bundle it.
+No CI, public deployment or main promotion is part of this milestone.
+
+Current validation and captures are under the ignored local folder
+`art-prototype/output/seamless-journey/`. Physical Pixel 8 performance is not
+measured; mobile results refer to Chrome touch emulation with 4x CPU slowdown.
+
+Validation on 2026-11-04:
+
+- Bare-URL desktop drive: 357.32 seconds, normal physics and chase camera,
+  automated throttle/brake/steering, no distance jumps during the recorded run.
+  Finished all three scenes; no page errors, missing-road frames, unsafe-road
+  frames or off-road samples. Startup was 1.67 seconds on this desktop.
+- Handoffs took 12.3 / 10.8 ms, preserving speed exactly and camera heading
+  relative to the road. Median / p99 animation-frame intervals were 16.7 /
+  16.8 ms. Two scenery-emergence frames still took 133 / 183 ms; this is not a
+  claim of hitch-free performance on every device. The former 600 ms background
+  upload spike was absent after distributing GPU preparation across frames.
+- An artificially delayed canyon request (18 seconds) exercised the longer
+  highway reserve and successfully joined at unchanged speed. Destination sky
+  is configured from fixed road data before loading, so download completion
+  cannot suddenly move the sun. The two initial holds in that targeted test
+  followed its deliberate diagnostic distance jump, not continuous driving.
+- `npm run build` and focused journey, connector, disposal, camera-depth and
+  stream tests passed. No CI was run. Browser recordings/screenshots are local
+  validation artifacts, not physical Pixel 8 measurements.
+- Final touch-emulation check (844 x 390, 4x CPU): startup 2.40 seconds,
+  both joins and replay passed without page errors; joins took 40.7 / 21.5 ms.
+  Median / p99 frame intervals were 16.7 / 16.8 ms, worst 150 ms during
+  preparation. This uses the desktop GPU and cannot predict phone GPU timings.
+
+Full recording: `Seamless_Coast_City_Canyon.webm`; telemetry: `full-drive.json`.
+The older diagnostic recording is preserved as `Baseline_Before_Prewarm_Fix.webm`.
+
+---
+
+# Historical first implementation — chapter fades (2026-11-04)
 
 Open `/` and press Play. The default game now runs these existing scenes in order:
 

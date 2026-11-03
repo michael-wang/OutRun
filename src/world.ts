@@ -22,7 +22,7 @@ import type {TripCandidate} from './trip';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
@@ -194,10 +194,12 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const clouds=[];for(let i=0;i<24;i++){const angle=i*2.4;for(let j=0;j<4;j++)clouds.push({p:new THREE.Vector3(400+Math.cos(angle)*1700+j*50,280+rand(i)*170,500+Math.sin(angle)*1700),s:new THREE.Vector3(70,18+rand(j+i)*15,35),r:new THREE.Euler()});}
   // These old low-altitude cloud blobs intersect the new high plateau vistas.
   if(!coastUltra&&!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
-  const car=createCar(!!dusk);scene.add(car);
+  const car=options.deferCar?new THREE.Group():createCar(!!dusk);scene.add(car);
+  if(!options.deferCar){
   const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=64;const context=shadowCanvas.getContext('2d')!;
   const gradient=context.createRadialGradient(32,32,7,32,32,31);gradient.addColorStop(0,'rgba(18,33,30,.65)');gradient.addColorStop(.55,'rgba(18,33,30,.3)');gradient.addColorStop(1,'rgba(18,33,30,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);
   const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.1,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.025;car.add(shadow);
+  }
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
   // One authoritative contact edge for the same r7 rails and marker rows emitted
   // by the Worker. Do not add invisible collision in bridge/canyon/rock overrides.

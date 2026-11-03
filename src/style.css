@@ -358,14 +358,3 @@ html[data-qa="true"]:has(#scene-inspector:not([hidden])) #stream-health-hud{
  #scene-inspector .si-feature-filters{gap:3px;margin-top:5px;padding-top:5px}
  #scene-inspector .si-feature-filters button{min-height:29px;padding:4px 2px;font-size:10px}
 }
-
-/* A short time ellipse between the three default journey chapters. */
-#journey-transition{position:fixed;inset:0;z-index:800;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#162d3b,#373145);color:#fff2d7;animation:journey-in .4s ease both;transition:opacity .5s ease;pointer-events:all;text-align:center}
-#journey-transition h1{font-size:clamp(36px,7vw,72px);margin:16px 0}
-#journey-transition small{letter-spacing:.3em;color:#ddc0a3}
-#journey-transition p{margin:12px;color:#d9c9ba}
-#journey-transition.leaving{animation:none;opacity:0}
-.journey-track{width:min(280px,65vw);height:3px;background:#ffffff25;overflow:hidden;margin:22px 0 4px}
-.journey-track i{display:block;width:40%;height:100%;background:#ffd19c;animation:journey-progress 1.2s ease-in-out infinite}
-@keyframes journey-in{from{opacity:0}to{opacity:1}}
-@keyframes journey-progress{from{transform:translateX(-100%)}to{transform:translateX(350%)}}
