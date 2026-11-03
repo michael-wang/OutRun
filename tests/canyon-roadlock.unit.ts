@@ -107,7 +107,12 @@ describe('Grand Canyon Road Lock — driving before scenery',()=>{
   expect(asphalt.colors.every(x=>x>=.7&&x<=1)).toBe(true);
   expect(a.some(x=>x.kind==='center-line')).toBe(true);
   expect(a.filter(x=>x.kind==='line').length).toBeGreaterThan(0);
-  expect(a.filter(x=>x.kind==='edge-white').length).toBe(2);
+  // Chunk upload merges both painted edge strips into one material batch.
+  const edge=a.find(x=>x.kind==='edge-white')!;
+  expect(edge).toBeDefined();
+  const lateral=Array.from(edge.uvs).filter((_,i)=>i%2===0);
+  expect(Math.min(...lateral)).toBeLessThan(-1.6);
+  expect(Math.max(...lateral)).toBeGreaterThan(1.6);
   expect(a.some(x=>x.kind==='edge-red'||x.kind==='surf')).toBe(false);
   expect(b.some(x=>x.kind==='asphalt')).toBe(true);
  },30000);
