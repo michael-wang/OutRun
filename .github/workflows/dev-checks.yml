@@ -37,7 +37,7 @@ jobs:
         run: |
           npm run art:road
           python3 -m py_compile scripts/art-proto/build_scene.py
-          node --input-type=module -e "import{readFileSync}from\'node:fs\';const x=JSON.parse(readFileSync(\'art-prototype/output/road-reference.json\',\'utf8\'));if(x.frames.length!==81||x.cameras.length!==3||x.end-x.start!==400||x.frames.some(f=>!Number.isFinite(f.center[0]+f.center[1]+f.center[2]+f.heading)))process.exit(1);console.log(\'Art ref verified: \'+x.frames.length+\' frames / \'+x.cameras.length+\' chase cameras\')"
+          node --input-type=commonjs -e "const fs=require('node:fs');const x=JSON.parse(fs.readFileSync('art-prototype/output/road-reference.json','utf8'));if(x.frames.length!==81||x.cameras.length!==3||x.end-x.start!==400||x.frames.some(f=>!Number.isFinite(f.center[0]+f.center[1]+f.center[2]+f.heading)))throw Error('Invalid exact road reference');console.log('Road frames: '+x.frames.length+' / chase cameras: '+x.cameras.length)"
       - name: Install Chromium for QA browser checks
         run: npx playwright install --with-deps chromium
       - name: Scene Inspector UI and PS4 controller smoke
