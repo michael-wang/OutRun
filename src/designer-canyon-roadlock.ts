@@ -11,18 +11,18 @@ export const CANYON_ROADLOCK_LENGTH=road.routeLength;
 export const CANYON_SCENIC_ZONES=road.scenicZones;
 export interface RoadLockMoment {readonly id:string;readonly name:string;readonly startS:number;readonly endS:number;readonly role:'hero'|'challenge'}
 export const CANYON_ROADLOCK_MOMENTS:readonly RoadLockMoment[]=[
- {id:'ENTRY',name:'Upper rim approach',startS:0,endS:850,role:'challenge'},
- {id:'H1',name:'Right-side basin overlook',startS:850,endS:1550,role:'hero'},
- {id:'NARROWS',name:'Same-bank narrows sweep',startS:1550,endS:2250,role:'challenge'},
- {id:'H2',name:'Downstream cliff cut',startS:2250,endS:2950,role:'hero'},
- {id:'EXIT',name:'Rim farewell',startS:2950,endS:road.routeLength,role:'challenge'},
+ {id:'ENTRY',name:'Long-grade rim approach',startS:0,endS:1460,role:'challenge'},
+ {id:'H1',name:'Basin drift reveal',startS:1460,endS:1740,role:'hero'},
+ {id:'NARROWS',name:'Same-bank narrows sweep',startS:1740,endS:2080,role:'challenge'},
+ {id:'H2',name:'Downstream drift reveal',startS:2080,endS:2380,role:'hero'},
+ {id:'EXIT',name:'Rim farewell',startS:2380,endS:road.routeLength,role:'challenge'},
 ];
 const duration=road.routeLength/REFERENCE_TRAVEL;
 export const CANYON_ROADLOCK_STAGE:TripCandidate={
- ...DESIGNER_CANYON_STAGE,revision:16,name:'Grand Canyon · Rim Pass R1',
- intent:'A continuous same-bank cliff road with two optional right-side scenic camera zones.',
+ ...DESIGNER_CANYON_STAGE,revision:17,name:'Grand Canyon · Rim Pass R2',
+ intent:'Long gentle grades and two right-side reveals triggered by actual drifting in the authored bends.',
  emotionalRole:'rim-pass-prototype',generatorVersion:CANYON_ROADLOCK_VERSION,
- contentFingerprint:'canyon-rim-pass-r1-01',stageCode:'CANYON-RIM-PASS-R1',tripCode:'CANYON-RIM-PASS-R1',
+ contentFingerprint:'canyon-rim-pass-r2-01',stageCode:'CANYON-RIM-PASS-R2',tripCode:'CANYON-RIM-PASS-R2',
  length:road.routeLength,baseHeight:road.frames[0][2],baseLanes:4,roadWidth:14,
  fixedRoad:road.frames,placements:[],bankFeatures:[],
  beats:CANYON_ROADLOCK_MOMENTS.map(p=>({id:p.id,startS:p.startS,endS:p.endS,world:'canyon',verticality:'rolling',role:p.name})),

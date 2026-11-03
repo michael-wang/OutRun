@@ -1,11 +1,19 @@
-"""Local road/camera-clearance edits to Rim_Pass_Working.blend only."""
-import bpy,bmesh,json,math
+"""R2: open the saved R1 scene, fit long grades and clear right-side drift reveals.
+No terrain regeneration or extra mesh subdivision. R1 remains untouched.
+"""
+import bpy,json,math
 from pathlib import Path
 from mathutils import Vector,kdtree
-ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'art-prototype/output/rim-pass-r1'
+ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'art-prototype/output/rim-pass-r2'
+if Path(bpy.data.filepath).name!='Canyon_Rim_Pass_R1.blend':raise RuntimeError('Open the saved Canyon_Rim_Pass_R1.blend')
 road=json.loads((ROOT/'src/terrain-first-road.json').read_text());ref=json.loads((ROOT/'art-prototype/output/roadlock-road-reference.json').read_text());frames=road['frames'];scene=bpy.context.scene
 def cv(p):return (p[0],-p[2],p[1])
-def collection(name):c=bpy.data.collections.new(name);scene.collection.children.link(c);return c
+def collection(name):
+ old=bpy.data.collections.get(name)
+ if old:
+  for obj in list(old.objects):bpy.data.objects.remove(obj,do_unlink=True)
+  bpy.data.collections.remove(old)
+ c=bpy.data.collections.new(name);scene.collection.children.link(c);return c
 edges=collection('30_ROAD_EDGES');reference=collection('00_REFERENCE_DO_NOT_EXPORT');cams=collection('91_GAME_CHASE')
 def mesh(name,vs,fs,col,mat):
  me=bpy.data.meshes.new(name);me.from_pydata([cv(p) for p in vs],[],fs);me.update();o=bpy.data.objects.new(name,me);col.objects.link(o);me.materials.append(mat);return o
@@ -18,16 +26,22 @@ def road_at(v):
  _,i,_=kd.find((v.x,v.y,0));a=frames[max(0,i-1)];b=frames[min(len(frames)-1,i+1)];dx,dz=b[1]-a[1],b[3]-a[3]
  t=max(0,min(1,((v.x-a[1])*dx+(-v.y-a[3])*dz)/(dx*dx+dz*dz)));p=[a[j]+(b[j]-a[j])*t for j in range(6)]
  offset=-(v.x-p[1])*math.cos(p[4])-(-v.y-p[3])*math.sin(p[4]);dist=math.hypot(v.x-p[1],-v.y-p[3]);return p,offset,dist
-land=bpy.data.objects['Connected canyon with two eroded rims'];bm=bmesh.new();bm.from_mesh(land.data)
-for _ in range(1):
- selected=[e for e in bm.edges if road_at((e.verts[0].co+e.verts[1].co)*.5)[2]<27]
- bmesh.ops.subdivide_edges(bm,edges=selected,cuts=1,use_grid_fill=True)
-bm.to_mesh(land.data);bm.free();modified=0;maxcut=0;maxfill=0
+land=bpy.data.objects['Connected canyon with two eroded rims'];modified=0;maxcut=0;maxfill=0;view_cuts=0
+def smooth(t):t=max(0,min(1,t));return t*t*t*(t*(t*6-15)+10)
 for v in land.data.vertices:
  p,o,d=road_at(v.co)
- if d>32:continue
- target=p[2]-math.tan(p[5])*o-.2;t=max(0,min(1,(d-12)/20));w=1-t*t*(3-2*t)
- delta=(target-v.co.z)*w;maxcut=max(maxcut,-delta);maxfill=max(maxfill,delta);v.co.z+=delta;modified+=1
+ before=v.co.z
+ if d<=42:
+  target=p[2]-math.tan(p[5])*o-.2;w=1-smooth((d-12)/30)
+  v.co.z+=(target-v.co.z)*w
+ # Local removal of the outside lip at the two authored right-hand bends.
+ # Lower only obstructing terrain; never fill the canyon or touch the far rim.
+ if 12<o<100:
+  reveal=max(smooth((p[0]-z['start'])/65)*smooth((z['end']-p[0])/65) for z in road['scenicZones'])
+  cap=p[2]-.2-(o-12)*.5;w=reveal*(1-smooth((o-55)/45))
+  if v.co.z>cap and w>0:v.co.z+=(cap-v.co.z)*w;view_cuts+=1
+ delta=v.co.z-before
+ if abs(delta)>.00001:maxcut=max(maxcut,-delta);maxfill=max(maxfill,delta);modified+=1
 land.data.update()
 for p in land.data.polygons:p.use_smooth=True
 # Preserve all distant materials and geometry. This is only a road shelf repair.
@@ -54,16 +68,16 @@ for p in frames[::12]:
 mesh('Road edge posts',vs,fs,edges,metal)
 for spec in ref['cameras']:
  c=bpy.data.cameras.new(spec['name']);o=bpy.data.objects.new(spec['name'],c);cams.objects.link(o);o.location=cv(spec['eye']);o.rotation_euler=(Vector(cv(spec['look']))-o.location).to_track_quat('-Z','Y').to_euler();c.lens=36/(2*math.tan(math.radians(spec['horizontalFov'])/2));c.sensor_width=36;c.clip_end=2200
-scene.camera=bpy.data.objects['H1_Reveal'];scene['rim_pass_revision']=2;scene['rim_pass_fit_vertices']=modified
+scene.camera=bpy.data.objects['H1_Reveal'];scene['rim_pass_revision']='R2 drift reveal';scene['rim_pass_fit_vertices']=modified
 embedded=bpy.data.texts.get('FIXED_ROAD.json') or bpy.data.texts.new('FIXED_ROAD.json')
 embedded.clear();embedded.write(json.dumps(road))
-scene['rim_pass_scope']='Same existing canyon. Old bridge removed; local road shelf/camera clearance only. No canyon regeneration.'
+scene['rim_pass_scope']='R1 canyon retained. Long vertical curves; local road support and outside-lip cuts at two drift reveals.'
 scene['art_collections']=['10_CANYON_SCULPT','20_RIVER','30_ROAD_EDGES']
-bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'Canyon_Rim_Pass_R1.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(OUT/'Canyon_Rim_Pass_R2.blend'))
 bpy.ops.object.select_all(action='DESELECT')
 for name in scene['art_collections']:
  for obj in bpy.data.collections[name].objects:
   if obj.type=='MESH':obj.select_set(True)
-bpy.ops.export_scene.gltf(filepath=str(OUT/'canyon_rim_pass_r1.glb'),export_format='GLB',use_selection=True,export_apply=True)
-(OUT/'local-edit-report.json').write_text(json.dumps({'modifiedVertices':modified,'maxLocalCut':maxcut,'maxLocalFill':maxfill,'corridorRadius':32,'bridgeMeshes':0,'terrainRebuilt':False},indent=2))
+bpy.ops.export_scene.gltf(filepath=str(OUT/'canyon_rim_pass_r2.glb'),export_format='GLB',use_selection=True,export_apply=True)
+(OUT/'local-edit-report.json').write_text(json.dumps({'modifiedVertices':modified,'viewCutVertices':view_cuts,'maxLocalCut':maxcut,'maxLocalFill':maxfill,'corridorRadius':42,'bridgeMeshes':0,'terrainRebuilt':False},indent=2))
 print('Local road fitting',modified,'cut',maxcut,'fill',maxfill,flush=True)
