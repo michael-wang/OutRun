@@ -26,3 +26,20 @@ describe('sparse road trip traffic',()=>{
   traffic.reset();expect(traffic.inspect().actors).toHaveLength(0);expect(traffic.inspect().impacts).toBe(0);traffic.dispose();expect(scene.children).toHaveLength(0);
  });
 });
+
+it('keeps dusk running lamps attached to visible traffic and out of daylight mode',()=>{
+ const dayScene=new THREE.Scene(),nightScene=new THREE.Scene();
+ const day=new Traffic(dayScene,sample,()=>7,10000,804),night=new Traffic(nightScene,sample,()=>7,10000,804,()=>true,[],undefined,true);
+ try{
+  day.update(0,350);night.update(0,350);
+  expect(night.inspect().actors).toEqual(day.inspect().actors);
+  expect(dayScene.getObjectByName('traffic-head-lights')).toBeUndefined();
+  const head=nightScene.getObjectByName('traffic-head-lights') as THREE.InstancedMesh,tail=nightScene.getObjectByName('traffic-tail-lights') as THREE.InstancedMesh;
+  const visible=night.inspect().actors.filter(a=>a.visible);expect(head.count).toBe(visible.length*2);expect(tail.count).toBe(head.count);
+  const front=new THREE.Matrix4(),rear=new THREE.Matrix4();head.getMatrixAt(0,front);tail.getMatrixAt(0,rear);
+  expect(front.elements[14]-rear.elements[14]).toBeGreaterThan(TRAFFIC_TYPES[visible[0].type].length*.9);
+  expect((head.material as THREE.MeshBasicMaterial).toneMapped).toBe(false);
+  night.reset();expect(head.count).toBe(0);expect(tail.count).toBe(0);
+ }finally{day.dispose();night.dispose();}
+ expect(nightScene.getObjectByName('traffic-head-lights')).toBeUndefined();
+});

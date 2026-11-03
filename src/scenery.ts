@@ -218,13 +218,14 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    if(type===3){part(cylinder,'#9ba3a4',1.8,h+1.2,-w*.22,1.2,2,1.2);part(boxes,wall,1,h+.75,w*.24,3,1.5,2.6);}
   }
   // Different households have different occupancy; some homes are entirely dark.
-  const occupancy=random(key+201)<.23?0:.16+random(key+213)*.43;
+  const occupancy=random(key+201)<.10?0:.72+random(key+213)*.22;
   for(let floor=0;floor<Math.floor(h/2.8);floor++)for(const [column,z] of [-w*.28,w*.28].entries()){
    const y=1.5+floor*2.8;
    part(boxes,'#293643',-4.56,y,z,.12,1.65,1.9);
-   if(random(key*31+floor*7+column*17+923)<occupancy){
+   if(occupancy>0&&((floor===0&&column===0)||random(key*31+floor*7+column*17+923)<occupancy)){
     const color=['#ffca83','#dfbd8e','#b7cbd1'][(key+column+floor)%3];
-    part(boxes,color,-4.64,y,z,.07,1.35,1.65,0,0,0,.65+random(key+floor+column)*.75);
+    // Share three brightness levels so more lit homes do not create a material per window.
+    part(boxes,color,-4.64,y,z,.07,1.35,1.65,0,0,0,[.8,1.1,1.4][Math.floor(random(key+floor+column)*3)]);
     part(boxes,'#665d61',-4.7,y,z,.07,1.4,.06);
    }
    if(floor&&type%2===0){part(boxes,wall,-5,y-.9,z,1.4,.18,2.6);part(boxes,'#665d61',-5.6,y-.45,z,.1,.75,2.6);}
@@ -319,8 +320,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   for(const bay of COAST_BEACHES){
    // Loose pockets, never a repeating row along the whole highway.
-   for(let j=0;j<23;j++){
-    const d=bay.distance-370+j*33+rand(j+bay.distance)*15;
+   const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
+   for(let j=0;j<count;j++){
+    const d=bay.distance-half+j*33+rand(j+bay.distance)*15;
     if(!inChunk(d))continue;
     const x=-19-rand(j*11+bay.distance)*17;
     beachAnchor(d,x);if(!clear(4)||base.y<-4.05)continue;

@@ -205,3 +205,33 @@ Ultra mode confirmed in development; the sunset bay screenshot remains intact.
 Build and 21 relevant tests pass, including lossless decode and rejection of stale
 or truncated data. Missing-asset fallback was checked in Chrome. Evidence stays
 local in `art-prototype/output/loading-performance/`. No CI or main changes.
+
+## 2026-11-04 R6 lit traffic and livelier coastal pacing
+
+The dusk coast now gives every visible traffic vehicle white front lamps and red
+rear lamps, with small depth-tested halos. Three pooled draws cover the existing
+12-vehicle limit; there are no per-car dynamic lights. The player's running lamps
+are brighter too, while braking remains a distinct brighter state. Daylight modes,
+traffic motion, handling and the 10 km road geometry are unchanged.
+
+Approximately 90% of houses now have occupied, lit rooms, with some dark windows
+inside those homes. Three shared brightness levels avoid a separate material for
+each window. Streetlight heads and halos are brighter, and the permanent ground
+light pools have 75% stronger opacity; the lights do not switch on with proximity.
+
+Five beach bays replace two, with homes and markets distributed through the
+opening, middle and exit. Left-side beaches alternate with right-side activity,
+overlap locally, and meet again at the original sunset postcard bay. Short gaps
+remain for contrast, including the turn into the sunset finale. Existing varied
+stalls, visitors and beach furniture are reused; narrow bays receive fewer groups.
+The revised shore mask is still baked offline, not on the player's device.
+
+Build and 21 relevant tests pass. Local desktop Chrome mobile viewport with 4x CPU
+slowdown: production cold start 1.68s, repeat load 1.13s, coast preparation 0.35s.
+These are local emulation results, not physical Pixel 8 measurements. A complete
+1920x1080 desktop drive reached the finish in about 110s at approximately 60 FPS,
+with no browser errors, missing road/camera chunks or streaming stalls. Captures,
+complete normal-physics automated drive video and telemetry remain ignored in
+`art-prototype/output/coast-lively-r6/`. People remain static low-poly figures;
+vehicle lamps improve recognition but do not project headlight beams onto scenery.
+No CI, main changes or large media commits.

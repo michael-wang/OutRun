@@ -1,7 +1,10 @@
 /** Fixed art direction for the isolated coastal trial; metres along its existing road. */
 export const COAST_BEACHES=[
  {distance:1570,radius:630,extra:42},
+ {distance:4500,radius:610,extra:38},
+ {distance:6450,radius:540,extra:36},
  {distance:8270,radius:650,extra:46},
+ {distance:9820,radius:420,extra:28},
 ] as const;
 export function coastBeachExtra(d:number){
  let extra=0;
@@ -29,9 +32,13 @@ export const COAST_ROCKS=[
 export const coastRockX=(rock:typeof COAST_ROCKS[number])=>coastBeachX(-26,rock.d)-rock.out;
 
 export const COAST_DISTRICTS=[
- {start:2560,end:3290,kind:'homes'},
- {start:3460,end:4050,kind:'homes'},
+ {start:480,end:980,kind:'homes'},
+ {start:2300,end:3350,kind:'homes'},
+ {start:3550,end:4350,kind:'market'},
+ {start:5050,end:5760,kind:'homes'},
+ {start:6720,end:7310,kind:'market'},
  {start:7930,end:9060,kind:'market'},
+ {start:9450,end:10100,kind:'homes'},
 ] as const;
 export const coastDistrictAt=(d:number)=>COAST_DISTRICTS.find(s=>d>=s.start&&d<s.end);
 export const COAST_LAMPS=Array.from({length:156},(_,i)=>380+i*64);
