@@ -38,12 +38,30 @@ try{
    eye:vec(t.eye),look:vec(t.look),verticalFov:chaseComposition(aspect).fov,
    horizontalFov:CHASE.horizontalFov};
  });
+ // Artist-only clearance reference, covering ALL of the drive, not just
+ // the 400m hero camera window. This must guide .blend edits, not runtime
+ // procedural carving. Road/handling never consume this additional data.
+ const protectionStart=BRICK_START,protectionEnd=BRICK_START+stage.length;
+ const protectionStep=5,protectionFrames=[];
+ for(let d=protectionStart;d<=protectionEnd;d+=protectionStep){
+  const p=track.sample(d),drive=pilotSample(stage,d);
+  protectionFrames.push({
+   distance:d,center:vec(p.position),right:vec(p.right),
+   halfWidth:drive.halfWidth,heading:p.roadHeading,
+  });
+ }
+ const roadProtection={
+  start:protectionStart,end:protectionEnd,step:protectionStep,
+  // Artist's visual clearance beyond the 7m pavement half-width.
+  lateralPadding:4,headroom:80,belowRoad:10,
+  frames:protectionFrames,
+ };
  const data={
   format:'outrun-blender-road-reference-v1',
   project:name,source:'src/designer-canyon.ts',tripCode:stage.tripCode,
   coordinateSystem:'Three.js X-right Y-up Z-forward, meters',
   start,end,step,riverY:stage.canyonPrototype.riverY,
-  worldUp:[0,1,0],frames,cameras,
+  worldUp:[0,1,0],frames,cameras,roadProtection,
   // Fixed editorial markers. These are NOT fed back into the road generator.
   landmarks:[
    {name:'far_rim_center',distance:BRICK_START+1310,offset:-235},
@@ -55,4 +73,5 @@ try{
  await writeFile(output,JSON.stringify(data,null,2)+'\n','utf8');
  console.log('Designer blockout road reference: '+output);
  console.log('Frames: '+frames.length+' | cameras: '+cameras.length+' | road: '+start+'-'+end+'m');
+ console.log('Road protection: '+roadProtection.frames.length+' exact frames / '+protectionStart+'-'+protectionEnd+'m');
 }finally{await server.close();}

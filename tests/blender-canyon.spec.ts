@@ -77,7 +77,7 @@ for(const mobile of [false,true])for(const blender of [false,true]){
    let video:number[]|undefined;
    if(w.artRecorder){await new Promise<void>(resolve=>{w.artRecorder.onstop=()=>resolve();w.artRecorder.stop();});video=Array.from(new Uint8Array(await new Blob(w.artVideo).arrayBuffer()));}
    const probes=[];
-   for(let d=1000;d<=2450;d+=10)for(const x of [-6.5,0,6.5]){const hits=g.artProbe(d,x).filter((h:any)=>h.gap>=-.01);if(hits.length)probes.push({d,x,hits});}
+   for(let d=1000;d<=2450;d+=10)for(const x of [-7.5,-6.5,0,6.5,7.5]){const hits=g.artProbe(d,x).filter((h:any)=>h.gap>=-.01);if(hits.length)probes.push({d,x,hits});}
    return {audit:w.artAudit,final:g.snapshot(),stream:g.streaming(),diagnostics:w.__streamDiagnostics.snapshot(),probes,video};
   });
   if(result.video)writeFileSync(`${root}/${label}-drive.webm`,Buffer.from(result.video));
@@ -87,9 +87,12 @@ for(const mobile of [false,true])for(const blender of [false,true]){
   const {video:omitted,...audit}=result;writeFileSync(`${root}/${label}.json`,JSON.stringify({summary,startup,shots,rows,...audit},null,2));console.log(JSON.stringify(summary));
   expect(result.final.distance).toBeGreaterThanOrEqual(2450);expect(next).toBe(targets.length);
   expect(errors).toEqual([]);expect(result.audit.missing).toBe(0);expect(result.audit.unsafe).toBe(0);expect(result.stream.fatal).toBe('');
-  // Outside the authored segment, retain/report existing GLB intersections.
-  // Passing drivability does not imply the exit art is visually accepted.
-  expect(result.audit.maxLateral).toBeLessThan(6.5);expect(heroOverlaps).toEqual([]);
+  // Art must respect the entire APPROACH + HERO + EXIT driving corridor.
+  // Previously 94 hidden intersections after 2040m passed while scenery
+  // visibly formed a rock ceiling above the player. Never accept this again.
+  expect(result.audit.maxLateral).toBeLessThan(6.5);
+  expect(heroOverlaps).toEqual([]);
+  if(blender)expect(result.probes).toEqual([]);
   if(blender){expect(startup.art.position).toEqual([0,0,0]);expect(startup.art.scale).toEqual([1,1,1]);expect(startup.art.quaternion).toEqual([0,0,0,1]);}
   await context.close();
  });

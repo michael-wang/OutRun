@@ -292,3 +292,55 @@ preview. All seven cases passed across the initial comparison run and final
 Blender/production rerun. GLB-dependent cases skip when the intentionally
 untracked local asset is absent. Output captures, videos, scene files and logs
 remain ignored; only integration code, tests and this report belong in Git.
+
+## v3 Road–Terrain Seam Gate — 2026-11-03
+
+The Blender v2 driving video had a strong hero image at ~14–20 seconds but
+serious intersection after ~21 seconds. The offending object was
+`GROUND_|_continuous_canyon_foundation_-_no_sky_seams`, intended to fill
+an unfinished horizon. It continued into the rest of the real road and
+became an unintentional ceiling. At 2050m the art was ~3.1m above the
+pavement; at 2350m ~30.8m.
+
+**Repair the existing .blend in place; do not rebuild the canyon or move the road.**
+
+The latest `npm run art:road` exports an extra `roadProtection` array with
+5m samples across **the entire 3.2km designer road**, not just the 400m hero
+window. Each record includes actual world center/right/halfWidth and a
+suggested 4m lateral safety margin. This is offline ART REFERENCE DATA
+only; never change `createPilotTrack` or runtime road collision.
+
+### Required local Blender / Codex steps
+
+1. **Back up** `Grand_Canyon_Art_Prototype.blend`, edited GLB and PNGs
+   before making any modification; do not execute the blockout rebuild.
+2. Run `npm run art:road`. This updates only the ignored road-reference JSON;
+   the original 81 hero frames and three chase cameras remain unchanged.
+3. In the existing Blender scene, identify all art geometry crossing the
+   protected swept corridor (road half-width + 4m horizontally, from 10m
+   below the road to at least 80m above). **Especially** inspect the
+   foundation's extension after the hero and entry/exit far rock walls.
+4. **Edit the actual art meshes**: trim/split the long foundation behind
+   the scenic bend; carve any remaining overlap with a swept corridor
+   along the EXACT downstream road (no simplistic straight rectangular
+   crop, no arbitrary world transform). Cap and hide finite art boundaries
+   using already present close canyon rock volumes.
+5. Preserve the 14–20 second canyon reveal. Keep the actor-facing
+   scene, lighting, track, chase camera and GLB root coordinates unchanged.
+6. Re-render 01/02/03 plus **two extra in-game screenshots** at 2050m and
+   2350m. Review continuous drive **1000–2450m** to verify no visible
+   ground-plane edges, floating walls, occluding ceilings or road intersections.
+7. Re-export the local ignored GLB and run:
+   `npx playwright test tests/blender-canyon.spec.ts`.
+   The previously permissive test now **fails on ANY art above the driving
+   road from 1000m through 2450m**, not just within the 1340–1940m hero.
+   These are 10m probes across five lateral positions; this test remains a
+   sample, not a complete proof that the whole scene is visually correct.
+8. Compare Pixel 8 FPS if a real device is available. Keep every asset local
+   and do not merge to main.
+
+**Pass condition:** original hero composition substantially preserved AND
+approach/exit correctly join the real driving road, no rock roof or terrain
+intersections anywhere along the 1000–2450m acceptance drive. If the fixed
+hero foundation cannot be reshaped safely, trim it earlier behind a natural
+occluder rather than hiding it with a runtime clipping hack.
