@@ -1,7 +1,7 @@
-// R3: a long descent towards a readable river basin on the existing same-bank road.
+// R4: stronger, smoothly eased banking on the accepted R3 centerline and grades.
 import fs from 'node:fs';
 import * as THREE from 'three';
-const root='art-prototype/output/river-reveal-r3';
+const root='art-prototype/output/cliff-pass-r4';
 const controls=[[-410,2600],[-440,2350],[-420,2100],[-490,1850],[-550,1600],[-535,1350],[-490,1150],[-490,1020],[-340,900],[-285,820],[-285,730],[-300,680],[-400,600],[-450,480],[-420,250],[-390,60],[-400,-180],[-420,-400]];
 const cp=[controls[0],controls[0],...controls,controls.at(-1),controls.at(-1)],raw=[];
 for(let i=0;i<cp.length-3;i++)for(let j=0;j<500;j++){
@@ -30,11 +30,13 @@ if(process.argv.includes('--final')){
   const j=Math.max(1,elevation.findIndex(q=>q[0]>=p[0]));
   const a=elevation[j-1],b=elevation[j];return a[1]+(b[1]-a[1])*smooth((p[0]-a[0])/(b[0]-a[0]));
  });
+ // Fixed bank landmarks, independent of short curvature changes in the S bend.
+ // These are baked road geometry, not runtime smoothing or camera roll.
+ const banking=[[350,0],[900,-5],[1400,3],[1600,4],[1880,22],[2000,22],
+  [2260,-22],[2540,22],[2620,22],[2900,0],[3150,-4],[350+routeLength,0]];
  for(let i=0;i<frames.length;i++){
-  const p=frames[i],a=frames[Math.max(0,i-12)],b=frames[Math.min(frames.length-1,i+12)],k=(b[4]-a[4])/(b[0]-a[0]);
-  p[2]=y[i]+.2;p[5]=Math.max(-.21,Math.min(.21,k*24));
-  // Static right-down banking supports the bend. It never triggers the camera.
-  for(const z of scenicZones){const w=smooth((p[0]-z.start)/z.ramp)*smooth((z.end-p[0])/z.ramp);p[5]+=(8*Math.PI/180-p[5])*w;}
+  const p=frames[i],j=Math.max(1,banking.findIndex(q=>q[0]>=p[0])),a=banking[j-1],b=banking[j];
+  p[2]=y[i]+.2;p[5]=(a[1]+(b[1]-a[1])*smooth((p[0]-a[0])/(b[0]-a[0])))*Math.PI/180;
  }
  const start=frames[0],end=frames.at(-1),padded=[];
  for(let d=0;d<350;d+=2.5){const t=d-350;padded.push([d,start[1]-Math.sin(start[4])*t,start[2],start[3]+Math.cos(start[4])*t,start[4],start[5]]);}

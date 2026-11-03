@@ -44,4 +44,10 @@ describe('fixed-road joins and scenic camera isolation',()=>{
    expect(Math.abs(Math.atan(a.grade)-Math.atan(b.grade))*180/Math.PI).toBeLessThan(1);
   }
  });
+ it('spreads stronger banking transitions over distance instead of snapping at the S bend',()=>{
+  for(let d=350;d<350+road.routeLength-5;d+=1){
+   const a=fixedRoadPose(road.frames,d),b=fixedRoadPose(road.frames,d+5);
+   expect(Math.abs(b.bank-a.bank)*180/Math.PI/5).toBeLessThan(.35);
+  }
+ });
 });

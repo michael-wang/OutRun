@@ -6,7 +6,7 @@ import {writeFile, mkdir} from 'node:fs/promises';
 import {dirname, resolve} from 'node:path';
 
 const roadlock=process.argv.includes('--roadlock');
-const name=roadlock?'grand-canyon-river-reveal-r3':'grand-canyon-blockout-v1';
+const name=roadlock?'grand-canyon-cliff-pass-r4':'grand-canyon-blockout-v1';
 const arg=process.argv.indexOf('--output');
 const output=resolve(arg>=0&&process.argv[arg+1]?process.argv[arg+1]:'art-prototype/output/road-reference.json');
 const server=await createServer({
