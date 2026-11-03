@@ -36,3 +36,4 @@ docs/evidence/
 
 # Blender blockout exports, previews and editable working files stay local.
 /art-prototype/output/
+__pycache__/
