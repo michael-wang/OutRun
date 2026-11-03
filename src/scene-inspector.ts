@@ -2,11 +2,12 @@ import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,ROAD_FEATURE_REFERENCE,type RoadF
 import type {ScenicCue} from './scenic-director';
 import {SECTION_LABELS,SIDE_LABELS,type ScenerySection} from './scenery-cross-section';
 import type {GrandCanyonScene} from './grand-canyon-scene';
+import type {RoadLockMoment} from './designer-canyon-roadlock';
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
-export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat'|'scenery-section'|'canyon-prototype';
+export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat'|'scenery-section'|'canyon-prototype'|'road-lock';
 export interface InspectorStop {
  id:string;kind:InspectorKind;label:string;distance:number;
- landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;scenerySection?:ScenerySection;canyonPrototype?:GrandCanyonScene;
+ landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;scenerySection?:ScenerySection;canyonPrototype?:GrandCanyonScene;roadLockMoment?:RoadLockMoment;
 }
 export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'clock',label:'鐘塔街區'},{kind:'lighthouse',label:'海岸燈塔'},
@@ -16,6 +17,7 @@ export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'scenic-beat',label:'導演節奏'},
  {kind:'scenery-section',label:'場景橫斷面'},
  {kind:'canyon-prototype',label:'大峽谷河灣 R2'},
+ {kind:'road-lock',label:'峽谷極限賽道'},
 ];
 export function canStepBack(distance:number,roadExists:(distance:number)=>boolean,length:number){
  return Number.isFinite(distance)&&distance>=0&&distance<length&&roadExists(distance);
@@ -183,6 +185,12 @@ export class SceneInspector {
    this.audit.textContent=report?
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
+  }else if(site?.kind==='road-lock'&&site.roadLockMoment){
+   const p=site.roadLockMoment;
+   this.audit.textContent='Grand Canyon Road Lock · '+p.name+'。\\n'+
+    '相對里程 '+p.startS+'–'+p.endS+'m · '+(p.role==='hero'?'英雄段':'連接路段')+
+    '。\\n四線道；左右大型髮夾彎最高約 ±26° banking；全程高差約 300m。'+
+    '\\n地形僅為粗模佔位，這次優先測試煞車、轉向、坡度及高速節奏。';
   }else if(site?.kind==='canyon-prototype'&&site.canyonPrototype){
    const c=site.canyonPrototype;
    this.audit.textContent='Scenery Foundation R2.0 · 大峽谷河灣原型 · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
