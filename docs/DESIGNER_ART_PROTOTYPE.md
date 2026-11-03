@@ -61,8 +61,10 @@ any road coordinates.
 **Important:** Camera frustum tests are NOT a substitute for looking at the
 actual three rendered PNGs. The scripts merely create a first editable
 blockout. After the first run, open the `.blend` file in Blender and edit
-the scene by hand; rerunning the script will overwrite the starter `.blend`.
-Keep a copy of your artistic edits.
+the scene by hand. The starter command now refuses to replace an existing
+`.blend`; `npm run art:blockout -- --overwrite` explicitly rebuilds it.
+Archive your artistic edits before using that override. Use `render_scene.py`
+below to render the edited scene without rebuilding it.
 
 Maximum two major visual revision rounds before a go / stop decision.
 Do not add more procedural scenery systems as a workaround.
@@ -98,3 +100,65 @@ acceptance gate has **not** passed. These are the initial authored blockout
 renders for Julia and the owner to review; no artistic revision round or game
 integration was performed. This is an offline Blender result, not browser or
 physical-device gameplay validation.
+
+## Hero Scene v2 — local review candidate, 2026-11-03
+
+The existing `.blend` was opened and its art meshes were directly edited with
+Blender Python mesh operations and fixed, artist-chosen coordinates. No new
+scene generator or runtime scenery system was added. The editable result is
+`art-prototype/output/Grand_Canyon_Art_Prototype.blend`; the first version and
+its three PNGs, GLB and road JSON are preserved in `output/archive-v1/`.
+Two spatial revision rounds were followed by seam, surface and crop repairs.
+
+Changes in the scene:
+
+- Driver-left: a narrow gravel lip, steep stepped descent, lower talus, a
+  fixed-height river at 56.14m, rising opposite bank and continuous redwall.
+- Driver-right: a close sandstone cutting with authored recesses and ledges.
+  The near wall and bend screen mask the unfinished outer scene and road crop.
+- Three large backdrop silhouettes: western mesa, taller split crown and a
+  lower, wider distant rampart. A continuous foundation closes sky gaps below
+  them. These are finite view-serving backdrop meshes, not a complete world.
+- Warm weathered stone, subdued asphalt, narrow gravel shoulders and road
+  markings replace the broad pale shoulders. No cones or red/white curbs are
+  present. Three small, unevenly spaced sage clumps provide restrained scale.
+- The 400m reference asphalt's 162 vertex coordinates remain exactly unchanged.
+  Its face winding was corrected for lighting. A separate reference-only mesh
+  samples the **existing** production track from 1740–1940m so the road continues
+  behind the bend screen; this does not change the track or its driving behavior.
+  The extra samples are local `output/hero-road-continuation.json`.
+
+The three original camera transforms, lens settings, clipping planes and shift
+values match the archived v1 scene exactly. The exported game chase targets and
+horizontal/vertical FOVs also pass validation. All three new PNGs are genuine
+Blender 4.5.13 EEVEE renders at 1920 x 1080, with the same 16:9 composition.
+
+To render the edited scene again and export only its art collections:
+
+```powershell
+$env:BLENDER_BIN = 'C:\astra-dev\tools\blender-4.5.13-windows-x64\blender.exe'
+& $env:BLENDER_BIN --background art-prototype/output/Grand_Canyon_Art_Prototype.blend --python-exit-code 1 --python scripts/art-proto/render_scene.py
+```
+
+This helper checks the game cameras and renders existing geometry; it does not
+rebuild or save over the artist's scene. `canyon_art_only.glb` now contains 26
+art meshes and excludes asphalt, painted road markings and cameras. Blender
+weathering shader nodes are not baked into the GLB; it is a geometry/base-color
+handoff, while the `.blend` and PNGs are the visual review authority.
+
+Verification: the original road JSON is byte-identical to v1; 605 vertical
+pavement probes across the original and downstream reference found no art
+overlap. All PNGs decode at 1920 x 1080. GLB 2.0 headers, mesh count and excluded
+reference objects were checked. The starter overwrite guard was exercised and
+left the edited scene hash unchanged. Local evidence is in
+`output/v2-final-render.log`, `output/v2-verification.log` and
+`output/v2-overwrite-guard.log`. No gameplay or physical-device testing was
+performed for this offline art edit.
+
+**Visual assessment: improved, awaiting Julia/owner review; not a passed gate.**
+All three views now show a canyon theme, with the river and opposing strata
+readable on the left and a close wall on the right. However, the river is still
+thin in the normal chase view, the sheer depth is less convincing than the
+authored height difference, and the silhouettes/strata retain a strong faceted
+blockout character. The road still occupies much of the lower frame. No further
+major revision or game integration is implied by this delivery.

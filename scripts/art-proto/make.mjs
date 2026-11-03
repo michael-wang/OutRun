@@ -1,6 +1,6 @@
 // Run once to create editable Blender assets from the actual road data.
 import {spawnSync} from 'node:child_process';
-import {statSync} from 'node:fs';
+import {existsSync,statSync} from 'node:fs';
 import {resolve} from 'node:path';
 const run=(label,cmd,args)=>{
  console.log('\n['+label+'] '+cmd+' '+args.join(' ')+'\n');
@@ -12,6 +12,9 @@ const run=(label,cmd,args)=>{
  if(result.status!==0)throw Error(label+': exited with '+result.status);
 };
 const relative='art-prototype/output';
+if(existsSync(resolve(relative,'Grand_Canyon_Art_Prototype.blend'))&&!process.argv.includes('--overwrite')){
+ throw Error('An editable Blender scene already exists. Render it with render_scene.py. To deliberately replace it with the starter blockout, archive your edits first and use npm run art:blockout -- --overwrite.');
+}
 run('exact road',process.execPath,['scripts/art-proto/export-road.mjs',
  '--output',resolve(relative,'road-reference.json')]);
 run('Blender artwork',process.env.BLENDER_BIN||'blender',[
