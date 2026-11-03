@@ -15,7 +15,7 @@ export interface RayRange {start:number;end:number;offset:number;count:number}
 export interface RoadMeshData {artContactOnly?:boolean;artVisualOnly?:boolean;normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'center-line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false,mountainPaint=false):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  // S2B experiment: repeated absolute-distance queries across ribbons and markings.
  // Reuse exact values within this chunk only; no interpolation or global retention.
@@ -93,6 +93,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
      color.lerp(new THREE.Color('#83bdc5'),
       mixedAt(d).rightSea*Math.max(0,Math.min(1,(o-13)/62)));
     }const rocky=rockyAt(d,Math.sign(o),rocks);if(rocky&&Math.abs(o)>7)color.lerp(new THREE.Color('#927658'),rockNode(d,rocky).blend);colors.push(color.r,color.g,color.b);}
+   if(kind==='asphalt'&&mountainPaint){
+    // No added geometry: minor age/dust variation in existing asphalt vertex
+    // colors. The road is still fully raycastable and collision-identical.
+    const wear=Math.abs(Math.sin(d*.071+o*.27)*Math.sin(d*.027-o*.61));
+    const v=.84+wear*.11;colors.push(v,v*.985,v*.96);
+   }
   }}
   for(let i=0;i<n;i++){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
   out.push({kind,...(seamless&&kind!=='support'?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
@@ -203,7 +209,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  }
  if(canyon){const a=Math.max(start,CANYON_BEND.start),b=Math.min(end,CANYON_BEND.end);append('rail',CANYON_BEND.railOffset,CANYON_BEND.railOffset,.6,1.05,a,b,2.5);append('rail',CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness,CANYON_BEND.railOffset+CANYON_BEND.railHalfThickness,1.05,1.05,a,b,2.5);}
  // The Designer's Cut has no ocean shoreline — only its actual river.
- if(!grandCanyon?.authored){
+ if(!grandCanyon?.authored&&!mountainPaint){
   if(active){
    if(start<cutFrom)append('surf',-29,-27,-10.9,-10.9,start,cutFrom,10);
    if(cutTo<end)append('surf',-29,-27,-10.9,-10.9,cutTo,end,10);
@@ -218,8 +224,19 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
  if(blenderPaint)for(const [a,b] of [[-.24,-.14],[.14,.24]])append('center-line',a,b,.03,.03,start,end,2.5);
+ if(mountainPaint)for(const [a,b] of [[-.23,-.13],[.13,.23]])append('center-line',a,b,.035,.035,start,end,2.5);
  for(let d=Math.floor(start/6)*6;!blenderPaint&&d<end;d+=6){
   if(d<0)continue;
+  if(mountainPaint){
+   // Four physical lanes: two each direction, solid double yellow center,
+   // simple dashed same-direction lane dividers, no racetrack chevrons.
+   for(const lane of [-LANE_WIDTH,LANE_WIDTH]){
+    const raw=lane*7/halfAt(d);
+    append('line',raw-.14,raw+.14,.03,.03,Math.max(start,d),
+     Math.min(end,d+3,length),1.5);
+   }
+   continue;
+  }
   const junctionLanes=interchangeLaneBoundaries(interchange,d,halfAt(d));
   if(junctionLanes){
    // Four original lanes remain exactly where they were; only the rightmost
@@ -237,7 +254,8 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    }
   }
  }
- for(let color=0;!blenderPaint&&color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
+ if(mountainPaint)for(const [a,b] of [[-6.97,-6.83],[6.83,6.97]])append('edge-white',a,b,.035,.035,start,end,2.5);
+ for(let color=0;!blenderPaint&&!mountainPaint&&color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
   if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;
   // Canyon road edges are dusty and deliberately not painted like a racetrack.
   // Keep white readable markings but drop the alternating red curb tiles.
