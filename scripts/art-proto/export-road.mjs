@@ -1,10 +1,12 @@
-// Exact road-reference export for the 400m Designer's Cut art blockout.
+// Exact road-reference export for the 400m art blockout OR the full 5.65km
+// Road Lock. Both modes use game geometry and normal chase camera poses.
 // Runs on the developer machine after npm ci, not inside the game loop.
 import {createServer} from 'vite';
 import {writeFile, mkdir} from 'node:fs/promises';
 import {dirname, resolve} from 'node:path';
 
-const name='grand-canyon-blockout-v1';
+const roadlock=process.argv.includes('--roadlock');
+const name=roadlock?'grand-canyon-roadlock-terrain-v3':'grand-canyon-blockout-v1';
 const arg=process.argv.indexOf('--output');
 const output=resolve(arg>=0&&process.argv[arg+1]?process.argv[arg+1]:'art-prototype/output/road-reference.json');
 const server=await createServer({
@@ -14,14 +16,17 @@ const server=await createServer({
 });
 const vec=p=>[Number(p.x.toFixed(5)),Number(p.y.toFixed(5)),Number(p.z.toFixed(5))];
 try{
- const [{DESIGNER_CANYON_STAGE},{createPilotTrack,pilotSample},{BRICK_START},{chaseTargets,CHASE,chaseComposition}]=await Promise.all([
+ const [{DESIGNER_CANYON_STAGE},{CANYON_ROADLOCK_STAGE},
+  {createPilotTrack,pilotSample},{BRICK_START},{chaseTargets,CHASE,chaseComposition}]=await Promise.all([
   server.ssrLoadModule('/src/designer-canyon.ts'),
+  server.ssrLoadModule('/src/designer-canyon-roadlock.ts'),
   server.ssrLoadModule('/src/pilot-composer.ts'),
   server.ssrLoadModule('/src/bricks.ts'),
   server.ssrLoadModule('/src/chase.ts'),
  ]);
- const stage=DESIGNER_CANYON_STAGE,track=createPilotTrack(stage);
- const start=BRICK_START+990,end=start+400,step=5,aspect=16/9;
+ const stage=roadlock?CANYON_ROADLOCK_STAGE:DESIGNER_CANYON_STAGE,track=createPilotTrack(stage);
+ const start=roadlock?BRICK_START:BRICK_START+990;
+ const end=roadlock?BRICK_START+stage.length:start+400,step=roadlock?10:5,aspect=16/9;
  const frames=[];
  for(let distance=start;distance<=end;distance+=step){
   const p=track.sample(distance),drive=pilotSample(stage,distance);
@@ -30,11 +35,17 @@ try{
    halfWidth:drive.halfWidth,grade:drive.grade,curvature:p.curvature,
   });
  }
- // These are artist-chosen snapshots, not points selected by a camera optimizer.
- const cameras=[1015,1120,1235].map((relative,i)=>{
-  const distance=BRICK_START+relative,pose=track.sample(distance),drive=pilotSample(stage,distance);
+ // Fixed hero cameras are for composition in Blender. Road geometry remains
+ // authoritative; the artist can hide unfinished gaps behind close rock walls.
+ const cameraStops=roadlock?[
+  ['H1_Approach',420],['H1_Reveal',670],['H1_Exit',970],
+  ['H2_Approach',1530],['H2_Reveal',1730],['H2_Exit',2090],
+  ['H3_Approach',2740],['H3_Reveal',2920],['H3_Exit',3290],
+ ]:[['01_Approach',1015],['02_Reveal',1120],['03_Exit',1235]];
+ const cameras=cameraStops.map(([cameraName,relative])=>{
+  const distance=BRICK_START+Number(relative),pose=track.sample(distance),drive=pilotSample(stage,distance);
   const t=chaseTargets(pose.position,pose.roadHeading,aspect,drive.grade);
-  return {name:['01_Approach','02_Reveal','03_Exit'][i],distance,
+  return {name:String(cameraName),distance,
    eye:vec(t.eye),look:vec(t.look),verticalFov:chaseComposition(aspect).fov,
    horizontalFov:CHASE.horizontalFov};
  });
@@ -58,12 +69,17 @@ try{
  };
  const data={
   format:'outrun-blender-road-reference-v1',
-  project:name,source:'src/designer-canyon.ts',tripCode:stage.tripCode,
+  project:name,source:roadlock?'src/designer-canyon-roadlock.ts':'src/designer-canyon.ts',
+  tripCode:stage.tripCode,
   coordinateSystem:'Three.js X-right Y-up Z-forward, meters',
-  start,end,step,riverY:stage.canyonPrototype.riverY,
+  start,end,step,riverY:stage.canyonPrototype?.riverY??null,
   worldUp:[0,1,0],frames,cameras,roadProtection,
   // Fixed editorial markers. These are NOT fed back into the road generator.
-  landmarks:[
+  landmarks:roadlock?[
+   {name:'hero_1_deep_valley',distance:BRICK_START+670,offset:-260},
+   {name:'hero_2_opposite_rim',distance:BRICK_START+1730,offset:260},
+   {name:'hero_3_high_plateau',distance:BRICK_START+2920,offset:-300},
+  ]:[
    {name:'far_rim_center',distance:BRICK_START+1310,offset:-235},
    {name:'right_cliff',distance:BRICK_START+1190,offset:140},
    {name:'river_bend',distance:BRICK_START+1290,offset:-115},

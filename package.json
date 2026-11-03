@@ -10,7 +10,8 @@
     "test:e2e": "npm run build && playwright test",
     "preview": "vite preview --host 127.0.0.1",
     "art:road": "node scripts/art-proto/export-road.mjs",
-    "art:blockout": "node scripts/art-proto/make.mjs"
+    "art:blockout": "node scripts/art-proto/make.mjs",
+    "art:roadlock": "node scripts/art-proto/export-road.mjs --roadlock --output art-prototype/output/roadlock-road-reference.json"
   },
   "dependencies": {
     "three": "^0.180.0"
