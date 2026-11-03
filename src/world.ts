@@ -161,7 +161,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
      annotations.push(signAt(d,material,5.2,2.6,'road-junction-'+which));
     }
   }
-  const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.rotation.x=-Math.PI/2;sea.position.y=-5;sea.visible=!['designer-canyon-v1','canyon-roadlock-v1'].includes(options.streamStage?.generatorVersion??'');scene.add(sea);
+  const sea=new THREE.Mesh(new THREE.PlaneGeometry(18000,18000),new THREE.MeshStandardMaterial({color:'#087eaa',metalness:.22,roughness:.42}));sea.name='default-coast-water';sea.rotation.x=-Math.PI/2;sea.position.y=-5;sea.visible=!['designer-canyon-v1','canyon-roadlock-v1'].includes(options.streamStage?.generatorVersion??'');scene.add(sea);
   // Thin pale surf lines make the shore readable without textures or external assets.
   if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
