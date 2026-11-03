@@ -40,7 +40,7 @@ describe('fixed-road joins and scenic camera isolation',()=>{
  it('keeps the authored road free of short crest/dip pitch reversals',()=>{
   for(let d=350;d<=350+road.routeLength-25;d+=2.5){
    const a=fixedRoadPose(road.frames,d),b=fixedRoadPose(road.frames,d+25);
-   expect(Math.abs(a.grade)).toBeLessThan(.053);
+   expect(Math.abs(a.grade)).toBeLessThan(.055);
    expect(Math.abs(Math.atan(a.grade)-Math.atan(b.grade))*180/Math.PI).toBeLessThan(1);
   }
  });

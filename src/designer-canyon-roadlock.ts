@@ -19,10 +19,10 @@ export const CANYON_ROADLOCK_MOMENTS:readonly RoadLockMoment[]=[
 ];
 const duration=road.routeLength/REFERENCE_TRAVEL;
 export const CANYON_ROADLOCK_STAGE:TripCandidate={
- ...DESIGNER_CANYON_STAGE,revision:17,name:'Grand Canyon · Rim Pass R2',
+ ...DESIGNER_CANYON_STAGE,revision:18,name:'Grand Canyon · River Reveal R3',
  intent:'Long gentle grades and two right-side reveals triggered by actual drifting in the authored bends.',
  emotionalRole:'rim-pass-prototype',generatorVersion:CANYON_ROADLOCK_VERSION,
- contentFingerprint:'canyon-rim-pass-r2-01',stageCode:'CANYON-RIM-PASS-R2',tripCode:'CANYON-RIM-PASS-R2',
+ contentFingerprint:'canyon-river-reveal-r3-01',stageCode:'CANYON-RIVER-REVEAL-R3',tripCode:'CANYON-RIVER-REVEAL-R3',
  length:road.routeLength,baseHeight:road.frames[0][2],baseLanes:4,roadWidth:14,
  fixedRoad:road.frames,placements:[],bankFeatures:[],
  beats:CANYON_ROADLOCK_MOMENTS.map(p=>({id:p.id,startS:p.startS,endS:p.endS,world:'canyon',verticality:'rolling',role:p.name})),

@@ -1,7 +1,7 @@
-// R2: long vertical curves on the existing same-bank road. No terrain generator.
+// R3: a long descent towards a readable river basin on the existing same-bank road.
 import fs from 'node:fs';
 import * as THREE from 'three';
-const root='art-prototype/output/rim-pass-r2';
+const root='art-prototype/output/river-reveal-r3';
 const controls=[[-410,2600],[-440,2350],[-420,2100],[-490,1850],[-550,1600],[-535,1350],[-490,1150],[-490,1020],[-340,900],[-285,820],[-285,730],[-300,680],[-400,600],[-450,480],[-420,250],[-390,60],[-400,-180],[-420,-400]];
 const cp=[controls[0],controls[0],...controls,controls.at(-1),controls.at(-1)],raw=[];
 for(let i=0;i<cp.length-3;i++)for(let j=0;j<500;j++){
@@ -25,7 +25,7 @@ if(process.argv.includes('--final')){
  // Authored LONG vertical curves, independent of rock-scale surface samples.
  // Zero first/second derivatives at each join remove the repeated short crests
  // seen in the owner's video; no runtime camera/vehicle smoothing is involved.
- const elevation=[[350,294],[1050,300],[1800,286],[2300,300],[2900,294],[350+routeLength,287]];
+ const elevation=[[350,294],[1050,300],[1950,274],[2450,264],[350+routeLength,263]];
  const y=frames.map(p=>{
   const j=Math.max(1,elevation.findIndex(q=>q[0]>=p[0]));
   const a=elevation[j-1],b=elevation[j];return a[1]+(b[1]-a[1])*smooth((p[0]-a[0])/(b[0]-a[0]));
