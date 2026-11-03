@@ -1,3 +1,4 @@
+import {loadingStep,loadingProgress,loadingFinished,loadingFailed} from './loading';
 import {RockContact} from './rocky-shoulder';
 import {RoadCones} from './road-cones';
 import {bankPrototype} from './banking';
@@ -60,6 +61,7 @@ const roadLockMode=designerMode&&params.get('road')==='lock';
 const scenicCameraEnabled=roadLockMode&&params.get('art')==='blender'&&params.get('scenicCamera')==='1';
 const blenderMode=designerMode&&params.get('art')==='blender';
 const defaultTrip=!designerMode&&!coastUltraMode&&params.get('mode')!=='free'&&!['trip','stage','lab','challenge','pace','velocity'].some(key=>params.has(key));
+await loadingStep(12,'正在規劃路線','安排這趟旅程的道路、彎道與沿途風景。');
 const trip=coastUltraMode?COAST_ULTRA_STAGE:roadLockMode?CANYON_ROADLOCK_STAGE:designerMode?DESIGNER_CANYON_STAGE:(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:params.get('revision')==='r7'?7:params.get('revision')==='r8'?8:params.get('revision')==='r9'?9:params.get('revision')==='r10'?10:params.get('revision')==='r11'?11:12):undefined;
 // Production visitors see the game; internal QA tools remain available through ?qa=1.
 const playerUi=!!trip&&params.get('qa')!=='1'&&(import.meta.env.PROD||params.get('playerui')==='1');
@@ -99,6 +101,7 @@ document.getElementById('startup-fallback')!.hidden=true;
 const $ = (id:string) => document.getElementById(id)!;
 $('route-title').textContent=blenderMode?(roadLockMode?'Grand Canyon · Cliff Pass R4':'Grand Canyon · Blender v2'):brick?.name??'Coast Road';
 for(const [id,key] of Object.entries({drive:'P',resume:'P',restart:'R',sound:'M',settings:'C',fullscreen:'F'})){const node=$(id);node.classList.add('shortcut');node.dataset.shortcut=key;node.setAttribute('aria-keyshortcuts',key);}
+await loadingStep(25,'正在建立駕駛場景','準備公路、車輛與追尾視角。');
 const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
 renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(pointer:coarse)').matches ? 1 : 1.75));
 renderer.setSize(innerWidth,innerHeight); renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -106,18 +109,22 @@ renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1
 renderer.shadowMap.enabled=!matchMedia('(pointer:coarse)').matches; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.domElement.tabIndex=-1;renderer.domElement.setAttribute('aria-label','Driving surface');$('view').append(renderer.domElement);
 const blenderAsset=blenderMode?await (async()=>{
+ await loadingStep(30,'正在載入峽谷地形','下載場景模型與岩壁材質，請稍候。');
  const status=document.createElement('p');status.id='blender-art-status';status.setAttribute('role','status');status.style.cssText='position:fixed;top:12px;left:12px;z-index:300;background:#17343d;color:white;padding:12px';status.textContent='Blender 峽谷美術載入中…';document.body.append(status);
  try{const asset=await (await import('./blender-canyon')).loadBlenderCanyon(roadLockMode);status.remove();return asset;}
  catch(error){status.textContent=roadLockMode?'Blender 地形載入失敗：請確認本機 cliff-pass-r4/canyon_cliff_pass_r4.glb。道路入口：?showcase=canyon&road=lock':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。原版入口：?showcase=canyon';throw error;}
 })():undefined;
+await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const world=createWorld(brick?{blenderArt:!!blenderAsset,bank:bankLab?banking:undefined,chunked:!!stage,streamStage:bankLab?pilot:stage&&(blenderMode||trip||import.meta.env.PROD||params.get('stream')!=='0')?stage:undefined,track:pilot?createPilotTrack(pilot,bankLab?banking:undefined):l2?createL2Track(l2):createBrickTrack(brick),theme:brick.sceneryAct,seed:brick.seed,roadWidth:brick.roadWidth,halfAt:d=>pilot?pilotSample(pilot,d).halfWidth:brickWidth(brick,d).halfWidth,weightsAt:pilot?(d=>pilotWeights(pilot,d)):undefined,narrowings:stage?stage.placements.filter(p=>p.channel==='width'&&p.parameters.to<p.parameters.from).map(p=>Math.max(BRICK_START+30,BRICK_START+p.startS-180)):brick.lanes.flatMap((k,i)=>i&&k[1]<brick.lanes[i-1][1]?[Math.max(BRICK_START+30,BRICK_START+brick.lanes[i-1][0]*brick.length/brick.nominalDuration-180)]:[]),course:pilot?pilotCourse(pilot):l2?l2Course(l2):brickCourse(brick),notice:brick.id==='BRK-03'?{distance:BRICK_START+brick.length*5/brick.nominalDuration,text:'LEFT BEND BEYOND'}:undefined}:{}); world.car.rotation.order="YXZ"; const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,CHASE_NEAR,matchMedia('(pointer:coarse)').matches?1400:2200);
 if(blenderAsset)world.scene.add(blenderAsset.root);
 // Load the FFT code only for the explicit coastal water trial. Everything
 // else (main trip, canyon, city) stays on the regular Three.js render path.
+await loadingStep(48,coastUltraWater?'正在準備海岸':'正在準備光影',coastUltraWater?'計算沙灘與海水交界，讓浪花留在岸邊。':'準備場景光線與畫面效果。');
 const ultraOcean=coastUltraWater?await import('./coast-ocean')
- .then(({UltraCoastOcean})=>new UltraCoastOcean(renderer,world.scene,world))
+ .then(({UltraCoastOcean})=>UltraCoastOcean.create(renderer,world.scene,world,p=>loadingProgress(48+p*30,'正在準備海岸',`海岸交界已完成 ${Math.round(p*100)}%，接著準備海浪與夕陽。`)))
  .catch(error=>{console.error('Ultra-Water unavailable; using basic sea',error);return null;}):null;
 if(ultraOcean){const originalSea=world.scene.getObjectByName('default-coast-water');if(originalSea)originalSea.visible=false;}
+await loadingStep(82,'正在準備出發路段','載入前方公路與沿途景物，剩餘路段會隨旅程準備。');
 if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;} advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
@@ -452,6 +459,7 @@ function recordStreamDiagnostics(now:number){if(!streamDiagnosticMode||now-strea
     });
   }
 }
+let startupPending=true;
 let last=performance.now();
 function loop(now:number){
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
@@ -468,6 +476,16 @@ function loop(now:number){
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
   if(!manual&&!wasCounting)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);if(advance(tick)===false)break;remaining-=tick;}
   render(dt);
+  if(startupPending){
+    const stream=world.streamer;
+    if(stream?.error){loadingFailed('前方道路載入失敗，請檢查連線後重新載入。');startupPending=false;}
+    else if(!stream||stream.ready){loadingFinished();startupPending=false;}
+    else{
+      const {nearby,chunks}=stream.stats;
+      const done=chunks.filter(c=>nearby.includes(c.index)).reduce((n,c)=>n+Number(c.road==='ready')+Number(c.scenery==='ready'),0),total=nearby.length*2;
+      loadingProgress(82+16*done/Math.max(1,total),'正在準備出發路段',`道路與景物已完成 ${done}／${total} 項。準備好就能出發。`);
+    }
+  }
   sceneInspector?.refresh();
   updatePlayerUi();
   roadOverlay.hidden=(playerUi&&mode!=='playing')||!(streamHeld&&mode==='playing')&&!world.streamer?.error&&!contextLost;

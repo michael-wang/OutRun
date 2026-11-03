@@ -1,7 +1,7 @@
 import {COAST_SUN,COAST_SKY_GLSL} from './coast-dusk';
 import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
-import {bakeCoastShore} from './coast-shore';
+import {bakeCoastShore,bakeCoastShoreAsync} from './coast-shore';
 import {COAST_SEA_LEVEL} from './scenery-cross-section';
 // The upstream, MIT-licensed simulation is intentionally left untouched.
 // @ts-ignore - vendored upstream JavaScript has no TypeScript declarations.
@@ -185,7 +185,12 @@ export class UltraCoastOcean {
  private readonly mobile:boolean;
  private readonly renderer:THREE.WebGLRenderer;
 
- constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},level=COAST_SEA_LEVEL){
+ static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},onProgress:(p:number)=>void){
+  const shore=await bakeCoastShoreAsync(coast.sample,coast.length,onProgress);
+  try{return new UltraCoastOcean(renderer,scene,coast,COAST_SEA_LEVEL,shore);}
+  catch(error){shore.texture.dispose();throw error;}
+ }
+ constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},level=COAST_SEA_LEVEL,shore=bakeCoastShore(coast.sample,coast.length)){
   if(!renderer.capabilities.isWebGL2)throw new Error('Ultra-Water experiment requires WebGL2');
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
@@ -194,7 +199,6 @@ export class UltraCoastOcean {
   oceanParams.waveScale=.55;
   oceanParams.swellScale=.3;
   this.sim=new OceanSim(renderer,oceanParams);
-  const shore=bakeCoastShore(coast.sample,coast.length);
   const rockPositions=COAST_ROCKS.map(r=>{
    const p=coast.sample(r.d),v=p.position.clone().addScaledVector(p.right,coastRockX(r));
    return new THREE.Vector4(v.x,v.z,r.r,r.d*.017);

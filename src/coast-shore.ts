@@ -6,7 +6,7 @@ type ShoreSample={position:THREE.Vector3;right:THREE.Vector3};
 /** A one-time, world-space coastal mask from the existing road, not a terrain
  * generator. Channels: signed distance offshore, sand height, outward X/Z.
  * Both the FFT surface and its fragment clipping read the same static map. */
-export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
+function* coastShoreRows(sample:(d:number)=>ShoreSample,length:number){
  const points:ShoreSample[]=[];
  for(let d=0;d<length;d+=20)points.push(sample(d));
  points.push(sample(length));
@@ -46,8 +46,29 @@ export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
   data[k+1]=THREE.DataUtils.toHalfFloat(y);
   data[k+2]=THREE.DataUtils.toHalfFloat(-rx/n);data[k+3]=THREE.DataUtils.toHalfFloat(-rz/n);
   }
+  yield (j+1)/height;
  }
  const texture=new THREE.DataTexture(data,width,height,THREE.RGBAFormat,THREE.HalfFloatType);
  texture.minFilter=texture.magFilter=THREE.LinearFilter;texture.generateMipmaps=false;texture.needsUpdate=true;
  return {texture,bounds:new THREE.Vector4(minX,minZ,sx,sz)};
+}
+
+/** Synchronous entry retained for offline checks. */
+export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
+ const rows=coastShoreRows(sample,length);let next=rows.next();
+ while(!next.done)next=rows.next();
+ return next.value;
+}
+/** Yield between short row batches so mobile loading UI keeps painting. */
+export async function bakeCoastShoreAsync(sample:(d:number)=>ShoreSample,length:number,onProgress:(p:number)=>void=()=>{}){
+ const rows=coastShoreRows(sample,length);let next=rows.next(),since=performance.now();
+ while(!next.done){
+  if(performance.now()-since>=8){
+   onProgress(next.value);
+   await new Promise<void>(resolve=>setTimeout(resolve,0));
+   since=performance.now();
+  }
+  next=rows.next();
+ }
+ onProgress(1);return next.value;
 }

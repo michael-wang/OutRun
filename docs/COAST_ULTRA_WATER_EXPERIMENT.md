@@ -154,3 +154,27 @@ telemetry and mask comparison remain ignored in
 `art-prototype/output/coast-journey/`. Existing visual limits remain: low-poly
 buildings/hills, static beachgoers and stylized shore foam. This milestone changes
 composition and pacing rather than upgrading the art asset fidelity.
+
+## 2026-11-04 responsive startup feedback
+
+Initial HTML now contains an artwork-backed, portrait/landscape loading surface
+above the game and rotation prompt, including animated activity, Traditional
+Chinese stage descriptions and an accessible progress bar. It reuses the approved
+splash pictures, with a gradient fallback while the image itself downloads.
+Progress is weighted preparation milestones, not estimated time or download bytes:
+module availability, route/world setup, completed shoreline rows and ready nearby
+road/scenery chunks. 100% requires a rendered frame and the existing safe-nearby
+readiness gate. The rest of the route continues streaming normally.
+
+The coastal mask uses the same exact computation in short batches with browser
+yields. A regression checks event-loop yielding, monotonic progress and equality
+of every mask channel against the synchronous result. Controls, track and water
+geometry are unchanged. Slow preparation gets a notice after 15s and a reload
+option after 45s; failed initialization or road preparation gets an explicit error.
+
+Build and 21 relevant unit tests pass. Local Chrome checks cover development and
+production, portrait/landscape, coast and default trip, blocked module download,
+retry recovery and Play. At 4x CPU slowdown the real coast calculation continued
+producing animation frames and progress updates. This is desktop mobile emulation,
+not a physical Pixel 8 measurement. Local captures and a loading preview are in
+`art-prototype/output/mobile-loading/`; no media is committed and no CI was run.
