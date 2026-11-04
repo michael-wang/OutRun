@@ -80,10 +80,11 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #drive-hud{position:fixed;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);font:700 16px/1.4 system-ui;font-variant-numeric:tabular-nums;white-space:nowrap;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #route-name{position:fixed;top:calc(max(16px,env(safe-area-inset-top)) + 48px);left:max(24px,env(safe-area-inset-left));max-width:29vw;font:11px/1.3 system-ui;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #release-version{display:block;margin-top:3px;font:10px/1.2 system-ui;color:#e1e8e8;text-shadow:0 1px 2px #071323;pointer-events:none}
-#drive-footer{position:fixed;z-index:4;left:50%;bottom:calc(env(safe-area-inset-bottom) + 8px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 12px;border-radius:7px;background:#071923d9;color:#fff;pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
-#drive-footer[hidden]{display:none}
-#drive-fps{font:800 20px/1.15 Arial,sans-serif;color:#d3ffb5}
-#game-version{font:10px/1.2 Arial,sans-serif;color:#dae2e7}
+#drive-readout{position:fixed;z-index:4;top:max(12px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:5px 8px;border-radius:4px;background:rgba(24,27,30,.48);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+#drive-readout[hidden]{display:none}
+#drive-fps{font:500 16px/1.2 Arial,sans-serif;color:#c5c8cb}
+#game-version{font:10px/1.2 Arial,sans-serif;color:#aeb4b9}
+#app #immersive-note{top:calc(max(12px,env(safe-area-inset-top)) + 54px)}
 #app #l2-hud{top:calc(max(16px,env(safe-area-inset-top)) + 96px);left:max(24px,env(safe-area-inset-left));max-width:calc(100vw - 48px);font-size:10px}
 
 /* iPhone Safari: keep rotation and home-screen guidance readable without hiding gameplay. */
@@ -293,7 +294,7 @@ html[data-input-mode="gamepad"] #app .l2-lab button[data-pad-hint]:focus-visible
  * buttons over the diagnostics HUD. Hidden from the public player UI. */
 html:not([data-qa="true"]) #qa-tools{display:none!important}
 #app #qa-tools{
- position:fixed;z-index:98;top:max(12px,env(safe-area-inset-top));
+ position:fixed;z-index:98;top:calc(max(12px,env(safe-area-inset-top)) + 54px);
  right:max(18px,env(safe-area-inset-right));
  display:flex;flex-direction:column;gap:7px;align-items:stretch;
  width:148px;padding:7px;box-sizing:border-box;
@@ -317,7 +318,7 @@ html:not([data-qa="true"]) #qa-tools{display:none!important}
  outline:3px solid #ffe39d;outline-offset:2px;
 }
 #app #photo-status{
- position:fixed;z-index:99;top:calc(max(12px,env(safe-area-inset-top)) + 119px);
+ position:fixed;z-index:99;top:calc(max(12px,env(safe-area-inset-top)) + 173px);
  right:max(18px,env(safe-area-inset-right));
  max-width:min(310px,60vw);pointer-events:none;
 }
@@ -334,7 +335,7 @@ html[data-qa="true"] #stream-health-hud{
  html[data-qa="true"] #stream-health-hud{
   right:calc(max(18px,env(safe-area-inset-right)) + 147px);
  }
- #app #photo-status{top:calc(max(12px,env(safe-area-inset-top)) + 101px)}
+ #app #photo-status{top:calc(max(12px,env(safe-area-inset-top)) + 155px)}
 }
 
 

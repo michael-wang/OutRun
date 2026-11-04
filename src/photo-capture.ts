@@ -6,12 +6,13 @@ export class PhotoCapture {
  }
  capture(){
   this.redraw();const meta=this.metadata(),out=document.createElement('canvas');out.width=this.canvas.width;out.height=this.canvas.height;const ctx=out.getContext('2d');if(!ctx)return;
-  ctx.drawImage(this.canvas,0,0);ctx.fillStyle='rgba(7,34,41,.85)';ctx.fillRect(0,0,out.width,Math.max(52,out.height*.085));ctx.fillStyle='#fff';ctx.font=`${Math.max(14,Math.round(out.height*.025))}px sans-serif`;ctx.fillText(`${meta.stageCode} · ${meta.time.toFixed(1)}s · ${meta.distance.toFixed(0)}m · ${meta.speed.toFixed(0)} km/h`,12,24);ctx.fillText(`steer ${meta.steer.toFixed(2)} · grade ${meta.grade.toFixed(3)} · x ${meta.roadX.toFixed(1)}/${meta.halfWidth.toFixed(1)} · surface gap ${meta.surfaceGap===null?'unavailable':meta.surfaceGap.toFixed(3)+'m'}`,12,46);
-  // The in-game camera captures WebGL only, so stamp the public footer too.
-  const scale=out.height/Math.max(1,this.canvas.clientHeight),w=150*scale,h=49*scale,x=(out.width-w)/2,y=out.height-h-8*scale;
-  ctx.fillStyle='rgba(7,25,35,.85)';ctx.fillRect(x,y,w,h);ctx.textAlign='center';
-  ctx.fillStyle='#d3ffb5';ctx.font=`800 ${20*scale}px Arial`;ctx.fillText(`${meta.fps?Math.round(meta.fps):'—'} FPS`,out.width/2,y+23*scale);
-  ctx.fillStyle='#dae2e7';ctx.font=`${10*scale}px Arial`;ctx.fillText(meta.buildVersion??GAME_VERSION,out.width/2,y+39*scale);
+  const scale=out.height/Math.max(1,this.canvas.clientHeight);
+  ctx.drawImage(this.canvas,0,0);ctx.fillStyle='rgba(7,34,41,.85)';ctx.fillRect(0,0,out.width,Math.max(52,out.height*.085));ctx.fillStyle='#fff';ctx.font=`${Math.max(14,Math.round(out.height*.025))}px sans-serif`;ctx.fillText(`${meta.stageCode} · ${meta.time.toFixed(1)}s · ${meta.distance.toFixed(0)}m · ${meta.speed.toFixed(0)} km/h`,12,24,out.width-150*scale);ctx.fillText(`steer ${meta.steer.toFixed(2)} · grade ${meta.grade.toFixed(3)} · x ${meta.roadX.toFixed(1)}/${meta.halfWidth.toFixed(1)} · surface gap ${meta.surfaceGap===null?'unavailable':meta.surfaceGap.toFixed(3)+'m'}`,12,46,out.width-150*scale);
+  // WebGL-only captures also include the quiet upper-right public readout.
+  const w=112*scale,h=43*scale,x=out.width-w-18*scale,y=12*scale;
+  ctx.fillStyle='rgba(24,27,30,.48)';ctx.fillRect(x,y,w,h);ctx.textAlign='right';
+  ctx.fillStyle='#c5c8cb';ctx.font=`500 ${16*scale}px Arial`;ctx.fillText(`${meta.fps?Math.round(meta.fps):'—'} FPS`,x+w-8*scale,y+20*scale);
+  ctx.fillStyle='#aeb4b9';ctx.font=`${10*scale}px Arial`;ctx.fillText(meta.buildVersion??GAME_VERSION,x+w-8*scale,y+35*scale);
   const photo={id:`${Date.now()}-${++this.serial}`,png:out.toDataURL('image/png'),meta};this.pending=this.pending.then(async()=>{const controller=new AbortController(),timer=window.setTimeout(()=>controller.abort(),10000);try{const response=await fetch('/__outrun_capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({png:photo.png,meta:photo.meta}),signal:controller.signal});if(!response.ok)throw Error(`HTTP ${response.status}`);const data=await response.json();if(typeof data.path!=='string'||!data.path.startsWith('captures/'))throw Error('Invalid archive acknowledgement');this.status('📸 Saved');}catch{this.status('PC save unconfirmed. Downloading PNG; check browser downloads.');const a=document.createElement('a');a.href=photo.png;a.download=`outrun-${photo.id}.png`;a.click();}finally{clearTimeout(timer);}});return photo.meta;
  }
 }
