@@ -5,6 +5,7 @@ import {attachJourneyLink,highwayExtension,LINK_HALF,LINK_LOAD_START} from './jo
 import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed} from './loading';
 import {startupDiagnostics} from './startup-diagnostics';
 import {DriveFpsDiagnostics} from './drive-fps-diagnostics';
+import {sharedFlowerMaskStats} from './vendor/three-stylized/flowerShapes';
 import {RockContact} from './rocky-shoulder';
 import {RoadCones} from './road-cones';
 import {bankPrototype} from './banking';
@@ -172,7 +173,8 @@ const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
   farms:{plots:farms.length,ricePlots:farms.filter(f=>f.kind==='rice').length,flowerPlots:farms.filter(f=>f.kind==='flowers').length,
    riceCanopyTriangles:farms.reduce((n,f)=>n+f.canopyTriangles,0),riceClumps:farms.reduce((n,f)=>n+f.crops.reduce((m,c)=>m+c,0),0),
    grassBlades:farms.reduce((n,f)=>n+f.blades,0),flowers:farms.reduce((n,f)=>n+f.flowers,0),
-   backgroundWarmup:warm?.farmWarm??null,backgroundTasks:warm?.backgroundTasks??[]},
+   backgroundWarmup:warm?.farmWarm??null,backgroundTasks:warm?.backgroundTasks??[],
+   sharedFlowerAtlas:sharedFlowerMaskStats()},
   water:ultraOcean?.stats??null,
  };
 });
