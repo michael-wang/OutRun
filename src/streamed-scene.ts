@@ -72,6 +72,7 @@ export class StreamedScene {
  private markerMaterials:THREE.Material[];
  private uploadOwners=new WeakMap<object,number>();
  private generation=1;private errorMessage='';
+ private farmWorkerPrepared={chunks:0,plots:0,workerCpuMs:0,lastChunk:-1,lastMs:0,missingPlots:0};
  private farmAssets?:FarmAssets;private farms=new Map<number,FarmPatch[]>();private disposed=false;private farmGpuWarmed=false;private farmWarmTask?:Promise<void>;
  private farmWarmIds=new Set<number>();
  private farmWarmStartedAt=0;
@@ -97,6 +98,7 @@ export class StreamedScene {
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
  /** Opt-in common streaming-task cost attribution (read-only). */
  get sceneTaskProfile(){return this.taskProfiler?.snapshot()??null;}
+ get farmWorkerStats(){return {...this.farmWorkerPrepared,workerCpuMs:Math.round(this.farmWorkerPrepared.workerCpuMs),lastMs:Math.round(this.farmWorkerPrepared.lastMs)};}
  get sceneTaskSpikes(){return this.taskProfiler?.recentSlowTasks()??[];}
  constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false,private farmSample?:Parameters<typeof createFarmPlot>[1]){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
@@ -162,7 +164,19 @@ export class StreamedScene {
   if(data.type!=='prepared'&&data.type!=='sceneryPrepared')throw Error('Unexpected worker result '+data.type);
   // Retain pending until result validation succeeds, so recovery retries this chunk.
   if(data.type==='prepared'&&!data.meshes?.some((m:RoadData)=>m.kind==='asphalt'&&m.positions?.length&&m.indices?.length))throw Error('Worker returned no drivable road');
-  const road=data.type==='prepared';if(!road)this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
+  const road=data.type==='prepared';
+  if(!road){
+   this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});
+   const farms=data.farmPreps as PreparedFarmPlot[]|undefined;
+   if(farms?.length){
+    this.farmWorkerPrepared.chunks++;
+    this.farmWorkerPrepared.plots+=farms.length;
+    this.farmWorkerPrepared.workerCpuMs+=data.farmPrepCpuMs??0;
+    this.farmWorkerPrepared.lastChunk=c.index;
+    this.farmWorkerPrepared.lastMs=data.farmPrepCpuMs??0;
+   }
+  }
+  this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
   if(record&&!road)record.generatedInstances=data.instances.reduce((n:number,i:Instance)=>n+i.matrices.length/16,0);this.activeRecord=undefined;
   const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances,data.farmPreps);
   const taskPlots=this.taskProfiler&&!road&&this.farmSample&&this.farmAssets
@@ -183,6 +197,8 @@ export class StreamedScene {
  });for(let i=0;i<roadside.length;i++)tasks.push(()=>{const matrices=roadside[i],mesh=new THREE.InstancedMesh(this.markerGeometries[i],this.markerMaterials[i],matrices.length/16);mesh.instanceMatrix.array.set(matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.castShadow=true;mesh.receiveShadow=true;this.attach(c,'road-detail',mesh);});for(const annotation of this.annotations)if(Math.floor(annotation.distance/this.chunkLength)===c.index)tasks.push(()=>{for(const mesh of annotation.create()){for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material])this.annotationMaterials.add(material);this.registerGeometry(mesh.geometry,c.index);this.attach(c,'road-detail',mesh);c.geometries.add(mesh.geometry);}});return tasks;}
  private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[],farmPreps?:PreparedFarmPlot[]){
   const prepared=new Map((farmPreps??[]).map(p=>[p.id,p]));
+  const plots=this.farmSample&&this.farmAssets?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
+  if(plots.length&&prepared.size!==plots.length)this.farmWorkerPrepared.missingPlots+=plots.filter(p=>!prepared.has(p.id)).length;
   // A real prepared payload is an entire chunk's farm batch; partial data is a
   // worker contract violation rather than a silent visual mismatch.
   if(farmPreps?.length&&this.farmSample&&farmPreps.length!==farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength).length)
