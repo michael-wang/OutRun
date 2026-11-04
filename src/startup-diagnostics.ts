@@ -46,6 +46,8 @@ class FirstLoadDiagnostics {
   private completed = false;
   private status?: HTMLElement;
   private panel?: HTMLElement;
+  private driving={startedAt:0,lastFrame:0,samples:0,totalMs:0,above33:0,above50:0,above100:0,worstMs:0,maxDrawCalls:0,atRiceSamples:0,atRiceAbove50:0,secondBuckets:[] as {elapsedS:number;distanceM:number;fps:number;maxGapMs:number;drawCalls:number}[]};
+  private currentDriveBucket={since:0,frames:0,maxGap:0};
 
   constructor() {
     if (!this.enabled) return;
@@ -127,6 +129,26 @@ class FirstLoadDiagnostics {
     this.updatePanel();
   }
 
+  /** Optional lightweight moving-playtest trace for the first two minutes.
+   * Does not run in regular gameplay and never calls the renderer itself.
+   */
+  drivingFrame(now:number,playing:boolean,distance:number,drawCalls:number){
+    if(!this.enabled||!this.completed||!playing)return;
+    const d=this.driving;
+    if(!d.startedAt){d.startedAt=now;d.lastFrame=now;this.currentDriveBucket={since:now,frames:0,maxGap:0};return;}
+    if(now-d.startedAt>120000)return;
+    const dt=now-d.lastFrame;d.lastFrame=now;
+    if(dt<=0||dt>1000){this.currentDriveBucket.since=now;this.currentDriveBucket.frames=0;return;}
+    d.samples++;d.totalMs+=dt;d.worstMs=Math.max(d.worstMs,dt);d.maxDrawCalls=Math.max(d.maxDrawCalls,drawCalls);
+    if(dt>33.3)d.above33++;if(dt>50)d.above50++;if(dt>100)d.above100++;
+    if(distance>=2300&&distance<=3670){d.atRiceSamples++;if(dt>50)d.atRiceAbove50++;}
+    this.currentDriveBucket.frames++;this.currentDriveBucket.maxGap=Math.max(this.currentDriveBucket.maxGap,dt);
+    if(now-this.currentDriveBucket.since>=1000){
+      d.secondBuckets.push({elapsedS:Math.round((now-d.startedAt)/1000),distanceM:Math.round(distance),fps:Math.round(this.currentDriveBucket.frames*1000/(now-this.currentDriveBucket.since)),maxGapMs:Math.round(this.currentDriveBucket.maxGap*10)/10,drawCalls});
+      this.currentDriveBucket={since:now,frames:0,maxGap:0};
+    }
+  }
+
   report() {
     const nav = navigator as Navigator & {deviceMemory?: number; connection?: {effectiveType?: string; downlink?: number}};
     const resources = (performance.getEntriesByType('resource') as PerformanceResourceTiming[])
@@ -159,6 +181,7 @@ class FirstLoadDiagnostics {
       timeAt98Ms: this.entered98 === undefined ? null : Math.round(this.entered98 - this.startedAt),
       waitAfter98Ms: this.entered98 === undefined ? null : Math.round((this.exited98 ?? performance.now()) - this.entered98),
       frameGaps: this.gaps,
+      drive: {...this.driving,meanFps:this.driving.totalMs>0?Math.round(this.driving.samples*1000/this.driving.totalMs*10)/10:null},
       finalReadiness: this.latest ?? null,
       events: this.events,
       slowestResources: resources,
