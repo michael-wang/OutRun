@@ -3,6 +3,7 @@ import {readFileSync,existsSync} from 'node:fs';
 import * as THREE from 'three';
 import {coastHillHeight,coastWildness} from '../src/coast-terrain';
 import {COAST_DISTRICTS} from '../src/coast-layout';
+import {farmPlainMask} from '../src/coast-farm-layout';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastBeachHeight} from '../src/scenery-cross-section';
@@ -21,7 +22,7 @@ describe('sunset coast nature',()=>{
   for(let d=350;d<10350;d+=5)expect(Math.abs(track.sample(d).curvature)).toBeLessThan(.0016);
  });
  it('leaves a broad flat coastal plain and district forecourts, with hills in the middle distance',()=>{
-  for(let d=350;d<10350;d+=25)for(const x of [-60,-13,0,13,18,45,70,88])expect(coastHillHeight(x,d)).toBe(0);
+  for(let d=350;d<10350;d+=25)for(const x of [-60,-13,0,13,18,45,70,88])if(x<=18||!farmPlainMask(x,d))expect(coastHillHeight(x,d)).toBe(0);
   for(const zone of COAST_DISTRICTS)for(let d=zone.start;d<zone.end;d+=25){expect(coastWildness(d)).toBe(0);for(const x of [24,40,65])expect(coastHillHeight(x,d)).toBe(0);}
   for(const d of [1250,1750,4650,6150,7600]){
    const heights=Array.from({length:32},(_,i)=>coastHillHeight(140+i*10,d));

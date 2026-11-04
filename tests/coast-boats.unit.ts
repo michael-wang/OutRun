@@ -8,8 +8,9 @@ import {coastBeachX} from '../src/coast-layout';
 import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
 const track=createPilotTrack(COAST_ULTRA_STAGE);
 
-it('keeps exactly four vessels safely offshore along the real curved coast for full patrols',()=>{
- expect(COAST_BOATS.filter(b=>b.kind==='sail')).toHaveLength(2);expect(COAST_BOATS.filter(b=>b.kind==='yacht')).toHaveLength(2);
+it('keeps the expanded fleet safely offshore along the real curved coast for full patrols',()=>{
+ expect(COAST_BOATS.filter(b=>b.kind==='sail')).toHaveLength(8);expect(COAST_BOATS.filter(b=>b.kind==='yacht')).toHaveLength(6);
+ for(let i=1;i<COAST_BOATS.length;i++)expect(COAST_BOATS[i].distance-COAST_BOATS[i-1].distance).toBeLessThan(1200);
  const shore=Array.from({length:Math.ceil(track.length/20)},(_,i)=>{const d=i*20,p=track.sample(d);return {road:p.position,right:p.right.clone().setY(0).normalize(),edge:coastBeachX(COAST_SHORE_OFFSET,d)};});
  for(const boat of COAST_BOATS)for(let t=0;t<=7200;t+=31){
   const p=coastBoatPosition(boat,t,track.sample),next=coastBoatPosition(boat,t+.25,track.sample);
@@ -24,7 +25,7 @@ it('keeps exactly four vessels safely offshore along the real curved coast for f
  }
 });
 
-it('ships original local GLB models within the four-boat geometry budget',()=>{
+it('reuses two local source models within the expanded fleet geometry budget',()=>{
  let triangles=0;
  for(const file of ['boat-sail-a.glb','flybridge-yacht.glb']){
   const b=readFileSync('public/assets/coast-boats/'+file);expect(b.readUInt32LE(0)).toBe(0x46546c67);
@@ -33,4 +34,5 @@ it('ships original local GLB models within the four-boat geometry budget',()=>{
   for(const image of g.images??[])if(image.uri){expect(image.uri).not.toMatch(/https?:/);expect(readFileSync('public/assets/coast-boats/'+image.uri).length).toBeGreaterThan(0);}
  }
  expect(triangles*2).toBeLessThan(15000);
+ expect(triangles*7).toBeLessThan(51000);
 });

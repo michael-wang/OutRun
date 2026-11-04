@@ -1,0 +1,17 @@
+{
+  "errors": [],
+  "stats": {
+    "enabled": true,
+    "size": 512,
+    "hz": 10,
+    "casters": 3,
+    "updates": 58
+  },
+  "difference": {
+    "width": 1280,
+    "height": 576,
+    "changed": 1570,
+    "darkened": 1570,
+    "maxDrop": 46.666666666666664
+  }
+}

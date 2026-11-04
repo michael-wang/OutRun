@@ -66,9 +66,13 @@ export class StreamedScene {
  private uploadOwners=new WeakMap<object,number>();
  private generation=1;private errorMessage='';
  private farmAssets?:FarmAssets;private farms=new Map<number,FarmPatch[]>();private disposed=false;private farmWarmed=false;private farmGpuWarmed=false;private farmWarmTask?:Promise<void>;
+ private farmWarmIds=new Set<number>();
  warmFarm(renderer:THREE.WebGLRenderer,camera:THREE.Camera):Promise<void>|undefined{
-  if(!this.farmSample||this.disposed||![2,3].every(i=>this.chunks.get(i)?.scenery==='ready'))return;
-  return this.farmWarmTask??=warmFarmMeshes(renderer,camera,this.scene,[...this.farms.values()].flat(),()=>!this.disposed).then(()=>{this.farmGpuWarmed=true;}).catch(e=>{this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
+  if(!this.farmSample||this.disposed||(!this.farmGpuWarmed&&![2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready')))return;
+  if(this.farmWarmTask)return this.farmWarmTask;
+  const patches=[...this.farms.values()].flat().filter(p=>!this.farmWarmIds.has(p.plot.id));if(!patches.length)return;
+  patches.forEach(p=>this.farmWarmIds.add(p.plot.id));
+  return this.farmWarmTask=warmFarmMeshes(renderer,camera,this.scene,patches,()=>!this.disposed).then(()=>{this.farmGpuWarmed=true;this.farmWarmTask=undefined;}).catch(e=>{this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
  }
  updateFarm(time:number){if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
@@ -117,7 +121,7 @@ export class StreamedScene {
    // no longer render or participate in tire raycasts. Dispose GPU buffers in
    // individual, budgeted steps on subsequent frames.
    for(const group of Object.values(c.groups))group?.removeFromParent();
-   for(const farm of this.farms.get(index)??[])this.retiring.push({index,priority:1,run:()=>{farm.group.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.ShaderMaterial)this.clippedMaterials.delete(m);});farm.dispose();}});this.farms.delete(index);
+   for(const farm of this.farms.get(index)??[])this.retiring.push({index,priority:1,run:()=>{this.farmWarmIds.delete(farm.plot.id);farm.group.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.ShaderMaterial)this.clippedMaterials.delete(m);});farm.dispose();}});this.farms.delete(index);
    if(this.diagnostics)for(const r of this.lifecycle)if(r.index===index&&r.retiredAt===undefined)r.retiredAt=performance.now();
    for(const object of c.objects)if(object instanceof THREE.InstancedMesh)this.retiring.push({index,priority:1,run:()=>object.dispose()});
    for(const geometry of c.geometries)this.retiring.push({index,priority:1,run:()=>geometry.dispose()});this.chunks.delete(index);this.sceneryCounts.delete(index);
@@ -165,10 +169,10 @@ export class StreamedScene {
  // Complete the visible neighbourhood first; the full 5 km window continues in background.
  get nearby(){const first=Math.floor(Math.max(0,this.position-80)/this.chunkLength),last=Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((this.position+1200)/this.chunkLength));return Array.from({length:last-first+1},(_,i)=>first+i);}
  get ready(){
-  // This one farm visit is inside the initial 5 km allocation window. Prepare
-  // its small upstream vegetation batches during the existing loading screen,
-  // not as main-thread construction spikes while the player is already moving.
-  if(this.farmSample&&!this.farmWarmed){this.farmWarmed=this.farmGpuWarmed&&[2,3].every(i=>this.chunks.get(i)?.scenery==='ready');if(!this.farmWarmed)return false;}
+  // Prepare the main farm and first village fields in the initial 5 km window.
+  // Later fields use the same budgeted construction and incremental GPU warmup
+  // well ahead of the player, before entering their visible neighbourhood.
+  if(this.farmSample&&!this.farmWarmed){this.farmWarmed=this.farmGpuWarmed&&[2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready');if(!this.farmWarmed)return false;}
   return !this.errorMessage&&this.natureTextureLoads===0&&this.nearby.every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});
  }
  get fullyReady(){return !this.errorMessage&&!this.retiring.length&&[...this.desired].every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});}

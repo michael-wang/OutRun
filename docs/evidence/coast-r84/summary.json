@@ -1,0 +1,101 @@
+{
+  "version": "v0.9-coast-r8.4",
+  "environment": "Desktop Edge 960x432 touch, DPR 2.75; capture frames excluded; not Pixel 8",
+  "initialReadyMs": 5278,
+  "frames": {
+    "count": 8437,
+    "p95": 16.799999999999272,
+    "p99": 16.80000000000291,
+    "worst": 33.30000000000109,
+    "over50": 0
+  },
+  "soakFrames": {
+    "count": 6598,
+    "p50": 16.69999999999709,
+    "p95": 16.800000000000182,
+    "p99": 16.80000000000291,
+    "worst": 33.399999999999636,
+    "over50": 0
+  },
+  "plots": 91,
+  "scarecrows": 6,
+  "boats": 14,
+  "blades": 73402,
+  "flowers": 45403,
+  "cropInstances": 20075,
+  "areas": [
+    {
+      "start": 2400,
+      "end": 3000,
+      "mainDrawCalls": [
+        196,
+        278
+      ],
+      "triangles": [
+        492089,
+        829467
+      ]
+    },
+    {
+      "start": 3100,
+      "end": 3600,
+      "mainDrawCalls": [
+        260,
+        286
+      ],
+      "triangles": [
+        319864,
+        383200
+      ]
+    },
+    {
+      "start": 4500,
+      "end": 4800,
+      "mainDrawCalls": [
+        213,
+        222
+      ],
+      "triangles": [
+        305153,
+        611486
+      ]
+    },
+    {
+      "start": 5900,
+      "end": 6400,
+      "mainDrawCalls": [
+        309,
+        351
+      ],
+      "triangles": [
+        369777,
+        891902
+      ]
+    },
+    {
+      "start": 7400,
+      "end": 7800,
+      "mainDrawCalls": [
+        301,
+        331
+      ],
+      "triangles": [
+        500495,
+        777410
+      ]
+    }
+  ],
+  "replay": {
+    "plots": 67,
+    "boats": 14,
+    "scarecrows": 4,
+    "shadow": {
+      "enabled": true,
+      "size": 512,
+      "hz": 10,
+      "casters": 1,
+      "updates": 1
+    }
+  },
+  "errors": []
+}

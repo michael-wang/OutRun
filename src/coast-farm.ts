@@ -80,26 +80,30 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  const group=new THREE.Group();group.name=`coast-farm-${plot.id}`;
  const ownedGeometry:THREE.BufferGeometry[]=[],instances:THREE.InstancedMesh[]=[];
  const chunkStart=Math.floor(plot.start/1000)*1000,chunkEnd=chunkStart+1000;
- const position=(d:number,x:number,lift=0)=>{const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);v.y=coastNatureGround(sample,d,x,chunkStart,chunkEnd)+lift;return v;};
+  // Sample the original terrain once per row, not again for every crop instance.
+ const rows=Math.ceil((plot.end-plot.start)/4),ground=Array.from({length:rows+1},(_,i)=>{const d=plot.start+(plot.end-plot.start)*i/rows;return [coastNatureGround(sample,d,plot.left,chunkStart,chunkEnd),coastNatureGround(sample,d,plot.right,chunkStart,chunkEnd)];});
+ const position=(d:number,x:number,lift=0)=>{const p=sample(d),v=p.position.clone().addScaledVector(p.right,x),f=THREE.MathUtils.clamp((d-plot.start)/(plot.end-plot.start)*rows,0,rows),i=Math.min(rows-1,Math.floor(f)),t=f-i,u=(x-plot.left)/(plot.right-plot.left);v.y=THREE.MathUtils.lerp(THREE.MathUtils.lerp(ground[i][0],ground[i][1],u),THREE.MathUtils.lerp(ground[i+1][0],ground[i+1][1],u),t)+lift;return v;};
  function ribbon(left:number,right:number,start:number,end:number,lift:number,mat:THREE.Material){
   const vertices=[],uv=[],indices=[],rows=Math.ceil((end-start)/4);
   for(let i=0;i<=rows;i++){const d=start+(end-start)*i/rows;for(const x of [left,right]){const p=position(d,x,lift);vertices.push(p.x,p.y,p.z);uv.push((x-left)/8,(d-start)/8);}if(i<rows){const j=i*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}}
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();ownedGeometry.push(g);const m=new THREE.Mesh(g,mat);group.add(m);return m;
  }
- const groundColor=plot.kind==='rice'?'#c7a43c':flowerColors[plot.band];
+ const groundColor=plot.kind==='rice'?'#c7a43c':flowerColors[plot.band%3];
  const surface=ribbon(plot.left,plot.right,plot.start,plot.end,.055,assets.material('ground',groundColor));
  // Keep the exact sampled terrain, including road bend and mild grade. No new terrain generator.
  const sampling=surface.clone(false);sampling.geometry=surface.geometry.clone();ownedGeometry.push(sampling.geometry);
  const suv=sampling.geometry.getAttribute('uv');for(let i=0;i<suv.count;i++)suv.setXY(i,suv.getX(i)*8/(plot.right-plot.left),suv.getY(i)*8/(plot.end-plot.start));
- const clearPath=(d:number,x:number)=>Math.abs(d-2680)<2.3&&x<25;
+ const residentScarecrows=FARM_SCARECROWS.filter(s=>s.d>=plot.start&&s.d<plot.end&&s.x>plot.left&&s.x<plot.right);
+ const clearPath=(d:number,x:number)=>residentScarecrows.some(s=>Math.abs(d-s.d)<2.2&&Math.abs(x-s.x)<3);
+ const density=[1,.55,.28,.10,.07][plot.band];
  const coverage={sample:({uv}:{uv:THREE.Vector2|null})=>uv&&uv.x>.035&&uv.x<.965&&uv.y>.015&&uv.y<.985&&((uv.x*20)%1)>.22&&!clearPath(plot.start+uv.y*(plot.end-plot.start),plot.left+uv.x*(plot.right-plot.left))?1:0};
- const meadow=new Grass({surface:sampling,coverage,terrain:{seed:80483+plot.id},grass:{density:plot.kind==='rice'?1.1:.18,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind},wildflowers:{enabled:plot.kind==='flowers',density:1.1,maxCount:2300,seed:80483+plot.id}});
+ const meadow=new Grass({surface:sampling,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?1.1:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}});
  // Grass facade borrows the external surface. Its visual clone is redundant with
  // our always-visible far ground, so remove only that clone, never the source.
  for(const child of [...meadow.children])if(child instanceof THREE.Mesh)meadow.remove(child);
  meadow.traverse(o=>{if(o instanceof THREE.InstancedMesh){instances.push(o);o.frustumCulled=true;o.computeBoundingSphere();o.boundingSphere!.radius+=1.5;const m=o.material as THREE.ShaderMaterial;distanceShader(m,0,plot.kind==='rice'?260:240,true);m.fog=true;m.clipping=true;m.transparent=false;m.needsUpdate=true;}});
  if(meadow.wildflowers){
-  const flowers=meadow.wildflowers.flowers,g=flowers.geometry,color=new THREE.Color(flowerColors[plot.band]).multiplyScalar(.58),attr=g.getAttribute('aPetalColor');
+  const flowers=meadow.wildflowers.flowers,g=flowers.geometry,color=new THREE.Color(flowerColors[plot.band%3]).multiplyScalar(.58),attr=g.getAttribute('aPetalColor');
   for(let i=0;i<attr.count;i++)attr.setXYZ(i,color.r,color.g,color.b);attr.needsUpdate=true;
   for(const name of ['aFoliageColor','aCentreColor']){const a=g.getAttribute(name);for(let i=0;i<a.count;i++)a.setXYZ(i,a.getX(i)*.65,a.getY(i)*.65,a.getZ(i)*.65);a.needsUpdate=true;}
   // Cultivated flowers are taller than the upstream wildflower meadow; use its
@@ -110,10 +114,10 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  group.add(meadow);
  // Golden rice heads are the downloaded model, not widened yellow grass blades.
  const crops:THREE.InstancedMesh[]=[];
- if(plot.kind==='rice')for(const lod of [0,1]){
+ if(plot.kind==='rice'&&plot.band<3)for(const lod of [0,1]){
   if(lod===0&&plot.band>0)continue;
   const rand=seededRandom(7300+plot.id),matrices:THREE.Matrix4[]=[],dummy=new THREE.Object3D();
-  for(let d=plot.start+2;d<plot.end-2;d+=lod?3.4:2.4)for(let x=plot.left+1;x<plot.right-1;x+=lod?2:1.5){
+  for(let d=plot.start+2;d<plot.end-2;d+=lod?3.4+plot.band*1.5:2.4)for(let x=plot.left+1;x<plot.right-1;x+=lod?2+plot.band:1.5){
    const at=d+(rand()-.5)*.5,lateral=x+(rand()-.5)*.24;
    if(clearPath(at,lateral))continue;
    dummy.position.copy(position(at,lateral,.04));dummy.rotation.set(0,rand()*Math.PI*2,0);dummy.scale.setScalar(1.3+rand()*.18);dummy.updateMatrix();matrices.push(dummy.matrix.clone());
@@ -126,17 +130,21 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  // Narrow matte irrigation channel: one shallow strip, no extra water simulation.
  if(plot.band===0){ribbon(17.6,18.7,plot.start,plot.end,.065,assets.material('canal','#608c82'));ribbon(19,19.7,plot.start,plot.end,.14,bund);}
  const scarecrows:number[]=[];
- if(plot.band===0)for(const d of FARM_SCARECROWS)if(d>=plot.start&&d<plot.end){
-  const scare=new THREE.InstancedMesh(assets.geometries[2],assets.material('scarecrow','#fff1d4'),1),dummy=new THREE.Object3D();dummy.position.copy(position(d,d===2680?22:16.2,.08));dummy.scale.set(1.4,1.18,1.18);
+ for(const {d,x} of residentScarecrows){
+  const scare=new THREE.InstancedMesh(assets.geometries[2],assets.material('scarecrow','#fff1d4'),1),dummy=new THREE.Object3D();dummy.position.copy(position(d,x,.08));dummy.scale.set(1.4,1.18,1.18);
   const road=sample(d-25),towards=road.position.clone().sub(dummy.position);dummy.quaternion.setFromAxisAngle(up,Math.atan2(towards.x,towards.z));dummy.updateMatrix();scare.setMatrixAt(0,dummy.matrix);scare.name='farm-scarecrow';group.add(scare);instances.push(scare);scarecrows.push(d);
-  ribbon(14.5,d===2680?25:21,d-1.8,d+1.8,.09,bund);
+  ribbon(x-3,x+3,d-1.8,d+1.8,.09,bund);
  }
  // Ground, paths and matte channels share one draw per plot. Retain each field's
  // own bounds instead of merging the entire kilometre into an uncullable mesh.
  const surfaces=group.children.filter((o):o is THREE.Mesh=>o instanceof THREE.Mesh&&!(o instanceof THREE.InstancedMesh));
  const parts=surfaces.map(m=>{const g=m.geometry.clone(),colors=[],c=(m.material as THREE.MeshStandardMaterial).color;for(let i=0;i<g.getAttribute('position').count;i++)colors.push(c.r,c.g,c.b);g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));return g;});
  const merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());ownedGeometry.push(merged);surfaces.forEach(m=>group.remove(m));
- const fieldMaterial=assets.material('ground','#ffffff');fieldMaterial.vertexColors=true;fieldMaterial.emissive.set(0x000000);group.add(new THREE.Mesh(merged,fieldMaterial));
+ const fieldMaterial=assets.material('ground','#ffffff');fieldMaterial.vertexColors=true;fieldMaterial.emissive.set(0x000000);
+ // The distant crop canopy retains its golden/flower palette after individual
+ // plants fade. Tint the ambient contribution by the same field/row colours.
+ fieldMaterial.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance += diffuseColor.rgb * .28;');};
+ fieldMaterial.customProgramCacheKey=()=> 'farm-canopy-ground-v1';group.add(new THREE.Mesh(merged,fieldMaterial));
  const update=(distance:number,time:number)=>{
   const gap=Math.max(plot.start-distance,0,distance-plot.end);meadow.visible=gap<265;
   crops.forEach(m=>m.visible=gap<(m.userData.farmLod?425:140));if(meadow.visible)meadow.update(time);
