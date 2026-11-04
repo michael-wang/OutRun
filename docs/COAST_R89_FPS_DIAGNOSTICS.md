@@ -7,7 +7,7 @@
 - **Driving FPS profiler:** `/?fpsdiag=1` — 10-minute bounded one-second samples; export **「匯出 FPS JSON」** from a small floating diagnostic panel.
 - **Existing startup profiler:** `/?startupdiag=1` — retained unchanged for first-load analysis. Use separately when comparing driving to avoid unnecessary overlapping instrumentation.
 - The accepted R8.8 golden rice renderer is now the **only** live rendering path. `?rice=legacy` / `?rice=hybrid` no longer select variants.
-- Dev version label: **`v0.9-coast-r9.0-p0`**. No new `main` release from this diagnostic change.
+- Dev version label: **`v0.9-coast-r9.0-p0b-exp`** (shared flower atlas experiment). No new `main` release from this diagnostic change.
 
 Open the local `dev` server from the **actual Pixel 8** on the same Wi-Fi (use its current IP and port, for example `http://192.168.1.106:5173/?fpsdiag=1` if that remains the active server).
 
@@ -46,3 +46,11 @@ The R8.8 legacy rice toggles were retired previously; the accepted golden rice l
 
 
 For the R9.0 resource architecture decision and current P0 benchmark, see [ADR-009](ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md) and [R9.0 P0 handoff](R90_P0_SCENE_TASK_HANDOFF.md).
+
+## P0b shared flower atlas and detailed plot timing
+
+This version includes a small real optimization (not just more telemetry): all flower plots borrow a **single** reference-counted flower mask texture instead of each plotting its own procedurally rasterized CanvasTexture. The atlas is built at stage-asset load and released after all stage users are retired. Flower shape, color, density and wind remain unchanged.
+
+For comparison to the pre-P0b Pixel 8 baseline, focus on `extras.streamer.taskProfile.byDetail['scenery-field/flowers']`, `['scenery-field/rice']`, `lastSlowTasks[*].detail` / `resourceId`, and `extras.farms.sharedFlowerAtlas`. The old log only had `byKind['scenery-field']` (91 tasks, 3,413ms total, worst 100.7ms by 2.3km); a direct *flower-only* old baseline does not exist.
+
+Avoid assuming that sharing one atlas solves the entire field-construction spike. Re-measure the early 400m, 1.1km, 2.2km frame drops and the ~3.2km flower-region sustained FPS. A 3ms queue budget is still only a soft budget until the remaining monolithic numerical work is split or moved off-thread.
