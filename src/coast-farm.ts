@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {Grass} from './vendor/three-stylized/Grass';
+import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-stylized/flowerShapes';
 import {grassWindVertexTransform,grassWindVertexUniforms} from './vendor/three-stylized/shaders';
 import {seededRandom} from './vendor/three-stylized/utils';
 import {coastNatureGround} from './coast-nature';
@@ -46,6 +47,9 @@ export async function loadCoastFarm(){
  }));
  const time={value:0},materials=new Map<string,THREE.Material>();
  const texture=fieldTexture(),canopyTexture=riceSeaTexture();
+ // Stage-local pin for the single shared flower mask. Build it once during
+ // resource preparation, before distant field constructors run during driving.
+ const flowerMask=acquireSharedFlowerMask();
  function material(kind:string,color:string,near=0,far=0){
   const key=`${kind}:${color}:${near}:${far}`;let m=materials.get(key) as THREE.MeshStandardMaterial|undefined;
   if(!m){m=new THREE.MeshStandardMaterial({color,vertexColors:kind==='crop'||kind==='scarecrow'||kind==='canopy',roughness:1,side:THREE.DoubleSide,...(kind==='ground'?{map:texture,emissive:color,emissiveIntensity:.17}:kind==='canopy'?{map:canopyTexture}:{})});
@@ -64,7 +68,7 @@ export async function loadCoastFarm(){
    }materials.set(key,m);
   }return m;
  }
- return {geometries,time,material,dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();}};
+ return {geometries,time,material,dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();releaseSharedFlowerMask(flowerMask);}};
 }
 export type FarmAssets=Awaited<ReturnType<typeof loadCoastFarm>>;
 
