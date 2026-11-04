@@ -16,9 +16,9 @@ export function driveRegionAt(distance:number):DriveRegion {
  return 'other';
 }
 
-export type CpuPhase='physics'|'world'|'ocean'|'boatShadow'|'mainScene'|'otherRender';
+export type CpuPhase='callback'|'physics'|'world'|'ocean'|'boatShadow'|'mainScene'|'otherRender';
 type CpuTotals=Record<CpuPhase,number>;
-const emptyCpu=():CpuTotals=>({physics:0,world:0,ocean:0,boatShadow:0,mainScene:0,otherRender:0});
+const emptyCpu=():CpuTotals=>({callback:0,physics:0,world:0,ocean:0,boatShadow:0,mainScene:0,otherRender:0});
 const average=(rows:number[])=>rows.length?rows.reduce((sum,x)=>sum+x,0)/rows.length:0;
 const round=(n:number)=>Math.round(n*100)/100;
 
