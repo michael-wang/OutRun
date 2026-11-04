@@ -20,15 +20,15 @@ describe('sunset coast nature',()=>{
   }
   for(let d=350;d<10350;d+=5)expect(Math.abs(track.sample(d).curvature)).toBeLessThan(.0016);
  });
- it('leaves road shoulders and district forecourts alone, and builds real rounded hills',()=>{
-  for(let d=350;d<10350;d+=25)for(const x of [-60,-13,0,13,18])expect(coastHillHeight(x,d)).toBe(0);
+ it('leaves a broad flat coastal plain and district forecourts, with hills in the middle distance',()=>{
+  for(let d=350;d<10350;d+=25)for(const x of [-60,-13,0,13,18,45,70,88])expect(coastHillHeight(x,d)).toBe(0);
   for(const zone of COAST_DISTRICTS)for(let d=zone.start;d<zone.end;d+=25){expect(coastWildness(d)).toBe(0);for(const x of [24,40,65])expect(coastHillHeight(x,d)).toBe(0);}
   for(const d of [1250,1750,4650,6150,7600]){
-   const heights=Array.from({length:28},(_,i)=>coastHillHeight(25+i*5,d));
+   const heights=Array.from({length:32},(_,i)=>coastHillHeight(140+i*10,d));
    expect(Math.max(...heights)).toBeGreaterThan(14);
    expect(heights.some((h,i)=>i>0&&h<heights[i-1]-.1)).toBe(true);
   }
-  for(const zone of COAST_DISTRICTS)for(const d of [zone.start,zone.end])expect(Math.abs(coastHillHeight(55,d-.001)-coastHillHeight(55,d+.001))).toBeLessThan(.001);
+  for(const zone of COAST_DISTRICTS)for(const d of [zone.start,zone.end])expect(Math.abs(coastHillHeight(155,d-.001)-coastHillHeight(155,d+.001))).toBeLessThan(.001);
  });
  it('roots batched source models on the rendered hill mesh, with bounded far geometry',async()=>{
   vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>assets})));

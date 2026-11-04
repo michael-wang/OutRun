@@ -21,11 +21,11 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:24,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
- name:'Azure Coast · Sunset Postcard',
- intent:'Four open sunset bays along a scalloped shore, with wooded inland hills between neighbourhoods and markets.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-sunset-hills-r7-804',
- stageCode:'COAST-SUNSET-R7',tripCode:'COAST-SUNSET-R7',
+ revision:25,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ name:'Azure Coast · Resort Plain',
+ intent:'Sunset bays beside a resort road, with a wooded plain, inland foothills and layered high mountains.',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-resort-plain-r8-804',
+ stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
  length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:4,roadWidth:4*LANE_WIDTH,
  placements:[
   gentleRise,

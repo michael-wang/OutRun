@@ -61,3 +61,7 @@
 ## R7.3 手機持續 GPU 負載
 
 依 Pixel 8 接近一分鐘後降至約 25 FPS 的回報，手機 FFT 改為 128²、依時間限制 30Hz，並提早使用遠距離植被簡模。海浪離屏 viewport 工作量實測下降 77.8%，模擬 GPU 貼圖容量估算下降 75%；保留夕照、近處模型、道路、操控與旅程預載。建置與 268 項 active unit tests 通過，150 秒桌機觸控模擬完成海濱至都市；實體手機持續 FPS 仍待回測。完整診斷、限制與記錄見 [COAST_R73_PERFORMANCE.md](COAST_R73_PERFORMANCE.md)。
+
+## 後續 R8 景觀調整
+
+使用者回報 R7.3 的 Pixel 8 FPS 已明顯改善，並要求平原、遠山及度假公路風格；後續實作與驗收見 [COAST_R8_HANDOFF.md](COAST_R8_HANDOFF.md)。R7 的既有證據與回報保留。

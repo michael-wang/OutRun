@@ -8,7 +8,7 @@ try{
  await page.goto('http://127.0.0.1:5180/?showcase=coast');
  await page.waitForFunction(()=>window.__drive?.streaming()?.ready,null,{timeout:120000});
  const views=[];
- for(const d of [1250,1850,4450,6100,6500,7600,8750,9200]){
+ for(const d of process.env.COAST_VIEW_DISTANCES?.split(',').map(Number)??[1250,1850,4450,6100,6500,7600,8750,9200]){
   await page.evaluate(d=>{const g=window.__drive;g.manual(true);g.reset({distance:d,speed:65});},d);
   await page.waitForFunction(()=>window.__drive.streaming().ready,null,{timeout:60000});
   await page.waitForTimeout(1500);

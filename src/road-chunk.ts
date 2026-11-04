@@ -1,4 +1,4 @@
-import {coastBeachX,coastProfileX} from './coast-layout';
+import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
@@ -205,7 +205,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  }
  append('line',d=>-7+.35*7/halfAt(d),d=>-7+.51*7/halfAt(d),.025,.025,start,end,2.5);
  append('line',d=>7-.51*7/halfAt(d),d=>7-.35*7/halfAt(d),.025,.025,start,end,2.5);
- if(shoulders){
+ if(shoulders&&!coastUltra){
   // r7: continuous visible rails flank each row of roadside markers.
   // Placement is measured in physical meters beyond asphalt, not shoulder-scaled
   // legacy offsets. Bridges, the authored canyon and rock walls remain special.
@@ -228,7 +228,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
     append('rail',inner,outer,1.12,1.12,a,b,2.5);
    }
   }
- }else{
+ }else if(!coastUltra){
   // Previous revisions retain their unchanged left coastal guardrail.
   let railRanges=canyon?[[start,Math.min(end,CANYON_BEND.start)],[Math.max(start,CANYON_BEND.end),end]]:[[start,end]];
   for(const rock of rocks.filter(r=>r.side<0))railRanges=railRanges.flatMap(([a,b])=>b<=rock.start||a>=rock.end?[[a,b]]:[[a,Math.min(b,rock.start)],[Math.max(a,rock.end),b]].filter(([x,y])=>y>x));
@@ -254,6 +254,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  // One-way four-lane road: no double-yellow centerline.
  for(let d=Math.floor(start/6)*6;!blenderPaint&&d<end;d+=6){
   if(d<0)continue;
+  if(coastUltra&&COAST_CROSSWALKS.some(at=>d+3>at-4&&d<at+4))continue;
   if(mountainPaint){
    // One-way four-lane course: all three separators are dashed white.
    for(const lane of [-LANE_WIDTH,0,LANE_WIDTH]){
@@ -281,7 +282,11 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   }
  }
  if(mountainPaint)for(const [a,b] of [[-6.97,-6.83],[6.83,6.97]])append('edge-white',a,b,.035,.035,start,end,2.5);
- for(let color=0;!blenderPaint&&!mountainPaint&&color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
+ if(coastUltra)for(const at of COAST_CROSSWALKS){
+  const from=Math.max(start,at-2.8),to=Math.min(end,at+2.8);if(to<=from)continue;
+  for(let x=-6.4;x<6.4;x+=1.15)append('line',x,x+.55,.038,.038,from,to,1.4);
+ }
+ for(let color=0;!coastUltra&&!blenderPaint&&!mountainPaint&&color<2;color++)for(let d=Math.floor((start-color*3)/6)*6+color*3;d<end;d+=6)for(const side of [-1,1] as const){
   if(d<0||onBridge(d,bridge)||(canyon&&canyonBend(d))||rockyAt(d,side,rocks)||(interchange&&interchangeRailOpening(interchange,d,side)))continue;
   // Canyon road edges are dusty and deliberately not painted like a racetrack.
   // Keep white readable markings but drop the alternating red curb tiles.

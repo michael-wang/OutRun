@@ -74,13 +74,13 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
   for(let j=0;j<3;j++){
    const key=i*37+j*131,at=d+random(key)*18;
    if(at>=end||coastWildness(at)<.3)continue;
-   const x=j<2?25+random(key+9)*42:70+random(key+9)*65,choice=random(key+13);
-   if(random(key+18)>.18)plant(choice<.12?'CommonTree_1':choice<.72?'CommonTree_3':'Pine_5',at,x,6+random(key+2)*9,key,600);
+   const x=j<2?28+random(key+9)*47:150+random(key+9)*155,choice=random(key+13);
+   if(random(key+18)>.18)plant(choice<.12?'CommonTree_1':choice<.72?'CommonTree_3':'Pine_5',at,x,(j<2?5:7)+random(key+2)*6,key,600);
   }
   for(let j=0;j<3;j++){
    const key=i*43+j*193,at=d+random(key+6)*18;
    if(at>=end||coastWildness(at)<.3)continue;
-   plant('Bush_Common',at,20+random(key+11)*45,1.5+random(key+3)*2.5,key,420);
+   plant('Bush_Common',at,j<2?20+random(key+11)*45:125+random(key+11)*100,1.5+random(key+3)*2.5,key,420);
    plant('Grass_Common_Short',at,18+random(key+15)*20,.5+random(key+21)*.65,key+1,260);
   }
   if(i%3===0)plant('Rock_Medium_2',d,23+random(i+19)*53,1+random(i+24)*2.2,i,650);
