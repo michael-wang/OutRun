@@ -33,7 +33,8 @@ it('discarded worker results are counted and never attached',()=>{
  vi.stubGlobal('location',{search:'?streamdiag=1'});const s=setup(),w=FakeWorker.all[0];s.update(9000);road(w,0);const d=s.diagnosticsSnapshot(100);expect(d.discardedResponses).toBe(1);expect(d.records[0].error).toContain('discarded');expect(d.chunks.some(c=>c.index===0)).toBe(false);s.dispose();
 });
 
-it('coastal batches share textures, wait for images, switch LOD and dispose them',()=>{
+it.each([false,true])('coastal batches share textures, wait for images, switch LOD and dispose them (mobile=%s)',mobile=>{
+ vi.stubGlobal('matchMedia',()=>({matches:mobile}));
  const texture=new THREE.Texture(),disposed=vi.spyOn(texture,'dispose');let loaded!:()=>void;
  const load=vi.spyOn(THREE.TextureLoader.prototype,'load').mockImplementation((_url,onLoad)=>{loaded=()=>onLoad?.(texture);return texture;});
  const s=setup(),w=FakeWorker.all[0];
@@ -50,6 +51,7 @@ it('coastal batches share textures, wait for images, switch LOD and dispose them
  // Ahead-of-car batches cross the near/far switch without requiring a new chunk.
  near.userData.nature.center=1200;far.userData.nature.center=1200;
  s.update(400);expect(near.visible).toBe(false);expect(far.visible).toBe(true);
- s.update(700);expect(near.visible).toBe(true);expect(far.visible).toBe(false);
+ s.update(700);expect(near.visible).toBe(!mobile);expect(far.visible).toBe(mobile);
+ s.update(900);expect(near.visible).toBe(true);expect(far.visible).toBe(false);
  s.dispose();expect(disposed).toHaveBeenCalledTimes(1);
 });

@@ -1,0 +1,103 @@
+{
+  "build": "v0.9-coast-r7.3",
+  "environment": "Desktop Edge, touch emulation, 960x432 CSS pixels, DPR 2.75; not physical Pixel 8",
+  "metricCaveat": "Viewport-area counts estimate offscreen draw workload; not GPU timing. GPU target memory is calculated from target formats and mip sizes, excluding driver overhead.",
+  "baseline100s": {
+    "samples": 100,
+    "meanFps": 59.97,
+    "geometryPeak": 285,
+    "meanSceneTriangles": 349681.83,
+    "meanNatureTriangles": 131411.62,
+    "offscreenViewportPixelsPerFrame": 2359689.672169418,
+    "heapPeak": 118255800
+  },
+  "finalFirst100s": {
+    "samples": 100,
+    "meanFps": 59.97,
+    "geometryPeak": 282,
+    "meanSceneTriangles": 318079.41,
+    "meanNatureTriangles": 95853.12,
+    "offscreenViewportPixelsPerFrame": 524550.5346006337,
+    "heapPeak": 120112010
+  },
+  "offscreenWorkReduction": 0.7777035934905882,
+  "natureTriangleReduction": 0.2705887044083316,
+  "oceanTargetMiB": {
+    "before": 22.6667,
+    "after": 5.6667
+  },
+  "final150sFrames": {
+    "count": 8991,
+    "p50": 16.69999999999709,
+    "p95": 16.80000000000291,
+    "p99": 16.80000000000291,
+    "worst": 83.40000000000873,
+    "over50": 1
+  },
+  "errors": [],
+  "offRoadSamples": 0,
+  "transitions": [
+    {
+      "from": 0,
+      "to": 1,
+      "ms": 10.700000000186265,
+      "speedBefore": 64.9516248262055,
+      "speedAfter": 64.9516248262055,
+      "headingError": 2.220446049250313e-16,
+      "rebase": 1.1445945969487394
+    }
+  ],
+  "lastSample": {
+    "wall": 151225.7000000002,
+    "elapsed": 37.91819999999799,
+    "d": 13488.87040656606,
+    "offRoad": false,
+    "frames": 60,
+    "work": {
+      "draws": 16662,
+      "offscreenDraws": 0,
+      "offscreenViewportPixels": 0
+    },
+    "render": {
+      "frame": 73545,
+      "calls": 275,
+      "triangles": 202060,
+      "points": 0,
+      "lines": 0
+    },
+    "memory": {
+      "geometries": 156,
+      "textures": 12
+    },
+    "heap": 82473394,
+    "nature": {
+      "batches": 0,
+      "visible": 0,
+      "instances": 0,
+      "triangles": 0,
+      "materials": 0,
+      "textures": 0
+    },
+    "water": {
+      "mode": "disabled"
+    },
+    "journey": {
+      "index": 1,
+      "preparing": false
+    },
+    "stream": {
+      "chunks": 7,
+      "queued": 0,
+      "retiring": 0,
+      "fatal": ""
+    }
+  },
+  "slowSamples": [
+    {
+      "distance": 11348.604405720853,
+      "chapter": 1,
+      "elapsed": 2.9167999999999963,
+      "frames": 56
+    }
+  ]
+}

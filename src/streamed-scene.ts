@@ -1,4 +1,5 @@
 import type {NatureBatch} from './coast-nature';
+import {natureVisible} from './coast-performance';
 import * as THREE from 'three';
 import type {BankStrength} from './banking';
 import type {PilotCandidate} from './pilot-composer';
@@ -28,6 +29,7 @@ export class StreamedScene {
  private recordRequest(index:number,kind:Phase,since:number){if(!this.diagnostics)return;const r:Lifecycle={index,start:index*this.chunkLength,end:Math.min(this.length,(index+1)*this.chunkLength),kind,generation:this.generation,requestedAt:since,commitCpuMs:0,attachedInstances:0,discardedTasks:0};this.lifecycle.push(r);if(this.lifecycle.length>256)this.lifecycle.shift();this.activeRecord=r;}
 
  private natureTextures=new Map<string,THREE.Texture>();
+ private readonly mobile=typeof matchMedia!=='undefined'&&matchMedia('(pointer:coarse)').matches;
  private natureTextureLoads=0;
  private configureNatureMaterial(material:THREE.MeshStandardMaterial,nature:NatureBatch){
   material.side=THREE.DoubleSide;
@@ -96,7 +98,7 @@ export class StreamedScene {
  private attach(c:Chunk,name:string,object:THREE.Object3D){if(this.clippingPlanes.length)this.clipMaterial(object);let group=c.groups[name];if(!group){group=new THREE.Group();group.name=`chunk-${c.index}-${name}`;group.userData.chunkIndex=c.index;c.groups[name]=group;this.groups[name].add(group);}group.add(object);c.objects.push(object);}
  update(distance:number){
   this.position=Math.max(0,Math.min(this.length,distance));const first=Math.floor(Math.max(0,this.position-this.behind)/this.chunkLength),last=Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((this.position+this.ahead)/this.chunkLength));
-  for(const c of this.chunks.values())for(const o of c.objects){const n=o.userData.nature as NatureBatch|undefined;if(n){const delta=n.center-this.position,range=Math.abs(delta);o.visible=delta>-250&&range>=n.near&&range<n.far;}}
+  for(const c of this.chunks.values())for(const o of c.objects){const n=o.userData.nature as NatureBatch|undefined;if(n)o.visible=natureVisible(n,this.position,this.mobile);}
   const bounds=`${first}:${last}`;if(bounds===this.bounds){this.dispatch();return;}this.bounds=bounds;
   this.desired=new Set(Array.from({length:last-first+1},(_,i)=>first+i));
   for(const [index,c] of this.chunks)if(!this.desired.has(index)){
@@ -135,7 +137,7 @@ export class StreamedScene {
  private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[]){
   const templates=new Map<string,THREE.BufferGeometry>(),tasks:(()=>void)[]=[];
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
-  for(const data of instances)tasks.push(()=>{const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}`;let material=this.materials.get(key);if(!material){material=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});if(data.nature)this.configureNatureMaterial(material,data.nature);this.materials.set(key,material);}const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.receiveShadow=!data.nature;if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';const delta=data.nature.center-this.position,r=Math.abs(delta);mesh.visible=delta>-250&&r>=data.nature.near&&r<data.nature.far;}this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
+  for(const data of instances)tasks.push(()=>{const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}`;let material=this.materials.get(key);if(!material){material=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});if(data.nature)this.configureNatureMaterial(material,data.nature);this.materials.set(key,material);}const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.receiveShadow=!data.nature;if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
   return tasks;
  }
  pump(){
