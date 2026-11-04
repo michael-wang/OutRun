@@ -5,6 +5,47 @@
 **Public `main`:** remains the human-approved R8.8 family playtest; no public deploy authorized for P0.  
 **Rollback checkpoint:** `checkpoint/r90-before-scene-pipeline` at `5a43c2770dfef5fe4bb854087a56f975bbcd6024`.
 
+> **2026-11-05 P0a evidence and P0b first experiment (dev):** The real Pixel 8 log `outrun-fps-2026-11-04T18-30-46.957Z.json` confirms `scenery-field` is the expensive synchronous class. New experiment shares the flower mask atlas and records plot subtypes; **no post-change Pixel 8 evidence yet**. `main` remains unchanged. See the update below.
+
+## P0a field evidence — confirmed by physical Pixel 8
+
+The ~42-second exported driving trace reached 4.52km and captured three recurring streaming cliffs.
+
+| Driver position | Recorded FPS | World CPU average/frame | Expensive background work |
+| --- | ---: | ---: | --- |
+| ~407m | 15.67 | 32.08ms | Initial chunks 4/5 being materialized |
+| ~451m | **24.67** | 12.54ms | Farm construction for Chunk 5 |
+| ~1,102m | 38.19 | 5.31ms | Farm construction for Chunk 6 |
+| ~1,176m | 33.52 | 8.97ms | Farm construction for Chunk 6 |
+| ~2,209m | **30.53** | 11.07ms | Farm construction for Chunk 7 |
+| ~2,456m (rice) | 54.22 | 0.40ms | Queue empty, no field construction |
+| ~3,218m (flowers) | 37.46 | 1.25ms | No synchronous field-creation spike |
+
+Near 2,330m: **91 scenery-field tasks**, total **3,413.4ms CPU**, mean **37.51ms per task**, worst **100.7ms**, **55 >33ms** and **13 >50ms**. In contrast, `scenery-instances` worst 0.8ms, `road-geometry` worst 0.3ms. This confirms the broad root cause is the monolithic `createFarmPlot()` call per `scenery-field` task, not ordinary geometry or instanced-mesh commit.
+
+In the snapshot closest to 2.2km, Chunk 7 plots are built while the driver is almost 5km behind them; the 3ms queue budget cannot preempt a running 60ms callback. The trace does **not** contain a full isolated GPU timer measurement (`gpuTimerSupported=false`).
+
+**Important:** The user observed one instant ~24 FPS before the flower field. This specific JSON has **24.67 FPS at ~451m** and a flower-field per-second low of **37.46 FPS at ~3,218m**. The HUD's instantaneous reading may be shorter than a one-second window. Treat it as reported gameplay observation, not as a verified matching 3.2km per-second log sample.
+
+## P0b-1: shared deterministic flower atlas (first safe optimization on dev)
+
+The high-risk global Worker/prebake refactor remains postponed. First eliminate an obvious and needless **repeated GPU-resource and Canvas draw cost** in the confirmed slow code path:
+
+- `src/vendor/three-stylized/flowerShapes.ts`: `acquireSharedFlowerMask()` / `releaseSharedFlowerMask()` with reference-counted atlas lifetime, plus `sharedFlowerMaskStats()`.
+- `Wildflowers.ts`: every field reuses the same shape atlas instead of regenerating a separate 480×256 CanvasTexture each time; the last owner disposes the texture. The pre-existing flower shape, UV, wind, masks and field density are unchanged.
+- `src/coast-farm.ts`: stage resources pin one flower atlas during `loadCoastFarm()`, so the CPU rasterization is not triggered on the first visible field. Disposed at stage end alongside other assets.
+- `src/scene-task-profiler.ts` and `src/streamed-scene.ts`: generic optional `detail` and `resourceId` on scene task records, aggregated under `byDetail` (`scenery-field/rice`, `scenery-field/flowers`). These preserve location/identity for future scenery types without specializing the scheduler.
+- `?fpsdiag=1` includes `extras.farms.sharedFlowerAtlas` so repeated per-field duplicate masks and release behavior can be checked.
+- Unit tests cover shared identity/refcount/disposal and subtype task accounting.
+
+### P0b-1 acceptance and limits
+
+Run `npm run build` and `npm test` locally, then the same physical Pixel 8 drive, comparing the 400m, 1.1km, 2.2km cliffs and actual flower-region FPS. Check `byDetail` for whether `flowers` construction costs less, and `sharedFlowerAtlas.residentAtlases` remains 1 while fields are active. Drive far enough to retire early fields and restart to catch reference leaks. **Do not claim the 100ms tasks are solved until the new trace demonstrates it.** If worst `scenery-field` times still exceed one 60 FPS frame (~16.7ms), P0b-2 must split numerical preparation into bounded Worker/build-time stages; do not merely move creation from 2km to 5km.
+
+The previous accepted R8.8 geometry/Shader/wind, 5km road safety window, and gameplay inputs remain unchanged. `main` remains on the approved stable R8.8; rollback via a normal Git revert on dev if regression occurs. Original baseline checkpoint `5a43c2770dfef5fe4bb854087a56f975bbcd6024` remains preserved.
+
+---
+
 ## Why this first step
 
 Nov 4 Pixel 8 `?fpsdiag=1` drive showed ~20.69 FPS at 2,205m while average `world.update()` CPU cost spiked to ~24.2ms/frame. At 2,281m FPS recovered to ~52.3; inside 2,400–3,000m golden rice fields the run averaged ~49.6 FPS. A simultaneous farm count increase from 79 to 91 suggests Chunk 7 scenery preparation, but the previous trace did not identify **which synchronous main-thread task** was responsible. The existing `StreamedScene.pump()` soft 3ms budget checks only **between** tasks: a single blocking `createFarmPlot()` cannot be preempted mid-call.
