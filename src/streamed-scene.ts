@@ -69,6 +69,7 @@ export class StreamedScene {
  private generation=1;private errorMessage='';
  private farmAssets?:FarmAssets;private farms=new Map<number,FarmPatch[]>();private disposed=false;private farmWarmed=false;private farmGpuWarmed=false;private farmWarmTask?:Promise<void>;
  private farmWarmIds=new Set<number>();
+ private farmWarmStartedAt=0;
  private startupFarmWarm={running:false,done:0,total:0,elapsedMs:0,compileWallMs:0,uploadSubmitMs:0,maxObjectSubmitMs:0,batches:0};
  warmFarm(renderer:THREE.WebGLRenderer,camera:THREE.Camera):Promise<void>|undefined{
   if(!this.farmSample||this.disposed||(!this.farmGpuWarmed&&![2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready')))return;
@@ -76,6 +77,7 @@ export class StreamedScene {
   const patches=[...this.farms.values()].flat().filter(p=>!this.farmWarmIds.has(p.plot.id));if(!patches.length)return;
   patches.forEach(p=>this.farmWarmIds.add(p.plot.id));
   const warmStart=performance.now(),info=this.startupFarmWarm;
+  this.farmWarmStartedAt=warmStart;
   info.running=true;info.done=0;info.total=0;info.elapsedMs=0;info.compileWallMs=0;info.uploadSubmitMs=0;info.maxObjectSubmitMs=0;info.batches++;
   const instrument=typeof location!=='undefined'&&new URLSearchParams(location.search).get('startupdiag')==='1';
   return this.farmWarmTask=warmFarmMeshes(renderer,camera,this.scene,patches,()=>!this.disposed,instrument?p=>{
@@ -191,7 +193,7 @@ export class StreamedScene {
   return {
    workerInitialized:this.initialized,farmAssetsLoaded:!!this.farmAssets,
    farmChunksReady,farmChunksTotal:farmChunks.length,farmGpuWarmed:this.farmGpuWarmed,
-   farmWarm:{...this.startupFarmWarm,...(this.startupFarmWarm.running?{elapsedMs:this.startupFarmWarm.elapsedMs}:{})},
+   farmWarm:{...this.startupFarmWarm,elapsedMs:this.startupFarmWarm.running?performance.now()-this.farmWarmStartedAt:this.startupFarmWarm.elapsedMs},
    nearbyCompleted,nearbyTotal:near.length*2,natureTexturesPending:this.natureTextureLoads,
    workerPending:this.pending?{kind:this.pending.kind,index:this.pending.index,ageMs:Math.round(performance.now()-this.pending.since)}:null,
    queuedMainTasks:this.work.length,blockers,fatal:this.errorMessage,
