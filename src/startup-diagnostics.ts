@@ -1,3 +1,4 @@
+import {RICE_SEA_MODE} from './rice-sea-mode';
 /**
  * Opt-in first-load measurements. Enable with ?startupdiag=1.
  * Records timings and readiness gates; deliberately does not change startup scheduling.
@@ -24,6 +25,7 @@ export type StartupSnapshot = {
   workerPending: {kind: string; index: number; ageMs: number} | null;
   queuedMainTasks: number;
   blockers: string[];
+  backgroundTasks?: string[];
   fatal: string;
 };
 
@@ -140,7 +142,8 @@ class FirstLoadDiagnostics {
       .slice(0, 150);
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
     return {
-      kind: 'outrun-startup-diagnostic-v1',
+      kind: 'outrun-startup-diagnostic-v2',
+      riceRenderer: RICE_SEA_MODE,
       generatedAt: new Date().toISOString(),
       urlPath: location.pathname,
       userAgent: navigator.userAgent,
@@ -191,6 +194,7 @@ class FirstLoadDiagnostics {
       lines.push('道路/景物 ' + s.nearbyCompleted + '/' + s.nearbyTotal + ' ｜ 農田區塊 ' + s.farmChunksReady + '/' + s.farmChunksTotal);
       lines.push('農田GPU預熱 ' + s.farmWarm.done + '/' + s.farmWarm.total + ' ｜ ' + Math.round(s.farmWarm.elapsedMs) + 'ms');
       lines.push('等待：' + (s.blockers.join('、') || '準備完成'));
+      if(s.backgroundTasks?.length)lines.push('背景：' + s.backgroundTasks.join('、'));
     } else lines.push('正在建立遊戲場景');
     this.status.textContent = lines.join('\n');
   }
