@@ -163,13 +163,14 @@ world.streamer?.update(state.distance);
 startupDiagnostics.mark('road-streaming-active');
 // The expensive diagnostic snapshot runs only once per second when ?fpsdiag=1.
 const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
- const stream=world.streamer?.stats,farms=world.streamer?.farmStats??[];
+ const stream=world.streamer?.stats,farms=world.streamer?.farmStats??[],warm=world.streamer?.startupDiagnosticState();
  return {
   streamer:{queue:stream?.queued??0,worker:stream?.pending?.kind??null,workerAgeMs:stream?.pending?.ageMs??null,retries:stream?.retries??0,
    chunks:stream?.chunks?.map(c=>({index:c.index,road:c.road,scenery:c.scenery}))??[]},
   farms:{plots:farms.length,ricePlots:farms.filter(f=>f.kind==='rice').length,flowerPlots:farms.filter(f=>f.kind==='flowers').length,
    riceCanopyTriangles:farms.reduce((n,f)=>n+f.canopyTriangles,0),riceClumps:farms.reduce((n,f)=>n+f.crops.reduce((m,c)=>m+c,0),0),
-   grassBlades:farms.reduce((n,f)=>n+f.blades,0),flowers:farms.reduce((n,f)=>n+f.flowers,0)},
+   grassBlades:farms.reduce((n,f)=>n+f.blades,0),flowers:farms.reduce((n,f)=>n+f.flowers,0),
+   backgroundWarmup:warm?.farmWarm??null,backgroundTasks:warm?.backgroundTasks??[]},
   water:ultraOcean?.stats??null,
  };
 });
