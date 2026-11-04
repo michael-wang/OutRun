@@ -7,6 +7,40 @@
 
 > **2026-11-05 P0a evidence and P0b first experiment (dev):** The real Pixel 8 log `outrun-fps-2026-11-04T18-30-46.957Z.json` confirms `scenery-field` is the expensive synchronous class. New experiment shares the flower mask atlas and records plot subtypes; **no post-change Pixel 8 evidence yet**. `main` remains unchanged. See the update below.
 
+## P0b-2 Pixel 8 A/B result — 2026-11-05 — PARTIAL PASS
+
+Real Chrome / Pixel 8 10.41km drive trace: `outrun-fps-2026-11-04T19-11-35.723Z.json`; 83 one-second buckets / ~84.3 seconds of driving. This is a single matched-device experiment, not a statistically controlled performance study.
+
+**Worker data path accepted provisionally.** The trace confirms 6 prepared farm chunks, 91 worker-prepared field plots, 2870ms total reported Worker CPU prep, and `missingPlots=0`. No logged retries or missing road. Field graphics/positions still need separate owner visual sign-off; JSON can only confirm geometry/instance counts and successful preparation.
+
+| Matched metric | P0b-1 baseline | P0b-2 Worker preparation | Interpretation |
+| --- | ---: | ---: | --- |
+| 91 synchronous field-creation tasks total | 3333.6ms | **994.6ms** | **70.2% less main-thread CPU wall time** |
+| Worst synchronous field task | 87.6ms | **40.1ms** | **54.2% faster**, still exceeds 16.7ms |
+| First 4.5km mean per-second FPS | 47.43 | **49.47** | +2.04 FPS, one run each |
+| Number of first-4.5km one-second buckets below 30 FPS | 4 | **1** | Early severe slowdown much rarer |
+| 4.5km-to-end mean FPS | 44.85 | **49.53** | +4.68 FPS, not proof of a direct Worker effect |
+| Main rice 2.4–3.0km mean FPS | 52.06 | **52.07** | Essentially unchanged |
+| Main flower 3.1–3.6km mean FPS | 43.39 | **44.24** | Small change; still a sustained-rendering topic |
+
+Matched critical positions (nearest available one-second samples; not frame-for-frame):
+- 450m: **20.37 → 41.42 FPS**.
+- 1.15–1.20km: **27.57 → 37.24 FPS**.
+- 2.215–2.240km: **24.81 → 41.42 FPS**.
+
+Residual stutters are **not gone**:
+- At ~405m, first recorded second **27.92 FPS**, mean `world` 16.8ms/frame, active distant field construction.
+- Four >50ms individual frame gaps recorded overall; worst **99.8ms at ~2283m** during a Chunk 7 field commit. Worker cannot prevent synchronous main-thread mesh assembly from occasionally overrunning.
+- Final `scenery-field` 91 tasks: 994.6ms total, max 40.1ms, **21 >16.7ms**, **9 >33.3ms**, **0 >50ms**.
+- Rice: 51 plots, 222.1ms total, 4.35ms average, 14.5ms worst, **no plot >16.7ms**.
+- **Flowers: 40 plots, 772.5ms total, 19.31ms average, 40.1ms worst, 21 plots >16.7ms**. These residual flower commits still dominate P0.
+- The new Worker itself spent 2870ms CPU on farm numeric prep, completing the last distant farm batch by ~2.3km. Retain road-priority safety constraints: do not let Worker-side scene prep delay essential road deliveries in future larger stages.
+- 4.5km-to-end: **44 samples average 49.53 FPS, minimum 38.45 FPS, no >50ms frame gap**. Accepted golden rice remains ~52 FPS, flowers ~44 FPS; `gpuTimerSupported=false`, so do not claim a GPU bottleneck is measured.
+
+**P0b-2 outcome: KEEP on dev for follow-up; do not promote to main yet.** This fulfills meaningful CPU offload but not the strict <16.7ms per-main-thread-task target. The next narrow step (P0b-3) should address the per-flower `Wildflowers`/`GrassLayer` **main-thread `InstancedMesh` attribute/matrix generation and geometry aggregation** still in `createFarmPlot()`. Either prepare GPU-ready typed instance transforms/attributes off-thread (preserving original RNG sequence and world-space transform exactly), or break the per-plot build into explicit small commit stages. Instrument separate `field-materialize` phases if needed before moving code. Keep plots, wind, colours, culling and flower-masks unchanged; confirm no new road stalls, GPU upload bursts, or visual differences on Pixel 8. The broader P1 road/scenery window split and P2 sustained flower rendering remain separately scoped.
+
+---
+
 ## P0b-2 — Worker-side deterministic field preparation (dev experiment, not yet device-accepted)
 
 **Checkpoint:** `checkpoint/r90-p0b1-before-worker-farms` references `88322e062a86cedca8a4e1f017e79736d1c0f7dc` before this series. `main` is still R8.8. Version on dev: **`v0.9-coast-r9.0-p0b2-exp`**.
