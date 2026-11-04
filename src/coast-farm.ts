@@ -193,18 +193,20 @@ export async function warmFarmMeshes(renderer:THREE.WebGLRenderer,camera:THREE.C
  for(const object of objects){
   await new Promise<void>(r=>requestAnimationFrame(()=>r()));if(!alive())break;
   const parent=object.parent!,visible=object.visible,cull=object.frustumCulled,materials=Array.isArray(object.material)?object.material:[object.material];
-  if(materials.some(m=>!compiled.has(m))){const compileStart=performance.now();await renderer.compileAsync(object,camera,scene);compileWallMs+=performance.now()-compileStart;materials.forEach(m=>compiled.add(m));if(!alive())break;}
+  if(materials.some(m=>!compiled.has(m))){const compileStart=onProgress?performance.now():0;await renderer.compileAsync(object,camera,scene);if(onProgress)compileWallMs+=performance.now()-compileStart;materials.forEach(m=>compiled.add(m));if(!alive())break;}
   const viewport=renderer.getViewport(new THREE.Vector4()),scissor=renderer.getScissor(new THREE.Vector4()),test=renderer.getScissorTest(),auto=renderer.autoClear,writes=materials.map(m=>[m.colorWrite,m.depthWrite]);
-  const submitStart=performance.now();
+  const submitStart=onProgress?performance.now():0;
   try{
    staging.add(object);object.visible=true;object.frustumCulled=false;materials.forEach(m=>{m.colorWrite=false;m.depthWrite=false;});renderer.autoClear=false;
    renderer.setViewport(0,0,2,2);renderer.setScissor(0,0,2,2);renderer.setScissorTest(true);renderer.render(staging,camera);
   }finally{
    parent.add(object);object.visible=visible;object.frustumCulled=cull;materials.forEach((m,i)=>{[m.colorWrite,m.depthWrite]=writes[i];});renderer.autoClear=auto;renderer.setViewport(viewport);renderer.setScissor(scissor);renderer.setScissorTest(test);
   }
-  const submitMs=performance.now()-submitStart;
-  uploadSubmitMs+=submitMs;maxObjectSubmitMs=Math.max(maxObjectSubmitMs,submitMs);
-  done++;onProgress?.({done,total:objects.length,compileWallMs,uploadSubmitMs,maxObjectSubmitMs});
+  if(onProgress){
+   const submitMs=performance.now()-submitStart;
+   uploadSubmitMs+=submitMs;maxObjectSubmitMs=Math.max(maxObjectSubmitMs,submitMs);
+   done++;onProgress({done,total:objects.length,compileWallMs,uploadSubmitMs,maxObjectSubmitMs});
+  }
  }
  staging.clear();
 }
