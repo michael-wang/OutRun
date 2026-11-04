@@ -1,3 +1,5 @@
+> **Status update, 2026-11-05:** Owner accepted the Pixel 8 hybrid rice visuals and authorized main promotion. Cold/Warm first-load improved from 22.00/22.64s to 8.16/7.99s. The original experiment text below is retained for A/B context; see [COAST_R88_RELEASE.md](COAST_R88_RELEASE.md) for current release status, remaining FPS uncertainty, and rollback instructions.
+
 # COAST R8.8 EXP — Rice Sea Hybrid Renderer + startup gate A/B
 
 ## Baseline / rollback
