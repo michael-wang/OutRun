@@ -1,4 +1,4 @@
-> **Status update, 2026-11-05:** Owner accepted the Pixel 8 hybrid rice visuals and authorized main promotion. Cold/Warm first-load improved from 22.00/22.64s to 8.16/7.99s. The original experiment text below is retained for A/B context; see [COAST_R88_RELEASE.md](COAST_R88_RELEASE.md) for current release status, remaining FPS uncertainty, and rollback instructions.
+> **歷史紀錄（不再是執行指引）— 2026-11-05：** R8.8 稻海已驗收並納入 main。此頁保留當時 A/B 實驗的研究與基準數據；以下提及的 `?rice=legacy`、`?rice=hybrid`、舊版農田路徑及實驗版號均已從目前 dev 移除，**現在無法使用**。目前啟動診斷為 `?startupdiag=1`；稻田附近 FPS 診斷請看 [COAST_R89_FPS_DIAGNOSTICS.md](COAST_R89_FPS_DIAGNOSTICS.md)。
 
 # COAST R8.8 EXP — Rice Sea Hybrid Renderer + startup gate A/B
 
