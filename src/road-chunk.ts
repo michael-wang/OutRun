@@ -251,7 +251,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  // Dash and edge phases are absolute. Splitting a piece at a chunk seam does
  // not reset its phase or duplicate its area.
  if(blenderPaint)for(const [a,b] of [[-.24,-.14],[.14,.24]])append('center-line',a,b,.03,.03,start,end,2.5);
- // One-way four-lane road: no double-yellow centerline.
+ // One-way road: no double-yellow centerline.
  for(let d=Math.floor(start/6)*6;!blenderPaint&&d<end;d+=6){
   if(d<0)continue;
   if(coastUltra&&COAST_CROSSWALKS.some(at=>d+3>at-4&&d<at+4))continue;
@@ -274,7 +274,8 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
     append('line',at(-.14),at(.14),.03,.03,Math.max(start,d),Math.min(end,d+3,length),1.5);
    }
   }else{
-   for(const lane of [-3,-2,-1,0,1,2,3].map(n=>n*LANE_WIDTH)){
+   const separators=coastUltra&&Math.round(halfAt(d)*2/LANE_WIDTH)===5?[-1.5,-.5,.5,1.5]:[-3,-2,-1,0,1,2,3];
+   for(const lane of separators.map(n=>n*LANE_WIDTH)){
     if(Math.abs(lane)+.5>=Math.min(halfAt(d),halfAt(Math.min(d+3,length))))continue;
     const at=(delta:number)=>(s:number)=>(lane+delta)*7/halfAt(s);
     append('line',at(-.14),at(.14),.03,.03,Math.max(start,d),Math.min(end,d+3,length),1.5);

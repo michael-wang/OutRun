@@ -8,14 +8,14 @@ for(const [index,district] of COAST_DISTRICTS.entries()){
  const market=district.kind==='market';let d=district.start+18,slot=0;
  for(let pocket=0;d<district.end-20;pocket++){
   const key=index*10000+pocket*113,group=index*100+pocket;
-  const count=rand(key+4)<.24?1:market?2+Math.floor(rand(key+5)*3):2;
+  const count=pocket%4===0?1:market?4+Math.floor(rand(key+5)*3):3+Math.floor(rand(key+5)*2);
   for(let j=0;j<count&&d<district.end-20;j++,slot++){
    const k=key+j*19,kind=market?(pocket%4===1&&j===0?'waffle':'stall'):'home';
-   COAST_VILLAGE_SITES.push({d,x:market?22+rand(k+10)*11:27+rand(k+10)*18,yaw:(rand(k+11)-.5)*(market?.6:.48),key:k,group,kind});
-   if(!market&&slot%3===1)COAST_VILLAGE_SITES.push({d:d+5+rand(k+12)*6,x:60+rand(k+13)*11,yaw:(rand(k+14)-.5)*.6,key:k+7,group,kind:'home',rear:true});
-   d+=market?10+rand(k+16)*8:22+rand(k+16)*12;
+   COAST_VILLAGE_SITES.push({d,x:market?23+rand(k+10)*8:28+rand(key+10)*8+(rand(k+13)-.5)*5,yaw:(rand(k+11)-.5)*(market?.42:.32),key:k,group,kind});
+   if(!market&&slot%2===1)COAST_VILLAGE_SITES.push({d:d+5+rand(k+12)*6,x:57+rand(k+13)*12,yaw:(rand(k+14)-.5)*.4,key:k+7,group,kind:'home',rear:true});
+   d+=market?9+rand(k+16)*4:18+rand(k+16)*7;
   }
-  d+=market?22+rand(key+20)*28:27+rand(key+20)*38;
+  d+=market?19+rand(key+20)*20:22+rand(key+20)*25;
  }
 }
 export const COAST_REST_SPOTS=COAST_BEACHES.flatMap((bay,index)=>{

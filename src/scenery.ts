@@ -1,5 +1,6 @@
 import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
+import {FARM_HOMES} from './coast-farm-layout';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
@@ -199,9 +200,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  function glow(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number){
   part(g,color,x,y,z,sx,sy,sz,0,0,0,2.2);
  }
- function coastHome(key:number,shop=false){
+ function coastHome(key:number,shop=false,farm=false){
   yaw+=Math.PI+(random(key+94)-.5)*.22;
-  const type=Math.floor(random(key+330)*4),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
+  const type=Math.floor(random(key+330)*(farm?2:4)),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
   const wall=['#c8b49f','#b5bcc1','#bd9180','#b7bb9e','#d2baab'][Math.floor(random(key+8)*5)];
   part(boxes,wall,0,h/2-.15,0,9,h+.3,w);
   if(type<2&&!shop){
@@ -319,6 +320,18 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     for(let j=0;j<5;j++){const t=j/5,n=(j+1)/5,y=4.9+target.y*t-Math.sin(t*Math.PI)*.6,ny=4.9+target.y*n-Math.sin(n*Math.PI)*.6;
      part(boxes,'#665d61',target.x*(t+n)/2,(y+ny)/2,target.z*(t+n)/2,.025,.025,Math.hypot(span/5,ny-y),-Math.atan2(ny-y,span/5),angle);glow(round,'#ffd298',target.x*t,y-.11,target.z*t,.10,.13,.10);}
    }
+  }
+  for(const site of FARM_HOMES){
+   if(!inChunk(site.d))continue;
+   beachAnchor(site.d,site.x);yaw+=site.yaw;if(!clear(10))continue;
+   // The same coastal house kit, with low roofs, an earth yard and a short fence.
+   part(boxes,'#aa996f',0,.015,0,17,.08,21);
+   coastHome(site.key,false,true);
+   for(const z of [-9,9]){
+    for(const x of [-7,-3,1,5])part(boxes,'#aa8960',x,.55,z,.14,1.1,.14);
+    part(boxes,'#aa8960',-1,.73,z,12,.12,.1);
+   }
+   beachAnchor(site.d-8,site.x-7);beachPerson(site.key,false,1);
   }
   for(const spot of COAST_REST_SPOTS){
    if(!inChunk(spot.d))continue;

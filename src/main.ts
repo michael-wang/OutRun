@@ -2,7 +2,7 @@ import {isScenicJourney,journeyChapters} from './scenic-journey';
 import {GAME_VERSION} from './build-info';
 import {disposeScene,sceneDisposal} from './dispose-scene';
 import {attachJourneyLink,highwayExtension,LINK_HALF,LINK_LOAD_START} from './journey-link';
-import {loadingStep,loadingProgress,loadingFinished,loadingFailed} from './loading';
+import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed} from './loading';
 import {RockContact} from './rocky-shoulder';
 import {RoadCones} from './road-cones';
 import {bankPrototype} from './banking';
@@ -500,7 +500,7 @@ function configureLinkDestination(link:ReturnType<typeof attachJourneyLink>,inde
  const entry=highwayExtension(journeyTracks![index+1].sample,next.start,-1);
  link.setDestination(next.id,entry(next.start-LINK_HALF).roadHeading);
 }
-async function prepareChapter(index:number):Promise<PreparedChapter>{
+async function prepareChapter(index:number,report?:(value:number,title:string,detail:string)=>void):Promise<PreparedChapter>{
  while(import.meta.env.DEV&&index>0&&journeyLoadHeld)await new Promise<void>(r=>requestAnimationFrame(()=>r()));
  const c=chapters![index],candidate=c.stage;let previous=performance.now();const steps:{name:string;ms:number}[]=[];const mark=(name:string)=>{const now=performance.now();steps.push({name,ms:now-previous});previous=now;};
  const art=c.id==='canyon'?await (await import('./blender-canyon')).loadBlenderCanyon(true):undefined;
@@ -511,8 +511,9 @@ async function prepareChapter(index:number):Promise<PreparedChapter>{
    halfAt:d=>pilotSample(candidate,d).halfWidth,weightsAt:d=>pilotWeights(candidate,d),course:pilotCourse(candidate),blenderArt:!!art,dawn:c.id==='canyon',
    narrowings:candidate.placements.filter(p=>p.channel==='width'&&p.parameters.to<p.parameters.from).map(p=>BRICK_START+p.startS-180)});
   preparedWorld.car.rotation.order='YXZ';if(art)preparedWorld.scene.add(art.root);preparedWorld.streamer?.update(c.start);
+  report?.(10,'正在準備海岸','整理道路、海灘與沿岸風景。');
   if(c.id==='coast'){
-   ocean=await (await import('./coast-ocean')).UltraCoastOcean.create(renderer,preparedWorld.scene,preparedWorld,()=>{});
+   ocean=await (await import('./coast-ocean')).UltraCoastOcean.create(renderer,preparedWorld.scene,preparedWorld,p=>report?.(12+p*25,'正在準備海岸','讓海浪、船隻與夕陽回到海面。'));
    const sea=preparedWorld.scene.getObjectByName('default-coast-water');if(sea)sea.visible=false;
    boats=await (await import('./coast-boats')).addCoastBoats(preparedWorld.scene,preparedWorld.sample,ocean?.boatSurfaceUniforms,ocean?.boatShadow);
    await renderer.compileAsync(ocean.boatShadow.scene,camera);
@@ -521,9 +522,11 @@ async function prepareChapter(index:number):Promise<PreparedChapter>{
   const link=attachJourneyLink(preparedWorld,c.start,c.end,c.id,index>0,index<2);configureLinkDestination(link,index);mark('highway');
   while(preparedWorld.streamer&&!preparedWorld.streamer.fullyReady){
    if(preparedWorld.streamer.error)throw Error(preparedWorld.streamer.error);
+   if(report){const {desired,chunks}=preparedWorld.streamer.stats,total=desired.length*2,done=chunks.filter(c=>desired.includes(c.index)).reduce((n,c)=>n+Number(c.road==='ready')+Number(c.scenery==='ready'),0);report(40+20*done/Math.max(1,total),'正在準備出發路段',`道路與景物已完成 ${done}／${total} 項。`);}
    preparedWorld.streamer.pump();await new Promise<void>(r=>requestAnimationFrame(()=>r()));
   }
   mark('stream');
+  report?.(62,'正在整理田野','準備金色稻田、花海與農舍。');
   await preparedWorld.streamer?.warmFarm(renderer,camera);
   if(preparedWorld.streamer?.error)throw Error(preparedWorld.streamer.error);
   // Warm shaders and upload the entry view before it becomes the active scene.
@@ -534,8 +537,9 @@ async function prepareChapter(index:number):Promise<PreparedChapter>{
   preparedWorld.scene.traverseVisible(o=>{if(o instanceof THREE.Mesh||o instanceof THREE.Points||o instanceof THREE.Line)uploads.push(o);});
   const culling=uploads.map(o=>o.frustumCulled);uploads.forEach(o=>{o.visible=false;o.frustumCulled=false;});let worstUpload=0;
   try{
-   for(const object of uploads){
+   for(const [uploadIndex,object] of uploads.entries()){
     await new Promise<void>(r=>requestAnimationFrame(()=>r()));
+    report?.(70+28*uploadIndex/Math.max(1,uploads.length),'正在完成出發準備',`已整理 ${uploadIndex}／${uploads.length} 組景物，即將重新出發。`);
     // Submit one object's shader work per slice, not a whole chapter in one frame.
     await renderer.compileAsync(object,probe,preparedWorld.scene);
     const began=performance.now(),viewport=renderer.getViewport(new THREE.Vector4()),scissor=renderer.getScissor(new THREE.Vector4()),scissorTest=renderer.getScissorTest(),autoClear=renderer.autoClear,background=preparedWorld.scene.background;
@@ -611,10 +615,12 @@ function highwayHandoff(){
  const c=nextChapter;nextChapter=undefined;adoptChapter(c);
 }
 async function restartJourney(){
- if(journeyTransition)return;journeyTransition=true;mode='paused';sound.pause();input.clear();prepareEpoch++;preparingChapter=false;roadOverlay.textContent='正在準備重新出發…';roadOverlay.hidden=false;
+ if(journeyTransition)return;journeyTransition=true;mode='paused';settingsOpen=false;sound.pause();input.clear();prepareEpoch++;preparingChapter=false;roadOverlay.hidden=true;
+ tripPauseDock?.collapse();loadingStarted();ui();
+ await loadingStep(2,'正在準備重新出發','海岸旅程準備中，完成後會自動出發。');
  if(nextChapter){releaseChapter(nextChapter);nextChapter=undefined;}
- try{const c=await prepareChapter(0);adoptChapter(c,true);journeyTransition=false;roadOverlay.hidden=true;start();}
- catch(error){journeyTransition=false;roadOverlay.hidden=true;console.error('Journey replay failed',error);ui();}
+ try{const c=await prepareChapter(0,loadingProgress);adoptChapter(c,true);journeyTransition=false;loadingFinished();start();}
+ catch(error){journeyTransition=false;loadingFailed('重新出發準備失敗，請重新載入再試一次。');console.error('Journey replay failed',error);ui();}
 }
 
 let startupPending=true;

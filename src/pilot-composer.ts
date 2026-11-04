@@ -13,7 +13,7 @@ export type Placement =
  | {channel:'width';id:WidthId;startS:number;endS:number;parameters:WidthParameters;transition:'smooth';beat:string};
 export type WorldName='coast'|'canyon'|'city';
 export interface WorldPhase {startS:number;endS:number;world:WorldName;beat:string}
-export interface PilotCandidate extends ChallengeBrick {fixedRoad?:readonly FixedRoadFrame[];bankFeatures?:BankFeature[];world:WorldName;generatorVersion:string;contentFingerprint:string;baseHeight:number;baseLanes:2|4|6|8;placements:Placement[];worldPhases:WorldPhase[]}
+export interface PilotCandidate extends ChallengeBrick {fixedRoad?:readonly FixedRoadFrame[];bankFeatures?:BankFeature[];world:WorldName;generatorVersion:string;contentFingerprint:string;baseHeight:number;baseLanes:2|4|5|6|8;placements:Placement[];worldPhases:WorldPhase[]}
 export const PILOT_GENERATOR='v0.7D.1-r2',PILOT_STORAGE='outrun-l2-pilots-v071d1';
 const c=(id:CurvatureId,startS:number,endS:number,effort:number,direction:1|-1,beat:string):Placement=>({channel:'curvature',id,startS,endS,parameters:{effort,direction,start:0,end:1,secondary:.7},transition:'smooth',beat});
 const e=(id:ElevationId,startS:number,endS:number,base:number,amplitude:number,direction:1|-1,beat:string):Placement=>({channel:'elevation',id,startS,endS,parameters:{base,amplitude,direction,shelfStart:.32,shelfEnd:.68},transition:'smooth',beat});

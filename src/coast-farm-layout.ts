@@ -7,7 +7,10 @@ export const FARM_ZONES=[
 ] as const;
 export const COAST_FARM={start:2300,end:3670,riceStart:2400,riceEnd:3000,flowerStart:3100,flowerEnd:3600} as const;
 // Each scarecrow occupies the middle of a cultivated plot, never the roadside verge.
-export const FARM_SCARECROWS=[{d:2450,x:76},{d:2650,x:125},{d:2850,x:76},{d:4550,x:76},{d:6050,x:76},{d:7550,x:76}] as const;
+export const FARM_SCARECROWS=[{d:2450,x:76},{d:2650,x:125},{d:2850,x:76},{d:3250,x:76},{d:3450,x:35},{d:4550,x:76},{d:4750,x:35},{d:6050,x:76},{d:6350,x:35},{d:7550,x:76},{d:7750,x:35}] as const;
+// Farmsteads occupy existing breaks before/after crops, never cut a hole in the
+// golden canopy. Keep each yard on one of the flat planting benches.
+export const FARM_HOMES=[{d:2370,x:35},{d:3025,x:35},{d:3065,x:76},{d:3630,x:35},{d:4460,x:35},{d:4830,x:35},{d:5860,x:35},{d:6430,x:35},{d:7370,x:35},{d:7825,x:35}].map((site,i)=>({...site,key:81000+i*71,yaw:Math.sin(i*4.3)*.12}));
 export type FarmPlot={id:number;start:number;end:number;left:number;right:number;kind:'rice'|'flowers';band:number};
 const bands=[[20,50],[56,96],[102,148],[154,200],[206,252]];
 export const FARM_PLOTS:FarmPlot[]=[];

@@ -85,7 +85,12 @@ export function attachJourneyLink(world:World,start:number,end:number,mood:Journ
   ribbon(a,b,d=>-half(d)-1,d=>half(d)+1,()=>0,()=>0,roadMaterial,'driving-surface');
   for(const lane of [-1,-.5,0,.5,1]){
    if(Math.abs(lane)===1)ribbon(a,b,d=>half(d)*lane-.08,d=>half(d)*lane+.08,()=>.025,()=>.025,stripeMaterial,'lane-markings');
-   else for(let q=lo;q<hi;q+=48){const d0=at+q,d1=Math.min(at+hi,at+q+22);ribbon(d0,d1,d=>half(d)*lane-.07,d=>half(d)*lane+.07,()=>.025,()=>.025,stripeMaterial,'lane-markings');}
+   else if(!(mood==='coast'&&nativeHalf(end)>8))for(let q=lo;q<hi;q+=48){const d0=at+q,d1=Math.min(at+hi,at+q+22);ribbon(d0,d1,d=>half(d)*lane-.07,d=>half(d)*lane+.07,()=>.025,()=>.025,stripeMaterial,'lane-markings');}
+  }
+  if(mood==='coast'&&nativeHalf(end)>8)for(const lane of [-2,-1,1,2])for(let q=lo;q<hi;q+=48){
+   const d0=at+q,d1=Math.min(at+hi,at+q+22);if(lane===1&&half(d0)<=7.0001)continue;
+   const offset=(d:number)=>Math.sign(lane)*(Math.abs(lane)===2?half(d)-3.5:Math.max(0,half(d)-7));
+   ribbon(d0,d1,d=>offset(d)-.07,d=>offset(d)+.07,()=>.025,()=>.025,stripeMaterial,'lane-markings');
   }
   // Raise walls before the native seam; lower them gradually on emergence.
   const wa=sign<0?a:lo===0?end-120:a,wb=sign<0?start+120:b;

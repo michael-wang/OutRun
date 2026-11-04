@@ -21,12 +21,12 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:25,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ revision:26,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
  name:'Azure Coast · Resort Plain',
  intent:'Sunset bays beside a resort road, with a wooded plain, inland foothills and layered high mountains.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-resort-plain-r8-804',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-five-lanes-r87-804',
  stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
- length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:4,roadWidth:4*LANE_WIDTH,
+ length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:5,roadWidth:5*LANE_WIDTH,
  placements:[
   gentleRise,
   // Shallow headlands keep the fixed sun offshore and in the forward-left view.
@@ -54,7 +54,7 @@ export const COAST_ULTRA_STAGE:TripCandidate={
  scenerySections:[{id:'coast-ultra-left-sea',kind:'coastal-left',start:BRICK_START,end:BRICK_START+COAST_ULTRA_LENGTH,left:'sea',right:'coastal-land'}],
  canyonPrototype:undefined,designerCut:undefined,scenicCues:undefined,roadFeatures:undefined,scenicLandmarks:[],
  nominalDuration:duration,entrySpeed:140,referenceSpeed:230,
- lanes:[[0,4],[duration,4]],elevation:[[0,-1.8],[duration,-.8]],requiredSteerProfile:[[0,0]],
+ lanes:[[0,5],[duration,5]],elevation:[[0,-1.8],[duration,-.8]],requiredSteerProfile:[[0,0]],
  entry:'Quiet dusk shoreline',exit:'Golden-water farewell',warning:{leadMeters:250,text:'COASTAL SWEEPER · HOLD YOUR LINE'},
  tags:['coast','ultra-water','prototype'],autoValidation:'PENDING',
 };
