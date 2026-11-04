@@ -7,6 +7,7 @@ import type {PilotCandidate} from './pilot-composer';
 import type {RoadMeshData} from './road-chunk';
 import {loadCoastFarm,createFarmPlot,warmFarmMeshes,type FarmAssets,type FarmPatch} from './coast-farm';
 import {farmPlotsInChunk} from './coast-farm-layout';
+import {HYBRID_RICE_SEA} from './rice-sea-mode';
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
@@ -182,11 +183,11 @@ export class StreamedScene {
   const near=this.nearby,farmChunks=[2,3,4];
   const nearbyCompleted=near.reduce((n,i)=>{const c=this.chunks.get(i);return n+Number(c?.road==='ready')+Number(c?.scenery==='ready');},0);
   const farmChunksReady=farmChunks.filter(i=>this.chunks.get(i)?.scenery==='ready').length;
-  const blockers:string[]=[];
+  const blockers:string[]=[],backgroundTasks:string[]=[];
   if(!this.farmAssets&&this.farmSample)blockers.push('農田模型下載／解析');
   if(!this.initialized)blockers.push('Road Worker 初始化');
-  if(farmChunksReady<farmChunks.length&&this.farmSample)blockers.push('遠方農田 Chunk');
-  if(!this.farmGpuWarmed&&this.farmSample)blockers.push('農田 Shader／GPU 預熱');
+  if(farmChunksReady<farmChunks.length&&this.farmSample)(HYBRID_RICE_SEA?backgroundTasks:blockers).push('遠方農田 Chunk');
+  if(!this.farmGpuWarmed&&this.farmSample)(HYBRID_RICE_SEA?backgroundTasks:blockers).push('農田 Shader／GPU 預熱');
   if(nearbyCompleted<near.length*2)blockers.push('附近道路／景物');
   if(this.natureTextureLoads)blockers.push('樹木貼圖下載');
   if(this.errorMessage)blockers.unshift('錯誤：'+this.errorMessage);
@@ -196,7 +197,7 @@ export class StreamedScene {
    farmWarm:{...this.startupFarmWarm,elapsedMs:this.startupFarmWarm.running?performance.now()-this.farmWarmStartedAt:this.startupFarmWarm.elapsedMs},
    nearbyCompleted,nearbyTotal:near.length*2,natureTexturesPending:this.natureTextureLoads,
    workerPending:this.pending?{kind:this.pending.kind,index:this.pending.index,ageMs:Math.round(performance.now()-this.pending.since)}:null,
-   queuedMainTasks:this.work.length,blockers,fatal:this.errorMessage,
+   queuedMainTasks:this.work.length,blockers,backgroundTasks,fatal:this.errorMessage,
   };
  }
  // Complete the visible neighbourhood first; the full 5 km window continues in background.
@@ -205,7 +206,10 @@ export class StreamedScene {
   // Prepare the main farm and first village fields in the initial 5 km window.
   // Later fields use the same budgeted construction and incremental GPU warmup
   // well ahead of the player, before entering their visible neighbourhood.
-  if(this.farmSample&&!this.farmWarmed){this.farmWarmed=this.farmGpuWarmed&&[2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready');if(!this.farmWarmed)return false;}
+  // Hybrid mode lets the playable shoreline depart when nearby road and scenery
+  // are ready. The 2-4 km farm stays in the existing streamed background queue.
+  // Legacy mode preserves the exact original preflight gate for A/B comparison.
+  if(this.farmSample&&!HYBRID_RICE_SEA&&!this.farmWarmed){this.farmWarmed=this.farmGpuWarmed&&[2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready');if(!this.farmWarmed)return false;}
   return !this.errorMessage&&this.natureTextureLoads===0&&this.nearby.every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});
  }
  get fullyReady(){return !this.errorMessage&&!this.retiring.length&&[...this.desired].every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});}
