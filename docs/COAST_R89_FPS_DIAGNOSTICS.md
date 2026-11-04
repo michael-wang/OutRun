@@ -1,4 +1,4 @@
-# COAST R8.8 — Pixel 8 rice-field FPS diagnosis (dev instrumentation only)
+# COAST R9.0 P0 — Pixel 8 scene-task FPS diagnosis (dev instrumentation only)
 
 **Goal:** identify why real Pixel 8 Chrome reports ~27 FPS around the main golden rice fields, without changing appearance, FFT settings, material density, physics, streaming budgets, or `main`.
 
@@ -7,7 +7,7 @@
 - **Driving FPS profiler:** `/?fpsdiag=1` — 10-minute bounded one-second samples; export **「匯出 FPS JSON」** from a small floating diagnostic panel.
 - **Existing startup profiler:** `/?startupdiag=1` — retained unchanged for first-load analysis. Use separately when comparing driving to avoid unnecessary overlapping instrumentation.
 - The accepted R8.8 golden rice renderer is now the **only** live rendering path. `?rice=legacy` / `?rice=hybrid` no longer select variants.
-- Dev version label: **`v0.9-coast-r8.8-fpsdiag`**. No new `main` release from this diagnostic change.
+- Dev version label: **`v0.9-coast-r9.0-p0`**. No new `main` release from this diagnostic change.
 
 Open the local `dev` server from the **actual Pixel 8** on the same Wi-Fi (use its current IP and port, for example `http://192.168.1.106:5173/?fpsdiag=1` if that remains the active server).
 
@@ -18,12 +18,13 @@ Open the local `dev` server from the **actual Pixel 8** on the same Wi-Fi (use i
 - Total JS/render callback CPU duration.
 - Main-scene draw calls and triangles, plus renderer texture/geometry counts.
 - Every second: outstanding streaming tasks / current Worker request, loaded rice/flower plots, crop clumps, grass blades, flower instances, rice-canopy triangle counts and Ultra-Water state.
+- **R9.0 P0:** `extras.streamer.taskProfile` breaks down each main-thread scene task by kind, chunk, average and maximum CPU time, and >3/16/33/50ms counts. `lastSlowTasks` retains recent high-cost individual task records. Also separates `queue-sort` and `pump-overhead`.
 - If supported by Chrome/GPU, periodic asynchronous WebGL2 `EXT_disjoint_timer_query_webgl2` timing around **FFT + boat shadow + scene**; logged in `gpuSamples`. No blocking `gl.finish()` calls. Unsupported devices report `gpuTimerSupported=false`.
 - Regions based on real route metres: approach **1800–2400m**, main rice **2400–3000m**, first flowers **3100–3600m**, exit **3600–4200m**, plus other rice/flower visits. The export has `regionSummary` and individual `seconds` rows.
 
 ## Pixel 8 collection
 
-1. Update the local `dev`, run `npm run build` / `npm test`, start the normal server. Confirm the `-fpsdiag` suffix.
+1. Update the local `dev`, run `npm run build` / `npm test`, start the normal server. Confirm the `-r9.0-p0` suffix.
 2. Open **`?fpsdiag=1`** on Pixel 8, rotate to landscape, press Play.
 3. Drive past the main **2400–3000m** rice field **and** the nearby 3100–3600m flower field. Drive normally at a consistent fast pace when safe; avoid repeated pauses, focus loss and deliberate off-road tests. Watch the on-screen FPS if needed.
 4. After passing about 4200m, tap **匯出 FPS JSON**. The file contains all earlier recorded seconds and spikes; export does not stop recording. Share this JSON and, if helpful, a screenshot where FPS is low.
@@ -41,4 +42,7 @@ Open the local `dev` server from the **actual Pixel 8** on the same Wi-Fi (use i
 
 ## Changes and verification boundaries
 
-The current work removes runtime legacy rice toggles, retains the accepted R8.8 look, and only adds opt-in FPS instrumentation and automated tests for section boundaries / summaries. Shader, water and driving parameters are unchanged. Full repository Build, automated unit tests and real-device measurement need to be executed in the actual development environment; remote GitHub edits alone do not count as a test pass.
+The R8.8 legacy rice toggles were retired previously; the accepted golden rice look stays unchanged. R9.0 P0 adds per-task streaming attribution and tests so the next performance change targets a proven bottleneck. Shader, water and driving parameters are unchanged. Full repository Build, automated unit tests and real-device measurement need to be executed in the actual development environment; remote GitHub edits alone do not count as a test pass.
+
+
+For the R9.0 resource architecture decision and current P0 benchmark, see [ADR-009](ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md) and [R9.0 P0 handoff](R90_P0_SCENE_TASK_HANDOFF.md).
