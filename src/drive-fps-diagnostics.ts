@@ -91,7 +91,7 @@ export class DriveFpsDiagnostics {
  }
  /** Periodic nonblocking GPU timer query. Includes ocean FFT, boat shadows and the main draw. */
  beginGpu(distanceM:number){
-  if(!this.enabled||!this.gl||!this.ext||this.runningQuery||this.pending.length>=3||this.frameCount++%30!==0)return;
+  if(!this.enabled||!this.startAt||!this.gl||!this.ext||this.runningQuery||this.pending.length>=3||this.frameCount++%30!==0)return;
   try{
    const query=this.gl.createQuery();
    if(!query)return;
