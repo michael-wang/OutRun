@@ -1,0 +1,36 @@
+{
+  "version": "v0.9-coast-r8.3",
+  "platform": "Desktop Edge 960x432 touch, DPR 2.75; capture frames excluded; not Pixel 8",
+  "physicalPixel8Tested": false,
+  "initialReadyMs": 3749,
+  "frames": {
+    "count": 8493,
+    "p95": 16.799999999999272,
+    "p99": 16.80000000000291,
+    "worst": 16.90000000000873,
+    "over50": 0
+  },
+  "glbRequests": 3,
+  "glbBytes": 56724,
+  "resident": {
+    "blades": 29728,
+    "flowers": 22913,
+    "riceInstancesIncludingLOD": 7335,
+    "scarecrows": 3
+  },
+  "mainPassDrawCalls": [
+    168,
+    250
+  ],
+  "mainPassTriangles": [
+    328992,
+    663776
+  ],
+  "submittedFarmInstances": [
+    3557,
+    20655
+  ],
+  "retirementVerified": true,
+  "replayPlots": 33,
+  "errors": []
+}

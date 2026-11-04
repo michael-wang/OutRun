@@ -7,12 +7,13 @@ import {shoulderProfile} from '../src/road-profile';
 import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle} from '../src/coast-layout';
 import {addCoastResort} from '../src/coast-resort';
 import {addCoastMountains} from '../src/coast-mountains';
+import {farmClearing} from '../src/coast-farm-layout';
 const track=createPilotTrack(stage);
 const road=(start:number,end:number)=>prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],start,end,track.length,false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections);
 
-it('replaces racing curbs and tall continuous rails; puts crossings at populated districts',()=>{
+it('replaces racing curbs and tall continuous rails; keeps crossings at districts and the farm visit',()=>{
  for(const at of COAST_CROSSWALKS){
-  expect(coastDistrictAt(at)).toBeDefined();expect(coastBarrierStyle(at)).toBe('opening');
+  expect(!!coastDistrictAt(at)||farmClearing(at,20)).toBe(true);expect(coastBarrierStyle(at)).toBe('opening');
   const meshes=road(at-8,at+8);
   expect(meshes.some(m=>['edge-red','edge-white','rail'].includes(m.kind))).toBe(false);
   const paint=meshes.find(m=>m.kind==='line')!,p=track.sample(at);

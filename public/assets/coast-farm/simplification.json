@@ -1,0 +1,12 @@
+[
+  {
+    "name": "rice-near",
+    "triangles": 184,
+    "bytes": 25688
+  },
+  {
+    "name": "rice-mid",
+    "triangles": 44,
+    "bytes": 7236
+  }
+]

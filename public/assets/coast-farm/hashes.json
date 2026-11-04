@@ -1,0 +1,18 @@
+[
+  {
+    "file": "rice-mid.glb",
+    "sha256": "113cc34c027454749ba86e13bc362977a3009da06900a77a1e7c882b94dca25e"
+  },
+  {
+    "file": "rice-near.glb",
+    "sha256": "cd9cf2c3372cfcb7f6646c9b3f9c1e5c9f0a7903c9d4de938ba81caa38dc2189"
+  },
+  {
+    "file": "rice-original.glb",
+    "sha256": "e658df8d32737c848ecdaed492e78f8cd7774e5b5ed31d527e08bdf4b9266c22"
+  },
+  {
+    "file": "scarecrow.glb",
+    "sha256": "bdef3b397d721ddb273338a29c65e930d7ea2543688775556f034992f98e46ca"
+  }
+]

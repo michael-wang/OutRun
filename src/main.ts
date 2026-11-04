@@ -518,6 +518,8 @@ async function prepareChapter(index:number):Promise<PreparedChapter>{
    preparedWorld.streamer.pump();await new Promise<void>(r=>requestAnimationFrame(()=>r()));
   }
   mark('stream');
+  await preparedWorld.streamer?.warmFarm(renderer,camera);
+  if(preparedWorld.streamer?.error)throw Error(preparedWorld.streamer.error);
   // Warm shaders and upload the entry view before it becomes the active scene.
   const probe=camera.clone(),entry=preparedWorld.sample(c.start+20);
   preparedWorld.car.position.copy(entry.position);preparedWorld.update(0,0,0,c.start+20);
@@ -629,6 +631,7 @@ function loop(now:number){
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
   if(!manual&&!wasCounting)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);if(advance(tick)===false)break;remaining-=tick;}
   render(dt);
+  void world.streamer?.warmFarm(renderer,camera);
   if(startupPending){
     const stream=world.streamer;
     if(stream?.error){loadingFailed('前方道路載入失敗，請檢查連線後重新載入。');startupPending=false;}
@@ -734,6 +737,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   },
   perf:()=>({...perf}),
   blenderArt:()=>blenderAsset?.stats??{status:'disabled'},
+  coastFarm:()=>world.streamer?.farmStats??[],
   coastBoats:()=>coastBoats?.inspect(elapsed)??[],
   coastWater:()=>({mode:ultraOcean?'ultra':coastUltraMode?'basic':'disabled',...ultraOcean?.stats}),
   coastNature:()=>{let batches=0,visible=0,instances=0,triangles=0;const materials=new Set(),textures=new Set();world.scene.traverse(o=>{if(!(o instanceof THREE.InstancedMesh)||!o.userData.nature)return;batches++;const m=o.material as THREE.MeshStandardMaterial;materials.add(m);if(m.map)textures.add(m.map);if(o.visible){visible++;instances+=o.count;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3*o.count;}});return {batches,visible,instances,triangles,materials:materials.size,textures:textures.size};},

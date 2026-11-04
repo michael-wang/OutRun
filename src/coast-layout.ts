@@ -33,8 +33,7 @@ export const coastRockX=(rock:typeof COAST_ROCKS[number])=>coastBeachX(-26,rock.
 
 export const COAST_DISTRICTS=[
  {start:480,end:980,kind:'homes'},
- {start:2300,end:3350,kind:'homes'},
- {start:3550,end:4350,kind:'market'},
+ {start:3900,end:4350,kind:'market'},
  {start:5050,end:5760,kind:'homes'},
  {start:6720,end:7310,kind:'market'},
  {start:7930,end:9060,kind:'market'},

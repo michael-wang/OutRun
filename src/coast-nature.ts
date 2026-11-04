@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {farmClearing} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastBeachHeight} from './scenery-cross-section';
 import {roadOffset,shoulderProfile} from './road-profile';
@@ -51,6 +52,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch}>();
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
  function plant(name:string,d:number,x:number,height:number,key:number,far:number){
+  if(farmClearing(d,x))return;
   const p=sample(d),model=assets![name];
   dummy.position.copy(p.position).addScaledVector(p.right,x);
   dummy.position.y=coastNatureGround(sample,d,x,start,end)-.06;
