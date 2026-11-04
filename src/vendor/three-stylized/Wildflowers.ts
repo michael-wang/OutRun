@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { normalizeCoverage } from './coverage'
 import { DEFAULT_GRASS_OPTIONS } from './defaults'
-import { buildSurfaceLayout, sampleSurfaceData } from './surfaceSampler'
+import { buildSurfaceLayout, sampleSurfaceData, unpackSurfaceSamples } from './surfaceSampler'
 import type { GrassCoverageOptions, NormalizedGrassWindOptions } from './types'
 import { seededRandom, windDirectionVec2 } from './utils'
 
@@ -9,6 +9,8 @@ import { acquireSharedFlowerMask, releaseSharedFlowerMask, FLOWER_PALETTES, MASK
 
 export interface WildflowerOptions {
   surface: THREE.Mesh
+  /** Optional initial samples from stage worker; runtime edits re-sample normally. */
+  preparedSamples?:Float32Array
   density?: number
   maxCount?: number
   seed?: number
@@ -249,9 +251,11 @@ export class Wildflowers extends THREE.Group {
       throw new RangeError('Wildflower density and maximum count must be nonnegative.')
     }
 
-    const layout = buildSurfaceLayout(options.surface, coverage)
-    const requested = Math.min(maxCount, Math.round(layout.coveredArea * density))
-    const samples = sampleSurfaceData(options.surface, requested, seed, coverage, layout)
+    const samples=options.preparedSamples!==undefined?unpackSurfaceSamples(options.preparedSamples):(()=>{
+      const layout=buildSurfaceLayout(options.surface,coverage)
+      const requested=Math.min(maxCount,Math.round(layout.coveredArea*density))
+      return sampleSurfaceData(options.surface,requested,seed,coverage,layout)
+    })()
     this.count = samples.length
 
     const random = seededRandom(seed ^ 0x85ebca6b)
