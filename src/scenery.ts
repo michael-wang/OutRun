@@ -1,4 +1,6 @@
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,COAST_DISTRICTS} from './coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
+import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
+import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
 import {canyonBend,canyonBlend} from './canyon-identity';
@@ -162,7 +164,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  }
  function part(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0,emission=0){
   if(bridgeGap||(ordinaryProps&&anchorRight&&range.junction&&interchangeSceneryClear(range.junction,anchorDistance,1)))return;
-  const materialKey=color+':'+emission;let material=materials.get(materialKey);if(!material){material=new THREE.MeshStandardMaterial({color,roughness:.85,vertexColors:!!g.getAttribute('color'),emissive:emission?color:0,emissiveIntensity:emission});materials.set(materialKey,material);}
+  const materialKey=color+':'+emission+':'+!!g.getAttribute('color')+':'+!!g.userData.waffleSign;let material=materials.get(materialKey);if(!material){material=new THREE.MeshStandardMaterial({color,roughness:.85,vertexColors:!!g.getAttribute('color'),emissive:emission?color:0,emissiveIntensity:emission});if(g.userData.waffleSign&&typeof document!=='undefined')material.map=waffleSignTexture();materials.set(materialKey,material);}
   quaternion.setFromAxisAngle(axis,yaw);dummy.position.set(x,y,z).applyQuaternion(quaternion).add(base);dummy.rotation.set(rx,ry,rz);dummy.quaternion.premultiply(quaternion);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();
   const key=g.uuid+materialKey+':'+chunk;let b=buckets.get(key);if(!b){b={geometry:g,material,matrices:[]};buckets.set(key,b);}b.matrices.push(dummy.matrix.clone());
  }
@@ -172,13 +174,26 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   anchor(d,x);const p=sample(d);base.copy(p.position).addScaledVector(p.right,x);
   base.y=coastBeachHeight(x,p.position.y,p.right.y,d);
  }
- function beachPerson(key:number,playing=false){
+ function beachPerson(key:number,playing=false,size=1){
+  const limb=(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0)=>part(g,color,x*size,y*size,z*size,sx*size,sy*size,sz*size,rx,ry,rz);
   const shirt=['#e76f51','#36a8b1','#edc969'][Math.abs(key)%3];
-  part(round,'#bd8d68',0,1.58,0,.21,.25,.21);
-  part(boxes,shirt,0,1.05,0,.48,.65,.28);
+  limb(round,'#bd8d68',0,1.58,0,.21,.25,.21);
+  limb(boxes,shirt,0,1.05,0,.48,.65,.28);
   for(const side of [-1,1]){
-   part(cylinder,'#bd8d68',side*.13,.38,0,.085,.72,.085,0,0,side*.1);
-   part(cylinder,'#bd8d68',side*.36,playing?1.42:1.05,0,.07,.6,.07,0,0,side*(playing?.85:.22));
+   limb(cylinder,'#bd8d68',side*.13,.38,playing?side*.12:0,.085,.72,.085,playing?side*.35:0,0,side*.1);
+   limb(cylinder,'#bd8d68',side*.36,playing?1.42:1.05,0,.07,.6,.07,0,0,side*(playing?.85:.22));
+  }
+ }
+ function restingBench(key:number,people:number){
+  // Local +Z faces the sea. Bent thighs/shins keep seated silhouettes distinct.
+  for(const x of [-1.12,1.12])for(const z of [-.23,.23])part(boxes,'#665d61',x,.25,z,.12,.5,.12);
+  for(const z of [-.24,0,.24])part(boxes,'#aa8960',0,.52,z,2.8,.10,.21);
+  for(const x of [-1.12,1.12])part(boxes,'#665d61',x,.78,-.3,.1,.65,.1);
+  for(const y of [.83,1.05])part(boxes,'#aa8960',0,y,-.33,2.8,.16,.10);
+  for(let i=0;i<people;i++){
+   const x=people===1?-.25:i===0?-.67:.67,shirt=['#e76f51','#36a8b1','#edc969'][(key+i)%3];
+   part(round,'#bd8d68',x,1.38,.02,.20,.23,.20);part(boxes,shirt,x,.98,.02,.46,.55,.30);
+   for(const side of [-1,1]){part(boxes,'#665d61',x+side*.13,.62,.21,.18,.18,.48);part(cylinder,'#bd8d68',x+side*.13,.32,.44,.075,.52,.075);part(boxes,'#665d61',x+side*.13,.09,.53,.17,.13,.3);part(cylinder,'#bd8d68',x+side*.29,.84,.14,.065,.4,.065,.45,0,side*.15);}
   }
  }
  function glow(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number){
@@ -269,32 +284,49 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
   }
   const inChunk=(d:number)=>d>=range.start&&d<Math.min(length,range.end);
-  for(const district of COAST_DISTRICTS){
-   const market=district.kind==='market',step=market?13:25;
-   for(let nominal=district.start+10,slot=0;nominal<district.end-8;nominal+=step,slot++){
-    const key=slot+Math.round(district.start),d=nominal+(random(key+21)-.5)*(market?5:10);
-    if(!inChunk(d)||(!market&&random(key+417)<.13))continue;
-    if(market){
-     beachAnchor(d,22+random(key+10)*5);if(clear(5))nightStall(key);
-     // A second, higher street frontage gives the stalls a neighbourhood context.
-     if(key%3===0){beachAnchor(d+3,44+random(key+55)*6);if(clear(9))coastHome(key,true);}
-     for(let j=0;j<3;j++){
-      beachAnchor(d-4+j*3.1+random(key*17+j)*2,17+random(key*7+j)*3.2);if(clear(1)){yaw+=random(key+j)*6;beachPerson(key+j,random(key*3+j)>.84);}
-     }
-     // Sagging bulb strings follow the pedestrian strip, outside the road.
-     beachAnchor(d,18.5);
-     part(cylinder,'#665d61',0,2.5,0,.045,5,.045);
-     const span=nominal+step+(random(key+22)-.5)*5-d;
-     for(let j=0;j<5&&nominal+step<district.end-8;j++){
-      const y=4.9-Math.sin(j/5*Math.PI)*.6,next=4.9-Math.sin((j+1)/5*Math.PI)*.6;
-      part(boxes,'#665d61',0,(y+next)/2,(j+.5)*span/5,.025,.025,Math.hypot(span/5,next-y),-Math.atan2(next-y,span/5));
-      glow(round,'#ffd298',0,y-.11,j*span/5,.10,.13,.10);
-     }
-    }else{
-     beachAnchor(d,27+random(key+19)*12);if(clear(10))coastHome(key);
-     if(key%2===0){beachAnchor(d+6+random(key+31)*9,55+random(key+33)*8);if(clear(10))coastHome(key+7);}
-     beachAnchor(d-8,18);if(clear(3)){part(boxes,'#c0aa91',0,.35,0,2,.7,4);part(round,'#527849',0,1.05,0,1.2,.7,2.1);}
-    }
+  let waffle:THREE.BufferGeometry|undefined,waffleSign:THREE.BufferGeometry|undefined;
+  for(const [index,site] of COAST_VILLAGE_SITES.entries()){
+   const {d,key}=site;if(!inChunk(d))continue;
+   beachAnchor(d,site.x);yaw+=site.yaw;
+   if(site.kind==='home'){
+    if(clear(10))coastHome(key);
+    if(!site.rear&&key%3===0){beachAnchor(d-9,site.x-7);if(clear(3)){part(boxes,'#c0aa91',0,.35,0,2,.7,4);part(round,'#527849',0,1.05,0,1.2,.7,2.1);}}
+    continue;
+   }
+   if(clear(5)){
+    if(site.kind==='waffle'){
+     waffle??=vehicleGeometry(3);waffleSign??=waffleSignGeometry();waffleSign.userData.waffleSign=true;
+     part(waffle,'#ffffff',0,0,0,1.15,1.15,1.15);
+     part(waffleSign,'#ffffff',0,0,0,1.15,1.15,1.15);
+     // Serving counter and a vendor use the existing market palette.
+     part(boxes,'#aa8960',1.65,1.2,-.7,1.1,.15,2.7);
+     for(const z of [-1.6,.2]){part(cylinder,'#665d61',1.65,.55,z,.07,1.1,.07);part(round,'#edc969',1.65,1.34,z,.25,.07,.25);}
+     part(round,'#bd8d68',0,2.36,-.8,.22,.25,.22);part(boxes,'#fff0ca',0,1.96,-.8,.5,.6,.32);
+    }else nightStall(key);
+   }
+   if(index%4===0){beachAnchor(d+3,53+random(key+55)*8);yaw+=site.yaw*.7;if(clear(9))coastHome(key,true);}
+   const count=key%4===0?1:2+key%2;
+   for(let j=0;j<count;j++){
+    beachAnchor(d-5+random(key*17+j)*10,16.4+random(key*7+j)*3.6);if(clear(1)){yaw+=random(key+j)*6;beachPerson(key+j,false,.92+random(key*3+j)*.13);}
+   }
+   // Lights connect only neighbours in the same little pocket, not long gaps.
+   const next=COAST_VILLAGE_SITES[index+1];beachAnchor(d,19.5+site.yaw*3);
+   part(cylinder,'#665d61',0,2.5,0,.045,5,.045);
+   if(next&&next.group===site.group){
+    const p=sample(next.d),x=19.5+next.yaw*3,target=p.position.clone().addScaledVector(p.right,x);
+    target.y=coastBeachHeight(x,p.position.y,p.right.y,next.d);target.sub(base).applyAxisAngle(axis,-yaw);
+    const span=Math.hypot(target.x,target.z),angle=Math.atan2(target.x,target.z);
+    for(let j=0;j<5;j++){const t=j/5,n=(j+1)/5,y=4.9+target.y*t-Math.sin(t*Math.PI)*.6,ny=4.9+target.y*n-Math.sin(n*Math.PI)*.6;
+     part(boxes,'#665d61',target.x*(t+n)/2,(y+ny)/2,target.z*(t+n)/2,.025,.025,Math.hypot(span/5,ny-y),-Math.atan2(ny-y,span/5),angle);glow(round,'#ffd298',target.x*t,y-.11,target.z*t,.10,.13,.10);}
+   }
+  }
+  for(const spot of COAST_REST_SPOTS){
+   if(!inChunk(spot.d))continue;
+   beachAnchor(spot.d,spot.x);if(base.y< -3.7||!clear(3))continue;
+   yaw+=Math.PI/2+(random(spot.key+83)-.5)*.22;restingBench(spot.key,spot.people);
+   if(spot.children){
+    for(let j=0;j<2;j++){beachAnchor(spot.d+(j?5:-5),spot.x-4-j);if(base.y> -4&&clear(1)){yaw+=j?Math.PI:0;beachPerson(spot.key+j,true,.60+j*.07);}}
+    beachAnchor(spot.d+1,spot.x-5);if(base.y> -4)part(ball,'#fffdf4',0,.3,0,.3,.3,.3);
    }
   }
   for(const bay of COAST_BEACHES){
@@ -304,6 +336,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     const d=bay.distance-half+j*33+rand(j+bay.distance)*15;
     if(!inChunk(d))continue;
     const x=-19-rand(j*11+bay.distance)*17;
+    if(COAST_REST_SPOTS.some(s=>Math.abs(s.d-d)<11&&Math.abs(s.x-x)<7))continue;
     beachAnchor(d,x);if(!clear(4)||base.y<-4.05)continue;
     yaw+=rand(d)*1.8;
     part(cylinder,'#aa8960',0,1.6,0,.055,3.2,.055);
@@ -642,6 +675,6 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   if(act.id==='city'&&index===1){for(const x of [-20,20]){part(boxes,'#4b8090',x,19,0,2,38,2);part(boxes,'#dfb65c',x-10,37,0,36,1.2,1.2);part(cylinder,'#647a7b',x-25,24,0,.07,25,.07);part(boxes,'#d38e6a',x,2,6,14,4,6);}}
  }
- for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;group.add(mesh);}
+ for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;group.add(mesh);}
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};
 }

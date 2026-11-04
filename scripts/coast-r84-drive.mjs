@@ -15,7 +15,7 @@ try{
   window.driver=setInterval(()=>{const s=g.snapshot();g.controls({gas:s.speed<65,brake:s.speed>66,steer:Math.max(-1,Math.min(1,s.requiredSteer-s.lateral*.14))});},30);
   window.sampler=setInterval(()=>{const s=g.snapshot();window.trace.push({d:s.distance,time:s.elapsed,speed:s.speed,offRoad:s.offRoad,farm:g.coastFarm(),boats:g.coastBoats(),water:g.coastWater(),memory:g.scenery().memory,render:g.scenery().render,journey:g.journey().index});},1000);
  });
- for(const d of [1520,2425,2640,3210,4520,6000,7500]){
+ for(const d of (process.env.DRIVE_VIEWS??'1520,2425,2640,3210,4520,6000,7500').split(',').map(Number)){
   await page.waitForFunction(d=>window.__drive.snapshot().distance>=d,d,{timeout:90000});
   await page.evaluate(()=>{window.capture=true;});await page.screenshot({path:`${root}/moving-${d}.png`});
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>{window.capture=false;resolve();}))));
