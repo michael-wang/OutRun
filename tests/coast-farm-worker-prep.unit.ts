@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {FARM_PLOTS} from '../src/coast-farm-layout';
 import {prepareFarmPlot,farmPrepTransferables} from '../src/coast-farm-prep';
 import {createFarmPlot,type FarmAssets} from '../src/coast-farm';
+import {Grass} from '../src/vendor/three-stylized/Grass';
 import type {createTrack} from '../src/track';
 
 const sample=((distance:number)=>({
@@ -61,14 +62,14 @@ it('worker-prepared flower and grass samples retain counts and placement',()=>{
  try{
   expect(a.stats().blades).toBe(b.stats().blades);
   expect(a.stats().flowers).toBe(b.stats().flowers);
+  const meadowA=a.group.children.find(o=>o instanceof Grass) as Grass;
+  const meadowB=b.group.children.find(o=>o instanceof Grass) as Grass;
+  expect(meadowA).toBeDefined();expect(meadowB).toBeDefined();
   for(const meshName of ['blades','flowers'] as const){
-   const meadowA=a.group.children.find(o=>o.type==='Group'&&o.type=== 'Group'&&o!==a.group) as THREE.Group;
-   const meadowB=b.group.children.find(o=>o.type==='Group'&&o.type=== 'Group'&&o!==b.group) as THREE.Group;
-   const pick=(group:THREE.Group)=>group.getObjectsByProperty('type','InstancedMesh') as THREE.InstancedMesh[];
-   const index=meshName==='blades'?0:1;
-   const aa=pick(meadowA)[index]?.instanceMatrix.array,bb=pick(meadowB)[index]?.instanceMatrix.array;
-   expect(aa?.length).toBe(bb?.length);
-   for(let i=0;i<Math.min(aa?.length??0,100);i++)
+   const pick=(group:Grass)=>meshName==='blades'?group.blades.blades:group.wildflowers!.flowers;
+   const aa=pick(meadowA).instanceMatrix.array,bb=pick(meadowB).instanceMatrix.array;
+   expect(aa.length).toBe(bb.length);
+   for(let i=0;i<Math.min(aa.length,100);i++)
     expect(Math.abs(aa[i]-bb[i])).toBeLessThan(.005);
   }
  }finally{a.dispose();b.dispose();fresh.dispose();}
