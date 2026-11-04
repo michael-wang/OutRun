@@ -5,7 +5,7 @@ import { buildSurfaceLayout, sampleSurfaceData } from './surfaceSampler'
 import type { GrassCoverageOptions, NormalizedGrassWindOptions } from './types'
 import { seededRandom, windDirectionVec2 } from './utils'
 
-import { createMaskTexture, FLOWER_PALETTES, MASK_VARIANTS } from './flowerShapes'
+import { acquireSharedFlowerMask, releaseSharedFlowerMask, FLOWER_PALETTES, MASK_VARIANTS } from './flowerShapes'
 
 export interface WildflowerOptions {
   surface: THREE.Mesh
@@ -257,7 +257,7 @@ export class Wildflowers extends THREE.Group {
     const random = seededRandom(seed ^ 0x85ebca6b)
     const attributes = createFlowerAttributes(this.count, random)
 
-    this.uniforms = createFlowerUniforms(createMaskTexture())
+    this.uniforms = createFlowerUniforms(acquireSharedFlowerMask())
     this.depthMaterial = createFlowerDepthMaterial(this.uniforms)
     this.flowers = new THREE.InstancedMesh(
       createCardGeometry(attributes),
@@ -324,7 +324,7 @@ export class Wildflowers extends THREE.Group {
     this.disposed = true
     this.remove(this.flowers)
     this.flowers.geometry.dispose()
-    this.flowers.material.uniforms.uMask.value.dispose()
+    releaseSharedFlowerMask(this.flowers.material.uniforms.uMask.value)
     this.flowers.material.dispose()
     this.depthMaterial.dispose()
     this.clear()
