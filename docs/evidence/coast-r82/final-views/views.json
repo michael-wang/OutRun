@@ -1,0 +1,895 @@
+{
+  "browser": "Desktop Edge, touch emulation, normal journey/chase camera; not Pixel 8",
+  "errors": [],
+  "assets": [
+    "http://127.0.0.1:5180/assets/coast-boats/boat-sail-a.glb",
+    "http://127.0.0.1:5180/assets/coast-boats/flybridge-yacht.glb",
+    "http://127.0.0.1:5180/assets/coast-boats/Textures/colormap.png"
+  ],
+  "views": [
+    {
+      "state": {
+        "gear": 5,
+        "rpm": 6921.632653061224,
+        "shiftRemaining": 0,
+        "shiftDirection": 0,
+        "gearInitialized": true,
+        "tractionFactor": 1,
+        "gearRatio": 0.6530612244897959,
+        "engineTorque": 5.874870399035901,
+        "driveForce": 0,
+        "roadDrag": 1.9055,
+        "shiftDrag": 0,
+        "netAcceleration": 0,
+        "distance": 1550,
+        "speed": 65,
+        "lateral": 0,
+        "heading": 0,
+        "velocityHeading": 0,
+        "worldHeading": -0.3511736602985951,
+        "steering": 0,
+        "yawRate": 0,
+        "slipAngle": 0,
+        "slip": 0,
+        "offRoad": false,
+        "footprintEdge": 1.13,
+        "curvature": 0,
+        "corridorSide": 0,
+        "steeringTarget": 0,
+        "drifting": false,
+        "rawSteer": 0,
+        "effectiveSteer": 0,
+        "requiredSteer": 0,
+        "lateralRate": 0,
+        "weightRoll": 0,
+        "bank": 0,
+        "appliedSteer": 0,
+        "steerFrom": 0,
+        "steerTo": 0,
+        "steerTime": 0,
+        "grade": 0,
+        "gradeAcceleration": 0,
+        "bankDegrees": 0,
+        "roadHalfWidth": 7,
+        "laneCount": 4,
+        "highSpeedPace": 1.75,
+        "effectivePace": 1.75,
+        "travelSpeed": 113.75,
+        "mode": "playing",
+        "elapsed": 0,
+        "frames": 83,
+        "inputs": {
+          "gas": false,
+          "brake": false,
+          "steer": 0
+        },
+        "audio": {
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 0,
+            "consumed": 0
+          },
+          "gravelLevel": 0,
+          "impactCount": 0,
+          "coneHitCount": 0,
+          "contextState": "locked",
+          "muted": false,
+          "active": false,
+          "engineHz": 42,
+          "engineRpm": 1000,
+          "gear": 1,
+          "skidIntensity": 0,
+          "skidLevel": 0,
+          "windLevel": 0,
+          "rms": 0
+        },
+        "trackLength": 12366,
+        "position": [
+          301.9465759627258,
+          -1.76,
+          1501.9334572506511
+        ],
+        "swapped": false,
+        "surfaceError": -4.768371586472142e-8,
+        "camera": {
+          "horizontalFov": 76,
+          "fov": 38.741159100630384,
+          "distance": 8,
+          "height": 2.6,
+          "lookAhead": 13.284848493623585,
+          "lookHeight": 0,
+          "position": [
+            299.19457535877507,
+            0.8400000000000001,
+            1494.42170028734
+          ],
+          "direction": [
+            0.3414619863510143,
+            -0.12125135741932297,
+            0.9320417480999397
+          ],
+          "scenicEnabled": false,
+          "scenicWeight": 0
+        },
+        "immersive": {
+          "active": false,
+          "installed": false,
+          "lockState": "idle",
+          "pending": false,
+          "message": ""
+        },
+        "rightScreenDelta": 0.15502740465977996
+      },
+      "boats": [
+        {
+          "id": "white-sail",
+          "kind": "sail",
+          "distance": 1916.4289233548911,
+          "offshore": 136.9822497710202,
+          "travel": 70,
+          "sway": 38,
+          "speed": 0.85,
+          "phase": 1.25,
+          "length": 18,
+          "draft": 1.5,
+          "position": [
+            598.7285370977648,
+            -4.906126491833311,
+            1783.4504526596054
+          ],
+          "rotation": [
+            0.005386249296935608,
+            -0.688017878718362,
+            0.01708172314840055,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "white-yacht",
+          "kind": "yacht",
+          "distance": 2448.835978399077,
+          "offshore": 68.7392771438053,
+          "travel": 80,
+          "sway": 22,
+          "speed": 1.25,
+          "phase": 1.4,
+          "length": 20,
+          "draft": 1.05,
+          "position": [
+            675.3561159349186,
+            -4.912251184435861,
+            2344.98968261817
+          ],
+          "rotation": [
+            0.0030148933514031456,
+            -0.8736009374752538,
+            0.01773809513979228,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-sail",
+          "kind": "sail",
+          "distance": 6124.093009645616,
+          "offshore": 231.42183819173286,
+          "travel": 110,
+          "sway": 42,
+          "speed": 0.65,
+          "phase": 1.9,
+          "length": 14,
+          "draft": 1.16,
+          "position": [
+            1304.7752248880213,
+            -4.905717983468428,
+            5911.237620383997
+          ],
+          "rotation": [
+            -0.00550672101848447,
+            -2.0636876628571597,
+            0.01703340157837346,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-yacht",
+          "kind": "yacht",
+          "distance": 8723.883517737051,
+          "offshore": 197.68252140668358,
+          "travel": 90,
+          "sway": 35,
+          "speed": 1.05,
+          "phase": 1.2,
+          "length": 18,
+          "draft": 0.94,
+          "position": [
+            1709.6584938353042,
+            -4.903643525199253,
+            8403.065165033526
+          ],
+          "rotation": [
+            0.006079168624960358,
+            -0.7294696637326532,
+            0.016776703547410073,
+            "YXZ"
+          ]
+        }
+      ],
+      "render": {
+        "frame": 920,
+        "calls": 203,
+        "triangles": 421744,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 151,
+        "textures": 34
+      }
+    },
+    {
+      "state": {
+        "gear": 5,
+        "rpm": 6921.632653061224,
+        "shiftRemaining": 0,
+        "shiftDirection": 0,
+        "gearInitialized": true,
+        "tractionFactor": 1,
+        "gearRatio": 0.6530612244897959,
+        "engineTorque": 5.874870399035901,
+        "driveForce": 0,
+        "roadDrag": 1.9055,
+        "shiftDrag": 0,
+        "netAcceleration": 0,
+        "distance": 2250,
+        "speed": 65,
+        "lateral": 0,
+        "heading": 0,
+        "velocityHeading": 0,
+        "worldHeading": -0.2773693072941047,
+        "steering": 0,
+        "yawRate": 0,
+        "slipAngle": 0,
+        "slip": 0,
+        "offRoad": false,
+        "footprintEdge": 1.13,
+        "curvature": 0,
+        "corridorSide": 0,
+        "steeringTarget": 0,
+        "drifting": false,
+        "rawSteer": 0,
+        "effectiveSteer": 0,
+        "requiredSteer": 0,
+        "lateralRate": 0,
+        "weightRoll": 0,
+        "bank": 0,
+        "appliedSteer": 0,
+        "steerFrom": 0,
+        "steerTo": 0,
+        "steerTime": 0,
+        "grade": 0,
+        "gradeAcceleration": 0,
+        "bankDegrees": 4.265550495952617,
+        "roadHalfWidth": 7,
+        "laneCount": 4,
+        "highSpeedPace": 1.75,
+        "effectivePace": 1.75,
+        "travelSpeed": 113.75,
+        "mode": "playing",
+        "elapsed": 0,
+        "frames": 150,
+        "inputs": {
+          "gas": false,
+          "brake": false,
+          "steer": 0
+        },
+        "audio": {
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 0,
+            "consumed": 0
+          },
+          "gravelLevel": 0,
+          "impactCount": 0,
+          "coneHitCount": 0,
+          "contextState": "locked",
+          "muted": false,
+          "active": false,
+          "engineHz": 42,
+          "engineRpm": 1000,
+          "gear": 1,
+          "skidIntensity": 0,
+          "skidLevel": 0,
+          "windLevel": 0,
+          "rms": 0
+        },
+        "trackLength": 12366,
+        "position": [
+          539.44874251496,
+          -1.7392137412291264,
+          2160.33499722407
+        ],
+        "swapped": false,
+        "surfaceError": 0.0000019282690413291448,
+        "camera": {
+          "horizontalFov": 76,
+          "fov": 38.741159100630384,
+          "distance": 8,
+          "height": 2.6,
+          "lookAhead": 13.284848493623585,
+          "lookHeight": 0,
+          "position": [
+            537.2580889025816,
+            0.8603144594156409,
+            2152.6406168146655
+          ],
+          "direction": [
+            0.27180795429032467,
+            -0.1211964180113492,
+            0.954689407213533
+          ],
+          "scenicEnabled": false,
+          "scenicWeight": 0
+        },
+        "immersive": {
+          "active": false,
+          "installed": false,
+          "lockState": "idle",
+          "pending": false,
+          "message": ""
+        },
+        "rightScreenDelta": 0.15485774544211367
+      },
+      "boats": [
+        {
+          "id": "white-sail",
+          "kind": "sail",
+          "distance": 1916.4289233548911,
+          "offshore": 136.9822497710202,
+          "travel": 70,
+          "sway": 38,
+          "speed": 0.85,
+          "phase": 1.25,
+          "length": 18,
+          "draft": 1.5,
+          "position": [
+            598.7285370977648,
+            -4.906126491833311,
+            1783.4504526596054
+          ],
+          "rotation": [
+            0.005386249296935608,
+            -0.688017878718362,
+            0.01708172314840055,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "white-yacht",
+          "kind": "yacht",
+          "distance": 2448.835978399077,
+          "offshore": 68.7392771438053,
+          "travel": 80,
+          "sway": 22,
+          "speed": 1.25,
+          "phase": 1.4,
+          "length": 20,
+          "draft": 1.05,
+          "position": [
+            675.3561159349186,
+            -4.912251184435861,
+            2344.98968261817
+          ],
+          "rotation": [
+            0.0030148933514031456,
+            -0.8736009374752538,
+            0.01773809513979228,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-sail",
+          "kind": "sail",
+          "distance": 6124.093009645616,
+          "offshore": 231.42183819173286,
+          "travel": 110,
+          "sway": 42,
+          "speed": 0.65,
+          "phase": 1.9,
+          "length": 14,
+          "draft": 1.16,
+          "position": [
+            1304.7752248880213,
+            -4.905717983468428,
+            5911.237620383997
+          ],
+          "rotation": [
+            -0.00550672101848447,
+            -2.0636876628571597,
+            0.01703340157837346,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-yacht",
+          "kind": "yacht",
+          "distance": 8723.883517737051,
+          "offshore": 197.68252140668358,
+          "travel": 90,
+          "sway": 35,
+          "speed": 1.05,
+          "phase": 1.2,
+          "length": 18,
+          "draft": 0.94,
+          "position": [
+            1709.6584938353042,
+            -4.903643525199253,
+            8403.065165033526
+          ],
+          "rotation": [
+            0.006079168624960358,
+            -0.7294696637326532,
+            0.016776703547410073,
+            "YXZ"
+          ]
+        }
+      ],
+      "render": {
+        "frame": 1633,
+        "calls": 213,
+        "triangles": 259864,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 139,
+        "textures": 34
+      }
+    },
+    {
+      "state": {
+        "gear": 5,
+        "rpm": 6921.632653061224,
+        "shiftRemaining": 0,
+        "shiftDirection": 0,
+        "gearInitialized": true,
+        "tractionFactor": 1,
+        "gearRatio": 0.6530612244897959,
+        "engineTorque": 5.874870399035901,
+        "driveForce": 0,
+        "roadDrag": 1.9055,
+        "shiftDrag": 0,
+        "netAcceleration": 0,
+        "distance": 5500,
+        "speed": 65,
+        "lateral": 0,
+        "heading": 0,
+        "velocityHeading": 0,
+        "worldHeading": 0.09542513479706,
+        "steering": 0,
+        "yawRate": 0,
+        "slipAngle": 0,
+        "slip": 0,
+        "offRoad": false,
+        "footprintEdge": 1.13,
+        "curvature": 0,
+        "corridorSide": 0,
+        "steeringTarget": 0,
+        "drifting": false,
+        "rawSteer": 0,
+        "effectiveSteer": 0,
+        "requiredSteer": 0,
+        "lateralRate": 0,
+        "weightRoll": 0,
+        "bank": 0,
+        "appliedSteer": 0,
+        "steerFrom": 0,
+        "steerTo": 0,
+        "steerTime": 0,
+        "grade": 0,
+        "gradeAcceleration": 0,
+        "bankDegrees": 2.2825051925618647,
+        "roadHalfWidth": 7,
+        "laneCount": 4,
+        "highSpeedPace": 1.75,
+        "effectivePace": 1.75,
+        "travelSpeed": 113.75,
+        "mode": "playing",
+        "elapsed": 0,
+        "frames": 217,
+        "inputs": {
+          "gas": false,
+          "brake": false,
+          "steer": 0
+        },
+        "audio": {
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 0,
+            "consumed": 0
+          },
+          "gravelLevel": 0,
+          "impactCount": 0,
+          "coneHitCount": 0,
+          "contextState": "locked",
+          "muted": false,
+          "active": false,
+          "engineHz": 42,
+          "engineRpm": 1000,
+          "gear": 1,
+          "skidIntensity": 0,
+          "skidLevel": 0,
+          "windLevel": 0,
+          "rms": 0
+        },
+        "trackLength": 12366,
+        "position": [
+          1075.5172058313606,
+          -1.2290173026857028,
+          5311.663940709096
+        ],
+        "swapped": false,
+        "surfaceError": 0.0000010021301879437061,
+        "camera": {
+          "horizontalFov": 76,
+          "fov": 38.741159100630384,
+          "distance": 8,
+          "height": 2.6,
+          "lookAhead": 13.284848493623585,
+          "lookHeight": 0,
+          "position": [
+            1076.2794999412424,
+            1.36933234968684,
+            5303.699803167965
+          ],
+          "direction": [
+            -0.09457961843432243,
+            -0.12105918331913122,
+            0.9881292273336131
+          ],
+          "scenicEnabled": false,
+          "scenicWeight": 0
+        },
+        "immersive": {
+          "active": false,
+          "installed": false,
+          "lockState": "idle",
+          "pending": false,
+          "message": ""
+        },
+        "rightScreenDelta": 0.15493647113875386
+      },
+      "boats": [
+        {
+          "id": "white-sail",
+          "kind": "sail",
+          "distance": 1916.4289233548911,
+          "offshore": 136.9822497710202,
+          "travel": 70,
+          "sway": 38,
+          "speed": 0.85,
+          "phase": 1.25,
+          "length": 18,
+          "draft": 1.5,
+          "position": [
+            598.7285370977648,
+            -4.906126491833311,
+            1783.4504526596054
+          ],
+          "rotation": [
+            0.005386249296935608,
+            -0.688017878718362,
+            0.01708172314840055,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "white-yacht",
+          "kind": "yacht",
+          "distance": 2448.835978399077,
+          "offshore": 68.7392771438053,
+          "travel": 80,
+          "sway": 22,
+          "speed": 1.25,
+          "phase": 1.4,
+          "length": 20,
+          "draft": 1.05,
+          "position": [
+            675.3561159349186,
+            -4.912251184435861,
+            2344.98968261817
+          ],
+          "rotation": [
+            0.0030148933514031456,
+            -0.8736009374752538,
+            0.01773809513979228,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-sail",
+          "kind": "sail",
+          "distance": 6124.093009645616,
+          "offshore": 231.42183819173286,
+          "travel": 110,
+          "sway": 42,
+          "speed": 0.65,
+          "phase": 1.9,
+          "length": 14,
+          "draft": 1.16,
+          "position": [
+            1304.7752248880213,
+            -4.905717983468428,
+            5911.237620383997
+          ],
+          "rotation": [
+            -0.00550672101848447,
+            -2.0636876628571597,
+            0.01703340157837346,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-yacht",
+          "kind": "yacht",
+          "distance": 8723.883517737051,
+          "offshore": 197.68252140668358,
+          "travel": 90,
+          "sway": 35,
+          "speed": 1.05,
+          "phase": 1.2,
+          "length": 18,
+          "draft": 0.94,
+          "position": [
+            1709.6584938353042,
+            -4.903643525199253,
+            8403.065165033526
+          ],
+          "rotation": [
+            0.006079168624960358,
+            -0.7294696637326532,
+            0.016776703547410073,
+            "YXZ"
+          ]
+        }
+      ],
+      "render": {
+        "frame": 2327,
+        "calls": 197,
+        "triangles": 270768,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 123,
+        "textures": 34
+      }
+    },
+    {
+      "state": {
+        "gear": 5,
+        "rpm": 6921.632653061224,
+        "shiftRemaining": 0,
+        "shiftDirection": 0,
+        "gearInitialized": true,
+        "tractionFactor": 1,
+        "gearRatio": 0.6530612244897959,
+        "engineTorque": 5.874870399035901,
+        "driveForce": 0,
+        "roadDrag": 1.9055,
+        "shiftDrag": 0,
+        "netAcceleration": 0,
+        "distance": 8050,
+        "speed": 65,
+        "lateral": 0,
+        "heading": 0,
+        "velocityHeading": 0,
+        "worldHeading": 0.10033533151388573,
+        "steering": 0,
+        "yawRate": 0,
+        "slipAngle": 0,
+        "slip": 0,
+        "offRoad": false,
+        "footprintEdge": 1.13,
+        "curvature": 0,
+        "corridorSide": 0,
+        "steeringTarget": 0,
+        "drifting": false,
+        "rawSteer": 0,
+        "effectiveSteer": 0,
+        "requiredSteer": 0,
+        "lateralRate": 0,
+        "weightRoll": 0,
+        "bank": 0,
+        "appliedSteer": 0,
+        "steerFrom": 0,
+        "steerTo": 0,
+        "steerTime": 0,
+        "grade": 0,
+        "gradeAcceleration": 0,
+        "bankDegrees": 0.7174743518814168,
+        "roadHalfWidth": 7,
+        "laneCount": 4,
+        "highSpeedPace": 1.75,
+        "effectivePace": 1.75,
+        "travelSpeed": 113.75,
+        "mode": "playing",
+        "elapsed": 0,
+        "frames": 284,
+        "inputs": {
+          "gas": false,
+          "brake": false,
+          "steer": 0
+        },
+        "audio": {
+          "passBy": {
+            "starts": 0,
+            "crossings": 0,
+            "active": [],
+            "tracked": 0,
+            "consumed": 0
+          },
+          "gravelLevel": 0,
+          "impactCount": 0,
+          "coneHitCount": 0,
+          "contextState": "locked",
+          "muted": false,
+          "active": false,
+          "engineHz": 42,
+          "engineRpm": 1000,
+          "gear": 1,
+          "skidIntensity": 0,
+          "skidLevel": 0,
+          "windLevel": 0,
+          "rms": 0
+        },
+        "trackLength": 12366,
+        "position": [
+          1488.6408169684423,
+          -0.8108045090540106,
+          7782.580656431184
+        ],
+        "swapped": false,
+        "surfaceError": -1.1252649745330245e-7,
+        "camera": {
+          "horizontalFov": 76,
+          "fov": 38.741159100630384,
+          "distance": 8,
+          "height": 2.6,
+          "lookAhead": 13.284848493623585,
+          "lookHeight": 0,
+          "position": [
+            1489.442177144261,
+            1.7884692819332142,
+            7774.620656580173
+          ],
+          "direction": [
+            -0.09942905251521786,
+            -0.12116679318706486,
+            0.987639849208551
+          ],
+          "scenicEnabled": false,
+          "scenicWeight": 0
+        },
+        "immersive": {
+          "active": false,
+          "installed": false,
+          "lockState": "idle",
+          "pending": false,
+          "message": ""
+        },
+        "rightScreenDelta": 0.15499874951191675
+      },
+      "boats": [
+        {
+          "id": "white-sail",
+          "kind": "sail",
+          "distance": 1916.4289233548911,
+          "offshore": 136.9822497710202,
+          "travel": 70,
+          "sway": 38,
+          "speed": 0.85,
+          "phase": 1.25,
+          "length": 18,
+          "draft": 1.5,
+          "position": [
+            598.7285370977648,
+            -4.906126491833311,
+            1783.4504526596054
+          ],
+          "rotation": [
+            0.005386249296935608,
+            -0.688017878718362,
+            0.01708172314840055,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "white-yacht",
+          "kind": "yacht",
+          "distance": 2448.835978399077,
+          "offshore": 68.7392771438053,
+          "travel": 80,
+          "sway": 22,
+          "speed": 1.25,
+          "phase": 1.4,
+          "length": 20,
+          "draft": 1.05,
+          "position": [
+            675.3561159349186,
+            -4.912251184435861,
+            2344.98968261817
+          ],
+          "rotation": [
+            0.0030148933514031456,
+            -0.8736009374752538,
+            0.01773809513979228,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-sail",
+          "kind": "sail",
+          "distance": 6124.093009645616,
+          "offshore": 231.42183819173286,
+          "travel": 110,
+          "sway": 42,
+          "speed": 0.65,
+          "phase": 1.9,
+          "length": 14,
+          "draft": 1.16,
+          "position": [
+            1304.7752248880213,
+            -4.905717983468428,
+            5911.237620383997
+          ],
+          "rotation": [
+            -0.00550672101848447,
+            -2.0636876628571597,
+            0.01703340157837346,
+            "YXZ"
+          ]
+        },
+        {
+          "id": "distant-yacht",
+          "kind": "yacht",
+          "distance": 8723.883517737051,
+          "offshore": 197.68252140668358,
+          "travel": 90,
+          "sway": 35,
+          "speed": 1.05,
+          "phase": 1.2,
+          "length": 18,
+          "draft": 0.94,
+          "position": [
+            1709.6584938353042,
+            -4.903643525199253,
+            8403.065165033526
+          ],
+          "rotation": [
+            0.006079168624960358,
+            -0.7294696637326532,
+            0.016776703547410073,
+            "YXZ"
+          ]
+        }
+      ],
+      "render": {
+        "frame": 3040,
+        "calls": 269,
+        "triangles": 418452,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 119,
+        "textures": 34
+      }
+    }
+  ]
+}

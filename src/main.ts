@@ -138,6 +138,7 @@ let ultraOcean=coastUltraWater?await import('./coast-ocean')
  .then(({UltraCoastOcean})=>UltraCoastOcean.create(renderer,world.scene,world,p=>loadingProgress(48+p*30,'正在準備海岸','載入海岸資料，接著準備海浪與夕陽。')))
  .catch(error=>{console.error('Ultra-Water unavailable; using basic sea',error);return null;}):null;
 if(ultraOcean){const originalSea=world.scene.getObjectByName('default-coast-water');if(originalSea)originalSea.visible=false;}
+let coastBoats=coastUltraMode?await (await import('./coast-boats')).addCoastBoats(world.scene,world.sample):null;
 let journeyLink=chapters?attachJourneyLink(world,chapters[0].start,chapters[0].end,chapters[0].id,false,true):undefined;
 if(journeyLink)configureLinkDestination(journeyLink,0);
 await loadingStep(82,'正在準備出發路段','載入前方公路與沿途景物，剩餘路段會隨旅程準備。');
@@ -365,7 +366,7 @@ function groundHeight(height:number,lateral:number){
   return height+(Math.abs(lateral)>world.half?-.1:0);
 }
 function render(dt:number,draw=true){
-  blenderAsset?.update(elapsed);
+  blenderAsset?.update(elapsed);coastBoats?.update(elapsed);
   const p=world.sample(state.distance);
   world.car.position.copy(p.position).addScaledVector(p.right,state.lateral);
   world.car.position.y=groundHeight(p.position.y,state.lateral)+p.right.y*state.lateral+.04;
@@ -481,7 +482,7 @@ function recordStreamDiagnostics(now:number){if(!streamDiagnosticMode||now-strea
 }
 
 // Prepare only after entering the highway; rebase on a straight after readiness.
-type PreparedChapter={index:number;world:ReturnType<typeof createWorld>;ocean:typeof ultraOcean;art:typeof blenderAsset;link:ReturnType<typeof attachJourneyLink>};
+type PreparedChapter={index:number;world:ReturnType<typeof createWorld>;ocean:typeof ultraOcean;art:typeof blenderAsset;boats:typeof coastBoats;link:ReturnType<typeof attachJourneyLink>};
 let journeyExitAt:number|undefined,journeyLoadHeld=false;
 const journeyLoadStarts:{index:number;distance:number}[]=[];
 let nextChapter:PreparedChapter|undefined,preparingChapter=false,preparationError='',prepareEpoch=0,retryPreparationAt=0;
@@ -499,7 +500,7 @@ async function prepareChapter(index:number):Promise<PreparedChapter>{
  const c=chapters![index],candidate=c.stage;let previous=performance.now();const steps:{name:string;ms:number}[]=[];const mark=(name:string)=>{const now=performance.now();steps.push({name,ms:now-previous});previous=now;};
  const art=c.id==='canyon'?await (await import('./blender-canyon')).loadBlenderCanyon(true):undefined;
  mark('asset');
- let preparedWorld:ReturnType<typeof createWorld>|undefined,ocean:typeof ultraOcean=null;
+ let preparedWorld:ReturnType<typeof createWorld>|undefined,ocean:typeof ultraOcean=null,boats:typeof coastBoats=null;
  try{
   preparedWorld=createWorld({deferCar:true,track:journeyTracks![index],streamStage:candidate,chunked:true,theme:candidate.sceneryAct,seed:candidate.seed,roadWidth:candidate.roadWidth,
    halfAt:d=>pilotSample(candidate,d).halfWidth,weightsAt:d=>pilotWeights(candidate,d),course:pilotCourse(candidate),blenderArt:!!art,dawn:c.id==='canyon',
@@ -508,6 +509,7 @@ async function prepareChapter(index:number):Promise<PreparedChapter>{
   if(c.id==='coast'){
    ocean=await (await import('./coast-ocean')).UltraCoastOcean.create(renderer,preparedWorld.scene,preparedWorld,()=>{});
    const sea=preparedWorld.scene.getObjectByName('default-coast-water');if(sea)sea.visible=false;
+   boats=await (await import('./coast-boats')).addCoastBoats(preparedWorld.scene,preparedWorld.sample);
   }
   mark('world');await new Promise<void>(r=>requestAnimationFrame(()=>r()));
   const link=attachJourneyLink(preparedWorld,c.start,c.end,c.id,index>0,index<2);configureLinkDestination(link,index);mark('highway');
@@ -545,7 +547,7 @@ async function prepareChapter(index:number):Promise<PreparedChapter>{
   }finally{uploads.forEach((o,i)=>{o.visible=true;o.frustumCulled=culling[i];});preparedWorld.car.visible=true;}
   steps.push({name:'worstUploadSlice',ms:worstUpload});
   mark('upload');journeyPreparations.push({index,steps});
-  return {index,world:preparedWorld,ocean,art,link};
+  return {index,world:preparedWorld,ocean,art,boats,link};
  }catch(error){
   ocean?.dispose();if(preparedWorld){const release=sceneDisposal(preparedWorld.scene);preparedWorld.streamer?.dispose();release();}else if(art){const scene=new THREE.Scene();scene.add(art.root);disposeScene(scene);}throw error;
  }
@@ -575,7 +577,7 @@ function adoptChapter(c:PreparedChapter,replay=false){
  c.world.car=world.car;c.world.scene.add(world.car);for(const shadow of contactShadows)c.world.scene.add(shadow);
  const release=sceneDisposal(world.scene),oldOcean=ultraOcean,oldStream=world.streamer;
  tireEffects.dispose();dustEffects.dispose();impactSparks.dispose();trafficSparks.dispose();traffic?.dispose();cones?.dispose();triangles?.dispose();
- world=c.world;ultraOcean=c.ocean;blenderAsset=c.art;journeyLink=c.link;
+ world=c.world;ultraOcean=c.ocean;blenderAsset=c.art;coastBoats=c.boats;journeyLink=c.link;
  chapterIndex=c.index;journeyExitAt=undefined;trip=candidate;stage=candidate;pilot=candidate;brick=candidate;
  designerMode=native.id==='canyon';coastUltraMode=native.id==='coast';coastUltraWater=coastUltraMode;roadLockMode=designerMode;blenderMode=designerMode;scenicCameraEnabled=false;
  journeyElapsed=replay?0:journeyElapsed+elapsed;elapsed=0;
@@ -732,6 +734,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   },
   perf:()=>({...perf}),
   blenderArt:()=>blenderAsset?.stats??{status:'disabled'},
+  coastBoats:()=>coastBoats?.inspect(elapsed)??[],
   coastWater:()=>({mode:ultraOcean?'ultra':coastUltraMode?'basic':'disabled',...ultraOcean?.stats}),
   coastNature:()=>{let batches=0,visible=0,instances=0,triangles=0;const materials=new Set(),textures=new Set();world.scene.traverse(o=>{if(!(o instanceof THREE.InstancedMesh)||!o.userData.nature)return;batches++;const m=o.material as THREE.MeshStandardMaterial;materials.add(m);if(m.map)textures.add(m.map);if(o.visible){visible++;instances+=o.count;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3*o.count;}});return {batches,visible,instances,triangles,materials:materials.size,textures:textures.size};},
   artProbe:(distance:number,lateral=0)=>{if(!blenderAsset)return [];world.scene.updateMatrixWorld(true);const p=world.sample(distance).position.addScaledVector(world.sample(distance).right,lateral);return new THREE.Raycaster(p.clone().add(new THREE.Vector3(0,500,0)),down,0,1000).intersectObject(blenderAsset.root,true).map(h=>({name:h.object.name,gap:h.point.y-p.y}));},
