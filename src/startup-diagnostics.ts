@@ -128,7 +128,7 @@ class FirstLoadDiagnostics {
   report() {
     const nav = navigator as Navigator & {deviceMemory?: number; connection?: {effectiveType?: string; downlink?: number}};
     const resources = (performance.getEntriesByType('resource') as PerformanceResourceTiming[])
-      .filter(e => /assets|generated|\\.js|\\.css|\\.glb|worker/.test(e.name))
+      .filter(e => e.name.includes('/assets/') || e.name.includes('/generated/') || e.name.includes('.js') || e.name.includes('.css') || e.name.includes('.glb') || e.name.includes('worker'))
       .map(e => ({
         path: new URL(e.name).pathname,
         startMs: Math.round(e.startTime),
