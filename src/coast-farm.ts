@@ -50,6 +50,7 @@ export async function loadCoastFarm(){
  // Stage-local pin for the single shared flower mask. Build it once during
  // resource preparation, before distant field constructors run during driving.
  const flowerMask=acquireSharedFlowerMask();
+ let stageDisposed=false;
  function material(kind:string,color:string,near=0,far=0){
   const key=`${kind}:${color}:${near}:${far}`;let m=materials.get(key) as THREE.MeshStandardMaterial|undefined;
   if(!m){m=new THREE.MeshStandardMaterial({color,vertexColors:kind==='crop'||kind==='scarecrow'||kind==='canopy',roughness:1,side:THREE.DoubleSide,...(kind==='ground'?{map:texture,emissive:color,emissiveIntensity:.17}:kind==='canopy'?{map:canopyTexture}:{})});
@@ -68,7 +69,7 @@ export async function loadCoastFarm(){
    }materials.set(key,m);
   }return m;
  }
- return {geometries,time,material,dispose(){geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();releaseSharedFlowerMask(flowerMask);}};
+ return {geometries,time,material,dispose(){if(stageDisposed)return;stageDisposed=true;geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();releaseSharedFlowerMask(flowerMask);}};
 }
 export type FarmAssets=Awaited<ReturnType<typeof loadCoastFarm>>;
 
