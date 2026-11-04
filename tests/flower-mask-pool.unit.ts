@@ -4,7 +4,9 @@ import {
 } from '../src/vendor/three-stylized/flowerShapes';
 
 it('reuses one flower atlas and only releases it after the final plot',()=>{
+ vi.stubGlobal('document',undefined);
  const first=acquireSharedFlowerMask();
+ let current=first;
  try{
   const second=acquireSharedFlowerMask();
   const dispose=vi.spyOn(first,'dispose');
@@ -17,11 +19,13 @@ it('reuses one flower atlas and only releases it after the final plot',()=>{
   expect(dispose).toHaveBeenCalledTimes(1);
   expect(sharedFlowerMaskStats()).toEqual({owners:0,residentAtlases:0});
   const reloaded=acquireSharedFlowerMask();
+  current=reloaded;
   expect(reloaded).not.toBe(first);
   releaseSharedFlowerMask(reloaded);
  }finally{
   // Test must not leak an atlas into subsequent tests if an assertion fails.
-  while(sharedFlowerMaskStats().owners>0)releaseSharedFlowerMask(first);
+  while(sharedFlowerMaskStats().owners>0)releaseSharedFlowerMask(current);
   vi.restoreAllMocks();
+  vi.unstubAllGlobals();
  }
 });
