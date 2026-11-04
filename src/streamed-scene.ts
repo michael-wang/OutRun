@@ -188,9 +188,33 @@ export class StreamedScene {
  }
  pump(){
   if(this.pending&&performance.now()-this.pending.since>30000)this.fail('Worker response timed out after 30 seconds');
-  const start=performance.now(),current=Math.floor(this.position/this.chunkLength);this.work.sort((a,b)=>a.priority-b.priority||Math.abs(a.index-current)-Math.abs(b.index-current));
-  while((this.work.length||this.retiring.length)&&performance.now()-start<3){const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0),task=disposing?this.retiring.shift()!:this.work.shift()!;if(!disposing&&!this.desired.has(task.index))continue;const t=performance.now();if(task.record&&task.record.commitStart===undefined)task.record.commitStart=t;try{task.run();}catch(error){if(task.record)task.record.error=String(error);this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;}const end=performance.now();if(task.record){task.record.commitEnd=end;task.record.commitCpuMs+=end-t;}this.note(disposing?'dispose':'main-commit',task.index,end-t);this.taskProfiler?.record(task.kind??'other',task.index,end-t,this.position,this.work.length+this.retiring.length,end);}
+  const start=performance.now(),current=Math.floor(this.position/this.chunkLength);
+  this.work.sort((a,b)=>a.priority-b.priority||Math.abs(a.index-current)-Math.abs(b.index-current));
+  const sortedAt=performance.now(),profile=this.taskProfiler;
+  profile?.record('queue-sort',current,sortedAt-start,this.position,this.work.length+this.retiring.length,sortedAt);
+  let taskWallMs=0;
+  // Soft 3ms frame budget; individual synchronous callbacks can still exceed it.
+  // The task profiler reveals exactly which kind/chunk must later be split or moved to a Worker.
+  while((this.work.length||this.retiring.length)&&performance.now()-start<3){
+   const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0);
+   const task=disposing?this.retiring.shift()!:this.work.shift()!;
+   if(!disposing&&!this.desired.has(task.index))continue;
+   const t=performance.now();
+   if(task.record&&task.record.commitStart===undefined)task.record.commitStart=t;
+   try{task.run();}
+   catch(error){
+    if(task.record)task.record.error=String(error);
+    this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;
+    console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;
+   }
+   const ended=performance.now(),duration=ended-t;taskWallMs+=duration;
+   if(task.record){task.record.commitEnd=ended;task.record.commitCpuMs+=duration;}
+   this.note(disposing?'dispose':'main-commit',task.index,duration);
+   profile?.record(task.kind??'other',task.index,duration,this.position,this.work.length+this.retiring.length,ended);
+  }
   this.dispatch();
+  const finished=performance.now();
+  profile?.record('pump-overhead',current,Math.max(0,finished-sortedAt-taskWallMs),this.position,this.work.length+this.retiring.length,finished);
  }
  /** Read-only first-load gate snapshot. Does not call the stateful ready getter. */
  startupDiagnosticState(){
