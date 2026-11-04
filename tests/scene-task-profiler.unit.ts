@@ -36,3 +36,18 @@ it('bounds retained task-latency data and ignores invalid durations',()=>{
  expect(profiler.recentSlowTasks()).toHaveLength(96);
  expect(profiler.recentSlowTasks()[0].atDistanceM).toBe(1104);
 });
+
+it('separates expensive field construction by subtype and retains plot identity in slow events',()=>{
+ const profiler=new SceneTaskProfiler();
+ profiler.record('scenery-field',7,49.2,2200,5,2000,'flowers',117);
+ profiler.record('scenery-field',7,7.5,2210,4,2010,'rice',118);
+ profiler.record('scenery-field',7,43.1,2220,3,2020,'flowers',119);
+ const metrics=profiler.snapshot();
+ expect(metrics.byKind['scenery-field'].count).toBe(3);
+ expect(metrics.byDetail['scenery-field/flowers'].count).toBe(2);
+ expect(metrics.byDetail['scenery-field/flowers'].worstMs).toBe(49.2);
+ expect(metrics.byDetail['scenery-field/rice'].count).toBe(1);
+ expect(profiler.recentSlowTasks()[0]).toEqual(expect.objectContaining({
+  kind:'scenery-field',detail:'flowers',resourceId:117,chunk:7
+ }));
+});
