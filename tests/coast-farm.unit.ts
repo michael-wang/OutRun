@@ -1,5 +1,7 @@
 import {it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
+import {Vector3} from 'three';
+import {riceCanopyGeometry} from '../src/coast-rice-canopy';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastNatureGround} from '../src/coast-nature';
@@ -23,6 +25,24 @@ it('owns every field exactly once, outside housing, wholly inside a streamed chu
 it('ships the requested scarecrow and two small derived rice LODs, without runtime external URLs',()=>{
  const glb=(name:string)=>{const b=readFileSync(`public/assets/coast-farm/${name}.glb`);return JSON.parse(b.subarray(20,20+b.readUInt32LE(12)).toString());};
  const triangles=(g:any)=>g.meshes.flatMap((m:any)=>m.primitives).reduce((n:number,p:any)=>n+g.accessors[p.indices??p.attributes.POSITION].count/3,0);
- expect(triangles(glb('rice-near'))).toBeLessThanOrEqual(200);expect(triangles(glb('rice-mid'))).toBeLessThanOrEqual(60);expect(triangles(glb('scarecrow'))).toBe(430);
+ // Near asset is a two-plant closed-head clump, replacing multiple skinny
+ // instances. Mid is a wider single clump; neither can regress to the 2268-tri source.
+ expect(triangles(glb('rice-near'))).toBeLessThanOrEqual(400);expect(triangles(glb('rice-mid'))).toBeLessThanOrEqual(90);expect(triangles(glb('scarecrow'))).toBe(430);
+ for(const name of ['rice-near','rice-mid']){const g=glb(name),a=g.accessors[g.meshes[0].primitives[0].attributes.POSITION];expect(a.max[0]-a.min[0]).toBeGreaterThan(2.5);expect(a.max[2]-a.min[2]).toBeGreaterThan(1.7);expect(a.max[1]-a.min[1]).toBeGreaterThan(1.2);expect(a.max[1]).toBeLessThan(1.5);}
  for(const name of ['rice-near','rice-mid','scarecrow']){const g=glb(name);expect(g.buffers.every((b:any)=>!b.uri)).toBe(true);expect(g.images??[]).toHaveLength(0);}
+});
+it('keeps an opaque crop-height canopy across each rice plot while preserving scarecrow clearings',()=>{
+ for(const plot of FARM_PLOTS.filter(p=>p.kind==='rice')){
+  const residents=FARM_SCARECROWS.filter(s=>s.d>plot.start&&s.d<plot.end&&s.x>plot.left&&s.x<plot.right);
+  const clear=(d:number,x:number)=>residents.some(s=>Math.abs(d-s.d)<2.2&&Math.abs(x-s.x)<3);
+  const g=riceCanopyGeometry(plot,(d,x,lift)=>new Vector3(x,7+x*.008+lift,d),clear),p=g.getAttribute('position'),ix=g.index!;
+  let area=0;const a=new Vector3(),b=new Vector3(),c=new Vector3();
+  for(let i=0;i<p.count;i++){const height=p.getY(i)-7-p.getX(i)*.008;expect(height).toBeGreaterThan(.55);expect(height).toBeLessThan(.92);}
+  for(let i=0;i<ix.count;i+=3){a.fromBufferAttribute(p,ix.getX(i));b.fromBufferAttribute(p,ix.getX(i+1));c.fromBufferAttribute(p,ix.getX(i+2));area+=Math.abs((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z))/2;}
+  expect(area/((plot.right-plot.left)*(plot.end-plot.start))).toBeGreaterThan(.985);
+  expect(ix.count/3).toBeLessThan(2400);
+  // The crop-top surface must not cover the scarecrow's central footpath.
+  for(const s of residents){let covers=false;for(let i=0;i<ix.count;i+=3){a.fromBufferAttribute(p,ix.getX(i));b.fromBufferAttribute(p,ix.getX(i+1));c.fromBufferAttribute(p,ix.getX(i+2));if(Math.min(a.x,b.x,c.x)<s.x&&Math.max(a.x,b.x,c.x)>s.x&&Math.min(a.z,b.z,c.z)<s.d&&Math.max(a.z,b.z,c.z)>s.d)covers=true;}expect(covers).toBe(false);}
+  g.dispose();
+ }
 });

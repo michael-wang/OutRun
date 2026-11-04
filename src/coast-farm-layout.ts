@@ -12,7 +12,7 @@ export type FarmPlot={id:number;start:number;end:number;left:number;right:number
 const bands=[[20,50],[56,96],[102,148],[154,200],[206,252]];
 export const FARM_PLOTS:FarmPlot[]=[];
 for(const zone of FARM_ZONES)for(const kind of ['rice','flowers'] as const)for(let d=zone[kind][0];d<zone[kind][1];d+=100)
- for(const [band,[left,right]] of bands.entries())if(right<=zone.right)FARM_PLOTS.push({id:FARM_PLOTS.length,start:d,end:d+96,left,right,kind,band});
+ for(const [band,[left,right]] of bands.entries())if(right<=zone.right)FARM_PLOTS.push({id:FARM_PLOTS.length,start:d,end:d+(kind==='rice'?98:96),left,right,kind,band});
 export const farmClearing=(d:number,x:number)=>FARM_ZONES.some(z=>d>=z.start&&d<z.end&&x<z.right+10);
 export const farmPlotsInChunk=(start:number,end:number)=>FARM_PLOTS.filter(p=>p.start>=start&&p.start<end);
 /** Horizontal planting benches separated by planted earth banks. The fine
