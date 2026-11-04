@@ -15,7 +15,7 @@ type Instance={waffleSign?:boolean;nature?:NatureBatch;template:string;color:num
 type Chunk={index:number;objects:THREE.Object3D[];groups:Partial<Record<string,THREE.Group>>;geometries:Set<THREE.BufferGeometry>;road:'missing'|'working'|'ready';scenery:'missing'|'working'|'ready'};
 type Phase='road'|'scenery';
 type Lifecycle={index:number;start:number;end:number;kind:Phase;generation:number;requestedAt:number;responseAt?:number;workerCpuMs?:number;responseMs?:number;commitStart?:number;commitEnd?:number;commitCpuMs:number;readyAt?:number;generatedInstances?:number;attachedInstances:number;discardedTasks:number;error?:string;retiredAt?:number};
-type Work={index:number;priority:number;run:()=>void;record?:Lifecycle;kind?:SceneTaskKind};
+type Work={index:number;priority:number;run:()=>void;record?:Lifecycle;kind?:SceneTaskKind;detail?:string;resourceId?:number};
 /** Nearest-rank quantiles over the bounded retained sample set. */
 export function latencyDistribution(values:number[]){const sorted=values.filter(Number.isFinite).sort((a,b)=>a-b),q=(p:number)=>sorted.length?sorted[Math.max(0,Math.ceil(sorted.length*p)-1)]:null;return {count:sorted.length,p50:q(.5),p95:q(.95),p99:q(.99),worst:q(1)};}
 export interface SceneAnnotation {distance:number;create:()=>THREE.Mesh[]}
@@ -164,11 +164,15 @@ export class StreamedScene {
   const road=data.type==='prepared';if(!road)this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
   if(record&&!road)record.generatedInstances=data.instances.reduce((n:number,i:Instance)=>n+i.matrices.length/16,0);this.activeRecord=undefined;
   const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances);
+  const taskPlots=this.taskProfiler&&!road&&this.farmSample&&this.farmAssets
+   ?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
   for(const [taskIndex,task] of tasks.entries()){
    const kind:SceneTaskKind=road
     ?taskIndex<data.meshes.length?'road-geometry':taskIndex<data.meshes.length+data.roadside.length?'roadside-instances':'road-annotation'
     :taskIndex<data.definitions.length?'scenery-geometry':taskIndex<data.definitions.length+data.instances.length?'scenery-instances':'scenery-field';
-   this.work.push({index:c.index,priority:road?0:1,record,kind,run:task});
+   const plot=kind==='scenery-field'?taskPlots[taskIndex-data.definitions.length-data.instances.length]:undefined;
+   this.work.push({index:c.index,priority:road?0:1,record,kind,run:task,
+    ...(plot?{detail:plot.kind,resourceId:plot.id}:{})});
   }
   this.work.push({index:c.index,priority:road?0:1,record,kind:'ready-marker',run:()=>{c[road?'road':'scenery']='ready';if(record)record.readyAt=performance.now();}});this.busy=false;this.pending=undefined;this.dispatch();
  }
@@ -210,7 +214,7 @@ export class StreamedScene {
    const ended=performance.now(),duration=ended-t;taskWallMs+=duration;
    if(task.record){task.record.commitEnd=ended;task.record.commitCpuMs+=duration;}
    this.note(disposing?'dispose':'main-commit',task.index,duration);
-   profile?.record(task.kind??'other',task.index,duration,this.position,this.work.length+this.retiring.length,ended);
+   profile?.record(task.kind??'other',task.index,duration,this.position,this.work.length+this.retiring.length,ended,task.detail,task.resourceId);
   }
   this.dispatch();
   const finished=performance.now();
