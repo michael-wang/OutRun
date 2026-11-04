@@ -7,6 +7,38 @@
 
 > **2026-11-05 P0a evidence and P0b first experiment (dev):** The real Pixel 8 log `outrun-fps-2026-11-04T18-30-46.957Z.json` confirms `scenery-field` is the expensive synchronous class. New experiment shares the flower mask atlas and records plot subtypes; **no post-change Pixel 8 evidence yet**. `main` remains unchanged. See the update below.
 
+## P0b-2 — Worker-side deterministic field preparation (dev experiment, not yet device-accepted)
+
+**Checkpoint:** `checkpoint/r90-p0b1-before-worker-farms` references `88322e062a86cedca8a4e1f017e79736d1c0f7dc` before this series. `main` is still R8.8. Version on dev: **`v0.9-coast-r9.0-p0b2-exp`**.
+
+### Implementation
+
+The 10-km route is a **finite authored stage**. Its Worker already owns the same deterministic track recipe. Instead of asking the rendering thread to reconstruct every field's terrain and repeatedly sample thousands of vegetation positions inside each non-preemptible `createFarmPlot()`:
+
+1. `src/coast-farm-prep.ts` introduces a **pure numeric** `prepareFarmPlot(plot,track.sample)` routine. It computes terrace-edge heights using the existing terrain rules; rice-canopy positions, normals, UVs, colors and indices; and deterministic grass/wildflower surface sample arrays. It creates **no textures, WebGL objects or DOM elements** and can also be used in future build-time stage baking.
+2. `src/road-worker.ts`: while assembling each coast scenery chunk, prepare its farm data; send it with the original scenery payload as **transferable `Float32Array` / index buffers**, with `farmPrepCpuMs` separately recorded. This moves the expensive geometry/coverage/surface sampling work off the main render thread, not the car collision/road-safety checks.
+3. `src/vendor/three-stylized/surfaceSampler.ts`: pack/unpack world positions/normals in an explicit 6-float stride. The original seeded sampling algorithm remains the authoritative implementation.
+4. `GrassLayer.ts`, `Wildflowers.ts`, `Grass.ts`: accept **optional** one-shot precomputed initial samples, preserving existing no-preparation behavior for noncoastal stages and runtime changes. Existing flower masks, wind Shader, instance colours and density are unchanged.
+5. `src/coast-farm.ts`: optional prepared data populates the **same** field meshes/materials, instead of running terrain-height sampling and rice-canopy vertex generation again. Subsequent renderer controls, farm updates, cullling, lifecycle and stage-owned resource pools are unchanged.
+6. `StreamedScene`: consume full per-chunk preparations in the old scenery commit queue, keep road priority, reject incomplete advertised Worker payloads and track fallback. `?fpsdiag=1` now adds `extras.streamer.farmWorker`: `chunks,plots,workerCpuMs,lastChunk,lastMs,missingPlots`.
+7. New `tests/coast-farm-worker-prep.unit.ts` compares old versus Worker-prepared rice mesh attributes/indices, flower/grass instance counts and transforms, and transferable-buffer uniqueness.
+
+**No visual simplification:** all approved R8.8 rice, flowers, houses, scarecrows, Ultra-Water and driving settings remain the same. The exact numeric positions are serialized as 32-bit floats when crossing Workers, so minuscule rounding differences are possible; mobile visual QA is required. Worker responses can take more CPU time on the separate thread; this is acceptable only if it does not delay required road chunks, create pop-in or increase stage loading beyond acceptable limits.
+
+### Required verification on physical Pixel 8
+
+- First run `npm run build` and `npm test` locally; GitHub file edits alone do not prove TS compilation or tests passed.
+- Launch `/?fpsdiag=1`; verify upper-right version `v0.9-coast-r9.0-p0b2-exp`.
+- Drive normally from 350m through **4.5km**, especially 400–500m, 1100–1250m and 2100–2300m. Capture the complete JSON **after** driving. Inspect unchanged visual density, flower colours, rice canopy continuity, no missing scenery or stuck "Preparing Road".
+- In `seconds[].extras.streamer`, check `farmWorker.plots` increases during chunk assembly, `missingPlots=0`, and per-task `taskProfile.byDetail['scenery-field/rice'|'scenery-field/flowers']` worst drops to ideally **below 16.7ms**. If `missingPlots>0`, old synchronous work is still running and invalidates that A/B comparison.
+- Check the `fps` at the three previous bottleneck distances; look for **zero per-second samples below 30 FPS caused by field creation**, and far fewer `>50ms` frame gaps.
+- Replay at maximum safe speed to near the 10km route end; verify road is present, no new scenic pop-in and stage-local field resources are retired. Also verify start-up remains close to approved R8.8 (~8s in previous dev test; not guaranteed on every run).
+- Compare the same 3.2km flower field and 2.6km rice field screenshots, keeping scenery, colours, and wind unchanged.
+
+**Acceptance is pending.** This is a substantial internal data-path change even though the intended art output is identical. If compilation, real Pixel 8 frame times, road readiness or visual comparison fail, revert the P0b-2 commit range normally or restore from the checkpoint branch; do not force push. Do not promote to `main` until approved.
+
+---
+
 ## P0b-1 Pixel 8 follow-up — 2026-11-05, 10.41km driven
 
 **Result: ACCEPT the reference-counted shared flower atlas as a resource-lifecycle improvement; DO NOT mark the main-thread field stutter fixed.** The physical Pixel 8 trace is `outrun-fps-2026-11-04T18-46-07.787Z.json`, ~82.5s of gameplay and 10.41km traveled. It is a single A/B run, subject to device variance; comparison uses only the shared 0–4.5km distance.
