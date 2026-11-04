@@ -7,6 +7,33 @@
 
 > **2026-11-05 P0a evidence and P0b first experiment (dev):** The real Pixel 8 log `outrun-fps-2026-11-04T18-30-46.957Z.json` confirms `scenery-field` is the expensive synchronous class. New experiment shares the flower mask atlas and records plot subtypes; **no post-change Pixel 8 evidence yet**. `main` remains unchanged. See the update below.
 
+## P0b-1 Pixel 8 follow-up — 2026-11-05, 10.41km driven
+
+**Result: ACCEPT the reference-counted shared flower atlas as a resource-lifecycle improvement; DO NOT mark the main-thread field stutter fixed.** The physical Pixel 8 trace is `outrun-fps-2026-11-04T18-46-07.787Z.json`, ~82.5s of gameplay and 10.41km traveled. It is a single A/B run, subject to device variance; comparison uses only the shared 0–4.5km distance.
+
+| Measure | P0a baseline (4.52km run) | P0b-1 new (10.41km run) |
+| --- | ---: | ---: |
+| Matched 0–4.5km mean per-second FPS | 46.81 | 47.43 |
+| Main rice 2.4–3.0km mean FPS | 49.91 | 52.06 |
+| Main flowers 3.1–3.6km mean FPS | 42.72 | 43.39 |
+| Main flowers minimum per-second FPS | 37.46 | 41.42 |
+| Main flowers mean main-scene CPU ms/frame | 11.82 | 11.20 |
+| 91 field tasks cumulative CPU | 3413.4ms | 3333.6ms |
+| Worst field task | 100.7ms | 87.6ms |
+| Field tasks above 50ms (same 91 plots) | 13 | 14 |
+| Loaded renderer texture count at ~3.2km | 72 | 43 |
+| Shared flower-mask atlases (new only) | not tracked | 1 (reference-counted) |
+
+At ~400m, 454m, 1152m and 2215m the **new trace has four per-second samples below 30 FPS** (17.63, 20.37, 27.57, 24.81 respectively), all coincident with field construction for distant chunks. The baseline had two below-30 samples at matched 0–4.5km. The user felt a significant improvement in the first half, but the instrumented 0–4.5km mean gain is only 0.62 FPS, and the very short streaming cliffs still occur. The new 1.15km spike reveals Plot 76/77/78 (flowers, Chunk 6), including a **87.6ms** synchronous plot; at 2.215km several Chunk 7 flower plots remain >45ms. Rice plots average ~34.3ms, flowers ~39.6ms over 91 plots, so material pooling alone is not enough.
+
+On the additional unobserved baseline distance **4.5–10.41km**, 42 one-second samples average **44.85 FPS**, minimum **36.86 FPS** (at ~6765m), and **zero frame gaps >50ms**. The `scenery-field` task count stays at 91 from ~2.3km onward. At 6.7–7.0km `world` averages ~0.33–0.42ms while `mainScene` is ~12.7–13.2ms, identifying *steady draw/render load* (P2 concern), not streaming creation (P0 concern).
+
+Reference-counted mask ownership falls with live flower fields: 31 owners at ~2.3km (30 flower masks + one stage pin) to 16 around 5km, 7 around 8km, and **1 at 9km with zero farm plots** (the intentionally pinned stage atlas); no evidence of owner accumulation during this drive. Only a restart/stage transition can verify the final pin is released.
+
+**Next recommendation — P0b-2:** preserve the accepted visual geometry and field densities, but eliminate the per-plot non-preemptible 30–88ms `createFarmPlot()` synchronous task. Provide reusable prepare/commit primitives: deterministic sampling / vegetation matrix calculation in Worker or stage-baked resource data; main thread does bounded upload/object attachment. Keep `plot.kind`, `plot.id` telemetry and measure no >16.7ms plot callback; do not merely reschedule the same 88ms callback to another kilometer. This needs independent code/build/device validation before P1. Treat P2 flower steady ~40–43 FPS as a separate rendering optimization.
+
+---
+
 ## P0a field evidence — confirmed by physical Pixel 8
 
 The ~42-second exported driving trace reached 4.52km and captured three recurring streaming cliffs.
