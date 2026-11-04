@@ -6,6 +6,7 @@ const smooth=(t:number)=>t*t*t*(t*(t*6-15)+10),clamp=(v:number,limit:number)=>Ma
 export class TrafficLanes {
  private states=new Map<number,Maneuver>();private activeIds=new Set<number>();
  constructor(private seed:number){}
+ forget(id:number){this.states.delete(id);this.activeIds.delete(id);}
  reset(){this.states.clear();this.activeIds.clear();}
  update(time:number,actors:LaneActor[],halfAt:(d:number)=>number,player:{distance:number;lateral:number;speed:number},reacting:(id:number)=>boolean){
   this.activeIds=new Set(actors.map(a=>a.id));

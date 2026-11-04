@@ -25,14 +25,14 @@ try{
  await page.waitForFunction(()=>window.__drive?.streaming()?.ready,null,{timeout:120000});
  await page.evaluate(()=>{
   const g=window.__drive;g.reset({distance:350,speed:65});g.manual(false);
-  window.trace=[];window.frameTimes=[];let previous=0,frames=0;
-  function frame(t){if(previous)window.frameTimes.push(t-previous);previous=t;frames++;requestAnimationFrame(frame);}requestAnimationFrame(frame);
+  window.trace=[];window.frameTimes=[];window.longFrames=[];let previous=0,frames=0;
+  function frame(t){if(previous){window.frameTimes.push(t-previous);if(t-previous>40)window.longFrames.push({ms:t-previous,d:g.snapshot().distance,index:g.journey().index,preparing:g.journey().preparing});}previous=t;frames++;requestAnimationFrame(frame);}requestAnimationFrame(frame);
   window.driver=setInterval(()=>{const s=g.snapshot();g.controls({gas:s.speed<65,brake:s.speed>66,steer:Math.max(-1,Math.min(1,s.requiredSteer-s.lateral*.14))});},50);
   window.glWork={draws:0,offscreenDraws:0,offscreenViewportPixels:0};
   window.sampler=setInterval(()=>{const s=g.snapshot(),stream=g.streaming(),j=g.journey();window.trace.push({wall:performance.now(),elapsed:s.elapsed,d:s.distance,offRoad:s.offRoad,frames,work:{...window.glWork},render:g.scenery().render,memory:g.scenery().memory,heap:performance.memory?.usedJSHeapSize,nature:g.coastNature(),water:g.coastWater(),journey:{index:j.index,preparing:j.preparing,prepared:j.prepared},stream:{chunks:stream.chunks.length,queued:stream.queued,retiring:stream.retiring,fatal:stream.fatal}});frames=0;window.glWork={draws:0,offscreenDraws:0,offscreenViewportPixels:0};},1000);
  });
  await page.waitForTimeout(seconds*1000);
- const result=await page.evaluate(()=>{clearInterval(window.driver);clearInterval(window.sampler);window.__drive.manual(true);const frames=window.frameTimes.sort((a,b)=>a-b),q=p=>frames[Math.ceil(frames.length*p)-1];return {trace:window.trace,frames:{count:frames.length,p50:q(.5),p95:q(.95),p99:q(.99),worst:frames.at(-1),over50:frames.filter(x=>x>=50).length},journey:window.__drive.journey(),state:window.__drive.snapshot()};});
+ const result=await page.evaluate(()=>{clearInterval(window.driver);clearInterval(window.sampler);window.__drive.manual(true);const frames=window.frameTimes.sort((a,b)=>a-b),q=p=>frames[Math.ceil(frames.length*p)-1];return {trace:window.trace,longFrames:window.longFrames,frames:{count:frames.length,p50:q(.5),p95:q(.95),p99:q(.99),worst:frames.at(-1),over50:frames.filter(x=>x>=50).length},journey:window.__drive.journey(),state:window.__drive.snapshot()};});
  await page.screenshot({path:`${root}/finish.png`});
  await writeFile(`${root}/soak.json`,JSON.stringify({browser:'Desktop Edge, touch emulation, 960x432 CSS pixels, DPR 2.75; not physical Pixel 8',errors,...result},null,2));
  const windows=[result.trace.slice(5,20),result.trace.slice(45,65),result.trace.slice(-15)].map(a=>({samples:a.length,fps:a.reduce((n,x)=>n+x.frames,0)/a.length,drawsPerFrame:a.reduce((n,x)=>n+x.work.draws,0)/a.reduce((n,x)=>n+x.frames,0),offscreenPixelsPerFrame:a.reduce((n,x)=>n+x.work.offscreenViewportPixels,0)/a.reduce((n,x)=>n+x.frames,0),geometries:[Math.min(...a.map(x=>x.memory.geometries)),Math.max(...a.map(x=>x.memory.geometries))],textures:[Math.min(...a.map(x=>x.memory.textures)),Math.max(...a.map(x=>x.memory.textures))]}));

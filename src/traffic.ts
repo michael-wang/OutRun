@@ -66,6 +66,8 @@ interface Reaction {offset:number;velocity:number;boost:number;yaw:number;roll:n
 export class Traffic {
  private runningLights?:TrafficLights;
  private schedule:readonly TrafficRecipe[];
+ private highwayStart?:number;private highwaySlot=0;private highwayRecipes:TrafficRecipe[]=[];
+ enableHighway(start:number){this.highwayStart=start;}
  private history=new Map<number,{distance:number;speed:number;time:number}>();
  private lanes:TrafficLanes;private indicators:THREE.InstancedMesh;private lampPose=new THREE.Object3D();
  private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
@@ -136,13 +138,27 @@ export class Traffic {
   this.breakdownSmoke.frustumCulled=false;this.breakdownSmoke.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(this.breakdownSmoke);
  }
- reset(){this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
+ reset(){this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
   this.runningLights?.begin();
   if(time<this.time)this.reset();const dt=time-this.time,previous=this.actors;this.time=time;
   // Actual motion is authoritative once observed. Retain only lightweight history
   // for the finite route recipe; meshes/reactions still use the 12-actor pool.
-  const candidates:TrafficActor[]=this.schedule.map(recipe=>{
+  if(this.highwayStart!==undefined&&player>=this.highwayStart){
+   // Spawn beyond the fog; bound both recipes and AI history during arbitrary waits.
+   this.highwaySlot=Math.max(this.highwaySlot,Math.floor((player-this.highwayStart)/400));
+   while(this.highwayStart+this.highwaySlot*400<player+1200){
+    const slot=this.highwaySlot++,id=1000000+slot,type=slot%3,speed=trafficCruise(this.seed,id,type);
+    const distance=this.highwayStart+slot*400;
+    if(distance>player+390)this.highwayRecipes.push({id,type,speed,distance:distance-speed*time,group:id});
+   }
+   this.highwayRecipes=this.highwayRecipes.filter(r=>{
+    const saved=this.history.get(r.id),d=saved?saved.distance+saved.speed*(time-saved.time):r.distance+r.speed*time;
+    if(d>=player-240&&d<=player+1600)return true;
+    this.history.delete(r.id);this.lanes.forget(r.id);return false;
+   });
+  }
+  const candidates:TrafficActor[]=[...this.schedule,...this.highwayRecipes].map(recipe=>{
    const old=previous.find(a=>a.id===recipe.id),saved=this.history.get(recipe.id),nominalDistance=recipe.distance+recipe.speed*time;
    if(old)return {...old,nominalDistance,distance:old.distance+old.speed*dt,speed:old.speed+(recipe.speed-old.speed)*(1-Math.exp(-dt*1.8)),...(dt>0?{previousDistance:old.distance,previousLateral:old.lateral,previousVisible:old.visible}:{})};
    const distance=saved?saved.distance+saved.speed*(time-saved.time):nominalDistance;
@@ -168,7 +184,7 @@ export class Traffic {
    }
   }
   for(const a of candidates)if(previous.some(old=>old.id===a.id))this.history.set(a.id,{distance:a.distance,speed:a.speed,time});
-  const inside=candidates.filter(a=>a.distance>=player-180&&a.distance<=player+850&&a.distance<this.length-20);
+  const inside=candidates.filter(a=>a.distance>=player-180&&a.distance<=player+850&&(a.distance<this.length-20||this.highwayStart!==undefined&&a.distance>=this.highwayStart));
   this.actors=inside.filter(a=>previous.some(old=>old.id===a.id));
   const entering=inside.filter(a=>!previous.some(old=>old.id===a.id)&&(time===0||a.id===INTERCHANGE_DEMO_CAR_ID||Math.abs(a.distance-player)>120)).sort((a,b)=>Math.abs(a.distance-player)-Math.abs(b.distance-player));
   for(const a of entering){if(this.actors.length>=TRAFFIC_LIMIT)break;this.actors.push(a);}
@@ -220,7 +236,7 @@ export class Traffic {
    if(!enteringFromRamp||!this.junction||a.distance>=this.junction.entry.end)
     a.lateral=THREE.MathUtils.clamp(a.lateral,-safeEdge,safeEdge);if(reaction){reaction.offset+=a.lateral-unclamped;if(dt>0){const old=previous.find(p=>p.id===a.id);reaction.slide=old?Math.abs(a.lateral-old.lateral)/dt:0;}}
    this.history.set(a.id,{distance:a.distance,speed:a.speed,time});a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2)&&(time===0||!!previous.find(old=>old.id===a.id)?.visible||Math.abs(a.distance-player)>80);if(!a.visible)continue;
-   const p=this.sample(a.distance),front=this.sample(Math.min(this.length,a.distance+spec.axle)),rear=this.sample(Math.max(0,a.distance-spec.axle));
+   const p=this.sample(a.distance),front=this.sample(this.highwayStart===undefined?Math.min(this.length,a.distance+spec.axle):a.distance+spec.axle),rear=this.sample(Math.max(0,a.distance-spec.axle));
    const frontDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance+spec.axle):0;
    const rearDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance-spec.axle):0;
    const frontY=front.position.y+front.right.y*a.lateral+frontDrop,rearY=rear.position.y+rear.right.y*a.lateral+rearDrop,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
@@ -317,7 +333,7 @@ export class Traffic {
  get skidIntensity(){let intensity=0;for(const r of this.reactions.values())intensity=Math.max(intensity,r.skid.intensity);return intensity;}
  contactPoints(){const matrix=new THREE.Matrix4(),counts=[0,0,0,0],out:{id:number;distance:number;point:number[]}[]=[];for(const a of this.actors){if(!a.visible)continue;this.meshes[a.type].getMatrixAt(counts[a.type]++,matrix);const spec=TRAFFIC_TYPES[a.type];for(const side of [-1,1])for(const end of [-1,1])out.push({id:a.id,distance:a.distance+end*spec.axle,point:new THREE.Vector3(side*(spec.width/2-.04),0,end*spec.axle).applyMatrix4(matrix).toArray()});}return out;}
  audioActors():readonly TrafficActor[]{return this.actors;}
- inspect(){return {historySize:this.history.size,historyLimit:this.schedule.length,laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+3+(this.sign?1:0),outlineColor:TRAFFIC_OUTLINE_COLOR,outlineInstances:this.outlineMeshes.map(m=>m.count),crestRimInstances:this.crestRims.map(m=>m.count),crestHints:this.crestHints.filter(h=>h.visible).length,breakdownSmoke:this.breakdownSmoke.count,smokeCapacity:TRAFFIC_LIMIT*7,contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
+ inspect(){return {historySize:this.history.size,historyLimit:this.schedule.length+this.highwayRecipes.length,highwayRecipes:this.highwayRecipes.length,laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+3+(this.sign?1:0),outlineColor:TRAFFIC_OUTLINE_COLOR,outlineInstances:this.outlineMeshes.map(m=>m.count),crestRimInstances:this.crestRims.map(m=>m.count),crestHints:this.crestHints.filter(h=>h.visible).length,breakdownSmoke:this.breakdownSmoke.count,smokeCapacity:TRAFFIC_LIMIT*7,contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
  dispose(){this.runningLights?.dispose();this.history.clear();this.lanes.reset();this.indicators.removeFromParent();this.indicators.geometry.dispose();(this.indicators.material as THREE.Material).dispose();this.shadows.removeFromParent();this.shadows.geometry.dispose();const shadowMaterial=this.shadows.material as THREE.MeshBasicMaterial;shadowMaterial.map?.dispose();shadowMaterial.dispose();for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});
   this.crestHints.forEach(h=>h.removeFromParent());this.outlineEdges.forEach(g=>g.dispose());
   this.crestRims.forEach(m=>{m.removeFromParent();m.dispose();});this.outlineMeshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();m.dispose();});

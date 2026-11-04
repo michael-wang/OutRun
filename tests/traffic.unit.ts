@@ -43,3 +43,9 @@ it('keeps dusk running lamps attached to visible traffic and out of daylight mod
  }finally{day.dispose();night.dispose();}
  expect(nightScene.getObjectByName('traffic-head-lights')).toBeUndefined();
 });
+it('continues highway traffic beyond the native route with bounded history and meshes',()=>{
+ const scene=new THREE.Scene(),traffic=new Traffic(scene,sample,()=>7,12000,804);traffic.enableHighway(10000);
+ const ids=scene.children.map(o=>o.uuid);let seen=0;
+ for(let t=0;t<1800;t+=.5){traffic.update(t,10000+t*90);const data=traffic.inspect();if(t>150)seen+=data.actors.filter(a=>a.id>=1000000&&a.visible).length;expect(data.actors.length).toBeLessThanOrEqual(12);expect(data.highwayRecipes).toBeLessThan(12);expect(data.historySize).toBeLessThanOrEqual(data.historyLimit);for(const a of data.actors)expect(a.grade).toBeCloseTo(.1);}
+ expect(seen).toBeGreaterThan(1000);expect(scene.children.map(o=>o.uuid)).toEqual(ids);traffic.dispose();
+});

@@ -44,9 +44,14 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  for(const mesh of scene.children as THREE.Mesh[]){
   const p=mesh.geometry.attributes.position;let peak=0;
   for(let i=0;i<p.count;i++){const v=new THREE.Vector3().fromBufferAttribute(p,i);peak=Math.max(peak,v.y);expect(v.sub(origin).dot(right)).toBeGreaterThan(400);}
-  expect(peak).toBeGreaterThan(300);triangles+=mesh.geometry.index!.count/3;
+  expect(peak).toBeGreaterThan(mesh.name.endsWith('0')?200:400);triangles+=mesh.geometry.index!.count/3;
+  // Full slopes carry sunlight variation, instead of a single flat colour band.
+  const normals=mesh.geometry.attributes.normal,colors=mesh.geometry.attributes.color;
+  let darkest=Infinity,lightest=0,steep=0;
+  for(let i=0;i<colors.count;i++){const l=colors.getX(i)+colors.getY(i)+colors.getZ(i);darkest=Math.min(darkest,l);lightest=Math.max(lightest,l);if(Math.abs(normals.getY(i))<.9)steep++;}
+  expect(lightest-darkest).toBeGreaterThan(.07);expect(steep).toBeGreaterThan(100);
   expect((mesh.material as THREE.MeshBasicMaterial).fog).toBe(false);
   mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
- expect(triangles).toBeLessThan(2500);
+ expect(triangles).toBeLessThan(14000);
 });

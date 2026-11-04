@@ -28,3 +28,14 @@ it('has congruent overlap road, lane phase and sun direction across the rigid re
   const oldSun=MOODS[b.id].sun.clone().applyAxisAngle(up,delta);expect(oldSun.applyAxisAngle(up,-delta).distanceTo(MOODS[b.id].sun)).toBeLessThan(1e-10);
  }
 });
+import {endlessHighway,LINK_CYCLE} from '../src/journey-link';
+it('recycles smooth highway bends indefinitely and exits on a congruent straight',()=>{
+ const c=journeyChapters()[0],road=endlessHighway(createPilotTrack(c.stage).sample,c.end);
+ let maxCurve=0;
+ for(let u=0;u<LINK_CYCLE;u+=4){const a=road.sample(road.start+u),b=road.sample(road.start+u+100*LINK_CYCLE);expect(b.position.clone().sub(a.position).distanceTo(road.stride.clone().multiplyScalar(100))).toBeLessThan(1e-7);maxCurve=Math.max(maxCurve,Math.abs(a.curvature));}
+ expect(maxCurve).toBeGreaterThan(.0001);expect(maxCurve).toBeLessThan(.001);
+ for(const lap of [0,1,2,100]){const at=road.start+lap*LINK_CYCLE,left=road.sample(at-.001),right=road.sample(at+.001);expect(left.position.distanceTo(right.position)).toBeCloseTo(.002,5);expect(left.tangent.distanceTo(right.tangent)).toBeLessThan(1e-8);}
+ const at=road.start+LINK_CYCLE*.7,exit=road.exitAfter(at);expect(exit-at).toBeGreaterThanOrEqual(400);
+ for(let u=-390;u<=390;u+=10)expect(Math.abs(road.sample(exit+u).curvature)).toBeLessThan(1e-8);
+ expect(LINK_CYCLE%96).toBe(0);expect(LINK_CYCLE%64).toBe(0);
+});

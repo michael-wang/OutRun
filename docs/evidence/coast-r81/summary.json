@@ -1,0 +1,65 @@
+{
+  "browser": "Desktop Edge, touch emulation, 960x432 CSS pixels, DPR 2.75; not physical Pixel 8",
+  "errors": [],
+  "frames": {
+    "count": 8999,
+    "p50": 16.69999999999709,
+    "p95": 16.799999999999272,
+    "p99": 16.80000000000291,
+    "worst": 17,
+    "over50": 0
+  },
+  "longFrames": [],
+  "loadStarts": [
+    {
+      "index": 1,
+      "distance": 10610.028493011638
+    }
+  ],
+  "transitions": [
+    {
+      "from": 0,
+      "to": 1,
+      "ms": 9.600000000558794,
+      "speedBefore": 34.53542013548194,
+      "speedAfter": 34.53542013548194,
+      "headingError": -1.1102230246251565e-16,
+      "rebase": 1.1445945969487392
+    }
+  ],
+  "preparations": [
+    {
+      "index": 1,
+      "steps": [
+        {
+          "name": "asset",
+          "ms": 0.09999999962747097
+        },
+        {
+          "name": "world",
+          "ms": 15.600000000558794
+        },
+        {
+          "name": "highway",
+          "ms": 16.799999999813735
+        },
+        {
+          "name": "stream",
+          "ms": 317.29999999981374
+        },
+        {
+          "name": "worstUploadSlice",
+          "ms": 26.399999999441206
+        },
+        {
+          "name": "upload",
+          "ms": 7052
+        }
+      ]
+    }
+  ],
+  "finalChapter": 1,
+  "finalDistance": 11600.620905745653,
+  "coastPreloading": 0,
+  "offRoadSamples": 0
+}
