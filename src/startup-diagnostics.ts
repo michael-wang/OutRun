@@ -163,7 +163,7 @@ class FirstLoadDiagnostics {
       .slice(0, 150);
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
     return {
-      kind: 'outrun-startup-diagnostic-v2',
+      kind: 'outrun-startup-diagnostic-v3',
       generatedAt: new Date().toISOString(),
       urlPath: location.pathname,
       userAgent: navigator.userAgent,
