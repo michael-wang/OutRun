@@ -80,14 +80,14 @@ function fieldTexture(canopy=false){
 }
 
 /** Low-cost seamless golden-grain texture: dozens of rice heads per square metre,
- * drawn offline once with Canvas, then mipped for stable oblique coastal views. */
+ * generated once on the main thread, then mipped for stable oblique coastal views. */
 function hybridRiceTexture(){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
  const ctx=canvas.getContext('2d')!,rand=seededRandom(20261104);
  ctx.fillStyle='#f3dfaa';ctx.fillRect(0,0,256,256);
  // Broad, low-contrast cultivated rows remain visible when distant mip levels
  // average the individual grains away.
- for(let x=0;x<256;x+=20){
+ for(let x=0;x<256;x+=16){
   ctx.fillStyle='rgba(123,101,44,.12)';ctx.fillRect(x,0,4,256);
   ctx.fillStyle='rgba(255,251,207,.10)';ctx.fillRect(x+6,0,6,256);
  }
@@ -97,6 +97,7 @@ function hybridRiceTexture(){
   const shade=rand();
   ctx.fillStyle=shade<.3?'#cead62':shade<.72?'#f7e4ad':'#fff0c0';
   ctx.fillRect(x,y,w,h);
+  if(y+h>256)ctx.fillRect(x,y-256,w,h);
   if(shade>.82){ctx.fillStyle='#ddc478';ctx.fillRect((x+2)%256,(y+2)%256,1,Math.max(2,h-3));}
  }
  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;
