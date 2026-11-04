@@ -1,8 +1,23 @@
 // The loading surface lives in HTML so it also covers module downloads.
 let progress=0,complete=false,failed=false;
 const node=(id:string)=>document.getElementById(id)!;
-const slow=setTimeout(()=>{node('loading-slow').hidden=false;},15000);
-const retry=setTimeout(()=>{node('startup-fallback').hidden=false;},45000);
+let slow:ReturnType<typeof setTimeout>,retry:ReturnType<typeof setTimeout>,finish:ReturnType<typeof setTimeout>|undefined;
+function armTimers(){
+ clearTimeout(slow);clearTimeout(retry);clearTimeout(finish);
+ slow=setTimeout(()=>{node('loading-slow').hidden=false;},15000);
+ retry=setTimeout(()=>{node('startup-fallback').hidden=false;},45000);
+}
+armTimers();
+
+/** Reuse the initial artwork/status surface for an explicitly requested replay. */
+export function loadingStarted(title='正在準備重新出發',detail='沿著海岸，再走一段好風景。'){
+ progress=0;complete=false;failed=false;armTimers();
+ document.documentElement.dataset.loading='true';node('game-loading').hidden=false;
+ node('game-loading').setAttribute('aria-busy','true');node('loading-slow').hidden=true;node('startup-fallback').hidden=true;
+ node('startup-error').textContent='準備時間較長。你可以繼續等待，或重新載入。';
+ node('loading-slow').textContent='風景準備中，請保持此頁開啟。';
+ node('loading-hint').textContent='準備完成後，自動重新出發';loadingProgress(0,title,detail);
+}
 
 export function loadingProgress(value:number,title:string,detail:string){
  if(complete||failed)return;
@@ -35,7 +50,7 @@ export function loadingFinished(){
  loadingProgress(100,'風景已就緒','準備好了，出發吧。');
  complete=true;clearTimeout(slow);clearTimeout(retry);
  node('game-loading').setAttribute('aria-busy','false');
- setTimeout(()=>{
+ finish=setTimeout(()=>{
   node('game-loading').hidden=true;
   delete document.documentElement.dataset.loading;
  },300);

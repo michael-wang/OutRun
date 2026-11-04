@@ -32,3 +32,26 @@ it('records response versus CPU attachment and bounds retained requests',()=>{
 it('discarded worker results are counted and never attached',()=>{
  vi.stubGlobal('location',{search:'?streamdiag=1'});const s=setup(),w=FakeWorker.all[0];s.update(9000);road(w,0);const d=s.diagnosticsSnapshot(100);expect(d.discardedResponses).toBe(1);expect(d.records[0].error).toContain('discarded');expect(d.chunks.some(c=>c.index===0)).toBe(false);s.dispose();
 });
+
+it.each([false,true])('coastal batches share textures, wait for images, switch LOD and dispose them (mobile=%s)',mobile=>{
+ vi.stubGlobal('matchMedia',()=>({matches:mobile}));
+ const texture=new THREE.Texture(),disposed=vi.spyOn(texture,'dispose');let loaded!:()=>void;
+ const load=vi.spyOn(THREE.TextureLoader.prototype,'load').mockImplementation((_url,onLoad)=>{loaded=()=>onLoad?.(texture);return texture;});
+ const s=setup(),w=FakeWorker.all[0];
+ for(let index=0;index<6;index++){road(w,index);for(let i=0;i<5;i++)s.pump();}
+ for(const index of [0,1]){
+  w.send({type:'sceneryPrepared',index,cpuMs:1,scenery:{instances:2,draws:2},definitions:[{id:'tree',position:new Float32Array([0,0,0]),normal:new Float32Array(),uv:new Float32Array(),color:new Float32Array(),index:new Uint32Array()}],instances:[
+   {template:'tree',color:0xffffff,vertexColors:false,matrices:new Float32Array(new THREE.Matrix4().elements),nature:{center:500,near:0,far:600,texture:'leaves.png',alpha:true}},
+   {template:'tree',color:0xffffff,vertexColors:false,matrices:new Float32Array(new THREE.Matrix4().elements),nature:{center:500,near:600,far:1800}},
+  ]});for(let i=0;i<5;i++)s.pump();
+ }
+ expect(load).toHaveBeenCalledTimes(1);expect(s.ready).toBe(false);loaded();expect(s.ready).toBe(true);
+ const near=s.groups.scenery.children[0].children[0],far=s.groups.scenery.children[0].children[1];
+ expect(near.visible).toBe(true);expect(far.visible).toBe(false);
+ // Ahead-of-car batches cross the near/far switch without requiring a new chunk.
+ near.userData.nature.center=1200;far.userData.nature.center=1200;
+ s.update(400);expect(near.visible).toBe(false);expect(far.visible).toBe(true);
+ s.update(700);expect(near.visible).toBe(!mobile);expect(far.visible).toBe(mobile);
+ s.update(900);expect(near.visible).toBe(true);expect(far.visible).toBe(false);
+ s.dispose();expect(disposed).toHaveBeenCalledTimes(1);
+});

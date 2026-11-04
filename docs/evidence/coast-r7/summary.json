@@ -1,0 +1,227 @@
+{
+  "baseline": "eb67cf2",
+  "build": "pass",
+  "unit": {
+    "passed": 270,
+    "failed": 6,
+    "failures": [
+      {
+        "file": "handling.test.ts",
+        "name": "arcade driving steers independently in both directions and can leave asphalt"
+      },
+      {
+        "file": "v07d2-review.unit.ts",
+        "name": "the accepted pilot fingerprints and original PENDING reviews remain intact"
+      },
+      {
+        "file": "v081-stage.unit.ts",
+        "name": "composes reproducible multi-curve cores with distinct L3 buffers and measured widths"
+      },
+      {
+        "file": "vertical-width.unit.ts",
+        "name": "R1 archive and stored history survive R2 edits without manufacturing new approvals"
+      },
+      {
+        "file": "vertical-width.unit.ts",
+        "name": "accepted R1 steering patterns, lengths and seeds remain unchanged"
+      },
+      {
+        "file": "vertical-width.unit.ts",
+        "name": "records authoritative old/new elevation and lane profiles for visual comparison"
+      }
+    ],
+    "baselineReproduced": true
+  },
+  "drive": {
+    "browser": "Headless Edge, 960x432 touch emulation on desktop GPU; not a physical phone benchmark",
+    "errors": [],
+    "seconds": 103.01226666668967,
+    "distance": 10350.277677487747,
+    "offroadSeconds": 0,
+    "frames": {
+      "count": 6183,
+      "p50": 16.69999999999709,
+      "p95": 16.799999999999272,
+      "p99": 16.80000000000291,
+      "worst": 17,
+      "over50": 0
+    },
+    "missingRoadSamples": 0,
+    "heldSamples": 0,
+    "maxSurfaceError": 0.002527396633834389,
+    "calls": {
+      "min": 117,
+      "max": 370
+    },
+    "triangles": {
+      "min": 182270,
+      "max": 590450
+    },
+    "geometries": {
+      "min": 115,
+      "max": 174
+    },
+    "textures": {
+      "min": 33,
+      "max": 36
+    },
+    "natureMaterials": {
+      "min": 7,
+      "max": 7
+    },
+    "natureVisibleBatches": {
+      "min": 3,
+      "max": 46
+    }
+  },
+  "assets": {
+    "textureBytes": 666411,
+    "modelsBytes": 1556963
+  },
+  "views": [
+    {
+      "d": 1250,
+      "nature": {
+        "batches": 218,
+        "visible": 42,
+        "instances": 399,
+        "triangles": 307430,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 1313,
+        "calls": 183,
+        "triangles": 407110,
+        "points": 488,
+        "lines": 0
+      }
+    },
+    {
+      "d": 1850,
+      "nature": {
+        "batches": 218,
+        "visible": 35,
+        "instances": 335,
+        "triangles": 257916,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 2440,
+        "calls": 222,
+        "triangles": 387806,
+        "points": 488,
+        "lines": 0
+      }
+    },
+    {
+      "d": 4450,
+      "nature": {
+        "batches": 182,
+        "visible": 31,
+        "instances": 300,
+        "triangles": 209328,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 3567,
+        "calls": 183,
+        "triangles": 413094,
+        "points": 492,
+        "lines": 0
+      }
+    },
+    {
+      "d": 6100,
+      "nature": {
+        "batches": 194,
+        "visible": 47,
+        "instances": 439,
+        "triangles": 320148,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 4716,
+        "calls": 287,
+        "triangles": 513044,
+        "points": 492,
+        "lines": 0
+      }
+    },
+    {
+      "d": 6500,
+      "nature": {
+        "batches": 194,
+        "visible": 38,
+        "instances": 307,
+        "triangles": 194914,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 5844,
+        "calls": 282,
+        "triangles": 401348,
+        "points": 488,
+        "lines": 0
+      }
+    },
+    {
+      "d": 7600,
+      "nature": {
+        "batches": 182,
+        "visible": 32,
+        "instances": 271,
+        "triangles": 198248,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 6993,
+        "calls": 308,
+        "triangles": 564166,
+        "points": 496,
+        "lines": 0
+      }
+    },
+    {
+      "d": 8750,
+      "nature": {
+        "batches": 134,
+        "visible": 25,
+        "instances": 131,
+        "triangles": 91077,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 8143,
+        "calls": 292,
+        "triangles": 399459,
+        "points": 492,
+        "lines": 0
+      }
+    },
+    {
+      "d": 9200,
+      "nature": {
+        "batches": 89,
+        "visible": 36,
+        "instances": 243,
+        "triangles": 132510,
+        "materials": 7,
+        "textures": 6
+      },
+      "render": {
+        "frame": 9271,
+        "calls": 197,
+        "triangles": 261136,
+        "points": 504,
+        "lines": 0
+      }
+    }
+  ]
+}

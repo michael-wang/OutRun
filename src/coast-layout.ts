@@ -33,12 +33,15 @@ export const coastRockX=(rock:typeof COAST_ROCKS[number])=>coastBeachX(-26,rock.
 
 export const COAST_DISTRICTS=[
  {start:480,end:980,kind:'homes'},
- {start:2300,end:3350,kind:'homes'},
- {start:3550,end:4350,kind:'market'},
+ {start:3900,end:4350,kind:'market'},
  {start:5050,end:5760,kind:'homes'},
  {start:6720,end:7310,kind:'market'},
  {start:7930,end:9060,kind:'market'},
  {start:9450,end:10100,kind:'homes'},
 ] as const;
 export const coastDistrictAt=(d:number)=>COAST_DISTRICTS.find(s=>d>=s.start&&d<s.end);
+/** Resort pedestrian links, absolute distances so chunk seams never reset paint. */
+export const COAST_CROSSWALKS=[750,2700,3930,5410,7010,8460,9740] as const;
+export const coastCrosswalkNear=(d:number,margin=8)=>COAST_CROSSWALKS.some(at=>Math.abs(d-at)<margin);
+export const coastBarrierStyle=(d:number)=>coastCrosswalkNear(d,14)?'opening':d%144>=96?'rail':'block';
 export const COAST_LAMPS=Array.from({length:156},(_,i)=>380+i*64);

@@ -1,3 +1,5 @@
+import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
+import {addCoastResort} from './coast-resort';
 import {bridgeSpan,bridgeShoulders,onBridge,type BridgeSpan} from './bridge';
 import {rockySections,rockyAt,type RockySection} from './rocky-shoulder';
 import type {BankStrength} from './banking';
@@ -35,15 +37,17 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   const t=performance.now(),candidate=stage,current=track,coastUltra=(candidate as TripCandidate).scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
   if(request.type==='scenery'&&roadLockArt){worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions:[],instances:[],scenery:{instances:0,draws:0},clearance:{queries:0,checks:0,rejected:0},cpuMs:performance.now()-t});return;}
   if(request.type==='scenery'){
+   if(coastUltra)await loadCoastNature();
    const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:(candidate as TripCandidate).scenicLandmarks,scenerySections:(candidate as TripCandidate).scenerySections,
     denseCity:candidate.generatorVersion==='v0.9-r10'||candidate.generatorVersion==='v0.9-r11'||candidate.generatorVersion==='v0.9-r12',
     canyonPrototype:(candidate as TripCandidate).canyonPrototype,designerCut:(candidate as TripCandidate).designerCut,coastUltra});
-   const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
+   if(coastUltra){const nature=addCoastNature(scene,current.sample,request.start,Math.min(request.end,current.length)),resort=addCoastResort(scene,current.sample,d=>pilotSample(candidate,d).halfWidth,request.start,Math.min(request.end,current.length));scenery.instances+=nature.instances+resort.instances;scenery.draws+=nature.draws+resort.draws;}
+   const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{waffleSign?:boolean;nature?:NatureBatch;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
    scene.traverse(object=>{if(!(object instanceof THREE.InstancedMesh))return;const g=object.geometry,m=object.material as THREE.MeshStandardMaterial;geometries.add(g);materials.add(m);
     if(!templates.has(g.uuid)){const attr=(name:string)=>new Float32Array(g.getAttribute(name)?.array??[]);templates.set(g.uuid,{position:attr('position'),normal:attr('normal'),uv:attr('uv'),color:attr('color'),index:new Uint32Array(g.index?.array??[])});}
     let matrices=new Float32Array(object.instanceMatrix.array);
     if(blenderArt){g.computeBoundingSphere();const kept:number[]=[];const pose=new THREE.Matrix4(),scale=new THREE.Vector3();for(let i=0;i<object.count;i++){object.getMatrixAt(i,pose);scale.setFromMatrixScale(pose);const radius=(g.boundingSphere?.radius??0)*Math.max(scale.x,scale.y,scale.z);if(!insideBlenderFootprint(pose.elements[12],pose.elements[14],radius))kept.push(...pose.elements);}matrices=new Float32Array(kept);}
-    if(matrices.length)instances.push({template:g.uuid,color:m.color.getHex(),...(m.emissiveIntensity?{emissive:m.emissive.getHex(),emissiveIntensity:m.emissiveIntensity}:{}),vertexColors:m.vertexColors,matrices});
+    if(matrices.length)instances.push({waffleSign:object.userData.waffleSign,nature:object.userData.nature,template:g.uuid,color:m.color.getHex(),...(m.emissiveIntensity?{emissive:m.emissive.getHex(),emissiveIntensity:m.emissiveIntensity}:{}),vertexColors:m.vertexColors,matrices});
    });
    const definitions=[...templates].map(([id,data])=>({id,...data})),transfer:Transferable[]=[];for(const x of definitions)transfer.push(x.position.buffer,x.normal.buffer,x.uv.buffer,x.color.buffer,x.index.buffer);for(const x of instances)transfer.push(x.matrices.buffer);
    for(const g of geometries)g.dispose();for(const m of materials)m.dispose();
@@ -55,7 +59,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   const meshes=roadLockArt?rawMeshes.filter(m=>!['grass','water','surf','support'].includes(m.kind)).map(m=>m.kind==='sand'?{...m,artContactOnly:true}:m):blenderArt?blenderRoadVisuals(rawMeshes,request.start,request.end):rawMeshes;
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
   let markerBank=0,markerYaw=0;const record=(which:number,p:THREE.Vector3,yaw=markerYaw)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,markerBank,'YXZ');dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
-  for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;markerYaw=shoulders?-p.roadHeading:0;if(onBridge(d,bridge)||candidate.generatorVersion==='canyon-roadlock-v1'||(coastUltra&&d%48!==0))continue;
+  for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;markerYaw=shoulders?-p.roadHeading:0;if(onBridge(d,bridge)||candidate.generatorVersion==='canyon-roadlock-v1'||coastUltra)continue;
    // R2.1 removes city-style black/yellow posts from the authored canyon.
    // Sparse wooden markers live in the scenery batch instead; guardrails and
    // their existing collision boundaries remain in place.

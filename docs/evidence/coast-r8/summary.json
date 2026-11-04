@@ -1,0 +1,44 @@
+{
+  "environment": "Desktop Edge, touch emulation, 960x432 CSS pixels, DPR 2.75; not physical Pixel 8",
+  "prior": {
+    "drawsPerFrame": 260.54810738702685,
+    "meanTriangles": 318079.41,
+    "geometryPeak": 282
+  },
+  "resort": {
+    "drawsPerFrame": 252.73807935978658,
+    "meanTriangles": 317520.51,
+    "geometryPeak": 277
+  },
+  "frames": {
+    "count": 8993,
+    "p50": 16.69999999999709,
+    "p95": 16.800000000000182,
+    "p99": 16.80000000000291,
+    "worst": 83.30000000000291,
+    "over50": 1
+  },
+  "errors": [],
+  "offRoadSamples": 0,
+  "transition": [
+    {
+      "from": 0,
+      "to": 1,
+      "ms": 8.899999999441206,
+      "speedBefore": 64.93507651242446,
+      "speedAfter": 64.93507651242446,
+      "headingError": 2.220446049250313e-16,
+      "rebase": 1.1445945969487394
+    }
+  ],
+  "water": {
+    "mode": "ultra",
+    "resolution": 128,
+    "simulationHz": 30,
+    "updates": 1543
+  },
+  "lastMemory": {
+    "geometries": 156,
+    "textures": 12
+  }
+}

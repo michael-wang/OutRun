@@ -1,0 +1,367 @@
+{
+  "touchGas": true,
+  "release": true,
+  "errors": [],
+  "coast": {
+    "journey": {
+      "enabled": true,
+      "index": 0,
+      "transitioning": false,
+      "totalElapsed": 0,
+      "memory": {
+        "geometries": 142,
+        "textures": 36
+      },
+      "chapters": [
+        {
+          "id": "coast",
+          "title": "海濱公路",
+          "start": 350,
+          "end": 10350
+        },
+        {
+          "id": "city",
+          "title": "都市叢林",
+          "start": 11688,
+          "end": 23771
+        },
+        {
+          "id": "canyon",
+          "title": "大峽谷",
+          "start": 350,
+          "end": 3485
+        }
+      ],
+      "transitions": [],
+      "preparations": [],
+      "preparing": false,
+      "error": "",
+      "highway": false
+    },
+    "nature": {
+      "batches": 218,
+      "visible": 40,
+      "instances": 422,
+      "triangles": 331144,
+      "materials": 7,
+      "textures": 6
+    },
+    "state": {
+      "gear": 5,
+      "rpm": 6466.122448979592,
+      "shiftRemaining": 0,
+      "shiftDirection": 0,
+      "gearInitialized": true,
+      "tractionFactor": 1,
+      "gearRatio": 0.6530612244897959,
+      "engineTorque": 6.153551833321918,
+      "driveForce": 0,
+      "roadDrag": 1.6680000000000001,
+      "shiftDrag": 0,
+      "netAcceleration": 0,
+      "distance": 1500,
+      "speed": 60,
+      "lateral": 0,
+      "heading": 0,
+      "velocityHeading": 0,
+      "worldHeading": -0.3511736602985951,
+      "steering": 0,
+      "yawRate": 0,
+      "slipAngle": 0,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.13,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steeringTarget": 0,
+      "drifting": false,
+      "rawSteer": 0,
+      "effectiveSteer": 0,
+      "requiredSteer": 0,
+      "lateralRate": 0,
+      "weightRoll": 0,
+      "bank": 0,
+      "appliedSteer": 0,
+      "steerFrom": 0,
+      "steerTo": 0,
+      "steerTime": 0,
+      "grade": 0,
+      "gradeAcceleration": 0,
+      "bankDegrees": 0,
+      "roadHalfWidth": 7,
+      "laneCount": 4,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 105,
+      "mode": "playing",
+      "elapsed": 0,
+      "frames": 153,
+      "inputs": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "passBy": {
+          "starts": 0,
+          "crossings": 0,
+          "active": [],
+          "tracked": 0,
+          "consumed": 0
+        },
+        "gravelLevel": 0,
+        "impactCount": 0,
+        "coneHitCount": 0,
+        "contextState": "running",
+        "muted": false,
+        "active": false,
+        "engineHz": 130.19797871479528,
+        "engineRpm": 5574.435202625198,
+        "gear": 4,
+        "skidIntensity": 0,
+        "skidLevel": 0,
+        "windLevel": 0,
+        "rms": 0
+      },
+      "trackLength": 12366,
+      "position": [
+        284.7465721880329,
+        -1.76,
+        1454.9849762299589
+      ],
+      "swapped": false,
+      "surfaceError": -4.768371586472142e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          281.9945715840822,
+          0.8400000000000001,
+          1447.4732192666477
+        ],
+        "direction": [
+          0.3414619863510143,
+          -0.12125135741932297,
+          0.9320417480999397
+        ],
+        "scenicEnabled": false,
+        "scenicWeight": 0
+      },
+      "immersive": {
+        "active": true,
+        "installed": false,
+        "lockState": "denied",
+        "pending": false,
+        "message": "Rotate your device to landscape. Automatic rotation was not allowed."
+      },
+      "rightScreenDelta": 0.15502740465978418
+    }
+  },
+  "city": {
+    "journey": {
+      "enabled": true,
+      "index": 1,
+      "transitioning": false,
+      "totalElapsed": 9.767000000000131,
+      "memory": {
+        "geometries": 181,
+        "textures": 12
+      },
+      "chapters": [
+        {
+          "id": "coast",
+          "title": "海濱公路",
+          "start": 350,
+          "end": 10350
+        },
+        {
+          "id": "city",
+          "title": "都市叢林",
+          "start": 11688,
+          "end": 23771
+        },
+        {
+          "id": "canyon",
+          "title": "大峽谷",
+          "start": 350,
+          "end": 3485
+        }
+      ],
+      "transitions": [
+        {
+          "from": 0,
+          "to": 1,
+          "ms": 7.099999999860302,
+          "speedBefore": 64.95029085678361,
+          "speedAfter": 64.95029085678361,
+          "headingError": -1.1102230246251565e-16,
+          "rebase": 1.1445945969487394
+        }
+      ],
+      "preparations": [
+        {
+          "index": 1,
+          "steps": [
+            {
+              "name": "asset",
+              "ms": 0
+            },
+            {
+              "name": "world",
+              "ms": 21.200000000186265
+            },
+            {
+              "name": "highway",
+              "ms": 22
+            },
+            {
+              "name": "stream",
+              "ms": 393.19999999995343
+            },
+            {
+              "name": "compile",
+              "ms": 64.5
+            },
+            {
+              "name": "worstUploadSlice",
+              "ms": 57.699999999953434
+            },
+            {
+              "name": "upload",
+              "ms": 6583.59999999986
+            }
+          ]
+        }
+      ],
+      "preparing": false,
+      "error": "",
+      "highway": true
+    },
+    "nature": {
+      "batches": 0,
+      "visible": 0,
+      "instances": 0,
+      "triangles": 0,
+      "materials": 0,
+      "textures": 0
+    },
+    "state": {
+      "gear": 5,
+      "rpm": 6921.721755295356,
+      "shiftRemaining": 0,
+      "shiftDirection": 0,
+      "gearInitialized": true,
+      "tractionFactor": 1,
+      "gearRatio": 0.6530612244897959,
+      "engineTorque": 5.874814478562082,
+      "driveForce": 0,
+      "roadDrag": 1.9013021928275418,
+      "shiftDrag": 0,
+      "netAcceleration": -3.8,
+      "distance": 11304.27415504978,
+      "speed": 64.88355519488708,
+      "lateral": 0,
+      "heading": 0,
+      "velocityHeading": 0,
+      "worldHeading": 0.7934209366501446,
+      "steering": 0,
+      "yawRate": 0,
+      "slipAngle": 0,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 1.13,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steeringTarget": 0,
+      "drifting": false,
+      "rawSteer": 0,
+      "effectiveSteer": 0,
+      "requiredSteer": 0,
+      "lateralRate": 0,
+      "weightRoll": 0,
+      "bank": 0,
+      "appliedSteer": 0,
+      "steerFrom": 0,
+      "steerTo": 0,
+      "steerTime": 9.767000000000127,
+      "grade": 0,
+      "gradeAcceleration": 0,
+      "bankDegrees": 0,
+      "roadHalfWidth": 7,
+      "laneCount": 4,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.75,
+      "travelSpeed": 113.54622159105239,
+      "mode": "playing",
+      "elapsed": 2.533399999999996,
+      "frames": 731,
+      "inputs": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "passBy": {
+          "starts": 0,
+          "crossings": 0,
+          "active": [],
+          "tracked": 2,
+          "consumed": 0
+        },
+        "gravelLevel": 0,
+        "impactCount": 0,
+        "coneHitCount": 0,
+        "contextState": "running",
+        "muted": false,
+        "active": true,
+        "engineHz": 154.89823218041488,
+        "engineRpm": 6921.721755295356,
+        "gear": 5,
+        "skidIntensity": 0,
+        "skidLevel": 0,
+        "windLevel": 0.06062221058008262,
+        "rms": 0.024956578629881303
+      },
+      "trackLength": 25787,
+      "position": [
+        1570.4110101310082,
+        48.54,
+        9723.006169486465
+      ],
+      "swapped": false,
+      "surfaceError": 0,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          1576.113065502191,
+          51.14,
+          9717.394880459515
+        ],
+        "direction": [
+          -0.7074980835877339,
+          -0.12125135741931642,
+          0.6962360016859636
+        ],
+        "scenicEnabled": false,
+        "scenicWeight": 0
+      },
+      "immersive": {
+        "active": true,
+        "installed": false,
+        "lockState": "denied",
+        "pending": false,
+        "message": "Rotate your device to landscape. Automatic rotation was not allowed."
+      },
+      "rightScreenDelta": 0.1550274046597543
+    }
+  }
+}

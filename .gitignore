@@ -44,3 +44,7 @@ __pycache__/
 # Release-hosted runtime art is verified and copied into the deployment at build time.
 /public/generated/*.glb
 /public/generated/*.glb.*.tmp
+
+# Local source archives; selected licensed runtime models live in public/assets.
+/.cache/watercraft/
+/.cache/farm/

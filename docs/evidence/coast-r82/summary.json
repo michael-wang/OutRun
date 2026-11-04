@@ -1,0 +1,32 @@
+{
+  "browser": "Desktop Edge 960x432 touch, DPR 2.75; capture frames excluded; not Pixel 8",
+  "errors": [],
+  "frames": {
+    "count": 8497,
+    "p95": 16.799999999999272,
+    "p99": 16.80000000000291,
+    "worst": 16.900000000001455,
+    "over50": 0
+  },
+  "samples": 142,
+  "coastSamples": 142,
+  "fourBoatsThroughout": true,
+  "offRoadSamples": 0,
+  "glbRequests": [
+    "http://127.0.0.1:5180/assets/coast-boats/boat-sail-a.glb",
+    "http://127.0.0.1:5180/assets/coast-boats/flybridge-yacht.glb"
+  ],
+  "boatCountAfterTransition": 0,
+  "boatCountAfterReplay": 4,
+  "transitions": [
+    {
+      "from": 0,
+      "to": 1,
+      "ms": 9.400000000372529,
+      "speedBefore": 34.515137276178,
+      "speedAfter": 34.515137276178,
+      "headingError": -1.1102230246251565e-16,
+      "rebase": 1.1445945969487394
+    }
+  ]
+}

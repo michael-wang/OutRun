@@ -1,5 +1,6 @@
 import {addCanyonDawn,CANYON_DAWN_SUN} from './canyon-dawn';
 import {addCoastDusk,COAST_SUN} from './coast-dusk';
+import {addCoastMountains} from './coast-mountains';
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
@@ -39,6 +40,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
   const coastUltra=(options.streamStage as TripCandidate|undefined)?.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false;
   const dusk=coastUltra?addCoastDusk(scene,sample):undefined;
+  if(coastUltra)addCoastMountains(scene,sample,length);
   if(dusk){hemisphere.color.set('#aab1da');hemisphere.groundColor.set('#66534b');hemisphere.intensity=1.25;sun.color.set('#ffc080');sun.intensity=1.8;scene.fog!.color.set('#a8796e');scene.fog!.near=250;scene.fog!.far=1450;}
   if(options.dawn){addCanyonDawn(scene);hemisphere.color.set('#c2d7ed');hemisphere.groundColor.set('#9a7765');hemisphere.intensity=1.45;sun.color.set('#ffe0ad');sun.intensity=2.3;scene.fog!.near=450;scene.fog!.far=2600;}
   const asphalt=mat(mountainRoad?'#56534d':'#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
@@ -173,7 +175,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
   sand.vertexColors=true;grass.vertexColors=true;
-  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,'center-line':mat('#c4a564'),rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial,steel:mat('#b93d29',.7),deck:new THREE.MeshStandardMaterial({color:'#827b6b',roughness:1,side:THREE.DoubleSide}),water:new THREE.MeshStandardMaterial({color:'#278d9e',roughness:.55,side:THREE.DoubleSide})},annotations,options.bank,options.blenderArt):undefined;
+  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,'center-line':mat('#c4a564'),rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial,steel:mat('#b93d29',.7),deck:new THREE.MeshStandardMaterial({color:'#827b6b',roughness:1,side:THREE.DoubleSide}),water:new THREE.MeshStandardMaterial({color:'#278d9e',roughness:.55,side:THREE.DoubleSide})},annotations,options.bank,options.blenderArt,coastUltra?sample:undefined):undefined;
   const scenery=streamer?{get instances(){return streamer.sceneryStats.instances;},get draws(){return streamer.sceneryStats.draws;}}:addJourneyScenery(scene,sample,length,options.theme,options.seed,halfAt,options.weightsAt);
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
   // Enclose the actual route. The former fixed (400,500)/1550m ring intersected
@@ -219,5 +221,5 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
       right:rockyAt(d,1,rockSections)?undefined:interchangeRailOpeningAt(d),
     };
   }:undefined;
-  return {bridge,junction,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(dusk?COAST_SUN.clone().multiplyScalar(120):options.dawn?CANYON_DAWN_SUN.clone().multiplyScalar(120):new THREE.Vector3(-60,95,-45));if(dusk){scene.fog!.color.set('#a8796e');}else if(options.dawn){scene.fog!.color.set('#c7b6ae');}}};
+  return {bridge,junction,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();streamer?.updateFarm(_time);const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}sun.target.position.copy(car.position);sun.position.copy(car.position).add(dusk?COAST_SUN.clone().multiplyScalar(120):options.dawn?CANYON_DAWN_SUN.clone().multiplyScalar(120):new THREE.Vector3(-60,95,-45));if(dusk){scene.fog!.color.set('#a8796e');}else if(options.dawn){scene.fog!.color.set('#c7b6ae');}}};
 }

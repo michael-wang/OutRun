@@ -3,7 +3,9 @@ import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
 import {COAST_SEA_LEVEL} from './scenery-cross-section';
-// The upstream, MIT-licensed simulation is intentionally left untouched.
+import {OceanCadence} from './coast-performance';
+import {CoastBoatShadow,BOAT_SHADOW_GLSL} from './coast-boat-shadow';
+// MIT-licensed upstream simulation, with configurable FFT size for mobile.
 // @ts-ignore - vendored upstream JavaScript has no TypeScript declarations.
 import {OceanSim, defaultOceanParams} from './ultra-water/water/OceanSim.js';
 
@@ -60,6 +62,7 @@ uniform sampler2D uDisp0;
 uniform sampler2D uDisp1;
 uniform sampler2D uDisp2;
 uniform float uSpacing;
+uniform float uResolution;
 out vec3 vWorld;
 out float vChurn;
 out float vDistance;
@@ -68,9 +71,10 @@ void main(){
  vec3 world=(modelMatrix*vec4(position,1.0)).xyz;
  float ring=max(length(position.xz),1.0);
  float spacing=max(0.35,ring*uSpacing);
- float l0=clamp(log2(max(1.0,spacing*256.0/600.0)),0.0,8.0);
- float l1=clamp(log2(max(1.0,spacing*256.0/85.0)),0.0,8.0);
- float l2=clamp(log2(max(1.0,spacing*256.0/12.0)),0.0,8.0);
+ float maxLod=log2(uResolution);
+ float l0=clamp(log2(max(1.0,spacing*uResolution/600.0)),0.0,maxLod);
+ float l1=clamp(log2(max(1.0,spacing*uResolution/85.0)),0.0,maxLod);
+ float l2=clamp(log2(max(1.0,spacing*uResolution/12.0)),0.0,maxLod);
  vec4 d0=textureLod(uDisp0,world.xz/600.0,l0);
  vec4 d1=textureLod(uDisp1,world.xz/85.0,l1);
  vec4 d2=textureLod(uDisp2,world.xz/12.0,l2);
@@ -93,6 +97,7 @@ const fragment=/* glsl */`
 precision highp float;
 ${COAST_SKY_GLSL}
 ${shoreGLSL}
+${BOAT_SHADOW_GLSL}
 uniform sampler2D uSlope0;
 uniform sampler2D uSlope1;
 uniform sampler2D uSlope2;
@@ -143,12 +148,14 @@ void main(){
  }
  vec3 body=mix(shallows,deep,smoothstep(3.0,12.0,depth));
  vec3 sky=coastSky(reflected,sunDir);
+ float sunVisibility=boatSunShadow(vWorld);
  vec3 color=mix(body,sky,clamp(.35+fresnel*.60,0.0,1.0));
+ color*=mix(.68,1.0,sunVisibility);
  vec3 halfVec=normalize(viewDir+sunDir);
  float sunGlitter=pow(max(dot(normal,halfVec),0.0),95.0)*(.3+max(dot(normal,sunDir),0.0));
  float spark=hash12(floor(vWorld.xz*2.4+uTime*.13));
  sunGlitter*=.65+.7*spark;
- color+=vec3(1.0,.63,.27)*sunGlitter*3.8;
+ color+=vec3(1.0,.63,.27)*sunGlitter*3.8*sunVisibility;
  float foam=(1.0-smoothstep(.48,.93,vChurn))*.4*nearshore;
  foam*=.82+.18*hash12(floor(vWorld.xz*.9+uTime*.4));
  // Breaking crests advance toward the beach, losing energy on the wet sand.
@@ -180,10 +187,11 @@ export class UltraCoastOcean {
  readonly mesh:THREE.Mesh;
  private readonly sim:any;
  private readonly uniforms:Record<string,THREE.IUniform>;
- private pending=0;
- private frames=0;
+ private readonly cadence=new OceanCadence(30);
+ private updates=0;
  private readonly mobile:boolean;
  private readonly renderer:THREE.WebGLRenderer;
+ readonly boatShadow:CoastBoatShadow;
 
  static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},onProgress:(p:number)=>void){
   const shore=await loadCoastShore(onProgress);
@@ -194,19 +202,22 @@ export class UltraCoastOcean {
   if(!renderer.capabilities.isWebGL2)throw new Error('Ultra-Water experiment requires WebGL2');
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
+  this.boatShadow=new CoastBoatShadow(renderer,this.mobile?512:1024);
   const oceanParams=defaultOceanParams();
   oceanParams.windSpeed=6;
   oceanParams.waveScale=.55;
   oceanParams.swellScale=.3;
-  this.sim=new OceanSim(renderer,oceanParams);
+  this.sim=new OceanSim(renderer,oceanParams,{resolution:this.mobile?128:256,anisotropy:this.mobile?1:renderer.capabilities.getMaxAnisotropy()});
   const rockPositions=COAST_ROCKS.map(r=>{
    const p=coast.sample(r.d),v=p.position.clone().addScaledVector(p.right,coastRockX(r));
    return new THREE.Vector4(v.x,v.z,r.r,r.d*.017);
   });
   this.uniforms={
+   ...this.boatShadow.uniforms,
    uDisp0:{value:null},uDisp1:{value:null},uDisp2:{value:null},
    uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
    uSpacing:{value:2*Math.PI/(this.mobile?128:192)},
+   uResolution:{value:this.sim.resolution},
    uSun:{value:COAST_SUN.clone()},
    uTime:{value:0},uRocks:{value:rockPositions},
    uShore:{value:shore.texture},uShoreBounds:{value:shore.bounds},
@@ -249,19 +260,23 @@ export class UltraCoastOcean {
   const spray=new THREE.Points(sprayGeometry,sprayMaterial);spray.name='coast-rock-spray';spray.frustumCulled=false;scene.add(spray);
  }
  dispose(){
+  this.boatShadow.dispose();
   // Release the upstream simulator's owned targets/materials; its fullscreen
   // triangle is shared and must remain alive for a later replay.
   for(const rt of [this.sim.h0RT,this.sim.ping,this.sim.pong,...this.sim.out.flat()])rt.dispose();
   for(const m of [this.sim.initMat,this.sim.evolveMat,this.sim.fftMat,this.sim.assembleMat])m.dispose();
  }
+ get stats(){return {resolution:this.sim.resolution,simulationHz:this.mobile?30:'display',updates:this.updates,boatShadow:this.boatShadow.stats};}
+ /** Read-only bindings for decorative hulls/contact patches; simulation stays here. */
+ get boatSurfaceUniforms():Readonly<Record<string,THREE.IUniform>>{return this.uniforms;}
  update(camera:THREE.Camera,dt:number){
   this.mesh.position.x=camera.position.x;
   this.mesh.position.z=camera.position.z;
-  this.pending+=Math.max(0,Math.min(dt,.08));
-  // FFT updates at 30Hz on touch screens; full frame rate on desktop.
-  if(!this.mobile||(++this.frames%2===0)){
-   this.sim.update(Math.max(.001,this.pending));
-   this.pending=0;
+  const delta=Math.max(0,Math.min(dt,.08));
+  // A 120Hz phone must not double FFT workload. Advance by actual elapsed time.
+  const step=this.mobile?this.cadence.step(delta):delta;
+  if(step!==null){
+   this.sim.update(step);this.updates++;
   }
   for(let i=0;i<3;i++)this.uniforms['uDisp'+i].value=this.sim.displacement[i];
   for(let i=0;i<4;i++)this.uniforms['uSlope'+i].value=this.sim.slope[i];

@@ -1,0 +1,3230 @@
+{
+  "browser": "Desktop Edge touch emulation; not a physical phone",
+  "errors": [],
+  "held": {
+    "journey": {
+      "enabled": true,
+      "index": 0,
+      "transitioning": false,
+      "totalElapsed": 36.001499999998465,
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "chapters": [
+        {
+          "id": "coast",
+          "title": "海濱公路",
+          "start": 350,
+          "end": 10350
+        },
+        {
+          "id": "city",
+          "title": "都市叢林",
+          "start": 11688,
+          "end": 23771
+        },
+        {
+          "id": "canyon",
+          "title": "大峽谷",
+          "start": 350,
+          "end": 3485
+        }
+      ],
+      "transitions": [],
+      "preparations": [],
+      "loadStarts": [
+        {
+          "index": 1,
+          "distance": 10610.001077104722
+        }
+      ],
+      "loadHeld": true,
+      "preparing": true,
+      "error": "",
+      "highway": true
+    },
+    "snapshot": {
+      "gear": 3,
+      "rpm": 5547.0136726144,
+      "shiftRemaining": 0,
+      "shiftDirection": 0,
+      "gearInitialized": true,
+      "tractionFactor": 1,
+      "gearRatio": 1.103448275862069,
+      "engineTorque": 6.6285269773850155,
+      "driveForce": 7.314236664700707,
+      "roadDrag": 0.6483698542969131,
+      "shiftDrag": 0,
+      "netAcceleration": 6.665866810403794,
+      "distance": 12750.602682125585,
+      "speed": 30.278979449678822,
+      "lateral": 2.7103622053264904,
+      "heading": 0,
+      "velocityHeading": -0.053989602162332284,
+      "worldHeading": -0.3507282303106736,
+      "steering": -0.25,
+      "yawRate": 0,
+      "slipAngle": 0,
+      "slip": 0,
+      "offRoad": false,
+      "footprintEdge": 3.8403622053264903,
+      "curvature": 0,
+      "corridorSide": 0,
+      "steeringTarget": -0.38298761366072465,
+      "drifting": false,
+      "rawSteer": -0.38298761366072465,
+      "effectiveSteer": -0.25,
+      "requiredSteer": 0,
+      "lateralRate": -1.636340273701522,
+      "weightRoll": -0.0007301032302060281,
+      "bank": 0,
+      "appliedSteer": -0.25,
+      "steerFrom": 0,
+      "steerTo": -0.25,
+      "steerTime": 0.900099999999998,
+      "grade": 0,
+      "gradeAcceleration": 0,
+      "bankDegrees": 0,
+      "roadHalfWidth": 7,
+      "laneCount": 4,
+      "highSpeedPace": 1.75,
+      "effectivePace": 1.256851413370546,
+      "travelSpeed": 38.056178116746544,
+      "mode": "playing",
+      "elapsed": 36.001499999998465,
+      "frames": 2250,
+      "inputs": {
+        "gas": false,
+        "brake": false,
+        "steer": 0
+      },
+      "audio": {
+        "passBy": {
+          "starts": 4,
+          "crossings": 4,
+          "active": [],
+          "tracked": 9,
+          "consumed": 2
+        },
+        "gravelLevel": 0,
+        "lastImpact": "vehicle",
+        "impactCount": 7,
+        "coneHitCount": 0,
+        "contextState": "locked",
+        "muted": false,
+        "active": true,
+        "engineHz": 132.69525066459732,
+        "engineRpm": 5547.0136726144,
+        "gear": 3,
+        "skidIntensity": 0,
+        "skidLevel": 0,
+        "windLevel": 0.013202158989802646,
+        "rms": 0
+      },
+      "trackLength": 12366,
+      "position": [
+        2848.7698596566274,
+        -0.76,
+        12238.153072885938
+      ],
+      "swapped": false,
+      "surfaceError": 1.1920928910669204e-8,
+      "camera": {
+        "horizontalFov": 76,
+        "fov": 38.741159100630384,
+        "distance": 8,
+        "height": 2.6,
+        "lookAhead": 13.284848493623585,
+        "lookHeight": 0,
+        "position": [
+          2846.0178590526766,
+          1.84,
+          12230.641315922627
+        ],
+        "direction": [
+          0.3414619863510123,
+          -0.1212513574193204,
+          0.9320417480999408
+        ],
+        "scenicEnabled": false,
+        "scenicWeight": 0
+      },
+      "immersive": {
+        "active": false,
+        "installed": false,
+        "lockState": "idle",
+        "pending": false,
+        "message": ""
+      },
+      "rightScreenDelta": 0.15502740465978845
+    }
+  },
+  "trace": [
+    {
+      "d": 9908.740780565984,
+      "index": 0,
+      "speed": 65.04200116331945,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 64
+      },
+      "memory": {
+        "geometries": 124,
+        "textures": 34
+      },
+      "traffic": 3,
+      "recipes": 0
+    },
+    {
+      "d": 9963.734548813189,
+      "index": 0,
+      "speed": 65.02124110011016,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 79
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 10020.613547500958,
+      "index": 0,
+      "speed": 64.9357502175832,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 94
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 10079.347440335856,
+      "index": 0,
+      "speed": 64.9796168904139,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 110
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 10134.276800652067,
+      "index": 0,
+      "speed": 64.95863580686283,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 124
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 10191.152968592887,
+      "index": 0,
+      "speed": 64.87489635411843,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 139
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 10249.875886150983,
+      "index": 0,
+      "speed": 65.01505272259007,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 155
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 10304.846959447597,
+      "index": 0,
+      "speed": 64.99445694642152,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 169
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 10361.691143533515,
+      "index": 0,
+      "speed": 64.90893535744289,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 184
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 3
+    },
+    {
+      "d": 10420.455917986295,
+      "index": 0,
+      "speed": 65.0482657506571,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 200
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 3
+    },
+    {
+      "d": 10475.431944502512,
+      "index": 0,
+      "speed": 65.025808282971,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 214
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 3
+    },
+    {
+      "d": 10532.311808317825,
+      "index": 0,
+      "speed": 65.03536802557873,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 229
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 3
+    },
+    {
+      "d": 10591.03419590365,
+      "index": 0,
+      "speed": 64.88927029261326,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 3
+    },
+    {
+      "d": 10646.010024353867,
+      "index": 0,
+      "speed": 64.96437701295751,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 3
+    },
+    {
+      "d": 10702.832314840842,
+      "index": 0,
+      "speed": 64.88173609989128,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 3
+    },
+    {
+      "d": 10761.584254353113,
+      "index": 0,
+      "speed": 65.02153928158792,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 4
+    },
+    {
+      "d": 10816.53797023913,
+      "index": 0,
+      "speed": 64.9998073804856,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 5,
+      "recipes": 4
+    },
+    {
+      "d": 10873.409423806948,
+      "index": 0,
+      "speed": 64.91395514549748,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 5,
+      "recipes": 4
+    },
+    {
+      "d": 10932.167430520109,
+      "index": 0,
+      "speed": 65.05407764079398,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 5,
+      "recipes": 4
+    },
+    {
+      "d": 10987.157876171459,
+      "index": 0,
+      "speed": 64.93709898398323,
+      "offRoad": false,
+      "gap": 1.1920928799646902e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 5,
+      "recipes": 4
+    },
+    {
+      "d": 11043.979401897293,
+      "index": 0,
+      "speed": 65.04375518065439,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 5,
+      "recipes": 4
+    },
+    {
+      "d": 11100.833989364884,
+      "index": 0,
+      "speed": 64.9590493375688,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 4
+    },
+    {
+      "d": 11157.671933552192,
+      "index": 0,
+      "speed": 64.96948714967706,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 125,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 5
+    },
+    {
+      "d": 11211.221825309116,
+      "index": 0,
+      "speed": 31.135724829480637,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 127,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 4
+    },
+    {
+      "d": 11233.287621140675,
+      "index": 0,
+      "speed": 32.05714013457973,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 131,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 4
+    },
+    {
+      "d": 11254.89437599098,
+      "index": 0,
+      "speed": 34.854041456886726,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 131,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 4
+    },
+    {
+      "d": 11280.740464827159,
+      "index": 0,
+      "speed": 37.83861986754903,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 131,
+        "textures": 34
+      },
+      "traffic": 4,
+      "recipes": 4
+    },
+    {
+      "d": 11311.136214324504,
+      "index": 0,
+      "speed": 40.40389410632609,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 6,
+      "recipes": 4
+    },
+    {
+      "d": 11340.979739031012,
+      "index": 0,
+      "speed": 41.257829919018455,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 7,
+      "recipes": 4
+    },
+    {
+      "d": 11374.300142042368,
+      "index": 0,
+      "speed": 43.440915719477076,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 7,
+      "recipes": 4
+    },
+    {
+      "d": 11411.595723423443,
+      "index": 0,
+      "speed": 45.60554459947855,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 7,
+      "recipes": 4
+    },
+    {
+      "d": 11449.015415350506,
+      "index": 0,
+      "speed": 47.545688421330254,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 7,
+      "recipes": 4
+    },
+    {
+      "d": 11490.095254265303,
+      "index": 0,
+      "speed": 49.46400730118198,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 7,
+      "recipes": 4
+    },
+    {
+      "d": 11534.868011045213,
+      "index": 0,
+      "speed": 51.35252400828384,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00005978433032263008,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 8,
+      "recipes": 4
+    },
+    {
+      "d": 11578.688201661498,
+      "index": 0,
+      "speed": 53.03511334408147,
+      "offRoad": false,
+      "gap": 1.1920928799646902e-8,
+      "curvature": 0.0002526762165755977,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 8,
+      "recipes": 5
+    },
+    {
+      "d": 11625.63924914102,
+      "index": 0,
+      "speed": 53.95610867016638,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00036737250102904397,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 8,
+      "recipes": 5
+    },
+    {
+      "d": 11672.896304627871,
+      "index": 0,
+      "speed": 54.696040525042626,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00017793740762009287,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 8,
+      "recipes": 5
+    },
+    {
+      "d": 11716.882218347384,
+      "index": 0,
+      "speed": 34.240756828482134,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0002205826748291265,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 11740.669766800513,
+      "index": 0,
+      "speed": 35.095123302926346,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0004364201304515778,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 11766.748701317167,
+      "index": 0,
+      "speed": 38.025315507726084,
+      "offRoad": false,
+      "gap": 1.1920929021691506e-8,
+      "curvature": -0.0006027861323666527,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 11796.312028572333,
+      "index": 0,
+      "speed": 40.366150929333806,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0006508642094721865,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 11827.259197330102,
+      "index": 0,
+      "speed": 41.40110690393513,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.000525650965337848,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 11860.75265233832,
+      "index": 0,
+      "speed": 43.57836348453558,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.00024346722741605152,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 11896.977622838647,
+      "index": 0,
+      "speed": 45.669250031695675,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00009760966347395288,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 11935.801410810956,
+      "index": 0,
+      "speed": 47.67173868908951,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00033362903601103763,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 5
+    },
+    {
+      "d": 11978.43828020029,
+      "index": 0,
+      "speed": 49.64627120664584,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.0003374991320158429,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12020.474229609728,
+      "index": 0,
+      "speed": 51.408275547018924,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00016326401328517267,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12058.147694059455,
+      "index": 0,
+      "speed": 25.463709739415027,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.000022788345114343173,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12073.529577363657,
+      "index": 0,
+      "speed": 27.927310956094686,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.000001284106480073145,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12091.942947174208,
+      "index": 0,
+      "speed": 31.289872886640392,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12113.799144729066,
+      "index": 0,
+      "speed": 34.48461720655487,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12140.123628331687,
+      "index": 0,
+      "speed": 37.58891860497054,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12162.550525069311,
+      "index": 0,
+      "speed": 22.82504996113736,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 134,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12175.937892162736,
+      "index": 0,
+      "speed": 25.941679576450973,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12192.054841157367,
+      "index": 0,
+      "speed": 27.62194419202543,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12209.508164642482,
+      "index": 0,
+      "speed": 30.886153052802523,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12230.933293228554,
+      "index": 0,
+      "speed": 34.10279202836456,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12255.436597737142,
+      "index": 0,
+      "speed": 34.559111290277556,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12280.029013820948,
+      "index": 0,
+      "speed": 37.4612645572459,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12308.952987954051,
+      "index": 0,
+      "speed": 40.27658404180062,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12340.767781727933,
+      "index": 0,
+      "speed": 41.043723974879164,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12372.663607556271,
+      "index": 0,
+      "speed": 43.16254479152058,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12408.375711948647,
+      "index": 0,
+      "speed": 45.27086161597903,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12446.70217362641,
+      "index": 0,
+      "speed": 47.290269474748605,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12487.478443979098,
+      "index": 0,
+      "speed": 49.220197540768595,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12530.502602640663,
+      "index": 0,
+      "speed": 51.06097511602646,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 37
+      },
+      "traffic": 10,
+      "recipes": 6
+    },
+    {
+      "d": 12577.087301854775,
+      "index": 0,
+      "speed": 52.87107856120862,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12622.369405994401,
+      "index": 0,
+      "speed": 54.14017936970113,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12669.54850727627,
+      "index": 0,
+      "speed": 54.516833827218164,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 12717.85230813097,
+      "index": 0,
+      "speed": 55.88188405174857,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 12733.09683980729,
+      "index": 0,
+      "speed": 27.61529523823942,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 5
+    },
+    {
+      "d": 12750.602682125585,
+      "index": 0,
+      "speed": 30.278979449678822,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12771.38791999287,
+      "index": 0,
+      "speed": 33.52749610727728,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 132,
+        "textures": 37
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12795.71040147462,
+      "index": 0,
+      "speed": 36.59327312695577,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 140,
+        "textures": 39
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12823.595084158242,
+      "index": 0,
+      "speed": 39.46582363980461,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 165,
+        "textures": 39
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12854.041900375254,
+      "index": 0,
+      "speed": 40.302245704834014,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 180,
+        "textures": 40
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12886.155646922734,
+      "index": 0,
+      "speed": 42.51926137421766,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 198,
+        "textures": 42
+      },
+      "traffic": 9,
+      "recipes": 6
+    },
+    {
+      "d": 12921.060893911075,
+      "index": 0,
+      "speed": 44.653455255662486,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 214,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 12958.624487243489,
+      "index": 0,
+      "speed": 46.69933443051031,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 220,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 12998.684180332923,
+      "index": 0,
+      "speed": 48.655498510618656,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 223,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 13021.507841707898,
+      "index": 0,
+      "speed": 24.333914984046096,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 226,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 13037.180275247427,
+      "index": 0,
+      "speed": 27.94381579249762,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 4.7680953770732355e-8,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 229,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 13054.935849176669,
+      "index": 0,
+      "speed": 31.1955641218213,
+      "offRoad": false,
+      "gap": 1.1920928799646902e-8,
+      "curvature": 0.000016498993567638838,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 229,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 13076.695667751183,
+      "index": 0,
+      "speed": 34.39609248702523,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00008106271022966785,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 232,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 13101.742368326259,
+      "index": 0,
+      "speed": 34.54061907916556,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00019263149772486856,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 237,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 13126.306117842918,
+      "index": 0,
+      "speed": 37.4404829209707,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00030067212836531955,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 237,
+        "textures": 42
+      },
+      "traffic": 8,
+      "recipes": 6
+    },
+    {
+      "d": 13155.205018688554,
+      "index": 0,
+      "speed": 40.257141093669006,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00036730640814898225,
+      "preparing": true,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 243,
+        "textures": 43
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13185.940459617581,
+      "index": 0,
+      "speed": 40.95027517239779,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00031160578446922424,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13218.874502581408,
+      "index": 0,
+      "speed": 43.14479343034647,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.0000988280555573989,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13238.836690205966,
+      "index": 0,
+      "speed": 17.341477514168577,
+      "offRoad": false,
+      "gap": 1.1920928799646902e-8,
+      "curvature": -0.00008386041356732196,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13248.370901839016,
+      "index": 0,
+      "speed": 20.45303008366096,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.00017667814530186057,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13260.767673197333,
+      "index": 0,
+      "speed": 24.95596015613792,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0002960072851160052,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13276.001671893608,
+      "index": 0,
+      "speed": 26.74198134342143,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.00043102993575909243,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13293.275981751884,
+      "index": 0,
+      "speed": 30.151006519807478,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0005538997610225544,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13309.59255476671,
+      "index": 0,
+      "speed": 24.86489608916281,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0006283032777688791,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13325.165815675642,
+      "index": 0,
+      "speed": 28.341999685420653,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0006544251518273076,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13343.982160974005,
+      "index": 0,
+      "speed": 31.6854851234591,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0006236036058692688,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13366.265054358046,
+      "index": 0,
+      "speed": 34.85833587673111,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.0005048545772035878,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13389.191933088083,
+      "index": 0,
+      "speed": 35.231053735509285,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.00031503812818429924,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13415.4704330618,
+      "index": 0,
+      "speed": 38.19097628555864,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": -0.00006160118361931923,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13445.190886204615,
+      "index": 0,
+      "speed": 40.276898376513024,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.0001929704812118457,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13476.207362592544,
+      "index": 0,
+      "speed": 41.52601762109783,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.0003465970130772815,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13509.857751172885,
+      "index": 0,
+      "speed": 43.69853341048566,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.000348724908616659,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13546.240414351045,
+      "index": 0,
+      "speed": 45.784868956276554,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00021159016333691273,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 260,
+        "textures": 42
+      },
+      "traffic": 7,
+      "recipes": 7
+    },
+    {
+      "d": 13585.189663312538,
+      "index": 0,
+      "speed": 47.78151899192533,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0.00004652851004681194,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 8
+    },
+    {
+      "d": 13626.556777080437,
+      "index": 0,
+      "speed": 49.689437501589225,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 8
+    },
+    {
+      "d": 13670.100481474828,
+      "index": 0,
+      "speed": 51.507722066042966,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 256,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 8
+    },
+    {
+      "d": 13709.941644587794,
+      "index": 0,
+      "speed": 25.48745211744427,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 254,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 7
+    },
+    {
+      "d": 13725.027096915795,
+      "index": 0,
+      "speed": 27.796136919776583,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 256,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 7
+    },
+    {
+      "d": 13743.308817929246,
+      "index": 0,
+      "speed": 31.163719481693143,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 256,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 7
+    },
+    {
+      "d": 13765.029828942308,
+      "index": 0,
+      "speed": 34.36535662818817,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 256,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 7
+    },
+    {
+      "d": 13789.030958215832,
+      "index": 0,
+      "speed": 34.90309493734302,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 7
+    },
+    {
+      "d": 13814.924961126266,
+      "index": 0,
+      "speed": 37.880539058270045,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 6
+    },
+    {
+      "d": 13844.332368345047,
+      "index": 0,
+      "speed": 40.36350913405673,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 6
+    },
+    {
+      "d": 13875.192665042063,
+      "index": 0,
+      "speed": 41.292767055076624,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 6
+    },
+    {
+      "d": 13908.550025733331,
+      "index": 0,
+      "speed": 43.47412677335961,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 6
+    },
+    {
+      "d": 13944.644680814896,
+      "index": 0,
+      "speed": 45.569300541291156,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 6
+    },
+    {
+      "d": 13983.353916169277,
+      "index": 0,
+      "speed": 47.57654195968973,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 7
+    },
+    {
+      "d": 14024.461860449761,
+      "index": 0,
+      "speed": 49.49308004094697,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 258,
+        "textures": 42
+      },
+      "traffic": 6,
+      "recipes": 7
+    },
+    {
+      "d": 14067.79428840046,
+      "index": 0,
+      "speed": 51.32100346563489,
+      "offRoad": false,
+      "gap": 1.1920928910669204e-8,
+      "curvature": 0,
+      "preparing": false,
+      "prepared": 1,
+      "exit": 14094,
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 238
+      },
+      "memory": {
+        "geometries": 256,
+        "textures": 42
+      },
+      "traffic": 5,
+      "recipes": 7
+    },
+    {
+      "d": 11035.116596514603,
+      "index": 1,
+      "speed": 53.06147257710049,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11082.07845517222,
+      "index": 1,
+      "speed": 53.888867830442024,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11129.320365825535,
+      "index": 1,
+      "speed": 54.71953109945941,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11177.812510027794,
+      "index": 1,
+      "speed": 56.07759819668611,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11227.465813960158,
+      "index": 1,
+      "speed": 57.385668520436255,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11278.241697984193,
+      "index": 1,
+      "speed": 58.6444182759375,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11330.107762986778,
+      "index": 1,
+      "speed": 59.854739925110245,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11383.001038243125,
+      "index": 1,
+      "speed": 61.01698396475083,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11436.890362527824,
+      "index": 1,
+      "speed": 62.13238125787128,
+      "offRoad": false,
+      "gap": 0,
+      "curvature": 0,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 2,
+      "recipes": 0
+    },
+    {
+      "d": 11491.735238740901,
+      "index": 1,
+      "speed": 63.20203895090071,
+      "offRoad": false,
+      "gap": 0.0027369721699557203,
+      "curvature": -0.00013519916536486757,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 4,
+      "recipes": 0
+    },
+    {
+      "d": 11547.49616398292,
+      "index": 1,
+      "speed": 64.22716194359472,
+      "offRoad": false,
+      "gap": 0.004182001886334774,
+      "curvature": -0.0005759243481699742,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 4,
+      "recipes": 0
+    },
+    {
+      "d": 11604.11692368058,
+      "index": 1,
+      "speed": 65.01903304684652,
+      "offRoad": false,
+      "gap": 0.004148627609986022,
+      "curvature": -0.0011096581257742258,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 5,
+      "recipes": 0
+    },
+    {
+      "d": 11660.969635200445,
+      "index": 1,
+      "speed": 65.03092467185535,
+      "offRoad": false,
+      "gap": 0.0012652539155695308,
+      "curvature": -0.0014894114325895136,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 5,
+      "recipes": 0
+    },
+    {
+      "d": 11717.797403966262,
+      "index": 1,
+      "speed": 64.94876296166244,
+      "offRoad": false,
+      "gap": 0.00005405191128460274,
+      "curvature": -0.0015436204993193579,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 6,
+      "recipes": 0
+    },
+    {
+      "d": 11770.865354300831,
+      "index": 1,
+      "speed": 64.89537513551285,
+      "offRoad": false,
+      "gap": 0.00002620520913154678,
+      "curvature": -0.0015436204993193579,
+      "preparing": false,
+      "water": {
+        "mode": "disabled"
+      },
+      "memory": {
+        "geometries": 193,
+        "textures": 12
+      },
+      "traffic": 6,
+      "recipes": 0
+    }
+  ],
+  "longFrames": [
+    {
+      "ms": 149.90000000000146,
+      "d": 12764.065593231033,
+      "index": 0
+    },
+    {
+      "ms": 100.09999999999854,
+      "d": 11262.903825367075,
+      "index": 1
+    }
+  ],
+  "journey": {
+    "enabled": true,
+    "index": 1,
+    "transitioning": false,
+    "totalElapsed": 67.46929999999465,
+    "memory": {
+      "geometries": 193,
+      "textures": 12
+    },
+    "chapters": [
+      {
+        "id": "coast",
+        "title": "海濱公路",
+        "start": 350,
+        "end": 10350
+      },
+      {
+        "id": "city",
+        "title": "都市叢林",
+        "start": 11688,
+        "end": 23771
+      },
+      {
+        "id": "canyon",
+        "title": "大峽谷",
+        "start": 350,
+        "end": 3485
+      }
+    ],
+    "transitions": [
+      {
+        "from": 0,
+        "to": 1,
+        "ms": 9.099999999627471,
+        "speedBefore": 52.37598973475712,
+        "speedAfter": 52.37598973475712,
+        "headingError": -1.1102230246251565e-16,
+        "rebase": 1.1445945969487392
+      }
+    ],
+    "preparations": [
+      {
+        "index": 1,
+        "steps": [
+          {
+            "name": "asset",
+            "ms": 0.10000000055879354
+          },
+          {
+            "name": "world",
+            "ms": 22.899999999441206
+          },
+          {
+            "name": "highway",
+            "ms": 23.90000000037253
+          },
+          {
+            "name": "stream",
+            "ms": 419.79999999981374
+          },
+          {
+            "name": "worstUploadSlice",
+            "ms": 47.40000000037253
+          },
+          {
+            "name": "upload",
+            "ms": 7099.299999999814
+          }
+        ]
+      }
+    ],
+    "loadStarts": [
+      {
+        "index": 1,
+        "distance": 10610.001077104722
+      }
+    ],
+    "loadHeld": false,
+    "preparing": false,
+    "error": "",
+    "highway": false
+  },
+  "snapshot": {
+    "gear": 5,
+    "rpm": 6919.092472567819,
+    "shiftRemaining": 0,
+    "shiftDirection": 0,
+    "gearInitialized": true,
+    "tractionFactor": 1,
+    "gearRatio": 0.6530612244897959,
+    "engineTorque": 5.876464462563069,
+    "driveForce": 0,
+    "roadDrag": 1.9003419385795401,
+    "shiftDrag": 0,
+    "netAcceleration": -3.8,
+    "distance": 11770.865354300831,
+    "speed": 64.89537513551285,
+    "lateral": 0.4282408553020785,
+    "heading": -0.104719642762261,
+    "velocityHeading": 0.012331022032676728,
+    "worldHeading": 0.48129424927387704,
+    "steering": -0.25,
+    "yawRate": -9.364417575526552e-7,
+    "slipAngle": -0.104719642762261,
+    "slip": 0,
+    "offRoad": false,
+    "footprintEdge": 1.5582408553020783,
+    "curvature": -0.0015436204993193579,
+    "corridorSide": 0,
+    "steeringTarget": -0.3726767502322043,
+    "drifting": false,
+    "rawSteer": -0.3726767502322043,
+    "effectiveSteer": -0.25,
+    "requiredSteer": -0.31557937583197376,
+    "lateralRate": 0.8002668623130058,
+    "weightRoll": 0.00006265341351778432,
+    "bank": -0.026094526520281408,
+    "appliedSteer": -0.25,
+    "steerFrom": 0,
+    "steerTo": -0.25,
+    "steerTime": 2.183499999999996,
+    "grade": 0,
+    "gradeAcceleration": 0,
+    "bankDegrees": -1.4951082696212898,
+    "roadHalfWidth": 7,
+    "laneCount": 4,
+    "highSpeedPace": 1.75,
+    "effectivePace": 1.75,
+    "travelSpeed": 113.56690648714749,
+    "mode": "playing",
+    "elapsed": 7.166900000000091,
+    "frames": 4123,
+    "inputs": {
+      "gas": false,
+      "brake": false,
+      "steer": 0
+    },
+    "audio": {
+      "passBy": {
+        "starts": 0,
+        "crossings": 0,
+        "active": [],
+        "tracked": 6,
+        "consumed": 0
+      },
+      "gravelLevel": 0,
+      "lastImpact": "vehicle",
+      "impactCount": 14,
+      "coneHitCount": 0,
+      "contextState": "locked",
+      "muted": false,
+      "active": true,
+      "engineHz": 154.85002866374336,
+      "engineRpm": 6919.092472567819,
+      "gear": 5,
+      "skidIntensity": 0,
+      "skidLevel": 0,
+      "windLevel": 0.06064429988129674,
+      "rms": 0
+    },
+    "trackLength": 25787,
+    "position": [
+      1263.5195292709664,
+      48.55117729462645,
+      10071.759608702556
+    ],
+    "swapped": false,
+    "surfaceError": 0.00002620520913154678,
+    "camera": {
+      "horizontalFov": 76,
+      "fov": 38.741159100630384,
+      "distance": 8,
+      "height": 2.6,
+      "lookAhead": 13.284848493623585,
+      "lookHeight": 0,
+      "position": [
+        1267.3823316301452,
+        51.15117729462645,
+        10064.753985394533
+      ],
+      "direction": [
+        -0.4792877459957894,
+        -0.1212513574193208,
+        0.8692418333595364
+      ],
+      "scenicEnabled": false,
+      "scenicWeight": 0
+    },
+    "immersive": {
+      "active": false,
+      "installed": false,
+      "lockState": "idle",
+      "pending": false,
+      "message": ""
+    },
+    "rightScreenDelta": 0.1546041391244668
+  }
+}

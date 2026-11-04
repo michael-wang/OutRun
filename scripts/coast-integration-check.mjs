@@ -1,0 +1,32 @@
+import {chromium} from '@playwright/test';
+import {writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const browser=await chromium.launch({channel:'msedge',headless:true});
+try{
+ const page=await browser.newPage({viewport:{width:960,height:432},hasTouch:true,isMobile:true,deviceScaleFactor:1}),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:5180/');
+ await page.waitForFunction(()=>window.__drive?.streaming()?.ready,{timeout:120000});
+ await page.locator('#player-play').tap();
+ await page.waitForFunction(()=>window.__drive.snapshot().mode==='playing');
+ const cdp=await page.context().newCDPSession(page),box=await page.locator('[data-control="gas"]').boundingBox();
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:box.x+box.width/2,y:box.y+box.height/2,id:1}]});
+ await page.waitForTimeout(500);
+ const held=await page.evaluate(()=>window.__drive.snapshot().inputs.gas);assert.equal(held,true);
+ await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ await page.waitForTimeout(100);assert.equal(await page.evaluate(()=>window.__drive.snapshot().inputs.gas),false);
+ await page.evaluate(()=>{const g=window.__drive;g.manual(true);g.reset({distance:1500,speed:60});});
+ await page.waitForFunction(()=>window.__drive.streaming().ready);await page.waitForTimeout(1000);
+ await page.evaluate(()=>window.__drive.advance(0));
+ await page.screenshot({path:'docs/evidence/coast-r7/journey-coast.png'});
+ const coast=await page.evaluate(()=>({journey:window.__drive.journey(),nature:window.__drive.coastNature(),state:window.__drive.snapshot()}));
+ assert.equal(coast.journey.index,0);assert.ok(coast.nature.instances>0);
+ await page.evaluate(()=>{const g=window.__drive;g.reset({distance:10200,speed:65});g.manual(false);window.driver=setInterval(()=>{const s=g.snapshot();g.controls({gas:s.speed<65,brake:s.speed>66,steer:Math.max(-1,Math.min(1,s.requiredSteer-s.lateral*.14))});},50);});
+ await page.waitForFunction(()=>window.__drive.journey().index===1&&!window.__drive.journey().transitioning,null,{timeout:90000});
+ await page.waitForTimeout(2500);
+ const city=await page.evaluate(()=>{clearInterval(window.driver);window.__drive.manual(true);return {journey:window.__drive.journey(),nature:window.__drive.coastNature(),state:window.__drive.snapshot()};});
+ await page.screenshot({path:'docs/evidence/coast-r7/journey-city-transition.png'});
+ assert.equal(city.nature.instances,0);assert.equal(city.state.offRoad,false);assert.deepEqual(errors,[]);
+ await writeFile('docs/evidence/coast-r7/integration.json',JSON.stringify({touchGas:true,release:true,errors,coast,city},null,2));
+ console.log(JSON.stringify({touchGas:true,errors,coastNature:coast.nature,transition:city.journey.transitions,cityNature:city.nature}));
+}finally{await browser.close();}

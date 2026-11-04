@@ -1,0 +1,3534 @@
+{
+  "browser": "Desktop Edge, touch emulation, 960x432 CSS pixels, DPR 2.75; not physical Pixel 8",
+  "errors": [],
+  "trace": [
+    {
+      "wall": 2721.800000000745,
+      "elapsed": 1.0000999999999982,
+      "d": 463.6223501933701,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11186,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 1191,
+        "calls": 173,
+        "triangles": 198034,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 112,
+        "textures": 33
+      },
+      "heap": 88708298,
+      "nature": {
+        "batches": 236,
+        "visible": 29,
+        "instances": 227,
+        "triangles": 105349,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 57
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 3721.5,
+      "elapsed": 2.000199999999994,
+      "d": 577.2779879337259,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11031,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 1821,
+        "calls": 176,
+        "triangles": 220768,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 120,
+        "textures": 33
+      },
+      "heap": 91654398,
+      "nature": {
+        "batches": 236,
+        "visible": 24,
+        "instances": 167,
+        "triangles": 34447,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 87
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 4722.4000000003725,
+      "elapsed": 3.0001999999999907,
+      "d": 690.9715651623045,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10552,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 2451,
+        "calls": 159,
+        "triangles": 218700,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 122,
+        "textures": 33
+      },
+      "heap": 92141362,
+      "nature": {
+        "batches": 236,
+        "visible": 24,
+        "instances": 165,
+        "triangles": 34404,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 117
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 5720.9000000003725,
+      "elapsed": 4.000199999999987,
+      "d": 804.7015876754162,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10175,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 3081,
+        "calls": 160,
+        "triangles": 264535,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 128,
+        "textures": 34
+      },
+      "heap": 91919114,
+      "nature": {
+        "batches": 236,
+        "visible": 27,
+        "instances": 179,
+        "triangles": 67473,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 147
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 6721.10000000149,
+      "elapsed": 5.000300000000033,
+      "d": 870.3974919020341,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10941,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 3711,
+        "calls": 176,
+        "triangles": 293923,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 34
+      },
+      "heap": 102577421,
+      "nature": {
+        "batches": 236,
+        "visible": 28,
+        "instances": 202,
+        "triangles": 88173,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 177
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 7720.9000000003725,
+      "elapsed": 6.000300000000074,
+      "d": 922.0094207197859,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10777,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 4341,
+        "calls": 167,
+        "triangles": 294187,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 136,
+        "textures": 34
+      },
+      "heap": 101865561,
+      "nature": {
+        "batches": 236,
+        "visible": 32,
+        "instances": 212,
+        "triangles": 89933,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 207
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 8722,
+      "elapsed": 7.000300000000117,
+      "d": 984.2418800692421,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10720,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 4971,
+        "calls": 156,
+        "triangles": 346014,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 140,
+        "textures": 38
+      },
+      "heap": 77208447,
+      "nature": {
+        "batches": 236,
+        "visible": 36,
+        "instances": 259,
+        "triangles": 150340,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 237
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 9721.900000000373,
+      "elapsed": 8.000300000000163,
+      "d": 1056.2556827555927,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 9963,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 5601,
+        "calls": 156,
+        "triangles": 357250,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 141,
+        "textures": 38
+      },
+      "heap": 86825231,
+      "nature": {
+        "batches": 284,
+        "visible": 37,
+        "instances": 287,
+        "triangles": 175540,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 267
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 10721.800000000745,
+      "elapsed": 9.000500000000137,
+      "d": 1138.3300274275357,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10455,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 6231,
+        "calls": 166,
+        "triangles": 361377,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 152,
+        "textures": 38
+      },
+      "heap": 94033695,
+      "nature": {
+        "batches": 284,
+        "visible": 41,
+        "instances": 297,
+        "triangles": 177302,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 297
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 11721.10000000149,
+      "elapsed": 10.000500000000109,
+      "d": 1228.8166029996337,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10659,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 6861,
+        "calls": 171,
+        "triangles": 366522,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 155,
+        "textures": 38
+      },
+      "heap": 104706603,
+      "nature": {
+        "batches": 284,
+        "visible": 46,
+        "instances": 375,
+        "triangles": 253210,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 327
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 12720.900000000373,
+      "elapsed": 11.000500000000086,
+      "d": 1323.7527334518331,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10884,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 7491,
+        "calls": 167,
+        "triangles": 362534,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 156,
+        "textures": 38
+      },
+      "heap": 83243995,
+      "nature": {
+        "batches": 284,
+        "visible": 49,
+        "instances": 362,
+        "triangles": 251409,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 357
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 13720.900000000373,
+      "elapsed": 12.000500000000065,
+      "d": 1422.9902794189616,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10821,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 8121,
+        "calls": 172,
+        "triangles": 361444,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 161,
+        "textures": 38
+      },
+      "heap": 79387159,
+      "nature": {
+        "batches": 284,
+        "visible": 46,
+        "instances": 376,
+        "triangles": 265672,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 387
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 14721.5,
+      "elapsed": 13.000600000000041,
+      "d": 1526.6476628577987,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11071,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 8751,
+        "calls": 173,
+        "triangles": 358712,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 166,
+        "textures": 38
+      },
+      "heap": 103076279,
+      "nature": {
+        "batches": 284,
+        "visible": 49,
+        "instances": 359,
+        "triangles": 263238,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 417
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 15721.10000000149,
+      "elapsed": 14.000700000000018,
+      "d": 1634.37752898513,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11325,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 9381,
+        "calls": 182,
+        "triangles": 380681,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 174,
+        "textures": 38
+      },
+      "heap": 98778023,
+      "nature": {
+        "batches": 284,
+        "visible": 45,
+        "instances": 357,
+        "triangles": 246420,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 447
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 16722.5,
+      "elapsed": 15.000499999999992,
+      "d": 1745.8217599344002,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11345,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 10011,
+        "calls": 181,
+        "triangles": 376561,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 184,
+        "textures": 38
+      },
+      "heap": 93173807,
+      "nature": {
+        "batches": 284,
+        "visible": 51,
+        "instances": 388,
+        "triangles": 297398,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 477
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 17722.300000000745,
+      "elapsed": 16.000599999999967,
+      "d": 1859.4742625624992,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11393,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 10641,
+        "calls": 182,
+        "triangles": 363398,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 188,
+        "textures": 38
+      },
+      "heap": 86055243,
+      "nature": {
+        "batches": 284,
+        "visible": 44,
+        "instances": 339,
+        "triangles": 246022,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 507
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 18721.800000000745,
+      "elapsed": 17.000799999999916,
+      "d": 1973.122811515125,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11289,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 11271,
+        "calls": 178,
+        "triangles": 354827,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 192,
+        "textures": 38
+      },
+      "heap": 105820699,
+      "nature": {
+        "batches": 284,
+        "visible": 43,
+        "instances": 298,
+        "triangles": 197673,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 537
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 19721.300000000745,
+      "elapsed": 18.000799999999863,
+      "d": 2086.787547246107,
+      "offRoad": false,
+      "frames": 58,
+      "work": {
+        "draws": 10855,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 11899,
+        "calls": 179,
+        "triangles": 379721,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 180,
+        "textures": 38
+      },
+      "heap": 98554766,
+      "nature": {
+        "batches": 300,
+        "visible": 43,
+        "instances": 288,
+        "triangles": 208788,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 567
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 20721.700000001118,
+      "elapsed": 19.000699999999807,
+      "d": 2200.4744510836317,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11326,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 12529,
+        "calls": 179,
+        "triangles": 349066,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 183,
+        "textures": 38
+      },
+      "heap": 98645121,
+      "nature": {
+        "batches": 300,
+        "visible": 43,
+        "instances": 238,
+        "triangles": 155550,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 597
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 21722.10000000149,
+      "elapsed": 20.000799999999753,
+      "d": 2314.203944861466,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11095,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 13159,
+        "calls": 170,
+        "triangles": 428308,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 187,
+        "textures": 38
+      },
+      "heap": 99280138,
+      "nature": {
+        "batches": 300,
+        "visible": 43,
+        "instances": 220,
+        "triangles": 159465,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 627
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 22721.300000000745,
+      "elapsed": 21.000899999999703,
+      "d": 2427.831260694956,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10791,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 13789,
+        "calls": 168,
+        "triangles": 538020,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 190,
+        "textures": 38
+      },
+      "heap": 92966456,
+      "nature": {
+        "batches": 300,
+        "visible": 39,
+        "instances": 165,
+        "triangles": 105445,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 657
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 23721.900000000373,
+      "elapsed": 22.00099999999965,
+      "d": 2541.49732557696,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11576,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 14419,
+        "calls": 210,
+        "triangles": 581165,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 201,
+        "textures": 38
+      },
+      "heap": 84925520,
+      "nature": {
+        "batches": 300,
+        "visible": 41,
+        "instances": 159,
+        "triangles": 117667,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 687
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 24722.400000000373,
+      "elapsed": 23.0008999999996,
+      "d": 2655.174348835176,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 14844,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 15049,
+        "calls": 251,
+        "triangles": 622507,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 211,
+        "textures": 38
+      },
+      "heap": 104054638,
+      "nature": {
+        "batches": 300,
+        "visible": 34,
+        "instances": 115,
+        "triangles": 75931,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 717
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 25721.60000000149,
+      "elapsed": 24.000899999999543,
+      "d": 2768.9101597826934,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 15305,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 15679,
+        "calls": 238,
+        "triangles": 663740,
+        "points": 476,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 219,
+        "textures": 38
+      },
+      "heap": 95925014,
+      "nature": {
+        "batches": 300,
+        "visible": 33,
+        "instances": 125,
+        "triangles": 70584,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 747
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 26722,
+      "elapsed": 25.000999999999493,
+      "d": 2882.529122880925,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 14839,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 16309,
+        "calls": 237,
+        "triangles": 539000,
+        "points": 476,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 227,
+        "textures": 41
+      },
+      "heap": 91480292,
+      "nature": {
+        "batches": 300,
+        "visible": 34,
+        "instances": 133,
+        "triangles": 77784,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 777
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 27722.5,
+      "elapsed": 26.001099999999436,
+      "d": 2996.1875070489823,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 14674,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 16939,
+        "calls": 235,
+        "triangles": 436976,
+        "points": 476,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 234,
+        "textures": 44
+      },
+      "heap": 81715070,
+      "nature": {
+        "batches": 300,
+        "visible": 33,
+        "instances": 140,
+        "triangles": 73330,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 807
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 28721.800000000745,
+      "elapsed": 27.000999999999383,
+      "d": 3109.857777517453,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 14993,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 17569,
+        "calls": 249,
+        "triangles": 328992,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 219,
+        "textures": 47
+      },
+      "heap": 102544600,
+      "nature": {
+        "batches": 243,
+        "visible": 37,
+        "instances": 171,
+        "triangles": 84680,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 837
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 29721.10000000149,
+      "elapsed": 28.001199999999333,
+      "d": 3223.6084059110817,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 15581,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 18199,
+        "calls": 247,
+        "triangles": 336886,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 225,
+        "textures": 50
+      },
+      "heap": 97541697,
+      "nature": {
+        "batches": 243,
+        "visible": 33,
+        "instances": 166,
+        "triangles": 83402,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 867
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 30721.60000000149,
+      "elapsed": 29.00119999999928,
+      "d": 3337.255669392303,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 15428,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 18829,
+        "calls": 245,
+        "triangles": 330143,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 232,
+        "textures": 53
+      },
+      "heap": 92382002,
+      "nature": {
+        "batches": 243,
+        "visible": 34,
+        "instances": 168,
+        "triangles": 83890,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 897
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 31722,
+      "elapsed": 30.00119999999923,
+      "d": 3450.892306725582,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 14959,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 19459,
+        "calls": 236,
+        "triangles": 366201,
+        "points": 480,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 232,
+        "textures": 53
+      },
+      "heap": 86709622,
+      "nature": {
+        "batches": 243,
+        "visible": 31,
+        "instances": 186,
+        "triangles": 121955,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 927
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 32721.700000001118,
+      "elapsed": 31.001199999999184,
+      "d": 3564.561943048543,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 14549,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 20089,
+        "calls": 233,
+        "triangles": 374022,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 236,
+        "textures": 53
+      },
+      "heap": 82325782,
+      "nature": {
+        "batches": 243,
+        "visible": 28,
+        "instances": 187,
+        "triangles": 111414,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 957
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 33721.60000000149,
+      "elapsed": 32.00129999999913,
+      "d": 3678.289763870849,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 14768,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 20719,
+        "calls": 243,
+        "triangles": 373177,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 242,
+        "textures": 53
+      },
+      "heap": 97315020,
+      "nature": {
+        "batches": 243,
+        "visible": 29,
+        "instances": 195,
+        "triangles": 118614,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 987
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 34721.5,
+      "elapsed": 33.001399999998945,
+      "d": 3791.963374138567,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 15543,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 21349,
+        "calls": 253,
+        "triangles": 327389,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 243,
+        "textures": 53
+      },
+      "heap": 92778172,
+      "nature": {
+        "batches": 243,
+        "visible": 25,
+        "instances": 179,
+        "triangles": 97631,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1017
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 35722.300000000745,
+      "elapsed": 34.00139999999877,
+      "d": 3905.5890624201,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 15895,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 21979,
+        "calls": 257,
+        "triangles": 307300,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 243,
+        "textures": 53
+      },
+      "heap": 87923327,
+      "nature": {
+        "batches": 243,
+        "visible": 24,
+        "instances": 161,
+        "triangles": 94841,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1047
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 36721.60000000149,
+      "elapsed": 35.001399999998604,
+      "d": 4019.2493201007605,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 15046,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 22609,
+        "calls": 213,
+        "triangles": 286192,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 188,
+        "textures": 53
+      },
+      "heap": 85324303,
+      "nature": {
+        "batches": 218,
+        "visible": 16,
+        "instances": 100,
+        "triangles": 32059,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1077
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 37721.300000000745,
+      "elapsed": 36.00149999999842,
+      "d": 4132.966821258907,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 13169,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 23239,
+        "calls": 209,
+        "triangles": 272188,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 189,
+        "textures": 53
+      },
+      "heap": 83280331,
+      "nature": {
+        "batches": 218,
+        "visible": 19,
+        "instances": 118,
+        "triangles": 34927,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1107
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 38721.800000000745,
+      "elapsed": 37.001499999998245,
+      "d": 4246.6693011329035,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 13110,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 23869,
+        "calls": 207,
+        "triangles": 338045,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 196,
+        "textures": 53
+      },
+      "heap": 107401310,
+      "nature": {
+        "batches": 218,
+        "visible": 17,
+        "instances": 147,
+        "triangles": 85807,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1137
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 39722.10000000149,
+      "elapsed": 38.001599999998106,
+      "d": 4360.295938141891,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 12638,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 24499,
+        "calls": 178,
+        "triangles": 355503,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 200,
+        "textures": 53
+      },
+      "heap": 102295230,
+      "nature": {
+        "batches": 218,
+        "visible": 25,
+        "instances": 223,
+        "triangles": 141475,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1167
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 40720.60000000149,
+      "elapsed": 39.00149999999797,
+      "d": 4473.93505249743,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11356,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 25129,
+        "calls": 179,
+        "triangles": 375681,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 204,
+        "textures": 53
+      },
+      "heap": 89395744,
+      "nature": {
+        "batches": 218,
+        "visible": 26,
+        "instances": 249,
+        "triangles": 164875,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1197
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 41721.70000000112,
+      "elapsed": 40.00149999999779,
+      "d": 4587.632089563401,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11155,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 25759,
+        "calls": 172,
+        "triangles": 330847,
+        "points": 496,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 209,
+        "textures": 53
+      },
+      "heap": 81241824,
+      "nature": {
+        "batches": 218,
+        "visible": 34,
+        "instances": 322,
+        "triangles": 212560,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1227
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 42721.300000000745,
+      "elapsed": 41.00169999999761,
+      "d": 4701.385527741188,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10821,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 26389,
+        "calls": 173,
+        "triangles": 348401,
+        "points": 496,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 209,
+        "textures": 53
+      },
+      "heap": 77809179,
+      "nature": {
+        "batches": 218,
+        "visible": 37,
+        "instances": 345,
+        "triangles": 236802,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1257
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 43720.5,
+      "elapsed": 42.00159999999745,
+      "d": 4815.011083204633,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11348,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 27019,
+        "calls": 174,
+        "triangles": 288445,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 214,
+        "textures": 53
+      },
+      "heap": 101003042,
+      "nature": {
+        "batches": 218,
+        "visible": 30,
+        "instances": 294,
+        "triangles": 165333,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1287
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 44721.800000000745,
+      "elapsed": 43.001699999997285,
+      "d": 4928.6575995416115,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10757,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 27649,
+        "calls": 171,
+        "triangles": 267737,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 214,
+        "textures": 53
+      },
+      "heap": 98385434,
+      "nature": {
+        "batches": 218,
+        "visible": 32,
+        "instances": 277,
+        "triangles": 162631,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1317
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 45721.5,
+      "elapsed": 44.00179999999712,
+      "d": 5042.352330519957,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10558,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 28279,
+        "calls": 163,
+        "triangles": 198536,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 148,
+        "textures": 38
+      },
+      "heap": 99619626,
+      "nature": {
+        "batches": 230,
+        "visible": 24,
+        "instances": 202,
+        "triangles": 87757,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1347
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 46720.800000000745,
+      "elapsed": 45.001799999996955,
+      "d": 5156.070311608691,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 10454,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 28909,
+        "calls": 165,
+        "triangles": 217056,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 148,
+        "textures": 38
+      },
+      "heap": 98407350,
+      "nature": {
+        "batches": 230,
+        "visible": 15,
+        "instances": 99,
+        "triangles": 14544,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1377
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 47722.5,
+      "elapsed": 46.001799999996784,
+      "d": 5269.743916326669,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 9984,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 29539,
+        "calls": 155,
+        "triangles": 214400,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 149,
+        "textures": 38
+      },
+      "heap": 89622170,
+      "nature": {
+        "batches": 230,
+        "visible": 15,
+        "instances": 99,
+        "triangles": 14544,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1407
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 48721.90000000037,
+      "elapsed": 47.00189999999661,
+      "d": 5383.377142589174,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 11297,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 30169,
+        "calls": 193,
+        "triangles": 251748,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 149,
+        "textures": 38
+      },
+      "heap": 87865326,
+      "nature": {
+        "batches": 230,
+        "visible": 15,
+        "instances": 99,
+        "triangles": 14544,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1437
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 49722.40000000037,
+      "elapsed": 48.00189999999643,
+      "d": 5491.725531830474,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 12231,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 30799,
+        "calls": 207,
+        "triangles": 264338,
+        "points": 588,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 152,
+        "textures": 38
+      },
+      "heap": 86719256,
+      "nature": {
+        "batches": 230,
+        "visible": 16,
+        "instances": 102,
+        "triangles": 15276,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1467
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 50720.70000000112,
+      "elapsed": 49.00199999999627,
+      "d": 5534.260031895721,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 13858,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 31429,
+        "calls": 242,
+        "triangles": 307562,
+        "points": 496,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 161,
+        "textures": 38
+      },
+      "heap": 89560708,
+      "nature": {
+        "batches": 230,
+        "visible": 18,
+        "instances": 106,
+        "triangles": 15868,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1497
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 51720.60000000149,
+      "elapsed": 50.00189999999611,
+      "d": 5589.345509368092,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 15528,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 32059,
+        "calls": 267,
+        "triangles": 362211,
+        "points": 496,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 167,
+        "textures": 38
+      },
+      "heap": 92673700,
+      "nature": {
+        "batches": 230,
+        "visible": 21,
+        "instances": 129,
+        "triangles": 64109,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1527
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 52721,
+      "elapsed": 51.00199999999598,
+      "d": 5653.465868016835,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 16185,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 32689,
+        "calls": 257,
+        "triangles": 385373,
+        "points": 500,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 168,
+        "textures": 38
+      },
+      "heap": 96107632,
+      "nature": {
+        "batches": 230,
+        "visible": 22,
+        "instances": 156,
+        "triangles": 88409,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1557
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 53720.60000000149,
+      "elapsed": 52.00199999999584,
+      "d": 5728.073689456478,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17581,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 33319,
+        "calls": 296,
+        "triangles": 414781,
+        "points": 500,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 169,
+        "textures": 38
+      },
+      "heap": 73340860,
+      "nature": {
+        "batches": 230,
+        "visible": 26,
+        "instances": 179,
+        "triangles": 92069,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1587
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 54721,
+      "elapsed": 53.00209999999567,
+      "d": 5812.371725540426,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17777,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 33949,
+        "calls": 285,
+        "triangles": 456078,
+        "points": 500,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 176,
+        "textures": 38
+      },
+      "heap": 73473714,
+      "nature": {
+        "batches": 230,
+        "visible": 30,
+        "instances": 228,
+        "triangles": 143368,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1617
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 55722,
+      "elapsed": 54.0020999999955,
+      "d": 5904.553050778294,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17984,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 34579,
+        "calls": 303,
+        "triangles": 483596,
+        "points": 496,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 179,
+        "textures": 38
+      },
+      "heap": 75022286,
+      "nature": {
+        "batches": 230,
+        "visible": 35,
+        "instances": 281,
+        "triangles": 171774,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1647
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 7,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 56720.800000000745,
+      "elapsed": 55.00209999999532,
+      "d": 6000.212880667161,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 18019,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 35209,
+        "calls": 287,
+        "triangles": 453459,
+        "points": 496,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 157,
+        "textures": 38
+      },
+      "heap": 76688350,
+      "nature": {
+        "batches": 194,
+        "visible": 39,
+        "instances": 330,
+        "triangles": 220974,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1677
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 57720.60000000149,
+      "elapsed": 56.002199999995156,
+      "d": 6100.557568204324,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17643,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 35839,
+        "calls": 284,
+        "triangles": 458998,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 157,
+        "textures": 38
+      },
+      "heap": 80477750,
+      "nature": {
+        "batches": 194,
+        "visible": 43,
+        "instances": 345,
+        "triangles": 243591,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1707
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 58720.70000000112,
+      "elapsed": 57.00229999999499,
+      "d": 6205.22648754719,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17608,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 36469,
+        "calls": 282,
+        "triangles": 437033,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 157,
+        "textures": 38
+      },
+      "heap": 82705062,
+      "nature": {
+        "batches": 194,
+        "visible": 39,
+        "instances": 319,
+        "triangles": 216296,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1737
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 59720.800000000745,
+      "elapsed": 58.002299999994825,
+      "d": 6313.874197951068,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17521,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 37099,
+        "calls": 283,
+        "triangles": 455035,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 157,
+        "textures": 38
+      },
+      "heap": 84884970,
+      "nature": {
+        "batches": 194,
+        "visible": 40,
+        "instances": 321,
+        "triangles": 236899,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1767
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 60720.60000000149,
+      "elapsed": 59.002199999994666,
+      "d": 6426.165144925779,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17414,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 37729,
+        "calls": 277,
+        "triangles": 410206,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 156,
+        "textures": 38
+      },
+      "heap": 80518374,
+      "nature": {
+        "batches": 194,
+        "visible": 37,
+        "instances": 295,
+        "triangles": 193054,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1797
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 61720.800000000745,
+      "elapsed": 60.00229999999451,
+      "d": 6539.897456749885,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 17725,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 38359,
+        "calls": 326,
+        "triangles": 469539,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 163,
+        "textures": 38
+      },
+      "heap": 100350730,
+      "nature": {
+        "batches": 194,
+        "visible": 36,
+        "instances": 268,
+        "triangles": 188869,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1827
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 62720.60000000149,
+      "elapsed": 61.00229999999435,
+      "d": 6653.548230197015,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21307,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 38989,
+        "calls": 349,
+        "triangles": 452290,
+        "points": 484,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 168,
+        "textures": 38
+      },
+      "heap": 77321820,
+      "nature": {
+        "batches": 194,
+        "visible": 29,
+        "instances": 206,
+        "triangles": 117450,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1857
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 63720.800000000745,
+      "elapsed": 62.0023999999942,
+      "d": 6767.183647724367,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21346,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 39619,
+        "calls": 344,
+        "triangles": 434104,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 168,
+        "textures": 38
+      },
+      "heap": 96803136,
+      "nature": {
+        "batches": 194,
+        "visible": 20,
+        "instances": 103,
+        "triangles": 39682,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1887
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 64720.90000000037,
+      "elapsed": 63.00239999999403,
+      "d": 6821.104069213577,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21858,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 40249,
+        "calls": 356,
+        "triangles": 439456,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 170,
+        "textures": 38
+      },
+      "heap": 93882284,
+      "nature": {
+        "batches": 194,
+        "visible": 20,
+        "instances": 103,
+        "triangles": 39682,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1917
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 65721.30000000075,
+      "elapsed": 64.00249999999387,
+      "d": 6873.025937651138,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21502,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 40879,
+        "calls": 348,
+        "triangles": 438918,
+        "points": 584,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 170,
+        "textures": 38
+      },
+      "heap": 91063604,
+      "nature": {
+        "batches": 194,
+        "visible": 19,
+        "instances": 91,
+        "triangles": 37822,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1947
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 66721.5,
+      "elapsed": 65.0024999999946,
+      "d": 6903.5954455445935,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 22173,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 41509,
+        "calls": 358,
+        "triangles": 442588,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 173,
+        "textures": 38
+      },
+      "heap": 91497264,
+      "nature": {
+        "batches": 194,
+        "visible": 20,
+        "instances": 92,
+        "triangles": 38066,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 1977
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 67721.20000000112,
+      "elapsed": 66.00249999999534,
+      "d": 6942.625012257274,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21760,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 42139,
+        "calls": 352,
+        "triangles": 446288,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 177,
+        "textures": 38
+      },
+      "heap": 92357541,
+      "nature": {
+        "batches": 194,
+        "visible": 22,
+        "instances": 96,
+        "triangles": 44724,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 2007
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 68721.30000000075,
+      "elapsed": 67.00249999999606,
+      "d": 6995.714300816889,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21677,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 42769,
+        "calls": 359,
+        "triangles": 539528,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 177,
+        "textures": 38
+      },
+      "heap": 93513999,
+      "nature": {
+        "batches": 194,
+        "visible": 14,
+        "instances": 64,
+        "triangles": 15566,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 2037
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 6,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 69721.30000000075,
+      "elapsed": 68.00249999999686,
+      "d": 7058.770185819857,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21438,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 43399,
+        "calls": 341,
+        "triangles": 494072,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 156,
+        "textures": 38
+      },
+      "heap": 96203967,
+      "nature": {
+        "batches": 182,
+        "visible": 15,
+        "instances": 68,
+        "triangles": 19166,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 2067
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 5,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 70720.90000000037,
+      "elapsed": 69.00259999999766,
+      "d": 7131.898398546248,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 21006,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 44029,
+        "calls": 329,
+        "triangles": 489468,
+        "points": 492,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 156,
+        "textures": 38
+      },
+      "heap": 73579359,
+      "nature": {
+        "batches": 182,
+        "visible": 16,
+        "instances": 71,
+        "triangles": 19898,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 2097
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 5,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    },
+    {
+      "wall": 71721.10000000149,
+      "elapsed": 70.00269999999843,
+      "d": 7214.920694986212,
+      "offRoad": false,
+      "frames": 60,
+      "work": {
+        "draws": 19278,
+        "offscreenDraws": 570,
+        "offscreenViewportPixels": 31457280
+      },
+      "render": {
+        "frame": 44659,
+        "calls": 303,
+        "triangles": 501762,
+        "points": 488,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 159,
+        "textures": 38
+      },
+      "heap": 81096079,
+      "nature": {
+        "batches": 182,
+        "visible": 20,
+        "instances": 95,
+        "triangles": 64354,
+        "materials": 7,
+        "textures": 6
+      },
+      "water": {
+        "mode": "ultra",
+        "resolution": 128,
+        "simulationHz": 30,
+        "updates": 2127
+      },
+      "journey": {
+        "index": 0,
+        "preparing": false
+      },
+      "stream": {
+        "chunks": 5,
+        "queued": 0,
+        "retiring": 0,
+        "fatal": ""
+      }
+    }
+  ],
+  "longFrames": [
+    {
+      "ms": 50.099999999998545,
+      "d": 1980.7001181389362,
+      "index": 0,
+      "preparing": false
+    }
+  ],
+  "frames": {
+    "count": 4197,
+    "p50": 16.69999999999709,
+    "p95": 16.799999999999272,
+    "p99": 16.80000000000291,
+    "worst": 50.099999999998545,
+    "over50": 1
+  },
+  "journey": {
+    "enabled": true,
+    "index": 0,
+    "transitioning": false,
+    "totalElapsed": 70.00269999999843,
+    "memory": {
+      "geometries": 159,
+      "textures": 38
+    },
+    "chapters": [
+      {
+        "id": "coast",
+        "title": "海濱公路",
+        "start": 350,
+        "end": 10350
+      },
+      {
+        "id": "city",
+        "title": "都市叢林",
+        "start": 11688,
+        "end": 23771
+      },
+      {
+        "id": "canyon",
+        "title": "大峽谷",
+        "start": 350,
+        "end": 3485
+      }
+    ],
+    "transitions": [],
+    "preparations": [],
+    "loadStarts": [],
+    "loadHeld": false,
+    "preparing": false,
+    "error": "",
+    "highway": false
+  },
+  "state": {
+    "gear": 4,
+    "rpm": 6760.733939778654,
+    "shiftRemaining": 0,
+    "shiftDirection": 0,
+    "gearInitialized": true,
+    "tractionFactor": 1,
+    "gearRatio": 0.8205128205128205,
+    "engineTorque": 5.975153942120654,
+    "driveForce": 4.902690414047716,
+    "roadDrag": 1.2785983811430885,
+    "shiftDrag": 0,
+    "netAcceleration": 3.6226376863764584,
+    "distance": 7214.920694986212,
+    "speed": 50.74712951121449,
+    "lateral": 0.06336412097322246,
+    "heading": 0,
+    "velocityHeading": 0,
+    "worldHeading": -0.34281528775917414,
+    "steering": 0,
+    "yawRate": 0,
+    "slipAngle": 0,
+    "slip": 0,
+    "offRoad": false,
+    "footprintEdge": 1.1933641209732224,
+    "curvature": 0,
+    "corridorSide": 0,
+    "steeringTarget": -0.008870976936251145,
+    "drifting": false,
+    "rawSteer": -0.008870976936251145,
+    "effectiveSteer": 0,
+    "requiredSteer": 0,
+    "lateralRate": 0,
+    "weightRoll": 5.006540512860944e-13,
+    "bank": 0.001511290459073476,
+    "appliedSteer": 0,
+    "steerFrom": -0.25,
+    "steerTo": 0,
+    "steerTime": 3.7000999999999817,
+    "grade": 0.00014825143161581282,
+    "gradeAcceleration": -0.0014543465281689559,
+    "bankDegrees": 0.08660114602042539,
+    "roadHalfWidth": 7,
+    "laneCount": 4,
+    "highSpeedPace": 1.75,
+    "effectivePace": 1.722340568253511,
+    "travelSpeed": 87.40383987957968,
+    "mode": "playing",
+    "elapsed": 70.00269999999843,
+    "frames": 4245,
+    "inputs": {
+      "gas": false,
+      "brake": false,
+      "steer": 0
+    },
+    "audio": {
+      "passBy": {
+        "starts": 9,
+        "crossings": 8,
+        "active": [],
+        "tracked": 3,
+        "consumed": 2
+      },
+      "gravelLevel": 0,
+      "lastImpact": "vehicle",
+      "impactCount": 4,
+      "coneHitCount": 0,
+      "contextState": "locked",
+      "muted": false,
+      "active": true,
+      "engineHz": 154.946788895942,
+      "engineRpm": 6760.733939778654,
+      "gear": 4,
+      "skidIntensity": 0,
+      "skidLevel": 0,
+      "windLevel": 0.03708390461224286,
+      "rms": 0
+    },
+    "trackLength": 12366,
+    "position": [
+      1366.758511679131,
+      -0.9117061245585422,
+      6968.619523514333
+    ],
+    "swapped": false,
+    "surfaceError": -0.00003380976549516301,
+    "camera": {
+      "horizontalFov": 76,
+      "fov": 38.741159100630384,
+      "distance": 8,
+      "height": 2.6,
+      "lookAhead": 13.284848493623585,
+      "lookHeight": 0,
+      "position": [
+        1364.0063785094699,
+        1.6871078368171117,
+        6961.107404704662
+      ],
+      "direction": [
+        0.3414677863954699,
+        -0.12111324870081949,
+        0.9320575796823454
+      ],
+      "scenicEnabled": false,
+      "scenicWeight": 0
+    },
+    "immersive": {
+      "active": false,
+      "installed": false,
+      "lockState": "idle",
+      "pending": false,
+      "message": ""
+    },
+    "rightScreenDelta": 0.15502369167776886
+  }
+}

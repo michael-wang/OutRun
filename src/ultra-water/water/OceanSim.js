@@ -8,7 +8,6 @@ import { FullscreenQuad, rawPass } from '../engine/fullscreen.js';
 // (slope variance -> roughness, LEAN style).
 
 export const N = 256;
-const LOG_N = 8;
 // last cascade is the gravity-capillary detail layer; 12/2.1 is non-integer so tiles don't align
 export const CASCADE_LENGTHS = [600, 85, 12, 2.1];
 const G = 9.81;
@@ -226,7 +225,14 @@ export const defaultOceanParams = () => ({
 });
 
 export class OceanSim {
-  constructor(renderer, params = defaultOceanParams()) {
+  // OutRun: retain the upstream 256 default; mobile uses 128 with matching
+  // shader dimensions, butterfly stages and render targets.
+  constructor(renderer, params = defaultOceanParams(), options = {}) {
+    const resolution = options.resolution ?? N;
+    if (![128, 256].includes(resolution)) throw new Error('Ocean FFT resolution must be 128 or 256');
+    this.resolution = resolution;
+    this.logN = Math.log2(resolution);
+    const shader = source => source.replace(`#define N ${N}`, `#define N ${resolution}`);
     this.renderer = renderer;
     this.params = params;
     this.time = 0;
@@ -237,20 +243,20 @@ export class OceanSim {
       type: THREE.FloatType, minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter,
       depthBuffer: false, generateMipmaps: false,
     };
-    const H = N * CASCADE_LENGTHS.length;
-    this.h0RT = new THREE.WebGLRenderTarget(N, H, fft);
+    const H = resolution * CASCADE_LENGTHS.length;
+    this.h0RT = new THREE.WebGLRenderTarget(resolution, H, fft);
     // the 16 IFFT stages are bandwidth-bound; fp16 halves that, and its ~1e-3 relative
     // error is about a millimetre of displacement on the largest cascade
     const half = { ...fft, type: THREE.HalfFloatType, count: 2 };
-    this.ping = new THREE.WebGLRenderTarget(N, H, half);
-    this.pong = new THREE.WebGLRenderTarget(N, H, half);
+    this.ping = new THREE.WebGLRenderTarget(resolution, H, half);
+    this.pong = new THREE.WebGLRenderTarget(resolution, H, half);
 
     const out = {
       type: THREE.HalfFloatType, minFilter: THREE.LinearMipmapLinearFilter, magFilter: THREE.LinearFilter,
       wrapS: THREE.RepeatWrapping, wrapT: THREE.RepeatWrapping, generateMipmaps: true,
-      anisotropy: renderer.capabilities.getMaxAnisotropy(), depthBuffer: false, count: 2,
+      anisotropy: options.anisotropy ?? renderer.capabilities.getMaxAnisotropy(), depthBuffer: false, count: 2,
     };
-    this.out = CASCADE_LENGTHS.map(() => [new THREE.WebGLRenderTarget(N, N, out), new THREE.WebGLRenderTarget(N, N, out)]);
+    this.out = CASCADE_LENGTHS.map(() => [new THREE.WebGLRenderTarget(resolution, resolution, out), new THREE.WebGLRenderTarget(resolution, resolution, out)]);
 
     // turbulence starts at 1 (no foam)
     const prevClear = renderer.getClearColor(new THREE.Color()), prevAlpha = renderer.getClearAlpha();
@@ -260,7 +266,7 @@ export class OceanSim {
     renderer.setRenderTarget(null);
 
     const lengths = new THREE.Vector4(...CASCADE_LENGTHS);
-    this.initMat = rawPass(INIT_FRAG, {
+    this.initMat = rawPass(shader(INIT_FRAG), {
       uSpecA: { value: [new THREE.Vector4(), new THREE.Vector4()] },
       uSpecB: { value: [new THREE.Vector4(), new THREE.Vector4()] },
       uLength: { value: lengths },
@@ -269,13 +275,13 @@ export class OceanSim {
       uCapFade: { value: 0 },
       uSeed: { value: 1337 },
     });
-    this.evolveMat = rawPass(EVOLVE_FRAG, {
+    this.evolveMat = rawPass(shader(EVOLVE_FRAG), {
       uH0: { value: this.h0RT.texture }, uLength: { value: lengths }, uTime: { value: 0 },
     });
-    this.fftMat = rawPass(FFT_FRAG, {
+    this.fftMat = rawPass(shader(FFT_FRAG), {
       uIn0: { value: null }, uIn1: { value: null }, uSub: { value: 2 }, uVertical: { value: 0 },
     });
-    this.assembleMat = rawPass(ASSEMBLE_FRAG, {
+    this.assembleMat = rawPass(shader(ASSEMBLE_FRAG), {
       uIn0: { value: null }, uIn1: { value: null }, uPrev: { value: null },
       uCascade: { value: 0 }, uLambda: { value: 1 }, uDt: { value: 0 }, uFoamRecovery: { value: 0.45 },
     });
@@ -319,7 +325,7 @@ export class OceanSim {
     q.material = this.fftMat;
     for (let dir = 0; dir < 2; dir++) {
       fu.uVertical.value = dir;
-      for (let s = 1; s <= LOG_N; s++) {
+      for (let s = 1; s <= this.logN; s++) {
         fu.uSub.value = 1 << s;
         fu.uIn0.value = src.textures[0];
         fu.uIn1.value = src.textures[1];
