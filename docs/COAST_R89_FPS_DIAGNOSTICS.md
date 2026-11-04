@@ -7,7 +7,7 @@
 - **Driving FPS profiler:** `/?fpsdiag=1` — 10-minute bounded one-second samples; export **「匯出 FPS JSON」** from a small floating diagnostic panel.
 - **Existing startup profiler:** `/?startupdiag=1` — retained unchanged for first-load analysis. Use separately when comparing driving to avoid unnecessary overlapping instrumentation.
 - The accepted R8.8 golden rice renderer is now the **only** live rendering path. `?rice=legacy` / `?rice=hybrid` no longer select variants.
-- Dev version label: **`v0.9-coast-r9.0-p0b-exp`** (shared flower atlas experiment). No new `main` release from this diagnostic change.
+- Dev version label: **`v0.9-coast-r9.0-p0b2-exp`** (shared flower atlas experiment). No new `main` release from this diagnostic change.
 
 Open the local `dev` server from the **actual Pixel 8** on the same Wi-Fi (use its current IP and port, for example `http://192.168.1.106:5173/?fpsdiag=1` if that remains the active server).
 
@@ -54,3 +54,11 @@ This version includes a small real optimization (not just more telemetry): all f
 For comparison to the pre-P0b Pixel 8 baseline, focus on `extras.streamer.taskProfile.byDetail['scenery-field/flowers']`, `['scenery-field/rice']`, `lastSlowTasks[*].detail` / `resourceId`, and `extras.farms.sharedFlowerAtlas`. The old log only had `byKind['scenery-field']` (91 tasks, 3,413ms total, worst 100.7ms by 2.3km); a direct *flower-only* old baseline does not exist.
 
 Avoid assuming that sharing one atlas solves the entire field-construction spike. Re-measure the early 400m, 1.1km, 2.2km frame drops and the ~3.2km flower-region sustained FPS. A 3ms queue budget is still only a soft budget until the remaining monolithic numerical work is split or moved off-thread.
+
+## P0b-2 (Worker-prepared field data)
+
+The latest `dev` moves deterministic field terrain-height calculations, rice canopy geometry, grass surface sampling and wildflower sample placement into the existing Road Worker. The main thread builds the **same** Three.js materials, Shader and meshes from transferable typed arrays.
+
+The optional `extras.streamer.farmWorker` snapshot now reports Worker-prepared chunk/plot counts, cumulative Worker-only preparation CPU milliseconds, the most recent prep Chunk and its cost, and `missingPlots` (fallback to the previous synchronous constructor). **The success criterion is `missingPlots=0`, no new missing scenery/road and a major drop in `scenery-field` worst-task wall time.** If the Worker is slow but the main frame rate stays stable, that is preferable to blocking the render loop—as long as the buffer of safe playable road remains ready.
+
+See [R9.0 P0 handoff](R90_P0_SCENE_TASK_HANDOFF.md) for matched A/B points (~450m, ~1150m, ~2200m), mobile acceptance and full rollback instructions. Run TypeScript build and Vitest before real-device QA.
