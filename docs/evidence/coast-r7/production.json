@@ -1,0 +1,35 @@
+{
+  "errors": [],
+  "assets": [
+    {
+      "url": "/assets/coast-nature/models.json",
+      "status": 200
+    },
+    {
+      "url": "/assets/coast-nature/Bark_NormalTree.png",
+      "status": 200
+    },
+    {
+      "url": "/assets/coast-nature/Leaves_TwistedTree_C.png",
+      "status": 200
+    },
+    {
+      "url": "/assets/coast-nature/Leaves_NormalTree_C.png",
+      "status": 200
+    },
+    {
+      "url": "/assets/coast-nature/Grass.png",
+      "status": 200
+    },
+    {
+      "url": "/assets/coast-nature/Leaf_Pine_C.png",
+      "status": 200
+    },
+    {
+      "url": "/assets/coast-nature/Rocks_Diffuse.png",
+      "status": 200
+    }
+  ],
+  "debugAPI": "undefined",
+  "canvas": 1
+}

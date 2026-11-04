@@ -1,4 +1,4 @@
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,COAST_DISTRICTS,coastDistrictAt} from './coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastRockX,COAST_DISTRICTS} from './coast-layout';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
 import {canyonBend,canyonBlend} from './canyon-identity';
@@ -171,27 +171,6 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  function beachAnchor(d:number,x:number){
   anchor(d,x);const p=sample(d);base.copy(p.position).addScaledVector(p.right,x);
   base.y=coastBeachHeight(x,p.position.y,p.right.y,d);
- }
- function coastTree(key:number){
-  yaw+=random(key+81)*6.28;
-  const h=4+random(key+12)*5,type=Math.floor(random(key+19)*3);
-  if(type===0){
-   const lean=.4+random(key)*.8;
-   part(cylinder,'#aa8960',lean*.3,h*.3,0,.22,h*.6,.22,0,0,-.1);
-   part(cylinder,'#aa8960',lean*.7,h*.78,0,.16,h*.4,.16,0,0,-.14);
-   for(let j=0;j<7;j++){
-    const a=j*6.283/7+random(key)*2;
-    part(round,'#287b52',lean+Math.sin(a)*1.25,h,Math.cos(a)*1.25,.38,.15,1.8,-.22,a);
-    part(round,'#287b52',lean+Math.sin(a)*2.6,h-.65,Math.cos(a)*2.6,.26,.11,1.4,.45,a);
-   }
-   return;
-  }
-  part(cylinder,'#aa8960',0,h*.4,0,.23,h*.8,.23,0,0,.07);
-  if(type===1){ // Windswept broadleaf, with an off-centre, uneven crown.
-   for(let j=0;j<3;j++)part(round,'#527849',(j-1)*1.5,h*.78+random(key+j)*1.2,random(key+j+7)-.5,2.3,1.4,2.1);
-  }else{ // Coastal pine silhouette rather than another round crown.
-   for(let j=0;j<3;j++)part(cone,'#3f6854',.2*j,h*.55+j*1.35,0,2.6-j*.55,3.8-j*.6,2.3-j*.5);
-  }
  }
  function beachPerson(key:number,playing=false){
   const shirt=['#e76f51','#36a8b1','#edc969'][Math.abs(key)%3];
@@ -534,13 +513,6 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  for(let i=Math.max(0,Math.ceil((range.start-16)/30)),d=16+i*30;d<Math.min(length,range.end);d+=30,i++){
   if(range.designerCut)continue;
   if(range.coastUltra){
-   // Sparse irregular groves: mixed species, heights, depth and deliberate gaps.
-   if(!coastDistrictAt(d)&&random(i+73)>(d>4150&&d<6900?.65:.35))for(let j=0;j<1+Math.floor(random(i+18)*3);j++){
-    const at=d+(random(i*9+j)-.5)*21;
-    if(at<range.start||at>=range.end)continue;
-    beachAnchor(at,21+random(i*13+j)*43);if(clear(5))coastTree(i*7+j);
-   }
-   if(!coastDistrictAt(d)&&i%13===0){beachAnchor(d,92+random(i+51)*24);if(clear(38))part(boulder,'#9eaa91',0,1,0,34,7,39);}
    continue;
   }
   const weights=weightsAt(d),family=random(i+300)<weights[0]?0:random(i+300)<weights[0]+weights[1]?1:2;

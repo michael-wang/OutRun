@@ -1,4 +1,5 @@
 import {coastBeachX,coastProfileX} from './coast-layout';
+import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
@@ -86,6 +87,11 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
      const x=coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d);
      color.set('#dfc894').lerp(new THREE.Color('#a58e68'),Math.max(0,Math.min(1,(-x-15)/11)));
     }
+    if(coastUltra&&kind==='grass'){
+     const x=roadOffset(o,cachedWidth(d),cachedShoulders(d)),hill=coastHillHeight(x,d);
+     color.set('#81915a').lerp(new THREE.Color('#536b47'),Math.min(1,hill/48));
+     color.lerp(new THREE.Color('#ae9b70'),.14+.1*Math.sin(d*.017+x*.12));
+    }
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
      const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);
      color.lerp(new THREE.Color(o<0?'#b98459':'#a8754d'),Math.max(0,blend)*.83);
@@ -134,7 +140,11 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   if(seamless){for(const [a,b] of [[-13,-7],[-7,7],[7,13]])append('sand',a,b,-.1,-.1,start,end,2.5);}
   else append('sand',-13,13,-.1,-.1,start,end,2.5);
  }
- if(active){
+ if(coastUltra){
+  // Actual cross-slope relief: fine near the verge, coarse on distant ridges.
+  const strips=COAST_HILL_STRIPS;
+  for(let i=1;i<strips.length;i++)append('grass',strips[i-1],strips[i],0,0,start,end,strips[i]<140?5:20);
+ }else if(active){
   for(const [a,b,ha,hb] of [[13,75,-.12,-3],[75,160,-3,-14]]){
    if(start<cutFrom)append('grass',a,b,ha,hb,start,cutFrom,10);
    if(cutTo<end)append('grass',a,b,ha,hb,cutTo,end,10);
@@ -146,7 +156,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   append('grass',13,75,-.12,-3,start,end,10);
   append('grass',75,160,-3,-14,start,end,10);
  }
- if(scenerySections)append('grass',160,d=>sceneryFarReach(sampled(d).curvature),-14,-48,start,end,10,undefined,true);
+ if(scenerySections&&!coastUltra)append('grass',160,d=>sceneryFarReach(sampled(d).curvature),-14,-48,start,end,10,undefined,true);
  append('asphalt',-7,7,0,0,start,end,2.5);
  // The off-ramp takes away the mainline's last (fifth) lane; the on-ramp
  // supplies that exact lane. Render feeder geometry until it overlaps the

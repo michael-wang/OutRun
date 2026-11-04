@@ -13,4 +13,4 @@
 
 The owner authorizes each development milestone. Preserve accepted driving behavior, input controls, screenshot archives, telemetry and human reviews unless the owner explicitly requests a change. Work only in this repository; do not deploy publicly or modify other projects without separate authorization. Test actual gameplay as appropriate and clearly distinguish browser emulation from physical-device results.
 
-Current state: `main` contains human-approved v0.8.5; `dev` contains v0.9 and awaits human Road Trip playtesting. Do not begin another milestone without the owner's request.
+Current state: `main` contains human-approved v0.8.5; `dev` includes the owner-requested COAST-SUNSET-R7 scenery pass and awaits human coastal/phone playtesting. The v0.9 Road Trip human review remains pending. See `docs/COAST_R7_HANDOFF.md`. Do not begin another milestone without the owner's request.

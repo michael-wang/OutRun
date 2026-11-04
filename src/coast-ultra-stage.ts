@@ -13,10 +13,6 @@ const c=(a:number,b:number,effort:number,direction:1|-1,beat:string):Placement=>
  channel:'curvature',id:'C02',startS:a,endS:b,
  parameters:{effort,direction,start:0,end:1,secondary:.7},transition:'smooth',beat,
 });
-const s=(a:number,b:number,effort:number,direction:1|-1,beat:string):Placement=>({
- channel:'curvature',id:'C06',startS:a,endS:b,
- parameters:{effort,direction,start:0,end:1,secondary:.7},transition:'smooth',beat,
-});
 const gentleRise:Placement={
  channel:'elevation',id:'E02',startS:0,endS:COAST_ULTRA_LENGTH,
  parameters:{base:-1.8,amplitude:1.0,direction:1,shelfStart:.32,shelfEnd:.68},
@@ -25,24 +21,23 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:23,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ revision:24,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
  name:'Azure Coast · Sunset Postcard',
- intent:'A paced sunset journey: alternating beaches, lit neighbourhoods and markets, with a sunset bay finale.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-sunset-lively-r6-804',
- stageCode:'COAST-SUNSET-R6',tripCode:'COAST-SUNSET-R6',
+ intent:'Four open sunset bays along a scalloped shore, with wooded inland hills between neighbourhoods and markets.',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-sunset-hills-r7-804',
+ stageCode:'COAST-SUNSET-R7',tripCode:'COAST-SUNSET-R7',
  length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:4,roadWidth:4*LANE_WIDTH,
  placements:[
   gentleRise,
-  c(160,780,.56,-1,'Beach approach'),
-  c(1000,1720,.48,1,'Family beach'),
-  c(2200,2820,.4,1,'Neighbourhood arrival'),
-  c(3180,3800,.4,-1,'Leave the village'),
-  s(4200,5400,.3,1,'Quiet coast S'),
-  c(6000,6600,.42,1,'Headland approach'),
-  // End heading ~-0.47 rad places the fixed COAST_SUN left of the chase view.
-  // The beach/market open after this turn; the camera and sun never pivot for it.
-  c(6800,7750,.44,-1,'Sunset reveal'),
-  c(8500,9200,.28,1,'Golden-water farewell'),
+  // Shallow headlands keep the fixed sun offshore and in the forward-left view.
+  // Each return opens another long bay, without rotating the sky or the camera.
+  c(0,650,.14,-1,'First sunset bay'),
+  c(1750,2400,.18,1,'Village headland'),
+  c(2800,3450,.18,-1,'Second sunset bay'),
+  c(4550,5200,.18,1,'Wooded headland'),
+  c(5500,6150,.18,-1,'Third sunset bay'),
+  c(7000,7650,.18,1,'Market headland'),
+  c(7950,8600,.18,-1,'Golden-water farewell'),
  ].sort((a,b)=>a.startS-b.startS),
  bankFeatures:[],fixedRoad:undefined,
  worldPhases:[{startS:0,endS:COAST_ULTRA_LENGTH,world:'coast',beat:'Sunset coast journey'}],
