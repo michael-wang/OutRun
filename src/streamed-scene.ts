@@ -71,20 +71,23 @@ export class StreamedScene {
  private farmAssets?:FarmAssets;private farms=new Map<number,FarmPatch[]>();private disposed=false;private farmWarmed=false;private farmGpuWarmed=false;private farmWarmTask?:Promise<void>;
  private farmWarmIds=new Set<number>();
  private farmWarmStartedAt=0;
+ private farmWarmElapsedBeforeBatch=0;
  private startupFarmWarm={running:false,done:0,total:0,elapsedMs:0,compileWallMs:0,uploadSubmitMs:0,maxObjectSubmitMs:0,batches:0};
  warmFarm(renderer:THREE.WebGLRenderer,camera:THREE.Camera):Promise<void>|undefined{
   if(!this.farmSample||this.disposed||(!this.farmGpuWarmed&&![2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready')))return;
   if(this.farmWarmTask)return this.farmWarmTask;
   const patches=[...this.farms.values()].flat().filter(p=>!this.farmWarmIds.has(p.plot.id));if(!patches.length)return;
   patches.forEach(p=>this.farmWarmIds.add(p.plot.id));
-  const warmStart=performance.now(),info=this.startupFarmWarm;
-  this.farmWarmStartedAt=warmStart;
-  info.running=true;info.done=0;info.total=0;info.elapsedMs=0;info.compileWallMs=0;info.uploadSubmitMs=0;info.maxObjectSubmitMs=0;info.batches++;
+  const warmStart=performance.now(),info=this.startupFarmWarm,previous={...this.startupFarmWarm};
+  this.farmWarmStartedAt=warmStart;this.farmWarmElapsedBeforeBatch=previous.elapsedMs;
+  info.running=true;info.batches++;
   const instrument=typeof location!=='undefined'&&new URLSearchParams(location.search).get('startupdiag')==='1';
   return this.farmWarmTask=warmFarmMeshes(renderer,camera,this.scene,patches,()=>!this.disposed,instrument?p=>{
-   info.done=p.done;info.total=p.total;info.elapsedMs=performance.now()-warmStart;
-   info.compileWallMs=p.compileWallMs;info.uploadSubmitMs=p.uploadSubmitMs;info.maxObjectSubmitMs=p.maxObjectSubmitMs;
-  }:undefined).then(()=>{info.running=false;info.elapsedMs=performance.now()-warmStart;this.farmGpuWarmed=true;this.farmWarmTask=undefined;}).catch(e=>{info.running=false;info.elapsedMs=performance.now()-warmStart;this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
+   info.done=previous.done+p.done;info.total=previous.total+p.total;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;
+   info.compileWallMs=previous.compileWallMs+p.compileWallMs;info.uploadSubmitMs=previous.uploadSubmitMs+p.uploadSubmitMs;
+   info.maxObjectSubmitMs=Math.max(previous.maxObjectSubmitMs,p.maxObjectSubmitMs);
+  }:undefined).then(()=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.farmGpuWarmed=true;this.farmWarmTask=undefined;})
+   .catch(e=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
  }
  updateFarm(time:number){if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
@@ -194,7 +197,7 @@ export class StreamedScene {
   return {
    workerInitialized:this.initialized,farmAssetsLoaded:!!this.farmAssets,
    farmChunksReady,farmChunksTotal:farmChunks.length,farmGpuWarmed:this.farmGpuWarmed,
-   farmWarm:{...this.startupFarmWarm,elapsedMs:this.startupFarmWarm.running?performance.now()-this.farmWarmStartedAt:this.startupFarmWarm.elapsedMs},
+   farmWarm:{...this.startupFarmWarm,elapsedMs:this.startupFarmWarm.running?this.farmWarmElapsedBeforeBatch+performance.now()-this.farmWarmStartedAt:this.startupFarmWarm.elapsedMs},
    nearbyCompleted,nearbyTotal:near.length*2,natureTexturesPending:this.natureTextureLoads,
    workerPending:this.pending?{kind:this.pending.kind,index:this.pending.index,ageMs:Math.round(performance.now()-this.pending.since)}:null,
    queuedMainTasks:this.work.length,blockers,backgroundTasks,fatal:this.errorMessage,
