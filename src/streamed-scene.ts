@@ -7,7 +7,7 @@ import type {PilotCandidate} from './pilot-composer';
 import type {RoadMeshData} from './road-chunk';
 import {loadCoastFarm,createFarmPlot,warmFarmMeshes,type FarmAssets,type FarmPatch} from './coast-farm';
 import {farmPlotsInChunk} from './coast-farm-layout';
-import {SceneTaskProfiler,type SceneTaskKind} from './scene-task-profiler';
+import {SceneTaskProfiler,SCENE_TASK_SOFT_BUDGET_MS,type SceneTaskKind} from './scene-task-profiler';
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
@@ -195,7 +195,7 @@ export class StreamedScene {
   let taskWallMs=0;
   // Soft 3ms frame budget; individual synchronous callbacks can still exceed it.
   // The task profiler reveals exactly which kind/chunk must later be split or moved to a Worker.
-  while((this.work.length||this.retiring.length)&&performance.now()-start<3){
+  while((this.work.length||this.retiring.length)&&performance.now()-start<SCENE_TASK_SOFT_BUDGET_MS){
    const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0);
    const task=disposing?this.retiring.shift()!:this.work.shift()!;
    if(!disposing&&!this.desired.has(task.index))continue;
