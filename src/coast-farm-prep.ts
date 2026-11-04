@@ -81,7 +81,8 @@ export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
   const layout=buildSurfaceLayout(surface,coverage);
   const grassCount=layout.coveredArea>0?Math.max(1,Math.floor(layout.coveredArea*.18*density)):0;
   const blades=packSurfaceSamples(sampleSurfaceData(surface,grassCount,seed,coverage,layout));
-  const flowerCount=plot.band<3?Math.min([2300,1500,800][plot.band],Math.round(layout.coveredArea*1.1*density)):0;
+  const flowerDensity=1.1*density;
+  const flowerCount=plot.band<3?Math.min([2300,1500,800][plot.band],Math.round(layout.coveredArea*flowerDensity)):0;
   const flowers=plot.band<3?packSurfaceSamples(sampleSurfaceData(surface,flowerCount,seed,coverage,layout)):new Float32Array();
   result.meadow={blades,flowers};
   geometry.dispose();
