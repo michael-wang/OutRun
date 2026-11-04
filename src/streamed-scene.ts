@@ -199,10 +199,11 @@ export class StreamedScene {
   const prepared=new Map((farmPreps??[]).map(p=>[p.id,p]));
   const plots=this.farmSample&&this.farmAssets?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
   if(plots.length&&prepared.size!==plots.length)this.farmWorkerPrepared.missingPlots+=plots.filter(p=>!prepared.has(p.id)).length;
-  // A real prepared payload is an entire chunk's farm batch; partial data is a
-  // worker contract violation rather than a silent visual mismatch.
-  if(farmPreps?.length&&this.farmSample&&farmPreps.length!==farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength).length)
-   throw new Error('Incomplete Worker farm preparation for chunk '+c.index);
+  // Real Worker payloads must contain exactly one preparation per expected
+  // farm plot. Missing payload remains a compatible legacy/test fallback.
+  if(farmPreps!==undefined&&this.farmSample
+   &&(prepared.size!==plots.length||plots.some(p=>!prepared.has(p.id))))
+    throw new Error('Incomplete Worker farm preparation for chunk '+c.index);
   const templates=new Map<string,THREE.BufferGeometry>(),tasks:(()=>void)[]=[];
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
   for(const data of instances)tasks.push(()=>{const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}:${!!data.waffleSign}`;let material=this.materials.get(key);if(!material){material=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});if(data.nature)this.configureNatureMaterial(material,data.nature);if(data.waffleSign){material.map=this.waffleTexture??=waffleSignTexture();material.emissive.set(0xffffff);material.emissiveMap=material.map;material.emissiveIntensity=.3;}this.materials.set(key,material);}const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.receiveShadow=!data.nature;if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
