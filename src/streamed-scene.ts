@@ -7,6 +7,7 @@ import type {PilotCandidate} from './pilot-composer';
 import type {RoadMeshData} from './road-chunk';
 import {loadCoastFarm,createFarmPlot,warmFarmMeshes,type FarmAssets,type FarmPatch} from './coast-farm';
 import {farmPlotsInChunk} from './coast-farm-layout';
+import {HYBRID_RICE_SEA} from './rice-sea-mode';
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
@@ -69,12 +70,24 @@ export class StreamedScene {
  private generation=1;private errorMessage='';
  private farmAssets?:FarmAssets;private farms=new Map<number,FarmPatch[]>();private disposed=false;private farmWarmed=false;private farmGpuWarmed=false;private farmWarmTask?:Promise<void>;
  private farmWarmIds=new Set<number>();
+ private farmWarmStartedAt=0;
+ private farmWarmElapsedBeforeBatch=0;
+ private startupFarmWarm={running:false,done:0,total:0,elapsedMs:0,compileWallMs:0,uploadSubmitMs:0,maxObjectSubmitMs:0,batches:0};
  warmFarm(renderer:THREE.WebGLRenderer,camera:THREE.Camera):Promise<void>|undefined{
   if(!this.farmSample||this.disposed||(!this.farmGpuWarmed&&![2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready')))return;
   if(this.farmWarmTask)return this.farmWarmTask;
   const patches=[...this.farms.values()].flat().filter(p=>!this.farmWarmIds.has(p.plot.id));if(!patches.length)return;
   patches.forEach(p=>this.farmWarmIds.add(p.plot.id));
-  return this.farmWarmTask=warmFarmMeshes(renderer,camera,this.scene,patches,()=>!this.disposed).then(()=>{this.farmGpuWarmed=true;this.farmWarmTask=undefined;}).catch(e=>{this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
+  const warmStart=performance.now(),info=this.startupFarmWarm,previous={...this.startupFarmWarm};
+  this.farmWarmStartedAt=warmStart;this.farmWarmElapsedBeforeBatch=previous.elapsedMs;
+  info.running=true;info.batches++;
+  const instrument=typeof location!=='undefined'&&new URLSearchParams(location.search).get('startupdiag')==='1';
+  return this.farmWarmTask=warmFarmMeshes(renderer,camera,this.scene,patches,()=>!this.disposed,instrument?p=>{
+   info.done=previous.done+p.done;info.total=previous.total+p.total;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;
+   info.compileWallMs=previous.compileWallMs+p.compileWallMs;info.uploadSubmitMs=previous.uploadSubmitMs+p.uploadSubmitMs;
+   info.maxObjectSubmitMs=Math.max(previous.maxObjectSubmitMs,p.maxObjectSubmitMs);
+  }:undefined).then(()=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.farmGpuWarmed=true;this.farmWarmTask=undefined;})
+   .catch(e=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
  }
  updateFarm(time:number){if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
@@ -168,13 +181,38 @@ export class StreamedScene {
   while((this.work.length||this.retiring.length)&&performance.now()-start<3){const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0),task=disposing?this.retiring.shift()!:this.work.shift()!;if(!disposing&&!this.desired.has(task.index))continue;const t=performance.now();if(task.record&&task.record.commitStart===undefined)task.record.commitStart=t;try{task.run();}catch(error){if(task.record)task.record.error=String(error);this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;}const end=performance.now();if(task.record){task.record.commitEnd=end;task.record.commitCpuMs+=end-t;}this.note(disposing?'dispose':'main-commit',task.index,end-t);}
   this.dispatch();
  }
+ /** Read-only first-load gate snapshot. Does not call the stateful ready getter. */
+ startupDiagnosticState(){
+  const near=this.nearby,farmChunks=[2,3,4];
+  const nearbyCompleted=near.reduce((n,i)=>{const c=this.chunks.get(i);return n+Number(c?.road==='ready')+Number(c?.scenery==='ready');},0);
+  const farmChunksReady=farmChunks.filter(i=>this.chunks.get(i)?.scenery==='ready').length;
+  const blockers:string[]=[],backgroundTasks:string[]=[];
+  if(!this.farmAssets&&this.farmSample)blockers.push('農田模型下載／解析');
+  if(!this.initialized)blockers.push('Road Worker 初始化');
+  if(farmChunksReady<farmChunks.length&&this.farmSample)(HYBRID_RICE_SEA?backgroundTasks:blockers).push('遠方農田 Chunk');
+  if(!this.farmGpuWarmed&&this.farmSample)(HYBRID_RICE_SEA?backgroundTasks:blockers).push('農田 Shader／GPU 預熱');
+  if(nearbyCompleted<near.length*2)blockers.push('附近道路／景物');
+  if(this.natureTextureLoads)blockers.push('樹木貼圖下載');
+  if(this.errorMessage)blockers.unshift('錯誤：'+this.errorMessage);
+  return {
+   workerInitialized:this.initialized,farmAssetsLoaded:!!this.farmAssets,
+   farmChunksReady,farmChunksTotal:farmChunks.length,farmGpuWarmed:this.farmGpuWarmed,
+   farmWarm:{...this.startupFarmWarm,elapsedMs:this.startupFarmWarm.running?this.farmWarmElapsedBeforeBatch+performance.now()-this.farmWarmStartedAt:this.startupFarmWarm.elapsedMs},
+   nearbyCompleted,nearbyTotal:near.length*2,natureTexturesPending:this.natureTextureLoads,
+   workerPending:this.pending?{kind:this.pending.kind,index:this.pending.index,ageMs:Math.round(performance.now()-this.pending.since)}:null,
+   queuedMainTasks:this.work.length,blockers,backgroundTasks,fatal:this.errorMessage,
+  };
+ }
  // Complete the visible neighbourhood first; the full 5 km window continues in background.
  get nearby(){const first=Math.floor(Math.max(0,this.position-80)/this.chunkLength),last=Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((this.position+1200)/this.chunkLength));return Array.from({length:last-first+1},(_,i)=>first+i);}
  get ready(){
   // Prepare the main farm and first village fields in the initial 5 km window.
   // Later fields use the same budgeted construction and incremental GPU warmup
   // well ahead of the player, before entering their visible neighbourhood.
-  if(this.farmSample&&!this.farmWarmed){this.farmWarmed=this.farmGpuWarmed&&[2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready');if(!this.farmWarmed)return false;}
+  // Hybrid mode lets the playable shoreline depart when nearby road and scenery
+  // are ready. The 2-4 km farm stays in the existing streamed background queue.
+  // Legacy mode preserves the exact original preflight gate for A/B comparison.
+  if(this.farmSample&&!HYBRID_RICE_SEA&&!this.farmWarmed){this.farmWarmed=this.farmGpuWarmed&&[2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready');if(!this.farmWarmed)return false;}
   return !this.errorMessage&&this.natureTextureLoads===0&&this.nearby.every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});
  }
  get fullyReady(){return !this.errorMessage&&!this.retiring.length&&[...this.desired].every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});}
