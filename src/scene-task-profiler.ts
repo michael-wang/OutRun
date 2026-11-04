@@ -3,7 +3,7 @@ export const SCENE_TASK_SOFT_BUDGET_MS=3;
 export type SceneTaskKind=
  'road-geometry'|'roadside-instances'|'road-annotation'
  |'scenery-geometry'|'scenery-instances'|'scenery-field'
- |'ready-marker'|'retire-field'|'retire-instances'|'retire-geometry'|'other';
+ |'ready-marker'|'retire-field'|'retire-instances'|'retire-geometry'|'queue-sort'|'pump-overhead'|'other';
 
 type Accumulator={count:number;sumMs:number;worstMs:number;overBudget:number;over16:number;over33:number;over50:number;sampleMs:number[]};
 export type SceneTaskSpike={
