@@ -20,7 +20,7 @@ export class SceneTaskProfiler {
  constructor(readonly budgetMs=SCENE_TASK_SOFT_BUDGET_MS){}
  record(kind:SceneTaskKind,chunk:number,ms:number,atDistanceM:number,remainingTasks:number,atMs:number,detail?:string,resourceId?:number){
   if(!Number.isFinite(ms)||ms<0)return;
-  const track=(group:Map<string,Accumulator>,key:string)=>{
+  const track=<K extends string>(group:Map<K,Accumulator>,key:K)=>{
    let a=group.get(key);
    if(!a){a={count:0,sumMs:0,worstMs:0,overBudget:0,over16:0,over33:0,over50:0,sampleMs:[]};group.set(key,a);}
    a.count++;a.sumMs+=ms;a.worstMs=Math.max(a.worstMs,ms);
@@ -39,7 +39,7 @@ export class SceneTaskProfiler {
   }
  }
  snapshot(){
-  const summarize=(totals:Map<string,Accumulator>)=>Object.fromEntries([...totals].map(([kind,a])=>{
+  const summarize=<K extends string>(totals:Map<K,Accumulator>)=>Object.fromEntries([...totals].map(([kind,a])=>{
    const sorted=[...a.sampleMs].sort((x,y)=>x-y),index=Math.max(0,Math.ceil(sorted.length*.95)-1);
    return [kind,{
     count:a.count,totalMs:fmt(a.sumMs),meanMs:fmt(a.sumMs/a.count),worstMs:fmt(a.worstMs),
