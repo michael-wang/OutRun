@@ -7,6 +7,7 @@ import {seededRandom} from './vendor/three-stylized/utils';
 import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
 import {HYBRID_RICE_SEA} from './rice-sea-mode';
+import {farmWarmupRepresentatives} from './farm-warmup-plan';
 import {FARM_SCARECROWS,type FarmPlot} from './coast-farm-layout';
 import type {createTrack} from './track';
 
@@ -223,14 +224,7 @@ export async function warmFarmMeshes(renderer:THREE.WebGLRenderer,camera:THREE.C
  // The hybrid renderer uses shared farm shaders. Prewarm one representative
  // for each material/object variant rather than submitting every distant Mesh
  // to WebGL before it enters the view. Remaining meshes are streamed normally.
- const seen=new Map<THREE.Material,Set<string>>();
- const objects=HYBRID_RICE_SEA?allObjects.filter(object=>{
-  const kind=object instanceof THREE.InstancedMesh?'instanced':'mesh';
-  const materials=Array.isArray(object.material)?object.material:[object.material];
-  const needsWarmup=materials.some(material=>!seen.get(material)?.has(kind));
-  for(const material of materials){let variants=seen.get(material);if(!variants){variants=new Set();seen.set(material,variants);}variants.add(kind);}
-  return needsWarmup;
- }):allObjects;
+ const objects=farmWarmupRepresentatives(allObjects,HYBRID_RICE_SEA);
  const compiled=new Set<THREE.Material>();
  let done=0,compileWallMs=0,uploadSubmitMs=0,maxObjectSubmitMs=0;
  onProgress?.({done,total:objects.length,compileWallMs,uploadSubmitMs,maxObjectSubmitMs});
