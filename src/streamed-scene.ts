@@ -7,6 +7,7 @@ import type {PilotCandidate} from './pilot-composer';
 import type {RoadMeshData} from './road-chunk';
 import {loadCoastFarm,createFarmPlot,warmFarmMeshes,type FarmAssets,type FarmPatch} from './coast-farm';
 import {farmPlotsInChunk} from './coast-farm-layout';
+import {SceneTaskProfiler,type SceneTaskKind} from './scene-task-profiler';
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
@@ -14,7 +15,7 @@ type Instance={waffleSign?:boolean;nature?:NatureBatch;template:string;color:num
 type Chunk={index:number;objects:THREE.Object3D[];groups:Partial<Record<string,THREE.Group>>;geometries:Set<THREE.BufferGeometry>;road:'missing'|'working'|'ready';scenery:'missing'|'working'|'ready'};
 type Phase='road'|'scenery';
 type Lifecycle={index:number;start:number;end:number;kind:Phase;generation:number;requestedAt:number;responseAt?:number;workerCpuMs?:number;responseMs?:number;commitStart?:number;commitEnd?:number;commitCpuMs:number;readyAt?:number;generatedInstances?:number;attachedInstances:number;discardedTasks:number;error?:string;retiredAt?:number};
-type Work={index:number;priority:number;run:()=>void;record?:Lifecycle};
+type Work={index:number;priority:number;run:()=>void;record?:Lifecycle;kind?:SceneTaskKind};
 /** Nearest-rank quantiles over the bounded retained sample set. */
 export function latencyDistribution(values:number[]){const sorted=values.filter(Number.isFinite).sort((a,b)=>a-b),q=(p:number)=>sorted.length?sorted[Math.max(0,Math.ceil(sorted.length*p)-1)]:null;return {count:sorted.length,p50:q(.5),p95:q(.95),p99:q(.99),worst:q(1)};}
 export interface SceneAnnotation {distance:number;create:()=>THREE.Mesh[]}
@@ -26,6 +27,9 @@ export class StreamedScene {
  readonly history:{kind:string;index:number;ms:number}[]=[];
  private worker!:Worker;private bank?:BankStrength;private pending?:{kind:string;index:number;since:number};private retries=0;private failures:{message:string;kind:string;index:number;at:number}[]=[];private testFaults={delayMs:0,fromIndex:0,fail:false};private chunks=new Map<number,Chunk>();private desired=new Set<number>();private work:Work[]=[];
  private retiring:Work[]=[];
+ private readonly taskProfiler=typeof location!=='undefined'&&(()=>{
+  const p=new URLSearchParams(location.search);return p.get('fpsdiag')==='1'||p.get('streamdiag')==='1';
+ })()?new SceneTaskProfiler():undefined;
  private diagnostics=typeof location!=='undefined'&&(()=>{const p=new URLSearchParams(location.search);return p.get('streamdiag')==='1'||(p.get('streamhud')==='1'&&(import.meta.env.DEV||p.get('qa')==='1'));})();
  private lifecycle:Lifecycle[]=[];private activeRecord?:Lifecycle;private discardedResponses=0;private discardedTasks=0;
  // Scalar records only: never retain geometry or transferable buffers.
@@ -90,6 +94,9 @@ export class StreamedScene {
  }
  updateFarm(time:number){if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
+ /** Opt-in common streaming-task cost attribution (read-only). */
+ get sceneTaskProfile(){return this.taskProfiler?.snapshot()??null;}
+ get sceneTaskSpikes(){return this.taskProfiler?.recentSlowTasks()??[];}
  constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false,private farmSample?:Parameters<typeof createFarmPlot>[1]){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
@@ -135,10 +142,10 @@ export class StreamedScene {
    // no longer render or participate in tire raycasts. Dispose GPU buffers in
    // individual, budgeted steps on subsequent frames.
    for(const group of Object.values(c.groups))group?.removeFromParent();
-   for(const farm of this.farms.get(index)??[])this.retiring.push({index,priority:1,run:()=>{this.farmWarmIds.delete(farm.plot.id);farm.group.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.ShaderMaterial)this.clippedMaterials.delete(m);});farm.dispose();}});this.farms.delete(index);
+   for(const farm of this.farms.get(index)??[])this.retiring.push({index,priority:1,kind:'retire-field',run:()=>{this.farmWarmIds.delete(farm.plot.id);farm.group.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.ShaderMaterial)this.clippedMaterials.delete(m);});farm.dispose();}});this.farms.delete(index);
    if(this.diagnostics)for(const r of this.lifecycle)if(r.index===index&&r.retiredAt===undefined)r.retiredAt=performance.now();
-   for(const object of c.objects)if(object instanceof THREE.InstancedMesh)this.retiring.push({index,priority:1,run:()=>object.dispose()});
-   for(const geometry of c.geometries)this.retiring.push({index,priority:1,run:()=>geometry.dispose()});this.chunks.delete(index);this.sceneryCounts.delete(index);
+   for(const object of c.objects)if(object instanceof THREE.InstancedMesh)this.retiring.push({index,priority:1,kind:'retire-instances',run:()=>object.dispose()});
+   for(const geometry of c.geometries)this.retiring.push({index,priority:1,kind:'retire-geometry',run:()=>geometry.dispose()});this.chunks.delete(index);this.sceneryCounts.delete(index);
   }
   this.work=this.work.filter(task=>{if(this.desired.has(task.index))return true;this.discardedTasks++;if(task.record)task.record.discardedTasks++;return false;});this.dispatch();
  }
@@ -157,8 +164,13 @@ export class StreamedScene {
   const road=data.type==='prepared';if(!road)this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
   if(record&&!road)record.generatedInstances=data.instances.reduce((n:number,i:Instance)=>n+i.matrices.length/16,0);this.activeRecord=undefined;
   const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances);
-  for(const task of tasks)this.work.push({index:c.index,priority:road?0:1,record,run:task});
-  this.work.push({index:c.index,priority:road?0:1,record,run:()=>{c[road?'road':'scenery']='ready';if(record)record.readyAt=performance.now();}});this.busy=false;this.pending=undefined;this.dispatch();
+  for(const [taskIndex,task] of tasks.entries()){
+   const kind:SceneTaskKind=road
+    ?taskIndex<data.meshes.length?'road-geometry':taskIndex<data.meshes.length+data.roadside.length?'roadside-instances':'road-annotation'
+    :taskIndex<data.definitions.length?'scenery-geometry':taskIndex<data.definitions.length+data.instances.length?'scenery-instances':'scenery-field';
+   this.work.push({index:c.index,priority:road?0:1,record,kind,run:task});
+  }
+  this.work.push({index:c.index,priority:road?0:1,record,kind:'ready-marker',run:()=>{c[road?'road':'scenery']='ready';if(record)record.readyAt=performance.now();}});this.busy=false;this.pending=undefined;this.dispatch();
  }
  private roadWork(c:Chunk,meshes:RoadData[],roadside:Float32Array[]){const tasks=meshes.map(m=>()=>{
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setAttribute('normal',new THREE.BufferAttribute(m.normals,3));if(m.uvs.length)g.setAttribute('uv',new THREE.BufferAttribute(m.uvs,2));if(m.colors.length)g.setAttribute('color',new THREE.BufferAttribute(m.colors,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));
@@ -177,7 +189,7 @@ export class StreamedScene {
  pump(){
   if(this.pending&&performance.now()-this.pending.since>30000)this.fail('Worker response timed out after 30 seconds');
   const start=performance.now(),current=Math.floor(this.position/this.chunkLength);this.work.sort((a,b)=>a.priority-b.priority||Math.abs(a.index-current)-Math.abs(b.index-current));
-  while((this.work.length||this.retiring.length)&&performance.now()-start<3){const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0),task=disposing?this.retiring.shift()!:this.work.shift()!;if(!disposing&&!this.desired.has(task.index))continue;const t=performance.now();if(task.record&&task.record.commitStart===undefined)task.record.commitStart=t;try{task.run();}catch(error){if(task.record)task.record.error=String(error);this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;}const end=performance.now();if(task.record){task.record.commitEnd=end;task.record.commitCpuMs+=end-t;}this.note(disposing?'dispose':'main-commit',task.index,end-t);}
+  while((this.work.length||this.retiring.length)&&performance.now()-start<3){const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0),task=disposing?this.retiring.shift()!:this.work.shift()!;if(!disposing&&!this.desired.has(task.index))continue;const t=performance.now();if(task.record&&task.record.commitStart===undefined)task.record.commitStart=t;try{task.run();}catch(error){if(task.record)task.record.error=String(error);this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;}const end=performance.now();if(task.record){task.record.commitEnd=end;task.record.commitCpuMs+=end-t;}this.note(disposing?'dispose':'main-commit',task.index,end-t);this.taskProfiler?.record(task.kind??'other',task.index,end-t,this.position,this.work.length+this.retiring.length,end);}
   this.dispatch();
  }
  /** Read-only first-load gate snapshot. Does not call the stateful ready getter. */
