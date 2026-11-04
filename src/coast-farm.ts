@@ -6,6 +6,7 @@ import {grassWindVertexTransform,grassWindVertexUniforms} from './vendor/three-s
 import {seededRandom} from './vendor/three-stylized/utils';
 import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
+import {HYBRID_RICE_SEA} from './rice-sea-mode';
 import {FARM_SCARECROWS,type FarmPlot} from './coast-farm-layout';
 import type {createTrack} from './track';
 
@@ -69,11 +70,37 @@ export type FarmAssets=Awaited<ReturnType<typeof loadCoastFarm>>;
 
 /** A small repeating row texture preserves field structure beyond plant LOD. */
 function fieldTexture(canopy=false){
+ if(canopy&&HYBRID_RICE_SEA)return hybridRiceTexture();
  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const ctx=canvas.getContext('2d')!,rand=seededRandom(80483);
  ctx.fillStyle=canopy?'#f5eac7':'#e2d5a9';ctx.fillRect(0,0,128,128);
  if(!canopy)for(let x=0;x<128;x+=16){ctx.fillStyle='#b7b488';ctx.fillRect(x,0,3,128);}
  for(let i=0;i<1800;i++){ctx.fillStyle=rand()>.5?'#eee5bf':canopy?'#d9ca91':'#bfc191';ctx.fillRect(rand()*128,rand()*128,canopy?2:1,canopy?4:2);}
  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=1;return t;
+}
+
+/** Low-cost seamless golden-grain texture: dozens of rice heads per square metre,
+ * drawn offline once with Canvas, then mipped for stable oblique coastal views. */
+function hybridRiceTexture(){
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
+ const ctx=canvas.getContext('2d')!,rand=seededRandom(20261104);
+ ctx.fillStyle='#f3dfaa';ctx.fillRect(0,0,256,256);
+ // Broad, low-contrast cultivated rows remain visible when distant mip levels
+ // average the individual grains away.
+ for(let x=0;x<256;x+=20){
+  ctx.fillStyle='rgba(123,101,44,.12)';ctx.fillRect(x,0,4,256);
+  ctx.fillStyle='rgba(255,251,207,.10)';ctx.fillRect(x+6,0,6,256);
+ }
+ // Short leaning heads and stalks; avoid high-contrast noise and alpha overdraw.
+ for(let i=0;i<4400;i++){
+  const x=Math.floor(rand()*256),y=Math.floor(rand()*256),w=1+Math.floor(rand()*3),h=3+Math.floor(rand()*9);
+  const shade=rand();
+  ctx.fillStyle=shade<.3?'#cead62':shade<.72?'#f7e4ad':'#fff0c0';
+  ctx.fillRect(x,y,w,h);
+  if(shade>.82){ctx.fillStyle='#ddc478';ctx.fillRect((x+2)%256,(y+2)%256,1,Math.max(2,h-3));}
+ }
+ const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;
+ t.wrapS=t.wrapT=THREE.RepeatWrapping;t.minFilter=THREE.LinearMipmapLinearFilter;
+ t.magFilter=THREE.LinearFilter;t.generateMipmaps=true;t.anisotropy=2;return t;
 }
 
 // Use the existing opaque/alpha-tested passes. No blending layers or shadows.
@@ -107,16 +134,21 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
   for(let i=0;i<=rows;i++){const d=start+(end-start)*i/rows;for(const x of [left,right]){const p=position(d,x,lift);vertices.push(p.x,p.y,p.z);uv.push((x-left)/8,(d-start)/8);}if(i<rows){const j=i*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}}
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();ownedGeometry.push(g);const m=new THREE.Mesh(g,mat);group.add(m);return m;
  }
+ const hybridRice=HYBRID_RICE_SEA&&plot.kind==='rice';
  const groundColor=plot.kind==='rice'?'#d3b450':flowerColors[plot.band%3];
  const surface=ribbon(plot.left,plot.right,plot.start,plot.end,.055,assets.material('ground',groundColor));
  // Keep the exact sampled terrain, including road bend and mild grade. No new terrain generator.
- const sampling=surface.clone(false);sampling.geometry=surface.geometry.clone();ownedGeometry.push(sampling.geometry);
- const suv=sampling.geometry.getAttribute('uv');for(let i=0;i<suv.count;i++)suv.setXY(i,suv.getX(i)*8/(plot.right-plot.left),suv.getY(i)*8/(plot.end-plot.start));
+ // The hybrid rice sea is a single animated canopy plus roadside rice heads.
+ // Do not allocate an extra terrain mesh/grass system when it cannot be seen.
+ const sampling=hybridRice?null:surface.clone(false);
+ if(sampling){sampling.geometry=surface.geometry.clone();ownedGeometry.push(sampling.geometry);
+  const suv=sampling.geometry.getAttribute('uv');for(let i=0;i<suv.count;i++)suv.setXY(i,suv.getX(i)*8/(plot.right-plot.left),suv.getY(i)*8/(plot.end-plot.start));}
  const residentScarecrows=FARM_SCARECROWS.filter(s=>s.d>=plot.start&&s.d<plot.end&&s.x>plot.left&&s.x<plot.right);
  const clearPath=(d:number,x:number)=>residentScarecrows.some(s=>Math.abs(d-s.d)<2.2&&Math.abs(x-s.x)<3);
  const density=[1,.55,.28,.10,.07][plot.band];
  const coverage={sample:({uv}:{uv:THREE.Vector2|null})=>uv&&uv.x>(plot.kind==='rice'?.015:.035)&&uv.x<(plot.kind==='rice'?.985:.965)&&uv.y>.015&&uv.y<.985&&(plot.kind==='rice'||((uv.x*20)%1)>.22)&&!clearPath(plot.start+uv.y*(plot.end-plot.start),plot.left+uv.x*(plot.right-plot.left))?1:0};
- const meadow=new Grass({surface:sampling,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?.24:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind:plot.kind==='rice'?riceWind:wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}});
+ const meadow=hybridRice?null:new Grass({surface:sampling!,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?.24:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind:plot.kind==='rice'?riceWind:wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}});
+ if(meadow){
  // Grass facade borrows the external surface. Its visual clone is redundant with
  // our always-visible far ground, so remove only that clone, never the source.
  for(const child of [...meadow.children])if(child instanceof THREE.Mesh)meadow.remove(child);
@@ -131,12 +163,13 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
   for(let i=0;i<flowers.count;i++){flowers.getMatrixAt(i,m);m.decompose(p,q,s);s.multiplyScalar(1.7);m.compose(p,q,s);flowers.setMatrixAt(i,m);}flowers.instanceMatrix.needsUpdate=true;flowers.computeBoundingSphere();flowers.boundingSphere!.radius+=2;
  }
  group.add(meadow);
+ }
  // Golden rice heads are the downloaded model, not widened yellow grass blades.
  const crops:THREE.InstancedMesh[]=[];
- if(plot.kind==='rice'&&plot.band<3)for(const lod of [0,1]){
-  if(lod===0&&plot.band>0)continue;
+ if(plot.kind==='rice'&&(hybridRice?plot.band===0:plot.band<3))for(const lod of [0,1]){
+  if(lod===0&&plot.band>0||hybridRice&&lod===1)continue;
   const rand=seededRandom(7300+plot.id),matrices:THREE.Matrix4[]=[],dummy=new THREE.Object3D();
-  for(let d=plot.start+1.6;d<plot.end-1.4;d+=lod?4.4+plot.band:2.8)for(let x=plot.left+1.4;x<plot.right-1.2;x+=lod?3.6+plot.band*.7:2.5){
+  for(let d=plot.start+1.6;d<plot.end-1.4;d+=lod?4.4+plot.band:hybridRice?3.5:2.8)for(let x=plot.left+1.4;x<plot.right-1.2;x+=lod?3.6+plot.band*.7:hybridRice?2.9:2.5){
    const at=d+(rand()-.5)*.8,lateral=x+(rand()-.5)*.5;
    if(clearPath(at,lateral))continue;
    dummy.position.copy(position(at,lateral,.04));dummy.rotation.set(0,rand()*Math.PI*2,0);const scale=.94+rand()*.14;dummy.scale.set(scale*(lod?1.18:1.08),scale,scale*(lod?1.18:1.08));dummy.updateMatrix();matrices.push(dummy.matrix.clone());
@@ -170,14 +203,14 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  let canopyTriangles=0;
  if(plot.kind==='rice'){
   const geometry=riceCanopyGeometry(plot,position,clearPath);ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
-  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';group.add(canopy);
+  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=hybridRice;group.add(canopy);
  }
  const update=(distance:number,time:number)=>{
-  const gap=Math.max(plot.start-distance,0,distance-plot.end);meadow.visible=gap<265;
-  crops.forEach(m=>m.visible=gap<(m.userData.farmLod?425:140));if(meadow.visible)meadow.update(time);
+  const gap=Math.max(plot.start-distance,0,distance-plot.end);if(meadow){meadow.visible=gap<265;if(meadow.visible)meadow.update(time);}
+  crops.forEach(m=>m.visible=gap<(m.userData.farmLod?425:hybridRice?105:140));
  };
  if(import.meta.env.DEV)group.traverse(o=>{if(o instanceof THREE.Mesh)o.onAfterRender=()=>{o.userData.farmSubmitted=performance.now();};});
- return {group,plot,update,stats:()=>{let submittedDraws=0,submittedInstances=0;group.traverse(o=>{if(o instanceof THREE.Mesh&&performance.now()-(o.userData.farmSubmitted??-Infinity)<100){submittedDraws++;if(o instanceof THREE.InstancedMesh)submittedInstances+=o.count;}});return {id:plot.id,kind:plot.kind,blades:meadow.bladeCount,flowers:meadow.wildflowerCount,crops:crops.map(m=>m.count),scarecrows,canopyTriangles,draws:instances.length+1+(canopyTriangles?1:0),submittedDraws,submittedInstances};},dispose(){meadow.dispose();instances.forEach(m=>m.dispose());ownedGeometry.forEach(g=>g.dispose());group.removeFromParent();}};
+ return {group,plot,update,stats:()=>{let submittedDraws=0,submittedInstances=0;group.traverse(o=>{if(o instanceof THREE.Mesh&&performance.now()-(o.userData.farmSubmitted??-Infinity)<100){submittedDraws++;if(o instanceof THREE.InstancedMesh)submittedInstances+=o.count;}});return {id:plot.id,kind:plot.kind,blades:meadow?.bladeCount??0,flowers:meadow?.wildflowerCount??0,crops:crops.map(m=>m.count),scarecrows,canopyTriangles,draws:instances.length+1+(canopyTriangles?1:0),submittedDraws,submittedInstances};},dispose(){meadow?.dispose();instances.forEach(m=>m.dispose());ownedGeometry.forEach(g=>g.dispose());group.removeFromParent();}};
 }
 export type FarmPatch=ReturnType<typeof createFarmPlot>;
 
