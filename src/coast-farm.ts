@@ -7,6 +7,7 @@ import {grassWindVertexTransform,grassWindVertexUniforms} from './vendor/three-s
 import {seededRandom} from './vendor/three-stylized/utils';
 import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
+import type {PreparedFarmPlot} from './coast-farm-prep';
 import {farmWarmupRepresentatives} from './farm-warmup-plan';
 import {FARM_SCARECROWS,type FarmPlot} from './coast-farm-layout';
 import type {createTrack} from './track';
@@ -127,12 +128,18 @@ function distanceShader(shader:{vertexShader:string;fragmentShader:string;unifor
  }
 }
 
-export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
+export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,prepared?:PreparedFarmPlot){
+ if(prepared&&prepared.id!==plot.id)throw new Error('Prepared farm plot id mismatch');
  const group=new THREE.Group();group.name=`coast-farm-${plot.id}`;
  const ownedGeometry:THREE.BufferGeometry[]=[],instances:THREE.InstancedMesh[]=[];
  const chunkStart=Math.floor(plot.start/1000)*1000,chunkEnd=chunkStart+1000;
   // Sample the original terrain once per row, not again for every crop instance.
- const rows=Math.ceil((plot.end-plot.start)/4),ground=Array.from({length:rows+1},(_,i)=>{const d=plot.start+(plot.end-plot.start)*i/rows;return [coastNatureGround(sample,d,plot.left,chunkStart,chunkEnd),coastNatureGround(sample,d,plot.right,chunkStart,chunkEnd)];});
+ const rows=Math.ceil((plot.end-plot.start)/4);
+ const ground=Array.from({length:rows+1},(_,i)=>{
+  if(prepared){if(prepared.ground.length!==(rows+1)*2)throw new Error('Bad prepared farm ground row count');return [prepared.ground[i*2],prepared.ground[i*2+1]];}
+  const d=plot.start+(plot.end-plot.start)*i/rows;
+  return [coastNatureGround(sample,d,plot.left,chunkStart,chunkEnd),coastNatureGround(sample,d,plot.right,chunkStart,chunkEnd)];
+ });
  const position=(d:number,x:number,lift=0)=>{const p=sample(d),v=p.position.clone().addScaledVector(p.right,x),f=THREE.MathUtils.clamp((d-plot.start)/(plot.end-plot.start)*rows,0,rows),i=Math.min(rows-1,Math.floor(f)),t=f-i,u=(x-plot.left)/(plot.right-plot.left);v.y=THREE.MathUtils.lerp(THREE.MathUtils.lerp(ground[i][0],ground[i][1],u),THREE.MathUtils.lerp(ground[i+1][0],ground[i+1][1],u),t)+lift;return v;};
  function ribbon(left:number,right:number,start:number,end:number,lift:number,mat:THREE.Material){
   const vertices=[],uv=[],indices=[],rows=Math.ceil((end-start)/4);
@@ -152,7 +159,7 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  const clearPath=(d:number,x:number)=>residentScarecrows.some(s=>Math.abs(d-s.d)<2.2&&Math.abs(x-s.x)<3);
  const density=[1,.55,.28,.10,.07][plot.band];
  const coverage={sample:({uv}:{uv:THREE.Vector2|null})=>uv&&uv.x>(plot.kind==='rice'?.015:.035)&&uv.x<(plot.kind==='rice'?.985:.965)&&uv.y>.015&&uv.y<.985&&(plot.kind==='rice'||((uv.x*20)%1)>.22)&&!clearPath(plot.start+uv.y*(plot.end-plot.start),plot.left+uv.x*(plot.right-plot.left))?1:0};
- const meadow=isRice?null:new Grass({surface:sampling!,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?.24:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind:plot.kind==='rice'?riceWind:wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}});
+ const meadow=isRice?null:new Grass({surface:sampling!,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?.24:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind:plot.kind==='rice'?riceWind:wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}},prepared?.meadow);
  if(meadow){
  // Grass facade borrows the external surface. Its visual clone is redundant with
  // our always-visible far ground, so remove only that clone, never the source.
@@ -210,7 +217,16 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  // scarecrow access patch open, so its post and outstretched arms stay readable.
  let canopyTriangles=0;
  if(plot.kind==='rice'){
-  const geometry=riceCanopyGeometry(plot,position,clearPath);ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
+  const geometry=prepared?.canopy?(()=>{
+    const p=prepared.canopy!,g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.BufferAttribute(p.position,3));
+    g.setAttribute('uv',new THREE.BufferAttribute(p.uv,2));
+    g.setAttribute('color',new THREE.BufferAttribute(p.color,3));
+    g.setAttribute('normal',new THREE.BufferAttribute(p.normal,3));
+    g.setIndex(new THREE.BufferAttribute(p.index,1));
+    g.computeBoundingSphere();g.boundingSphere!.radius+=.2;return g;
+   })():riceCanopyGeometry(plot,position,clearPath);
+   ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
   const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;group.add(canopy);
  }
  const update=(distance:number,time:number)=>{
