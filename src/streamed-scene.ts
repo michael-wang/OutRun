@@ -7,6 +7,7 @@ import type {PilotCandidate} from './pilot-composer';
 import type {RoadMeshData} from './road-chunk';
 import {loadCoastFarm,createFarmPlot,warmFarmMeshes,type FarmAssets,type FarmPatch} from './coast-farm';
 import {farmPlotsInChunk} from './coast-farm-layout';
+import type {PreparedFarmPlot} from './coast-farm-prep';
 import {SceneTaskProfiler,SCENE_TASK_SOFT_BUDGET_MS,type SceneTaskKind} from './scene-task-profiler';
 
 type RoadData=RoadMeshData&{normals:Float32Array};
@@ -163,7 +164,7 @@ export class StreamedScene {
   if(data.type==='prepared'&&!data.meshes?.some((m:RoadData)=>m.kind==='asphalt'&&m.positions?.length&&m.indices?.length))throw Error('Worker returned no drivable road');
   const road=data.type==='prepared';if(!road)this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
   if(record&&!road)record.generatedInstances=data.instances.reduce((n:number,i:Instance)=>n+i.matrices.length/16,0);this.activeRecord=undefined;
-  const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances);
+  const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances,data.farmPreps);
   const taskPlots=this.taskProfiler&&!road&&this.farmSample&&this.farmAssets
    ?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
   for(const [taskIndex,task] of tasks.entries()){
@@ -180,12 +181,17 @@ export class StreamedScene {
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setAttribute('normal',new THREE.BufferAttribute(m.normals,3));if(m.uvs.length)g.setAttribute('uv',new THREE.BufferAttribute(m.uvs,2));if(m.colors.length)g.setAttribute('color',new THREE.BufferAttribute(m.colors,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));
   this.registerGeometry(g,c.index);const mesh=new THREE.Mesh(g,this.roadMaterials[m.kind]);mesh.userData.chunkIndex=c.index;mesh.userData.roadKind=m.kind;mesh.userData.rayRanges=m.rayRanges;mesh.userData.artVisualOnly=m.artVisualOnly;mesh.visible=!m.artContactOnly;mesh.receiveShadow=true;const name=m.kind==='asphalt'?'driving-surface':m.kind==='sand'?'shoulder':m.kind==='grass'?'terrain':m.kind==='support'?'road-support':(m.kind==='line'||m.kind==='center-line')?'lane-markings':'road-detail';mesh.name=name;this.attach(c,name,mesh);c.geometries.add(g);
  });for(let i=0;i<roadside.length;i++)tasks.push(()=>{const matrices=roadside[i],mesh=new THREE.InstancedMesh(this.markerGeometries[i],this.markerMaterials[i],matrices.length/16);mesh.instanceMatrix.array.set(matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.castShadow=true;mesh.receiveShadow=true;this.attach(c,'road-detail',mesh);});for(const annotation of this.annotations)if(Math.floor(annotation.distance/this.chunkLength)===c.index)tasks.push(()=>{for(const mesh of annotation.create()){for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material])this.annotationMaterials.add(material);this.registerGeometry(mesh.geometry,c.index);this.attach(c,'road-detail',mesh);c.geometries.add(mesh.geometry);}});return tasks;}
- private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[]){
+ private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[],farmPreps?:PreparedFarmPlot[]){
+  const prepared=new Map((farmPreps??[]).map(p=>[p.id,p]));
+  // A real prepared payload is an entire chunk's farm batch; partial data is a
+  // worker contract violation rather than a silent visual mismatch.
+  if(farmPreps?.length&&this.farmSample&&farmPreps.length!==farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength).length)
+   throw new Error('Incomplete Worker farm preparation for chunk '+c.index);
   const templates=new Map<string,THREE.BufferGeometry>(),tasks:(()=>void)[]=[];
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
   for(const data of instances)tasks.push(()=>{const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}:${!!data.waffleSign}`;let material=this.materials.get(key);if(!material){material=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});if(data.nature)this.configureNatureMaterial(material,data.nature);if(data.waffleSign){material.map=this.waffleTexture??=waffleSignTexture();material.emissive.set(0xffffff);material.emissiveMap=material.map;material.emissiveIntensity=.3;}this.materials.set(key,material);}const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.receiveShadow=!data.nature;if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
   if(this.farmSample&&this.farmAssets)for(const plot of farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength))tasks.push(()=>{
-   const farm=createFarmPlot(plot,this.farmSample!,this.farmAssets!);let patches=this.farms.get(c.index);if(!patches){patches=[];this.farms.set(c.index,patches);}patches.push(farm);
+   const farm=createFarmPlot(plot,this.farmSample!,this.farmAssets!,prepared.get(plot.id));let patches=this.farms.get(c.index);if(!patches){patches=[];this.farms.set(c.index,patches);}patches.push(farm);
    farm.update(this.position,this.farmAssets!.time.value);if(this.clippingPlanes.length)farm.group.traverse(o=>this.clipMaterial(o));this.attach(c,'scenery',farm.group);
   });
   return tasks;
