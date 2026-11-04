@@ -6,7 +6,6 @@ import {grassWindVertexTransform,grassWindVertexUniforms} from './vendor/three-s
 import {seededRandom} from './vendor/three-stylized/utils';
 import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
-import {HYBRID_RICE_SEA} from './rice-sea-mode';
 import {farmWarmupRepresentatives} from './farm-warmup-plan';
 import {FARM_SCARECROWS,type FarmPlot} from './coast-farm-layout';
 import type {createTrack} from './track';
@@ -29,7 +28,7 @@ const flowerColors=['#ecc341','#e679a7','#a382d8'];
 const up=new THREE.Vector3(0,1,0);
 /** Replays reuse downloads, but own and dispose their GPU resources. */
 export async function loadCoastFarm(){
- const geometries=await Promise.all(['rice-near','rice-mid','scarecrow'].map(async name=>{
+ const geometries=await Promise.all(['rice-near','scarecrow'].map(async name=>{
   let request=bytes.get(name);if(!request){request=fetch(`${import.meta.env.BASE_URL}assets/coast-farm/${name}.glb`).then(r=>{if(!r.ok)throw Error(`Farm model ${name}: ${r.status}`);return r.arrayBuffer();});bytes.set(name,request);request.catch(()=>bytes.delete(name));}
   const {scene}=await new GLTFLoader().parseAsync((await request).slice(0),'');scene.updateMatrixWorld(true);
   const parts:THREE.BufferGeometry[]=[];
@@ -46,7 +45,7 @@ export async function loadCoastFarm(){
   });const merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());return merged;
  }));
  const time={value:0},materials=new Map<string,THREE.Material>();
- const texture=fieldTexture(),canopyTexture=fieldTexture(true);
+ const texture=fieldTexture(),canopyTexture=riceSeaTexture();
  function material(kind:string,color:string,near=0,far=0){
   const key=`${kind}:${color}:${near}:${far}`;let m=materials.get(key) as THREE.MeshStandardMaterial|undefined;
   if(!m){m=new THREE.MeshStandardMaterial({color,vertexColors:kind==='crop'||kind==='scarecrow'||kind==='canopy',roughness:1,side:THREE.DoubleSide,...(kind==='ground'?{map:texture,emissive:color,emissiveIntensity:.17}:kind==='canopy'?{map:canopyTexture}:{})});
@@ -70,18 +69,17 @@ export async function loadCoastFarm(){
 export type FarmAssets=Awaited<ReturnType<typeof loadCoastFarm>>;
 
 /** A small repeating row texture preserves field structure beyond plant LOD. */
-function fieldTexture(canopy=false){
- if(canopy&&HYBRID_RICE_SEA)return hybridRiceTexture();
+function fieldTexture(){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const ctx=canvas.getContext('2d')!,rand=seededRandom(80483);
- ctx.fillStyle=canopy?'#f5eac7':'#e2d5a9';ctx.fillRect(0,0,128,128);
- if(!canopy)for(let x=0;x<128;x+=16){ctx.fillStyle='#b7b488';ctx.fillRect(x,0,3,128);}
- for(let i=0;i<1800;i++){ctx.fillStyle=rand()>.5?'#eee5bf':canopy?'#d9ca91':'#bfc191';ctx.fillRect(rand()*128,rand()*128,canopy?2:1,canopy?4:2);}
+ ctx.fillStyle='#e2d5a9';ctx.fillRect(0,0,128,128);
+ for(let x=0;x<128;x+=16){ctx.fillStyle='#b7b488';ctx.fillRect(x,0,3,128);}
+ for(let i=0;i<1800;i++){ctx.fillStyle=rand()>.5?'#eee5bf':'#bfc191';ctx.fillRect(rand()*128,rand()*128,1,2);}
  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=1;return t;
 }
 
 /** Low-cost seamless golden-grain texture: dozens of rice heads per square metre,
  * generated once on the main thread, then mipped for stable oblique coastal views. */
-function hybridRiceTexture(){
+function riceSeaTexture(){
  const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
  const ctx=canvas.getContext('2d')!,rand=seededRandom(20261104);
  ctx.fillStyle='#f3dfaa';ctx.fillRect(0,0,256,256);
@@ -136,20 +134,20 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
   for(let i=0;i<=rows;i++){const d=start+(end-start)*i/rows;for(const x of [left,right]){const p=position(d,x,lift);vertices.push(p.x,p.y,p.z);uv.push((x-left)/8,(d-start)/8);}if(i<rows){const j=i*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}}
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();ownedGeometry.push(g);const m=new THREE.Mesh(g,mat);group.add(m);return m;
  }
- const hybridRice=HYBRID_RICE_SEA&&plot.kind==='rice';
+ const isRice=plot.kind==='rice';
  const groundColor=plot.kind==='rice'?'#d3b450':flowerColors[plot.band%3];
  const surface=ribbon(plot.left,plot.right,plot.start,plot.end,.055,assets.material('ground',groundColor));
  // Keep the exact sampled terrain, including road bend and mild grade. No new terrain generator.
  // The hybrid rice sea is a single animated canopy plus roadside rice heads.
  // Do not allocate an extra terrain mesh/grass system when it cannot be seen.
- const sampling=hybridRice?null:surface.clone(false);
+ const sampling=isRice?null:surface.clone(false);
  if(sampling){sampling.geometry=surface.geometry.clone();ownedGeometry.push(sampling.geometry);
   const suv=sampling.geometry.getAttribute('uv');for(let i=0;i<suv.count;i++)suv.setXY(i,suv.getX(i)*8/(plot.right-plot.left),suv.getY(i)*8/(plot.end-plot.start));}
  const residentScarecrows=FARM_SCARECROWS.filter(s=>s.d>=plot.start&&s.d<plot.end&&s.x>plot.left&&s.x<plot.right);
  const clearPath=(d:number,x:number)=>residentScarecrows.some(s=>Math.abs(d-s.d)<2.2&&Math.abs(x-s.x)<3);
  const density=[1,.55,.28,.10,.07][plot.band];
  const coverage={sample:({uv}:{uv:THREE.Vector2|null})=>uv&&uv.x>(plot.kind==='rice'?.015:.035)&&uv.x<(plot.kind==='rice'?.985:.965)&&uv.y>.015&&uv.y<.985&&(plot.kind==='rice'||((uv.x*20)%1)>.22)&&!clearPath(plot.start+uv.y*(plot.end-plot.start),plot.left+uv.x*(plot.right-plot.left))?1:0};
- const meadow=hybridRice?null:new Grass({surface:sampling!,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?.24:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind:plot.kind==='rice'?riceWind:wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}});
+ const meadow=isRice?null:new Grass({surface:sampling!,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?.24:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind:plot.kind==='rice'?riceWind:wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}});
  if(meadow){
  // Grass facade borrows the external surface. Its visual clone is redundant with
  // our always-visible far ground, so remove only that clone, never the source.
@@ -168,15 +166,18 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  }
  // Golden rice heads are the downloaded model, not widened yellow grass blades.
  const crops:THREE.InstancedMesh[]=[];
- if(plot.kind==='rice'&&(hybridRice?plot.band===0:plot.band<3))for(const lod of [0,1]){
-  if(lod===0&&plot.band>0||hybridRice&&lod===1)continue;
+ if(isRice&&plot.band===0){
   const rand=seededRandom(7300+plot.id),matrices:THREE.Matrix4[]=[],dummy=new THREE.Object3D();
-  for(let d=plot.start+1.6;d<plot.end-1.4;d+=lod?4.4+plot.band:hybridRice?3.5:2.8)for(let x=plot.left+1.4;x<plot.right-1.2;x+=lod?3.6+plot.band*.7:hybridRice?2.9:2.5){
+  for(let d=plot.start+1.6;d<plot.end-1.4;d+=3.5)for(let x=plot.left+1.4;x<plot.right-1.2;x+=2.9){
    const at=d+(rand()-.5)*.8,lateral=x+(rand()-.5)*.5;
    if(clearPath(at,lateral))continue;
-   dummy.position.copy(position(at,lateral,.04));dummy.rotation.set(0,rand()*Math.PI*2,0);const scale=.94+rand()*.14;dummy.scale.set(scale*(lod?1.18:1.08),scale,scale*(lod?1.18:1.08));dummy.updateMatrix();matrices.push(dummy.matrix.clone());
+   dummy.position.copy(position(at,lateral,.04));dummy.rotation.set(0,rand()*Math.PI*2,0);
+   const scale=.94+rand()*.14;dummy.scale.set(scale*1.08,scale,scale*1.08);
+   dummy.updateMatrix();matrices.push(dummy.matrix.clone());
   }
-  const mesh=new THREE.InstancedMesh(assets.geometries[lod],assets.material('crop','#fff2bf',lod&&plot.band===0?100:0,lod?420:135),matrices.length);mesh.userData.farmLod=lod;matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.computeBoundingSphere();mesh.boundingSphere!.radius+=1;group.add(mesh);instances.push(mesh);crops.push(mesh);
+  const mesh=new THREE.InstancedMesh(assets.geometries[0],assets.material('crop','#fff2bf',0,135),matrices.length);
+  mesh.userData.farmLod=0;matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));
+  mesh.computeBoundingSphere();mesh.boundingSphere!.radius+=1;group.add(mesh);instances.push(mesh);crops.push(mesh);
  }
  const bund=assets.material('path','#a99363');
  ribbon(plot.left-.65,plot.left,plot.start,plot.end,.16,bund);
@@ -185,7 +186,7 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  if(plot.band===0){ribbon(17.6,18.7,plot.start,plot.end,.065,assets.material('canal','#608c82'));ribbon(19,19.7,plot.start,plot.end,.14,bund);}
  const scarecrows:number[]=[];
  for(const {d,x} of residentScarecrows){
-  const scare=new THREE.InstancedMesh(assets.geometries[2],assets.material('scarecrow','#fff1d4'),1),dummy=new THREE.Object3D();dummy.position.copy(position(d,x,.08));dummy.scale.set(1.4,1.18,1.18);
+  const scare=new THREE.InstancedMesh(assets.geometries[1],assets.material('scarecrow','#fff1d4'),1),dummy=new THREE.Object3D();dummy.position.copy(position(d,x,.08));dummy.scale.set(1.4,1.18,1.18);
   const road=sample(d-25),towards=road.position.clone().sub(dummy.position);dummy.quaternion.setFromAxisAngle(up,Math.atan2(towards.x,towards.z));dummy.updateMatrix();scare.setMatrixAt(0,dummy.matrix);scare.name='farm-scarecrow';group.add(scare);instances.push(scare);scarecrows.push(d);
   ribbon(x-3,x+3,d-1.8,d+1.8,.09,bund);
  }
@@ -205,11 +206,11 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets){
  let canopyTriangles=0;
  if(plot.kind==='rice'){
   const geometry=riceCanopyGeometry(plot,position,clearPath);ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
-  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=hybridRice;group.add(canopy);
+  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;group.add(canopy);
  }
  const update=(distance:number,time:number)=>{
   const gap=Math.max(plot.start-distance,0,distance-plot.end);if(meadow){meadow.visible=gap<265;if(meadow.visible)meadow.update(time);}
-  crops.forEach(m=>m.visible=gap<(m.userData.farmLod?425:hybridRice?105:140));
+  crops.forEach(m=>m.visible=gap<105);
  };
  if(import.meta.env.DEV)group.traverse(o=>{if(o instanceof THREE.Mesh)o.onAfterRender=()=>{o.userData.farmSubmitted=performance.now();};});
  return {group,plot,update,stats:()=>{let submittedDraws=0,submittedInstances=0;group.traverse(o=>{if(o instanceof THREE.Mesh&&performance.now()-(o.userData.farmSubmitted??-Infinity)<100){submittedDraws++;if(o instanceof THREE.InstancedMesh)submittedInstances+=o.count;}});return {id:plot.id,kind:plot.kind,blades:meadow?.bladeCount??0,flowers:meadow?.wildflowerCount??0,crops:crops.map(m=>m.count),scarecrows,canopyTriangles,draws:instances.length+1+(canopyTriangles?1:0),submittedDraws,submittedInstances};},dispose(){meadow?.dispose();instances.forEach(m=>m.dispose());ownedGeometry.forEach(g=>g.dispose());group.removeFromParent();}};
@@ -225,7 +226,7 @@ export async function warmFarmMeshes(renderer:THREE.WebGLRenderer,camera:THREE.C
  // The hybrid renderer uses shared farm shaders. Prewarm one representative
  // for each material/object variant rather than submitting every distant Mesh
  // to WebGL before it enters the view. Remaining meshes are streamed normally.
- const objects=farmWarmupRepresentatives(allObjects,HYBRID_RICE_SEA);
+ const objects=farmWarmupRepresentatives(allObjects);
  const compiled=new Set<THREE.Material>();
  let done=0,compileWallMs=0,uploadSubmitMs=0,maxObjectSubmitMs=0;
  onProgress?.({done,total:objects.length,compileWallMs,uploadSubmitMs,maxObjectSubmitMs});
