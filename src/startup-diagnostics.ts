@@ -114,7 +114,7 @@ class FirstLoadDiagnostics {
     if (this.panel && this.status) {
       this.status.hidden = true;
       document.body.append(this.panel);
-      this.panel.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:8000;background:#132e38ed;padding:5px 9px;border-radius:7px;pointer-events:auto';
+      this.panel.style.cssText = 'position:fixed;right:12px;top:60px;z-index:8000;background:#132e38ed;padding:5px 9px;border-radius:7px;pointer-events:auto';
     }
     console.info('[startupdiag] Ready; use the download button or window.__startupDiagnostics.report()', this.report());
   }
