@@ -183,22 +183,28 @@ export type FarmPatch=ReturnType<typeof createFarmPlot>;
 
 /** Same tiny real-framebuffer upload technique as chapter preparation. Warm
  * distant farm materials too: their first visible draw must not compile at speed. */
-export async function warmFarmMeshes(renderer:THREE.WebGLRenderer,camera:THREE.Camera,scene:THREE.Scene,patches:FarmPatch[],alive:()=>boolean){
+export async function warmFarmMeshes(renderer:THREE.WebGLRenderer,camera:THREE.Camera,scene:THREE.Scene,patches:FarmPatch[],alive:()=>boolean,onProgress?:(progress:{done:number;total:number;compileWallMs:number;uploadSubmitMs:number;maxObjectSubmitMs:number})=>void){
  const staging=new THREE.Scene();staging.fog=scene.fog;staging.environment=scene.environment;
  scene.traverse(o=>{if(o instanceof THREE.Light)staging.add(o.clone());});
  const objects:THREE.Mesh[]=[];for(const patch of patches)patch.group.traverse(o=>{if(o instanceof THREE.Mesh)objects.push(o);});
  const compiled=new Set<THREE.Material>();
+ let done=0,compileWallMs=0,uploadSubmitMs=0,maxObjectSubmitMs=0;
+ onProgress?.({done,total:objects.length,compileWallMs,uploadSubmitMs,maxObjectSubmitMs});
  for(const object of objects){
   await new Promise<void>(r=>requestAnimationFrame(()=>r()));if(!alive())break;
   const parent=object.parent!,visible=object.visible,cull=object.frustumCulled,materials=Array.isArray(object.material)?object.material:[object.material];
-  if(materials.some(m=>!compiled.has(m))){await renderer.compileAsync(object,camera,scene);materials.forEach(m=>compiled.add(m));if(!alive())break;}
+  if(materials.some(m=>!compiled.has(m))){const compileStart=performance.now();await renderer.compileAsync(object,camera,scene);compileWallMs+=performance.now()-compileStart;materials.forEach(m=>compiled.add(m));if(!alive())break;}
   const viewport=renderer.getViewport(new THREE.Vector4()),scissor=renderer.getScissor(new THREE.Vector4()),test=renderer.getScissorTest(),auto=renderer.autoClear,writes=materials.map(m=>[m.colorWrite,m.depthWrite]);
+  const submitStart=performance.now();
   try{
    staging.add(object);object.visible=true;object.frustumCulled=false;materials.forEach(m=>{m.colorWrite=false;m.depthWrite=false;});renderer.autoClear=false;
    renderer.setViewport(0,0,2,2);renderer.setScissor(0,0,2,2);renderer.setScissorTest(true);renderer.render(staging,camera);
   }finally{
    parent.add(object);object.visible=visible;object.frustumCulled=cull;materials.forEach((m,i)=>{[m.colorWrite,m.depthWrite]=writes[i];});renderer.autoClear=auto;renderer.setViewport(viewport);renderer.setScissor(scissor);renderer.setScissorTest(test);
   }
+  const submitMs=performance.now()-submitStart;
+  uploadSubmitMs+=submitMs;maxObjectSubmitMs=Math.max(maxObjectSubmitMs,submitMs);
+  done++;onProgress?.({done,total:objects.length,compileWallMs,uploadSubmitMs,maxObjectSubmitMs});
  }
  staging.clear();
 }
