@@ -7,8 +7,8 @@ import type {createTrack} from './track';
  * They live past the camera's normal far plane, behind the playable landscape.
  * The coastal road, water, and shadow passes do not depend on these mountains.
  */
-export const COAST_MOUNTAIN_STEP_M=78;
-export const COAST_MOUNTAIN_ROWS=19;
+export const COAST_MOUNTAIN_STEP_M=90;
+export const COAST_MOUNTAIN_ROWS=17;
 
 /** Height field for the inland ridge. No extra runtime sampling or shaders.
  * Wide peaks are interrupted by narrow valley cuts and off-center spurs;
