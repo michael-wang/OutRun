@@ -3,7 +3,7 @@ import {it,expect,vi} from 'vitest';
 it('reopens the artwork progress surface on replay and cancels stale completion timers',async()=>{
  vi.useFakeTimers();vi.resetModules();
  const nodes=new Map<string,any>(),dataset:Record<string,string>={};
- const get=(id:string)=>{if(!nodes.has(id))nodes.set(id,{hidden:false,textContent:'',style:{},attributes:{},setAttribute(k:string,v:string){this.attributes[k]=v;}});return nodes.get(id);};
+ const get=(id:string)=>{if(!nodes.has(id))nodes.set(id,{hidden:false,textContent:'',dataset:{},style:{},attributes:{},setAttribute(k:string,v:string){this.attributes[k]=v;}});return nodes.get(id);};
  vi.stubGlobal('document',{getElementById:get,documentElement:{dataset}});
  try{
   const l=await import('../src/loading');l.loadingFinished();l.loadingStarted();
