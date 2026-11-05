@@ -81,7 +81,7 @@ export function buildCoastGroundShadows(
  sample:Sample,anchors:readonly CoastShadowAnchor[],routeLength:number,
  halfAt:(d:number)=>number=()=>8.75,
 ){
- const positions:number[]=[],alpha:number[]=[],indices:number[]=[];
+ const positions:number[]=[],alpha:number[]=[],indices:number[]=[],ranges:{d:number;start:number;count:number}[]=[];
  let accepted=0,rejectedUnderwater=0;
  const samples=(d:number)=>sample(Math.max(0,Math.min(routeLength,d)));
  for(const a of anchors){
@@ -92,7 +92,7 @@ export function buildCoastGroundShadows(
   const fwd=at.tangent?.clone()??samples(a.d+.5).position.clone().sub(samples(a.d-.5).position);
   fwd.y=0;fwd.normalize();
   const right=at.right.clone().setY(0).normalize();
-  const rows=8,cols=5,first=positions.length/3;
+  const rows=8,cols=5,first=positions.length/3,indexStart=indices.length;
   const span=Math.max(2,a.length),w=Math.max(.2,a.width);
   const weight=a.kind==='rail'?.70:a.kind==='concrete'?.85:a.kind==='visitor'?.73:
    a.kind==='lamp'?.60:a.kind==='rock'?.94:.90;
@@ -124,12 +124,13 @@ export function buildCoastGroundShadows(
    }
   }
   accepted++;
+  ranges.push({d:a.d,start:indexStart,count:indices.length-indexStart});
  }
  const geometry=new THREE.BufferGeometry();
  geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
  geometry.setAttribute('shadowAlpha',new THREE.Float32BufferAttribute(alpha,1));
  geometry.setIndex(indices);geometry.computeBoundingSphere();
- return {geometry,accepted,rejectedUnderwater};
+ return {geometry,accepted,rejectedUnderwater,ranges};
 }
 
 function makeContactTexture(){
@@ -179,10 +180,13 @@ export class CoastDuskShadows {
    }`,
  });
  private readonly angle=Math.atan2(away.x,away.z);
+ private readonly ranges:{d:number;start:number;count:number}[];
+ private visibleStatic=0;
  constructor(scene:THREE.Scene,sample:Sample,routeLength=10000,halfAt:(d:number)=>number=()=>8.75,seed=0){
   const beach=coastBeachShadowAnchors(seed);
   const barriers=coastBarrierShadowAnchors(routeLength,halfAt);
-  const built=buildCoastGroundShadows(sample,[...beach,...barriers],routeLength,halfAt);
+  const built=buildCoastGroundShadows(sample,[...beach,...barriers].sort((a,b)=>a.d-b.d),routeLength,halfAt);
+  this.ranges=built.ranges;
   this.props=beach.length;this.barriers=barriers.length;this.anchorCount=built.accepted;
   this.beach=new THREE.Mesh(built.geometry,this.staticMaterial);
   this.beach.name='coast-dusk-beach-shadows';
@@ -193,16 +197,28 @@ export class CoastDuskShadows {
   this.player.renderOrder=2;this.player.frustumCulled=false;
   scene.add(this.beach,this.player);
  }
- update(carPosition:THREE.Vector3,roadHeight:number){
+ update(carPosition:THREE.Vector3,roadHeight:number,distanceM?:number){
   const length=13;
   this.player.position.copy(carPosition).add(coastShadowOffset(length));
   this.player.position.y=roadHeight+.085;
   this.player.rotation.set(0,this.angle,0);
   this.player.scale.set(4,1,length);
+  // One draw batch, but only submit shadows within the currently visible
+  // ~2.5km coast window. No 10km worth of vertices every frame on Pixel 8.
+  if(distanceM!==undefined){
+   const lo=distanceM-950,hi=distanceM+1450;
+   let left=0,right=this.ranges.length;
+   while(left<right){const mid=(left+right)>>>1;if(this.ranges[mid].d<lo)left=mid+1;else right=mid;}
+   const from=left;right=this.ranges.length;
+   while(left<right){const mid=(left+right)>>>1;if(this.ranges[mid].d<=hi)left=mid+1;else right=mid;}
+   this.visibleStatic=left-from;
+   this.beach.geometry.setDrawRange(from<this.ranges.length?this.ranges[from].start:0,
+    from<left?this.ranges[left-1].start+this.ranges[left-1].count-this.ranges[from].start:0);
+  }
  }
  get stats(){return {
   drawBatches:2,beachAnchors:this.anchorCount,propCandidates:this.props,
-  barrierCandidates:this.barriers,shadowTriangles:this.beach.geometry.getIndex()!.count/3,
+  barrierCandidates:this.barriers,visibleStatic:this.visibleStatic,shadowTriangles:this.beach.geometry.getIndex()!.count/3,
   playerShadows:1,shadowMaps:0,
  };}
  dispose(){
