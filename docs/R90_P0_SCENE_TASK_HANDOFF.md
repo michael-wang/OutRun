@@ -1,11 +1,28 @@
 # R9.0 P0 — Scene Task Attribution (FIRST INCREMENT)
 
-**Status: R9.0 P0b-2 on `dev`, repeat Pixel 8 driving accepted by owner; strict per-task budget and local CI/build verification remain open.**  
+**Status: R9.0 P0b-3 candidate on `dev`; P0b-2 Pixel 8 playability accepted; P0b-3 CI/device gates pending.**  
 **Design authority:** [ADR-009 — bounded stages and Scene Resource Pipeline](ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md).  
 **Public `main`:** remains the human-approved R8.8 family playtest; no public deploy authorized for P0.  
 **Rollback checkpoint:** `checkpoint/r90-before-scene-pipeline` at `5a43c2770dfef5fe4bb854087a56f975bbcd6024`.
 
 > **2026-11-05 P0a evidence and P0b first experiment (dev):** The real Pixel 8 log `outrun-fps-2026-11-04T18-30-46.957Z.json` confirms `scenery-field` is the expensive synchronous class. New experiment shares the flower mask atlas and records plot subtypes; **no post-change Pixel 8 evidence yet**. `main` remains unchanged. See the update below.
+
+## P0b-3 — Worker-baked GPU-ready flower buffers (release candidate)
+
+**Owner request, 2026-11-05:** finish reducing persistent expensive flower-field creation and, after checks, promote the scene-pipeline gains to the public `main` playtest build. **Status at this commit: CODE COMPLETE, automated CI and device acceptance NOT YET CONFIRMED.**
+
+- The P0b-2 physical Pixel 8 10.33km run established a minimum 1-second FPS of 35.49 with no below-30 one-second buckets, but flower commits still averaged **23.05ms** with 27 >16.7ms callbacks (worst 47.9ms).
+- The remaining cost is largely `Wildflowers`' per-flower RNG, palette/HSL attributes, transform matrices and `createFarmPlot`'s 1.7× scaling/post-tinting loop. No new visible effects are being added.
+- `Wildflowers.ts` now exports pure `prepareFlowerInstances()` and accepts `preparedInstances`. It calculates the **same** palette random sequence, matrix construction, intermediate Float32 rounding, coastal 1.7× scale, petal tint and foliage/centre tint on the Worker. The main thread allocates the same Three.js geometry/material and bulk-copies the finished typed arrays instead of looping over thousands of flowers.
+- `coast-farm-prep.ts` sends only GPU-ready matrices and four attribute arrays for flowers; raw flower samples are not duplicated in the transfer message. `Grass.ts` forwards the optional prepared field payload. `coast-farm.ts` skips the CPU post-tint/re-scale when a `coastalStyled` payload is present.
+- `FARM_FLOWER_COLORS` now lives in `coast-farm-layout.ts`, shared by the Worker and renderer to prevent palette drift. Runtime default pathways for non-coastal `Wildflowers` continue to work without prepared data.
+- `tests/coast-farm-worker-prep.unit.ts` now checks legacy vs worker flower matrix and all four GPU vertex attribute arrays across first/middle/last instances. The common `build` / `test` CI workflow is `.github/workflows/r90-validate.yml`.
+- The effect **does not** simplify the approved rice/flower scenery, wind, ocean, controls or road-safety window. `main` remains on R8.8 until CI has passed and release approval is verified.
+- Rollback checkpoint: `checkpoint/r90-p0b1-before-worker-farms` (pre-P0b2), with all prior states retained in Git history. For public rollback revert the release merge without rewriting `main`.
+
+**Release acceptance:** (1) GitHub Actions / local `npm run build && npm test` pass; (2) a physical Pixel 8 drive (or previously accepted P0b2 with the new patch gated to unchanged visuals plus visual QA) reports no missing scenery/road; (3) `fpsdiag` shows worker `missingPlots=0`, reduced flower commit latency (ideally no >16.7ms callback) and no new repeated <30 FPS buckets; (4) preserve existing start-up and original art. This document is a plan/implementation record, **not a claim that these gates have passed**.
+
+---
 
 ## P0b-2 Pixel 8 repeat drive — 2026-11-05 05:26 UTC — GAMEPLAY ACCEPTED, TECHNICAL DEBT OPEN
 
