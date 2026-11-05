@@ -3,6 +3,21 @@ import * as THREE from 'three';
 import {TireEffects,type TireContact} from '../src/tire-effects';
 const contacts=(z:number,road=true):TireContact[]=>['rear','front'].flatMap(axle=>[-1,1].map(side=>({name:`${axle}-wheel-${side}`,gap:0,surface:[side,0,z],normal:[0,1,0],onRoad:road})));
 describe('bounded contact-driven tire effects',()=>{
+
+ it('uses subdued, irregular and bounded coastal smoke without extra draw batches',()=>{
+  const scene=new THREE.Scene(),fx=new TireEffects(scene);
+  fx.setDuskSmoke(true);
+  for(let i=1;i<24;i++)fx.update(i/60,65,1,contacts(i),200);
+  const smoke=scene.getObjectByName('tire-smoke') as THREE.Mesh;
+  const material=smoke.material as THREE.ShaderMaterial;
+  expect(material.uniforms.tint.value.toArray()).toEqual([.51,.48,.48]);
+  expect(fx.inspect().smokeRadius).toBeLessThan(1);
+  const variation=smoke.geometry.getAttribute('variation');
+  expect(variation).toBeDefined();
+  expect(variation.getX(2)).not.toBeCloseTo(variation.getX(5));
+  expect(fx.inspect()).toMatchObject({geometries:2,particleCapacity:192});
+  fx.dispose();
+ });
  it('keeps fresh smoke near the contact plane and trailing the moving tire before rising',()=>{
   const scene=new THREE.Scene(),fx=new TireEffects(scene);fx.update(1/60,60,1,contacts(1),200);fx.update(2/60,60,1,contacts(2),200);
   const smoke=scene.getObjectByName('tire-smoke') as THREE.Points,p=smoke.geometry.getAttribute('center'),z=p.getZ(4),y=p.getY(4);
