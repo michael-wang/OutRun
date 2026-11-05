@@ -29,10 +29,10 @@ it('makes one terrain-following beach/road shadow batch plus a dynamic sunset ca
  expect(scene.children).toHaveLength(0);
 });
 
-it('keeps real beach props at elevations below the obsolete -4.05 metre filter',()=>{
+it('grounds visible beach props and lets their shadows follow wet-sand slopes',()=>{
  const built=buildCoastGroundShadows(sample,[
-  {d:500,x:-21,width:4,length:16,kind:'umbrella'},
-  {d:505,x:-22,width:.8,length:5,kind:'visitor'},
+  {d:500,x:-18,width:4,length:16,kind:'umbrella'},
+  {d:505,x:-19,width:.8,length:5,kind:'visitor'},
  ],10000,()=>8.75);
  try{
   expect(built.accepted).toBe(2);
@@ -40,6 +40,18 @@ it('keeps real beach props at elevations below the obsolete -4.05 metre filter',
   expect(Math.min(...Array.from({length:pos.count},(_,i)=>pos.getY(i)))).toBeLessThan(-4.05);
   expect(Math.max(...Array.from({length:alpha.count},(_,i)=>alpha.getX(i)))).toBeGreaterThan(.45);
   expect(built.geometry.getIndex()!.count).toBeGreaterThan(100);
+ }finally{built.geometry.dispose();}
+});
+
+it('does not draw ghost silhouettes for beach props omitted by scenery height gates',()=>{
+ const built=buildCoastGroundShadows(sample,[
+  {d:500,x:-21,width:4,length:16,kind:'umbrella'},
+  {d:505,x:-22,width:.8,length:5,kind:'visitor'},
+  {d:510,x:-22,width:2.8,length:9,kind:'bench'},
+ ],10000,()=>8.75);
+ try{
+  expect(built.accepted).toBe(0);
+  expect(built.geometry.getIndex()!.count).toBe(0);
  }finally{built.geometry.dispose();}
 });
 
@@ -54,5 +66,14 @@ it('follows the exact coast-resort 12m block/rail cadence and correct authored s
  const first=COAST_BEACHES[0];
  const umbrellas=a.filter(x=>x.kind==='umbrella'&&Math.abs(x.d-first.distance)<first.radius);
  expect(umbrellas.length).toBeGreaterThan(1);
- expect(a.find(x=>x.kind==='umbrella')?.d).not.toEqual(b.find(x=>x.kind==='umbrella')?.d);
+ // scenery.ts uses unseeded rand() for beach umbrella positions.
+ const rand=(n:number)=>{const v=Math.sin(n*127.1+43.7)*43758.5453;return v-Math.floor(v);};
+ const expectedFirstD=first.distance-Math.min(370,first.radius*.7)+rand(first.distance)*15;
+ const expectedFirstX=-19-rand(first.distance)*17;
+ expect(umbrellas[0].d).toBeCloseTo(expectedFirstD,8);
+ expect(umbrellas[0].x).toBeCloseTo(expectedFirstX,8);
+ expect(a.find(x=>x.kind==='umbrella')?.d).toEqual(b.find(x=>x.kind==='umbrella')?.d);
+ // Market visitors are different: scenery.ts seeds its random() per stage.
+ const marketVisitor=(anchors:ReturnType<typeof coastBeachShadowAnchors>)=>anchors.find(x=>x.kind==='visitor'&&x.x>0);
+ expect(marketVisitor(a)?.d).not.toEqual(marketVisitor(b)?.d);
 });
