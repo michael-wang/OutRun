@@ -58,6 +58,6 @@ describe('automatic zero-touch coast shadow benchmark',()=>{
   expect(main).toContain("params.get('autobench')==='1'");
   expect(main).toContain('autoShadowBenchmark?.tick(now,mode===');
   expect(main).toContain('auto:autoShadowBenchmark.snapshot(performance.now())');
-  expect(main).toContain('autoShadowBenchmark?.noteTouch(performance.now())');
+  expect(main).toContain('autoShadowBenchmark.noteTouch(performance.now())');
  });
 });

@@ -22,5 +22,5 @@ it('does not accidentally unfreeze a fixed-location benchmark on resume or resta
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
  expect(main).toContain('if(fpsBenchDistance!==null){state.distance=fpsBenchDistance;state.speed=0;}');
  expect(main).toContain("if(fpsBenchDistance!==null){\n   // Hold the exact camera and car pose.");
- expect(main).toContain("fpsBenchmark:{mode:'fixed-position',distanceM:fpsBenchDistance,physicsFrozen:true}");
+ expect(main).toContain("fpsBenchmark:{mode:'fixed-position',distanceM:fpsBenchDistance,physicsFrozen:true,");
 });
