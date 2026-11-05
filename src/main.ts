@@ -52,6 +52,7 @@ import {SECTION_LABELS} from './scenery-cross-section';
 import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
+import {COAST_SHADOW_GROUPS,coastShadowGroupEnabled,coastShadowGroupSnapshot,setCoastShadowGroupEnabled} from './coast-shadow-layers';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import roadWorkerUrl from './road-worker.ts?worker&url';
@@ -153,7 +154,12 @@ let ultraOcean=coastUltraWater?await import('./coast-ocean')
  .then(({UltraCoastOcean})=>UltraCoastOcean.create(renderer,world.scene,world,p=>loadingProgress(48+p*30,'正在準備海岸','載入海岸資料，接著準備海浪與夕陽。')))
  .catch(error=>{console.error('Ultra-Water unavailable; using basic sea',error);return null;}):null;
 startupDiagnostics.mark('coast-ocean-ready',{active:!!ultraOcean});
-if(ultraOcean){const originalSea=world.scene.getObjectByName('default-coast-water');if(originalSea)originalSea.visible=false;}
+if(ultraOcean){
+ const originalSea=world.scene.getObjectByName('default-coast-water');
+ if(originalSea)originalSea.visible=false;
+ ultraOcean.boatShadow.enabled=coastShadowGroupEnabled('boats');
+ ultraOcean.setRockSunShadows(coastShadowGroupEnabled('rocks'));
+}
 startupDiagnostics.mark('coast-boats-start');
 let coastBoats=coastUltraMode?await (await import('./coast-boats')).addCoastBoats(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms,ultraOcean?.boatShadow):null;
 startupDiagnostics.mark('coast-boats-ready',{active:!!coastBoats});
@@ -185,7 +191,7 @@ const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
    backgroundWarmup:warm?.farmWarm??null,backgroundTasks:warm?.backgroundTasks??[],
    sharedFlowerAtlas:sharedFlowerMaskStats()},
   water:ultraOcean?.stats??null,
-  lighting:{sunsetShadowsEnabled,geometrySunShadows:coastGeometryShadows(),shadowMapEnabled:renderer.shadowMap.enabled,staticCache:world.shadowCache?.stats??null,projected:coastDuskShadows?.stats??null},
+  lighting:{sunsetShadowsEnabled,geometrySunShadows:coastGeometryShadows(),shadowMapEnabled:renderer.shadowMap.enabled,staticCache:world.shadowCache?.stats??null,shadowGroups:coastShadowGroupSnapshot(),projected:coastDuskShadows?.stats??null},
  };
 });
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
@@ -659,6 +665,10 @@ function adoptChapter(c:PreparedChapter,replay=false){
  coastDuskShadows?.dispose();
  tireEffects.dispose();dustEffects.dispose();impactSparks.dispose();trafficSparks.dispose();traffic?.dispose();cones?.dispose();triangles?.dispose();
  world=c.world;ultraOcean=c.ocean;blenderAsset=c.art;coastBoats=c.boats;journeyLink=c.link;
+  if(ultraOcean){
+   ultraOcean.boatShadow.enabled=coastShadowGroupEnabled('boats');
+   ultraOcean.setRockSunShadows(coastShadowGroupEnabled('rocks'));
+  }
  chapterIndex=c.index;journeyExitAt=undefined;trip=candidate;stage=candidate;pilot=candidate;brick=candidate;
  designerMode=native.id==='canyon';coastUltraMode=native.id==='coast';coastUltraWater=coastUltraMode;roadLockMode=designerMode;blenderMode=designerMode;scenicCameraEnabled=false;
  renderer.shadowMap.enabled=coastUltraMode?coastGeometryShadows():!matchMedia('(pointer:coarse)').matches;
@@ -796,7 +806,15 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
   l2UI?.setReviewExpanded(opening);tripPauseDock?.collapse();ui();
   if(!mobile())(opening?document.getElementById('l2-play'):tripPauseDock?.moreButton)?.focus();
  },
-},!playerUi);
+},!playerUi,coastUltraMode&&coastGeometryShadows()?{onChange:(group,enabled)=>{
+  if(!setCoastShadowGroupEnabled(world.scene,group,enabled))return;
+  if(group==='boats'&&ultraOcean)ultraOcean.boatShadow.enabled=enabled;
+  if(group==='rocks')ultraOcean?.setRockSunShadows(enabled);
+  if(group!=='boats'){
+   world.shadowCache?.refreshLightCasting();
+   if(COAST_SHADOW_GROUPS.find(g=>g.id===group)?.kind==='static')world.shadowCache?.invalidate();
+  }
+ }}:undefined);
 // Render a legible keycap on the action itself, following the last active input mode.
 // Existing L2 shortcut text is replaced by the same badge rather than doubled.
 for(const [id,key,pad] of [

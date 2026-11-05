@@ -1,10 +1,12 @@
 import './trip-pause-dock.css';
+import {COAST_SHADOW_GROUPS,coastShadowGroupSnapshot,type CoastShadowGroup} from './coast-shadow-layers';
 
 /** Road Trip pause controls stay in the corner; full reviews are explicitly opt-in. */
 export interface TripPauseActions {
  resume():void;replay():void;newRoute():void;settings():void;
  sound():void;fullscreen():void;review():void;
 }
+export interface TripShadowAudit {onChange(group:CoastShadowGroup,enabled:boolean):void}
 export class TripPauseDock {
  readonly element:HTMLElement;
  readonly resumeButton:HTMLButtonElement;
@@ -13,9 +15,18 @@ export class TripPauseDock {
  private readonly options:HTMLElement;
  private expanded=false;
  private reviewOpen=false;
- constructor(root:HTMLElement,actions:TripPauseActions,reviewAvailable:boolean){
+ constructor(root:HTMLElement,actions:TripPauseActions,reviewAvailable:boolean,shadowAudit?:TripShadowAudit){
   const element=document.createElement('aside');this.element=element;
   element.id='trip-pause-dock';element.hidden=true;element.setAttribute('aria-label','暫停操作');
+  const shadowMarkup=shadowAudit?
+   `<details id="tp-shadow-audit">
+    <summary>陰影效能測試 ▸</summary>
+    <small>勾選代表投影開啟；物件本身始終顯示。</small>
+    <div class="tp-shadow-options">
+     ${COAST_SHADOW_GROUPS.map(g=>`<label><input type="checkbox" data-shadow-group="${g.id}" ${coastShadowGroupSnapshot()[g.id]?'checked':''}> ${g.label}</label>`).join('')}
+    </div>
+    <button id="tp-shadow-reset" type="button">全部開啟</button>
+   </details>`:'';
   element.innerHTML=`<div class="tp-top">
     <span class="tp-indicator">Ⅱ 暫停</span>
     <button id="tp-resume" type="button">▶ 繼續</button>
@@ -28,7 +39,7 @@ export class TripPauseDock {
     <button id="tp-sound" type="button">音效開</button>
     <button id="tp-fullscreen" type="button">全螢幕</button>
     <button id="tp-review" type="button" aria-expanded="false">評分／匯出</button>
-   </div>`;
+   </div>${shadowMarkup}`;
   root.append(element);
   const button=(id:string)=>element.querySelector<HTMLButtonElement>('#'+id)!;
   this.resumeButton=button('tp-resume');this.moreButton=button('tp-more');
@@ -51,6 +62,15 @@ export class TripPauseDock {
   button('tp-sound').onclick=actions.sound;
   button('tp-fullscreen').onclick=actions.fullscreen;
   this.reviewButton.onclick=actions.review;
+  if(shadowAudit){
+   const inputs=element.querySelectorAll<HTMLInputElement>('input[data-shadow-group]');
+   inputs.forEach(input=>input.addEventListener('change',()=>{
+    shadowAudit.onChange(input.dataset.shadowGroup as CoastShadowGroup,input.checked);
+   }));
+   button('tp-shadow-reset').onclick=()=>{
+    inputs.forEach(input=>{if(!input.checked){input.checked=true;shadowAudit.onChange(input.dataset.shadowGroup as CoastShadowGroup,true);}});
+   };
+  }
  }
  private setExpanded(value:boolean){
   this.expanded=value;this.options.hidden=!value;
@@ -63,6 +83,7 @@ export class TripPauseDock {
  update(paused:boolean,muted:boolean,reviewOpen=false){
   this.element.hidden=!paused;this.reviewOpen=reviewOpen;
   if(!paused||reviewOpen)this.collapse();
+  if(!paused){const audit=this.element.querySelector<HTMLDetailsElement>('#tp-shadow-audit');if(audit)audit.open=false;}
   (this.element.querySelector('#tp-sound') as HTMLButtonElement).textContent=muted?'音效關':'音效開';
   this.moreButton.textContent=reviewOpen?'收起評分':this.expanded?'收起':'☰ 功能';
   this.moreButton.setAttribute('aria-expanded',String(reviewOpen||this.expanded));
