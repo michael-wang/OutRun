@@ -88,11 +88,16 @@ export function buildCoastGroundShadows(
   if(a.d<0||a.d>=routeLength)continue;
   const at=samples(a.d),rootGround=coastBeachHeight(a.x,at.position.y,at.right.y,a.d);
   // Draw on actually dry beach; water-side boulders use the water shader instead.
-  if(rootGround<COAST_SEA_LEVEL+.015){rejectedUnderwater++;continue;}
+  // Offshore rocks are allowed to project *onto* a dry shore even if their
+  // base sits below sea level; underwater ribbon vertices fade to zero while
+  // Ultra-Water handles the submerged part.
+  if(rootGround<COAST_SEA_LEVEL+.015&&a.kind!=='rock'){rejectedUnderwater++;continue;}
   const fwd=at.tangent?.clone()??samples(a.d+.5).position.clone().sub(samples(a.d-.5).position);
   fwd.y=0;fwd.normalize();
   const right=at.right.clone().setY(0).normalize();
-  const rows=8,cols=5,first=positions.length/3,indexStart=indices.length;
+  // Four samples across preserve a broad soft centre while trimming ~40% of
+  // the old vertex/triangle work for the whole 10km scene.
+  const rows=6,cols=4,first=positions.length/3,indexStart=indices.length;
   const span=Math.max(2,a.length),w=Math.max(.2,a.width);
   const weight=a.kind==='rail'?.70:a.kind==='concrete'?.85:a.kind==='visitor'?.73:
    a.kind==='lamp'?.60:a.kind==='rock'?.94:.90;
