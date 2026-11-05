@@ -1,11 +1,40 @@
 # R9.0 P0 — Scene Task Attribution (FIRST INCREMENT)
 
-**Status: INSTRUMENTED ON `dev`; awaiting real Pixel 8 trace and build/test execution.**  
+**Status: R9.0 P0b-2 on `dev`, repeat Pixel 8 driving accepted by owner; strict per-task budget and local CI/build verification remain open.**  
 **Design authority:** [ADR-009 — bounded stages and Scene Resource Pipeline](ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md).  
 **Public `main`:** remains the human-approved R8.8 family playtest; no public deploy authorized for P0.  
 **Rollback checkpoint:** `checkpoint/r90-before-scene-pipeline` at `5a43c2770dfef5fe4bb854087a56f975bbcd6024`.
 
 > **2026-11-05 P0a evidence and P0b first experiment (dev):** The real Pixel 8 log `outrun-fps-2026-11-04T18-30-46.957Z.json` confirms `scenery-field` is the expensive synchronous class. New experiment shares the flower mask atlas and records plot subtypes; **no post-change Pixel 8 evidence yet**. `main` remains unchanged. See the update below.
+
+## P0b-2 Pixel 8 repeat drive — 2026-11-05 05:26 UTC — GAMEPLAY ACCEPTED, TECHNICAL DEBT OPEN
+
+Second physical Pixel 8 Chrome trace: `outrun-fps-2026-11-05T05-26-33.058Z.json`, 77 one-second buckets covering **408–10,334m** (78.36s recorded). The owner drove almost the entire 10km coast and reported **no player-perceptible stutter**, perhaps only subtle frame-rate variations. This is the primary user-experience acceptance evidence; it is not proof of zero slow frames.
+
+| Metric | P0b-1 legacy preparation | P0b-2 previous trial (19:11 UTC Nov 4) | P0b-2 repeat (05:26 UTC Nov 5) |
+| --- | ---: | ---: | ---: |
+| 91 field-commit CPU wall total | 3333.6ms | 994.6ms | **1146.5ms** (65.6% lower than P0b-1) |
+| Worst field-commit task | 87.6ms | 40.1ms | **47.9ms** (45.3% lower) |
+| Flower field commits >16.7ms | not subtyped | 21 | **27** |
+| Field commits >50ms | 14 | 0 | **0** |
+| First 0–4.5km mean FPS | 47.43 | 49.47 | **50.19** |
+| All one-second buckets below 30 FPS | 4 in baseline 10.4km | 1 | **0** |
+| Minimum per-second FPS, whole drive | 17.63 | 27.92 | **35.49** |
+| Main rice 2.4–3.0km average FPS | 52.06 | 52.07 | **53.01** |
+| Main flowers 3.1–3.6km average FPS | 43.39 | 44.24 | **41.32** |
+| Second half (4.5km onward) mean FPS | 44.85 | 49.53 | **44.77** |
+
+*Only one physical device/run per capture; FPS varies with scene, GPU heat and conditions. The latest repeat is not uniformly faster than the first P0b-2 capture, but both confirm reduced creation cost compared with P0b-1.*
+
+**Critical old drop regions:** near ~450m **20.37 → 60.15 FPS**, near ~1.15km **27.57 → 37.84 FPS at 1226m**, near ~2.2km **24.81 → 41.72 FPS at 2218m**, with near-2353m **40.43 FPS**. Near-position comparison is approximate, not frame-aligned.
+
+**Remaining trace:** 8 isolated >50ms frame gaps in the 77-second capture; largest **83.2ms at ~360m** just after the drive timer began, with `mainScene` CPU 38.3ms rather than world task creation. Other 66.5–66.6ms gaps occurred near 1182m and 2261–2274m where `world` CPU reached ~19–24ms, plus near 3553m, 3700m and 5138m. **Zero gaps >100ms**. `gpuTimerSupported=false`, so exact GPU execution cost is unknown.
+
+**Data-path validity:** Worker prepared all **91 plots in 6 chunks** (`farmWorker.workerCpuMs=2582`), `missingPlots=0`, no recorded retries. End-of-drive `farms.plots=0` and `sharedFlowerAtlas.owners=1`, consistent with stage-local cleanup and the intentionally retained shared-stage atlas pin. No missing-road condition appears in the one-second chunk status snapshots; the owner's complete drive corroborates usability. This is **not** a substitute for a rigorous repeated-stage memory-leak test.
+
+**Decision:** Keep P0b-2 on `dev` as a **playability / user-experience pass**; do not claim the strict 16.7ms-per-field-task performance criterion passed. The remaining 40 flower commits take 921.8ms total, ~23.05ms each on average (27 over 16.7ms, worst 47.9ms), while 51 rice commits average 4.41ms with **none over 16.7ms**. If strict P0 completion is needed, P0b-3 should offload flower/grass instance transform + vertex attribute generation or split main-thread assembly. P1 streaming priorities and P2 sustained flower rendering remain separate. User approval to promote to `main` has **not** been requested or granted for this release.
+
+---
 
 ## P0b-2 Pixel 8 A/B result — 2026-11-05 — PARTIAL PASS
 
