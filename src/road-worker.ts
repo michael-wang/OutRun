@@ -1,4 +1,6 @@
 import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
+import {farmPlotsInChunk} from './coast-farm-layout';
+import {prepareFarmPlot,farmPrepTransferables} from './coast-farm-prep';
 import {addCoastResort} from './coast-resort';
 import {bridgeSpan,bridgeShoulders,onBridge,type BridgeSpan} from './bridge';
 import {rockySections,rockyAt,type RockySection} from './rocky-shoulder';
@@ -51,8 +53,14 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    });
    const definitions=[...templates].map(([id,data])=>({id,...data})),transfer:Transferable[]=[];for(const x of definitions)transfer.push(x.position.buffer,x.normal.buffer,x.uv.buffer,x.color.buffer,x.index.buffer);for(const x of instances)transfer.push(x.matrices.buffer);
    for(const g of geometries)g.dispose();for(const m of materials)m.dispose();
+   // Finite stage: all expensive, deterministic field samples and canopy vertices
+   // are computed here, never synchronously during the driver's render frame.
+   const farmPreparationStart=performance.now();
+   const farmPreps=coastUltra?farmPlotsInChunk(request.start,request.end).map(plot=>prepareFarmPlot(plot,current.sample)):[];
+   const farmPrepCpuMs=performance.now()-farmPreparationStart;
+   for(const prep of farmPreps)transfer.push(...farmPrepTransferables(prep));
    const visibleScenery=blenderArt?{...scenery,instances:instances.reduce((n,i)=>n+i.matrices.length/16,0),draws:instances.length}:scenery;
-   worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,scenery:visibleScenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
+   worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,farmPreps,farmPrepCpuMs,scenery:visibleScenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
   }
   const rawMeshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||hasModernShoulders(candidate.generatorVersion)))) ,rocks,shoulders,bridge,true,junction,(candidate as TripCandidate).scenerySections,(candidate as TripCandidate).canyonPrototype,blenderArt,candidate.generatorVersion==='canyon-roadlock-v1');
   // Full-route static art replaces only visual terrain. Original sand remains a contact surface.

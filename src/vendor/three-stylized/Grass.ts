@@ -6,7 +6,7 @@ import {
   validateSurfaceCoverage,
 } from './coverage'
 import { createTerrain, type Terrain } from './Terrain'
-import { Wildflowers } from './Wildflowers'
+import { Wildflowers, type PreparedFlowerInstances } from './Wildflowers'
 import { vegetationSeeds } from './seedStreams'
 import {
   DEFAULT_GRASS_OPTIONS,
@@ -344,6 +344,9 @@ export class Grass extends THREE.Group {
   >()
   private initialized = false
   private disposed = false
+  private preparedBladeSamples?:Float32Array
+  private preparedFlowerSamples?:Float32Array
+  private preparedFlowerInstances?:PreparedFlowerInstances
 
   get ground(): THREE.Mesh | undefined {
     return this.terrain?.ground
@@ -365,8 +368,11 @@ export class Grass extends THREE.Group {
     return readonlySnapshot(this.normalized, this.surface)
   }
 
-  constructor(options: GrassOptions = {}) {
+  constructor(options: GrassOptions = {}, prepared?:{blades:Float32Array;flowers:Float32Array;flowerInstances?:PreparedFlowerInstances}) {
     super()
+    this.preparedBladeSamples=prepared?.blades
+    this.preparedFlowerSamples=prepared?.flowers
+    this.preparedFlowerInstances=prepared?.flowerInstances
     this.sourceOptions = cloneOptions(options)
     this.normalized = this.normalizeSourceOptions(this.sourceOptions)
     this.validateCoverageOptions(this.normalized)
@@ -450,6 +456,8 @@ export class Grass extends THREE.Group {
   }
 
   private createBlades(): GrassLayer {
+    const prepared=this.preparedBladeSamples
+    this.preparedBladeSamples=undefined
     return new GrassLayer({
       surface: this.surface,
       density: this.normalized.grass.density,
@@ -465,7 +473,7 @@ export class Grass extends THREE.Group {
       brightness: this.normalized.grass.brightness,
       shadow: this.normalized.grass.shadow,
       lighting: this.normalized.grass.lighting,
-    })
+    }, prepared)
   }
 
   private applyLiveOptions(): void {
@@ -512,6 +520,8 @@ export class Grass extends THREE.Group {
     if (!this.normalized.wildflowers.enabled) return
     this.wildflowers = new Wildflowers({
       surface: this.surface,
+      ...(this.preparedFlowerSamples!==undefined?{preparedSamples:this.preparedFlowerSamples}:{}),
+      ...(this.preparedFlowerInstances!==undefined?{preparedInstances:this.preparedFlowerInstances}:{}),
       density: this.normalized.wildflowers.density,
       maxCount: this.normalized.wildflowers.maxCount,
       seed: this.normalized.wildflowers.seed,
@@ -520,6 +530,8 @@ export class Grass extends THREE.Group {
       shadow: this.normalized.grass.shadow,
     })
     this.add(this.wildflowers)
+    this.preparedFlowerSamples=undefined
+    this.preparedFlowerInstances=undefined
   }
 
   private normalizeSourceOptions(options: GrassOptions): NormalizedGrassFacadeOptions {

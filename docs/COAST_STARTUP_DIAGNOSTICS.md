@@ -1,6 +1,6 @@
-# COAST R8.7 — Pixel 8 first-load diagnostics (dev only)
+# First-load diagnostics — Pixel 8 Chrome (retained after R8.8)
 
-This is **instrumentation**, not a startup optimization. The public `main` branch is unchanged.
+This is the retained first-load diagnostic feature. It does not change startup scheduling and remains available through `?startupdiag=1`; the R8.8 rice renderer and the earlier start gate have been accepted.
 
 ## Run on the actual phone
 
@@ -20,8 +20,8 @@ The JSON contains stage timestamps, 98%-to-ready wait, detailed readiness gate c
 - `src/streamed-scene.ts`: read-only startup blockers and farm warmup progress.
 - `src/coast-farm.ts`: optional per-object shader compile/submission timing during the existing warmup.
 
-The following are **not changed**: `StreamedScene.ready` gate, Worker window, farm warmup algorithm, rendering parameters, driving controls, frame budget, Netlify production config.
+The diagnostic flag itself does not change `StreamedScene.ready`, Worker window, shader/texture settings, driving controls or render budgets. The R8.8 accepted renderer separately changed the readiness gate before this retained diagnostic.
 
 For analysis: compare time at 98% with `startup-ready`, inspect the last `readiness` event's `blockers`, the `farmWarm` done/total and compile/submit totals, and compare with network resource durations. No conclusions about GPU vs CPU can be drawn solely from a slow percentage.
 
-**Verification:** Physical Pixel 8 timings and build/test execution are pending. The next step is to collect real device JSON before making scheduling changes.
+**Verification:** Physical Pixel 8 first-load baselines and accepted R8.8 results are documented in `COAST_R88_RELEASE.md`. For detailed 10-minute driving FPS and CPU/GPU timing comparison, use `?fpsdiag=1` as described in `COAST_R89_FPS_DIAGNOSTICS.md`.

@@ -1,4 +1,3 @@
-import {RICE_SEA_MODE} from './rice-sea-mode';
 /**
  * Opt-in first-load measurements. Enable with ?startupdiag=1.
  * Records timings and readiness gates; deliberately does not change startup scheduling.
@@ -164,8 +163,7 @@ class FirstLoadDiagnostics {
       .slice(0, 150);
     const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
     return {
-      kind: 'outrun-startup-diagnostic-v2',
-      riceRenderer: RICE_SEA_MODE,
+      kind: 'outrun-startup-diagnostic-v3',
       generatedAt: new Date().toISOString(),
       urlPath: location.pathname,
       userAgent: navigator.userAgent,

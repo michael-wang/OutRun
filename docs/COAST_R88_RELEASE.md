@@ -20,16 +20,16 @@ The two new JSON files were exported **before driving** (`drive.samples = 0`). T
 
 Build/unit test execution was **not independently available through this remote GitHub integration**. Do not claim a fresh CI pass or local build from this publish action. If build failure occurs in Netlify, keep the earlier `main` merge commit as the known rollout fallback.
 
-## Rollback
+## Post-acceptance cleanup (dev, Nov 5)
 
-- Runtime A/B/fallback in the same build: `/?rice=legacy` activates the previous rice construction **and** its slow startup gate. `/?rice=hybrid` (or no rice parameter) is the accepted R8.8 default.
-- Full pre-experiment dev tip: `b6a4ad3abd91923cf8f162bce5a730e825ec27be`.
-- Previous published main merge commit: `b63ec3bdcad02e24fe8b46d27d5a8f569a063d1f`.
-- For a full production rollback, use a follow-up Git revert PR of this release merge on `main`; **never force push** or rewrite main history.
-- `?startupdiag=1` is optional. The JSON now carries `riceRenderer` and the first two minutes' drive stats **when exported after driving**.
+The **R8.8 golden rice sea** is now the only production rendering path. The temporary `?rice=legacy` / `?rice=hybrid` URL modes and legacy startup gate were removed from `dev`; historical A/B experiments are retained in Git history, not as live runtime options.
+
+The optional `?startupdiag=1` remains for first-load measurement. New `?fpsdiag=1` measures the driving FPS and CPU breakdown near rice/flower sections; see [COAST_R89_FPS_DIAGNOSTICS.md](COAST_R89_FPS_DIAGNOSTICS.md). No renderer quality settings were changed by diagnostic work.
+
+The November 4 first-load files were exported **before driving**, so they cannot establish farm-region FPS or absence of late Shader/upload stalls. A single Pixel 8 screenshot showed 27 FPS; the new profiler targets this unresolved issue.
 
 ## Next phase
 
-- Gather driving JSON exported after passing the main rice field, and compare frame-gap spikes / FPS with legacy.
+- Gather `?fpsdiag=1` JSON after passing the main rice and flower fields, comparing region FPS, CPU timing and (where available) async GPU timer samples.
 - Reduce draw calls, improve land-side scene efficiency, and preserve the accepted rice appearance before proposing additional visual changes.
 - Preserve the original user's visual references for future fine-tuning.

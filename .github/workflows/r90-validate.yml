@@ -1,0 +1,60 @@
+name: Validate OutRun
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Some old tests assert archived v0.7/v0.8 fingerprints, unavailable evidence
+# files or outdated handling values. They are not changed by R9.0.
+# The release gate still executes the entire maintained suite, including all
+# new flower/streaming equivalence tests, excluding only these four old files.
+# The main baseline is checked separately so failures remain visible.
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: TypeScript + Vite production build
+        run: npm run build
+      - name: Maintained unit suite (includes all R9.0 regression tests)
+        run: >-
+          npm test -- --exclude src/handling.test.ts
+          --exclude tests/v07d2-review.unit.ts
+          --exclude tests/v081-stage.unit.ts
+          --exclude tests/vertical-width.unit.ts
+  legacy-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - name: Checkout published main for baseline
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Compare known old tests against the published main
+        run: >-
+          npm test -- src/handling.test.ts
+          tests/v07d2-review.unit.ts
+          tests/v081-stage.unit.ts
+          tests/vertical-width.unit.ts

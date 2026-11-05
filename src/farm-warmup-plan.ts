@@ -3,10 +3,8 @@ import * as THREE from 'three';
 /** A safe, minimal shader/geometry variant preflight.
  * Same material + same mesh instancing mode need one representative draw.
  * Geometry buffers for other distant objects are allowed to stream later.
- * Legacy mode returns every object, preserving the old startup behavior.
  */
-export function farmWarmupRepresentatives(objects:THREE.Mesh[],hybrid:boolean):THREE.Mesh[]{
- if(!hybrid)return objects;
+export function farmWarmupRepresentatives(objects:THREE.Mesh[]):THREE.Mesh[]{
  const seen=new Map<THREE.Material,Set<string>>();
  return objects.filter(object=>{
   const kind=object instanceof THREE.InstancedMesh?'instanced':'mesh';

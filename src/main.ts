@@ -4,6 +4,8 @@ import {disposeScene,sceneDisposal} from './dispose-scene';
 import {attachJourneyLink,highwayExtension,LINK_HALF,LINK_LOAD_START} from './journey-link';
 import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed} from './loading';
 import {startupDiagnostics} from './startup-diagnostics';
+import {DriveFpsDiagnostics} from './drive-fps-diagnostics';
+import {sharedFlowerMaskStats} from './vendor/three-stylized/flowerShapes';
 import {RockContact} from './rocky-shoulder';
 import {RoadCones} from './road-cones';
 import {bankPrototype} from './banking';
@@ -160,6 +162,23 @@ if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=chapterStart();state.speed=brick.entrySpeed/3.6;} advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
 world.streamer?.update(state.distance);
 startupDiagnostics.mark('road-streaming-active');
+// The expensive diagnostic snapshot runs only once per second when ?fpsdiag=1.
+const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
+ const stream=world.streamer?.stats,farms=world.streamer?.farmStats??[],warm=world.streamer?.startupDiagnosticState();
+ return {
+  streamer:{queue:stream?.queued??0,worker:stream?.pending?.kind??null,workerAgeMs:stream?.pending?.ageMs??null,retries:stream?.retries??0,
+   chunks:stream?.chunks?.map(c=>({index:c.index,road:c.road,scenery:c.scenery}))??[],
+   taskProfile:world.streamer?.sceneTaskProfile??null,
+   farmWorker:world.streamer?.farmWorkerStats??null,
+   lastSlowTasks:world.streamer?.sceneTaskSpikes.slice(-3)??[]},
+  farms:{plots:farms.length,ricePlots:farms.filter(f=>f.kind==='rice').length,flowerPlots:farms.filter(f=>f.kind==='flowers').length,
+   riceCanopyTriangles:farms.reduce((n,f)=>n+f.canopyTriangles,0),riceClumps:farms.reduce((n,f)=>n+f.crops.reduce((m,c)=>m+c,0),0),
+   grassBlades:farms.reduce((n,f)=>n+f.blades,0),flowers:farms.reduce((n,f)=>n+f.flowers,0),
+   backgroundWarmup:warm?.farmWarm??null,backgroundTasks:warm?.backgroundTasks??[],
+   sharedFlowerAtlas:sharedFlowerMaskStats()},
+  water:ultraOcean?.stats??null,
+ };
+});
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
 let inputMode:'keyboard'|'gamepad'|'touch'=mobile()?'touch':'keyboard';
 document.documentElement.dataset.inputMode=inputMode;
@@ -381,6 +400,7 @@ function groundHeight(height:number,lateral:number){
   return height+(Math.abs(lateral)>world.half?-.1:0);
 }
 function render(dt:number,draw=true){
+  const fpsProfiling=driveFpsDiagnostics.enabled&&mode==='playing';
   blenderAsset?.update(elapsed);coastBoats?.update(elapsed,camera);
   const p=world.sample(state.distance);
   world.car.position.copy(p.position).addScaledVector(p.right,state.lateral);
@@ -411,10 +431,22 @@ function render(dt:number,draw=true){
     camera.position.copy(world.car.localToWorld(offset));camera.lookAt(world.car.localToWorld(new THREE.Vector3(0,.8,0)));
   }
   if(import.meta.env.DEV&&bridgeInspection){const q=world.sample(state.distance);camera.position.copy(q.position).addScaledVector(q.right,140).addScaledVector(q.tangent,-100).add(new THREE.Vector3(0,18,0));camera.lookAt(q.position.clone().add(new THREE.Vector3(0,-7,0)));}
-  const worldStart=perfEnabled?performance.now():0;world.update(elapsed,state.speed,state.slip,state.distance);if(perfEnabled)worldTotal+=performance.now()-worldStart;if(!draw)return;cones?.update(elapsed,state.distance,state.lateral,state.speed);triangles?.update(elapsed,state.distance,state.lateral,state.speed);traffic?.update(elapsed,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace),camera,renderer.domElement.height);const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);refreshHints();world.car.userData.motion.render();const rayStart=perfEnabled?performance.now():0;groundWheels();sound.surface(state.speed,mode==='playing'?wheelContacts.filter(c=>c.onRoad===false&&c.surface&&c.gap!==null&&Math.abs(c.gap)<.12).length:0,dt);tireEffects.update(elapsed,state.speed,sound.skidFeedback.intensity,wheelContacts,renderer.domElement.height*camera.projectionMatrix.elements[5]/2);if(wheelContacts.some(c=>c.onRoad===false&&!!c.surface))dustEffects.setDustTint(world.weightsAt(state.distance));dustEffects.update(elapsed,state.speed,0,wheelContacts,1);sparkOrigin.copy(p.position).addScaledVector(p.right,world.boundaries?guardrail.contactEdge:CANYON_BEND.railOffset);sparkOrigin.y+=.9;impactSparks.update(elapsed,sparkOrigin,p.right,p.tangent,guardrail.flash>0?guardrail.strength:0);trafficSparks.update(elapsed,trafficSparkOrigin,p.right,p.tangent,trafficImpact.flash>0?(trafficImpact.event?.severity??0):0);brakeLights.set(mode==='playing'&&lastControls.brake);if(pendingExhaustRpm>0&&mode==='playing')exhaustEffects.burst(elapsed,pendingExhaustRpm);pendingExhaustRpm=0;exhaustEffects.update(elapsed,mode==='playing');const renderStart=perfEnabled?performance.now():0;if(perfEnabled)raycastTotal+=renderStart-rayStart;
+  const worldStart=perfEnabled||fpsProfiling?performance.now():0;world.update(elapsed,state.speed,state.slip,state.distance);if(perfEnabled)worldTotal+=performance.now()-worldStart;if(fpsProfiling)driveFpsDiagnostics.cpu('world',performance.now()-worldStart);if(!draw)return;
+  const remainingRenderStart=fpsProfiling?performance.now():0;cones?.update(elapsed,state.distance,state.lateral,state.speed);triangles?.update(elapsed,state.distance,state.lateral,state.speed);traffic?.update(elapsed,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace),camera,renderer.domElement.height);const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);refreshHints();world.car.userData.motion.render();const rayStart=perfEnabled?performance.now():0;groundWheels();sound.surface(state.speed,mode==='playing'?wheelContacts.filter(c=>c.onRoad===false&&c.surface&&c.gap!==null&&Math.abs(c.gap)<.12).length:0,dt);tireEffects.update(elapsed,state.speed,sound.skidFeedback.intensity,wheelContacts,renderer.domElement.height*camera.projectionMatrix.elements[5]/2);if(wheelContacts.some(c=>c.onRoad===false&&!!c.surface))dustEffects.setDustTint(world.weightsAt(state.distance));dustEffects.update(elapsed,state.speed,0,wheelContacts,1);sparkOrigin.copy(p.position).addScaledVector(p.right,world.boundaries?guardrail.contactEdge:CANYON_BEND.railOffset);sparkOrigin.y+=.9;impactSparks.update(elapsed,sparkOrigin,p.right,p.tangent,guardrail.flash>0?guardrail.strength:0);trafficSparks.update(elapsed,trafficSparkOrigin,p.right,p.tangent,trafficImpact.flash>0?(trafficImpact.event?.severity??0):0);brakeLights.set(mode==='playing'&&lastControls.brake);if(pendingExhaustRpm>0&&mode==='playing')exhaustEffects.burst(elapsed,pendingExhaustRpm);pendingExhaustRpm=0;exhaustEffects.update(elapsed,mode==='playing');const renderStart=perfEnabled?performance.now():0;if(perfEnabled)raycastTotal+=renderStart-rayStart;
+  if(fpsProfiling){
+   driveFpsDiagnostics.cpu('otherRender',performance.now()-remainingRenderStart);
+   driveFpsDiagnostics.beginGpu(state.distance);
+  }
+  const oceanBegin=fpsProfiling?performance.now():0;
   if(ultraOcean?.mesh.visible)ultraOcean.update(camera,dt);
+  if(fpsProfiling)driveFpsDiagnostics.cpu('ocean',performance.now()-oceanBegin);
+  const boatShadowBegin=fpsProfiling?performance.now():0;
   if(ultraOcean?.mesh.visible)ultraOcean.boatShadow.update(renderer,camera,dt);
-  renderer.render(world.scene,camera);if(perfEnabled)renderTotal+=performance.now()-renderStart;frames++;
+  if(fpsProfiling)driveFpsDiagnostics.cpu('boatShadow',performance.now()-boatShadowBegin);
+  const sceneDrawBegin=fpsProfiling?performance.now():0;
+  renderer.render(world.scene,camera);
+  if(fpsProfiling){driveFpsDiagnostics.cpu('mainScene',performance.now()-sceneDrawBegin);driveFpsDiagnostics.endGpu();}
+  if(perfEnabled)renderTotal+=performance.now()-renderStart;frames++;
   $('speed').querySelector('strong')!.textContent=Math.round(state.speed*3.6).toString().padStart(3,'0');
   const speedBand=state.speed*3.6>=300?'redline':state.speed*3.6>=240?'fast':'cruise';if($('speed').dataset.band!==speedBand)$('speed').dataset.band=speedBand;
   $('speed-needle').setAttribute('transform',`rotate(${needleAngle(state.speed*3.6)} 100 100)`);$('gear').textContent=`G${state.gear}`;
@@ -638,6 +670,7 @@ let startupPending=true;
 let startupDiagnosticSampleAt=0;
 let last=performance.now();
 function loop(now:number){
+  const fpsCallbackStart=driveFpsDiagnostics.enabled?performance.now():0;
   if(startupDiagnostics.enabled&&startupPending){
     startupDiagnostics.frame(now);
     if(now-startupDiagnosticSampleAt>=250){
@@ -661,7 +694,9 @@ function loop(now:number){
   const wasCounting=mode==='countdown';if(wasCounting){$('ready-countdown').textContent=`${playerUi?'準備':'READY'} ${Math.max(0,(readyUntil-now)/1000).toFixed(1)}`;if(now>=readyUntil&&!document.hidden&&document.hasFocus()){mode='playing';input.clear();pad.neutralize();ui();}}
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
+  const fpsPhysicsStart=driveFpsDiagnostics.enabled&&mode==='playing'?performance.now():0;
   if(!manual&&!wasCounting)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);if(advance(tick)===false)break;remaining-=tick;}
+  if(fpsPhysicsStart)driveFpsDiagnostics.cpu('physics',performance.now()-fpsPhysicsStart);
   render(dt);
   if(startupDiagnostics.enabled)startupDiagnostics.drivingFrame(now,mode==='playing',state.distance,renderer.info.render.calls);
   void world.streamer?.warmFarm(renderer,camera);
@@ -698,6 +733,11 @@ Draws ${renderer.info.render.calls} · ray ${perf.raycastMs.toFixed(1)}ms · ren
 
   if(!manual&&mode==='playing'&&!settingsOpen)speedAudit?.record({wall:now,simulated:elapsed,progress:state.distance,speed:state.speed,position:world.car.position.toArray(),camera:camera.position.toArray(),trackLength:world.length,heading:state.worldHeading,lateral:state.lateral,pace:effectivePace(state.speed,highSpeedPace)});
   else speedAudit?.reset();
+  if(driveFpsDiagnostics.enabled){
+   driveFpsDiagnostics.cpu('callback',performance.now()-fpsCallbackStart);
+   driveFpsDiagnostics.frame(now,mode==='playing'&&!settingsOpen,state.distance,
+    renderer.info.render.calls,renderer.info.render.triangles);
+  }
   requestAnimationFrame(loop);
 }
 if(brick&&!l2&&!pilot)labUI=mountBrickLab(brick,{play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),exportMoments:()=>l2UI?.exportCurrent()});

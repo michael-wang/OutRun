@@ -1,14 +1,18 @@
 import * as THREE from 'three'
 import { normalizeCoverage } from './coverage'
 import { DEFAULT_GRASS_OPTIONS } from './defaults'
-import { buildSurfaceLayout, sampleSurfaceData } from './surfaceSampler'
+import { buildSurfaceLayout, sampleSurfaceData, unpackSurfaceSamples } from './surfaceSampler'
 import type { GrassCoverageOptions, NormalizedGrassWindOptions } from './types'
 import { seededRandom, windDirectionVec2 } from './utils'
 
-import { createMaskTexture, FLOWER_PALETTES, MASK_VARIANTS } from './flowerShapes'
+import { acquireSharedFlowerMask, releaseSharedFlowerMask, FLOWER_PALETTES, MASK_VARIANTS } from './flowerShapes'
 
 export interface WildflowerOptions {
   surface: THREE.Mesh
+  /** Optional initial samples from stage worker; runtime edits re-sample normally. */
+  preparedSamples?:Float32Array
+  /** Fully prepared matrices/attributes from finite stage Worker. */
+  preparedInstances?:PreparedFlowerInstances
   density?: number
   maxCount?: number
   seed?: number
@@ -149,6 +153,56 @@ function createFlowerAttributes(
   return { variants, petalColors, foliageColors, centreColors }
 }
 
+/** Transferable GPU-ready values. The matrix and attribute ordering must
+ * exactly reproduce Wildflowers() followed by the coastal field styling.
+ * No WebGL resources or DOM access are required to generate these buffers. */
+export type PreparedFlowerInstances={
+ matrices:Float32Array;
+ variants:Float32Array;
+ petalColors:Float32Array;
+ foliageColors:Float32Array;
+ centreColors:Float32Array;
+ coastalStyled:boolean;
+};
+export function prepareFlowerInstances(samples:Float32Array,seed:number,coastalFlowerColor?:string):PreparedFlowerInstances{
+ if(samples.length%6!==0)throw Error('Invalid flower sample stride');
+ const count=samples.length/6,random=seededRandom(seed ^ 0x85ebca6b);
+ const attrs=createFlowerAttributes(count,random);
+ const matrices=new Float32Array(count*16);
+ const up=new THREE.Vector3(0,1,0),root=new THREE.Vector3(),normal=new THREE.Vector3();
+ const rotation=new THREE.Quaternion(),spin=new THREE.Quaternion(),matrix=new THREE.Matrix4(),scale=new THREE.Vector3();
+ for(let i=0;i<count;i++){
+  const at=i*6,height=THREE.MathUtils.lerp(.32,.72,random());
+  root.set(samples[at],samples[at+1],samples[at+2]);
+  normal.set(samples[at+3],samples[at+4],samples[at+5]).normalize();
+  rotation.setFromUnitVectors(up,normal);
+  spin.setFromAxisAngle(up,random()*Math.PI*2);
+  rotation.multiply(spin);
+  matrix.compose(root,rotation,scale.set(height*THREE.MathUtils.lerp(.45,.62,random()),height,1));
+  matrix.toArray(matrices,i*16);
+  if(coastalFlowerColor!==undefined){
+   // Match the original post-construction getMatrixAt -> decompose -> 1.7x
+   // scale -> compose, including the intermediate float32 precision.
+   matrix.fromArray(matrices,i*16);
+   matrix.decompose(root,rotation,scale);
+   scale.multiplyScalar(1.7);
+   matrix.compose(root,rotation,scale);
+   matrix.toArray(matrices,i*16);
+  }
+ }
+ if(coastalFlowerColor!==undefined){
+  const color=new THREE.Color(coastalFlowerColor).multiplyScalar(.58);
+  for(let i=0;i<count;i++){
+   const p=i*3;
+   attrs.petalColors[p]=color.r;attrs.petalColors[p+1]=color.g;attrs.petalColors[p+2]=color.b;
+  }
+  for(const colors of [attrs.foliageColors,attrs.centreColors]){
+   for(let i=0;i<colors.length;i++)colors[i]*=.65;
+  }
+ }
+ return {matrices,...attrs,coastalStyled:coastalFlowerColor!==undefined};
+}
+
 function createCardGeometry(
   attributes: ReturnType<typeof createFlowerAttributes>,
 ): THREE.PlaneGeometry {
@@ -249,15 +303,21 @@ export class Wildflowers extends THREE.Group {
       throw new RangeError('Wildflower density and maximum count must be nonnegative.')
     }
 
-    const layout = buildSurfaceLayout(options.surface, coverage)
-    const requested = Math.min(maxCount, Math.round(layout.coveredArea * density))
-    const samples = sampleSurfaceData(options.surface, requested, seed, coverage, layout)
-    this.count = samples.length
+    const prepared=options.preparedInstances
+    const samples=prepared?[]:options.preparedSamples!==undefined?unpackSurfaceSamples(options.preparedSamples):(()=>{
+      const layout=buildSurfaceLayout(options.surface,coverage)
+      const requested=Math.min(maxCount,Math.round(layout.coveredArea*density))
+      return sampleSurfaceData(options.surface,requested,seed,coverage,layout)
+    })()
+    this.count=prepared?prepared.matrices.length/16:samples.length
+    if(prepared&&(!Number.isInteger(this.count)||prepared.variants.length!==this.count
+      ||[prepared.petalColors,prepared.foliageColors,prepared.centreColors].some(a=>a.length!==this.count*3)))
+      throw Error('Invalid prepared flower instance arrays')
 
-    const random = seededRandom(seed ^ 0x85ebca6b)
-    const attributes = createFlowerAttributes(this.count, random)
+    const random=prepared?undefined:seededRandom(seed ^ 0x85ebca6b)
+    const attributes=prepared??createFlowerAttributes(this.count, random!)
 
-    this.uniforms = createFlowerUniforms(createMaskTexture())
+    this.uniforms = createFlowerUniforms(acquireSharedFlowerMask())
     this.depthMaterial = createFlowerDepthMaterial(this.uniforms)
     this.flowers = new THREE.InstancedMesh(
       createCardGeometry(attributes),
@@ -279,19 +339,23 @@ export class Wildflowers extends THREE.Group {
     const matrix = new THREE.Matrix4()
     const scale = new THREE.Vector3()
 
-    for (let index = 0; index < samples.length; index += 1) {
-      const height = THREE.MathUtils.lerp(0.32, 0.72, random())
-      root.copy(samples[index].position).applyMatrix4(worldToLocal)
-      localNormal.copy(samples[index].normal).transformDirection(worldToLocal).normalize()
-      rotation.setFromUnitVectors(up, localNormal)
-      spin.setFromAxisAngle(up, random() * Math.PI * 2)
-      rotation.multiply(spin)
-      matrix.compose(
-        root,
-        rotation,
-        scale.set(height * THREE.MathUtils.lerp(0.45, 0.62, random()), height, 1),
-      )
-      this.flowers.setMatrixAt(index, matrix)
+    if(prepared){
+      this.flowers.instanceMatrix.array.set(prepared.matrices)
+    }else{
+      for (let index = 0; index < samples.length; index += 1) {
+        const height = THREE.MathUtils.lerp(0.32, 0.72, random!())
+        root.copy(samples[index].position).applyMatrix4(worldToLocal)
+        localNormal.copy(samples[index].normal).transformDirection(worldToLocal).normalize()
+        rotation.setFromUnitVectors(up, localNormal)
+        spin.setFromAxisAngle(up, random!() * Math.PI * 2)
+        rotation.multiply(spin)
+        matrix.compose(
+          root,
+          rotation,
+          scale.set(height * THREE.MathUtils.lerp(0.45, 0.62, random!()), height, 1),
+        )
+        this.flowers.setMatrixAt(index, matrix)
+      }
     }
     this.flowers.instanceMatrix.needsUpdate = true
     this.add(this.flowers)
@@ -324,7 +388,7 @@ export class Wildflowers extends THREE.Group {
     this.disposed = true
     this.remove(this.flowers)
     this.flowers.geometry.dispose()
-    this.flowers.material.uniforms.uMask.value.dispose()
+    releaseSharedFlowerMask(this.flowers.material.uniforms.uMask.value)
     this.flowers.material.dispose()
     this.depthMaterial.dispose()
     this.clear()

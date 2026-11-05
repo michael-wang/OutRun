@@ -22,6 +22,26 @@ export interface SurfaceSample {
   normal: THREE.Vector3
 }
 
+/** Transfer-only pure numeric data; no THREE instances cross Worker boundaries. */
+export function packSurfaceSamples(samples: readonly SurfaceSample[]): Float32Array {
+  const out=new Float32Array(samples.length*6)
+  for(let i=0;i<samples.length;i++){
+    const at=i*6,p=samples[i].position,n=samples[i].normal
+    out[at]=p.x;out[at+1]=p.y;out[at+2]=p.z
+    out[at+3]=n.x;out[at+4]=n.y;out[at+5]=n.z
+  }
+  return out
+}
+export function unpackSurfaceSamples(data:Float32Array):SurfaceSample[] {
+  if(data.length%6!==0)throw new Error('Invalid prepared surface sample stride')
+  const out:SurfaceSample[]=[]
+  for(let i=0;i<data.length;i+=6)out.push({
+    position:new THREE.Vector3(data[i],data[i+1],data[i+2]),
+    normal:new THREE.Vector3(data[i+3],data[i+4],data[i+5]),
+  })
+  return out
+}
+
 function buildSurfaceSampler(surface: THREE.Mesh): SurfaceSampler {
   surface.updateWorldMatrix(true, false)
 

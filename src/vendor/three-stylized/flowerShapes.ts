@@ -33,6 +33,35 @@ export const FLOWER_PALETTES: readonly FlowerPalette[] = [
   },
 ]
 
+/** Stage-shared atlas: every floral plot uses the same deterministic shapes.
+ * Keep the rasterized canvas/texture alive while any field still owns it.
+ * This avoids repeating canvas drawing and uploading one atlas per plot.
+ */
+let sharedMask: THREE.Texture | undefined
+let sharedMaskUsers = 0
+
+export function acquireSharedFlowerMask(): THREE.Texture {
+  if (!sharedMask) sharedMask = createMaskTexture()
+  sharedMaskUsers++
+  return sharedMask
+}
+
+export function releaseSharedFlowerMask(texture: THREE.Texture): void {
+  if (texture !== sharedMask || sharedMaskUsers === 0) {
+    throw new Error('Flower mask release without matching active owner.')
+  }
+  sharedMaskUsers--
+  if (sharedMaskUsers === 0) {
+    sharedMask.dispose()
+    sharedMask = undefined
+  }
+}
+
+/** Lightweight telemetry for the common scene-resource lifecycle. */
+export function sharedFlowerMaskStats() {
+  return { owners: sharedMaskUsers, residentAtlases: sharedMask ? 1 : 0 }
+}
+
 export function createMaskTexture(): THREE.Texture {
   if (typeof document === 'undefined') {
     const texture = new THREE.DataTexture(new Uint8Array([0, 0, 0, 0]), 1, 1)

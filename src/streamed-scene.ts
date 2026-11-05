@@ -7,7 +7,8 @@ import type {PilotCandidate} from './pilot-composer';
 import type {RoadMeshData} from './road-chunk';
 import {loadCoastFarm,createFarmPlot,warmFarmMeshes,type FarmAssets,type FarmPatch} from './coast-farm';
 import {farmPlotsInChunk} from './coast-farm-layout';
-import {HYBRID_RICE_SEA} from './rice-sea-mode';
+import type {PreparedFarmPlot} from './coast-farm-prep';
+import {SceneTaskProfiler,SCENE_TASK_SOFT_BUDGET_MS,type SceneTaskKind} from './scene-task-profiler';
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
@@ -15,7 +16,7 @@ type Instance={waffleSign?:boolean;nature?:NatureBatch;template:string;color:num
 type Chunk={index:number;objects:THREE.Object3D[];groups:Partial<Record<string,THREE.Group>>;geometries:Set<THREE.BufferGeometry>;road:'missing'|'working'|'ready';scenery:'missing'|'working'|'ready'};
 type Phase='road'|'scenery';
 type Lifecycle={index:number;start:number;end:number;kind:Phase;generation:number;requestedAt:number;responseAt?:number;workerCpuMs?:number;responseMs?:number;commitStart?:number;commitEnd?:number;commitCpuMs:number;readyAt?:number;generatedInstances?:number;attachedInstances:number;discardedTasks:number;error?:string;retiredAt?:number};
-type Work={index:number;priority:number;run:()=>void;record?:Lifecycle};
+type Work={index:number;priority:number;run:()=>void;record?:Lifecycle;kind?:SceneTaskKind;detail?:string;resourceId?:number};
 /** Nearest-rank quantiles over the bounded retained sample set. */
 export function latencyDistribution(values:number[]){const sorted=values.filter(Number.isFinite).sort((a,b)=>a-b),q=(p:number)=>sorted.length?sorted[Math.max(0,Math.ceil(sorted.length*p)-1)]:null;return {count:sorted.length,p50:q(.5),p95:q(.95),p99:q(.99),worst:q(1)};}
 export interface SceneAnnotation {distance:number;create:()=>THREE.Mesh[]}
@@ -27,6 +28,9 @@ export class StreamedScene {
  readonly history:{kind:string;index:number;ms:number}[]=[];
  private worker!:Worker;private bank?:BankStrength;private pending?:{kind:string;index:number;since:number};private retries=0;private failures:{message:string;kind:string;index:number;at:number}[]=[];private testFaults={delayMs:0,fromIndex:0,fail:false};private chunks=new Map<number,Chunk>();private desired=new Set<number>();private work:Work[]=[];
  private retiring:Work[]=[];
+ private readonly taskProfiler=typeof location!=='undefined'&&(()=>{
+  const p=new URLSearchParams(location.search);return p.get('fpsdiag')==='1'||p.get('streamdiag')==='1';
+ })()?new SceneTaskProfiler():undefined;
  private diagnostics=typeof location!=='undefined'&&(()=>{const p=new URLSearchParams(location.search);return p.get('streamdiag')==='1'||(p.get('streamhud')==='1'&&(import.meta.env.DEV||p.get('qa')==='1'));})();
  private lifecycle:Lifecycle[]=[];private activeRecord?:Lifecycle;private discardedResponses=0;private discardedTasks=0;
  // Scalar records only: never retain geometry or transferable buffers.
@@ -68,7 +72,8 @@ export class StreamedScene {
  private markerMaterials:THREE.Material[];
  private uploadOwners=new WeakMap<object,number>();
  private generation=1;private errorMessage='';
- private farmAssets?:FarmAssets;private farms=new Map<number,FarmPatch[]>();private disposed=false;private farmWarmed=false;private farmGpuWarmed=false;private farmWarmTask?:Promise<void>;
+ private farmWorkerPrepared={chunks:0,plots:0,workerCpuMs:0,lastChunk:-1,lastMs:0,missingPlots:0};
+ private farmAssets?:FarmAssets;private farms=new Map<number,FarmPatch[]>();private disposed=false;private farmGpuWarmed=false;private farmWarmTask?:Promise<void>;
  private farmWarmIds=new Set<number>();
  private farmWarmStartedAt=0;
  private farmWarmElapsedBeforeBatch=0;
@@ -91,6 +96,10 @@ export class StreamedScene {
  }
  updateFarm(time:number){if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
+ /** Opt-in common streaming-task cost attribution (read-only). */
+ get sceneTaskProfile(){return this.taskProfiler?.snapshot()??null;}
+ get farmWorkerStats(){return {...this.farmWorkerPrepared,workerCpuMs:Math.round(this.farmWorkerPrepared.workerCpuMs),lastMs:Math.round(this.farmWorkerPrepared.lastMs)};}
+ get sceneTaskSpikes(){return this.taskProfiler?.recentSlowTasks()??[];}
  constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false,private farmSample?:Parameters<typeof createFarmPlot>[1]){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
@@ -136,10 +145,10 @@ export class StreamedScene {
    // no longer render or participate in tire raycasts. Dispose GPU buffers in
    // individual, budgeted steps on subsequent frames.
    for(const group of Object.values(c.groups))group?.removeFromParent();
-   for(const farm of this.farms.get(index)??[])this.retiring.push({index,priority:1,run:()=>{this.farmWarmIds.delete(farm.plot.id);farm.group.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.ShaderMaterial)this.clippedMaterials.delete(m);});farm.dispose();}});this.farms.delete(index);
+   for(const farm of this.farms.get(index)??[])this.retiring.push({index,priority:1,kind:'retire-field',run:()=>{this.farmWarmIds.delete(farm.plot.id);farm.group.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.ShaderMaterial)this.clippedMaterials.delete(m);});farm.dispose();}});this.farms.delete(index);
    if(this.diagnostics)for(const r of this.lifecycle)if(r.index===index&&r.retiredAt===undefined)r.retiredAt=performance.now();
-   for(const object of c.objects)if(object instanceof THREE.InstancedMesh)this.retiring.push({index,priority:1,run:()=>object.dispose()});
-   for(const geometry of c.geometries)this.retiring.push({index,priority:1,run:()=>geometry.dispose()});this.chunks.delete(index);this.sceneryCounts.delete(index);
+   for(const object of c.objects)if(object instanceof THREE.InstancedMesh)this.retiring.push({index,priority:1,kind:'retire-instances',run:()=>object.dispose()});
+   for(const geometry of c.geometries)this.retiring.push({index,priority:1,kind:'retire-geometry',run:()=>geometry.dispose()});this.chunks.delete(index);this.sceneryCounts.delete(index);
   }
   this.work=this.work.filter(task=>{if(this.desired.has(task.index))return true;this.discardedTasks++;if(task.record)task.record.discardedTasks++;return false;});this.dispatch();
  }
@@ -155,31 +164,84 @@ export class StreamedScene {
   if(data.type!=='prepared'&&data.type!=='sceneryPrepared')throw Error('Unexpected worker result '+data.type);
   // Retain pending until result validation succeeds, so recovery retries this chunk.
   if(data.type==='prepared'&&!data.meshes?.some((m:RoadData)=>m.kind==='asphalt'&&m.positions?.length&&m.indices?.length))throw Error('Worker returned no drivable road');
-  const road=data.type==='prepared';if(!road)this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
+  const road=data.type==='prepared';
+  if(!road){
+   this.sceneryCounts.set(c.index,{...data.scenery,clearance:data.clearance});
+   const farms=data.farmPreps as PreparedFarmPlot[]|undefined;
+   if(farms?.length){
+    this.farmWorkerPrepared.chunks++;
+    this.farmWorkerPrepared.plots+=farms.length;
+    this.farmWorkerPrepared.workerCpuMs+=data.farmPrepCpuMs??0;
+    this.farmWorkerPrepared.lastChunk=c.index;
+    this.farmWorkerPrepared.lastMs=data.farmPrepCpuMs??0;
+   }
+  }
+  this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
   if(record&&!road)record.generatedInstances=data.instances.reduce((n:number,i:Instance)=>n+i.matrices.length/16,0);this.activeRecord=undefined;
-  const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances);
-  for(const task of tasks)this.work.push({index:c.index,priority:road?0:1,record,run:task});
-  this.work.push({index:c.index,priority:road?0:1,record,run:()=>{c[road?'road':'scenery']='ready';if(record)record.readyAt=performance.now();}});this.busy=false;this.pending=undefined;this.dispatch();
+  const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances,data.farmPreps);
+  const taskPlots=this.taskProfiler&&!road&&this.farmSample&&this.farmAssets
+   ?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
+  for(const [taskIndex,task] of tasks.entries()){
+   const kind:SceneTaskKind=road
+    ?taskIndex<data.meshes.length?'road-geometry':taskIndex<data.meshes.length+data.roadside.length?'roadside-instances':'road-annotation'
+    :taskIndex<data.definitions.length?'scenery-geometry':taskIndex<data.definitions.length+data.instances.length?'scenery-instances':'scenery-field';
+   const plot=kind==='scenery-field'?taskPlots[taskIndex-data.definitions.length-data.instances.length]:undefined;
+   this.work.push({index:c.index,priority:road?0:1,record,kind,run:task,
+    ...(plot?{detail:plot.kind,resourceId:plot.id}:{})});
+  }
+  this.work.push({index:c.index,priority:road?0:1,record,kind:'ready-marker',run:()=>{c[road?'road':'scenery']='ready';if(record)record.readyAt=performance.now();}});this.busy=false;this.pending=undefined;this.dispatch();
  }
  private roadWork(c:Chunk,meshes:RoadData[],roadside:Float32Array[]){const tasks=meshes.map(m=>()=>{
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setAttribute('normal',new THREE.BufferAttribute(m.normals,3));if(m.uvs.length)g.setAttribute('uv',new THREE.BufferAttribute(m.uvs,2));if(m.colors.length)g.setAttribute('color',new THREE.BufferAttribute(m.colors,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));
   this.registerGeometry(g,c.index);const mesh=new THREE.Mesh(g,this.roadMaterials[m.kind]);mesh.userData.chunkIndex=c.index;mesh.userData.roadKind=m.kind;mesh.userData.rayRanges=m.rayRanges;mesh.userData.artVisualOnly=m.artVisualOnly;mesh.visible=!m.artContactOnly;mesh.receiveShadow=true;const name=m.kind==='asphalt'?'driving-surface':m.kind==='sand'?'shoulder':m.kind==='grass'?'terrain':m.kind==='support'?'road-support':(m.kind==='line'||m.kind==='center-line')?'lane-markings':'road-detail';mesh.name=name;this.attach(c,name,mesh);c.geometries.add(g);
  });for(let i=0;i<roadside.length;i++)tasks.push(()=>{const matrices=roadside[i],mesh=new THREE.InstancedMesh(this.markerGeometries[i],this.markerMaterials[i],matrices.length/16);mesh.instanceMatrix.array.set(matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.castShadow=true;mesh.receiveShadow=true;this.attach(c,'road-detail',mesh);});for(const annotation of this.annotations)if(Math.floor(annotation.distance/this.chunkLength)===c.index)tasks.push(()=>{for(const mesh of annotation.create()){for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material])this.annotationMaterials.add(material);this.registerGeometry(mesh.geometry,c.index);this.attach(c,'road-detail',mesh);c.geometries.add(mesh.geometry);}});return tasks;}
- private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[]){
+ private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[],farmPreps?:PreparedFarmPlot[]){
+  const prepared=new Map((farmPreps??[]).map(p=>[p.id,p]));
+  const plots=this.farmSample&&this.farmAssets?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
+  if(plots.length&&prepared.size!==plots.length)this.farmWorkerPrepared.missingPlots+=plots.filter(p=>!prepared.has(p.id)).length;
+  // Real Worker payloads must contain exactly one preparation per expected
+  // farm plot. Missing payload remains a compatible legacy/test fallback.
+  if(farmPreps!==undefined&&this.farmSample
+   &&(prepared.size!==plots.length||plots.some(p=>!prepared.has(p.id))))
+    throw new Error('Incomplete Worker farm preparation for chunk '+c.index);
   const templates=new Map<string,THREE.BufferGeometry>(),tasks:(()=>void)[]=[];
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
   for(const data of instances)tasks.push(()=>{const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}:${!!data.waffleSign}`;let material=this.materials.get(key);if(!material){material=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});if(data.nature)this.configureNatureMaterial(material,data.nature);if(data.waffleSign){material.map=this.waffleTexture??=waffleSignTexture();material.emissive.set(0xffffff);material.emissiveMap=material.map;material.emissiveIntensity=.3;}this.materials.set(key,material);}const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.receiveShadow=!data.nature;if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
   if(this.farmSample&&this.farmAssets)for(const plot of farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength))tasks.push(()=>{
-   const farm=createFarmPlot(plot,this.farmSample!,this.farmAssets!);let patches=this.farms.get(c.index);if(!patches){patches=[];this.farms.set(c.index,patches);}patches.push(farm);
+   const farm=createFarmPlot(plot,this.farmSample!,this.farmAssets!,prepared.get(plot.id));let patches=this.farms.get(c.index);if(!patches){patches=[];this.farms.set(c.index,patches);}patches.push(farm);
    farm.update(this.position,this.farmAssets!.time.value);if(this.clippingPlanes.length)farm.group.traverse(o=>this.clipMaterial(o));this.attach(c,'scenery',farm.group);
   });
   return tasks;
  }
  pump(){
   if(this.pending&&performance.now()-this.pending.since>30000)this.fail('Worker response timed out after 30 seconds');
-  const start=performance.now(),current=Math.floor(this.position/this.chunkLength);this.work.sort((a,b)=>a.priority-b.priority||Math.abs(a.index-current)-Math.abs(b.index-current));
-  while((this.work.length||this.retiring.length)&&performance.now()-start<3){const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0),task=disposing?this.retiring.shift()!:this.work.shift()!;if(!disposing&&!this.desired.has(task.index))continue;const t=performance.now();if(task.record&&task.record.commitStart===undefined)task.record.commitStart=t;try{task.run();}catch(error){if(task.record)task.record.error=String(error);this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;}const end=performance.now();if(task.record){task.record.commitEnd=end;task.record.commitCpuMs+=end-t;}this.note(disposing?'dispose':'main-commit',task.index,end-t);}
+  const start=performance.now(),current=Math.floor(this.position/this.chunkLength);
+  this.work.sort((a,b)=>a.priority-b.priority||Math.abs(a.index-current)-Math.abs(b.index-current));
+  const sortedAt=performance.now(),profile=this.taskProfiler;
+  profile?.record('queue-sort',current,sortedAt-start,this.position,this.work.length+this.retiring.length,sortedAt);
+  let taskWallMs=0;
+  // Soft 3ms frame budget; individual synchronous callbacks can still exceed it.
+  // The task profiler reveals exactly which kind/chunk must later be split or moved to a Worker.
+  while((this.work.length||this.retiring.length)&&performance.now()-start<SCENE_TASK_SOFT_BUDGET_MS){
+   const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0);
+   const task=disposing?this.retiring.shift()!:this.work.shift()!;
+   if(!disposing&&!this.desired.has(task.index))continue;
+   const t=performance.now();
+   if(task.record&&task.record.commitStart===undefined)task.record.commitStart=t;
+   try{task.run();}
+   catch(error){
+    if(task.record)task.record.error=String(error);
+    this.errorMessage=`Road commit failed at chunk ${task.index}: ${String(error)}`;
+    console.error(this.errorMessage);this.worker.terminate();this.busy=false;this.pending=undefined;this.work=[];break;
+   }
+   const ended=performance.now(),duration=ended-t;taskWallMs+=duration;
+   if(task.record){task.record.commitEnd=ended;task.record.commitCpuMs+=duration;}
+   this.note(disposing?'dispose':'main-commit',task.index,duration);
+   profile?.record(task.kind??'other',task.index,duration,this.position,this.work.length+this.retiring.length,ended,task.detail,task.resourceId);
+  }
   this.dispatch();
+  const finished=performance.now();
+  profile?.record('pump-overhead',current,Math.max(0,finished-sortedAt-taskWallMs),this.position,this.work.length+this.retiring.length,finished);
  }
  /** Read-only first-load gate snapshot. Does not call the stateful ready getter. */
  startupDiagnosticState(){
@@ -189,8 +251,8 @@ export class StreamedScene {
   const blockers:string[]=[],backgroundTasks:string[]=[];
   if(!this.farmAssets&&this.farmSample)blockers.push('農田模型下載／解析');
   if(!this.initialized)blockers.push('Road Worker 初始化');
-  if(farmChunksReady<farmChunks.length&&this.farmSample)(HYBRID_RICE_SEA?backgroundTasks:blockers).push('遠方農田 Chunk');
-  if(!this.farmGpuWarmed&&this.farmSample)(HYBRID_RICE_SEA?backgroundTasks:blockers).push('農田 Shader／GPU 預熱');
+  if(farmChunksReady<farmChunks.length&&this.farmSample)backgroundTasks.push('遠方農田 Chunk');
+  if(!this.farmGpuWarmed&&this.farmSample)backgroundTasks.push('農田 Shader／GPU 預熱');
   if(nearbyCompleted<near.length*2)blockers.push('附近道路／景物');
   if(this.natureTextureLoads)blockers.push('樹木貼圖下載');
   if(this.errorMessage)blockers.unshift('錯誤：'+this.errorMessage);
@@ -206,13 +268,7 @@ export class StreamedScene {
  // Complete the visible neighbourhood first; the full 5 km window continues in background.
  get nearby(){const first=Math.floor(Math.max(0,this.position-80)/this.chunkLength),last=Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((this.position+1200)/this.chunkLength));return Array.from({length:last-first+1},(_,i)=>first+i);}
  get ready(){
-  // Prepare the main farm and first village fields in the initial 5 km window.
-  // Later fields use the same budgeted construction and incremental GPU warmup
-  // well ahead of the player, before entering their visible neighbourhood.
-  // Hybrid mode lets the playable shoreline depart when nearby road and scenery
-  // are ready. The 2-4 km farm stays in the existing streamed background queue.
-  // Legacy mode preserves the exact original preflight gate for A/B comparison.
-  if(this.farmSample&&!HYBRID_RICE_SEA&&!this.farmWarmed){this.farmWarmed=this.farmGpuWarmed&&[2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready');if(!this.farmWarmed)return false;}
+  // Driving starts when the nearby road and scenery are ready; distant farms stream in the background.
   return !this.errorMessage&&this.natureTextureLoads===0&&this.nearby.every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});
  }
  get fullyReady(){return !this.errorMessage&&!this.retiring.length&&[...this.desired].every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});}

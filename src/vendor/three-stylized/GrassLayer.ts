@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { coverageEquals, normalizeCoverage, validateSurfaceCoverage } from './coverage'
-import { buildSurfaceLayout, sampleSurfaceData } from './surfaceSampler'
+import { buildSurfaceLayout, sampleSurfaceData, unpackSurfaceSamples } from './surfaceSampler'
 import {
   grassFragmentShader,
   grassVertexShader,
@@ -300,13 +300,15 @@ export class GrassLayer extends THREE.Group {
   private readonly lastGrassWorldMatrix = new THREE.Matrix4()
   private lastExternalSurfaceWorldMatrix?: THREE.Matrix4
   private disposed = false
+  private preparedOnce?:Float32Array
 
   get options(): ReadonlyGrassLayerOptions {
     return readonlySnapshot(this.normalized)
   }
 
-  constructor(options: GrassLayerOptions) {
+  constructor(options: GrassLayerOptions, preparedSamples?:Float32Array) {
     super()
+    this.preparedOnce=preparedSamples
     this.normalized = normalizedOptions(options)
     validateSurfaceCoverage(this.normalized.surface, this.normalized.coverage)
     this.uniforms = this.createUniforms()
@@ -426,18 +428,14 @@ export class GrassLayer extends THREE.Group {
 
   private rebuild(initial = false): void {
     const surface = this.normalized.surface
-    const layout = buildSurfaceLayout(surface, this.normalized.coverage)
-    const requestedCount =
-      layout.coveredArea > 0
-        ? Math.max(1, Math.floor(layout.coveredArea * this.normalized.density))
-        : 0
-    const samples = sampleSurfaceData(
-      surface,
-      requestedCount,
-      this.normalized.seed,
-      this.normalized.coverage,
-      layout,
-    )
+    const prepared=this.preparedOnce
+    this.preparedOnce=undefined
+    const samples=prepared!==undefined?unpackSurfaceSamples(prepared):(()=>{
+      const layout=buildSurfaceLayout(surface,this.normalized.coverage)
+      const requestedCount=layout.coveredArea>0
+        ?Math.max(1,Math.floor(layout.coveredArea*this.normalized.density)):0
+      return sampleSurfaceData(surface,requestedCount,this.normalized.seed,this.normalized.coverage,layout)
+    })()
     this.updateWorldMatrix(true, false)
     const worldToGrassLocal = this.matrixWorld.clone().invert()
     const geometry = makeBladeGeometry(this.normalized.blade.segments, this.normalized.blade.lean)
