@@ -169,7 +169,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(bridgeGap||(ordinaryProps&&anchorRight&&range.junction&&interchangeSceneryClear(range.junction,anchorDistance,1)))return;
   const materialKey=color+':'+emission+':'+!!g.getAttribute('color')+':'+!!g.userData.waffleSign;let material=materials.get(materialKey);if(!material){material=new THREE.MeshStandardMaterial({color,roughness:.85,vertexColors:!!g.getAttribute('color'),emissive:emission?color:0,emissiveIntensity:emission});if(g.userData.waffleSign&&typeof document!=='undefined')material.map=waffleSignTexture();materials.set(materialKey,material);}
   quaternion.setFromAxisAngle(axis,yaw);dummy.position.set(x,y,z).applyQuaternion(quaternion).add(base);dummy.rotation.set(rx,ry,rz);dummy.quaternion.premultiply(quaternion);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();
-  const groupForPart:CoastShadowGroup=range.coastUltra&&(g===boulder||g===rock)?'rocks':coastShadowGroup;
+  const groupForPart:CoastShadowGroup=!range.coastUltra?'other':g===boulder||g===rock?'rocks':coastShadowGroup;
    // Do not batch a home and a beach bench into the same shadow group.
    const key=g.uuid+materialKey+':'+chunk+':'+groupForPart;
    let b=buckets.get(key);if(!b){b={geometry:g,material,matrices:[],shadowGroup:groupForPart};buckets.set(key,b);}
