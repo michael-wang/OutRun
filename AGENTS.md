@@ -19,7 +19,7 @@ Read **[docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md](docs/ADR_009_BOUNDED_STAG
 - Implement the Scene Resource Pipeline incrementally: P0 task attribution / oversized-work control → P1 stage-scoped road/scenery priority windows → P2 shared resources and hybrid flower fields. Do not rewrite all systems in one PR.
 - Do not optimize by removing user-approved golden rice fields or Ultra-Water visuals without device A/B evidence. Use `?startupdiag=1` for startup and `?fpsdiag=1` for driving on physical Pixel 8.
 - **Every new scene object, particle effect, water pass, shader or traffic feature needs a mobile FPS gate before release.** On a physical Pixel 8 use `?fpsdiag=1` to record a matched drive; the exported `playtestGate` warns on >50ms frame gaps and marks **`REVIEW_REQUIRED` if any one-second bucket falls below 30 FPS or an individual frame exceeds 100ms**. Never interpret a green GitHub CI build as a measured FPS pass. Only the owner decides whether to promote a version with such warnings.
-- For optional coastal shadow changes, compare `?fpsdiag=1` with `?fpsdiag=1&sunshadow=0` at matched phone/camera conditions and inspect water cast counts, scene CPU, frame gaps, and visible art. See `docs/R91_DUSK_POLISH_QA.md`.
+- The only supported URL query keys are `fpsdiag`, `startupdiag` and `at`. Optional shadow-technology checkboxes live under the pause dock only while `?fpsdiag=1`; never instruct testers to use `sunshadow=0`, `showcase=coast`, `qa=1`, `fpsbench`, or `autobench`. The owner has paused performance measurement. See `docs/R91_DUSK_POLISH_QA.md`.
 
 ## Scope and verification
 
