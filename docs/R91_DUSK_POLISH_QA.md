@@ -4,6 +4,23 @@
 
 **Scope:** `dev` only, version `v0.9-coast-r9.1-exp`. Existing `main` R9.0 remains the family-playtest build. Changes are not claimed as Pixel 8 accepted until physical drive and comparison.
 
+## 2026-11-05 Sunset Cast Audit — Follow-up on owner Pixel 8 QA
+
+**Accepted:** all three posts of short coastline guardrails and the large water-side rock silhouettes. **Still awaiting device art QA:** no luminous under-car halo, road cones and warning triangles cast correctly, every moving/parked car (including bus, truck and waffle van) has a directional dusk shadow.
+
+**Implemented on `dev` (not a new rendering engine):**
+
+- Player: retired the old colored canvas under-car decal for coast, while preserving it in noncoastal biomes. The existing `CoastDuskShadows.player` now uses true-black alpha ink, so compositing cannot brighten a very dark road; the four tyre contact patches are neutral black on the coast as well.
+- Traffic: existing 12-actor contact batch retained. Added **one coastal-only 12-instance sun-projection batch** for all active cars/buses/trucks/waffle cars, using their existing poses and `coastShadowLength(height)` (no shadow-map or new render targets). Actors culled by road readiness have no cast.
+- Roadside cones: existing `RoadCones` geometry pool receives exactly one additional black-alpha instance batch (capacity 48). The same applies to the separate breakdown-warning triangles pool. Struck flying cones retain a ground shadow.
+- Existing static coverage unchanged: coastal guardrail bars/posts, concrete blocks, rocks on dry sand/in the water shader, tourists, umbrellas, benches, stalls, farm houses, village homes and streetlights, plus existing boat shadows. Some static clearance is approximate, so visually inspect against the real objects; a literal shadow for every background blade of grass is out of budget.
+- In coastal mode, these new casts obey `sunshadow=0` for A/B. New work adds at most **three instanced draws** at full count (traffic, cones, warning triangles), and **zero offscreen shadow passes**.
+- **No Netlify preview builds for development:** `netlify.toml` build-ignore permits only `production/main`. Netlify may still register a skipped build for PR updates; disable its Deploy Previews and branch deploys in Netlify site settings if the goal is absolutely no Netlify trigger. Test local `dev` using `npm run dev -- --host 0.0.0.0` and the PC's actual LAN IP on Pixel 8.
+
+**Required QA:** local Pixel 8 coastal stage, inspect car on dark asphalt, moving cars/buses, cones and warning triangles, compare at matching route with `?sunshadow=0` if useful; confirm FPS and no missing road. Passing GitHub CI is not a Pixel 8 FPS result. Do not merge to `main` until owner approves.
+
+---
+
 ## 2026-11-05 R9.1 Shadow Revision — Physical owner feedback
 
 **Owner accepted:** sunset smoke visual, engine/pass sound balance, and perceived FPS (no new logging required for this round). **Owner did not accept previous shadows:** large shoreline rocks, left coastal guardrail/concrete blocks, umbrellas/visitors/shops had little/no visible shadow; car body had a cool/blue-looking underbody patch.
