@@ -219,7 +219,8 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  // This opaque terrace sits ABOVE the road worker's terrain. Without a shadow
  // receiver, tree/lamp shadows land on hidden grass and seem to disappear.
  const fieldSurface=new THREE.Mesh(merged,fieldMaterial);
- fieldSurface.receiveShadow=true;group.add(fieldSurface);
+ // The distant farm surface is not worth shadow sampling on mobile.
+ fieldSurface.receiveShadow=false;group.add(fieldSurface);
  // All five terraces retain a crop-height silhouette after individual heads fade.
  // One opaque draw per plot, never stacked transparent cards. Leave the existing
  // scarecrow access patch open, so its post and outstretched arms stay readable.
@@ -236,7 +237,8 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
    })():riceCanopyGeometry(plot,position,clearPath);
    ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
   const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;
-  canopy.receiveShadow=true;group.add(canopy);
+  // Rice canopy stays lit by the material; no realtime shadow sampling.
+  canopy.receiveShadow=false;group.add(canopy);
  }
  const update=(distance:number,time:number)=>{
   const gap=Math.max(plot.start-distance,0,distance-plot.end);if(meadow){meadow.visible=gap<265;if(meadow.visible)meadow.update(time);}
