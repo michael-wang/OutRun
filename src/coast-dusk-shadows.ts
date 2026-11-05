@@ -39,8 +39,10 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
  for(const bay of COAST_BEACHES){
   const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
   for(let j=0;j<count;j++){
-   const d=bay.distance-half+j*33+rnd(j+bay.distance)*15;
-   const x=-19-rnd(j*11+bay.distance)*17;
+   // scenery.ts uses the unseeded rand() for beach umbrella locations.
+   // Only its village people use seeded random(); keep shadow anchors aligned.
+   const d=bay.distance-half+j*33+rawRandom(j+bay.distance)*15;
+   const x=-19-rawRandom(j*11+bay.distance)*17;
    if(COAST_REST_SPOTS.some(s=>Math.abs(s.d-d)<11&&Math.abs(s.x-x)<7))continue;
    anchors.push({d,x,width:4.2,length:15.5,kind:'umbrella'});
    anchors.push({d:d+5,x:x-1,width:.85,length:5.5,kind:'visitor'});
@@ -92,6 +94,11 @@ export function buildCoastGroundShadows(
   // base sits below sea level; underwater ribbon vertices fade to zero while
   // Ultra-Water handles the submerged part.
   if(rootGround<COAST_SEA_LEVEL+.015&&a.kind!=='rock'){rejectedUnderwater++;continue;}
+  // scenery.ts omits umbrellas, benches and beach visitors below these
+  // height gates; don't leave a free-floating shadow for a missing prop.
+  if((a.kind==='umbrella'&&rootGround<-4.05)||
+   (a.kind==='bench'&&rootGround< -3.7)||
+   (a.kind==='visitor'&&a.x<0&&rootGround<=-4.2))continue;
   const fwd=at.tangent?.clone()??samples(a.d+.5).position.clone().sub(samples(a.d-.5).position);
   fwd.y=0;fwd.normalize();
   const right=at.right.clone().setY(0).normalize();
