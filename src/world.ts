@@ -199,7 +199,14 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const car=options.deferCar?new THREE.Group():createCar(!!dusk);scene.add(car);
   if(!options.deferCar){
   const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=64;const context=shadowCanvas.getContext('2d')!;
-  const gradient=context.createRadialGradient(32,32,7,32,32,31);gradient.addColorStop(0,'rgba(18,33,30,.65)');gradient.addColorStop(.55,'rgba(18,33,30,.3)');gradient.addColorStop(1,'rgba(18,33,30,0)');context.fillStyle=gradient;context.fillRect(0,0,64,64);
+  // This is the original contact shadow, not an emissive under-car light.
+  // At sunset, keep its grounding but neutralize the teal cast beneath the red body.
+  const shadowInk=dusk?'29,27,24':'18,33,30';
+  const gradient=context.createRadialGradient(32,32,7,32,32,31);
+  gradient.addColorStop(0,`rgba(${shadowInk},.65)`);
+  gradient.addColorStop(.55,`rgba(${shadowInk},.3)`);
+  gradient.addColorStop(1,`rgba(${shadowInk},0)`);
+  context.fillStyle=gradient;context.fillRect(0,0,64,64);
   const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.1,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.025;car.add(shadow);
   }
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
