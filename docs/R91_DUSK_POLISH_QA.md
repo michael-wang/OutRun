@@ -4,6 +4,29 @@
 
 **Scope:** `dev` only, version `v0.9-coast-r9.1-exp`. Existing `main` R9.0 remains the family-playtest build. Changes are not claimed as Pixel 8 accepted until physical drive and comparison.
 
+## 2026-11-05 R9.1 Shadow Revision — Physical owner feedback
+
+**Owner accepted:** sunset smoke visual, engine/pass sound balance, and perceived FPS (no new logging required for this round). **Owner did not accept previous shadows:** large shoreline rocks, left coastal guardrail/concrete blocks, umbrellas/visitors/shops had little/no visible shadow; car body had a cool/blue-looking underbody patch.
+
+### Confirmed causes and code changes
+
+1. The old `CoastDuskShadows` skipped all receivers below **-4.05m**, despite **`COAST_SEA_LEVEL=-5m`** and dry lower-beach surfaces between those elevations. This silently removed many actual umbrella/visitor shadows. New check uses the real sea level + small tolerance; water regions continue to use the ocean shader.
+2. The old 1-quad horizontal projections could pass underneath sharply sloped beach terrain. Replaced with **ground-conforming projected shadow ribbons** using the same `coastBeachHeight`, `sample()`, `halfAt()` and current road surface equations. Each low-poly ribbon follows the sand height and rises onto the paved shoulder if a sunset shadow crosses it.
+3. The original decorative shadow generator used `rand(n)` whereas `scenery.ts` places the umbrellas with `rand(n + seed)` (`seed=804` for the coast). New shadow anchors share the stage seed and same beach/visitor/market positions. Clearance can still omit some actual props, so this remains an *art-direction approximation*, not a real optical shadow map.
+4. **Guardrails, streetlights and concrete barrier blocks** now cast directional shadows from the same **12m cadence, `coastBarrierStyle()` and physical offsets** as `coast-resort.ts`. Beach benches, tourists, umbrellas, shops/homes, farm houses and near-shore rock contacts receive appropriately sized projections.
+5. Full route static polygons are prebuilt once into **one shared draw batch**; each frame only its geometry's **~950m behind to 1450m ahead** index range is submitted to the GPU. A separate existing low-cost player shadow is the other draw batch. No mobile directional shadow map is enabled, and no per-prop draw calls are added.
+6. Water-rock `uRocks` shading adds a visible soft contact footprint as well as longer low-sun occlusion, inside the existing water fragment loop and without additional render targets. Underwater rock footprints aren't drawn as fake flat sand shadows.
+7. The previously present under-car cyan-looking patch was **an existing canvas contact shadow, not an emissive light**. Kept the important grounding effect, changing only the coastal-dusk ink from green-teal to neutral warm charcoal. The longer separate car shadow remains.
+8. Smoke still keeps the **accepted coast sunset `[.51,.48,.48]` tint**. New `setSceneSmoke(weights,sunsetCoast)` uses neutral coast, warm canyon, and cool city palettes elsewhere. The player and traffic collision tire smoke follow the current stage biome; offroad dust remains independently terrain-matched.
+
+### Pixel 8 visual acceptance (no extra LOG requested)
+
+Open the R9.1 draft PR preview, verify version `v0.9-coast-r9.1-exp`. Compare near umbrellas/visitors around first beach, low concrete blocks vs high rail sections, houses/shops, player shadow, and especially the large rocks by the water. Check for floating or duplicated shadows on unoccupied props; compare screenshots with the same route/camera conditions. Test a canyon/city section once to confirm no dusk-grey smoke tint leakage. The owner already accepted the existing R9.1 smoke/audio mix and reported no perceptible FPS drop, so FPS logging is not requested for these *shadow visual fixes*. If FPS visibly degrades below 30, `?fpsdiag=1` remains available with a release-review warning.
+
+**Release:** all changes are on `dev`; do not merge R9.1 draft PR into `main` until the owner approves the revised shadow appearance.
+
+---
+
 ## 1. Shadows — bounded mobile pipeline
 
 - `src/coast-dusk-shadows.ts`: two transparent batches: one **dynamic projected player-car shadow** on asphalt and one **instanced authored beach-prop shadow batch**. Anchors use the existing coastal `COAST_BEACHES` umbrella generator, bench sites, village sites, farm homes and fixed rocks. Their elongated footprint direction is **away from `COAST_SUN`**, matching the visible sunset. No mobile directional shadow-map pass, no shadow-casting geometry per static prop. Beach shadow placement has an authored-position approximation: visually inspect for shadows without an actual prop, especially near patch clearances.
