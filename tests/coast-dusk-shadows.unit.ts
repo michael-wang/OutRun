@@ -1,8 +1,8 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {CoastDuskShadows,coastShadowOffset,coastBeachShadowAnchors,coastBarrierShadowAnchors,buildCoastGroundShadows} from '../src/coast-dusk-shadows';
+import {CoastDuskShadows,coastShadowOffset,coastShadowLength,coastBeachShadowAnchors,coastBarrierShadowAnchors,buildCoastGroundShadows} from '../src/coast-dusk-shadows';
 import {COAST_SUN} from '../src/coast-dusk';
-import {COAST_BEACHES,coastBarrierStyle} from '../src/coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastBarrierStyle} from '../src/coast-layout';
 
 const sample=(d:number)=>({
  position:new THREE.Vector3(0,4,d),right:new THREE.Vector3(1,0,0),
@@ -76,4 +76,35 @@ it('follows the exact coast-resort 12m block/rail cadence and correct authored s
  // Market visitors are different: scenery.ts seeds its random() per stage.
  const marketVisitor=(anchors:ReturnType<typeof coastBeachShadowAnchors>)=>anchors.find(x=>x.kind==='visitor'&&x.x>0);
  expect(marketVisitor(a)?.d).not.toEqual(marketVisitor(b)?.d);
+});
+
+it('projects all three real posts and the 10.8m rail beams from one low sun',()=>{
+ // coast-resort.ts emits posts at -5/0/+5 around each 12m rail section.
+ const markers=coastBarrierShadowAnchors(150,()=>8.75);
+ const posts=markers.filter(a=>a.kind==='rail'&&a.x<0&&Math.abs(a.d-120)<=5);
+ expect(posts.map(a=>a.d).sort((a,b)=>a-b)).toEqual([115,120,125]);
+ const beam=markers.find(a=>a.kind==='rail-beam'&&a.x<0&&a.d===120);
+ expect(beam).toBeDefined();
+ expect(beam?.width).toBeCloseTo(10.8);
+ expect(beam?.length).toBeCloseTo(coastShadowLength(.70));
+ const projected=buildCoastGroundShadows(sample,[...posts,beam!],150,()=>8.75);
+ try{
+  expect(projected.accepted).toBe(4);
+  expect(projected.ranges).toHaveLength(4);
+  expect(projected.geometry.getAttribute('shadowAlpha').count).toBeGreaterThan(50);
+ }finally{projected.geometry.dispose();}
+});
+
+it('scales rock, concrete, rail, umbrella and car shadows by the same sun height',()=>{
+ const rock=coastBeachShadowAnchors().find(a=>a.kind==='rock')!;
+ const first=COAST_ROCKS[0];
+ expect(rock.length).toBeCloseTo(coastShadowLength(first.r*.82));
+ expect(rock.length).toBeGreaterThan(coastShadowLength(.72)*4);
+ const concrete=coastBarrierShadowAnchors(150,()=>8.75).find(a=>a.kind==='concrete')!;
+ expect(concrete.length).toBeCloseTo(coastShadowLength(.44));
+ expect(concrete.length).toBeLessThan(coastShadowLength(.72));
+ const umbrella=coastBeachShadowAnchors().find(a=>a.kind==='umbrella')!;
+ expect(umbrella.length).toBeCloseTo(coastShadowLength(3.5));
+ expect(coastShadowLength(1.55)).toBeGreaterThan(concrete.length);
+ expect(coastShadowLength(11.5)).toBeLessThanOrEqual(76);
 });
