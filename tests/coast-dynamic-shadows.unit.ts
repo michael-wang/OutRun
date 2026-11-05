@@ -6,6 +6,7 @@ import {RoadCones,coneLayout} from '../src/road-cones';
 import {Traffic} from '../src/traffic';
 import {TRAFFIC_TYPES,vehicleGeometry} from '../src/vehicle-model';
 import type {createTrack} from '../src/track';
+import {COAST_DYNAMIC_SHADOW_LAYER,COAST_STATIC_SHADOW_LAYER,markCoastShadowCaster} from '../src/coast-shadow-layers';
 
 const sample=((d:number)=>({
  position:new THREE.Vector3(0,4,d),right:new THREE.Vector3(1,0,0),
@@ -87,14 +88,32 @@ it('casts the full truck cab, cargo and wheels instead of a rear-only rectangle'
   for(const type of TRAFFIC_TYPES){
    const mesh=scene.getObjectByName('traffic-'+type.name) as THREE.InstancedMesh;
    expect(mesh.castShadow).toBe(true);
+   expect(mesh.layers.isEnabled(COAST_DYNAMIC_SHADOW_LAYER)).toBe(true);
+   expect(mesh.layers.isEnabled(COAST_STATIC_SHADOW_LAYER)).toBe(false);
    expect(mesh.geometry.getAttribute('position').count).toBeGreaterThan(100);
   }
   const cones=new RoadCones(sample,()=>8.75,scene,804,8000,()=>true,undefined,true,true);
   try{
    cones.update(0,1500,0,0);
    expect((scene.getObjectByName('road-cones') as THREE.InstancedMesh).castShadow).toBe(true);
+   expect((scene.getObjectByName('road-cones') as THREE.InstancedMesh).layers.isEnabled(COAST_DYNAMIC_SHADOW_LAYER)).toBe(true);
    expect(scene.getObjectByName('road-cone-sunset-shadows')).toBeUndefined();
    expect(cones.inspect().sunsetProjectedShadows).toBe(0);
   }finally{cones.dispose();}
  }finally{traffic.dispose();}
+});
+
+it('static casters are separated from dynamic depth passes without hiding main-camera geometry',()=>{
+ const house=markCoastShadowCaster(new THREE.Mesh(new THREE.BoxGeometry(3,5,4)), 'static');
+ const truck=markCoastShadowCaster(new THREE.Mesh(new THREE.BoxGeometry(3,3,7)), 'dynamic');
+ const camera=new THREE.PerspectiveCamera();
+ const sun=new THREE.DirectionalLight(),far=new THREE.DirectionalLight();
+ configureCoastShadowLights(sun,far,true);
+ expect(camera.layers.test(house.layers)).toBe(true);
+ expect(camera.layers.test(truck.layers)).toBe(true);
+ expect(sun.shadow.camera.layers.test(house.layers)).toBe(false);
+ expect(sun.shadow.camera.layers.test(truck.layers)).toBe(true);
+ expect(far.shadow.camera.layers.test(house.layers)).toBe(true);
+ expect(far.shadow.camera.layers.test(truck.layers)).toBe(false);
+ house.geometry.dispose();truck.geometry.dispose();
 });
