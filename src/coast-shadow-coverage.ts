@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {COAST_SUN} from './coast-dusk';
-import {COAST_STATIC_SHADOW_LAYER,COAST_DYNAMIC_SHADOW_LAYER,coastShadowLightEnabled} from './coast-shadow-layers';
+import {COAST_STATIC_SHADOW_LAYER,COAST_DYNAMIC_SHADOW_LAYER} from './coast-shadow-layers';
+import {coastShadowTechniqueEnabled} from './coast-shadow-techniques';
 
 /** Geometry-accurate live shadows by the car plus region-cached static shadows. */
 export const COAST_NEAR_SHADOW={left:-220,right:220,top:110,bottom:-110,near:1,far:1300} as const;
@@ -21,8 +22,8 @@ export function configureCoastShadowLights(near:THREE.DirectionalLight,far:THREE
  setup(far,COAST_FAR_SHADOW,mobile?3072:4096,-.00002,COAST_STATIC_SHADOW_LAYER);
  far.shadow.autoUpdate=false;
  far.shadow.needsUpdate=true;
- near.castShadow=coastShadowLightEnabled('dynamic');
- far.castShadow=coastShadowLightEnabled('static');
+ near.castShadow=coastShadowTechniqueEnabled('dynamicMap');
+ far.castShadow=coastShadowTechniqueEnabled('staticMap');
 }
 
 /** Diagnostic/reference geometry; driving uses CoastShadowCache below. */
@@ -54,6 +55,9 @@ export class CoastShadowCache {
  update(carPosition:THREE.Vector3,distanceM:number,revision:number){
   this.near.target.position.copy(carPosition);
   this.near.position.copy(carPosition).addScaledVector(COAST_SUN,500);
+  // Disabled static depth does not need camera work or map updates;
+  // re-enable invalidates the cached cell for a fresh silhouette.
+  if(!this.far.castShadow)return false;
   const distance=Math.max(0,Math.min(this.routeLength,distanceM));
   const cell=Math.floor(distance/COAST_STATIC_SHADOW_STEP_M);
   if(cell===this.previousCell&&revision===this.previousSceneRevision)return false;
@@ -67,16 +71,16 @@ export class CoastShadowCache {
   this.lastAtM=anchor;this.requests++;
   return true;
  }
- /** Shadow group toggles must invalidate the cached static depth, even inside
+ /** Shadow technique toggles must invalidate the cached static depth, even inside
   * the same 240m cell with an unchanged scene revision. */
  invalidate(){this.previousCell=-1;this.previousSceneRevision=-1;this.far.shadow.needsUpdate=true;}
  refreshLightCasting(){
-  this.near.castShadow=coastShadowLightEnabled('dynamic');
-  this.far.castShadow=coastShadowLightEnabled('static');
+  this.near.castShadow=coastShadowTechniqueEnabled('dynamicMap');
+  this.far.castShadow=coastShadowTechniqueEnabled('staticMap');
  }
  get stats(){return {policy:'geometry-dynamic/static-region-cache',
   nearMapSize:this.near.shadow.mapSize.x,farMapSize:this.far.shadow.mapSize.x,
   staticRefreshRequests:this.requests,staticRefreshStepM:COAST_STATIC_SHADOW_STEP_M,
   lastStaticAnchorM:this.lastAtM,sceneRevision:this.previousSceneRevision,
-  farAutoUpdate:this.far.shadow.autoUpdate};}
+  farAutoUpdate:this.far.shadow.autoUpdate,nearShadowEnabled:this.near.castShadow,farShadowEnabled:this.far.castShadow};}
 }

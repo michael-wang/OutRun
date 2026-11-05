@@ -1,12 +1,12 @@
 import './trip-pause-dock.css';
-import {COAST_SHADOW_GROUPS,coastShadowGroupSnapshot,type CoastShadowGroup} from './coast-shadow-layers';
+import {COAST_SHADOW_TECHNIQUES,coastShadowTechniqueSnapshot,type CoastShadowTechnique} from './coast-shadow-techniques';
 
 /** Road Trip pause controls stay in the corner; full reviews are explicitly opt-in. */
 export interface TripPauseActions {
  resume():void;replay():void;newRoute():void;settings():void;
  sound():void;fullscreen():void;review():void;
 }
-export interface TripShadowAudit {onChange(group:CoastShadowGroup,enabled:boolean):void}
+export interface TripShadowAudit {onChange(technique:CoastShadowTechnique,enabled:boolean):void}
 export class TripPauseDock {
  readonly element:HTMLElement;
  readonly resumeButton:HTMLButtonElement;
@@ -20,10 +20,10 @@ export class TripPauseDock {
   element.id='trip-pause-dock';element.hidden=true;element.setAttribute('aria-label','暫停操作');
   const shadowMarkup=shadowAudit?
    `<details id="tp-shadow-audit">
-    <summary>陰影效能測試 ▸</summary>
-    <small>勾選代表投影開啟；物件本身始終顯示。</small>
+    <summary>陰影技術／成本測試 ▸</summary>
+    <small>勾選＝啟用這套技術。預期成本是待驗證假設；物件仍全部顯示。</small>
     <div class="tp-shadow-options">
-     ${COAST_SHADOW_GROUPS.map(g=>`<label><input type="checkbox" data-shadow-group="${g.id}" ${coastShadowGroupSnapshot()[g.id]?'checked':''}> ${g.label}</label>`).join('')}
+     ${COAST_SHADOW_TECHNIQUES.map(tech=>`<label class="tp-shadow-tech"><input type="checkbox" data-shadow-technique="${tech.id}" ${coastShadowTechniqueSnapshot()[tech.id]?'checked':''}><span><strong>${tech.label}</strong><small>${tech.cost} · 預期：${tech.expected}</small></span></label>`).join('')}
     </div>
     <button id="tp-shadow-reset" type="button">全部開啟</button>
    </details>`:'';
@@ -63,12 +63,12 @@ export class TripPauseDock {
   button('tp-fullscreen').onclick=actions.fullscreen;
   this.reviewButton.onclick=actions.review;
   if(shadowAudit){
-   const inputs=element.querySelectorAll<HTMLInputElement>('input[data-shadow-group]');
+   const inputs=element.querySelectorAll<HTMLInputElement>('input[data-shadow-technique]');
    inputs.forEach(input=>input.addEventListener('change',()=>{
-    shadowAudit.onChange(input.dataset.shadowGroup as CoastShadowGroup,input.checked);
+    shadowAudit.onChange(input.dataset.shadowTechnique as CoastShadowTechnique,input.checked);
    }));
    button('tp-shadow-reset').onclick=()=>{
-    inputs.forEach(input=>{if(!input.checked){input.checked=true;shadowAudit.onChange(input.dataset.shadowGroup as CoastShadowGroup,true);}});
+    inputs.forEach(input=>{if(!input.checked){input.checked=true;shadowAudit.onChange(input.dataset.shadowTechnique as CoastShadowTechnique,true);}});
    };
   }
  }

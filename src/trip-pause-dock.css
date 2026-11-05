@@ -58,3 +58,11 @@
 #trip-pause-dock #tp-shadow-reset{min-height:29px;padding:4px 10px;margin-top:7px;background:transparent;color:#ffe4ba;border-color:#ffffff55}
 #trip-pause-dock #tp-shadow-reset:active{background:#ffffff24}
 @media(max-height:470px){#trip-pause-dock{max-height:calc(100dvh - 64px)}#tp-shadow-audit label{min-height:27px;font-size:10px}}
+
+/* One full-width row per GPU technique, with its expected cost. */
+#tp-shadow-audit .tp-shadow-options{grid-template-columns:minmax(0,1fr);gap:3px}
+#tp-shadow-audit label.tp-shadow-tech{min-height:42px;padding:4px 5px;gap:9px;border-bottom:1px solid #ffffff18;align-items:center}
+#tp-shadow-audit label.tp-shadow-tech>span{min-width:0;display:block}
+#tp-shadow-audit label.tp-shadow-tech strong{display:block;color:#fff4d6;font:700 11px/1.35 system-ui,"PingFang TC",sans-serif}
+#tp-shadow-audit label.tp-shadow-tech small{display:block;margin:1px 0;color:#cfdfdc;font:400 9.5px/1.35 system-ui,"PingFang TC",sans-serif}
+@media(max-height:470px){#tp-shadow-audit label.tp-shadow-tech{min-height:37px}}
