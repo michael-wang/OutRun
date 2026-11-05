@@ -55,7 +55,9 @@ it('worker-prepared flower and grass samples retain counts and placement',()=>{
  const plot=FARM_PLOTS.find(p=>p.kind==='flowers'&&p.band===0)!;
  const prep=prepareFarmPlot(plot,sample);
  expect(prep.meadow?.blades.length).toBeGreaterThan(0);
- expect(prep.meadow?.flowers.length).toBeGreaterThan(0);
+ expect(prep.meadow?.flowerInstances?.matrices.length).toBeGreaterThan(0);
+ expect(prep.meadow?.flowerInstances?.coastalStyled).toBe(true);
+ expect(prep.meadow?.flowers.length).toBe(0); // raw samples stay in the worker
  const fresh=fakeAssets();
  const a=createFarmPlot(plot,sample,fresh.assets);
  const b=createFarmPlot(plot,sample,fresh.assets,prep);
@@ -69,8 +71,16 @@ it('worker-prepared flower and grass samples retain counts and placement',()=>{
    const pick=(group:Grass)=>meshName==='blades'?group.blades.blades:group.wildflowers!.flowers;
    const aa=pick(meadowA).instanceMatrix.array,bb=pick(meadowB).instanceMatrix.array;
    expect(aa.length).toBe(bb.length);
-   for(let i=0;i<Math.min(aa.length,100);i++)
-    expect(Math.abs(aa[i]-bb[i])).toBeLessThan(.005);
+   // Check across the whole field, including final flowers rather than only the first 6 matrices.
+   for(const i of [0,1,16,65,100,Math.floor(aa.length/2),aa.length-17,aa.length-1])
+    if(i>=0&&i<aa.length)expect(Math.abs(aa[i]-bb[i])).toBeLessThan(.005);
+  }
+  for(const attr of ['aVariant','aPetalColor','aFoliageColor','aCentreColor']){
+   const aa=meadowA.wildflowers!.flowers.geometry.getAttribute(attr).array;
+   const bb=meadowB.wildflowers!.flowers.geometry.getAttribute(attr).array;
+   expect(aa.length).toBe(bb.length);
+   for(const i of [0,1,12,36,Math.floor(aa.length/2),aa.length-3,aa.length-1])
+    if(i>=0&&i<aa.length)expect(Math.abs(aa[i]-bb[i])).toBeLessThan(.005);
   }
  }finally{a.dispose();b.dispose();fresh.dispose();}
 });
