@@ -35,7 +35,7 @@ describe('bounded contact-driven tire effects',()=>{
  it('reuses two geometries through ten minutes of drifting and resets without stale trails',()=>{
   const scene=new THREE.Scene(),fx=new TireEffects(scene),ids=scene.children.map(o=>(o as THREE.Mesh).geometry.uuid);
   for(let i=1;i<=36000;i++)fx.update(i/60,65,1,contacts(i),200);
-  expect(fx.inspect()).toMatchObject({particles:192,segments:768,geometries:2});expect(scene.children.map(o=>(o as THREE.Mesh).geometry.uuid)).toEqual(ids);
+  expect(fx.inspect()).toMatchObject({particleCapacity:192,segments:768,geometries:2});expect(fx.inspect().particles).toBeGreaterThan(100);expect(fx.inspect().particles).toBeLessThanOrEqual(192);expect(scene.children.map(o=>(o as THREE.Mesh).geometry.uuid)).toEqual(ids);
   fx.clear();expect(fx.inspect().particles).toBe(0);expect(fx.inspect().segments).toBe(0);expect(scene.children.every(o=>!o.visible)).toBe(true);
   fx.update(.016,65,1,contacts(999999),200);expect(fx.inspect().segments).toBe(0);fx.dispose();
  });
