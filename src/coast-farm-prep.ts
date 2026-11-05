@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import {coastNatureGround} from './coast-nature';
-import {FARM_SCARECROWS,type FarmPlot} from './coast-farm-layout';
+import {FARM_SCARECROWS,FARM_FLOWER_COLORS,type FarmPlot} from './coast-farm-layout';
 import {riceCanopyGeometry} from './coast-rice-canopy';
 import {buildSurfaceLayout,sampleSurfaceData,packSurfaceSamples} from './vendor/three-stylized/surfaceSampler';
+import {prepareFlowerInstances,type PreparedFlowerInstances} from './vendor/three-stylized/Wildflowers';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -15,12 +16,19 @@ export type PreparedFarmPlot={
  id:number;
  ground:Float32Array;
  canopy?:NumericCanopy;
- meadow?:{blades:Float32Array;flowers:Float32Array};
+ meadow?:{blades:Float32Array;flowers:Float32Array;flowerInstances?:PreparedFlowerInstances};
 };
 export function farmPrepTransferables(plot:PreparedFarmPlot):Transferable[]{
  const buffers:ArrayBuffer[]=[plot.ground.buffer as ArrayBuffer];
  if(plot.canopy)for(const a of [plot.canopy.position,plot.canopy.uv,plot.canopy.color,plot.canopy.normal,plot.canopy.index])buffers.push(a.buffer as ArrayBuffer);
- if(plot.meadow)for(const a of [plot.meadow.blades,plot.meadow.flowers])buffers.push(a.buffer as ArrayBuffer);
+ if(plot.meadow){
+  for(const a of [plot.meadow.blades,plot.meadow.flowers])buffers.push(a.buffer as ArrayBuffer);
+  if(plot.meadow.flowerInstances)for(const a of [
+   plot.meadow.flowerInstances.matrices,plot.meadow.flowerInstances.variants,
+   plot.meadow.flowerInstances.petalColors,plot.meadow.flowerInstances.foliageColors,
+   plot.meadow.flowerInstances.centreColors,
+  ])buffers.push(a.buffer as ArrayBuffer);
+ }
  return buffers;
 }
 
@@ -83,8 +91,11 @@ export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
   const blades=packSurfaceSamples(sampleSurfaceData(surface,grassCount,seed,coverage,layout));
   const flowerDensity=1.1*density;
   const flowerCount=plot.band<3?Math.min([2300,1500,800][plot.band],Math.round(layout.coveredArea*flowerDensity)):0;
-  const flowers=plot.band<3?packSurfaceSamples(sampleSurfaceData(surface,flowerCount,seed,coverage,layout)):new Float32Array();
-  result.meadow={blades,flowers};
+  const flowerSamples=plot.band<3?packSurfaceSamples(sampleSurfaceData(surface,flowerCount,seed,coverage,layout)):new Float32Array();
+  // All flower instance transforms + palette attributes are generated off-thread.
+  // Avoid sending the raw samples back as well: only GPU-ready buffers cross the boundary.
+  const flowerInstances=plot.band<3?prepareFlowerInstances(flowerSamples,seed,FARM_FLOWER_COLORS[plot.band%3]):undefined;
+  result.meadow={blades,flowers:new Float32Array(),...(flowerInstances?{flowerInstances}:{})};
   geometry.dispose();
  }
  return result;
