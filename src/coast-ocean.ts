@@ -171,15 +171,17 @@ void main(){
  // Rock silhouettes shade nearby water in the same shader loop as surf foam.
  // No secondary reflection or GPU render target.
  float rockShadow=0.0;
- vec2 sunsetAway=-normalize(uSun.xz);
+ // The shared foam loop still runs when the separate rock-shade math is off.
  for(int i=0;i<10;i++){
   vec2 delta=vWorld.xz-uRocks[i].xy;
   float r=uRocks[i].z,dist=length(delta);
   if(dist<r*.52)discard;
   // Match the dry-sand ribbon's rock-height / sunset-elevation projection.
   // Keep this in the existing 10-rock water loop; no extra shadow pass.
-  float projectedLength=min(76.0,r*.82*length(uSun.xz)/max(.02,uSun.y)*${COAST_SHADOW_STRETCH.toFixed(2)});
-  if(uRockShadowStrength>0.5&&dist<projectedLength+r*1.45){
+  if(uRockShadowStrength>0.5){
+   float projectedLength=min(76.0,r*.82*length(uSun.xz)/max(.02,uSun.y)*${COAST_SHADOW_STRETCH.toFixed(2)});
+   if(dist<projectedLength+r*1.45){
+    vec2 sunsetAway=-normalize(uSun.xz);
    float along=dot(delta,sunsetAway);
    float across=dot(delta,vec2(-sunsetAway.y,sunsetAway.x));
    float contact=(1.0-smoothstep(r*.48,r*1.45,dist))*.64;
@@ -187,6 +189,7 @@ void main(){
      *(1.0-smoothstep(projectedLength*.72,projectedLength,along))
      *exp(-pow(across/(r*.84+.45),2.0));
    rockShadow=max(rockShadow,max(contact,tail));
+   }
   }
   float wash=exp(-pow((dist-r*.85)/1.5,2.0));
   float pulse=.35+.65*pow(.5+.5*sin(uTime*1.4+uRocks[i].w),3.0);
