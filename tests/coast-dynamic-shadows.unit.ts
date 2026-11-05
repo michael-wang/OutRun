@@ -6,6 +6,7 @@ import {RoadCones,coneLayout} from '../src/road-cones';
 import {Traffic} from '../src/traffic';
 import {TRAFFIC_TYPES,vehicleGeometry} from '../src/vehicle-model';
 import type {createTrack} from '../src/track';
+import {configureCoastShadowLights} from '../src/coast-shadow-coverage';
 import {COAST_DYNAMIC_SHADOW_LAYER,COAST_STATIC_SHADOW_LAYER,markCoastShadowCaster} from '../src/coast-shadow-layers';
 
 const sample=((d:number)=>({
