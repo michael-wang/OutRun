@@ -1,4 +1,4 @@
-import {COAST_SUN,COAST_SKY_GLSL} from './coast-dusk';
+import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
 import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
@@ -176,14 +176,15 @@ void main(){
   vec2 delta=vWorld.xz-uRocks[i].xy;
   float r=uRocks[i].z,dist=length(delta);
   if(dist<r*.52)discard;
-  if(uRockShadowStrength>0.5&&dist<r*7.0){
+  // Match the dry-sand ribbon's rock-height / sunset-elevation projection.
+  // Keep this in the existing 10-rock water loop; no extra shadow pass.
+  float projectedLength=min(76.0,r*.82*length(uSun.xz)/max(.02,uSun.y)*${COAST_SHADOW_STRETCH.toFixed(2)});
+  if(uRockShadowStrength>0.5&&dist<projectedLength+r*1.45){
    float along=dot(delta,sunsetAway);
    float across=dot(delta,vec2(-sunsetAway.y,sunsetAway.x));
-   // Big rocks need visible water contact AND a long low-sun shadow.
-   // The earlier directional tail often fell onto clipped dry sand.
    float contact=(1.0-smoothstep(r*.48,r*1.45,dist))*.64;
    float tail=smoothstep(-r*.30,r*.35,along)
-     *(1.0-smoothstep(r*4.4,r*6.8,along))
+     *(1.0-smoothstep(projectedLength*.72,projectedLength,along))
      *exp(-pow(across/(r*.84+.45),2.0));
    rockShadow=max(rockShadow,max(contact,tail));
   }
