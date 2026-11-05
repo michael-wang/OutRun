@@ -140,7 +140,7 @@ let world=createWorld(initialBrick?{blenderArt:!!blenderAsset,bank:bankLab?banki
 if(blenderAsset)world.scene.add(blenderAsset.root);
 const sunsetShadowsEnabled=params.get('sunshadow')!=='0';
 let coastDuskShadows=coastUltraMode&&sunsetShadowsEnabled
- ?new CoastDuskShadows(world.scene,world.sample):undefined;
+ ?new CoastDuskShadows(world.scene,world.sample,world.length,world.halfAt,trip?.seed??0):undefined;
 // Load the FFT code only for the explicit coastal water trial. Everything
 // else (main trip, canyon, city) stays on the regular Three.js render path.
 await loadingStep(48,coastUltraWater?'正在準備海岸':'正在準備光影',coastUltraWater?'載入已準備好的海岸資料與海浪效果。':'準備場景光線與畫面效果。');
@@ -645,7 +645,7 @@ function adoptChapter(c:PreparedChapter,replay=false){
  chapterIndex=c.index;journeyExitAt=undefined;trip=candidate;stage=candidate;pilot=candidate;brick=candidate;
  designerMode=native.id==='canyon';coastUltraMode=native.id==='coast';coastUltraWater=coastUltraMode;roadLockMode=designerMode;blenderMode=designerMode;scenicCameraEnabled=false;
  coastDuskShadows=coastUltraMode&&sunsetShadowsEnabled
-  ?new CoastDuskShadows(world.scene,world.sample):undefined;
+  ?new CoastDuskShadows(world.scene,world.sample,world.length,world.halfAt,trip?.seed??0):undefined;
  journeyElapsed=replay?0:journeyElapsed+elapsed;elapsed=0;
  if(replay){state=createState();state.speed=0;initialized=false;input.clear();testControls=undefined;world.car.userData.motion.reset();}
  state.distance=distance;state.worldHeading+=delta;cameraHeading+=delta;
