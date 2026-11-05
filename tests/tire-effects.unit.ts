@@ -3,6 +3,22 @@ import * as THREE from 'three';
 import {TireEffects,type TireContact} from '../src/tire-effects';
 const contacts=(z:number,road=true):TireContact[]=>['rear','front'].flatMap(axle=>[-1,1].map(side=>({name:`${axle}-wheel-${side}`,gap:0,surface:[side,0,z],normal:[0,1,0],onRoad:road})));
 describe('bounded contact-driven tire effects',()=>{
+ it('uses dusk tint only for sunset coast and adapts canyon/city palettes without altering dust',()=>{
+  const scene=new THREE.Scene(),fx=new TireEffects(scene),dust=new TireEffects(scene,'dust');
+  try{
+   fx.setSceneSmoke([1,0,0],true);
+   expect(fx.inspect().tint).toEqual([.51,.48,.48]);
+   fx.setSceneSmoke([0,1,0],false);
+   expect(fx.inspect().tint).toEqual([.70,.64,.59]);
+   fx.setSceneSmoke([0,0,1],false);
+   expect(fx.inspect().tint).toEqual([.70,.72,.75]);
+   fx.setSceneSmoke([1,0,0],false);
+   expect(fx.inspect().tint).toEqual([.81,.80,.80]);
+   const dustTint=dust.inspect().tint;
+   dust.setSceneSmoke([0,1,0],false);
+   expect(dust.inspect().tint).toEqual(dustTint);
+  }finally{fx.dispose();dust.dispose();}
+ });
 
  it('uses subdued, irregular and bounded coastal smoke without extra draw batches',()=>{
   const scene=new THREE.Scene(),fx=new TireEffects(scene);
