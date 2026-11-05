@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {COAST_SUN} from './coast-dusk';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,COAST_LAMPS} from './coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,COAST_LAMPS} from './coast-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
 import {coastBeachHeight,COAST_SEA_LEVEL} from './scenery-cross-section';
@@ -64,13 +64,14 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
 export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>number):CoastShadowAnchor[]{
  const anchors:CoastShadowAnchor[]=[];
  for(let d=0;d<length;d+=12){
-  const style=coastBarrierStyle(d);
-  if(style==='opening')continue;
   for(const side of [-1,1] as const){
-   const x=side*(halfAt(d)+TRIP_BARRIER_INNER_M+.28);
+   const style=coastBarrierStyle(d,side);if(style==='opening')continue;
    if(style==='block'){
-    anchors.push({d,x,width:1.25,length:coastShadowLength(.44),kind:'concrete'});
+    const stone=coastBarrierStoneAt(d,side);
+    const x=side*(halfAt(stone.d)+TRIP_BARRIER_INNER_M+.28);
+    anchors.push({d:stone.d,x,width:1.25,length:coastShadowLength(stone.height),kind:'concrete'});
    }else{
+    const x=side*(halfAt(d)+TRIP_BARRIER_INNER_M+.28);
     // Broad soft beam silhouette runs along the actual roadway tangent.
     anchors.push({d,x,width:10.8,length:coastShadowLength(.70),kind:'rail-beam'});
     for(const offset of [-5,0,5]){

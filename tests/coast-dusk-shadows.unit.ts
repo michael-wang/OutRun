@@ -2,7 +2,7 @@ import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {CoastDuskShadows,coastShadowOffset,coastShadowLength,coastBeachShadowAnchors,coastBarrierShadowAnchors,buildCoastGroundShadows} from '../src/coast-dusk-shadows';
 import {COAST_SUN} from '../src/coast-dusk';
-import {COAST_BEACHES,COAST_ROCKS,coastBarrierStyle} from '../src/coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastBarrierStyle,coastBarrierStoneAt} from '../src/coast-layout';
 
 const sample=(d:number)=>({
  position:new THREE.Vector3(0,4,d),right:new THREE.Vector3(1,0,0),
@@ -56,7 +56,7 @@ it('does not draw ghost silhouettes for beach props omitted by scenery height ga
 });
 
 it('follows the exact coast-resort 12m block/rail cadence and correct authored seed',()=>{
- const markers=coastBarrierShadowAnchors(100,()=>8.75);
+ const markers=coastBarrierShadowAnchors(1000,()=>8.75);
  const block=markers.find(x=>x.kind==='concrete');
  const rail=markers.find(x=>x.kind==='rail');
  expect(block).toBeDefined();
@@ -100,11 +100,22 @@ it('scales rock, concrete, rail, umbrella and car shadows by the same sun height
  const first=COAST_ROCKS[0];
  expect(rock.length).toBeCloseTo(coastShadowLength(first.r*.82));
  expect(rock.length).toBeGreaterThan(coastShadowLength(.72)*4);
- const concrete=coastBarrierShadowAnchors(150,()=>8.75).find(a=>a.kind==='concrete')!;
- expect(concrete.length).toBeCloseTo(coastShadowLength(.44));
+ const concrete=coastBarrierShadowAnchors(1000,()=>8.75).find(a=>a.kind==='concrete')!;
+ expect(concrete.length).toBeGreaterThanOrEqual(coastShadowLength(.40));
+ expect(concrete.length).toBeLessThanOrEqual(coastShadowLength(.47));
  expect(concrete.length).toBeLessThan(coastShadowLength(.72));
  const umbrella=coastBeachShadowAnchors().find(a=>a.kind==='umbrella')!;
  expect(umbrella.length).toBeCloseTo(coastShadowLength(3.5));
  expect(coastShadowLength(1.55)).toBeGreaterThan(concrete.length);
  expect(coastShadowLength(11.5)).toBeLessThanOrEqual(76);
+});
+
+it('keeps legacy shadow-anchor positions in exact agreement with stone placement',()=>{
+ const anchors=coastBarrierShadowAnchors(1650,()=>8.75);
+ const stone=anchors.find(a=>a.kind==='concrete'&&a.d>1500&&a.d<1610&&a.x<0);
+ expect(stone).toBeDefined();
+ const slot=Math.round(stone!.d/12)*12;
+ const authored=coastBarrierStoneAt(slot,-1);
+ expect(stone!.d).toBeCloseTo(authored.d,5);
+ expect(stone!.length).toBeCloseTo(coastShadowLength(authored.height));
 });

@@ -4,7 +4,7 @@ import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
 import {createPilotTrack,pilotSample} from '../src/pilot-composer';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
-import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle} from '../src/coast-layout';
+import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle,coastBarrierStoneAt,COAST_BEACHES} from '../src/coast-layout';
 import {addCoastResort} from '../src/coast-resort';
 import {addCoastMountains} from '../src/coast-mountains';
 import {farmClearing} from '../src/coast-farm-layout';
@@ -61,4 +61,39 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
   mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
  expect(triangles).toBeLessThan(14000);
+});
+
+it('uses human beach access and uninterrupted remote headland rails, never a fixed checkerboard',()=>{
+ for(const bay of COAST_BEACHES){
+  const half=Math.min(440,bay.radius*.70);
+  for(let d=Math.ceil((bay.distance-half+24)/12)*12;d<bay.distance+half-24;d+=12)
+   if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
+    expect(coastBarrierStyle(d,-1)).toBe('block');
+ }
+ for(let d=2400;d<=3600;d+=12)
+  if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
+   expect(coastBarrierStyle(d,-1)).toBe('rail');
+ expect(coastBarrierStyle(4100,1)).toBe('block');
+ expect(coastBarrierStyle(5500,1)).toBe('block');
+ expect(coastBarrierStyle(3300,1)).toBe('rail');
+ expect(coastBarrierStyle(2740,1)).toBe('block');
+ for(const at of COAST_CROSSWALKS){
+  expect(coastBarrierStyle(at,-1)).toBe('opening');
+  expect(coastBarrierStyle(at,1)).toBe('opening');
+ }
+ const styles=Array.from({length:834},(_,i)=>coastBarrierStyle(i*12,-1));
+ expect(styles.slice(1).filter((v,i)=>v!==styles[i]).length).toBeLessThan(32);
+});
+
+it('adds deterministic but non-periodic stone imperfections without moving into the roadway',()=>{
+ const a=coastBarrierStoneAt(1548,-1);
+ expect(coastBarrierStoneAt(1548,-1)).toEqual(a);
+ expect(a.d).toBeGreaterThan(1546);
+ expect(a.d).toBeLessThan(1550);
+ expect(a.length).toBeGreaterThan(2.1);
+ expect(a.length).toBeLessThan(3.3);
+ expect(a.height).toBeGreaterThan(.38);
+ expect(a.height).toBeLessThan(.5);
+ expect(coastBarrierStoneAt(1560,-1)).not.toEqual(a);
+ expect(coastBarrierStoneAt(1548,1).d).not.toEqual(a.d);
 });
