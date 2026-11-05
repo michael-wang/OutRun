@@ -1,4 +1,5 @@
 import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
+import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
@@ -94,7 +95,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
  for(let j=0;j<rings.length-1;j++)for(let i=0;i<sides;i++){const a=j*(sides+1)+i,b=a+sides+1;indices.push(a,b,a+1,a+1,b,b+1);}const top=(rings.length-1)*(sides+1);for(let i=1;i<sides-1;i++)indices.push(top,top+i+1,top+i);
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.setIndex(indices);g.computeVertexNormals();return g;});
  const boulder=new THREE.IcosahedronGeometry(1,1);const vertices=boulder.getAttribute('position');for(let i=0;i<vertices.count;i++){const x=vertices.getX(i),y=vertices.getY(i),z=vertices.getZ(i),r=.86+rand(Math.round(x*31+y*47+z*59))*.23;vertices.setXYZ(i,x*r,y*r,z*r);}boulder.computeVertexNormals();boulder.name='roadside-rock';
- const materials=new Map<string,THREE.MeshStandardMaterial>(),buckets=new Map<string,{geometry:THREE.BufferGeometry;material:THREE.Material;matrices:THREE.Matrix4[]}>();
+ const materials=new Map<string,THREE.MeshStandardMaterial>(),buckets=new Map<string,{geometry:THREE.BufferGeometry;material:THREE.Material;matrices:THREE.Matrix4[];shadowGroup:CoastShadowGroup}>();
+  let coastShadowGroup:CoastShadowGroup='other';
  const dummy=new THREE.Object3D(),quaternion=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
  let base=new THREE.Vector3(),yaw=0,chunk=0,bridgeGap=false,roadsideDrop=0,anchorDistance=0,anchorRight=false,ordinaryProps=false;
  const roadSamples=range.roadSamples??Array.from({length:Math.ceil(length/25)},(_,i)=>sample(i*25).position);
@@ -167,15 +169,19 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(bridgeGap||(ordinaryProps&&anchorRight&&range.junction&&interchangeSceneryClear(range.junction,anchorDistance,1)))return;
   const materialKey=color+':'+emission+':'+!!g.getAttribute('color')+':'+!!g.userData.waffleSign;let material=materials.get(materialKey);if(!material){material=new THREE.MeshStandardMaterial({color,roughness:.85,vertexColors:!!g.getAttribute('color'),emissive:emission?color:0,emissiveIntensity:emission});if(g.userData.waffleSign&&typeof document!=='undefined')material.map=waffleSignTexture();materials.set(materialKey,material);}
   quaternion.setFromAxisAngle(axis,yaw);dummy.position.set(x,y,z).applyQuaternion(quaternion).add(base);dummy.rotation.set(rx,ry,rz);dummy.quaternion.premultiply(quaternion);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();
-  const key=g.uuid+materialKey+':'+chunk;let b=buckets.get(key);if(!b){b={geometry:g,material,matrices:[]};buckets.set(key,b);}b.matrices.push(dummy.matrix.clone());
+  const groupForPart:CoastShadowGroup=range.coastUltra&&(g===boulder||g===rock)?'rocks':coastShadowGroup;
+   // Do not batch a home and a beach bench into the same shadow group.
+   const key=g.uuid+materialKey+':'+chunk+':'+groupForPart;
+   let b=buckets.get(key);if(!b){b={geometry:g,material,matrices:[],shadowGroup:groupForPart};buckets.set(key,b);}
+   b.matrices.push(dummy.matrix.clone());
  }
- function palm(seed:number){const h=7+random(seed)*4;part(cylinder,'#aa8960',0,h/2,0,.23,h,.23,0,0,-.035);for(let j=0;j<7;j++){const a=j*Math.PI*2/7;part(round,'#287b52',Math.sin(a)*1.7,h,Math.cos(a)*1.7,.7,.24,3.3,.15,a,0);}}
+ function palm(seed:number){const previous=coastShadowGroup;coastShadowGroup='vegetation';const h=7+random(seed)*4;part(cylinder,'#aa8960',0,h/2,0,.23,h,.23,0,0,-.035);for(let j=0;j<7;j++){const a=j*Math.PI*2/7;part(round,'#287b52',Math.sin(a)*1.7,h,Math.cos(a)*1.7,.7,.24,3.3,.15,a,0);}coastShadowGroup=previous;}
  // Coast-only props still use the existing Worker/instance buckets and clearance.
  function beachAnchor(d:number,x:number){
   anchor(d,x);const p=sample(d);base.copy(p.position).addScaledVector(p.right,x);
   base.y=coastBeachHeight(x,p.position.y,p.right.y,d);
  }
- function beachPerson(key:number,playing=false,size=1){
+ function beachPerson(key:number,playing=false,size=1){const previous=coastShadowGroup;coastShadowGroup='beach';
   const limb=(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number,rx=0,ry=0,rz=0)=>part(g,color,x*size,y*size,z*size,sx*size,sy*size,sz*size,rx,ry,rz);
   const shirt=['#e76f51','#36a8b1','#edc969'][Math.abs(key)%3];
   limb(round,'#bd8d68',0,1.58,0,.21,.25,.21);
@@ -184,8 +190,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    limb(cylinder,'#bd8d68',side*.13,.38,playing?side*.12:0,.085,.72,.085,playing?side*.35:0,0,side*.1);
    limb(cylinder,'#bd8d68',side*.36,playing?1.42:1.05,0,.07,.6,.07,0,0,side*(playing?.85:.22));
   }
+  coastShadowGroup=previous;
  }
- function restingBench(key:number,people:number){
+ function restingBench(key:number,people:number){const previous=coastShadowGroup;coastShadowGroup='beach';
   // Local +Z faces the sea. Bent thighs/shins keep seated silhouettes distinct.
   for(const x of [-1.12,1.12])for(const z of [-.23,.23])part(boxes,'#665d61',x,.25,z,.12,.5,.12);
   for(const z of [-.24,0,.24])part(boxes,'#aa8960',0,.52,z,2.8,.10,.21);
@@ -196,11 +203,12 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    part(round,'#bd8d68',x,1.38,.02,.20,.23,.20);part(boxes,shirt,x,.98,.02,.46,.55,.30);
    for(const side of [-1,1]){part(boxes,'#665d61',x+side*.13,.62,.21,.18,.18,.48);part(cylinder,'#bd8d68',x+side*.13,.32,.44,.075,.52,.075);part(boxes,'#665d61',x+side*.13,.09,.53,.17,.13,.3);part(cylinder,'#bd8d68',x+side*.29,.84,.14,.065,.4,.065,.45,0,side*.15);}
   }
+  coastShadowGroup=previous;
  }
  function glow(g:THREE.BufferGeometry,color:string,x:number,y:number,z:number,sx:number,sy:number,sz:number){
   part(g,color,x,y,z,sx,sy,sz,0,0,0,2.2);
  }
- function coastHome(key:number,shop=false,farm=false){
+ function coastHome(key:number,shop=false,farm=false){const previous=coastShadowGroup;coastShadowGroup='buildings';
   yaw+=Math.PI+(random(key+94)-.5)*.22;
   const type=Math.floor(random(key+330)*(farm?2:4)),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
   const wall=['#c8b49f','#b5bcc1','#bd9180','#b7bb9e','#d2baab'][Math.floor(random(key+8)*5)];
@@ -234,8 +242,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    for(const z of [-2,0,2])part(boxes,'#735a53',-4.9,2.9,z,.15,.32,.16);
    part(boxes,'#b46958',-5.3,3.35,0,2,.18,w+.6);
   }
+  coastShadowGroup=previous;
  }
- function nightStall(key:number){
+ function nightStall(key:number){const previous=coastShadowGroup;coastShadowGroup='buildings';
   yaw+=Math.PI+(random(key+73)-.5)*.24;
   const type=key%4;
   const tint=['#ae534a','#317f87','#ba8745'][key%3];
@@ -270,6 +279,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   part(round,'#bd8d68',-.7,1.85,0,.22,.25,.22);
   part(boxes,'#e76f51',-.7,1.4,0,.5,.6,.3);
+  coastShadowGroup=previous;
  }
  if(range.coastUltra){
   // Alternating fabric panels make umbrellas and balls readable at driving speed.
@@ -321,6 +331,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
      part(boxes,'#665d61',target.x*(t+n)/2,(y+ny)/2,target.z*(t+n)/2,.025,.025,Math.hypot(span/5,ny-y),-Math.atan2(ny-y,span/5),angle);glow(round,'#ffd298',target.x*t,y-.11,target.z*t,.10,.13,.10);}
    }
   }
+  coastShadowGroup='buildings';
   for(const site of FARM_HOMES){
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,site.x);yaw+=site.yaw;if(!clear(10))continue;
@@ -333,6 +344,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
    beachAnchor(site.d-8,site.x-7);beachPerson(site.key,false,1);
   }
+  coastShadowGroup='beach';
   for(const spot of COAST_REST_SPOTS){
    if(!inChunk(spot.d))continue;
    beachAnchor(spot.d,spot.x);if(base.y< -3.7||!clear(3))continue;
@@ -342,6 +354,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     beachAnchor(spot.d+1,spot.x-5);if(base.y> -4)part(ball,'#fffdf4',0,.3,0,.3,.3,.3);
    }
   }
+  coastShadowGroup='beach';
   for(const bay of COAST_BEACHES){
    // Loose pockets, never a repeating row along the whole highway.
    const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
@@ -379,6 +392,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     }
    }
   }
+  coastShadowGroup='rocks';
   for(const site of COAST_ROCKS){
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,coastRockX(site));
@@ -388,8 +402,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boulder,'#a5a48f',site.r*.5,0,site.r*.65,site.r*.48,site.r*.44,site.r*.42);
    }
   }
+  coastShadowGroup='other';
  }
- function dryTree(seed:number){const h=4+random(seed)*2;part(cylinder,'#82634a',0,h/2,0,.22,h,.22);for(const side of [-1,1]){part(cylinder,'#82634a',side*.75,h*.75,0,.13,h*.65,.13,0,0,-side*.55);part(round,'#8d9254',side*1.4,h,0,1.2,.6,1);}}
+ function dryTree(seed:number){const previous=coastShadowGroup;coastShadowGroup='vegetation';const h=4+random(seed)*2;part(cylinder,'#82634a',0,h/2,0,.22,h,.22);for(const side of [-1,1]){part(cylinder,'#82634a',side*.75,h*.75,0,.13,h*.65,.13,0,0,-side*.55);part(round,'#8d9254',side*1.4,h,0,1.2,.6,1);}coastShadowGroup=previous;}
  function mesa(seed:number,large=false){if(!bridgeApproachAllowsBuilding(anchorDistance,range.bridge))return;const w=(large?32:18)+random(seed)*15,h=(large?65:30)+random(seed+1)*30;part(mesaGeometry[Math.abs(seed)%3],'#ffffff',0,0,0,w,h,w*.8,0,random(seed)*6);}
  function lighthouse(seed:number,d:number){
   // The coastal anchor lies down by the sea; a visible lighthouse needs an
@@ -688,6 +703,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   if(act.id==='city'&&index===1){for(const x of [-20,20]){part(boxes,'#4b8090',x,19,0,2,38,2);part(boxes,'#dfb65c',x-10,37,0,36,1.2,1.2);part(cylinder,'#647a7b',x-25,24,0,.07,25,.07);part(boxes,'#d38e6a',x,2,6,14,4,6);}}
  }
- for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;group.add(mesh);}
+ for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;
+   if(range.coastUltra)mesh.userData.coastShadowGroup=b.shadowGroup;
+   group.add(mesh);}
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};
 }
