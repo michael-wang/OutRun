@@ -88,3 +88,12 @@ Open the R9.1 draft PR preview, verify version `v0.9-coast-r9.1-exp`. Compare ne
 - **A/B:** `?showcase=coast&shadow3d=0` restores old inexpensive author-projected shadows; `?showcase=coast&sunshadow=0` disables the sunset shadows. Water uses the existing specialized FFT boat/rock shadow shader and remains unchanged.
 - **Quality first:** shadow map enlarged; postpone reducing casters or resolution until a physical Pixel 8 test shows visible FPS loss. Inspect the truck cab and wheels, moving traffic, cone silhouettes, roadster and scenery on slopes. Record `?fpsdiag=1` and observe FPS before tuning.
 - **Release:** Test local `dev` on Pixel 8 over LAN. Do not deploy Netlify PR previews or merge into `main` before owner approval.
+
+
+## R9.1 distant shadow visibility (Pixel 8 owner feedback)
+
+**Issue:** On the ocean-facing road, buildings acquired their shadows only when approached; looking right, street lamps and hillside trees lacked shadows. Their 3D geometry was already a caster, but the old real-time shadow frustum was only **200m x 47m**, with a 500m depth window, tracked at the player's feet.
+
+**Code:** A matched-direction pair of real geometry-casting lights now shares the original coastal sun brightness (0.65 near + 1.15 far = 1.8). The near pass retains crisp car/guardrail detail (600m x 270m), while a second 2800m x 800m pass follows 680m ahead of the driver and covers the visible right hillside, buildings, shore and long sunset shadows. Full depth range is expanded; no caster-distance spawn gate or replacement fake box shadows. Camera motion follows continuous sampled route positions, not abrupt tile steps. Ultra-Water's own water shader remains unchanged.
+
+**Pixel 8 acceptance required:** Check right-side roadside lamps, isolated trees and houses from far distance through the approach; shadows should not vanish then appear suddenly. Check near rail/vehicle shadow detail, dusk brightness, the 10km road, and frame timing with `?fpsdiag=1`. Two depth passes are deliberately retained for visual integrity until device evidence justifies optimization. `?shadow3d=0` remains an old-shadow comparison. Do not deploy Netlify previews or merge `main`.
