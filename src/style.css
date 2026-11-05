@@ -363,3 +363,72 @@ html[data-qa="true"]:has(#scene-inspector:not([hidden])) #stream-health-hud{
  #scene-inspector .si-feature-filters{gap:3px;margin-top:5px;padding-top:5px}
  #scene-inspector .si-feature-filters button{min-height:29px;padding:4px 2px;font-size:10px}
 }
+
+/* R9.1 scenic HUD experiment: visual chrome is outline-only while driving.
+ * Keep the generous original touch targets and readable menus; avoid
+ * fullscreen compositing blurs. */
+header #pause,
+#touch.active button[data-control],
+#touch.active #steering-strip,
+#drive-readout:not([hidden]),
+#gear{
+ background:transparent;
+ backdrop-filter:none;
+ box-shadow:none;
+}
+header #pause,
+#touch.active button[data-control]{
+ border-color:rgba(255,242,216,.67);
+ color:#fff6e8;
+ text-shadow:0 1px 3px #071c27,0 0 6px #061721;
+}
+#touch.active #steering-strip{
+ border-color:rgba(255,234,197,.67);
+}
+#drive-readout:not([hidden]){
+ border:1px solid rgba(240,235,219,.50);
+ text-shadow:0 1px 3px #061722,0 0 5px #061722;
+}
+#gear{
+ border-color:rgba(107,201,232,.68);
+ text-shadow:0 1px 3px #061722,0 0 5px #061722;
+}
+#speed strong{
+ text-shadow:0 2px 3px #061522,0 0 7px #061522;
+}
+#speed svg text{
+ paint-order:stroke fill;
+ stroke:#071927;
+ stroke-width:2.4px;
+ stroke-linejoin:round;
+}
+#touch.active button[data-control]:hover,
+header #pause:hover{
+ background:transparent;
+}
+/* Subtle fill appears only during an actual hold, including the gas pedal. */
+#touch.active button[data-control]:is(:active,.pressed,.active),
+#touch.active #steering-strip:is(:active,.pressed),
+header #pause:active{
+ background:rgba(16,55,64,.24);
+ border-color:rgba(255,232,194,.92);
+ color:#fff6e8;
+ transform:none;
+}
+/* ?fpsdiag=1: the temporary JSON export tool should not cover the scene. */
+#drive-fps-diagnostic{
+ background:transparent;
+ text-shadow:0 1px 3px #071621,0 0 5px #071621;
+}
+#drive-fps-diagnostic button,
+#drive-fps-diagnostic button:hover{
+ background:transparent;
+ border:1px solid rgba(255,226,184,.73);
+ color:#fff5e4;
+ text-shadow:0 1px 3px #071621;
+}
+#drive-fps-diagnostic button:active{
+ background:rgba(16,55,64,.24);
+ color:#fff5e4;
+ transform:none;
+}

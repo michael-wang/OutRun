@@ -117,3 +117,12 @@ Following the Pixel 8 JSON (77/98 seconds under 30fps, minimum 17.46fps), shadow
 - Low-risk CPU savings: previously `refreshHints()` queried buttons and rewrote UI text every rendered frame. Mode changes still refresh immediately, with a once-per-60-frames fallback for newly mounted QA. Development-only per-mesh `onAfterRender` farm timestamp callbacks are now opt-in with `?qa=1`, `?streamdiag=1`, or `?farmdiag=1`; `?fpsdiag=1` no longer installs hundreds of per-frame probes.
 - No reduction to shadow-map sizes, culling distances, ocean, farm density, tire smoke, sound, traffic, or driving physics in this pass. Pixel 8 visual + FPS verification required.
 - Baseline FPS JSON 2026-11-05T14:08:44: mean 37.38, median 36.02, min 26.76 across 94 one-second buckets; 10 under 30fps, 79 long frames; mean mainScene 14.19ms, otherRender 6.39ms, physics 2.79ms. A device result is needed before claiming FPS gains.
+
+ 
+## 2026-11-05 R9.1 — scenic HUD transparency experiment and Pixel 8 gate
+
+Coastal stone bollards and remote metal rails have passed owner visual review. Keep their placement and geometry frozen.
+
+Pixel 8 log `outrun-fps-2026-11-05T15-23-45.078Z.json` (71 one-second samples) regressed against `outrun-fps-2026-11-05T14-45-45.621Z.json` (84 samples) on the same dev revision: average 39.18 -> 32.89 FPS, median 37.04 -> 31.55, minimum 28.57 -> 22.88, below-30 buckets 1 -> 24, over-50ms long frames 10 -> 27, mainScene mean 13.85 -> 16.34ms. Distance-matched 3–4km saw approximately 295 vs 296 draw calls yet 39.6 -> 28.8 FPS. Sustained device-load / throttling is a plausible hypothesis but not confirmed: GPU timing and device thermal sensors were unavailable. **Mobile FPS gate remains REVIEW_REQUIRED.**
+
+HUD-only experiment: strip the two opaque radial-gradient speedometer faces, keep dial rim/ticks/numerals/needle, make gear badge transparent; driving pause, steering slider, throttle/brake and the FPS status box use outlines and contrast-protected text with no fill at rest. Only a held touch/keyboard input triggers a muted translucent tint; steer clears on pointer up/cancel/lost capture, keyboard up, reset and blur. The optional FPS JSON diagnostics panel also becomes transparent. Paused and settings menu panels deliberately retain reading surfaces. This experiment does **not** change scene density, shaders, shadow maps, water or gameplay mechanics.
