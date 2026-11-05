@@ -5,8 +5,7 @@ import {attachJourneyLink,highwayExtension,LINK_HALF,LINK_LOAD_START} from './jo
 import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed,loadingDismissReady} from './loading';
 import {startupDiagnostics} from './startup-diagnostics';
 import {DriveFpsDiagnostics} from './drive-fps-diagnostics';
-import {resolveFixedFpsBenchmark} from './fps-benchmark';
-import {AutoShadowBenchmark} from './fps-auto-benchmark';
+import {canonicalGameQuery} from './runtime-query';
 import {sharedFlowerMaskStats} from './vendor/three-stylized/flowerShapes';
 import {RockContact} from './rocky-shoulder';
 import {RoadCones} from './road-cones';
@@ -62,39 +61,33 @@ import roadWorkerUrl from './road-worker.ts?worker&url';
 import {StreamHealthHud} from './stream-health-hud';
 import type {FeedbackAnchor} from './l2-feedback';
 startupDiagnostics.mark('main-module-evaluated');
-const labMode=new URLSearchParams(location.search).get('lab')==='bricks';
-const l2=new URLSearchParams(location.search).get('lab')==='l2'?(L2_CANDIDATES.find(b=>b.id===new URLSearchParams(location.search).get('l2'))??L2_CANDIDATES[0]):undefined;
-const params=new URLSearchParams(location.search);
-document.documentElement.dataset.qa=String(params.get('qa')==='1');
-// Explicit historical and diagnostic routes keep their existing selection.
-const journeyMode=isScenicJourney(params);
+const params=canonicalGameQuery(new URLSearchParams(location.search));
+if(params.toString()!==location.search.replace(/^\?/,''))history.replaceState(history.state,'',location.pathname+(params.size?'?'+params:'')+location.hash);
+const labMode=false;
+const l2=undefined as (typeof L2_CANDIDATES)[number]|undefined;
+document.documentElement.dataset.qa='false';
+const journeyMode=false; // Retired URL journeys: ordinary launch goes to the coast.
 const chapters=journeyMode?journeyChapters():undefined;
 let chapterIndex=0,journeyElapsed=0,journeyTransition=false;
 const chapterStart=()=>chapters?.[chapterIndex].start??BRICK_START;
 const chapterEnd=()=>chapters?.[chapterIndex].end??BRICK_START+(brick?.length??0);
-let designerMode=params.get('showcase')==='canyon';
-let coastUltraMode=journeyMode||params.get('showcase')==='coast';
-const sunsetShadowsEnabled=params.get('sunshadow')!=='0';
-// Default to geometry casts. ?shadow3d=0 retains legacy decals for A/B.
-const geometryShadowRequested=params.get('shadow3d')!=='0';
+let designerMode=false,coastUltraMode=true;
+const sunsetShadowsEnabled=true,geometryShadowRequested=true;
 const coastGeometryShadows=()=>coastUltraMode&&sunsetShadowsEnabled&&geometryShadowRequested;
-let coastUltraWater=coastUltraMode&&params.get('water')!=='basic';
-let roadLockMode=designerMode&&params.get('road')==='lock';
-let scenicCameraEnabled=roadLockMode&&params.get('art')==='blender'&&params.get('scenicCamera')==='1';
-let blenderMode=designerMode&&params.get('art')==='blender';
-const defaultTrip=!designerMode&&!coastUltraMode&&params.get('mode')!=='free'&&!['trip','stage','lab','challenge','pace','velocity'].some(key=>params.has(key));
+let coastUltraWater=true,roadLockMode=false,scenicCameraEnabled=false,blenderMode=false;
+const defaultTrip=false;
 await loadingStep(12,'正在規劃路線','安排這趟旅程的道路、彎道與沿途風景。');
 const journeyTracks=chapters?.map(c=>createPilotTrack(c.stage));
 startupDiagnostics.mark('route-plan-ready');
 let trip=journeyMode?chapters![0].stage:coastUltraMode?COAST_ULTRA_STAGE:roadLockMode?CANYON_ROADLOCK_STAGE:designerMode?DESIGNER_CANYON_STAGE:(params.get('trip')==='10m'||defaultTrip)?generateTrip(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:params.get('revision')==='r2'?2:params.get('revision')==='r3'?3:params.get('revision')==='r4'?4:params.get('revision')==='r5'?5:params.get('revision')==='r6'?6:params.get('revision')==='r7'?7:params.get('revision')==='r8'?8:params.get('revision')==='r9'?9:params.get('revision')==='r10'?10:params.get('revision')==='r11'?11:12):undefined;
 // Production visitors see the game; internal QA tools remain available through ?qa=1.
-const playerUi=!!trip&&params.get('qa')!=='1'&&(journeyMode||import.meta.env.PROD||params.get('playerui')==='1');
+const playerUi=!!trip;
 document.documentElement.dataset.playerUi=String(playerUi);
 let stage=trip??(params.get('stage')==='1'?generateStage(Number(params.get('seed'))||1,params.get('revision')==='r1'?1:2):undefined);
 let pilot=stage??(params.get('lab')==='pilots'?(PILOTS.find(b=>b.id===params.get('pilot'))??PILOTS[0]):undefined);
 const banking=bankPrototype(params.get('lab'),pilot?.id,params.get('bank'));
 const bankLab=params.get('lab')==='pilots'&&pilot?.id==='L2P-B'&&params.has('bank');
-let brick=pilot??l2??(labMode?(BRICKS.find(b=>b.id===new URLSearchParams(location.search).get('brick'))??BRICKS[0]):undefined);
+let brick=pilot??l2??(labMode?(BRICKS.find(b=>b.id===params.get('brick'))??BRICKS[0]):undefined);
 function momentFingerprint(value:unknown){let h=2166136261;for(const c of JSON.stringify(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return (h>>>0).toString(16).padStart(8,'0');}
 const momentCandidate={...L2_CANDIDATES[0],...(brick??{}),id:brick?.id??'FREE-DRIVE',seed:brick?.seed??0,contentFingerprint:brick?momentFingerprint({brick,handling:'ALB2'}):'00000000',generatorVersion:brick?'brick-moments-v0.7D.2':'free-drive-v0.7D.2'};
 let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof mountL2Lab>|undefined,brickCompleted=false;
@@ -106,7 +99,7 @@ document.querySelector('#app')!.innerHTML = `
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <div id="qa-tools" aria-label="測試工具列"><button id="photo-button" aria-label="截圖" data-key-hint="F8" data-pad-hint="TOUCHPAD" hidden>📷 截圖</button></div><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
-<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>${designerMode?'Grand Canyon<br>Designer’s Cut':'Take the<br>coast road.'}</h1><p>${designerMode?'手工設計的峽谷公路。沿著道路親自看見河灣。':'Steer through the bends. Lift or brake to find your line.'}</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><p><a href="/?showcase=canyon&road=lock">大峽谷 · Cliff Pass R4 試駕 ↗</a></p><p><a href="/?showcase=canyon">大峽谷 · 原導演版 ↗</a></p>${designerMode?`<p><a href="/?showcase=canyon${roadLockMode?'&road=lock':''}${blenderMode?'':'&art=blender'}">${blenderMode?'切換道路原版':roadLockMode?'Cliff Pass R4 · 本機試駕':'Blender v2 · 本機測試'} ↗</a></p>`:''}<p><a href="/?trip=10m">10-Minute Road Trip ↗</a></p><p><a href="/?stage=1">Stage 01: Pacific Getaway ↗</a></p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
+<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>${designerMode?'Grand Canyon<br>Designer’s Cut':'Take the<br>coast road.'}</h1><p>${designerMode?'手工設計的峽谷公路。沿著道路親自看見河灣。':'Steer through the bends. Lift or brake to find your line.'}</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div><p id="iphone-fullscreen-hint" role="status" hidden>On iPhone, open this site in Safari. Tap Share → Add to Home Screen, then launch the icon to hide Safari browser bars. Rotate the phone to landscape to drive.</p></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
 <div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span></div><div class="pedals"><button data-control="gas">${playerUi?'油門':'GAS'}</button><button data-control="brake">${playerUi?'煞車':'BRAKE'}</button></div></div>
@@ -141,7 +134,7 @@ let blenderAsset=blenderMode?await (async()=>{
  await loadingStep(30,'正在載入峽谷地形','下載場景模型與岩壁材質，請稍候。');
  const status=document.createElement('p');status.id='blender-art-status';status.setAttribute('role','status');status.style.cssText='position:fixed;top:12px;left:12px;z-index:300;background:#17343d;color:white;padding:12px';status.textContent='Blender 峽谷美術載入中…';document.body.append(status);
  try{const asset=await (await import('./blender-canyon')).loadBlenderCanyon(roadLockMode);status.remove();return asset;}
- catch(error){status.textContent=roadLockMode?'峽谷場景載入失敗，請確認網路連線後重新載入。':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。原版入口：?showcase=canyon';throw error;}
+ catch(error){status.textContent=roadLockMode?'峽谷場景載入失敗，請確認網路連線後重新載入。':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。';throw error;}
 })():undefined;
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const initialBrick=brick,initialPilot=pilot;
@@ -176,12 +169,11 @@ let journeyLink=chapters?attachJourneyLink(world,chapters[0].start,chapters[0].e
 if(journeyLink)configureLinkDestination(journeyLink,0);
 await loadingStep(82,'正在準備出發路段','載入前方公路與沿途景物，剩餘路段會隨旅程準備。');
 if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
-// Dedicated stationary shadow-profile route; unlike ?qa=1&at=..., no QA
-// inspector, scripted 170 km/h launch, or car physics are involved.
-const fpsBenchDistance=resolveFixedFpsBenchmark(params,coastUltraMode,world.length);
-const useAutoShadowBenchmark=fpsBenchDistance!==null&&params.get('autobench')==='1';
+// ?at jumps to a real playable location, never freezes physics.
+const requestedAt=Number(params.get('at'));
+const atDistance=params.has('at')&&Number.isFinite(requestedAt)&&requestedAt>=350&&requestedAt<world.length-20?requestedAt:null;
 const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=chapterStart();state.speed=brick.entrySpeed/3.6;}
-if(fpsBenchDistance!==null){state.distance=fpsBenchDistance;state.speed=0;}
+if(atDistance!==null){state.distance=atDistance;state.speed=0;}
 advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
 world.streamer?.update(state.distance);
 startupDiagnostics.mark('road-streaming-active');
@@ -189,7 +181,6 @@ startupDiagnostics.mark('road-streaming-active');
 const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
  const stream=world.streamer?.stats,farms=world.streamer?.farmStats??[],warm=world.streamer?.startupDiagnosticState();
  return {
-  ...(fpsBenchDistance===null?{}:{fpsBenchmark:{mode:'fixed-position',distanceM:fpsBenchDistance,physicsFrozen:true,...(autoShadowBenchmark?{auto:autoShadowBenchmark.snapshot(performance.now())}:{})}}),
   streamer:{queue:stream?.queued??0,worker:stream?.pending?.kind??null,workerAgeMs:stream?.pending?.ageMs??null,retries:stream?.retries??0,
    chunks:stream?.chunks?.map(c=>({index:c.index,road:c.road,scenery:c.scenery}))??[],
    taskProfile:world.streamer?.sceneTaskProfile??null,
@@ -236,12 +227,12 @@ let preparationSince=performance.now();
 const streamStallEvents:{start:number;end?:number;durationMs?:number;distance:number;reason:string}[]=[];
 let streamHeld=false,streamHoldSince=0,streamStalls=0,streamWaitMs=0,contextLost=false;
 const roadOverlay=document.createElement('div');roadOverlay.id='road-loading';roadOverlay.setAttribute('role','status');roadOverlay.style.cssText='position:fixed;inset:35% 12% auto;z-index:150;padding:22px;background:#102a35ee;color:white;text-align:center;border:2px solid #ffd46b;border-radius:12px;pointer-events:none;font:600 18px system-ui';roadOverlay.hidden=true;document.getElementById('app')!.append(roadOverlay);
-function holdRoad(held:boolean){if(held===streamHeld)return;streamHeld=held;if(held){streamStalls++;streamHoldSince=performance.now();if(params.get('streamdiag')==='1'){streamStallEvents.push({start:streamHoldSince,distance:state.distance,reason:contextLost?'context-lost':world.streamer?.error||'road-coverage'});if(streamStallEvents.length>128)streamStallEvents.shift();}}else{streamWaitMs+=performance.now()-streamHoldSince;const event=streamStallEvents.at(-1);if(event){event.end=performance.now();event.durationMs=event.end-event.start;}}}
+function holdRoad(held:boolean){if(held===streamHeld)return;streamHeld=held;if(held){streamStalls++;streamHoldSince=performance.now();if(params.get('fpsdiag')==='1'){streamStallEvents.push({start:streamHoldSince,distance:state.distance,reason:contextLost?'context-lost':world.streamer?.error||'road-coverage'});if(streamStallEvents.length>128)streamStallEvents.shift();}}else{streamWaitMs+=performance.now()-streamHoldSince;const event=streamStallEvents.at(-1);if(event){event.end=performance.now();event.durationMs=event.end-event.start;}}}
 renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();contextLost=true;holdRoad(true);sound.pause();});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{contextLost=false;});
 
 let testControls:InputState|undefined;let hardDetents=false;let lastControls:InputState={gas:false,brake:false,steer:0};let usedExternalControls=false;
-const highSpeedPace=import.meta.env.DEV?selectedPace(new URLSearchParams(location.search).get('pace')):DEFAULT_PACE;
+const highSpeedPace=DEFAULT_PACE;
 let bridgeInspection=false;let cameraHeading=0; let scenicDriftBlend=0;let scenicWeight=0;let initialized=false; let elapsed=0; let frames=0;
 const history=new RecentDrivingHistory();
 let telemetry=stage?new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined):undefined;
@@ -277,20 +268,6 @@ function applyShadowTechnique(technique:CoastShadowTechnique,enabled:boolean){
   `input[data-shadow-technique="${technique}"]`);
  if(checkbox)checkbox.checked=enabled;
 }
-const autoShadowStatus=useAutoShadowBenchmark?document.createElement('small'):undefined;
-if(autoShadowStatus){
- autoShadowStatus.id='fps-auto-benchmark-status';
- autoShadowStatus.textContent='自動陰影測試：等待開始';
- autoShadowStatus.style.cssText='display:block;margin-top:4px;text-align:right;color:#fff2cf;font:600 10px/1.35 system-ui;text-shadow:0 1px 3px #10232a';
- document.getElementById('drive-fps-diagnostic')?.append(autoShadowStatus);
-}
-const autoShadowBenchmark=useAutoShadowBenchmark?new AutoShadowBenchmark(
- applyShadowTechnique,
- (_id,label)=>{if(autoShadowStatus)autoShadowStatus.textContent=label;}
-):undefined;
-if(autoShadowBenchmark)document.addEventListener('pointerdown',(event)=>{
- if(event.pointerType==='touch')autoShadowBenchmark.noteTouch(performance.now());
-},{capture:true,passive:true});
 if(chapters&&chapterIndex<2)traffic?.enableHighway(chapterEnd());
 const contactRay=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),contactShadows=Array.from({length:4},()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(.34,16),new THREE.MeshBasicMaterial({color:coastUltraMode?0x000000:0x172d28,transparent:true,opacity:.24,depthWrite:false}));m.visible=false;world.scene.add(m);return m;});
 function tireBottom(p:THREE.Group){const center=p.getWorldPosition(new THREE.Vector3()),axis=new THREE.Vector3(1,0,0).transformDirection(p.matrixWorld),vertical=new THREE.Vector3(0,1,0).addScaledVector(axis,-axis.y).normalize();return center.addScaledVector(vertical,-.46).addScaledVector(axis,-Math.sign(axis.y)*.135);}
@@ -370,12 +347,12 @@ function updatePlayerUi(){
   loading.hidden=!preparing&&!world.streamer?.error;
   if(!loading.hidden){const message=world.streamer?.error?'道路載入失敗，請重試。':slow?'道路準備時間較長，請稍候或重新載入。':'道路準備中…';if(loading.textContent!==message)loading.textContent=message;}
 }
-function ui(){ $('drive-readout').hidden=settingsOpen||mode==='menu'; tripPauseDock?.update(!!trip&&mode==='paused'&&!brickCompleted&&!settingsOpen,muted,l2UI?.reviewExpanded??false);$('preferences').classList.toggle('trip-settings-drawer',!!trip&&mode==='paused'&&settingsOpen); $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=(mode!=='playing'&&!(trip&&params.get('qa')==='1'&&mode==='paused'))||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=playerUi?(mode==='playing'?'Ⅱ 暫停':'☰ 選單'):(mode==='playing'?'Ⅱ Menu':'☰ Menu');if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); updatePlayerUi(); }
+function ui(){ $('drive-readout').hidden=settingsOpen||mode==='menu'; tripPauseDock?.update(!!trip&&mode==='paused'&&!brickCompleted&&!settingsOpen,muted,l2UI?.reviewExpanded??false);$('preferences').classList.toggle('trip-settings-drawer',!!trip&&mode==='paused'&&settingsOpen); $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=(mode!=='playing'&&!(trip&&params.has('at')&&mode==='paused'))||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=playerUi?(mode==='playing'?'Ⅱ 暫停':'☰ 選單'):(mode==='playing'?'Ⅱ Menu':'☰ Menu');if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); updatePlayerUi(); }
 function start(){if(journeyTransition)return;if(sceneInspector?.isOpen)sceneInspector.close();l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();void sound.unlock().catch(()=>{});if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;// Resume immediately: pause already neutralizes held inputs; no READY countdown.
  mode='playing';settingsOpen=false;input.clear();ui();
   loadingDismissReady();renderer.domElement.focus({preventScroll:true});}
 function pause(){if(journeyTransition)return;if(l2UI?.feedbackOpen)return;if(sceneInspector?.isOpen){sceneInspector.close();ui();return;}if(mode==='paused'){start();return;}l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();mode='paused';input.clear();pad.neutralize();sound.pause();ui();if(!mobile())(trip?tripPauseDock?.resumeButton:document.getElementById(playerUi?'player-play':brick?(l2||pilot?'l2-play':'brick-play'):'resume'))?.focus();}
-function restart(){if(journeyMode){if(mode==='menu'&&elapsed===0){start();return;}void restartJourney();return;}tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);preparationSince=performance.now();sound.pause();sound.resetPassBy();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}if(fpsBenchDistance!==null){state.distance=fpsBenchDistance;state.speed=0;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
+function restart(){if(journeyMode){if(mode==='menu'&&elapsed===0){start();return;}void restartJourney();return;}tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);preparationSince=performance.now();sound.pause();sound.resetPassBy();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}if(atDistance!==null){state.distance=atDistance;state.speed=0;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
 $('player-retry').onclick=()=>location.reload();
 $('player-play').onclick=()=>document.getElementById('l2-play')?.click();
 document.getElementById('loading-ready')!.addEventListener('click',()=>$('player-play').click());
@@ -420,7 +397,7 @@ addEventListener('keydown',e=>{
   if(e.code==='Escape'&&sceneInspector?.isOpen){e.preventDefault();toggleSceneQa();return;}
   if(e.code==='Escape'&&mode==='paused'&&l2UI?.reviewExpanded){e.preventDefault();l2UI.setReviewExpanded(false);ui();tripPauseDock?.moreButton.focus();return;}
   if(e.code==='Escape'&&mode==='paused'&&tripPauseDock?.isExpanded){e.preventDefault();tripPauseDock.collapse();ui();return;}
-  if(e.code==='F8'&&(mode==='playing'||(trip&&params.get('qa')==='1'&&mode==='paused'))&&!settingsOpen){e.preventDefault();capturePhoto();return;}
+  if(e.code==='F8'&&(mode==='playing'||(trip&&params.has('at')&&mode==='paused'))&&!settingsOpen){e.preventDefault();capturePhoto();return;}
   if(e.code==='Escape'){e.preventDefault();if(settingsOpen){$('close-settings').click();return;}pause();return;}
   if(settingsOpen)return;
   if((mode==='playing'||brickCompleted)&&l2UI&&(e.code==='KeyG'||e.code==='KeyI')){e.preventDefault();l2UI.openQuick(e.code==='KeyG'?'praise':'issue','keyboard');return;}
@@ -549,13 +526,13 @@ const pad=new GamepadInput(input,action=>{
  if(action==='confirm'){const active=document.activeElement as HTMLElement;if(items.includes(active))active.click();else items[0]?.focus();return;}
  const index=items.indexOf(document.activeElement as HTMLElement),delta=action==='up'?-1:1;items[(index<0?0:(index+delta+items.length)%items.length)]?.focus();
 },()=>setInputMode('gamepad'),()=>{if(inputMode==='gamepad')setInputMode(mobile()?'touch':'keyboard');});
-const perfEnabled=import.meta.env.DEV&&params.get('perf')==='1'&&!playerUi;
+const perfEnabled=false; // retired URL profiler
 const perf={fps:0,startupMs:0,raycastMs:0,renderMs:0,worldMs:0,pixelRatio:renderer.getPixelRatio(),shadows:renderer.shadowMap.enabled};
 let perfFrames=0,perfSince=performance.now(),raycastTotal=0,renderTotal=0,worldTotal=0;
 const perfPanel=perfEnabled?document.createElement('pre'):undefined;
 if(perfPanel){perfPanel.id='perf';perfPanel.style.cssText='position:fixed;left:8px;top:50px;z-index:100;pointer-events:none;background:#102a35dd;color:white;padding:8px;font:12px monospace';document.getElementById('app')!.append(perfPanel);}
-const streamHudEnabled=params.get('streamhud')==='1'&&!playerUi&&(import.meta.env.DEV||params.get('qa')==='1');
-const streamDiagnosticMode=(params.get('streamdiag')==='1'||streamHudEnabled)&&!playerUi;
+const streamHudEnabled=false; // retired URL stream HUD
+const streamDiagnosticMode=false; // FPS JSON still available
 const streamLog:unknown[]=[];
 let streamSampleAt=0,streamSampleDistance=state.distance;let observedWorldTravelSpeedMps:number|null=null;
 const diagnosticSnapshot=()=>{const started=performance.now(),stream=world.streamer?.stats;const row={build:'S1-stream-diagnostics',schemaVersion:2,observedWorldTravelSpeedMps,travelSampleAt:streamSampleAt,unheldTravelSpeedMps:state.speed*effectivePace(state.speed,highSpeedPace),trip:trip?.tripCode,wall:performance.now(),elapsed,distance:state.distance,speed:state.speed,fps:perf.fps,held:streamHeld,stalls:streamStalls,waitMs:streamWaitMs+(streamHeld?performance.now()-streamHoldSince:0),contextLost,stallEvents:streamStallEvents.map(e=>({...e,durationMs:e.durationMs??performance.now()-e.start})),lifecycle:world.streamer?.diagnosticsSnapshot(state.speed*effectivePace(state.speed,highSpeedPace)),draws:renderer.info.render.calls,triangles:renderer.info.render.triangles,programs:renderer.info.programs?.length??null,gpuMemoryBytes:null,memory:{...renderer.info.memory,heap:(performance as any).memory?.usedJSHeapSize??null,heapLimit:(performance as any).memory?.jsHeapSizeLimit??null},stream:stream?{...stream,history:[...stream.history.filter(h=>h.kind.endsWith('-cpu')||h.kind==='worker-wall').slice(-12),...stream.history.filter(h=>!h.kind.endsWith('-cpu')&&h.kind!=='worker-wall').slice(-18)]}:null};return {...row,snapshotCpuMs:performance.now()-started};};
@@ -787,14 +764,8 @@ function loop(now:number){
   const dt=Math.min((now-last)/1000,.25);last=now;
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
-  // Autonomous GPU A/B: schedule changes without tapping the Pixel 8.
-  autoShadowBenchmark?.tick(now,mode==='playing'&&!settingsOpen&&!document.hidden);
   const fpsPhysicsStart=driveFpsDiagnostics.enabled&&mode==='playing'?performance.now():0;
-  if(fpsBenchDistance!==null){
-   // Hold the exact camera and car pose. Scene time still advances so
-   // water, background vehicles and live/static shadow pipelines render.
-   if(mode==='playing'&&!settingsOpen)elapsed+=dt;
-  }else if(!manual)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);if(advance(tick)===false)break;remaining-=tick;}
+  if(!manual)for(let remaining=dt;remaining>1e-8;){const tick=Math.min(remaining,1/120);if(advance(tick)===false)break;remaining-=tick;}
   if(fpsPhysicsStart)driveFpsDiagnostics.cpu('physics',performance.now()-fpsPhysicsStart);
   render(dt);
   if(startupDiagnostics.enabled)startupDiagnostics.drivingFrame(now,mode==='playing',state.distance,renderer.info.render.calls);
@@ -862,7 +833,7 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
   l2UI?.setReviewExpanded(opening);tripPauseDock?.collapse();ui();
   if(!mobile())(opening?document.getElementById('l2-play'):tripPauseDock?.moreButton)?.focus();
  },
-},!playerUi,coastUltraMode&&coastGeometryShadows()?{onChange:applyShadowTechnique}:undefined);
+},!playerUi,coastUltraMode&&coastGeometryShadows()&&params.get('fpsdiag')==='1'?{onChange:applyShadowTechnique}:undefined);
 // Render a legible keycap on the action itself, following the last active input mode.
 // Existing L2 shortcut text is replaced by the same badge rather than doubled.
 for(const [id,key,pad] of [
@@ -982,41 +953,9 @@ if(import.meta.env.DEV){(window as any).__drive={
   recentHistory:()=>history.snapshot(),
   sample:(d:number)=>{const p=world.sample(d);return {bankDegrees:(-Math.atan(p.right.y)*180/Math.PI)||0,halfWidth:world.halfAt(d),lanes:pilot?pilotSample(pilot,d).lanes:brick?brickWidth(brick,d).lanes:3,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),position:p.position.toArray(),curvature:p.curvature,roadHeading:p.roadHeading,tangent:p.tangent.toArray(),challenge:p.challenge};}
 };}
-if(import.meta.env.DEV&&new URLSearchParams(location.search).has('challenge')){
- const id=new URLSearchParams(location.search).get('challenge'),c=COURSE.find(c=>c.id===id);
- if(c){state.distance=Math.max(0,c.start-120);state.speed=230/3.6;}
- const panel=document.createElement('div');panel.id='challenge-readout';panel.style.cssText='position:fixed;z-index:21;top:8px;left:25%;right:25%;color:white;background:#123d;text-align:center;font:12px monospace;padding:6px;pointer-events:none';document.body.append(panel);
- setInterval(()=>{const s=(window as any).__drive.steering();panel.textContent=`DEV ${s.challenge.label} · raw ${s.rawSteer.toFixed(2)} / notch ${s.effectiveSteer.toFixed(2)} / applied ${s.appliedSteer.toFixed(2)} / need ${s.requiredSteer.toFixed(2)} · x ${s.roadRelativeX.toFixed(2)}m`;},100);
-}
-// Explicit development URL only: reproducible same-segment A/B for human review.
-if(import.meta.env.DEV&&(new URLSearchParams(location.search).has('pace')||new URLSearchParams(location.search).has('velocity'))){
- const selector=document.createElement('div');selector.id='pace-selector';
- selector.style.cssText='position:fixed;z-index:21;top:4px;left:24%;right:21%;text-align:center;background:#123e;color:#fff;font:11px system-ui;border-radius:6px;padding:4px';
- selector.innerHTML=`DEV PACE ${[1,1.5,1.75,2].map(p=>`<a style="color:${p===highSpeedPace?'#ffc874':'white'};padding:0 6px" href="?pace=${p}${location.search.includes('velocity')?'&velocity':''}">${p}×</a>`).join('')}<span id="pace-readout"></span>`;
- document.body.append(selector);
- setInterval(()=>{const measured=speedAudit?.rows.at(-1)?.worldMetersPerSecond;$('pace-readout').textContent=` · measured ${measured===undefined?'—':Number(measured).toFixed(1)} m/s (1s)`;},200);
-}
-// No calibration driver or UI is retained in the production bundle.
-if(import.meta.env.DEV&&new URLSearchParams(location.search).has('velocity')){
- void import('../tests/driver').then(({scriptedDriver})=>{
-  const g=(window as any).__drive;
-  const panel=document.createElement('div');panel.id='velocity-calibration';
-  panel.style.cssText='position:fixed;z-index:20;top:36px;left:25%;right:20%;text-align:center;font:12px system-ui;color:white;background:#123e;padding:6px;border-radius:8px';
-  panel.innerHTML='<div>DEV SPEED COMPARISON · automatic test driver · same start</div><button data-speed="22.22">Low</button> <button data-speed="65">High</button> <button id="velocity-exit">Exit demo</button><div id="velocity-time"></div>';
-  document.body.append(panel);
-  let target=22.22,driver=scriptedDriver();
-  const select=(speed:number)=>{target=speed;driver=scriptedDriver();g.reset({distance:400,speed});void sound.unlock().catch(()=>{});$('speed').style.visibility='hidden';};
-  $('pace-readout').hidden=true;
-  panel.querySelectorAll<HTMLButtonElement>('[data-speed]').forEach(button=>button.onclick=()=>select(Number(button.dataset.speed)));
-  panel.querySelector<HTMLButtonElement>('#velocity-exit')!.onclick=()=>location.assign(`${location.pathname}?pace=${highSpeedPace}`);
-  setInterval(()=>{const s=g.snapshot();if(s.mode!=='playing')return;const controls=driver(s,g.sample(s.distance).curvature,target);controls.gas=s.speed<target;controls.brake=s.speed>target+2;g.controls(controls);$('velocity-time').textContent=`${target<30?'LOW':'HIGH'} · ${s.elapsed.toFixed(1)} s · fixed camera · speed readout hidden`;},50);
- });
-}
-
-if(import.meta.env.DEV&&new URLSearchParams(location.search).has('stage')){const id=new URLSearchParams(location.search).get('stage'),act=ACTS.find(a=>a.id===id);if(act)state.distance=act.start+700;}
-
+// Retired challenge / pace / velocity / stage URL overlays.
 /* Opt-in QA Scene Inspector: exact route/biome sites, not a second world generator. */
-if(params.get('qa')==='1'&&trip&&!journeyMode){
+if(params.has('at')&&trip&&!journeyMode){
  const stops:InspectorStop[]=[];
  if(roadLockMode)for(const moment of CANYON_ROADLOCK_MOMENTS){
   stops.push({id:'roadlock-'+moment.id,kind:'road-lock',
@@ -1127,8 +1066,6 @@ if(params.get('qa')==='1'&&trip&&!journeyMode){
  },trip.seed);
  $('qa-tools').prepend(sceneInspector.toggle);
  // Shareable QA coordinates, including when a particular building is missed.
- const target=Number(params.get('at'));
- if(params.has('at')&&Number.isFinite(target)&&target>=350&&target<world.length-20){
-  sceneInspector.open();sceneInspector.jumpTo(target);
- }
+ // The initial position came from ?at. Do not auto-open a QA overlay.
+ 
 }
