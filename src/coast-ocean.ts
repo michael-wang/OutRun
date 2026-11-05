@@ -176,18 +176,23 @@ void main(){
   vec2 delta=vWorld.xz-uRocks[i].xy;
   float r=uRocks[i].z,dist=length(delta);
   if(dist<r*.52)discard;
-  if(uRockShadowStrength>0.5&&dist<r*6.0){
+  if(uRockShadowStrength>0.5&&dist<r*7.0){
    float along=dot(delta,sunsetAway);
    float across=dot(delta,vec2(-sunsetAway.y,sunsetAway.x));
-   float stretch=smoothstep(-r*.4,r*.4,along)*(1.0-smoothstep(r*4.4,r*6.0,along));
-   rockShadow=max(rockShadow,stretch*exp(-pow(across/(r*.85+.5),2.0)));
+   // Big rocks need visible water contact AND a long low-sun shadow.
+   // The earlier directional tail often fell onto clipped dry sand.
+   float contact=(1.0-smoothstep(r*.48,r*1.45,dist))*.64;
+   float tail=smoothstep(-r*.30,r*.35,along)
+     *(1.0-smoothstep(r*4.4,r*6.8,along))
+     *exp(-pow(across/(r*.84+.45),2.0));
+   rockShadow=max(rockShadow,max(contact,tail));
   }
   float wash=exp(-pow((dist-r*.85)/1.5,2.0));
   float pulse=.35+.65*pow(.5+.5*sin(uTime*1.4+uRocks[i].w),3.0);
   foam=max(foam,wash*pulse*(.6+.4*lace));
  }
  color=mix(color,vec3(.64,.64,.57),clamp(foam,0.0,.94));
- color*=1.0-uRockShadowStrength*rockShadow*.55;
+ color*=1.0-uRockShadowStrength*rockShadow*.80;
  // The parent game uses a bright coastal horizon; blend distant water into it.
  float fog=1.0-exp(-vDistance*.00038);
  color=mix(color,vec3(.52,.38,.36),clamp(fog,0.0,.94));
