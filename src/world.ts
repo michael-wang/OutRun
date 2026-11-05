@@ -1,6 +1,7 @@
 import {addCanyonDawn,CANYON_DAWN_SUN} from './canyon-dawn';
 import {addCoastDusk,COAST_SUN} from './coast-dusk';
-import {configureCoastShadowLights,updateCoastShadowLights} from './coast-shadow-coverage';
+import {configureCoastShadowLights,CoastShadowCache} from './coast-shadow-coverage';
+import {markCoastShadowCaster} from './coast-shadow-layers';
 import {addCoastSandLight} from './coast-sand-light';
 import {addCoastMountains} from './coast-mountains';
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
@@ -51,6 +52,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   }
   scene.add(sun.target);
   const {sample,length}=options.track??createTrack();
+  const shadowCache=farSun?new CoastShadowCache(sun,farSun,sample,length):undefined;
   const bridge=shoulders&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(options.streamStage?.generatorVersion??'')?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
   const junction=options.streamStage?selectRoadInterchange(options.streamStage,bridge):undefined;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
@@ -218,7 +220,9 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const clouds=[];for(let i=0;i<24;i++){const angle=i*2.4;for(let j=0;j<4;j++)clouds.push({p:new THREE.Vector3(400+Math.cos(angle)*1700+j*50,280+rand(i)*170,500+Math.sin(angle)*1700),s:new THREE.Vector3(70,18+rand(j+i)*15,35),r:new THREE.Euler()});}
   // These old low-altitude cloud blobs intersect the new high plateau vistas.
   if(!coastUltra&&!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
-  const car=options.deferCar?new THREE.Group():createCar(!!dusk);scene.add(car);
+  const car=options.deferCar?new THREE.Group():createCar(!!dusk);
+  if(coastUltra)car.traverse(o=>{if(o instanceof THREE.Mesh&&o.castShadow)markCoastShadowCaster(o,'dynamic');});
+  scene.add(car);
   // Keep the original contact mesh in the car's bounding box so collision
   // geometry is unchanged, but hide its tinted pixels in sunset scenes.
   if(!options.deferCar){
@@ -251,8 +255,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
       right:rockyAt(d,1,rockSections)?undefined:interchangeRailOpeningAt(d),
     };
   }:undefined;
-  return {bridge,junction,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();streamer?.updateFarm(_time);const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}if(dusk&&farSun){
-   updateCoastShadowLights(sun,farSun,car.position,sample,distance,length);
+  return {bridge,junction,shoulders,boundaries,rockSections,breakdowns,scene,sample,length,car,scenery,streamer,shadowCache,half,halfAt,weightsAt,update:(_time:number,_speed:number,_slip:number,distance=0)=>{streamer?.update(distance);streamer?.pump();streamer?.updateFarm(_time);const weights=weightsAt(distance);(scene.background as THREE.Color).setRGB(0,0,0);scene.fog!.color.setRGB(0,0,0);for(let i=0;i<3;i++){(scene.background as THREE.Color).r+=skyColors[i].r*weights[i];(scene.background as THREE.Color).g+=skyColors[i].g*weights[i];(scene.background as THREE.Color).b+=skyColors[i].b*weights[i];scene.fog!.color.r+=fogColors[i].r*weights[i];scene.fog!.color.g+=fogColors[i].g*weights[i];scene.fog!.color.b+=fogColors[i].b*weights[i];}if(dusk&&shadowCache){
+   shadowCache.update(car.position,distance,streamer?.shadowRevision??0);
   }else{
    sun.target.position.copy(car.position);
    sun.position.copy(car.position).add(options.dawn?CANYON_DAWN_SUN.clone().multiplyScalar(120):new THREE.Vector3(-60,95,-45));

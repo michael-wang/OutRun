@@ -185,7 +185,7 @@ const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
    backgroundWarmup:warm?.farmWarm??null,backgroundTasks:warm?.backgroundTasks??[],
    sharedFlowerAtlas:sharedFlowerMaskStats()},
   water:ultraOcean?.stats??null,
-  lighting:{sunsetShadowsEnabled,geometrySunShadows:coastGeometryShadows(),shadowMapEnabled:renderer.shadowMap.enabled,projected:coastDuskShadows?.stats??null},
+  lighting:{sunsetShadowsEnabled,geometrySunShadows:coastGeometryShadows(),shadowMapEnabled:renderer.shadowMap.enabled,staticCache:world.shadowCache?.stats??null,projected:coastDuskShadows?.stats??null},
  };
 });
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
