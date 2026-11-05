@@ -52,7 +52,7 @@ import {SECTION_LABELS} from './scenery-cross-section';
 import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
-import {COAST_SHADOW_GROUPS,coastShadowGroupEnabled,coastShadowGroupSnapshot,setCoastShadowGroupEnabled} from './coast-shadow-layers';
+import {COAST_SHADOW_GROUPS,coastShadowGroupEnabled,coastShadowGroupSnapshot,markCoastShadowCaster,setCoastShadowGroupEnabled} from './coast-shadow-layers';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import roadWorkerUrl from './road-worker.ts?worker&url';
@@ -157,8 +157,8 @@ startupDiagnostics.mark('coast-ocean-ready',{active:!!ultraOcean});
 if(ultraOcean){
  const originalSea=world.scene.getObjectByName('default-coast-water');
  if(originalSea)originalSea.visible=false;
- ultraOcean.boatShadow.enabled=coastShadowGroupEnabled('boats');
- ultraOcean.setRockSunShadows(coastShadowGroupEnabled('rocks'));
+ ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowGroupEnabled('boats');
+ ultraOcean.setRockSunShadows(sunsetShadowsEnabled&&coastShadowGroupEnabled('rocks'));
 }
 startupDiagnostics.mark('coast-boats-start');
 let coastBoats=coastUltraMode?await (await import('./coast-boats')).addCoastBoats(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms,ultraOcean?.boatShadow):null;
@@ -666,11 +666,18 @@ function adoptChapter(c:PreparedChapter,replay=false){
  tireEffects.dispose();dustEffects.dispose();impactSparks.dispose();trafficSparks.dispose();traffic?.dispose();cones?.dispose();triangles?.dispose();
  world=c.world;ultraOcean=c.ocean;blenderAsset=c.art;coastBoats=c.boats;journeyLink=c.link;
   if(ultraOcean){
-   ultraOcean.boatShadow.enabled=coastShadowGroupEnabled('boats');
-   ultraOcean.setRockSunShadows(coastShadowGroupEnabled('rocks'));
+   ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowGroupEnabled('boats');
+   ultraOcean.setRockSunShadows(sunsetShadowsEnabled&&coastShadowGroupEnabled('rocks'));
   }
  chapterIndex=c.index;journeyExitAt=undefined;trip=candidate;stage=candidate;pilot=candidate;brick=candidate;
  designerMode=native.id==='canyon';coastUltraMode=native.id==='coast';coastUltraWater=coastUltraMode;roadLockMode=designerMode;blenderMode=designerMode;scenicCameraEnabled=false;
+  // Keep coast diagnostics out of canyon/city chapters. The reused car still
+  // casts normal shadows there, regardless of previous coast checkbox state.
+  tripPauseDock?.setShadowAuditVisible(coastUltraMode&&coastGeometryShadows());
+  world.car.traverse(o=>{
+   if(!(o instanceof THREE.Mesh)||o.userData.coastShadowGroup!=='player')return;
+   if(coastUltraMode)markCoastShadowCaster(o,'dynamic','player');else o.castShadow=true;
+  });
  renderer.shadowMap.enabled=coastUltraMode?coastGeometryShadows():!matchMedia('(pointer:coarse)').matches;
  coastDuskShadows=coastUltraMode&&sunsetShadowsEnabled&&!coastGeometryShadows()
   ?new CoastDuskShadows(world.scene,world.sample,world.length,world.halfAt,trip?.seed??0):undefined;

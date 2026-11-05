@@ -78,6 +78,10 @@ export class TripPauseDock {
   this.moreButton.textContent=value?'收起':'☰ 功能';
  }
  collapse(){this.setExpanded(false);}
+ setShadowAuditVisible(visible:boolean){
+  const node=this.element.querySelector<HTMLDetailsElement>('#tp-shadow-audit');
+  if(node){node.hidden=!visible;if(!visible)node.open=false;}
+ }
  get isExpanded(){return this.expanded;}
  focusResume(){this.resumeButton.focus();}
  update(paused:boolean,muted:boolean,reviewOpen=false){
