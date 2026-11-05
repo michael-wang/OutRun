@@ -6,6 +6,8 @@ export const FARM_ZONES=[
  {start:7340,end:7850,right:152,rice:[7400,7600],flowers:[7600,7800],main:false},
 ] as const;
 export const COAST_FARM={start:2300,end:3670,riceStart:2400,riceEnd:3000,flowerStart:3100,flowerEnd:3600} as const;
+/** Authored flower-band palette shared by Worker baking and runtime materialization. */
+export const FARM_FLOWER_COLORS=['#ecc341','#e679a7','#a382d8'] as const;
 // Each scarecrow occupies the middle of a cultivated plot, never the roadside verge.
 export const FARM_SCARECROWS=[{d:2450,x:76},{d:2650,x:125},{d:2850,x:76},{d:3250,x:76},{d:3450,x:35},{d:4550,x:76},{d:4750,x:35},{d:6050,x:76},{d:6350,x:35},{d:7550,x:76},{d:7750,x:35}] as const;
 // Farmsteads occupy existing breaks before/after crops, never cut a hole in the
