@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {markCoastShadowCaster} from './coast-shadow-layers';
 import {farmClearing} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastBeachHeight} from './scenery-cross-section';
@@ -90,7 +91,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  for(const b of buckets.values()){
   const mesh=new THREE.InstancedMesh(b.g,b.m,b.matrices.length);
   b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.userData.nature=b.nature;
-  mesh.name='coast-nature';mesh.castShadow=false;mesh.receiveShadow=false;scene.add(mesh);
+  mesh.name='coast-nature';markCoastShadowCaster(mesh,'static');mesh.receiveShadow=false;scene.add(mesh);
  }
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};
 }

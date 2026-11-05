@@ -1,6 +1,7 @@
 import {warningTriangleGeometry,type Breakdown} from './breakdowns';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import * as THREE from 'three';
+import {markCoastShadowCaster} from './coast-shadow-layers';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {createTrack} from './track';
 import {trafficRandom} from './traffic-lanes';
@@ -56,7 +57,9 @@ export class RoadCones {
    :new THREE.MeshStandardMaterial({vertexColors:true,roughness:.8}),48);
   this.mesh.name=triangles?'breakdown-warning-objects':'road-cones';
   this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  this.mesh.count=0;this.mesh.frustumCulled=false;this.mesh.castShadow=this.geometryShadows;scene.add(this.mesh);
+  this.mesh.count=0;this.mesh.frustumCulled=false;this.mesh.castShadow=this.geometryShadows;
+  if(this.mesh.castShadow)markCoastShadowCaster(this.mesh,'dynamic');
+  scene.add(this.mesh);
   if(this.sunsetShadows&&!this.geometryShadows){
    const plane=new THREE.PlaneGeometry(1,1);plane.rotateX(-Math.PI/2);
    this.sunsetCast=new THREE.InstancedMesh(plane,makeCoastShadowMaterial(.80),48);

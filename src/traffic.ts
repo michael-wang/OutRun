@@ -5,6 +5,7 @@ import {TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR,TRAFFIC_CREST_RISK_COLOR,roadHides
 import {CANYON_BEND} from './canyon-identity';
 import {INTERCHANGE_DEMO_CAR_ID,interchangeCenterOffset,interchangeTrafficShift,interchangeDemoCarLateral,interchangeRampElevation,type RoadInterchange} from './road-interchange';
 import * as THREE from 'three';
+import {markCoastShadowCaster} from './coast-shadow-layers';
 import {TRAFFIC_TYPES,vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import {TireEffects,type TireContact} from './tire-effects';
 import {SkidFeedback} from './skid-feedback';
@@ -85,9 +86,13 @@ export class Traffic {
    this.sunsetCast.renderOrder=2;scene.add(this.sunsetCast);
   }
   if(typeof document!=='undefined'){
-   this.sign=new THREE.InstancedMesh(waffleSignGeometry(),new THREE.MeshBasicMaterial({map:waffleSignTexture()}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;this.sign.castShadow=this.dusk&&this.geometryShadows;scene.add(this.sign);
+   this.sign=new THREE.InstancedMesh(waffleSignGeometry(),new THREE.MeshBasicMaterial({map:waffleSignTexture()}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;this.sign.castShadow=this.dusk&&this.geometryShadows;
+   if(this.sign.castShadow)markCoastShadowCaster(this.sign,'dynamic');
+   scene.add(this.sign);
   }
-  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=this.dusk&&this.geometryShadows;mesh.receiveShadow=true;scene.add(mesh);return mesh;});
+  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=this.dusk&&this.geometryShadows;mesh.receiveShadow=true;
+   if(mesh.castShadow)markCoastShadowCaster(mesh,'dynamic');
+   scene.add(mesh);return mesh;});
   // Four pooled back-face hull draws; the depth buffer hides the interior, leaving a thin silhouette.
   const hulls=TRAFFIC_TYPES.map((_t,i)=>trafficOutlineGeometry(i));
   this.outlineEdges=hulls.map(h=>new THREE.EdgesGeometry(h,28));
