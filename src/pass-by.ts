@@ -2,11 +2,11 @@ import {TRAFFIC_TYPES,type TrafficActor} from './traffic';
 const clamp=(n:number,lo=0,hi=1)=>Math.max(lo,Math.min(hi,n));
 /** Calibrate passing sound against *relative* road speed, not absolute player speed.
  * Loud crossings should remain an accent under the continuously audible engine. */
-export const PASS_AUDIO={minRelativeSpeed:12,fullRelativeSpeed:115,peakCap:.46,heavyMultiplier:1.17} as const;
+export const PASS_AUDIO={minRelativeSpeed:12,fullRelativeSpeed:115,peakCap:.34,totalVoiceCap:.36,heavyMultiplier:1.17} as const;
 export function passGainFromRelativeSpeed(relativeSpeed:number,type:number){
  const speed=clamp((Math.abs(relativeSpeed)-PASS_AUDIO.minRelativeSpeed)/(PASS_AUDIO.fullRelativeSpeed-PASS_AUDIO.minRelativeSpeed));
  const heavy=type===1?PASS_AUDIO.heavyMultiplier:type===2?1.11:type===3?1.07:1;
- return Math.min(PASS_AUDIO.peakCap,(.105+.29*speed**1.3)*heavy);
+ return Math.min(PASS_AUDIO.peakCap,(.09+.22*speed**1.3)*heavy);
 }
 export interface PassVoice {id:number;type:number;pan:number;gain:number;cutoff:number;rate:number}
 interface Pass {id:number;type:number;direction:number;side:number;started:number;lead:number;trail:number;peak:number}
