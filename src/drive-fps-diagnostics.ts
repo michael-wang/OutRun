@@ -193,8 +193,10 @@ export class DriveFpsDiagnostics {
   panel.style.cssText='position:fixed;right:7px;top:75px;z-index:310;color:#fff2dc;border:1px solid #ffd19c77;padding:5px 8px;border-radius:7px;max-width:270px;font:11px/1.4 system-ui;pointer-events:auto';
   const status=document.createElement('span');status.textContent='FPS 診斷準備中';panel.append(status);
   const button=document.createElement('button');button.type='button';button.textContent='匯出 FPS JSON';
-  button.style.cssText='display:block;margin-top:4px;border-radius:4px;padding:4px 7px;font:11px system-ui';
-  button.onclick=()=>this.download();panel.append(button);document.body.append(panel);
+  // Keep the export action FIRST, right below the FPS badge. The long
+  // per-second diagnostic summary can wrap below without burying the button.
+  button.style.cssText='display:block;margin:0 0 6px auto;border-radius:4px;padding:7px 12px;min-height:36px;font:700 12px system-ui';
+  button.onclick=()=>this.download();panel.prepend(button);document.body.append(panel);
   this.panel=panel;this.status=status;
   (window as typeof window & {__driveFpsDiagnostics?:DriveFpsDiagnostics}).__driveFpsDiagnostics=this;
  }
