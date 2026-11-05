@@ -43,12 +43,23 @@ export class TireEffects {
   this.marks=new THREE.Mesh(this.markGeo,new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
   this.smoke.name=mode==='dust'?'tire-dust':'tire-smoke';this.marks.name=mode==='dust'?'dust-unused-marks':'tire-marks';this.smoke.frustumCulled=this.marks.frustumCulled=false;this.smoke.renderOrder=3;this.marks.renderOrder=1;scene.add(this.marks,this.smoke);this.clear();
  }
- /** A subdued smoke color at sunset; leaves off-road dust and daytime smoke alone. */
- setDuskSmoke(enabled:boolean){
+ /** Smoke follows the current biome. Only the sunset coast uses the
+  * approved warm-grey palette; terrain dust has its own separate palette. */
+ setSceneSmoke(weights:readonly number[],sunsetCoast=false){
   if(this.mode!=='smoke')return;
+  const coast=sunsetCoast?[.51,.48,.48]:[.81,.80,.80];
+  const canyon=[.70,.64,.59],city=[.70,.72,.75];
+  const w=[Math.max(0,weights[0]??0),Math.max(0,weights[1]??0),Math.max(0,weights[2]??0)];
+  const total=Math.max(.0001,w[0]+w[1]+w[2]);
   const tint=(this.smoke.material as THREE.ShaderMaterial).uniforms.tint.value as THREE.Vector3;
-  tint.set(enabled ? .51 : .81, enabled ? .48 : .80, enabled ? .48 : .80);
+  tint.set(
+   (coast[0]*w[0]+canyon[0]*w[1]+city[0]*w[2])/total,
+   (coast[1]*w[0]+canyon[1]*w[1]+city[1]*w[2])/total,
+   (coast[2]*w[0]+canyon[2]*w[1]+city[2]*w[2])/total,
+  );
  }
+ setDuskSmoke(enabled:boolean){this.setSceneSmoke([1,0,0],enabled);}
+
  /** Terrain-matched dust tint. White coastal sand must not emit canyon-brown puffs. */
  setDustTint(weights:readonly number[]){
   if(this.mode!=='dust')return;
