@@ -298,7 +298,9 @@ export class Traffic {
    if(r?.touching||r&&time-r.lastHit<1.25)continue;
    const relative=Math.abs(closing),outward=Math.abs(s.lateral-previous.lateral)/Math.max(dt,.001);
    const severity=THREE.MathUtils.clamp(kind==='rear'?relative/40:.15+outward/14,.12,1);
-   const reaction=r??{offset:0,velocity:0,boost:0,yaw:0,roll:0,skid:new SkidFeedback(),effects:new TireEffects(this.scene),touching:false,lastHit:0,slide:0};
+   const effects=r?.effects??new TireEffects(this.scene);
+   if(!r)effects.setDuskSmoke(this.dusk);
+   const reaction=r??{offset:0,velocity:0,boost:0,yaw:0,roll:0,skid:new SkidFeedback(),effects,touching:false,lastHit:0,slide:0};
    const mass=a.type===0?1:a.type===1?3.2:a.type===2?2.3:1.6;
    const trafficSide=Math.abs(a.lateral)>this.halfAt(a.distance)-spec.width/2-1?-Math.sign(a.lateral):-side;reaction.velocity=trafficSide*(kind==='rear'?4+9*severity:2.5+4*severity)/Math.sqrt(mass);
    const leader=this.actors.filter(b=>b.id!==a.id&&b.distance>a.distance&&Math.abs(b.lateral-a.lateral)<2.7).sort((a,b)=>a.distance-b.distance)[0];
