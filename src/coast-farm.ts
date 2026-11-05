@@ -9,7 +9,7 @@ import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
 import type {PreparedFarmPlot} from './coast-farm-prep';
 import {farmWarmupRepresentatives} from './farm-warmup-plan';
-import {FARM_SCARECROWS,type FarmPlot} from './coast-farm-layout';
+import {FARM_SCARECROWS,FARM_FLOWER_COLORS,type FarmPlot} from './coast-farm-layout';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -26,7 +26,6 @@ const riceWaves=/* glsl */ `
    + sin(dot(p,uWindDirection)*.027-uTime*.23)*.18;
  }
 `;
-const flowerColors=['#ecc341','#e679a7','#a382d8'];
 const up=new THREE.Vector3(0,1,0);
 /** Replays reuse downloads, but own and dispose their GPU resources. */
 export async function loadCoastFarm(){
@@ -147,7 +146,7 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();ownedGeometry.push(g);const m=new THREE.Mesh(g,mat);group.add(m);return m;
  }
  const isRice=plot.kind==='rice';
- const groundColor=plot.kind==='rice'?'#d3b450':flowerColors[plot.band%3];
+ const groundColor=plot.kind==='rice'?'#d3b450':FARM_FLOWER_COLORS[plot.band%3];
  const surface=ribbon(plot.left,plot.right,plot.start,plot.end,.055,assets.material('ground',groundColor));
  // Keep the exact sampled terrain, including road bend and mild grade. No new terrain generator.
  // The hybrid rice sea is a single animated canopy plus roadside rice heads.
@@ -166,13 +165,18 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  for(const child of [...meadow.children])if(child instanceof THREE.Mesh)meadow.remove(child);
  meadow.traverse(o=>{if(o instanceof THREE.InstancedMesh){instances.push(o);o.frustumCulled=true;o.computeBoundingSphere();o.boundingSphere!.radius+=1.5;const m=o.material as THREE.ShaderMaterial;distanceShader(m,0,plot.kind==='rice'?260:240,true);m.fog=true;m.clipping=true;m.transparent=false;m.needsUpdate=true;}});
  if(meadow.wildflowers){
-  const flowers=meadow.wildflowers.flowers,g=flowers.geometry,color=new THREE.Color(flowerColors[plot.band%3]).multiplyScalar(.58),attr=g.getAttribute('aPetalColor');
-  for(let i=0;i<attr.count;i++)attr.setXYZ(i,color.r,color.g,color.b);attr.needsUpdate=true;
-  for(const name of ['aFoliageColor','aCentreColor']){const a=g.getAttribute(name);for(let i=0;i<a.count;i++)a.setXYZ(i,a.getX(i)*.65,a.getY(i)*.65,a.getZ(i)*.65);a.needsUpdate=true;}
-  // Cultivated flowers are taller than the upstream wildflower meadow; use its
-  // original flower masks and GPU wind, with one coherent palette per band.
-  const m=new THREE.Matrix4(),p=new THREE.Vector3(),q=new THREE.Quaternion(),s=new THREE.Vector3();
-  for(let i=0;i<flowers.count;i++){flowers.getMatrixAt(i,m);m.decompose(p,q,s);s.multiplyScalar(1.7);m.compose(p,q,s);flowers.setMatrixAt(i,m);}flowers.instanceMatrix.needsUpdate=true;flowers.computeBoundingSphere();flowers.boundingSphere!.radius+=2;
+  const flowers=meadow.wildflowers.flowers;
+  if(!prepared?.meadow?.flowerInstances?.coastalStyled){
+   // Other stages still use legacy Wildflowers CPU construction and styling.
+   const g=flowers.geometry,color=new THREE.Color(FARM_FLOWER_COLORS[plot.band%3]).multiplyScalar(.58),attr=g.getAttribute('aPetalColor');
+   for(let i=0;i<attr.count;i++)attr.setXYZ(i,color.r,color.g,color.b);attr.needsUpdate=true;
+   for(const name of ['aFoliageColor','aCentreColor']){const a=g.getAttribute(name);for(let i=0;i<a.count;i++)a.setXYZ(i,a.getX(i)*.65,a.getY(i)*.65,a.getZ(i)*.65);a.needsUpdate=true;}
+   // Cultivated flowers are taller than the upstream wildflower meadow.
+   const m=new THREE.Matrix4(),p=new THREE.Vector3(),q=new THREE.Quaternion(),sc=new THREE.Vector3();
+   for(let i=0;i<flowers.count;i++){flowers.getMatrixAt(i,m);m.decompose(p,q,sc);sc.multiplyScalar(1.7);m.compose(p,q,sc);flowers.setMatrixAt(i,m);}
+   flowers.instanceMatrix.needsUpdate=true;
+  }
+  flowers.computeBoundingSphere();flowers.boundingSphere!.radius+=2;
  }
  group.add(meadow);
  }
