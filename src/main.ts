@@ -6,6 +6,7 @@ import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed
 import {startupDiagnostics} from './startup-diagnostics';
 import {DriveFpsDiagnostics} from './drive-fps-diagnostics';
 import {resolveFixedFpsBenchmark} from './fps-benchmark';
+import {AutoShadowBenchmark} from './fps-auto-benchmark';
 import {sharedFlowerMaskStats} from './vendor/three-stylized/flowerShapes';
 import {RockContact} from './rocky-shoulder';
 import {RoadCones} from './road-cones';
@@ -54,7 +55,7 @@ import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
 import {markCoastShadowCaster} from './coast-shadow-layers';
-import {coastShadowTechniqueEnabled,coastShadowTechniqueSnapshot,setCoastShadowTechniqueEnabled} from './coast-shadow-techniques';
+import {coastShadowTechniqueEnabled,coastShadowTechniqueSnapshot,setCoastShadowTechniqueEnabled,type CoastShadowTechnique} from './coast-shadow-techniques';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import roadWorkerUrl from './road-worker.ts?worker&url';
@@ -178,6 +179,7 @@ if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 // Dedicated stationary shadow-profile route; unlike ?qa=1&at=..., no QA
 // inspector, scripted 170 km/h launch, or car physics are involved.
 const fpsBenchDistance=resolveFixedFpsBenchmark(params,coastUltraMode,world.length);
+const useAutoShadowBenchmark=fpsBenchDistance!==null&&params.get('autobench')==='1';
 const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=chapterStart();state.speed=brick.entrySpeed/3.6;}
 if(fpsBenchDistance!==null){state.distance=fpsBenchDistance;state.speed=0;}
 advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
@@ -187,7 +189,7 @@ startupDiagnostics.mark('road-streaming-active');
 const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
  const stream=world.streamer?.stats,farms=world.streamer?.farmStats??[],warm=world.streamer?.startupDiagnosticState();
  return {
-  ...(fpsBenchDistance===null?{}:{fpsBenchmark:{mode:'fixed-position',distanceM:fpsBenchDistance,physicsFrozen:true}}),
+  ...(fpsBenchDistance===null?{}:{fpsBenchmark:{mode:'fixed-position',distanceM:fpsBenchDistance,physicsFrozen:true,...(autoShadowBenchmark?{auto:autoShadowBenchmark.snapshot(performance.now())}:{})}}),
   streamer:{queue:stream?.queued??0,worker:stream?.pending?.kind??null,workerAgeMs:stream?.pending?.ageMs??null,retries:stream?.retries??0,
    chunks:stream?.chunks?.map(c=>({index:c.index,road:c.road,scenery:c.scenery}))??[],
    taskProfile:world.streamer?.sceneTaskProfile??null,
@@ -258,6 +260,37 @@ let cones=trip&&!roadLockMode&&trip.revision>=5?new RoadCones(world.sample,world
 let triangles=trip&&!roadLockMode&&trip.revision>=6?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
 let traffic=trip&&!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,trip.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
  traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
+function applyShadowTechnique(technique:CoastShadowTechnique,enabled:boolean){
+ if(!setCoastShadowTechniqueEnabled(technique,enabled))return;
+ if(technique==='dynamicMap'||technique==='staticMap'){
+  world.shadowCache?.refreshLightCasting();
+  if(technique==='staticMap'&&enabled)world.shadowCache?.invalidate();
+ }else if(technique==='boatDepth'&&ultraOcean){
+  ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&enabled;
+ }else if(technique==='rockShader'){
+  ultraOcean?.setRockSunShadows(sunsetShadowsEnabled&&enabled);
+ }else if(technique==='contactDecals'){
+  traffic?.setContactShadowsEnabled(enabled);
+ }
+ // Keep the existing pause checkboxes accurate if the automatic trial is interrupted.
+ const checkbox=tripPauseDock?.element.querySelector<HTMLInputElement>(
+  `input[data-shadow-technique="${technique}"]`);
+ if(checkbox)checkbox.checked=enabled;
+}
+const autoShadowStatus=useAutoShadowBenchmark?document.createElement('small'):undefined;
+if(autoShadowStatus){
+ autoShadowStatus.id='fps-auto-benchmark-status';
+ autoShadowStatus.textContent='自動陰影測試：等待開始';
+ autoShadowStatus.style.cssText='display:block;margin-top:4px;text-align:right;color:#fff2cf;font:600 10px/1.35 system-ui;text-shadow:0 1px 3px #10232a';
+ document.getElementById('drive-fps-diagnostic')?.append(autoShadowStatus);
+}
+const autoShadowBenchmark=useAutoShadowBenchmark?new AutoShadowBenchmark(
+ applyShadowTechnique,
+ (_id,label)=>{if(autoShadowStatus)autoShadowStatus.textContent=label;}
+):undefined;
+if(autoShadowBenchmark)document.addEventListener('pointerdown',(event)=>{
+ if(event.pointerType==='touch')autoShadowBenchmark.noteTouch(performance.now());
+},{capture:true,passive:true});
 if(chapters&&chapterIndex<2)traffic?.enableHighway(chapterEnd());
 const contactRay=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),contactShadows=Array.from({length:4},()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(.34,16),new THREE.MeshBasicMaterial({color:coastUltraMode?0x000000:0x172d28,transparent:true,opacity:.24,depthWrite:false}));m.visible=false;world.scene.add(m);return m;});
 function tireBottom(p:THREE.Group){const center=p.getWorldPosition(new THREE.Vector3()),axis=new THREE.Vector3(1,0,0).transformDirection(p.matrixWorld),vertical=new THREE.Vector3(0,1,0).addScaledVector(axis,-axis.y).normalize();return center.addScaledVector(vertical,-.46).addScaledVector(axis,-Math.sign(axis.y)*.135);}
@@ -754,6 +787,8 @@ function loop(now:number){
   const dt=Math.min((now-last)/1000,.25);last=now;
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
+  // Autonomous GPU A/B: schedule changes without tapping the Pixel 8.
+  autoShadowBenchmark?.tick(now,mode==='playing'&&!settingsOpen&&!document.hidden);
   const fpsPhysicsStart=driveFpsDiagnostics.enabled&&mode==='playing'?performance.now():0;
   if(fpsBenchDistance!==null){
    // Hold the exact camera and car pose. Scene time still advances so
@@ -827,20 +862,7 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
   l2UI?.setReviewExpanded(opening);tripPauseDock?.collapse();ui();
   if(!mobile())(opening?document.getElementById('l2-play'):tripPauseDock?.moreButton)?.focus();
  },
-},!playerUi,coastUltraMode&&coastGeometryShadows()?{onChange:(technique,enabled)=>{
-  if(!setCoastShadowTechniqueEnabled(technique,enabled))return;
-  // Isolate the GPU mechanism, leaving all the original objects on screen.
-  if(technique==='dynamicMap'||technique==='staticMap'){
-   world.shadowCache?.refreshLightCasting();
-   if(technique==='staticMap'&&enabled)world.shadowCache?.invalidate();
-  }else if(technique==='boatDepth'&&ultraOcean){
-   ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&enabled;
-  }else if(technique==='rockShader'){
-   ultraOcean?.setRockSunShadows(sunsetShadowsEnabled&&enabled);
-  }else if(technique==='contactDecals'){
-   traffic?.setContactShadowsEnabled(enabled);
-  }
- }}:undefined);
+},!playerUi,coastUltraMode&&coastGeometryShadows()?{onChange:applyShadowTechnique}:undefined);
 // Render a legible keycap on the action itself, following the last active input mode.
 // Existing L2 shortcut text is replaced by the same badge rather than doubled.
 for(const [id,key,pad] of [
