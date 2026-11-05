@@ -52,7 +52,8 @@ import {SECTION_LABELS} from './scenery-cross-section';
 import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
-import {COAST_SHADOW_GROUPS,coastShadowGroupEnabled,coastShadowGroupSnapshot,markCoastShadowCaster,setCoastShadowGroupEnabled} from './coast-shadow-layers';
+import {markCoastShadowCaster} from './coast-shadow-layers';
+import {coastShadowTechniqueEnabled,coastShadowTechniqueSnapshot,setCoastShadowTechniqueEnabled} from './coast-shadow-techniques';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import roadWorkerUrl from './road-worker.ts?worker&url';
@@ -157,8 +158,8 @@ startupDiagnostics.mark('coast-ocean-ready',{active:!!ultraOcean});
 if(ultraOcean){
  const originalSea=world.scene.getObjectByName('default-coast-water');
  if(originalSea)originalSea.visible=false;
- ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowGroupEnabled('boats');
- ultraOcean.setRockSunShadows(sunsetShadowsEnabled&&coastShadowGroupEnabled('rocks'));
+ ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowTechniqueEnabled('boatDepth');
+ ultraOcean.setRockSunShadows(sunsetShadowsEnabled&&coastShadowTechniqueEnabled('rockShader'));
 }
 startupDiagnostics.mark('coast-boats-start');
 let coastBoats=coastUltraMode?await (await import('./coast-boats')).addCoastBoats(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms,ultraOcean?.boatShadow):null;
@@ -191,7 +192,7 @@ const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
    backgroundWarmup:warm?.farmWarm??null,backgroundTasks:warm?.backgroundTasks??[],
    sharedFlowerAtlas:sharedFlowerMaskStats()},
   water:ultraOcean?.stats??null,
-  lighting:{sunsetShadowsEnabled,geometrySunShadows:coastGeometryShadows(),shadowMapEnabled:renderer.shadowMap.enabled,staticCache:world.shadowCache?.stats??null,shadowGroups:coastShadowGroupSnapshot(),projected:coastDuskShadows?.stats??null},
+  lighting:{sunsetShadowsEnabled,geometrySunShadows:coastGeometryShadows(),shadowMapEnabled:renderer.shadowMap.enabled,staticCache:world.shadowCache?.stats??null,shadowTechniques:coastShadowTechniqueSnapshot(),projected:coastDuskShadows?.stats??null},
  };
 });
 const mobile=()=>matchMedia("(pointer:coarse)").matches;
@@ -249,6 +250,7 @@ function actorRoadReady(d:number){return (!chapters||d>=chapterStart()&&d<=chapt
 let cones=trip&&!roadLockMode&&trip.revision>=5?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
 let triangles=trip&&!roadLockMode&&trip.revision>=6?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
 let traffic=trip&&!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,trip.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
+ traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
 if(chapters&&chapterIndex<2)traffic?.enableHighway(chapterEnd());
 const contactRay=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),contactShadows=Array.from({length:4},()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(.34,16),new THREE.MeshBasicMaterial({color:coastUltraMode?0x000000:0x172d28,transparent:true,opacity:.24,depthWrite:false}));m.visible=false;world.scene.add(m);return m;});
 function tireBottom(p:THREE.Group){const center=p.getWorldPosition(new THREE.Vector3()),axis=new THREE.Vector3(1,0,0).transformDirection(p.matrixWorld),vertical=new THREE.Vector3(0,1,0).addScaledVector(axis,-axis.y).normalize();return center.addScaledVector(vertical,-.46).addScaledVector(axis,-Math.sign(axis.y)*.135);}
@@ -259,7 +261,7 @@ function groundWheels(){
  if(!surfacesReady){world.scene.updateMatrixWorld(true);surfacesReady=true;}else world.car.updateWorldMatrix(true,true);
  wheelContacts=pivots.map((p,index)=>{let bottom=new THREE.Vector3(),hit:THREE.Intersection|undefined;const m=p.parent!.matrixWorld.elements,up=new THREE.Vector3(m[4],m[5],m[6]);
   for(let i=0;i<2;i++){p.updateWorldMatrix(true,false);bottom=tireBottom(p);contactRay.set(bottom.clone().add(new THREE.Vector3(0,4,0)),down);contactRay.far=12;hit=intersect()[0];if(!hit)break;const normal=hit.face?.normal.clone().transformDirection(hit.object.matrixWorld)??new THREE.Vector3(0,1,0),denominator=normal.dot(up);if(Math.abs(denominator)<.2)break;const correction=THREE.MathUtils.clamp(normal.dot(hit.point.clone().sub(bottom))/denominator,-.4-(p.position.y-.46),.4-(p.position.y-.46));p.position.y+=correction;if(Math.abs(correction)<.001)break;}
-  p.updateWorldMatrix(true,false);bottom=tireBottom(p);contactRay.set(bottom.clone().add(new THREE.Vector3(0,4,0)),down);contactRay.far=12;hit=intersect()[0];const shadow=contactShadows[index];shadow.visible=!!hit;if(hit){const normal=hit.face?.normal.clone().transformDirection(hit.object.matrixWorld)??new THREE.Vector3(0,1,0);if(normal.y<0)normal.negate();shadow.position.copy(hit.point).addScaledVector(normal,.025);shadow.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal);}return {name:p.name,gap:hit?bottom.y-hit.point.y:null,point:bottom.toArray(),surface:hit?.point.toArray()??null,normal:hit?.face?.normal.clone().transformDirection(hit.object.matrixWorld).toArray(),onRoad:hit?.object.name==='driving-surface'};});
+  p.updateWorldMatrix(true,false);bottom=tireBottom(p);contactRay.set(bottom.clone().add(new THREE.Vector3(0,4,0)),down);contactRay.far=12;hit=intersect()[0];const shadow=contactShadows[index];shadow.visible=!!hit&&(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));if(hit&&shadow.visible){const normal=hit.face?.normal.clone().transformDirection(hit.object.matrixWorld)??new THREE.Vector3(0,1,0);if(normal.y<0)normal.negate();shadow.position.copy(hit.point).addScaledVector(normal,.025);shadow.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal);}return {name:p.name,gap:hit?bottom.y-hit.point.y:null,point:bottom.toArray(),surface:hit?.point.toArray()??null,normal:hit?.face?.normal.clone().transformDirection(hit.object.matrixWorld).toArray(),onRoad:hit?.object.name==='driving-surface'};});
 }
 
 const speedAudit=import.meta.env.DEV?new SpeedAudit():undefined;
@@ -666,8 +668,8 @@ function adoptChapter(c:PreparedChapter,replay=false){
  tireEffects.dispose();dustEffects.dispose();impactSparks.dispose();trafficSparks.dispose();traffic?.dispose();cones?.dispose();triangles?.dispose();
  world=c.world;ultraOcean=c.ocean;blenderAsset=c.art;coastBoats=c.boats;journeyLink=c.link;
   if(ultraOcean){
-   ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowGroupEnabled('boats');
-   ultraOcean.setRockSunShadows(sunsetShadowsEnabled&&coastShadowGroupEnabled('rocks'));
+   ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowTechniqueEnabled('boatDepth');
+   ultraOcean.setRockSunShadows(sunsetShadowsEnabled&&coastShadowTechniqueEnabled('rockShader'));
   }
  chapterIndex=c.index;journeyExitAt=undefined;trip=candidate;stage=candidate;pilot=candidate;brick=candidate;
  designerMode=native.id==='canyon';coastUltraMode=native.id==='coast';coastUltraWater=coastUltraMode;roadLockMode=designerMode;blenderMode=designerMode;scenicCameraEnabled=false;
@@ -695,6 +697,7 @@ function adoptChapter(c:PreparedChapter,replay=false){
  cones=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,candidate.seed,world.length,actorRoad,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
  triangles=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,candidate.seed,world.length,actorRoad,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
  traffic=!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,candidate.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
+  traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
  if(chapterIndex<2)traffic?.enableHighway(native.end);
  pendingExhaustRpm=0;trafficImpact.reset();sound.resetPassBy();history.clear();l2UI?.reset();l2UI?.setCandidate(candidate);reportArea.hidden=true;
  telemetry=new DriveTelemetry(candidate.stageCode,candidate.seed,candidate.generatorVersion,'outrun-trip-drive-reports-v09');
@@ -813,13 +816,18 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
   l2UI?.setReviewExpanded(opening);tripPauseDock?.collapse();ui();
   if(!mobile())(opening?document.getElementById('l2-play'):tripPauseDock?.moreButton)?.focus();
  },
-},!playerUi,coastUltraMode&&coastGeometryShadows()?{onChange:(group,enabled)=>{
-  if(!setCoastShadowGroupEnabled(world.scene,group,enabled))return;
-  if(group==='boats'&&ultraOcean)ultraOcean.boatShadow.enabled=enabled;
-  if(group==='rocks')ultraOcean?.setRockSunShadows(enabled);
-  if(group!=='boats'){
+},!playerUi,coastUltraMode&&coastGeometryShadows()?{onChange:(technique,enabled)=>{
+  if(!setCoastShadowTechniqueEnabled(technique,enabled))return;
+  // Isolate the GPU mechanism, leaving all the original objects on screen.
+  if(technique==='dynamicMap'||technique==='staticMap'){
    world.shadowCache?.refreshLightCasting();
-   if(COAST_SHADOW_GROUPS.find(g=>g.id===group)?.kind==='static')world.shadowCache?.invalidate();
+   if(technique==='staticMap'&&enabled)world.shadowCache?.invalidate();
+  }else if(technique==='boatDepth'&&ultraOcean){
+   ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&enabled;
+  }else if(technique==='rockShader'){
+   ultraOcean?.setRockSunShadows(sunsetShadowsEnabled&&enabled);
+  }else if(technique==='contactDecals'){
+   traffic?.setContactShadowsEnabled(enabled);
   }
  }}:undefined);
 // Render a legible keycap on the action itself, following the last active input mode.
