@@ -66,7 +66,7 @@ export class Traffic {
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
  private rampDemoStartedAt?:number;private rampDemoFinished=false;
  private smokeWorldWeights:readonly number[]=[1,0,0];
- constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false){
+ constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false,private geometryShadows=false){
   if(dusk)this.runningLights=new TrafficLights(scene,TRAFFIC_LIMIT);
   this.schedule=[...trafficRecipe(seed,length),...stopped];
   this.lanes=new TrafficLanes(seed,dusk);this.indicators=new THREE.InstancedMesh(new THREE.BoxGeometry(.46,.25,.08),new THREE.MeshBasicMaterial({color:'#ffb000',toneMapped:false}),TRAFFIC_LIMIT*4);this.indicators.name='traffic-turn-signals';this.indicators.count=0;this.indicators.frustumCulled=false;scene.add(this.indicators);
@@ -75,7 +75,7 @@ export class Traffic {
   const texture=new THREE.DataTexture(pixels,32,32);texture.needsUpdate=true;texture.magFilter=texture.minFilter=THREE.LinearFilter;
   const plane=new THREE.PlaneGeometry(1,1);plane.rotateX(-Math.PI/2);
   this.shadows=new THREE.InstancedMesh(plane,new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}),TRAFFIC_LIMIT);this.shadows.name='traffic-contact-shadows';this.shadows.count=0;this.shadows.frustumCulled=false;scene.add(this.shadows);
-  if(this.dusk&&this.sunsetShadows){
+  if(this.dusk&&this.sunsetShadows&&!this.geometryShadows){
    // One pooled draw for <=12 actors; no mobile shadow map, no per-car meshes.
    const shape=new THREE.PlaneGeometry(1,1);shape.rotateX(-Math.PI/2);
    this.sunsetCast=new THREE.InstancedMesh(shape,makeCoastShadowMaterial(.72),TRAFFIC_LIMIT);
@@ -85,9 +85,9 @@ export class Traffic {
    this.sunsetCast.renderOrder=2;scene.add(this.sunsetCast);
   }
   if(typeof document!=='undefined'){
-   this.sign=new THREE.InstancedMesh(waffleSignGeometry(),new THREE.MeshBasicMaterial({map:waffleSignTexture()}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;scene.add(this.sign);
+   this.sign=new THREE.InstancedMesh(waffleSignGeometry(),new THREE.MeshBasicMaterial({map:waffleSignTexture()}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;this.sign.castShadow=this.dusk&&this.geometryShadows;scene.add(this.sign);
   }
-  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=false;mesh.receiveShadow=true;scene.add(mesh);return mesh;});
+  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=this.dusk&&this.geometryShadows;mesh.receiveShadow=true;scene.add(mesh);return mesh;});
   // Four pooled back-face hull draws; the depth buffer hides the interior, leaving a thin silhouette.
   const hulls=TRAFFIC_TYPES.map((_t,i)=>trafficOutlineGeometry(i));
   this.outlineEdges=hulls.map(h=>new THREE.EdgesGeometry(h,28));

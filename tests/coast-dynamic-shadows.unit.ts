@@ -4,6 +4,7 @@ import {makeCoastShadowMaterial,coastShadowLength,COAST_SHADOW_YAW} from '../src
 import {CoastDuskShadows} from '../src/coast-dusk-shadows';
 import {RoadCones,coneLayout} from '../src/road-cones';
 import {Traffic} from '../src/traffic';
+import {TRAFFIC_TYPES,vehicleGeometry} from '../src/vehicle-model';
 import type {createTrack} from '../src/track';
 
 const sample=((d:number)=>({
@@ -67,4 +68,33 @@ it('road cones cast coast sun shadows, absent on unmodified routes',()=>{
   expect(scale.z).toBeGreaterThan(coastShadowLength(1.35));
   cones.reset();expect(shadows.count).toBe(0);
  }finally{cones.dispose();baseline.dispose();}
+});
+
+it('casts the full truck cab, cargo and wheels instead of a rear-only rectangle',()=>{
+ const truck=vehicleGeometry(2);
+ try{
+  truck.computeBoundingBox();
+  expect(truck.boundingBox!.min.z).toBeLessThan(-3.5);
+  expect(truck.boundingBox!.max.z).toBeGreaterThan(3.5);
+ }finally{truck.dispose();}
+ const scene=new THREE.Scene();
+ const traffic=new Traffic(scene,sample,()=>8.75,5000,804,()=>true,[],undefined,true,true,true);
+ try{
+  traffic.update(0,0);
+  expect(traffic.inspect().shadowCasting).toBe(true);
+  expect(traffic.inspect().sunsetProjectedShadows).toBe(0);
+  expect(scene.getObjectByName('traffic-sunset-shadows')).toBeUndefined();
+  for(const type of TRAFFIC_TYPES){
+   const mesh=scene.getObjectByName('traffic-'+type.name) as THREE.InstancedMesh;
+   expect(mesh.castShadow).toBe(true);
+   expect(mesh.geometry.getAttribute('position').count).toBeGreaterThan(100);
+  }
+  const cones=new RoadCones(sample,()=>8.75,scene,804,8000,()=>true,undefined,true,true);
+  try{
+   cones.update(0,1500,0,0);
+   expect((scene.getObjectByName('road-cones') as THREE.InstancedMesh).castShadow).toBe(true);
+   expect(scene.getObjectByName('road-cone-sunset-shadows')).toBeUndefined();
+   expect(cones.inspect().sunsetProjectedShadows).toBe(0);
+  }finally{cones.dispose();}
+ }finally{traffic.dispose();}
 });

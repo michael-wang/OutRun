@@ -44,7 +44,7 @@ export class RoadCones {
  constructor(
   private sample:Sample,private halfAt:(d:number)=>number,scene:THREE.Scene,
   seed:number,private length:number,private ready:(d:number)=>boolean=()=>true,
-  private triangles?:readonly Breakdown[],private sunsetShadows=false,
+  private triangles?:readonly Breakdown[],private sunsetShadows=false,private geometryShadows=false,
  ){
   this.recipe=triangles
    ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:h.stopSide*(this.halfAt(h.distance)-1.75)})))
@@ -56,8 +56,8 @@ export class RoadCones {
    :new THREE.MeshStandardMaterial({vertexColors:true,roughness:.8}),48);
   this.mesh.name=triangles?'breakdown-warning-objects':'road-cones';
   this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  this.mesh.count=0;this.mesh.frustumCulled=false;scene.add(this.mesh);
-  if(this.sunsetShadows){
+  this.mesh.count=0;this.mesh.frustumCulled=false;this.mesh.castShadow=this.geometryShadows;scene.add(this.mesh);
+  if(this.sunsetShadows&&!this.geometryShadows){
    const plane=new THREE.PlaneGeometry(1,1);plane.rotateX(-Math.PI/2);
    this.sunsetCast=new THREE.InstancedMesh(plane,makeCoastShadowMaterial(.80),48);
    this.sunsetCast.name=triangles?'breakdown-warning-sunset-shadows':'road-cone-sunset-shadows';

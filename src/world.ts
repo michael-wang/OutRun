@@ -30,16 +30,29 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
   // Authored canyon backdrops reach beyond 1km. Change haze, not chase optics.
   if(options.blenderArt){scene.fog.near=450;scene.fog.far=2400;}
+  const coastUltra=(options.streamStage as TripCandidate|undefined)?.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false;
   const hemisphere=new THREE.HemisphereLight('#e3f7ff','#a09162',1.65);scene.add(hemisphere);
   const sun=new THREE.DirectionalLight('#fff0c9',2.8); sun.position.set(-180,280,-100); scene.add(sun);
-  sun.castShadow=true; const shadowSize=matchMedia('(pointer:coarse)').matches?512:1024; sun.shadow.mapSize.set(shadowSize,shadowSize); Object.assign(sun.shadow.camera,{left:-36,right:36,top:36,bottom:-36,near:1,far:250});
-  sun.shadow.bias=-.0004; sun.shadow.normalBias=.035; scene.add(sun.target);
+  // Coastal sunset uses actual geometry: truck cab, cargo and all wheels.
+  // Preserve the older non-coast shadow camera values.
+  sun.castShadow=true;
+  const shadowSize=coastUltra?(matchMedia('(pointer:coarse)').matches?3072:4096)
+   :matchMedia('(pointer:coarse)').matches?512:1024;
+  sun.shadow.mapSize.set(shadowSize,shadowSize);
+  if(coastUltra){
+   // With a low sun the ground plane is foreshortened in light-camera Y.
+   Object.assign(sun.shadow.camera,{left:-100,right:100,top:25,bottom:-22,near:.5,far:500});
+   sun.shadow.bias=-.0002;sun.shadow.normalBias=.035;
+  }else{
+   Object.assign(sun.shadow.camera,{left:-36,right:36,top:36,bottom:-36,near:1,far:250});
+   sun.shadow.bias=-.0004;sun.shadow.normalBias=.035;
+  }
+  scene.add(sun.target);
   const {sample,length}=options.track??createTrack();
   const bridge=shoulders&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(options.streamStage?.generatorVersion??'')?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
   const junction=options.streamStage?selectRoadInterchange(options.streamStage,bridge):undefined;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
-  const coastUltra=(options.streamStage as TripCandidate|undefined)?.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false;
   const dusk=coastUltra?addCoastDusk(scene,sample):undefined;
   if(coastUltra)addCoastMountains(scene,sample,length);
   if(dusk){hemisphere.color.set('#aab1da');hemisphere.groundColor.set('#66534b');hemisphere.intensity=1.25;sun.color.set('#ffc080');sun.intensity=1.8;scene.fog!.color.set('#a8796e');scene.fog!.near=250;scene.fog!.far=1450;}

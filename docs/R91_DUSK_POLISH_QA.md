@@ -80,3 +80,11 @@ Open the R9.1 draft PR preview, verify version `v0.9-coast-r9.1-exp`. Compare ne
 6. Existing P0b-2 approved device baseline: entire 10.33km coastal journey, min one-second 35.49 FPS, zero below-30 seconds. R9.1 must not regress this gameplay experience.
 
 **No automatic deployment:** Updating `dev` and passing desktop GitHub Actions is necessary, not sufficient. Wait for phone art/FPS owner acceptance before merging to `main`.
+
+
+## R9.1 full-geometry sunset shadow experiment (truck screenshot at 0:38)
+
+- **Default:** `?showcase=coast` activates Three.js directional shadow maps on mobile and desktop. The complete instanced car/bus/truck/waffle mesh (front cab, cargo, all wheels), roadster, road cones, warning triangles, shops, houses, beach umbrellas and visitors, resort rails/blocks, vegetation and streetlights cast their actual 3D silhouettes onto existing road/beach receivers. No rectangular projected decals are mixed on top.
+- **A/B:** `?showcase=coast&shadow3d=0` restores old inexpensive author-projected shadows; `?showcase=coast&sunshadow=0` disables the sunset shadows. Water uses the existing specialized FFT boat/rock shadow shader and remains unchanged.
+- **Quality first:** shadow map enlarged; postpone reducing casters or resolution until a physical Pixel 8 test shows visible FPS loss. Inspect the truck cab and wheels, moving traffic, cone silhouettes, roadster and scenery on slopes. Record `?fpsdiag=1` and observe FPS before tuning.
+- **Release:** Test local `dev` on Pixel 8 over LAN. Do not deploy Netlify PR previews or merge into `main` before owner approval.
