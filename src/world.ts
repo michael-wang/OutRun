@@ -1,5 +1,6 @@
 import {addCanyonDawn,CANYON_DAWN_SUN} from './canyon-dawn';
 import {addCoastDusk,COAST_SUN} from './coast-dusk';
+import {addCoastSandLight} from './coast-sand-light';
 import {addCoastMountains} from './coast-mountains';
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
@@ -44,6 +45,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   if(dusk){hemisphere.color.set('#aab1da');hemisphere.groundColor.set('#66534b');hemisphere.intensity=1.25;sun.color.set('#ffc080');sun.intensity=1.8;scene.fog!.color.set('#a8796e');scene.fog!.near=250;scene.fog!.far=1450;}
   if(options.dawn){addCanyonDawn(scene);hemisphere.color.set('#c2d7ed');hemisphere.groundColor.set('#9a7765');hemisphere.intensity=1.45;sun.color.set('#ffe0ad');sun.intensity=2.3;scene.fog!.near=450;scene.fog!.far=2600;}
   const asphalt=mat(mountainRoad?'#56534d':'#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
+  if(coastUltra)addCoastSandLight(sand); // existing sand material; no new terrain draw.
   asphalt.vertexColors=mountainRoad;
   function ribbon(offsetA:number|((d:number)=>number),offsetB:number|((d:number)=>number),liftA:number,liftB:number,material:THREE.Material,start=0,end=length,step=2.5) {
     // Finite stage ribbons share a parent but retain independently culled pieces.
