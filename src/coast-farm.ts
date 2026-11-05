@@ -215,7 +215,11 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  // The distant crop canopy retains its golden/flower palette after individual
  // plants fade. Tint the ambient contribution by the same field/row colours.
  fieldMaterial.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance += diffuseColor.rgb * .28;');};
- fieldMaterial.customProgramCacheKey=()=> 'farm-canopy-ground-v1';group.add(new THREE.Mesh(merged,fieldMaterial));
+ fieldMaterial.customProgramCacheKey=()=> 'farm-canopy-ground-v1';
+ // This opaque terrace sits ABOVE the road worker's terrain. Without a shadow
+ // receiver, tree/lamp shadows land on hidden grass and seem to disappear.
+ const fieldSurface=new THREE.Mesh(merged,fieldMaterial);
+ fieldSurface.receiveShadow=true;group.add(fieldSurface);
  // All five terraces retain a crop-height silhouette after individual heads fade.
  // One opaque draw per plot, never stacked transparent cards. Leave the existing
  // scarecrow access patch open, so its post and outstretched arms stay readable.
@@ -231,7 +235,8 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
     g.computeBoundingSphere();g.boundingSphere!.radius+=.2;return g;
    })():riceCanopyGeometry(plot,position,clearPath);
    ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
-  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;group.add(canopy);
+  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;
+  canopy.receiveShadow=true;group.add(canopy);
  }
  const update=(distance:number,time:number)=>{
   const gap=Math.max(plot.start-distance,0,distance-plot.end);if(meadow){meadow.visible=gap<265;if(meadow.visible)meadow.update(time);}
