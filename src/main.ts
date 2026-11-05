@@ -420,7 +420,7 @@ function render(dt:number,draw=true){
     world.car.rotation.z+=Math.atan(-cross*Math.cos(state.heading));
   }
   if(coastDuskShadows)coastDuskShadows.update(
-   world.car.position,groundHeight(p.position.y,state.lateral)+p.right.y*state.lateral);
+   world.car.position,groundHeight(p.position.y,state.lateral)+p.right.y*state.lateral,state.distance);
   const travelHeading=p.roadHeading;
   if(!initialized){cameraHeading=travelHeading;scenicDriftBlend=0;initialized=true;}
   else cameraHeading+=angleDifference(travelHeading-cameraHeading)*(1-Math.exp(-dt*7));
