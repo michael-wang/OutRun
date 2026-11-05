@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import {COAST_SUN,COAST_SHADOW_STRETCH} from './coast-dusk';
+import {COAST_SUN} from './coast-dusk';
+import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
+export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
 import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,COAST_LAMPS} from './coast-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
@@ -12,13 +14,6 @@ export type CoastShadowAnchor={d:number;x:number;width:number;length:number;kind
 const rawRandom=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 const away=new THREE.Vector3(-COAST_SUN.x,0,-COAST_SUN.z).normalize();
 const across=new THREE.Vector3(-away.z,0,away.x);
-/** The same sun-height rule applies to rocks, the three rail posts, concrete
- * blocks and beach props. The cap keeps far-away buildings mobile-safe. */
-export function coastShadowLength(height:number){
- return Math.min(76,Math.max(0,height)*Math.hypot(COAST_SUN.x,COAST_SUN.z)/
-  Math.max(.02,COAST_SUN.y)*COAST_SHADOW_STRETCH);
-}
-export function coastShadowOffset(length:number){return away.clone().multiplyScalar(Math.max(0,length)*.32);}
 
 /** Share the actual scene seed, beach pocket spacing and authored prop coordinates.
  * No independently randomized umbrella placements or shadows on the wrong beach.
@@ -161,30 +156,15 @@ export function buildCoastGroundShadows(
  return {geometry,accepted,rejectedUnderwater,ranges};
 }
 
-function makeContactTexture(){
- const pixels=new Uint8Array(64*64*4);
- for(let y=0;y<64;y++)for(let x=0;x<64;x++){
-  const u=(x-31.5)/31.5,v=(y-31.5)/31.5;
-  const r=Math.pow(u*u*1.4+v*v*.95,.7),a=Math.pow(Math.max(0,1-Math.min(1,r)),1.45);
-  const o=(y*64+x)*4;
-  pixels[o]=39;pixels[o+1]=33;pixels[o+2]=31;pixels[o+3]=Math.round(238*a);
- }
- const tex=new THREE.DataTexture(pixels,64,64,THREE.RGBAFormat);
- tex.magFilter=tex.minFilter=THREE.LinearFilter;tex.needsUpdate=true;return tex;
-}
-
 export class CoastDuskShadows {
  readonly beach:THREE.Mesh<THREE.BufferGeometry,THREE.ShaderMaterial>;
  readonly player:THREE.Mesh<THREE.PlaneGeometry,THREE.MeshBasicMaterial>;
  readonly anchorCount:number;
  readonly barriers:number;
  readonly props:number;
- private readonly texture=makeContactTexture();
  private readonly playerGeometry=new THREE.PlaneGeometry(1,1);
- private readonly playerMaterial=new THREE.MeshBasicMaterial({
-  map:this.texture,transparent:true,opacity:.8,depthWrite:false,polygonOffset:true,
-  polygonOffsetFactor:-1,polygonOffsetUnits:-1,toneMapped:false,side:THREE.DoubleSide,
- });
+ // Black ink never brightens the near-black coastal asphalt.
+ private readonly playerMaterial=makeCoastShadowMaterial(.78);
  private readonly staticMaterial=new THREE.ShaderMaterial({
   uniforms:{...THREE.UniformsUtils.clone(THREE.UniformsLib.fog),uColor:{value:new THREE.Color('#302a28')}},
   fog:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,
@@ -207,7 +187,7 @@ export class CoastDuskShadows {
     #include <fog_fragment>
    }`,
  });
- private readonly angle=Math.atan2(away.x,away.z);
+ private readonly angle=COAST_SHADOW_YAW;
  private readonly ranges:{d:number;start:number;count:number}[];
  private visibleStatic=0;
  constructor(scene:THREE.Scene,sample:Sample,routeLength=10000,halfAt:(d:number)=>number=()=>8.75,seed=0){
@@ -252,6 +232,6 @@ export class CoastDuskShadows {
  dispose(){
   this.beach.removeFromParent();this.player.removeFromParent();
   this.beach.geometry.dispose();this.staticMaterial.dispose();
-  this.playerGeometry.dispose();this.texture.dispose();this.playerMaterial.dispose();
+  this.playerGeometry.dispose();this.playerMaterial.map?.dispose();this.playerMaterial.dispose();
  }
 }
