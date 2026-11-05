@@ -19,8 +19,8 @@
 
 ## 3. Traffic pass / engine audio
 
-- `src/pass-by.ts`: pass strength now scales with **measured `abs(d(relativeDistance)/dt)`**, attenuates small speed differences, max event peak `0.46`. Large trucks remain louder than cars at the same relative speed but cannot exceed the maximum cap.
-- `src/sound.ts`: raised gas engine gain `0.22→0.31`, off-throttle `0.11→0.16`, shifting `0.15→0.20`; pass voices hard-capped, including two simultaneous crossings. No new voices. On headphones/phone speakers, ensure the engine stays clearly audible through traffic.
+- `src/pass-by.ts`: pass strength now scales with **measured `abs(d(relativeDistance)/dt)`**, attenuates small speed differences, max individual event peak `0.34` with total simultaneous pass mix budget `0.36`. Large trucks remain louder than cars at the same relative speed but cannot exceed the maximum cap.
+- `src/sound.ts`: raised gas engine gain `0.22→0.35`, off-throttle `0.11→0.18`, shifting `0.15→0.23`; pass voices hard-capped, including two simultaneous crossings. No new voices. On headphones/phone speakers, ensure the engine stays clearly audible through traffic.
 - New test ensures monotonic relative-speed gain and peak cap; old pass-direction/crossing behavior retained.
 
 ## 4. Honest FPS release gate and useful tests
