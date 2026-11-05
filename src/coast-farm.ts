@@ -242,7 +242,14 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
   const gap=Math.max(plot.start-distance,0,distance-plot.end);if(meadow){meadow.visible=gap<265;if(meadow.visible)meadow.update(time);}
   crops.forEach(m=>m.visible=gap<105);
  };
- if(import.meta.env.DEV)group.traverse(o=>{if(o instanceof THREE.Mesh)o.onAfterRender=()=>{o.userData.farmSubmitted=performance.now();};});
+ // Exact per-mesh draw timestamps belong to interactive farm/stream QA,
+ // not normal developer driving or FPS logging. The former always-on
+ // onAfterRender hook ran hundreds of JS callbacks every rendered frame.
+ const farmTrace=import.meta.env.DEV&&typeof location!=='undefined'&&(()=>{
+  const p=new URLSearchParams(location.search);
+  return p.get('farmdiag')==='1'||p.get('streamdiag')==='1'||p.get('qa')==='1';
+ })();
+ if(farmTrace)group.traverse(o=>{if(o instanceof THREE.Mesh)o.onAfterRender=()=>{o.userData.farmSubmitted=performance.now();};});
  return {group,plot,update,stats:()=>{let submittedDraws=0,submittedInstances=0;group.traverse(o=>{if(o instanceof THREE.Mesh&&performance.now()-(o.userData.farmSubmitted??-Infinity)<100){submittedDraws++;if(o instanceof THREE.InstancedMesh)submittedInstances+=o.count;}});return {id:plot.id,kind:plot.kind,blades:meadow?.bladeCount??0,flowers:meadow?.wildflowerCount??0,crops:crops.map(m=>m.count),scarecrows,canopyTriangles,draws:instances.length+1+(canopyTriangles?1:0),submittedDraws,submittedInstances};},dispose(){meadow?.dispose();instances.forEach(m=>m.dispose());ownedGeometry.forEach(g=>g.dispose());group.removeFromParent();}};
 }
 export type FarmPatch=ReturnType<typeof createFarmPlot>;
