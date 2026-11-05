@@ -2,7 +2,7 @@ import {isScenicJourney,journeyChapters} from './scenic-journey';
 import {GAME_VERSION} from './build-info';
 import {disposeScene,sceneDisposal} from './dispose-scene';
 import {attachJourneyLink,highwayExtension,LINK_HALF,LINK_LOAD_START} from './journey-link';
-import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed} from './loading';
+import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed,loadingDismissReady} from './loading';
 import {startupDiagnostics} from './startup-diagnostics';
 import {DriveFpsDiagnostics} from './drive-fps-diagnostics';
 import {sharedFlowerMaskStats} from './vendor/three-stylized/flowerShapes';
@@ -321,11 +321,13 @@ function updatePlayerUi(){
 }
 function ui(){ $('drive-readout').hidden=settingsOpen||mode==='menu'; tripPauseDock?.update(!!trip&&mode==='paused'&&!brickCompleted&&!settingsOpen,muted,l2UI?.reviewExpanded??false);$('preferences').classList.toggle('trip-settings-drawer',!!trip&&mode==='paused'&&settingsOpen); $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen; $('touch').classList.toggle('active',(mode==='playing'||mode==='countdown')&&!settingsOpen);$('photo-button').hidden=(mode!=='playing'&&!(trip&&params.get('qa')==='1'&&mode==='paused'))||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=playerUi?(mode==='playing'?'Ⅱ 暫停':'☰ 選單'):(mode==='playing'?'Ⅱ Menu':'☰ Menu');if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); updatePlayerUi(); }
 function start(){if(journeyTransition)return;if(sceneInspector?.isOpen)sceneInspector.close();l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();void sound.unlock().catch(()=>{});if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;// Resume immediately: pause already neutralizes held inputs; no READY countdown.
- mode='playing';settingsOpen=false;input.clear();ui();renderer.domElement.focus({preventScroll:true});}
+ mode='playing';settingsOpen=false;input.clear();ui();
+  loadingDismissReady();renderer.domElement.focus({preventScroll:true});}
 function pause(){if(journeyTransition)return;if(l2UI?.feedbackOpen)return;if(sceneInspector?.isOpen){sceneInspector.close();ui();return;}if(mode==='paused'){start();return;}l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();mode='paused';input.clear();pad.neutralize();sound.pause();ui();if(!mobile())(trip?tripPauseDock?.resumeButton:document.getElementById(playerUi?'player-play':brick?(l2||pilot?'l2-play':'brick-play'):'resume'))?.focus();}
 function restart(){if(journeyMode){if(mode==='menu'&&elapsed===0){start();return;}void restartJourney();return;}tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);preparationSince=performance.now();sound.pause();sound.resetPassBy();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
 $('player-retry').onclick=()=>location.reload();
 $('player-play').onclick=()=>document.getElementById('l2-play')?.click();
+document.getElementById('loading-ready')!.addEventListener('click',()=>$('player-play').click());
 $('player-restart').onclick=()=>document.getElementById('l2-replay')?.click();
 $('player-new-route').onclick=()=>document.getElementById('l2-next')?.click();
 $('player-options').onclick=()=>document.getElementById('l2-settings')?.click();
@@ -728,7 +730,7 @@ function loop(now:number){
   if(startupPending){
     const stream=world.streamer;
     if(stream?.error){if(startupDiagnostics.enabled)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFailed('前方道路載入失敗，請檢查連線後重新載入。');startupPending=false;}
-    else if(!stream||stream.ready){if(startupDiagnostics.enabled&&stream)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFinished();startupPending=false;}
+    else if(!stream||stream.ready){if(startupDiagnostics.enabled&&stream)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFinished(playerUi&&mode==='menu');startupPending=false;}
     else{
       const {nearby,chunks}=stream.stats;
       const done=chunks.filter(c=>nearby.includes(c.index)).reduce((n,c)=>n+Number(c.road==='ready')+Number(c.scenery==='ready'),0),total=nearby.length*2;
