@@ -199,17 +199,17 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   // These old low-altitude cloud blobs intersect the new high plateau vistas.
   if(!coastUltra&&!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
   const car=options.deferCar?new THREE.Group():createCar(!!dusk);scene.add(car);
-  if(!options.deferCar){
+  // Dusk uses one black sun projection, not a legacy tinted canvas plane.
+  if(!options.deferCar&&!dusk){
   const shadowCanvas=document.createElement('canvas');shadowCanvas.width=shadowCanvas.height=64;const context=shadowCanvas.getContext('2d')!;
-  // This is the original contact shadow, not an emissive under-car light.
-  // At sunset, keep its grounding but neutralize the teal cast beneath the red body.
-  const shadowInk=dusk?'29,27,24':'18,33,30';
+  // Legacy contact shadow is retained for non-coast scenery only.
+  const shadowInk='18,33,30';
   const gradient=context.createRadialGradient(32,32,7,32,32,31);
   gradient.addColorStop(0,`rgba(${shadowInk},.65)`);
   gradient.addColorStop(.55,`rgba(${shadowInk},.3)`);
   gradient.addColorStop(1,`rgba(${shadowInk},0)`);
   context.fillStyle=gradient;context.fillRect(0,0,64,64);
-  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.1,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.025;car.add(shadow);
+  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(3.1,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.025;shadow.name='legacy-car-contact-shadow';car.add(shadow);
   }
   const skyColors=ACTS.map(a=>new THREE.Color(a.sky)),fogColors=ACTS.map(a=>new THREE.Color(a.fog));
   // One authoritative contact edge for the same r7 rails and marker rows emitted
