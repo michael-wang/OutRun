@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {COAST_SUN} from './coast-dusk';
+import {COAST_SUN,COAST_SHADOW_STRETCH} from './coast-dusk';
 import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,COAST_LAMPS} from './coast-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
@@ -7,11 +7,17 @@ import {coastBeachHeight,COAST_SEA_LEVEL} from './scenery-cross-section';
 import {TRIP_BARRIER_INNER_M} from './road-profile';
 
 type Sample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3;tangent?:THREE.Vector3};
-type Kind='umbrella'|'visitor'|'bench'|'home'|'shop'|'rock'|'concrete'|'rail'|'lamp';
+type Kind='umbrella'|'visitor'|'bench'|'home'|'shop'|'rock'|'concrete'|'rail'|'rail-beam'|'lamp';
 export type CoastShadowAnchor={d:number;x:number;width:number;length:number;kind?:Kind};
 const rawRandom=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 const away=new THREE.Vector3(-COAST_SUN.x,0,-COAST_SUN.z).normalize();
 const across=new THREE.Vector3(-away.z,0,away.x);
+/** The same sun-height rule applies to rocks, the three rail posts, concrete
+ * blocks and beach props. The cap keeps far-away buildings mobile-safe. */
+export function coastShadowLength(height:number){
+ return Math.min(76,Math.max(0,height)*Math.hypot(COAST_SUN.x,COAST_SUN.z)/
+  Math.max(.02,COAST_SUN.y)*COAST_SHADOW_STRETCH);
+}
 export function coastShadowOffset(length:number){return away.clone().multiplyScalar(Math.max(0,length)*.32);}
 
 /** Share the actual scene seed, beach pocket spacing and authored prop coordinates.
@@ -21,21 +27,21 @@ export function coastShadowOffset(length:number){return away.clone().multiplySca
 export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
  const rnd=(n:number)=>rawRandom(n+seed),anchors:CoastShadowAnchor[]=[];
  for(const site of COAST_REST_SPOTS){
-  anchors.push({d:site.d,x:site.x,width:2.8,length:9,kind:'bench'});
-  if(site.children)for(let j=0;j<2;j++)anchors.push({d:site.d+(j?5:-5),x:site.x-4-j,width:.85,length:5.4,kind:'visitor'});
+  anchors.push({d:site.d,x:site.x,width:2.8,length:coastShadowLength(1.12),kind:'bench'});
+  if(site.children)for(let j=0;j<2;j++)anchors.push({d:site.d+(j?5:-5),x:site.x-4-j,width:.85,length:coastShadowLength(.98),kind:'visitor'});
  }
  for(const site of COAST_VILLAGE_SITES){
   anchors.push({d:site.d,x:site.x,width:site.kind==='home'?9:4.5,
-   length:site.kind==='home'?24:13,kind:site.kind==='home'?'home':'shop'});
+   length:coastShadowLength(site.kind==='home'?7.5:4.05),kind:site.kind==='home'?'home':'shop'});
   if(site.kind!=='home'){
    const count=site.key%4===0?1:2+site.key%2;
    for(let j=0;j<count;j++)anchors.push({
     d:site.d-5+rnd(site.key*17+j)*10,x:16.4+rnd(site.key*7+j)*3.6,
-    width:.9,length:5.5,kind:'visitor',
+    width:.9,length:coastShadowLength(1.7),kind:'visitor',
    });
   }
  }
- for(const site of FARM_HOMES)anchors.push({d:site.d,x:site.x,width:10,length:22,kind:'home'});
+ for(const site of FARM_HOMES)anchors.push({d:site.d,x:site.x,width:10,length:coastShadowLength(7.5),kind:'home'});
  for(const bay of COAST_BEACHES){
   const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
   for(let j=0;j<count;j++){
@@ -44,21 +50,22 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
    const d=bay.distance-half+j*33+rawRandom(j+bay.distance)*15;
    const x=-19-rawRandom(j*11+bay.distance)*17;
    if(COAST_REST_SPOTS.some(s=>Math.abs(s.d-d)<11&&Math.abs(s.x-x)<7))continue;
-   anchors.push({d,x,width:4.2,length:15.5,kind:'umbrella'});
-   anchors.push({d:d+5,x:x-1,width:.85,length:5.5,kind:'visitor'});
+   anchors.push({d,x,width:4.2,length:coastShadowLength(3.5),kind:'umbrella'});
+   anchors.push({d:d+5,x:x-1,width:.85,length:coastShadowLength(1.7),kind:'visitor'});
    if(j%3===0)anchors.push({d:d+8,x:x-3,width:.85,length:5.5,kind:'visitor'});
   }
-  anchors.push({d:bay.distance-55,x:-16.8,width:4.5,length:12.5,kind:'shop'});
+  anchors.push({d:bay.distance-55,x:-16.8,width:4.5,length:coastShadowLength(3.9),kind:'shop'});
  }
  // Offshore rock occlusion is performed in the existing Ultra-Water shader;
  // these optional footprints only show where rock surfaces touch dry ground.
  for(const rock of COAST_ROCKS)
-  anchors.push({d:rock.d,x:coastRockX(rock),width:rock.r*1.4,length:rock.r*5,kind:'rock'});
+  anchors.push({d:rock.d,x:coastRockX(rock),width:rock.r*1.4,length:coastShadowLength(rock.r*.82),kind:'rock'});
  return anchors;
 }
 
-/** Exactly match coast-resort.ts's 12 m barrier cadence and physical offset.
- * Include both continuous rails and the low concrete block style. */
+/** Match coast-resort.ts's real 12m cadence. Each rail section has THREE
+ * posts at -5/0/+5m plus continuous horizontal bars, not one central shadow.
+ * All elements still share the existing single static draw batch. */
 export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>number):CoastShadowAnchor[]{
  const anchors:CoastShadowAnchor[]=[];
  for(let d=0;d<length;d+=12){
@@ -66,12 +73,21 @@ export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>numbe
   if(style==='opening')continue;
   for(const side of [-1,1] as const){
    const x=side*(halfAt(d)+TRIP_BARRIER_INNER_M+.28);
-   anchors.push({d,x,width:style==='block'?1.25:.65,length:style==='block'?6.5:10.5,
-    kind:style==='block'?'concrete':'rail'});
+   if(style==='block'){
+    anchors.push({d,x,width:1.25,length:coastShadowLength(.44),kind:'concrete'});
+   }else{
+    // Broad soft beam silhouette runs along the actual roadway tangent.
+    anchors.push({d,x,width:10.8,length:coastShadowLength(.70),kind:'rail-beam'});
+    for(const offset of [-5,0,5]){
+     const postD=d+offset;if(postD<0||postD>=length)continue;
+     anchors.push({d:postD,x:side*(halfAt(postD)+TRIP_BARRIER_INNER_M+.28),
+      width:.60,length:coastShadowLength(.72),kind:'rail'});
+    }
+   }
   }
  }
  for(const d of COAST_LAMPS)if(d<length)
-  anchors.push({d,x:14,width:.55,length:18,kind:'lamp'});
+  anchors.push({d,x:14,width:.55,length:coastShadowLength(11.5),kind:'lamp'});
  return anchors;
 }
 
@@ -102,18 +118,18 @@ export function buildCoastGroundShadows(
   const fwd=at.tangent?.clone()??samples(a.d+.5).position.clone().sub(samples(a.d-.5).position);
   fwd.y=0;fwd.normalize();
   const right=at.right.clone().setY(0).normalize();
-  // Four samples across preserve a broad soft centre while trimming ~40% of
-  // the old vertex/triangle work for the whole 10km scene.
-  const rows=6,cols=4,first=positions.length/3,indexStart=indices.length;
+  // Posts are only 0.72m tall: four ground samples suffice. Longer beach
+  // shadows retain six terrain-conforming rows. No new draw calls or passes.
+  const rows=a.kind==='rail'||a.kind==='rail-beam'?4:6,cols=4,first=positions.length/3,indexStart=indices.length;
   const span=Math.max(2,a.length),w=Math.max(.2,a.width);
-  const weight=a.kind==='rail'?.70:a.kind==='concrete'?.85:a.kind==='visitor'?.73:
+  const weight=a.kind==='rail'?.80:a.kind==='rail-beam'?.24:a.kind==='concrete'?.85:a.kind==='visitor'?.73:
    a.kind==='lamp'?.60:a.kind==='rock'?.94:.90;
   for(let row=0;row<=rows;row++){
    const t=row/rows;
    const travel=away.clone().multiplyScalar(span*t);
    for(let col=0;col<cols;col++){
     const u=col/(cols-1)*2-1;
-    const delta=travel.clone().addScaledVector(across,u*w*.5);
+    const delta=travel.clone().addScaledVector(a.kind==='rail-beam'?fwd:across,u*w*.5);
     const nd=Math.max(0,Math.min(routeLength,a.d+delta.dot(fwd)));
     const nx=a.x+delta.dot(right);
     const p=samples(nd);
@@ -126,7 +142,7 @@ export function buildCoastGroundShadows(
     world.y=ground+.10;
     positions.push(world.x,world.y,world.z);
     const lateral=1-THREE.MathUtils.smoothstep(Math.abs(u),.48,1.0);
-    const tip=1-THREE.MathUtils.smoothstep(t,.52,1.0);
+    const tip=1-THREE.MathUtils.smoothstep(t,.72,1.0);
     const wet=ground>=COAST_SEA_LEVEL+.015?1:0;
     alpha.push(weight*lateral*tip*wet*(.63+.37*(1-t)));
    }
@@ -210,7 +226,7 @@ export class CoastDuskShadows {
   scene.add(this.beach,this.player);
  }
  update(carPosition:THREE.Vector3,roadHeight:number,distanceM?:number){
-  const length=13;
+  const length=coastShadowLength(1.55);
   this.player.position.copy(carPosition).add(coastShadowOffset(length));
   this.player.position.y=roadHeight+.085;
   this.player.rotation.set(0,this.angle,0);
