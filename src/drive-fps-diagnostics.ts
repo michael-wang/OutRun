@@ -1,4 +1,5 @@
 import type {WebGLRenderer} from 'three';
+import {PlaytestFrameGate} from './playtest-frame-gate';
 import {FARM_ZONES} from './coast-farm-layout';
 
 /** Opt-in driving profiler (?fpsdiag=1); no gameplay or rendering changes. */
@@ -73,6 +74,7 @@ export class DriveFpsDiagnostics {
  private gpuSamples:GpuSample[]=[];
  private frameCount=0;
  private readonly startedWall=new Date().toISOString();
+ private readonly frameGate=new PlaytestFrameGate();
 
  constructor(private renderer:WebGLRenderer,private captureExtras:()=>Record<string,unknown>){
   if(!this.enabled)return;
@@ -165,6 +167,7 @@ export class DriveFpsDiagnostics {
    extras:this.captureExtras(),
   };
   this.samples.push(row);
+  this.frameGate.ingest(row);
   this.bucketAt=now;this.bucketGaps=[];this.bucketCpu=emptyCpu();
   this.updatePanel(row);
  }
@@ -178,6 +181,7 @@ export class DriveFpsDiagnostics {
    gpuTimerSupported:!!this.ext,
    mainRiceMeters:FARM_ZONES[0].rice,mainFlowerMeters:FARM_ZONES[0].flowers,
    regionSummary:summarizeDriveRegions(this.samples),
+   playtestGate:this.frameGate.report,
    seconds:this.samples,
    gpuSamples:this.gpuSamples,
    slowFrames:this.spikes,
@@ -196,7 +200,11 @@ export class DriveFpsDiagnostics {
  }
  private updatePanel(row:DriveFpsSecond){
   if(!this.status)return;
-  this.status.textContent='FPS '+row.fps.toFixed(0)+' · '+row.region+' · '+row.distanceM+'m | scene '+row.cpuMeanMs.mainScene+'ms · water '+row.cpuMeanMs.ocean+'ms · '+row.drawCalls+' draws';
+  const gate=this.frameGate.report;
+  this.status.textContent=(gate.verdict==='REVIEW_REQUIRED'?'⚠ 需人工決定是否發佈 · ':gate.verdict==='WATCH'?'留意長影格 · ':'')+
+   'FPS '+row.fps.toFixed(0)+' · '+row.region+' · '+row.distanceM+'m | scene '+row.cpuMeanMs.mainScene+
+   'ms · water '+row.cpuMeanMs.ocean+'ms · '+row.drawCalls+' draws';
+  if(gate.verdict==='REVIEW_REQUIRED')this.panel!.style.borderColor='#ff9f69';
  }
  private download(){
   const output=JSON.stringify(this.report(),null,2);
