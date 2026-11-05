@@ -90,7 +90,10 @@ export class EngineSound {
     if(this.context)this.gravelGain!.gain.setTargetAtTime(target,this.context.currentTime,.055);
   }
   passBy(time:number,distance:number,lateral:number,extent:number,actors:readonly TrafficActor[],collisionId?:number){
-    const voices=this.passes.update(time,distance,lateral,extent,actors,collisionId),mix=voices.filter(Boolean).length>1?.78:1;
+    const voices=this.passes.update(time,distance,lateral,extent,actors,collisionId);
+    // Two close passes share one bounded noise budget; neither drowns the engine.
+    const sum=voices.reduce((n,v)=>n+(v?.gain??0),0);
+    const mix=Math.min(1,PASS_AUDIO.totalVoiceCap/Math.max(.0001,sum));
     if(!this.context)return;const now=this.context.currentTime;
     this.passVoices.forEach((node,i)=>{const v=voices[i];node.gain.gain.setTargetAtTime(v?Math.min(PASS_AUDIO.peakCap,v.gain*mix):0,now,v && v.gain>0 ? .018 : .025);if(v){node.pan.pan.setTargetAtTime(v.pan,now,.02);node.high.frequency.setTargetAtTime(v.type===0?220:75,now,.03);node.low.frequency.setTargetAtTime(v.cutoff,now,.02);node.source.playbackRate.setTargetAtTime(v.rate,now,.02);}});
   }
@@ -107,7 +110,7 @@ export class EngineSound {
     this.engine!.frequency.setTargetAtTime(this.engineHz, now, 0.08);
     this.undertone!.frequency.setTargetAtTime(this.engineHz*.5,now,.08);
     this.windGain!.gain.setTargetAtTime(this.windLevel,now,.12);
-    this.engineGain!.gain.setTargetAtTime(gas ? (drivetrain?.shiftRemaining ? .20 : .31) : .16, now, .07);
+    this.engineGain!.gain.setTargetAtTime(gas ? (drivetrain?.shiftRemaining ? .23 : .35) : .18, now, .07);
     this.skid!.frequency.setTargetAtTime(510 + intensity * 250, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
