@@ -3,6 +3,8 @@
 import * as THREE from 'three';
 import {COAST_SUN} from './coast-dusk';
 
+const MAX_WATER_SHADOW_CASTERS=4; // One more near boat/fishing vessel, still a single 10Hz depth pass.
+
 export const BOAT_SHADOW_GLSL=/* glsl */`
 uniform highp sampler2DShadow uBoatShadow;
 uniform mat4 uBoatShadowMatrix;
@@ -50,7 +52,7 @@ export class CoastBoatShadow {
   if(this.elapsed<.1&&viewer.position.distanceToSquared(this.lastViewer)<2500&&this.uniforms.uBoatShadowBias.value>0)return;
   this.elapsed=0;this.lastViewer.copy(viewer.position);this.viewer.value.copy(viewer.position);
   const selected=this.casters.filter(c=>c.source.position.distanceToSquared(viewer.position)<1100**2)
-   .sort((a,b)=>a.source.position.distanceToSquared(viewer.position)-b.source.position.distanceToSquared(viewer.position)).slice(0,3);
+   .sort((a,b)=>a.source.position.distanceToSquared(viewer.position)-b.source.position.distanceToSquared(viewer.position)).slice(0,MAX_WATER_SHADOW_CASTERS);
   this.count=selected.length;this.casters.forEach(c=>{c.copy.visible=false;});
   if(!selected.length){this.uniforms.uBoatShadowBias.value=0;return;}
   const bounds=new THREE.Box3();
@@ -68,6 +70,6 @@ export class CoastBoatShadow {
   try{renderer.setRenderTarget(this.target);renderer.autoClear=false;renderer.clear(false,true,false);renderer.render(this.scene,cam);this.draws++;}
   finally{renderer.autoClear=auto;renderer.setRenderTarget(previous);}
  }
- get stats(){return {enabled:this.enabled,size:this.size,hz:10,casters:this.count,updates:this.draws};}
+ get stats(){return {enabled:this.enabled,size:this.size,hz:10,maxCasters:MAX_WATER_SHADOW_CASTERS,casters:this.count,updates:this.draws};}
  dispose(){this.target.dispose();this.materials.forEach(m=>m.dispose());this.scene.clear();this.casters=[];}
 }
