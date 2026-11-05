@@ -221,7 +221,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   // These old low-altitude cloud blobs intersect the new high plateau vistas.
   if(!coastUltra&&!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
   const car=options.deferCar?new THREE.Group():createCar(!!dusk);
-  if(coastUltra)car.traverse(o=>{if(o instanceof THREE.Mesh&&o.castShadow)markCoastShadowCaster(o,'dynamic');});
+  if(coastUltra)car.traverse(o=>{if(o instanceof THREE.Mesh&&o.castShadow)markCoastShadowCaster(o,'dynamic','player');});
   scene.add(car);
   // Keep the original contact mesh in the car's bounding box so collision
   // geometry is unchanged, but hide its tinted pixels in sunset scenes.

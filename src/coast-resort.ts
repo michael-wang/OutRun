@@ -27,7 +27,7 @@ export function addCoastResort(scene:THREE.Scene,sample:ReturnType<typeof create
  }
  for(const kind of ['block','rail'] as const){
   const mesh=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial({color:kind==='block'?'#bbb6a5':'#8c9895',roughness:.95}),matrices[kind].length);
-  matrices[kind].forEach((m,i)=>mesh.setMatrixAt(i,m));scene.add(mesh);
+  matrices[kind].forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.userData.coastShadowGroup='barriers';scene.add(mesh);
  }
  return {instances:matrices.block.length+matrices.rail.length,draws:2};
 }

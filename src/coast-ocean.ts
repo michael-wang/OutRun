@@ -285,7 +285,8 @@ export class UltraCoastOcean {
   for(const rt of [this.sim.h0RT,this.sim.ping,this.sim.pong,...this.sim.out.flat()])rt.dispose();
   for(const m of [this.sim.initMat,this.sim.evolveMat,this.sim.fftMat,this.sim.assembleMat])m.dispose();
  }
- get stats(){return {resolution:this.sim.resolution,simulationHz:this.mobile?30:'display',updates:this.updates,boatShadow:this.boatShadow.stats,rockSunShadows:this.boatShadow.enabled};}
+ setRockSunShadows(enabled:boolean){this.uniforms.uRockShadowStrength.value=enabled?1:0;}
+ get stats(){return {resolution:this.sim.resolution,simulationHz:this.mobile?30:'display',updates:this.updates,boatShadow:this.boatShadow.stats,rockSunShadows:this.uniforms.uRockShadowStrength.value>.5};}
  /** Read-only bindings for decorative hulls/contact patches; simulation stays here. */
  get boatSurfaceUniforms():Readonly<Record<string,THREE.IUniform>>{return this.uniforms;}
  update(camera:THREE.Camera,dt:number){

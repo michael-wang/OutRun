@@ -52,7 +52,7 @@ export function addCoastDusk(scene:THREE.Scene,sample:(d:number)=>{position:THRE
   }
   for(let row=0;row<16;row++)for(let col=0;col<xs.length-1;col++){const a=first+row*xs.length+col,b=a+xs.length;indices.push(a,b,a+1,a+1,b,b+1);}
  }
- for(const mesh of [poles,arms,heads]){mesh.name='coast-permanent-streetlights';markCoastShadowCaster(mesh,'static');scene.add(mesh);}
+ for(const mesh of [poles,arms,heads]){mesh.name='coast-permanent-streetlights';markCoastShadowCaster(mesh,'static','lamps');scene.add(mesh);}
  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));geometry.setIndex(indices);
  const pool=new THREE.Mesh(geometry,new THREE.ShaderMaterial({
   transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,

@@ -87,11 +87,11 @@ export class Traffic {
   }
   if(typeof document!=='undefined'){
    this.sign=new THREE.InstancedMesh(waffleSignGeometry(),new THREE.MeshBasicMaterial({map:waffleSignTexture()}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;this.sign.castShadow=this.dusk&&this.geometryShadows;
-   if(this.sign.castShadow)markCoastShadowCaster(this.sign,'dynamic');
+   if(this.sign.castShadow)markCoastShadowCaster(this.sign,'dynamic','traffic');
    scene.add(this.sign);
   }
   this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=this.dusk&&this.geometryShadows;mesh.receiveShadow=true;
-   if(mesh.castShadow)markCoastShadowCaster(mesh,'dynamic');
+   if(mesh.castShadow)markCoastShadowCaster(mesh,'dynamic','traffic');
    scene.add(mesh);return mesh;});
   // Four pooled back-face hull draws; the depth buffer hides the interior, leaving a thin silhouette.
   const hulls=TRAFFIC_TYPES.map((_t,i)=>trafficOutlineGeometry(i));

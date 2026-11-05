@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {COAST_SUN} from './coast-dusk';
-import {COAST_STATIC_SHADOW_LAYER,COAST_DYNAMIC_SHADOW_LAYER} from './coast-shadow-layers';
+import {COAST_STATIC_SHADOW_LAYER,COAST_DYNAMIC_SHADOW_LAYER,coastShadowLightEnabled} from './coast-shadow-layers';
 
 /** Geometry-accurate live shadows by the car plus region-cached static shadows. */
 export const COAST_NEAR_SHADOW={left:-220,right:220,top:110,bottom:-110,near:1,far:1300} as const;
@@ -21,6 +21,8 @@ export function configureCoastShadowLights(near:THREE.DirectionalLight,far:THREE
  setup(far,COAST_FAR_SHADOW,mobile?3072:4096,-.00002,COAST_STATIC_SHADOW_LAYER);
  far.shadow.autoUpdate=false;
  far.shadow.needsUpdate=true;
+ near.castShadow=coastShadowLightEnabled('dynamic');
+ far.castShadow=coastShadowLightEnabled('static');
 }
 
 /** Diagnostic/reference geometry; driving uses CoastShadowCache below. */
@@ -64,6 +66,13 @@ export class CoastShadowCache {
   this.previousCell=cell;this.previousSceneRevision=revision;
   this.lastAtM=anchor;this.requests++;
   return true;
+ }
+ /** Shadow group toggles must invalidate the cached static depth, even inside
+  * the same 240m cell with an unchanged scene revision. */
+ invalidate(){this.previousCell=-1;this.previousSceneRevision=-1;this.far.shadow.needsUpdate=true;}
+ refreshLightCasting(){
+  this.near.castShadow=coastShadowLightEnabled('dynamic');
+  this.far.castShadow=coastShadowLightEnabled('static');
  }
  get stats(){return {policy:'geometry-dynamic/static-region-cache',
   nearMapSize:this.near.shadow.mapSize.x,farMapSize:this.far.shadow.mapSize.x,

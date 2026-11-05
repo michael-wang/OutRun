@@ -58,7 +58,7 @@ export class RoadCones {
   this.mesh.name=triangles?'breakdown-warning-objects':'road-cones';
   this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   this.mesh.count=0;this.mesh.frustumCulled=false;this.mesh.castShadow=this.geometryShadows;
-  if(this.mesh.castShadow)markCoastShadowCaster(this.mesh,'dynamic');
+  if(this.mesh.castShadow)markCoastShadowCaster(this.mesh,'dynamic','hazards');
   scene.add(this.mesh);
   if(this.sunsetShadows&&!this.geometryShadows){
    const plane=new THREE.PlaneGeometry(1,1);plane.rotateX(-Math.PI/2);
