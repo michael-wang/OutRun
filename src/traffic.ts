@@ -63,6 +63,7 @@ export class Traffic {
  private breakdownSmoke:THREE.InstancedMesh;private smokePose=new THREE.Object3D();private smokePoint=new THREE.Vector3();
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
  private rampDemoStartedAt?:number;private rampDemoFinished=false;
+ private smokeWorldWeights:readonly number[]=[1,0,0];
  constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false){
   if(dusk)this.runningLights=new TrafficLights(scene,TRAFFIC_LIMIT);
   this.schedule=[...trafficRecipe(seed,length),...stopped];
@@ -116,6 +117,11 @@ export class Traffic {
   this.breakdownSmoke.name='breakdown-engine-smoke';this.breakdownSmoke.count=0;
   this.breakdownSmoke.frustumCulled=false;this.breakdownSmoke.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(this.breakdownSmoke);
+ }
+ /** Share the player's biome-dependent palette with traffic collision smoke. */
+ setSmokeScene(weights:readonly number[]){
+  this.smokeWorldWeights=weights;
+  for(const reaction of this.reactions.values())reaction.effects.setSceneSmoke(weights,this.dusk);
  }
  reset(){this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
@@ -299,7 +305,7 @@ export class Traffic {
    const relative=Math.abs(closing),outward=Math.abs(s.lateral-previous.lateral)/Math.max(dt,.001);
    const severity=THREE.MathUtils.clamp(kind==='rear'?relative/40:.15+outward/14,.12,1);
    const effects=r?.effects??new TireEffects(this.scene);
-   if(!r)effects.setDuskSmoke(this.dusk);
+   if(!r)effects.setSceneSmoke(this.smokeWorldWeights,this.dusk);
    const reaction=r??{offset:0,velocity:0,boost:0,yaw:0,roll:0,skid:new SkidFeedback(),effects,touching:false,lastHit:0,slide:0};
    const mass=a.type===0?1:a.type===1?3.2:a.type===2?2.3:1.6;
    const trafficSide=Math.abs(a.lateral)>this.halfAt(a.distance)-spec.width/2-1?-Math.sign(a.lateral):-side;reaction.velocity=trafficSide*(kind==='rear'?4+9*severity:2.5+4*severity)/Math.sqrt(mass);
