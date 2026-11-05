@@ -65,8 +65,6 @@ export class DriveFpsDiagnostics {
  private samples:DriveFpsSecond[]=[];
  private spikes:{seconds:number;distanceM:number;region:DriveRegion;gapMs:number;cpuMs:CpuTotals}[]=[];
  private currentCpu:CpuTotals=emptyCpu();
- private panel?:HTMLDivElement;
- private status?:HTMLSpanElement;
  private readonly gl?:WebGL2RenderingContext;
  private readonly ext?:GpuExtension;
  private pending:OutstandingQuery[]=[];
@@ -169,7 +167,6 @@ export class DriveFpsDiagnostics {
   this.samples.push(row);
   this.frameGate.ingest(row);
   this.bucketAt=now;this.bucketGaps=[];this.bucketCpu=emptyCpu();
-  this.updatePanel(row);
  }
  report(){
   return {
@@ -189,24 +186,15 @@ export class DriveFpsDiagnostics {
   };
  }
  private createPanel(){
+  // ?fpsdiag=1: the FPS badge already shows live performance. Keep only
+  // the one control needed to export the complete (and richer) JSON log.
   const panel=document.createElement('div');panel.id='drive-fps-diagnostic';
-  panel.style.cssText='position:fixed;right:7px;top:75px;z-index:310;color:#fff2dc;border:1px solid #ffd19c77;padding:5px 8px;border-radius:7px;max-width:270px;font:11px/1.4 system-ui;pointer-events:auto';
-  const status=document.createElement('span');status.textContent='FPS 診斷準備中';panel.append(status);
-  const button=document.createElement('button');button.type='button';button.textContent='匯出 FPS JSON';
-  // Keep the export action FIRST, right below the FPS badge. The long
-  // per-second diagnostic summary can wrap below without burying the button.
-  button.style.cssText='display:block;margin:0 0 6px auto;border-radius:4px;padding:7px 12px;min-height:36px;font:700 12px system-ui';
-  button.onclick=()=>this.download();panel.prepend(button);document.body.append(panel);
-  this.panel=panel;this.status=status;
+  const button=document.createElement('button');button.type='button';
+  button.textContent='匯出 FPS JSON';
+  button.setAttribute('aria-label','匯出 FPS 診斷 JSON');
+  button.onclick=()=>this.download();
+  panel.append(button);document.body.append(panel);
   (window as typeof window & {__driveFpsDiagnostics?:DriveFpsDiagnostics}).__driveFpsDiagnostics=this;
- }
- private updatePanel(row:DriveFpsSecond){
-  if(!this.status)return;
-  const gate=this.frameGate.report;
-  this.status.textContent=(gate.verdict==='REVIEW_REQUIRED'?'⚠ 需人工決定是否發佈 · ':gate.verdict==='WATCH'?'留意長影格 · ':'')+
-   'FPS '+row.fps.toFixed(0)+' · '+row.region+' · '+row.distanceM+'m | scene '+row.cpuMeanMs.mainScene+
-   'ms · water '+row.cpuMeanMs.ocean+'ms · '+row.drawCalls+' draws';
-  if(gate.verdict==='REVIEW_REQUIRED')this.panel!.style.borderColor='#ff9f69';
  }
  private download(){
   const output=JSON.stringify(this.report(),null,2);

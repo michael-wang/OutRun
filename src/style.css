@@ -415,20 +415,39 @@ header #pause:active{
  color:#fff6e8;
  transform:none;
 }
-/* ?fpsdiag=1: the temporary JSON export tool should not cover the scene. */
+/* ?fpsdiag=1 only: one reachable export action, not a second FPS HUD. */
 #drive-fps-diagnostic{
- background:transparent;
- text-shadow:0 1px 3px #071621,0 0 5px #071621;
+ position:fixed;
+ top:calc(max(12px,env(safe-area-inset-top)) + 57px);
+ right:max(18px,env(safe-area-inset-right));
+ z-index:75;
+ pointer-events:auto;
 }
 #drive-fps-diagnostic button,
 #drive-fps-diagnostic button:hover{
- background:transparent;
- border:1px solid rgba(255,226,184,.73);
- color:#fff5e4;
- text-shadow:0 1px 3px #071621;
+ min-height:40px;
+ padding:8px 12px;
+ border:1px solid rgba(255,225,176,.86);
+ border-radius:7px;
+ background:rgba(13,47,55,.88);
+ color:#fff4dc;
+ font:700 12px/1.2 system-ui,"PingFang TC",sans-serif;
+ white-space:nowrap;
+ text-shadow:0 1px 2px #051820;
+ box-shadow:none;
+ backdrop-filter:none;
 }
 #drive-fps-diagnostic button:active{
- background:rgba(16,55,64,.24);
- color:#fff5e4;
+ background:rgba(255,211,151,.88);
+ color:#153c40;
  transform:none;
+}
+/* Portrait has a central orientation instruction and a full-width CTA.
+ * Place the debug export in unused space next to the phone's home bar. */
+@media(pointer:coarse) and (orientation:portrait){
+ #drive-fps-diagnostic{
+  top:auto;
+  bottom:calc(max(24px,env(safe-area-inset-bottom)) + 14px);
+  right:max(16px,env(safe-area-inset-right));
+ }
 }

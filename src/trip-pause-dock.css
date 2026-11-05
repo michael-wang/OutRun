@@ -66,3 +66,9 @@
 #tp-shadow-audit label.tp-shadow-tech strong{display:block;color:#fff4d6;font:700 11px/1.35 system-ui,"PingFang TC",sans-serif}
 #tp-shadow-audit label.tp-shadow-tech small{display:block;margin:1px 0;color:#cfdfdc;font:400 9.5px/1.35 system-ui,"PingFang TC",sans-serif}
 @media(max-height:470px){#tp-shadow-audit label.tp-shadow-tech{min-height:37px}}
+
+/* The portrait rotation cue takes precedence over pause controls.
+ * Reveal the same untouched pause dock immediately when rotated landscape. */
+@media(pointer:coarse) and (orientation:portrait){
+ html[data-player-ui="true"] #trip-pause-dock{display:none!important}
+}
