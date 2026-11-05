@@ -47,7 +47,7 @@ export class TireEffects {
  setDuskSmoke(enabled:boolean){
   if(this.mode!=='smoke')return;
   const tint=(this.smoke.material as THREE.ShaderMaterial).uniforms.tint.value as THREE.Vector3;
-  tint.set(enabled?.51:.81,enabled?.48:.80,enabled?.48:.80);
+  tint.set(enabled ? .51 : .81, enabled ? .48 : .80, enabled ? .48 : .80);
  }
  /** Terrain-matched dust tint. White coastal sand must not emit canyon-brown puffs. */
  setDustTint(weights:readonly number[]){
