@@ -1,5 +1,5 @@
 import {it,expect} from 'vitest';
-import {PassBy,type PassVoice} from '../src/pass-by';
+import {PassBy,PASS_AUDIO,passGainFromRelativeSpeed,type PassVoice} from '../src/pass-by';
 import type {TrafficActor} from '../src/traffic';
 const actor=(z:number,lateral=-4,type=0,id=0):TrafficActor=>({id,type,distance:z,lateral,speed:34,lane:0,visible:true,y:0,grade:0});
 function pass(side:number,rate=80,type=0){const p=new PassBy(),samples:{z:number;voice:PassVoice}[]=[];for(let i=0;i<240;i++){const z=(rate>0?30:-30)-rate*i/120;for(const v of p.update(i/120,0,0,1.55,[actor(z,side,type)]))if(v)samples.push({z,voice:{...v}});}return {p,samples};}
@@ -16,4 +16,17 @@ it('cancels on collisions, suppresses repeats across pause and clears replay sta
 });
 it('bounds dense traffic voices and releases tracking when actors stream out',()=>{
  const p=new PassBy();for(let i=0;i<300;i++){const actors=Array.from({length:12},(_,id)=>actor(45+id*.3-i*.65,id%2?4:-4,0,id));p.update(i/120,0,0,1.55,actors);expect(p.inspect().active.length).toBeLessThanOrEqual(2);expect(p.inspect().tracked).toBeLessThanOrEqual(12);}expect(p.starts).toBeLessThanOrEqual(3);p.update(3,0,0,1.55,[]);expect(p.inspect()).toMatchObject({tracked:0,consumed:0,active:[]});
+});
+
+it('keeps loudest possible pass-by below the engine mix cap with monotonic relative-speed dynamics',()=>{
+ for(const type of [0,1,2,3])for(const v of [0,12,20,40,80,115,180,300]){
+  const volume=passGainFromRelativeSpeed(v,type);
+  expect(volume).toBeGreaterThanOrEqual(0);
+  expect(volume).toBeLessThanOrEqual(PASS_AUDIO.peakCap);
+  expect(passGainFromRelativeSpeed(v+5,type)).toBeGreaterThanOrEqual(volume);
+ }
+ expect(passGainFromRelativeSpeed(80,0)).toBeGreaterThan(passGainFromRelativeSpeed(20,0));
+ expect(passGainFromRelativeSpeed(115,1)).toBeGreaterThan(passGainFromRelativeSpeed(115,0));
+ const heavy=pass(-4,120,1);
+ expect(Math.max(...heavy.samples.map(s=>s.voice.gain))).toBeLessThanOrEqual(PASS_AUDIO.peakCap);
 });
