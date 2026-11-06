@@ -19,14 +19,15 @@ const ground=(d:number,x:number)=>{
 
 it('sculpts an actual local ditch below both concrete banks without changing asphalt or rice-plot terrain',()=>{
  expect(COAST_SIDE_DRAINS.map(s=>s.kind)).toEqual(['open','covered','mixed']);
- for(const [d,depth] of [[940,.62],[4170,.48],[8870,.62]] as const){
-  expect(coastDrainDepth(15.85,d)).toBeCloseTo(depth,5);
-  expect(ground(d,15.85)).toBeLessThan((ground(d,14.45)+ground(d,17.65))*.5-.28);
-  expect(coastDrainDepth(13,d)).toBe(0); // no asphalt/shoulder alteration
+ for(const [d,depth] of [[940,1.12],[4170,.88],[8870,1.12]] as const){
+  expect(coastDrainDepth(11.1,d)).toBeCloseTo(depth,5);
+  expect(ground(d,11.1)).toBeLessThan((ground(d,10.12)+ground(d,14.75))*.5-.65);
+  expect(coastDrainDepth(8.75,d)).toBe(0); // five actual driving lanes untouched
+  expect(coastDrainDepth(14.75,d)).toBe(0); // grass begins outside trench
   expect(coastDrainDepth(22,d)).toBe(0); // rice and existing creek unchanged
  }
- expect(coastDrainDepth(15.85,2390)).toBe(0);
- expect(coastDrainDepth(15.85,940)).toBeGreaterThan(coastDrainDepth(15.85,789));
+ expect(coastDrainDepth(11.1,2390)).toBe(0);
+ expect(coastDrainDepth(11.1,940)).toBeGreaterThan(coastDrainDepth(11.1,789));
  expect(coastDrainCovered(1051)).toBe(true); // driveway crossing near courtyard
  expect(coastDrainCovered(940)).toBe(false);
  expect(coastDrainCovered(4170)).toBe(true); // most town gutters are covered
