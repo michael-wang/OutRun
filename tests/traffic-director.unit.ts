@@ -142,7 +142,7 @@ it('places random roadside breakdowns on safe, visible parts of the real coast',
   expect(site.speed).toBe(0);
   expect(Math.abs(site.stopSide)).toBe(1);
  }
- expect(new Set(layouts.map(x=>JSON.stringify(x)))).size).toBeGreaterThan(1);
+ expect(new Set(layouts.map(x=>JSON.stringify(x))).size).toBeGreaterThan(1);
 });
 
 it('samples game-speed coastal traffic within pool capacity with near-route breakdowns',()=>{
