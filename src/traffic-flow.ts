@@ -18,6 +18,15 @@ export const TRAFFIC_FLOW=Object.freeze({
  maximumAcceleration:2.8, // m/s²
 });
 export type TrafficSlot={id:number;distance:number;lateral:number;speed:number;length:number;stationary?:boolean};
+/** A passed car leaves play as soon as its front bumper clears the player's
+ * rear bumper. The rear of the car is then outside the chase camera; a
+ * fast vehicle cannot catch up from behind while the player has no mirror.
+ * Pure route-space rule, equally valid at replay and high-speed crossings.
+ */
+export function trafficHasBeenPassed(vehicleDistance:number,vehicleLength:number,playerDistance:number){
+ return vehicleDistance+vehicleLength*.5+2.8<playerDistance;
+}
+
 
 /** A normal arcade run is different each time; ?trafficSeed=1234 pins QA.
  * Crypto is preferred for freshness, but Math.random works in older browsers.
