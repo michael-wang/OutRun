@@ -7,7 +7,7 @@ import type {createTrack} from './track';
 /** Two shared instanced batches per streamed chunk; no per-block materials. */
 export function addCoastResort(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],halfAt:(d:number)=>number,start:number,end:number){
  const matrices:{block:THREE.Matrix4[];rail:THREE.Matrix4[]}={block:[],rail:[]},dummy=new THREE.Object3D();
- function part(kind:'block'|'rail',d:number,side:number,y:number,sx:number,sy:number,sz:number){
+ function part(kind:'block'|'rail',d:number,side:-1|1,y:number,sx:number,sy:number,sz:number){
   const p=sample(d),x=side*(halfAt(d)+coastBarrierClearance(d,side));
   dummy.position.copy(p.position).addScaledVector(p.right,x);
   dummy.position.y=coastBeachHeight(x,p.position.y,p.right.y,d)+y;
