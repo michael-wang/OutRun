@@ -318,6 +318,8 @@ export class StreamedScene {
   return hits.sort((a,b)=>a.distance-b.distance);
  }
  roadReady(distance:number){const c=this.chunks.get(Math.floor(Math.min(this.length-1e-6,Math.max(0,distance))/this.chunkLength)),g=c?.groups['driving-surface'];return c?.road==='ready'&&g?.parent===this.groups['driving-surface']&&g.children.some(o=>(o as THREE.Mesh).geometry?.getAttribute('position')?.count>0);}
+ /** No physical stone collision before its chunk's scenery is displayed. */
+ sceneryReady(distance:number){const c=this.chunks.get(Math.floor(Math.min(this.length-1e-6,Math.max(0,distance))/this.chunkLength)),g=c?.groups.scenery;return c?.scenery==='ready'&&g?.parent===this.groups.scenery;}
  get error(){return this.errorMessage;}
  get sceneryStats(){let instances=0,draws=0;this.groups.scenery.traverse(o=>{if(o instanceof THREE.InstancedMesh){instances+=o.count;draws++;}});return {instances,draws};}
  private registerGeometry(g:THREE.BufferGeometry,index:number){for(const a of Object.values(g.attributes))this.uploadOwners.set(a.array,index);if(g.index)this.uploadOwners.set(g.index.array,index);}
