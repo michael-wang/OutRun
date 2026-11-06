@@ -373,7 +373,7 @@ export class Traffic {
    s.lateral=THREE.MathUtils.clamp(s.lateral,-edge,rightEdge);
    // If the shoulder/rail leaves no side clearance, stay behind the actor instead.
    if(kind==='side'&&Math.abs(s.lateral-a.lateral)<width-.001)s.distance=a.distance+(previous.distance<a.distance?-1:1)*length;
-   if(r?.touching||r&&time-r.lastHit<1.25)continue;
+   if(r?.touching||r&&time-r.lastHit<2.6)continue; // avoid rapid repeat impact from the same AI car while both recover
    const relative=Math.abs(closing),outward=Math.abs(s.lateral-previous.lateral)/Math.max(dt,.001);
    const severity=THREE.MathUtils.clamp(kind==='rear'?relative/40:.15+outward/14,.12,1);
    const effects=r?.effects??new TireEffects(this.scene);
