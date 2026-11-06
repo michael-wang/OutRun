@@ -24,7 +24,7 @@ it('keeps seaside benches and children on dry beach outside the driving corridor
  const track=createPilotTrack(COAST_ULTRA_STAGE);
  expect(COAST_REST_SPOTS.length).toBeGreaterThanOrEqual(12);
  for(const spot of COAST_REST_SPOTS){
-  expect(spot.x).toBeLessThan(-18);const p=track.sample(spot.d);
+  expect(spot.x).toBeLessThan(-14);expect(spot.x).toBeGreaterThan(-18);const p=track.sample(spot.d);
   expect(coastBeachHeight(spot.x,p.position.y,p.right.y,spot.d)).toBeGreaterThan(-3.7);
   if(spot.children)for(const j of [0,1]){const d=spot.d+(j?5:-5),q=track.sample(d);expect(coastBeachHeight(spot.x-4-j,q.position.y,q.right.y,d)).toBeGreaterThan(-4);}
  }
