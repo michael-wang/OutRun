@@ -4,7 +4,8 @@ import {createState} from '../src/handling';
 import {CoastStoneContact} from '../src/coast-stone-contact';
 import {coastBarrierStyle,coastBarrierStoneAt,COAST_LAMPS} from '../src/coast-layout';
 import {COAST_DRAIN_X,COAST_SIDE_DRAINS,COAST_UTILITY_POLES,coastDrainAt,coastDrainCovered} from '../src/coast-roadside-layout';
-import {buildCoastRoadsideDrain} from '../src/coast-roadside-geometry';
+import {buildCoastRoadsideDrain,buildCoastRoadsideWater} from '../src/coast-roadside-geometry';
+import {makeCoastDrainWaterMaterial,COAST_DRAIN_FLOW_METRES_PER_SECOND} from '../src/coast-drain-water';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {addJourneyScenery} from '../src/scenery';
@@ -62,24 +63,40 @@ it('gives nearly every metre of the inland coast the same drainage corridor, wit
  expect(coastDrainCovered(850)).toBe(false);
 });
 
-it('makes open drainage water distinct from the dark floor, safely below the lip, without extra draw calls',()=>{
- const g=buildCoastRoadsideDrain(track.sample,800,900)!;
- const c=new THREE.Color('#4c7770'),attr=g.getAttribute('color'),pos=g.getAttribute('position');
- const vertexIndices=Array.from({length:attr.count},(_,i)=>i).filter(i=>
-  Math.abs(attr.getX(i)-c.r)<1e-5&&Math.abs(attr.getY(i)-c.g)<1e-5&&Math.abs(attr.getZ(i)-c.b)<1e-5,
- );
- expect(vertexIndices.length).toBeGreaterThan(60);
+it('uses actual water geometry above the floor and a one-clock reverse-flow shader, without white glint stripes',()=>{
+ const staticGeometry=buildCoastRoadsideDrain(track.sample,800,900)!;
+ const flow=buildCoastRoadsideWater(track.sample,800,900)!;
+ expect(flow.name).toBe('coast-roadside-flowing-water');
+ expect(flow.userData.coastDrainWater).toBe(true);
+ expect(flow.getAttribute('uv').count).toBe(flow.getAttribute('position').count);
+ expect(flow.index!.count).toBeGreaterThan(45);
+ expect(flow.index!.count).toBeLessThan(550);
+ const uv=flow.getAttribute('uv'),position=flow.getAttribute('position');
+ expect(uv.getY(0)).toBeGreaterThanOrEqual(800);
+ expect(uv.getY(uv.count-1)).toBeLessThanOrEqual(900);
+ expect(uv.getY(uv.count-1)).toBeGreaterThan(uv.getY(0));
+ expect(uv.getX(0)).toBe(0);
+ expect(uv.getX(1)).toBe(1);
+ const m=makeCoastDrainWaterMaterial({value:1});
+ const shader:any={uniforms:{},vertexShader:'#include <common>\n#include <begin_vertex>',
+  fragmentShader:'#include <common>\n#include <color_fragment>'};
+ m.onBeforeCompile(shader,{} as any);
+ expect(shader.fragmentShader).toContain('uCoastFlowTime');
+ expect(shader.fragmentShader).toContain('vCoastFlowUV.y + uCoastFlowTime');
+ expect(shader.fragmentShader).toContain(COAST_DRAIN_FLOW_METRES_PER_SECOND.toFixed(1));
+ expect(shader.vertexShader).toContain('vCoastFlowUV = uv');
+ // The old pale static glint geometry must be GONE, not simply hidden.
+ const oldGlint=new THREE.Color('#b1a47d'),colors=staticGeometry.getAttribute('color');
+ expect(Array.from({length:colors.count},(_,i)=>
+  Math.abs(colors.getX(i)-oldGlint.r)+Math.abs(colors.getY(i)-oldGlint.g)+Math.abs(colors.getZ(i)-oldGlint.b))
+  .every(v=>v>.01)).toBe(true);
  const frame=track.sample(850);
- const waterY=pos.getY(vertexIndices[Math.floor(vertexIndices.length/2)]);
- // A banked five-lane road may tilt the whole ditch above or below the road
- // center. Compare against its LOCAL concrete lip, not the centreline Y.
- const lip=frame.position.y+frame.right.y*COAST_DRAIN_X.leftLip-.1;
- expect(waterY).toBeLessThan(lip-.34);
- expect(waterY).toBeGreaterThan(lip-1.65);
- expect(g.index!.count).toBeLessThan(6500);
- expect(COAST_DRAIN_X.leftLip).toBeLessThan(COAST_DRAIN_X.innerLeft);
- expect(COAST_DRAIN_X.innerRight).toBeLessThan(COAST_DRAIN_X.rightLip);
- g.dispose();
+ const floor=frame.position.y+frame.right.y*11.1-1.12-.1;
+ const midY=position.getY(Math.floor(position.count/2));
+ expect(midY).toBeGreaterThan(floor-.7);
+ expect(midY).toBeLessThan(frame.position.y+1.0);
+ expect(m.fog).toBe(true);
+ m.dispose();flow.dispose();staticGeometry.dispose();
 });
 
 it('replaces regular standalone lamps with sparse pole-mounted fixtures aimed toward traffic',()=>{
