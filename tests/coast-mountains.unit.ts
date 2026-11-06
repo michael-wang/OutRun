@@ -13,13 +13,14 @@ it('cuts varied summit lines and valley notches without approaching the road',()
   expect(heights.every(Number.isFinite)).toBe(true);
  }
 });
-it('reveals a towering distant skyline above the lowered middle ridge',()=>{
+it('reveals a high but not overwhelming distant skyline above the middle ridge',()=>{
  for(const d of [0,750,1850,3500,6500,9200]){
   const middle=coastMountainHeight(0,d,.44);
   const distant=coastMountainHeight(1,d,.44);
   expect(middle).toBeGreaterThan(150);
-  // The far backdrop is intentionally exaggerated for the sunset composition.
-  expect(distant).toBeGreaterThan(middle*1.8);
+  // Visible behind the middle sheet, without the former towering black wall.
+  expect(distant).toBeGreaterThan(middle*1.6);
+  expect(distant).toBeLessThan(850);
  }
 });
 it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh budget',()=>{
@@ -40,24 +41,25 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
    const positions=geo.getAttribute('position');
    let peak=-Infinity;
    for(let j=0;j<positions.count;j++)peak=Math.max(peak,positions.getY(j));
-   expect(peak).toBeGreaterThan(750);
+   expect(peak).toBeGreaterThan(480);
+   expect(peak).toBeLessThan(900);
   }
   const pos=geo.getAttribute('position').array,colors=geo.getAttribute('color').array;
   expect([...pos].every(Number.isFinite)).toBe(true);
   expect([...colors].every(Number.isFinite)).toBe(true);
   expect((mesh.material as THREE.MeshBasicMaterial).vertexColors).toBe(true);
   const material=mesh.material as THREE.MeshBasicMaterial;
-  // Layer-specific final dimming keeps the far skyline behind the near
-  // mountains while preserving a bright, sunlit ocean to the left.
+  // Both layers use predictable pre-baked color without an ACES darkening
+  // arms race; the farther backdrop now receives slightly more airlight.
   expect(material.toneMapped).toBe(false);
-  expect(material.color.r).toBeCloseTo(i===0?.33:.31,6);
+  expect(material.color.r).toBeCloseTo(i===0?.70:.72,6);
   expect(material.color.g).toBeCloseTo(material.color.r,6);
   expect(material.color.b).toBeCloseTo(material.color.r,6);
   geo.dispose();(mesh.material as THREE.Material).dispose();
  }
 });
 
-it('renders the rear range as subdued forest green, darker than the middle range',()=>{
+it('renders a cooler, less saturated and gently hazier distant range',()=>{
  const scene=new THREE.Scene();
  const sample=((d:number)=>({position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(1,0,0)})) as ReturnType<typeof createTrack>['sample'];
  addCoastMountains(scene,sample,10000);
@@ -83,17 +85,20 @@ it('renders the rear range as subdued forest green, darker than the middle range
  };
  const [mid,far]=scene.children as THREE.Mesh[];
  const midTone=sampleRidgeTone(mid),farTone=sampleRidgeTone(far);
- // The middle ridge was dimmed deliberately; the rear still has the
- // darker layer tint without forcing an excessive difference in material RGB.
+ // Distant land should recede through a little more airlight and lower
+ // chroma, NOT grow progressively darker into a black cutout.
  expect((far.material as THREE.MeshBasicMaterial).color.r)
-  .toBeLessThan((mid.material as THREE.MeshBasicMaterial).color.r);
- // These are final sRGB brightness checks, not vertex-only comparisons.
- // The earlier vertex-only test passed while ACES made the ridges too bright.
- expect(midTone.luminance).toBeLessThan(.32);
- expect(farTone.luminance).toBeLessThan(.27);
- expect(farTone.luminance).toBeLessThan(midTone.luminance*.87);
- expect(farTone.luminance).toBeGreaterThan(.10); // dark green, not black
- expect(farTone.g).toBeGreaterThan(farTone.r*1.08);
- expect(farTone.g).toBeGreaterThan(farTone.b*1.04);
+  .toBeGreaterThan((mid.material as THREE.MeshBasicMaterial).color.r);
+ // Compare estimated displayed sRGB values (material tint, vertex color,
+ // output transfer function). Both retain enough contrast to read as hills.
+ expect(midTone.luminance).toBeGreaterThan(.25);
+ expect(midTone.luminance).toBeLessThan(.50);
+ expect(farTone.luminance).toBeGreaterThan(midTone.luminance*1.03);
+ expect(farTone.luminance).toBeLessThan(midTone.luminance*1.40);
+ expect(farTone.luminance).toBeLessThan(.54);
+ expect(farTone.g).toBeGreaterThan(farTone.r);
+ // Blue-grey airlight narrows the green/blue gap compared with nearer hills.
+ expect(Math.abs(farTone.g-farTone.b))
+  .toBeLessThan(Math.abs(midTone.g-midTone.b)*.65);
  for(const mesh of [mid,far]){mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();}
 });
