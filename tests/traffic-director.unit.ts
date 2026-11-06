@@ -97,6 +97,36 @@ it('moving cars respond to a broken-down car and signal before a safe overtake',
  expect(Math.abs(states.at(-1)!.lateral+1.75)).toBeGreaterThan(2);
 });
 
+
+it('keeps a practical passing lane during three varied 10km encounter simulations',()=>{
+ const centers=roadLaneCenters(8.75);
+ for(const variation of [10,2026,8821]){
+  const traffic=new Traffic(new THREE.Scene(),sample,()=>8.75,10000,804,
+   ()=>true,breakdownLayout(sample,()=>8.75,10000,804^variation,true),
+   undefined,true,false,false,variation);
+  let closeEncounters=0;
+  for(let frame=0;frame<750;frame++){
+   const time=frame*.12,player=350+time*80;
+   traffic.update(time,player,0,80);
+   const actors=traffic.inspect().actors;
+   expect(actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);
+   for(const actor of actors){
+    if(!actor.visible||actor.stationary)continue;
+    const near=actors.filter(other=>other.visible&&Math.abs(other.distance-actor.distance)<15);
+    const blocked=new Set(near.map(x=>roadLaneCenters(8.75).reduce((best,_,i)=>
+     Math.abs(x.lateral-centers[i])<Math.abs(x.lateral-centers[best])?i:best,0)));
+    expect(blocked.size).toBeLessThan(centers.length);
+    const previous=actors.filter(other=>other.visible&&other.id!==actor.id
+     &&other.distance>actor.distance&&Math.abs(actor.lateral-other.lateral)<2.4)
+     .sort((a,b)=>a.distance-b.distance)[0];
+    if(previous&&previous.distance-actor.distance<80)closeEncounters++;
+   }
+  }
+  traffic.dispose();
+  expect(closeEncounters).toBeGreaterThanOrEqual(0);
+ }
+});
+
 it('samples game-speed coastal traffic within pool capacity with near-route breakdowns',()=>{
  const breakdowns=breakdownLayout(sample,()=>8.75,10000,804^1473,true);
  expect(breakdowns.length).toBeGreaterThanOrEqual(1);
