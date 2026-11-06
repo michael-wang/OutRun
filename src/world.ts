@@ -255,7 +255,9 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     if(onBridge(d,bridge))return {left:-bridgeRailEdge(halfAt(d)),right:bridgeRailEdge(halfAt(d))};
     if(options.seed===1&&canyonBend(d))return {right:CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness};
     return {
-      left:rockyAt(d,-1,rockSections)?undefined:-(halfAt(d)+TRIP_BARRIER_INNER_M),
+      // No invisible METAL RAIL collision across the unguarded ocean vista.
+      // Beach stones and sparse boulders are checked individually instead.
+      left:coastUltra?undefined:rockyAt(d,-1,rockSections)?undefined:-(halfAt(d)+TRIP_BARRIER_INNER_M),
       right:rockyAt(d,1,rockSections)?undefined:interchangeRailOpeningAt(d),
     };
   }:undefined;
