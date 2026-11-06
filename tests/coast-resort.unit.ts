@@ -100,9 +100,9 @@ it('uses human beach access and uninterrupted remote headland rails, never a fix
  expect(coastBarrierStyle(4100,1)).toBe('none'); // covered town drain; no rail
  expect(coastBarrierStyle(850,1)).toBe('block'); // rural concrete stones
  expect(coastBarrierStyle(8550,1)).toBe('none'); // unguarded fishing countryside
- expect(coastBarrierStyle(5500,1)).toBe('block');
- expect(coastBarrierStyle(3300,1)).toBe('rail');
- expect(coastBarrierStyle(2740,1)).toBe('rail');
+ expect(coastBarrierStyle(5500,1)).toBe('none'); // covered town drains have no metal rail
+ expect(coastBarrierStyle(3300,1)).toBe('none'); // open visitor-coast drainage
+ expect(coastBarrierStyle(2740,1)).toBe('none'); // visitor-coast gutter with no railing
  for(const at of COAST_CROSSWALKS){
   expect(coastBarrierStyle(at,-1)).toBe('opening');
   expect(coastBarrierStyle(at,1)).toBe('opening');
