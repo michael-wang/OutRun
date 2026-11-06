@@ -1,5 +1,6 @@
 import {coastProfileX} from './coast-layout';
 import {coastHillHeight} from './coast-terrain';
+import {coastRuralCreekCut} from './coast-rural-layout';
 import {BRICK_START} from './bricks';
 import type {StageBeat} from './stage-one';
 
@@ -115,7 +116,7 @@ export function coastBeachHeight(x:number,roadY:number,rightY:number,distance?:n
  if(x<-11)return lerp(COAST_SEA_LEVEL+.8,dry,(x+18)/7);
  if(x<-7)return lerp(dry,roadY+rightY*-7-.1,(x+11)/4);
  if(x<=13)return roadY+rightY*x-.1;
- return roadY+rightY*13-.1+(x-13)*.008+(distance===undefined?0:coastHillHeight(x,distance));
+ return roadY+rightY*13-.1+(x-13)*.008+(distance===undefined?0:coastHillHeight(x,distance)-coastRuralCreekCut(x,distance));
 }
 /** Shared by the coastal trial's Worker meshes and prop anchors only. */
 export function coastUltraGroundY(
