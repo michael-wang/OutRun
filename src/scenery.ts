@@ -221,12 +221,20 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   const type=Math.floor(random(key+330)*(farm?2:4)),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
   const wall=['#c8b49f','#b5bcc1','#bd9180','#b7bb9e','#d2baab'][Math.floor(random(key+8)*5)];
   part(boxes,wall,0,h/2-.15,0,9,h+.3,w);
-  if(type<2&&!shop){
-   part(cone,type?'#795a51':'#676674',0,h+1,0,7,2.2,w*.77,0,Math.PI/4);
+  // Only a minority of older bungalows get a steep roof. Most Taiwanese
+  // town homes are flat-roof RC boxes with practical rooftop additions.
+  if(type===0&&!shop){
+   part(cone,'#795a51',0,h+1,0,7,2.2,w*.77,0,Math.PI/4);
    if(type===0){part(boxes,wall,-4.7,1.6,w*.25,1.7,3.2,2.9);part(boxes,'#6e5d62',-5.2,3.3,w*.25,2.7,.25,3.6);}
   }else{
    part(boxes,'#6e5d62',0,h+.2,0,9.6,.4,w+.6);
    if(type===3){part(cylinder,'#9ba3a4',1.8,h+1.2,-w*.22,1.2,2,1.2);part(boxes,wall,1,h+.75,w*.24,3,1.5,2.6);}
+   if(!shop&&type>=1){
+    // An uneven rooftop water tank / green-grey corrugated tin lean-to.
+    if(key%3===1){part(boxes,'#748c83',1.7,h+.67,w*.19,4,.85,w*.35);
+     part(boxes,'#97a59b',1.7,h+1.12,w*.19,4.5,.15,w*.39);}
+    if(key%4===1)part(cylinder,'#a0aaa4',2.2,h+1.38,-w*.23,.83,1.9,.83);
+   }
   }
   // Different households have different occupancy; some homes are entirely dark.
   const occupancy=random(key+201)<.10?0:.72+random(key+213)*.22;
@@ -239,10 +247,19 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boxes,color,-4.64,y,z,.07,1.35,1.65,0,0,0,[.8,1.1,1.4][Math.floor(random(key+floor+column)*3)]);
     part(boxes,'#665d61',-4.7,y,z,.07,1.4,.06);
    }
+   if(!shop&&type>0&&(key+floor+column)%3!==0){
+    for(const offset of [-.55,.55])part(boxes,'#66777a',-4.77,y,z+offset,.045,1.43,.055); // iron window guards
+   }
    if(floor&&type%2===0){part(boxes,wall,-5,y-.9,z,1.4,.18,2.6);part(boxes,'#665d61',-5.6,y-.45,z,.1,.75,2.6);}
    else if(floor)part(boxes,'#6e5d62',-4.8,y+.92,z,.65,.14,2.3);
   }
-  part(boxes,'#665d61',-4.65,1.15,0,.12,2.3,1.1);
+  // Nearly every small town has these pragmatic, slightly mismatched
+  // building-front features. Avoid sub-pixel relief textures on mobile.
+  if(!shop&&type>0&&key%3!==0){
+   part(boxes,'#7b8584',-4.66,1.35,0,.11,2.55,2.2); // garage roller shutter
+   for(const y of [.75,1.35,1.95])part(boxes,'#a1aca6',-4.75,y,0,.04,.06,2.2);
+  }else part(boxes,'#665d61',-4.65,1.15,0,.12,2.3,1.1);
+  if(!shop&&type>0)part(boxes,'#a5a297',-4.56,h-1.35,0,.095,.24,w*.91); // terrazzo/mosaic border
   if(random(key+77)>.65)glow(round,'#ffd298',-4.9,2.65,.9,.13,.18,.13);
   if(shop){
    part(boxes,'#315e66',-4.7,1.4,0,.15,2.6,w*.88);
@@ -340,14 +357,21 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
   }
   coastShadowGroup='buildings';
+  let taiwanFarmPrefab:THREE.BufferGeometry|undefined;
   for(const site of FARM_HOMES){
    // The demonstration hamlet replaces only these two primitive farm houses.
    if(ruralShowcaseReplacesFarmHome(site.d))continue;
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,site.x);yaw+=site.yaw;if(!clear(10))continue;
-   // The same coastal house kit, with low roofs, an earth yard and a short fence.
+   // Two of three rural plots use the single-draw Taiwanese brick/plaster
+   // farmhouse prefab. The third retains a modest older RC house for real
+   // mixed-age village character instead of a cloned museum village.
    part(boxes,'#aa996f',0,.015,0,17,.08,21);
-   coastHome(site.key,false,true);
+   if(site.key%3!==0){
+    taiwanFarmPrefab??=buildCoastRuralHouse('farmhouse');
+    yaw+=Math.PI+coastHomeFacingYaw(site.key,'farm');
+    part(taiwanFarmPrefab,'#ffffff',0,0,0,1,1,1);
+   }else coastHome(site.key,false,true);
    for(const z of [-9,9]){
     for(const x of [-7,-3,1,5])part(boxes,'#aa8960',x,.55,z,.14,1.1,.14);
     part(boxes,'#aa8960',-1,.73,z,12,.12,.1);
@@ -361,6 +385,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(inChunk(COAST_RURAL_SHOWCASE.start)){
    coastShadowGroup='buildings';
    const ruralPrefabs=new Map<string,THREE.BufferGeometry>();
+   if(taiwanFarmPrefab)ruralPrefabs.set('farmhouse',taiwanFarmPrefab);
    for(const site of COAST_RURAL_HOUSES){
     beachAnchor(site.d,site.x);
     // The PI turn faces each local -X entrance toward the actual road;
