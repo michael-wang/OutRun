@@ -5,16 +5,26 @@ import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from './scenery-cross-section';
 import type {CoastBoatShadow} from './coast-boat-shadow';
 
 type Sample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};
-export type Boat={id:string;kind:'sail'|'yacht';distance:number;offshore:number;travel:number;sway:number;speed:number;phase:number;length:number;draft:number};
+export type Boat={id:string;kind:'sail'|'yacht'|'fishing';distance:number;offshore:number;travel:number;sway:number;speed:number;phase:number;length:number;draft:number};
+/** Sea has a distinct chapter arc: an unobstructed opener, visitor sailing
+ * beside town, then more frequent working fishing boats after 7km. Boat
+ * paths use the same curved coast frame and small patrol radii as before. */
 export const COAST_BOATS:readonly Boat[]=[
- ['arrival-sail','sail',950,105,16],['bay-yacht','yacht',1450,165,17],
- ['white-sail','sail',1850,125,18],['white-yacht','yacht',2370,85,20],
- ['farm-sail','sail',3150,150,16],['village-sail','sail',3800,110,15],
- ['market-yacht','yacht',4350,180,18],['headland-sail','sail',4950,125,17],
- ['orchard-yacht','yacht',5500,100,18],['distant-sail','sail',6020,210,14],
- ['evening-sail','sail',6850,135,17],['flower-yacht','yacht',7500,155,19],
- ['distant-yacht','yacht',8640,185,18],['last-sail','sail',9500,110,16],
-].map((row,i)=>{const [id,kind,distance,offshore,length]=row as [string,'sail'|'yacht',number,number,number];return {id,kind,distance,offshore,length,travel:65+i%3*15,sway:(kind==='sail'?38:18)+i%3*6,speed:kind==='sail'?.8:1.2,phase:1.1+i*.31,draft:length*(kind==='sail'?.15:.075)};});
+ ['opening-distant-sail','sail',1290,210,16],
+ ['beach-yacht','yacht',2070,130,18],['beach-sail','sail',2740,175,16],
+ ['beach-yacht-east','yacht',3190,145,18],
+ ['town-sail-one','sail',3560,112,17],['town-sail-two','sail',4010,168,16],
+ ['town-yacht','yacht',4470,170,18],['town-sail-three','sail',5110,122,16],
+ ['town-sail-four','sail',5780,175,16],['town-yacht-two','yacht',6430,158,19],
+ ['fishing-one','fishing',7100,122,16],['fishing-two','fishing',7540,160,16],
+ ['fishing-three','fishing',7950,125,15],['fishing-four','fishing',8400,185,17],
+ ['fishing-five','fishing',9000,150,16],['fishing-six','fishing',9640,120,16],
+].map((row,i)=>{const [id,kind,distance,offshore,length]=row as [string,Boat['kind'],number,number,number];return {
+ id,kind,distance,offshore,length,travel:65+i%3*15,
+ sway:(kind==='sail'?38:kind==='fishing'?14:18)+i%3*6,
+ speed:kind==='sail'?.8:kind==='fishing'?.55:1.2,
+ phase:1.1+i*.31,draft:length*(kind==='sail'?.15:kind==='fishing'?.09:.075),
+};});
 
 // Read-only use of the existing FFT textures, with the ocean adapter's same
 // camera-dependent mip selection and bounded displacement. No CPU readback.
@@ -39,6 +49,46 @@ export function coastBoatPosition(boat:Boat,time:number,sample:Sample){
  return {distance,offshore,position:road.position.clone().addScaledVector(out,lateral).setY(COAST_SEA_LEVEL)};
 }
 
+/** A recognizable working fishing craft, not a luxury yacht painted grey.
+ * A compact low-poly hull, sheltered wheelhouse, outriggers, crates and mast.
+ * One shared source geometry set is cloned for the six fishing boats.
+ */
+function fishingBoatSource(){
+ const root=new THREE.Group();root.name='fishing-boat';
+ const hull=new THREE.MeshStandardMaterial({color:'#446d75',roughness:.88});
+ const trim=new THREE.MeshStandardMaterial({color:'#b47c4e',roughness:.90});
+ const cabin=new THREE.MeshStandardMaterial({color:'#e0d1ae',roughness:.9});
+ const glass=new THREE.MeshStandardMaterial({color:'#5c8792',roughness:.55});
+ const metal=new THREE.MeshStandardMaterial({color:'#666e70',roughness:.80});
+ const rope=new THREE.MeshStandardMaterial({color:'#bc9e77',roughness:1});
+ function box(w:number,h:number,l:number,x:number,y:number,z:number,m:THREE.Material){
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,l),m);
+  mesh.position.set(x,y,z);root.add(mesh);return mesh;
+ }
+ function pole(r:number,h:number,x:number,y:number,z:number,m:THREE.Material,angle=0){
+  const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,6),m);
+  mesh.position.set(x,y,z);mesh.rotation.z=angle;root.add(mesh);
+ }
+ box(3.8,1.05,8.5,0,.66,0,hull);
+ // Narrow bows and stern caps with no translucent or custom shader passes.
+ const bow=new THREE.Mesh(new THREE.ConeGeometry(1.9,2.5,4),hull);
+ bow.rotation.x=Math.PI/2;bow.position.set(0,.66,5.0);root.add(bow);
+ box(3.9,.16,8.4,0,1.25,0,trim);
+ box(2.5,2.2,2.65,0,2.4,-.9,cabin);
+ box(2.62,.2,2.84,0,3.55,-.9,trim);
+ box(2.57,.87,.08,0,2.75,.49,glass);
+ for(const side of [-1,1]){
+  box(.08,.78,1.1,side*1.31,2.72,-.9,glass);
+  pole(.065,3.0,side*1.55,3.52,-1.6,metal,side*.35);
+  box(.25,.2,1.6,side*2.1,3.5,-1.6,metal);
+  box(.62,.58,.68,side*.95,1.65,-3.0,rope);
+ }
+ pole(.09,3.5,0,4.62,-1.35,metal);
+ box(2.6,.18,1.0,0,1.55,-3.45,rope);
+ for(const z of [-3.1,-2.25])box(.8,.45,.75,0,1.78,z,trim);
+ return root;
+}
+
 const files={sail:'boat-sail-a.glb',yacht:'flybridge-yacht.glb'};
 // Keep bytes, not live GPU resources: a replay gets clean scene-owned materials,
 // while sceneDisposal can retire the previous chapter without invalidating a cache.
@@ -49,13 +99,14 @@ function modelBytes(file:string){
 
 export async function addCoastBoats(scene:THREE.Scene,sample:Sample,water?:Readonly<Record<string,THREE.IUniform>>,shadow?:CoastBoatShadow){
  const loader=new GLTFLoader(),models=await Promise.all([files.sail,files.yacht].map(async file=>loader.parseAsync(await modelBytes(file),'/assets/coast-boats/')));
+ const fishingSource=fishingBoatSource();
  // Match the coast's matte toy-like finish without adding lights or shadows.
  const materials=new Set<THREE.MeshStandardMaterial>();
- models.forEach(g=>g.scene.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.MeshStandardMaterial)materials.add(m);}));
+ for(const source of [...models.map(g=>g.scene),fishingSource])source.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.MeshStandardMaterial)materials.add(m);});
  materials.forEach(m=>{m.roughness=Math.max(.7,m.roughness);m.metalness=Math.min(.15,m.metalness);m.emissive.set(0);m.emissiveIntensity=0;if(m.name==='colormap')m.side=THREE.DoubleSide;});
  const root=new THREE.Group();root.name='coast-boats';
  const vessels=COAST_BOATS.map(spec=>{
-  const source=models[spec.kind==='sail'?0:1].scene,model=source.clone(true);
+  const source=spec.kind==='fishing'?fishingSource:models[spec.kind==='sail'?0:1].scene,model=source.clone(true);
   const sail=model.getObjectByName('sail');if(sail)sail.rotation.y=.6;
   const bounds=new THREE.Box3().setFromObject(model),center=bounds.getCenter(new THREE.Vector3()),scale=spec.length/(bounds.max.z-bounds.min.z);
   model.scale.setScalar(scale);model.position.set(-center.x*scale,-bounds.min.y*scale-spec.draft,-center.z*scale);
