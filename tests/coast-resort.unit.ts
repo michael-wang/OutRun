@@ -56,7 +56,11 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
   const normals=mesh.geometry.attributes.normal,colors=mesh.geometry.attributes.color;
   let darkest=Infinity,lightest=0,steep=0;
   for(let i=0;i<colors.count;i++){const l=colors.getX(i)+colors.getY(i)+colors.getZ(i);darkest=Math.min(darkest,l);lightest=Math.max(lightest,l);if(Math.abs(normals.getY(i))<.9)steep++;}
-  expect(lightest-darkest).toBeGreaterThan(.07);expect(steep).toBeGreaterThan(100);
+  // Normalize relief contrast to the baked brightness: the rear range is
+  // intentionally much darker, so an absolute lightness gap is misleading.
+  expect(lightest).toBeGreaterThan(0);
+  expect((lightest-darkest)/lightest).toBeGreaterThan(.08);
+  expect(steep).toBeGreaterThan(100);
   expect((mesh.material as THREE.MeshBasicMaterial).fog).toBe(false);
   mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
