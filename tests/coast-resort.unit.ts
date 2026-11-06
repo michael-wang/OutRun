@@ -31,11 +31,11 @@ it('replaces racing curbs and tall continuous rails; keeps crossings at district
 });
 it('keeps concrete and rails outside the driven lanes, bounded in height and batched',()=>{
  const scene=new THREE.Scene(),stats=addCoastResort(scene,track.sample,halfAt,0,1000);
- expect(stats.draws).toBe(2);expect(scene.children).toHaveLength(2);
+ expect(stats.draws).toBe(3);expect(scene.children).toHaveLength(3); // stones, little legacy launch rail, natural seaward rock batch
  const matrix=new THREE.Matrix4(),scale=new THREE.Vector3();
  for(const mesh of scene.children as THREE.InstancedMesh[]){
   for(let i=0;i<mesh.count;i++){
-   mesh.getMatrixAt(i,matrix);scale.setFromMatrixScale(matrix);expect(scale.y).toBeLessThanOrEqual(.721);
+   mesh.getMatrixAt(i,matrix);scale.setFromMatrixScale(matrix);expect(scale.y).toBeLessThanOrEqual(mesh.geometry.name==='coast-ungarded-natural-rock'?2.5:.721);
    const p=new THREE.Vector3().setFromMatrixPosition(matrix);
    let distance=Infinity;for(let d=0;d<=1010;d+=1)distance=Math.min(distance,p.clone().sub(track.sample(d).position).setY(0).length());
    expect(distance).toBeGreaterThan(9.35); // concrete stones sit just outside the new 10m paved verge
@@ -87,7 +87,7 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  expect(triangles).toBeLessThan(14000);
 });
 
-it('uses human beach access and uninterrupted remote headland rails, never a fixed checkerboard',()=>{
+it('uses beach stones and occasional natural rocks, preserving open seaward vistas',()=>{
  for(const bay of COAST_BEACHES){
   const half=Math.min(440,bay.radius*.70);
   for(let d=Math.ceil((bay.distance-half+24)/12)*12;d<bay.distance+half-24;d+=12)
@@ -96,7 +96,7 @@ it('uses human beach access and uninterrupted remote headland rails, never a fix
  }
  for(let d=240;d<=1740;d+=12)
   if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
-   expect(coastBarrierStyle(d,-1)).toBe('rail');
+   expect(coastBarrierStyle(d,-1)).toBe(d>=440&&d<770?'rock':'none');
  expect(coastBarrierStyle(4100,1)).toBe('none'); // covered town drain; no rail
  expect(coastBarrierStyle(850,1)).toBe('block'); // rural concrete stones
  expect(coastBarrierStyle(8550,1)).toBe('none'); // unguarded fishing countryside
