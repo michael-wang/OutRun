@@ -1,6 +1,6 @@
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
-import {coastDrainOverlaps,COAST_DRAIN_X} from './coast-roadside-layout';
+import {coastDrainOverlaps,coastDrainAt,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
@@ -144,7 +144,21 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11],[-11,-7]])
    append('sand',rawAt(a),rawAt(b),0,0,start,end,2.5);
   append('sand',-7,7,-.1,-.1,start,end,2.5);
-  append('sand',7,13,-.1,-.1,start,end,2.5);
+  // Rural/town/remote Taiwan drainage sections have no six-metre BEIGE
+  // highway shoulder. Continue the existing blacktop about 1.37m beyond
+  // the actual lane edge, then hand off to the steep concrete U channel.
+  // It is an ART extension only; five drivable lanes and handling stay put.
+  const boundaries=Array.from(new Set([
+   start,end,...COAST_SIDE_DRAINS.flatMap(site=>[Math.max(start,Math.min(end,site.start)),Math.max(start,Math.min(end,site.end))]),
+  ])).sort((a,b)=>a-b);
+  for(let i=1;i<boundaries.length;i++){
+   const a=boundaries[i-1],b=boundaries[i];
+   if(b-a<.001)continue;
+   if(coastDrainAt((a+b)/2)){
+    const edge=(d:number)=>tripBarrierRawOffset(1,COAST_DRAIN_X.outerRoad-cachedWidth(d),cachedShoulders(d)!);
+    append('asphalt',7,edge,0,-.1,a,b,2.5);
+   }else append('sand',7,13,-.1,-.1,a,b,2.5);
+  }
  }else{
   if(scenerySections)append('sand',d=>-sceneryFarReach(sampled(d).curvature),-160,-12,-9,start,end,10,undefined,true);
   if(active){
@@ -160,7 +174,8 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  if(coastUltra){
   // Actual cross-slope relief: fine near the verge, coarse on distant ridges.
   // Only chunks intersecting Taiwan roadside ditches need extra vertices
-  // between 14–18m. The same shared ground sampler cuts the true U profile.
+  // near the gutter's 14.75m FAR ground seam. The whole U from 10–13m is
+  // owned by one visual scene ribbon rather than hidden under grass.
   // Never subdivide the entire 10km road or add a runtime terrain pass.
   const strips:number[]=coastDrainOverlaps(start,end)?Array.from(new Set([
    ...COAST_HILL_STRIPS,...Object.values(COAST_DRAIN_X),
