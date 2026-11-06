@@ -213,13 +213,15 @@ export class Traffic {
   // active recipe and forget the id to keep infinite-road memory bounded.
   if(this.highwayRecipes.length){
    this.highwayRecipes=this.highwayRecipes.filter(r=>!this.passedIds.has(r.id));
-   for(const id of this.passedIds)if(id>=1000000)this.passedIds.delete(id);
   }
   for(const a of candidates)if(!this.passedIds.has(a.id)&&previous.some(old=>old.id===a.id))
    this.history.set(a.id,{distance:a.distance,speed:a.speed,time});
   const inside=candidates.filter(a=>!this.passedIds.has(a.id)
    &&a.distance>=player-180&&a.distance<=player+populationAhead
    &&(a.distance<this.length-20||this.highwayStart!==undefined&&a.distance>=this.highwayStart));
+  // No feeder recipe can generate the same id again; release highway ids
+  // only AFTER filtering this frame's candidates so they cannot re-enter.
+  for(const id of this.passedIds)if(id>=1000000)this.passedIds.delete(id);
   this.actors=inside.filter(a=>previous.some(old=>old.id===a.id));
   // Known stalled hazards are admitted first. Moving cars must plan around
   // them; never silently omit an already-authored breakdown to make room.
