@@ -1,3 +1,5 @@
+import {TRAFFIC_FLOW,nearestTrafficLane,roadLaneCenters} from './traffic-flow';
+
 /** Bounded presentation/traffic state, independent of impact displacement. */
 export interface LaneActor {stationary?:boolean;id:number;distance:number;speed:number;lateral:number;signal?:number;changing?:boolean;unsignaled?:boolean}
 interface Maneuver {center:number;from:number;to:number;start:number;next:number;event:number;silent:boolean;active:boolean;phase?:number}
@@ -30,11 +32,41 @@ export class TrafficLanes {
     const lo=Math.min(s.center,to)-2.8,hi=Math.max(s.center,to)+2.8;
     const conflict=(distance:number,speed:number,lateral:number,margin:number)=>{if(lateral<lo||lateral>hi)return false;const z=distance-a.distance,end=z+(speed-a.speed)*3.2;return Math.min(z,end)<margin&&Math.max(z,end)>-margin;};
     if(conflict(player.distance,player.speed,player.lateral,23))return false;
-    return !actors.some(b=>{if(b.id===a.id)return false;if(reacting(b.id)&&Math.abs(b.distance-a.distance)<60)return true;const other=this.states.get(b.id)!;return conflict(b.distance,b.speed,b.lateral,22)||(other.active&&conflict(b.distance,b.speed,other.to,22));});
+    if(actors.some(b=>{if(b.id===a.id)return false;if(reacting(b.id)&&Math.abs(b.distance-a.distance)<60)return true;const other=this.states.get(b.id)!;return conflict(b.distance,b.speed,b.lateral,22)||(other.active&&conflict(b.distance,b.speed,other.to,22));}))return false;
+    // A spontaneous / obstacle-avoidance lane change cannot fill the last
+    // open lane in a short traffic wall. This protects a physical passing
+    // corridor even when multiple independent groups catch one another.
+    const centers=roadLaneCenters(halfAt(a.distance)),occupied=new Set<number>();
+    for(const b of actors){
+     if(b.id===a.id||Math.abs(b.distance-a.distance)>TRAFFIC_FLOW.blockadeSpan)continue;
+     occupied.add(nearestTrafficLane(this.states.get(b.id)?.active?this.states.get(b.id)!.to:b.lateral,centers));
+    }
+    const destination=nearestTrafficLane(to,centers);
+    return occupied.size<centers.length-1||occupied.has(destination);
    };
    if(a.stationary){s.active=false;s.center=a.lateral;continue;}
    if(reacting(a.id)||Math.abs(s.to)>limit+.01){s.active=false;s.next=Math.max(s.next,time+4);s.center=clamp(s.center,limit);s.from=s.to=s.center;}
    const closing=Math.max(0,player.speed-a.speed),ahead=a.distance-player.distance;
+   // Vehicles see *real road obstacles*, not just the player: a slower car or
+   // stopped breakdown ahead is a reason to indicate and overtake early.
+   // If neither adjacent lane is safe they brake via the traffic director.
+   const obstacle=actors.filter(b=>b.id!==a.id&&b.distance>a.distance
+    &&b.distance-a.distance<TRAFFIC_FLOW.leaderLookAhead
+    &&Math.abs(b.lateral-s.center)<2.75
+    &&(b.stationary||a.speed>b.speed+4))
+    .sort((x,y)=>x.distance-y.distance)[0];
+   const danger=!!obstacle&&obstacle.distance-a.distance<
+    Math.min(TRAFFIC_FLOW.leaderLookAhead,75+Math.max(0,a.speed-obstacle.speed)*5);
+   if(!s.active&&danger&&!reacting(a.id)){
+    const nearest=Math.round((s.center-phase)/3.5)*3.5+phase;
+    const prefer=trafficRandom(this.seed^0x93b,a.id+s.event*89)<.5?-1:1;
+    for(const direction of [prefer,-prefer]){
+     const to=nearest+direction*3.5;
+     if(Math.abs(to)>limit||Math.abs(to-s.center)<.5||!safe(to))continue;
+     s.from=s.center;s.to=to;s.start=time;s.silent=false;s.event++;s.active=true;
+     s.next=time+2;break;
+    }
+   }
    if(!s.active&&(phase===0||phase===1.75)&&time>=s.next&&ahead>Math.max(80,closing*3.2+25)&&ahead<Math.max(160,closing*3.2+75)){
     const direction=trafficRandom(this.seed^0x159,a.id+s.event*997)<.5?-1:1;
     const nearest=Math.round((s.center-phase)/3.5)*3.5+phase;let to=nearest+direction*3.5;if(Math.abs(to)>limit)to=nearest-direction*3.5;

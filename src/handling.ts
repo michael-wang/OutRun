@@ -27,9 +27,12 @@ export function updateFootprint(s:DrivingState,roadHalfWidth=ROAD_HALF_WIDTH){
 }
 /** Arcade balance remains the target; grip converges lateral velocity over a brief
  * speed-dependent interval. Banking relieves pressure without automatic steering. */
-export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH,grade=0,bank=0){
+export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH,grade=0,bank=0,rightSafety?:(d:number,usualLimit:number)=>number){
  const halfAt=typeof width==='number'?()=>width:width,roadHalfWidth=halfAt(s.distance);
  const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
+ // Optional side-specific *invisible* limit for the unguarded Taiwan U-ditch.
+ // Ordinary roads and the ocean-side edge retain their exact old behavior.
+ const rightLimit=rightSafety?Math.min(corridorLimit,rightSafety(s.distance,corridorLimit)):corridorLimit;
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
  const driving=input.gas&&!input.brake,driveForce=advancePowertrain(s,s.speed,driving,dt);
  s.grade=Number.isFinite(grade)?grade:0;s.gradeAcceleration=s.speed<.001&&!driving?0:-9.81*s.grade/Math.hypot(1,s.grade);
@@ -52,10 +55,11 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  const transfer=clamp((rate-oldRate)/Math.max(dt,.001)*.0018,-.045,.045);
  s.weightRoll+=(transfer-s.weightRoll)*(1-Math.exp(-dt/.14));
  if(s.corridorSide&&s.effectiveSteer*s.corridorSide<0&&rate*s.corridorSide<0)s.corridorSide=0;
- if(s.corridorSide&&Math.abs(s.lateral)<corridorLimit-1e-5)s.corridorSide=0;
+ if(s.corridorSide&&(s.corridorSide>0?s.lateral<rightLimit-1e-5:s.lateral>-corridorLimit+1e-5))s.corridorSide=0;
  const attempted=s.lateral+meanRate*dt;
- if(Math.abs(attempted)>=corridorLimit)s.corridorSide=Math.sign(attempted);
- s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?s.corridorSide*corridorLimit:attempted;
+ if(attempted>=rightLimit)s.corridorSide=1;
+ else if(attempted<=-corridorLimit)s.corridorSide=-1;
+ s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?(s.corridorSide>0?rightLimit:-corridorLimit):attempted;
  const ds=s.speed*effectivePace(s.speed,highSpeedPace)*dt;s.distance+=ds;
  const load=Math.sign(s.appliedSteer)===Math.sign(s.requiredSteer)?Math.min(Math.abs(s.appliedSteer),Math.abs(s.requiredSteer)):0;
  const body=bodyYawTarget(s.appliedSteer,s.requiredSteer,s.speed);
@@ -66,6 +70,8 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  s.slipAngle=s.heading;s.slip=Math.max(clamp((load-.55)/.25,0,1),clamp((Math.abs(s.lateralRate)-2.5)/5,0,1))*Math.min(1,s.speed/50);
  s.drifting=s.slip>.2;
  const nextHalf=halfAt(s.distance),nextLimit=nextHalf+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
- if(Math.abs(s.lateral)>nextLimit){s.corridorSide=Math.sign(s.lateral);s.lateral=s.corridorSide*nextLimit;s.lateralRate=0;}
+ const nextRight=rightSafety?Math.min(nextLimit,rightSafety(s.distance,nextLimit)):nextLimit;
+ if(s.lateral>nextRight){s.corridorSide=1;s.lateral=nextRight;s.lateralRate=0;}
+ else if(s.lateral< -nextLimit){s.corridorSide=-1;s.lateral=-nextLimit;s.lateralRate=0;}
  updateFootprint(s,nextHalf);
 }

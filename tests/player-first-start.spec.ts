@@ -1,57 +1,54 @@
 import {test,expect} from '@playwright/test';
 
-test('player-first Trip opening uses approved artwork and QA hidden',async({browser})=>{
+test('the public coast starts automatically at zero speed with its approved HUD',async({browser})=>{
  const context=await browser.newContext({viewport:{width:896,height:414},isMobile:true,hasTouch:true});
  try{
   const page=await context.newPage();
-  await page.goto('/?seed=1&playerui=1');
+  await page.goto('/?at=850&trafficSeed=1234');
   await expect(page.locator('#view canvas')).toBeVisible();
-  await expect(page.locator('#player-start')).toBeVisible();
-  await expect(page.locator('#l2-lab')).toBeHidden();
-  await expect(page.locator('#player-play')).toBeVisible();
-  await expect(page.locator('#player-play')).toContainText('開始駕駛');
+  await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
+  await expect(page.locator('#speed')).toBeVisible();
+  const state=await page.evaluate(()=>(window as any).__drive.snapshot());
+  expect(state.mode).toBe('playing');
+  expect(state.speed).toBe(0);
+  expect(state.distance).toBe(850);
   await expect(page.locator('#stage-seed')).toBeHidden();
   await expect(page.locator('#l2-export')).toBeHidden();
-  await expect(page.locator('#l2-difficulty')).toBeHidden();
-  await expect(page.locator('#l2-fullscreen')).toBeHidden();
-  await expect(page.locator('#player-options')).toBeVisible();
-  await expect(page.locator('#player-sound')).toBeVisible();
-  await page.locator('#player-play').tap();
-  await expect(page.locator('#player-start')).toBeHidden({timeout:45000});
-  await expect(page.locator('#view canvas')).toBeVisible();
-  await expect(page.locator('#speed')).toBeVisible();
+  await expect(page.locator('#l2-next')).toBeHidden();
+  await expect(page.locator('#player-new-route')).toBeHidden();
  }finally{await context.close();}
 });
 
-test('portrait shows transparent rotation cue over artwork, not QA or opaque screen',async({browser})=>{
+test('portrait waits for landscape, then launches automatically without tapping Play',async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  try{
   const page=await context.newPage();
-  await page.goto('/?seed=1&playerui=1');
-  await expect(page.locator('#view canvas')).toBeVisible();
+  await page.goto('/');
   await expect(page.locator('#rotate')).toBeVisible();
   await expect(page.locator('#player-start')).toBeHidden();
   await expect(page.locator('#rotate-fullscreen')).toBeHidden();
-  await expect(page.locator('#rotate-pause')).toBeHidden();
   await expect(page.locator('#l2-lab')).toBeHidden();
   const style=await page.locator('#rotate').evaluate(el=>({backgroundColor:getComputedStyle(el).backgroundColor,backgroundImage:getComputedStyle(el).backgroundImage}));
   expect(style.backgroundColor).toBe('rgba(0, 0, 0, 0)');
   expect(style.backgroundImage).toContain('linear-gradient');
   await page.setViewportSize({width:844,height:390});
-  await expect(page.locator('#rotate')).toBeHidden();
-  await expect(page.locator('#player-start')).toBeVisible();
+  await expect(page.locator('#rotate')).toBeHidden({timeout:60000});
+  await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
+  await expect.poll(()=>page.evaluate(()=>(window as any).__drive?.snapshot()?.mode)).toBe('playing');
  }finally{await context.close();}
 });
 
-test('QA mode retains full authoring controls and does not show player menu',async({page})=>{
- await page.goto('/?qa=1&seed=1');
- await expect(page.locator('#l2-lab')).toBeVisible();
- await expect(page.locator('#stage-seed')).toBeVisible();
- await expect(page.locator('#l2-export')).toBeVisible();
- await expect(page.locator('#player-start')).toBeHidden();
+test('QA at= coordinate opens into a stationary playable coast and retains the inspector',async({page})=>{
+ await page.goto('/?at=1360&trafficSeed=2026');
+ await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
+ const state=await page.evaluate(()=>(window as any).__drive.snapshot());
+ expect(state.mode).toBe('playing');
+ expect(state.distance).toBe(1360);
+ expect(state.speed).toBe(0);
+ await expect(page.locator('#qa-tools')).toBeVisible();
 });
 
-test('public iPhone entry stays minimal without an inert fullscreen button',async({browser})=>{
+test('iPhone landscape also auto-launches, with no inert fullscreen button',async({browser})=>{
  const ua='Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1';
  const context=await browser.newContext({viewport:{width:896,height:414},isMobile:true,hasTouch:true,userAgent:ua});
  await context.addInitScript(()=>{
@@ -60,10 +57,10 @@ test('public iPhone entry stays minimal without an inert fullscreen button',asyn
  });
  try{
   const page=await context.newPage();
-  await page.goto('/?seed=1&playerui=1');
-  await expect(page.locator('#player-start')).toBeVisible();
+  await page.goto('/');
+  await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
   await expect(page.locator('#player-install-guide')).toBeHidden();
-  await expect(page.locator('#player-install-help')).toBeHidden();
   await expect(page.locator('#l2-fullscreen')).toBeHidden();
+  await expect(page.locator('#speed')).toBeVisible();
  }finally{await context.close();}
 });

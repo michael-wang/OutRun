@@ -5,6 +5,7 @@ import {markCoastShadowCaster} from './coast-shadow-layers';
 import {addCoastSandLight} from './coast-sand-light';
 import {softenCoastInlandFog} from './coast-inland-fog';
 import {addCoastMountains} from './coast-mountains';
+import {coastDriveBounds} from './coast-layout';
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
@@ -27,7 +28,7 @@ import type {TripCandidate} from './trip';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
@@ -152,7 +153,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const leftCanvas=signCanvas.cloneNode() as HTMLCanvasElement;const leftInk=leftCanvas.getContext('2d')!;leftInk.drawImage(signCanvas,0,0);leftInk.fillStyle='#153e45';leftInk.fillRect(20,20,472,88);leftInk.fillStyle='#fff4d9';leftInk.textAlign='center';leftInk.font='bold 70px sans-serif';leftInk.fillText('← BRAKE',256,96);const leftTexture=new THREE.CanvasTexture(leftCanvas);leftTexture.colorSpace=THREE.SRGBColorSpace;const leftSign=new THREE.MeshBasicMaterial({map:leftTexture,side:THREE.DoubleSide});
   // No experimental near-road rock walls/boulders in r7. Preserve historic r6 rock content.
   const rockSections=options.streamStage?.generatorVersion==='v0.9-r6'?rockySections(options.seed??1,length,weightsAt):[];
-  const breakdowns=options.streamStage?.generatorVersion==='canyon-roadlock-v1'?[]:(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion)))?breakdownLayout(sample,halfAt,length,options.seed??1):[];
+  const breakdowns=options.streamStage?.generatorVersion==='canyon-roadlock-v1'?[]:(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion)))?breakdownLayout(sample,halfAt,length,(options.seed??1)^(options.trafficVariation??0),!!coastUltra):[];
   const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion))?[]:breakdownAnnotations(sample,halfAt,breakdowns);
   if(!options.streamStage){
   for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of options.track?[300,160]:[160,80]){
@@ -254,8 +255,11 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     if(streamer&&!streamer.roadReady(d))return {};
     if(onBridge(d,bridge))return {left:-bridgeRailEdge(halfAt(d)),right:bridgeRailEdge(halfAt(d))};
     if(options.seed===1&&canyonBend(d))return {right:CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness};
+    if(coastUltra)return coastDriveBounds(d,halfAt(d));
     return {
-      left:rockyAt(d,-1,rockSections)?undefined:-(halfAt(d)+TRIP_BARRIER_INNER_M),
+      // No invisible METAL RAIL collision across the unguarded ocean vista.
+      // Beach stones and sparse boulders are checked individually instead.
+      left:coastUltra?undefined:rockyAt(d,-1,rockSections)?undefined:-(halfAt(d)+TRIP_BARRIER_INNER_M),
       right:rockyAt(d,1,rockSections)?undefined:interchangeRailOpeningAt(d),
     };
   }:undefined;

@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import {COAST_SUN} from './coast-dusk';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,COAST_LAMPS} from './coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
+import {COAST_UTILITY_POLES,coastDrainAt} from './coast-roadside-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
 import {coastBeachHeight,COAST_SEA_LEVEL} from './scenery-cross-section';
-import {TRIP_BARRIER_INNER_M} from './road-profile';
 
 type Sample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3;tangent?:THREE.Vector3};
 type Kind='umbrella'|'visitor'|'bench'|'home'|'shop'|'rock'|'concrete'|'rail'|'rail-beam'|'lamp';
@@ -65,25 +65,36 @@ export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>numbe
  const anchors:CoastShadowAnchor[]=[];
  for(let d=0;d<length;d+=12){
   for(const side of [-1,1] as const){
-   const style=coastBarrierStyle(d,side);if(style==='opening')continue;
+   const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
    if(style==='block'){
     const stone=coastBarrierStoneAt(d,side);
-    const x=side*(halfAt(stone.d)+TRIP_BARRIER_INNER_M+.28);
+    const x=side*(halfAt(stone.d)+coastBarrierClearance(stone.d,side));
     anchors.push({d:stone.d,x,width:1.25,length:coastShadowLength(stone.height),kind:'concrete'});
    }else{
-    const x=side*(halfAt(d)+TRIP_BARRIER_INNER_M+.28);
+    const x=side*(halfAt(d)+coastBarrierClearance(d,side));
     // Broad soft beam silhouette runs along the actual roadway tangent.
     anchors.push({d,x,width:10.8,length:coastShadowLength(.70),kind:'rail-beam'});
     for(const offset of [-5,0,5]){
      const postD=d+offset;if(postD<0||postD>=length)continue;
-     anchors.push({d:postD,x:side*(halfAt(postD)+TRIP_BARRIER_INNER_M+.28),
+     anchors.push({d:postD,x:side*(halfAt(postD)+coastBarrierClearance(postD,side)),
       width:.60,length:coastShadowLength(.72),kind:'rail'});
     }
    }
   }
  }
- for(const d of COAST_LAMPS)if(d<length)
+ // Inside the Taiwan roadside pockets, lamps now grow from actual
+ // concrete utility poles. Do not leave ghost shadows from the old
+ // stand-alone 64m lamp grid at the previous shoulder location.
+ for(let d=0;d<length;d+=33){
+  if(coastBarrierStyle(d,-1)!=='rock')continue;
+  const b=coastBarrierRockAt(d);
+  anchors.push({d:b.d,x:-(halfAt(b.d)+b.offset),width:b.width*1.1,
+   length:coastShadowLength(b.height*.8),kind:'rock'});
+ }
+ for(const d of COAST_LAMPS)if(d<length&&!coastDrainAt(d))
   anchors.push({d,x:14,width:.55,length:coastShadowLength(11.5),kind:'lamp'});
+ for(const pole of COAST_UTILITY_POLES)if(pole.d<length&&pole.lamp)
+  anchors.push({d:pole.d,x:pole.x,width:.7,length:coastShadowLength(pole.height),kind:'lamp'});
  return anchors;
 }
 

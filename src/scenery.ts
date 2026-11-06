@@ -1,9 +1,12 @@
 import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
+import {coastHomeFacingYaw} from './coast-house-facing';
 import {FARM_HOMES} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek} from './coast-rural-vignette';
+import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
+import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
@@ -211,16 +214,27 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   part(g,color,x,y,z,sx,sy,sz,0,0,0,2.2);
  }
  function coastHome(key:number,shop=false,farm=false){const previous=coastShadowGroup;coastShadowGroup='buildings';
-  yaw+=Math.PI+(random(key+94)-.5)*.22;
+  // Model facades use local -X, while track.sample().right is world -X
+  // for the straight road. PI correctly faces the road; the varied EXTRA
+  // angle reveals some front walls to approaching drivers without a grid.
+  yaw+=Math.PI+coastHomeFacingYaw(key,farm?'farm':shop?'shop':'village');
   const type=Math.floor(random(key+330)*(farm?2:4)),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
   const wall=['#c8b49f','#b5bcc1','#bd9180','#b7bb9e','#d2baab'][Math.floor(random(key+8)*5)];
   part(boxes,wall,0,h/2-.15,0,9,h+.3,w);
-  if(type<2&&!shop){
-   part(cone,type?'#795a51':'#676674',0,h+1,0,7,2.2,w*.77,0,Math.PI/4);
+  // Only a minority of older bungalows get a steep roof. Most Taiwanese
+  // town homes are flat-roof RC boxes with practical rooftop additions.
+  if(type===0&&!shop){
+   part(cone,'#795a51',0,h+1,0,7,2.2,w*.77,0,Math.PI/4);
    if(type===0){part(boxes,wall,-4.7,1.6,w*.25,1.7,3.2,2.9);part(boxes,'#6e5d62',-5.2,3.3,w*.25,2.7,.25,3.6);}
   }else{
    part(boxes,'#6e5d62',0,h+.2,0,9.6,.4,w+.6);
    if(type===3){part(cylinder,'#9ba3a4',1.8,h+1.2,-w*.22,1.2,2,1.2);part(boxes,wall,1,h+.75,w*.24,3,1.5,2.6);}
+   if(!shop&&type>=1){
+    // An uneven rooftop water tank / green-grey corrugated tin lean-to.
+    if(key%3===1){part(boxes,'#748c83',1.7,h+.67,w*.19,4,.85,w*.35);
+     part(boxes,'#97a59b',1.7,h+1.12,w*.19,4.5,.15,w*.39);}
+    if(key%4===1)part(cylinder,'#a0aaa4',2.2,h+1.38,-w*.23,.83,1.9,.83);
+   }
   }
   // Different households have different occupancy; some homes are entirely dark.
   const occupancy=random(key+201)<.10?0:.72+random(key+213)*.22;
@@ -233,10 +247,19 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boxes,color,-4.64,y,z,.07,1.35,1.65,0,0,0,[.8,1.1,1.4][Math.floor(random(key+floor+column)*3)]);
     part(boxes,'#665d61',-4.7,y,z,.07,1.4,.06);
    }
+   if(!shop&&type>0&&(key+floor+column)%3!==0){
+    for(const offset of [-.55,.55])part(boxes,'#66777a',-4.77,y,z+offset,.045,1.43,.055); // iron window guards
+   }
    if(floor&&type%2===0){part(boxes,wall,-5,y-.9,z,1.4,.18,2.6);part(boxes,'#665d61',-5.6,y-.45,z,.1,.75,2.6);}
    else if(floor)part(boxes,'#6e5d62',-4.8,y+.92,z,.65,.14,2.3);
   }
-  part(boxes,'#665d61',-4.65,1.15,0,.12,2.3,1.1);
+  // Nearly every small town has these pragmatic, slightly mismatched
+  // building-front features. Avoid sub-pixel relief textures on mobile.
+  if(!shop&&type>0&&key%3!==0){
+   part(boxes,'#7b8584',-4.66,1.35,0,.11,2.55,2.2); // garage roller shutter
+   for(const y of [.75,1.35,1.95])part(boxes,'#a1aca6',-4.75,y,0,.04,.06,2.2);
+  }else part(boxes,'#665d61',-4.65,1.15,0,.12,2.3,1.1);
+  if(!shop&&type>0)part(boxes,'#a5a297',-4.56,h-1.35,0,.095,.24,w*.91); // terrazzo/mosaic border
   if(random(key+77)>.65)glow(round,'#ffd298',-4.9,2.65,.9,.13,.18,.13);
   if(shop){
    part(boxes,'#315e66',-4.7,1.4,0,.15,2.6,w*.88);
@@ -334,14 +357,21 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
   }
   coastShadowGroup='buildings';
+  let taiwanFarmPrefab:THREE.BufferGeometry|undefined;
   for(const site of FARM_HOMES){
    // The demonstration hamlet replaces only these two primitive farm houses.
    if(ruralShowcaseReplacesFarmHome(site.d))continue;
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,site.x);yaw+=site.yaw;if(!clear(10))continue;
-   // The same coastal house kit, with low roofs, an earth yard and a short fence.
+   // Two of three rural plots use the single-draw Taiwanese brick/plaster
+   // farmhouse prefab. The third retains a modest older RC house for real
+   // mixed-age village character instead of a cloned museum village.
    part(boxes,'#aa996f',0,.015,0,17,.08,21);
-   coastHome(site.key,false,true);
+   if(site.key%3!==0){
+    taiwanFarmPrefab??=buildCoastRuralHouse('farmhouse');
+    yaw+=Math.PI+coastHomeFacingYaw(site.key,'farm');
+    part(taiwanFarmPrefab,'#ffffff',0,0,0,1,1,1);
+   }else coastHome(site.key,false,true);
    for(const z of [-9,9]){
     for(const x of [-7,-3,1,5])part(boxes,'#aa8960',x,.55,z,.14,1.1,.14);
     part(boxes,'#aa8960',-1,.73,z,12,.12,.1);
@@ -355,8 +385,11 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   if(inChunk(COAST_RURAL_SHOWCASE.start)){
    coastShadowGroup='buildings';
    const ruralPrefabs=new Map<string,THREE.BufferGeometry>();
+   if(taiwanFarmPrefab)ruralPrefabs.set('farmhouse',taiwanFarmPrefab);
    for(const site of COAST_RURAL_HOUSES){
     beachAnchor(site.d,site.x);
+    // The PI turn faces each local -X entrance toward the actual road;
+    // the authored positive yaw tilts the hero gate toward incoming cars.
     yaw+=Math.PI+site.yaw;
     // Explicitly positioned, road-side-safe authored lots. A single prefab
     // template takes the place of many per-wall primitive draw calls.
@@ -366,11 +399,14 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
    // Low bridge over the irrigation channel toward the courtyard entrance;
    // begins beyond the guardrail, not on the playable asphalt.
-   beachAnchor(1056,34);
-   part(boxes,'#bdb5a3',-4,.34,0,19,.50,4.2);
+   // Connect the irrigation crossing to the *turned* courtyard gate.
+   // The new entrance is roughly at route 1051m, x 43m. This short footpath
+   // follows it without flattening or touching the water ribbon.
+   beachAnchor(1052,34);
+   part(boxes,'#bdb5a3',-3,.34,0,22,.50,4.2);
    for(const z of [-1.9,1.9]){
-    part(boxes,'#bcb4a6',-4,.98,z,17,.20,.18);
-    for(const x of [-11,-6,-1,3])part(boxes,'#aaa294',x,.70,z,.19,.79,.22);
+    part(boxes,'#bcb4a6',-3,.98,z,21,.20,.18);
+    for(const x of [-13,-8,-3,2,7])part(boxes,'#aaa294',x,.70,z,.19,.79,.22);
    }
    const treeSites=[
     {d:1008,x:76,h:8.6},{d:1020,x:152,h:10.4},
@@ -394,6 +430,67 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    bridgeGap=false;anchorRight=false;
    coastShadowGroup='other';
    part(creek,'#ffffff',0,0,0,1,1,1);
+  }
+  // 台灣路側樣板 R0: one entire drainage channel per scenery chunk.
+  // The ROAD Worker has already sculpted the U profile into grass; this
+  // visual mesh adds concrete lips, water, and baked precast/grating covers.
+  // It does not touch asphalt physics, camera, or the approved ocean.
+  if(coastDrainOverlaps(range.start,range.end)){
+   const gutter=buildCoastRoadsideDrain(sample,range.start,range.end);
+   if(gutter){
+    base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+    bridgeGap=false;anchorRight=false;coastShadowGroup='other';
+    part(gutter,'#ffffff',0,0,0,1,1,1);
+   }
+   // Separate flow geometry has a route-UV clock-driven shader; no extra
+   // simulation, texture fetch or transparent overlay on the concrete.
+   const flow=buildCoastRoadsideWater(sample,range.start,range.end);
+   if(flow){
+    base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+    bridgeGap=false;anchorRight=false;coastShadowGroup='other';
+    part(flow,'#ffffff',0,0,0,1,1,1);
+   }
+  }
+  // Utility poles now stand directly along the far canal lip. The normal
+  // generic scenery clearance would reject them for being close to asphalt;
+  // this authored gutter-side position is intentional and safely outside it.
+  // Warning rings, ceramic insulators and transformer parts use
+  // existing instanced cylinder/box buckets; wires use ONE combined mesh.
+  coastShadowGroup='other';
+  for(const pole of COAST_UTILITY_POLES){
+   if(!inChunk(pole.d))continue;
+   beachAnchor(pole.d,pole.x);
+   if(pole.x<=COAST_DRAIN_X.rightLip+.23)continue;
+   const h=pole.height;
+   part(cylinder,'#94968f',0,h*.5,0,.245,h,.245);
+   part(cylinder,'#373d3e',0,1.03,0,.266,2.06,.266);
+   for(const y of [.50,.98,1.46])part(cylinder,'#dbb245',0,y,0,.283,.27,.283);
+   part(boxes,'#687174',0,h-.54,0,3.05,.17,.22);
+   for(const across of [-1.05,0,1.05]){
+    part(cylinder,'#dad6c7',across,h-.31,0,.105,.32,.105);
+    part(cylinder,'#4d5051',across,h-.13,0,.045,.07,.045);
+   }
+   if(pole.transformer){
+    part(cylinder,'#71807c',.64,h-2.20,0,.48,1.42,.48);
+    part(boxes,'#59635f',.64,h-1.42,0,1.15,.15,1.10);
+    part(boxes,'#6d7272',.58,h-2.82,0,1.08,.14,1.12);
+   }
+   // In this road frame, positive local +X extends TOWARD the sea-side
+   // traffic lanes. The R1 -X arm mistakenly pointed back into the fields.
+   // Every pole has its own small road-facing streetlight, no extra poles.
+   if(pole.lamp){
+    part(boxes,'#696f6d',1.42,h-1.63,0,2.85,.15,.17);
+    part(boxes,'#68706a',2.93,h-1.73,0,.83,.22,.64);
+    part(boxes,'#f8dfaa',2.96,h-1.89,0,.68,.065,.46,0,0,0,.9);
+   }
+  }
+  if(coastPoleLinks(range.start,range.end).length){
+   const wires=buildCoastUtilityWires(sample,range.start,range.end);
+   if(wires){
+    base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+    bridgeGap=false;anchorRight=false;
+    part(wires,'#ffffff',0,0,0,1,1,1);
+   }
   }
   // A few distinctive trees near the fields and farmyards, not a wall of
   // vegetation. These sit in the authored field-edge gaps where the generic
@@ -797,7 +894,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   if(act.id==='city'&&index===1){for(const x of [-20,20]){part(boxes,'#4b8090',x,19,0,2,38,2);part(boxes,'#dfb65c',x-10,37,0,36,1.2,1.2);part(cylinder,'#647a7b',x-25,24,0,.07,25,.07);part(boxes,'#d38e6a',x,2,6,14,4,6);}}
  }
- for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;
+ for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;if(b.geometry.userData.coastDrainWater)mesh.userData.coastDrainWater=true;
    if(range.coastUltra)mesh.userData.coastShadowGroup=b.shadowGroup;
    group.add(mesh);}
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};

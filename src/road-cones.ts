@@ -1,4 +1,5 @@
 import {warningTriangleGeometry,type Breakdown} from './breakdowns';
+import {coastCurveConeLayout} from './coast-curve-cones';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
@@ -45,11 +46,11 @@ export class RoadCones {
  constructor(
   private sample:Sample,private halfAt:(d:number)=>number,scene:THREE.Scene,
   seed:number,private length:number,private ready:(d:number)=>boolean=()=>true,
-  private triangles?:readonly Breakdown[],private sunsetShadows=false,private geometryShadows=false,
+  private triangles?:readonly Breakdown[],private sunsetShadows=false,private geometryShadows=false,private coastalBends=false,
  ){
   this.recipe=triangles
    ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:h.stopSide*(this.halfAt(h.distance)-1.75)})))
-   :coneLayout(seed,length);
+   :[...coneLayout(seed,length),...(coastalBends?coastCurveConeLayout(sample,halfAt,length):[])];
   const g=triangles?warningTriangleGeometry():geometry();
   if(triangles)g.rotateY(Math.PI);
   this.mesh=new THREE.InstancedMesh(g,triangles

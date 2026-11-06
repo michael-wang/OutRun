@@ -56,12 +56,13 @@ type RoadSlice={position:THREE.Vector3;right:THREE.Vector3};
 export function roadHidesVehicle(
  sample:(distance:number)=>RoadSlice,halfAt:(distance:number)=>number,player:number,vehicle:number,
  eye:THREE.Vector3,aim:THREE.Vector3,
+ step:number=TRAFFIC_OUTLINE.crestStep,far:number=TRAFFIC_OUTLINE.crestFar,
 ):boolean{
  const ahead=vehicle-player;
- if(ahead<TRAFFIC_OUTLINE.crestNear||ahead>TRAFFIC_OUTLINE.crestFar)return false;
+ if(ahead<TRAFFIC_OUTLINE.crestNear||ahead>far)return false;
  const dx=aim.x-eye.x,dz=aim.z-eye.z,segmentSquared=dx*dx+dz*dz;
  if(segmentSquared<9)return false;
- for(let d=player+TRAFFIC_OUTLINE.crestStep;d<vehicle-9;d+=TRAFFIC_OUTLINE.crestStep){
+ for(let d=player+step;d<vehicle-9;d+=step){
   const road=sample(d),rx=road.position.x-eye.x,rz=road.position.z-eye.z;
   const t=(rx*dx+rz*dz)/segmentSquared;
   if(t<=.04||t>=.98)continue;

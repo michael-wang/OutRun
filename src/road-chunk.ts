@@ -1,5 +1,6 @@
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
+import {coastDrainAt,coastDrainOverlaps,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
@@ -140,10 +141,29 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  if(coastUltra){
   // Physical beach stations survive the variable-width shoulder conversion.
   const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-coastBeachX(metres,d)-cachedWidth(d),cachedShoulders(d)!);
-  for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11],[-11,-7]])
+  for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11]])
    append('sand',rawAt(a),rawAt(b),0,0,start,end,2.5);
+  // The SEA-SIDE shoulder is blacktop too, right up to its -11m edge.
+  // Beach sand starts OUTSIDE this apron rather than intruding into traffic.
+  // This reuses the existing asphalt render material and leaves 5 lanes
+  // / collision raycast strips completely unchanged.
+  append('asphalt',rawAt(-11),rawAt(-7),-.09,-.09,start,end,2.5);
   append('sand',-7,7,-.1,-.1,start,end,2.5);
-  append('sand',7,13,-.1,-.1,start,end,2.5);
+  // Rural/town/remote Taiwan drainage sections have no six-metre BEIGE
+  // highway shoulder. Continue the existing blacktop about 1.37m beyond
+  // the actual lane edge, then hand off to the steep concrete U channel.
+  // It is an ART extension only; five drivable lanes and handling stay put.
+  const boundaries=Array.from(new Set([
+   start,end,...COAST_SIDE_DRAINS.flatMap(site=>[Math.max(start,Math.min(end,site.start)),Math.max(start,Math.min(end,site.end))]),
+  ])).sort((a,b)=>a-b);
+  for(let i=1;i<boundaries.length;i++){
+   const a=boundaries[i-1],b=boundaries[i];
+   if(b-a<.001)continue;
+   if(coastDrainAt((a+b)/2)){
+    const edge=(d:number)=>tripBarrierRawOffset(1,COAST_DRAIN_X.outerRoad-cachedWidth(d),cachedShoulders(d)!);
+    append('asphalt',7,edge,0,-.1,a,b,2.5);
+   }else append('sand',7,13,-.1,-.1,a,b,2.5);
+  }
  }else{
   if(scenerySections)append('sand',d=>-sceneryFarReach(sampled(d).curvature),-160,-12,-9,start,end,10,undefined,true);
   if(active){
@@ -157,9 +177,31 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   else append('sand',-13,13,-.1,-.1,start,end,2.5);
  }
  if(coastUltra){
-  // Actual cross-slope relief: fine near the verge, coarse on distant ridges.
+  // Grass begins at raw=13 on ordinary coast, but raw=13 physically
+  // moves INWARD when the shoulder narrows to 1.6m. The gutter stays at
+  // fixed PHYSICAL x=10.12–14.75, so the first grass ribbon must follow
+  // the inverse road-offset mapping on active drain stretches. Otherwise
+  // grass would cover the 1m-deep trench at the 8.55km acceptance site.
+  // No additional scene mesh or draw family, just one variable inner edge.
   const strips=COAST_HILL_STRIPS;
-  for(let i=1;i<strips.length;i++)append('grass',strips[i-1],strips[i],0,0,start,end,strips[i]<140?5:20);
+  for(let i=1;i<strips.length;i++){
+   if(i!==1||!coastDrainOverlaps(start,end)){
+    append('grass',strips[i-1],strips[i],0,0,start,end,strips[i]<140?5:20);
+    continue;
+   }
+   const boundaries=Array.from(new Set([
+    start,end,...COAST_SIDE_DRAINS.flatMap(site=>[
+     Math.max(start,Math.min(end,site.start)),Math.max(start,Math.min(end,site.end)),
+    ]),
+   ])).sort((a,b)=>a-b);
+   for(let j=1;j<boundaries.length;j++){
+    const a=boundaries[j-1],b=boundaries[j];if(b-a<.001)continue;
+    const left:Edge=coastDrainAt((a+b)/2)?
+     (d:number)=>tripBarrierRawOffset(1,COAST_DRAIN_X.outerLand-cachedWidth(d),cachedShoulders(d)!):
+     strips[0];
+    append('grass',left,strips[1],0,0,a,b,5);
+   }
+  }
  }else if(active){
   for(const [a,b,ha,hb] of [[13,75,-.12,-3],[75,160,-3,-14]]){
    if(start<cutFrom)append('grass',a,b,ha,hb,start,cutFrom,10);

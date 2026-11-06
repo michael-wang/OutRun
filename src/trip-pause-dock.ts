@@ -3,7 +3,7 @@ import {COAST_SHADOW_TECHNIQUES,coastShadowTechniqueSnapshot,type CoastShadowTec
 
 /** Road Trip pause controls stay in the corner; full reviews are explicitly opt-in. */
 export interface TripPauseActions {
- resume():void;replay():void;newRoute():void;settings():void;
+ resume():void;replay():void;settings():void;
  sound():void;fullscreen():void;review():void;
 }
 export interface TripShadowAudit {onChange(technique:CoastShadowTechnique,enabled:boolean):void}
@@ -33,8 +33,7 @@ export class TripPauseDock {
     <button id="tp-more" type="button" aria-expanded="false" aria-controls="tp-actions">☰ 功能</button>
    </div>
    <div id="tp-actions" hidden>
-    <button id="tp-replay" type="button">↻ 重新開始</button>
-    <button id="tp-new-route" type="button">新路線</button>
+    <button id="tp-replay" type="button">↻ 再玩一次</button>
     <button id="tp-settings" type="button">操作設定</button>
     <button id="tp-sound" type="button">音效開</button>
     <button id="tp-fullscreen" type="button">全螢幕</button>
@@ -48,7 +47,7 @@ export class TripPauseDock {
   // Only show keys that actually work. PS4 ✕ means confirm the focused control.
   for(const [id,keyboard,pad] of [
    ['tp-resume','P','OPTIONS'],['tp-more','↵','✕'],
-   ['tp-replay','R','✕'],['tp-new-route','N','✕'],
+   ['tp-replay','R','✕'],
    ['tp-settings','C','✕'],['tp-sound','M','✕'],
    ['tp-fullscreen','F','SHARE'],['tp-review','V','✕'],
   ]){const node=button(id);node.dataset.keyHint=keyboard;node.dataset.padHint=pad;
@@ -57,7 +56,6 @@ export class TripPauseDock {
   this.resumeButton.onclick=actions.resume;
   this.moreButton.onclick=()=>{if(this.reviewOpen)actions.review();else this.setExpanded(!this.expanded);};
   button('tp-replay').onclick=actions.replay;
-  button('tp-new-route').onclick=actions.newRoute;
   button('tp-settings').onclick=actions.settings;
   button('tp-sound').onclick=actions.sound;
   button('tp-fullscreen').onclick=actions.fullscreen;

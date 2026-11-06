@@ -1,3 +1,5 @@
+import {coastDrainAt,coastDrainCovered,COAST_DRAIN_X} from './coast-roadside-layout';
+
 /** Coast-only visitor beaches: a large relaxed second act, two lively
  * bays beside town, and just two quiet pockets on the fishing coast.
  * The opening has an open sea vista without a crowded tourist beach.
@@ -54,19 +56,78 @@ export const coastCrosswalkNear=(d:number,margin=8)=>COAST_CROSSWALKS.some(at=>M
  * receives long uninterrupted metal rail. Inland districts get safe, porous
  * frontage. All boundaries are authored in absolute route metres.
  */
-export type CoastBarrierStyle='opening'|'block'|'rail';
+export type CoastBarrierStyle='opening'|'block'|'rail'|'rock'|'none';
+/** Physical distance from the asphalt edge, not the former highway shoulder.
+ * Rural stone blocks sit immediately BEFORE the open ditch; covered drains
+ * and the deliberately unguarded fishing section have NO visible barrier.
+ */
+export function coastBarrierClearance(d:number,side:-1|1=-1){
+ // The seaward rail and tourist bollards sit just OUTSIDE the -11m
+ // asphalt apron; previously they stood beyond the sand at -12.63m.
+ if(side===-1)return 2.40;
+ return coastDrainAt(d)?.kind==='open'?1.05:TRIP_BARRIER_INNER_FALLBACK;
+}
+const TRIP_BARRIER_INNER_FALLBACK=3.6+.28;
 export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
  if(coastCrosswalkNear(d,14))return 'opening';
+ if(side===1){
+  const drain=coastDrainAt(d);
+  if(drain){
+   if(drain.kind==='open')return coastDrainCovered(d)?'none':'block';
+   return 'none'; // town lid and remote unguarded rural ditch
+  }
+ }
  if(side===-1){
-  return COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70))
-   ?'block':'rail';
+  // Beach activity keeps low walkable concrete. The remote coast gets
+  // occasional short, inexpensive metal rails, with generous open sea views.
+  // Remove the former large dark land-side rock barriers completely.
+  if(COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70)))return 'block';
+  const ruralRails=[[475,680],[3370,3490],[4760,4910],[6990,7250],[8450,8640],[9320,9500]];
+  return ruralRails.some(([a,b])=>d>=a&&d<b)?'rail':'none';
  }
  return coastDistrictAt(d)!==undefined||coastCrosswalkNear(d,65)?'block':'rail';
 }
+/** Road-edge protection is continuous physically, not visually: a short
+ * steel rail or individual concrete stone takes the impact wherever visible;
+ * otherwise a conservative invisible edge prevents the player from driving
+ * across an open beach or into the irrigation canal. The invisible fallback
+ * sits BEHIND a stone's near side so its swept contact remains meaningful.
+ * The bounds are at the edge itself; GuardrailContact handles car dimensions.
+ */
+export function coastDriveBounds(d:number,half:number){
+ const sea=coastBarrierStyle(d,-1);
+ const inland=coastBarrierStyle(d,1);
+ const seaRailCentre=half+coastBarrierClearance(d,-1);
+ const left=sea==='rail'?-seaRailCentre+.05
+  :sea==='block'?-seaRailCentre-.38:-11.0;
+ const right=inland==='block'?COAST_DRAIN_X.leftLip+.06
+  :coastDrainAt(d)?COAST_DRAIN_X.outerRoad:half+.15;
+ return {left,right};
+}
+
+/** Retained only for legacy geometry snapshots; current coast layouts no
+ * longer select 'rock' as a guardrail style. Offshore scenic rocks remain.
+ */
+export function coastBarrierRockAt(d:number){
+ const slot=Math.floor(d/33);
+ const noise=(k:number)=>{const v=Math.sin((slot+73)*41.79+k*107.31)*43152.57;return v-Math.floor(v);};
+ return {
+  d:Math.max(0,d+(noise(1)-.5)*7.5),
+  offset:3.3+noise(2)*.90,
+  width:2.2+noise(3)*1.2,
+  height:1.2+noise(4)*1.20,
+  length:2.7+noise(5)*1.6,
+  yaw:(noise(6)-.5)*.9,
+ };
+}
+
 /** Stable, modest human irregularity, shared by render and shadow coordinates. */
 export function coastBarrierStoneAt(d:number,side:-1|1){
  const slot=Math.floor(d/12);
  const rand=(salt:number)=>{const v=Math.sin((slot+1)*97.13+(side+3)*31.77+salt*17.11)*43758.5453;return v-Math.floor(v);};
  return {d:Math.max(0,d+(rand(1)-.5)*3.2),length:2.2+rand(2),height:.40+rand(3)*.07};
 }
-export const COAST_LAMPS=Array.from({length:156},(_,i)=>380+i*64);
+/** The former 64m standalone lamp grid is retired. Taiwan-style street
+ * lights are now a sparse attribute of COAST_UTILITY_POLES instead.
+ */
+export const COAST_LAMPS:readonly number[]=[];

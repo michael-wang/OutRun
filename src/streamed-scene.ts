@@ -1,4 +1,5 @@
 import {waffleSignTexture} from './vehicle-model';
+import {makeCoastDrainWaterMaterial,type CoastCanalFftUniforms} from './coast-drain-water';
 import type {NatureBatch} from './coast-nature';
 import {natureVisible} from './coast-performance';
 import {markCoastShadowCaster} from './coast-shadow-layers';
@@ -13,7 +14,7 @@ import {SceneTaskProfiler,SCENE_TASK_SOFT_BUDGET_MS,type SceneTaskKind} from './
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
-type Instance={waffleSign?:boolean;nature?:NatureBatch;shadowGroup?:import('./coast-shadow-layers').CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array};
+type Instance={waffleSign?:boolean;coastDrainWater?:boolean;nature?:NatureBatch;shadowGroup?:import('./coast-shadow-layers').CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array};
 type Chunk={index:number;objects:THREE.Object3D[];groups:Partial<Record<string,THREE.Group>>;geometries:Set<THREE.BufferGeometry>;road:'missing'|'working'|'ready';scenery:'missing'|'working'|'ready'};
 type Phase='road'|'scenery';
 type Lifecycle={index:number;start:number;end:number;kind:Phase;generation:number;requestedAt:number;responseAt?:number;workerCpuMs?:number;responseMs?:number;commitStart?:number;commitEnd?:number;commitCpuMs:number;readyAt?:number;generatedInstances?:number;attachedInstances:number;discardedTasks:number;error?:string;retiredAt?:number};
@@ -71,7 +72,23 @@ export class StreamedScene {
  private clipMaterial(o:THREE.Object3D){if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m.clippingPlanes!==this.clippingPlanes){m.clippingPlanes=this.clippingPlanes;m.clipShadows=true;m.userData.journeyBaseOpacity??=m.opacity;m.alphaHash=true;m.opacity=m.userData.journeyBaseOpacity*this.environmentOpacity;this.clippedMaterials.add(m);m.needsUpdate=true;}}
 
  private sceneryCounts=new Map<number,{instances:number;draws:number;clearance:unknown}>();
- private busy=false;private initialized=false;private position=0;private materials=new Map<string,THREE.MeshStandardMaterial>();
+ private busy=false;private initialized=false;private position=0;private materials=new Map<string,THREE.MeshStandardMaterial|THREE.MeshBasicMaterial>();
+ private canalFlowTime={value:0};
+ private readonly canalFft:CoastCanalFftUniforms={
+  uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
+ };
+ private readonly canalFftEnabled={value:0};
+ private coastOceanFft?:Readonly<Record<string,THREE.IUniform>>;
+ /** Each ocean update writes into the SAME shader uniform objects kept by
+  * every stream chunk; materials also work if the ocean failed to load. */
+ bindCoastOceanWater(source?:Readonly<Record<string,THREE.IUniform>>){
+  this.coastOceanFft=source;this.syncCanalOceanWater();
+ }
+ private syncCanalOceanWater(){
+  for(const key of ['uSlope0','uSlope1','uSlope2','uSlope3'] as const)
+   this.canalFft[key].value=this.coastOceanFft?.[key]?.value??null;
+  this.canalFftEnabled.value=Object.values(this.canalFft).every(u=>!!u.value)?1:0;
+ }
  private markerGeometries=[new THREE.BoxGeometry(.15,1.2,.15),new THREE.BoxGeometry(.38,1.6,.3),new THREE.BoxGeometry(.42,.3,.34),new THREE.BoxGeometry(.4,.35,.32)];
  private markerMaterials:THREE.Material[];
  private uploadOwners=new WeakMap<object,number>();
@@ -103,7 +120,7 @@ export class StreamedScene {
   }:undefined).then(()=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.farmGpuWarmed=true;this.farmWarmTask=undefined;})
    .catch(e=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
  }
- updateFarm(time:number){if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
+ updateFarm(time:number){this.canalFlowTime.value=time;this.syncCanalOceanWater();if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
  /** Opt-in common streaming-task cost attribution (read-only). */
  get sceneTaskProfile(){return this.taskProfiler?.snapshot()??null;}
@@ -225,9 +242,29 @@ export class StreamedScene {
     throw new Error('Incomplete Worker farm preparation for chunk '+c.index);
   const templates=new Map<string,THREE.BufferGeometry>(),tasks:(()=>void)[]=[];
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
-  for(const data of instances)tasks.push(()=>{const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}:${!!data.waffleSign}`;let material=this.materials.get(key);if(!material){material=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});if(data.nature)this.configureNatureMaterial(material,data.nature);if(data.waffleSign){material.map=this.waffleTexture??=waffleSignTexture();material.emissive.set(0xffffff);material.emissiveMap=material.map;material.emissiveIntensity=.3;}this.materials.set(key,material);}const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.receiveShadow=!data.nature;mesh.castShadow=!!this.farmSample;
+  for(const data of instances)tasks.push(()=>{
+   const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');
+   const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
+   let material=this.materials.get(key);
+   if(!material){
+    if(data.coastDrainWater){
+     material=makeCoastDrainWaterMaterial(this.canalFlowTime,this.canalFft,this.canalFftEnabled);
+    }else{
+     const standard=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});
+     if(data.nature)this.configureNatureMaterial(standard,data.nature);
+     if(data.waffleSign){standard.map=this.waffleTexture??=waffleSignTexture();standard.emissive.set(0xffffff);standard.emissiveMap=standard.map;standard.emissiveIntensity=.3;}
+     material=standard;
+    }
+    this.materials.set(key,material);
+   }
+   const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);
+   mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;
+   mesh.receiveShadow=!data.nature&&!data.coastDrainWater;
+   mesh.castShadow=!!this.farmSample&&!data.coastDrainWater;
    if(mesh.castShadow)markCoastShadowCaster(mesh,'static',data.shadowGroup??(data.nature?'vegetation':'other'));
-   if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
+   if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}
+   if(data.coastDrainWater){mesh.name='coast-drain-flowing-water';mesh.userData.coastDrainWater=true;}
+   this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
   if(this.farmSample&&this.farmAssets)for(const plot of farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength))tasks.push(()=>{
    const farm=createFarmPlot(plot,this.farmSample!,this.farmAssets!,prepared.get(plot.id));let patches=this.farms.get(c.index);if(!patches){patches=[];this.farms.set(c.index,patches);}patches.push(farm);
    farm.update(this.position,this.farmAssets!.time.value);// Rice, flower, and individual grass blades never render in shadow depth.
@@ -318,6 +355,8 @@ export class StreamedScene {
   return hits.sort((a,b)=>a.distance-b.distance);
  }
  roadReady(distance:number){const c=this.chunks.get(Math.floor(Math.min(this.length-1e-6,Math.max(0,distance))/this.chunkLength)),g=c?.groups['driving-surface'];return c?.road==='ready'&&g?.parent===this.groups['driving-surface']&&g.children.some(o=>(o as THREE.Mesh).geometry?.getAttribute('position')?.count>0);}
+ /** No physical stone collision before its chunk's scenery is displayed. */
+ sceneryReady(distance:number){const c=this.chunks.get(Math.floor(Math.min(this.length-1e-6,Math.max(0,distance))/this.chunkLength)),g=c?.groups.scenery;return c?.scenery==='ready'&&g?.parent===this.groups.scenery;}
  get error(){return this.errorMessage;}
  get sceneryStats(){let instances=0,draws=0;this.groups.scenery.traverse(o=>{if(o instanceof THREE.InstancedMesh){instances+=o.count;draws++;}});return {instances,draws};}
  private registerGeometry(g:THREE.BufferGeometry,index:number){for(const a of Object.values(g.attributes))this.uploadOwners.set(a.array,index);if(g.index)this.uploadOwners.set(g.index.array,index);}
