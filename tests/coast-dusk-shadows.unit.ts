@@ -17,7 +17,7 @@ it('makes one terrain-following beach/road shadow batch plus a dynamic sunset ca
  try{
   expect(shadow.stats).toMatchObject({drawBatches:2,playerShadows:1,shadowMaps:0});
   expect(shadow.anchorCount).toBeGreaterThan(200);
-  expect(shadow.stats.barrierCandidates).toBeGreaterThan(1000);
+  expect(shadow.stats.barrierCandidates).toBeGreaterThan(300); // fewer silhouettes after removing almost all sea rails
   expect(shadow.beach.geometry.getAttribute('position').count).toBeGreaterThan(shadow.anchorCount*6);
   const player=new THREE.Vector3(0,4,500);
   shadow.update(player,3.8);
@@ -58,9 +58,10 @@ it('does not draw ghost silhouettes for beach props omitted by scenery height ga
 it('follows the exact coast-resort 12m block/rail cadence and correct authored seed',()=>{
  const markers=coastBarrierShadowAnchors(1000,()=>8.75);
  const block=markers.find(x=>x.kind==='concrete');
- const rail=markers.find(x=>x.kind==='rail');
+ const natural=markers.find(x=>x.kind==='rock'&&x.x<0);
  expect(block).toBeDefined();
- expect(rail).toBeDefined();
+ expect(natural).toBeDefined();
+ expect(markers.filter(m=>m.kind==='rail'&&m.x<0)).toHaveLength(0);
  expect(markers.some(m=>m.d===0&&coastBarrierStyle(0)==='opening')).toBe(false);
  const a=coastBeachShadowAnchors(804),b=coastBeachShadowAnchors(805);
  const first=COAST_BEACHES[0];
@@ -78,16 +79,12 @@ it('follows the exact coast-resort 12m block/rail cadence and correct authored s
  expect(marketVisitor(a)?.d).not.toEqual(marketVisitor(b)?.d);
 });
 
-it('projects all three real posts and the 10.8m rail beams from one low sun',()=>{
- // coast-resort.ts emits posts at -5/0/+5 around each 12m rail section.
- const markers=coastBarrierShadowAnchors(150,()=>8.75);
- const posts=markers.filter(a=>a.kind==='rail'&&a.x<0&&Math.abs(a.d-120)<=5);
- expect(posts.map(a=>a.d).sort((a,b)=>a-b)).toEqual([115,120,125]);
- const beam=markers.find(a=>a.kind==='rail-beam'&&a.x<0&&a.d===120);
- expect(beam).toBeDefined();
- expect(beam?.width).toBeCloseTo(10.8);
- expect(beam?.length).toBeCloseTo(coastShadowLength(.70));
- const projected=buildCoastGroundShadows(sample,[...posts,beam!],150,()=>8.75);
+it('projects real natural-rock silhouettes where the sea-side rail was removed',()=>{
+ const markers=coastBarrierShadowAnchors(1000,()=>8.75);
+ const rocks=markers.filter(a=>a.kind==='rock'&&a.x<0&&a.d>=440&&a.d<770);
+ expect(rocks.length).toBeGreaterThan(4);
+ expect(markers.some(a=>a.kind==='rail-beam'&&a.x<0&&a.d<1000)).toBe(false);
+ const projected=buildCoastGroundShadows(sample,rocks.slice(0,4),1000,()=>8.75);
  try{
   expect(projected.accepted).toBe(4);
   expect(projected.ranges).toHaveLength(4);
