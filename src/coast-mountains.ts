@@ -52,7 +52,7 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#40503f');
  const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#4c5649');
  const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#66705f');
- const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#536250');
+ const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#465043');
  const normal=new THREE.Vector3();
  for(let layer=0;layer<2;layer++){
   const rear=layer===1;
@@ -103,9 +103,11 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
   // brightens dark vertex colors into the distracting sage-green seen in play.
   // Bypass tone mapping here, then apply a neutral linear-space dimmer AFTER
   // every baked sun/rock/haze blend. Both sheets sit behind the playable hills.
-  // The dimmer preserves their forest-green hue and all existing relief detail.
+  // The dimmer preserves their forest-green hue and relief detail. Keep the
+  // farther skyline noticeably darker so the sunlit water owns the left side.
+  const dim=rear?.46:.56;
   const material=new THREE.MeshBasicMaterial({
-   color:new THREE.Color().setRGB(.58,.58,.58),
+   color:new THREE.Color().setRGB(dim,dim,dim),
    vertexColors:true,fog:false,toneMapped:false,side:THREE.DoubleSide,
   });
   material.onBeforeCompile=shader=>{
