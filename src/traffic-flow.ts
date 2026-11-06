@@ -72,8 +72,17 @@ export function trafficCanEnter(candidate:TrafficSlot,visible:readonly TrafficSl
  const centers=roadLaneCenters(halfWidth),blocked=new Set<number>();
  for(const actor of visible){
   const distance=Math.abs(candidate.distance-actor.distance);
-  if(distance<TRAFFIC_FLOW.roadEntryClearance
-   &&Math.abs(candidate.lateral-actor.lateral)<TRAFFIC_FLOW.laneWidth*.87)return false;
+  if(Math.abs(candidate.lateral-actor.lateral)<TRAFFIC_FLOW.laneWidth*.87){
+   if(distance<TRAFFIC_FLOW.roadEntryClearance)return false;
+   // If a new car appeared too close behind a stopped vehicle, even our
+   // maximum emergency brake could not prevent a crash. Reject that spawn.
+   const following=candidate.distance<actor.distance?candidate:actor;
+   const leading=candidate.distance<actor.distance?actor:candidate;
+   const closing=Math.max(0,following.speed-leading.speed);
+   const required=(candidate.length+actor.length)/2+TRAFFIC_FLOW.baseHeadway
+    +closing*closing/(2*TRAFFIC_FLOW.maximumBrake)+closing*.75;
+   if(distance<required)return false;
+  }
   if(distance<TRAFFIC_FLOW.blockadeSpan)
    blocked.add(nearestTrafficLane(actor.lateral,centers));
  }
