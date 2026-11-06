@@ -58,10 +58,12 @@ it('does not draw ghost silhouettes for beach props omitted by scenery height ga
 it('follows the exact coast-resort 12m block/rail cadence and correct authored seed',()=>{
  const markers=coastBarrierShadowAnchors(1000,()=>8.75);
  const block=markers.find(x=>x.kind==='concrete');
- const natural=markers.find(x=>x.kind==='rock'&&x.x<0);
+ const seaRail=markers.find(x=>x.kind==='rail-beam'&&x.x<0);
  expect(block).toBeDefined();
- expect(natural).toBeDefined();
- expect(markers.filter(m=>m.kind==='rail'&&m.x<0)).toHaveLength(0);
+ expect(seaRail).toBeDefined();
+ expect(markers.filter(m=>m.kind==='rock'&&m.x<0)).toHaveLength(0);
+ expect(seaRail!.d).toBeGreaterThan(475);
+ expect(seaRail!.d).toBeLessThan(680);
  expect(markers.some(m=>m.d===0&&coastBarrierStyle(0)==='opening')).toBe(false);
  const a=coastBeachShadowAnchors(804),b=coastBeachShadowAnchors(805);
  const first=COAST_BEACHES[0];
@@ -79,12 +81,12 @@ it('follows the exact coast-resort 12m block/rail cadence and correct authored s
  expect(marketVisitor(a)?.d).not.toEqual(marketVisitor(b)?.d);
 });
 
-it('projects real natural-rock silhouettes where the sea-side rail was removed',()=>{
+it('projects intermittent seaward metal-rail shadows without dark boulder silhouettes',()=>{
  const markers=coastBarrierShadowAnchors(1000,()=>8.75);
- const rocks=markers.filter(a=>a.kind==='rock'&&a.x<0&&a.d>=440&&a.d<770);
- expect(rocks.length).toBeGreaterThan(4);
- expect(markers.some(a=>a.kind==='rail-beam'&&a.x<0&&a.d<1000)).toBe(false);
- const projected=buildCoastGroundShadows(sample,rocks.slice(0,4),1000,()=>8.75);
+ const rails=markers.filter(a=>(a.kind==='rail'||a.kind==='rail-beam')&&a.x<0&&a.d>=475&&a.d<680);
+ expect(rails.length).toBeGreaterThan(4);
+ expect(markers.some(a=>a.kind==='rock'&&a.x<0&&a.d<1000)).toBe(false);
+ const projected=buildCoastGroundShadows(sample,rails.slice(0,4),1000,()=>8.75);
  try{
   expect(projected.accepted).toBe(4);
   expect(projected.ranges).toHaveLength(4);

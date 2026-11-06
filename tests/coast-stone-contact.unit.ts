@@ -84,7 +84,10 @@ it('uses actual water geometry above the floor and a one-clock reverse-flow shad
  expect(shader.fragmentShader).toContain('uCoastFlowTime');
  expect(shader.fragmentShader).toContain('vCoastFlowUV.y + uCoastFlowTime');
  expect(shader.fragmentShader).toContain(COAST_DRAIN_FLOW_METRES_PER_SECOND.toFixed(1));
- expect(shader.vertexShader).toContain('vCoastFlowUV = uv');
+ expect(shader.vertexShader).toContain('vCoastFlowUV=uv');
+ expect(shader.fragmentShader).toContain('uCoastSlope0');
+ expect(shader.fragmentShader).toContain('coastSky(reflected,sun)');
+ expect(shader.fragmentShader).toContain('uCoastFftEnabled');
  // The old pale static glint geometry must be GONE, not simply hidden.
  const oldGlint=new THREE.Color('#b1a47d'),colors=staticGeometry.getAttribute('color');
  expect(Array.from({length:colors.count},(_,i)=>
@@ -99,13 +102,13 @@ it('uses actual water geometry above the floor and a one-clock reverse-flow shad
  m.dispose();flow.dispose();staticGeometry.dispose();
 });
 
-it('replaces regular standalone lamps with sparse pole-mounted fixtures aimed toward traffic',()=>{
+it('mounts a working roadside lamp on every canal-side utility pole',()=>{
  const lit=COAST_UTILITY_POLES.filter(p=>p.lamp),poles=COAST_UTILITY_POLES;
  expect(COAST_LAMPS).toHaveLength(0);
  expect(poles.length).toBeGreaterThan(58);
  expect(poles.length).toBeLessThan(100);
- expect(lit.length).toBeGreaterThan(12);
- expect(lit.length).toBeLessThan(poles.length*.4);
+ expect(lit.length).toBe(poles.length);
+ expect(poles.every(p=>p.x>COAST_DRAIN_X.rightLip+.35&&p.x<COAST_DRAIN_X.rightLip+.8)).toBe(true);
  const separations=poles.slice(1).map((p,i)=>p.d-poles[i].d);
  expect(Math.min(...separations)).toBeGreaterThan(40);
  expect(Math.max(...separations)-Math.min(...separations)).toBeGreaterThan(50);

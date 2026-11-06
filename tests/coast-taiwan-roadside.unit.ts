@@ -5,8 +5,8 @@ import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
 import {shoulderProfile} from '../src/road-profile';
 import {addJourneyScenery} from '../src/scenery';
 import {coastBeachHeight} from '../src/scenery-cross-section';
-import {coastDrainAt,coastDrainDepth,coastDrainCovered,COAST_SIDE_DRAINS,COAST_UTILITY_POLES,coastPoleLinks} from '../src/coast-roadside-layout';
-import {buildCoastRoadsideDrain,buildCoastUtilityWires} from '../src/coast-roadside-geometry';
+import {coastDrainAt,coastDrainDepth,coastDrainCovered,coastDrainBridgeAt,COAST_DRAIN_BRIDGES,COAST_DRAIN_X,COAST_SIDE_DRAINS,COAST_UTILITY_POLES,coastPoleLinks} from '../src/coast-roadside-layout';
+import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from '../src/coast-roadside-geometry';
 import {buildCoastRuralHouse} from '../src/coast-rural-vignette';
 import {COAST_RURAL_HOUSES} from '../src/coast-rural-layout';
 import {rotatedHouseExtent} from '../src/coast-house-facing';
@@ -59,7 +59,7 @@ it('places an uneven but legible pole rhythm in the verge without blocking the h
  const opening=COAST_UTILITY_POLES.filter(p=>p.d>=780&&p.d<=1515);
  const intervals=opening.slice(1).map((p,i)=>p.d-opening[i].d);
  expect(Math.max(...intervals)-Math.min(...intervals)).toBeGreaterThan(55);
- expect(opening.every(p=>p.x>17.7&&p.x<20&&p.height>9.5)).toBe(true);
+ expect(opening.every(p=>p.x>COAST_DRAIN_X.rightLip+.35&&p.x<COAST_DRAIN_X.rightLip+.8&&p.height>9.5&&p.lamp)).toBe(true);
  for(const pole of opening){
   expect(coastDrainDepth(pole.x,pole.d)).toBe(0);
   const hero=COAST_RURAL_HOUSES.find(h=>h.kind==='courtyard')!;
@@ -114,4 +114,23 @@ it('keeps new Taiwan-prefab detailing inside the original tiny mobile geometry b
   expect(g.boundingSphere!.radius).toBeLessThan(30);
   g.dispose();
  }
+});
+
+it('adds short concrete access bridges where farms need to cross an open watercourse',()=>{
+ expect(COAST_DRAIN_BRIDGES.length).toBeGreaterThan(20);
+ for(const [d,kind] of [[115,'open'],[1052,'open'],[4665,'open'],[7160,'mixed'],[8880,'mixed']] as const){
+  expect(coastDrainAt(d)?.kind).toBe(kind);
+  const bridge=coastDrainBridgeAt(d);
+  expect(bridge).toBeDefined();
+  expect(bridge!.width).toBeGreaterThanOrEqual(6);
+  expect(bridge!.width).toBeLessThanOrEqual(8);
+  expect(coastDrainCovered(d)).toBe(true);
+  expect(coastDrainCovered(d+bridge!.width*.5+1)).toBe(false);
+ }
+ // Water MUST remain under access bridges and disappear under town lids.
+ const water=buildCoastRoadsideWater(sample,1000,1100)!;
+ const uv=water.getAttribute('uv');
+ expect(Array.from({length:uv.count},(_,i)=>uv.getY(i)).some(d=>d>=1048&&d<=1056)).toBe(true);
+ expect(buildCoastRoadsideWater(sample,3960,4010)).toBeNull();
+ water.dispose();
 });

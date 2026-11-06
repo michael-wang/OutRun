@@ -7,7 +7,7 @@ import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 import {coastCurveConeLayout} from '../src/coast-curve-cones';
 import {RoadCones} from '../src/road-cones';
-import {coastBarrierStyle,coastBarrierRockAt} from '../src/coast-layout';
+import {coastBarrierStyle,coastDriveBounds} from '../src/coast-layout';
 import {CoastStoneContact} from '../src/coast-stone-contact';
 import {FinishStats} from '../src/finish-stats';
 import {createState} from '../src/handling';
@@ -28,23 +28,19 @@ it('paints the sea-side shoulder blacktop right up to the beach edge',()=>{
  expect(sandX.some(x=>x<-14)).toBe(true); // still a natural beach
 });
 
-it('keeps low blocks on visitor beaches, rare natural boulders and open ocean vistas',()=>{
+it('keeps low visitor blocks, sparse seaward rails and open ocean vistas without dark boulders',()=>{
  expect(coastBarrierStyle(850,-1)).toBe('none');
- expect(coastBarrierStyle(500,-1)).toBe('rock');
+ expect(coastBarrierStyle(500,-1)).toBe('rail');
  expect(coastBarrierStyle(2500,-1)).toBe('block');
  expect(coastBarrierStyle(7500,-1)).toBe('none');
- const a=coastBarrierRockAt(495),b=coastBarrierRockAt(528);
- expect(a).not.toEqual(b);
- expect(a.width).toBeGreaterThan(2);
- expect(a.length).toBeGreaterThan(2.5);
- // Individual rocks also use swept contact, never an invisible sea-wall.
+ for(const d of [495,528,3440,4800,8500,9400])
+  expect(coastBarrierStyle(d,-1)).not.toBe('rock');
+ expect(coastDriveBounds(850,half(850)).left).toBeCloseTo(-11,5);
+ expect(coastDriveBounds(500,half(500)).left).toBeLessThan(-11);
+ // The removed boulders must not leave ghost impacts behind the ocean view.
  const hit=new CoastStoneContact(half,1.15,2.1);
- const slot=495,stone=coastBarrierRockAt(slot);
- const s=createState();s.distance=stone.d+6;s.lateral=-11.2;s.speed=75;
- const response=hit.update(s,{distance:stone.d-6,lateral:-11.2},.15,1);
- expect(response).toBeDefined();
- expect(response!.lateral).toBeLessThan(-11);
- expect(s.speed).toBeLessThan(75);
+ const s=createState();s.distance=501;s.lateral=-11.2;s.speed=75;
+ expect(hit.update(s,{distance:489,lateral:-11.2},.15,1)).toBeUndefined();
 });
 
 it('adds only sparse outside-of-turn cone groups, never a multi-lane blockade',()=>{

@@ -5,8 +5,9 @@ import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
 import {shoulderProfile} from '../src/road-profile';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {addCoastResort} from '../src/coast-resort';
-import {coastBarrierStyle,coastBarrierClearance} from '../src/coast-layout';
-import {coastDrainRightLimit,COAST_DRAIN_X,COAST_UTILITY_POLES} from '../src/coast-roadside-layout';
+import {coastBarrierStyle,coastBarrierClearance,coastDriveBounds} from '../src/coast-layout';
+import {COAST_DRAIN_X,COAST_UTILITY_POLES} from '../src/coast-roadside-layout';
+import {GuardrailContact} from '../src/guardrail-contact';
 import {coastBarrierShadowAnchors} from '../src/coast-dusk-shadows';
 import {addJourneyScenery} from '../src/scenery';
 import {step,createState} from '../src/handling';
@@ -70,25 +71,31 @@ it('delivers distinct Taiwan roadside treatments instead of one highway guardrai
   for(const mesh of scene.children as THREE.InstancedMesh[]){mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();}
  }
 });
-it('keeps the third act drain invisible-wall safe while leaving normal road steering unchanged',()=>{
- const oldLimit=8.75+2.6;
- expect(coastDrainRightLimit(0,oldLimit)).toBe(oldLimit);
- expect(coastDrainRightLimit(850,oldLimit)).toBeLessThan(9.1);
- expect(coastDrainRightLimit(3990,oldLimit)).toBeLessThan(9.1);
- expect(coastDrainRightLimit(8550,oldLimit)).toBeLessThan(9.1);
- expect(coastDrainRightLimit(40,oldLimit)).toBeGreaterThan(9.1); // smooth approach
- const state=createState();state.distance=8550;state.lateral=10.2;state.speed=50;
- step(state,{gas:true,brake:false,steer:1},.016,0,1,8.75,0,0,coastDrainRightLimit);
- expect(state.lateral+1.13).toBeLessThan(COAST_DRAIN_X.leftLip-.08);
- const normal=createState();normal.distance=20;normal.lateral=10.2;normal.speed=50;
- step(normal,{gas:true,brake:false,steer:1},.016,0,1,8.75,0,0,coastDrainRightLimit);
- expect(normal.lateral).toBeGreaterThan(10);
+it('keeps the car fully on asphalt on BOTH sides, matching guardrail and stone positions',()=>{
+ for(const [d,side] of [[850,-1],[500,-1],[2500,-1],[3990,1],[8550,1]] as const){
+  const bounds=coastDriveBounds(d,half(d));
+  expect(bounds.left).toBeLessThanOrEqual(-10.95);
+  expect(bounds.right).toBeLessThanOrEqual(COAST_DRAIN_X.leftLip+.07);
+  const contact=new GuardrailContact(1.15,2.1,x=>coastDriveBounds(x,half(x)));
+  const state=createState();state.distance=d;state.speed=60;
+  state.lateral=side<0?-13:13;
+  const impact=contact.update(state,d-0.5,state.lateral-side*.5,.016,true);
+  expect(impact).toBeGreaterThan(0);
+  expect(state.lateral).toBeGreaterThanOrEqual(bounds.left+1.15-.1);
+  expect(state.lateral).toBeLessThanOrEqual(bounds.right-1.15+.1);
+  expect(contact.inspect().impacts).toBe(1);
+ }
+ const beach=coastDriveBounds(850,8.75);
+ expect(beach.left).toBe(-11);
+ const metal=coastDriveBounds(500,8.75);
+ expect(metal.left).toBeLessThan(beach.left);
+ const rightStone=coastDriveBounds(850,8.75);
+ expect(rightStone.right).toBeGreaterThan(COAST_DRAIN_X.outerRoad);
 });
-it('mounts occasional lights ON existing poles without adding regular standalone lamps or new spacing',()=>{
+it('mounts a warm fixture ON every real canal-side utility pole',()=>{
  const mounted=COAST_UTILITY_POLES.filter(p=>p.lamp);
- expect(mounted.map(p=>p.d)).toEqual(expect.arrayContaining([906,1257,4060,4316,8640,9106]));
- expect(mounted.length).toBeGreaterThan(10);
- expect(mounted.length).toBeLessThan(COAST_UTILITY_POLES.length*.42);
+ expect(mounted.map(p=>p.d)).toEqual(expect.arrayContaining([906,4060,4316,8640]));
+ expect(mounted.length).toBe(COAST_UTILITY_POLES.length);
  for(const d of [906,4060,8640]){
   const scene=new THREE.Scene();
   const result=addJourneyScenery(scene,track.sample,track.length,stage.sceneryAct,stage.seed,
@@ -108,6 +115,8 @@ it('mounts occasional lights ON existing poles without adding regular standalone
   geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());
  }
  const shadows=coastBarrierShadowAnchors(1600,half);
- expect(shadows.some(s=>s.kind==='lamp'&&s.d===906&&s.x===18.7)).toBe(true);
- expect(shadows.some(s=>s.kind==='lamp'&&s.d>=780&&s.d<1515&&s.d!==906&&s.d!==1257)).toBe(false);
+ const pole=COAST_UTILITY_POLES.find(p=>p.d===906)!;
+ expect(shadows.some(s=>s.kind==='lamp'&&s.d===pole.d&&s.x===pole.x)).toBe(true);
+ expect(shadows.filter(s=>s.kind==='lamp'&&s.d>=780&&s.d<1515).length)
+  .toBe(COAST_UTILITY_POLES.filter(p=>p.d>=780&&p.d<1515).length);
 });

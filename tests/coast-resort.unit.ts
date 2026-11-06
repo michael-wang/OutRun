@@ -31,7 +31,7 @@ it('replaces racing curbs and tall continuous rails; keeps crossings at district
 });
 it('keeps concrete and rails outside the driven lanes, bounded in height and batched',()=>{
  const scene=new THREE.Scene(),stats=addCoastResort(scene,track.sample,halfAt,0,1000);
- expect(stats.draws).toBe(3);expect(scene.children).toHaveLength(3); // stones, little legacy launch rail, natural seaward rock batch
+ expect(stats.draws).toBe(2);expect(scene.children).toHaveLength(2); // concrete stones and sparse seaward metal rails, no dark boulders
  const matrix=new THREE.Matrix4(),scale=new THREE.Vector3();
  for(const mesh of scene.children as THREE.InstancedMesh[]){
   for(let i=0;i<mesh.count;i++){
@@ -87,7 +87,7 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  expect(triangles).toBeLessThan(14000);
 });
 
-it('uses beach stones and occasional natural rocks, preserving open seaward vistas',()=>{
+it('uses beach stones and occasional metal guardrails, preserving open seaward vistas',()=>{
  for(const bay of COAST_BEACHES){
   const half=Math.min(440,bay.radius*.70);
   for(let d=Math.ceil((bay.distance-half+24)/12)*12;d<bay.distance+half-24;d+=12)
@@ -96,7 +96,7 @@ it('uses beach stones and occasional natural rocks, preserving open seaward vist
  }
  for(let d=240;d<=1740;d+=12)
   if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
-   expect(coastBarrierStyle(d,-1)).toBe(d>=440&&d<770?'rock':'none');
+   expect(coastBarrierStyle(d,-1)).toBe(d>=475&&d<680?'rail':'none');
  expect(coastBarrierStyle(4100,1)).toBe('none'); // covered town drain; no rail
  expect(coastBarrierStyle(850,1)).toBe('block'); // rural concrete stones
  expect(coastBarrierStyle(8550,1)).toBe('none'); // unguarded fishing countryside
@@ -108,7 +108,7 @@ it('uses beach stones and occasional natural rocks, preserving open seaward vist
   expect(coastBarrierStyle(at,1)).toBe('opening');
  }
  const styles=Array.from({length:834},(_,i)=>coastBarrierStyle(i*12,-1));
- expect(styles.slice(1).filter((v,i)=>v!==styles[i]).length).toBeLessThan(50); // a few authored open/rock pockets, never 12m alternation
+ expect(styles.slice(1).filter((v,i)=>v!==styles[i]).length).toBeLessThan(50); // a few authored open/rail pockets, never 12m alternation
 });
 
 it('adds deterministic but non-periodic stone imperfections without moving into the roadway',()=>{
