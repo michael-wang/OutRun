@@ -49,7 +49,10 @@ export function makeCoastDrainWaterMaterial(clock:CoastFlowClock){
    vec3 shade = mix(vec3(.20,.41,.40),vec3(.29,.50,.47),small);
    shade += vec3(.24,.18,.11)*thin*(.45+.55*small);
    float edge = smoothstep(.0,.12,bank)*(1.0-smoothstep(.88,1.0,bank));
-   diffuseColor.rgb *= shade*(.82+.18*edge);
+   // Do not darken the existing diffuse tint TWICE: that was why the
+   // previous water read as asphalt from the driving camera. A soft slate
+   // teal base and drifting flecks remain legible against concrete walls.
+   diffuseColor.rgb = mix(diffuseColor.rgb,shade,.72)*(.84+.16*edge);
    `,
   );
  };
