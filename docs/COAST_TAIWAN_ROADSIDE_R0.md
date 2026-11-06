@@ -1,3 +1,50 @@
+# Coastal Taiwan roadside identity — R2 almost-entire-route release candidate
+
+Status: implemented on `dev`, pending driver-side photo/FPS acceptance on
+Pixel 8. This R2 supersedes the earlier three-segment R0/R1 notes below.
+**Houses and accepted mountains remain untouched.**
+
+## R2 changes (2026-11-07)
+
+- Drainage runs continuously along the inland side from **60–9,970m**.
+  Open rural U channels alternate with covered town segments and a few
+  covered driveway/field-road crossings. Beach/ocean side is unchanged.
+- **Open U channels now hold a thin, visible ~20cm murky green water surface**
+  with occasional warm sunset highlights; the >1m concrete walls remain
+  visible. No extra runtime water simulation, no transparent draw pass.
+- Covered town gutters have flush precast slabs, transverse seams and occasional
+  narrow grilles, **without the formerly excessive grey slab to the right**.
+  Ground/grass immediately resumes outside the lid.
+- Rural concrete roadside stones use exactly the displayed 12m marker slots
+  for **swept individual-stone collision**. Hitting a stone reduces speed,
+  nudges the car back, adds short body yaw/roll and reuses existing
+  metallic impact sound and sparks. The rear and impact state reset on replay.
+  The response is disabled until the stone's stream chunk is visible.
+- The 64m regular lamppost recipe is retired. Utility poles now occupy
+  several unevenly spaced groups across the road, typically **98–174m** apart.
+  Only a minority carry a short streetlight arm and warm head, extending
+  **toward the asphalt**, not toward the inland fields. Pole/wire mesh and
+  instance counts remain bounded. Existing curated pole positions kept.
+- Scoped Worker geometry: per-chunk one combined ditch mesh and one
+  combined utility-wire mesh; no new draw-call family, runtime CSG,
+  shadow map, or separate water FFT. Extra tests check segment continuity,
+  individual stone hits, hidden-collider safety and lantern orientation.
+
+### QA checkpoints
+
+- `?at=850` — hit an individual concrete stone, compare speed/sparks, and
+  check the open gutter water under the low sunset.
+- `?at=2100` — transition from quiet seaside to further open roadside drains.
+- `?at=3990` — lids next to the pavement, no unwanted outer grey sidewalk.
+- `?at=5600` — middle town covered drainage and occasional pole lamps.
+- `?at=8550` — open ditch, no visible barrier; invisible safety clamp remains.
+- `?at=9550` — another short covered farmyard crossing.
+
+Manual quality gate: actual 10km phone drive and FPS check. GitHub CI is not a
+substitute for phone visual/performance acceptance.
+
+---
+
 # Coastal Taiwan roadside identity — R0 art trial
 
 Status: implemented on `dev` in the existing Worker-prepared coast, for human driver-side art and Pixel 8 FPS review. **Do not merge into `main` before playing it.**
