@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type {createTrack} from './track';
 import {coastBeachHeight} from './scenery-cross-section';
-import {COAST_SIDE_DRAINS,COAST_DRAIN_X,coastDrainCovered,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_SIDE_DRAINS,COAST_DRAIN_X,coastDrainDepth,coastDrainCovered,coastPoleLinks} from './coast-roadside-layout';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 type V=[number,number,number];
@@ -53,7 +53,7 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
   if(b<=a)continue;
   // Town covers use shorter precast slabs; countryside open culverts can
   // use longer, geometrically cheaper pieces. No runtime tessellation.
-  const segments=Math.ceil((b-a)/(site.kind==='covered'?3.2:4.8));
+  const segments=Math.ceil((b-a)/(site.kind==='covered'?4.6:8.4));
   const coverPoint=(d:number,x:number,raise=0):V=>{
    const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
    const lip=coastBeachHeight(X.leftLip,p.position.y,p.right.y,d);
@@ -75,17 +75,33 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
    quad(X.innerLeft,X.innerRight,.075,'#4b514d'); // damp, muddy floor
    quad(X.innerRight,X.rightLip,.035,'#969991'); // far vertical side
    if(coastDrainCovered(mid)){
-    // Taiwan town footpath: grey slabs run all the way to the storefront.
-    quad(X.rightLip,X.outerLand,.045,'#9e9e95');
+    // The photographed town drain lid IS the concrete. The previous extra
+    // 2.1m grey slab beyond it looked like an unwanted second sidewalk.
+    // Restore natural earth/grass immediately outside the right-hand curb.
+    quad(X.rightLip,X.outerLand,.038,'#667453');
    }else{
-    // Rural roadside: a narrow concrete bank turns directly to planted
-    // soil/grass, never another wide beige or grey highway shoulder.
+    // Country road: narrow concrete rim leading directly into planted soil.
     quad(X.rightLip,X.rightLip+.27,.055,'#b1ada1');
     quad(X.rightLip+.27,X.outerLand,.045,'#667453');
    }
    if(!coastDrainCovered(mid)){
-    // Narrow dark olive water trace: let the trough remain unmistakably open.
-    if(i%3!==0)quad(X.innerLeft+.15,X.innerRight-.14,.092,'#626963');
+    // A continuous, deliberately shallow (20cm) muddy green water surface
+    // sits inside the actual >0.8m deep U gutter, never hiding its walls.
+    // Skip the first/last fade metres where the channel is not deep enough.
+    const depth=(coastDrainDepth(X.innerLeft+.3,mid));
+    if(depth>.55){
+     const left=X.innerLeft+.17,right=X.innerRight-.17;
+     const water=(d:number,x:number,above:number)=>ground(sample,d,x,above);
+     batch.quad(water(from,left,.21),water(from,right,.21),
+      water(to,right,.21),water(to,left,.21),'#4c7770');
+     if(i%6===2){
+      // Thin irregular low-sun reflections communicate WATER at 300km/h,
+      // without another transparent material, texture or FFT simulation.
+      const u=left+.27+(i%3)*.16;
+      batch.quad(water(from,u,.222),water(from,u+.17,.222),
+       water(to,u+.17,.222),water(to,u,.222),'#b1a47d');
+     }
+    }
    }else{
     // Precast concrete lid, flush with road surface and footpath. Full cover
     // gaps are genuinely dark; the townside contains NO barrier or stone.
