@@ -17,7 +17,7 @@ import type {createTrack} from './track';
 import {canyonSceneEnvelope,canyonGroundY,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonPropSlots,type CanyonPropSlot} from './canyon-language';
 import type {DesignedProp,DesignerCut} from './designer-canyon';
-import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,coastBeachHeight,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
+import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,coastBeachHeight,COAST_SEA_LEVEL,scenerySectionAt,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const rand=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 /** No freestanding city blocks over the water cut-out and unsupported bridge approaches.
@@ -456,6 +456,34 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
      part(round,'#bd8d68',0,1.9,0,.22,.25,.22);
      part(boxes,'#e76f51',0,1.5,0,.5,.5,.3);
     }
+   }
+  }
+  // Final chapter: two tiny working-boat landings punctuate the coast.
+  // These are sparse fishing sheds/net racks, not another resort village.
+  coastShadowGroup='buildings';
+  for(const landing of [{d:7730,x:-17.5},{d:8920,x:-17.5}]){
+   if(!inChunk(landing.d))continue;
+   beachAnchor(landing.d,landing.x);
+   if(!clear(6))continue;
+   yaw+=Math.PI/2;
+   part(boxes,'#a69a81',0,.28,0,8,.56,10);
+   part(boxes,'#c0b095',0,1.95,0,5,3.5,6.4);
+   part(boxes,'#6b6964',0,3.83,0,6.3,.40,7.4);
+   for(const z of [-2.8,2.8]){
+    part(cylinder,'#776a57',-4,1.6,z,.11,3.2,.11);
+    part(boxes,'#847d6c',-4,3.20,z,.45,.20,2.2);
+    part(boxes,'#b9a47d',-4,1.40,z,.25,1.9,1.8);
+   }
+   for(const z of [-2.4,0,2.4])part(boxes,'#8b6d52',-5,.55,z,1.5,.8,1.5);
+   // Short low pier extending seaward from above water level. It stays outside
+   // the drivable corridor and only these two locations have this structure.
+   const frame=sample(landing.d);
+   base.copy(frame.position).addScaledVector(frame.right,-25);
+   base.y=COAST_SEA_LEVEL+.75;
+   yaw=-frame.roadHeading;
+   part(boxes,'#a9a192',-8,.05,0,18,.36,3.4);
+   for(const x of [-15,-9,-3]){
+    for(const z of [-1.45,1.45])part(cylinder,'#827866',x,-.70,z,.12,1.60,.12);
    }
   }
   coastShadowGroup='rocks';
