@@ -1,6 +1,7 @@
 import {TrafficLights} from './traffic-lights';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import {TrafficLanes} from './traffic-lanes';
+import {trafficPopulationAhead,trafficRevealIsHidden} from './traffic-visibility';
 import {plannedTrafficLateral,trafficCanEnter,trafficFollowingTarget,approachTrafficSpeed,trafficStopBeforeLeader} from './traffic-flow';
 import {TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR,TRAFFIC_CREST_RISK_COLOR,roadHidesVehicle,trafficOutlineGeometry,trafficOutlineHeight,trafficOutlineRadius,trafficOutlineStrength} from './traffic-outline';
 import {CANYON_BEND} from './canyon-identity';
@@ -62,8 +63,8 @@ export class Traffic {
  private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();
  private sunsetCast?:THREE.InstancedMesh;private sunsetPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
  private outlineMeshes:THREE.InstancedMesh[];private crestRims:THREE.InstancedMesh[];private outlineEdges:THREE.EdgesGeometry[];private crestHints:THREE.LineSegments[];
- private outlineMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_OUTLINE_COLOR,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
- private crestMaterial=new THREE.LineBasicMaterial({color:TRAFFIC_CREST_RISK_COLOR,transparent:true,opacity:.6,depthTest:true,depthWrite:false,depthFunc:THREE.GreaterDepth,fog:false,toneMapped:false});
+ private outlineMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_OUTLINE_COLOR,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:true,toneMapped:false});
+ private crestMaterial=new THREE.LineBasicMaterial({color:TRAFFIC_CREST_RISK_COLOR,transparent:true,opacity:.6,depthTest:true,depthWrite:false,depthFunc:THREE.GreaterDepth,fog:true,toneMapped:false});
  private crestRimMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_CREST_RISK_COLOR,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
  private outlinePose=new THREE.Object3D();private outlineShift=new THREE.Vector3();private visionAim=new THREE.Vector3();
  private hintCache=new Map<number,boolean>();private nextHintCheck=0;
@@ -153,6 +154,9 @@ export class Traffic {
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
   this.runningLights?.begin();
   if(time<this.time)this.reset();const dt=time-this.time,previous=this.actors;this.time=time;
+  // Camera-visible traffic must exist before it enters the image. The old
+  // fixed 850m pool boundary was well inside the 1400m mobile chase view.
+  const populationAhead=trafficPopulationAhead(camera,this.scene.fog);
   // Actual motion is authoritative once observed. Retain only lightweight history
   // for the finite route recipe; meshes/reactions still use the 12-actor pool.
   if(this.highwayStart!==undefined&&player>=this.highwayStart){
@@ -195,7 +199,7 @@ export class Traffic {
    }
   }
   for(const a of candidates)if(previous.some(old=>old.id===a.id))this.history.set(a.id,{distance:a.distance,speed:a.speed,time});
-  const inside=candidates.filter(a=>a.distance>=player-180&&a.distance<=player+850&&(a.distance<this.length-20||this.highwayStart!==undefined&&a.distance>=this.highwayStart));
+  const inside=candidates.filter(a=>a.distance>=player-180&&a.distance<=player+populationAhead&&(a.distance<this.length-20||this.highwayStart!==undefined&&a.distance>=this.highwayStart));
   this.actors=inside.filter(a=>previous.some(old=>old.id===a.id));
   // Known stalled hazards are admitted first. Moving cars must plan around
   // them; never silently omit an already-authored breakdown to make room.
@@ -209,6 +213,13 @@ export class Traffic {
    if(this.actors.length>=TRAFFIC_LIMIT)break;
    a.lateral=a.stationary?(a.stopSide??1)*(this.halfAt(a.distance)-1.75):
     plannedTrafficLateral(this.trafficSeed,a.group??0,a.member??0,this.halfAt(a.distance));
+   // Never materialize an actor inside the player's current view. Accept it
+   // far beyond the fog/camera horizon, behind the player, or completely
+   // hidden by a crest. Once accepted it can naturally drive into view.
+   if(camera&&time>0&&a.distance>=player&&
+    !trafficRevealIsHidden(camera,this.sample,this.halfAt,player,a.distance,
+     a.lateral,TRAFFIC_TYPES[a.type].width,TRAFFIC_TYPES[a.type].length,
+     trafficOutlineHeight(a.type),this.scene.fog))continue;
    if(a.id!==INTERCHANGE_DEMO_CAR_ID&&!trafficCanEnter(
     {id:a.id,distance:a.distance,lateral:a.lateral,speed:a.speed,length:TRAFFIC_TYPES[a.type].length,stationary:a.stationary},
     this.actors.map(b=>({id:b.id,distance:b.distance,lateral:b.lateral,speed:b.speed,length:TRAFFIC_TYPES[b.type].length,stationary:b.stationary})),
@@ -217,7 +228,7 @@ export class Traffic {
   }
 
   for(const a of this.actors){const r=this.reactions.get(a.id);if(r){a.distance+=r.boost*.85*(1-Math.exp(-dt/.85));r.boost*=Math.exp(-dt/.85);r.offset+=r.velocity*.55*(1-Math.exp(-dt/.55));r.velocity*=Math.exp(-dt/.55);r.offset*=Math.exp(-dt*.55);const follow=1-Math.exp(-dt/.07);r.yaw+=(THREE.MathUtils.clamp(r.velocity*.075,-.38,.38)-r.yaw)*follow;r.roll+=(THREE.MathUtils.clamp(r.velocity*.03,-.17,.17)-r.roll)*follow;}}
-  this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0],outlineCounts=[0,0,0,0],crestRimCounts=[0,0,0,0];let shadowCount=0,sunsetCount=0,lampCount=0,smokeCount=0;
+  this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+populationAhead).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0],outlineCounts=[0,0,0,0],crestRimCounts=[0,0,0,0];let shadowCount=0,sunsetCount=0,lampCount=0,smokeCount=0;
   if(camera&&(time===0||time>=this.nextHintCheck)){this.hintCache.clear();this.nextHintCheck=time+TRAFFIC_OUTLINE.crestRefreshSeconds;}
   this.crestHints.forEach(h=>h.visible=false);let crestCount=0;
   for(const a of this.actors){
@@ -286,7 +297,17 @@ export class Traffic {
    const safeEdge=this.halfAt(a.distance)-Math.max(1.75,spec.width/2+Math.abs(reaction?.yaw??0)*spec.length/2+.12);const unclamped=a.lateral;
    if(!enteringFromRamp||!this.junction||a.distance>=this.junction.entry.end)
     a.lateral=THREE.MathUtils.clamp(a.lateral,-safeEdge,safeEdge);if(reaction){reaction.offset+=a.lateral-unclamped;if(dt>0){const old=previous.find(p=>p.id===a.id);reaction.slide=old?Math.abs(a.lateral-old.lateral)/dt:0;}}
-   this.history.set(a.id,{distance:a.distance,speed:a.speed,time});a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2)&&(time===0||!!previous.find(old=>old.id===a.id)?.visible||Math.abs(a.distance-player)>80);if(!a.visible)continue;
+   // A road chunk completing while a car sits inside the visible image is
+   // another pop-in source. Hold its first appearance until out of view,
+   // rather than suddenly enabling its instanced model/outline/headlights.
+   const wasVisible=!!previous.find(old=>old.id===a.id)?.visible;
+   const safeToReveal=!camera||time===0||wasVisible||
+    trafficRevealIsHidden(camera,this.sample,this.halfAt,player,a.distance,a.lateral,
+     spec.width,spec.length,trafficOutlineHeight(a.type),this.scene.fog);
+   this.history.set(a.id,{distance:a.distance,speed:a.speed,time});
+   a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2)
+    &&(time===0||wasVisible||Math.abs(a.distance-player)>80)&&safeToReveal;
+   if(!a.visible)continue;
    const p=this.sample(a.distance),front=this.sample(this.highwayStart===undefined?Math.min(this.length,a.distance+spec.axle):a.distance+spec.axle),rear=this.sample(Math.max(0,a.distance-spec.axle));
    const frontDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance+spec.axle):0;
    const rearDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance-spec.axle):0;
