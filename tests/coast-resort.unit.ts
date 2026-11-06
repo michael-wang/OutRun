@@ -38,7 +38,7 @@ it('keeps concrete and rails outside the driven lanes, bounded in height and bat
    mesh.getMatrixAt(i,matrix);scale.setFromMatrixScale(matrix);expect(scale.y).toBeLessThanOrEqual(.721);
    const p=new THREE.Vector3().setFromMatrixPosition(matrix);
    let distance=Infinity;for(let d=0;d<=1010;d+=1)distance=Math.min(distance,p.clone().sub(track.sample(d).position).setY(0).length());
-   expect(distance).toBeGreaterThan(12.2);
+   expect(distance).toBeGreaterThan(9.35); // concrete stones sit just outside the new 10m paved verge
   }
   mesh.dispose();mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
@@ -97,7 +97,9 @@ it('uses human beach access and uninterrupted remote headland rails, never a fix
  for(let d=240;d<=1740;d+=12)
   if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
    expect(coastBarrierStyle(d,-1)).toBe('rail');
- expect(coastBarrierStyle(4100,1)).toBe('block');
+ expect(coastBarrierStyle(4100,1)).toBe('none'); // covered town drain; no rail
+ expect(coastBarrierStyle(850,1)).toBe('block'); // rural concrete stones
+ expect(coastBarrierStyle(8550,1)).toBe('none'); // unguarded fishing countryside
  expect(coastBarrierStyle(5500,1)).toBe('block');
  expect(coastBarrierStyle(3300,1)).toBe('rail');
  expect(coastBarrierStyle(2740,1)).toBe('rail');
