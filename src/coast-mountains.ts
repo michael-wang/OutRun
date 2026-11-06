@@ -46,13 +46,13 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  const right=new THREE.Vector3(axis.z,0,-axis.x);
  if(right.dot(sample(length*.5).right)<0)right.negate();
  const count=Math.ceil((length+7000)/COAST_MOUNTAIN_STEP_M);
- // Sunset reference: the near hills catch warm sidelighting, while distant
- // ridges read as cooler, dark green silhouettes. Atmospheric perspective
- // lowers their contrast; it does NOT force their whole palette toward white.
- const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#4a6056');
- const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#697268');
- const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#948f7f');
- const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#718079');
+ // Sunset art direction: foreground hills carry the warmth; distant ranges
+ // stay in shadow as supporting dark forest-green silhouettes. Do not wash
+ // their greens out with pale rock highlights or bright atmospheric haze.
+ const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#2d4938');
+ const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#43564a');
+ const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#617359');
+ const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#43584a');
  const normal=new THREE.Vector3();
  for(let layer=0;layer<2;layer++){
   const rear=layer===1;
@@ -85,17 +85,16 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
    const sunlight=Math.max(0,normal.dot(COAST_SUN));
    const ribs=ribValues[i],fine=detailValues[i];
    color.copy(base).lerp(stone,rocky*(rear?.48:.59));
-   // The remote range is mostly in backlight; its peaks must not turn
-   // brighter than the sun-warmed middle hills from baked lighting alone.
-   color.multiplyScalar((rear?.69:.69)+(rear?.14:.22)*sunlight+(rear?.12:.14)*normal.y);
-   color.lerp(lit,sunlight*(rear?.08:.21));
-   // Mild erosion/vegetation colour follows relief without painted stripes.
-   color.multiplyScalar(.91+.12*ribs+.095*fine);
-   // Keep recession through lower saturation and less relief contrast.
-   // A moderate BLUE-GREEN airlight veil avoids washing a dark silhouette
-   // into a bright slab (the old rear .22-.42 haze caused the hard seam).
+   // Distant peaks face away from the low sun: reduce their baked fill and
+   // warm highlights rather than allowing the green backdrop to glow.
+   color.multiplyScalar((rear?.65:.69)+(rear?.10:.22)*sunlight+(rear?.10:.14)*normal.y);
+   color.lerp(lit,sunlight*(rear?.06:.21));
+   // Keep subtle relief, but do not give the remote range bright mottling.
+   color.multiplyScalar(rear?.95+.06*ribs+.045*fine:.91+.12*ribs+.095*fine);
+   // Atmospheric recession softens contrast without adding pale-green fog.
+   // Foreground hill colors and haze are deliberately unchanged.
    const depth=depthValues[i];
-   color.lerp(haze,rear?.12+.10*depth:.10+.15*depth);
+   color.lerp(haze,rear?.12+.06*depth:.10+.15*depth);
    colors.push(color.r,color.g,color.b);
   }
   geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
