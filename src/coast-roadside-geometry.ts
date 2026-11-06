@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type {createTrack} from './track';
 import {coastBeachHeight} from './scenery-cross-section';
-import {COAST_SIDE_DRAINS,COAST_DRAIN_X,coastDrainCovered,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_SIDE_DRAINS,COAST_DRAIN_X,COAST_DRAIN_BRIDGES,coastDrainBridgeAt,coastDrainCovered,coastDrainAt,coastPoleLinks} from './coast-roadside-layout';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 type V=[number,number,number];
@@ -54,6 +54,13 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
   // Town covers use shorter precast slabs; countryside open culverts can
   // use longer, geometrically cheaper pieces. No runtime tessellation.
   const segments=Math.ceil((b-a)/(site.kind==='covered'?4.6:8.4));
+  // Split precisely at bridge edges: no random partial slab or gap when
+  // the 8.4m countryside drainage panels happen to straddle a driveway.
+  const cuts=Array.from(new Set([
+   ...Array.from({length:segments+1},(_,i)=>a+(b-a)*i/segments),
+   ...COAST_DRAIN_BRIDGES.flatMap(bridge=>[bridge.d-bridge.width*.5,bridge.d+bridge.width*.5])
+    .filter(d=>d>a&&d<b),
+  ])).sort((x,y)=>x-y);
   const coverPoint=(d:number,x:number,raise=0):V=>{
    const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
    const lip=coastBeachHeight(X.leftLip,p.position.y,p.right.y,d);
@@ -61,8 +68,9 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
    v.y=lip+.055+p.right.y*(x-X.leftLip)+raise;
    return [v.x,v.y,v.z];
   };
-  for(let i=0;i<segments;i++){
-   const from=a+(b-a)*i/segments,to=a+(b-a)*(i+1)/segments,mid=(from+to)*.5;
+  for(let i=0;i<cuts.length-1;i++){
+   const from=cuts[i],to=cuts[i+1],mid=(from+to)*.5;
+   const bridge=coastDrainBridgeAt(mid);
    const quad=(x0:number,x1:number,above:number,color:string)=>{
     batch.quad(ground(sample,from,x0,above),ground(sample,from,x1,above),
      ground(sample,to,x1,above),ground(sample,to,x0,above),color);
@@ -74,7 +82,19 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
    quad(X.leftLip,X.innerLeft,.035,'#a4a399'); // near almost-vertical side
    quad(X.innerLeft,X.innerRight,.075,'#4b514d'); // damp, muddy floor
    quad(X.innerRight,X.rightLip,.035,'#969991'); // far vertical side
-   if(coastDrainCovered(mid)){
+   if(bridge){
+    // Narrow concrete road-to-field driveway. The water remains present
+    // below this shallow bridge, not deleted as if the whole canal were filled.
+    batch.quad(coverPoint(from,X.leftLip,.10),coverPoint(from,X.rightLip,.10),
+     coverPoint(to,X.rightLip,.10),coverPoint(to,X.leftLip,.10),'#b3b0a3');
+    batch.quad(coverPoint(from,X.rightLip,.07),coverPoint(from,X.outerLand,.07),
+     coverPoint(to,X.outerLand,.07),coverPoint(to,X.rightLip,.07),'#999a8d');
+    // Low, squared end parapets make the crossing legible from a moving car.
+    for(const d of [from,to]){
+     batch.quad(coverPoint(d,X.leftLip,.12),coverPoint(d,X.rightLip,.12),
+      coverPoint(d,X.rightLip,.35),coverPoint(d,X.leftLip,.35),'#8a8d88');
+    }
+   }else if(coastDrainCovered(mid)){
     // The photographed town drain lid IS the concrete. The previous extra
     // 2.1m grey slab beyond it looked like an unwanted second sidewalk.
     // Restore natural earth/grass immediately outside the right-hand curb.
@@ -113,9 +133,9 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
  return batch.finish('coast-taiwan-roadside-ditch');
 }
 
-/** Small, opaque canal surface above the floor of an open ~1m U drain.
- * Separate from concrete because only the water needs a simple flowing
- * shader; no Ultra-Water FFT, second camera, render target or transparency.
+/** Canal surface over the floor of the open ~1m U drain.
+ * The material reuses the existing Ultra-Water FFT slope textures and dusk
+ * sky, not a new simulation. Narrow bridges mask water with their slabs.
  * UV.y is ABSOLUTE route distance: streaming 1km chunks join seamlessly.
  * Visual flow uses phase (d + positive time), thus waves travel toward
  * decreasing d, opposite the player's forward direction.
@@ -132,7 +152,9 @@ export function buildCoastRoadsideWater(sample:Sample,start:number,end:number){
   distances.push(b);
   for(let row=0;row<distances.length-1;row++){
    const d0=distances[row],d1=distances[row+1],mid=(d0+d1)*.5;
-   if(coastDrainCovered(mid))continue;
+   // A bridge spans the open gutter and must NOT cut the stream. Only
+   // genuine fully covered town drains omit their hidden water surface.
+   if(coastDrainAt(mid)?.kind==='covered')continue;
    const first=pos.length/3;
    for(const d of [d0,d1])for(const [side,x] of [[0,left],[1,right]] as const){
     const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);

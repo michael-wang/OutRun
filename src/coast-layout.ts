@@ -62,7 +62,10 @@ export type CoastBarrierStyle='opening'|'block'|'rail'|'rock'|'none';
  * and the deliberately unguarded fishing section have NO visible barrier.
  */
 export function coastBarrierClearance(d:number,side:-1|1=-1){
- return side===1&&coastDrainAt(d)?.kind==='open'?1.05:TRIP_BARRIER_INNER_FALLBACK;
+ // The seaward rail and tourist bollards sit just OUTSIDE the -11m
+ // asphalt apron; previously they stood beyond the sand at -12.63m.
+ if(side===-1)return 2.40;
+ return coastDrainAt(d)?.kind==='open'?1.05:TRIP_BARRIER_INNER_FALLBACK;
 }
 const TRIP_BARRIER_INNER_FALLBACK=3.6+.28;
 export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
@@ -75,17 +78,17 @@ export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
   }
  }
  if(side===-1){
-  // Beaches with people get low, walkable stones. Between visitor bays we
-  // want a largely UNGUARDED ocean vista with occasional irregular boulders;
-  // the previous continuous metal highway fence is intentionally retired.
+  // Beach activity keeps low walkable concrete. The remote coast gets
+  // occasional short, inexpensive metal rails, with generous open sea views.
+  // Remove the former large dark land-side rock barriers completely.
   if(COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70)))return 'block';
-  const rockyPockets=[[440,770],[3360,3540],[4730,4980],[6950,7440],[8420,8920],[9290,9550]];
-  return rockyPockets.some(([a,b])=>d>=a&&d<b)?'rock':'none';
+  const ruralRails=[[475,680],[3370,3490],[4760,4910],[6990,7250],[8450,8640],[9320,9500]];
+  return ruralRails.some(([a,b])=>d>=a&&d<b)?'rail':'none';
  }
  return coastDistrictAt(d)!==undefined||coastCrosswalkNear(d,65)?'block':'rail';
 }
-/** Seaward boulders use wider 33m irregular intervals; each stone is
- * individually placed instead of becoming a continuous disguised rail.
+/** Retained only for legacy geometry snapshots; current coast layouts no
+ * longer select 'rock' as a guardrail style. Offshore scenic rocks remain.
  */
 export function coastBarrierRockAt(d:number){
  const slot=Math.floor(d/33);

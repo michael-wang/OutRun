@@ -38,20 +38,29 @@ export function coastDrainDepth(x:number,d:number){
   (1-smooth(COAST_DRAIN_X.innerRight,COAST_DRAIN_X.rightLip,x));
  return (site.kind==='covered'?.88:1.12)*along*across;
 }
-/** A short concrete driveway crossing and scattered grates interrupt the rural
- * gutter; in town most of the same channel is closed with cover slabs.
+/** Small one-lane farm/house access slabs, never 40m-long fake drain covers.
+ * Distances are authored near rice plots, farmsteads, and scattered houses.
+ * All placements are absolute route coordinates so bridges align across chunks.
  */
+export const COAST_DRAIN_BRIDGES:readonly {d:number;width:number}[]=[
+ {d:115,width:7},{d:340,width:6},{d:560,width:6},{d:785,width:6},
+ {d:1052,width:8},{d:1260,width:7},{d:1490,width:6},{d:1745,width:7},
+ {d:2090,width:7},{d:2730,width:7},
+ {d:4472,width:7},{d:4665,width:6},{d:4865,width:7},
+ {d:5756,width:7},{d:5960,width:6},{d:6165,width:7},
+ {d:7160,width:7},{d:7390,width:6},{d:7630,width:6},
+ {d:7885,width:6},{d:8160,width:7},
+ {d:8430,width:7},{d:8660,width:6},{d:8880,width:6},
+ {d:9100,width:6},{d:9325,width:6},{d:9550,width:6},{d:9670,width:7},
+];
+export function coastDrainBridgeAt(d:number){
+ return COAST_DRAIN_BRIDGES.find(bridge=>Math.abs(d-bridge.d)<bridge.width*.5);
+}
+/** A covered town drain has precast lids; a farm crossing is a short bridge
+ * over the OPEN channel, whose water must still flow underneath the slab. */
 export function coastDrainCovered(d:number){
  const site=coastDrainAt(d);
- if(!site)return false;
- if(site.kind==='covered')return true;
- // Only a few short village/farm driveways have concrete crossings, not a
- // repeating stripe every few metres of the real open ditch.
- return [
-  [1036,1082],[1250,1267],[2070,2110],[2700,2745],
-  [4730,4760],[5850,5885],[7350,7390],
-  [8710,8765],[8975,9035],[9550,9595],
- ].some(([from,to])=>d>=from&&d<to);
+ return !!site&&(site.kind==='covered'||!!coastDrainBridgeAt(d));
 }
 /** Preserve the existing invisible off-road corridor but stop the car BEFORE
  * its right tyres could hang over the open culvert. The safe limit eases in
@@ -67,9 +76,8 @@ export function coastDrainRightLimit(d:number,usualLimit:number){
  return usualLimit-Math.max(0,usualLimit-safe)*influence;
 }
 export type CoastUtilityPole={d:number;x:number;height:number;transformer:boolean;lamp?:boolean};
-/** Old hero-region poles keep their exact coordinates; the rest of the
- * coast is populated in uneven 95–175m runs. Far fewer lamps than the
- * historical 64m road-light row: roughly 1 in 4 poles carries a light.
+/** All coastal poles are moved immediately behind the far canal lip. Every
+ * pole carries a warm road lamp. Uneven rural spacing and wire sag remain.
  * Stable absolute coordinates support replay and chunk-boundary ownership.
  */
 const CURATED_POLES:readonly CoastUtilityPole[]=[
@@ -114,8 +122,15 @@ for(const [index,[from,to]] of POLE_FILL_GAPS.entries()){
   step++;
  }
 }
+/** Clearance prevents a pole from standing inside a narrow access bridge.
+ * The outer bank starts at x=12.62; poles sit about 0.55m farther inland. */
 export const COAST_UTILITY_POLES:readonly CoastUtilityPole[]=Object.freeze(
- [...CURATED_POLES,...generated].sort((a,b)=>a.d-b.d),
+ [...CURATED_POLES,...generated].map(p=>{
+  let d=p.d;
+  const near=COAST_DRAIN_BRIDGES.find(b=>Math.abs(d-b.d)<b.width*.5+5);
+  if(near)d=near.d+near.width*.5+9;
+  return {...p,d,x:COAST_DRAIN_X.rightLip+.55+(poleNoise(Math.round(d)+71)-.5)*.22,lamp:true};
+ }).sort((a,b)=>a.d-b.d),
 );
 export function coastPoleLinks(start:number,end:number){
  return COAST_UTILITY_POLES.slice(1).flatMap((next,i)=>{

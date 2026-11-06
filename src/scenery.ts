@@ -5,7 +5,7 @@ import {coastHomeFacingYaw} from './coast-house-facing';
 import {FARM_HOMES} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek} from './coast-rural-vignette';
-import {COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
 import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
@@ -451,14 +451,16 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(flow,'#ffffff',0,0,0,1,1,1);
    }
   }
-  // Utility-pole positions follow uneven rural parcel rhythm; black/yellow
-  // warning rings, ceramic insulators, optional small transformer. Parts use
+  // Utility poles now stand directly along the far canal lip. The normal
+  // generic scenery clearance would reject them for being close to asphalt;
+  // this authored gutter-side position is intentional and safely outside it.
+  // Warning rings, ceramic insulators and transformer parts use
   // existing instanced cylinder/box buckets; wires use ONE combined mesh.
   coastShadowGroup='other';
   for(const pole of COAST_UTILITY_POLES){
    if(!inChunk(pole.d))continue;
    beachAnchor(pole.d,pole.x);
-   if(!clear(1.3))continue;
+   if(pole.x<=COAST_DRAIN_X.rightLip+.23)continue;
    const h=pole.height;
    part(cylinder,'#94968f',0,h*.5,0,.245,h,.245);
    part(cylinder,'#373d3e',0,1.03,0,.266,2.06,.266);
@@ -475,7 +477,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
    // In this road frame, positive local +X extends TOWARD the sea-side
    // traffic lanes. The R1 -X arm mistakenly pointed back into the fields.
-   // Only about one pole in four receives a lamp; no standalone poles.
+   // Every pole has its own small road-facing streetlight, no extra poles.
    if(pole.lamp){
     part(boxes,'#696f6d',1.42,h-1.63,0,2.85,.15,.17);
     part(boxes,'#68706a',2.93,h-1.73,0,.83,.22,.64);
