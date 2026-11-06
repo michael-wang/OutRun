@@ -32,11 +32,10 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   expect([...colors].every(Number.isFinite)).toBe(true);
   expect((mesh.material as THREE.MeshBasicMaterial).vertexColors).toBe(true);
   const material=mesh.material as THREE.MeshBasicMaterial;
-  // Both sheets sit behind the real middle hills. ACES was lifting their
-  // greens much brighter than their baked vertex colors implied.
+  // Layer-specific final dimming keeps the far skyline behind the near
+  // mountains while preserving a bright, sunlit ocean to the left.
   expect(material.toneMapped).toBe(false);
-  expect(material.color.r).toBeGreaterThan(.45);
-  expect(material.color.r).toBeLessThan(.65);
+  expect(material.color.r).toBeCloseTo(i===0?.56:.46,6);
   expect(material.color.g).toBeCloseTo(material.color.r,6);
   expect(material.color.b).toBeCloseTo(material.color.r,6);
   geo.dispose();(mesh.material as THREE.Material).dispose();
@@ -69,6 +68,8 @@ it('renders the rear range as subdued forest green, darker than the middle range
  };
  const [mid,far]=scene.children as THREE.Mesh[];
  const midTone=sampleRidgeTone(mid),farTone=sampleRidgeTone(far);
+ expect((far.material as THREE.MeshBasicMaterial).color.r)
+  .toBeLessThan((mid.material as THREE.MeshBasicMaterial).color.r*.85);
  // These are final sRGB brightness checks, not vertex-only comparisons.
  // The earlier vertex-only test passed while ACES made the ridges too bright.
  expect(midTone.luminance).toBeLessThan(.32);
