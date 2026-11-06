@@ -33,13 +33,14 @@ export function trafficRevealIsHidden(
  const road=sample(distance);
  const foot=road.position.clone().addScaledVector(road.right,lateral);
  const center=foot.clone().add(new THREE.Vector3(0,height*.5,0));
+ const distanceFromEye=center.distanceTo(camera.position);
  const local=camera.worldToLocal(center);
  const depth=-local.z;
  const radius=Math.hypot(width,height,length)*.5+.5;
  if(depth+radius<camera.near||depth-radius>camera.far)return true;
  // StandardMaterial models and *also* their highlight rims now use scene fog.
  // An actor beyond full linear haze is imperceptible before entering the shot.
- if(fog instanceof THREE.Fog&&center.distanceTo(camera.position)>fog.far+radius)return true;
+ if(fog instanceof THREE.Fog&&distanceFromEye>fog.far+radius)return true;
  const vert=Math.max(.01,depth)*Math.tan(THREE.MathUtils.degToRad(camera.fov)*.5);
  const horiz=vert*camera.aspect;
  // Slightly overscan the viewport: a bus corner crossing the edge of the
