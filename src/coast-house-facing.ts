@@ -1,10 +1,11 @@
 /** Rural roadside art direction.
  *
- * Every house model's entrance/windows are on its local -X side. The road's
- * positive lateral is inland (right of the player), so relative yaw ZERO
- * already faces the road. The former extra Math.PI pointed doors inland.
+ * Every house model's entrance/windows are on its local -X side. The route
+ * sample.right is world NEGATIVE X on a straight road: placing homes at
+ * positive right means local -X needs a Math.PI flip to face the roadway.
+ * Do not drop that flip! The angles below are additional deltas to Math.PI.
  *
- * Negative yaw looks a little toward an APPROACHING driver's viewpoint
+ * Positive yaw looks a little toward an APPROACHING driver's viewpoint
  * (roadside plus back along the route). Not every home gets this treatment:
  * loosely farm-oriented parcels, quiet inward courtyards and irregular
  * roadside fronts keep the village from looking like an exhibition row.
@@ -27,15 +28,15 @@ export function coastHomeFacingYaw(key:number,context:CoastHomeContext):number{
  const style=rand(key,0x53f0a1),offset=rand(key,0x718ac4),micro=(rand(key,0x241a9d)-.5)*.11;
  if(context==='shop')return (offset-.5)*.24+micro;
  if(context==='farm'){
-  if(style<.43)return -.43-offset*.42+micro; // 43% readable on approach
-  if(style<.72)return -.14+offset*.51+micro; // road-facing, offset frontage
-  if(style<.89)return .53+offset*.74+micro;  // faces farmyard/service lane
-  return -1.12-offset*.32+micro;              // old path / oblique approach
+  if(style<.43)return .43+offset*.42+micro;  // 43% readable on approach
+  if(style<.72)return .14-offset*.51+micro;  // original varied road fronts
+  if(style<.89)return -.53-offset*.74+micro; // faces a side yard/path
+  return -1.95-offset*.30+micro;              // occasional inward-facing farm
  }
- if(style<.31)return -.36-offset*.43+micro;
- if(style<.77)return -.16+offset*.43+micro;
- if(style<.90)return .40+offset*.67+micro;
- return -1.0-offset*.26+micro;
+ if(style<.31)return .36+offset*.43+micro;
+ if(style<.77)return .16-offset*.43+micro;
+ if(style<.90)return -.40-offset*.67+micro;
+ return 1.0+offset*.26+micro;
 }
 
 /** Conservative rotated ground footprint in road coordinates.
@@ -49,9 +50,10 @@ export function rotatedHouseExtent(halfX:number,halfZ:number,yaw:number){
 
 /** Facing score for a house at lateral x and a viewer 'lead' metres before
  * it on the road. 1 = full front view; 0 = edge-on; negative = rear wall.
+ * yaw is the ADDITION to the road-facing Math.PI, not an absolute world yaw.
  */
 export function houseApproachFrontScore(yaw:number,lateral:number,lead:number){
  const towardRoad=-lateral,towardDriver=-lead;
- const dx=-Math.cos(yaw),dz=Math.sin(yaw);
+ const dx=-Math.cos(yaw),dz=-Math.sin(yaw);
  return (dx*towardRoad+dz*towardDriver)/Math.hypot(lateral,lead);
 }
