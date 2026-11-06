@@ -50,8 +50,15 @@ it('delivers distinct Taiwan roadside treatments instead of one highway guardrai
   for(const mesh of scene.children as THREE.InstancedMesh[]){
    for(let i=0;i<mesh.count;i++){
     const matrix=new THREE.Matrix4();mesh.getMatrixAt(i,matrix);
-    const world=new THREE.Vector3().setFromMatrixPosition(matrix),frame=track.sample((start+end)/2);
-    const x=world.clone().sub(frame.position).dot(frame.right);
+    const world=new THREE.Vector3().setFromMatrixPosition(matrix);
+    // Curved highway: project against the closest road frame, not the
+    // mid-section tangent (which can shift the measured side offset).
+    let nearest=Infinity,x=0;
+    for(let d=start;d<end;d+=2){
+     const frame=track.sample(d),delta=world.clone().sub(frame.position);
+     const longitudinal=Math.abs(delta.dot(frame.tangent));
+     if(longitudinal<nearest){nearest=longitudinal;x=delta.dot(frame.right);}
+    }
     if(x>0)centers.push(x);
    }
   }
