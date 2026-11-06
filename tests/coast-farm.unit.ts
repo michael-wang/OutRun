@@ -22,10 +22,10 @@ it('owns every field exactly once, outside housing, wholly inside a streamed chu
  expect(FARM_SCARECROWS.length).toBeGreaterThanOrEqual(3);
  for(const s of FARM_SCARECROWS){const plot=FARM_PLOTS.find(p=>s.d>=p.start&&s.d<p.end&&s.x>p.left&&s.x<p.right)!;expect(plot).toBeDefined();expect(Math.abs(s.x-(plot.left+plot.right)/2)).toBeLessThan(1);expect(s.d-plot.start).toBeGreaterThan(40);expect(plot.end-s.d).toBeGreaterThan(40);expect(s.x-plot.left).toBeGreaterThan(10);}
  for(const z of FARM_ZONES)for(const kind of ['rice','flowers'] as const)expect(FARM_SCARECROWS.some(s=>s.d>=z[kind][0]&&s.d<z[kind][1])).toBe(true);
- expect(FARM_ZONES).toHaveLength(4);expect(Math.max(...FARM_PLOTS.map(p=>p.right))).toBeGreaterThan(240);
+ expect(FARM_ZONES).toHaveLength(5);expect(Math.max(...FARM_PLOTS.map(p=>p.right))).toBeGreaterThan(240);
 });
 it('places farmhouse yards beside every farming zone without covering crops or district buildings',()=>{
- expect(FARM_HOMES).toHaveLength(10);
+ expect(FARM_HOMES).toHaveLength(12);
  for(const z of FARM_ZONES)expect(FARM_HOMES.some(h=>h.d>=z.start&&h.d<z.end)).toBe(true);
  for(const h of FARM_HOMES){
   expect(FARM_PLOTS.some(p=>h.d+12>p.start&&h.d-12<p.end&&h.x+10>p.left&&h.x-10<p.right)).toBe(false);
