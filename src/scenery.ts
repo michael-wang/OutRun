@@ -2,6 +2,8 @@ import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
+import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
+import {buildCoastRuralHouse,buildCoastRuralCreek} from './coast-rural-vignette';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
@@ -333,6 +335,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   coastShadowGroup='buildings';
   for(const site of FARM_HOMES){
+   // The demonstration hamlet replaces only these two primitive farm houses.
+   if(ruralShowcaseReplacesFarmHome(site.d))continue;
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,site.x);yaw+=site.yaw;if(!clear(10))continue;
    // The same coastal house kit, with low roofs, an earth yard and a short fence.
@@ -343,6 +347,51 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boxes,'#aa8960',-1,.73,z,12,.12,.1);
    }
    beachAnchor(site.d-8,site.x-7);beachPerson(site.key,false,1);
+  }
+  // One authored farming hamlet at 3.05km: a compact town home, a true
+  // open-courtyard farmhouse, a low farmhouse, trees, irrigation channel and
+  // footbridge. Complete vertex-coloured buildings are each ONE instanced
+  // prefab, prepared by the existing scenery Worker; no runtime CSG/GLB loads.
+  if(inChunk(COAST_RURAL_SHOWCASE.start)){
+   coastShadowGroup='buildings';
+   for(const site of COAST_RURAL_HOUSES){
+    beachAnchor(site.d,site.x);
+    yaw+=Math.PI+site.yaw;
+    // Explicitly positioned, road-side-safe authored lots. A single prefab
+    // template takes the place of many per-wall primitive draw calls.
+    const prefab=buildCoastRuralHouse(site.kind);
+    part(prefab,'#ffffff',0,0,0,1,1,1);
+   }
+   // Low bridge over the irrigation channel toward the courtyard entrance;
+   // begins beyond the guardrail, not on the playable asphalt.
+   beachAnchor(3056,34);
+   part(boxes,'#bdb5a3',-4,.34,0,19,.50,4.2);
+   for(const z of [-1.9,1.9]){
+    part(boxes,'#bcb4a6',-4,.98,z,17,.20,.18);
+    for(const x of [-11,-6,-1,3])part(boxes,'#aaa294',x,.70,z,.19,.79,.22);
+   }
+   const treeSites=[
+    {d:3008,x:73,h:8.6},{d:3030,x:97,h:10.4},
+    {d:3055,x:116,h:12.0},{d:3087,x:86,h:8.5},
+    {d:3075,x:140,h:9.5},
+   ];
+   coastShadowGroup='vegetation';
+   for(const [i,tree] of treeSites.entries()){
+    beachAnchor(tree.d,tree.x);
+    const h=tree.h;
+    part(cylinder,'#79604c',0,h*.48,0,.36,h*.95,.36);
+    part(round,'#496c45',0,h+.5,0,3.8,h*.32,4.0);
+    part(round,'#617d4a',1.8,h+.15,1.1,2.5,h*.23,2.7);
+    part(round,'#526c43',-1.9,h-.1,-1,2.4,h*.22,2.6);
+    for(const side of [-1,1])part(round,i%2?'#657d4e':'#536e4b',side*3,.75,side*1.2,1.9,.85,1.8);
+   }
+   // Creek has been sculpted into the SAME road-worker grass cross-section.
+   // Water, edge stones and warm glints share one 3km chunk-owned template.
+   const creek=buildCoastRuralCreek(sample);
+   base.set(0,0,0);yaw=0;chunk=Math.floor(RURAL_CREEK.start/650);
+   bridgeGap=false;anchorRight=false;
+   coastShadowGroup='other';
+   part(creek,'#ffffff',0,0,0,1,1,1);
   }
   coastShadowGroup='beach';
   for(const spot of COAST_REST_SPOTS){
