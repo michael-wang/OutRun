@@ -1,5 +1,7 @@
 import {warningTriangleGeometry,type Breakdown} from './breakdowns';
+import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import * as THREE from 'three';
+import {markCoastShadowCaster} from './coast-shadow-layers';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {createTrack} from './track';
 import {trafficRandom} from './traffic-lanes';
@@ -37,12 +39,13 @@ export class RoadCones {
  private hit=new Set<number>();
  private flying=new Map<number,Flight>();
  private mesh:THREE.InstancedMesh;
+ private sunsetCast?:THREE.InstancedMesh;private sunsetPose=new THREE.Object3D();
  private pose=new THREE.Object3D();
  private shown:number[]=[];
  constructor(
   private sample:Sample,private halfAt:(d:number)=>number,scene:THREE.Scene,
   seed:number,private length:number,private ready:(d:number)=>boolean=()=>true,
-  private triangles?:readonly Breakdown[],
+  private triangles?:readonly Breakdown[],private sunsetShadows=false,private geometryShadows=false,
  ){
   this.recipe=triangles
    ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:h.stopSide*(this.halfAt(h.distance)-1.75)})))
@@ -54,7 +57,17 @@ export class RoadCones {
    :new THREE.MeshStandardMaterial({vertexColors:true,roughness:.8}),48);
   this.mesh.name=triangles?'breakdown-warning-objects':'road-cones';
   this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  this.mesh.count=0;this.mesh.frustumCulled=false;scene.add(this.mesh);
+  this.mesh.count=0;this.mesh.frustumCulled=false;this.mesh.castShadow=this.geometryShadows;
+  if(this.mesh.castShadow)markCoastShadowCaster(this.mesh,'dynamic','hazards');
+  scene.add(this.mesh);
+  if(this.sunsetShadows&&!this.geometryShadows){
+   const plane=new THREE.PlaneGeometry(1,1);plane.rotateX(-Math.PI/2);
+   this.sunsetCast=new THREE.InstancedMesh(plane,makeCoastShadowMaterial(.80),48);
+   this.sunsetCast.name=triangles?'breakdown-warning-sunset-shadows':'road-cone-sunset-shadows';
+   this.sunsetCast.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+   this.sunsetCast.count=0;this.sunsetCast.frustumCulled=false;
+   this.sunsetCast.renderOrder=2;scene.add(this.sunsetCast);
+  }
  }
  update(time:number,player:number,lateral:number,speed:number,previous?:{distance:number;lateral:number},halfWidth=1.55){
   let hits=0,count=0;this.shown=[];
@@ -96,12 +109,29 @@ export class RoadCones {
     -Math.atan(p.right.y)+(f?age*f.spin:0),'YXZ',
    );
    this.pose.updateMatrix();
-   if(count<48){this.mesh.setMatrixAt(count++,this.pose.matrix);this.shown.push(c.id);}
+   if(count<48){
+    this.mesh.setMatrixAt(count,this.pose.matrix);
+    if(this.sunsetCast){
+     const length=coastShadowLength(this.triangles?1.95:1.35);
+     this.sunsetPose.position.copy(p.position).addScaledVector(p.right,x+sideways).add(coastShadowOffset(length));
+     // The cast stays on the road while a struck cone tumbles through the air.
+     this.sunsetPose.position.y=p.position.y+p.right.y*(x+sideways)+.055;
+     this.sunsetPose.rotation.set(0,COAST_SHADOW_YAW,0);
+     this.sunsetPose.scale.set(this.triangles?1.75:.86,1,length+1.2);
+     this.sunsetPose.updateMatrix();this.sunsetCast.setMatrixAt(count,this.sunsetPose.matrix);
+    }
+    count++;this.shown.push(c.id);
+   }
   }
   this.mesh.count=count;this.mesh.instanceMatrix.needsUpdate=true;
+  if(this.sunsetCast){this.sunsetCast.count=count;this.sunsetCast.instanceMatrix.needsUpdate=true;}
   return hits;
  }
- reset(){this.hit.clear();this.flying.clear();this.mesh.count=0;this.shown=[];}
- inspect(){return {capacity:48,active:this.mesh.count,hit:[...this.hit],flying:[...this.flying.keys()],trajectories:[...this.flying].map(([id,f])=>({id,forward:f.forward,sideways:f.sideways,up:f.up,spin:f.spin})),shown:this.shown,recipe:this.recipe};}
- dispose(){this.mesh.removeFromParent();this.mesh.geometry.dispose();(this.mesh.material as THREE.Material).dispose();this.mesh.dispose();this.reset();}
+ reset(){this.hit.clear();this.flying.clear();this.mesh.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.shown=[];}
+ inspect(){return {capacity:48,active:this.mesh.count,sunsetProjectedShadows:this.sunsetCast?.count??0,hit:[...this.hit],flying:[...this.flying.keys()],trajectories:[...this.flying].map(([id,f])=>({id,forward:f.forward,sideways:f.sideways,up:f.up,spin:f.spin})),shown:this.shown,recipe:this.recipe};}
+ dispose(){
+  if(this.sunsetCast){this.sunsetCast.removeFromParent();this.sunsetCast.geometry.dispose();
+   const mat=this.sunsetCast.material as THREE.MeshBasicMaterial;mat.map?.dispose();mat.dispose();this.sunsetCast.dispose();}
+  this.mesh.removeFromParent();this.mesh.geometry.dispose();(this.mesh.material as THREE.Material).dispose();this.mesh.dispose();this.reset();
+ }
 }

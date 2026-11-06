@@ -1,9 +1,11 @@
 import {TrafficLights} from './traffic-lights';
+import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import {TrafficLanes} from './traffic-lanes';
 import {TRAFFIC_OUTLINE,TRAFFIC_OUTLINE_COLOR,TRAFFIC_CREST_RISK_COLOR,roadHidesVehicle,trafficOutlineGeometry,trafficOutlineHeight,trafficOutlineRadius,trafficOutlineStrength} from './traffic-outline';
 import {CANYON_BEND} from './canyon-identity';
 import {INTERCHANGE_DEMO_CAR_ID,interchangeCenterOffset,interchangeTrafficShift,interchangeDemoCarLateral,interchangeRampElevation,type RoadInterchange} from './road-interchange';
 import * as THREE from 'three';
+import {markCoastShadowCaster} from './coast-shadow-layers';
 import {TRAFFIC_TYPES,vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import {TireEffects,type TireContact} from './tire-effects';
 import {SkidFeedback} from './skid-feedback';
@@ -53,7 +55,8 @@ export class Traffic {
  enableHighway(start:number){this.highwayStart=start;}
  private history=new Map<number,{distance:number;speed:number;time:number}>();
  private lanes:TrafficLanes;private indicators:THREE.InstancedMesh;private lampPose=new THREE.Object3D();
- private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
+ private shadows:THREE.InstancedMesh;private shadowPose=new THREE.Object3D();
+ private sunsetCast?:THREE.InstancedMesh;private sunsetPose=new THREE.Object3D();private meshes:THREE.InstancedMesh[];private material=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85});private dummy=new THREE.Object3D();
  private outlineMeshes:THREE.InstancedMesh[];private crestRims:THREE.InstancedMesh[];private outlineEdges:THREE.EdgesGeometry[];private crestHints:THREE.LineSegments[];
  private outlineMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_OUTLINE_COLOR,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
  private crestMaterial=new THREE.LineBasicMaterial({color:TRAFFIC_CREST_RISK_COLOR,transparent:true,opacity:.6,depthTest:true,depthWrite:false,depthFunc:THREE.GreaterDepth,fog:false,toneMapped:false});
@@ -63,19 +66,33 @@ export class Traffic {
  private breakdownSmoke:THREE.InstancedMesh;private smokePose=new THREE.Object3D();private smokePoint=new THREE.Vector3();
  private sign?:THREE.InstancedMesh;private actors:TrafficActor[]=[];private time=0;private reactions=new Map<number,Reaction>();private lastEvent?:TrafficCollision;private impacts=0;
  private rampDemoStartedAt?:number;private rampDemoFinished=false;
- constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false){
+ private smokeWorldWeights:readonly number[]=[1,0,0];
+ constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false,private geometryShadows=false){
   if(dusk)this.runningLights=new TrafficLights(scene,TRAFFIC_LIMIT);
   this.schedule=[...trafficRecipe(seed,length),...stopped];
   this.lanes=new TrafficLanes(seed,dusk);this.indicators=new THREE.InstancedMesh(new THREE.BoxGeometry(.46,.25,.08),new THREE.MeshBasicMaterial({color:'#ffb000',toneMapped:false}),TRAFFIC_LIMIT*4);this.indicators.name='traffic-turn-signals';this.indicators.count=0;this.indicators.frustumCulled=false;scene.add(this.indicators);
   // One soft contact-shadow draw for the whole traffic pool; no player-relative shadow-map cutoff.
-  const pixels=new Uint8Array(32*32*4);for(let y=0;y<32;y++)for(let x=0;x<32;x++){const r=Math.hypot((x-15.5)/15.5,(y-15.5)/15.5),i=(y*32+x)*4;pixels[i]=18;pixels[i+1]=26;pixels[i+2]=24;pixels[i+3]=Math.round(150*Math.max(0,1-r*r)**2);}
+  const pixels=new Uint8Array(32*32*4);for(let y=0;y<32;y++)for(let x=0;x<32;x++){const r=Math.hypot((x-15.5)/15.5,(y-15.5)/15.5),i=(y*32+x)*4;pixels[i]=this.dusk?0:18;pixels[i+1]=this.dusk?0:26;pixels[i+2]=this.dusk?0:24;pixels[i+3]=Math.round(150*Math.max(0,1-r*r)**2);}
   const texture=new THREE.DataTexture(pixels,32,32);texture.needsUpdate=true;texture.magFilter=texture.minFilter=THREE.LinearFilter;
   const plane=new THREE.PlaneGeometry(1,1);plane.rotateX(-Math.PI/2);
   this.shadows=new THREE.InstancedMesh(plane,new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}),TRAFFIC_LIMIT);this.shadows.name='traffic-contact-shadows';this.shadows.count=0;this.shadows.frustumCulled=false;scene.add(this.shadows);
-  if(typeof document!=='undefined'){
-   this.sign=new THREE.InstancedMesh(waffleSignGeometry(),new THREE.MeshBasicMaterial({map:waffleSignTexture()}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;scene.add(this.sign);
+  if(this.dusk&&this.sunsetShadows&&!this.geometryShadows){
+   // One pooled draw for <=12 actors; no mobile shadow map, no per-car meshes.
+   const shape=new THREE.PlaneGeometry(1,1);shape.rotateX(-Math.PI/2);
+   this.sunsetCast=new THREE.InstancedMesh(shape,makeCoastShadowMaterial(.72),TRAFFIC_LIMIT);
+   this.sunsetCast.name='traffic-sunset-shadows';
+   this.sunsetCast.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+   this.sunsetCast.count=0;this.sunsetCast.frustumCulled=false;
+   this.sunsetCast.renderOrder=2;scene.add(this.sunsetCast);
   }
-  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=false;mesh.receiveShadow=true;scene.add(mesh);return mesh;});
+  if(typeof document!=='undefined'){
+   this.sign=new THREE.InstancedMesh(waffleSignGeometry(),new THREE.MeshBasicMaterial({map:waffleSignTexture()}),TRAFFIC_LIMIT);this.sign.count=0;this.sign.frustumCulled=false;this.sign.castShadow=this.dusk&&this.geometryShadows;
+   if(this.sign.castShadow)markCoastShadowCaster(this.sign,'dynamic','traffic');
+   scene.add(this.sign);
+  }
+  this.meshes=TRAFFIC_TYPES.map((t,i)=>{const mesh=new THREE.InstancedMesh(vehicleGeometry(i),this.material,TRAFFIC_LIMIT);mesh.name=`traffic-${t.name}`;mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);mesh.count=0;mesh.frustumCulled=false;mesh.castShadow=this.dusk&&this.geometryShadows;mesh.receiveShadow=true;
+   if(mesh.castShadow)markCoastShadowCaster(mesh,'dynamic','traffic');
+   scene.add(mesh);return mesh;});
   // Four pooled back-face hull draws; the depth buffer hides the interior, leaving a thin silhouette.
   const hulls=TRAFFIC_TYPES.map((_t,i)=>trafficOutlineGeometry(i));
   this.outlineEdges=hulls.map(h=>new THREE.EdgesGeometry(h,28));
@@ -117,7 +134,14 @@ export class Traffic {
   this.breakdownSmoke.frustumCulled=false;this.breakdownSmoke.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(this.breakdownSmoke);
  }
- reset(){this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
+ /** Share the player's biome-dependent palette with traffic collision smoke. */
+ setSmokeScene(weights:readonly number[]){
+  this.smokeWorldWeights=weights;
+  for(const reaction of this.reactions.values())reaction.effects.setSceneSmoke(weights,this.dusk);
+ }
+ /** 2D contact-shadow A/B: disable decal draws and CPU pose updates only. */
+ setContactShadowsEnabled(enabled:boolean){this.shadows.visible=enabled;}
+ reset(){this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
   this.runningLights?.begin();
   if(time<this.time)this.reset();const dt=time-this.time,previous=this.actors;this.time=time;
@@ -169,7 +193,7 @@ export class Traffic {
   for(const a of entering){if(this.actors.length>=TRAFFIC_LIMIT)break;this.actors.push(a);}
 
   for(const a of this.actors){const r=this.reactions.get(a.id);if(r){a.distance+=r.boost*.85*(1-Math.exp(-dt/.85));r.boost*=Math.exp(-dt/.85);r.offset+=r.velocity*.55*(1-Math.exp(-dt/.55));r.velocity*=Math.exp(-dt/.55);r.offset*=Math.exp(-dt*.55);const follow=1-Math.exp(-dt/.07);r.yaw+=(THREE.MathUtils.clamp(r.velocity*.075,-.38,.38)-r.yaw)*follow;r.roll+=(THREE.MathUtils.clamp(r.velocity*.03,-.17,.17)-r.roll)*follow;}}
-  this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0],outlineCounts=[0,0,0,0],crestRimCounts=[0,0,0,0];let shadowCount=0,lampCount=0,smokeCount=0;
+  this.actors=this.actors.filter(a=>a.distance>=player-180&&a.distance<=player+850).sort((a,b)=>b.distance-a.distance).slice(0,TRAFFIC_LIMIT);for(const [id,r] of this.reactions)if(!this.actors.some(a=>a.id===id)){r.effects.dispose();this.reactions.delete(id);}const counts=[0,0,0,0],outlineCounts=[0,0,0,0],crestRimCounts=[0,0,0,0];let shadowCount=0,sunsetCount=0,lampCount=0,smokeCount=0;
   if(camera&&(time===0||time>=this.nextHintCheck)){this.hintCache.clear();this.nextHintCheck=time+TRAFFIC_OUTLINE.crestRefreshSeconds;}
   this.crestHints.forEach(h=>h.visible=false);let crestCount=0;
   for(const a of this.actors){
@@ -220,7 +244,16 @@ export class Traffic {
    const frontDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance+spec.axle):0;
    const rearDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance-spec.axle):0;
    const frontY=front.position.y+front.right.y*a.lateral+frontDrop,rearY=rear.position.y+rear.right.y*a.lateral+rearDrop,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
-   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035+(frontDrop+rearDrop)/2;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
+   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();if(this.shadows.visible){this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035+(frontDrop+rearDrop)/2;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);}
+   if(this.sunsetCast){
+    const length=coastShadowLength(trafficOutlineHeight(a.type));
+    this.sunsetPose.position.copy(p.position).addScaledVector(p.right,a.lateral).add(coastShadowOffset(length));
+    this.sunsetPose.position.y=p.position.y+p.right.y*a.lateral+.055+(frontDrop+rearDrop)/2;
+    this.sunsetPose.rotation.set(0,COAST_SHADOW_YAW,0);
+    this.sunsetPose.scale.set(spec.width*1.22,1,length+spec.length*.45);
+    this.sunsetPose.updateMatrix();this.sunsetCast.setMatrixAt(sunsetCount++,this.sunsetPose.matrix);
+   }
+   if(a.type===3)this.sign?.setMatrixAt(counts[3],this.dummy.matrix);this.meshes[a.type].setMatrixAt(counts[a.type]++,this.dummy.matrix);
    this.runningLights?.add(this.dummy.matrix,spec.width,spec.length);
    const height=trafficOutlineHeight(a.type),ahead=a.distance-player;
    let crestRisk=false;
@@ -272,7 +305,9 @@ export class Traffic {
   }
   this.runningLights?.finish();
   this.indicators.count=lampCount;this.indicators.instanceMatrix.needsUpdate=true;
-  this.shadows.count=shadowCount;this.shadows.instanceMatrix.needsUpdate=true;this.breakdownSmoke.count=smokeCount;this.breakdownSmoke.instanceMatrix.needsUpdate=true;
+  this.shadows.count=this.shadows.visible?shadowCount:0;this.shadows.instanceMatrix.needsUpdate=this.shadows.visible;
+  if(this.sunsetCast){this.sunsetCast.count=sunsetCount;this.sunsetCast.instanceMatrix.needsUpdate=true;}
+  this.breakdownSmoke.count=smokeCount;this.breakdownSmoke.instanceMatrix.needsUpdate=true;
   if(this.sign){this.sign.count=counts[3];this.sign.instanceMatrix.needsUpdate=true;}this.meshes.forEach((m,i)=>{m.count=counts[i];m.instanceMatrix.needsUpdate=true;});this.outlineMeshes.forEach((m,i)=>{m.count=outlineCounts[i];m.instanceMatrix.needsUpdate=true;});this.crestRims.forEach((m,i)=>{m.count=crestRimCounts[i];m.instanceMatrix.needsUpdate=true;});
  }
  /** Swept overlap plus persistent separation. Returns a new event only on contact entry. */
@@ -298,7 +333,9 @@ export class Traffic {
    if(r?.touching||r&&time-r.lastHit<1.25)continue;
    const relative=Math.abs(closing),outward=Math.abs(s.lateral-previous.lateral)/Math.max(dt,.001);
    const severity=THREE.MathUtils.clamp(kind==='rear'?relative/40:.15+outward/14,.12,1);
-   const reaction=r??{offset:0,velocity:0,boost:0,yaw:0,roll:0,skid:new SkidFeedback(),effects:new TireEffects(this.scene),touching:false,lastHit:0,slide:0};
+   const effects=r?.effects??new TireEffects(this.scene);
+   if(!r)effects.setSceneSmoke(this.smokeWorldWeights,this.dusk);
+   const reaction=r??{offset:0,velocity:0,boost:0,yaw:0,roll:0,skid:new SkidFeedback(),effects,touching:false,lastHit:0,slide:0};
    const mass=a.type===0?1:a.type===1?3.2:a.type===2?2.3:1.6;
    const trafficSide=Math.abs(a.lateral)>this.halfAt(a.distance)-spec.width/2-1?-Math.sign(a.lateral):-side;reaction.velocity=trafficSide*(kind==='rear'?4+9*severity:2.5+4*severity)/Math.sqrt(mass);
    const leader=this.actors.filter(b=>b.id!==a.id&&b.distance>a.distance&&Math.abs(b.lateral-a.lateral)<2.7).sort((a,b)=>a.distance-b.distance)[0];
@@ -313,8 +350,12 @@ export class Traffic {
  get skidIntensity(){let intensity=0;for(const r of this.reactions.values())intensity=Math.max(intensity,r.skid.intensity);return intensity;}
  contactPoints(){const matrix=new THREE.Matrix4(),counts=[0,0,0,0],out:{id:number;distance:number;point:number[]}[]=[];for(const a of this.actors){if(!a.visible)continue;this.meshes[a.type].getMatrixAt(counts[a.type]++,matrix);const spec=TRAFFIC_TYPES[a.type];for(const side of [-1,1])for(const end of [-1,1])out.push({id:a.id,distance:a.distance+end*spec.axle,point:new THREE.Vector3(side*(spec.width/2-.04),0,end*spec.axle).applyMatrix4(matrix).toArray()});}return out;}
  audioActors():readonly TrafficActor[]{return this.actors;}
- inspect(){return {historySize:this.history.size,historyLimit:this.schedule.length+this.highwayRecipes.length,highwayRecipes:this.highwayRecipes.length,laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+3+(this.sign?1:0),outlineColor:TRAFFIC_OUTLINE_COLOR,outlineInstances:this.outlineMeshes.map(m=>m.count),crestRimInstances:this.crestRims.map(m=>m.count),crestHints:this.crestHints.filter(h=>h.visible).length,breakdownSmoke:this.breakdownSmoke.count,smokeCapacity:TRAFFIC_LIMIT*7,contactShadows:this.shadows.count,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
- dispose(){this.runningLights?.dispose();this.history.clear();this.lanes.reset();this.indicators.removeFromParent();this.indicators.geometry.dispose();(this.indicators.material as THREE.Material).dispose();this.shadows.removeFromParent();this.shadows.geometry.dispose();const shadowMaterial=this.shadows.material as THREE.MeshBasicMaterial;shadowMaterial.map?.dispose();shadowMaterial.dispose();for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});
+ inspect(){return {historySize:this.history.size,historyLimit:this.schedule.length+this.highwayRecipes.length,highwayRecipes:this.highwayRecipes.length,laneChanges:this.lanes.inspect(),indicators:this.indicators.count,capacity:TRAFFIC_LIMIT,impacts:this.impacts,actors:this.actors.map(a=>({...a,typeName:TRAFFIC_TYPES[a.type].name})),geometries:this.meshes.length+3+(this.sign?1:0),outlineColor:TRAFFIC_OUTLINE_COLOR,outlineInstances:this.outlineMeshes.map(m=>m.count),crestRimInstances:this.crestRims.map(m=>m.count),crestHints:this.crestHints.filter(h=>h.visible).length,breakdownSmoke:this.breakdownSmoke.count,smokeCapacity:TRAFFIC_LIMIT*7,contactShadows:this.shadows.count,sunsetProjectedShadows:this.sunsetCast?.count??0,shadowCasting:this.meshes.some(m=>m.castShadow),reactions:[...this.reactions].map(([id,r])=>({id,offset:r.offset,boost:r.boost,slide:r.slide,yaw:r.yaw,roll:r.roll,touching:r.touching,skidIntensity:r.skid.intensity,effects:r.effects.inspect()})),lastEvent:this.lastEvent};}
+ dispose(){this.runningLights?.dispose();this.history.clear();this.lanes.reset();this.indicators.removeFromParent();this.indicators.geometry.dispose();(this.indicators.material as THREE.Material).dispose();this.shadows.removeFromParent();this.shadows.geometry.dispose();const shadowMaterial=this.shadows.material as THREE.MeshBasicMaterial;shadowMaterial.map?.dispose();shadowMaterial.dispose();
+  if(this.sunsetCast){this.sunsetCast.removeFromParent();this.sunsetCast.geometry.dispose();
+   const castMaterial=this.sunsetCast.material as THREE.MeshBasicMaterial;
+   castMaterial.map?.dispose();castMaterial.dispose();this.sunsetCast.dispose();}
+  for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();if(this.sign){this.sign.removeFromParent();this.sign.geometry.dispose();const m=this.sign.material as THREE.MeshBasicMaterial;m.map?.dispose();m.dispose();}this.meshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();});
   this.crestHints.forEach(h=>h.removeFromParent());this.outlineEdges.forEach(g=>g.dispose());
   this.crestRims.forEach(m=>{m.removeFromParent();m.dispose();});this.outlineMeshes.forEach(m=>{m.removeFromParent();m.geometry.dispose();m.dispose();});
   this.outlineMaterial.dispose();this.crestRimMaterial.dispose();this.crestMaterial.dispose();this.hintCache.clear();

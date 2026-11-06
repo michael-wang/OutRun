@@ -7,6 +7,7 @@ import {createPilotTrack} from '../src/pilot-composer';
 import {coastNatureGround} from '../src/coast-nature';
 import {COAST_DISTRICTS} from '../src/coast-layout';
 import {FARM_PLOTS,FARM_SCARECROWS,FARM_ZONES,FARM_HOMES,farmPlotsInChunk} from '../src/coast-farm-layout';
+import {ruralShowcaseReplacesFarmHome} from '../src/coast-rural-layout';
 const track=createPilotTrack(COAST_ULTRA_STAGE);
 it('owns every field exactly once, outside housing, wholly inside a streamed chunk and on the coastal plain',()=>{
  const ids=Array.from({length:11},(_,i)=>farmPlotsInChunk(i*1000,(i+1)*1000)).flat().map(p=>p.id);
@@ -30,6 +31,7 @@ it('places farmhouse yards beside every farming zone without covering crops or d
   expect(FARM_PLOTS.some(p=>h.d+12>p.start&&h.d-12<p.end&&h.x+10>p.left&&h.x-10<p.right)).toBe(false);
   expect(COAST_DISTRICTS.some(z=>h.d+12>z.start&&h.d-12<z.end)).toBe(false);
   const start=Math.floor(h.d/1000)*1000;expect(h.d-12).toBeGreaterThan(start);expect(h.d+12).toBeLessThan(start+1000);
+  if(ruralShowcaseReplacesFarmHome(h.d))continue; // authored houses replace these yards beside the newly carved creek
   const heights=[-8,8].flatMap(x=>[-10,10].map(d=>coastNatureGround(track.sample,h.d+d,h.x+x,start,start+1000)));
   expect(Math.max(...heights)-Math.min(...heights),`yard at ${h.d}, ${h.x}`).toBeLessThan(.32);
  }

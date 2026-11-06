@@ -43,5 +43,24 @@ export const coastDistrictAt=(d:number)=>COAST_DISTRICTS.find(s=>d>=s.start&&d<s
 /** Resort pedestrian links, absolute distances so chunk seams never reset paint. */
 export const COAST_CROSSWALKS=[750,2700,3930,5410,7010,8460,9740] as const;
 export const coastCrosswalkNear=(d:number,margin=8)=>COAST_CROSSWALKS.some(at=>Math.abs(d-at)<margin);
-export const coastBarrierStyle=(d:number)=>coastCrosswalkNear(d,14)?'opening':d%144>=96?'rail':'block';
+/** Choose barriers from coastal life, not a 144m checkerboard.
+ * Seaward public beach pockets need walkable low stone; remote coastline
+ * receives long uninterrupted metal rail. Inland districts get safe, porous
+ * frontage. All boundaries are authored in absolute route metres.
+ */
+export type CoastBarrierStyle='opening'|'block'|'rail';
+export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
+ if(coastCrosswalkNear(d,14))return 'opening';
+ if(side===-1){
+  return COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70))
+   ?'block':'rail';
+ }
+ return coastDistrictAt(d)!==undefined||coastCrosswalkNear(d,65)?'block':'rail';
+}
+/** Stable, modest human irregularity, shared by render and shadow coordinates. */
+export function coastBarrierStoneAt(d:number,side:-1|1){
+ const slot=Math.floor(d/12);
+ const rand=(salt:number)=>{const v=Math.sin((slot+1)*97.13+(side+3)*31.77+salt*17.11)*43758.5453;return v-Math.floor(v);};
+ return {d:Math.max(0,d+(rand(1)-.5)*3.2),length:2.2+rand(2),height:.40+rand(3)*.07};
+}
 export const COAST_LAMPS=Array.from({length:156},(_,i)=>380+i*64);

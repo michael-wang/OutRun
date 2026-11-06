@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {markCoastShadowCaster} from './coast-shadow-layers';
 import {farmClearing} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastBeachHeight} from './scenery-cross-section';
@@ -49,7 +50,7 @@ const geometry=(data:GeometryData)=>{
  * never depend on worker request order. The streamer culls whole batches. */
 export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],start:number,end:number){
  if(!assets)throw Error('Coast nature must load before scenery preparation');
- const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch}>();
+ const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch;shadowGroup:'rocks'|'vegetation'}>();
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
  function plant(name:string,d:number,x:number,height:number,key:number,far:number){
   if(farmClearing(d,x))return;
@@ -65,7 +66,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    if(!m){m=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:!!data.color?.length});materials.set(matKey,m);}
    const bucketKey=id+':'+center;
    let bucket=buckets.get(bucketKey);
-   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,alpha:part.alpha,center,near:isFar?600:0,far:isFar?1800:far}};buckets.set(bucketKey,bucket);}
+   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,alpha:part.alpha,center,near:isFar?600:0,far:isFar?1800:far},shadowGroup:name.startsWith('Rock_')?'rocks':'vegetation'};buckets.set(bucketKey,bucket);}
    bucket.matrices.push(dummy.matrix.clone());
   }
  }
@@ -90,7 +91,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  for(const b of buckets.values()){
   const mesh=new THREE.InstancedMesh(b.g,b.m,b.matrices.length);
   b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.userData.nature=b.nature;
-  mesh.name='coast-nature';mesh.castShadow=false;mesh.receiveShadow=false;scene.add(mesh);
+  mesh.name='coast-nature';mesh.userData.coastShadowGroup=b.shadowGroup;markCoastShadowCaster(mesh,'static',b.shadowGroup);mesh.receiveShadow=false;scene.add(mesh);
  }
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};
 }

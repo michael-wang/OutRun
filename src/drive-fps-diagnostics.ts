@@ -1,4 +1,5 @@
 import type {WebGLRenderer} from 'three';
+import {PlaytestFrameGate} from './playtest-frame-gate';
 import {FARM_ZONES} from './coast-farm-layout';
 
 /** Opt-in driving profiler (?fpsdiag=1); no gameplay or rendering changes. */
@@ -64,8 +65,6 @@ export class DriveFpsDiagnostics {
  private samples:DriveFpsSecond[]=[];
  private spikes:{seconds:number;distanceM:number;region:DriveRegion;gapMs:number;cpuMs:CpuTotals}[]=[];
  private currentCpu:CpuTotals=emptyCpu();
- private panel?:HTMLDivElement;
- private status?:HTMLSpanElement;
  private readonly gl?:WebGL2RenderingContext;
  private readonly ext?:GpuExtension;
  private pending:OutstandingQuery[]=[];
@@ -73,6 +72,7 @@ export class DriveFpsDiagnostics {
  private gpuSamples:GpuSample[]=[];
  private frameCount=0;
  private readonly startedWall=new Date().toISOString();
+ private readonly frameGate=new PlaytestFrameGate();
 
  constructor(private renderer:WebGLRenderer,private captureExtras:()=>Record<string,unknown>){
   if(!this.enabled)return;
@@ -165,8 +165,8 @@ export class DriveFpsDiagnostics {
    extras:this.captureExtras(),
   };
   this.samples.push(row);
+  this.frameGate.ingest(row);
   this.bucketAt=now;this.bucketGaps=[];this.bucketCpu=emptyCpu();
-  this.updatePanel(row);
  }
  report(){
   return {
@@ -178,6 +178,7 @@ export class DriveFpsDiagnostics {
    gpuTimerSupported:!!this.ext,
    mainRiceMeters:FARM_ZONES[0].rice,mainFlowerMeters:FARM_ZONES[0].flowers,
    regionSummary:summarizeDriveRegions(this.samples),
+   playtestGate:this.frameGate.report,
    seconds:this.samples,
    gpuSamples:this.gpuSamples,
    slowFrames:this.spikes,
@@ -185,18 +186,15 @@ export class DriveFpsDiagnostics {
   };
  }
  private createPanel(){
+  // ?fpsdiag=1: the FPS badge already shows live performance. Keep only
+  // the one control needed to export the complete (and richer) JSON log.
   const panel=document.createElement('div');panel.id='drive-fps-diagnostic';
-  panel.style.cssText='position:fixed;right:7px;top:75px;z-index:310;background:#0e2b36e8;color:#fff2dc;border:1px solid #ffd19c77;padding:5px 8px;border-radius:7px;max-width:270px;font:11px/1.4 system-ui;pointer-events:auto';
-  const status=document.createElement('span');status.textContent='FPS 診斷準備中';panel.append(status);
-  const button=document.createElement('button');button.type='button';button.textContent='匯出 FPS JSON';
-  button.style.cssText='display:block;margin-top:4px;border:0;border-radius:4px;padding:4px 7px;background:#ffd19c;color:#14333a;font:11px system-ui';
-  button.onclick=()=>this.download();panel.append(button);document.body.append(panel);
-  this.panel=panel;this.status=status;
+  const button=document.createElement('button');button.type='button';
+  button.textContent='匯出 FPS JSON';
+  button.setAttribute('aria-label','匯出 FPS 診斷 JSON');
+  button.onclick=()=>this.download();
+  panel.append(button);document.body.append(panel);
   (window as typeof window & {__driveFpsDiagnostics?:DriveFpsDiagnostics}).__driveFpsDiagnostics=this;
- }
- private updatePanel(row:DriveFpsSecond){
-  if(!this.status)return;
-  this.status.textContent='FPS '+row.fps.toFixed(0)+' · '+row.region+' · '+row.distanceM+'m | scene '+row.cpuMeanMs.mainScene+'ms · water '+row.cpuMeanMs.ocean+'ms · '+row.drawCalls+' draws';
  }
  private download(){
   const output=JSON.stringify(this.report(),null,2);

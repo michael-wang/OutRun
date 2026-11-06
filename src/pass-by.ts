@@ -1,5 +1,13 @@
 import {TRAFFIC_TYPES,type TrafficActor} from './traffic';
 const clamp=(n:number,lo=0,hi=1)=>Math.max(lo,Math.min(hi,n));
+/** Calibrate passing sound against *relative* road speed, not absolute player speed.
+ * Loud crossings should remain an accent under the continuously audible engine. */
+export const PASS_AUDIO={minRelativeSpeed:12,fullRelativeSpeed:115,peakCap:.34,totalVoiceCap:.36,heavyMultiplier:1.17} as const;
+export function passGainFromRelativeSpeed(relativeSpeed:number,type:number){
+ const speed=clamp((Math.abs(relativeSpeed)-PASS_AUDIO.minRelativeSpeed)/(PASS_AUDIO.fullRelativeSpeed-PASS_AUDIO.minRelativeSpeed));
+ const heavy=type===1?PASS_AUDIO.heavyMultiplier:type===2?1.11:type===3?1.07:1;
+ return Math.min(PASS_AUDIO.peakCap,(.09+.22*speed**1.3)*heavy);
+}
 export interface PassVoice {id:number;type:number;pan:number;gain:number;cutoff:number;rate:number}
 interface Pass {id:number;type:number;direction:number;side:number;started:number;lead:number;trail:number;peak:number}
 /** Audio presentation only. Measured relative travel includes the game's arcade pace. */
@@ -24,7 +32,7 @@ export class PassBy {
     if(phase<=0&&!this.crossed.has(a.id)){this.crossed.add(a.id);this.crossings++;}
     const near=clamp(1-Math.abs(phase)/(phase>=0?p.lead:p.trail)),front=clamp(.5+phase/(p.lead+p.trail)),heavy=p.type!==0;
     this.voices[slot]={id:a.id,type:a.type,pan:Math.sign(side)*(.70+.27*near),gain:p.peak*near*near,cutoff:heavy?700+front*2700:1300+front*5200,rate:.72+.55*front};
-   }else if(safe&&!this.played.has(a.id)&&speed>=9&&z*rate<0&&Math.abs(z)<=Math.min(24,Math.max(3,speed*(.28-.1*clamp(speed/85))))){
+   }else if(safe&&!this.played.has(a.id)&&speed>=PASS_AUDIO.minRelativeSpeed&&z*rate<0&&Math.abs(z)<=Math.min(24,Math.max(3,speed*(.28-.1*clamp(speed/85))))){
     if(time<this.blockedUntil){this.played.add(a.id);continue;}
     if(!candidate||Math.abs(z)<Math.abs(candidate.z))candidate={actor:a,rate,z,side};
    }
@@ -32,7 +40,7 @@ export class PassBy {
   for(let i=0;i<2;i++)if(this.active[i]&&!ids.has(this.active[i]!.id)){this.active[i]=undefined;this.voices[i]=undefined;}
   if(candidate&&time>=this.nextStart){const slot=this.active.findIndex(p=>!p);this.played.add(candidate.actor.id);if(slot>=0){
    const speed=Math.abs(candidate.rate),strength=clamp(speed/85),type=candidate.actor.type;
-   this.active[slot]={id:candidate.actor.id,type,direction:-Math.sign(candidate.rate),side:Math.sign(candidate.side),started:time,lead:Math.min(24,Math.max(3,speed*(.28-.1*strength))),trail:Math.min(28,Math.max(4,speed*(.35-.1*strength))),peak:Math.min(1.75,(.65+strength*.95)*(type===1?1.25:type===2?1.15:type===3?1.05:1))};
+   this.active[slot]={id:candidate.actor.id,type,direction:-Math.sign(candidate.rate),side:Math.sign(candidate.side),started:time,lead:Math.min(24,Math.max(3,speed*(.28-.1*strength))),trail:Math.min(28,Math.max(4,speed*(.35-.1*strength))),peak:passGainFromRelativeSpeed(speed,type)};
    this.starts++;this.nextStart=time+.30;
   }}
   return this.voices;

@@ -1,4 +1,4 @@
-import {COAST_SUN,COAST_SKY_GLSL} from './coast-dusk';
+import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
 import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
@@ -104,6 +104,7 @@ uniform sampler2D uSlope2;
 uniform sampler2D uSlope3;
 uniform vec3 uSun;
 uniform vec4 uRocks[10];
+uniform float uRockShadowStrength;
 in vec3 vWorld;
 in float vChurn;
 in float vDistance;
@@ -150,7 +151,7 @@ void main(){
  vec3 sky=coastSky(reflected,sunDir);
  float sunVisibility=boatSunShadow(vWorld);
  vec3 color=mix(body,sky,clamp(.35+fresnel*.60,0.0,1.0));
- color*=mix(.68,1.0,sunVisibility);
+ color*=mix(.53,1.0,sunVisibility);
  vec3 halfVec=normalize(viewDir+sunDir);
  float sunGlitter=pow(max(dot(normal,halfVec),0.0),95.0)*(.3+max(dot(normal,sunDir),0.0));
  float spark=hash12(floor(vWorld.xz*2.4+uTime*.13));
@@ -167,16 +168,35 @@ void main(){
  float surf=(crest+trail)*(1.0-smoothstep(15.0,42.0,shore.x));
  foam=max(foam,surf*(.4+.6*lace)*(.55+.45*breakup));
  foam=max(foam,(1.0-smoothstep(.03,.34,depth))*(.45+.5*lace));
- // Fixed rock footprints: exclude the solid core, wrap wash around the edges.
+ // Rock silhouettes shade nearby water in the same shader loop as surf foam.
+ // No secondary reflection or GPU render target.
+ float rockShadow=0.0;
+ // The shared foam loop still runs when the separate rock-shade math is off.
  for(int i=0;i<10;i++){
   vec2 delta=vWorld.xz-uRocks[i].xy;
   float r=uRocks[i].z,dist=length(delta);
   if(dist<r*.52)discard;
+  // Match the dry-sand ribbon's rock-height / sunset-elevation projection.
+  // Keep this in the existing 10-rock water loop; no extra shadow pass.
+  if(uRockShadowStrength>0.5){
+   float projectedLength=min(76.0,r*.82*length(uSun.xz)/max(.02,uSun.y)*${COAST_SHADOW_STRETCH.toFixed(2)});
+   if(dist<projectedLength+r*1.45){
+    vec2 sunsetAway=-normalize(uSun.xz);
+   float along=dot(delta,sunsetAway);
+   float across=dot(delta,vec2(-sunsetAway.y,sunsetAway.x));
+   float contact=(1.0-smoothstep(r*.48,r*1.45,dist))*.64;
+   float tail=smoothstep(-r*.30,r*.35,along)
+     *(1.0-smoothstep(projectedLength*.72,projectedLength,along))
+     *exp(-pow(across/(r*.84+.45),2.0));
+   rockShadow=max(rockShadow,max(contact,tail));
+   }
+  }
   float wash=exp(-pow((dist-r*.85)/1.5,2.0));
   float pulse=.35+.65*pow(.5+.5*sin(uTime*1.4+uRocks[i].w),3.0);
   foam=max(foam,wash*pulse*(.6+.4*lace));
  }
  color=mix(color,vec3(.64,.64,.57),clamp(foam,0.0,.94));
+ color*=1.0-uRockShadowStrength*rockShadow*.80;
  // The parent game uses a bright coastal horizon; blend distant water into it.
  float fog=1.0-exp(-vDistance*.00038);
  color=mix(color,vec3(.52,.38,.36),clamp(fog,0.0,.94));
@@ -203,6 +223,7 @@ export class UltraCoastOcean {
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
   this.boatShadow=new CoastBoatShadow(renderer,this.mobile?512:1024);
+  this.boatShadow.enabled=new URLSearchParams(location.search).get('sunshadow')!=='0';
   const oceanParams=defaultOceanParams();
   oceanParams.windSpeed=6;
   oceanParams.waveScale=.55;
@@ -219,6 +240,7 @@ export class UltraCoastOcean {
    uSpacing:{value:2*Math.PI/(this.mobile?128:192)},
    uResolution:{value:this.sim.resolution},
    uSun:{value:COAST_SUN.clone()},
+   uRockShadowStrength:{value:this.boatShadow.enabled?1:0},
    uTime:{value:0},uRocks:{value:rockPositions},
    uShore:{value:shore.texture},uShoreBounds:{value:shore.bounds},
   };
@@ -266,7 +288,8 @@ export class UltraCoastOcean {
   for(const rt of [this.sim.h0RT,this.sim.ping,this.sim.pong,...this.sim.out.flat()])rt.dispose();
   for(const m of [this.sim.initMat,this.sim.evolveMat,this.sim.fftMat,this.sim.assembleMat])m.dispose();
  }
- get stats(){return {resolution:this.sim.resolution,simulationHz:this.mobile?30:'display',updates:this.updates,boatShadow:this.boatShadow.stats};}
+ setRockSunShadows(enabled:boolean){this.uniforms.uRockShadowStrength.value=enabled?1:0;}
+ get stats(){return {resolution:this.sim.resolution,simulationHz:this.mobile?30:'display',updates:this.updates,boatShadow:this.boatShadow.stats,rockSunShadows:this.uniforms.uRockShadowStrength.value>.5};}
  /** Read-only bindings for decorative hulls/contact patches; simulation stays here. */
  get boatSurfaceUniforms():Readonly<Record<string,THREE.IUniform>>{return this.uniforms;}
  update(camera:THREE.Camera,dt:number){

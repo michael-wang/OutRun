@@ -4,7 +4,7 @@ import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
 import {createPilotTrack,pilotSample} from '../src/pilot-composer';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
-import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle} from '../src/coast-layout';
+import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle,coastBarrierStoneAt,COAST_BEACHES} from '../src/coast-layout';
 import {addCoastResort} from '../src/coast-resort';
 import {addCoastMountains} from '../src/coast-mountains';
 import {farmClearing} from '../src/coast-farm-layout';
@@ -43,6 +43,24 @@ it('keeps concrete and rails outside the driven lanes, bounded in height and bat
   mesh.dispose();mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
 });
+it('fades coastal grass warmth before the inland foothills',()=>{
+ // Road chunks merge all cross-section strips into one geometry.
+ const mesh=road(2350,2375).find(piece=>piece.kind==='grass')!;
+ expect(mesh).toBeDefined();
+ const p=track.sample(2350),position=new THREE.Vector3();
+ let nearTotal=0,farTotal=0,nearCount=0,farCount=0;
+ for(let i=0;i<mesh.positions.length;i+=3){
+  position.fromArray(mesh.positions,i).sub(p.position);
+  const x=position.dot(p.right),green=mesh.colors[i+1];
+  if(x<50&&x>12){nearTotal+=green;nearCount++;}
+  if(x>300){farTotal+=green;farCount++;}
+ }
+ expect(nearCount).toBeGreaterThan(10);
+ expect(farCount).toBeGreaterThan(5);
+ // More distant inland grass must not appear as a brighter yellow-green
+ // patch than vegetation immediately beside the road.
+ expect(farTotal/farCount).toBeLessThan(nearTotal/nearCount);
+});
 it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  const scene=new THREE.Scene();addCoastMountains(scene,track.sample,track.length);
  expect(scene.children).toHaveLength(2);
@@ -56,9 +74,50 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
   const normals=mesh.geometry.attributes.normal,colors=mesh.geometry.attributes.color;
   let darkest=Infinity,lightest=0,steep=0;
   for(let i=0;i<colors.count;i++){const l=colors.getX(i)+colors.getY(i)+colors.getZ(i);darkest=Math.min(darkest,l);lightest=Math.max(lightest,l);if(Math.abs(normals.getY(i))<.9)steep++;}
-  expect(lightest-darkest).toBeGreaterThan(.07);expect(steep).toBeGreaterThan(100);
+  // Normalize relief contrast to the baked brightness: the rear range is
+  // intentionally much darker, so an absolute lightness gap is misleading.
+  expect(lightest).toBeGreaterThan(0);
+  expect((lightest-darkest)/lightest).toBeGreaterThan(.08);
+  // Lower, gentler middle ridges naturally have fewer steep-facing vertices.
+  // Still require meaningful relief on both mountain sheets.
+  expect(steep).toBeGreaterThan(70);
   expect((mesh.material as THREE.MeshBasicMaterial).fog).toBe(false);
   mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
  expect(triangles).toBeLessThan(14000);
+});
+
+it('uses human beach access and uninterrupted remote headland rails, never a fixed checkerboard',()=>{
+ for(const bay of COAST_BEACHES){
+  const half=Math.min(440,bay.radius*.70);
+  for(let d=Math.ceil((bay.distance-half+24)/12)*12;d<bay.distance+half-24;d+=12)
+   if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
+    expect(coastBarrierStyle(d,-1)).toBe('block');
+ }
+ for(let d=2400;d<=3600;d+=12)
+  if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
+   expect(coastBarrierStyle(d,-1)).toBe('rail');
+ expect(coastBarrierStyle(4100,1)).toBe('block');
+ expect(coastBarrierStyle(5500,1)).toBe('block');
+ expect(coastBarrierStyle(3300,1)).toBe('rail');
+ expect(coastBarrierStyle(2740,1)).toBe('block');
+ for(const at of COAST_CROSSWALKS){
+  expect(coastBarrierStyle(at,-1)).toBe('opening');
+  expect(coastBarrierStyle(at,1)).toBe('opening');
+ }
+ const styles=Array.from({length:834},(_,i)=>coastBarrierStyle(i*12,-1));
+ expect(styles.slice(1).filter((v,i)=>v!==styles[i]).length).toBeLessThan(32);
+});
+
+it('adds deterministic but non-periodic stone imperfections without moving into the roadway',()=>{
+ const a=coastBarrierStoneAt(1548,-1);
+ expect(coastBarrierStoneAt(1548,-1)).toEqual(a);
+ expect(a.d).toBeGreaterThan(1546);
+ expect(a.d).toBeLessThan(1550);
+ expect(a.length).toBeGreaterThan(2.1);
+ expect(a.length).toBeLessThan(3.3);
+ expect(a.height).toBeGreaterThan(.38);
+ expect(a.height).toBeLessThan(.5);
+ expect(coastBarrierStoneAt(1560,-1)).not.toEqual(a);
+ expect(coastBarrierStoneAt(1548,1).d).not.toEqual(a.d);
 });

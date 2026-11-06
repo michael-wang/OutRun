@@ -3,6 +3,37 @@ import * as THREE from 'three';
 import {TireEffects,type TireContact} from '../src/tire-effects';
 const contacts=(z:number,road=true):TireContact[]=>['rear','front'].flatMap(axle=>[-1,1].map(side=>({name:`${axle}-wheel-${side}`,gap:0,surface:[side,0,z],normal:[0,1,0],onRoad:road})));
 describe('bounded contact-driven tire effects',()=>{
+ it('uses dusk tint only for sunset coast and adapts canyon/city palettes without altering dust',()=>{
+  const scene=new THREE.Scene(),fx=new TireEffects(scene),dust=new TireEffects(scene,'dust');
+  try{
+   fx.setSceneSmoke([1,0,0],true);
+   expect(fx.inspect().tint).toEqual([.51,.48,.48]);
+   fx.setSceneSmoke([0,1,0],false);
+   expect(fx.inspect().tint).toEqual([.70,.64,.59]);
+   fx.setSceneSmoke([0,0,1],false);
+   expect(fx.inspect().tint).toEqual([.70,.72,.75]);
+   fx.setSceneSmoke([1,0,0],false);
+   expect(fx.inspect().tint).toEqual([.81,.80,.80]);
+   const dustTint=dust.inspect().tint;
+   dust.setSceneSmoke([0,1,0],false);
+   expect(dust.inspect().tint).toEqual(dustTint);
+  }finally{fx.dispose();dust.dispose();}
+ });
+
+ it('uses subdued, irregular and bounded coastal smoke without extra draw batches',()=>{
+  const scene=new THREE.Scene(),fx=new TireEffects(scene);
+  fx.setDuskSmoke(true);
+  for(let i=1;i<24;i++)fx.update(i/60,65,1,contacts(i),200);
+  const smoke=scene.getObjectByName('tire-smoke') as THREE.Mesh;
+  const material=smoke.material as THREE.ShaderMaterial;
+  expect(material.uniforms.tint.value.toArray()).toEqual([.51,.48,.48]);
+  expect(fx.inspect().smokeRadius).toBeLessThan(1);
+  const variation=smoke.geometry.getAttribute('variation');
+  expect(variation).toBeDefined();
+  expect(variation.getX(2)).not.toBeCloseTo(variation.getX(5));
+  expect(fx.inspect()).toMatchObject({geometries:2,particleCapacity:192});
+  fx.dispose();
+ });
  it('keeps fresh smoke near the contact plane and trailing the moving tire before rising',()=>{
   const scene=new THREE.Scene(),fx=new TireEffects(scene);fx.update(1/60,60,1,contacts(1),200);fx.update(2/60,60,1,contacts(2),200);
   const smoke=scene.getObjectByName('tire-smoke') as THREE.Points,p=smoke.geometry.getAttribute('center'),z=p.getZ(4),y=p.getY(4);
@@ -20,7 +51,7 @@ describe('bounded contact-driven tire effects',()=>{
  it('reuses two geometries through ten minutes of drifting and resets without stale trails',()=>{
   const scene=new THREE.Scene(),fx=new TireEffects(scene),ids=scene.children.map(o=>(o as THREE.Mesh).geometry.uuid);
   for(let i=1;i<=36000;i++)fx.update(i/60,65,1,contacts(i),200);
-  expect(fx.inspect()).toMatchObject({particles:192,segments:768,geometries:2});expect(scene.children.map(o=>(o as THREE.Mesh).geometry.uuid)).toEqual(ids);
+  expect(fx.inspect()).toMatchObject({particleCapacity:192,segments:768,geometries:2});expect(fx.inspect().particles).toBeGreaterThan(100);expect(fx.inspect().particles).toBeLessThanOrEqual(192);expect(scene.children.map(o=>(o as THREE.Mesh).geometry.uuid)).toEqual(ids);
   fx.clear();expect(fx.inspect().particles).toBe(0);expect(fx.inspect().segments).toBe(0);expect(scene.children.every(o=>!o.visible)).toBe(true);
   fx.update(.016,65,1,contacts(999999),200);expect(fx.inspect().segments).toBe(0);fx.dispose();
  });

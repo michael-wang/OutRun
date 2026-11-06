@@ -5,7 +5,7 @@ A local Three.js and TypeScript arcade driving game with keyboard, controller, a
 ## Branches
 
 - `main`: human-approved stable family-playtest build, currently **COAST R8.8**.
-- `dev`: latest development version; currently **R9.0 staged scene-resource / streaming performance work**.
+- `dev`: ongoing **R9.1 sunset-coast** development (scenery refinement; shadow/performance diagnostics available but paused).
 
 Codex commits and pushes completed milestones to `dev`. Promote a version to `main` only when the owner explicitly approves it. Previous branch tips are retained as `archive/codex/*` Git tags. The historical documentation and reviews are in `docs/`; pre-consolidation versions of conflicting documents are also in `docs/archive/`.
 
@@ -22,7 +22,7 @@ npm ci
 npm run dev -- --host 0.0.0.0
 ```
 
-Open the local URL printed by Vite. A phone on the same network can use the printed network URL if the firewall permits it. The v0.9 Road Trip on `dev` is available at `/?trip=10m&seed=1`; the original short Stage is at `/?stage=1&seed=1`.
+Open the local URL printed by Vite. A phone on the same network can use the printed network URL if the firewall permits it. The development entry is now **the sunset coast** at `/` (or the local Vite network URL). There are only three supported query parameters: `?fpsdiag=1` for an optional FPS JSON export, `?startupdiag=1` for optional startup measurements, and `?at=6500` to begin near that route distance. These can be combined. Old `showcase`, `qa`, shadow overrides, and automatic performance benchmark URL modes are retired; scene and driving visuals are unchanged unless explicitly edited.
 
 ```powershell
 npm run build

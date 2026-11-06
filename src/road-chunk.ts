@@ -80,17 +80,33 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    const coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h;
    const legacyHeight=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;
    const height=sectionGround?surfaceY(d,o,h,kind):legacyHeight;
-   const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;positions.push(v.x,height-terrainDrop+(vertical?vertical(d):0),v.z);uvs.push(o/4,d/4);
+   const terrainDrop=canyon&&kind==='grass'?canyonBlend(d)*Math.max(0,(o-13)/147)*65:0;
+   positions.push(v.x,height-terrainDrop+(vertical?vertical(d):0),v.z);
+   // Coast sand's currently unused UV.x can encode the true widened beach
+   // cross-section for the wet-sand reflection in the existing PBR material.
+   const profileX=coastUltra&&kind==='sand'?coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d):undefined;
+   uvs.push(profileX===undefined?o/4:profileX,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));
     if(coastUltra&&kind==='sand'){
      const x=coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d);
      color.set('#dfc894').lerp(new THREE.Color('#a58e68'),Math.max(0,Math.min(1,(-x-15)/11)));
+     // Static low-frequency sand colour grain; no extra GPU layer or blinking.
+     // The water remains brightest, but dry land no longer reads as flat paper.
+     const grain=Math.sin(d*.047+x*.21)*Math.sin(d*.011-x*.43);
+     const broad=Math.sin(d*.0093+x*.071);
+     color.multiplyScalar(.97+.055*grain+.025*broad);
     }
     if(coastUltra&&kind==='grass'){
      const x=roadOffset(o,cachedWidth(d),cachedShoulders(d)),hill=coastHillHeight(x,d);
-     color.set('#81915a').lerp(new THREE.Color('#536b47'),Math.min(1,hill/48));
-     color.lerp(new THREE.Color('#ae9b70'),.14+.1*Math.sin(d*.017+x*.12));
+     const relief=THREE.MathUtils.clamp(hill/48,0,1);
+     // The old varying ochre overlay washed out some distant hills into
+     // bright yellow bands. Keep gentle sunset warmth only by the road,
+     // fading it away before reaching the inland foothills.
+     const inland=THREE.MathUtils.smoothstep(x,115,235);
+     color.set('#758452').lerp(new THREE.Color('#4d6141'),relief);
+     color.lerp(new THREE.Color('#9a8866'),.055*(1-inland));
+     color.multiplyScalar(.95-.025*relief);
     }
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
      const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);

@@ -215,7 +215,12 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  // The distant crop canopy retains its golden/flower palette after individual
  // plants fade. Tint the ambient contribution by the same field/row colours.
  fieldMaterial.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance += diffuseColor.rgb * .28;');};
- fieldMaterial.customProgramCacheKey=()=> 'farm-canopy-ground-v1';group.add(new THREE.Mesh(merged,fieldMaterial));
+ fieldMaterial.customProgramCacheKey=()=> 'farm-canopy-ground-v1';
+ // This opaque terrace sits ABOVE the road worker's terrain. Without a shadow
+ // receiver, tree/lamp shadows land on hidden grass and seem to disappear.
+ const fieldSurface=new THREE.Mesh(merged,fieldMaterial);
+ // The distant farm surface is not worth shadow sampling on mobile.
+ fieldSurface.receiveShadow=false;group.add(fieldSurface);
  // All five terraces retain a crop-height silhouette after individual heads fade.
  // One opaque draw per plot, never stacked transparent cards. Leave the existing
  // scarecrow access patch open, so its post and outstretched arms stay readable.
@@ -231,13 +236,22 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
     g.computeBoundingSphere();g.boundingSphere!.radius+=.2;return g;
    })():riceCanopyGeometry(plot,position,clearPath);
    ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
-  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;group.add(canopy);
+  const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;
+  // Rice canopy stays lit by the material; no realtime shadow sampling.
+  canopy.receiveShadow=false;group.add(canopy);
  }
  const update=(distance:number,time:number)=>{
   const gap=Math.max(plot.start-distance,0,distance-plot.end);if(meadow){meadow.visible=gap<265;if(meadow.visible)meadow.update(time);}
   crops.forEach(m=>m.visible=gap<105);
  };
- if(import.meta.env.DEV)group.traverse(o=>{if(o instanceof THREE.Mesh)o.onAfterRender=()=>{o.userData.farmSubmitted=performance.now();};});
+ // Exact per-mesh draw timestamps belong to interactive farm/stream QA,
+ // not normal developer driving or FPS logging. The former always-on
+ // onAfterRender hook ran hundreds of JS callbacks every rendered frame.
+ const farmTrace=import.meta.env.DEV&&typeof location!=='undefined'&&(()=>{
+  const p=new URLSearchParams(location.search);
+  return p.get('farmdiag')==='1'||p.get('streamdiag')==='1'||p.get('qa')==='1';
+ })();
+ if(farmTrace)group.traverse(o=>{if(o instanceof THREE.Mesh)o.onAfterRender=()=>{o.userData.farmSubmitted=performance.now();};});
  return {group,plot,update,stats:()=>{let submittedDraws=0,submittedInstances=0;group.traverse(o=>{if(o instanceof THREE.Mesh&&performance.now()-(o.userData.farmSubmitted??-Infinity)<100){submittedDraws++;if(o instanceof THREE.InstancedMesh)submittedInstances+=o.count;}});return {id:plot.id,kind:plot.kind,blades:meadow?.bladeCount??0,flowers:meadow?.wildflowerCount??0,crops:crops.map(m=>m.count),scarecrows,canopyTriangles,draws:instances.length+1+(canopyTriangles?1:0),submittedDraws,submittedInstances};},dispose(){meadow?.dispose();instances.forEach(m=>m.dispose());ownedGeometry.forEach(g=>g.dispose());group.removeFromParent();}};
 }
 export type FarmPatch=ReturnType<typeof createFarmPlot>;
