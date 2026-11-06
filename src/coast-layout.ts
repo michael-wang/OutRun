@@ -86,4 +86,7 @@ export function coastBarrierStoneAt(d:number,side:-1|1){
  const rand=(salt:number)=>{const v=Math.sin((slot+1)*97.13+(side+3)*31.77+salt*17.11)*43758.5453;return v-Math.floor(v);};
  return {d:Math.max(0,d+(rand(1)-.5)*3.2),length:2.2+rand(2),height:.40+rand(3)*.07};
 }
-export const COAST_LAMPS=Array.from({length:156},(_,i)=>380+i*64);
+/** The former 64m standalone lamp grid is retired. Taiwan-style street
+ * lights are now a sparse attribute of COAST_UTILITY_POLES instead.
+ */
+export const COAST_LAMPS:readonly number[]=[];
