@@ -75,7 +75,9 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
   // intentionally much darker, so an absolute lightness gap is misleading.
   expect(lightest).toBeGreaterThan(0);
   expect((lightest-darkest)/lightest).toBeGreaterThan(.08);
-  expect(steep).toBeGreaterThan(100);
+  // Lower, gentler middle ridges naturally have fewer steep-facing vertices.
+  // Still require meaningful relief on both mountain sheets.
+  expect(steep).toBeGreaterThan(70);
   expect((mesh.material as THREE.MeshBasicMaterial).fog).toBe(false);
   mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
