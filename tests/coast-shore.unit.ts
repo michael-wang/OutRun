@@ -58,7 +58,15 @@ describe('coastal road stays above a real beach',()=>{
  it('leaves the asphalt geometry unchanged and joins beach chunks without a height seam',()=>{
   const build=(a:number,b:number,coast:boolean)=>prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],a,b,track.length,false,true,[],d=>shoulderProfile(d,stage.seed),undefined,true,undefined,coast?stage.scenerySections:undefined);
   const a=build(2700,2800,true),b=build(2800,2900,true);
-  expect(a.find(m=>m.kind==='asphalt')).toEqual(build(2700,2800,false).find(m=>m.kind==='asphalt'));
+  const coastPaved=a.find(m=>m.kind==='asphalt')!,original=build(2700,2800,false).find(m=>m.kind==='asphalt')!;
+  // Main *drivable* asphalt and raycast geometry remain byte-equivalent;
+  // the coast deliberately adds a new narrow asphalt apron where tan
+  // shoulders have been replaced with an adjacent U channel.
+  expect(Array.from(coastPaved.positions.slice(0,original.positions.length)))
+   .toEqual(Array.from(original.positions));
+  expect(Array.from(coastPaved.indices.slice(0,original.indices.length)))
+   .toEqual(Array.from(original.indices));
+  expect(coastPaved.positions.length).toBeGreaterThan(original.positions.length);
   const sandA=a.find(m=>m.kind==='sand')!,sandB=b.find(m=>m.kind==='sand')!,stride=41*6;
   // Every beach strip uses physical metres even while shoulder widths taper.
   for(let i=0;i<7;i++)expect(Array.from(sandA.positions.slice((i+1)*stride-6,(i+1)*stride))).toEqual(Array.from(sandB.positions.slice(i*stride,i*stride+6)));
