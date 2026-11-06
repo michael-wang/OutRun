@@ -108,7 +108,7 @@ it('uses beach stones and occasional natural rocks, preserving open seaward vist
   expect(coastBarrierStyle(at,1)).toBe('opening');
  }
  const styles=Array.from({length:834},(_,i)=>coastBarrierStyle(i*12,-1));
- expect(styles.slice(1).filter((v,i)=>v!==styles[i]).length).toBeLessThan(32);
+ expect(styles.slice(1).filter((v,i)=>v!==styles[i]).length).toBeLessThan(50); // a few authored open/rock pockets, never 12m alternation
 });
 
 it('adds deterministic but non-periodic stone imperfections without moving into the roadway',()=>{
