@@ -11,26 +11,29 @@ export const COAST_MOUNTAIN_STEP_M=90;
 export const COAST_MOUNTAIN_ROWS=17;
 
 /** Height field for the inland ridge. No extra runtime sampling or shaders.
- * Wide peaks are interrupted by narrow valley cuts and off-center spurs;
- * the two layers have different wavelengths so they no longer look copied. */
+ * Both ranges share broad summit and valley rhythms, while keeping locally
+ * different spurs. This joins the green foothills to the distant skyline. */
 export function coastMountainHeight(layer:0|1,d:number,u:number){
  const rear=layer===1;
- const spineNoise=fbm2(d/1050+layer*7.4,layer*3.7,3,.48,2);
- const spine=.43+.13*(spineNoise-.5)+.05*Math.sin(d/(rear?525:640)+layer*2.1);
- const rib=ridged2(u*9.2+layer*4.5,d/(rear?360:300),3,.52,2,1.6,.28,.18);
- const crease=fbm2(u*11+layer*3.7,d/215+5.8,3,.5,2);
- const broad=ridged2(layer*8+4.2,d/(rear?490:380),4,.51,2,1.9,.32,.22);
- const irregular=ridged2(layer*6.2+2.1,d/260+4.4,3,.49,2,1.75,.25,.2);
- const valley=fbm2(layer*9+1.7,d/270+7.8,3,.50,2);
- const notch=smoothstep(.60,.79,valley);
- const crest=(rear?310:160)+(rear?320:210)*(.23+.48*broad+.32*irregular)-notch*(rear?145:94);
- const width=(rear?.26:.235)+.055*(broad-.5);
+ // Both ranges share the same large-scale watershed and valley positions.
+ const sharedSpine=fbm2(d/1050,3.7,3,.48,2);
+ const branchBend=fbm2(d/760+layer*2.9,layer*2.4+1.9,3,.5,2);
+ const spine=.43+.13*(sharedSpine-.5)+.04*(branchBend-.5)+.025*Math.sin(d/660+layer*.6);
+ const broad=ridged2(4.2,d/510,4,.51,2,1.9,.32,.22);
+ const valley=fbm2(1.7,d/420+7.8,3,.50,2);
+ const notch=smoothstep(.62,.80,valley);
+ // Independent small-scale spurs keep the layers from looking duplicated.
+ const irregular=ridged2(layer*6.2+2.1,d/(rear?365:315)+4.4,3,.49,2,1.75,.25,.2);
+ const crest=(rear?285:170)+(rear?270:215)*(.25+.52*broad+.23*irregular)-notch*(rear?92:65);
+ const rib=ridged2(u*9.2+layer*4.5,d/(rear?365:310),3,.52,2,1.6,.28,.18);
+ const crease=fbm2(u*11+layer*3.7,d/230+5.8,3,.5,2);
+ const width=(rear?.275:.225)+.045*(broad-.5);
  const q=Math.abs((u-spine)/width);
- // A steeper-than-Gaussian ridge makes distinct summits, not rounded domes.
- const main=Math.exp(-Math.pow(q,1.53));
+ // Rear mountains remain taller, but without the old needle-like silhouettes.
+ const main=Math.exp(-Math.pow(q,1.56));
  const spurL=Math.exp(-(((u-spine+.31)/.14)**2))*(.17+.13*rib);
  const spurR=Math.exp(-(((u-spine-.27)/.15)**2))*(.13+.12*(1-crease));
- const slopeDetail=(rib-.5)*72+(crease-.5)*43;
+ const slopeDetail=(rib-.5)*(rear?48:60)+(crease-.5)*(rear?29:36);
  const shoulder=smoothstep(0,.14,u)*(1-smoothstep(.89,1,u));
  return -22+shoulder*Math.max(0,main*(crest+slopeDetail)+(spurL+spurR)*crest*.51);
 }
@@ -43,14 +46,16 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  const right=new THREE.Vector3(axis.z,0,-axis.x);
  if(right.dot(sample(length*.5).right)<0)right.negate();
  const count=Math.ceil((length+7000)/COAST_MOUNTAIN_STEP_M);
- const nearGreen=new THREE.Color('#52674d'),farGreen=new THREE.Color('#777f7b');
- const nearRock=new THREE.Color('#92836b'),farRock=new THREE.Color('#9b9390');
- const nearWarm=new THREE.Color('#c0a078'),farWarm=new THREE.Color('#c6afa5');
- const nearHaze=new THREE.Color('#8b918e'),farHaze=new THREE.Color('#b2a6a4');
+ // One olive/sage family: the remote hills fade gently instead of turning
+ // gray-white and suggesting a completely different, snowy mountain range.
+ const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#6d8068');
+ const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#918c79');
+ const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#b3a58f');
+ const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#9aa095');
  const normal=new THREE.Vector3();
  for(let layer=0;layer<2;layer++){
   const rear=layer===1;
-  const pos:number[]=[],colors:number[]=[],indices:number[]=[],ribValues:number[]=[],detailValues:number[]=[],heightValues:number[]=[];
+  const pos:number[]=[],colors:number[]=[],indices:number[]=[],ribValues:number[]=[],detailValues:number[]=[],heightValues:number[]=[],depthValues:number[]=[];
   const rows=COAST_MOUNTAIN_ROWS;
   for(let i=0;i<=count;i++){
    const d=-3500+i*COAST_MOUNTAIN_STEP_M;
@@ -58,7 +63,7 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
     const u=row/(rows-1),x=(rear?1300:430)+u*(rear?2100:1700);
     const h=coastMountainHeight(layer as 0|1,d,u);
     const p=origin.clone().addScaledVector(axis,d).addScaledVector(right,x);
-    pos.push(p.x,h,p.z);heightValues.push(h);
+    pos.push(p.x,h,p.z);heightValues.push(h);depthValues.push(u);
     ribValues.push(ridged2(x/260+layer*4,d/405,3,.5,2,1.7,.30,.20));
     detailValues.push(fbm2(x/190+4,d/250,3,.5,2));
    }
@@ -78,13 +83,15 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
    const rocky=smoothstep(.15,.64,slope)*smoothstep(rear?120:75,rear?400:270,height);
    const sunlight=Math.max(0,normal.dot(COAST_SUN));
    const ribs=ribValues[i],fine=detailValues[i];
-   color.copy(base).lerp(stone,rocky*(rear?.52:.63));
-   color.multiplyScalar((rear?.76:.67)+.22*sunlight+.14*normal.y);
-   color.lerp(lit,sunlight*(rear?.20:.24));
+   color.copy(base).lerp(stone,rocky*(rear?.48:.59));
+   color.multiplyScalar((rear?.72:.69)+.22*sunlight+.14*normal.y);
+   color.lerp(lit,sunlight*(rear?.15:.21));
    // Mild erosion/vegetation colour follows relief without painted stripes.
    color.multiplyScalar(.91+.12*ribs+.095*fine);
-   // The farther range loses saturation and contrast into the dusk atmosphere.
-   color.lerp(haze,rear?.53:.17);
+   // Haze progresses within each range as well as between them; the two
+   // overlapping edges belong to the same dusk palette, not separate plates.
+   const depth=depthValues[i];
+   color.lerp(haze,rear?.22+.20*depth:.10+.15*depth);
    colors.push(color.r,color.g,color.b);
   }
   geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
