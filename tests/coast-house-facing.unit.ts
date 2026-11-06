@@ -19,12 +19,12 @@ it('keeps household orientations individual and gives only a fraction of them th
  const shops=COAST_VILLAGE_SITES.filter(s=>s.kind!=='home')
   .map(s=>coastHomeFacingYaw(s.key,'shop'));
  expect(near.length).toBeGreaterThan(40);
- expect(near.filter(y=>y<-.35).length).toBeGreaterThan(near.length*.17);
- expect(near.filter(y=>y>.35).length).toBeGreaterThan(2);
+ expect(near.filter(y=>y>.35).length).toBeGreaterThan(near.length*.17);
+ expect(near.filter(y=>y<-.35).length).toBeGreaterThan(2);
  expect(near.filter(y=>Math.abs(y)<.25).length).toBeGreaterThan(near.length*.20);
  expect(new Set(near.map(y=>Math.round(y*180/Math.PI))).size).toBeGreaterThan(20);
- expect(farm.some(y=>y<-.35)).toBe(true);
  expect(farm.some(y=>y>.35)).toBe(true);
+ expect(farm.some(y=>y<-.35)).toBe(true);
  expect(shops.every(y=>Math.abs(y)<.20)).toBe(true); // shops remain town-like
  for(const context of ['farm','village','shop'] as const){
   expect(coastHomeFacingYaw(12345,context)).toBe(coastHomeFacingYaw(12345,context));
@@ -35,9 +35,9 @@ it('puts the hero courtyard gate in a three-quarter approaching-camera view',()=
  expect(COAST_RURAL_SHOWCASE.approachAt).toBe(850);
  expect(hero.d).toBe(1056);
  expect(hero.x).toBeLessThan(60);
- expect(hero.yaw).toBeLessThan(-.32);
- // Model entrances/windows are local -X. Facing the road without an extra
- // PI turn makes the red gate visible already from an approaching vehicle.
+ expect(hero.yaw).toBeGreaterThan(.32);
+ // Model entrances/windows are local -X. With the CORRECT road-right
+ // frame, PI faces the road; a positive extra angle reveals the gate.
  expect(houseApproachFrontScore(hero.yaw,hero.x,150)).toBeGreaterThan(.69);
  expect(houseApproachFrontScore(hero.yaw,hero.x,90)).toBeGreaterThan(.77);
  const footprint=rotatedHouseExtent(11.5,17,hero.yaw);
