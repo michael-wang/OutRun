@@ -1,4 +1,4 @@
-import {coastDrainAt,coastDrainCovered} from './coast-roadside-layout';
+import {coastDrainAt,coastDrainCovered,COAST_DRAIN_X} from './coast-roadside-layout';
 
 /** Coast-only visitor beaches: a large relaxed second act, two lively
  * bays beside town, and just two quiet pockets on the fishing coast.
@@ -87,6 +87,24 @@ export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
  }
  return coastDistrictAt(d)!==undefined||coastCrosswalkNear(d,65)?'block':'rail';
 }
+/** Road-edge protection is continuous physically, not visually: a short
+ * steel rail or individual concrete stone takes the impact wherever visible;
+ * otherwise a conservative invisible edge prevents the player from driving
+ * across an open beach or into the irrigation canal. The invisible fallback
+ * sits BEHIND a stone's near side so its swept contact remains meaningful.
+ * The bounds are at the edge itself; GuardrailContact handles car dimensions.
+ */
+export function coastDriveBounds(d:number,half:number){
+ const sea=coastBarrierStyle(d,-1);
+ const inland=coastBarrierStyle(d,1);
+ const seaRailCentre=half+coastBarrierClearance(d,-1);
+ const left=sea==='rail'?-seaRailCentre+.05
+  :sea==='block'?-seaRailCentre-.38:-11.0;
+ const right=inland==='block'?COAST_DRAIN_X.leftLip+.06
+  :coastDrainAt(d)?COAST_DRAIN_X.outerRoad:half+.15;
+ return {left,right};
+}
+
 /** Retained only for legacy geometry snapshots; current coast layouts no
  * longer select 'rock' as a guardrail style. Offshore scenic rocks remain.
  */

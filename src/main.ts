@@ -40,7 +40,6 @@ import {generateStage} from './stage-one';
 import {generateTrip,TRIP_VERSION} from './trip';
 import {DESIGNER_CANYON_STAGE} from './designer-canyon';
 import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
-import {coastDrainRightLimit} from './coast-roadside-layout';
 import {CANYON_ROADLOCK_STAGE,CANYON_ROADLOCK_MOMENTS,CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
@@ -160,6 +159,7 @@ let ultraOcean=coastUltraWater?await import('./coast-ocean')
  .catch(error=>{console.error('Ultra-Water unavailable; using basic sea',error);return null;}):null;
 startupDiagnostics.mark('coast-ocean-ready',{active:!!ultraOcean});
 if(ultraOcean){
+ world.streamer?.bindCoastOceanWater(ultraOcean.boatSurfaceUniforms);
  const originalSea=world.scene.getObjectByName('default-coast-water');
  if(originalSea)originalSea.visible=false;
  ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowTechniqueEnabled('boatDepth');
@@ -468,7 +468,7 @@ function advance(dt:number,override?:InputState){
   if(mode==='playing'&&!settingsOpen){world.streamer?.update(state.distance);if(contextLost||(world.streamer&&!world.streamer.canDrive(state.distance,Math.max(0,state.speed)*effectivePace(state.speed,highSpeedPace)+5,dt))){holdRoad(true);sound.pause();return false;}holdRoad(false);}
 
   input.update(dt);
-  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance,beforeLateral=state.lateral;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};lastControls={...controls};usedExternalControls=!!external;if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}const road=world.sample(state.distance),previousGear=state.gear,previousRpm=state.rpm;step(state,controls,dt,road.curvature,highSpeedPace,world.halfAt,road.tangent.y/Math.hypot(road.tangent.x,road.tangent.z),-Math.atan(road.right.y),coastUltraMode?coastDrainRightLimit:undefined);
+  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance,beforeLateral=state.lateral;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};lastControls={...controls};usedExternalControls=!!external;if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}const road=world.sample(state.distance),previousGear=state.gear,previousRpm=state.rpm;step(state,controls,dt,road.curvature,highSpeedPace,world.halfAt,road.tangent.y/Math.hypot(road.tangent.x,road.tangent.z),-Math.atan(road.right.y),undefined);
  // The selected five-lane merge moves the road frame right; moving the car
  // left by the exact delta keeps the four old lanes physically stationary.
  if(world.junction)state.lateral-=interchangeCenterOffset(world.junction,state.distance)-interchangeCenterOffset(world.junction,beforeDistance);
@@ -655,7 +655,8 @@ async function prepareChapter(index:number,report?:(value:number,title:string,de
   report?.(10,'正在準備海岸','整理道路、海灘與沿岸風景。');
   if(c.id==='coast'){
    ocean=await (await import('./coast-ocean')).UltraCoastOcean.create(renderer,preparedWorld.scene,preparedWorld,p=>report?.(12+p*25,'正在準備海岸','讓海浪、船隻與夕陽回到海面。'));
-   const sea=preparedWorld.scene.getObjectByName('default-coast-water');if(sea)sea.visible=false;
+   preparedWorld.streamer?.bindCoastOceanWater(ocean.boatSurfaceUniforms);
+    const sea=preparedWorld.scene.getObjectByName('default-coast-water');if(sea)sea.visible=false;
    boats=await (await import('./coast-boats')).addCoastBoats(preparedWorld.scene,preparedWorld.sample,ocean?.boatSurfaceUniforms,ocean?.boatShadow);
    await renderer.compileAsync(ocean.boatShadow.scene,camera);
   }
@@ -733,6 +734,7 @@ function adoptChapter(c:PreparedChapter,replay=false){
  tireEffects.dispose();dustEffects.dispose();impactSparks.dispose();trafficSparks.dispose();traffic?.dispose();cones?.dispose();triangles?.dispose();
  world=c.world;ultraOcean=c.ocean;blenderAsset=c.art;coastBoats=c.boats;journeyLink=c.link;
   if(ultraOcean){
+   world.streamer?.bindCoastOceanWater(ultraOcean.boatSurfaceUniforms);
    ultraOcean.boatShadow.enabled=sunsetShadowsEnabled&&coastShadowTechniqueEnabled('boatDepth');
    ultraOcean.setRockSunShadows(sunsetShadowsEnabled&&coastShadowTechniqueEnabled('rockShader'));
   }

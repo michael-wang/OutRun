@@ -5,6 +5,7 @@ import {markCoastShadowCaster} from './coast-shadow-layers';
 import {addCoastSandLight} from './coast-sand-light';
 import {softenCoastInlandFog} from './coast-inland-fog';
 import {addCoastMountains} from './coast-mountains';
+import {coastDriveBounds} from './coast-layout';
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
@@ -254,6 +255,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
     if(streamer&&!streamer.roadReady(d))return {};
     if(onBridge(d,bridge))return {left:-bridgeRailEdge(halfAt(d)),right:bridgeRailEdge(halfAt(d))};
     if(options.seed===1&&canyonBend(d))return {right:CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness};
+    if(coastUltra)return coastDriveBounds(d,halfAt(d));
     return {
       // No invisible METAL RAIL collision across the unguarded ocean vista.
       // Beach stones and sparse boulders are checked individually instead.
