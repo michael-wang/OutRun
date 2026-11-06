@@ -88,25 +88,47 @@ function windowFront(g:RuralMesh,x:number,y:number,z:number,wide=1.15){
 function farmhouse(){
  const g=new RuralMesh();
  g.box(0,.10,0,13,.20,17,'#aa957a'); // yard/raised footing
- g.box(0,2.08,0,8,4,11,'#d6c5a9');
+ // 台灣鄉間常見的「紅磚下半截＋洗石子／白灰泥上半截」。
+ g.box(0,2.08,0,8,4,11,'#d2c0a3');
+ for(const z of [-4.55,4.55])g.box(-4.05,.65,z,.105,1.28,1.85,'#a45e48');
+ g.box(-4.12,3.33,0,.10,.40,10.8,'#e1d0b4');
  g.box(-4.11,1.25,0,.12,2.45,1.65,'#694b41');
+ for(const z of [-.98,.98])g.box(-4.23,1.8,z,.13,2.65,.16,'#eee0be');
+ g.box(-4.23,3.17,0,.18,.20,2.3,'#eadac0');
  windowFront(g,-4.2,2.35,-3.55,1.5);
  windowFront(g,-4.2,2.35,3.55,1.5);
+ for(const z of [-3.55,3.55]){
+  // 簡化鐵窗／鋁窗框：遠距仍看得出，不做每格獨立 mesh。
+  for(const offset of [-.48,.48])g.box(-4.30,2.35,z+offset,.09,1.37,.055,'#65716c');
+ }
  g.roof(0,4.12,0,8.7,11.4,1.9,'#a54e3f');
+ for(const z of [-4.5,-3,-1.5,0,1.5,3,4.5])
+  g.box(-2.1,5.03,z,.045,.035,6.9,'#b46a52');
  g.box(-5.12,3.05,0,2.0,.23,13,'#9f5d48'); // porch canopy
  for(const z of [-5.7,5.7])g.box(-5.5,1.45,z,.23,2.9,.23,'#8b745c');
- g.cylinder(2.0,4.42,-2.5,.65,.70,'#858c83'); // water tank
- g.box(3.4,1.18,-5.4,2.8,2.3,2.1,'#c3b49b'); // service annex
- g.roof(3.4,2.35,-5.4,2.9,2.1,.65,'#826a62');
+ g.cylinder(2.0,4.42,-2.5,.65,.70,'#858c83'); // stainless rooftop water tank
+ g.box(3.4,1.18,-5.4,2.8,2.3,2.1,'#ad9980'); // farm tool shed
+ g.box(1.9,1.10,-5.4,.13,1.8,1.30,'#7a8b85'); // sliding iron door
+ g.roof(3.4,2.35,-5.4,2.9,2.1,.65,'#71817a'); // corrugated tin addition
+ for(const z of [-6.30,-5.75,-5.20,-4.65])g.box(2.9,2.68,z,.08,.07,2.65,'#95a6a0');
  return g.finish('coast-rural-farmhouse');
 }
 function townhouse(){
  const g=new RuralMesh();
  g.box(0,.08,0,9,.16,11,'#ac997c');
- g.box(0,4.35,0,7.4,8.6,9.4,'#c8b6a7');
- g.box(-3.8,1.35,0,.1,2.65,2.2,'#38454a');
+ // 老透天的洗石子外牆、舊磁磚腰帶及鐵捲門。
+ g.box(0,4.35,0,7.4,8.6,9.4,'#c4b3a4');
+ g.box(-3.755,4.35,0,.11,.35,9.45,'#9e9d94');
+ g.box(-3.77,7.75,0,.11,.22,9.45,'#a89a83');
+ for(const z of [-3.9,3.9])g.box(-3.83,4.5,z,.16,8.55,.26,'#ded0bb');
+ g.box(-3.8,1.35,0,.1,2.65,2.2,'#77817d');
+ for(const y of [.55,1.1,1.65,2.2])g.box(-3.90,y,0,.04,.075,2.2,'#a3aca6');
  for(const y of [4.1,6.75]){
-  for(const z of [-2.45,2.40])windowFront(g,-3.82,y,z,1.55);
+  for(const z of [-2.45,2.40]){
+   windowFront(g,-3.82,y,z,1.55);
+   for(const offset of [-.5,0,.5])
+    g.box(-3.99,y,z+offset,.08,1.36,.055,'#626f70'); // iron window grille
+  }
   g.box(-4.10,y-1.0,0,1.75,.19,10,'#e1c9ab');
   g.box(-4.92,y-.55,0,.12,.95,10,'#697879'); // balcony wall
   for(const z of [-4.3,0,4.3])g.box(-4.92,y-.25,z,.14,1.0,.15,'#8a7569');
@@ -117,6 +139,10 @@ function townhouse(){
  g.box(0,8.85,0,7.9,.45,10,'#62616a');
  g.cylinder(1.25,10.0,-2.2,.84,1.8,'#a7b2af');
  g.box(1.2,10.93,-2.2,1.75,.10,1.75,'#cad2c7');
+ // 四、五十年透天常見的屋頂鐵皮小增建；只占屋頂一角。
+ g.box(1.1,9.45,2.15,3.6,1.05,3.6,'#7c8b85');
+ g.roof(1.1,10.05,2.15,4.0,3.9,.55,'#718b82');
+ for(const z of [.9,1.65,2.4,3.15])g.box(-1.0,9.78,z,.04,.28,.13,'#d1d7c9');
  return g.finish('coast-rural-townhouse');
 }
 function courtyard(){
@@ -124,7 +150,10 @@ function courtyard(){
  g.box(0,.08,0,23,.16,34,'#ac9379');
  // Rear ancestral hall, with two low flanking wings enclosing an open court.
  g.box(6.7,2.15,0,7.2,4.3,27,'#bd8068');
+ g.box(3.06,.85,0,.13,1.65,27.3,'#995b49'); // brick base course
+ g.box(3.00,3.78,0,.12,.30,26.8,'#e8d7bb'); // white lime-wash band
  g.roof(6.7,4.33,0,7.5,28,1.55,'#a54e3f');
+ for(const z of [-11,-7,-3,1,5,9])g.box(4.1,5.32,z,.05,.045,3.7,'#c87557');
  g.box(.3,1.86,-13.25,15.0,3.72,6.4,'#be876c');
  g.box(.3,1.86,13.25,15.0,3.72,6.4,'#be876c');
  g.roof(.3,3.75,-13.25,6.7,15.2,1.10,'#a54e3f','z');
@@ -139,6 +168,12 @@ function courtyard(){
  g.box(-9.9,3.38,0,3.35,1.05,6.6,'#b5795f');
  g.roof(-9.9,3.98,0,4.1,8.2,1.52,'#a54e3f');
  g.box(-11.1,1.16,0,.14,2.32,3.9,'#633d36');
+ // 紅門對聯用單色面片就足以讓車速下的視線辨識台灣合院。
+ for(const z of [-2.25,2.25]){
+  g.box(-11.24,1.56,z,.09,2.35,.28,'#a92928');
+  g.box(-11.30,1.55,z,.095,1.87,.09,'#d9af60');
+ }
+ g.box(-11.33,2.64,0,.12,.27,4.60,'#d7ad61');
  for(const z of [-3.1,3.1]){
   g.box(-11.25,2.4,z,.12,.78,.65,'#d6a659');
   g.box(-11.32,2.10,z,.18,.22,.70,'#d6a659');
@@ -146,8 +181,12 @@ function courtyard(){
  // Courtyard floor remains lower than the surrounding tiled wings.
  g.box(-1.5,.18,0,10,.14,15,'#c2a78b');
  g.box(2.9,1.22,0,.12,2.45,2.1,'#724e43');
- for(const z of [-9,-5.5,5.5,9])windowFront(g,2.97,2.40,z,1.1);
+ for(const z of [-9,-5.5,5.5,9]){
+  windowFront(g,2.97,2.40,z,1.1);
+  for(const offset of [-.27,.27])g.box(2.88,2.4,z+offset,.055,1.28,.055,'#6c6b62');
+ }
  for(const z of [-7.5,7.5])g.box(-4.0,.55,z,2.7,.8,1.6,'#739062');
+ g.box(-2.25,.26,1.0,2.5,.18,4,'#bea38a'); // simple courtyard stone bench
  return g.finish('coast-rural-courtyard');
 }
 /** Called only for the relevant streamed scenery chunk. */
