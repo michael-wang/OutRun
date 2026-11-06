@@ -1,3 +1,5 @@
+import {coastDrainAt,coastDrainCovered} from './coast-roadside-layout';
+
 /** Coast-only visitor beaches: a large relaxed second act, two lively
  * bays beside town, and just two quiet pockets on the fishing coast.
  * The opening has an open sea vista without a crowded tourist beach.
@@ -54,9 +56,24 @@ export const coastCrosswalkNear=(d:number,margin=8)=>COAST_CROSSWALKS.some(at=>M
  * receives long uninterrupted metal rail. Inland districts get safe, porous
  * frontage. All boundaries are authored in absolute route metres.
  */
-export type CoastBarrierStyle='opening'|'block'|'rail';
+export type CoastBarrierStyle='opening'|'block'|'rail'|'none';
+/** Physical distance from the asphalt edge, not the former highway shoulder.
+ * Rural stone blocks sit immediately BEFORE the open ditch; covered drains
+ * and the deliberately unguarded fishing section have NO visible barrier.
+ */
+export function coastBarrierClearance(d:number,side:-1|1=-1){
+ return side===1&&coastDrainAt(d)?.kind==='open'?1.05:TRIP_BARRIER_INNER_FALLBACK;
+}
+const TRIP_BARRIER_INNER_FALLBACK=3.6+.28;
 export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
  if(coastCrosswalkNear(d,14))return 'opening';
+ if(side===1){
+  const drain=coastDrainAt(d);
+  if(drain){
+   if(drain.kind==='open')return coastDrainCovered(d)?'none':'block';
+   return 'none'; // town lid and remote unguarded rural ditch
+  }
+ }
  if(side===-1){
   return COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70))
    ?'block':'rail';
