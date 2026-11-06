@@ -43,6 +43,21 @@ it('keeps concrete and rails outside the driven lanes, bounded in height and bat
   mesh.dispose();mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();
  }
 });
+it('fades coastal grass warmth before the inland foothills',()=>{
+ const strips=road(2350,2375).filter(mesh=>mesh.kind==='grass');
+ expect(strips.length).toBeGreaterThan(25);
+ const avgGreen=(colors:Float32Array)=>{
+  let total=0;
+  for(let i=1;i<colors.length;i+=3)total+=colors[i];
+  return total/(colors.length/3);
+ };
+ // Terrain strip order runs from the road verge inland; farther slopes
+ // should not become a brighter yellow-green band behind the houses.
+ const roadside=avgGreen(strips[0].colors);
+ const inland=avgGreen(strips.at(-1)!.colors);
+ expect(inland).toBeLessThan(roadside);
+ expect(inland).toBeGreaterThan(0);
+});
 it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  const scene=new THREE.Scene();addCoastMountains(scene,track.sample,track.length);
  expect(scene.children).toHaveLength(2);
