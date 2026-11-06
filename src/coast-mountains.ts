@@ -46,13 +46,13 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  const right=new THREE.Vector3(axis.z,0,-axis.x);
  if(right.dot(sample(length*.5).right)<0)right.negate();
  const count=Math.ceil((length+7000)/COAST_MOUNTAIN_STEP_M);
- // Sunset art direction: foreground hills carry the warmth; distant ranges
- // stay in shadow as supporting dark forest-green silhouettes. Do not wash
- // their greens out with pale rock highlights or bright atmospheric haze.
- const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#2d4938');
- const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#43564a');
- const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#617359');
- const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#43584a');
+ // Sunset art direction: the distant range is a quiet, forest-green backdrop
+ // slightly darker than the olive middle hills, not a bright green cutout.
+ // Keep dusk highlights and airlight subdued; no extra render passes needed.
+ const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#40503f');
+ const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#4c5649');
+ const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#66705f');
+ const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#536250');
  const normal=new THREE.Vector3();
  for(let layer=0;layer<2;layer++){
   const rear=layer===1;
@@ -98,12 +98,9 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
    colors.push(color.r,color.g,color.b);
   }
   geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
-  // TEMPORARY BLACK-MOUNTAIN DIAGNOSTIC (2026-11-06).
-  // Force BOTH coast mountain sheets to pure black at the material stage.
-  // MeshBasicMaterial multiplies its material color by baked vertex colors,
-  // so no sunset, vertex hue or haze can turn them green in this experiment.
-  // Remove this override after the actual rendering source is confirmed.
-  const material=new THREE.MeshBasicMaterial({color:0x000000,vertexColors:true,fog:false,side:THREE.DoubleSide});
+  // The black diagnostic confirmed these meshes own the visible distant hills.
+  // Restore the baked colors without a material tint.
+  const material=new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide});
   material.onBeforeCompile=shader=>{
    shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\ngl_Position.z=gl_Position.w*(1.0-0.00008/(1.0+max(0.0,-mvPosition.z)/2000.0));');
   };
