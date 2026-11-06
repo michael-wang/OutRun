@@ -3,16 +3,20 @@ import {readFileSync} from 'node:fs';
 import {driveRegionAt,summarizeDriveRegions,type DriveFpsSecond} from '../src/drive-fps-diagnostics';
 
 it('separates coastline approach, first rice, flowers, exit, and later farm visits',()=>{
- expect(driveRegionAt(1750)).toBe('other');
- expect(driveRegionAt(1800)).toBe('approach');
- expect(driveRegionAt(2399)).toBe('approach');
- expect(driveRegionAt(2400)).toBe('main-rice');
- expect(driveRegionAt(2999)).toBe('main-rice');
- expect(driveRegionAt(3099)).toBe('other');
- expect(driveRegionAt(3100)).toBe('main-flowers');
- expect(driveRegionAt(3600)).toBe('exit');
+ expect(driveRegionAt(0)).toBe('approach');
+ expect(driveRegionAt(199)).toBe('approach');
+ expect(driveRegionAt(200)).toBe('main-rice');
+ expect(driveRegionAt(899)).toBe('main-rice');
+ expect(driveRegionAt(999)).toBe('other');
+ expect(driveRegionAt(1200)).toBe('main-flowers');
+ expect(driveRegionAt(1699)).toBe('main-flowers');
+ expect(driveRegionAt(1700)).toBe('exit');
+ expect(driveRegionAt(2050)).toBe('exit');
+ expect(driveRegionAt(2500)).toBe('other');
  expect(driveRegionAt(4500)).toBe('other-rice');
- expect(driveRegionAt(4700)).toBe('other-flowers');
+ expect(driveRegionAt(4750)).toBe('other-flowers');
+ expect(driveRegionAt(7500)).toBe('other-rice');
+ expect(driveRegionAt(9500)).toBe('other-flowers');
 });
 it('reports region-specific frame drops without mixing in non-farm sections',()=>{
  const cpu={callback:8,physics:1,world:2,ocean:1,boatShadow:0.2,mainScene:3,otherRender:0.8};

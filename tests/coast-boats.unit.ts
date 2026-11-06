@@ -9,7 +9,11 @@ import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
 const track=createPilotTrack(COAST_ULTRA_STAGE);
 
 it('keeps the expanded fleet safely offshore along the real curved coast for full patrols',()=>{
- expect(COAST_BOATS.filter(b=>b.kind==='sail')).toHaveLength(8);expect(COAST_BOATS.filter(b=>b.kind==='yacht')).toHaveLength(6);
+ expect(COAST_BOATS.filter(b=>b.kind==='sail')).toHaveLength(6);
+ expect(COAST_BOATS.filter(b=>b.kind==='yacht')).toHaveLength(4);
+ expect(COAST_BOATS.filter(b=>b.kind==='fishing')).toHaveLength(6);
+ expect(COAST_BOATS.filter(b=>b.kind==='fishing').every(b=>b.distance>=7000)).toBe(true);
+ expect(COAST_BOATS.filter(b=>b.distance<1800)).toHaveLength(1);
  for(let i=1;i<COAST_BOATS.length;i++)expect(COAST_BOATS[i].distance-COAST_BOATS[i-1].distance).toBeLessThan(1200);
  const shore=Array.from({length:Math.ceil(track.length/20)},(_,i)=>{const d=i*20,p=track.sample(d);return {road:p.position,right:p.right.clone().setY(0).normalize(),edge:coastBeachX(COAST_SHORE_OFFSET,d)};});
  for(const boat of COAST_BOATS)for(let t=0;t<=7200;t+=31){

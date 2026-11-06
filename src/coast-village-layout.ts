@@ -20,5 +20,5 @@ for(const [index,district] of COAST_DISTRICTS.entries()){
 }
 export const COAST_REST_SPOTS=COAST_BEACHES.flatMap((bay,index)=>{
  const half=Math.min(330,bay.radius*.6),count=Math.floor(half*2/135);
- return Array.from({length:count},(_,i)=>({d:bay.distance-half+45+i*135+rand(index*43+i)*22,x:-19-rand(index*71+i+6)*3,key:index*100+i,people:i%3===0?1:2,children:i%3!==1}));
+ return Array.from({length:count},(_,i)=>({d:bay.distance-half+45+i*135+rand(index*43+i)*22,x:-15.2-rand(index*71+i+6)*1.35,key:index*100+i,people:i%3===0?1:2,children:i%3!==1}));
 });

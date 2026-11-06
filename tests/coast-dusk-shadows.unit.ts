@@ -111,8 +111,8 @@ it('scales rock, concrete, rail, umbrella and car shadows by the same sun height
 });
 
 it('keeps legacy shadow-anchor positions in exact agreement with stone placement',()=>{
- const anchors=coastBarrierShadowAnchors(1650,()=>8.75);
- const stone=anchors.find(a=>a.kind==='concrete'&&a.d>1500&&a.d<1610&&a.x<0);
+ const anchors=coastBarrierShadowAnchors(2900,()=>8.75);
+ const stone=anchors.find(a=>a.kind==='concrete'&&a.d>2450&&a.d<2570&&a.x<0);
  expect(stone).toBeDefined();
  const slot=Math.round(stone!.d/12)*12;
  const authored=coastBarrierStoneAt(slot,-1);

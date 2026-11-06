@@ -1,6 +1,7 @@
 import {REFERENCE_TRAVEL} from './challenges';
 import {BRICK_START} from './bricks';
 import {LANE_WIDTH} from './road-profile';
+import {COAST_SCENIC_ACTS} from './coast-journey-layout';
 import {DESIGNER_CANYON_STAGE} from './designer-canyon';
 import type {Placement} from './pilot-composer';
 import type {TripCandidate} from './trip';
@@ -21,10 +22,10 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:26,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
- name:'Azure Coast · Resort Plain',
- intent:'Sunset bays beside a resort road, with a wooded plain, inland foothills and layered high mountains.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-five-lanes-r87-804',
+ revision:27,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ name:'Azure Coast · Scenic Journey',
+ intent:'Coastal journey from rice fields and a courtyard through beach, lively market town and fishing farmland.',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-four-scenic-acts-r1-804',
  stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
  length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:5,roadWidth:5*LANE_WIDTH,
  placements:[
@@ -41,15 +42,12 @@ export const COAST_ULTRA_STAGE:TripCandidate={
  ].sort((a,b)=>a.startS-b.startS),
  bankFeatures:[],fixedRoad:undefined,
  worldPhases:[{startS:0,endS:COAST_ULTRA_LENGTH,world:'coast',beat:'Sunset coast journey'}],
- beats:[
-  {id:'COAST-ENTRY',startS:0,endS:900,world:'coast',verticality:'gentle',role:'Settle into the coast'},
-  {id:'COAST-BEACH',startS:900,endS:2100,world:'coast',verticality:'gentle',role:'Left beach and visitors; quiet inland'},
-  {id:'COAST-HOMES',startS:2100,endS:3800,world:'coast',verticality:'gentle',role:'Right neighbourhood; calm water'},
-  {id:'COAST-QUIET',startS:3800,endS:6000,world:'coast',verticality:'gentle',role:'Market into beach, then lit neighbourhood'},
-  {id:'COAST-TURN',startS:6000,endS:7450,world:'coast',verticality:'gentle',role:'Beach and market before a short sunset approach'},
-  {id:'COAST-POSTCARD',startS:7450,endS:8750,world:'coast',verticality:'gentle',role:'Sun path, wide beach and night market'},
-  {id:'COAST-EXIT',startS:8750,endS:10000,world:'coast',verticality:'gentle',role:'Beach and lit homes farewell'},
- ],
+ // Beat metadata follows the same authored act boundaries used by boats,
+ // crops, housing, tourism and vegetation. Road curvature stays untouched.
+ beats:COAST_SCENIC_ACTS.map((act,i)=>({
+  id:`COAST-SCENIC-${i+1}`,startS:act.start,endS:act.end,
+  world:'coast' as const,verticality:'gentle' as const,role:act.label,
+ })),
  buffers:[{startS:0,endS:100,role:'launch'},{startS:COAST_ULTRA_LENGTH-80,endS:COAST_ULTRA_LENGTH,role:'finish'}],
  scenerySections:[{id:'coast-ultra-left-sea',kind:'coastal-left',start:BRICK_START,end:BRICK_START+COAST_ULTRA_LENGTH,left:'sea',right:'coastal-land'}],
  canyonPrototype:undefined,designerCut:undefined,scenicCues:undefined,roadFeatures:undefined,scenicLandmarks:[],

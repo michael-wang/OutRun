@@ -34,7 +34,9 @@ describe('sunset coast nature',()=>{
  it('roots batched source models on the rendered hill mesh, with bounded far geometry',async()=>{
   vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>assets})));
   await loadCoastNature();
-  const start=1000,end=2000,scene=new THREE.Scene();
+  // Chapter II intentionally has scattered scrub, unlike the former densely
+  // wooded 1–2km stretch; use the new quiet-beach chapter for this ground check.
+  const start=2000,end=3000,scene=new THREE.Scene();
   addCoastNature(scene,track.sample,start,end);
   const terrain=prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],start,end,track.length,false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections).find(m=>m.kind==='grass')!;
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(terrain.positions,3));geometry.setIndex(new THREE.BufferAttribute(terrain.indices,1));
@@ -50,7 +52,8 @@ describe('sunset coast nature',()=>{
     expect(Math.abs(hits[0].point.y-base.y)).toBeLessThan(.08);checked++;
    }
   }
-  expect(checked).toBeGreaterThan(300);expect(scene.children.length).toBeLessThan(90);
+  expect(checked).toBeGreaterThan(15);
+  expect(checked).toBeLessThan(200);expect(scene.children.length).toBeLessThan(90);
   const again=new THREE.Scene();addCoastNature(again,track.sample,start,end);
   expect(again.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array))).toEqual(scene.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array)));
   geometry.dispose();(mesh.material as THREE.Material).dispose();

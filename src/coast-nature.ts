@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {farmClearing} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
+import {coastVegetationDensity} from './coast-journey-layout';
 import {coastBeachHeight} from './scenery-cross-section';
 import {roadOffset,shoulderProfile} from './road-profile';
 import type {createTrack} from './track';
@@ -73,7 +74,10 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  // Irregular multi-layer groves. Low grass at the verge, shrubs at the foot,
  // different-sized broadleaf and pine crowns on the rising slope behind them.
  for(let i=Math.ceil(start/22);i*22<end;i++){
-  const d=i*22;if(coastWildness(d)<.3)continue;
+  const d=i*22;
+  // Chapter II is an intentionally sparse headland behind the tourist
+  // beach. Keep authored trees at the farm/courtyard and late fishing coast.
+  if(coastWildness(d)<.3||random(i*67+231)>coastVegetationDensity(d))continue;
   for(let j=0;j<3;j++){
    const key=i*37+j*131,at=d+random(key)*18;
    if(at>=end||coastWildness(at)<.3)continue;
