@@ -48,6 +48,7 @@ import {TireEffects,type TireContact} from './tire-effects';
 import {CoastDuskShadows} from './coast-dusk-shadows';
 import {Traffic,trafficRecipe} from './traffic';
 import {newTrafficSessionSeed} from './traffic-flow';
+import {FinishStats} from './finish-stats';
 import {planJourneyLandmarks,CLOCK_COMPANION_COLOR,CLOCK_DISTRICT_COMPANIONS} from './scenery';
 import {SceneInspector,type InspectorStop} from './scene-inspector';
 import {ROAD_FEATURE_LABELS} from './road-features';
@@ -109,6 +110,12 @@ document.querySelector('#app')!.innerHTML = `
 <section id="player-start" aria-label="Start driving" hidden>
   <div id="player-title" class="player-title">極速漫遊</div>
   <p id="player-subtitle">公路冒險</p>
+  <dl id="player-finish-stats" aria-label="本次旅程數據" hidden>
+   <div><dt>時間</dt><dd id="finish-time">—</dd></div>
+   <div><dt>平均速度</dt><dd id="finish-average">—</dd></div>
+   <div><dt>最高速度</dt><dd id="finish-max">—</dd></div>
+   <div><dt>碰撞</dt><dd id="finish-collisions">—</dd></div>
+  </dl>
   <button id="player-play" class="primary">開始駕駛</button>
   <p id="player-loading" role="status">道路準備中…</p><button id="player-retry" hidden>重試載入</button>
   <div class="player-secondary"><button id="player-restart" hidden>重新開始</button><button id="player-new-route" hidden>新路線</button><button id="player-options">操作設定</button><button id="player-sound">音效開</button><button id="player-install-guide" hidden>更多畫面空間</button></div>
@@ -250,6 +257,7 @@ let testControls:InputState|undefined;let hardDetents=false;let lastControls:Inp
 const highSpeedPace=DEFAULT_PACE;
 let bridgeInspection=false;let cameraHeading=0; let scenicDriftBlend=0;let scenicWeight=0;let initialized=false; let elapsed=0; let frames=0;
 const history=new RecentDrivingHistory();
+const finishStats=new FinishStats();
 let telemetry=stage?new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined):undefined;
 let inspectionView:'front'|'side'|'cockpit'|undefined;
 let wheelContacts:(TireContact & {point:number[]})[]=[];
@@ -353,6 +361,16 @@ function updatePlayerUi(){
   // to the future main menu, not a second or third finish button.
   $('player-restart').hidden=elapsed===0||brickCompleted;
   $('player-new-route').hidden=true;
+  const finishPanel=$('player-finish-stats');finishPanel.hidden=!brickCompleted;
+  if(brickCompleted){
+   const result=finishStats.summary(elapsed);
+   for(const [id,value] of [
+    ['finish-time',result.time],
+    ['finish-average',result.averageKmh+' km/h'],
+    ['finish-max',result.maximumKmh+' km/h'],
+    ['finish-collisions',String(result.collisions)],
+   ]){const node=$(id);if(node.textContent!==value)node.textContent=value;}
+  }
   $('player-install-guide').hidden=true;
   const soundLabel=muted?'音效關':'音效開';
   if($('player-sound').textContent!==soundLabel)$('player-sound').textContent=soundLabel;
@@ -374,7 +392,7 @@ function pause(){if(journeyTransition)return;if(l2UI?.feedbackOpen)return;if(sce
  * current traffic seed for reproducible bug reports. Broken-car geometry and
  * warning markers are world-owned and reroll on the next map load. */
 function rerollTraffic(){if(!params.has('trafficSeed'))trafficSessionVariation=newTrafficSessionSeed();traffic?.reset(trafficSessionVariation);}
-function restart(){if(journeyMode){if(mode==='menu'&&elapsed===0){start();return;}void restartJourney();return;}tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);preparationSince=performance.now();sound.pause();sound.resetPassBy();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;rerollTraffic();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();coastStoneContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=trip?0:brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}if(atDistance!==null){state.distance=atDistance;state.speed=0;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
+function restart(){finishStats.reset();if(journeyMode){if(mode==='menu'&&elapsed===0){start();return;}void restartJourney();return;}tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);preparationSince=performance.now();sound.pause();sound.resetPassBy();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;rerollTraffic();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();coastStoneContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=trip?0:brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}if(atDistance!==null){state.distance=atDistance;state.speed=0;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}start();}
 $('player-retry').onclick=()=>location.reload();
 $('player-play').onclick=()=>document.getElementById('l2-play')?.click();
 document.getElementById('loading-ready')!.addEventListener('click',()=>$('player-play').click());
