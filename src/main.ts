@@ -263,7 +263,7 @@ let rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,ca
 let coastStoneContact=new CoastStoneContact(world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.sceneryReady(d)??true);
 function trafficRoadReady(d:number){return !!journeyLink?.inHighway(d)||actorRoadReady(d);}
 function actorRoadReady(d:number){return (!chapters||d>=chapterStart()&&d<=chapterEnd())&&(world.streamer?.roadReady(d)??true);}
-let cones=trip&&!roadLockMode&&trip.revision>=5?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
+let cones=trip&&!roadLockMode&&trip.revision>=5?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),coastUltraMode):undefined;
 let triangles=trip&&!roadLockMode&&trip.revision>=6?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
 let traffic=trip&&!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,trip.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation):undefined;
  traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
