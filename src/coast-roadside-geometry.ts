@@ -126,16 +126,13 @@ export function buildCoastRoadsideWater(sample:Sample,start:number,end:number){
  for(const site of COAST_SIDE_DRAINS){
   const a=Math.max(start,site.start),b=Math.min(end,site.end);
   if(b<=a)continue;
-  const rows=Math.ceil((b-a)/7.5);
   // Use a stable absolute route grid so water appears continuous at seams.
   const distances=[a];
   for(let d=Math.ceil(a/7.5)*7.5;d<b;d+=7.5)if(d>a+1e-5)distances.push(d);
   distances.push(b);
-  let prior:number|undefined;
   for(let row=0;row<distances.length-1;row++){
    const d0=distances[row],d1=distances[row+1],mid=(d0+d1)*.5;
-   if(coastDrainCovered(mid)) {prior=undefined;continue;}
-   const count=index.length/6;
+   if(coastDrainCovered(mid))continue;
    const first=pos.length/3;
    for(const d of [d0,d1])for(const [side,x] of [[0,left],[1,right]] as const){
     const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
@@ -146,7 +143,6 @@ export function buildCoastRoadsideWater(sample:Sample,start:number,end:number){
     uv.push(side,d);
    }
    index.push(first,first+1,first+2,first+1,first+3,first+2);
-   prior=mid;
   }
  }
  if(!index.length)return null;
