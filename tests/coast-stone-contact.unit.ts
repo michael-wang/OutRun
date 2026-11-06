@@ -69,11 +69,13 @@ it('makes open drainage water distinct from the dark floor, safely below the lip
   Math.abs(attr.getX(i)-c.r)<1e-5&&Math.abs(attr.getY(i)-c.g)<1e-5&&Math.abs(attr.getZ(i)-c.b)<1e-5,
  );
  expect(vertexIndices.length).toBeGreaterThan(60);
- const frame=track.sample(850),roadY=frame.position.y;
+ const frame=track.sample(850);
  const waterY=pos.getY(vertexIndices[Math.floor(vertexIndices.length/2)]);
- // Actual coast grade only changes slightly along this 100m sample.
- expect(waterY).toBeLessThan(roadY-.6);
- expect(waterY).toBeGreaterThan(roadY-1.7);
+ // A banked five-lane road may tilt the whole ditch above or below the road
+ // center. Compare against its LOCAL concrete lip, not the centreline Y.
+ const lip=frame.position.y+frame.right.y*COAST_DRAIN_X.leftLip-.1;
+ expect(waterY).toBeLessThan(lip-.34);
+ expect(waterY).toBeGreaterThan(lip-1.65);
  expect(g.index!.count).toBeLessThan(6500);
  expect(COAST_DRAIN_X.leftLip).toBeLessThan(COAST_DRAIN_X.innerLeft);
  expect(COAST_DRAIN_X.innerRight).toBeLessThan(COAST_DRAIN_X.rightLip);
