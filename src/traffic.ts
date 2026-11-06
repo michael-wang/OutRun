@@ -197,7 +197,11 @@ export class Traffic {
   for(const a of candidates)if(previous.some(old=>old.id===a.id))this.history.set(a.id,{distance:a.distance,speed:a.speed,time});
   const inside=candidates.filter(a=>a.distance>=player-180&&a.distance<=player+850&&(a.distance<this.length-20||this.highwayStart!==undefined&&a.distance>=this.highwayStart));
   this.actors=inside.filter(a=>previous.some(old=>old.id===a.id));
-  const entering=inside.filter(a=>!previous.some(old=>old.id===a.id)&&(time===0||a.id===INTERCHANGE_DEMO_CAR_ID||Math.abs(a.distance-player)>120)).sort((a,b)=>Math.abs(a.distance-player)-Math.abs(b.distance-player));
+  // Known stalled hazards are admitted first. Moving cars must plan around
+  // them; never silently omit an already-authored breakdown to make room.
+  const entering=inside.filter(a=>!previous.some(old=>old.id===a.id)&&(time===0||a.id===INTERCHANGE_DEMO_CAR_ID||Math.abs(a.distance-player)>120))
+   .sort((a,b)=>Number(!!b.stationary)-Number(!!a.stationary)
+    ||Math.abs(a.distance-player)-Math.abs(b.distance-player));
   // Admit only candidates that fit an existing moving/stopped lane picture.
   // An invisible entrant cannot suddenly fill the last usable passing lane
   // or intersect a vehicle already occupying its spawn envelope.
