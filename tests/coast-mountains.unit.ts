@@ -13,6 +13,14 @@ it('cuts varied summit lines and valley notches without approaching the road',()
   expect(heights.every(Number.isFinite)).toBe(true);
  }
 });
+it('keeps the middle skyline well below the distant ridge to show both layers',()=>{
+ for(const d of [0,750,1850,3500,6500,9200]){
+  const middle=coastMountainHeight(0,d,.44);
+  const distant=coastMountainHeight(1,d,.44);
+  expect(middle).toBeGreaterThan(150);
+  expect(middle).toBeLessThan(distant*.8);
+ }
+});
 it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh budget',()=>{
  const scene=new THREE.Scene();
  const sample=((d:number)=>({position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(1,0,0)})) as ReturnType<typeof createTrack>['sample'];
@@ -35,7 +43,7 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   // Layer-specific final dimming keeps the far skyline behind the near
   // mountains while preserving a bright, sunlit ocean to the left.
   expect(material.toneMapped).toBe(false);
-  expect(material.color.r).toBeCloseTo(i===0?.56:.46,6);
+  expect(material.color.r).toBeCloseTo(i===0?.50:.46,6);
   expect(material.color.g).toBeCloseTo(material.color.r,6);
   expect(material.color.b).toBeCloseTo(material.color.r,6);
   geo.dispose();(mesh.material as THREE.Material).dispose();
