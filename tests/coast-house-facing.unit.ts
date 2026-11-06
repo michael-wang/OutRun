@@ -59,7 +59,6 @@ it('keeps a real gate-facing transform in the actual batched scenery, without ne
    start:1000,end:1100,openRoad:true,coastUltra:true,
    shoulders:d=>shoulderProfile(d,804),scenerySections:stage.scenerySections,
   });
- const courtyard=scene.getObjectByProperty('name','unreachable');
  const meshes:THREE.InstancedMesh[]=[];
  scene.traverse(obj=>{if(obj instanceof THREE.InstancedMesh)meshes.push(obj);});
  const hero=meshes.find(m=>m.geometry.name==='coast-rural-courtyard')!;
