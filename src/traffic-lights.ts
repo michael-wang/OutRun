@@ -17,8 +17,11 @@ export class TrafficLights {
   for(let i=0;i<capacity*4;i++)new THREE.Color(i%4<2?'#fff2c7':'#ff2615').toArray(colors,i*3);
   g.setAttribute('color',new THREE.BufferAttribute(colors,3));g.setDrawRange(0,0);
   this.halo=new THREE.Points(g,new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true,
-   vertexShader:`varying vec3 tint;void main(){tint=color;vec4 p=modelViewMatrix*vec4(position,1.0);gl_Position=projectionMatrix*p;gl_PointSize=clamp(300.0/max(1.0,-p.z),2.0,14.0);}`,
-   fragmentShader:`varying vec3 tint;void main(){float r=length(gl_PointCoord-.5)*2.0;gl_FragColor=vec4(tint,pow(max(0.0,1.0-r),2.0)*.65);}`,
+   // Headlight/tail-light halo shader does not use Three's standard fog;
+   // fade its *alpha* into the coastal dusk or it pops up as glowing pixels
+   // well before the (now fogged) vehicle model can actually be seen.
+   vertexShader:`varying vec3 tint;varying float vLampFade;void main(){tint=color;vec4 world=modelMatrix*vec4(position,1.0);vLampFade=1.0-smoothstep(950.0,1400.0,distance(world.xyz,cameraPosition));vec4 p=modelViewMatrix*vec4(position,1.0);gl_Position=projectionMatrix*p;gl_PointSize=clamp(300.0/max(1.0,-p.z),2.0,14.0);}`,
+   fragmentShader:`varying vec3 tint;varying float vLampFade;void main(){float r=length(gl_PointCoord-.5)*2.0;gl_FragColor=vec4(tint,pow(max(0.0,1.0-r),2.0)*.65*vLampFade);}`,
   }));this.halo.name='traffic-running-light-halos';this.halo.frustumCulled=false;scene.add(this.halo);
  }
  begin(){this.count=0;}
