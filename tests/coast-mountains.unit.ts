@@ -31,8 +31,14 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   expect([...pos].every(Number.isFinite)).toBe(true);
   expect([...colors].every(Number.isFinite)).toBe(true);
   expect((mesh.material as THREE.MeshBasicMaterial).vertexColors).toBe(true);
-  // Prevent the temporary black-material diagnostic from accidentally shipping.
-  expect((mesh.material as THREE.MeshBasicMaterial).color.getHex()).toBe(0xffffff);
+  const material=mesh.material as THREE.MeshBasicMaterial;
+  // Both sheets sit behind the real middle hills. ACES was lifting their
+  // greens much brighter than their baked vertex colors implied.
+  expect(material.toneMapped).toBe(false);
+  expect(material.color.r).toBeGreaterThan(.45);
+  expect(material.color.r).toBeLessThan(.65);
+  expect(material.color.g).toBeCloseTo(material.color.r,6);
+  expect(material.color.b).toBeCloseTo(material.color.r,6);
   geo.dispose();(mesh.material as THREE.Material).dispose();
  }
 });
@@ -44,24 +50,32 @@ it('renders the rear range as subdued forest green, darker than the middle range
  const sampleRidgeTone=(mesh:THREE.Mesh)=>{
   const positions=(mesh.geometry as THREE.BufferGeometry).getAttribute('position');
   const colors=(mesh.geometry as THREE.BufferGeometry).getAttribute('color');
+  const material=mesh.material as THREE.MeshBasicMaterial;
   let weighted=0,red=0,green=0,blue=0,count=0;
   for(let i=0;i<positions.count;i++){
    if(positions.getY(i)<95)continue;
-   // Compare only exposed mountain faces, not the bottom dark skirt.
-   const r=colors.getX(i),g=colors.getY(i),b=colors.getZ(i);
-   weighted+=.2126*r+.7152*g+.0722*b;
-   red+=r;green+=g;blue+=b;count++;
+   // Approximate actual display output: baked color * material tint,
+   // converted from linear RGB to sRGB with tone mapping disabled.
+   const color=new THREE.Color(
+    colors.getX(i)*material.color.r,
+    colors.getY(i)*material.color.g,
+    colors.getZ(i)*material.color.b,
+   ).convertLinearToSRGB();
+   weighted+=.2126*color.r+.7152*color.g+.0722*color.b;
+   red+=color.r;green+=color.g;blue+=color.b;count++;
   }
   expect(count).toBeGreaterThan(200);
   return {luminance:weighted/count,r:red/count,g:green/count,b:blue/count};
  };
  const [mid,far]=scene.children as THREE.Mesh[];
  const midTone=sampleRidgeTone(mid),farTone=sampleRidgeTone(far);
- // Keep the sunset's distant range subdued and dark green, not a
- // luminous pale-green slab competing with the road or middle hills.
- expect(farTone.luminance).toBeLessThan(midTone.luminance*.82);
- expect(farTone.luminance).toBeGreaterThan(midTone.luminance*.35);
- expect(farTone.g).toBeGreaterThan(farTone.r*1.2);
- expect(farTone.g).toBeGreaterThan(farTone.b*1.02);
+ // These are final sRGB brightness checks, not vertex-only comparisons.
+ // The earlier vertex-only test passed while ACES made the ridges too bright.
+ expect(midTone.luminance).toBeLessThan(.32);
+ expect(farTone.luminance).toBeLessThan(.27);
+ expect(farTone.luminance).toBeLessThan(midTone.luminance*.87);
+ expect(farTone.luminance).toBeGreaterThan(.10); // dark green, not black
+ expect(farTone.g).toBeGreaterThan(farTone.r*1.08);
+ expect(farTone.g).toBeGreaterThan(farTone.b*1.04);
  for(const mesh of [mid,far]){mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();}
 });
