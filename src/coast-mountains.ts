@@ -24,10 +24,10 @@ export function coastMountainHeight(layer:0|1,d:number,u:number){
  const notch=smoothstep(.62,.80,valley);
  // Independent small-scale spurs keep the layers from looking duplicated.
  const irregular=ridged2(layer*6.2+2.1,d/(rear?365:315)+4.4,3,.49,2,1.75,.25,.2);
- // Dramatic sunset backdrop: leave the lower middle ridgeline unchanged,
- // but make the distant wall of mountains tower above it. Silhouette first,
- // real-world scale second; no additional mesh rows or per-frame work.
- const crest=(rear?560:145)+(rear?520:175)*(.25+.52*broad+.23*irregular)-notch*(rear?92:52);
+ // Return the exaggerated distant wall to a plausible scenic silhouette.
+ // Broad ridge rhythms dominate at long range; small spurs are subdued.
+ const relief=.25+(rear?.60:.52)*broad+(rear?.15:.23)*irregular;
+ const crest=(rear?410:145)+(rear?340:175)*relief-notch*(rear?76:52);
  const rib=ridged2(u*9.2+layer*4.5,d/(rear?365:310),3,.52,2,1.6,.28,.18);
  const crease=fbm2(u*11+layer*3.7,d/230+5.8,3,.5,2);
  const width=(rear?.275:.225)+.045*(broad-.5);
@@ -49,13 +49,14 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  const right=new THREE.Vector3(axis.z,0,-axis.x);
  if(right.dot(sample(length*.5).right)<0)right.negate();
  const count=Math.ceil((length+7000)/COAST_MOUNTAIN_STEP_M);
- // Sunset art direction: the distant range is a quiet, forest-green backdrop
- // slightly darker than the olive middle hills, not a bright green cutout.
- // Keep dusk highlights and airlight subdued; no extra render passes needed.
- const nearGreen=new THREE.Color('#4d5d47'),farGreen=new THREE.Color('#40503f');
- const nearRock=new THREE.Color('#797565'),farRock=new THREE.Color('#4c5649');
- const nearWarm=new THREE.Color('#9e8f77'),farWarm=new THREE.Color('#66705f');
- const nearHaze=new THREE.Color('#7b8578'),farHaze=new THREE.Color('#465043');
+ // One coherent dusk palette, rather than two separately darkened green
+ // silhouettes. The mid ridge stays warm olive; the more distant ridge loses
+ // saturation, shifts slightly toward slate, and picks up subtle evening haze.
+ // No extra meshes, shaders, or runtime fog passes are necessary.
+ const midGreen=new THREE.Color('#56654e'),farGreen=new THREE.Color('#66736f');
+ const midRock=new THREE.Color('#827c6d'),farRock=new THREE.Color('#7b7976');
+ const midWarm=new THREE.Color('#a3917b'),farWarm=new THREE.Color('#968879');
+ const midHaze=new THREE.Color('#7d827b'),farHaze=new THREE.Color('#847c80');
  const normal=new THREE.Vector3();
  for(let layer=0;layer<2;layer++){
   const rear=layer===1;
@@ -78,7 +79,7 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
   const geometry=new THREE.BufferGeometry();
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
   geometry.setIndex(indices);geometry.computeVertexNormals();
-  const base=rear?farGreen:nearGreen,stone=rear?farRock:nearRock,lit=rear?farWarm:nearWarm,haze=rear?farHaze:nearHaze;
+  const base=rear?farGreen:midGreen,stone=rear?farRock:midRock,lit=rear?farWarm:midWarm,haze=rear?farHaze:midHaze;
   const color=new THREE.Color();
   for(let i=0;i<pos.length/3;i++){
    normal.fromBufferAttribute(geometry.attributes.normal,i);
@@ -87,30 +88,27 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
    const rocky=smoothstep(.15,.64,slope)*smoothstep(rear?120:75,rear?400:270,height);
    const sunlight=Math.max(0,normal.dot(COAST_SUN));
    const ribs=ribValues[i],fine=detailValues[i];
-   color.copy(base).lerp(stone,rocky*(rear?.48:.59));
-   // Distant peaks face away from the low sun: reduce their baked fill and
-   // warm highlights rather than allowing the green backdrop to glow.
-   color.multiplyScalar((rear?.65:.69)+(rear?.10:.22)*sunlight+(rear?.10:.14)*normal.y);
-   color.lerp(lit,sunlight*(rear?.06:.21));
-   // Keep subtle relief, but do not give the remote range bright mottling.
-   color.multiplyScalar(rear?.95+.06*ribs+.045*fine:.91+.12*ribs+.095*fine);
-   // Atmospheric recession softens contrast without adding pale-green fog.
-   // Foreground hill colors and haze are deliberately unchanged.
+   color.copy(base).lerp(stone,rocky*(rear?.42:.55));
+   // The warm, low sun still outlines middle hills; distant surfaces have
+   // gentler relief lighting and fewer brightly colored rocky highlights.
+   color.multiplyScalar((rear?.82:.77)+(rear?.11:.18)*sunlight+(rear?.08:.12)*normal.y);
+   color.lerp(lit,sunlight*(rear?.12:.16));
+   color.multiplyScalar(rear?.93+.09*ribs+.05*fine:.91+.11*ribs+.045*fine);
+   // Bake atmospheric perspective from the very same dusk palette.
+   // Lower distant slopes are hazier than exposed summits; unlike a flat
+   // pastel overlay this retains landform volume and a readable horizon.
    const depth=depthValues[i];
-   color.lerp(haze,rear?.12+.06*depth:.10+.15*depth);
+   const airlight=rear
+    ?.14+.18*(1-smoothstep(100,480,height))+.06*depth
+    :.10+.06*depth;
+   color.lerp(haze,airlight);
    colors.push(color.r,color.g,color.b);
   }
   geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
-  // The black-mountain experiment verified that this material controls the
-  // visible backdrop. The game's global ACES tone mapping (exposure 1.1)
-  // brightens dark vertex colors into the distracting sage-green seen in play.
-  // Bypass tone mapping here, then apply a neutral linear-space dimmer AFTER
-  // every baked sun/rock/haze blend. Both sheets sit behind the playable hills.
-  // After the previous fog fix, the middle mountains still occupied too much
-  // of the bright half of the value range. Darken BOTH background sheets
-  // substantially: the middle is a shadowed green shape, and the oversized
-  // distant peaks form the darkest rim against the dusk sky.
-  const dim=rear?.31:.33;
+  // Fixed neutral exposure keeps the baked linear vertex colors predictable
+  // (the game's ACES pass would otherwise brighten them again). The distant
+  // range is slightly *lighter* and grayer, rather than a black cutout.
+  const dim=rear?.72:.70;
   const material=new THREE.MeshBasicMaterial({
    color:new THREE.Color().setRGB(dim,dim,dim),
    vertexColors:true,fog:false,toneMapped:false,side:THREE.DoubleSide,
