@@ -99,8 +99,14 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
     }
     if(coastUltra&&kind==='grass'){
      const x=roadOffset(o,cachedWidth(d),cachedShoulders(d)),hill=coastHillHeight(x,d);
-     color.set('#81915a').lerp(new THREE.Color('#536b47'),Math.min(1,hill/48));
-     color.lerp(new THREE.Color('#ae9b70'),.14+.1*Math.sin(d*.017+x*.12));
+     const relief=THREE.MathUtils.clamp(hill/48,0,1);
+     // The old varying ochre overlay washed out some distant hills into
+     // bright yellow bands. Keep gentle sunset warmth only by the road,
+     // fading it away before reaching the inland foothills.
+     const inland=THREE.MathUtils.smoothstep(x,115,235);
+     color.set('#758452').lerp(new THREE.Color('#4d6141'),relief);
+     color.lerp(new THREE.Color('#9a8866'),.055*(1-inland));
+     color.multiplyScalar(.95-.025*relief);
     }
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
      const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);
