@@ -42,21 +42,24 @@ it('uses a darker backlit rear ridge rather than a pale silhouette cutout',()=>{
  const sampleRidgeTone=(mesh:THREE.Mesh)=>{
   const positions=(mesh.geometry as THREE.BufferGeometry).getAttribute('position');
   const colors=(mesh.geometry as THREE.BufferGeometry).getAttribute('color');
-  let weighted=0,count=0;
+  let weighted=0,red=0,green=0,blue=0,count=0;
   for(let i=0;i<positions.count;i++){
    if(positions.getY(i)<95)continue;
    // Compare only exposed mountain faces, not the bottom dark skirt.
    const r=colors.getX(i),g=colors.getY(i),b=colors.getZ(i);
-   weighted+=.2126*r+.7152*g+.0722*b;count++;
+   weighted+=.2126*r+.7152*g+.0722*b;
+   red+=r;green+=g;blue+=b;count++;
   }
   expect(count).toBeGreaterThan(200);
-  return weighted/count;
+  return {luminance:weighted/count,r:red/count,g:green/count,b:blue/count};
  };
  const [mid,far]=scene.children as THREE.Mesh[];
  const midTone=sampleRidgeTone(mid),farTone=sampleRidgeTone(far);
- // Atmospheric depth remains, but the whole remote range cannot be lighter
- // than the warmly lit middle hills (the previous visual regression).
- expect(farTone).toBeLessThan(midTone);
- expect(farTone).toBeGreaterThan(midTone*.54);
+ // Keep the sunset's distant range subdued and dark green, not a
+ // luminous pale-green slab competing with the road or middle hills.
+ expect(farTone.luminance).toBeLessThan(midTone.luminance*.65);
+ expect(farTone.luminance).toBeGreaterThan(midTone.luminance*.25);
+ expect(farTone.g).toBeGreaterThan(farTone.r*1.55);
+ expect(farTone.g).toBeGreaterThan(farTone.b*1.2);
  for(const mesh of [mid,far]){mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();}
 });
