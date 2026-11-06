@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {COAST_SUN} from './coast-dusk';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
+import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
 import {COAST_UTILITY_POLES,coastDrainAt} from './coast-roadside-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
@@ -65,7 +65,7 @@ export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>numbe
  const anchors:CoastShadowAnchor[]=[];
  for(let d=0;d<length;d+=12){
   for(const side of [-1,1] as const){
-   const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none')continue;
+   const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
    if(style==='block'){
     const stone=coastBarrierStoneAt(d,side);
     const x=side*(halfAt(stone.d)+coastBarrierClearance(stone.d,side));
@@ -85,6 +85,12 @@ export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>numbe
  // Inside the Taiwan roadside pockets, lamps now grow from actual
  // concrete utility poles. Do not leave ghost shadows from the old
  // stand-alone 64m lamp grid at the previous shoulder location.
+ for(let d=0;d<length;d+=33){
+  if(coastBarrierStyle(d,-1)!=='rock')continue;
+  const b=coastBarrierRockAt(d);
+  anchors.push({d:b.d,x:-(halfAt(b.d)+b.offset),width:b.width*1.1,
+   length:coastShadowLength(b.height*.8),kind:'rock'});
+ }
  for(const d of COAST_LAMPS)if(d<length&&!coastDrainAt(d))
   anchors.push({d,x:14,width:.55,length:coastShadowLength(11.5),kind:'lamp'});
  for(const pole of COAST_UTILITY_POLES)if(pole.d<length&&pole.lamp)
