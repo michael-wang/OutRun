@@ -65,7 +65,7 @@ export class Traffic {
  private outlineMeshes:THREE.InstancedMesh[];private crestRims:THREE.InstancedMesh[];private outlineEdges:THREE.EdgesGeometry[];private crestHints:THREE.LineSegments[];
  private outlineMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_OUTLINE_COLOR,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:true,toneMapped:false});
  private crestMaterial=new THREE.LineBasicMaterial({color:TRAFFIC_CREST_RISK_COLOR,transparent:true,opacity:.6,depthTest:true,depthWrite:false,depthFunc:THREE.GreaterDepth,fog:true,toneMapped:false});
- private crestRimMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_CREST_RISK_COLOR,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:false,toneMapped:false});
+ private crestRimMaterial=new THREE.MeshBasicMaterial({color:TRAFFIC_CREST_RISK_COLOR,side:THREE.BackSide,transparent:true,opacity:.95,depthTest:true,depthWrite:false,fog:true,toneMapped:false});
  private outlinePose=new THREE.Object3D();private outlineShift=new THREE.Vector3();private visionAim=new THREE.Vector3();
  private hintCache=new Map<number,boolean>();private nextHintCheck=0;
  private breakdownSmoke:THREE.InstancedMesh;private smokePose=new THREE.Object3D();private smokePoint=new THREE.Vector3();
