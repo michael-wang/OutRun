@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {coastBeachX} from './coast-layout';
 import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from './scenery-cross-section';
 import type {CoastBoatShadow} from './coast-boat-shadow';
@@ -86,7 +87,25 @@ function fishingBoatSource(){
  pole(.09,3.5,0,4.62,-1.35,metal);
  box(2.6,.18,1.0,0,1.55,-3.45,rope);
  for(const z of [-3.1,-2.25])box(.8,.45,.75,0,1.78,z,trim);
- return root;
+ // Merge the complete hull/deck/rigging by the six shared paint materials.
+ // Six fishing vessels must not become hundreds of tiny WebGL draw calls.
+ const buckets=new Map<THREE.Material,THREE.BufferGeometry[]>();
+ for(const child of root.children){
+  if(!(child instanceof THREE.Mesh))continue;
+  child.updateMatrix();
+  const geometry=child.geometry.clone().applyMatrix4(child.matrix);
+  const arr=buckets.get(child.material as THREE.Material)??[];
+  arr.push(geometry);buckets.set(child.material as THREE.Material,arr);
+  child.geometry.dispose();
+ }
+ const batched=new THREE.Group();batched.name='fishing-boat';
+ for(const [material,geometries] of buckets){
+  const geometry=mergeGeometries(geometries);
+  if(!geometry)throw Error('Cannot batch coastal fishing craft');
+  geometries.forEach(g=>g.dispose());
+  batched.add(new THREE.Mesh(geometry,material));
+ }
+ return batched;
 }
 
 const files={sail:'boat-sail-a.glb',yacht:'flybridge-yacht.glb'};
