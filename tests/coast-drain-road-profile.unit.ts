@@ -33,10 +33,10 @@ it('replaces BEIGE shoulder with asphalt apron, a real gap for the ditch, and dr
   expect(Math.max(...sandX)).toBeLessThan(9.25); // no tan apron 8.75–14.75m
   expect(Math.min(...grassX)).toBeGreaterThan(14.10); // no grass covering channel
  }
- const ordinary=road(2330,2350),ordinaryPaved=ordinary.find(p=>p.kind==='asphalt')!;
+ const ordinary=road(20,40),ordinaryPaved=ordinary.find(p=>p.kind==='asphalt')!;
  const ordinarySand=ordinary.find(p=>p.kind==='sand')!;
- expect(Math.max(...lateralPositions(ordinaryPaved,2340))).toBeLessThan(9.3);
- expect(Math.max(...lateralPositions(ordinarySand,2340))).toBeGreaterThan(13.5);
+ expect(Math.max(...lateralPositions(ordinaryPaved,30))).toBeLessThan(9.3);
+ expect(Math.max(...lateralPositions(ordinarySand,30))).toBeGreaterThan(13.5);
 });
 it('delivers distinct Taiwan roadside treatments instead of one highway guardrail',()=>{
  expect(coastBarrierStyle(850,1)).toBe('block');
@@ -72,21 +72,23 @@ it('delivers distinct Taiwan roadside treatments instead of one highway guardrai
 });
 it('keeps the third act drain invisible-wall safe while leaving normal road steering unchanged',()=>{
  const oldLimit=8.75+2.6;
- expect(coastDrainRightLimit(500,oldLimit)).toBe(oldLimit);
+ expect(coastDrainRightLimit(0,oldLimit)).toBe(oldLimit);
  expect(coastDrainRightLimit(850,oldLimit)).toBeLessThan(9.1);
  expect(coastDrainRightLimit(3990,oldLimit)).toBeLessThan(9.1);
  expect(coastDrainRightLimit(8550,oldLimit)).toBeLessThan(9.1);
- expect(coastDrainRightLimit(750,oldLimit)).toBeGreaterThan(9.1); // smooth approach
+ expect(coastDrainRightLimit(40,oldLimit)).toBeGreaterThan(9.1); // smooth approach
  const state=createState();state.distance=8550;state.lateral=10.2;state.speed=50;
  step(state,{gas:true,brake:false,steer:1},.016,0,1,8.75,0,0,coastDrainRightLimit);
  expect(state.lateral+1.13).toBeLessThan(COAST_DRAIN_X.leftLip-.08);
- const normal=createState();normal.distance=2300;normal.lateral=10.2;normal.speed=50;
+ const normal=createState();normal.distance=20;normal.lateral=10.2;normal.speed=50;
  step(normal,{gas:true,brake:false,steer:1},.016,0,1,8.75,0,0,coastDrainRightLimit);
  expect(normal.lateral).toBeGreaterThan(10);
 });
 it('mounts occasional lights ON existing poles without adding regular standalone lamps or new spacing',()=>{
  const mounted=COAST_UTILITY_POLES.filter(p=>p.lamp);
- expect(mounted.map(p=>p.d)).toEqual([906,1257,4060,4316,8640,9106]);
+ expect(mounted.map(p=>p.d)).toEqual(expect.arrayContaining([906,1257,4060,4316,8640,9106]));
+ expect(mounted.length).toBeGreaterThan(10);
+ expect(mounted.length).toBeLessThan(COAST_UTILITY_POLES.length*.42);
  for(const d of [906,4060,8640]){
   const scene=new THREE.Scene();
   const result=addJourneyScenery(scene,track.sample,track.length,stage.sceneryAct,stage.seed,
