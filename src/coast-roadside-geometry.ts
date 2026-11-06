@@ -43,37 +43,60 @@ function ground(sample:Sample,d:number,x:number,raise=0):V{
  return [v.x,v.y,v.z];
 }
 
-/** Non-interactive visual U-channel, physically cut into terrain at 14–18m.
- * The playable asphalt and its collision mesh are NOT modified. */
+/** One continuous paved edge + steep U-channel (x=10–14.75m).
+ * The road Worker removes the old sand ribbon on these exact intervals.
+ * Asphalt and lane count remain unchanged; wall/cover are purely scenic. */
 export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
  const batch=new RoadsideBatch(),X=COAST_DRAIN_X;
  for(const site of COAST_SIDE_DRAINS){
   const a=Math.max(start,site.start),b=Math.min(end,site.end);
   if(b<=a)continue;
-  const segments=Math.ceil((b-a)/4.8);
+  // Town covers use shorter precast slabs; countryside open culverts can
+  // use longer, geometrically cheaper pieces. No runtime tessellation.
+  const segments=Math.ceil((b-a)/(site.kind==='covered'?3.2:4.8));
+  const coverPoint=(d:number,x:number,raise=0):V=>{
+   const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
+   const lip=coastBeachHeight(X.leftLip,p.position.y,p.right.y,d);
+   // Flat flush lid instead of a textured polygon following the trough.
+   v.y=lip+.055+p.right.y*(x-X.leftLip)+raise;
+   return [v.x,v.y,v.z];
+  };
   for(let i=0;i<segments;i++){
    const from=a+(b-a)*i/segments,to=a+(b-a)*(i+1)/segments,mid=(from+to)*.5;
    const quad=(x0:number,x1:number,above:number,color:string)=>{
     batch.quad(ground(sample,from,x0,above),ground(sample,from,x1,above),
      ground(sample,to,x1,above),ground(sample,to,x0,above),color);
    };
-   // Low concrete lips, raw open sidewalls, wet brown/grey bottom. Physical
-   // depth comes from coastDrainDepth in the COMMON terrain sampler.
-   quad(X.outerRoad,X.leftLip,.06,'#a5a195');
-   quad(X.leftLip,X.innerLeft,.045,'#858a81');
-   quad(X.innerLeft,X.innerRight,.075,'#4c6564');
-   quad(X.innerRight,X.rightLip,.045,'#8d8d80');
-   quad(X.rightLip,X.outerLand,.065,'#b0a99b');
-   if(site.kind!=='covered'&&i%4===0)quad(15.58,16.18,.09,'#78908c');
-   if(coastDrainCovered(mid)){
-    // Solid culvert over driveways, mostly-covered village drain. Each
-    // panel and slot is baked into the same one-draw channel mesh.
-    const plate='#a29f94';
-    batch.quad(ground(sample,from,X.leftLip,.11),
-     ground(sample,from,X.rightLip,.11),
-     ground(sample,to,X.rightLip,.11),
-     ground(sample,to,X.leftLip,.11),plate);
-    if(i%5===1)quad(15.12,16.83,.145,'#555e60'); // drainage intake slit
+   // Asphalt finishes at 10.12m. There is NO sandy shoulder or outer metal
+   // highway rail: the thin roadside curb immediately meets a tall concrete
+   // wall and a 1m deep DARK bottom, like actual rural Taiwanese U-gutters.
+   quad(X.outerRoad,X.leftLip,.055,'#adaaa0');
+   quad(X.leftLip,X.innerLeft,.035,'#a4a399'); // near almost-vertical side
+   quad(X.innerLeft,X.innerRight,.075,'#4b514d'); // damp, muddy floor
+   quad(X.innerRight,X.rightLip,.035,'#969991'); // far vertical side
+   quad(X.rightLip,X.outerLand,.045,'#797d6f'); // narrow grass/earth verge
+   if(!coastDrainCovered(mid)){
+    // Narrow dark olive water trace: let the trough remain unmistakably open.
+    if(i%3!==0)quad(X.innerLeft+.15,X.innerRight-.14,.092,'#626963');
+   }else{
+    // Precast concrete lid, flush with road surface and footpath. Full cover
+    // gaps are genuinely dark; the townside contains NO barrier or stone.
+    batch.quad(coverPoint(from,X.leftLip),coverPoint(from,X.rightLip),
+     coverPoint(to,X.rightLip),coverPoint(to,X.leftLip),'#a6a59d');
+    // Each panel has a transverse seam, not giant featureless paving slabs.
+    const seamEnd=Math.min(to,from+.08);
+    batch.quad(coverPoint(from,X.leftLip,.012),coverPoint(from,X.rightLip,.012),
+     coverPoint(seamEnd,X.rightLip,.012),coverPoint(seamEnd,X.leftLip,.012),'#5d625f');
+    // Occasional narrow rectangular cast-iron inlet with three dark slots.
+    if(i%6===2){
+     const c=(from+to)*.5;
+     const inletX=X.leftLip+.36;
+     batch.quad(coverPoint(c-.35,inletX,.02),coverPoint(c-.35,inletX+.75,.02),
+      coverPoint(c+.35,inletX+.75,.02),coverPoint(c+.35,inletX,.02),'#515653');
+     for(const dx of [.15,.37,.59])
+      batch.quad(coverPoint(c-.24,inletX+dx,.028),coverPoint(c-.24,inletX+dx+.055,.028),
+       coverPoint(c+.24,inletX+dx+.055,.028),coverPoint(c+.24,inletX+dx,.028),'#aeb4ac');
+    }
    }
   }
  }
