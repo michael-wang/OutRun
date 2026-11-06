@@ -3,6 +3,7 @@ import {addCoastDusk,COAST_SUN} from './coast-dusk';
 import {configureCoastShadowLights,CoastShadowCache} from './coast-shadow-coverage';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {addCoastSandLight} from './coast-sand-light';
+import {softenCoastInlandFog} from './coast-inland-fog';
 import {addCoastMountains} from './coast-mountains';
 import {bridgeSpan,bridgeShoulders,bridgeRailEdge,onBridge} from './bridge';
 import {rockySections,rockyAt} from './rocky-shoulder';
@@ -67,7 +68,10 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
    scene.fog!.color.set('#a8796e');scene.fog!.near=250;scene.fog!.far=1450;}
   if(options.dawn){addCanyonDawn(scene);hemisphere.color.set('#c2d7ed');hemisphere.groundColor.set('#9a7765');hemisphere.intensity=1.45;sun.color.set('#ffe0ad');sun.intensity=2.3;scene.fog!.near=450;scene.fog!.far=2600;}
   const asphalt=mat(mountainRoad?'#56534d':'#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
-  if(coastUltra)addCoastSandLight(sand); // existing sand material; no new terrain draw.
+  if(coastUltra){
+   addCoastSandLight(sand); // existing sand material; no new terrain draw.
+   softenCoastInlandFog(grass); // same grass mesh; reduce pink sunset fog only inland.
+  }
   asphalt.vertexColors=mountainRoad;
   function ribbon(offsetA:number|((d:number)=>number),offsetB:number|((d:number)=>number),liftA:number,liftB:number,material:THREE.Material,start=0,end=length,step=2.5) {
     // Finite stage ribbons share a parent but retain independently culled pieces.
