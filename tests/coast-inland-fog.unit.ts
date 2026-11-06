@@ -16,8 +16,7 @@ it('limits sunset fog on inland grass to a small fraction without touching other
  expect(otherMaterial.customProgramCacheKey()).toBe(unmodifiedKey);
 
  // Inspect the compiled fragment source hook (no GL device required).
- const shader=({fragmentShader:'void main(){\n#include <fog_fragment>\n}'})
-  as Parameters<typeof coastGrass.onBeforeCompile>[0];
+ const shader=({fragmentShader:'void main(){\n#include <fog_fragment>\n}'}) as Parameters<typeof coastGrass.onBeforeCompile>[0];
  coastGrass.onBeforeCompile(shader,{} as THREE.WebGLRenderer);
  expect(shader.fragmentShader).not.toContain('#include <fog_fragment>');
  expect(shader.fragmentShader).toContain('coastGrassFogFactor*0.10');
