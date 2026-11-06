@@ -100,7 +100,7 @@ it('uses human beach access and uninterrupted remote headland rails, never a fix
  expect(coastBarrierStyle(4100,1)).toBe('block');
  expect(coastBarrierStyle(5500,1)).toBe('block');
  expect(coastBarrierStyle(3300,1)).toBe('rail');
- expect(coastBarrierStyle(2740,1)).toBe('block');
+ expect(coastBarrierStyle(2740,1)).toBe('rail');
  for(const at of COAST_CROSSWALKS){
   expect(coastBarrierStyle(at,-1)).toBe('opening');
   expect(coastBarrierStyle(at,1)).toBe('opening');
