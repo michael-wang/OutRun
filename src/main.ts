@@ -259,7 +259,7 @@ let carBounds=new THREE.Box3().setFromObject(world.car).getSize(new THREE.Vector
 let brakeLights=world.car.userData.brakeLights as BrakeLightController;
 let exhaustEffects=new ExhaustEffects(world.car);
 let pendingExhaustRpm=0;
-let rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,carBounds.z/2,actorRoadReady);coastStoneContact=new CoastStoneContact(world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.sceneryReady(d)??true);
+let rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,carBounds.z/2,actorRoadReady);
 let coastStoneContact=new CoastStoneContact(world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.sceneryReady(d)??true);
 function trafficRoadReady(d:number){return !!journeyLink?.inHighway(d)||actorRoadReady(d);}
 function actorRoadReady(d:number){return (!chapters||d>=chapterStart()&&d<=chapterEnd())&&(world.streamer?.roadReady(d)??true);}
@@ -739,7 +739,7 @@ function adoptChapter(c:PreparedChapter,replay=false){
  if(replay){state=createState();state.speed=0;initialized=false;input.clear();testControls=undefined;world.car.userData.motion.reset();}
  state.distance=distance;state.worldHeading+=delta;cameraHeading+=delta;
  tireEffects=new TireEffects(world.scene);tireEffects.setDuskSmoke(coastUltraMode);dustEffects=new TireEffects(world.scene,'dust');impactSparks=new ImpactSparks(world.scene);trafficSparks=new ImpactSparks(world.scene,true);
- guardrail=new GuardrailContact(carBounds.x/2,carBounds.z/2,world.boundaries);rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,carBounds.z/2,actorRoadReady);
+ guardrail=new GuardrailContact(carBounds.x/2,carBounds.z/2,world.boundaries);rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,carBounds.z/2,actorRoadReady);coastStoneContact=new CoastStoneContact(world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.sceneryReady(d)??true);
  const actorRoad=(d:number)=>d>=native.start&&d<=native.end&&(world.streamer?.roadReady(d)??true);
  cones=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,candidate.seed,world.length,actorRoad,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
  triangles=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,candidate.seed,world.length,actorRoad,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
