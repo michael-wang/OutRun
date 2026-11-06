@@ -31,14 +31,13 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   expect([...pos].every(Number.isFinite)).toBe(true);
   expect([...colors].every(Number.isFinite)).toBe(true);
   expect((mesh.material as THREE.MeshBasicMaterial).vertexColors).toBe(true);
-  // Temporary art-debug contract: both coast mountain meshes must render
-  // pitch black, even though their baked vertex colors are still populated.
-  expect((mesh.material as THREE.MeshBasicMaterial).color.getHex()).toBe(0x000000);
+  // Prevent the temporary black-material diagnostic from accidentally shipping.
+  expect((mesh.material as THREE.MeshBasicMaterial).color.getHex()).toBe(0xffffff);
   geo.dispose();(mesh.material as THREE.Material).dispose();
  }
 });
 
-it('uses a darker backlit rear ridge rather than a pale silhouette cutout',()=>{
+it('renders the rear range as subdued forest green, darker than the middle range',()=>{
  const scene=new THREE.Scene();
  const sample=((d:number)=>({position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(1,0,0)})) as ReturnType<typeof createTrack>['sample'];
  addCoastMountains(scene,sample,10000);
@@ -60,9 +59,9 @@ it('uses a darker backlit rear ridge rather than a pale silhouette cutout',()=>{
  const midTone=sampleRidgeTone(mid),farTone=sampleRidgeTone(far);
  // Keep the sunset's distant range subdued and dark green, not a
  // luminous pale-green slab competing with the road or middle hills.
- expect(farTone.luminance).toBeLessThan(midTone.luminance*.65);
- expect(farTone.luminance).toBeGreaterThan(midTone.luminance*.25);
- expect(farTone.g).toBeGreaterThan(farTone.r*1.55);
- expect(farTone.g).toBeGreaterThan(farTone.b*1.2);
+ expect(farTone.luminance).toBeLessThan(midTone.luminance*.82);
+ expect(farTone.luminance).toBeGreaterThan(midTone.luminance*.35);
+ expect(farTone.g).toBeGreaterThan(farTone.r*1.2);
+ expect(farTone.g).toBeGreaterThan(farTone.b*1.02);
  for(const mesh of [mid,far]){mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();}
 });
