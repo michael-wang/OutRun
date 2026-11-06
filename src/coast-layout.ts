@@ -56,7 +56,7 @@ export const coastCrosswalkNear=(d:number,margin=8)=>COAST_CROSSWALKS.some(at=>M
  * receives long uninterrupted metal rail. Inland districts get safe, porous
  * frontage. All boundaries are authored in absolute route metres.
  */
-export type CoastBarrierStyle='opening'|'block'|'rail'|'none';
+export type CoastBarrierStyle='opening'|'block'|'rail'|'rock'|'none';
 /** Physical distance from the asphalt edge, not the former highway shoulder.
  * Rural stone blocks sit immediately BEFORE the open ditch; covered drains
  * and the deliberately unguarded fishing section have NO visible barrier.
@@ -75,11 +75,31 @@ export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
   }
  }
  if(side===-1){
-  return COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70))
-   ?'block':'rail';
+  // Beaches with people get low, walkable stones. Between visitor bays we
+  // want a largely UNGUARDED ocean vista with occasional irregular boulders;
+  // the previous continuous metal highway fence is intentionally retired.
+  if(COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70)))return 'block';
+  const rockyPockets=[[440,770],[3360,3540],[4730,4980],[6950,7440],[8420,8920],[9290,9550]];
+  return rockyPockets.some(([a,b])=>d>=a&&d<b)?'rock':'none';
  }
  return coastDistrictAt(d)!==undefined||coastCrosswalkNear(d,65)?'block':'rail';
 }
+/** Seaward boulders use wider 33m irregular intervals; each stone is
+ * individually placed instead of becoming a continuous disguised rail.
+ */
+export function coastBarrierRockAt(d:number){
+ const slot=Math.floor(d/33);
+ const noise=(k:number)=>{const v=Math.sin((slot+73)*41.79+k*107.31)*43152.57;return v-Math.floor(v);};
+ return {
+  d:Math.max(0,d+(noise(1)-.5)*7.5),
+  offset:3.3+noise(2)*.90,
+  width:2.2+noise(3)*1.2,
+  height:1.2+noise(4)*1.20,
+  length:2.7+noise(5)*1.6,
+  yaw:(noise(6)-.5)*.9,
+ };
+}
+
 /** Stable, modest human irregularity, shared by render and shadow coordinates. */
 export function coastBarrierStoneAt(d:number,side:-1|1){
  const slot=Math.floor(d/12);
