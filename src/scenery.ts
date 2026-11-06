@@ -465,6 +465,15 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boxes,'#59635f',.64,h-1.42,0,1.15,.15,1.10);
     part(boxes,'#6d7272',.58,h-2.82,0,1.08,.14,1.12);
    }
+   // Taiwan country-road streetlamp: one short arm on an EXISTING power
+   // pole, not an independent 64m-spaced highway luminaire. Sparse by
+   // authored pole flag; the player sees a few warm shades at dusk.
+   // Direction -X reaches seaward above the asphalt from the inland pole.
+   if(pole.lamp){
+    part(boxes,'#696f6d',-1.42,h-1.63,0,2.85,.15,.17);
+    part(boxes,'#68706a',-2.93,h-1.73,0,.83,.22,.64);
+    part(boxes,'#f8dfaa',-2.96,h-1.89,0,.68,.065,.46,0,0,0,.9);
+   }
   }
   if(coastPoleLinks(range.start,range.end).length){
    const wires=buildCoastUtilityWires(sample,range.start,range.end);
