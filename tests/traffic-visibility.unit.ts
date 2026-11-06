@@ -91,5 +91,12 @@ it('never first materializes a new car inside the visible chase-camera picture',
  ] as THREE.Object3D[]){
   expect((mesh as THREE.Mesh).material).toHaveProperty('fog',true);
  }
+ // The custom dusk halo shader is not a built-in fogged material. Its alpha
+ // must fade toward the same horizon or tiny headlights still pop in first.
+ const halos=scene.getObjectByName('traffic-running-light-halos') as THREE.Points;
+ const material=halos.material as THREE.ShaderMaterial;
+ expect(material.vertexShader).toContain('vLampFade');
+ expect(material.vertexShader).toContain('smoothstep(950.0,1400.0');
+ expect(material.fragmentShader).toContain('vLampFade');
  traffic.dispose();
 });
