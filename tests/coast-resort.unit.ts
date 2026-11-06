@@ -44,19 +44,22 @@ it('keeps concrete and rails outside the driven lanes, bounded in height and bat
  }
 });
 it('fades coastal grass warmth before the inland foothills',()=>{
- const strips=road(2350,2375).filter(mesh=>mesh.kind==='grass');
- expect(strips.length).toBeGreaterThan(25);
- const avgGreen=(colors:Float32Array)=>{
-  let total=0;
-  for(let i=1;i<colors.length;i+=3)total+=colors[i];
-  return total/(colors.length/3);
- };
- // Terrain strip order runs from the road verge inland; farther slopes
- // should not become a brighter yellow-green band behind the houses.
- const roadside=avgGreen(strips[0].colors);
- const inland=avgGreen(strips.at(-1)!.colors);
- expect(inland).toBeLessThan(roadside);
- expect(inland).toBeGreaterThan(0);
+ // Road chunks merge all cross-section strips into one geometry.
+ const mesh=road(2350,2375).find(piece=>piece.kind==='grass')!;
+ expect(mesh).toBeDefined();
+ const p=track.sample(2350),position=new THREE.Vector3();
+ let nearTotal=0,farTotal=0,nearCount=0,farCount=0;
+ for(let i=0;i<mesh.positions.length;i+=3){
+  position.fromArray(mesh.positions,i).sub(p.position);
+  const x=position.dot(p.right),green=mesh.colors[i+1];
+  if(x<50&&x>12){nearTotal+=green;nearCount++;}
+  if(x>300){farTotal+=green;farCount++;}
+ }
+ expect(nearCount).toBeGreaterThan(10);
+ expect(farCount).toBeGreaterThan(10);
+ // More distant inland grass must not appear as a brighter yellow-green
+ // patch than vegetation immediately beside the road.
+ expect(farTotal/farCount).toBeLessThan(nearTotal/nearCount);
 });
 it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  const scene=new THREE.Scene();addCoastMountains(scene,track.sample,track.length);
