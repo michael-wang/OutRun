@@ -13,12 +13,13 @@ it('cuts varied summit lines and valley notches without approaching the road',()
   expect(heights.every(Number.isFinite)).toBe(true);
  }
 });
-it('keeps the middle skyline well below the distant ridge to show both layers',()=>{
+it('reveals a towering distant skyline above the lowered middle ridge',()=>{
  for(const d of [0,750,1850,3500,6500,9200]){
   const middle=coastMountainHeight(0,d,.44);
   const distant=coastMountainHeight(1,d,.44);
   expect(middle).toBeGreaterThan(150);
-  expect(middle).toBeLessThan(distant*.8);
+  // The far backdrop is intentionally exaggerated for the sunset composition.
+  expect(distant).toBeGreaterThan(middle*1.8);
  }
 });
 it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh budget',()=>{
@@ -35,6 +36,12 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   expect(geo.getAttribute('position').count%COAST_MOUNTAIN_ROWS).toBe(0);
   expect(geo.getAttribute('color').count).toBe(geo.getAttribute('position').count);
   expect(geo.getAttribute('position').count).toBeLessThan(6000);
+  if(i===1){
+   const positions=geo.getAttribute('position');
+   let peak=-Infinity;
+   for(let j=0;j<positions.count;j++)peak=Math.max(peak,positions.getY(j));
+   expect(peak).toBeGreaterThan(750);
+  }
   const pos=geo.getAttribute('position').array,colors=geo.getAttribute('color').array;
   expect([...pos].every(Number.isFinite)).toBe(true);
   expect([...colors].every(Number.isFinite)).toBe(true);
@@ -43,7 +50,7 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   // Layer-specific final dimming keeps the far skyline behind the near
   // mountains while preserving a bright, sunlit ocean to the left.
   expect(material.toneMapped).toBe(false);
-  expect(material.color.r).toBeCloseTo(i===0?.50:.46,6);
+  expect(material.color.r).toBeCloseTo(i===0?.33:.31,6);
   expect(material.color.g).toBeCloseTo(material.color.r,6);
   expect(material.color.b).toBeCloseTo(material.color.r,6);
   geo.dispose();(mesh.material as THREE.Material).dispose();
