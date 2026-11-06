@@ -74,7 +74,15 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
    quad(X.leftLip,X.innerLeft,.035,'#a4a399'); // near almost-vertical side
    quad(X.innerLeft,X.innerRight,.075,'#4b514d'); // damp, muddy floor
    quad(X.innerRight,X.rightLip,.035,'#969991'); // far vertical side
-   quad(X.rightLip,X.outerLand,.045,'#797d6f'); // narrow grass/earth verge
+   if(coastDrainCovered(mid)){
+    // Taiwan town footpath: grey slabs run all the way to the storefront.
+    quad(X.rightLip,X.outerLand,.045,'#9e9e95');
+   }else{
+    // Rural roadside: a narrow concrete bank turns directly to planted
+    // soil/grass, never another wide beige or grey highway shoulder.
+    quad(X.rightLip,X.rightLip+.27,.055,'#b1ada1');
+    quad(X.rightLip+.27,X.outerLand,.045,'#667453');
+   }
    if(!coastDrainCovered(mid)){
     // Narrow dark olive water trace: let the trough remain unmistakably open.
     if(i%3!==0)quad(X.innerLeft+.15,X.innerRight-.14,.092,'#626963');
