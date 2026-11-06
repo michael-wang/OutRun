@@ -24,7 +24,9 @@ export function coastMountainHeight(layer:0|1,d:number,u:number){
  const notch=smoothstep(.62,.80,valley);
  // Independent small-scale spurs keep the layers from looking duplicated.
  const irregular=ridged2(layer*6.2+2.1,d/(rear?365:315)+4.4,3,.49,2,1.75,.25,.2);
- const crest=(rear?285:170)+(rear?270:215)*(.25+.52*broad+.23*irregular)-notch*(rear?92:65);
+ // Lower the broad middle ridge so the genuinely distant peaks remain visible.
+ // Only layer 0 changes; layer 1 retains the approved height and silhouette.
+ const crest=(rear?285:145)+(rear?270:175)*(.25+.52*broad+.23*irregular)-notch*(rear?92:52);
  const rib=ridged2(u*9.2+layer*4.5,d/(rear?365:310),3,.52,2,1.6,.28,.18);
  const crease=fbm2(u*11+layer*3.7,d/230+5.8,3,.5,2);
  const width=(rear?.275:.225)+.045*(broad-.5);
@@ -33,7 +35,7 @@ export function coastMountainHeight(layer:0|1,d:number,u:number){
  const main=Math.exp(-Math.pow(q,1.56));
  const spurL=Math.exp(-(((u-spine+.31)/.14)**2))*(.17+.13*rib);
  const spurR=Math.exp(-(((u-spine-.27)/.15)**2))*(.13+.12*(1-crease));
- const slopeDetail=(rib-.5)*(rear?48:60)+(crease-.5)*(rear?29:36);
+ const slopeDetail=(rib-.5)*(rear?48:46)+(crease-.5)*(rear?29:28);
  const shoulder=smoothstep(0,.14,u)*(1-smoothstep(.89,1,u));
  return -22+shoulder*Math.max(0,main*(crest+slopeDetail)+(spurL+spurR)*crest*.51);
 }
@@ -49,10 +51,10 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  // Sunset art direction: the distant range is a quiet, forest-green backdrop
  // slightly darker than the olive middle hills, not a bright green cutout.
  // Keep dusk highlights and airlight subdued; no extra render passes needed.
- const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#40503f');
- const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#4c5649');
- const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#66705f');
- const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#465043');
+ const nearGreen=new THREE.Color('#4d5d47'),farGreen=new THREE.Color('#40503f');
+ const nearRock=new THREE.Color('#797565'),farRock=new THREE.Color('#4c5649');
+ const nearWarm=new THREE.Color('#9e8f77'),farWarm=new THREE.Color('#66705f');
+ const nearHaze=new THREE.Color('#7b8578'),farHaze=new THREE.Color('#465043');
  const normal=new THREE.Vector3();
  for(let layer=0;layer<2;layer++){
   const rear=layer===1;
@@ -105,7 +107,8 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
   // every baked sun/rock/haze blend. Both sheets sit behind the playable hills.
   // The dimmer preserves their forest-green hue and relief detail. Keep the
   // farther skyline noticeably darker so the sunlit water owns the left side.
-  const dim=rear?.46:.56;
+  // Middle range recedes behind the playable foothills; far range stays as-is.
+  const dim=rear?.46:.50;
   const material=new THREE.MeshBasicMaterial({
    color:new THREE.Color().setRGB(dim,dim,dim),
    vertexColors:true,fog:false,toneMapped:false,side:THREE.DoubleSide,
