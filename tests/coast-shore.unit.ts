@@ -62,9 +62,13 @@ describe('coastal road stays above a real beach',()=>{
   // Main *drivable* asphalt and raycast geometry remain byte-equivalent;
   // the coast deliberately adds a new narrow asphalt apron where tan
   // shoulders have been replaced with an adjacent U channel.
-  expect(Array.from(coastPaved.positions.slice(0,original.positions.length)))
+  // New apron is baked first; original five-lane surface remains the
+  // final asphalt ribbon in the material-merged geometry.
+  const vertexOffset=(coastPaved.positions.length-original.positions.length)/3;
+  const indexOffset=coastPaved.indices.length-original.indices.length;
+  expect(Array.from(coastPaved.positions.slice(vertexOffset*3)))
    .toEqual(Array.from(original.positions));
-  expect(Array.from(coastPaved.indices.slice(0,original.indices.length)))
+  expect(Array.from(coastPaved.indices.slice(indexOffset),i=>i-vertexOffset))
    .toEqual(Array.from(original.indices));
   expect(coastPaved.positions.length).toBeGreaterThan(original.positions.length);
   const sandA=a.find(m=>m.kind==='sand')!,sandB=b.find(m=>m.kind==='sand')!,stride=41*6;
