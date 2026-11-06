@@ -1,18 +1,34 @@
-/** Route-anchored fields: a broad principal plain and three smaller farm visits. */
+/** The farming story begins immediately: a broad opening rice plain and
+ * flowers, two *small* farm breaks amid town streets, then a larger working
+ * countryside on the fishing coast. Every plot stays within one 1km chunk.
+ */
 export const FARM_ZONES=[
- {start:2300,end:3670,right:252,rice:[2400,3000],flowers:[3100,3600],main:true},
- {start:4390,end:4890,right:152,rice:[4500,4700],flowers:[4700,4800],main:false},
- {start:5800,end:6520,right:152,rice:[5900,6200],flowers:[6200,6400],main:false},
- {start:7340,end:7850,right:152,rice:[7400,7600],flowers:[7600,7800],main:false},
+ {start:65,end:1780,right:252,rice:[200,900],flowers:[1200,1700],main:true},
+ {start:4450,end:4900,right:152,rice:[4500,4700],flowers:[4750,4850],main:false},
+ {start:5740,end:6190,right:152,rice:[5800,6000],flowers:[6040,6140],main:false},
+ {start:7140,end:8230,right:200,rice:[7200,7600],flowers:[7800,8100],main:false},
+ {start:8390,end:9760,right:252,rice:[8500,9100],flowers:[9300,9600],main:false},
 ] as const;
-export const COAST_FARM={start:2300,end:3670,riceStart:2400,riceEnd:3000,flowerStart:3100,flowerEnd:3600} as const;
+export const COAST_FARM={start:65,end:1780,riceStart:200,riceEnd:900,flowerStart:1200,flowerEnd:1700} as const;
 /** Authored flower-band palette shared by Worker baking and runtime materialization. */
 export const FARM_FLOWER_COLORS=['#ecc341','#e679a7','#a382d8'] as const;
 // Each scarecrow occupies the middle of a cultivated plot, never the roadside verge.
-export const FARM_SCARECROWS=[{d:2450,x:76},{d:2650,x:125},{d:2850,x:76},{d:3250,x:76},{d:3450,x:35},{d:4550,x:76},{d:4750,x:35},{d:6050,x:76},{d:6350,x:35},{d:7550,x:76},{d:7750,x:35}] as const;
+export const FARM_SCARECROWS=[
+ {d:350,x:76},{d:650,x:125},{d:1450,x:76},{d:1650,x:35},
+ {d:4550,x:76},{d:4800,x:76},
+ {d:5850,x:76},{d:6090,x:76},
+ {d:7250,x:76},{d:7450,x:125},{d:7850,x:76},{d:8050,x:35},
+ {d:8550,x:76},{d:8750,x:125},{d:8950,x:76},{d:9350,x:76},{d:9550,x:35},
+] as const;
 // Farmsteads occupy existing breaks before/after crops, never cut a hole in the
 // golden canopy. Keep each yard on one of the flat planting benches.
-export const FARM_HOMES=[{d:2370,x:35},{d:3025,x:35},{d:3065,x:76},{d:3630,x:35},{d:4460,x:35},{d:4830,x:35},{d:5860,x:35},{d:6430,x:35},{d:7370,x:35},{d:7825,x:35}].map((site,i)=>({...site,key:81000+i*71,yaw:Math.sin(i*4.3)*.12}));
+export const FARM_HOMES=[
+ {d:115,x:35},{d:1015,x:35},{d:1065,x:76},{d:1750,x:35},
+ {d:4465,x:35},{d:4870,x:35},
+ {d:5755,x:35},{d:6170,x:35},
+ {d:7160,x:35},{d:8160,x:35},
+ {d:8430,x:35},{d:9670,x:35},
+].map((site,i)=>({...site,key:81000+i*71,yaw:Math.sin(i*4.3)*.12}));
 export type FarmPlot={id:number;start:number;end:number;left:number;right:number;kind:'rice'|'flowers';band:number};
 const bands=[[20,50],[56,96],[102,148],[154,200],[206,252]];
 export const FARM_PLOTS:FarmPlot[]=[];
