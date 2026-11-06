@@ -31,6 +31,9 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   expect([...pos].every(Number.isFinite)).toBe(true);
   expect([...colors].every(Number.isFinite)).toBe(true);
   expect((mesh.material as THREE.MeshBasicMaterial).vertexColors).toBe(true);
+  // Temporary art-debug contract: both coast mountain meshes must render
+  // pitch black, even though their baked vertex colors are still populated.
+  expect((mesh.material as THREE.MeshBasicMaterial).color.getHex()).toBe(0x000000);
   geo.dispose();(mesh.material as THREE.Material).dispose();
  }
 });
