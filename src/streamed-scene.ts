@@ -1,5 +1,5 @@
 import {waffleSignTexture} from './vehicle-model';
-import {makeCoastDrainWaterMaterial} from './coast-drain-water';
+import {makeCoastDrainWaterMaterial,type CoastCanalFftUniforms} from './coast-drain-water';
 import type {NatureBatch} from './coast-nature';
 import {natureVisible} from './coast-performance';
 import {markCoastShadowCaster} from './coast-shadow-layers';
@@ -74,6 +74,21 @@ export class StreamedScene {
  private sceneryCounts=new Map<number,{instances:number;draws:number;clearance:unknown}>();
  private busy=false;private initialized=false;private position=0;private materials=new Map<string,THREE.MeshStandardMaterial|THREE.MeshBasicMaterial>();
  private canalFlowTime={value:0};
+ private readonly canalFft:CoastCanalFftUniforms={
+  uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
+ };
+ private readonly canalFftEnabled={value:0};
+ private coastOceanFft?:Readonly<Record<string,THREE.IUniform>>;
+ /** Each ocean update writes into the SAME shader uniform objects kept by
+  * every stream chunk; materials also work if the ocean failed to load. */
+ bindCoastOceanWater(source?:Readonly<Record<string,THREE.IUniform>>){
+  this.coastOceanFft=source;this.syncCanalOceanWater();
+ }
+ private syncCanalOceanWater(){
+  for(const key of ['uSlope0','uSlope1','uSlope2','uSlope3'] as const)
+   this.canalFft[key].value=this.coastOceanFft?.[key]?.value??null;
+  this.canalFftEnabled.value=Object.values(this.canalFft).every(u=>!!u.value)?1:0;
+ }
  private markerGeometries=[new THREE.BoxGeometry(.15,1.2,.15),new THREE.BoxGeometry(.38,1.6,.3),new THREE.BoxGeometry(.42,.3,.34),new THREE.BoxGeometry(.4,.35,.32)];
  private markerMaterials:THREE.Material[];
  private uploadOwners=new WeakMap<object,number>();
@@ -105,7 +120,7 @@ export class StreamedScene {
   }:undefined).then(()=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.farmGpuWarmed=true;this.farmWarmTask=undefined;})
    .catch(e=>{info.running=false;info.elapsedMs=previous.elapsedMs+performance.now()-warmStart;this.errorMessage=`Farm warmup failed: ${String(e)}`;console.error(this.errorMessage);});
  }
- updateFarm(time:number){this.canalFlowTime.value=time;if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
+ updateFarm(time:number){this.canalFlowTime.value=time;this.syncCanalOceanWater();if(!this.farmAssets)return;this.farmAssets.time.value=time;for(const patches of this.farms.values())for(const p of patches)p.update(this.position,time);}
  get farmStats(){return [...this.farms.values()].flatMap(p=>p.map(f=>f.stats()));}
  /** Opt-in common streaming-task cost attribution (read-only). */
  get sceneTaskProfile(){return this.taskProfiler?.snapshot()??null;}
@@ -233,7 +248,7 @@ export class StreamedScene {
    let material=this.materials.get(key);
    if(!material){
     if(data.coastDrainWater){
-     material=makeCoastDrainWaterMaterial(this.canalFlowTime);
+     material=makeCoastDrainWaterMaterial(this.canalFlowTime,this.canalFft,this.canalFftEnabled);
     }else{
      const standard=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});
      if(data.nature)this.configureNatureMaterial(standard,data.nature);
