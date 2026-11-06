@@ -61,7 +61,7 @@ export function coastDrainRightLimit(d:number,usualLimit:number){
  const safe=COAST_DRAIN_X.leftLip-1.13-.12;
  let influence=0;
  for(const site of COAST_SIDE_DRAINS){
-  const near=smooth(site.start-70,site.start,d),far=1-smooth(site.end,site.end+70,d);
+  const near=smooth(Math.max(0,site.start-70),site.start,d),far=1-smooth(site.end,site.end+70,d);
   influence=Math.max(influence,near*far);
  }
  return usualLimit-Math.max(0,usualLimit-safe)*influence;
