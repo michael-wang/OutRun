@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type {createTrack} from './track';
 import {coastBeachHeight} from './scenery-cross-section';
-import {COAST_SIDE_DRAINS,COAST_DRAIN_X,coastDrainDepth,coastDrainCovered,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_SIDE_DRAINS,COAST_DRAIN_X,coastDrainCovered,coastPoleLinks} from './coast-roadside-layout';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 type V=[number,number,number];
@@ -85,23 +85,9 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
     quad(X.rightLip+.27,X.outerLand,.045,'#667453');
    }
    if(!coastDrainCovered(mid)){
-    // A continuous, deliberately shallow (20cm) muddy green water surface
-    // sits inside the actual >0.8m deep U gutter, never hiding its walls.
-    // Skip the first/last fade metres where the channel is not deep enough.
-    const depth=(coastDrainDepth(X.innerLeft+.3,mid));
-    if(depth>.55){
-     const left=X.innerLeft+.17,right=X.innerRight-.17;
-     const water=(d:number,x:number,above:number)=>ground(sample,d,x,above);
-     batch.quad(water(from,left,.21),water(from,right,.21),
-      water(to,right,.21),water(to,left,.21),'#4c7770');
-     if(i%6===2){
-      // Thin irregular low-sun reflections communicate WATER at 300km/h,
-      // without another transparent material, texture or FFT simulation.
-      const u=left+.27+(i%3)*.16;
-      batch.quad(water(from,u,.222),water(from,u+.17,.222),
-       water(to,u+.17,.222),water(to,u,.222),'#b1a47d');
-     }
-    }
+    // No baked glint ribbon here: its old static pale stripe looked like a
+    // floating white object. Water is a separate (one-draw) animated plane
+    // with real distance-flow UV and a tiny uniform-time shader.
    }else{
     // Precast concrete lid, flush with road surface and footpath. Full cover
     // gaps are genuinely dark; the townside contains NO barrier or stone.
@@ -125,6 +111,53 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
   }
  }
  return batch.finish('coast-taiwan-roadside-ditch');
+}
+
+/** Small, opaque canal surface above the floor of an open ~1m U drain.
+ * Separate from concrete because only the water needs a simple flowing
+ * shader; no Ultra-Water FFT, second camera, render target or transparency.
+ * UV.y is ABSOLUTE route distance: streaming 1km chunks join seamlessly.
+ * Visual flow uses phase (d + positive time), thus waves travel toward
+ * decreasing d, opposite the player's forward direction.
+ */
+export function buildCoastRoadsideWater(sample:Sample,start:number,end:number){
+ const pos:number[]=[],uv:number[]=[],index:number[]=[];
+ const X=COAST_DRAIN_X,left=X.innerLeft+.13,right=X.innerRight-.13;
+ for(const site of COAST_SIDE_DRAINS){
+  const a=Math.max(start,site.start),b=Math.min(end,site.end);
+  if(b<=a)continue;
+  const rows=Math.ceil((b-a)/7.5);
+  // Use a stable absolute route grid so water appears continuous at seams.
+  const distances=[a];
+  for(let d=Math.ceil(a/7.5)*7.5;d<b;d+=7.5)if(d>a+1e-5)distances.push(d);
+  distances.push(b);
+  let prior:number|undefined;
+  for(let row=0;row<distances.length-1;row++){
+   const d0=distances[row],d1=distances[row+1],mid=(d0+d1)*.5;
+   if(coastDrainCovered(mid)) {prior=undefined;continue;}
+   const count=index.length/6;
+   const first=pos.length/3;
+   for(const d of [d0,d1])for(const [side,x] of [[0,left],[1,right]] as const){
+    const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
+    // Waterline lies above the actual gutter floor and below both lips.
+    // Use exact sampled terrain to follow banked/curved road sections.
+    v.y=coastBeachHeight(x,p.position.y,p.right.y,d)+.25;
+    pos.push(v.x,v.y,v.z);
+    uv.push(side,d);
+   }
+   index.push(first,first+1,first+2,first+1,first+3,first+2);
+   prior=mid;
+  }
+ }
+ if(!index.length)return null;
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+ g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+ g.setIndex(index);
+ g.computeVertexNormals();g.computeBoundingSphere();
+ g.name='coast-roadside-flowing-water';
+ g.userData.coastDrainWater=true;
+ return g;
 }
 
 /** Catenary-style sag across uneven real pole distances, authored once.
