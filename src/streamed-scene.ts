@@ -83,7 +83,12 @@ export class StreamedScene {
  private farmWarmElapsedBeforeBatch=0;
  private startupFarmWarm={running:false,done:0,total:0,elapsedMs:0,compileWallMs:0,uploadSubmitMs:0,maxObjectSubmitMs:0,batches:0};
  warmFarm(renderer:THREE.WebGLRenderer,camera:THREE.Camera):Promise<void>|undefined{
-  if(!this.farmSample||this.disposed||(!this.farmGpuWarmed&&![2,3,4].every(i=>this.chunks.get(i)?.scenery==='ready')))return;
+  // Fields now begin in chunk 0, not chunk 2. Use the *actual* current
+  // scenery chunk as the startup gate: it works both at the launch line and
+  // when QA enters via ?at=, without waiting for obsolete 2/3/4km chunks.
+  const activeChunk=Math.floor(this.position/this.chunkLength);
+  if(!this.farmSample||this.disposed||
+   (!this.farmGpuWarmed&&this.chunks.get(activeChunk)?.scenery!=='ready'))return;
   if(this.farmWarmTask)return this.farmWarmTask;
   const patches=[...this.farms.values()].flat().filter(p=>!this.farmWarmIds.has(p.plot.id));if(!patches.length)return;
   patches.forEach(p=>this.farmWarmIds.add(p.plot.id));
