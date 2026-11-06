@@ -24,9 +24,10 @@ export function coastMountainHeight(layer:0|1,d:number,u:number){
  const notch=smoothstep(.62,.80,valley);
  // Independent small-scale spurs keep the layers from looking duplicated.
  const irregular=ridged2(layer*6.2+2.1,d/(rear?365:315)+4.4,3,.49,2,1.75,.25,.2);
- // Lower the broad middle ridge so the genuinely distant peaks remain visible.
- // Only layer 0 changes; layer 1 retains the approved height and silhouette.
- const crest=(rear?285:145)+(rear?270:175)*(.25+.52*broad+.23*irregular)-notch*(rear?92:52);
+ // Dramatic sunset backdrop: leave the lower middle ridgeline unchanged,
+ // but make the distant wall of mountains tower above it. Silhouette first,
+ // real-world scale second; no additional mesh rows or per-frame work.
+ const crest=(rear?560:145)+(rear?520:175)*(.25+.52*broad+.23*irregular)-notch*(rear?92:52);
  const rib=ridged2(u*9.2+layer*4.5,d/(rear?365:310),3,.52,2,1.6,.28,.18);
  const crease=fbm2(u*11+layer*3.7,d/230+5.8,3,.5,2);
  const width=(rear?.275:.225)+.045*(broad-.5);
@@ -105,10 +106,11 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
   // brightens dark vertex colors into the distracting sage-green seen in play.
   // Bypass tone mapping here, then apply a neutral linear-space dimmer AFTER
   // every baked sun/rock/haze blend. Both sheets sit behind the playable hills.
-  // The dimmer preserves their forest-green hue and relief detail. Keep the
-  // farther skyline noticeably darker so the sunlit water owns the left side.
-  // Middle range recedes behind the playable foothills; far range stays as-is.
-  const dim=rear?.46:.50;
+  // After the previous fog fix, the middle mountains still occupied too much
+  // of the bright half of the value range. Darken BOTH background sheets
+  // substantially: the middle is a shadowed green shape, and the oversized
+  // distant peaks form the darkest rim against the dusk sky.
+  const dim=rear?.31:.33;
   const material=new THREE.MeshBasicMaterial({
    color:new THREE.Color().setRGB(dim,dim,dim),
    vertexColors:true,fog:false,toneMapped:false,side:THREE.DoubleSide,
