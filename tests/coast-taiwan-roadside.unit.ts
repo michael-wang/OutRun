@@ -18,7 +18,7 @@ const ground=(d:number,x:number)=>{
 };
 
 it('sculpts an actual local ditch below both concrete banks without changing asphalt or rice-plot terrain',()=>{
- expect(COAST_SIDE_DRAINS.map(s=>s.kind)).toEqual(['open','covered','mixed']);
+ expect(COAST_SIDE_DRAINS.map(s=>s.kind)).toEqual(['open','mixed','covered','open','covered','mixed','covered','mixed']);
  for(const [d,depth] of [[940,1.12],[4170,.88],[8870,1.12]] as const){
   expect(coastDrainDepth(11.1,d)).toBeCloseTo(depth,5);
   expect(ground(d,11.1)).toBeLessThan((ground(d,10.12)+ground(d,14.75))*.5-.65);
@@ -26,12 +26,14 @@ it('sculpts an actual local ditch below both concrete banks without changing asp
   expect(coastDrainDepth(14.75,d)).toBe(0); // grass begins outside trench
   expect(coastDrainDepth(22,d)).toBe(0); // rice and existing creek unchanged
  }
- expect(coastDrainDepth(11.1,2390)).toBe(0);
- expect(coastDrainDepth(11.1,940)).toBeGreaterThan(coastDrainDepth(11.1,789));
+ expect(coastDrainDepth(11.1,2390)).toBeGreaterThan(1);
+ expect(coastDrainDepth(11.1,940)).toBeGreaterThan(coastDrainDepth(11.1,67));
  expect(coastDrainCovered(1051)).toBe(true); // driveway crossing near courtyard
  expect(coastDrainCovered(940)).toBe(false);
  expect(coastDrainCovered(4170)).toBe(true); // most town gutters are covered
- expect(coastDrainAt(2100)).toBeUndefined();
+ expect(coastDrainAt(2100)?.kind).toBe('mixed');
+ expect(coastDrainAt(20)).toBeUndefined();
+ expect(coastDrainAt(9950)).toBeDefined();
 });
 it('bakes both drain and slit-cover details into one finite indexed vertex-color mesh',()=>{
  for(const [start,end] of [[0,1000],[1000,2000],[4000,5000],[8000,9000]]){
@@ -48,7 +50,8 @@ it('bakes both drain and slit-cover details into one finite indexed vertex-color
    .some(v=>Math.abs(v)>.2)).toBe(true);
   g.dispose();
  }
- expect(buildCoastRoadsideDrain(sample,2100,2200)).toBeNull();
+ expect(buildCoastRoadsideDrain(sample,2100,2200)).not.toBeNull();
+ expect(buildCoastRoadsideDrain(sample,0,40)).toBeNull();
 });
 it('places an uneven but legible pole rhythm in the verge without blocking the hero courtyard',()=>{
  expect(COAST_UTILITY_POLES.length).toBeGreaterThan(12);
@@ -65,7 +68,7 @@ it('places an uneven but legible pole rhythm in the verge without blocking the h
  }
  const spans=coastPoleLinks(0,1000);
  expect(spans.length).toBeGreaterThan(0);
- expect(coastPoleLinks(1800,3800)).toHaveLength(0); // no wires across the sea-to-town transition
+ expect(coastPoleLinks(1800,3800).length).toBeGreaterThan(10); // continuous country power lines
  expect(spans.every(s=>s.start>=0&&s.end<=1000)).toBe(true);
 });
 it('batches three gently sagging cables into a bounded one-draw chunk source',()=>{
@@ -78,7 +81,7 @@ it('batches three gently sagging cables into a bounded one-draw chunk source',()
   expect([...g.getAttribute('normal').array].every(Number.isFinite)).toBe(true);
   g.dispose();
  }
- expect(buildCoastUtilityWires(sample,2250,2300)).toBeNull();
+ expect(buildCoastUtilityWires(sample,2250,2300)).not.toBeNull();
 });
 it('materializes local roadside facilities with existing instancing, never per-grate meshes',()=>{
  const stage=COAST_ULTRA_STAGE;
