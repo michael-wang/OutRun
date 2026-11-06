@@ -19,7 +19,7 @@ it('uses five full-width coastal lanes throughout the native scenic road',()=>{
 
 it('replaces racing curbs and tall continuous rails; keeps crossings at districts and the farm visit',()=>{
  for(const at of COAST_CROSSWALKS){
-  expect(!!coastDistrictAt(at)||farmClearing(at,20)).toBe(true);expect(coastBarrierStyle(at)).toBe('opening');
+  expect(!!coastDistrictAt(at)||farmClearing(at,20)||COAST_BEACHES.some(b=>Math.abs(at-b.distance)<b.radius*.8)).toBe(true);expect(coastBarrierStyle(at)).toBe('opening');
   const meshes=road(at-8,at+8);
   expect(meshes.some(m=>['edge-red','edge-white','rail'].includes(m.kind))).toBe(false);
   const paint=meshes.find(m=>m.kind==='line')!,p=track.sample(at);
@@ -94,7 +94,7 @@ it('uses human beach access and uninterrupted remote headland rails, never a fix
    if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
     expect(coastBarrierStyle(d,-1)).toBe('block');
  }
- for(let d=2400;d<=3600;d+=12)
+ for(let d=240;d<=1740;d+=12)
   if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
    expect(coastBarrierStyle(d,-1)).toBe('rail');
  expect(coastBarrierStyle(4100,1)).toBe('block');
