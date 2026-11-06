@@ -348,7 +348,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
    beachAnchor(site.d-8,site.x-7);beachPerson(site.key,false,1);
   }
-  // One authored farming hamlet at 3.05km: a compact town home, a true
+  // Opening farming hamlet at 1.05km: a compact town home, a true
   // open-courtyard farmhouse, a low farmhouse, trees, irrigation channel and
   // footbridge. Complete vertex-coloured buildings are each ONE instanced
   // prefab, prepared by the existing scenery Worker; no runtime CSG/GLB loads.
@@ -366,16 +366,16 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
    // Low bridge over the irrigation channel toward the courtyard entrance;
    // begins beyond the guardrail, not on the playable asphalt.
-   beachAnchor(3056,34);
+   beachAnchor(1056,34);
    part(boxes,'#bdb5a3',-4,.34,0,19,.50,4.2);
    for(const z of [-1.9,1.9]){
     part(boxes,'#bcb4a6',-4,.98,z,17,.20,.18);
     for(const x of [-11,-6,-1,3])part(boxes,'#aaa294',x,.70,z,.19,.79,.22);
    }
    const treeSites=[
-    {d:3008,x:73,h:8.6},{d:3030,x:97,h:10.4},
-    {d:3055,x:116,h:12.0},{d:3087,x:86,h:8.5},
-    {d:3075,x:140,h:9.5},
+    {d:1008,x:76,h:8.6},{d:1020,x:152,h:10.4},
+    {d:1065,x:104,h:12.0},{d:1092,x:86,h:8.5},
+    {d:1075,x:160,h:9.5},
    ];
    coastShadowGroup='vegetation';
    for(const [i,tree] of treeSites.entries()){
@@ -394,6 +394,21 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    bridgeGap=false;anchorRight=false;
    coastShadowGroup='other';
    part(creek,'#ffffff',0,0,0,1,1,1);
+  }
+  // A few distinctive trees near the fields and farmyards, not a wall of
+  // vegetation. These sit in the authored field-edge gaps where the generic
+  // nature scatter correctly avoids covering rice and flower crops.
+  coastShadowGroup='vegetation';
+  for(const site of [
+   {d:148,x:72,h:8.5},{d:460,x:267,h:11},
+   {d:760,x:266,h:9.5},{d:1310,x:265,h:10.5},
+   {d:1660,x:268,h:9},
+  ]){
+   if(!inChunk(site.d))continue;
+   beachAnchor(site.d,site.x);
+   part(cylinder,'#79604c',0,site.h*.47,0,.34,site.h*.94,.34);
+   part(round,'#587648',0,site.h+.35,0,3.2,site.h*.3,3.7);
+   part(round,'#6b8050',1.55,site.h-.3,.7,2.0,site.h*.22,2.3);
   }
   coastShadowGroup='beach';
   for(const spot of COAST_REST_SPOTS){
