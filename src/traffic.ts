@@ -403,6 +403,11 @@ export class Traffic {
     reaction.effects.update(time,a.speed,reaction.skid.intensity,contacts,1);
    }
   }
+  // The original endless-road feeder retires its recipe once passed.
+  // Remove any last-frame history entry for that retired id as well, or
+  // the finite history can outgrow its advertised recipe capacity by one.
+  for(const id of this.history.keys())if(id>=1000000&&!this.highwayRecipes.some(r=>r.id===id))
+   this.history.delete(id);
   this.runningLights?.finish();
   this.indicators.count=lampCount;this.indicators.instanceMatrix.needsUpdate=true;
   this.shadows.count=this.shadows.visible?shadowCount:0;this.shadows.instanceMatrix.needsUpdate=this.shadows.visible;
