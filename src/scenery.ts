@@ -212,10 +212,10 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   part(g,color,x,y,z,sx,sy,sz,0,0,0,2.2);
  }
  function coastHome(key:number,shop=false,farm=false){const previous=coastShadowGroup;coastShadowGroup='buildings';
-  // Local -X is the actual door/window facade. The former +PI rotated
-  // it away from the passing car. Keep an organic per-house angle: some
-  // reveal their fronts to an approaching driver; others face their yards.
-  yaw+=coastHomeFacingYaw(key,farm?'farm':shop?'shop':'village');
+  // Model facades use local -X, while track.sample().right is world -X
+  // for the straight road. PI correctly faces the road; the varied EXTRA
+  // angle reveals some front walls to approaching drivers without a grid.
+  yaw+=Math.PI+coastHomeFacingYaw(key,farm?'farm':shop?'shop':'village');
   const type=Math.floor(random(key+330)*(farm?2:4)),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
   const wall=['#c8b49f','#b5bcc1','#bd9180','#b7bb9e','#d2baab'][Math.floor(random(key+8)*5)];
   part(boxes,wall,0,h/2-.15,0,9,h+.3,w);
@@ -361,9 +361,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const ruralPrefabs=new Map<string,THREE.BufferGeometry>();
    for(const site of COAST_RURAL_HOUSES){
     beachAnchor(site.d,site.x);
-    // These handcrafted entrances face local -X, i.e. toward the road.
-    // Their route-relative angles are authored for genuine three-quarter views.
-    yaw+=site.yaw;
+    // The PI turn faces each local -X entrance toward the actual road;
+    // the authored positive yaw tilts the hero gate toward incoming cars.
+    yaw+=Math.PI+site.yaw;
     // Explicitly positioned, road-side-safe authored lots. A single prefab
     // template takes the place of many per-wall primitive draw calls.
     let prefab=ruralPrefabs.get(site.kind);
