@@ -30,7 +30,10 @@ export function coastDrainOverlaps(start:number,end:number){
 export function coastDrainDepth(x:number,d:number){
  const site=coastDrainAt(d);
  if(!site)return 0;
- const along=smooth(site.start,site.start+18,d)*(1-smooth(site.end-18,site.end,d));
+ // Adjacent scenic chapters are one continuous physical channel, not
+ // eight little disconnected trenches that flatten at every zone boundary.
+ const first=COAST_SIDE_DRAINS[0],last=COAST_SIDE_DRAINS[COAST_SIDE_DRAINS.length-1];
+ const along=smooth(first.start,first.start+18,d)*(1-smooth(last.end-18,last.end,d));
  const across=smooth(COAST_DRAIN_X.leftLip,COAST_DRAIN_X.innerLeft,x)*
   (1-smooth(COAST_DRAIN_X.innerRight,COAST_DRAIN_X.rightLip,x));
  return (site.kind==='covered'?.88:1.12)*along*across;
