@@ -21,11 +21,33 @@ it('collision sweeps use actual endpoints and require previously visible traffic
  state.distance=next.distance;const event=traffic.hit(.1,state,{distance:a.distance-20,lateral:a.lateral},.1);expect(event?.actorId).toBe(0);
  writeFileSync('docs/evidence/traffic-continuity/contact.json',JSON.stringify({before:a,after:next,event},null,2));traffic.reset();expect(traffic.inspect().historySize).toBe(0);traffic.dispose();
 });
-it('overtaken traffic can genuinely catch a slowing player from behind without recipe resurrection',()=>{
- const traffic=new Traffic(new THREE.Scene(),sample,()=>7,70000,1),seen=new Map<number,any>(),reentries:any[]=[];let previous=new Set<number>();
- for(let i=0;i<1300;i++){const time=i/10,player=350+Math.min(time,80)*110;traffic.update(time,player,1.75,time<80?110:0);const actors=traffic.inspect().actors,next=new Set(actors.map(a=>a.id));for(const a of actors){const old=seen.get(a.id);if(old&&!previous.has(a.id)&&time-old.time>1){const cruise=trafficRecipe(1,70000).find(r=>r.id===a.id)!.speed,retiredSpeed=old.speed+(cruise-old.speed)*(1-Math.exp(-.18));const expected=old.distance+old.speed*.1+retiredSpeed*(time-old.time-.1);reentries.push({id:a.id,time,player,actual:a.distance,nominal:a.nominalDistance,visible:a.visible,expected,error:a.distance-expected});if(Math.abs(a.distance-expected)>12)console.log({id:a.id,old,actual:a.distance,speed:a.speed,expected,time,player});expect(Math.abs(a.distance-expected)).toBeLessThan(12);}seen.set(a.id,{distance:a.distance,speed:a.speed,time});}previous=next;}
- expect(reentries.length).toBeGreaterThan(0);expect(reentries.some(a=>a.actual<a.player)).toBe(true);writeFileSync('docs/evidence/traffic-continuity/reentry.json',JSON.stringify(reentries,null,2));traffic.dispose();
-});
+it('fully overtaken traffic retires permanently and cannot reappear from behind when the player stops',()=>{
+ const traffic=new Traffic(new THREE.Scene(),sample,()=>7,70000,1),seen=new Map<number,{distance:number;type:number}>(),retired=new Set<number>();
+ let previous=new Set<number>();
+ for(let i=0;i<1300;i++){
+  const time=i/10,player=350+Math.min(time,80)*110;
+  traffic.update(time,player,1.75,time<80?110:0);
+  const actors=traffic.inspect().actors,next=new Set(actors.map(a=>a.id));
+  for(const id of retired)expect(next.has(id),`retired car ${id} must not chase the player`).toBe(false);
+  for(const a of actors){
+   expect(a.distance+a.speed*.2).toBeGreaterThan(player-250);
+   seen.set(a.id,{distance:a.distance,type:a.type});
+  }
+  for(const id of previous)if(!next.has(id)){
+   const old=seen.get(id);
+   if(old&&old.distance+5<player)retired.add(id);
+  }
+  previous=next;
+ }
+ expect(retired.size).toBeGreaterThan(0);
+ // Long stationary wait: no previously passed car can return from the rear.
+ for(let t=130;t<155;t+=.1){
+  traffic.update(t,350+80*110,1.75,0);
+  expect(traffic.inspect().actors.some(a=>retired.has(a.id))).toBe(false);
+ }
+ traffic.reset();expect(traffic.inspect().passedCount).toBe(0);
+ traffic.dispose();
+},20000);
 it('streaming readiness cannot reveal a collidable actor inside the player envelope',()=>{
  let ready=false;const traffic=new Traffic(new THREE.Scene(),sample,()=>7,70000,1,()=>ready);traffic.update(0,350);const first=traffic.inspect().actors.find(a=>a.id===0)!;expect(first.visible).toBe(false);
  ready=true;traffic.update(.1,first.distance);const near=traffic.inspect().actors.find(a=>a.id===0)!;expect(near.visible).toBe(false);const state={...createState(),distance:near.distance,lateral:near.lateral,speed:60};expect(traffic.hit(.1,state,{distance:state.distance-20,lateral:state.lateral},.1)).toBeUndefined();
