@@ -1,11 +1,17 @@
-/** 台灣鄉間路側樣板 R0 — Worker-side absolute-distance recipes.
- * One rural stretch, one village/town stretch and one fishing-farm stretch.
- * Avoid ocean-side ditches: the left shoulder is beach and open water.
+/** Taiwan roadside drainage R2 — almost the entire ten-kilometre coast.
+ * An uninterrupted inland-side roadside theme; coast-side beach/sea untouched.
+ * Fields and open country have open U-drains, town fronts have flush covers;
+ * tiny cover crossings/driveway spans are encoded by coastDrainCovered().
  */
 export const COAST_SIDE_DRAINS=[
- {start:780,end:1515,kind:'open'},
- {start:3965,end:4435,kind:'covered'},
- {start:8525,end:9210,kind:'mixed'},
+ {start:60,end:1900,kind:'open'},
+ {start:1900,end:3400,kind:'mixed'},
+ {start:3400,end:4435,kind:'covered'},
+ {start:4435,end:4900,kind:'open'},
+ {start:4900,end:5680,kind:'covered'},
+ {start:5680,end:6200,kind:'mixed'},
+ {start:6200,end:7000,kind:'covered'},
+ {start:7000,end:9970,kind:'mixed'},
 ] as const;
 export type CoastDrain=(typeof COAST_SIDE_DRAINS)[number];
 /** Physical metres right of the road centre on the five-lane coast.
@@ -35,9 +41,14 @@ export function coastDrainDepth(x:number,d:number){
 export function coastDrainCovered(d:number){
  const site=coastDrainAt(d);
  if(!site)return false;
- if(site.kind==='covered')return !(d>=4100&&d<4135);
- if(site.kind==='mixed')return (d>=8710&&d<8765)||(d>=8975&&d<9035);
- return (d>=1036&&d<1082)||(d>=1250&&d<1267);
+ if(site.kind==='covered')return true;
+ // Only a few short village/farm driveways have concrete crossings, not a
+ // repeating stripe every few metres of the real open ditch.
+ return [
+  [1036,1082],[1250,1267],[2070,2110],[2700,2745],
+  [4730,4760],[5850,5885],[7350,7390],
+  [8710,8765],[8975,9035],[9550,9595],
+ ].some(([from,to])=>d>=from&&d<to);
 }
 /** Preserve the existing invisible off-road corridor but stop the car BEFORE
  * its right tyres could hang over the open culvert. The safe limit eases in
@@ -53,10 +64,12 @@ export function coastDrainRightLimit(d:number,usualLimit:number){
  return usualLimit-Math.max(0,usualLimit-safe)*influence;
 }
 export type CoastUtilityPole={d:number;x:number;height:number;transformer:boolean;lamp?:boolean};
-/** Fixed irregular but believable spacing; strategically skip the hero gate.
- * All poles stand landward of the roadside drain and before the rice plots.
+/** Old hero-region poles keep their exact coordinates; the rest of the
+ * coast is populated in uneven 95–175m runs. Far fewer lamps than the
+ * historical 64m road-light row: roughly 1 in 4 poles carries a light.
+ * Stable absolute coordinates support replay and chunk-boundary ownership.
  */
-export const COAST_UTILITY_POLES:readonly CoastUtilityPole[]=[
+const CURATED_POLES:readonly CoastUtilityPole[]=[
  {d:808,x:18.9,height:10.6,transformer:false},
  {d:906,x:18.7,height:10.2,transformer:false,lamp:true},
  {d:988,x:19.0,height:10.7,transformer:false},
@@ -74,6 +87,33 @@ export const COAST_UTILITY_POLES:readonly CoastUtilityPole[]=[
  {d:8908,x:18.8,height:10.2,transformer:true},
  {d:9106,x:18.9,height:10.4,transformer:false,lamp:true},
 ];
+function poleNoise(seed:number){
+ let x=seed>>>0;
+ x=Math.imul(x^(x>>>16),0x7feb352d);
+ x=Math.imul(x^(x>>>15),0x846ca68b);
+ return ((x^(x>>>16))>>>0)/4294967296;
+}
+const POLE_FILL_GAPS=[
+ [90,730],[1530,3850],[4580,8420],[9240,9930],
+] as const;
+const generated:CoastUtilityPole[]=[];
+for(const [index,[from,to]] of POLE_FILL_GAPS.entries()){
+ let d=from+19+poleNoise(index*503+41)*30,step=0;
+ while(d<to){
+  const z=Math.round(d),r=poleNoise(index*10007+step*177+83);
+  generated.push({
+   d:z,x:18.55+poleNoise(z+71)*.75,
+   height:10.0+poleNoise(z+421)*.92,
+   transformer:step%13===8,
+   lamp:r>.69 && step%3!==0,
+  });
+  d+=98+poleNoise(index*911+step*83+77)*76;
+  step++;
+ }
+}
+export const COAST_UTILITY_POLES:readonly CoastUtilityPole[]=Object.freeze(
+ [...CURATED_POLES,...generated].sort((a,b)=>a.d-b.d),
+);
 export function coastPoleLinks(start:number,end:number){
  return COAST_UTILITY_POLES.slice(1).flatMap((next,i)=>{
   const prev=COAST_UTILITY_POLES[i];
