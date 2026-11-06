@@ -173,6 +173,19 @@ if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 const requestedAt=Number(params.get('at'));
 const atDistance=params.has('at')&&Number.isFinite(requestedAt)&&requestedAt>=350&&requestedAt<world.length-20?requestedAt:null;
 const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=chapterStart();state.speed=trip?0:brick.entrySpeed/3.6;}
+// Autoplay is not a user gesture. Browsers may leave WebAudio suspended until
+// the first throttle/steer/tap, so unlock sound on that interaction without
+// showing a Play overlay or requiring an extra button.
+function unlockSoundOnGesture(){
+ void sound.unlock().then(()=>{
+  if(sound.inspect().contextState==='running'){
+   document.removeEventListener('pointerdown',unlockSoundOnGesture);
+   document.removeEventListener('keydown',unlockSoundOnGesture);
+  }
+ }).catch(()=>{});
+}
+document.addEventListener('pointerdown',unlockSoundOnGesture,{passive:true});
+document.addEventListener('keydown',unlockSoundOnGesture);
 if(atDistance!==null){state.distance=atDistance;state.speed=0;}
 advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
 world.streamer?.update(state.distance);
