@@ -43,7 +43,7 @@ it('delivers distinct Taiwan roadside treatments instead of one highway guardrai
  expect(coastBarrierClearance(850,1)).toBe(1.05);
  expect(coastBarrierStyle(3990,1)).toBe('none');
  expect(coastBarrierStyle(8550,1)).toBe('none');
- expect(coastBarrierStyle(3990,-1)).toBe('rail'); // left sea safety unchanged
+ expect(coastBarrierStyle(3990,-1)).toBe('none'); // sea vista is open away from tourist bays
  for(const [start,end,right] of [[840,930,'block'],[3980,4080,'none'],[8540,8660,'none']] as const){
   const scene=new THREE.Scene();addCoastResort(scene,track.sample,half,start,end);
   const centers:number[]=[];
