@@ -7,7 +7,7 @@ export const COAST_RURAL_SHOWCASE={start:1008,end:1095,approachAt:850} as const;
 export type RuralHouseKind='townhouse'|'farmhouse'|'courtyard';
 export const COAST_RURAL_HOUSES:readonly {d:number;x:number;kind:RuralHouseKind;yaw:number}[]=[
  {d:1027,x:94,kind:'townhouse',yaw:-.06},
- {d:1056,x:53,kind:'courtyard',yaw:.04}, // near road: readable from ~200m
+ {d:1056,x:46,kind:'courtyard',yaw:.04}, // road-facing gate; still clear of the creek cut
  {d:1085,x:45,kind:'farmhouse',yaw:-.05},
  {d:1034,x:124,kind:'farmhouse',yaw:.16},
 ];
