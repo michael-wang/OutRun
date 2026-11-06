@@ -34,3 +34,29 @@ it('keeps two static baked-vertex-color mountain sheets with a small fixed mesh 
   geo.dispose();(mesh.material as THREE.Material).dispose();
  }
 });
+
+it('uses a darker backlit rear ridge rather than a pale silhouette cutout',()=>{
+ const scene=new THREE.Scene();
+ const sample=((d:number)=>({position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(1,0,0)})) as ReturnType<typeof createTrack>['sample'];
+ addCoastMountains(scene,sample,10000);
+ const sampleRidgeTone=(mesh:THREE.Mesh)=>{
+  const positions=(mesh.geometry as THREE.BufferGeometry).getAttribute('position');
+  const colors=(mesh.geometry as THREE.BufferGeometry).getAttribute('color');
+  let weighted=0,count=0;
+  for(let i=0;i<positions.count;i++){
+   if(positions.getY(i)<95)continue;
+   // Compare only exposed mountain faces, not the bottom dark skirt.
+   const r=colors.getX(i),g=colors.getY(i),b=colors.getZ(i);
+   weighted+=.2126*r+.7152*g+.0722*b;count++;
+  }
+  expect(count).toBeGreaterThan(200);
+  return weighted/count;
+ };
+ const [mid,far]=scene.children as THREE.Mesh[];
+ const midTone=sampleRidgeTone(mid),farTone=sampleRidgeTone(far);
+ // Atmospheric depth remains, but the whole remote range cannot be lighter
+ // than the warmly lit middle hills (the previous visual regression).
+ expect(farTone).toBeLessThan(midTone);
+ expect(farTone).toBeGreaterThan(midTone*.54);
+ for(const mesh of [mid,far]){mesh.geometry.dispose();(mesh.material as THREE.Material).dispose();}
+});

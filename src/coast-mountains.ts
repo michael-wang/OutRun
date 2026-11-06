@@ -46,12 +46,13 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  const right=new THREE.Vector3(axis.z,0,-axis.x);
  if(right.dot(sample(length*.5).right)<0)right.negate();
  const count=Math.ceil((length+7000)/COAST_MOUNTAIN_STEP_M);
- // One olive/sage family: the remote hills fade gently instead of turning
- // gray-white and suggesting a completely different, snowy mountain range.
- const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#6d8068');
- const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#918c79');
- const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#b3a58f');
- const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#9aa095');
+ // Sunset reference: the near hills catch warm sidelighting, while distant
+ // ridges read as cooler, dark green silhouettes. Atmospheric perspective
+ // lowers their contrast; it does NOT force their whole palette toward white.
+ const nearGreen=new THREE.Color('#55684d'),farGreen=new THREE.Color('#4a6056');
+ const nearRock=new THREE.Color('#867e6a'),farRock=new THREE.Color('#697268');
+ const nearWarm=new THREE.Color('#b5a080'),farWarm=new THREE.Color('#948f7f');
+ const nearHaze=new THREE.Color('#899487'),farHaze=new THREE.Color('#718079');
  const normal=new THREE.Vector3();
  for(let layer=0;layer<2;layer++){
   const rear=layer===1;
@@ -84,14 +85,17 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
    const sunlight=Math.max(0,normal.dot(COAST_SUN));
    const ribs=ribValues[i],fine=detailValues[i];
    color.copy(base).lerp(stone,rocky*(rear?.48:.59));
-   color.multiplyScalar((rear?.72:.69)+.22*sunlight+.14*normal.y);
-   color.lerp(lit,sunlight*(rear?.15:.21));
+   // The remote range is mostly in backlight; its peaks must not turn
+   // brighter than the sun-warmed middle hills from baked lighting alone.
+   color.multiplyScalar((rear?.69:.69)+(rear?.14:.22)*sunlight+(rear?.12:.14)*normal.y);
+   color.lerp(lit,sunlight*(rear?.08:.21));
    // Mild erosion/vegetation colour follows relief without painted stripes.
    color.multiplyScalar(.91+.12*ribs+.095*fine);
-   // Haze progresses within each range as well as between them; the two
-   // overlapping edges belong to the same dusk palette, not separate plates.
+   // Keep recession through lower saturation and less relief contrast.
+   // A moderate BLUE-GREEN airlight veil avoids washing a dark silhouette
+   // into a bright slab (the old rear .22-.42 haze caused the hard seam).
    const depth=depthValues[i];
-   color.lerp(haze,rear?.22+.20*depth:.10+.15*depth);
+   color.lerp(haze,rear?.12+.10*depth:.10+.15*depth);
    colors.push(color.r,color.g,color.b);
   }
   geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
