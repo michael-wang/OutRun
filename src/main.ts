@@ -39,6 +39,7 @@ import {generateStage} from './stage-one';
 import {generateTrip,TRIP_VERSION} from './trip';
 import {DESIGNER_CANYON_STAGE} from './designer-canyon';
 import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
+import {coastDrainRightLimit} from './coast-roadside-layout';
 import {CANYON_ROADLOCK_STAGE,CANYON_ROADLOCK_MOMENTS,CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
@@ -447,7 +448,7 @@ function advance(dt:number,override?:InputState){
   if(mode==='playing'&&!settingsOpen){world.streamer?.update(state.distance);if(contextLost||(world.streamer&&!world.streamer.canDrive(state.distance,Math.max(0,state.speed)*effectivePace(state.speed,highSpeedPace)+5,dt))){holdRoad(true);sound.pause();return false;}holdRoad(false);}
 
   input.update(dt);
-  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance,beforeLateral=state.lateral;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};lastControls={...controls};usedExternalControls=!!external;if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}const road=world.sample(state.distance),previousGear=state.gear,previousRpm=state.rpm;step(state,controls,dt,road.curvature,highSpeedPace,world.halfAt,road.tangent.y/Math.hypot(road.tangent.x,road.tangent.z),-Math.atan(road.right.y));
+  if(mode==='playing'&&!settingsOpen){const beforeDistance=state.distance,beforeLateral=state.lateral;const external=override??(import.meta.env.DEV?testControls:undefined),controls=external??{...input.snapshot(),rawSteer:input.steeringTarget};lastControls={...controls};usedExternalControls=!!external;if(import.meta.env.DEV&&hardDetents){const q=quantizeSteering(controls.steer,state.effectiveSteer);state.appliedSteer=q;state.steerFrom=q;state.steerTo=q;state.steerTime=1;}const road=world.sample(state.distance),previousGear=state.gear,previousRpm=state.rpm;step(state,controls,dt,road.curvature,highSpeedPace,world.halfAt,road.tangent.y/Math.hypot(road.tangent.x,road.tangent.z),-Math.atan(road.right.y),coastUltraMode?coastDrainRightLimit:undefined);
  // The selected five-lane merge moves the road frame right; moving the car
  // left by the exact delta keeps the four old lanes physically stationary.
  if(world.junction)state.lateral-=interchangeCenterOffset(world.junction,state.distance)-interchangeCenterOffset(world.junction,beforeDistance);
