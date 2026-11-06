@@ -141,8 +141,13 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  if(coastUltra){
   // Physical beach stations survive the variable-width shoulder conversion.
   const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-coastBeachX(metres,d)-cachedWidth(d),cachedShoulders(d)!);
-  for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11],[-11,-7]])
+  for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11]])
    append('sand',rawAt(a),rawAt(b),0,0,start,end,2.5);
+  // The SEA-SIDE shoulder is blacktop too, right up to its -11m edge.
+  // Beach sand starts OUTSIDE this apron rather than intruding into traffic.
+  // This reuses the existing asphalt render material and leaves 5 lanes
+  // / collision raycast strips completely unchanged.
+  append('asphalt',rawAt(-11),rawAt(-7),-.09,-.09,start,end,2.5);
   append('sand',-7,7,-.1,-.1,start,end,2.5);
   // Rural/town/remote Taiwan drainage sections have no six-metre BEIGE
   // highway shoulder. Continue the existing blacktop about 1.37m beyond
