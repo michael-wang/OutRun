@@ -1,6 +1,6 @@
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
-import {coastDrainOverlaps,coastDrainAt,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
+import {coastDrainAt,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
@@ -172,14 +172,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   else append('sand',-13,13,-.1,-.1,start,end,2.5);
  }
  if(coastUltra){
-  // Actual cross-slope relief: fine near the verge, coarse on distant ridges.
-  // Only chunks intersecting Taiwan roadside ditches need extra vertices
-  // near the gutter's 14.75m FAR ground seam. The whole U from 10–13m is
-  // owned by one visual scene ribbon rather than hidden under grass.
-  // Never subdivide the entire 10km road or add a runtime terrain pass.
-  const strips:number[]=coastDrainOverlaps(start,end)?Array.from(new Set([
-   ...COAST_HILL_STRIPS,...Object.values(COAST_DRAIN_X),
-  ])).sort((a,b)=>a-b):[...COAST_HILL_STRIPS];
+  // The grass begins at raw x=13, physically ~14.75m on this five-lane
+  // coast. The new steep U channel owns 10.12–14.75m in ONE scenic mesh.
+  // Do NOT feed physical drain coordinates (<13m) into these RAW strips:
+  // doing so would produce grass overlapping the asphalt and ditch.
+  // No extra hill terrain triangles or new drawing family required.
+  const strips=COAST_HILL_STRIPS;
   for(let i=1;i<strips.length;i++)append('grass',strips[i-1],strips[i],0,0,start,end,strips[i]<140?5:20);
  }else if(active){
   for(const [a,b,ha,hb] of [[13,75,-.12,-3],[75,160,-3,-14]]){
