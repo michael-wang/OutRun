@@ -5,6 +5,8 @@ import {coastHomeFacingYaw} from './coast-house-facing';
 import {FARM_HOMES} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek} from './coast-rural-vignette';
+import {COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
+import {buildCoastRoadsideDrain,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
@@ -403,6 +405,49 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    bridgeGap=false;anchorRight=false;
    coastShadowGroup='other';
    part(creek,'#ffffff',0,0,0,1,1,1);
+  }
+  // 台灣路側樣板 R0: one entire drainage channel per scenery chunk.
+  // The ROAD Worker has already sculpted the U profile into grass; this
+  // visual mesh adds concrete lips, water, and baked precast/grating covers.
+  // It does not touch asphalt physics, camera, or the approved ocean.
+  if(coastDrainOverlaps(range.start,range.end)){
+   const gutter=buildCoastRoadsideDrain(sample,range.start,range.end);
+   if(gutter){
+    base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+    bridgeGap=false;anchorRight=false;coastShadowGroup='other';
+    part(gutter,'#ffffff',0,0,0,1,1,1);
+   }
+  }
+  // Utility-pole positions follow uneven rural parcel rhythm; black/yellow
+  // warning rings, ceramic insulators, optional small transformer. Parts use
+  // existing instanced cylinder/box buckets; wires use ONE combined mesh.
+  coastShadowGroup='other';
+  for(const pole of COAST_UTILITY_POLES){
+   if(!inChunk(pole.d))continue;
+   beachAnchor(pole.d,pole.x);
+   if(!clear(1.3))continue;
+   const h=pole.height;
+   part(cylinder,'#94968f',0,h*.5,0,.245,h,.245);
+   part(cylinder,'#373d3e',0,1.03,0,.266,2.06,.266);
+   for(const y of [.50,.98,1.46])part(cylinder,'#dbb245',0,y,0,.283,.27,.283);
+   part(boxes,'#687174',0,h-.54,0,3.05,.17,.22);
+   for(const across of [-1.05,0,1.05]){
+    part(cylinder,'#dad6c7',across,h-.31,0,.105,.32,.105);
+    part(cylinder,'#4d5051',across,h-.13,0,.045,.07,.045);
+   }
+   if(pole.transformer){
+    part(cylinder,'#71807c',.64,h-2.20,0,.48,1.42,.48);
+    part(boxes,'#59635f',.64,h-1.42,0,1.15,.15,1.10);
+    part(boxes,'#6d7272',.58,h-2.82,0,1.08,.14,1.12);
+   }
+  }
+  if(coastPoleLinks(range.start,range.end).length){
+   const wires=buildCoastUtilityWires(sample,range.start,range.end);
+   if(wires){
+    base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+    bridgeGap=false;anchorRight=false;
+    part(wires,'#ffffff',0,0,0,1,1,1);
+   }
   }
   // A few distinctive trees near the fields and farmyards, not a wall of
   // vegetation. These sit in the authored field-edge gaps where the generic
