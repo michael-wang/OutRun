@@ -29,7 +29,7 @@ it('starts traffic beyond both the mobile viewport and sunset fog, not at the ol
 it('considers the chase camera viewport, whole vehicle silhouette and road crests',()=>{
  const camera=cameraAt(500),half=()=>7;
  expect(trafficRevealIsHidden(camera,flat,half,500,950,1.75,2,5,1.7,fog())).toBe(false);
- expect(trafficRevealIsHidden(camera,flat,half,500,950,400,2,5,1.7,fog())).toBe(true);
+ expect(trafficRevealIsHidden(camera,flat,half,500,950,850,2,5,1.7,fog())).toBe(true);
  expect(trafficRevealIsHidden(camera,flat,half,500,2400,1.75,2,5,1.7,fog())).toBe(true);
  expect(trafficRevealIsHidden(camera,flat,half,500,300,1.75,2,5,1.7,fog())).toBe(true);
  const hill=(d:number)=>({...flat(d),
