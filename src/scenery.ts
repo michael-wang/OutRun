@@ -6,7 +6,7 @@ import {FARM_HOMES} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek} from './coast-rural-vignette';
 import {COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
-import {buildCoastRoadsideDrain,buildCoastUtilityWires} from './coast-roadside-geometry';
+import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
 import type {RockySection} from './rocky-shoulder';
@@ -441,6 +441,14 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
     bridgeGap=false;anchorRight=false;coastShadowGroup='other';
     part(gutter,'#ffffff',0,0,0,1,1,1);
+   }
+   // Separate flow geometry has a route-UV clock-driven shader; no extra
+   // simulation, texture fetch or transparent overlay on the concrete.
+   const flow=buildCoastRoadsideWater(sample,range.start,range.end);
+   if(flow){
+    base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+    bridgeGap=false;anchorRight=false;coastShadowGroup='other';
+    part(flow,'#ffffff',0,0,0,1,1,1);
    }
   }
   // Utility-pole positions follow uneven rural parcel rhythm; black/yellow
@@ -884,7 +892,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   if(act.id==='city'&&index===1){for(const x of [-20,20]){part(boxes,'#4b8090',x,19,0,2,38,2);part(boxes,'#dfb65c',x-10,37,0,36,1.2,1.2);part(cylinder,'#647a7b',x-25,24,0,.07,25,.07);part(boxes,'#d38e6a',x,2,6,14,4,6);}}
  }
- for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;
+ for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;if(b.geometry.userData.coastDrainWater)mesh.userData.coastDrainWater=true;
    if(range.coastUltra)mesh.userData.coastShadowGroup=b.shadowGroup;
    group.add(mesh);}
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};
