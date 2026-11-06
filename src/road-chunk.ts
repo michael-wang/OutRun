@@ -1,6 +1,6 @@
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
-import {coastDrainAt,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
+import {coastDrainAt,coastDrainOverlaps,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
@@ -172,13 +172,31 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   else append('sand',-13,13,-.1,-.1,start,end,2.5);
  }
  if(coastUltra){
-  // The grass begins at raw x=13, physically ~14.75m on this five-lane
-  // coast. The new steep U channel owns 10.12–14.75m in ONE scenic mesh.
-  // Do NOT feed physical drain coordinates (<13m) into these RAW strips:
-  // doing so would produce grass overlapping the asphalt and ditch.
-  // No extra hill terrain triangles or new drawing family required.
+  // Grass begins at raw=13 on ordinary coast, but raw=13 physically
+  // moves INWARD when the shoulder narrows to 1.6m. The gutter stays at
+  // fixed PHYSICAL x=10.12–14.75, so the first grass ribbon must follow
+  // the inverse road-offset mapping on active drain stretches. Otherwise
+  // grass would cover the 1m-deep trench at the 8.55km acceptance site.
+  // No additional scene mesh or draw family, just one variable inner edge.
   const strips=COAST_HILL_STRIPS;
-  for(let i=1;i<strips.length;i++)append('grass',strips[i-1],strips[i],0,0,start,end,strips[i]<140?5:20);
+  for(let i=1;i<strips.length;i++){
+   if(i!==1||!coastDrainOverlaps(start,end)){
+    append('grass',strips[i-1],strips[i],0,0,start,end,strips[i]<140?5:20);
+    continue;
+   }
+   const boundaries=Array.from(new Set([
+    start,end,...COAST_SIDE_DRAINS.flatMap(site=>[
+     Math.max(start,Math.min(end,site.start)),Math.max(start,Math.min(end,site.end)),
+    ]),
+   ])).sort((a,b)=>a-b);
+   for(let j=1;j<boundaries.length;j++){
+    const a=boundaries[j-1],b=boundaries[j];if(b-a<.001)continue;
+    const left:Edge=coastDrainAt((a+b)/2)?
+     (d:number)=>tripBarrierRawOffset(1,COAST_DRAIN_X.outerLand-cachedWidth(d),cachedShoulders(d)!):
+     strips[0];
+    append('grass',left,strips[1],0,0,a,b,5);
+   }
+  }
  }else if(active){
   for(const [a,b,ha,hb] of [[13,75,-.12,-3],[75,160,-3,-14]]){
    if(start<cutFrom)append('grass',a,b,ha,hb,start,cutFrom,10);
