@@ -56,7 +56,7 @@ type RoadSlice={position:THREE.Vector3;right:THREE.Vector3};
 export function roadHidesVehicle(
  sample:(distance:number)=>RoadSlice,halfAt:(distance:number)=>number,player:number,vehicle:number,
  eye:THREE.Vector3,aim:THREE.Vector3,
- step=TRAFFIC_OUTLINE.crestStep,far=TRAFFIC_OUTLINE.crestFar,
+ step:number=TRAFFIC_OUTLINE.crestStep,far:number=TRAFFIC_OUTLINE.crestFar,
 ):boolean{
  const ahead=vehicle-player;
  if(ahead<TRAFFIC_OUTLINE.crestNear||ahead>far)return false;
