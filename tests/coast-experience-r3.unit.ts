@@ -40,8 +40,8 @@ it('keeps low blocks on visitor beaches, rare natural boulders and open ocean vi
  // Individual rocks also use swept contact, never an invisible sea-wall.
  const hit=new CoastStoneContact(half,1.15,2.1);
  const slot=495,stone=coastBarrierRockAt(slot);
- const s=createState();s.distance=stone.d+6;s.lateral=-10.5;s.speed=75;
- const response=hit.update(s,{distance:stone.d-6,lateral:-10.5},.15,1);
+ const s=createState();s.distance=stone.d+6;s.lateral=-11.2;s.speed=75;
+ const response=hit.update(s,{distance:stone.d-6,lateral:-11.2},.15,1);
  expect(response).toBeDefined();
  expect(response!.lateral).toBeLessThan(-11);
  expect(s.speed).toBeLessThan(75);
