@@ -19,11 +19,14 @@ class RoadsideBatch {
  }
  quad(a:V,b:V,c:V,d:V,hex:string){
   const idx=this.positions.length/3,col=this.shade(hex);
-  for(const p of [a,b,c,d]){this.positions.push(...p);this.colors.push(col.r,col.g,col.b);}
-  // Double-faced geometry: channel walls and thin wires are seen from either
-  // side of the fast-moving chase camera without a material-per-face pass.
+  // Duplicate the back-face *vertices*, not just indices. Otherwise
+  // computeVertexNormals() cancels both sides into a zero-length normal and
+  // the shallow concrete channel becomes weirdly flat or dark.
+  for(const p of [a,b,c,d,a,d,c,b]){
+   this.positions.push(...p);this.colors.push(col.r,col.g,col.b);
+  }
   this.indices.push(idx,idx+1,idx+2,idx,idx+2,idx+3,
-   idx+2,idx+1,idx,idx+3,idx+2,idx);
+   idx+4,idx+5,idx+6,idx+4,idx+6,idx+7);
  }
  finish(name:string){
   if(!this.indices.length)return null;
