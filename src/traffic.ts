@@ -308,7 +308,13 @@ export class Traffic {
    a.visible=this.roadReady(a.distance-spec.length/2)&&this.roadReady(a.distance+spec.length/2)
     &&(time===0||wasVisible||Math.abs(a.distance-player)>80)&&safeToReveal;
    if(!a.visible)continue;
-   const p=this.sample(a.distance),front=this.sample(this.highwayStart===undefined?Math.min(this.length,a.distance+spec.axle):a.distance+spec.axle),rear=this.sample(Math.max(0,a.distance-spec.axle));
+   const p=this.sample(a.distance);
+   // Keep far actors in the continuity/headway pool, but do not submit their
+   // car body, lights, smoke or shadows while completely behind distance fog.
+   // This offsets the extra managed look-ahead without extra mobile GPU cost.
+   if(camera&&this.scene.fog instanceof THREE.Fog&&
+    p.position.distanceTo(camera.position)>this.scene.fog.far+spec.length)continue;
+   const front=this.sample(this.highwayStart===undefined?Math.min(this.length,a.distance+spec.axle):a.distance+spec.axle),rear=this.sample(Math.max(0,a.distance-spec.axle));
    const frontDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance+spec.axle):0;
    const rearDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance-spec.axle):0;
    const frontY=front.position.y+front.right.y*a.lateral+frontDrop,rearY=rear.position.y+rear.right.y*a.lateral+rearDrop,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
