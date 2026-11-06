@@ -354,12 +354,14 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   // prefab, prepared by the existing scenery Worker; no runtime CSG/GLB loads.
   if(inChunk(COAST_RURAL_SHOWCASE.start)){
    coastShadowGroup='buildings';
+   const ruralPrefabs=new Map<string,THREE.BufferGeometry>();
    for(const site of COAST_RURAL_HOUSES){
     beachAnchor(site.d,site.x);
     yaw+=Math.PI+site.yaw;
     // Explicitly positioned, road-side-safe authored lots. A single prefab
     // template takes the place of many per-wall primitive draw calls.
-    const prefab=buildCoastRuralHouse(site.kind);
+    let prefab=ruralPrefabs.get(site.kind);
+    if(!prefab){prefab=buildCoastRuralHouse(site.kind);ruralPrefabs.set(site.kind,prefab);}
     part(prefab,'#ffffff',0,0,0,1,1,1);
    }
    // Low bridge over the irrigation channel toward the courtyard entrance;
