@@ -1,6 +1,7 @@
 import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
+import {coastHomeFacingYaw} from './coast-house-facing';
 import {FARM_HOMES} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek} from './coast-rural-vignette';
@@ -211,7 +212,10 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   part(g,color,x,y,z,sx,sy,sz,0,0,0,2.2);
  }
  function coastHome(key:number,shop=false,farm=false){const previous=coastShadowGroup;coastShadowGroup='buildings';
-  yaw+=Math.PI+(random(key+94)-.5)*.22;
+  // Local -X is the actual door/window facade. The former +PI rotated
+  // it away from the passing car. Keep an organic per-house angle: some
+  // reveal their fronts to an approaching driver; others face their yards.
+  yaw+=coastHomeFacingYaw(key,farm?'farm':shop?'shop':'village');
   const type=Math.floor(random(key+330)*(farm?2:4)),h=shop?7.5:[3.7,6.5,9.3,11.8][type],w=7+random(key+2)*5;
   const wall=['#c8b49f','#b5bcc1','#bd9180','#b7bb9e','#d2baab'][Math.floor(random(key+8)*5)];
   part(boxes,wall,0,h/2-.15,0,9,h+.3,w);
@@ -357,7 +361,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const ruralPrefabs=new Map<string,THREE.BufferGeometry>();
    for(const site of COAST_RURAL_HOUSES){
     beachAnchor(site.d,site.x);
-    yaw+=Math.PI+site.yaw;
+    // These handcrafted entrances face local -X, i.e. toward the road.
+    // Their route-relative angles are authored for genuine three-quarter views.
+    yaw+=site.yaw;
     // Explicitly positioned, road-side-safe authored lots. A single prefab
     // template takes the place of many per-wall primitive draw calls.
     let prefab=ruralPrefabs.get(site.kind);
@@ -366,11 +372,14 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
    // Low bridge over the irrigation channel toward the courtyard entrance;
    // begins beyond the guardrail, not on the playable asphalt.
-   beachAnchor(1056,34);
-   part(boxes,'#bdb5a3',-4,.34,0,19,.50,4.2);
+   // Connect the irrigation crossing to the *turned* courtyard gate.
+   // The new entrance is roughly at route 1051m, x 43m. This short footpath
+   // follows it without flattening or touching the water ribbon.
+   beachAnchor(1052,34);
+   part(boxes,'#bdb5a3',-3,.34,0,22,.50,4.2);
    for(const z of [-1.9,1.9]){
-    part(boxes,'#bcb4a6',-4,.98,z,17,.20,.18);
-    for(const x of [-11,-6,-1,3])part(boxes,'#aaa294',x,.70,z,.19,.79,.22);
+    part(boxes,'#bcb4a6',-3,.98,z,21,.20,.18);
+    for(const x of [-13,-8,-3,2,7])part(boxes,'#aaa294',x,.70,z,.19,.79,.22);
    }
    const treeSites=[
     {d:1008,x:76,h:8.6},{d:1020,x:152,h:10.4},
