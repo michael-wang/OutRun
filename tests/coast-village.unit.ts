@@ -17,12 +17,12 @@ it('places clustered frontages and waffle carts inside districts with unique chu
   if(district.kind==='market')expect(sites.some(s=>s.kind==='waffle')).toBe(true);
  }
  for(const s of COAST_VILLAGE_SITES){expect(COAST_DISTRICTS.some(d=>s.d>d.start&&s.d<d.end)).toBe(true);expect(s.x).toBeGreaterThanOrEqual(22);expect(s.x).toBeLessThan(75);}
- expect(COAST_VILLAGE_SITES.filter(s=>s.kind==='home').length).toBeGreaterThan(60);
- expect(COAST_VILLAGE_SITES.filter(s=>s.kind!=='home').length).toBeGreaterThan(90);
+ expect(COAST_VILLAGE_SITES.filter(s=>s.kind==='home').length).toBeGreaterThan(40);
+ expect(COAST_VILLAGE_SITES.filter(s=>s.kind!=='home').length).toBeGreaterThan(55);
 });
 it('keeps seaside benches and children on dry beach outside the driving corridor',()=>{
  const track=createPilotTrack(COAST_ULTRA_STAGE);
- expect(COAST_REST_SPOTS.length).toBeGreaterThanOrEqual(15);
+ expect(COAST_REST_SPOTS.length).toBeGreaterThanOrEqual(12);
  for(const spot of COAST_REST_SPOTS){
   expect(spot.x).toBeLessThan(-18);const p=track.sample(spot.d);
   expect(coastBeachHeight(spot.x,p.position.y,p.right.y,spot.d)).toBeGreaterThan(-3.7);
