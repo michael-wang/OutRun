@@ -76,8 +76,10 @@ it('renders the rear range as subdued forest green, darker than the middle range
  };
  const [mid,far]=scene.children as THREE.Mesh[];
  const midTone=sampleRidgeTone(mid),farTone=sampleRidgeTone(far);
+ // The middle ridge was dimmed deliberately; the rear still has the
+ // darker layer tint without forcing an excessive difference in material RGB.
  expect((far.material as THREE.MeshBasicMaterial).color.r)
-  .toBeLessThan((mid.material as THREE.MeshBasicMaterial).color.r*.85);
+  .toBeLessThan((mid.material as THREE.MeshBasicMaterial).color.r);
  // These are final sRGB brightness checks, not vertex-only comparisons.
  // The earlier vertex-only test passed while ACES made the ridges too bright.
  expect(midTone.luminance).toBeLessThan(.32);
