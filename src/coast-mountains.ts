@@ -98,9 +98,16 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
    colors.push(color.r,color.g,color.b);
   }
   geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
-  // The black diagnostic confirmed these meshes own the visible distant hills.
-  // Restore the baked colors without a material tint.
-  const material=new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide});
+  // The black-mountain experiment verified that this material controls the
+  // visible backdrop. The game's global ACES tone mapping (exposure 1.1)
+  // brightens dark vertex colors into the distracting sage-green seen in play.
+  // Bypass tone mapping here, then apply a neutral linear-space dimmer AFTER
+  // every baked sun/rock/haze blend. Both sheets sit behind the playable hills.
+  // The dimmer preserves their forest-green hue and all existing relief detail.
+  const material=new THREE.MeshBasicMaterial({
+   color:new THREE.Color().setRGB(.58,.58,.58),
+   vertexColors:true,fog:false,toneMapped:false,side:THREE.DoubleSide,
+  });
   material.onBeforeCompile=shader=>{
    shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\ngl_Position.z=gl_Position.w*(1.0-0.00008/(1.0+max(0.0,-mvPosition.z)/2000.0));');
   };
