@@ -46,7 +46,7 @@ export class CoastStoneContact {
    for(const side of [-1,1] as const){
     if(coastBarrierStyle(slot,side)!=='block')continue;
     const stone=coastBarrierStoneAt(slot,side);
-    targets.push({slot:slot*2+(side>0?1:0),side,d:stone.d,
+    targets.push({slot:side>0?slot:-(slot+1),side,d:stone.d,
      x:side*(this.halfAt(stone.d)+coastBarrierClearance(stone.d,side)),
      width:.56,length:stone.length,kind:'stone'});
    }
