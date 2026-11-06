@@ -98,7 +98,12 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
    colors.push(color.r,color.g,color.b);
   }
   geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
-  const material=new THREE.MeshBasicMaterial({vertexColors:true,fog:false,side:THREE.DoubleSide});
+  // TEMPORARY BLACK-MOUNTAIN DIAGNOSTIC (2026-11-06).
+  // Force BOTH coast mountain sheets to pure black at the material stage.
+  // MeshBasicMaterial multiplies its material color by baked vertex colors,
+  // so no sunset, vertex hue or haze can turn them green in this experiment.
+  // Remove this override after the actual rendering source is confirmed.
+  const material=new THREE.MeshBasicMaterial({color:0x000000,vertexColors:true,fog:false,side:THREE.DoubleSide});
   material.onBeforeCompile=shader=>{
    shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\ngl_Position.z=gl_Position.w*(1.0-0.00008/(1.0+max(0.0,-mvPosition.z)/2000.0));');
   };
