@@ -225,7 +225,9 @@ export class Traffic {
   this.actors=inside.filter(a=>previous.some(old=>old.id===a.id));
   // Known stalled hazards are admitted first. Moving cars must plan around
   // them; never silently omit an already-authored breakdown to make room.
-  const entering=inside.filter(a=>!previous.some(old=>old.id===a.id)&&(time===0||a.id===INTERCHANGE_DEMO_CAR_ID||Math.abs(a.distance-player)>120))
+  const entering=inside.filter(a=>a.distance>=player
+   &&!previous.some(old=>old.id===a.id)
+   &&(time===0||a.id===INTERCHANGE_DEMO_CAR_ID||Math.abs(a.distance-player)>120))
    .sort((a,b)=>Number(!!b.stationary)-Number(!!a.stationary)
     ||Math.abs(a.distance-player)-Math.abs(b.distance-player));
   // Admit only candidates that fit an existing moving/stopped lane picture.
