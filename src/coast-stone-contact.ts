@@ -1,5 +1,5 @@
 import type {DrivingState} from './handling';
-import {coastBarrierStyle,coastBarrierStoneAt,coastBarrierClearance} from './coast-layout';
+import {coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance} from './coast-layout';
 import {sweptContact} from './traffic-impact';
 
 export interface CoastStoneHit {
@@ -38,36 +38,50 @@ export class CoastStoneContact {
   if(!(dt>0))return;
   const from=Math.max(0,Math.min(previous.distance,state.distance)-this.carHalfLength-4);
   const to=Math.max(previous.distance,state.distance)+this.carHalfLength+4;
-  const first=Math.max(0,Math.ceil(from/12)*12);
-  for(let slot=first;slot<=to;slot+=12){
-   // The remote countryside has no stones; town covers have no barrier.
-   if(coastBarrierStyle(slot,1)!=='block')continue;
-   const stone=coastBarrierStoneAt(slot,1);
-   if(!this.sceneryReady(stone.d))continue;
-   const x=this.halfAt(stone.d)+coastBarrierClearance(stone.d,1);
-   const width=this.carHalfWidth+.56/2+.06;
-   const length=this.carHalfLength+stone.length*.5+.06;
+  // Existing 12m concrete markers AND individual 33m sea-side boulders
+  // share a small swept collision check. No invisible wall in their gaps.
+  type Target={slot:number;side:-1|1;d:number;x:number;width:number;length:number;kind:'stone'|'rock'};
+  const targets:Target[]=[];
+  for(let slot=Math.max(0,Math.ceil(from/12)*12);slot<=to;slot+=12){
+   for(const side of [-1,1] as const){
+    if(coastBarrierStyle(slot,side)!=='block')continue;
+    const stone=coastBarrierStoneAt(slot,side);
+    targets.push({slot:slot*2+(side>0?1:0),side,d:stone.d,
+     x:side*(this.halfAt(stone.d)+coastBarrierClearance(stone.d,side)),
+     width:.56,length:stone.length,kind:'stone'});
+   }
+  }
+  for(let slot=Math.max(0,Math.ceil(from/33)*33);slot<=to;slot+=33){
+   if(coastBarrierStyle(slot,-1)!=='rock')continue;
+   const b=coastBarrierRockAt(slot);
+   targets.push({slot:100000+slot,side:-1,d:b.d,
+    x:-(this.halfAt(b.d)+b.offset),width:b.width,length:b.length,kind:'rock'});
+  }
+  for(const target of targets){
+   if(!this.sceneryReady(target.d))continue;
+   const halfW=this.carHalfWidth+target.width*.5+.06;
+   const halfL=this.carHalfLength+target.length*.5+.06;
    const contact=sweptContact(
-    previous.lateral-x,previous.distance-stone.d,
-    state.lateral-x,state.distance-stone.d,width,length,
+    previous.lateral-target.x,previous.distance-target.d,
+    state.lateral-target.x,state.distance-target.d,halfW,halfL,
    );
    if(!contact)continue;
-   // Continuous touching one concrete stone is ONE collision episode, even
-   // when the driver holds steering into the block for several frames.
-   if(this.recentSlot===slot&&time-this.lastHitTime<1.25)continue;
-   this.recentSlot=slot;this.lastHitTime=time;
-   const approach=Math.max(0,(state.lateral-previous.lateral)/dt);
+   if(this.recentSlot===target.slot&&time-this.lastHitTime<1.25)continue;
+   this.recentSlot=target.slot;this.lastHitTime=time;
+   const outward=Math.max(0,(state.lateral-previous.lateral)*target.side/dt);
    const severity=Math.min(1,Math.max(.22,
-    state.speed/125*.55+approach/13*.35));
+    state.speed/125*.55+outward/13*.35));
    this.impacts++;
-   this.yaw=.12*severity;
-   this.roll=.075*severity;
+   this.yaw=target.side*.12*severity;
+   this.roll=target.side*.075*severity;
    this.flash=.20;
    state.speed*=1-(.11+.28*severity);
-   state.lateral=Math.min(state.lateral,x-width+.02);
-   state.lateralRate=Math.min(0,state.lateralRate);
+   state.lateral=target.side>0
+    ?Math.min(state.lateral,target.x-halfW+.02)
+    :Math.max(state.lateral,target.x+halfW-.02);
+   state.lateralRate=target.side>0?Math.min(0,state.lateralRate):Math.max(0,state.lateralRate);
    state.corridorSide=0;
-   return {distance:stone.d,lateral:x,severity,slot};
+   return {distance:target.d,lateral:target.x,severity,slot:target.slot};
   }
  }
  inspect(){return {impacts:this.impacts,lastSlot:this.recentSlot,yaw:this.yaw,roll:this.roll,flash:this.flash};}
