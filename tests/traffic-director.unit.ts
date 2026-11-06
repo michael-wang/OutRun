@@ -64,7 +64,7 @@ it('brakes behind a stalled vehicle without overlap or sudden backward teleport'
  let follower={id:1,distance:280,lateral:5.25,speed:46,length:4.5};
  let slow=false,maxChange=0;
  const dt=1/60;
- for(let i=0;i<420;i++){
+ for(let i=0;i<900;i++){
   const next=trafficFollowingTarget(follower,leader,46);
   const speed=approachTrafficSpeed(follower.speed,next,dt);
   const predicted=follower.distance+(speed+follower.speed)*dt/2;
