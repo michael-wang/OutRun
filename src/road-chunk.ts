@@ -1,5 +1,6 @@
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
+import {coastDrainOverlaps,COAST_DRAIN_X} from './coast-roadside-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
 import {CANYON_BEND,canyonBend,canyonBlend} from './canyon-identity';
@@ -158,7 +159,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  }
  if(coastUltra){
   // Actual cross-slope relief: fine near the verge, coarse on distant ridges.
-  const strips=COAST_HILL_STRIPS;
+  // Only chunks intersecting Taiwan roadside ditches need extra vertices
+  // between 14–18m. The same shared ground sampler cuts the true U profile.
+  // Never subdivide the entire 10km road or add a runtime terrain pass.
+  const strips:number[]=coastDrainOverlaps(start,end)?Array.from(new Set([
+   ...COAST_HILL_STRIPS,...Object.values(COAST_DRAIN_X),
+  ])).sort((a,b)=>a-b):[...COAST_HILL_STRIPS];
   for(let i=1;i<strips.length;i++)append('grass',strips[i-1],strips[i],0,0,start,end,strips[i]<140?5:20);
  }else if(active){
   for(const [a,b,ha,hb] of [[13,75,-.12,-3],[75,160,-3,-14]]){
