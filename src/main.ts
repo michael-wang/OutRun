@@ -61,6 +61,7 @@ import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {coastShadowTechniqueEnabled,coastShadowTechniqueSnapshot,setCoastShadowTechniqueEnabled,type CoastShadowTechnique} from './coast-shadow-techniques';
+import {setCoastRoadDynamicShadowEnabled} from './coast-road-shadows';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import roadWorkerUrl from './road-worker.ts?worker&url';
@@ -287,6 +288,7 @@ let traffic=trip&&!roadLockMode?new Traffic(world.scene,world.sample,world.halfA
 function applyShadowTechnique(technique:CoastShadowTechnique,enabled:boolean){
  if(!setCoastShadowTechniqueEnabled(technique,enabled))return;
  if(technique==='dynamicMap'||technique==='staticMap'){
+  if(technique==='dynamicMap')setCoastRoadDynamicShadowEnabled(enabled);
   world.shadowCache?.refreshLightCasting();
   if(technique==='staticMap'&&enabled)world.shadowCache?.invalidate();
  }else if(technique==='boatDepth'&&ultraOcean){

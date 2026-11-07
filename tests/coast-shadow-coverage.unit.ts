@@ -5,7 +5,7 @@ import {
  COAST_NEAR_SHADOW,COAST_FAR_SHADOW,COAST_SHADOW_LOOKAHEAD_M,COAST_STATIC_SHADOW_STEP_M,CoastShadowCache,
  configureCoastShadowLights,updateCoastShadowLights,
 } from '../src/coast-shadow-coverage';
-import {coastRoadLightingChunk,constrainCoastRoadShadowReceiver,COAST_ROAD_DYNAMIC_SHADOW_END_M} from '../src/coast-road-shadows';
+import {coastRoadLightingChunk,constrainCoastRoadShadowReceiver,COAST_ROAD_DYNAMIC_SHADOW_END_M,setCoastRoadDynamicShadowEnabled,coastRoadDynamicShadowEnabled} from '../src/coast-road-shadows';
 
 const sample=(d:number)=>({position:new THREE.Vector3(0,5,d)});
 
@@ -106,6 +106,15 @@ it('samples dynamic car/truck depth only on asphalt; bypasses unstable far stati
  };
  material.onBeforeCompile(shader,{} as any);
  expect(shader.fragmentShader).toContain('UNROLLED_LOOP_INDEX == 0');
+ expect(shader.fragmentShader).toContain('uCoastRoadDynamicShadowEnabled');
+ expect(shader.fragmentShader).toContain('uniform bool uCoastRoadDynamicShadowEnabled;');
+ expect(shader.uniforms.uCoastRoadDynamicShadowEnabled.value).toBe(true);
+ try{
+  setCoastRoadDynamicShadowEnabled(false);
+  expect(coastRoadDynamicShadowEnabled()).toBe(false);
+  expect(shader.uniforms.uCoastRoadDynamicShadowEnabled.value).toBe(false);
+ }finally{setCoastRoadDynamicShadowEnabled(true);}
+ expect(shader.uniforms.uCoastRoadDynamicShadowEnabled.value).toBe(true);
  expect(shader.fragmentShader).not.toContain('#include <lights_fragment_begin>');
  expect(material.customProgramCacheKey()).toBe('coast-road-dynamic-shadow-only-v1');
  material.dispose();
