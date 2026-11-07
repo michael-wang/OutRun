@@ -71,8 +71,12 @@ export function createCar(dusk=false) {
     // Low-profile sculpted wing mirror, rather than a round toy handle.
     bar([side*.97,.952,.51],[side*1.107,.987,.452],.010,dark);
     mesh(createGTWingMirrorHousing(),paint,side*1.121,.996,.426);
-    oval(.080,.031,.006,dark,side*1.121,.996,.352);
-    oval(.070,.025,.004,silver,side*1.121,.997,.343);
+    // Two thin, camera-facing glass/rim discs instead of four dense
+    // miniature spheres. The painted 3-D shell supplies the curved shape.
+    const rim=mesh(new THREE.CircleGeometry(1,12),dark,side*1.121,.996,.352);
+    rim.rotation.y=Math.PI;rim.scale.set(.092,.036,1);
+    const pane=mesh(new THREE.CircleGeometry(1,12),silver,side*1.121,.997,.343);
+    pane.rotation.y=Math.PI;pane.scale.set(.078,.028,1);
     for(const z of [-1.45,1.38]){
       // Subtle sculpted arch brow follows the wheel without a giant polygon.
       const brow=mesh(new THREE.TorusGeometry(.49,.05,6,20,Math.PI),paint,side*1.052,.46,z);

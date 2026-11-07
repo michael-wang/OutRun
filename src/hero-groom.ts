@@ -49,7 +49,7 @@ export function createDriverHair():THREE.Group{
   {y:.110,rx:.139,rz:.129},
   {y:.159,rx:.064,rz:.064},
  ] as const;
- const sides=28;
+ const sides=20;
  for(const [k,ring] of sections.entries())for(let i=0;i<sides;i++){
   const angle=i*2*Math.PI/sides,side=Math.sin(angle),front=Math.cos(angle);
   // Low, natural tapered nape, slightly higher parted hairline in front.
@@ -78,12 +78,12 @@ export function createDriverHair():THREE.Group{
  // A modest swept fringe and individually shaded locks break the helmet
  // silhouette. These cards all share ONE opaque material/draw.
  const layers:Strand[]=[];
- for(let i=0;i<22;i++){
-  const angle=(i+.4)*2*Math.PI/22;
+ for(let i=0;i<11;i++){
+  const angle=(i+.4)*2*Math.PI/11;
   const sx=Math.sin(angle)*.09,sz=Math.cos(angle)*.085;
   const rows:Row[]=[];
-  for(let j=0;j<=6;j++){
-   const t=j/6;
+  for(let j=0;j<=4;j++){
+   const t=j/4;
    rows.push({
     x:sx*(.63+.55*t)+.039*t,
     y:.148-.088*t+.006*Math.cos(i*1.9),
