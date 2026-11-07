@@ -60,7 +60,8 @@ it('keeps an opaque crop-height canopy across each rice plot while preserving sc
    // the evaluated slanted edge by a fraction of a millimetre.
    const margin=Math.abs(x-edges.left)<.001||Math.abs(x-edges.right)<.001||z===plot.start||z===plot.end;
    expect(height).toBeGreaterThan(margin?.06:.75);expect(height).toBeLessThan(margin?.37:.92);
-   expect(cover.getW(i)<1).toBe(margin);
+   if(margin)expect(cover.getW(i)).toBeLessThan(.06);
+   else expect(cover.getW(i)).toBeCloseTo(plot.band===0?Math.min(1,(x-edges.left)/10):1,3);
   }
   for(let i=0;i<ix.count;i+=3){a.fromBufferAttribute(p,ix.getX(i));b.fromBufferAttribute(p,ix.getX(i+1));c.fromBufferAttribute(p,ix.getX(i+2));area+=Math.abs((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z))/2;}
   const rows=p.count/(Math.ceil((plot.right-plot.left)/2)+1)-1,step=(plot.end-plot.start)/rows;

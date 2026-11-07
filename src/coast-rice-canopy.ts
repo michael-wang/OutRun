@@ -16,7 +16,10 @@ export function riceCanopyGeometry(plot:FarmPlot,position:(d:number,x:number,lif
    const cover=margin?.12+.09*grain:1;
    const p=position(d,lateral,.14+.69*cover+grain*.075);vertices.push(p.x,p.y,p.z);uv.push((lateral-plot.left)/4,(d-plot.start)/4);
    const c=new THREE.Color('#f6e8c8').lerp(new THREE.Color('#c1d4a7'),.30+.22*Math.sin(plot.id*1.7)+.075*Math.sin(d*.043+lateral*.08));
-   c.multiplyScalar(.98+grain*.035);colors.push(c.r,c.g,c.b,cover);
+   // Use the curved planting edge for the handoff to the modeled heads.
+   // Only the roadside terrace has individual plants under its canopy.
+   const density=margin?.04+.018*grain:plot.band===0?Math.min(1,(lateral-left)/10):1;
+   c.multiplyScalar(.98+grain*.035);colors.push(c.r,c.g,c.b,density);
   }
  }
  for(let z=0;z<nz;z++){

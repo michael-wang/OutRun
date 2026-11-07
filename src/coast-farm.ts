@@ -3,7 +3,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {Grass} from './vendor/three-stylized/Grass';
 import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-stylized/flowerShapes';
-import {shadeRipeRice,shadePaddyWater} from './coast-rice-material';
+import {createRiceWindTexture,shadeRipeRice,shadePaddyWater} from './coast-rice-material';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 import {seededRandom} from './vendor/three-stylized/utils';
 import {riceBundGeometry,riceCanopyGeometry} from './coast-rice-canopy';
@@ -38,7 +38,7 @@ export async function loadCoastFarm(){
   });const merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());return merged;
  }));
  const time={value:0},materials=new Map<string,THREE.Material>();
- const texture=fieldTexture(),canopyTexture=riceSeaTexture();
+ const texture=fieldTexture(),canopyTexture=riceSeaTexture(),riceWind=createRiceWindTexture();
  // Stage-local pin for the single shared flower mask. Build it once during
  // resource preparation, before distant field constructors run during driving.
  const flowerMask=acquireSharedFlowerMask();
@@ -49,7 +49,7 @@ export async function loadCoastFarm(){
    if(kind==='crop'||kind==='canopy'){
     m.onBeforeCompile=shader=>{
      const crop=kind==='crop';
-     shadeRipeRice(shader,time,crop);
+     shadeRipeRice(shader,time,riceWind,crop);
      if(crop)distanceShader(shader,near,far,false);
     };m.customProgramCacheKey=()=>`farm-${kind}-ripe-${near}-${far}`;
    }else if(kind==='paddy'||kind==='field'){
@@ -62,7 +62,7 @@ export async function loadCoastFarm(){
    }materials.set(key,m);
   }return m;
  }
- return {geometries,time,material,dispose(){if(stageDisposed)return;stageDisposed=true;geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();releaseSharedFlowerMask(flowerMask);}};
+ return {geometries,time,material,dispose(){if(stageDisposed)return;stageDisposed=true;geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();riceWind.dispose();releaseSharedFlowerMask(flowerMask);}};
 }
 export type FarmAssets=Awaited<ReturnType<typeof loadCoastFarm>>;
 

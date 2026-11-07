@@ -1,8 +1,20 @@
-import type {MeshStandardMaterial} from 'three';
+import {DataTexture,LinearFilter,RepeatWrapping,RGFormat,type MeshStandardMaterial} from 'three';
+import {seededRandom} from './vendor/three-stylized/utils';
 import {COAST_SUN} from './coast-dusk';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 
 type RiceShader=Parameters<MeshStandardMaterial['onBeforeCompile']>[0];
+
+const WIND_SIZE=64;
+export function createRiceWindTexture(){
+ const rand=seededRandom(28491),data=new Uint8Array(WIND_SIZE*WIND_SIZE*2);
+ for(let i=0;i<data.length;i++)data[i]=Math.floor(rand()*256);
+ const texture=new DataTexture(data,WIND_SIZE,WIND_SIZE,RGFormat);
+ texture.wrapS=texture.wrapT=RepeatWrapping;
+ texture.magFilter=texture.minFilter=LinearFilter;
+ texture.needsUpdate=true;
+ return texture;
+}
 
 // Advect the whole gust pattern in metres, so adjacent terraces and both
 // representations see the same wind even when a new plot streams in.
@@ -10,16 +22,16 @@ const windField=/* glsl */`
  uniform float riceTime;
  uniform vec3 riceSun;
  varying float vEarLight;
- const vec2 windDir=vec2(.9998,.02);
- float riceLean(vec2 p) {
-  float along=dot(p,windDir)-riceTime*9.5;
-  float across=dot(p,vec2(-windDir.y,windDir.x));
-  // Long crests travel across the carriageway. The chase camera can track
-  // them across several planted rows while moving quickly along the coast.
-  float swirl=sin(across*.025+along*.027)+.55*sin(across*.052-along*.038);
-  float front=sin(along*.172+1.5*swirl);
-  float ripple=sin(along*.32+.023*across-.9*swirl);
-  return .31+.52*front+.18*ripple;
+ uniform sampler2D riceWind;
+ vec2 windNoise(vec2 p) {
+  vec2 f=fract(p);
+  return texture2D(riceWind,(floor(p)+f*f*(3.-2.*f)+.5)/${WIND_SIZE}.).rg*2.-1.;
+ }
+ vec2 riceGust(vec2 p) {
+  vec2 broad=windNoise((p-vec2(9.3,1.7)*riceTime)/vec2(17.,32.));
+  vec2 eddy=windNoise(mat2(.87,.5,-.5,.87)*(p-vec2(6.8,-1.3)*riceTime)/vec2(8.7,14.)+broad*.88);
+  vec2 flutter=windNoise((p-vec2(4.4,2.1)*riceTime)/4.7+eddy*.65);
+  return broad*vec2(.63,.44)+eddy*vec2(.35,.30)+flutter*vec2(.16,.15);
  }
 `;
 
@@ -29,28 +41,25 @@ const plantingGrid=/* glsl */`
  }
 `;
 
-export function shadeRipeRice(shader:RiceShader,time:{value:number},crop:boolean){
- Object.assign(shader.uniforms,{riceTime:time,riceSun:{value:COAST_SUN}});
+export function shadeRipeRice(shader:RiceShader,time:{value:number},wind:DataTexture,crop:boolean){
+ Object.assign(shader.uniforms,{riceTime:time,riceWind:{value:wind},riceSun:{value:COAST_SUN}});
  shader.vertexShader=shader.vertexShader.replace('#include <common>',`#include <common>\n${windField}`)
   .replace('#include <beginnormal_vertex>',`#include <beginnormal_vertex>
    ${crop?`mat4 riceBasis=modelMatrix*instanceMatrix;
-    vec2 riceWorld=(riceBasis*vec4(position,1.)).xz;
-    vec2 localWind=vec2(dot(normalize(riceBasis[0].xz),windDir),dot(normalize(riceBasis[2].xz),windDir));`
-    :`vec2 riceWorld=(modelMatrix*vec4(position,1.)).xz;
-    vec2 localWind=windDir;`}
-   float lean=riceLean(riceWorld);
-   float h=${crop?'max(position.y,0.)':'mix(.14,.83,color.a)'};
+    vec2 riceWorld=(riceBasis*vec4(position,1.)).xz;`
+    :`vec2 riceWorld=(modelMatrix*vec4(position,1.)).xz;`}
+   vec2 gust=riceGust(riceWorld),windDir=normalize(vec2(1.,gust.y));
+   vec2 localWind=${crop?'vec2(dot(normalize(riceBasis[0].xz),windDir),dot(normalize(riceBasis[2].xz),windDir))':'windDir'};
+   float lean=clamp(.29+gust.x,-.76,1.04);
+   float h=${crop?'max(position.y,0.)':'mix(.14,.83,smoothstep(.04,.22,color.a))'};
    float angle=lean*${crop?'h/1.30':'1.'};
    float bend=sin(angle), upright=cos(angle);
-   // Light scattered by the hulls varies as their orientation changes. Nearby
-   // crowns toward the low sun also screen the light in compressed troughs.
+   // Straw retains diffuse skylight even when a gust turns it away from the sun.
    float facing=dot(normalize(vec3(windDir.x*bend,upright,windDir.y*bend)),riceSun);
-   float ahead=riceLean(riceWorld+riceSun.xz*2.0);
-   float clearance=.83*(cos(lean)-cos(ahead))+2.0*riceSun.y;
-   vEarLight=smoothstep(.00,.60,facing)*smoothstep(-.09,.20,clearance);
+   vEarLight=smoothstep(-.24,.77,facing);
    ${crop?`float alongNormal=dot(objectNormal.xz,localWind);
     objectNormal.y=(objectNormal.y-alongNormal*bend)/upright;`
-    :`objectNormal.xz+=localWind*bend*sign(objectNormal.y)*.68;`}
+    :`objectNormal.xz+=localWind*bend*sign(objectNormal.y)*.37;`}
   `)
   .replace('#include <begin_vertex>',`#include <begin_vertex>
    ${crop?`// Integrating the tangent anchors roots and preserves stem length.
@@ -69,15 +78,15 @@ export function shadeRipeRice(shader:RiceShader,time:{value:number},crop:boolean
     vec2 resolved=1.-smoothstep(vec2(.12),vec2(.52),footprint);
     float furrow=smoothstep(.30,.48,delta.x)*resolved.x+.42*smoothstep(.32,.49,delta.y)*resolved.y;
     float close=1.-smoothstep(65.,130.,length(vViewPosition));
-    float cover=vColor.a-(1.-smoothstep(2.6,7.,metres.x))*close-furrow*.83;
+    float cover=mix(smoothstep(.04,.24,vColor.a),smoothstep(.46,.96,vColor.a),close)-furrow*.74;
     if(cover+.30*sampledDiffuseColor.g<.39) discard;
-    diffuseColor.rgb*=1.-.23*furrow;
+    diffuseColor.rgb*=1.-.15*furrow;
     // A bowed stand exposes more husks to the low sun above the green leaves.
-    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.72,.59,.32),vEarLight*.48);`}
-   diffuseColor.rgb*=mix(vec3(.65,.76,.68),vec3(1.04,1.05,.96),vEarLight);
+    diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.72,.59,.32),.10+vEarLight*.16);`}
+   diffuseColor.rgb*=mix(vec3(.90,.89,.83),vec3(1.03,1.01,.95),vEarLight);
   `)
   .replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
-   totalEmissiveRadiance+=diffuseColor.rgb*(vec3(.16,.19,.16)+vEarLight*vec3(.29,.25,.17));
+   totalEmissiveRadiance+=diffuseColor.rgb*(vec3(.30,.28,.22)+vEarLight*vec3(.12,.11,.08));
   `);
 }
 
