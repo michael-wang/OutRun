@@ -1,3 +1,4 @@
+import {townStreetAt} from './coast-town-access';
 /** Taiwan roadside drainage R2 — almost the entire ten-kilometre coast.
  * An uninterrupted inland-side roadside theme; coast-side beach/sea untouched.
  * Fields and open country have open U-drains, town fronts have flush covers;
@@ -129,6 +130,14 @@ export const COAST_UTILITY_POLES:readonly CoastUtilityPole[]=Object.freeze(
   let d=p.d;
   const near=COAST_DRAIN_BRIDGES.find(b=>Math.abs(d-b.d)<b.width*.5+5);
   if(near)d=near.d+near.width*.5+9;
+  // Pole + road-light must not stand on a town side-street junction.
+  // Recheck after each move so close crossings never accidentally collide.
+  for(let n=0;n<3;n++){
+   const road=townStreetAt(d,10);
+   if(!road)break;
+   const direction=d<road.d?-1:1;
+   d=Math.round(road.d+direction*(road.width*.5+12));
+  }
   return {...p,d,x:COAST_DRAIN_X.rightLip+.55+(poleNoise(Math.round(d)+71)-.5)*.22,lamp:true};
  }).sort((a,b)=>a.d-b.d),
 );

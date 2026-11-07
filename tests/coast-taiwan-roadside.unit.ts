@@ -10,6 +10,8 @@ import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} 
 import {buildCoastRuralHouse} from '../src/coast-rural-vignette';
 import {COAST_RURAL_HOUSES} from '../src/coast-rural-layout';
 import {rotatedHouseExtent} from '../src/coast-house-facing';
+import {COAST_TOWN_SIDE_STREETS} from '../src/coast-town-access';
+import {buildCoastTownStreets} from '../src/coast-town-streets';
 
 const track=createPilotTrack(COAST_ULTRA_STAGE),sample=track.sample;
 const ground=(d:number,x:number)=>{
@@ -133,4 +135,23 @@ it('adds short concrete access bridges where farms need to cross an open waterco
  expect(Array.from({length:uv.count},(_,i)=>uv.getY(i)).some(d=>d>=1048&&d<=1056)).toBe(true);
  expect(buildCoastRoadsideWater(sample,3960,4010)).toBeNull();
  water.dispose();
+});
+
+it('town side roads cross the covered gutter flush and utility poles avoid their mouths',()=>{
+ expect(COAST_TOWN_SIDE_STREETS).toHaveLength(9);
+ for(const site of COAST_TOWN_SIDE_STREETS){
+  expect(coastDrainAt(site.d)?.kind).toBe('covered');
+  expect(COAST_UTILITY_POLES.every(p=>Math.abs(p.d-site.d)>site.width*.5+7)).toBe(true);
+  const chunk=Math.floor(site.d/1000)*1000;
+  const g=buildCoastTownStreets(sample,chunk,chunk+1000)!;
+  try{
+   const attr=g.getAttribute('position'),centre=sample(site.d);
+   const offsets=Array.from({length:attr.count},(_,i)=>{
+    const p=new THREE.Vector3().fromBufferAttribute(attr,i);
+    return p.sub(centre.position).dot(centre.right);
+   });
+   expect(offsets.some(x=>x<COAST_DRAIN_X.leftLip-.2)).toBe(true);
+   expect(offsets.some(x=>x>COAST_DRAIN_X.rightLip+.2)).toBe(true);
+  }finally{g.dispose();}
+ }
 });
