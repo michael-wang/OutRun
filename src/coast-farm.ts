@@ -6,11 +6,10 @@ import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-st
 import {shadeRipeRice,shadePaddyWater} from './coast-rice-material';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 import {seededRandom} from './vendor/three-stylized/utils';
-import {coastNatureGround} from './coast-nature';
-import {riceCanopyGeometry} from './coast-rice-canopy';
-import type {PreparedFarmPlot} from './coast-farm-prep';
+import {riceBundGeometry,riceCanopyGeometry} from './coast-rice-canopy';
+import {farmGroundRow,type PreparedFarmPlot} from './coast-farm-prep';
 import {farmWarmupRepresentatives} from './farm-warmup-plan';
-import {FARM_SCARECROWS,FARM_FLOWER_COLORS,farmFlowerDetail,type FarmPlot} from './coast-farm-layout';
+import {FARM_SCARECROWS,FARM_FLOWER_COLORS,farmFlowerDetail,ricePlotEdges,type FarmPlot} from './coast-farm-layout';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -82,12 +81,12 @@ function riceSeaTexture(){
  const size=512,canvas=document.createElement('canvas');
  canvas.width=canvas.height=size;
  const ctx=canvas.getContext('2d')!,rand=seededRandom(20261104);
- ctx.fillStyle='#668653';ctx.fillRect(0,0,size,size);
+ ctx.fillStyle='#8c935b';ctx.fillRect(0,0,size,size);
  ctx.lineCap='round';
  for(let row=0;row<20;row++)for(let hill=0;hill<18;hill++)for(let ear=0;ear<3;ear++){
   const x=(row+rand()*.64)*size/20,y=(hill+rand())*size/18;
   const reach=9+rand()*13,rise=8+rand()*9, tilt=rand()*.95-.4;
-  const hull=rand()<.38?'#c6b071':'#e9d49a';
+  const hull=rand()<.38?'#d3ae66':'#eed696';
   const xs=[x],ys=[y];
   if(x<32)xs.push(x+size);if(x>size-32)xs.push(x-size);
   if(y<32)ys.push(y+size);if(y>size-32)ys.push(y-size);
@@ -98,7 +97,7 @@ function riceSeaTexture(){
    ctx.fillStyle=hull;
    for(let k=0;k<7;k++){
     const t=(k+1)/8,cx=reach*t,cy=-2*rise*t*(1-t);
-    ctx.beginPath();ctx.ellipse(cx,cy+(k%2?1.6:-1.6),2.6,1.15,.75*t+(k%2?.6:-.6),0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(cx,cy+(k%2?1.9:-1.9),3.65,1.85,.75*t+(k%2?.6:-.6),0,Math.PI*2);ctx.fill();
    }
    ctx.restore();
   }
@@ -136,17 +135,21 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  const ground=Array.from({length:rows+1},(_,i)=>{
   if(prepared){if(prepared.ground.length!==(rows+1)*2)throw new Error('Bad prepared farm ground row count');return [prepared.ground[i*2],prepared.ground[i*2+1]];}
   const d=plot.start+(plot.end-plot.start)*i/rows;
-  return [coastNatureGround(sample,d,plot.left,chunkStart,chunkEnd),coastNatureGround(sample,d,plot.right,chunkStart,chunkEnd)];
+  return farmGroundRow(plot,sample,d,chunkStart,chunkEnd);
  });
  const position=(d:number,x:number,lift=0)=>{const p=sample(d),v=p.position.clone().addScaledVector(p.right,x),f=THREE.MathUtils.clamp((d-plot.start)/(plot.end-plot.start)*rows,0,rows),i=Math.min(rows-1,Math.floor(f)),t=f-i,u=(x-plot.left)/(plot.right-plot.left);v.y=THREE.MathUtils.lerp(THREE.MathUtils.lerp(ground[i][0],ground[i][1],u),THREE.MathUtils.lerp(ground[i+1][0],ground[i+1][1],u),t)+lift;return v;};
- function ribbon(left:number,right:number,start:number,end:number,lift:number,mat:THREE.Material){
+ function ribbon(left:number,right:number,start:number,end:number,lift:number,mat:THREE.Material,paddy=false){
   const vertices=[],uv=[],indices=[],rows=Math.ceil((end-start)/4);
-  for(let i=0;i<=rows;i++){const d=start+(end-start)*i/rows;for(const x of [left,right]){const p=position(d,x,lift);vertices.push(p.x,p.y,p.z);uv.push((x-left)/8,(d-start)/8);}if(i<rows){const j=i*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}}
+  for(let i=0;i<=rows;i++){
+   const d=start+(end-start)*i/rows,edges=paddy?ricePlotEdges(plot,d):{left,right};
+   for(const x of [edges.left,edges.right]){const p=position(d,x,lift);vertices.push(p.x,p.y,p.z);uv.push((x-left)/8,(d-start)/8);}
+   if(i<rows){const j=i*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}
+  }
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();ownedGeometry.push(g);const m=new THREE.Mesh(g,mat);group.add(m);return m;
  }
  const isRice=plot.kind==='rice';
  const groundColor=plot.kind==='rice'?'#908346':FARM_FLOWER_COLORS[plot.band%3];
- const surface=ribbon(plot.left,plot.right,plot.start,plot.end,.055,assets.material('ground',groundColor));
+ const surface=ribbon(plot.left,plot.right,plot.start,plot.end,.055,assets.material('ground',groundColor),isRice);
  // Keep the exact sampled terrain, including road bend and mild grade. No new terrain generator.
  // The hybrid rice sea is a single animated canopy plus roadside rice heads.
  // Do not allocate an extra terrain mesh/grass system when it cannot be seen.
@@ -192,8 +195,11 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
   const rand=seededRandom(7300+plot.id),matrices:THREE.Matrix4[]=[],dummy=new THREE.Object3D();
   for(let d=plot.start+RICE_FIRST_HILL+RICE_HILL_PITCH;d<plot.end-RICE_HILL_PITCH;d+=3*RICE_HILL_PITCH){
    const right=sample(d).right,yaw=Math.atan2(-right.z,right.x);
+   const fore=ricePlotEdges(plot,d+RICE_HILL_PITCH),aft=ricePlotEdges(plot,d-RICE_HILL_PITCH);
+   const left=Math.max(fore.left,aft.left)+RICE_ROW_PITCH*.5+.35;
+   const outer=Math.min(fore.right,aft.right)-RICE_ROW_PITCH*.5-.35;
    for(let x=plot.left+RICE_FIRST_HILL+.5*RICE_ROW_PITCH;x<plot.right-RICE_ROW_PITCH*.5;x+=2*RICE_ROW_PITCH){
-    if(clearPath(d,x))continue;
+    if(x<left||x>outer||clearPath(d,x))continue;
     dummy.position.copy(position(d,x,.025));dummy.rotation.set(0,yaw,0);
     dummy.scale.set(1,.95+rand()*.10,1);
     dummy.updateMatrix();matrices.push(dummy.matrix.clone());
@@ -204,8 +210,12 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
   mesh.computeBoundingSphere();mesh.boundingSphere!.radius+=1;group.add(mesh);instances.push(mesh);crops.push(mesh);
  }
  const bund=assets.material('path','#a99363');
- ribbon(plot.left-.65,plot.left,plot.start,plot.end,.16,bund);
- ribbon(plot.left,plot.right,plot.end,plot.end+1.3,.14,bund);
+ if(isRice){
+  const g=riceBundGeometry(plot,position);ownedGeometry.push(g);group.add(new THREE.Mesh(g,assets.material('path','#91845a')));
+ }else{
+  ribbon(plot.left-.65,plot.left,plot.start,plot.end,.16,bund);
+  ribbon(plot.left,plot.right,plot.end,plot.end+1.3,.14,bund);
+ }
  // Narrow matte irrigation channel: one shallow strip, no extra water simulation.
  if(plot.band===0){ribbon(17.6,18.7,plot.start,plot.end,.065,assets.material('canal','#608c82'));ribbon(19,19.7,plot.start,plot.end,.14,bund);}
  const scarecrows:number[]=[];

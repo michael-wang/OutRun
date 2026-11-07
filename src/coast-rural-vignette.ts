@@ -85,6 +85,20 @@ function windowFront(g:RuralMesh,x:number,y:number,z:number,wide=1.15){
  g.box(x-.095,y,z,.02,1.20,.10,'#d6c6a8');
  g.box(x-.10,y-.69,z,.18,.13,wide+.28,'#d9c5aa');
 }
+/** A low tin-roofed implement store with an open work bay on the road side. */
+export function buildPaddyToolShed(){
+ const g=new RuralMesh();
+ g.box(0,.015,0,5.6,.32,6.8,'#95876c');
+ g.box(.72,1.22,0,2.95,2.25,5.4,'#ac967c');
+ g.box(-.79,1.14,.55,.10,2,2.15,'#545b54');
+ g.box(-.87,1.14,1.48,.11,2.05,1.6,'#87897b'); // partly open sliding door
+ g.roof(0,2.45,0,4.8,5.8,.85,'#647b79');
+ for(const z of [-2.55,2.55])g.box(-2.22,1.27,z,.15,2.35,.15,'#806950');
+ g.box(-1.46,.85,-1.63,1.2,.12,1.5,'#8f6e50');
+ for(const z of [-2.15,-1.12])g.box(-1.87,.49,z,.10,.68,.10,'#715d48');
+ g.cylinder(-1.55,.50,2.05,.34,.70,'#657572');
+ return g.finish('coast-paddy-tool-shed');
+}
 function farmhouse(){
  const g=new RuralMesh();
  g.box(0,.10,0,13,.20,17,'#aa957a'); // yard/raised footing

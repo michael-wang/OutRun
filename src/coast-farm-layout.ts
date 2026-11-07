@@ -39,11 +39,37 @@ export const FARM_HOMES=[
  {d:7160,x:35},{d:8160,x:35},
  {d:8430,x:35},{d:9670,x:35},
 ].map((site,i)=>({...site,key:81000+i*71,yaw:Math.sin(i*4.3)*.12}));
-export type FarmPlot={id:number;start:number;end:number;left:number;right:number;kind:'rice'|'flowers';band:number};
+/** Dry working bays cut into the outer bund, with room for a cart and a shade tree. */
+export const RICE_YARDS=[
+ {d:572,x:46,yaw:.42},{d:833,x:91,yaw:-.24},
+ {d:4628,x:46,yaw:-.35},{d:5936,x:91,yaw:.56},
+ {d:7374,x:46,yaw:.20},{d:8656,x:46,yaw:-.32},{d:8872,x:142,yaw:.55},
+] as const;
+export type FarmPlot={id:number;start:number;end:number;left:number;right:number;kind:'rice'|'flowers';band:number;yard?:typeof RICE_YARDS[number]};
 const bands=[[20,50],[56,96],[102,148],[154,200],[206,252]];
 export const FARM_PLOTS:FarmPlot[]=[];
+// Interior cross-bunds meet neighbouring terraces at different distances.
+// Retain the exact farm entrances and streaming boundaries.
+function riceDivision(d:number,band:number,limits:readonly number[]){
+ if(d===limits[0]||d===limits[1]||d%1000===0)return d;
+ return d+[13,-6,6,-15,17][band];
+}
 for(const zone of FARM_ZONES)for(const kind of ['rice','flowers'] as const)for(let d=zone[kind][0];d<zone[kind][1];d+=100)
- for(const [band,[left,right]] of bands.entries())if(right<=zone.right)FARM_PLOTS.push({id:FARM_PLOTS.length,start:d,end:d+(kind==='rice'?98:96),left,right,kind,band});
+ for(const [band,[left,right]] of bands.entries())if(right<=zone.right){
+  const start=kind==='rice'?riceDivision(d,band,zone.rice)+(d%1000===0?1.5:0):d;
+  const end=kind==='rice'?riceDivision(d+100,band,zone.rice)-3:d+96;
+  const yard=kind==='rice'?RICE_YARDS.find(s=>s.d>=start&&s.d<end&&s.x>left&&s.x<right):undefined;
+  FARM_PLOTS.push({id:FARM_PLOTS.length,start,end,left,right,kind,band,yard});
+ }
+/** Piecewise banks in planting coordinates. Keep the planted rows straight
+ * inside a field with chamfered corners, angled sides and a dry turning bay. */
+export function ricePlotEdges(p:FarmPlot,d:number){
+ const t=Math.max(0,Math.min(1,(d-p.start)/(p.end-p.start))),key=p.id;
+ const left=p.left+1.1+(1+Math.sin(key*2.3+t*4.3))*1.45+Math.max(0,1-t*5)*(2+key%6);
+ let right=p.right-.9-(1+Math.cos(key*1.7+t*3.5))*1.45-Math.max(0,t*5-4)*(3+key%4);
+ if(p.yard)right=Math.min(right,p.yard.x-7+Math.max(0,Math.abs(d-p.yard.d)-8)*.65);
+ return {left,right};
+}
 export const farmClearing=(d:number,x:number)=>FARM_ZONES.some(z=>d>=z.start&&d<z.end&&x<z.right+10);
 export const farmPlotsInChunk=(start:number,end:number)=>FARM_PLOTS.filter(p=>p.start>=start&&p.start<end);
 /** Horizontal planting benches separated by planted earth banks. The fine

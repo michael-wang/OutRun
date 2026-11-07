@@ -6,7 +6,7 @@ import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastNatureGround} from '../src/coast-nature';
 import {COAST_DISTRICTS} from '../src/coast-layout';
-import {FARM_PLOTS,FARM_SCARECROWS,FARM_ZONES,FARM_HOMES,farmPlotsInChunk} from '../src/coast-farm-layout';
+import {FARM_PLOTS,FARM_SCARECROWS,FARM_ZONES,FARM_HOMES,RICE_YARDS,ricePlotEdges,farmPlotsInChunk} from '../src/coast-farm-layout';
 import {ruralShowcaseReplacesFarmHome} from '../src/coast-rural-layout';
 const track=createPilotTrack(COAST_ULTRA_STAGE);
 it('owns every field exactly once, outside housing, wholly inside a streamed chunk and on the coastal plain',()=>{
@@ -55,15 +55,44 @@ it('keeps an opaque crop-height canopy across each rice plot while preserving sc
   const cover=g.getAttribute('color');expect(cover.itemSize).toBe(4);
   for(let i=0;i<p.count;i++){
    const x=p.getX(i),z=p.getZ(i),height=p.getY(i)-7-x*.008;
-   const margin=x===plot.left||x===plot.right||z===plot.start||z===plot.end;
+   const edges=ricePlotEdges(plot,z);
+   // World positions are Float32; longitudinal rounding at 9km can move
+   // the evaluated slanted edge by a fraction of a millimetre.
+   const margin=Math.abs(x-edges.left)<.001||Math.abs(x-edges.right)<.001||z===plot.start||z===plot.end;
    expect(height).toBeGreaterThan(margin?.06:.75);expect(height).toBeLessThan(margin?.37:.92);
    expect(cover.getW(i)<1).toBe(margin);
   }
   for(let i=0;i<ix.count;i+=3){a.fromBufferAttribute(p,ix.getX(i));b.fromBufferAttribute(p,ix.getX(i+1));c.fromBufferAttribute(p,ix.getX(i+2));area+=Math.abs((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z))/2;}
-  expect(area/((plot.right-plot.left)*(plot.end-plot.start))).toBeGreaterThan(.985);
+  const rows=p.count/(Math.ceil((plot.right-plot.left)/2)+1)-1,step=(plot.end-plot.start)/rows;
+  let footprint=0;
+  for(let row=0;row<=rows;row++){
+   const {left,right}=ricePlotEdges(plot,plot.start+step*row);
+   footprint+=(right-left)*step*(row===0||row===rows?.5:1);
+  }
+  expect(area/footprint).toBeGreaterThan(.98);expect(area/footprint).toBeLessThan(1.001);
   expect(ix.count/3).toBeLessThan(2400);
   // The crop-top surface must not cover the scarecrow's central footpath.
   for(const s of residents){let covers=false;for(let i=0;i<ix.count;i+=3){a.fromBufferAttribute(p,ix.getX(i));b.fromBufferAttribute(p,ix.getX(i+1));c.fromBufferAttribute(p,ix.getX(i+2));if(Math.min(a.x,b.x,c.x)<s.x&&Math.max(a.x,b.x,c.x)>s.x&&Math.min(a.z,b.z,c.z)<s.d&&Math.max(a.z,b.z,c.z)>s.d)covers=true;}expect(covers).toBe(false);}
   g.dispose();
+ }
+});
+
+it('keeps the first paddy below the road, with level benches rising toward the hills',()=>{
+ for(const zone of FARM_ZONES){
+  const d=zone.rice[0]+54,start=Math.floor(d/1000)*1000,road=track.sample(d).position.y;
+  let previous=-Infinity;
+  for(const plot of FARM_PLOTS.filter(p=>p.kind==='rice'&&d>=p.start&&d<=p.end)){
+   const {left,right}=ricePlotEdges(plot,d);
+   const bed=(x:number)=>coastNatureGround(track.sample,d,x,start,start+1000)+.055;
+   const h=bed((left+right)/2);
+   if(plot.band===0)expect(h).toBeLessThan(road-.65);
+   expect(h-previous).toBeGreaterThan(.55);
+   expect(Math.abs(bed(left+3)-bed(right-3))).toBeLessThan(.16);
+   previous=h;
+  }
+ }
+ for(const yard of RICE_YARDS){
+  const p=FARM_PLOTS.find(p=>p.yard===yard)!;
+  for(const d of [yard.d-4,yard.d,yard.d+4])expect(ricePlotEdges(p,d).right+1.4).toBeLessThan(yard.x-4);
  }
 });

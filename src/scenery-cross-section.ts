@@ -1,5 +1,5 @@
 import {coastProfileX} from './coast-layout';
-import {coastHillHeight} from './coast-terrain';
+import {coastHillHeight,riceBasinCut} from './coast-terrain';
 import {coastRuralCreekCut} from './coast-rural-layout';
 import {coastDrainDepth} from './coast-roadside-layout';
 import {BRICK_START} from './bricks';
@@ -119,7 +119,7 @@ export function coastBeachHeight(x:number,roadY:number,rightY:number,distance?:n
  // The open concrete ditch now sits directly beyond the paved verge, so
  // its physical cut begins around x=10.26m rather than in the far grass.
  if(x<=13)return roadY+rightY*x-.1-(distance===undefined?0:coastDrainDepth(x,distance));
- return roadY+rightY*13-.1+(x-13)*.008+(distance===undefined?0:coastHillHeight(x,distance)-coastRuralCreekCut(x,distance)-coastDrainDepth(x,distance));
+ return roadY+rightY*13-.1+(x-13)*.008+(distance===undefined?0:coastHillHeight(x,distance)-riceBasinCut(x,distance,rightY)-coastRuralCreekCut(x,distance)-coastDrainDepth(x,distance));
 }
 /** Shared by the coastal trial's Worker meshes and prop anchors only. */
 export function coastUltraGroundY(

@@ -1,8 +1,22 @@
 import {fbm2,ridged2,smoothstep} from './vendor/procedural-terrains/cpuNoise.js';
 import {COAST_DISTRICTS} from './coast-layout';
-import {farmPlainMask,farmTerraceHeight} from './coast-farm-layout';
+import {FARM_ZONES,farmPlainMask,farmTerraceHeight} from './coast-farm-layout';
 
 export const COAST_HILL_STRIPS=[13,18,23,29,36,48,51,53,55,58,70,88,94,97,99,101,104,125,140,146,149,151,153,156,180,198,201,203,205,208,220,250,252,270,340,450] as const;
+
+/** Lower the roadside bench and step the remaining paddies up toward the
+ * foothills. Cancel the dry plain's crossfall inside each flooded bench. */
+export function riceBasinCut(x:number,d:number,roadBank:number){
+ if(x<=15)return 0;
+ for(const zone of FARM_ZONES){
+  const [a,b]=zone.rice;
+  if(d<=a-22||d>=b+22||x>=zone.right+52)continue;
+  const along=smoothstep(a-22,a-5,d)*(1-smoothstep(b+5,b+22,d));
+  const across=smoothstep(15,18,x)*(1-smoothstep(zone.right+4,zone.right+52,x));
+  return along*across*(1.13+13*roadBank+.008*(x-13)-.45*farmTerraceHeight(x));
+ }
+ return 0;
+}
 
 /** District forecourts stay flat; hills ease in beyond their ends and behind them. */
 export function coastWildness(d:number){

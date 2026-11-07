@@ -3,9 +3,9 @@ import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {buildCoastTownStreets} from './coast-town-streets';
 import {coastHomeFacingYaw} from './coast-house-facing';
-import {FARM_HOMES} from './coast-farm-layout';
+import {FARM_HOMES,RICE_YARDS} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
-import {buildCoastRuralHouse,buildCoastRuralCreek} from './coast-rural-vignette';
+import {buildCoastRuralHouse,buildCoastRuralCreek,buildPaddyToolShed} from './coast-rural-vignette';
 import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
 import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
@@ -358,6 +358,12 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
   }
   coastShadowGroup='buildings';
+  let toolshed:THREE.BufferGeometry|undefined;
+  for(const yard of RICE_YARDS){
+   if(!inChunk(yard.d))continue;
+   beachAnchor(yard.d,yard.x);yaw+=Math.PI+yard.yaw;
+   if(clear(5))part(toolshed??=buildPaddyToolShed(),'#ffffff',0,0,0,1,1,1);
+  }
   let taiwanFarmPrefab:THREE.BufferGeometry|undefined;
   for(const site of FARM_HOMES){
    // The demonstration hamlet replaces only these two primitive farm houses.

@@ -26,10 +26,10 @@ export function bakeRipeRice(parts) {
    const forward=new THREE.Vector3(Math.cos(dir),0,Math.sin(dir));
    const side=new THREE.Vector3(-forward.z,0,forward.x);
    const root=hillRoot.clone().add(new THREE.Vector3(base.x,0,base.z).applyAxisAngle(new THREE.Vector3(0,1,0),yaw));
-   const neck=1.02+.08*Math.sin(hill*3+i),stem=new THREE.Color('#467d43'),neckColor=new THREE.Color('#90a55e');
+   const neck=.91+.065*Math.sin(hill*3+i),stem=new THREE.Color('#587744'),neckColor=new THREE.Color('#aaac69');
    function spine(t) {
     const angle=2.82*t;
-    return root.clone().addScaledVector(forward,.13+.28*(1-Math.cos(angle))).setY(neck+.28*Math.sin(angle));
+    return root.clone().addScaledVector(forward,.13+.38*(1-Math.cos(angle))).setY(neck+.36*Math.sin(angle));
    }
    // A slender triangular culm curves through the entire panicle.
    let last=[];
@@ -43,26 +43,26 @@ export function bakeRipeRice(parts) {
     last=ring;
    }
    // One ridged, tapering flag leaf springs out below each loaded head.
-   const olive=new THREE.Color('#42804b'),ridge=new THREE.Color('#86ad5d');
+   const olive=new THREE.Color('#527a48'),ridge=new THREE.Color('#91a668');
    const collar=root.clone().lerp(spine(0),.36), blade=collar.clone().addScaledVector(forward,-.18);
-   blade.y+=.47;
-   const tip=collar.clone().addScaledVector(forward,-.36);tip.y+=.72;
+   blade.y+=.37;
+   const tip=collar.clone().addScaledVector(forward,-.38);tip.y+=.56;
    const a=vertex(collar,olive),b=vertex(blade.clone().addScaledVector(side,.046),olive);
    const c=vertex(blade.clone().addScaledVector(forward,.024),ridge);
    const d=vertex(blade.clone().addScaledVector(side,-.046),olive),e=vertex(tip,ridge);
    indices.push(a,c,b,a,d,c,b,c,e,c,d,e);
    for(const {origin,size} of grains){
     const t=(origin.y-.54)/.27,p=spine(t);
-    p.addScaledVector(side,(origin.x-base.x)*1.45);
+    p.addScaledVector(side,(origin.x-base.x)*1.85);
     const angle=t*2.82;
     const axis=forward.clone().multiplyScalar(Math.sin(angle)).setY(Math.cos(angle));
     const radial=forward.clone().multiplyScalar(Math.cos(angle)).setY(-Math.sin(angle));
-    const husk=new THREE.Color().lerpColors(new THREE.Color('#bca16c'),new THREE.Color('#e8d396'),.38+.32*Math.sin(t*9+i+hill));
-    const ends=[-1,1].map(sign=>vertex(p.clone().addScaledVector(axis,sign*size.y*.63),husk));
+    const husk=new THREE.Color().lerpColors(new THREE.Color('#cda660'),new THREE.Color('#f3db96'),.50+.28*Math.sin(t*9+i+hill));
+    const ends=[-1,1].map(sign=>vertex(p.clone().addScaledVector(axis,sign*size.y*.86),husk));
     const ring=[];
     for(let k=0;k<4;k++){
      const angle=k*Math.PI/2;
-     ring.push(vertex(p.clone().addScaledVector(radial,Math.cos(angle)*size.z*.42).addScaledVector(side,Math.sin(angle)*size.x*.52),husk));
+     ring.push(vertex(p.clone().addScaledVector(radial,Math.cos(angle)*size.z*.68).addScaledVector(side,Math.sin(angle)*size.x*.80),husk));
     }
     for(let k=0;k<4;k++){const l=(k+1)%4;indices.push(ends[0],ring[k],ring[l],ends[1],ring[l],ring[k]);}
    }

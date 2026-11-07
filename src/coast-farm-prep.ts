@@ -1,12 +1,22 @@
 import * as THREE from 'three';
 import {coastNatureGround} from './coast-nature';
-import {FARM_SCARECROWS,FARM_FLOWER_COLORS,farmFlowerDetail,type FarmPlot} from './coast-farm-layout';
+import {FARM_SCARECROWS,FARM_FLOWER_COLORS,farmFlowerDetail,ricePlotEdges,type FarmPlot} from './coast-farm-layout';
 import {riceCanopyGeometry} from './coast-rice-canopy';
 import {buildSurfaceLayout,sampleSurfaceData,packSurfaceSamples} from './vendor/three-stylized/surfaceSampler';
 import {prepareFlowerInstances,type PreparedFlowerInstances} from './vendor/three-stylized/Wildflowers';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
+
+export function farmGroundRow(plot:FarmPlot,sample:Sample,d:number,start:number,end:number){
+ const ground=(x:number)=>coastNatureGround(sample,d,x,start,end);
+ if(plot.kind!=='rice')return [ground(plot.left),ground(plot.right)];
+ // A banked road and the coarse hillside triangles can put one end of a
+ // terrace slightly above the other. Keep the water level across its width.
+ const {left,right}=ricePlotEdges(plot,d);
+ const level=Math.max(ground(left),ground((left+right)/2),ground(right));
+ return [level,level];
+}
 type NumericCanopy={
  position:Float32Array;uv:Float32Array;color:Float32Array;normal:Float32Array;
  index:Uint16Array|Uint32Array;
@@ -40,8 +50,7 @@ export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
  const rows=Math.ceil((plot.end-plot.start)/4),ground=new Float32Array((rows+1)*2);
  for(let i=0;i<=rows;i++){
   const d=plot.start+(plot.end-plot.start)*i/rows;
-  ground[i*2]=coastNatureGround(sample,d,plot.left,chunkStart,chunkEnd);
-  ground[i*2+1]=coastNatureGround(sample,d,plot.right,chunkStart,chunkEnd);
+  ground.set(farmGroundRow(plot,sample,d,chunkStart,chunkEnd),i*2);
  }
  const position=(d:number,x:number,lift=0)=>{
   const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
