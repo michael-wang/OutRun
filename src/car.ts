@@ -159,9 +159,9 @@ export function createCar(dusk=false) {
     for(const arm of [-1,1] as const){
       const shoulder:[number,number,number]=[x+arm*.20,1.173,-.47];
       const resting=driver&&arm===1;
-      const elbow:[number,number,number]=resting?[.93,1.00,-.35]:
+      const elbow:[number,number,number]=resting?[1.09,1.04,-.35]:
         driver?[.22,1.025,-.13]:[x+arm*.23,1.01,-.22];
-      const hand:[number,number,number]=resting?[1.005,1.02,-.07]:
+      const hand:[number,number,number]=resting?[1.16,1.04,-.07]:
         driver?[.42,1.025,.255]:[x+arm*.12,.84,-.06];
       const limb=new THREE.Group();person.add(limb);
       limb.name=resting?'driver-left-arm-resting-on-door':driver?
@@ -180,6 +180,9 @@ export function createCar(dusk=false) {
     }
     batch(head);pivotAt(head,x,1.30,-.46);
     batch(person);pivotAt(person,x,.80,-.48);
+    // Passenger/driver were oversized against the GT body in the chase
+    // camera. Scale around their seat centres, not the car or road physics.
+    person.scale.setScalar(.84);
     travelers.push({body:person,head,arms,locks,scarf,syncHair});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser

@@ -1,13 +1,13 @@
 /** Lightweight, asset-free paint palette. One mesh and one set of materials;
  * no additional car objects, renders or shader variants for color changes.
  */
-export const CAR_COLORS=['ferrari-red','silver-white','graphite-black'] as const;
+export const CAR_COLORS=['ferrari-red','pure-white','royal-blue'] as const;
 export type CarColor=(typeof CAR_COLORS)[number];
 export const DEFAULT_CAR_COLOR:CarColor='ferrari-red';
 export const CAR_PAINT_PRESETS={
  'ferrari-red':{label:'法拉利紅',hex:'#e51e2c',metalness:.38,roughness:.23},
- 'silver-white':{label:'銀白色',hex:'#d8dee0',metalness:.66,roughness:.20},
- 'graphite-black':{label:'灰黑色',hex:'#383b44',metalness:.54,roughness:.24},
+ 'pure-white':{label:'純白色',hex:'#ffffff',metalness:.12,roughness:.24},
+ 'royal-blue':{label:'寶藍色',hex:'#2c63ed',metalness:.35,roughness:.23},
 } as const satisfies Record<CarColor,{label:string;hex:string;metalness:number;roughness:number}>;
 export const CAR_PAINT_STORAGE_KEY='outrun-hero-car-color';
 export const isCarColor=(value:unknown):value is CarColor=>CAR_COLORS.some(color=>color===value);
@@ -15,6 +15,9 @@ export function readCarColor(storage?:Pick<Storage,'getItem'>):CarColor{
  try{
   const source=storage??(typeof localStorage!=='undefined'?localStorage:undefined);
   const value=source?.getItem(CAR_PAINT_STORAGE_KEY);
+  // Preserve a player's previous color choice when upgrading the palette.
+  if(value==='silver-white')return 'pure-white';
+  if(value==='graphite-black')return 'royal-blue';
   return isCarColor(value)?value:DEFAULT_CAR_COLOR;
  }catch{return DEFAULT_CAR_COLOR;}
 }

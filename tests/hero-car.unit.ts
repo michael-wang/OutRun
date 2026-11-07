@@ -14,10 +14,15 @@ describe('hero spider focal-point art',()=>{
   expect(steering).toBeDefined();expect(steering!.position.x).toBeGreaterThan(0);
   expect(car.getObjectByName('driver')!.position.x).toBeGreaterThan(0);
   expect(car.getObjectByName('passenger')!.position.x).toBeLessThan(0);
+  for(const name of ['driver','passenger']){
+   const person=car.getObjectByName(name)!;
+   expect(person.scale.x).toBeCloseTo(.84);
+   expect(person.scale.y).toBeCloseTo(.84);
+  }
   expect(arm).toBeDefined();expect(hand).toBeDefined();expect(hair).toBeDefined();
   const armBox=new THREE.Box3().setFromObject(arm!);
-  expect(armBox.max.x).toBeGreaterThan(.92);
-  expect(armBox.max.y).toBeLessThan(1.30);
+  expect(armBox.max.x).toBeGreaterThan(.99);
+  expect(armBox.max.y).toBeLessThan(1.25);
   expect(car.userData.licensePlate).toBe('FZR-123');
   expect(plate).toBeInstanceOf(THREE.Mesh);
   expect((plate as THREE.Mesh).geometry.getAttribute('uv')).toBeDefined();
