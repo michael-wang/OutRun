@@ -3,7 +3,7 @@ import {createRoadWheel} from './wheels';
 import {createGTWingMirrorHousing} from './hero-body';
 import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry';
 import {createDriverHair,createBlondeBob} from './hero-groom';
-import {createOccupantMotion} from './occupants';
+import {createOccupantMotion,type Traveler} from './occupants';
 import {CAR_PAINT_PRESETS,DEFAULT_CAR_COLOR,type CarColor} from './car-appearance';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
@@ -19,12 +19,12 @@ export interface CarPaintController {
 
 /** Authored hero spider, +Z nose. Wheelbase, mass envelope and camera
  * anchor stay unchanged while the focal-point body/cockpit receive detail.
- * Static meshes are merged by material; only the small hair joints animate.
+ * Static meshes are merged by material alongside the articulated occupants.
  */
 export function createCar(dusk=false) {
   const car=new THREE.Group();car.name='coastal-roadster';
   const wheels:ReturnType<typeof createRoadWheel>[]=[];
-  const travelers:{body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],syncHair?:()=>void}[]=[];
+  const travelers:Traveler[]=[];
   const material=(color:string,roughness=.5,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
   // One physical clearcoat body shader; all three body paints share it.
   const red=CAR_PAINT_PRESETS[DEFAULT_CAR_COLOR];
@@ -116,8 +116,8 @@ export function createCar(dusk=false) {
     const driver=side===1,person=new THREE.Group();person.name=name;car.add(person);
     const x=side*.41;
     const head=new THREE.Group();head.name=name+'-head';person.add(head);
-    const arms:THREE.Group[]=[],locks:THREE.Group[]=[];
-    let syncHair:(()=>void)|undefined;
+    const arms:THREE.Group[]=[];
+    let bob:ReturnType<typeof createBlondeBob>|undefined;
     const skin=material(driver?'#c89a7b':'#e3b79b',.82);
     const suit=material('#252d36',.74,.06);
     const lapel=material('#38414a',.80);
@@ -169,8 +169,7 @@ export function createCar(dusk=false) {
       const groom=createDriverHair();
       groom.position.set(x,1.525,-.464);head.add(groom);
     }else{
-      const bob=createBlondeBob();bob.root.position.set(x,1.485,-.465);head.add(bob.root);
-      locks.push(...bob.locks);syncHair=bob.sync;
+      bob=createBlondeBob();bob.root.position.set(x,1.485,-.465);head.add(bob.root);
     }
     // Natural shoulder/elbow joints without a full rig. Left (screen-left)
     // driver arm hangs over the near door, right arm holds the steering wheel.
@@ -201,7 +200,7 @@ export function createCar(dusk=false) {
     // Passenger/driver were oversized against the GT body in the chase
     // camera. Scale around their seat centres, not the car or road physics.
     person.scale.setScalar(.84);
-    travelers.push({body:person,head,arms,locks,syncHair});
+    travelers.push({body:person,head,arms,hair:bob});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
   // are readable at the normal chase distance (unlike single red cubes).
@@ -270,7 +269,7 @@ export function createCar(dusk=false) {
   paintController.set(DEFAULT_CAR_COLOR);
   car.userData.paintController=paintController;
   const people=createOccupantMotion(travelers,wheel);
-  car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
+  car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number,rightAcceleration=0)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt,rightAcceleration);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;
 }
 

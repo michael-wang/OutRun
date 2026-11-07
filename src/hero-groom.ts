@@ -104,6 +104,10 @@ function blondeCrown(){
  const segments=64,rings=7;
  const root=new THREE.Color('#966237'),gold=new THREE.Color('#ffdb90');
  const color=root.clone(),positions=[.034,.213,-.012],colors=[root.r,root.g,root.b],indices:number[]=[];
+ // Relative shapes for back-sweep, lateral load and two phases of a ripple.
+ // All share the rest mesh, including a pinned scalp and front hairline.
+ const shapes=Array.from({length:4},()=>[0,0,0]);
+ const bounds=new THREE.Box3().setFromArray(positions);
  for(let row=1;row<=rings;row++)for(let i=0;i<segments;i++){
   const t=row/rings,angle=i*Math.PI*2/segments;
   // The fringe clears the brows. Side waves roll down around the cheeks
@@ -120,6 +124,25 @@ function blondeCrown(){
    .213*Math.cos(arc)+.014*wave*Math.sin(arc)-ends*(.028+.023*wave),
    -.012-.018*t+.164*spread*Math.cos(sweep),
   );
+  const flex=THREE.MathUtils.smoothstep(arc,.88,2.45)*(1-.78*fringe);
+  const bend=flex*flex,phase=angle*3+arc*2;
+  shapes[0].push(.015*Math.sin(sweep)*bend,.085*bend,-.152*bend);
+  shapes[1].push(.108*bend,.018*Math.sin(sweep)*bend,0);
+  for(let k=0;k<2;k++){
+   const ripple=bend*Math.sin(phase+k*Math.PI/2);
+   shapes[2+k].push(.035*ripple,.024*ripple,-.021*ripple);
+  }
+  // Bound each vertex's motion. A mesh-wide morph delta would raise the
+  // stationary parting and inflate the measured height of the whole car.
+  const offset=positions.length-3;
+  for(let axis=0;axis<3;axis++){
+   const j=offset+axis;
+   const margin=Math.abs(shapes[1][j])*1.2+Math.hypot(shapes[2][j],shapes[3][j]);
+   const low=positions[j]+Math.min(0,shapes[0][j])-margin;
+   const high=positions[j]+Math.max(0,shapes[0][j])+margin;
+   bounds.min.setComponent(axis,Math.min(bounds.min.getComponent(axis),low));
+   bounds.max.setComponent(axis,Math.max(bounds.max.getComponent(axis),high));
+  }
   color.copy(root).lerp(gold,.12+.36*wave+.32*streak+.16*Math.sin(arc));
   colors.push(color.r,color.g,color.b);
   const here=1+(row-1)*segments+i,next=1+(row-1)*segments+(i+1)%segments;
@@ -130,14 +153,28 @@ function blondeCrown(){
  g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
  g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
  g.setIndex(indices);g.computeVertexNormals();
+ g.morphTargetsRelative=true;
+ g.boundingBox=bounds;g.boundingSphere=bounds.getBoundingSphere(new THREE.Sphere());
+ g.morphAttributes.position=shapes.map(shape=>new THREE.Float32BufferAttribute(shape,3));
+ // Bake each bent shape's lighting normals once. Three applies these same
+ // morph weights to the visible and shadow geometry.
+ const rest=g.getAttribute('position'),normals=g.getAttribute('normal');
+ g.morphAttributes.normal=g.morphAttributes.position.map(delta=>{
+  const bent=rest.clone();
+  for(let i=0;i<bent.count;i++)bent.setXYZ(i,rest.getX(i)+delta.getX(i),rest.getY(i)+delta.getY(i),rest.getZ(i)+delta.getZ(i));
+  const pose=new THREE.BufferGeometry();pose.setAttribute('position',bent);pose.setIndex(g.index);pose.computeVertexNormals();
+  const n=pose.getAttribute('normal') as THREE.BufferAttribute;
+  for(let i=0;i<n.count;i++)n.setXYZ(i,n.getX(i)-normals.getX(i),n.getY(i)-normals.getY(i),n.getZ(i)-normals.getZ(i));
+  pose.dispose();return n;
+ });
  const mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.78}));
  mesh.name='blonde-layered-crown';mesh.castShadow=true;return mesh;
 }
 
 /** One opaque crown and five double-jointed windblown ends in two batches. */
-export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=>void}{
+export function createBlondeBob(){
  const root=new THREE.Group();root.name='layered-blonde-bob';
- root.add(blondeCrown());
+ const crown=blondeCrown();root.add(crown);
  // Instanced dual-joint locks: FIVE independently moving clusters,
  // but only TWO hair draws (root & tip), not ten separate mesh draws.
  // Root cards share the same shaped strips; matrices vary per lock.
@@ -149,14 +186,14 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=
    const t=step/8;
    rows.push({
     x:(j-1)*.014+.030*Math.sin(t*4.1+j*.55)*t,
-    y:-.015-.18*t-.024*t*t,
+    y:-.015-.22*t-.029*t*t,
     z:-.012-.085*t+.013*Math.sin(t*Math.PI),
     width:(.023+.004*j)*(1-.80*t),
     shade:.84+.10*Math.sin(2+j)+.13*t,
    });
   }
-  upper.push({rows:rows.slice(0,5)});
-  lower.push({rows:rows.slice(4).map(row=>({...row,y:row.y+.13}))});
+  upper.push({rows:rows.slice(0,6)});
+  lower.push({rows:rows.slice(4).map(row=>({...row,y:row.y+.132,z:row.z+.042}))});
  }
  const rootCard=strandMesh(upper,'#94612a','#f6d788','blonde-wind-root-prototype');
  const tipCard=strandMesh(lower,'#ba8743','#f8dc99','blonde-wind-tip-prototype');
@@ -165,24 +202,36 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=
  primary.name='blonde-wind-locks-batched';
  secondary.name='blonde-wind-tips-batched';
  primary.castShadow=secondary.castShadow=true;
+ // Both instance batches can swing past their resting bounds.
+ primary.boundingSphere=new THREE.Sphere(new THREE.Vector3(0,-.1,-.15),.5);
+ secondary.boundingSphere=primary.boundingSphere.clone();
  primary.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
  secondary.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
  root.add(primary,secondary);
  for(let i=0;i<5;i++){
   const anchor=new THREE.Group();anchor.name='blonde-hair-lock-'+i;
   const side=(i-2)/2;
-  anchor.position.set(side*.116,-.025+.012*Math.sin(i*2.1),-.132+.038*side*side);
+  anchor.position.set(side*.134,-.025+.012*Math.sin(i*2.1),-.137+.045*side*side);
   anchor.rotation.y=-side*.38;
   const length=1+(i%3)*.042;
   anchor.scale.set(length,.84*length,.92*length);
   root.add(anchor);
-  const tip=new THREE.Group();tip.name='blonde-tip-joint';tip.position.y=-.13;
+  const tip=new THREE.Group();tip.name='blonde-tip-joint';tip.position.set(0,-.132,-.042);
   anchor.add(tip);locks.push(anchor);
  }
  const matrix=new THREE.Matrix4();
- const sync=()=>{
+ const sync=(wind:number,sway:number,tipSway:number,phase:number)=>{
+  const weights=crown.morphTargetInfluences!;
+  weights[0]=wind*(.93+.07*Math.sin(phase*.71));
+  weights[1]=THREE.MathUtils.clamp(sway,-1.2,1.2);
+  weights[2]=wind*Math.sin(phase);weights[3]=wind*Math.cos(phase);
   for(let i=0;i<locks.length;i++){
    const anchor=locks[i],tip=anchor.children[0];
+   const gust=Math.sin(phase+i*.83),ripple=Math.sin(phase*1.61-i*.79);
+   anchor.rotation.x=.018+wind*(.79+.13*gust+.065*ripple);
+   anchor.rotation.z=.59*sway+wind*(.14*gust+.045*ripple);
+   tip.rotation.x=wind*(.29+.17*Math.sin(phase+i*.83-.95));
+   tip.rotation.z=.38*tipSway+wind*(.19*Math.sin(phase+i*.83-1.1)+.065*ripple);
    anchor.updateMatrix();tip.updateMatrix();
    primary.setMatrixAt(i,anchor.matrix);
    matrix.multiplyMatrices(anchor.matrix,tip.matrix);
@@ -191,6 +240,6 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=
   primary.instanceMatrix.needsUpdate=true;
   secondary.instanceMatrix.needsUpdate=true;
  };
- sync();
+ sync(0,0,0,0);
  return {root,locks,sync};
 }

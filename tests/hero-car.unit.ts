@@ -54,7 +54,7 @@ describe('hero spider focal-point art',()=>{
   expect(Math.abs(right.rotation.z)).toBeGreaterThan(.03);
   const h=m.occupants().people[1].hair;
   expect(h).toHaveLength(5);
-  expect(h.every((lock:{back:number})=>lock.back>.10&&lock.back<.45)).toBe(true);
+  expect(h.every((lock:{back:number})=>lock.back>.55&&lock.back<1.05)).toBe(true);
   expect(car.getObjectByName('driver-silk-scarf')).toBeUndefined();
   expect(m.occupants().people[0].scarf).toBeUndefined();
  });
@@ -81,8 +81,8 @@ it('covers the passenger scalp from the chase camera and above while leaving the
   const origin=bob.localToWorld(from),direction=bob.localToWorld(to).sub(origin).normalize();
   return new THREE.Raycaster(origin,direction).intersectObject(head,true)[0]?.object;
  };
- for(const speed of [0,68]){
-  for(let i=0;i<60;i++)car.userData.motion.advance(speed/60,.4,1/60);
+ for(const [speed,load] of [[0,0],[68,12],[68,-12]]){
+  for(let i=0;i<60;i++)car.userData.motion.advance(speed/60,.4,1/60,load);
   car.updateMatrixWorld(true);
   for(const x of [-.09,0,.09])for(const z of [-.06,0,.06]){
    expect(firstHit(new THREE.Vector3(x,.5,z),new THREE.Vector3(x,0,z))).toBe(crown);
