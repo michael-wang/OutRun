@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {COAST_SKY_GLSL,COAST_SUN} from './coast-dusk';
+import {buildCoastCanalReflectionTexture,COAST_CANAL_REFLECT_LENGTH} from './coast-canal-reflections';
 
 /** Reverse flow: increasing time moves crests toward decreasing road metres. */
 export const COAST_DRAIN_FLOW_METRES_PER_SECOND=4.8;
@@ -19,12 +20,15 @@ export function makeCoastDrainWaterMaterial(
  fftEnabled:THREE.IUniform={value:0},
 ){
  const m=new THREE.MeshBasicMaterial({color:'#ffffff',side:THREE.DoubleSide,fog:true,depthWrite:true,toneMapped:true});
+ const reflectedProps=buildCoastCanalReflectionTexture();
+ m.userData.coastCanalReflectionTexture=reflectedProps;
  m.name='coast-ocean-reflected-canal';
- m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r5';
+ m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r6-props';
  m.onBeforeCompile=shader=>{
   shader.uniforms.uCoastFlowTime=clock;
   shader.uniforms.uCoastSun={value:COAST_SUN};
   shader.uniforms.uCoastFftEnabled=fftEnabled;
+  shader.uniforms.uCoastReflectedProps={value:reflectedProps};
   for(const key of ['uSlope0','uSlope1','uSlope2','uSlope3'] as const)
    shader.uniforms['uCoast'+key.slice(1)]=fft[key];
   shader.vertexShader=shader.vertexShader.replace('#include <common>',`#include <common>
@@ -49,6 +53,7 @@ uniform sampler2D uCoastSlope1;
 uniform sampler2D uCoastSlope2;
 uniform sampler2D uCoastSlope3;
 uniform vec3 uCoastSun;
+uniform sampler2D uCoastReflectedProps;
 ${COAST_SKY_GLSL}`).replace('#include <color_fragment>',`#include <color_fragment>
 float f=vCoastFlowUV.y + uCoastFlowTime*${COAST_DRAIN_FLOW_METRES_PER_SECOND.toFixed(1)};
 // Reuse the ocean's LIVE four-cascade FFT slope maps and dusk sky.
@@ -83,6 +88,18 @@ vec3 halfway=normalize(viewDir+sun);
 float sunGlitter=pow(max(dot(normal,halfway),0.0),95.0)
  *(0.3+max(dot(normal,sun),0.0));
 color+=vec3(1.0,.63,.27)*sunGlitter*1.8;
+// Soft, local silhouettes only where genuine roadside fixtures exist.
+// FFT and irregular current disrupt the outline and keep the ocean's
+// reflection as the main character, not a new tiled procedural pattern.
+float featureWarp=clamp(fftSlope.y*.42+eddy.y*6.0,-3.5,3.5);
+float featureAt=clamp((vCoastFlowUV.y+featureWarp)/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)},0.0,1.0);
+vec2 sceneReflect=texture2D(uCoastReflectedProps,vec2(featureAt,.5)).rg;
+float bankView=smoothstep(.05,.88,vCoastFlowUV.x);
+float reflectedPole=sceneReflect.r*(.10+.035*current1)*bankView;
+float reflectedBridge=sceneReflect.g*(.13+.05*current2);
+// Muted charcoal/stone reflected into the SAME sky/ocean Fresnel body.
+float localReflection=clamp(reflectedPole+reflectedBridge,0.0,.22);
+color=mix(color,vec3(.054,.070,.075),localReflection);
 // No oversized foam stripes, repeated caustic circles or luminous cyan ribbon.
 diffuseColor.rgb=color;`);
  };
