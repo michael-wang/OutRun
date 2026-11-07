@@ -1,4 +1,5 @@
 import {it,expect} from 'vitest';
+import {COAST_HERO_TREE_SITES} from '../src/coast-nature';
 import * as THREE from 'three';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
@@ -66,7 +67,10 @@ it('survives actual coast scenery worker-style batching without old homes overla
  for(const name of ['coast-rural-farmhouse','coast-rural-townhouse','coast-rural-courtyard','coast-rural-irrigation-canal']){
   expect(meshes.some(mesh=>mesh.geometry.name===name),name).toBe(true);
  }
- expect(result.instances).toBeGreaterThan(30);
+ // Approved garden trees moved into multi-part 3D nature instancing,
+ // reducing manually batched primitive count without deleting the grove.
+ expect(result.instances).toBeGreaterThan(18);
+ expect(COAST_HERO_TREE_SITES).toHaveLength(5);
  // One material/geometry template per full prefab; don't emit a separate
  // mesh for every roof tile, window, wall or little riverside stone.
  expect(meshes.filter(mesh=>mesh.geometry.name.startsWith('coast-rural-'))).toHaveLength(4);

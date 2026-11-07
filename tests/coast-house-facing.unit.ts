@@ -1,4 +1,5 @@
 import {it,expect} from 'vitest';
+import {COAST_HERO_TREE_SITES} from '../src/coast-nature';
 import * as THREE from 'three';
 import {coastHomeFacingYaw,houseApproachFrontScore,rotatedHouseExtent} from '../src/coast-house-facing';
 import {COAST_RURAL_HOUSES,COAST_RURAL_SHOWCASE,RURAL_CREEK} from '../src/coast-rural-layout';
@@ -71,7 +72,10 @@ it('keeps a real gate-facing transform in the actual batched scenery, without ne
  const center=new THREE.Vector3().setFromMatrixPosition(matrix);
  const toViewer=eye.clone().sub(center).setY(0).normalize();
  expect(entrance.dot(toViewer)).toBeGreaterThan(.5);
- expect(result.instances).toBeGreaterThan(30);
+ // Five former hand-built 2D-looking trees now render via the shared 3D
+ // nature model, not as 15+ individual scenery primitive instances.
+ expect(result.instances).toBeGreaterThan(18);
+ expect(COAST_HERO_TREE_SITES).toHaveLength(5);
  expect(meshes.filter(m=>m.geometry.name.startsWith('coast-rural-'))).toHaveLength(4);
  const geos=new Set(meshes.map(m=>m.geometry));
  const mats=new Set(meshes.flatMap(m=>Array.isArray(m.material)?m.material:[m.material]));
