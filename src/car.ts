@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
-import {createSpiderShell,createGTWingMirrorHousing,createRearTonneau} from './hero-body';
+import {createGTWingMirrorHousing} from './hero-body';
+import {createClassicBody,createClassicTailLamps} from './hero-classic-geometry';
+import {DEFAULT_CAR_MODEL,type CarModel} from './car-models';
 import {createDriverHair,createBlondeBob} from './hero-groom';
 import {createOccupantMotion} from './occupants';
 import {CAR_PAINT_PRESETS,DEFAULT_CAR_COLOR,type CarColor} from './car-appearance';
@@ -14,6 +16,10 @@ export interface BrakeLightController {
 export interface CarPaintController {
  set(color:CarColor):void;
  inspect():{color:CarColor;hex:string};
+}
+export interface CarModelController{
+ set(model:CarModel):void;
+ inspect():{model:CarModel;bodyGeometry:string;rearLamps:string};
 }
 
 /** Authored hero spider, +Z nose. Wheelbase, mass envelope and camera
@@ -36,17 +42,16 @@ export function createCar(dusk=false) {
   const box=(w:number,h:number,d:number,m:THREE.Material,x:number,y:number,z:number)=>mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z);
   function oval(sx:number,sy:number,sz:number,m:THREE.Material,x:number,y:number,z:number,parent=car){const o=mesh(new THREE.SphereGeometry(1,12,8),m,x,y,z,parent);o.scale.set(sx,sy,sz);return o;}
   function bar(a:number[],b:number[],r:number,m:THREE.Material,parent=car){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),delta=end.clone().sub(start),o=mesh(new THREE.CylinderGeometry(r,r,delta.length(),8),m,0,0,0,parent);o.position.copy(start.add(end).multiplyScalar(.5));o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());return o;}
-  // Smooth multi-section sculpted body, baked once and merged with paint.
-  const shell=mesh(createSpiderShell(),paint);shell.name='sculpted-gt-spider-shell';
+  // The active historical body is a SINGLE painted mesh. Model swaps
+  // replace its baked geometry, never generate/keep three car instances.
+  const shell=mesh(createClassicBody(DEFAULT_CAR_MODEL),paint);
+  shell.name='hero-classic-body-shell';
   // Dark cockpit void and recessed centre tunnel let the sunlight catch
   // the painted shoulders rather than a flat, boxlike cabin roof.
   box(1.57,.09,1.76,dark,0,.47,-.23);
   box(.15,.19,1.23,dark,0,.60,-.16);
-  // Low painted rear tonneau hides the old exposed rectangular seatbacks
-  // from the chase view. The seats and cockpit remain truly open from above;
-  // this short body-height cowl is NOT a roof or a roll bar.
-  const tonneau=mesh(createRearTonneau(),paint);
-  tonneau.name='hero-rear-painted-cowl';
+  // Low body-coloured rear tonneau is already fused into the active body
+  // geometry and changes profile along with the selected classic roadster.
   box(.17,.03,.27,silver,0,.70,.01);
   // Sculpted hood creases and rear deck air channels are trim, not decals.
   for(const side of [-1,1]){
@@ -119,13 +124,21 @@ export function createCar(dusk=false) {
     const skin=material(driver?'#c89a7b':'#e3b79b',.82);
     const suit=material('#252d36',.74,.06);
     const lapel=material('#38414a',.80);
-    const shirt=material(driver?'#e4e3dc':'#eee6de',.77);
+    const shirt=material(driver?'#e4e3dc':'#efd0b9',.77);
     const hair=material(driver?'#22282d':'#b9904e',.7);
     // Narrow adult silhouette and shoulder line. Tailored jacket is built
     // from smooth conical cloth panels, not spherical Q-version torsos.
-    const jacket=mesh(new THREE.CylinderGeometry(.245,.205,.51,14),driver?suit:shirt,
-      x,1.02,-.49,person);jacket.scale.z=.84;
-    oval(.262,.076,.14,driver?suit:shirt,x,1.205,-.49,person);
+    const jacket=mesh(new THREE.CylinderGeometry(driver?.245:.205,driver?.205:.232,.51,14),
+      driver?suit:shirt,x,1.02,-.49,person);jacket.scale.z=.84;
+    // Sleeveless summer sundress: exposed shoulders and upper arms, a
+    // tapered bodice with a small flared skirt at seat level.
+    oval(driver?.262:.19,.075,.14,driver?suit:skin,x,1.205,-.49,person);
+    if(!driver){
+      const skirt=mesh(new THREE.CylinderGeometry(.215,.290,.27,14),shirt,x,.748,-.49,person);
+      skirt.scale.z=.88;skirt.name='passenger-summer-dress';
+      const neckline=mesh(new THREE.TorusGeometry(.125,.012,5,18,Math.PI),shirt,x,1.226,-.403,person);
+      neckline.rotation.x=Math.PI/2;
+    }
     oval(.125,.068,.125,skin,x,1.29,-.46,person);
     const neck=mesh(new THREE.CylinderGeometry(.079,.084,.155,12),skin,x,1.29,-.45,person);
     neck.rotation.x=.03;
@@ -167,15 +180,15 @@ export function createCar(dusk=false) {
     for(const arm of [-1,1] as const){
       const shoulder:[number,number,number]=[x+arm*.20,1.173,-.47];
       const resting=driver&&arm===1;
-      const elbow:[number,number,number]=resting?[1.09,1.04,-.35]:
+      const elbow:[number,number,number]=resting?[.864,1.058,-.35]:
         driver?[.22,1.025,-.13]:[x+arm*.23,1.01,-.22];
-      const hand:[number,number,number]=resting?[1.16,1.04,-.07]:
+      const hand:[number,number,number]=resting?[1.095,1.034,-.095]:
         driver?[.42,1.025,.255]:[x+arm*.12,.84,-.06];
       const limb=new THREE.Group();person.add(limb);
       limb.name=resting?'driver-left-arm-resting-on-door':driver?
         'driver-right-hand-steering':'passenger-arm-'+arm;
       arms.push(limb);
-      const sleeve=driver?suit:shirt;
+      const sleeve=driver?suit:skin;
       bar(shoulder,elbow,.071,sleeve,limb);
       bar(elbow,hand,.042,skin,limb);
       oval(.051,.039,.056,skin,...hand,limb);
@@ -200,16 +213,15 @@ export function createCar(dusk=false) {
   box(1.78,.17,.105,dark,0,.37,-2.36);
   // Dark cherry lenses at idle. Brake is perceptible without blooming
   // across the rear view; no emissive intensity change per mesh.
-  const rear=material('#781c22',.39);rear.emissive.set('#b83029');
+  const rear=material('#781c22',.39);rear.side=THREE.DoubleSide;rear.emissive.set('#b83029');
   const tailIdle=dusk?.14:.035,tailBraking=1.0;let braking=false;
   rear.emissiveIntensity=tailIdle;
   const lamp=material('#fff2cf',.3);lamp.emissive.set('#fff3bf');lamp.emissiveIntensity=dusk?2.5:.6;
+  // One draw for the era-specific rear lamps. The shared brake shader
+  // keeps exactly the same idle/brake intensity across all three cars.
+  const classicLamps=mesh(createClassicTailLamps(DEFAULT_CAR_MODEL),rear);
+  classicLamps.name='hero-classic-tail-lamps';
   for(const side of [-1,1]){
-    // Rear LED hockey-stick, housed in black. Both sides use ONE shared
-    // material, so the original brake-light controller still has one update.
-    box(.57,.103,.050,dark,side*.54,.743,-2.345);
-    box(.45,.034,.054,rear,side*.525,.752,-2.387);
-    box(.049,.073,.055,rear,side*.785,.725,-2.387);
     box(.58,.084,.062,lamp,side*.55,.58,2.32);
     // Twin exhaust finishers and low dark air outlets.
     const exhaust=mesh(new THREE.CylinderGeometry(.074,.074,.15,12),silver,side*.66,.30,-2.39);
@@ -258,6 +270,20 @@ export function createCar(dusk=false) {
   };
   paintController.set(DEFAULT_CAR_COLOR);
   car.userData.paintController=paintController;
+  let currentModel:CarModel=DEFAULT_CAR_MODEL;
+  const modelController:CarModelController={
+    set(model){
+      if(model===currentModel)return;
+      const nextBody=createClassicBody(model);
+      const nextLamps=createClassicTailLamps(model);
+      // Swap only on explicit selection; release old buffers for mobile.
+      const oldBody=shell.geometry,oldLamps=classicLamps.geometry;
+      shell.geometry=nextBody;classicLamps.geometry=nextLamps;
+      oldBody.dispose();oldLamps.dispose();currentModel=model;
+    },
+    inspect:()=>({model:currentModel,bodyGeometry:shell.geometry.name,rearLamps:classicLamps.geometry.name}),
+  };
+  car.userData.modelController=modelController;
   const people=createOccupantMotion(travelers,wheel);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;
@@ -269,7 +295,7 @@ function pivotAt(group:THREE.Group,x:number,y:number,z:number){const p=new THREE
 function batch(group:THREE.Group){
   const byMaterial=new Map<THREE.Material,THREE.BufferGeometry[]>();
   for(const child of [...group.children]){
-    if(!(child instanceof THREE.Mesh)||Array.isArray(child.material)||child.material.transparent||child.name==='rear-license-FZR-123'||child.name==='left-hand-drive-steering-wheel')continue;
+    if(!(child instanceof THREE.Mesh)||Array.isArray(child.material)||child.material.transparent||child.name==='rear-license-FZR-123'||child.name==='left-hand-drive-steering-wheel'||child.name==='hero-classic-body-shell'||child.name==='hero-classic-tail-lamps')continue;
     child.updateMatrix();const g=child.geometry.index?child.geometry.toNonIndexed():child.geometry.clone();
     for(const name of Object.keys(g.attributes))if(name!=='position'&&name!=='normal')g.deleteAttribute(name);
     g.applyMatrix4(child.matrix);const list=byMaterial.get(child.material)??[];list.push(g);byMaterial.set(child.material,list);group.remove(child);child.geometry.dispose();
