@@ -11,10 +11,12 @@ describe('player-car arcade visual feedback',()=>{
     expect(controller).toBeDefined();
     const idle=controller.inspect();
     expect(idle.braking).toBe(false);
+    expect(idle.emissiveIntensity).toBeLessThan(.2);
     controller.set(true);
     const active=controller.inspect();
     expect(active.braking).toBe(true);
     expect(active.emissiveIntensity).toBeGreaterThan(idle.emissiveIntensity*4);
+    expect(active.emissiveIntensity).toBeLessThanOrEqual(1.1);
     controller.set(false);
     expect(controller.inspect()).toEqual(idle);
     controller.set(true);

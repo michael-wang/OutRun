@@ -7,7 +7,7 @@ it('occupants and hair respond to observed motion without moving the car or whee
  for(let i=0;i<120;i++)m.advance(113.75/60,1,1/60);
  const fast=m.occupants();expect(fast.wind).toBeGreaterThan(.99);expect(fast.people.every((p:any)=>p.lean>.07)).toBe(true);
  expect(fast.people[1].hair.every((h:any)=>h.back>.12&&h.back<.38)).toBe(true);
- expect(fast.people[0].scarf).toHaveLength(2);
+ expect(fast.people[0].scarf).toHaveLength(1);
  const phase=fast.people[1].hair[0].side;m.advance(113.75/60,0,1/60);expect(m.occupants().people[1].hair[0].side).not.toBe(phase);
  for(let i=0;i<120;i++)m.advance(113.75/60,-1,1/60);
  expect(m.occupants().people.every((p:any)=>p.lean<-.07)).toBe(true);

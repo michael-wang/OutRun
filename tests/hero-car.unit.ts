@@ -2,6 +2,7 @@ import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {createCar,type CarPaintController} from '../src/car';
 import {CAR_COLORS,CAR_PAINT_PRESETS} from '../src/car-appearance';
+import {createGTWingMirrorHousing} from '../src/hero-body';
 
 describe('hero spider focal-point art',()=>{
  it('has real left-hand drive, a relaxed door-resting arm, blonde bob, and readable plate decal',()=>{
@@ -55,9 +56,9 @@ describe('hero spider focal-point art',()=>{
   expect(h).toHaveLength(5);
   expect(h.every((lock:{back:number})=>lock.back>.10&&lock.back<.45)).toBe(true);
   const scarf=m.occupants().people[0].scarf;
-  expect(scarf).toHaveLength(2);
-  // Longer above-deck scarf now lifts visibly with airflow.
-  expect(scarf.every((tail:{back:number})=>tail.back>.18&&tail.back<.48)).toBe(true);
+  expect(scarf).toHaveLength(1);
+  expect(scarf[0].back).toBeGreaterThan(.12);
+  expect(scarf[0].back).toBeLessThan(.27);
  });
 });
 
@@ -75,31 +76,54 @@ describe('hero spider focal-point art',()=>{
   expect(after.equals(first)).toBe(false);
  });
 
-it('keeps the passenger hairstyle but gives the driver a fitted cap and visible fabric motion',()=>{
+it('shows a full natural short-haired driver and only ONE understated scarf tail',()=>{
  const car=createCar();car.updateMatrixWorld(true);
- const cap=car.getObjectByName('driver-tailored-flat-cap');
- const brim=car.getObjectByName('driver-flat-cap-mesh');
- const girl=car.getObjectByName('layered-blonde-bob');
- expect(cap).toBeDefined();expect(brim).toBeInstanceOf(THREE.Mesh);
- expect(girl).toBeDefined();
- const capBounds=new THREE.Box3().setFromObject(cap!);
- expect(capBounds.max.y).toBeLessThan(1.69);
- expect(capBounds.min.y).toBeGreaterThan(1.38);
- expect(car.getObjectByName('tailored-driver-hair')).toBeUndefined();
- expect((brim as THREE.Mesh).geometry.getAttribute('color')).toBeDefined();
- expect((brim as THREE.Mesh).geometry.index!.count).toBeGreaterThan(180);
+ const groom=car.getObjectByName('driver-natural-short-hair');
+ const volume=car.getObjectByName('driver-short-hair-volume');
+ const layers=car.getObjectByName('driver-short-hair-layered-strands');
+ const bob=car.getObjectByName('layered-blonde-bob');
+ expect(groom).toBeDefined();
+ expect(volume).toBeInstanceOf(THREE.Mesh);
+ expect(layers).toBeInstanceOf(THREE.Mesh);
+ expect(bob).toBeDefined(); // approved female hair is unchanged
+ expect(car.getObjectByName('driver-tailored-flat-cap')).toBeUndefined();
+ const hairBounds=new THREE.Box3().setFromObject(groom!);
+ expect(hairBounds.max.y).toBeLessThan(1.66);
+ expect(hairBounds.min.y).toBeGreaterThan(1.25);
+ expect(hairBounds.getSize(new THREE.Vector3()).z).toBeGreaterThan(.22);
+ const hairMaterial=(volume as THREE.Mesh).material as THREE.MeshStandardMaterial;
+ expect(hairMaterial.vertexColors).toBe(true);
  const scarf=car.getObjectByName('driver-silk-scarf')!;
  expect(scarf).toBeDefined();
  expect(car.getObjectByName('wind-scarf-fabric-0')).toBeDefined();
- expect(car.getObjectByName('wind-scarf-fabric-1')).toBeDefined();
+ expect(car.getObjectByName('wind-scarf-fabric-1')).toBeUndefined();
  const motion=car.userData.motion;
  motion.reset();
  for(let step=0;step<120;step++)motion.advance(108/60,.6,1/60);
  const tails=motion.occupants().people[0].scarf;
- expect(tails).toHaveLength(2);
- expect(tails.some((tail:{back:number})=>tail.back>.25)).toBe(true);
+ expect(tails).toHaveLength(1);
+ expect(tails[0].back).toBeGreaterThan(.11);
+ expect(tails[0].back).toBeLessThan(.30);
  car.updateMatrixWorld(true);
  const bounds=new THREE.Box3().setFromObject(scarf);
- expect(bounds.min.z).toBeLessThan(-1.25);
- expect(bounds.max.y).toBeGreaterThan(1.23);
+ expect(bounds.min.z).toBeLessThan(-1.14);
+ expect(bounds.max.y).toBeGreaterThan(1.20);
+ expect(bounds.getSize(new THREE.Vector3()).x).toBeLessThan(.34);
 });
+it('makes wing mirrors thin and brake lights physically and visually modest',()=>{
+ const g=createGTWingMirrorHousing();
+ const size=g.boundingBox!.getSize(new THREE.Vector3());
+ expect(size.x).toBeGreaterThan(.23);
+ expect(size.x).toBeLessThan(.26);
+ expect(size.y).toBeLessThan(.105);
+ expect(size.z).toBeLessThan(.18);
+ g.dispose();
+ const car=createCar(true);
+ const lights=car.userData.brakeLights;
+ expect(lights.inspect().emissiveIntensity).toBeLessThan(.20);
+ lights.set(true);
+ expect(lights.inspect().emissiveIntensity).toBeGreaterThan(.8);
+ expect(lights.inspect().emissiveIntensity).toBeLessThan(1.2);
+ lights.reset();
+ expect(lights.inspect().emissiveIntensity).toBeLessThan(.20);
+});;
