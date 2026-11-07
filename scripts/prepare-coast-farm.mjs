@@ -1,6 +1,7 @@
 // Offline simplification only. Original CC0 GLBs remain beside the derived assets.
 import {readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
+import {bakeRipeRice} from './bake-ripe-rice.mjs';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
@@ -23,7 +24,7 @@ function components(source){
  const groups=new Map();for(let i=0;i<p.count;i++){const id=root(i),points=groups.get(id)??[];points.push(new THREE.Vector3().fromBufferAttribute(p,i));groups.set(id,points);}g.dispose();w.dispose();
  return [...groups.values()].map(points=>({points,box:new THREE.Box3().setFromPoints(points)}));
 }
-for(const [name,headVertices,stemVertices,copies,spread] of [['rice-near',10,6,2,3.7],['rice-mid',8,4,1,8.5]]){
+for(const name of ['rice-near','rice-mid']){
  const parts=[];
  scene.traverse(o=>{if(!o.isMesh)return;
   // Drop the supplied soil pedestal. Preserve the mature heads separately:
@@ -31,49 +32,39 @@ for(const [name,headVertices,stemVertices,copies,spread] of [['rice-near',10,6,2
   if(o.material.name==='soil')return;
   const original=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();original.applyMatrix4(o.matrixWorld);
   const pieces=components(original),shapes=[];
+  if(name==='rice-near'){
+   if(o.material.name==='gold')parts.push(bakeRipeRice(pieces));
+   original.dispose();return;
+  }
   if(o.material.name==='gold'){
    const stalks=pieces.filter(p=>p.box.max.y-p.box.min.y>.3&&p.box.min.y<.1);
    const ears=stalks.map(p=>({center:p.box.getCenter(new THREE.Vector3()),points:[]}));
    for(const p of pieces){
-    if(stalks.includes(p)){shapes.push({points:p.points,vertices:stemVertices});continue;}
+    if(stalks.includes(p)){shapes.push({points:p.points,vertices:4});continue;}
     const center=p.box.getCenter(new THREE.Vector3());let best=ears[0],distance=Infinity;
     for(const ear of ears){const d=(center.x-ear.center.x)**2+(center.z-ear.center.z)**2;if(d<distance){distance=d;best=ear;}}
     if(best)best.points.push(...p.points);
    }
-   for(const ear of ears)if(ear.points.length){
-    if(name==='rice-near'){
-     const box=new THREE.Box3().setFromPoints(ear.points),middle=(box.min.y+box.max.y)/2;
-     // Two overlapping envelopes keep the source grains' rounded lobes, instead
-     // of replacing the whole ear by one long flat wedge.
-     shapes.push({points:ear.points.filter(p=>p.y<middle+.022),vertices:headVertices},{points:ear.points.filter(p=>p.y>middle-.022),vertices:headVertices});
-    }else shapes.push({points:ear.points,vertices:headVertices});
-   }
-  }else for(const p of pieces)shapes.push({points:p.points,vertices:name==='rice-near'?6:4});
+   for(const ear of ears)if(ear.points.length)shapes.push({points:ear.points,vertices:8});
+  }else for(const p of pieces)shapes.push({points:p.points,vertices:4});
   for(const shape of shapes){
-  let g=new ConvexGeometry(shape.points);g.deleteAttribute('normal');g=mergeVertices(g);
-  g=new SimplifyModifier().modify(g,Math.max(0,g.attributes.position.count-shape.vertices));
-  if(g.index)g=g.toNonIndexed();g.computeVertexNormals();
-  const colors=[],uv=[],p=g.attributes.position,c=o.material.color;
-  for(let i=0;i<p.count;i++){colors.push(c.r,c.g,c.b);uv.push(0,Math.max(0,Math.min(1,p.getY(i)/.819)));}
-  g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
-  // A few transformed copies of the downloaded plant become one broad clump,
-  // not thousands of extra Meshes. Keep original grain/leaf geometry and colors.
-  for(let i=0;i<copies;i++){
-   const part=g.clone(),p=part.attributes.position,a=i*2.39996;
+   let g=new ConvexGeometry(shape.points);g.deleteAttribute('normal');g=mergeVertices(g);
+   g=new SimplifyModifier().modify(g,Math.max(0,g.attributes.position.count-shape.vertices));
+   if(g.index)g=g.toNonIndexed();g.computeVertexNormals();
+   const colors=[],uv=[],p=g.attributes.position,c=o.material.color;
    for(let j=0;j<p.count;j++){
     const y=p.getY(j),tip=Math.max(0,(y-.58)/.24);
-    p.setXYZ(j,(p.getX(j)-.012)*spread+tip*tip*.23,(y-.05)*1.85-tip*tip*.12,(p.getZ(j)-.024)*spread);
+    colors.push(c.r,c.g,c.b);uv.push(0,Math.max(0,Math.min(1,y/.819)));
+    p.setXYZ(j,(p.getX(j)-.012)*8.5+tip*tip*.23,(y-.05)*1.85-tip*tip*.12,(p.getZ(j)-.024)*8.5);
    }
-   part.rotateY(a);part.translate(Math.cos(a)*.56,i*.035,Math.sin(a)*.56);part.computeVertexNormals();
-   const color=part.attributes.color;for(let j=0;j<color.count;j++)color.setXYZ(j,color.getX(j)*(1-i*.045),color.getY(j)*(1-i*.035),color.getZ(j)*(1-i*.055));parts.push(part);
-  }
-  g.dispose();
+   g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+   g.translate(.56,0,0);g.computeVertexNormals();parts.push(g);
   }original.dispose();
  });
  const geometry=mergeGeometries(parts),mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({vertexColors:true,roughness:1,side:THREE.DoubleSide}));
  mesh.name=name;
  const glb=await new GLTFExporter().parseAsync(mesh,{binary:true});await writeFile(path+name+'.glb',Buffer.from(glb));
- geometry.computeBoundingBox();report.push({name,triangles:geometry.attributes.position.count/3,bytes:glb.byteLength,bounds:geometry.boundingBox,sourceCopies:copies});
+ geometry.computeBoundingBox();report.push({name,triangles:(geometry.index?.count??geometry.attributes.position.count)/3,bytes:glb.byteLength,bounds:geometry.boundingBox,sourceCopies:name==='rice-near'?6:1});
 }
 await writeFile(path+'simplification.json',JSON.stringify(report,null,2)+'\n');console.log(report);
 await writeFile(path+'hashes.json',JSON.stringify(await Promise.all(['rice-mid','rice-near','rice-original','scarecrow'].map(async name=>({file:name+'.glb',sha256:createHash('sha256').update(await readFile(path+name+'.glb')).digest('hex')}))),null,2)+'\n');

@@ -3,7 +3,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {Grass} from './vendor/three-stylized/Grass';
 import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-stylized/flowerShapes';
-import {grassWindVertexTransform,grassWindVertexUniforms} from './vendor/three-stylized/shaders';
+import {shadeRipeRice} from './coast-rice-material';
 import {seededRandom} from './vendor/three-stylized/utils';
 import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
@@ -15,17 +15,6 @@ import type {createTrack} from './track';
 type Sample=ReturnType<typeof createTrack>['sample'];
 const bytes=new Map<string,Promise<ArrayBuffer>>();
 const wind={strength:.12,speed:.65,frequency:.13,turbulence:.18,lean:.025,direction:65};
-const riceWind={...wind,strength:.26,speed:.52,frequency:.085,turbulence:.32,lean:.045};
-// Same world-space waves as three-stylized, plus a broad, slower gust envelope.
-// Both the instanced heads and the persistent canopy sample this field.
-const riceWaves=/* glsl */ `
- float riceWave(vec2 p) {
-  vec2 crossWind=vec2(-uWindDirection.y,uWindDirection.x);
-  return sin(dot(p,uWindDirection)*uWindFrequency+uTime*uWindSpeed)*.62
-   + sin(dot(p,crossWind)*uWindFrequency*1.7+uTime*uWindSpeed*.73)*.20
-   + sin(dot(p,uWindDirection)*.027-uTime*.23)*.18;
- }
-`;
 const up=new THREE.Vector3(0,1,0);
 /** Replays reuse downloads, but own and dispose their GPU resources. */
 export async function loadCoastFarm(){
@@ -34,7 +23,7 @@ export async function loadCoastFarm(){
   const {scene}=await new GLTFLoader().parseAsync((await request).slice(0),'');scene.updateMatrixWorld(true);
   const parts:THREE.BufferGeometry[]=[];
   scene.traverse(o=>{if(!(o instanceof THREE.Mesh))return;
-   const source=o.geometry.index?o.geometry.toNonIndexed():o.geometry,p=source.getAttribute('position'),n=source.getAttribute('normal'),c=source.getAttribute('color'),uv=source.getAttribute('uv'),positions=[],normals=[],colors=[],uvs=[];
+   const source=o.geometry,p=source.getAttribute('position'),n=source.getAttribute('normal'),c=source.getAttribute('color'),uv=source.getAttribute('uv'),positions=[],normals=[],colors=[],uvs=[];
    const sourceMaterial=o.material as THREE.MeshStandardMaterial,color=sourceMaterial.color.clone();
    // Pale timber keeps the existing outstretched arms legible against gold rice.
    if(name==='scarecrow'&&sourceMaterial.name==='timber')color.set('#c6aa6a');
@@ -42,7 +31,10 @@ export async function loadCoastFarm(){
    if(name==='scarecrow'&&sourceMaterial.name==='red')color.set('#bb5146');
    for(let i=0;i<p.count;i++){positions.push(p.getX(i),p.getY(i),p.getZ(i));normals.push(n.getX(i),n.getY(i),n.getZ(i));colors.push(c?c.getX(i):color.r,c?c.getY(i):color.g,c?c.getZ(i):color.b);uvs.push(uv?uv.getX(i):0,uv?uv.getY(i):0);}
    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));g.applyMatrix4(o.matrixWorld);parts.push(g);
-   o.geometry.dispose();if(source!==o.geometry)source.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();
+   // Keep shared kernel vertices indexed during instanced wind deformation.
+   if(source.index)g.setIndex(source.index.clone());
+   else g.setIndex(Array.from({length:p.count},(_,i)=>i));
+   source.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();
   });const merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());return merged;
  }));
  const time={value:0},materials=new Map<string,THREE.Material>();
@@ -55,17 +47,11 @@ export async function loadCoastFarm(){
   const key=`${kind}:${color}:${near}:${far}`;let m=materials.get(key) as THREE.MeshStandardMaterial|undefined;
   if(!m){m=new THREE.MeshStandardMaterial({color,vertexColors:kind==='crop'||kind==='scarecrow'||kind==='canopy',roughness:1,side:THREE.DoubleSide,...(kind==='ground'?{map:texture,emissive:color,emissiveIntensity:.17}:kind==='canopy'?{map:canopyTexture}:{})});
    if(kind==='crop'||kind==='canopy'){
-    m.onBeforeCompile=shader=>{Object.assign(shader.uniforms,{uTime:time,uWindStrength:{value:riceWind.strength},uWindSpeed:{value:riceWind.speed},uWindFrequency:{value:riceWind.frequency},uWindTurbulence:{value:riceWind.turbulence},uWindLean:{value:riceWind.lean},uWindDirection:{value:new THREE.Vector2(Math.cos(wind.direction*Math.PI/180),Math.sin(wind.direction*Math.PI/180))}});
+    m.onBeforeCompile=shader=>{
      const crop=kind==='crop';
-     shader.vertexShader=shader.vertexShader.replace('#include <common>',`#include <common>\nvarying float vRiceWave;\n${grassWindVertexUniforms}\n${riceWaves}\n${crop?grassWindVertexTransform:''}`).replace('#include <begin_vertex>',`#include <begin_vertex>
-      vec2 riceWorld=(modelMatrix * ${crop?'instanceMatrix * ':''}vec4(${crop?'0.0,0.0,0.0':'position'},1.0)).xz;
-      vRiceWave=riceWave(riceWorld);
-      ${crop?'transformed=deformGrassBlade(transformed); transformed.y-= (.07+.07*vRiceWave)*uv.y*uv.y;':'transformed.y-=vRiceWave*.12;'}
-     `);
-     shader.fragmentShader='varying float vRiceWave;\n'+shader.fragmentShader;
-     shader.fragmentShader=shader.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n diffuseColor.rgb *= .94 + .10*vRiceWave;').replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance += diffuseColor.rgb * .24;');
+     shadeRipeRice(shader,time,crop);
      if(crop)distanceShader(shader,near,far,false);
-    };m.customProgramCacheKey=()=>`farm-${kind}-waves-v2-${near}-${far}`;
+    };m.customProgramCacheKey=()=>`farm-${kind}-ripe-${near}-${far}`;
    }materials.set(key,m);
   }return m;
  }
@@ -82,30 +68,35 @@ function fieldTexture(){
  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=1;return t;
 }
 
-/** Low-cost seamless golden-grain texture: dozens of rice heads per square metre,
- * generated once on the main thread, then mipped for stable oblique coastal views. */
+/** Opaque, mipmapped panicles for the field behind the individual 3D ears.
+ * Paint across both seams so the culms and alternating kernels tile intact. */
 function riceSeaTexture(){
- const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
+ const size=512,canvas=document.createElement('canvas');
+ canvas.width=canvas.height=size;
  const ctx=canvas.getContext('2d')!,rand=seededRandom(20261104);
- ctx.fillStyle='#f3dfaa';ctx.fillRect(0,0,256,256);
- // Broad, low-contrast cultivated rows remain visible when distant mip levels
- // average the individual grains away.
- for(let x=0;x<256;x+=16){
-  ctx.fillStyle='rgba(123,101,44,.12)';ctx.fillRect(x,0,4,256);
-  ctx.fillStyle='rgba(255,251,207,.10)';ctx.fillRect(x+6,0,6,256);
- }
- // Short leaning heads and stalks; avoid high-contrast noise and alpha overdraw.
- for(let i=0;i<4400;i++){
-  const x=Math.floor(rand()*256),y=Math.floor(rand()*256),w=1+Math.floor(rand()*3),h=3+Math.floor(rand()*9);
-  const shade=rand();
-  ctx.fillStyle=shade<.3?'#cead62':shade<.72?'#f7e4ad':'#fff0c0';
-  ctx.fillRect(x,y,w,h);
-  if(y+h>256)ctx.fillRect(x,y-256,w,h);
-  if(shade>.82){ctx.fillStyle='#ddc478';ctx.fillRect((x+2)%256,(y+2)%256,1,Math.max(2,h-3));}
+ ctx.fillStyle='#bba967';ctx.fillRect(0,0,size,size);
+ ctx.lineCap='round';
+ for(let row=0;row<20;row++)for(let hill=0;hill<18;hill++)for(let ear=0;ear<3;ear++){
+  const x=(row+rand()*.64)*size/20,y=(hill+rand())*size/18;
+  const reach=9+rand()*13,rise=8+rand()*9, tilt=rand()*.95-.4;
+  const hull=rand()<.38?'#d9b15d':'#f3da92';
+  const xs=[x],ys=[y];
+  if(x<32)xs.push(x+size);if(x>size-32)xs.push(x-size);
+  if(y<32)ys.push(y+size);if(y>size-32)ys.push(y-size);
+  for(const px of xs)for(const py of ys){
+   ctx.save();ctx.translate(px,py);ctx.rotate(tilt);
+   ctx.strokeStyle='#988d4e';ctx.lineWidth=1.7;ctx.beginPath();
+   ctx.moveTo(-reach*.45,rise*.6);ctx.quadraticCurveTo(0,-rise,reach,0);ctx.stroke();
+   ctx.fillStyle=hull;
+   for(let k=0;k<7;k++){
+    const t=(k+1)/8,cx=reach*t,cy=-2*rise*t*(1-t);
+    ctx.beginPath();ctx.ellipse(cx,cy+(k%2?1.6:-1.6),2.6,1.15,.75*t+(k%2?.6:-.6),0,Math.PI*2);ctx.fill();
+   }
+   ctx.restore();
+  }
  }
  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;
- t.wrapS=t.wrapT=THREE.RepeatWrapping;t.minFilter=THREE.LinearMipmapLinearFilter;
- t.magFilter=THREE.LinearFilter;t.generateMipmaps=true;t.anisotropy=2;return t;
+ t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;return t;
 }
 
 // Use the existing opaque/alpha-tested passes. No blending layers or shadows.
@@ -146,7 +137,7 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(indices);g.computeVertexNormals();ownedGeometry.push(g);const m=new THREE.Mesh(g,mat);group.add(m);return m;
  }
  const isRice=plot.kind==='rice';
- const groundColor=plot.kind==='rice'?'#d3b450':FARM_FLOWER_COLORS[plot.band%3];
+ const groundColor=plot.kind==='rice'?'#908346':FARM_FLOWER_COLORS[plot.band%3];
  const surface=ribbon(plot.left,plot.right,plot.start,plot.end,.055,assets.material('ground',groundColor));
  // Keep the exact sampled terrain, including road bend and mild grade. No new terrain generator.
  // The hybrid rice sea is a single animated canopy plus roadside rice heads.
@@ -237,11 +228,12 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
     const p=prepared.canopy!,g=new THREE.BufferGeometry();
     g.setAttribute('position',new THREE.BufferAttribute(p.position,3));
     g.setAttribute('uv',new THREE.BufferAttribute(p.uv,2));
-    g.setAttribute('color',new THREE.BufferAttribute(p.color,3));
+    g.setAttribute('color',new THREE.BufferAttribute(p.color,4));
     g.setAttribute('normal',new THREE.BufferAttribute(p.normal,3));
     g.setIndex(new THREE.BufferAttribute(p.index,1));
-    g.computeBoundingSphere();g.boundingSphere!.radius+=.2;return g;
+    return g;
    })():riceCanopyGeometry(plot,position,clearPath);
+   geometry.computeBoundingSphere();geometry.boundingSphere!.radius+=.85;
    ownedGeometry.push(geometry);canopyTriangles=geometry.index!.count/3;
   const canopy=new THREE.Mesh(geometry,assets.material('canopy','#ffffff'));canopy.name='rice-canopy';canopy.userData.riceSeaCanopy=true;
   // Rice canopy stays lit by the material; no realtime shadow sampling.
@@ -249,7 +241,7 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  }
  const update=(distance:number,time:number)=>{
   const gap=Math.max(plot.start-distance,0,distance-plot.end);if(meadow){meadow.visible=gap<265;if(meadow.visible)meadow.update(time);}
-  crops.forEach(m=>m.visible=gap<105);
+  crops.forEach(m=>m.visible=gap<135);
  };
  // Exact per-mesh draw timestamps belong to interactive farm/stream QA,
  // not normal developer driving or FPS logging. The former always-on

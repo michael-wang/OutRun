@@ -12,14 +12,11 @@ https://creativecommons.org/publicdomain/zero/1.0/
 
 API metadata including the license declarations is preserved in
 `rice-source.json` and `scarecrow-source.json`. Both source pages identify these
-models as AI generated. OutRun downloads the supplied GLBs; it does not generate
-replacement models. The rice derivatives are offline reductions of the source
-geometry using Three.js ConvexGeometry and SimplifyModifier: connected source
-stalks identify each ear, overlapping envelopes preserve its grain volume, and
-two transformed plants form the near clump. The soil pedestal is omitted.
-Material colors are baked into merged draws with height UVs for the upstream
-wind shader. Originals and their hashes remain unchanged. See the preparation script
-and `simplification.json`.
+models as AI generated. The mid-distance derivative simplifies the original
+ears into envelopes. The near clump arranges six plants with bowed stems,
+folded flag leaves and individual husks shaped from the source grain positions
+and bounds. Both omit the soil pedestal. See the preparation scripts and
+`simplification.json`.
 
 Vegetation code and generated Wildflowers flower masks are from three-stylized,
 MIT, copyright (c) 2026 Steve245270533. Its full MIT license and pinned upstream
