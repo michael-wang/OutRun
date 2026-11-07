@@ -5,6 +5,7 @@ import {
  COAST_NEAR_SHADOW,COAST_FAR_SHADOW,COAST_SHADOW_LOOKAHEAD_M,COAST_STATIC_SHADOW_STEP_M,CoastShadowCache,
  configureCoastShadowLights,updateCoastShadowLights,
 } from '../src/coast-shadow-coverage';
+import {coastRoadLightingChunk,constrainCoastRoadShadowReceiver,COAST_ROAD_DYNAMIC_SHADOW_END_M} from '../src/coast-road-shadows';
 
 const sample=(d:number)=>({position:new THREE.Vector3(0,5,d)});
 
@@ -84,4 +85,28 @@ it('caches fixed-sun static shadows inside a route cell but updates dynamic shad
  expect(far.shadow.needsUpdate).toBe(true);
  expect(c.stats.staticRefreshRequests).toBe(3);
  expect(c.stats.policy).toContain('static-region-cache');
+});
+
+it('samples dynamic car/truck depth only on asphalt; bypasses unstable far static cache',()=>{
+ const original=THREE.ShaderChunk.lights_fragment_begin;
+ const patched=coastRoadLightingChunk(original);
+ expect(patched).toContain('UNROLLED_LOOP_INDEX == 0');
+ expect(patched).toContain('smoothstep(80.0,');
+ expect(patched).toContain('length(vViewPosition)');
+ expect(patched).toContain('200.0');
+ expect(COAST_ROAD_DYNAMIC_SHADOW_END_M).toBe(200);
+ expect(patched).toContain('getShadow( directionalShadowMap[ i ]');
+ expect(patched).not.toContain('directLight.visible && receiveShadow ) ? getShadow( directionalShadowMap');
+ const material=new THREE.MeshStandardMaterial({roughness:1});
+ constrainCoastRoadShadowReceiver(material);
+ const shader:any={
+  fragmentShader:'#include <common>\n#include <lights_fragment_begin>\n#include <color_fragment>',
+  vertexShader:'#include <common>\n#include <begin_vertex>',
+  uniforms:{},
+ };
+ material.onBeforeCompile(shader,{} as any);
+ expect(shader.fragmentShader).toContain('UNROLLED_LOOP_INDEX == 0');
+ expect(shader.fragmentShader).not.toContain('#include <lights_fragment_begin>');
+ expect(material.customProgramCacheKey()).toBe('coast-road-dynamic-shadow-only-v1');
+ material.dispose();
 });

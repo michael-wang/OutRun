@@ -1,6 +1,7 @@
 import {addCanyonDawn,CANYON_DAWN_SUN} from './canyon-dawn';
 import {addCoastDusk,COAST_SUN} from './coast-dusk';
 import {configureCoastShadowLights,CoastShadowCache} from './coast-shadow-coverage';
+import {constrainCoastRoadShadowReceiver} from './coast-road-shadows';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {addCoastSandLight} from './coast-sand-light';
 import {softenCoastInlandFog} from './coast-inland-fog';
@@ -91,6 +92,14 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   asphalt.map=asphaltTexture();
   const supportMaterial=new THREE.MeshStandardMaterial({color:'#c8aa7d',roughness:1,side:THREE.DoubleSide});
   const edgeMaterials=[line,mat('#b64b35')],surfMaterial=new THREE.MeshBasicMaterial({color:'#b8e2da',transparent:true,opacity:.72});
+  if(coastUltra){
+   // The original static-shadow map spans ~2.8km and slides every 240m.
+   // Its road receiver produces the flickering black rectangles seen at
+   // 933/1169m. Preserve NEAR vehicle depth shadows on the asphalt/lines,
+   // but never sample the static/far map on the paved driving surface.
+   for(const material of [asphalt,line,edgeMaterials[1]])
+    constrainCoastRoadShadowReceiver(material);
+  }
   const dummy=new THREE.Object3D();
   function instances(geo:THREE.BufferGeometry,material:THREE.Material,poses:{p:THREE.Vector3;s?:THREE.Vector3;r?:THREE.Euler}[]) {
     const mesh=new THREE.InstancedMesh(geo,material,poses.length);mesh.castShadow=true;mesh.receiveShadow=true;
