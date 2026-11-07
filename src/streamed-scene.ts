@@ -14,7 +14,7 @@ import {SceneTaskProfiler,SCENE_TASK_SOFT_BUDGET_MS,type SceneTaskKind} from './
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
-type Instance={waffleSign?:boolean;coastDrainWater?:boolean;nature?:NatureBatch;shadowGroup?:import('./coast-shadow-layers').CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array};
+type Instance={waffleSign?:boolean;coastDrainWater?:boolean;noShadowGround?:boolean;nature?:NatureBatch;shadowGroup?:import('./coast-shadow-layers').CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array};
 type Chunk={index:number;objects:THREE.Object3D[];groups:Partial<Record<string,THREE.Group>>;geometries:Set<THREE.BufferGeometry>;road:'missing'|'working'|'ready';scenery:'missing'|'working'|'ready'};
 type Phase='road'|'scenery';
 type Lifecycle={index:number;start:number;end:number;kind:Phase;generation:number;requestedAt:number;responseAt?:number;workerCpuMs?:number;responseMs?:number;commitStart?:number;commitEnd?:number;commitCpuMs:number;readyAt?:number;generatedInstances?:number;attachedInstances:number;discardedTasks:number;error?:string;retiredAt?:number};
@@ -259,11 +259,12 @@ export class StreamedScene {
    }
    const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);
    mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;
-   mesh.receiveShadow=!data.nature&&!data.coastDrainWater;
-   mesh.castShadow=!!this.farmSample&&!data.coastDrainWater;
+   mesh.receiveShadow=!data.nature&&!data.coastDrainWater&&!data.noShadowGround;
+   mesh.castShadow=!!this.farmSample&&!data.coastDrainWater&&!data.noShadowGround;
    if(mesh.castShadow)markCoastShadowCaster(mesh,'static',data.shadowGroup??(data.nature?'vegetation':'other'));
    if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}
    if(data.coastDrainWater){mesh.name='coast-drain-flowing-water';mesh.userData.coastDrainWater=true;}
+   if(data.noShadowGround){mesh.name='coast-inland-ground-detail';mesh.userData.noShadowGround=true;}
    this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
   if(this.farmSample&&this.farmAssets)for(const plot of farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength))tasks.push(()=>{
    const farm=createFarmPlot(plot,this.farmSample!,this.farmAssets!,prepared.get(plot.id));let patches=this.farms.get(c.index);if(!patches){patches=[];this.farms.set(c.index,patches);}patches.push(farm);

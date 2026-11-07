@@ -82,7 +82,10 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    const key=i*37+j*131,at=d+random(key)*18;
    if(at>=end||coastWildness(at)<.3)continue;
    const x=j<2?28+random(key+9)*47:150+random(key+9)*155,choice=random(key+13);
-   if(random(key+18)>.18)plant(choice<.12?'CommonTree_1':choice<.72?'CommonTree_3':'Pine_5',at,x,(j<2?5:7)+random(key+2)*6,key,600);
+   // Share the full, layered broadleaf canopy used in the admired
+    // countryside scene. Keep the needle-like pines only on remote hills.
+    if(random(key+18)>.18)plant(j<2||choice<.76?'CommonTree_3':'Pine_5',
+     at,x,(j<2?5:7)+random(key+2)*6,key,600);
   }
   for(let j=0;j<3;j++){
    const key=i*43+j*193,at=d+random(key+6)*18;

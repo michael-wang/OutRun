@@ -1,6 +1,8 @@
 import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
+import {buildCoastTownStreets} from './coast-town-streets';
+import {buildCoastMeadow} from './coast-meadow';
 import {coastHomeFacingYaw} from './coast-house-facing';
 import {FARM_HOMES} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
@@ -430,6 +432,22 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    bridgeGap=false;anchorRight=false;
    coastShadowGroup='other';
    part(creek,'#ffffff',0,0,0,1,1,1);
+  }
+  // Worker-baked grass/meadow tufts in gaps between authored fields.
+  // This is ONE opaque coloured geometry per chunk, never a mesh per blade.
+  const meadow=buildCoastMeadow(sample,range.start,range.end);
+  if(meadow){
+   base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+   bridgeGap=false;anchorRight=false;coastShadowGroup='vegetation';
+   part(meadow,'#ffffff',0,0,0,1,1,1);
+  }
+  // Short local streets link residential frontages to the covered town
+  // drain and highway edge, without altering the main road physics.
+  const streets=buildCoastTownStreets(sample,range.start,range.end);
+  if(streets){
+   base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
+   bridgeGap=false;anchorRight=false;coastShadowGroup='other';
+   part(streets,'#ffffff',0,0,0,1,1,1);
   }
   // 台灣路側樣板 R0: one entire drainage channel per scenery chunk.
   // The ROAD Worker has already sculpted the U profile into grass; this
@@ -894,7 +912,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   }
   if(act.id==='city'&&index===1){for(const x of [-20,20]){part(boxes,'#4b8090',x,19,0,2,38,2);part(boxes,'#dfb65c',x-10,37,0,36,1.2,1.2);part(cylinder,'#647a7b',x-25,24,0,.07,25,.07);part(boxes,'#d38e6a',x,2,6,14,4,6);}}
  }
- for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;if(b.geometry.userData.coastDrainWater)mesh.userData.coastDrainWater=true;
+ for(const b of buckets.values()){const mesh=new THREE.InstancedMesh(b.geometry,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.receiveShadow=true;mesh.castShadow=false;if(b.geometry.userData.waffleSign)mesh.userData.waffleSign=true;if(b.geometry.userData.coastDrainWater)mesh.userData.coastDrainWater=true;if(b.geometry.userData.noShadowGround)mesh.userData.noShadowGround=true;
    if(range.coastUltra)mesh.userData.coastShadowGroup=b.shadowGroup;
    group.add(mesh);}
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};
