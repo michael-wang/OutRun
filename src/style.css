@@ -581,3 +581,24 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 }
 #car-paint:focus-visible{outline:2px solid #ffe9b5;outline-offset:2px}
 #car-paint option{background:#153e45;color:#fff4de}
+
+/* Model chooser is intentionally beside paint, inside existing options:
+   no new driving-screen HUD or touch overlay. */
+#car-model-setting{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ margin:8px 0 10px;color:#fff3d8;
+ font:600 14px/1.4 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+#car-model{
+ min-width:142px;max-width:72%;height:40px;padding:6px 9px;
+ border:1.5px solid #ffe0a2aa;border-radius:8px;
+ background:#113a45ad;color:#fff4de;
+ font:600 12px/1.2 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+ cursor:pointer;touch-action:manipulation;
+}
+#car-model:focus-visible{outline:2px solid #ffe9b5;outline-offset:2px}
+#car-model option{background:#153e45;color:#fff4de}
+@media(orientation:landscape) and (max-height:500px){
+ #car-model-setting{margin:5px 0 6px;font-size:12px}
+ #car-model{height:34px;font-size:11px}
+}
