@@ -40,7 +40,6 @@ export function createDriverHair():THREE.Group{
  for(let i=0;i<23;i++){
   const theta=i/23*Math.PI*2;
   const x=Math.cos(theta)*.105,z=Math.sin(theta)*.095;
-  const long=.11+(i%4)*.009;
   const rows:Row[]=[];
   for(let step=0;step<=5;step++){
    const t=step/5;
@@ -88,11 +87,11 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[]}{
   const anchor=new THREE.Group();anchor.name='blonde-hair-lock-'+i;
   anchor.position.set((i-2)*.054,-.025,-.109-(i%2)*.011);
   root.add(anchor);
-  const clusters:Strand[]=[];
+  const upper:Strand[]=[],lower:Strand[]=[];
   for(let j=0;j<3;j++){
    const rows:Row[]=[];
-   for(let step=0;step<=7;step++){
-    const t=step/7;
+   for(let step=0;step<=8;step++){
+    const t=step/8;
     rows.push({
      x:(j-1)*.014+(i-2)*.006+Math.sin(t*2.2+i*.52)*.014*t,
      y:-.015-.18*t-.024*t*t,
@@ -101,11 +100,12 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[]}{
      shade:.84+.10*Math.sin(i+j)+.13*t,
     });
    }
-   clusters.push({rows});
+   upper.push({rows:rows.slice(0,5)});
+   lower.push({rows:rows.slice(4).map(row=>({...row,y:row.y+.13}))});
   }
-  anchor.add(strandMesh(clusters,'#94612a','#f6d788','blonde-wind-ribbons-'+i));
-  // A light second joint bends the very end, but the crown stays rooted.
+  anchor.add(strandMesh(upper,'#94612a','#f6d788','blonde-wind-ribbons-'+i));
   const tip=new THREE.Group();tip.name='blonde-tip-joint';tip.position.y=-.13;
+  tip.add(strandMesh(lower,'#ba8743','#f8dc99','blonde-tip-sheets-'+i));
   anchor.add(tip);
   locks.push(anchor);
  }

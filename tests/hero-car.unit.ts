@@ -11,10 +11,12 @@ describe('hero spider focal-point art',()=>{
   const hand=car.getObjectByName('driver-right-hand-steering');
   const hair=car.getObjectByName('blonde-hair-lock-1');
   const plate=car.getObjectByName('rear-license-FZR-123');
-  expect(steering).toBeDefined();expect(steering!.position.x).toBeLessThan(0);
+  expect(steering).toBeDefined();expect(steering!.position.x).toBeGreaterThan(0);
+  expect(car.getObjectByName('driver')!.position.x).toBeGreaterThan(0);
+  expect(car.getObjectByName('passenger')!.position.x).toBeLessThan(0);
   expect(arm).toBeDefined();expect(hand).toBeDefined();expect(hair).toBeDefined();
   const armBox=new THREE.Box3().setFromObject(arm!);
-  expect(armBox.min.x).toBeLessThan(-.92);
+  expect(armBox.max.x).toBeGreaterThan(.92);
   expect(armBox.max.y).toBeLessThan(1.30);
   expect(car.userData.licensePlate).toBe('FZR-123');
   expect(plate).toBeInstanceOf(THREE.Mesh);
@@ -45,7 +47,10 @@ describe('hero spider focal-point art',()=>{
   expect(Math.abs(left.rotation.z)).toBeLessThan(.01);
   expect(Math.abs(right.rotation.z)).toBeGreaterThan(.03);
   const h=m.occupants().people[1].hair;
-  expect(h).toHaveLength(3);
-  expect(h.every((lock:{back:number})=>lock.back>1.1)).toBe(true);
+  expect(h).toHaveLength(5);
+  expect(h.every((lock:{back:number})=>lock.back>.10&&lock.back<.45)).toBe(true);
+  const scarf=m.occupants().people[0].scarf;
+  expect(scarf).toHaveLength(2);
+  expect(scarf.every((tail:{back:number})=>tail.back>.13&&tail.back<.34)).toBe(true);
  });
 });
