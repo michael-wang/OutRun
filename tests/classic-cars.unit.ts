@@ -94,31 +94,38 @@ it('passenger has bare upper arms and a sleeveless fitted summer dress; driver r
  expect(colors.has('e3b79b')).toBe(true);
 });
 
-it('seals the rounded classics from the rear camera without covering the open cockpit',()=>{
+
+it('retains the approved Riviera and seals Grand Tourer 67 and Wedge Spider 76',()=>{
  const car=createCar();
  const controller=car.userData.modelController as CarModelController;
  const body=car.getObjectByName('hero-classic-body-shell') as THREE.Mesh;
- const wedgeTrim=car.getObjectByName('wedge-only-rear-trim')!;
+ const rivieraTrim=car.getObjectByName('riviera-only-rear-trim')!;
  const ray=new THREE.Raycaster();
- for(const model of ['riviera-62','grand-tourer-67'] as const){
+ controller.set('riviera-62');
+ expect(rivieraTrim.visible).toBe(true); // user's admired third screenshot
+ // Preserve the accepted original overlapping sculpted surface and deck
+ // topology for Riviera; only the two problematic models use a fascia.
+ const rivieraBody=createClassicBody('riviera-62');
+ const wedgeBody=createClassicBody('wedge-spider-76');
+ expect(rivieraBody.getAttribute('position').count).not.toBe(wedgeBody.getAttribute('position').count);
+ rivieraBody.dispose();wedgeBody.dispose();
+ for(const model of ['grand-tourer-67','wedge-spider-76'] as const){
   controller.set(model);
-  expect(wedgeTrim.visible).toBe(false);
-  // A horizontal chase ray MUST hit the opaque painted rear fascia before
-  // seeing the dark cockpit, old bumper ribs or wheel internals.
+  expect(rivieraTrim.visible).toBe(false);
+  // A horizontal chase ray MUST hit opaque painted fascia ahead of any
+  // old bumper ribs, even at left/right quarter corners.
   for(const x of [-.72,0,.72]){
    ray.set(new THREE.Vector3(x,.71,-5),new THREE.Vector3(0,0,1));
    const hits=ray.intersectObject(body,false);
    expect(hits.length).toBeGreaterThan(0);
    expect(hits[0].point.z).toBeLessThan(-2.35);
   }
-  // And the classic trunk surface stays solid across its centre.
+  // The top deck has one closed painted skin, not two conflicting ones.
   ray.set(new THREE.Vector3(0,2.5,-1.7),new THREE.Vector3(0,-1,0));
   const deck=ray.intersectObject(body,false);
   expect(deck.length).toBeGreaterThan(0);
   expect(deck[0].point.y).toBeGreaterThan(.78);
  }
- // The visually accepted 1976 Wedge keeps its rear vents and spoiler.
- controller.set('wedge-spider-76');
- expect(wedgeTrim.visible).toBe(true);
- expect(controller.inspect().bodyGeometry).toContain('wedge-spider-76');
+ controller.set('riviera-62');
+ expect(rivieraTrim.visible).toBe(true); // switching back restores details
 });

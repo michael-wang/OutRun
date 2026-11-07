@@ -104,12 +104,10 @@ function classicTonneau(model:CarModel):THREE.BufferGeometry{
  g.computeVertexNormals();return g;
 }
 
-/** An opaque, camera-facing rear body panel on the two rounded 1960s
- * models. Both previously shared a second tonneau OVER their shell roof:
- * intersecting/coplanar surfaces made the trunk and bumper look torn open.
- * The shell itself already has a closed rear deck, so these models need
- * a clean rear closing panel, not another overlapping roof surface.
- * The accepted angular 1976 Wedge keeps its original tonneau unchanged.
+/** Opaque rear closure on the Grand Tourer 67 and Wedge Spider 76.
+ * Their overlapping old tonneau skins and raised deck ribs intersected
+ * with the car shell, exposing "guts" from the chase camera. Riviera 62
+ * is the owner's APPROVED third screenshot: retain its original tonneau.
  */
 function classicRearFascia():THREE.BufferGeometry{
  const xs=[-.90,-.66,-.33,0,.33,.66,.90];
@@ -134,12 +132,12 @@ function classicRearFascia():THREE.BufferGeometry{
  return geometry;
 }
 
-/** One active clear-coated body. The 1976 wedge still gets a separate
- * styled tonneau; the rounded bodies use their existing closed deck plus
- * a properly oriented, opaque rear fascia. Never overlap two roof skins.
+/** The accepted Riviera retains its original deck. Both problem cars
+ * use a sealed rear fascia; their shell already provides the roof/deck top.
+ * Do not overlay another near-coplanar tonneau on either of those shells.
  */
 export function createClassicBody(model:CarModel):THREE.BufferGeometry{
- const pieces=model==='wedge-spider-76'
+ const pieces=model==='riviera-62'
   ?[classicShell(model),classicTonneau(model)]
   :[classicShell(model),classicRearFascia()];
  const merged=mergeGeometries(pieces);
