@@ -33,7 +33,7 @@ const strandMesh=(strands:readonly Strand[],base:string,highlight:string,name:st
 };
 
 /** Layered youthful Asian side-part, optimised for the rear chase camera.
- * A short tapered undercut fills the nape; 28 directional hair ribbons sit
+ * A short tapered undercut fills the nape; 26 directional hair ribbons sit
  * OUTSIDE it at different lengths. Unlike the old continuous spherical dome,
  * the silhouette has separated ends, a side-swept crown and a natural nape.
  * Both are opaque static meshes: no new per-frame animation or texture loads.
@@ -74,14 +74,14 @@ export function createDriverHair():THREE.Group{
  // narrow distinct locks swept slightly to the man's right, with staggered
  // tip heights and directional low-contrast vertex highlights.
  const strands:Strand[]=[];
- for(let i=0;i<28;i++){
-  const angle=(i+.35)*Math.PI*2/28;
+ for(let i=0;i<26;i++){
+  const angle=(i+.35)*Math.PI*2/26;
   const sx=Math.sin(angle),sz=Math.cos(angle);
   const rear=Math.max(0,-sz),temple=Math.abs(sx);
   const fall=.101+rear*.056+(i%4)*.010+temple*.006;
   const rows:Row[]=[];
-  for(let j=0;j<=6;j++){
-   const t=j/6;
+  for(let j=0;j<=5;j++){
+   const t=j/5;
    rows.push({
     x:sx*(.068+.096*t)+.025*(1-t)+.015*Math.sin(t*2.8+angle)*t,
     y:.150-fall*t+.006*Math.sin(i*.81+t*4.4),
