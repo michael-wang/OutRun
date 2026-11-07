@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
+import {coastTreeVolume,coastBushVolume} from './coast-volume-foliage';
 import {farmClearing} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastVegetationDensity} from './coast-journey-layout';
@@ -64,12 +65,18 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false){
   if(!authored&&farmClearing(d,x))return;
   const p=sample(d),model=assets![name];
+  if(!model&&name!=='Bush_Common')throw Error('Missing coast nature model '+name);
   dummy.position.copy(p.position).addScaledVector(p.right,x);
   dummy.position.y=coastNatureGround(sample,d,x,start,end)-.06;
   dummy.rotation.set(0,random(key+32)*Math.PI*2,0);dummy.scale.set(height*(.82+random(key+7)*.3),height,height*(.82+random(key+7)*.3));dummy.updateMatrix();
   const center=Math.floor(d/200)*200+100;
-  // All tree meshes are genuine three-dimensional foliage; no far impostors.
-  for(const [i,part] of model.parts.entries()){
+  // Original Leaves_NormalTree_C and Bush_Common were crossed alpha cards,
+  // despite 3D bark. Their actual thin planes caused the flat silhouette.
+  // Replace BOTH foliage variants with opaque irregular convex 3D crowns.
+  const parts=name==='Bush_Common'?[coastBushVolume()]
+   :name===COAST_TREE_MODEL?[...model.parts,coastTreeVolume()]
+   :model.parts;
+  for(const [i,part] of parts.entries()){
    const data=part,id=name+':'+i;
    let g=geometries.get(id);if(!g){g=geometry(data);geometries.set(id,g);}
    const matKey=part.texture??'plain';let m=materials.get(matKey);

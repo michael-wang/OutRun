@@ -69,9 +69,11 @@ describe('single full 3D tree model and no added grass',()=>{
   const src=readFileSync('src/coast-nature.ts','utf8');
   expect(src).not.toContain("plant('Grass_Common_Short'");
   expect(src).not.toContain("name==='Grass_Common_Short'");
-  expect(src).toContain('for(const [i,part] of model.parts.entries())');
+  expect(src).toContain("name===COAST_TREE_MODEL?[...model.parts,coastTreeVolume()]");
+  expect(src).toContain('coastBushVolume()');
   expect(src).not.toContain('model.far');
-  expect(Object.keys(assets).sort()).toEqual(['CommonTree_3','Bush_Common','Rock_Medium_2'].sort());
+  expect(Object.keys(assets).sort()).toEqual(['CommonTree_3','Rock_Medium_2'].sort());
+  expect(assets.Bush_Common).toBeUndefined();
   for(const name of ['CommonTree_1','Pine_5','Grass_Common_Short'])
    expect(assets[name]).toBeUndefined();
   expect(assets[COAST_TREE_MODEL].far).toBeUndefined();
@@ -94,4 +96,23 @@ describe('single full 3D tree model and no added grass',()=>{
   expect(trees.length).toBeGreaterThanOrEqual(assets[COAST_TREE_MODEL].parts.length);
   expect(trees.some(o=>(o as THREE.InstancedMesh).count>=5)).toBe(true);
  });
+});
+
+it('uses actual shaded convex foliage instead of billboards at home and on hills',async()=>{
+ const {coastTreeVolume,coastBushVolume}=await import('../src/coast-volume-foliage');
+ for(const geometry of [coastTreeVolume(),coastBushVolume()]){
+  expect(geometry.position.length/3).toBeGreaterThan(400);
+  expect(geometry.normal).toHaveLength(geometry.position.length);
+  expect(geometry.color).toHaveLength(geometry.position.length);
+  const xs=geometry.position.filter((_:number,i:number)=>i%3===0);
+  const ys=geometry.position.filter((_:number,i:number)=>i%3===1);
+  const zs=geometry.position.filter((_:number,i:number)=>i%3===2);
+  expect(Math.max(...xs)-Math.min(...xs)).toBeGreaterThan(.39);
+  expect(Math.max(...ys)-Math.min(...ys)).toBeGreaterThan(.35);
+  expect(Math.max(...zs)-Math.min(...zs)).toBeGreaterThan(.40);
+ }
+ const asset=JSON.parse(readFileSync('public/assets/coast-nature/models.json','utf8'));
+ expect(asset.CommonTree_3.parts).toHaveLength(1);
+ expect(asset.CommonTree_3.parts[0].texture).toBe('Bark_NormalTree.png');
+ expect(asset.Bush_Common).toBeUndefined();
 });
