@@ -409,21 +409,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boxes,'#bcb4a6',-3,.98,z,21,.20,.18);
     for(const x of [-13,-8,-3,2,7])part(boxes,'#aaa294',x,.70,z,.19,.79,.22);
    }
-   const treeSites=[
-    {d:1008,x:76,h:8.6},{d:1020,x:152,h:10.4},
-    {d:1065,x:104,h:12.0},{d:1092,x:86,h:8.5},
-    {d:1075,x:160,h:9.5},
-   ];
-   coastShadowGroup='vegetation';
-   for(const [i,tree] of treeSites.entries()){
-    beachAnchor(tree.d,tree.x);
-    const h=tree.h;
-    part(cylinder,'#79604c',0,h*.48,0,.36,h*.95,.36);
-    part(round,'#496c45',0,h+.5,0,3.8,h*.32,4.0);
-    part(round,'#617d4a',1.8,h+.15,1.1,2.5,h*.23,2.7);
-    part(round,'#526c43',-1.9,h-.1,-1,2.4,h*.22,2.6);
-    for(const side of [-1,1])part(round,i%2?'#657d4e':'#536e4b',side*3,.75,side*1.2,1.9,.85,1.8);
-   }
+   // Farm garden trees are now imported as full 3D CommonTree_3 in coast-nature.
    // Creek has been sculpted into the SAME road-worker grass cross-section.
    // Water, edge stones and warm glints share one 3km chunk-owned template.
    const creek=buildCoastRuralCreek(sample);

@@ -1,8 +1,6 @@
 import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {farmClearing} from './coast-farm-layout';
-import {townStreetAt} from './coast-town-access';
-import {COAST_VILLAGE_SITES} from './coast-village-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastVegetationDensity} from './coast-journey-layout';
 import {coastBeachHeight} from './scenery-cross-section';
@@ -20,6 +18,14 @@ export function loadCoastNature(){
  }).catch(e=>{loading=undefined;throw e;});
 }
 const random=(n:number)=>{const x=Math.sin(n*127.1+804)*43758.5453;return x-Math.floor(x);};
+export const COAST_TREE_MODEL='CommonTree_3';
+/** No distant flat/billboard replacement for the approved broadleaf tree. */
+export const COAST_TREE_DRAW_DISTANCE=1450;
+export const COAST_HERO_TREE_SITES=[
+ {d:1008,x:76,h:8.6},{d:1020,x:152,h:10.4},
+ {d:1065,x:104,h:12.0},{d:1092,x:86,h:8.5},
+ {d:1075,x:160,h:9.5},
+] as const;
 /** Intersect the same two triangles as the terrain ribbons. Analytic noise
  * alone can leave roots floating between coarse cross-slope stations. */
 export function coastNatureGround(sample:ReturnType<typeof createTrack>['sample'],d:number,x:number,start:number,end:number){
@@ -53,31 +59,34 @@ const geometry=(data:GeometryData)=>{
  * never depend on worker request order. The streamer culls whole batches. */
 export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],start:number,end:number){
  if(!assets)throw Error('Coast nature must load before scenery preparation');
- const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch;shadowGroup:'rocks'|'vegetation';lowGrass:boolean}>();
+ const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch;shadowGroup:'rocks'|'vegetation'}>();
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
- function plant(name:string,d:number,x:number,height:number,key:number,far:number){
-  if(farmClearing(d,x))return;
+ function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false){
+  if(!authored&&farmClearing(d,x))return;
   const p=sample(d),model=assets![name];
   dummy.position.copy(p.position).addScaledVector(p.right,x);
   dummy.position.y=coastNatureGround(sample,d,x,start,end)-.06;
   dummy.rotation.set(0,random(key+32)*Math.PI*2,0);dummy.scale.set(height*(.82+random(key+7)*.3),height,height*(.82+random(key+7)*.3));dummy.updateMatrix();
   const center=Math.floor(d/200)*200+100;
-  for(const [i,data] of [...model.parts,...(model.far?[model.far]:[])].entries()){
+  const parts=name===COAST_TREE_MODEL?model.parts:[...model.parts,...(model.far?[model.far]:[])];
+  for(const [i,data] of parts.entries()){
    const isFar=i===model.parts.length,part=data as Model['parts'][number],id=name+':'+i;
    let g=geometries.get(id);if(!g){g=geometry(data);geometries.set(id,g);}
    const matKey=isFar?'far':part.texture??'plain';let m=materials.get(matKey);
    if(!m){m=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:!!data.color?.length});materials.set(matKey,m);}
    const bucketKey=id+':'+center;
    let bucket=buckets.get(bucketKey);
-   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,alpha:part.alpha,center,near:isFar?(name==='CommonTree_3'?780:600):0,
-    far:isFar?1800:(name==='CommonTree_3'?780:far)},
-    shadowGroup:name.startsWith('Rock_')?'rocks':'vegetation',
-    lowGrass:name==='Grass_Common_Short'};buckets.set(bucketKey,bucket);}
+   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,alpha:part.alpha,center,near:isFar?600:0,
+     far:name===COAST_TREE_MODEL?COAST_TREE_DRAW_DISTANCE:isFar?1800:far},
+    shadowGroup:name.startsWith('Rock_')?'rocks':'vegetation'};buckets.set(bucketKey,bucket);}
    bucket.matrices.push(dummy.matrix.clone());
   }
  }
- // Irregular multi-layer groves. Low grass at the verge, shrubs at the foot,
- // different-sized broadleaf and pine crowns on the rising slope behind them.
+ // Farmhouse grove uses exactly the same 3D broadleaf as the distant hillside.
+ for(const [i,tree] of COAST_HERO_TREE_SITES.entries())
+  if(tree.d>=start&&tree.d<end)
+   plant(COAST_TREE_MODEL,tree.d,tree.x,tree.h,90000+i*97,600,true);
+ // Trees/shrubs remain; individual grassy tufts are unapproved and removed.
  for(let i=Math.ceil(start/22);i*22<end;i++){
   const d=i*22;
   // Chapter II is an intentionally sparse headland behind the tourist
@@ -91,7 +100,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    // Share the full, layered broadleaf canopy used in the admired
     // countryside scene. Keep the needle-like pines only on remote hills.
     if(random(key+18)>.18){
-     plant('CommonTree_3',at,x,(j<2?5:7)+random(key+2)*6,key,600);
+     plant(COAST_TREE_MODEL,at,x,(j<2?5:7)+random(key+2)*6,key,600);
      if(j<2)treeAnchors[j]={at,x};
     }
   }
@@ -104,36 +113,14 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    const x=tree?tree.x+(random(key+11)-.5)*8
     :j<2?20+random(key+11)*45:125+random(key+11)*100;
    plant('Bush_Common',at,x,1.5+random(key+3)*2.5,key,420);
-   plant('Grass_Common_Short',at,tree?x+3:18+random(key+15)*20,
-    .5+random(key+21)*.65,key+1,260);
   }
   if(i%3===0)plant('Rock_Medium_2',d,23+random(i+19)*53,1+random(i+24)*2.2,i,650);
- }
- // Groundcover reuses the existing imported Grass_Common_Short low-poly
- // asset with InstancedMesh buckets; no separate triangle-rock meadow mesh,
- // canvas overlay, new draw per clump or new procedural Grass() subsystem.
- // A fixed, sparse global grid keeps the scale legible at driving speed.
- for(let i=Math.ceil(start/19);i*19<end;i++){
-  const d=i*19;
-  for(let j=0;j<2;j++){
-   const key=200001+i*17+j*653;
-   const at=d+random(key)*13;
-   if(at>=end)continue;
-   const x=j===0?18+random(key+3)*22:42+random(key+7)*28;
-   if(farmClearing(at,x)||townStreetAt(at,9)&&x<84)continue;
-   if(COAST_VILLAGE_SITES.some(h=>Math.abs(h.d-at)<13&&Math.abs(h.x-x)<13))continue;
-   plant('Grass_Common_Short',at,x,.42+random(key+15)*.24,key,190);
-  }
  }
  for(const b of buckets.values()){
   const mesh=new THREE.InstancedMesh(b.g,b.m,b.matrices.length);
   b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.userData.nature=b.nature;
-  mesh.name=b.lowGrass?'coast-instanced-grass':'coast-nature';
-  mesh.userData.coastShadowGroup=b.shadowGroup;
-  // Short turf is too small to cast useful shadows. Rendering it into
-  // static 3072² shadow maps on Pixel 8 would defeat the whole budget.
-  if(b.lowGrass)mesh.userData.noShadowGround=true;
-  else markCoastShadowCaster(mesh,'static',b.shadowGroup);
+  mesh.name='coast-nature';mesh.userData.coastShadowGroup=b.shadowGroup;
+  markCoastShadowCaster(mesh,'static',b.shadowGroup);
   mesh.castShadow=false;mesh.receiveShadow=false;scene.add(mesh);
  }
  return {instances:[...buckets.values()].reduce((n,b)=>n+b.matrices.length,0),draws:buckets.size};

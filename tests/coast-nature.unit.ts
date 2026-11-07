@@ -7,7 +7,7 @@ import {farmPlainMask} from '../src/coast-farm-layout';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastBeachHeight} from '../src/scenery-cross-section';
-import {addCoastNature,loadCoastNature} from '../src/coast-nature';
+import {addCoastNature,loadCoastNature,COAST_HERO_TREE_SITES,COAST_TREE_MODEL,COAST_TREE_DRAW_DISTANCE} from '../src/coast-nature';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
@@ -55,10 +55,31 @@ describe('sunset coast nature',()=>{
   expect(checked).toBeGreaterThan(15);
   // New grass reuses the same cached InstancedMesh model in 200m buckets.
   expect(checked).toBeLessThan(450);expect(scene.children.length).toBeLessThan(90);
-  expect(scene.children.some(o=>o.name==='coast-instanced-grass')).toBe(true);
-  expect(scene.children.filter(o=>o.name==='coast-instanced-grass').every(o=>o.userData.noShadowGround===true)).toBe(true);
+  expect(scene.children.some(o=>o.name==='coast-instanced-grass')).toBe(false);
+  expect(COAST_TREE_MODEL).toBe('CommonTree_3');
+  expect(COAST_TREE_DRAW_DISTANCE).toBeGreaterThan(1200);
   const again=new THREE.Scene();addCoastNature(again,track.sample,start,end);
   expect(again.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array))).toEqual(scene.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array)));
   geometry.dispose();(mesh.material as THREE.Material).dispose();
+ });
+});
+
+describe('single full 3D tree model and no added grass',()=>{
+ it('has no grass placements or flat tree swap',()=>{
+  const src=readFileSync('src/coast-nature.ts','utf8');
+  expect(src).not.toContain("plant('Grass_Common_Short'");
+  expect(src).not.toContain("name==='Grass_Common_Short'");
+  expect(src).toContain("name===COAST_TREE_MODEL?model.parts:");
+  expect(COAST_HERO_TREE_SITES).toHaveLength(5);
+  expect(readFileSync('src/scenery.ts','utf8')).not.toContain("part(round,'#496c45'");
+ });
+ it('uses the same 3D crown near farmhouses',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>assets})));
+  await loadCoastNature();
+  const scene=new THREE.Scene();
+  addCoastNature(scene,track.sample,1000,1150);
+  const trees=scene.children.filter(o=>o.name==='coast-nature'&&o.userData.nature?.far===COAST_TREE_DRAW_DISTANCE);
+  expect(trees.length).toBeGreaterThanOrEqual(assets[COAST_TREE_MODEL].parts.length);
+  expect(trees.some(o=>(o as THREE.InstancedMesh).count>=5)).toBe(true);
  });
 });

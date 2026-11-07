@@ -38,8 +38,8 @@ it('uses existing instanced grass assets and no triangle-rock meadow geometry',(
   const scene=readFileSync(new URL('../src/scenery.ts',import.meta.url),'utf8');
   expect(scene).not.toContain('buildCoastMeadow');
   const nature=readFileSync(new URL('../src/coast-nature.ts',import.meta.url),'utf8');
-  expect(nature).toContain("plant('Grass_Common_Short'");
-  expect(nature).toContain("mesh.userData.noShadowGround=true");
+  expect(nature).not.toContain("plant('Grass_Common_Short'");
+  expect(nature).not.toContain('coast-instanced-grass');
   const worker=readFileSync(new URL('../src/road-worker.ts',import.meta.url),'utf8');
   const stream=readFileSync(new URL('../src/streamed-scene.ts',import.meta.url),'utf8');
   expect(worker).toContain('noShadowGround:!!object.userData.noShadowGround');
