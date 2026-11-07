@@ -68,6 +68,6 @@ export function buildCoastMeadow(
  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
  g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
  g.setIndex(indices);g.computeVertexNormals();g.computeBoundingSphere();
- g.name='coast-sparse-meadow';g.userData.coastMeadow=true;
+ g.name='coast-sparse-meadow';g.userData.noShadowGround=true;
  return g;
 }
