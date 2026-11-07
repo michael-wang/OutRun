@@ -1,2 +1,2 @@
 /** Public playtest build; separate from procedural route/handling revisions. */
-export const GAME_VERSION='v0.9-coast-r9.2-riviera-exp';
+export const GAME_VERSION='v0.9-coast-r9.2-polish-r1-exp';

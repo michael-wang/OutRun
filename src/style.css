@@ -581,3 +581,23 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 }
 #car-paint:focus-visible{outline:2px solid #ffe9b5;outline-offset:2px}
 #car-paint option{background:#153e45;color:#fff4de}
+
+
+/* Gamepad palette popup is body-mounted to avoid transformed drawer clipping.
+ * Keep native select for pointer and keyboard users. */
+#car-paint-list[hidden]{display:none}
+#car-paint-list{
+ position:fixed;z-index:210;display:grid;gap:3px;padding:6px;
+ background:#15383df2;color:#fff5df;border:1.5px solid #ffe0a2;
+ border-radius:8px;box-shadow:0 10px 26px #10252a66;box-sizing:border-box;
+}
+#car-paint-list button{
+ display:block;min-height:36px;text-align:left;padding:7px 11px;
+ border:1px solid #fff0d04d;border-radius:6px;
+ background:#193c43a6;color:#fff5df;
+ font:600 12px system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+#car-paint-list button[aria-selected="true"]{border-color:#ffe0a2}
+#car-paint-list button:focus-visible,#car-paint-list button:focus{
+ outline:2px solid #ffdd9c;outline-offset:0;background:#ffdfaa44;
+}

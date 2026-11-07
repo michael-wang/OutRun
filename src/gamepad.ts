@@ -22,8 +22,12 @@ export class GamepadInput {
  if((driving||canPraise)&&(edge(4)||edge(5))){this.releaseDrive();this.needsNeutral=true;this.previous=pressed;this.action('praise');return;}
  if((driving||canPraise)&&edge(2)){this.releaseDrive();this.needsNeutral=true;this.previous=pressed;this.action('issue');return;}
  if(edge(9))this.action('pause');
- if(!driving){if(edge(0))this.action('confirm');if(edge(1))this.action('back');if(edge(12)||(!qaMenu&&edge(14)))this.action('up');if(edge(13)||(!qaMenu&&edge(15)))this.action('down');if(qaMenu&&edge(14))this.action('left');if(qaMenu&&edge(15))this.action('right');this.releaseDrive();}
- else{if(this.needsNeutral){if(Math.abs(pad.axes[0]??0)>.16||b(6)||b(7)||b(14)||b(15)){this.previous=pressed;return;}this.needsNeutral=false;}const axis=Math.abs(pad.axes[0]??0)>.16?pad.axes[0]:0,steer=Number(b(15))-Number(b(14))||axis;if(steer)this.input.setAnalog('pad:axis',steer);else this.input.release('pad:axis');if(b(7))this.input.press('pad:gas','gas');else this.input.release('pad:gas');if(b(6))this.input.press('pad:brake','brake');else this.input.release('pad:brake');}
+ if(!driving){if(edge(0))this.action('confirm');if(edge(1))this.action('back');if(edge(12))this.action('up');if(edge(13))this.action('down');if(edge(14))this.action('left');if(edge(15))this.action('right');this.releaseDrive();}
+ else{// Resume without waiting for GAS/BRAKE/stick to be released.
+ // Menu inputs were already released above; held triggers should work
+ // on the FIRST drive frame, not after several additional presses.
+ this.needsNeutral=false;
+ const axis=Math.abs(pad.axes[0]??0)>.16?pad.axes[0]:0,steer=Number(b(15))-Number(b(14))||axis;if(steer)this.input.setAnalog('pad:axis',steer);else this.input.release('pad:axis');if(b(7))this.input.press('pad:gas','gas');else this.input.release('pad:gas');if(b(6))this.input.press('pad:brake','brake');else this.input.release('pad:brake');}
  this.previous=pressed;
  }
 }
