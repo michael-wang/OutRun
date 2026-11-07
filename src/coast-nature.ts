@@ -78,20 +78,30 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
   // Chapter II is an intentionally sparse headland behind the tourist
   // beach. Keep authored trees at the farm/courtyard and late fishing coast.
   if(coastWildness(d)<.3||random(i*67+231)>coastVegetationDensity(d))continue;
+  const treeAnchors:({at:number;x:number}|undefined)[]=[];
   for(let j=0;j<3;j++){
    const key=i*37+j*131,at=d+random(key)*18;
    if(at>=end||coastWildness(at)<.3)continue;
    const x=j<2?28+random(key+9)*47:150+random(key+9)*155,choice=random(key+13);
    // Share the full, layered broadleaf canopy used in the admired
     // countryside scene. Keep the needle-like pines only on remote hills.
-    if(random(key+18)>.18)plant(j<2||choice<.76?'CommonTree_3':'Pine_5',
-     at,x,(j<2?5:7)+random(key+2)*6,key,600);
+    if(random(key+18)>.18){
+     plant(j<2||choice<.76?'CommonTree_3':'Pine_5',
+      at,x,(j<2?5:7)+random(key+2)*6,key,600);
+     if(j<2)treeAnchors[j]={at,x};
+    }
   }
+  // Reuse the EXISTING bush/grass instance count, just cluster them around
+  // the broadleaf trees rather than isolating thin trees on bare ground.
   for(let j=0;j<3;j++){
-   const key=i*43+j*193,at=d+random(key+6)*18;
+   const key=i*43+j*193,tree=treeAnchors[j];
+   const at=tree?Math.max(start,Math.min(end-.01,tree.at+(random(key+6)-.5)*7)):d+random(key+6)*18;
    if(at>=end||coastWildness(at)<.3)continue;
-   plant('Bush_Common',at,j<2?20+random(key+11)*45:125+random(key+11)*100,1.5+random(key+3)*2.5,key,420);
-   plant('Grass_Common_Short',at,18+random(key+15)*20,.5+random(key+21)*.65,key+1,260);
+   const x=tree?tree.x+(random(key+11)-.5)*8
+    :j<2?20+random(key+11)*45:125+random(key+11)*100;
+   plant('Bush_Common',at,x,1.5+random(key+3)*2.5,key,420);
+   plant('Grass_Common_Short',at,tree?x+3:18+random(key+15)*20,
+    .5+random(key+21)*.65,key+1,260);
   }
   if(i%3===0)plant('Rock_Medium_2',d,23+random(i+19)*53,1+random(i+24)*2.2,i,650);
  }
