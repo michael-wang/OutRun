@@ -1,6 +1,8 @@
 import {it,expect} from 'vitest';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from '../src/coast-village-layout';
 import {COAST_DISTRICTS} from '../src/coast-layout';
+import {TOWN_BACK_LANE} from '../src/coast-town-access';
+import {coastHillHeight} from '../src/coast-terrain';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {createPilotTrack} from '../src/pilot-composer';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
@@ -16,7 +18,17 @@ it('places clustered frontages and waffle carts inside districts with unique chu
   expect([...groups.values()].some(n=>n===1)).toBe(true);expect([...groups.values()].some(n=>n>=3)).toBe(true);
   if(district.kind==='market')expect(sites.some(s=>s.kind==='waffle')).toBe(true);
  }
- for(const s of COAST_VILLAGE_SITES){expect(COAST_DISTRICTS.some(d=>s.d>d.start&&s.d<d.end)).toBe(true);expect(s.x).toBeGreaterThanOrEqual(22);expect(s.x).toBeLessThan(75);}
+ for(const s of COAST_VILLAGE_SITES){
+  expect(COAST_DISTRICTS.some(d=>s.d>d.start&&s.d<d.end)).toBe(true);
+  expect(s.x).toBeGreaterThanOrEqual(22);
+  expect(s.x).toBeLessThan(155);
+  expect(coastHillHeight(s.x,s.d)).toBe(0);
+ }
+ for(const district of COAST_DISTRICTS.filter(d=>d.kind==='homes')){
+  const rear=COAST_VILLAGE_SITES.filter(s=>s.rear&&s.d>district.start&&s.d<district.end);
+  expect(rear.some(s=>s.x>TOWN_BACK_LANE.x+12)).toBe(true);
+  expect(rear.some(s=>s.x<TOWN_BACK_LANE.x-12)).toBe(true);
+ }
  expect(COAST_VILLAGE_SITES.filter(s=>s.kind==='home').length).toBeGreaterThan(40);
  expect(COAST_VILLAGE_SITES.filter(s=>s.kind!=='home').length).toBeGreaterThan(55);
 });

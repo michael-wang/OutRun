@@ -26,7 +26,7 @@ export type CoastDrain=(typeof COAST_SIDE_DRAINS)[number];
  */
 export const COAST_DRAIN_X={outerRoad:10.12,leftLip:10.26,innerLeft:10.48,innerRight:12.38,rightLip:12.62,outerLand:14.75} as const;
 /** Surface below the lower concrete lip, in metres. */
-export const COAST_DRAIN_FREEBOARD=.14;
+export const COAST_DRAIN_FREEBOARD=.34;
 export const COAST_POLE_SETBACK=.55;
 const smooth=(a:number,b:number,v:number)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
 export function coastDrainAt(d:number):CoastDrain|undefined{

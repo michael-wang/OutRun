@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {COAST_SKY_GLSL,COAST_SUN} from './coast-dusk';
-import {buildCoastCanalReflectionTexture,COAST_CANAL_REFLECT_LENGTH} from './coast-canal-reflections';
+import {buildCoastCanalReflectionTexture,COAST_CANAL_REFLECT_LENGTH,COAST_POLE_LOOKUP_RADIUS} from './coast-canal-reflections';
 import {COAST_DRAIN_X,COAST_DRAIN_FREEBOARD,COAST_POLE_SETBACK} from './coast-roadside-layout';
 
 /** Reverse flow: increasing time moves crests toward decreasing road metres. */
@@ -24,7 +24,7 @@ export function makeCoastDrainWaterMaterial(
  const reflectedProps=buildCoastCanalReflectionTexture();
  m.userData.coastCanalReflectionTexture=reflectedProps;
  m.name='coast-ocean-reflected-canal';
- m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r8-bank';
+ m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r9-bridge';
  m.onBeforeCompile=shader=>{
   shader.uniforms.uCoastFlowTime=clock;
   shader.uniforms.uCoastSun={value:COAST_SUN};
@@ -108,14 +108,26 @@ color+=vec3(1.0,.63,.27)*sunGlitter*1.8;
 // Intersect the reflected ray with the row of roadside poles. Their
 // reflections now move across the water as the chase camera passes.
 float toPole=(1.0-vCoastFlowUV.x)*width+${COAST_POLE_SETBACK.toFixed(2)};
-float rayLength=toPole/max(acrossRay,.001);
-float featureAt=(vCoastFlowUV.y+rayLength*dot(reflected.xz,along))/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)};
-vec2 sceneReflect=texture2D(uCoastReflectedProps,vec2(featureAt,.5)).rg;
-float hitHeight=reflected.y*rayLength;
-float pole=sceneReflect.r*(1.0-smoothstep(9.8,11.0,hitHeight));
+// Low-frequency distortion keeps the shaft continuous underneath the finer sky ripples.
+vec3 poleRay=reflect(-viewDir,normalize(vec3(-worldSlope.x*.28,1.0,-worldSlope.y*.28)));
+float poleAcross=dot(poleRay.xz,across);
+float rayLength=toPole/max(poleAcross,.015);
+float featureMetres=vCoastFlowUV.y+rayLength*dot(poleRay.xz,along);
+vec3 sceneReflect=texture2D(uCoastReflectedProps,vec2(featureMetres/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)},.5)).rgb;
+float hitHeight=poleRay.y*rayLength;
+float shaftDistance=abs(sceneReflect.b-.5)*${(COAST_POLE_LOOKUP_RADIUS*2).toFixed(1)};
+float shaftWidth=.20/max(poleAcross,.05);
+float filterWidth=clamp(fwidth(featureMetres)*.5,.15,1.4);
+float pole=(1.0-smoothstep(max(0.0,shaftWidth-filterWidth),shaftWidth+filterWidth,shaftDistance))
+ *smoothstep(.10,.45,sceneReflect.r)*(1.0-smoothstep(9.8,11.0,hitHeight));
 float bridge=sceneReflect.g*(1.0-smoothstep(.35,.8,hitHeight));
-float localReflection=max(.90*pole,.68*bridge)*skyVisible*step(.001,acrossRay);
-color=mix(color,vec3(.045,.057,.060),localReflection);
+float localReflection=max(.96*pole,.68*bridge)*step(.015,poleAcross)*smoothstep(.0,.28,hitHeight);
+color=mix(color,vec3(.018,.024,.028),localReflection);
+// Project the low sun back to deck height. Unlike the reflected silhouette,
+// the bridge's cast shade stays fixed on the stream as the camera moves.
+float deckShift=dot(sun.xz,along)*${(COAST_DRAIN_FREEBOARD+.12).toFixed(2)}/sun.y;
+float deckShade=texture2D(uCoastReflectedProps,vec2((vCoastFlowUV.y+deckShift)/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)},.5)).g;
+color*=mix(vec3(1.0),vec3(.40,.48,.54),deckShade);
 // No oversized foam stripes, repeated caustic circles or luminous cyan ribbon.
 diffuseColor.rgb=color;`);
  };

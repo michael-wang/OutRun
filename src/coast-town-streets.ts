@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import type {createTrack} from './track';
 import {coastBeachHeight} from './scenery-cross-section';
-import {COAST_TOWN_SIDE_STREETS} from './coast-town-access';
+import {COAST_TOWN_SIDE_STREETS,TOWN_BACK_LANE} from './coast-town-access';
+import {COAST_DISTRICTS} from './coast-layout';
 import {COAST_DRAIN_X} from './coast-roadside-layout';
 
 /** A few short, terrain-hugging inhabited town side streets. The village
@@ -62,6 +63,14 @@ export function buildCoastTownStreets(
   // Short pair of centre dashes gives perspective and human scale.
   for(const x of [31,51])
    quad(site.d-.06,site.d+.06,x,x+2.5,.082,'#d1cabb');
+ }
+ for(const district of COAST_DISTRICTS){
+  if(district.kind!=='homes')continue;
+  const from=Math.max(start,district.start+12),to=Math.min(end,district.end-10);
+  const half=TOWN_BACK_LANE.width*.5;
+  for(let d=from;d<to;d+=8){
+   quad(d,Math.min(to,d+8),TOWN_BACK_LANE.x-half,TOWN_BACK_LANE.x+half,.07,'#45484a');
+  }
  }
  if(!indices.length)return null;
  const g=new THREE.BufferGeometry();g.name='coast-town-side-streets';

@@ -91,7 +91,9 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
      coverPoint(to,X.outerLand,.07),coverPoint(to,X.rightLip,.07),'#999a8d');
     // Low, squared end parapets make the crossing legible from a moving car.
     for(const d of [from,to]){
-     batch.quad(coverPoint(d,X.leftLip,.12),coverPoint(d,X.rightLip,.12),
+     if(Math.abs(Math.abs(d-bridge.d)-bridge.width*.5)>.001)continue;
+     // The end fascia continues below the deck to its concrete soffit.
+     batch.quad(coverPoint(d,X.leftLip,-.13),coverPoint(d,X.rightLip,-.13),
       coverPoint(d,X.rightLip,.35),coverPoint(d,X.leftLip,.35),'#8a8d88');
     }
    }else if(coastDrainCovered(mid)){
@@ -104,11 +106,7 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
     quad(X.rightLip,X.rightLip+.27,.055,'#b1ada1');
     quad(X.rightLip+.27,X.outerLand,.045,'#667453');
    }
-   if(!coastDrainCovered(mid)){
-    // No baked glint ribbon here: its old static pale stripe looked like a
-    // floating white object. Water is a separate (one-draw) animated plane
-    // with real distance-flow UV and a tiny uniform-time shader.
-   }else{
+   if(site.kind==='covered'&&!bridge){
     // Precast concrete lid, flush with road surface and footpath. Full cover
     // gaps are genuinely dark; the townside contains NO barrier or stone.
     batch.quad(coverPoint(from,X.leftLip),coverPoint(from,X.rightLip),

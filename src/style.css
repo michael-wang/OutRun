@@ -272,6 +272,16 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
 }
 
 /* Compact keycaps follow the last active controller; no floating instructional overlay. */
+.steer-keys{display:none}
+html[data-input-mode="keyboard"] #touch .steer-keys{
+ display:flex;justify-content:space-between;position:absolute;inset:5px 8px auto;
+ pointer-events:none;color:#fff6e8;text-shadow:0 1px 3px #071c27;
+}
+.steer-keys kbd{font:700 12px/1.2 system-ui,sans-serif}
+html[data-input-mode="keyboard"] #touch .pedals{display:flex}
+html[data-input-mode="keyboard"] #touch .pedals button{
+ width:auto;white-space:nowrap;padding-inline:12px;
+}
 #app button[data-key-hint]::after,#app button[data-pad-hint]::after{
  display:none;vertical-align:middle;margin-left:6px;padding:2px 5px;
  min-width:17px;border-radius:4px;border:1px solid currentColor;

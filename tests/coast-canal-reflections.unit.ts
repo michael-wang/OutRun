@@ -23,7 +23,7 @@ it('reflects nearby authored poles and bridge parapets, not repeating fake scene
  expect(coastCanalReflectionsAt(bridge.d+bridge.width*.5).bridge).toBeCloseTo(.5);
  expect(coastCanalReflectionsAt(bridge.d+bridge.width*.5+2).bridge).toBe(0);
  for(const d of [3700,5150,9850,10350]){
-  expect(coastCanalReflectionsAt(d)).toEqual({pole:0,bridge:0});
+  expect(coastCanalReflectionsAt(d)).toMatchObject({pole:0,bridge:0});
  }
 });
 
@@ -56,14 +56,14 @@ it('samples authored reflected props in the existing sea FFT/sky canal material'
   expect(shader.fragmentShader).toContain('uCoastReflectedProps');
   expect(shader.fragmentShader).toContain('coastSky(reflected,sun)');
   expect(shader.fragmentShader).toContain('uCoastSlope3');
-  expect(shader.fragmentShader).toContain('dot(reflected.xz,along)');
+  expect(shader.fragmentShader).toContain('dot(poleRay.xz,along)');
   expect(shader.fragmentShader).not.toContain('bankFoam');
   const cleanup=readFileSync(new URL('../src/streamed-scene.ts',import.meta.url),'utf8');
   expect(cleanup).toContain('localAtlas?.dispose()');
  }finally{texture.dispose();m.dispose();}
 });
 
-it('exposes the middle of the open channel to the chase camera but hides water under a driveway',()=>{
+it('exposes water toward the far bank to the chase camera but hides it under a driveway',()=>{
  const {sample}=createPilotTrack(COAST_ULTRA_STAGE);
  const mat=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});
  const walls=new THREE.Mesh(buildCoastRoadsideDrain(sample,950,1080)!,mat);
@@ -71,7 +71,7 @@ it('exposes the middle of the open channel to the chase camera but hides water u
  const ray=new THREE.Raycaster();
  try{
   for(const d of [988,1000,1010,1052]){
-   const frame=sample(d),above=frame.position.clone().addScaledVector(frame.right,11.43);
+   const frame=sample(d),above=frame.position.clone().addScaledVector(frame.right,12.05);
    above.y+=5;
    ray.set(above,new THREE.Vector3(0,-1,0));
    const target=ray.intersectObject(water)[0].point;

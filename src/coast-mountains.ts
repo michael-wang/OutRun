@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {fbm2,ridged2,smoothstep} from './vendor/procedural-terrains/cpuNoise.js';
 import {COAST_SUN} from './coast-dusk';
+import {COAST_DISTRICTS} from './coast-layout';
 import type {createTrack} from './track';
 
 /** Fixed, tiny mesh budget: two terrain sheets, with light and haze baked once.
@@ -49,6 +50,9 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
  const right=new THREE.Vector3(axis.z,0,-axis.x);
  if(right.dot(sample(length*.5).right)<0)right.negate();
  const count=Math.ceil((length+7000)/COAST_MOUNTAIN_STEP_M);
+ // The backdrop is in chord coordinates, while the towns use route metres.
+ const townAxisAt=(d:number)=>sample(d).position.clone().sub(origin).dot(axis);
+ const townStart=townAxisAt(COAST_DISTRICTS[0].start),townEnd=townAxisAt(COAST_DISTRICTS[COAST_DISTRICTS.length-1].end);
  // One coherent dusk palette, rather than two separately darkened green
  // silhouettes. The mid ridge stays warm olive; the more distant ridge loses
  // saturation, shifts slightly toward slate, and picks up subtle evening haze.
@@ -64,10 +68,11 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
   const rows=COAST_MOUNTAIN_ROWS;
   for(let i=0;i<=count;i++){
    const d=-3500+i*COAST_MOUNTAIN_STEP_M;
+   const townSetback=rear?0:260*smoothstep(townStart-560,townStart,d)*(1-smoothstep(townEnd,townEnd+560,d));
    for(let row=0;row<rows;row++){
     const u=row/(rows-1),x=(rear?1300:430)+u*(rear?2100:1700);
     const h=coastMountainHeight(layer as 0|1,d,u);
-    const p=origin.clone().addScaledVector(axis,d).addScaledVector(right,x);
+    const p=origin.clone().addScaledVector(axis,d).addScaledVector(right,x+townSetback);
     pos.push(p.x,h,p.z);heightValues.push(h);depthValues.push(u);
     ribValues.push(ridged2(x/260+layer*4,d/405,3,.5,2,1.7,.30,.20));
     detailValues.push(fbm2(x/190+4,d/250,3,.5,2));

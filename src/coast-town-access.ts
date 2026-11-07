@@ -2,15 +2,18 @@
  * Standalone to avoid circular village -> coast -> roadside imports.
  * All consumers (buildings, drain, utility poles) use identical positions. */
 export type CoastTownSideStreet={d:number;width:number;length:number;district:number};
+export const TOWN_BACK_LANE={x:128,width:5.6} as const;
+// The back lane owns the paved surface inside the junction.
+const residentialEnd=TOWN_BACK_LANE.x-TOWN_BACK_LANE.width*.5;
 export const COAST_TOWN_SIDE_STREETS:readonly CoastTownSideStreet[]=[
- {d:3610,width:6.6,length:80,district:0},
- {d:3746,width:6.6,length:80,district:0},
+ {d:3610,width:6.6,length:residentialEnd,district:0},
+ {d:3746,width:6.6,length:residentialEnd,district:0},
  {d:4216,width:6.6,length:64,district:1},
- {d:4980,width:6.6,length:80,district:2},
- {d:5180,width:6.6,length:80,district:2},
+ {d:4980,width:6.6,length:residentialEnd,district:2},
+ {d:5180,width:6.6,length:residentialEnd,district:2},
  {d:5544,width:6.6,length:64,district:3},
- {d:6270,width:6.6,length:80,district:4},
- {d:6390,width:6.6,length:80,district:4},
+ {d:6270,width:6.6,length:residentialEnd,district:4},
+ {d:6390,width:6.6,length:residentialEnd,district:4},
  {d:6754,width:6.6,length:64,district:5},
 ] as const;
 export const townStreetAt=(d:number,clearance=0)=>
