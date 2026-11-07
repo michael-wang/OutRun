@@ -565,3 +565,19 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
  html[data-player-ui="true"] #player-start[data-finished="true"] #player-play{min-height:34px;font-size:13px;padding:5px 9px}
  html[data-player-ui="true"] #player-start[data-finished="true"] .player-secondary button{min-height:30px;padding:5px;font-size:10px}
 }
+/* Hero-car finish selection: same translucent borders as the rest of the HUD.
+   Only visible when opening the existing settings drawer. */
+#car-paint-setting{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ margin:12px 0 10px;color:#fff3d8;
+ font:600 14px/1.4 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+#car-paint{
+ min-width:142px;max-width:65%;height:40px;padding:6px 10px;
+ border:1.5px solid #ffe0a2aa;border-radius:8px;
+ background:#113a45ad;color:#fff4de;
+ font:600 13px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+ cursor:pointer;touch-action:manipulation;
+}
+#car-paint:focus-visible{outline:2px solid #ffe9b5;outline-offset:2px}
+#car-paint option{background:#153e45;color:#fff4de}
