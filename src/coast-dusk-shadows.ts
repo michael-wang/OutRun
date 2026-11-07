@@ -3,7 +3,7 @@ import {COAST_SUN} from './coast-dusk';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
 import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
-import {COAST_UTILITY_POLES,coastDrainAt} from './coast-roadside-layout';
+import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainAt} from './coast-roadside-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
 import {coastBeachHeight,COAST_SEA_LEVEL} from './scenery-cross-section';
@@ -155,7 +155,8 @@ export function buildCoastGroundShadows(
     // centre of the five-lane highway, despite the real building being
     // entirely in the village. Keep the fake footprint on LAND only; the
     // cached depth map still gives real architectural shadows.
-    const noFakeBuildingOnRoad=asphalt&&(a.kind==='home'||a.kind==='shop')?0:1;
+    const pavedCorridor=Math.abs(nx)<=Math.max(halfAt(nd)+.18,COAST_DRAIN_X.outerRoad+.06);
+    const noFakeBuildingOnRoad=pavedCorridor&&(a.kind==='home'||a.kind==='shop')?0:1;
     alpha.push(weight*lateral*tip*wet*(.63+.37*(1-t))*noFakeBuildingOnRoad);
    }
    if(row<rows)for(let col=0;col<cols-1;col++){
