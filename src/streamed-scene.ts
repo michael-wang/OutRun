@@ -248,7 +248,7 @@ export class StreamedScene {
     if(data.coastDrainWater){
      material=makeCoastDrainWaterMaterial(this.canalFlowTime,this.canalFft,this.canalFftEnabled);
     }else if(data.nature?.meadow&&this.farmAssets){
-     material=meadowBladeMaterial(this.farmAssets,data.nature.meadow);
+     material=meadowBladeMaterial(this.farmAssets,data.nature.meadow,this.mobile);
     }else{
      const standard=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});
      if(data.nature)this.configureNatureMaterial(standard,data.nature);

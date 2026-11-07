@@ -39,6 +39,15 @@ describe('sunset coast nature',()=>{
    const stats=addCoastMeadow(scene,track.sample,()=>7,shoulders,start,end);
    expect(stats.instances).toBeGreaterThan(0);expect(stats.draws).toBeLessThanOrEqual(15);
    expect(new Set(scene.children.map(c=>c.userData.nature.meadow))).toEqual(new Set(['cover','detail']));
+   const templates=new Set(scene.children.map(c=>(c as THREE.InstancedMesh).geometry));
+   let tips=0,triangles=0;
+   for(const template of templates){
+    const uv=template.getAttribute('uv');
+    for(let i=0;i<uv.count;i++)if(uv.getY(i)===1)tips++;
+    triangles+=template.index!.count/3;
+   }
+   expect(tips).toBeGreaterThanOrEqual(160);
+   expect(triangles).toBeLessThanOrEqual(192);
    const terrain=prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],start,end,track.length,false,true,[],shoulders,undefined,true,undefined,stage.scenerySections).find(m=>m.kind==='grass')!;
    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(terrain.positions,3));geo.setIndex(new THREE.BufferAttribute(terrain.indices,1));
    const ground=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({side:THREE.DoubleSide})),matrix=new THREE.Matrix4(),root=new THREE.Vector3();

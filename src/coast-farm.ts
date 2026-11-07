@@ -5,6 +5,7 @@ import {Grass} from './vendor/three-stylized/Grass';
 import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-stylized/flowerShapes';
 import {shadeRipeRice,shadePaddyWater} from './coast-rice-material';
 import {createFarmWindTexture} from './coast-farm-wind';
+import {createMeadowTexture} from './coast-meadow-texture';
 import {flowerCanopyGeometry,flowerCrownTexture,flowerSoilTexture,shadeFlowerBeds,shapeCoastalFlowers} from './coast-flowers';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 import {seededRandom} from './vendor/three-stylized/utils';
@@ -41,7 +42,7 @@ export async function loadCoastFarm(){
  }));
  const time={value:0},materials=new Map<string,THREE.Material>();
  const texture=fieldTexture(),canopyTexture=riceSeaTexture(),farmWind=createFarmWindTexture(),flowerCrowns=flowerCrownTexture();
- const flowerSoil=flowerSoilTexture();
+ const flowerSoil=flowerSoilTexture(),meadowTile=createMeadowTexture();
  // Stage-local pin for the single shared flower mask. Build it once during
  // resource preparation, before distant field constructors run during driving.
  const flowerMask=acquireSharedFlowerMask();
@@ -66,7 +67,7 @@ export async function loadCoastFarm(){
    }materials.set(key,m);
   }return m;
  }
- return {geometries,time,farmWind,material,dispose(){if(stageDisposed)return;stageDisposed=true;geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();farmWind.dispose();flowerCrowns.dispose();flowerSoil.dispose();releaseSharedFlowerMask(flowerMask);}};
+ return {geometries,time,farmWind,meadowTile,material,dispose(){if(stageDisposed)return;stageDisposed=true;geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());texture.dispose();canopyTexture.dispose();farmWind.dispose();meadowTile.dispose();flowerCrowns.dispose();flowerSoil.dispose();releaseSharedFlowerMask(flowerMask);}};
 }
 export type FarmAssets=Awaited<ReturnType<typeof loadCoastFarm>>;
 

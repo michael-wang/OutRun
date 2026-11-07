@@ -12,19 +12,23 @@ type GrassLayer='cover'|'detail';
 function grassPatch(layer:GrassLayer){
  const rand=seededRandom(64403),pos:number[]=[],offsets:number[]=[],uv:number[]=[],colors:number[]=[],indices:number[]=[];
  const green=new THREE.Color('#576e40'),straw=new THREE.Color('#aba366');
- for(let fan=0;fan<21;fan++){
-  const cx=(rand()-.5)*4.6,cz=(rand()-.5)*4.6,stature=.48+rand()*.51;
+ // A full patch has 168 blades. Most have a single tapered triangle;
+ // a few longer arching leaves break up the nearby silhouette.
+ for(let fan=0;fan<28;fan++){
+  const cx=(rand()-.5)*5.6,cz=(rand()-.5)*5.6,stature=.48+rand()*.51;
   const tint=rand(),baseAngle=rand()*2*Math.PI;
-  for(let blade=0;blade<5;blade++){
+  for(let blade=0;blade<6;blade++){
    const yaw=baseAngle+blade*2.4+rand()*.65,dx=Math.cos(yaw),dz=Math.sin(yaw);
    const h=stature*(.64+rand()*.57),reach=h*(.30+rand()*.54);
    const width=.029+rand()*.035,x=cx+(rand()-.5)*.15,z=cz+(rand()-.5)*.15;
    const color=green.clone().lerp(straw,.64*tint+.20*rand());
-   if((blade===0)!==(layer==='cover'))continue;
+   const permanent=fan%3!==1&&blade===0;
+   if(permanent!==(layer==='cover'))continue;
    const first=pos.length/3;
-   const ribbon=layer==='cover'?[[0,-1],[0,1],[1,0]]:[[0,-1],[0,1],[.57,-.67],[.57,.67],[1,0]];
+   const curved=blade===2&&fan%4===0;
+   const ribbon=curved?[[0,-1],[0,1],[.57,-.67],[.57,.67],[1,0]]:[[0,-1],[0,1],[1,0]];
    for(const [t,side] of ribbon){
-    const w=side*width*(layer==='cover'?2.2:1);
+    const w=side*width*(permanent?2.4:1.24);
     pos.push(x+dx*reach*t*t-dz*w,h*t,z+dz*reach*t*t+dx*w);
     // Signed ribbon half-width in the template frame, carried by the normal
     // channel of the Worker mesh format. This unlit material does no lighting.
@@ -33,7 +37,7 @@ function grassPatch(layer:GrassLayer){
     colors.push(color.r*shade,color.g*shade,color.b*shade);
    }
    indices.push(first,first+1,first+2);
-   if(layer==='detail')indices.push(first+1,first+3,first+2,first+2,first+3,first+4);
+   if(curved)indices.push(first+1,first+3,first+2,first+2,first+3,first+4);
   }
  }
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
@@ -91,7 +95,7 @@ export function addCoastMeadow(scene:THREE.Scene,sample:ReturnType<typeof create
      dummy.scale.set(spread,(.36+stand*.94+rand()*.32)*Math.min(1,(x-15)/9),spread);
      dummy.updateMatrix();
      plant('cover',at);
-     if(x<104)plant('detail',at);
+     if(x<88)plant('detail',at);
     }
    }
    prev=next;
@@ -107,7 +111,7 @@ export function addCoastMeadow(scene:THREE.Scene,sample:ReturnType<typeof create
   for(const [center,matrices] of layers[layer]){
    const mesh=new THREE.InstancedMesh(g,m,matrices.length);
    matrices.forEach((matrix,i)=>mesh.setMatrixAt(i,matrix));
-   mesh.userData.nature={meadow:layer,center,near:0,far:layer==='cover'?1200:290};
+   mesh.userData.nature={meadow:layer,center,near:0,far:layer==='cover'?1200:225};
    scene.add(mesh);instances+=matrices.length;draws++;
   }
  }
