@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
 import {createGTWingMirrorHousing} from './hero-body';
-import {createClassicBody,createClassicTailLamps} from './hero-classic-geometry';
-import {DEFAULT_CAR_MODEL,type CarModel} from './car-models';
+import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry';
 import {createDriverHair,createBlondeBob} from './hero-groom';
 import {createOccupantMotion} from './occupants';
 import {CAR_PAINT_PRESETS,DEFAULT_CAR_COLOR,type CarColor} from './car-appearance';
@@ -16,10 +15,6 @@ export interface BrakeLightController {
 export interface CarPaintController {
  set(color:CarColor):void;
  inspect():{color:CarColor;hex:string};
-}
-export interface CarModelController{
- set(model:CarModel):void;
- inspect():{model:CarModel;bodyGeometry:string;rearLamps:string};
 }
 
 /** Authored hero spider, +Z nose. Wheelbase, mass envelope and camera
@@ -42,23 +37,18 @@ export function createCar(dusk=false) {
   const box=(w:number,h:number,d:number,m:THREE.Material,x:number,y:number,z:number)=>mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z);
   function oval(sx:number,sy:number,sz:number,m:THREE.Material,x:number,y:number,z:number,parent=car){const o=mesh(new THREE.SphereGeometry(1,12,8),m,x,y,z,parent);o.scale.set(sx,sy,sz);return o;}
   function bar(a:number[],b:number[],r:number,m:THREE.Material,parent=car){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),delta=end.clone().sub(start),o=mesh(new THREE.CylinderGeometry(r,r,delta.length(),8),m,0,0,0,parent);o.position.copy(start.add(end).multiplyScalar(.5));o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());return o;}
-  // The active historical body is a SINGLE painted mesh. Model swaps
-  // replace its baked geometry, never generate/keep three car instances.
-  const shell=mesh(createClassicBody(DEFAULT_CAR_MODEL),paint);
+  // Only the accepted 1962 Riviera is built. No runtime model switching.
+  const shell=mesh(createRivieraBody(),paint);
   shell.name='hero-classic-body-shell';
-  // Keep the accepted Riviera 62 trunk details intact. On the GT 67
-  // and Wedge 76, these formerly shared ribs/raised spoiler break through
-  // the deck and expose the interior, so they must be completely absent.
+  // Keep Riviera's accepted rear vents and delicate spoiler as they were.
   const rivieraTrim=new THREE.Group();
-  rivieraTrim.name='riviera-only-rear-trim';
-  rivieraTrim.visible=DEFAULT_CAR_MODEL==='riviera-62';
+  rivieraTrim.name='riviera-rear-trim';
   car.add(rivieraTrim);
   // Dark cockpit void and recessed centre tunnel let the sunlight catch
   // the painted shoulders rather than a flat, boxlike cabin roof.
   box(1.57,.09,1.76,dark,0,.47,-.23);
   box(.15,.19,1.23,dark,0,.60,-.16);
-  // Low body-coloured rear tonneau is already fused into the active body
-  // geometry and changes profile along with the selected classic roadster.
+  // Riviera's approved low painted rear tonneau is fused into the shell.
   box(.17,.03,.27,silver,0,.70,.01);
   // Sculpted hood creases and rear deck air channels are trim, not decals.
   for(const side of [-1,1]){
@@ -226,7 +216,7 @@ export function createCar(dusk=false) {
   const lamp=material('#fff2cf',.3);lamp.emissive.set('#fff3bf');lamp.emissiveIntensity=dusk?2.5:.6;
   // One draw for the era-specific rear lamps. The shared brake shader
   // keeps exactly the same idle/brake intensity across all three cars.
-  const classicLamps=mesh(createClassicTailLamps(DEFAULT_CAR_MODEL),rear);
+  const classicLamps=mesh(createRivieraTailLamps(),rear);
   classicLamps.name='hero-classic-tail-lamps';
   for(const side of [-1,1]){
     box(.58,.084,.062,lamp,side*.55,.58,2.32);
@@ -259,7 +249,7 @@ export function createCar(dusk=false) {
    mesh(new THREE.BoxGeometry(.80,.023,.04),dark,0,.955-i*.012,-1.50-i*.115,rivieraTrim);
   mesh(new THREE.BoxGeometry(1.70,.057,.13),paint,0,.96,-2.00,rivieraTrim);
   car.userData.licensePlate='FZR-123';
-  batch(rivieraTrim); // Riviera's approved details, hidden on both problem cars
+  batch(rivieraTrim); // Approved Riviera details, always displayed
   batch(car);
   // Both original tail lamps share one material after batching; change its uniform only.
   const brakeLights:BrakeLightController={
@@ -279,21 +269,6 @@ export function createCar(dusk=false) {
   };
   paintController.set(DEFAULT_CAR_COLOR);
   car.userData.paintController=paintController;
-  let currentModel:CarModel=DEFAULT_CAR_MODEL;
-  const modelController:CarModelController={
-    set(model){
-      if(model===currentModel)return;
-      const nextBody=createClassicBody(model);
-      const nextLamps=createClassicTailLamps(model);
-      // Swap only on explicit selection; release old buffers for mobile.
-      const oldBody=shell.geometry,oldLamps=classicLamps.geometry;
-      shell.geometry=nextBody;classicLamps.geometry=nextLamps;
-      rivieraTrim.visible=model==='riviera-62';
-      oldBody.dispose();oldLamps.dispose();currentModel=model;
-    },
-    inspect:()=>({model:currentModel,bodyGeometry:shell.geometry.name,rearLamps:classicLamps.geometry.name}),
-  };
-  car.userData.modelController=modelController;
   const people=createOccupantMotion(travelers,wheel);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;

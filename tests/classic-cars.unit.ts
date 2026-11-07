@@ -1,90 +1,83 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {CAR_MODELS} from '../src/car-models';
-import {createCar,type CarModelController,type CarPaintController} from '../src/car';
-import {classicBodyIdentity,createClassicBody,createClassicTailLamps} from '../src/hero-classic-geometry';
+import {readFileSync} from 'node:fs';
+import {createCar,type CarPaintController} from '../src/car';
+import {createRivieraBody,createRivieraTailLamps} from '../src/hero-classic-geometry';
 
-it('builds three truly different original classic silhouettes and period rear lamps',()=>{
- const signatures=new Set<string>(),tailNames=new Set<string>();
- for(const name of CAR_MODELS){
-  const a=createClassicBody(name),b=createClassicTailLamps(name);
-  expect(a.name).toContain(name);
-  expect(b.name).toContain(name);
-  const positions=a.getAttribute('position');
-  const bounds=new THREE.Box3().setFromBufferAttribute(positions as THREE.BufferAttribute);
-  expect(bounds.min.x).toBeGreaterThan(-1.22);
-  expect(bounds.max.x).toBeLessThan(1.22);
-  // The new opaque rear fascia remains IN FRONT of the existing license plate at -2.459m.
-  expect(bounds.min.z).toBeGreaterThanOrEqual(-2.43);
-  expect(bounds.max.z).toBeLessThanOrEqual(2.35);
-  // A low wedge nose can drop to roughly .23m but never below tire clearance.
-  expect(bounds.min.y).toBeGreaterThan(.20);
-  expect(bounds.max.y).toBeLessThan(1.12);
-  const at=classicBodyIdentity(name);
-  signatures.add(JSON.stringify(at.profile));
-  tailNames.add(at.tailKind);
-  expect(a.index!.count).toBeGreaterThan(180);
-  expect(b.index!.count).toBeGreaterThan(8);
-  a.dispose();b.dispose();
- }
- expect(signatures.size).toBe(3);expect(tailNames.size).toBe(3);
+it('keeps ONLY the owner-approved Riviera 62 silhouette, classic round lamps and sculpted deck',()=>{
+ const body=createRivieraBody(),lamps=createRivieraTailLamps();
+ expect(body.name).toBe('hero-riviera-62-body');
+ expect(lamps.name).toBe('hero-riviera-62-rear-lights');
+ const bounds=new THREE.Box3().setFromBufferAttribute(body.getAttribute('position') as THREE.BufferAttribute);
+ expect(bounds.min.x).toBeGreaterThan(-1.22);
+ expect(bounds.max.x).toBeLessThan(1.22);
+ expect(bounds.min.z).toBeGreaterThanOrEqual(-2.36);
+ expect(bounds.max.z).toBeLessThanOrEqual(2.35);
+ expect(bounds.max.y).toBeLessThan(1.12);
+ expect(body.index!.count).toBeGreaterThan(180);
+ // Four small rounded jewel lamps, matching the approved Riviera.
+ expect(lamps.index!.count).toBe(4*16*3);
+ body.dispose();lamps.dispose();
 });
-it('swaps only active exterior geometry; car body rig, wheel centres, license and paint survive',()=>{
+
+it('retains one car, same wheels, FZR-123, actors and three paint options',()=>{
  const car=createCar(true);
- const controller=car.userData.modelController as CarModelController;
  const paint=car.userData.paintController as CarPaintController;
- const body=car.getObjectByName('hero-classic-body-shell') as THREE.Mesh;
+ const shell=car.getObjectByName('hero-classic-body-shell') as THREE.Mesh;
  const lamps=car.getObjectByName('hero-classic-tail-lamps') as THREE.Mesh;
- const firstPaint=body.material;
- const firstBody=body.geometry;
- const wheelCenters=car.userData.motion.inspect().map((w:{center:number[]})=>w.center);
- const initialBox=new THREE.Box3().setFromObject(car),size=initialBox.getSize(new THREE.Vector3());
+ const trim=car.getObjectByName('riviera-rear-trim')!;
+ expect(car.userData.modelController).toBeUndefined();
+ expect(shell.geometry.name).toBe('hero-riviera-62-body');
+ expect(lamps.geometry.name).toBe('hero-riviera-62-rear-lights');
+ expect(trim.visible).toBe(true);
+ expect(car.getObjectByName('driver')).toBeDefined();
+ expect(car.getObjectByName('passenger')).toBeDefined();
+ expect(car.userData.licensePlate).toBe('FZR-123');
+ const firstBody=shell.geometry,firstLamps=lamps.geometry;
+ const before=new THREE.Box3().setFromObject(car),wheels=car.userData.motion.inspect().map((w:{center:number[]})=>w.center);
+ for(const color of ['ferrari-red','pure-white','seafoam-green'] as const){
+  paint.set(color);
+  expect(paint.inspect().color).toBe(color);
+  expect(shell.geometry).toBe(firstBody);
+  expect(lamps.geometry).toBe(firstLamps);
+  expect(new THREE.Box3().setFromObject(car).equals(before)).toBe(true);
+  expect(car.userData.motion.inspect().map((w:{center:number[]})=>w.center)).toEqual(wheels);
+ }
+});
+
+it('keeps the owner-approved open Riviera cockpit and strict player budget',()=>{
+ const car=createCar(),bounds=new THREE.Box3().setFromObject(car);
+ const size=bounds.getSize(new THREE.Vector3());
  expect(size.x).toBeLessThan(2.7);
  expect(size.z).toBeLessThan(5);
  expect(size.y).toBeLessThan(1.8);
- paint.set('royal-blue');
- for(const model of CAR_MODELS){
-  controller.set(model);
-  expect(controller.inspect().model).toBe(model);
-  expect(body.material).toBe(firstPaint);
-  expect(controller.inspect().bodyGeometry).toContain(model);
-  expect(controller.inspect().rearLamps).toContain(model);
-  expect(car.getObjectByName('driver')).toBeDefined();
-  expect(car.getObjectByName('passenger')).toBeDefined();
-  expect(car.userData.licensePlate).toBe('FZR-123');
-  expect(car.userData.motion.inspect().map((w:{center:number[]})=>w.center)).toEqual(wheelCenters);
-  const box=new THREE.Box3().setFromObject(car),actual=box.getSize(new THREE.Vector3());
-  expect(actual.x).toBeLessThan(2.7);
-  expect(actual.z).toBeLessThan(5);
-  expect(actual.y).toBeLessThan(1.8);
-  expect(Math.abs(actual.x-size.x)).toBeLessThan(.2);
-  expect(Math.abs(actual.z-size.z)).toBeLessThan(.12);
-  expect(paint.inspect().color).toBe('royal-blue');
- }
- expect(body.geometry).not.toBe(firstBody);
- expect(body.geometry).toBeInstanceOf(THREE.BufferGeometry);
- expect(lamps.geometry).toBeInstanceOf(THREE.BufferGeometry);
+ let meshes=0,triangles=0;
+ car.traverse(o=>{if(o instanceof THREE.Mesh){meshes++;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;}});
+ expect(meshes).toBeLessThanOrEqual(64);
+ expect(triangles).toBeLessThan(14000);
+ const ray=new THREE.Raycaster(new THREE.Vector3(0,3,-.2),new THREE.Vector3(0,-1,0));
+ expect(ray.intersectObject(car,true)[0].point.y).toBeLessThan(.9);
 });
-it('keeps model changes inside the original focal mesh and triangle budgets',()=>{
- const car=createCar(),ctl=car.userData.modelController as CarModelController;
- for(const model of CAR_MODELS){
-  ctl.set(model);
-  let meshes=0,tris=0;
-  car.traverse(o=>{if(o instanceof THREE.Mesh){meshes++;tris+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;}});
-  expect(meshes).toBeLessThanOrEqual(64);
-  expect(tris).toBeLessThanOrEqual(14000);
- }
+
+it('removes all model-switch options but retains the accessible paint selector',()=>{
+ const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../src/style.css',import.meta.url),'utf8');
+ expect(main).not.toContain('car-model-setting');
+ expect(main).not.toContain('car-model');
+ expect(main).not.toContain('CAR_MODELS');
+ expect(css).not.toContain('#car-model');
+ expect(main).toContain('id="car-paint"');
+ expect(main).toContain('CAR_COLORS.map(');
 });
-it('passenger has bare upper arms and a sleeveless fitted summer dress; driver reaches the door',()=>{
- const car=createCar();
- expect(car.getObjectByName('passenger-summer-dress')).toBeUndefined(); // batched static cloth
- const driver=car.getObjectByName('driver')!,passenger=car.getObjectByName('passenger')!;
- expect(driver.position.x).toBeGreaterThan(0);expect(passenger.position.x).toBeLessThan(0);
+
+it('retains the approved passenger sleeveless dress and left-hand driver',()=>{
+ const car=createCar(),driver=car.getObjectByName('driver')!,passenger=car.getObjectByName('passenger')!;
+ expect(driver.position.x).toBeGreaterThan(0);
+ expect(passenger.position.x).toBeLessThan(0);
  expect(car.getObjectByName('driver-left-arm-resting-on-door')).toBeDefined();
  expect(car.getObjectByName('passenger-arm--1')).toBeDefined();
  expect(car.getObjectByName('passenger-arm-1')).toBeDefined();
  expect(car.getObjectByName('layered-blonde-bob')).toBeDefined();
- // Dress fabric colour is distinct from the passenger's bare skin.
  const colors=new Set<string>();
  passenger.traverse(o=>{if(o instanceof THREE.Mesh){
   const m=o.material as THREE.MeshStandardMaterial;
@@ -92,43 +85,4 @@ it('passenger has bare upper arms and a sleeveless fitted summer dress; driver r
  }});
  expect(colors.has('efd0b9')).toBe(true);
  expect(colors.has('e3b79b')).toBe(true);
-});
-
-
-it('retains the approved Riviera and seals Grand Tourer 67 and Wedge Spider 76',()=>{
- const car=createCar();
- const controller=car.userData.modelController as CarModelController;
- const body=car.getObjectByName('hero-classic-body-shell') as THREE.Mesh;
- const rivieraTrim=car.getObjectByName('riviera-only-rear-trim')!;
- const ray=new THREE.Raycaster();
- controller.set('riviera-62');
- expect(rivieraTrim.visible).toBe(true); // user's admired third screenshot
- // Preserve the accepted original overlapping sculpted surface and deck
- // topology for Riviera; only the two problematic models use a fascia.
- const rivieraBody=createClassicBody('riviera-62');
- const wedgeBody=createClassicBody('wedge-spider-76');
- expect(rivieraBody.getAttribute('position').count).not.toBe(wedgeBody.getAttribute('position').count);
- rivieraBody.dispose();wedgeBody.dispose();
- for(const model of ['grand-tourer-67','wedge-spider-76'] as const){
-  controller.set(model);
-  expect(rivieraTrim.visible).toBe(false);
-  // A horizontal chase ray MUST hit opaque painted fascia ahead of any
-  // old bumper ribs, even at left/right quarter corners.
-  for(const x of [-.72,0,.72]){
-   ray.set(new THREE.Vector3(x,.71,-5),new THREE.Vector3(0,0,1));
-   const hits=ray.intersectObject(body,false);
-   expect(hits.length).toBeGreaterThan(0);
-   expect(hits[0].point.z).toBeLessThan(-2.35);
-  }
-  // The roofless cockpit remains open, but the trunk skin is fully
-  // continuous behind it. Raycasting catches holes invisible to bbox tests.
-  for(const x of [-.43,0,.43]){
-   ray.set(new THREE.Vector3(x,2.5,-1.7),new THREE.Vector3(0,-1,0));
-   const deck=ray.intersectObject(body,false);
-   expect(deck.length).toBeGreaterThan(0);
-   expect(deck[0].point.y).toBeGreaterThan(.92);
-  }
- }
- controller.set('riviera-62');
- expect(rivieraTrim.visible).toBe(true); // switching back restores details
 });
