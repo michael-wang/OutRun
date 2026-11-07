@@ -18,6 +18,29 @@ for(const [index,district] of COAST_DISTRICTS.entries()){
   d+=market?19+rand(key+20)*20:22+rand(key+20)*25;
  }
 }
+/** Short residential/market T-streets, designed in gaps between actual
+ * buildings rather than intersecting their entrances. Two home streets and
+ * one market lane per district add a lived-in cross-street rhythm. Deterministic
+ * and entirely visual: never change the drivable coastal highway geometry.
+ */
+export type CoastTownSideStreet={d:number;width:number;length:number;district:number};
+export const COAST_TOWN_SIDE_STREETS:readonly CoastTownSideStreet[]=COAST_DISTRICTS.flatMap((district,index)=>{
+ const homes=COAST_VILLAGE_SITES.filter(h=>h.d>=district.start-10&&h.d<=district.end+10);
+ const count=district.kind==='homes'?2:1,used:number[]=[],roads:CoastTownSideStreet[]=[];
+ for(let n=0;n<count;n++){
+  const target=district.start+(n+1)*(district.end-district.start)/(count+1);
+  let best:number|undefined,bestScore=-Infinity;
+  for(let d=district.start+22;d<district.end-22;d+=4){
+   if(used.some(previous=>Math.abs(d-previous)<78))continue;
+   const clearance=Math.min(...homes.map(h=>Math.abs(h.d-d)));
+   if(clearance<10.5)continue;
+   const score=clearance*1.3-Math.abs(d-target)*.34;
+   if(score>bestScore){best=d;bestScore=score;}
+  }
+  if(best!==undefined){used.push(best);roads.push({d:best,width:6.6,length:district.kind==='homes'?80:64,district:index});}
+ }
+ return roads;
+});
 export const COAST_REST_SPOTS=COAST_BEACHES.flatMap((bay,index)=>{
  const half=Math.min(330,bay.radius*.6),count=Math.floor(half*2/135);
  return Array.from({length:count},(_,i)=>({d:bay.distance-half+45+i*135+rand(index*43+i)*22,x:-15.2-rand(index*71+i+6)*1.35,key:index*100+i,people:i%3===0?1:2,children:i%3!==1}));
