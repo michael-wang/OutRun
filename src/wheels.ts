@@ -6,8 +6,8 @@ export function wheelRoll(angle:number,worldTravel:number){return angle+worldTra
 export function createRoadWheel(side:number,front:boolean){
  const pivot=new THREE.Group();pivot.name=front?`front-wheel-${side}`:`rear-wheel-${side}`;
  const rotor=new THREE.Group();rotor.name='rolling-axle';pivot.add(rotor);
- const tire=new THREE.Mesh(new THREE.CylinderGeometry(TIRE_RADIUS,TIRE_RADIUS,.27,32),new THREE.MeshStandardMaterial({color:'#192124',roughness:.9}));tire.rotation.z=Math.PI/2;rotor.add(tire);
- const rim=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.282,24),new THREE.MeshStandardMaterial({color:'#c9dad4',metalness:.75,roughness:.3}));rim.rotation.z=Math.PI/2;rotor.add(rim);
+ const tire=new THREE.Mesh(new THREE.CylinderGeometry(TIRE_RADIUS,TIRE_RADIUS,.27,28),new THREE.MeshStandardMaterial({color:'#192124',roughness:.9}));tire.rotation.z=Math.PI/2;rotor.add(tire);
+ const rim=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.282,20),new THREE.MeshStandardMaterial({color:'#c9dad4',metalness:.75,roughness:.3}));rim.rotation.z=Math.PI/2;rotor.add(rim);
  const parts:THREE.BufferGeometry[]=[];
  for(let i=0;i<5;i++){
   const a=i*2*Math.PI/5,g=new THREE.BoxGeometry(.015,.17,.045);g.translate(side*.15,.21,0);g.rotateX(a);parts.push(g);
