@@ -1,5 +1,10 @@
 export const PACE_VARIANTS = [1,1.5,1.75,2] as const;
-export const DEFAULT_PACE = 1.75;
+/** Runtime movement multiplier for new drives (the analog gauge is unchanged). */
+export const DEFAULT_PACE = 1.50;
+/** Keep road geometry/curve-authoring calibration at its approved 1.75x baseline.
+ * Changing the player's travel pace must not reshape previously authored stages.
+ */
+export const AUTHORING_PACE = 1.75;
 export function selectedPace(value:string|null):number {
   const n=Number(value);return PACE_VARIANTS.some(p=>p===n)?n:DEFAULT_PACE;
 }

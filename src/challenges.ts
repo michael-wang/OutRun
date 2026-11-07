@@ -1,6 +1,7 @@
-import {effectivePace,DEFAULT_PACE} from './pace';
+import {effectivePace,AUTHORING_PACE} from './pace';
 export const REFERENCE_KMH=230,REFERENCE_SPEED=REFERENCE_KMH/3.6;
-export const REFERENCE_TRAVEL=REFERENCE_SPEED*effectivePace(REFERENCE_SPEED,DEFAULT_PACE);
+/** Legacy road geometry is authored at 1.75×, independent of player travel pace. */
+export const REFERENCE_TRAVEL=REFERENCE_SPEED*effectivePace(REFERENCE_SPEED,AUTHORING_PACE);
 export const AUTHORITY_AT_REFERENCE=12;
 // Keep the reference-speed calibration while reducing grip at higher speed.
 export const CURVATURE_PER_STEER=Math.PI/(REFERENCE_TRAVEL*5.825);

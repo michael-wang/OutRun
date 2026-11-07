@@ -1,8 +1,9 @@
 import { it,expect } from 'vitest';
-import { effectivePace,selectedPace,PACE_VARIANTS } from './pace';
+import { effectivePace,selectedPace,PACE_VARIANTS,DEFAULT_PACE,AUTHORING_PACE } from './pace';
+import {REFERENCE_TRAVEL} from './challenges';
 import { createState,step,CORRIDOR_LIMIT } from './handling';
 it('ramps smoothly from low speed to selected high pace and validates selectors',()=>{
- expect(selectedPace(null)).toBe(1.75);expect(selectedPace('99')).toBe(1.75);
+ expect(selectedPace(null)).toBe(1.5);expect(selectedPace('99')).toBe(1.5);
  for(const pace of PACE_VARIANTS){expect(effectivePace(10,pace)).toBe(1);expect(effectivePace(65,pace)).toBe(pace);expect(effectivePace(80/3.6,pace)).toBeCloseTo(1+(pace-1)*.104);}
 });
 it('boosts actual longitudinal and lateral travel coherently without input yaw',()=>{
@@ -28,3 +29,14 @@ it('every pace retains bounded outward contact, speed penalty and inward-only re
  }
 });
 
+
+it('slows the default coastal journey to 1.50× without reauthoring the road',()=>{
+ expect(DEFAULT_PACE).toBe(1.5);
+ expect(AUTHORING_PACE).toBe(1.75);
+ expect(effectivePace(230/3.6,DEFAULT_PACE)).toBeCloseTo(1.5,10);
+ expect(REFERENCE_TRAVEL).toBeCloseTo((230/3.6)*1.75,9);
+ // Same indicated 230 km/h, but a 16.7% longer scenic viewing window.
+ const oldWorldSpeed=(230/3.6)*effectivePace(230/3.6,AUTHORING_PACE);
+ const newWorldSpeed=(230/3.6)*effectivePace(230/3.6,DEFAULT_PACE);
+ expect(oldWorldSpeed/newWorldSpeed).toBeCloseTo(7/6,10);
+});
