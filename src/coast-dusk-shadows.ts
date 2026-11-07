@@ -151,7 +151,12 @@ export function buildCoastGroundShadows(
     const lateral=1-THREE.MathUtils.smoothstep(Math.abs(u),.48,1.0);
     const tip=1-THREE.MathUtils.smoothstep(t,.72,1.0);
     const wet=ground>=COAST_SEA_LEVEL+.015?1:0;
-    alpha.push(weight*lateral*tip*wet*(.63+.37*(1-t)));
+    // Legacy planar "home" and "shop" rectangles can project across the
+    // centre of the five-lane highway, despite the real building being
+    // entirely in the village. Keep the fake footprint on LAND only; the
+    // cached depth map still gives real architectural shadows.
+    const noFakeBuildingOnRoad=asphalt&&(a.kind==='home'||a.kind==='shop')?0:1;
+    alpha.push(weight*lateral*tip*wet*(.63+.37*(1-t))*noFakeBuildingOnRoad);
    }
    if(row<rows)for(let col=0;col<cols-1;col++){
     const i=first+row*cols+col,j=i+cols;

@@ -118,3 +118,22 @@ it('keeps legacy shadow-anchor positions in exact agreement with stone placement
  expect(stone!.d).toBeCloseTo(authored.d,5);
  expect(stone!.length).toBeCloseTo(coastShadowLength(authored.height));
 });
+
+it('avoids fake home/shop shadow rectangles across the centre of the highway',()=>{
+ const built=buildCoastGroundShadows(sample,[
+  {d:3620,x:19,width:10,length:74,kind:'home'},
+  {d:3650,x:21,width:5,length:44,kind:'shop'},
+ ],10000,()=>8.75);
+ try{
+  const pos=built.geometry.getAttribute('position');
+  const alpha=built.geometry.getAttribute('shadowAlpha');
+  let onRoad=0,visibleOnLand=0;
+  for(let i=0;i<pos.count;i++){
+   const x=pos.getX(i),a=alpha.getX(i);
+   if(Math.abs(x)<=8.9){onRoad++;expect(a).toBe(0);}
+   else if(a>0)visibleOnLand++;
+  }
+  expect(onRoad).toBeGreaterThan(0);
+  expect(visibleOnLand).toBeGreaterThan(0);
+ }finally{built.geometry.dispose();}
+});

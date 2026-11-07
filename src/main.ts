@@ -101,7 +101,7 @@ let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof moun
 document.querySelector('#app')!.innerHTML = `
 <div id="view"></div><div class="vignette"></div>
 <div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??TRIP_VERSION}</small></div>
-<div id="drive-readout" hidden><strong id="drive-fps">— FPS</strong><small id="game-version">${GAME_VERSION}</small></div>
+<div id="drive-readout" hidden><strong id="drive-fps">— FPS</strong><small id="drive-distance">0 m</small><small id="game-version">${GAME_VERSION}</small></div>
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <div id="qa-tools" aria-label="測試工具列"><button id="photo-button" aria-label="截圖" data-key-hint="F8" data-pad-hint="TOUCHPAD" hidden>📷 截圖</button></div><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
@@ -902,6 +902,8 @@ Draws ${renderer.info.render.calls} · ray ${perf.raycastMs.toFixed(1)}ms · ren
   }
   const fpsText=`${perf.fps?Math.round(perf.fps):'—'} FPS`;
   if($('drive-fps').textContent!==fpsText)$('drive-fps').textContent=fpsText;
+  const distanceLabel=Math.max(0,Math.round(state.distance)).toLocaleString('en-US')+' m';
+  if($('drive-distance').textContent!==distanceLabel)$('drive-distance').textContent=distanceLabel;
   const hudText=`${Math.floor((elapsed+journeyElapsed)/60)}:${String(Math.floor((elapsed+journeyElapsed)%60)).padStart(2,'0')}`;
   if($('drive-hud').textContent!==hudText)$('drive-hud').textContent=hudText;
 

@@ -601,3 +601,10 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 #car-paint-list button:focus-visible,#car-paint-list button:focus{
  outline:2px solid #ffdd9c;outline-offset:0;background:#ffdfaa44;
 }
+/* Distance is in the existing compact FPS/build box, never a second HUD. */
+#drive-distance{
+ display:block;margin:1px 0 0;
+ color:#f3deba;font:600 11px/1.25 Arial,sans-serif;
+ letter-spacing:.02em;white-space:nowrap;
+}
+
