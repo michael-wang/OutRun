@@ -74,6 +74,25 @@ describe('hero spider focal-point art',()=>{
   expect(after.equals(first)).toBe(false);
  });
 
+it('covers the passenger scalp from the chase camera and above while leaving the face open',()=>{
+ const car=createCar(),bob=car.getObjectByName('layered-blonde-bob')!;
+ const head=car.getObjectByName('passenger-head')!,crown=car.getObjectByName('blonde-layered-crown')!;
+ const firstHit=(from:THREE.Vector3,to:THREE.Vector3)=>{
+  const origin=bob.localToWorld(from),direction=bob.localToWorld(to).sub(origin).normalize();
+  return new THREE.Raycaster(origin,direction).intersectObject(head,true)[0]?.object;
+ };
+ for(const speed of [0,68]){
+  for(let i=0;i<60;i++)car.userData.motion.advance(speed/60,.4,1/60);
+  car.updateMatrixWorld(true);
+  for(const x of [-.09,0,.09])for(const z of [-.06,0,.06]){
+   expect(firstHit(new THREE.Vector3(x,.5,z),new THREE.Vector3(x,0,z))).toBe(crown);
+   expect(firstHit(new THREE.Vector3(x,.26,z-.48),new THREE.Vector3(x,.08,z))).toBe(crown);
+  }
+  const face=firstHit(new THREE.Vector3(0,.01,.5),new THREE.Vector3(0,.01,0));
+  expect(face).toBeDefined();expect(face?.parent).toBe(head);
+ }
+});
+
 it('builds layered male hair rather than a spherical watermelon cap, with no scarf',()=>{
  const car=createCar();car.updateMatrixWorld(true);
  const hair=car.getObjectByName('driver-layered-short-hair');
@@ -83,7 +102,7 @@ it('builds layered male hair rather than a spherical watermelon cap, with no sca
  expect(hair).toBeDefined();
  expect(nape).toBeInstanceOf(THREE.Mesh);
  expect(strands).toBeInstanceOf(THREE.Mesh);
- expect(bob).toBeDefined(); // approved blonde hairstyle remains untouched
+ expect(bob).toBeDefined();
  expect(car.getObjectByName('driver-tailored-flat-cap')).toBeUndefined();
  expect(car.getObjectByName('driver-natural-short-hair')).toBeUndefined();
  expect(car.getObjectByName('driver-silk-scarf')).toBeUndefined();

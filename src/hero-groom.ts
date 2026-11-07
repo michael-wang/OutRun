@@ -98,30 +98,46 @@ export function createDriverHair():THREE.Group{
  return group;
 }
 
-/** Short layered blonde bob. Static crown is a single batched opaque mesh;
- * 5 small, double-jointed edge groups flutter independently with speed.
- * Hair is made of tapered shaded ribbons, not bulky spheres or particles. */
+/** A full bob swept from an off-centre part. The rings share a single crown
+ * vertex, so the scalp stays covered even when seen directly from above. */
+function blondeCrown(){
+ const segments=64,rings=7;
+ const root=new THREE.Color('#966237'),gold=new THREE.Color('#ffdb90');
+ const color=root.clone(),positions=[.034,.213,-.012],colors=[root.r,root.g,root.b],indices:number[]=[];
+ for(let row=1;row<=rings;row++)for(let i=0;i<segments;i++){
+  const t=row/rings,angle=i*Math.PI*2/segments;
+  // The fringe clears the brows. Side waves roll down around the cheeks
+  // and deepen toward the nape where the moving sections emerge.
+  const fringe=THREE.MathUtils.smoothstep(Math.cos(angle),.20,.86);
+  const hem=2.34-1.16*fringe+.09*Math.sin(5*angle+.6)+.045*Math.cos(9*angle);
+  const arc=t*hem,sweep=angle+.74*(1-t)+.23*Math.sin(arc*2+.5*Math.sin(angle));
+  const wave=.5+.5*Math.cos(9*angle+1.1*Math.sin(3*angle)+.65*t);
+  const streak=.5+.5*Math.cos(19*angle+.9*Math.sin(5*angle)+1.1*t);
+  const ends=THREE.MathUtils.smoothstep(arc,1.35,2.34);
+  const spread=(Math.sin(arc)+.22*ends)*(1+.065*wave);
+  positions.push(
+   .034*(1-t)*(1-t)+.176*spread*Math.sin(sweep),
+   .213*Math.cos(arc)+.014*wave*Math.sin(arc)-ends*(.028+.023*wave),
+   -.012-.018*t+.164*spread*Math.cos(sweep),
+  );
+  color.copy(root).lerp(gold,.12+.36*wave+.32*streak+.16*Math.sin(arc));
+  colors.push(color.r,color.g,color.b);
+  const here=1+(row-1)*segments+i,next=1+(row-1)*segments+(i+1)%segments;
+  if(row===1)indices.push(0,here,next);
+  else indices.push(here-segments,here,next-segments,next-segments,here,next);
+ }
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+ g.setIndex(indices);g.computeVertexNormals();
+ const mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.78}));
+ mesh.name='blonde-layered-crown';mesh.castShadow=true;return mesh;
+}
+
+/** One opaque crown and five double-jointed windblown ends in two batches. */
 export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=>void}{
  const root=new THREE.Group();root.name='layered-blonde-bob';
- const crown:Strand[]=[];
- for(let i=0;i<26;i++){
-  const theta=i/26*Math.PI*2;
-  const x=Math.cos(theta)*.111,z=Math.sin(theta)*.102;
-  const length=.12+.105*Math.max(0,-Math.sin(theta))+.015*(i%3);
-  const rows:Row[]=[];
-  for(let step=0;step<=7;step++){
-   const t=step/7;
-   rows.push({
-    x:x*(.66+.50*t)+Math.sin(t*Math.PI)*.008*Math.sin(theta),
-    y:.145-length*t,
-    z:z*(.67+.49*t)-.040*t,
-    width:(.023+(i%4)*.003)*(1-.73*t),
-    shade:.78+.14*Math.sin(i*5.15)+.13*t,
-   });
-  }
-  crown.push({rows});
- }
- root.add(strandMesh(crown,'#9b672c','#f3ce78','blonde-layered-crown'));
+ root.add(blondeCrown());
  // Instanced dual-joint locks: FIVE independently moving clusters,
  // but only TWO hair draws (root & tip), not ten separate mesh draws.
  // Root cards share the same shaped strips; matrices vary per lock.
@@ -132,7 +148,7 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=
   for(let step=0;step<=8;step++){
    const t=step/8;
    rows.push({
-    x:(j-1)*.014+Math.sin(t*2.2+1.04)*.014*t,
+    x:(j-1)*.014+.030*Math.sin(t*4.1+j*.55)*t,
     y:-.015-.18*t-.024*t*t,
     z:-.012-.085*t+.013*Math.sin(t*Math.PI),
     width:(.023+.004*j)*(1-.80*t),
@@ -154,8 +170,11 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=
  root.add(primary,secondary);
  for(let i=0;i<5;i++){
   const anchor=new THREE.Group();anchor.name='blonde-hair-lock-'+i;
-  anchor.position.set((i-2)*.054,-.025,-.109-(i%2)*.011);
-  anchor.scale.setScalar(1+(i%3)*.042);
+  const side=(i-2)/2;
+  anchor.position.set(side*.116,-.025+.012*Math.sin(i*2.1),-.132+.038*side*side);
+  anchor.rotation.y=-side*.38;
+  const length=1+(i%3)*.042;
+  anchor.scale.set(length,.84*length,.92*length);
   root.add(anchor);
   const tip=new THREE.Group();tip.name='blonde-tip-joint';tip.position.y=-.13;
   anchor.add(tip);locks.push(anchor);
