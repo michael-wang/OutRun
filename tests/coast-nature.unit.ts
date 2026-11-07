@@ -96,6 +96,24 @@ describe('single full 3D tree model and no added grass',()=>{
   expect(trees.length).toBeGreaterThanOrEqual(assets[COAST_TREE_MODEL].parts.length);
   expect(trees.some(o=>(o as THREE.InstancedMesh).count>=5)).toBe(true);
  });
+ it('keeps a bark trunk and opaque volumetric crown at each authored field-edge site',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>assets})));
+  await loadCoastNature();
+  const scene=new THREE.Scene();
+  for(const start of [0,1000])addCoastNature(scene,track.sample,start,start+1000);
+  const matrix=new THREE.Matrix4(),position=new THREE.Vector3();
+  for(const [d,x] of [[148,72],[460,267],[760,266],[1310,265],[1660,268]]){
+   const frame=track.sample(d),site=frame.position.clone().addScaledVector(frame.right,x);
+   const parts:THREE.InstancedMesh[]=[];
+   for(const obj of scene.children as THREE.InstancedMesh[])for(let i=0;i<obj.count;i++){
+    obj.getMatrixAt(i,matrix);position.setFromMatrixPosition(matrix);
+    if(Math.hypot(position.x-site.x,position.z-site.z)<.01)parts.push(obj);
+   }
+   expect(parts).toHaveLength(2);
+   expect(parts.some(m=>m.userData.nature.texture==='Bark_NormalTree.png')).toBe(true);
+   expect(parts.some(m=>m.geometry.hasAttribute('color')&&!m.geometry.hasAttribute('uv'))).toBe(true);
+  }
+ });
 });
 
 it('uses actual shaded convex foliage instead of billboards at home and on hills',async()=>{

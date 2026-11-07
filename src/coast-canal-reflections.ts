@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {COAST_UTILITY_POLES,COAST_DRAIN_BRIDGES,coastDrainAt,coastDrainCovered} from './coast-roadside-layout';
+import {COAST_UTILITY_POLES,COAST_DRAIN_BRIDGES,coastDrainAt} from './coast-roadside-layout';
 
 /** Shared coarse scene-reflection atlas for the narrow coast drain.
  * The ocean already supplies the expensive FFT normal/reflected sky.
@@ -15,29 +15,19 @@ export type CanalReflectionWeights={pole:number;bridge:number};
 
 export function coastCanalReflectionsAt(d:number):CanalReflectionWeights{
  const site=coastDrainAt(d);
- if(!site||site.kind==='covered'||coastDrainCovered(d))return {pole:0,bridge:0};
+ if(!site||site.kind==='covered')return {pole:0,bridge:0};
  let pole=0,bridge=0;
- // A height-weighted, slightly swept vertical reflection, blurred by
- // irregular FFT ripple normals in the fragment shader.
+ const texelMetres=COAST_CANAL_REFLECT_LENGTH/COAST_CANAL_REFLECT_TEXELS;
+ // Store the fixture footprint. The shader projects a reflected ray to
+ // the far bank; baking the stretch here would project the pole twice.
  for(const p of COAST_UTILITY_POLES){
-  // A standing pole reflects TOWARD the approaching driver in the water.
-  // Old 16m-symmetric masks were too faint, even near the 988m pole.
-  const behind=p.d-d,reach=p.height*3.25;
-  if(behind>=-4&&behind<=reach){
-   const u=Math.max(0,Math.min(1,(behind+4)/(reach+4)));
-   const grow=THREE.MathUtils.smoothstep(behind,-4,2);
-   pole=Math.max(pole,Math.pow(1-u,.62)*grow);
-  }
+  pole=Math.max(pole,1-Math.abs(p.d-d)/texelMetres);
  }
- // The water is physically hidden under a crossing. Draw only the soft
- // shadow/reflection in adjacent OPEN segments, not a square under the lid.
+ // The visible water pixel can lie outside a bridge while its reflected
+ // ray hits the crossing. Store the slab footprint at the bank.
  for(const span of COAST_DRAIN_BRIDGES){
   const separation=Math.abs(d-span.d)-span.width*.5;
-  if(separation>=0&&separation<14){
-   // Cast the end parapet farther across the adjacent exposed water.
-   const envelope=Math.max(0,1-separation/14);
-   bridge=Math.max(bridge,Math.pow(envelope,.8));
-  }
+  bridge=Math.max(bridge,1-THREE.MathUtils.smoothstep(separation,-texelMetres*.5,texelMetres*.5));
  }
  return {pole,bridge};
 }

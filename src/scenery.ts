@@ -487,21 +487,6 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(wires,'#ffffff',0,0,0,1,1,1);
    }
   }
-  // A few distinctive trees near the fields and farmyards, not a wall of
-  // vegetation. These sit in the authored field-edge gaps where the generic
-  // nature scatter correctly avoids covering rice and flower crops.
-  coastShadowGroup='vegetation';
-  for(const site of [
-   {d:148,x:72,h:8.5},{d:460,x:267,h:11},
-   {d:760,x:266,h:9.5},{d:1310,x:265,h:10.5},
-   {d:1660,x:268,h:9},
-  ]){
-   if(!inChunk(site.d))continue;
-   beachAnchor(site.d,site.x);
-   part(cylinder,'#79604c',0,site.h*.47,0,.34,site.h*.94,.34);
-   part(round,'#587648',0,site.h+.35,0,3.2,site.h*.3,3.7);
-   part(round,'#6b8050',1.55,site.h-.3,.7,2.0,site.h*.22,2.3);
-  }
   coastShadowGroup='beach';
   for(const spot of COAST_REST_SPOTS){
    if(!inChunk(spot.d))continue;

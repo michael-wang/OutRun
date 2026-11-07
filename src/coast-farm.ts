@@ -274,12 +274,28 @@ export async function warmFarmMeshes(renderer:THREE.WebGLRenderer,camera:THREE.C
  // to WebGL before it enters the view. Remaining meshes are streamed normally.
  const objects=farmWarmupRepresentatives(allObjects);
  const compiled=new Set<THREE.Material>();
+ // A seek can retire an entire chunk while a representative waits for its
+ // frame or shader. A mesh can still have a parent inside the detached chunk.
+ const attached=(object:THREE.Object3D)=>{
+  let root=object;
+  while(root.parent)root=root.parent;
+  return root===scene;
+ };
  let done=0,compileWallMs=0,uploadSubmitMs=0,maxObjectSubmitMs=0;
  onProgress?.({done,total:objects.length,compileWallMs,uploadSubmitMs,maxObjectSubmitMs});
  for(const object of objects){
   await new Promise<void>(r=>requestAnimationFrame(()=>r()));if(!alive())break;
-  const parent=object.parent!,visible=object.visible,cull=object.frustumCulled,materials=Array.isArray(object.material)?object.material:[object.material];
-  if(materials.some(m=>!compiled.has(m))){const compileStart=onProgress?performance.now():0;await renderer.compileAsync(object,camera,scene);if(onProgress)compileWallMs+=performance.now()-compileStart;materials.forEach(m=>compiled.add(m));if(!alive())break;}
+  if(!attached(object))continue;
+  const visible=object.visible,cull=object.frustumCulled,materials=Array.isArray(object.material)?object.material:[object.material];
+  if(materials.some(m=>!compiled.has(m))){
+   const compileStart=onProgress?performance.now():0;
+   await renderer.compileAsync(object,camera,scene);
+   if(onProgress)compileWallMs+=performance.now()-compileStart;
+   if(!alive())break;
+   if(!attached(object))continue;
+   materials.forEach(m=>compiled.add(m));
+  }
+  const parent=object.parent!;
   const viewport=renderer.getViewport(new THREE.Vector4()),scissor=renderer.getScissor(new THREE.Vector4()),test=renderer.getScissorTest(),auto=renderer.autoClear,writes=materials.map(m=>[m.colorWrite,m.depthWrite]);
   const submitStart=onProgress?performance.now():0;
   try{

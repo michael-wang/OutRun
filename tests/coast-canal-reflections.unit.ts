@@ -7,6 +7,10 @@ import {
  coastCanalReflectionsAt,buildCoastCanalReflectionTexture,
 } from '../src/coast-canal-reflections';
 import {makeCoastDrainWaterMaterial} from '../src/coast-drain-water';
+import {buildCoastRoadsideDrain,buildCoastRoadsideWater} from '../src/coast-roadside-geometry';
+import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
+import {createPilotTrack} from '../src/pilot-composer';
+import {chaseTargets} from '../src/chase';
 
 it('reflects nearby authored poles and bridge parapets, not repeating fake scenery',()=>{
  const pole=COAST_UTILITY_POLES.find(p=>p.d===906)!;
@@ -15,8 +19,9 @@ it('reflects nearby authored poles and bridge parapets, not repeating fake scene
  expect(poleWeight.pole).toBeGreaterThan(.65);
  const bridge=COAST_DRAIN_BRIDGES.find(b=>b.d===1052)!;
  expect(bridge).toBeDefined();
- expect(coastCanalReflectionsAt(bridge.d).bridge).toBe(0); // hidden by actual slab
- expect(coastCanalReflectionsAt(bridge.d+bridge.width*.5+1.5).bridge).toBeGreaterThan(.2);
+ expect(coastCanalReflectionsAt(bridge.d).bridge).toBe(1);
+ expect(coastCanalReflectionsAt(bridge.d+bridge.width*.5).bridge).toBeCloseTo(.5);
+ expect(coastCanalReflectionsAt(bridge.d+bridge.width*.5+2).bridge).toBe(0);
  for(const d of [3700,5150,9850,10350]){
   expect(coastCanalReflectionsAt(d)).toEqual({pole:0,bridge:0});
  }
@@ -51,27 +56,28 @@ it('samples authored reflected props in the existing sea FFT/sky canal material'
   expect(shader.fragmentShader).toContain('uCoastReflectedProps');
   expect(shader.fragmentShader).toContain('coastSky(reflected,sun)');
   expect(shader.fragmentShader).toContain('uCoastSlope3');
-  expect(shader.fragmentShader).toContain('featureWarp');
-  expect(shader.fragmentShader).toContain('vCoastFlowUV.y+featureWarp+acrossShift');
+  expect(shader.fragmentShader).toContain('dot(reflected.xz,along)');
   expect(shader.fragmentShader).not.toContain('bankFoam');
   const cleanup=readFileSync(new URL('../src/streamed-scene.ts',import.meta.url),'utf8');
   expect(cleanup).toContain('localAtlas?.dispose()');
  }finally{texture.dispose();m.dispose();}
 });
 
-it('shows a visibly extended reflected pole at the reported 973m screenshot',()=>{
- const p=coastCanalReflectionsAt(973);
- expect(p.pole).toBeGreaterThan(.42);
- expect(p.bridge).toBe(0);
- expect(coastCanalReflectionsAt(950).pole).toBeLessThan(p.pole);
- const m=makeCoastDrainWaterMaterial({value:1});
- const shader:any={uniforms:{},vertexShader:'#include <common>\n#include <begin_vertex>',
-  fragmentShader:'#include <common>\n#include <color_fragment>'};
+it('exposes the middle of the open channel to the chase camera but hides water under a driveway',()=>{
+ const {sample}=createPilotTrack(COAST_ULTRA_STAGE);
+ const mat=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});
+ const walls=new THREE.Mesh(buildCoastRoadsideDrain(sample,950,1080)!,mat);
+ const water=new THREE.Mesh(buildCoastRoadsideWater(sample,950,1080)!,mat);
+ const ray=new THREE.Raycaster();
  try{
-  m.onBeforeCompile(shader,{} as any);
-  expect(m.customProgramCacheKey()).toContain('r7-local-reflections');
-  expect(shader.fragmentShader).toContain('float localReflection=clamp(reflectedPole+reflectedBridge,0.0,.60)');
-  expect(shader.fragmentShader).toContain('float bankView=.30+.70');
-  expect(shader.fragmentShader).toContain('float lampGlint=');
- }finally{(m.userData.coastCanalReflectionTexture as THREE.Texture).dispose();m.dispose();}
+  for(const d of [988,1000,1010,1052]){
+   const frame=sample(d),above=frame.position.clone().addScaledVector(frame.right,11.43);
+   above.y+=5;
+   ray.set(above,new THREE.Vector3(0,-1,0));
+   const target=ray.intersectObject(water)[0].point;
+   const car=sample(d-25),{eye}=chaseTargets(car.position,car.roadHeading);
+   ray.set(eye,target.clone().sub(eye).normalize());
+   expect(ray.intersectObjects([walls,water])[0]?.object===water,`sightline at ${d}m`).toBe(d!==1052);
+  }
+ }finally{walls.geometry.dispose();water.geometry.dispose();mat.dispose();}
 });

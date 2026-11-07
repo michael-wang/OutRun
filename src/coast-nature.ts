@@ -8,9 +8,9 @@ import {coastBeachHeight} from './scenery-cross-section';
 import {roadOffset,shoulderProfile} from './road-profile';
 import type {createTrack} from './track';
 
-export interface NatureBatch {texture?:string;alpha?:boolean;center:number;near:number;far:number}
+export interface NatureBatch {texture?:string;center:number;near:number;far:number}
 type GeometryData={position:number[];normal:number[];uv:number[];color?:number[]};
-type Model={parts:(GeometryData&{texture?:string;alpha?:boolean})[]};
+type Model={parts:(GeometryData&{texture?:string})[]};
 let assets:Record<string,Model>|undefined,loading:Promise<void>|undefined;
 export function loadCoastNature(){
  return loading??=fetch(`${import.meta.env.BASE_URL}assets/coast-nature/models.json`).then(async r=>{
@@ -27,6 +27,11 @@ export const COAST_HERO_TREE_SITES=[
  {d:1065,x:104,h:12.0},{d:1092,x:86,h:8.5},
  {d:1075,x:160,h:9.5},
 ] as const;
+const authoredTrees=[
+ ...COAST_HERO_TREE_SITES,
+ {d:148,x:72,h:8.5},{d:460,x:267,h:11},{d:760,x:266,h:9.5},
+ {d:1310,x:265,h:10.5},{d:1660,x:268,h:9},
+];
 /** Intersect the same two triangles as the terrain ribbons. Analytic noise
  * alone can leave roots floating between coarse cross-slope stations. */
 export function coastNatureGround(sample:ReturnType<typeof createTrack>['sample'],d:number,x:number,start:number,end:number){
@@ -83,14 +88,14 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    if(!m){m=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:!!data.color?.length});materials.set(matKey,m);}
    const bucketKey=id+':'+center;
    let bucket=buckets.get(bucketKey);
-   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,alpha:part.alpha,center,near:0,
+   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,center,near:0,
      far:name===COAST_TREE_MODEL?COAST_TREE_DRAW_DISTANCE:far},
     shadowGroup:name.startsWith('Rock_')?'rocks':'vegetation'};buckets.set(bucketKey,bucket);}
    bucket.matrices.push(dummy.matrix.clone());
   }
  }
  // Farmhouse grove uses exactly the same 3D broadleaf as the distant hillside.
- for(const [i,tree] of COAST_HERO_TREE_SITES.entries())
+ for(const [i,tree] of authoredTrees.entries())
   if(tree.d>=start&&tree.d<end)
    plant(COAST_TREE_MODEL,tree.d,tree.x,tree.h,90000+i*97,600,true);
  // Trees/shrubs remain; individual grassy tufts are unapproved and removed.

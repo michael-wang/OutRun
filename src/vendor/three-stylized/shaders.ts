@@ -75,6 +75,7 @@ export const grassVertexShader = /* glsl */ `
 
 export const grassFragmentShader = /* glsl */ `
   #include <common>
+  #include <packing>
   #include <shadowmap_pars_fragment>
   uniform vec3 uGrassBottom;
   uniform vec3 uGrassTop;

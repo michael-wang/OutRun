@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-export type CoastVolumePart={position:number[];normal:number[];uv:number[];color:number[];texture?:string;alpha?:boolean};
+export type CoastVolumePart={position:number[];normal:number[];uv:number[];color:number[];texture?:string};
 /** Actual convex 3D canopy lobes, not alpha-tested flat texture cards.
  * 11 softly overlapping irregular icosahedra form a continuous broad crown.
  * Source coordinates are normalized to the existing imported bark geometry;

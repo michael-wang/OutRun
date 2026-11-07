@@ -1,6 +1,20 @@
-import {it,expect} from 'vitest';
+import {it,expect,vi} from 'vitest';
 import * as THREE from 'three';
 import {farmWarmupRepresentatives} from '../src/farm-warmup-plan';
+import {warmFarmMeshes,type FarmPatch} from '../src/coast-farm';
+
+it('skips a retired chunk even if its mesh still has a parent when compilation finishes',async()=>{
+ const scene=new THREE.Scene(),group=new THREE.Group(),mesh=new THREE.Mesh();
+ group.add(mesh);scene.add(group);
+ const renderer={compileAsync:vi.fn(async()=>group.removeFromParent()),render:vi.fn()};
+ vi.stubGlobal('requestAnimationFrame',(f:FrameRequestCallback)=>f(0));
+ try{
+  await warmFarmMeshes(renderer as unknown as THREE.WebGLRenderer,new THREE.Camera(),scene,[{group} as FarmPatch],()=>true);
+  expect(renderer.compileAsync).toHaveBeenCalledOnce();
+  expect(renderer.render).not.toHaveBeenCalled();
+  expect(mesh.parent).toBe(group);
+ }finally{vi.unstubAllGlobals();mesh.geometry.dispose();mesh.material.dispose();}
+});
 
 it('uses one distant GPU preflight per shared material and instancing variant',()=>{
  const geometry=new THREE.PlaneGeometry(1,1),shared=new THREE.MeshStandardMaterial(),other=new THREE.MeshStandardMaterial();

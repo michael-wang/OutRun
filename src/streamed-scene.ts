@@ -46,9 +46,6 @@ export class StreamedScene {
  private readonly mobile=typeof matchMedia!=='undefined'&&matchMedia('(pointer:coarse)').matches;
  private natureTextureLoads=0;
  private configureNatureMaterial(material:THREE.MeshStandardMaterial,nature:NatureBatch){
-  material.side=THREE.DoubleSide;
-  material.alphaTest=nature.alpha?.2:0;
-  if(nature.alpha){material.emissive.set(0x40572c);material.emissiveIntensity=.28;}
   if(!nature.texture)return;
   let texture=this.natureTextures.get(nature.texture);
   if(!texture){
@@ -244,7 +241,7 @@ export class StreamedScene {
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
   for(const data of instances)tasks.push(()=>{
    const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');
-   const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature?.alpha}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
+   const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
    let material=this.materials.get(key);
    if(!material){
     if(data.coastDrainWater){

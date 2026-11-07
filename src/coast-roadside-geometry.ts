@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type {createTrack} from './track';
 import {coastBeachHeight} from './scenery-cross-section';
-import {COAST_SIDE_DRAINS,COAST_DRAIN_X,COAST_DRAIN_BRIDGES,coastDrainBridgeAt,coastDrainCovered,coastDrainAt,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_SIDE_DRAINS,COAST_DRAIN_X,COAST_DRAIN_FREEBOARD,COAST_DRAIN_BRIDGES,coastDrainBridgeAt,coastDrainCovered,coastPoleLinks} from './coast-roadside-layout';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 type V=[number,number,number];
@@ -142,29 +142,30 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
  */
 export function buildCoastRoadsideWater(sample:Sample,start:number,end:number){
  const pos:number[]=[],uv:number[]=[],index:number[]=[];
- const X=COAST_DRAIN_X,left=X.innerLeft+.13,right=X.innerRight-.13;
+ const X=COAST_DRAIN_X;
  for(const site of COAST_SIDE_DRAINS){
+  if(site.kind==='covered')continue;
   const a=Math.max(start,site.start),b=Math.min(end,site.end);
   if(b<=a)continue;
   // Use a stable absolute route grid so water appears continuous at seams.
   const distances=[a];
   for(let d=Math.ceil(a/7.5)*7.5;d<b;d+=7.5)if(d>a+1e-5)distances.push(d);
   distances.push(b);
-  for(let row=0;row<distances.length-1;row++){
-   const d0=distances[row],d1=distances[row+1],mid=(d0+d1)*.5;
-   // A bridge spans the open gutter and must NOT cut the stream. Only
-   // genuine fully covered town drains omit their hidden water surface.
-   if(coastDrainAt(mid)?.kind==='covered')continue;
-   const first=pos.length/3;
-   for(const d of [d0,d1])for(const [side,x] of [[0,left],[1,right]] as const){
-    const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
-    // Waterline lies above the actual gutter floor and below both lips.
-    // Use exact sampled terrain to follow banked/curved road sections.
-    v.y=coastBeachHeight(x,p.position.y,p.right.y,d)+.25;
-    pos.push(v.x,v.y,v.z);
+  const first=pos.length/3;
+  for(const d of distances){
+   const p=sample(d);
+   const lip=(x:number)=>coastBeachHeight(x,p.position.y,p.right.y,d);
+   // Extend into both walls: depth testing forms the wet edge and lets
+   // the stream emerge naturally from the rising floor at the inlet.
+   const waterY=Math.min(lip(X.leftLip),lip(X.rightLip))+.035-COAST_DRAIN_FREEBOARD;
+   for(const [side,x] of [[0,X.leftLip],[1,X.rightLip]] as const){
+    pos.push(p.position.x+p.right.x*x,waterY,p.position.z+p.right.z*x);
     uv.push(side,d);
    }
-   index.push(first,first+1,first+2,first+1,first+3,first+2);
+  }
+  for(let row=0;row<distances.length-1;row++){
+   const i=first+row*2;
+   index.push(i,i+1,i+2,i+1,i+3,i+2);
   }
  }
  if(!index.length)return null;

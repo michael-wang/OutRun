@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {COAST_SKY_GLSL,COAST_SUN} from './coast-dusk';
 import {buildCoastCanalReflectionTexture,COAST_CANAL_REFLECT_LENGTH} from './coast-canal-reflections';
+import {COAST_DRAIN_X,COAST_DRAIN_FREEBOARD,COAST_POLE_SETBACK} from './coast-roadside-layout';
 
 /** Reverse flow: increasing time moves crests toward decreasing road metres. */
 export const COAST_DRAIN_FLOW_METRES_PER_SECOND=4.8;
@@ -23,7 +24,7 @@ export function makeCoastDrainWaterMaterial(
  const reflectedProps=buildCoastCanalReflectionTexture();
  m.userData.coastCanalReflectionTexture=reflectedProps;
  m.name='coast-ocean-reflected-canal';
- m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r7-local-reflections';
+ m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r8-bank';
  m.onBeforeCompile=shader=>{
   shader.uniforms.uCoastFlowTime=clock;
   shader.uniforms.uCoastSun={value:COAST_SUN};
@@ -55,22 +56,31 @@ uniform sampler2D uCoastSlope3;
 uniform vec3 uCoastSun;
 uniform sampler2D uCoastReflectedProps;
 ${COAST_SKY_GLSL}`).replace('#include <color_fragment>',`#include <color_fragment>
-float f=vCoastFlowUV.y + uCoastFlowTime*${COAST_DRAIN_FLOW_METRES_PER_SECOND.toFixed(1)};
+float travel=uCoastFlowTime*${COAST_DRAIN_FLOW_METRES_PER_SECOND.toFixed(1)};
+float f=vCoastFlowUV.y+travel;
+// Recover the horizontal bank direction from the existing route UVs.
+// This follows each bend without another worker attribute or texture.
+vec2 uvX=dFdx(vCoastFlowUV),uvY=dFdy(vCoastFlowUV);
+vec2 across=normalize(dFdx(vCoastWaterWorld.xz)*uvY.y-dFdy(vCoastWaterWorld.xz)*uvX.y)
+ *sign(uvX.x*uvY.y-uvY.x*uvX.y);
+vec2 along=vec2(across.y,-across.x);
 // Reuse the ocean's LIVE four-cascade FFT slope maps and dusk sky.
-vec2 worldXZ=vCoastWaterWorld.xz;
+float width=${(COAST_DRAIN_X.rightLip-COAST_DRAIN_X.leftLip).toFixed(2)};
+vec2 flowXZ=vec2(vCoastFlowUV.x*width,f);
 vec2 fftSlope=vec2(0.0);
 if(uCoastFftEnabled>.5){
- fftSlope=texture2D(uCoastSlope0,worldXZ/600.0).xy*.04
-  +texture2D(uCoastSlope1,worldXZ/85.0).xy*.13
-  +texture2D(uCoastSlope2,worldXZ/12.0).xy*.38
-  +texture2D(uCoastSlope3,worldXZ/2.1).xy*.17;
+ fftSlope=texture2D(uCoastSlope0,flowXZ/600.0).xy*.04
+  +texture2D(uCoastSlope1,flowXZ/85.0).xy*.13
+  +texture2D(uCoastSlope2,flowXZ/12.0).xy*.38
+  +texture2D(uCoastSlope3,flowXZ/2.1).xy*.17;
 }
 // f is absolute route metres plus upstream current: irregular smooth noise
 // replaces two fixed-frequency repeating sine waves and round tiled ripples.
 float current1=skyNoise(vec2(f*.11,vCoastFlowUV.x*1.73+2.1));
 float current2=skyNoise(vec2(f*.21+13.4,vCoastFlowUV.x*2.07+7.6));
-vec2 eddy=(vec2(current1,current2)-.5)*.055;
-vec3 normal=normalize(vec3(-fftSlope.x-eddy.x,1.0,-fftSlope.y-eddy.y));
+vec2 slope=fftSlope+(vec2(current1,current2)-.5)*.17;
+vec2 worldSlope=across*slope.x+along*slope.y;
+vec3 normal=normalize(vec3(-worldSlope.x,1.0,-worldSlope.y));
 vec3 viewDir=normalize(cameraPosition-vCoastWaterWorld);
 vec3 sun=normalize(uCoastSun);
 vec3 reflected=reflect(-viewDir,normal);
@@ -83,30 +93,29 @@ vec3 body=mix(deep,shallow,.58+.15*current1);
 body*=1.0-.08*(1.0-smoothstep(0.0,.10,bank));
 // The sky is reflected exactly like the acclaimed ocean: no cyan glint tiles.
 vec3 sky=coastSky(reflected,sun);
+float acrossRay=dot(reflected.xz,across);
+float toWall=(acrossRay>0.0?1.0-vCoastFlowUV.x:vCoastFlowUV.x)*width;
+float wallHeight=reflected.y*toWall/max(abs(acrossRay),.001);
+// At a grazing angle the wave reflects the shaded concrete wall. On the
+// next tilted facet the same ray clears the lip and reflects open sky.
+float skyVisible=smoothstep(.0,${(COAST_DRAIN_FREEBOARD*2).toFixed(2)},wallHeight);
+sky=mix(vec3(.07,.087,.08),sky,skyVisible);
 vec3 color=mix(body,sky,clamp(.44+fresnel*.45,0.0,.89));
 vec3 halfway=normalize(viewDir+sun);
 float sunGlitter=pow(max(dot(normal,halfway),0.0),95.0)
  *(0.3+max(dot(normal,sun),0.0));
 color+=vec3(1.0,.63,.27)*sunGlitter*1.8;
-// Soft, local silhouettes only where genuine roadside fixtures exist.
-// FFT and irregular current disrupt the outline and keep the ocean's
-// reflection as the main character, not a new tiled procedural pattern.
-// Real reflected poles stretch behind the fixture and should be legible
-// from the chase camera, even within a narrow 1.7m channel. Genuine ocean
-// FFT slopes and advected noise distort the silhouette, without adding SSR.
-float featureWarp=clamp(fftSlope.y*1.20+eddy.y*9.0,-4.0,4.0);
-float acrossShift=(vCoastFlowUV.x-.60)*1.35;
-float featureAt=clamp((vCoastFlowUV.y+featureWarp+acrossShift)/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)},0.0,1.0);
+// Intersect the reflected ray with the row of roadside poles. Their
+// reflections now move across the water as the chase camera passes.
+float toPole=(1.0-vCoastFlowUV.x)*width+${COAST_POLE_SETBACK.toFixed(2)};
+float rayLength=toPole/max(acrossRay,.001);
+float featureAt=(vCoastFlowUV.y+rayLength*dot(reflected.xz,along))/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)};
 vec2 sceneReflect=texture2D(uCoastReflectedProps,vec2(featureAt,.5)).rg;
-float bankView=.30+.70*smoothstep(.08,.93,vCoastFlowUV.x);
-float waviness=.72+.28*skyNoise(vec2(vCoastFlowUV.y*.38+uCoastFlowTime*.25,vCoastFlowUV.x*8.5));
-float reflectedPole=sceneReflect.r*(.48+.09*current1)*bankView*waviness;
-float reflectedBridge=sceneReflect.g*(.33+.08*current2)*(.72+.28*bankView)*waviness;
-float localReflection=clamp(reflectedPole+reflectedBridge,0.0,.60);
+float hitHeight=reflected.y*rayLength;
+float pole=sceneReflect.r*(1.0-smoothstep(9.8,11.0,hitHeight));
+float bridge=sceneReflect.g*(1.0-smoothstep(.35,.8,hitHeight));
+float localReflection=max(.90*pole,.68*bridge)*skyVisible*step(.001,acrossRay);
 color=mix(color,vec3(.045,.057,.060),localReflection);
-// Subtle golden lamp reflection, locked to the original authored poles.
-float lampGlint=pow(sceneReflect.r,6.0)*(.07+.025*current2)*bankView;
-color+=vec3(.80,.47,.22)*lampGlint;
 // No oversized foam stripes, repeated caustic circles or luminous cyan ribbon.
 diffuseColor.rgb=color;`);
  };

@@ -25,6 +25,9 @@ export type CoastDrain=(typeof COAST_SIDE_DRAINS)[number];
  * This tighter, steep-sided cross-section reads as Taiwanese roadside.
  */
 export const COAST_DRAIN_X={outerRoad:10.12,leftLip:10.26,innerLeft:10.48,innerRight:12.38,rightLip:12.62,outerLand:14.75} as const;
+/** Surface below the lower concrete lip, in metres. */
+export const COAST_DRAIN_FREEBOARD=.14;
+export const COAST_POLE_SETBACK=.55;
 const smooth=(a:number,b:number,v:number)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
 export function coastDrainAt(d:number):CoastDrain|undefined{
  return COAST_SIDE_DRAINS.find(x=>d>=x.start&&d<x.end);
@@ -142,7 +145,7 @@ export const COAST_UTILITY_POLES:readonly CoastUtilityPole[]=Object.freeze(
    const direction=d<road.d?-1:1;
    d=Math.round(road.d+direction*(road.width*.5+12));
   }
-  return {...p,d,x:COAST_DRAIN_X.rightLip+.55+(poleNoise(Math.round(d)+71)-.5)*.22,lamp:true};
+  return {...p,d,x:COAST_DRAIN_X.rightLip+COAST_POLE_SETBACK+(poleNoise(Math.round(d)+71)-.5)*.22,lamp:true};
  }).sort((a,b)=>a.d-b.d),
 );
 export function coastPoleLinks(start:number,end:number){

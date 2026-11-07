@@ -84,7 +84,7 @@ it('uses actual water geometry above the floor and a one-clock reverse-flow shad
   fragmentShader:'#include <common>\n#include <color_fragment>'};
  m.onBeforeCompile(shader,{} as any);
  expect(shader.fragmentShader).toContain('uCoastFlowTime');
- expect(shader.fragmentShader).toContain('vCoastFlowUV.y + uCoastFlowTime');
+ expect(shader.fragmentShader).toContain('vCoastFlowUV.y+travel');
  expect(shader.fragmentShader).toContain(COAST_DRAIN_FLOW_METRES_PER_SECOND.toFixed(1));
  expect(shader.vertexShader).toContain('vCoastFlowUV=uv');
  expect(shader.fragmentShader).toContain('uCoastSlope0');
@@ -155,7 +155,6 @@ it('uses actual ocean FFT and a calm dusk reflection without repeating canal cel
  m.onBeforeCompile(shader,{} as any);
  try{
   expect(m.name).toBe('coast-ocean-reflected-canal');
-  expect(m.customProgramCacheKey()).toContain('ocean-fft-r7-local-reflections');
   expect(shader.vertexShader).toContain('vCoastFlowUV=uv');
   expect(shader.vertexShader).toContain('canalWorld=instanceMatrix*canalWorld');
   expect(shader.vertexShader).not.toContain('transformed.y+=sin');
