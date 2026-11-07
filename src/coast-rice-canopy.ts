@@ -12,8 +12,8 @@ export function riceCanopyGeometry(plot:FarmPlot,position:(d:number,x:number,lif
   // Thin out toward the bund so the driver can see between the first stalks.
   const margin=x===0||x===nx||z===0||z===nz;
   const cover=margin?.12+.09*grain:1;
-  const p=position(d,lateral,.14+.69*cover+grain*.075);vertices.push(p.x,p.y,p.z);uv.push(lateral/4,d/4);
-  const c=new THREE.Color('#dfbb55').lerp(new THREE.Color('#b9ad4d'),.12+.08*Math.sin(d*.043+lateral*.08));
+  const p=position(d,lateral,.14+.69*cover+grain*.075);vertices.push(p.x,p.y,p.z);uv.push((lateral-plot.left)/4,(d-plot.start)/4);
+  const c=new THREE.Color('#f3f1da').lerp(new THREE.Color('#c9d2ae'),.27+.18*Math.sin(d*.043+lateral*.08));
   c.multiplyScalar(.98+grain*.035);colors.push(c.r,c.g,c.b,cover);
  }
  for(let z=0;z<nz;z++)for(let x=0;x<nx;x++){

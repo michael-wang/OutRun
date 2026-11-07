@@ -3,7 +3,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {Grass} from './vendor/three-stylized/Grass';
 import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-stylized/flowerShapes';
-import {shadeRipeRice} from './coast-rice-material';
+import {shadeRipeRice,shadePaddyWater} from './coast-rice-material';
+import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 import {seededRandom} from './vendor/three-stylized/utils';
 import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
@@ -52,6 +53,13 @@ export async function loadCoastFarm(){
      shadeRipeRice(shader,time,crop);
      if(crop)distanceShader(shader,near,far,false);
     };m.customProgramCacheKey=()=>`farm-${kind}-ripe-${near}-${far}`;
+   }else if(kind==='paddy'||kind==='field'){
+    m.vertexColors=true;m.map=texture;
+    m.onBeforeCompile=shader=>{
+     shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance += diffuseColor.rgb * .28;');
+     if(kind==='paddy')shadePaddyWater(shader,time);
+    };
+    m.customProgramCacheKey=()=>`farm-floor-${kind}`;
    }materials.set(key,m);
   }return m;
  }
@@ -74,18 +82,18 @@ function riceSeaTexture(){
  const size=512,canvas=document.createElement('canvas');
  canvas.width=canvas.height=size;
  const ctx=canvas.getContext('2d')!,rand=seededRandom(20261104);
- ctx.fillStyle='#bba967';ctx.fillRect(0,0,size,size);
+ ctx.fillStyle='#668653';ctx.fillRect(0,0,size,size);
  ctx.lineCap='round';
  for(let row=0;row<20;row++)for(let hill=0;hill<18;hill++)for(let ear=0;ear<3;ear++){
   const x=(row+rand()*.64)*size/20,y=(hill+rand())*size/18;
   const reach=9+rand()*13,rise=8+rand()*9, tilt=rand()*.95-.4;
-  const hull=rand()<.38?'#d9b15d':'#f3da92';
+  const hull=rand()<.38?'#c6b071':'#e9d49a';
   const xs=[x],ys=[y];
   if(x<32)xs.push(x+size);if(x>size-32)xs.push(x-size);
   if(y<32)ys.push(y+size);if(y>size-32)ys.push(y-size);
   for(const px of xs)for(const py of ys){
    ctx.save();ctx.translate(px,py);ctx.rotate(tilt);
-   ctx.strokeStyle='#988d4e';ctx.lineWidth=1.7;ctx.beginPath();
+   ctx.strokeStyle='#82a05a';ctx.lineWidth=2.4;ctx.beginPath();
    ctx.moveTo(-reach*.45,rise*.6);ctx.quadraticCurveTo(0,-rise,reach,0);ctx.stroke();
    ctx.fillStyle=hull;
    for(let k=0;k<7;k++){
@@ -182,14 +190,16 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  const crops:THREE.InstancedMesh[]=[];
  if(isRice&&plot.band===0){
   const rand=seededRandom(7300+plot.id),matrices:THREE.Matrix4[]=[],dummy=new THREE.Object3D();
-  for(let d=plot.start+1.6;d<plot.end-1.4;d+=3.5)for(let x=plot.left+1.4;x<plot.right-1.2;x+=2.9){
-   const at=d+(rand()-.5)*.8,lateral=x+(rand()-.5)*.5;
-   if(clearPath(at,lateral))continue;
-   dummy.position.copy(position(at,lateral,.04));dummy.rotation.set(0,rand()*Math.PI*2,0);
-   const scale=.94+rand()*.14;dummy.scale.set(scale*1.08,scale,scale*1.08);
-   dummy.updateMatrix();matrices.push(dummy.matrix.clone());
+  for(let d=plot.start+RICE_FIRST_HILL+RICE_HILL_PITCH;d<plot.end-RICE_HILL_PITCH;d+=3*RICE_HILL_PITCH){
+   const right=sample(d).right,yaw=Math.atan2(-right.z,right.x);
+   for(let x=plot.left+RICE_FIRST_HILL+.5*RICE_ROW_PITCH;x<plot.right-RICE_ROW_PITCH*.5;x+=2*RICE_ROW_PITCH){
+    if(clearPath(d,x))continue;
+    dummy.position.copy(position(d,x,.025));dummy.rotation.set(0,yaw,0);
+    dummy.scale.set(1,.95+rand()*.10,1);
+    dummy.updateMatrix();matrices.push(dummy.matrix.clone());
+   }
   }
-  const mesh=new THREE.InstancedMesh(assets.geometries[0],assets.material('crop','#fff2bf',0,135),matrices.length);
+  const mesh=new THREE.InstancedMesh(assets.geometries[0],assets.material('crop','#ffffff',0,135),matrices.length);
   mesh.userData.farmLod=0;matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));
   mesh.computeBoundingSphere();mesh.boundingSphere!.radius+=1;group.add(mesh);instances.push(mesh);crops.push(mesh);
  }
@@ -207,13 +217,24 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  // Ground, paths and matte channels share one draw per plot. Retain each field's
  // own bounds instead of merging the entire kilometre into an uncullable mesh.
  const surfaces=group.children.filter((o):o is THREE.Mesh=>o instanceof THREE.Mesh&&!(o instanceof THREE.InstancedMesh));
- const parts=surfaces.map(m=>{const g=m.geometry.clone(),colors=[],c=(m.material as THREE.MeshStandardMaterial).color;for(let i=0;i<g.getAttribute('position').count;i++)colors.push(c.r,c.g,c.b);g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));return g;});
+ const parts=surfaces.map(m=>{
+  const g=m.geometry.clone(),colors=[],c=(m.material as THREE.MeshStandardMaterial).color,count=g.getAttribute('position').count;
+  for(let i=0;i<count;i++)colors.push(c.r,c.g,c.b);
+  g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+  if(isRice){
+   // Paired ribbon vertices run from the inner to the outer bund. Their
+   // direction rotates with the road and also locates reflected rice rows.
+   const across=new Float32Array(count*2),p=g.getAttribute('position');
+   if(m===surface)for(let i=0;i<count;i+=2){
+    const dx=p.getX(i+1)-p.getX(i),dz=p.getZ(i+1)-p.getZ(i),length=Math.hypot(dx,dz);
+    across.set([dx/length,dz/length,dx/length,dz/length],i*2);
+   }
+   g.setAttribute('paddyAcross',new THREE.BufferAttribute(across,2));
+  }
+  return g;
+ });
  const merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());ownedGeometry.push(merged);surfaces.forEach(m=>group.remove(m));
- const fieldMaterial=assets.material('ground','#ffffff');fieldMaterial.vertexColors=true;fieldMaterial.emissive.set(0x000000);
- // The distant crop canopy retains its golden/flower palette after individual
- // plants fade. Tint the ambient contribution by the same field/row colours.
- fieldMaterial.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <emissivemap_fragment>','#include <emissivemap_fragment>\n totalEmissiveRadiance += diffuseColor.rgb * .28;');};
- fieldMaterial.customProgramCacheKey=()=> 'farm-canopy-ground-v1';
+ const fieldMaterial=assets.material(isRice?'paddy':'field','#ffffff');
  // This opaque terrace sits ABOVE the road worker's terrain. Without a shadow
  // receiver, tree/lamp shadows land on hidden grass and seem to disappear.
  const fieldSurface=new THREE.Mesh(merged,fieldMaterial);

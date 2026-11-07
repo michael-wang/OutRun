@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {FARM_PLOTS} from '../src/coast-farm-layout';
 import {prepareFarmPlot,farmPrepTransferables} from '../src/coast-farm-prep';
 import {createFarmPlot,type FarmAssets} from '../src/coast-farm';
+import {RICE_ROW_PITCH,RICE_FIRST_HILL,RICE_HILL_PITCH} from '../src/coast-rice-layout';
 import {Grass} from '../src/vendor/three-stylized/Grass';
 import type {createTrack} from '../src/track';
 
@@ -49,6 +50,34 @@ it('worker-prepared rice canopy reproduces mesh layout and colours without main-
   expect(Array.from(ga.getIndex()!.array)).toEqual(Array.from(gb.getIndex()!.array));
   expect(a.stats().crops).toEqual(b.stats().crops);
  }finally{a.dispose();b.dispose();fresh.dispose();}
+});
+
+it('aligns roadside rice blocks to planted rows and restricts water to the bed',()=>{
+ const plot=FARM_PLOTS.find(p=>p.kind==='rice'&&p.band===0)!;
+ const right=new THREE.Vector3(.8,0,-.6),forward=new THREE.Vector3(.6,0,.8);
+ const angled=((d:number)=>({...sample(d),position:forward.clone().multiplyScalar(d),right,tangent:forward})) as typeof sample;
+ const assets=fakeAssets(),patch=createFarmPlot(plot,angled,assets.assets,prepareFarmPlot(plot,angled));
+ try{
+  const crop=patch.group.children.find(o=>o.userData.farmLod===0) as THREE.InstancedMesh;
+  const m=new THREE.Matrix4(),v=new THREE.Vector3();
+  for(let i=0;i<crop.count;i++){
+   crop.getMatrixAt(i,m);
+   expect(v.setFromMatrixColumn(m,0).distanceTo(right)).toBeLessThan(.00001);
+   v.setFromMatrixPosition(m);
+   const col=(v.dot(right)-plot.left-RICE_FIRST_HILL-RICE_ROW_PITCH*.5)/(2*RICE_ROW_PITCH);
+   const row=(v.dot(forward)-plot.start-RICE_FIRST_HILL-RICE_HILL_PITCH)/(3*RICE_HILL_PITCH);
+   expect(col).toBeCloseTo(Math.round(col),4);expect(row).toBeCloseTo(Math.round(row),4);
+  }
+  const bed=patch.group.children.find(o=>o instanceof THREE.Mesh&&o.geometry.hasAttribute('paddyAcross')) as THREE.Mesh;
+  const axes=bed.geometry.getAttribute('paddyAcross'),ix=bed.geometry.index!;
+  let wet=0,dry=0;
+  for(let i=0;i<ix.count;i+=3){
+   const first=ix.getX(i),x=axes.getX(first),z=axes.getY(first);
+   for(let j=1;j<=2;j++){expect(axes.getX(ix.getX(i+j))).toBeCloseTo(x,4);expect(axes.getY(ix.getX(i+j))).toBeCloseTo(z,4);}
+   if(x===0&&z===0)dry++;else{expect(x).toBeCloseTo(right.x);expect(z).toBeCloseTo(right.z);wet++;}
+  }
+  expect(wet).toBe(Math.ceil((plot.end-plot.start)/4)*2);expect(dry).toBeGreaterThan(0);
+ }finally{patch.dispose();assets.dispose();}
 });
 
 it('worker-prepared flower and grass samples retain counts and placement',()=>{
