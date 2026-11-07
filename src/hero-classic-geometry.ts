@@ -112,8 +112,8 @@ function classicTonneau(model:CarModel):THREE.BufferGeometry{
  * The accepted angular 1976 Wedge keeps its original tonneau unchanged.
  */
 function classicRearFascia():THREE.BufferGeometry{
- const xs=[-.90,-.77,-.54,-.26,0,.26,.54,.77,.90];
- const ys=[.36,.49,.62,.75,.88];
+ const xs=[-.90,-.66,-.33,0,.33,.66,.90];
+ const ys=[.36,.52,.70,.88];
  const positions:number[]=[],indices:number[]=[];
  for(const y of ys)for(const x of xs){
   const round=Math.pow(Math.abs(x)/.9,2);

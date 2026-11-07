@@ -14,7 +14,8 @@ it('builds three truly different original classic silhouettes and period rear la
   const bounds=new THREE.Box3().setFromBufferAttribute(positions as THREE.BufferAttribute);
   expect(bounds.min.x).toBeGreaterThan(-1.22);
   expect(bounds.max.x).toBeLessThan(1.22);
-  expect(bounds.min.z).toBeGreaterThanOrEqual(-2.36);
+  // The new opaque rear fascia remains IN FRONT of the existing license plate at -2.459m.
+  expect(bounds.min.z).toBeGreaterThanOrEqual(-2.43);
   expect(bounds.max.z).toBeLessThanOrEqual(2.35);
   // A low wedge nose can drop to roughly .23m but never below tire clearance.
   expect(bounds.min.y).toBeGreaterThan(.20);
