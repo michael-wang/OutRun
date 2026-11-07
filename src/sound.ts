@@ -15,7 +15,7 @@ export class EngineSound {
   private skidGain?: GainNode;
   private analyser?: AnalyserNode;
   private impactGain?:GainNode;private impactCount=0;
-  private crashGain?:GainNode;private crunchGain?:GainNode;private gravelGain?:GainNode;private thump?:OscillatorNode;private crunchFilter?:BiquadFilterNode;private gravelLevel=0;private coneHitCount=0;private lastImpact:'vehicle'|'guardrail'|'cone'|undefined;
+  private crashGain?:GainNode;private crunchGain?:GainNode;private gravelGain?:GainNode;private thump?:OscillatorNode;private crunchFilter?:BiquadFilterNode;private gravelLevel=0;private coneHitCount=0;private lastImpact:'vehicle'|'guardrail'|'concrete'|'soft'|'cone'|undefined;
   private muted = false;
   private engineHz = 42;
   private engineRpm = 1000;
@@ -63,11 +63,27 @@ export class EngineSound {
     }
     await this.context.resume();
   }
-  impact(strength:number,kind:'vehicle'|'guardrail'='guardrail'){
+  impact(strength:number,kind:'vehicle'|'guardrail'|'concrete'|'soft'='guardrail'){
     this.impactCount++;this.lastImpact=kind;if(!this.context)return;const now=this.context.currentTime;
     const envelope=(gain:GainNode,peak:number,life:number)=>{const g=gain.gain;g.cancelScheduledValues(now);g.setValueAtTime(peak,now);g.exponentialRampToValueAtTime(.001,now+life);g.setValueAtTime(0,now+life+.01);};
-    if(kind==='guardrail')envelope(this.impactGain!,.12+.32*strength,.28);
-    else {this.thump!.frequency.cancelScheduledValues(now);this.thump!.frequency.setValueAtTime(115+25*strength,now);this.thump!.frequency.exponentialRampToValueAtTime(42,now+.16);this.crunchFilter!.frequency.setValueAtTime(900+1700*strength,now);envelope(this.crashGain!,.5+.7*strength,.20);envelope(this.crunchGain!,.35+.7*strength,.12+.10*strength);}
+    if(kind==='guardrail'){
+      // Bright steel scrape and ring, only at an actual visible metal rail.
+      envelope(this.impactGain!,.12+.32*strength,.28);
+    }else if(kind==='soft'){
+      // Invisible boundary: low, dry tire/shoulder thud. NEVER a metal ring.
+      this.thump!.frequency.cancelScheduledValues(now);
+      this.thump!.frequency.setValueAtTime(85+20*strength,now);
+      this.thump!.frequency.exponentialRampToValueAtTime(36,now+.14);
+      envelope(this.crashGain!,.12+.14*strength,.13);
+    }else{
+      const concrete=kind==='concrete';
+      this.thump!.frequency.cancelScheduledValues(now);
+      this.thump!.frequency.setValueAtTime(concrete?78+22*strength:115+25*strength,now);
+      this.thump!.frequency.exponentialRampToValueAtTime(concrete?35:42,now+.16);
+      this.crunchFilter!.frequency.setValueAtTime(concrete?580+550*strength:900+1700*strength,now);
+      envelope(this.crashGain!,concrete?.28+.36*strength:.5+.7*strength,concrete?.17:.20);
+      envelope(this.crunchGain!,concrete?.12+.28*strength:.35+.7*strength,concrete?.10:.12+.10*strength);
+    }
   }
   /** Short plastic clatter; reuse the already-running noise and low thump voices. */
   coneHit(speed:number){
