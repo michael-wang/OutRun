@@ -111,7 +111,7 @@ function classicTonneau(model:CarModel):THREE.BufferGeometry{
  */
 function classicRearFascia():THREE.BufferGeometry{
  const xs=[-.90,-.66,-.33,0,.33,.66,.90];
- const ys=[.36,.52,.70,.88];
+ const ys=[.36,.52,.70,.93];
  const positions:number[]=[],indices:number[]=[];
  for(const y of ys)for(const x of xs){
   const round=Math.pow(Math.abs(x)/.9,2);
@@ -132,14 +132,43 @@ function classicRearFascia():THREE.BufferGeometry{
  return geometry;
 }
 
-/** The accepted Riviera retains its original deck. Both problem cars
- * use a sealed rear fascia; their shell already provides the roof/deck top.
- * Do not overlay another near-coplanar tonneau on either of those shells.
+/** One outward-facing, continuous painted trunk skin for the two cars
+ * that previously exposed their internal ribs. The thin hand-sculpted deck
+ * climbs gradually from the rear fascia toward the cockpit; it is deliberately
+ * ABOVE (not coplanar with) the underlying shell roof and ends at the
+ * cockpit opening. Riviera 62 is accepted, so its original deck is untouched.
  */
+function sealedRearDeck():THREE.BufferGeometry{
+ const xs=[-.90,-.46,0,.46,.90];
+ const zs=[-2.35,-2.20,-2.00,-1.80,-1.55,-1.30,-1.08];
+ const positions:number[]=[],indices:number[]=[];
+ for(const z of zs){
+  const t=(z+2.35)/1.27;
+  for(const x of xs){
+   const shoulders=Math.pow(Math.abs(x)/.90,2);
+   positions.push(x,.91+.115*t+.018*shoulders,z);
+  }
+ }
+ const columns=xs.length;
+ for(let row=0;row<zs.length-1;row++)for(let col=0;col<xs.length-1;col++){
+  const a=row*columns+col,b=a+1,c=a+columns,d=c+1;
+  // Outward face points +Y. Explicit winding prevents the old hole.
+  indices.push(a,c,b,b,c,d);
+ }
+ const geometry=new THREE.BufferGeometry();
+ geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ geometry.setIndex(indices);geometry.computeVertexNormals();
+ geometry.name='sealed-classic-rear-deck';
+ return geometry;
+}
+
+/** The accepted Riviera retains its original tail. Both problem cars get
+ * a continuous upward-facing deck and a closed rear fascia. The previous
+ * nearly-coplanar decorative tonneau is NOT used on either problem body. */
 export function createClassicBody(model:CarModel):THREE.BufferGeometry{
  const pieces=model==='riviera-62'
   ?[classicShell(model),classicTonneau(model)]
-  :[classicShell(model),classicRearFascia()];
+  :[classicShell(model),sealedRearDeck(),classicRearFascia()];
  const merged=mergeGeometries(pieces);
  pieces.forEach(g=>g.dispose());
  if(!merged)throw Error('Failed to bake classic GT body');
