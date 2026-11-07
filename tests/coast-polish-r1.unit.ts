@@ -69,7 +69,7 @@ it('accepts held accelerator and steering immediately on resuming from OPTIONS',
  };
  const input={release:vi.fn(),press:vi.fn(),setAnalog:vi.fn()};
  const actions:string[]=[];
- const fakeStatus:Record<string,unknown>={hidden:true,textContent:''};
+ const fakeStatus:Record<string,unknown>={hidden:true,textContent:'',setAttribute:()=>{}};
  vi.stubGlobal('document',{
   createElement:()=>({...fakeStatus}),
   querySelector:()=>({append:()=>{}}),
