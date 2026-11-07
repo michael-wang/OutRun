@@ -604,7 +604,7 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 /* Distance is in the existing compact FPS/build box, never a second HUD. */
 #drive-distance{
  display:block;margin:1px 0 0;
- color:#f3deba;font:600 11px/1.25 Arial,sans-serif;
+ color:#c5c8cb;font:600 11px/1.25 Arial,sans-serif;
  letter-spacing:.02em;white-space:nowrap;
 }
 

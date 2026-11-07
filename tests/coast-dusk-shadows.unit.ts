@@ -137,3 +137,20 @@ it('avoids fake home/shop shadow rectangles across the centre of the highway',()
   expect(visibleOnLand).toBeGreaterThan(0);
  }finally{built.geometry.dispose();}
 });
+
+it('removes early phantom asphalt shadows from every non-barrier decal kind',()=>{
+ const built=buildCoastGroundShadows(sample,
+  (['home','shop','rock','umbrella','visitor','bench','lamp'] as const)
+   .map((kind,i)=>({d:900+i*30,x:21,width:7,length:75,kind})),
+  10000,()=>8.75);
+ try{
+  const pos=built.geometry.getAttribute('position');
+  const alpha=built.geometry.getAttribute('shadowAlpha');
+  let checked=0;
+  for(let i=0;i<pos.count;i++)if(Math.abs(pos.getX(i))<=10.2){
+   expect(alpha.getX(i)).toBe(0);
+   checked++;
+  }
+  expect(checked).toBeGreaterThan(0);
+ }finally{built.geometry.dispose();}
+});

@@ -12,7 +12,10 @@ export const COAST_SIDE_DRAINS=[
  {start:4900,end:5680,kind:'covered'},
  {start:5680,end:6200,kind:'mixed'},
  {start:6200,end:7000,kind:'covered'},
- {start:7000,end:9970,kind:'mixed'},
+ // Near the finish this channel runs beneath a continuous concrete
+ // culvert. Never expose an abrupt blue water source at 9,954m.
+ {start:7000,end:9600,kind:'mixed'},
+ {start:9600,end:10100,kind:'covered'},
 ] as const;
 export type CoastDrain=(typeof COAST_SIDE_DRAINS)[number];
 /** Physical metres right of the road centre on the five-lane coast.

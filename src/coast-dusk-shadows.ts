@@ -151,13 +151,14 @@ export function buildCoastGroundShadows(
     const lateral=1-THREE.MathUtils.smoothstep(Math.abs(u),.48,1.0);
     const tip=1-THREE.MathUtils.smoothstep(t,.72,1.0);
     const wet=ground>=COAST_SEA_LEVEL+.015?1:0;
-    // Legacy planar "home" and "shop" rectangles can project across the
-    // centre of the five-lane highway, despite the real building being
-    // entirely in the village. Keep the fake footprint on LAND only; the
-    // cached depth map still gives real architectural shadows.
+    // The remaining opening-road rectangles were projected decals from
+    // rocks, lamps, umbrellas and visitors, not the live 3D depth shadows.
+    // Keep synthetic ground overlays off ALL paved lanes/shoulders except
+    // tiny authentic concrete/rail contacts; real shadow maps remain.
     const pavedCorridor=Math.abs(nx)<=Math.max(halfAt(nd)+.18,COAST_DRAIN_X.outerRoad+.06);
-    const noFakeBuildingOnRoad=pavedCorridor&&(a.kind==='home'||a.kind==='shop')?0:1;
-    alpha.push(weight*lateral*tip*wet*(.63+.37*(1-t))*noFakeBuildingOnRoad);
+    const barrier=a.kind==='concrete'||a.kind==='rail'||a.kind==='rail-beam';
+    const visibleOnRoad=pavedCorridor&&!barrier?0:1;
+    alpha.push(weight*lateral*tip*wet*(.63+.37*(1-t))*visibleOnRoad);
    }
    if(row<rows)for(let col=0;col<cols-1;col++){
     const i=first+row*cols+col,j=i+cols;

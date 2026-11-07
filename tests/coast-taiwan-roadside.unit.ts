@@ -20,7 +20,7 @@ const ground=(d:number,x:number)=>{
 };
 
 it('sculpts an actual local ditch below both concrete banks without changing asphalt or rice-plot terrain',()=>{
- expect(COAST_SIDE_DRAINS.map(s=>s.kind)).toEqual(['open','mixed','covered','open','covered','mixed','covered','mixed']);
+ expect(COAST_SIDE_DRAINS.map(s=>s.kind)).toEqual(['open','mixed','covered','open','covered','mixed','covered','mixed','covered']);
  for(const [d,depth] of [[940,1.12],[4170,.88],[8870,1.12]] as const){
   expect(coastDrainDepth(11.1,d)).toBeCloseTo(depth,5);
   expect(ground(d,11.1)).toBeLessThan((ground(d,10.12)+ground(d,14.75))*.5-.65);
@@ -154,4 +154,16 @@ it('town side roads cross the covered gutter flush and utility poles avoid their
    expect(offsets.some(x=>x>COAST_DRAIN_X.rightLip+.2)).toBe(true);
   }finally{g.dispose();}
  }
+});
+
+it('seals the outlet under concrete well before the end-screen camera',()=>{
+ expect(coastDrainAt(9550)?.kind).toBe('mixed');
+ expect(coastDrainAt(9954)?.kind).toBe('covered');
+ expect(coastDrainCovered(9954)).toBe(true);
+ expect(buildCoastRoadsideWater(sample,9750,10000)).toBeNull();
+ const lid=buildCoastRoadsideDrain(sample,9750,10000);
+ try{expect(lid).not.toBeNull();expect(lid!.index!.count).toBeGreaterThan(200);}
+ finally{lid?.dispose();}
+ const oldFlow=buildCoastRoadsideWater(sample,9500,9575);
+ try{expect(oldFlow).not.toBeNull();}finally{oldFlow?.dispose();}
 });
