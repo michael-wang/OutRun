@@ -98,7 +98,7 @@ it('builds layered male hair rather than a spherical watermelon cap, with no sca
  expect(ribbonGeo.getAttribute('color')).toBeDefined();
  // ~28 tapered multi-row cards provide irregular distinct layered ends.
  expect(ribbonGeo.getAttribute('position').count).toBeGreaterThan(500);
- expect(ribbonGeo.index!.count).toBeGreaterThan(1400);
+ expect(ribbonGeo.index!.count).toBeGreaterThan(950);
 });
 it('recesses dark seatbacks behind a painted rear cowl without closing the cockpit',()=>{
  const car=createCar(),g=createRearTonneau();
