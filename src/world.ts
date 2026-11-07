@@ -156,7 +156,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   // Coast hazards must be positioned relative to the REAL scenic finish,
   // not the extra 600m of track-generation relief used after credits.
   const breakdowns=options.streamStage?.generatorVersion==='canyon-roadlock-v1'?[]:(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion)))?breakdownLayout(sample,halfAt,
-   coastUltra?(options.streamStage?.scenerySections?.find(section=>section.id==='coast-ultra-left-sea')?.end??length):length,
+   coastUltra?((options.streamStage as TripCandidate|undefined)?.scenerySections?.find(section=>section.id==='coast-ultra-left-sea')?.end??length):length,
    (options.seed??1)^(options.trafficVariation??0),!!coastUltra):[];
   const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion))?[]:breakdownAnnotations(sample,halfAt,breakdowns);
   if(!options.streamStage){
