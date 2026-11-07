@@ -2,7 +2,8 @@ import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {breakdownLayout,COAST_BREAKDOWN} from '../src/breakdowns';
 import {createPilotTrack,pilotSample} from '../src/pilot-composer';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
+import {COAST_ULTRA_STAGE,COAST_ULTRA_LENGTH} from '../src/coast-ultra-stage';
+import {BRICK_START} from '../src/bricks';
 
 const flat=(d:number)=>({
  position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(1,0,0),
@@ -29,11 +30,12 @@ it('preserves earlier non-coast stopped-car design and scans the real coast safe
  expect(legacy.length).toBeGreaterThan(1);
  expect(legacy[0].distance).toBeLessThan(3500);
  const track=createPilotTrack(COAST_ULTRA_STAGE);
+ const finishAt=BRICK_START+COAST_ULTRA_LENGTH;
  const coastal=breakdownLayout(track.sample,
-  d=>pilotSample(COAST_ULTRA_STAGE,d).halfWidth,track.length,804,true);
+  d=>pilotSample(COAST_ULTRA_STAGE,d).halfWidth,finishAt,804,true);
  expect(coastal.length).toBeLessThanOrEqual(1);
  for(const car of coastal){
-  expect(car.distance).toBeGreaterThan(8400);
-  expect(car.distance).toBeLessThan(9400);
+  expect(car.distance).toBeGreaterThan(finishAt-COAST_BREAKDOWN.firstBeforeEnd);
+  expect(car.distance).toBeLessThan(finishAt-COAST_BREAKDOWN.lastBeforeEnd);
  }
 });

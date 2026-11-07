@@ -59,7 +59,8 @@ it('gives nearly every metre of the inland coast the same drainage corridor, wit
   expect(coastDrainAt(d)).toBeDefined();
  expect(coastDrainAt(20)).toBeUndefined();
  expect(coastDrainAt(9990)?.kind).toBe('covered');
- expect(coastDrainAt(10100)).toBeUndefined(); // covered source extends beyond playable end
+ expect(coastDrainAt(10950)?.kind).toBe('covered');
+ expect(coastDrainAt(11200)).toBeUndefined(); // beyond post-finish relief
  expect(coastDrainCovered(3990)).toBe(true);
  expect(coastDrainCovered(850)).toBe(false);
 });

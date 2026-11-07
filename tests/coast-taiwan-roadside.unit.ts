@@ -160,6 +160,8 @@ it('seals the outlet under concrete well before the end-screen camera',()=>{
  expect(coastDrainAt(9550)?.kind).toBe('mixed');
  expect(coastDrainAt(9954)?.kind).toBe('covered');
  expect(coastDrainCovered(9954)).toBe(true);
+ expect(coastDrainAt(10500)?.kind).toBe('covered');
+ expect(buildCoastRoadsideWater(sample,10500,10800)).toBeNull();
  expect(buildCoastRoadsideWater(sample,9750,10000)).toBeNull();
  const lid=buildCoastRoadsideDrain(sample,9750,10000);
  try{expect(lid).not.toBeNull();expect(lid!.index!.count).toBeGreaterThan(200);}
