@@ -142,3 +142,30 @@ it('mounts a working roadside lamp on every canal-side utility pole',()=>{
  }});
  gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());
 });
+
+it('uses actual ocean FFT and a calm dusk reflection without repeating canal cells',()=>{
+ const m=makeCoastDrainWaterMaterial({value:0});
+ const shader:any={
+  uniforms:{},
+  vertexShader:'#include <common>\n#include <begin_vertex>',
+  fragmentShader:'#include <common>\n#include <color_fragment>',
+ };
+ m.onBeforeCompile(shader,{} as any);
+ try{
+  expect(m.name).toBe('coast-ocean-reflected-canal');
+  expect(m.customProgramCacheKey()).toContain('ocean-fft-r5');
+  expect(shader.vertexShader).toContain('vCoastFlowUV=uv');
+  expect(shader.vertexShader).toContain('canalWorld=instanceMatrix*canalWorld');
+  expect(shader.vertexShader).not.toContain('transformed.y+=sin');
+  expect(shader.fragmentShader).toContain('coastSky(reflected,sun)');
+  for(const cascade of [0,1,2,3])
+   expect(shader.fragmentShader).toContain('texture2D(uCoastSlope'+cascade);
+  expect(shader.fragmentShader).toContain('skyNoise(vec2(f*.11');
+  expect(shader.fragmentShader).not.toContain('float littleWave=');
+  expect(shader.fragmentShader).not.toContain('float longWave=');
+  expect(shader.fragmentShader).not.toContain('bankFoam');
+  expect(shader.fragmentShader).not.toContain('color+=vec3(1.0,.65,.31)*glint*3.7');
+  expect(m.depthWrite).toBe(true);
+  expect(m.transparent).toBe(false);
+ }finally{m.dispose();}
+});

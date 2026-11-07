@@ -93,3 +93,32 @@ it('passenger has bare upper arms and a sleeveless fitted summer dress; driver r
  expect(colors.has('efd0b9')).toBe(true);
  expect(colors.has('e3b79b')).toBe(true);
 });
+
+it('seals the rounded classics from the rear camera without covering the open cockpit',()=>{
+ const car=createCar();
+ const controller=car.userData.modelController as CarModelController;
+ const body=car.getObjectByName('hero-classic-body-shell') as THREE.Mesh;
+ const wedgeTrim=car.getObjectByName('wedge-only-rear-trim')!;
+ const ray=new THREE.Raycaster();
+ for(const model of ['riviera-62','grand-tourer-67'] as const){
+  controller.set(model);
+  expect(wedgeTrim.visible).toBe(false);
+  // A horizontal chase ray MUST hit the opaque painted rear fascia before
+  // seeing the dark cockpit, old bumper ribs or wheel internals.
+  for(const x of [-.72,0,.72]){
+   ray.set(new THREE.Vector3(x,.71,-5),new THREE.Vector3(0,0,1));
+   const hits=ray.intersectObject(body,false);
+   expect(hits.length).toBeGreaterThan(0);
+   expect(hits[0].point.z).toBeLessThan(-2.35);
+  }
+  // And the classic trunk surface stays solid across its centre.
+  ray.set(new THREE.Vector3(0,2.5,-1.7),new THREE.Vector3(0,-1,0));
+  const deck=ray.intersectObject(body,false);
+  expect(deck.length).toBeGreaterThan(0);
+  expect(deck[0].point.y).toBeGreaterThan(.78);
+ }
+ // The visually accepted 1976 Wedge keeps its rear vents and spoiler.
+ controller.set('wedge-spider-76');
+ expect(wedgeTrim.visible).toBe(true);
+ expect(controller.inspect().bodyGeometry).toContain('wedge-spider-76');
+});
