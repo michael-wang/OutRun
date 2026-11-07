@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
 import {createSpiderShell} from './hero-body';
-import {createDriverHair,createBlondeBob,createScarfTails} from './hero-groom';
+import {createFlatCap,createBlondeBob,createScarfTails} from './hero-groom';
 import {createOccupantMotion} from './occupants';
 import {CAR_PAINT_PRESETS,DEFAULT_CAR_COLOR,type CarColor} from './car-appearance';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -143,13 +143,18 @@ export function createCar(dusk=false) {
       oval(.047,.022,.013,driver?lapel:hair,x+eye*.063,1.493,-.332,head);
     }
     if(driver){
-      const groom=createDriverHair();groom.position.set(x,1.475,-.465);head.add(groom);
+      const cap=createFlatCap();
+      cap.position.set(x,1.607,-.455);head.add(cap);
       // One softly folded neck scarf, two narrow fabric tails drifting toward
       // the rear of the vehicle. This is 2 transforms, not a cloth simulation.
       const fabric=createScarfTails();
-      fabric.root.position.set(x,1.260,-.515);person.add(fabric.root);
+      fabric.root.position.set(x,1.276,-.577);person.add(fabric.root);
       scarf.push(...fabric.tails);
-      oval(.082,.047,.085,shirt,x,1.272,-.505,person);
+      // Champagne scarf collar is an actual neck wrap; trailing ends remain
+      // separate pivots above the rear deck for visible wind movement.
+      const scarfCloth=material('#f2c982',.66);
+      const collar=mesh(new THREE.TorusGeometry(.110,.029,6,22),scarfCloth,x,1.270,-.494,person);
+      collar.rotation.x=Math.PI/2;
     }else{
       const bob=createBlondeBob();bob.root.position.set(x,1.485,-.465);head.add(bob.root);
       locks.push(...bob.locks);syncHair=bob.sync;
