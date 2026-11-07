@@ -22,10 +22,10 @@ const gentleRise:Placement={
 
 export const COAST_ULTRA_STAGE:TripCandidate={
  ...DESIGNER_CANYON_STAGE,
- revision:27,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
+ revision:28,sceneryAct:0,seed:804,world:'coast',generatorVersion:'v0.9-r10',
  name:'Azure Coast · Scenic Journey',
  intent:'Coastal journey from rice fields and a courtyard through beach, lively market town and fishing farmland.',
- emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-four-scenic-acts-r1-804',
+ emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-farewell-headlands-r2-804',
  stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
  length:COAST_ULTRA_LENGTH,baseHeight:-1.8,baseLanes:5,roadWidth:5*LANE_WIDTH,
  placements:[
@@ -39,6 +39,10 @@ export const COAST_ULTRA_STAGE:TripCandidate={
   c(5500,6150,.18,-1,'Third sunset bay'),
   c(7000,7650,.18,1,'Market headland'),
   c(7950,8600,.18,-1,'Golden-water farewell'),
+  // HUD 8.98–10.23 km: round the fishing point, then unwind towards
+  // the sunset. Leave 120 m to settle before the finish at 10.35 km.
+  c(8630,9230,.14,-1,'Fishing point'),
+  c(9300,9880,.145,1,'Return along the last cove'),
  ].sort((a,b)=>a.startS-b.startS),
  bankFeatures:[],fixedRoad:undefined,
  worldPhases:[{startS:0,endS:COAST_ULTRA_LENGTH,world:'coast',beat:'Sunset coast journey'}],

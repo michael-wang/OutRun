@@ -11,20 +11,45 @@ export const COAST_BEACHES=[
  {distance:8150,radius:275,extra:19},
  {distance:9610,radius:240,extra:16},
 ] as const;
+// Sand points in absolute HUD metres. The shorter flank and longer flank
+// differ at each point; water comes back close to the road between them.
+// These shape the terrain independently of visitor beaches and their props.
+export const COAST_SAND_POINTS=[
+ {start:910,tip:1280,end:1500,reach:40},
+ {start:1510,tip:1710,end:2070,reach:29},
+ {start:2750,tip:3030,end:3220,reach:32},
+ {start:3680,tip:3900,end:4180,reach:38},
+ {start:4450,tip:4750,end:4970,reach:46},
+ {start:5450,tip:5685,end:5830,reach:44},
+ {start:6410,tip:6770,end:6970,reach:52},
+ {start:6990,tip:7200,end:7480,reach:31},
+ {start:7850,tip:8030,end:8320,reach:31},
+ {start:8730,tip:9130,end:9340,reach:46},
+ {start:9510,tip:9780,end:10030,reach:54},
+ {start:10060,tip:10240,end:10520,reach:30},
+] as const;
 export function coastBeachExtra(d:number){
  let extra=0;
  for(const bay of COAST_BEACHES){const t=Math.max(0,1-Math.abs(d-bay.distance)/bay.radius);extra+=bay.extra*t*t*(3-2*t);}
- // Small scallops between the broad beaches, with no per-frame terrain work.
+ for(const point of COAST_SAND_POINTS){
+  if(d<point.start)break;
+  if(d>point.end)continue;
+  const t=d<point.tip?(d-point.start)/(point.tip-point.start):(point.end-d)/(point.end-point.tip);
+  extra+=point.reach*t*t*(3-2*t);
+  break;
+ }
  return extra+2*(1+Math.sin(d*.019+Math.sin(d*.007)));
 }
 /** Remap the old cross-section, preserving the inner dry shoulder exactly. */
 export function coastBeachX(x:number,d:number){
+ if(x>=-11)return x;
  const e=coastBeachExtra(d);
- return x>=-11?x:x<-26?x-e:-11+(x+11)*(15+e)/15;
+ return x<-26?x-e:-11+(x+11)*(15+e)/15;
 }
 export function coastProfileX(x:number,d:number){
+ if(x>=-11)return x;
  const e=coastBeachExtra(d);
- return x>=-11?x:x<-26-e?x+e:-11+(x+11)*15/(15+e);
+ return x<-26-e?x+e:-11+(x+11)*15/(15+e);
 }
 /** Shared by instanced rocks, water clipping, wash foam and spray. */
 export const COAST_ROCKS=[

@@ -17,9 +17,15 @@ const track=createPilotTrack(stage),assets=JSON.parse(readFileSync('public/asset
 afterAll(()=>vi.unstubAllGlobals());
 describe('sunset coast nature',()=>{
  it('returns the fixed sun to four forward-left bays with safe shallow bends',()=>{
-  for(const [a,b] of [[1100,1950],[3900,4800],[6550,7250],[9050,10100]])for(let d=a;d<b;d+=25){
+  for(const [a,b] of [[1100,1950],[3900,4800],[6550,7250],[10175,10350]])for(let d=a;d<b;d+=25){
    const p=track.sample(d),angle=p.roadHeading+Math.atan2(.66,.75);
    expect(angle).toBeGreaterThan(.3);expect(angle).toBeLessThan(.45);
+  }
+  // The fishing point brings the sunset toward the windscreen centre,
+  // then opens the old forward-left vista again on the finish approach.
+  for(let d=8950;d<=10350;d+=20){
+   const angle=track.sample(d).roadHeading+Math.atan2(.66,.75);
+   expect(angle).toBeGreaterThan(0);expect(angle).toBeLessThan(.45);
   }
   for(let d=350;d<10350;d+=5)expect(Math.abs(track.sample(d).curvature)).toBeLessThan(.0016);
  });

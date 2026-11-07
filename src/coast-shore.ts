@@ -10,6 +10,17 @@ export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
  const points:ShoreSample[]=[];
  for(let d=0;d<length;d+=20)points.push(sample(d));
  points.push(sample(length));
+ // The wash follows the waterline around a sand point, even on a straight
+ // road. Bake its horizontal normal from neighbouring waterline stations.
+ const edge=points.map((p,i)=>{
+  const x=coastBeachX(COAST_SHORE_OFFSET,Math.min(i*20,length));
+  return new THREE.Vector2(p.position.x+x*p.right.x,p.position.z+x*p.right.z);
+ });
+ const outward=edge.map((_,i)=>{
+  const tangent=edge[Math.min(i+1,edge.length-1)].clone().sub(edge[Math.max(0,i-1)]);
+  const normal=new THREE.Vector2(tangent.y,-tangent.x).normalize(),r=points[i].right;
+  return normal.x*r.x+normal.y*r.z>0?normal.negate():normal;
+ });
  const minX=Math.min(...points.map(p=>p.position.x))-180,minZ=Math.min(...points.map(p=>p.position.z))-180;
  const sx=Math.max(...points.map(p=>p.position.x))+180-minX,sz=Math.max(...points.map(p=>p.position.z))+180-minZ;
  // Preserve metre-scale shore clipping when the authored route grows.
@@ -18,7 +29,7 @@ export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
  const segments=points.slice(1).map((b,i)=>{
   const a=points[i],dx=b.position.x-a.position.x,dz=b.position.z-a.position.z;
   const lo=i===0?-200:0,hi=i===points.length-2?200:1;
-  return {a,b,d:Math.min(i*20,length),end:Math.min((i+1)*20,length),dx,dz,inv:1/(dx*dx+dz*dz),lo,hi,
+  return {a,b,outA:outward[i],outB:outward[i+1],d:Math.min(i*20,length),end:Math.min((i+1)*20,length),dx,dz,inv:1/(dx*dx+dz*dz),lo,hi,
    minZ:Math.min(a.position.z+dz*lo,a.position.z+dz*hi),maxZ:Math.max(a.position.z+dz*lo,a.position.z+dz*hi)};
  });
  const data=new Uint16Array(width*height*4);
@@ -44,7 +55,9 @@ export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
   const k=(j*width+i)*4;
   data[k]=THREE.DataUtils.toHalfFloat(-lateral+coastBeachX(COAST_SHORE_OFFSET,distance));
   data[k+1]=THREE.DataUtils.toHalfFloat(y);
-  data[k+2]=THREE.DataUtils.toHalfFloat(-rx/n);data[k+3]=THREE.DataUtils.toHalfFloat(-rz/n);
+  const nx=THREE.MathUtils.lerp(chosen.outA.x,chosen.outB.x,t),nz=THREE.MathUtils.lerp(chosen.outA.y,chosen.outB.y,t);
+  const magnitude=Math.hypot(nx,nz);
+  data[k+2]=THREE.DataUtils.toHalfFloat(nx/magnitude);data[k+3]=THREE.DataUtils.toHalfFloat(nz/magnitude);
   }
  }
  const texture=new THREE.DataTexture(data,width,height,THREE.RGBAFormat,THREE.HalfFloatType);
