@@ -1,6 +1,7 @@
 import {fbm2,ridged2,smoothstep} from './vendor/procedural-terrains/cpuNoise.js';
 import {COAST_DISTRICTS} from './coast-layout';
 import {FARM_ZONES,farmPlainMask,farmTerraceHeight} from './coast-farm-layout';
+import {meadowRelief} from './coast-meadow-layout';
 
 export const COAST_HILL_STRIPS=[13,18,23,29,36,48,51,53,55,58,70,88,94,97,99,101,104,125,140,146,149,151,153,156,180,198,201,203,205,208,220,250,252,270,340,450] as const;
 
@@ -30,8 +31,9 @@ export function coastWildness(d:number){
  * The road and beach are deliberately outside this inland height field. */
 export function coastHillHeight(x:number,d:number){
  const farm=farmPlainMask(x,d),bench=farmTerraceHeight(x);
- if(x<=88)return farm*bench;
- if(farm===1)return bench;
+ const grassland=meadowRelief(x,d);
+ if(x<=88)return farm*bench+grassland;
+ if(farm===1)return bench+grassland;
  const wild=coastWildness(d);
  // Slide the foothills inland through inhabited districts, tapering the
  // displacement at each town entrance so the plain joins the countryside.
@@ -42,5 +44,5 @@ export function coastHillHeight(x:number,d:number){
  const crest=200+32*fbm2(8.04,d/230,3,.5,2);
  const near=Math.exp(-(((hillX-crest)/(65+20*broad))**2))*(12+28*ridge);
  const back=Math.exp(-(((hillX-355)/125)**2))*(15+32*broad);
- return envelope*smoothstep(88,155,hillX)*(near+back)*(1-farm)+farm*bench;
+ return envelope*smoothstep(88,155,hillX)*(near+back)*(1-farm)+farm*bench+grassland;
 }

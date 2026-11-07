@@ -1,4 +1,5 @@
 import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
+import {addCoastMeadow} from './coast-meadow';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {farmPlotsInChunk} from './coast-farm-layout';
 import {prepareFarmPlot,farmPrepTransferables} from './coast-farm-prep';
@@ -44,7 +45,12 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:(candidate as TripCandidate).scenicLandmarks,scenerySections:(candidate as TripCandidate).scenerySections,
     denseCity:candidate.generatorVersion==='v0.9-r10'||candidate.generatorVersion==='v0.9-r11'||candidate.generatorVersion==='v0.9-r12',
     canyonPrototype:(candidate as TripCandidate).canyonPrototype,designerCut:(candidate as TripCandidate).designerCut,coastUltra});
-   if(coastUltra){const nature=addCoastNature(scene,current.sample,request.start,Math.min(request.end,current.length)),resort=addCoastResort(scene,current.sample,d=>pilotSample(candidate,d).halfWidth,request.start,Math.min(request.end,current.length));scenery.instances+=nature.instances+resort.instances;scenery.draws+=nature.draws+resort.draws;}
+   if(coastUltra){
+    const end=Math.min(request.end,current.length),halfAt=(d:number)=>pilotSample(candidate,d).halfWidth;
+    const batches=[addCoastNature(scene,current.sample,request.start,end),addCoastResort(scene,current.sample,halfAt,request.start,end),
+     addCoastMeadow(scene,current.sample,halfAt,shoulders,request.start,end)];
+    for(const batch of batches){scenery.instances+=batch.instances;scenery.draws+=batch.draws;}
+   }
    const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{waffleSign?:boolean;coastDrainWater?:boolean;noShadowGround?:boolean;nature?:NatureBatch;shadowGroup?:CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
    scene.traverse(object=>{if(!(object instanceof THREE.InstancedMesh))return;const g=object.geometry,m=object.material as THREE.MeshStandardMaterial;geometries.add(g);materials.add(m);
     if(!templates.has(g.uuid)){const attr=(name:string)=>new Float32Array(g.getAttribute(name)?.array??[]);templates.set(g.uuid,{position:attr('position'),normal:attr('normal'),uv:attr('uv'),color:attr('color'),index:new Uint32Array(g.index?.array??[])});}

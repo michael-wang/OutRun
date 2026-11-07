@@ -2,6 +2,7 @@ import {waffleSignTexture} from './vehicle-model';
 import {makeCoastDrainWaterMaterial,type CoastCanalFftUniforms} from './coast-drain-water';
 import type {NatureBatch} from './coast-nature';
 import {natureVisible} from './coast-performance';
+import {meadowBladeMaterial,shadeMeadowGround} from './coast-meadow-material';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import * as THREE from 'three';
 import type {BankStrength} from './banking';
@@ -127,7 +128,7 @@ export class StreamedScene {
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
   this.bank=bank;
-  if(this.farmSample)loadCoastFarm().then(assets=>{if(this.disposed){assets.dispose();return;}this.farmAssets=assets;this.launch();}).catch(e=>{this.errorMessage=`Farm assets failed: ${String(e)}`;console.error(this.errorMessage);});else this.launch();
+  if(this.farmSample)loadCoastFarm().then(assets=>{if(this.disposed){assets.dispose();return;}this.farmAssets=assets;shadeMeadowGround(this.roadMaterials.grass,assets);this.launch();}).catch(e=>{this.errorMessage=`Farm assets failed: ${String(e)}`;console.error(this.errorMessage);});else this.launch();
   this.update(350);
  }
  private launch(){
@@ -241,11 +242,13 @@ export class StreamedScene {
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
   for(const data of instances)tasks.push(()=>{
    const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');
-   const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
+   const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature}:${!!data.nature?.meadow}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
    let material=this.materials.get(key);
    if(!material){
     if(data.coastDrainWater){
      material=makeCoastDrainWaterMaterial(this.canalFlowTime,this.canalFft,this.canalFftEnabled);
+    }else if(data.nature?.meadow&&this.farmAssets){
+     material=meadowBladeMaterial(this.farmAssets);
     }else{
      const standard=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});
      if(data.nature)this.configureNatureMaterial(standard,data.nature);
@@ -257,7 +260,7 @@ export class StreamedScene {
    const mesh=new THREE.InstancedMesh(geometry,material,data.matrices.length/16);
    mesh.instanceMatrix.array.set(data.matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;
    mesh.receiveShadow=!data.nature&&!data.coastDrainWater&&!data.noShadowGround;
-   mesh.castShadow=!!this.farmSample&&!data.coastDrainWater&&!data.noShadowGround;
+   mesh.castShadow=!!this.farmSample&&!data.coastDrainWater&&!data.noShadowGround&&!data.nature?.meadow;
    if(mesh.castShadow)markCoastShadowCaster(mesh,'static',data.shadowGroup??(data.nature?'vegetation':'other'));
    if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}
    if(data.coastDrainWater){mesh.name='coast-drain-flowing-water';mesh.userData.coastDrainWater=true;}
