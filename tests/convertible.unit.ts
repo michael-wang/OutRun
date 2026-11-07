@@ -1,7 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {createCar} from '../src/car';
-describe('original convertible geometry',()=>{
+describe('hero spider convertible geometry',()=>{
  it('keeps two distinct occupants, a genuinely open cockpit and the accepted footprint',()=>{
   const car=createCar();car.updateMatrixWorld(true);
   for(const name of ['driver','passenger']){const person=car.getObjectByName(name);expect(person).toBeDefined();const box=new THREE.Box3().setFromObject(person!);expect(box.max.y).toBeGreaterThan(1.6);expect(box.min.y).toBeGreaterThan(.5);}
