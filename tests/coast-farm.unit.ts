@@ -13,10 +13,11 @@ it('owns every field exactly once, outside housing, wholly inside a streamed chu
  const ids=Array.from({length:11},(_,i)=>farmPlotsInChunk(i*1000,(i+1)*1000)).flat().map(p=>p.id);
  expect(new Set(ids).size).toBe(FARM_PLOTS.length);expect(ids.length).toBe(FARM_PLOTS.length);
  for(const p of FARM_PLOTS){
-  expect(Math.floor(p.start/1000)).toBe(Math.floor((p.end+1.3)/1000));expect(p.right).toBeLessThan(260);
+  expect(Math.floor(p.start/1000)).toBe(Math.floor((p.end+1.3)/1000));expect(p.right).toBeLessThanOrEqual(p.kind==='rice'?252:340);
   expect(COAST_DISTRICTS.some(z=>p.start<z.end&&p.end>z.start)).toBe(false);
   for(let d=p.start;d<=p.end;d+=4){const start=Math.floor(d/1000)*1000,y=coastNatureGround(track.sample,d,p.left,start,start+1000),across=coastNatureGround(track.sample,d,p.right,start,start+1000),forward=coastNatureGround(track.sample,d+1,p.left,start,start+1000);
-   expect(Math.abs(across-y)/(p.right-p.left)).toBeLessThan(.035);expect(Math.abs(forward-y)).toBeLessThan(.035);
+   expect(Math.abs(across-y)/(p.right-p.left),`crossfall of plot ${p.id} at ${d}`).toBeLessThan(.035);
+   expect(Math.abs(forward-y),`grade of plot ${p.id} at ${d}`).toBeLessThan(.035);
   }
  }
  expect(FARM_SCARECROWS.length).toBeGreaterThanOrEqual(3);
@@ -100,5 +101,15 @@ it('leaves an unplanted working bay outside the bund at every tool shed',()=>{
   const p=FARM_PLOTS.find(p=>p.yard===yard)!;
   expect(yard.d-5).toBeGreaterThan(p.start);expect(yard.d+5).toBeLessThan(p.end);
   for(const d of [yard.d-4,yard.d,yard.d+4])expect(farmPlotEdges(p,d).right+1.4).toBeLessThan(yard.x-4);
+ }
+});
+
+it('looks down into roadside flower beds with an open view to planted terraces inland',()=>{
+ for(const z of FARM_ZONES){
+  const d=z.flowers[0]+45,start=Math.floor(d/1000)*1000;
+  const bed=(x:number)=>coastNatureGround(track.sample,d,x,start,start+1000);
+  expect(bed(35)-track.sample(d).position.y).toBeLessThan(-1.2);
+  expect(bed(125)-bed(35)).toBeGreaterThan(2);
+  expect(FARM_PLOTS.some(p=>p.kind==='flowers'&&p.right===z.flowerRight&&p.start<d&&d<p.end)).toBe(true);
  }
 });

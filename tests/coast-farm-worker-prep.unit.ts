@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {FARM_PLOTS} from '../src/coast-farm-layout';
+import {FARM_PLOTS,FARM_FLOWER_DETAIL} from '../src/coast-farm-layout';
 import {prepareFarmPlot,farmPrepTransferables} from '../src/coast-farm-prep';
 import {createFarmPlot,type FarmAssets} from '../src/coast-farm';
 import {RICE_ROW_PITCH,RICE_FIRST_HILL,RICE_HILL_PITCH} from '../src/coast-rice-layout';
@@ -136,7 +136,9 @@ it('keeps accepted golden rice and cuts distant flower blade/mesh costs',()=>{
  expect(prepareFarmPlot(far,sample).meadow).toBeUndefined();
  const nearPrep=prepareFarmPlot(near,sample);
  expect(nearPrep.meadow?.flowerInstances).toBeDefined();
- expect(nearPrep.meadow!.flowerInstances!.matrices.length/16).toBeLessThanOrEqual(1400);
+ const blooms=nearPrep.meadow!.flowerInstances!.matrices.length/16;
+ expect(blooms).toBeGreaterThan(1400);
+ expect(blooms).toBeLessThanOrEqual(FARM_FLOWER_DETAIL[0].maxFlowers);
  const assets=fakeAssets();
  const patch=createFarmPlot(far,sample,assets.assets,prepareFarmPlot(far,sample));
  try{

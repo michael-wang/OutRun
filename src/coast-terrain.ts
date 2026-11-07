@@ -5,11 +5,16 @@ import {meadowRelief} from './coast-meadow-layout';
 
 export const COAST_HILL_STRIPS=[13,18,23,29,36,48,51,53,55,58,70,88,94,97,99,101,104,125,140,146,149,151,153,156,180,198,201,203,205,208,220,250,252,270,340,450] as const;
 
-/** Lower the roadside bench and step the remaining paddies up toward the
- * foothills. Cancel the dry plain's crossfall inside each flooded bench. */
-export function riceBasinCut(x:number,d:number,roadBank:number){
+/** Cut the dry flower beds into the verge; retain a slight drainage slope.
+ * The flooded rice benches instead cancel the crossfall across each paddy. */
+export function farmBasinCut(x:number,d:number,roadBank:number){
  if(x<=15)return 0;
  for(const zone of FARM_ZONES){
+  if(d>zone.flowerApproach-8&&d<zone.flowers[1]+8){
+   const along=smoothstep(zone.flowerApproach-8,zone.flowerApproach,d)*(1-smoothstep(zone.flowers[1],zone.flowers[1]+8,d));
+   const across=smoothstep(15,19,x)*Math.max(0,1-farmTerraceHeight(x)/1.5);
+   return along*across*(1.50+13*roadBank+.004*(x-13));
+  }
   const [a,b]=zone.rice;
   if(d<=a-22||d>=b+22||x>=zone.right+52)continue;
   const along=smoothstep(a-22,a-5,d)*(1-smoothstep(b+5,b+22,d));

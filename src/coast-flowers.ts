@@ -29,9 +29,9 @@ export function flowerCrownTexture(){
  const ctx=canvas.getContext('2d')!,rand=seededRandom(53372);
  ctx.fillStyle='#000';ctx.fillRect(0,0,size,size);
  const wrap=(at:number)=>at<12?[0,size]:at>size-12?[0,-size]:[0];
- for(let row=0;row<4;row++)for(let i=0;i<140;i++){
-  const x=(row+.24+.72*rand())*size/4,y=rand()*size;
-  const r=2+rand()*3,angle=rand()*Math.PI,petal=155+Math.floor(rand()*96);
+ for(let row=0;row<4;row++)for(let i=0;i<210;i++){
+  const x=(row+.18+.78*rand())*size/4,y=rand()*size;
+  const r=2.3+rand()*3.2,angle=rand()*Math.PI,petal=155+Math.floor(rand()*96);
   for(const dx of wrap(x))for(const dy of wrap(y)){
    const px=x+dx,py=y+dy;
    ctx.fillStyle='#008300';ctx.beginPath();ctx.ellipse(px,py,2.8,9,angle,0,Math.PI*2);ctx.fill();
