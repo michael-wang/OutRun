@@ -73,3 +73,30 @@ describe('hero spider focal-point art',()=>{
   (primary as THREE.InstancedMesh).getMatrixAt(2,after);
   expect(after.equals(first)).toBe(false);
  });
+
+it('keeps the passenger hairstyle but gives the driver a fitted cap and visible fabric motion',()=>{
+ const car=createCar(),cap=car.getObjectByName('driver-tailored-flat-cap');
+ const brim=car.getObjectByName('driver-flat-cap-mesh');
+ const girl=car.getObjectByName('layered-blonde-bob');
+ expect(cap).toBeDefined();expect(brim).toBeInstanceOf(THREE.Mesh);
+ expect(girl).toBeDefined();
+ const capBounds=new THREE.Box3().setFromObject(cap!);
+ expect(capBounds.max.y).toBeLessThan(1.69);
+ expect(capBounds.min.y).toBeGreaterThan(1.38);
+ expect(car.getObjectByName('tailored-driver-hair')).toBeUndefined();
+ expect((brim as THREE.Mesh).geometry.getAttribute('color')).toBeDefined();
+ expect((brim as THREE.Mesh).geometry.index!.count).toBeGreaterThan(180);
+ const scarf=car.getObjectByName('driver-silk-scarf')!;
+ expect(scarf).toBeDefined();
+ expect(car.getObjectByName('wind-scarf-fabric-0')).toBeDefined();
+ expect(car.getObjectByName('wind-scarf-fabric-1')).toBeDefined();
+ const motion=car.userData.motion;
+ motion.reset();
+ for(let step=0;step<120;step++)motion.advance(108/60,.6,1/60);
+ const tails=motion.occupants().people[0].scarf;
+ expect(tails).toHaveLength(2);
+ expect(tails.some((tail:{back:number})=>tail.back>.25)).toBe(true);
+ const bounds=new THREE.Box3().setFromObject(scarf);
+ expect(bounds.min.z).toBeLessThan(-1.25);
+ expect(bounds.max.y).toBeGreaterThan(1.23);
+});
