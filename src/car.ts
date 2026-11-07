@@ -69,12 +69,9 @@ export function createCar(dusk=false) {
     // Leather sports seats: contoured back, bolsters, headrest, twin piping.
     oval(.34,.12,.39,leather,side*.41,.64,-.34);
     const seat=box(.57,.37,.145,leather,side*.41,.79,-.87);seat.rotation.x=-.10;
-    for(const inset of [-.265,.265])bar([side*.41+inset,.68,-.9],[side*.41+inset,1.09,-.88],.045,seam);
+    for(const inset of [-.265,.265])bar([side*.41+inset,.68,-.9],[side*.41+inset,.965,-.88],.020,seam);
     oval(.185,.077,.088,leather,side*.41,1.025,-.91);
-    for(const x of [-.17,.17])bar([side*.41+x,.71,-.975],[side*.41+x,1.07,-.925],.010,seam);
-    // Low twin rollover hoops rather than a roof or visible rear window.
-    for(const x of [-.22,.22])bar([side*.41+x,.92,-1.09],[side*.41+x,1.23,-1.09],.029,silver);
-    bar([side*.41-.22,1.23,-1.09],[side*.41+.22,1.23,-1.09],.029,silver);
+    for(const x of [-.17,.17])bar([side*.41+x,.71,-.955],[side*.41+x,.963,-.938],.010,seam);
     // Low-profile sculpted wing mirror, rather than a round toy handle.
     bar([side*.97,.952,.51],[side*1.107,.987,.452],.010,dark);
     mesh(createGTWingMirrorHousing(),paint,side*1.121,.996,.426);
@@ -117,24 +114,19 @@ export function createCar(dusk=false) {
     const x=side*.41;
     const head=new THREE.Group();head.name=name+'-head';person.add(head);
     const arms:THREE.Group[]=[];
-    let bob:ReturnType<typeof createBlondeBob>|undefined;
-    const skin=material(driver?'#c89a7b':'#e3b79b',.82);
+    const skin=material(driver?'#c89a7b':'#f4d4c5',.82);
     const suit=material('#252d36',.74,.06);
     const lapel=material('#38414a',.80);
-    const shirt=material(driver?'#e4e3dc':'#efd0b9',.77);
+    const shirt=material(driver?'#e4e3dc':'#fffdf8',driver?.77:.87);
     const hair=material(driver?'#22282d':'#b9904e',.7);
     // Narrow adult silhouette and shoulder line. Tailored jacket is built
     // from smooth conical cloth panels, not spherical Q-version torsos.
-    const jacket=mesh(new THREE.CylinderGeometry(driver?.245:.205,driver?.205:.232,.51,14),
-      driver?suit:shirt,x,1.02,-.49,person);jacket.scale.z=.84;
-    // Sleeveless summer sundress: exposed shoulders and upper arms, a
-    // tapered bodice with a small flared skirt at seat level.
-    oval(driver?.262:.19,.075,.14,driver?suit:skin,x,1.205,-.49,person);
-    if(!driver){
-      const skirt=mesh(new THREE.CylinderGeometry(.215,.290,.27,14),shirt,x,.748,-.49,person);
-      skirt.scale.z=.88;skirt.name='passenger-summer-dress';
-      const neckline=mesh(new THREE.TorusGeometry(.125,.012,5,18,Math.PI),shirt,x,1.226,-.403,person);
-      neckline.rotation.x=Math.PI/2;
+    if(driver){
+      const jacket=mesh(new THREE.CylinderGeometry(.245,.205,.51,14),suit,x,1.02,-.49,person);jacket.scale.z=.84;
+      oval(.262,.075,.14,suit,x,1.205,-.49,person);
+    }else{
+      mesh(createSundress(),shirt,x,0,-.49,person);
+      oval(.222,.108,.146,skin,x,1.178,-.49,person);
     }
     oval(.125,.068,.125,skin,x,1.29,-.46,person);
     const neck=mesh(new THREE.CylinderGeometry(.079,.084,.155,12),skin,x,1.29,-.45,person);
@@ -149,10 +141,6 @@ export function createCar(dusk=false) {
       const rearSeam=bar([x,1.17,-.646],[x, .84,-.662],.008,lapel,person);
       rearSeam.name='tailored-jacket-back-seam';
       oval(.075,.055,.040,shirt,x,1.266,-.575,person);
-    }else{
-      // A light-coloured silk blouse with natural sloping shoulders.
-      bar([x-.18,1.19,-.58],[x-.12,1.04,-.66],.012,shirt,person);
-      bar([x+.18,1.19,-.58],[x+.12,1.04,-.66],.012,shirt,person);
     }
     // Adult-sized elongated skull with tapered jaw, rather than large ball
     // head and helmet hair. Realistic silhouette is more important than tiny
@@ -163,14 +151,8 @@ export function createCar(dusk=false) {
     for(const eye of [-1,1]){
       oval(.047,.022,.013,driver?lapel:hair,x+eye*.063,1.493,-.332,head);
     }
-    if(driver){
-      // Deep black, distinct layered strands rather than a continuous
-      // half-sphere bowl haircut. The suit and plain collar are unchanged.
-      const groom=createDriverHair();
-      groom.position.set(x,1.525,-.464);head.add(groom);
-    }else{
-      bob=createBlondeBob();bob.root.position.set(x,1.485,-.465);head.add(bob.root);
-    }
+    const groom=driver?createDriverHair():createBlondeBob();
+    groom.root.position.set(x,driver?1.525:1.485,driver?-.464:-.465);head.add(groom.root);
     // Natural shoulder/elbow joints without a full rig. Left (screen-left)
     // driver arm hangs over the near door, right arm holds the steering wheel.
     for(const arm of [-1,1] as const){
@@ -184,8 +166,11 @@ export function createCar(dusk=false) {
       limb.name=resting?'driver-left-arm-resting-on-door':driver?
         'driver-right-hand-steering':'passenger-arm-'+arm;
       arms.push(limb);
-      const sleeve=driver?suit:skin;
-      bar(shoulder,elbow,.071,sleeve,limb);
+      bar(shoulder,elbow,driver?.071:.058,driver?suit:skin,limb);
+      if(!driver){
+        const cap=mesh(new THREE.SphereGeometry(1,8,5),skin,...shoulder,limb);
+        cap.scale.set(.06,.061,.064);
+      }
       bar(elbow,hand,.042,skin,limb);
       oval(.051,.039,.056,skin,...hand,limb);
       if(resting){
@@ -200,7 +185,7 @@ export function createCar(dusk=false) {
     // Passenger/driver were oversized against the GT body in the chase
     // camera. Scale around their seat centres, not the car or road physics.
     person.scale.setScalar(.84);
-    travelers.push({body:person,head,arms,hair:bob});
+    travelers.push({body:person,head,arms,hair:groom});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
   // are readable at the normal chase distance (unlike single red cubes).
@@ -271,6 +256,35 @@ export function createCar(dusk=false) {
   const people=createOccupantMotion(travelers,wheel);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number,rightAcceleration=0)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt,rightAcceleration);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;
+}
+
+/** A seated A-line skirt, fitted waist and two broad straps over bare shoulders. */
+function createSundress(){
+ const positions:number[]=[],indices:number[]=[],segments=16;
+ // Height, width, depth and forward shift over the lap.
+ const rings=[[.625,.267,.245,.10],[.78,.228,.20,.04],[.908,.161,.134,0],
+  [1.055,.177,.151,0],[1.138,.194,.154,0],[1.189,.18,.144,0]];
+ for(const [row,[y,width,depth,forward]] of rings.entries())for(let i=0;i<segments;i++){
+  const angle=i*2*Math.PI/segments,sx=Math.sin(angle),cz=Math.cos(angle);
+  const fold=row<2?1+.042*Math.cos(7*angle):1;
+  positions.push(width*sx*fold,y-(row===rings.length-1?.032*cz*cz:0),forward+depth*cz*fold);
+  if(row===0)continue;
+  const a=(row-1)*segments+i,b=(row-1)*segments+(i+1)%segments;
+  indices.push(a,b,a+segments,b,b+segments,a+segments);
+ }
+ for(const side of [-1,1]){
+  const start=positions.length/3;
+  for(let i=0;i<=8;i++){
+   const a=-.25+i*(Math.PI+.50)/8;
+   for(const offset of [-.025,.025]){
+    const x=side*.122+offset,section=Math.sqrt(1-(x/.222)**2);
+    positions.push(x,1.178+.114*section*Math.sin(a),.153*section*Math.cos(a));
+   }
+   if(i){const j=start+(i-1)*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}
+  }
+ }
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ g.setIndex(indices);g.computeVertexNormals();return g;
 }
 
 function pivotAt(group:THREE.Group,x:number,y:number,z:number){const p=new THREE.Vector3(x,y,z);for(const child of group.children)child.position.sub(p);group.position.copy(p);}

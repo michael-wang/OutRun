@@ -1,6 +1,18 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {createCar} from '../src/car';
+it('streams the silver short hair back and outward with the roots held at the part',()=>{
+ const car=createCar(),motion=car.userData.motion;
+ const layers=car.getObjectByName('driver-side-part-layered-strands') as THREE.Mesh;
+ const read=(i:number)=>layers.getVertexPosition(i,new THREE.Vector3());
+ const root=read(1),tip=read(16);
+ const drive=(load:number)=>{for(let i=0;i<120;i++)motion.advance(90/60,0,1/60,load);return read(16);};
+ const right=drive(12),left=drive(-12);
+ expect(right.z).toBeLessThan(tip.z-.045);
+ expect(right.x-left.x).toBeGreaterThan(.07);
+ expect(read(1)).toEqual(root);
+ motion.reset();expect(read(16)).toEqual(tip);
+});
 it('occupants and hair respond to observed motion without moving the car or wheel centers',()=>{
  const car=createCar(),m=car.userData.motion;
  const centers=m.inspect().map((w:any)=>w.center);

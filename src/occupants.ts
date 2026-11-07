@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import type {createBlondeBob} from './hero-groom';
-export type Traveler={body:THREE.Group,head:THREE.Group,arms:THREE.Group[],hair?:ReturnType<typeof createBlondeBob>};
+import type {WindGroom} from './hero-groom';
+export type Traveler={body:THREE.Group,head:THREE.Group,arms:THREE.Group[],hair:WindGroom};
 /** Small presentation pivots, driven only by observed travel and applied input. */
 export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
  let phase=0,wind=0,turn=0,pitch=0,lastSpeed=0;
@@ -16,7 +16,7 @@ export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
     arm.rotation.z=turn*(resting?.007:index===0?.045:.02);
     arm.rotation.x=pitch*(resting?.08:.25)+(resting?0:index===0?turn*.025:0);
    });
-   p.hair?.sync(wind,sway,tipSway,flutterPhase);
+   p.hair.sync(wind,sway,tipSway,flutterPhase);
   });
   wheel.rotation.z=-turn*.32;
  }
@@ -35,6 +35,6 @@ export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
   lastSpeed=speed;pose();
  },reset(){phase=wind=turn=pitch=lastSpeed=sway=swayRate=tipSway=flutterPhase=0;pose();},
  inspect:()=>({wind,turn,pitch,phase,sway,tipSway,people:people.map(p=>({
-  lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.hair?.locks.map(l=>({back:l.rotation.x,side:l.rotation.z}))??[],
+  lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.hair.locks?.map(l=>({back:l.rotation.x,side:l.rotation.z}))??[],
  }))})};
 }

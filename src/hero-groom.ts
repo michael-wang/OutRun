@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-type Row={x:number;y:number;z:number;width:number;shade:number};
+type Row={x:number;y:number;z:number;width:number;shade:number;sweep?:number};
 type Strand={rows:Row[]};
 const strandMesh=(strands:readonly Strand[],base:string,highlight:string,name:string)=>{
  const pos:number[]=[],colors:number[]=[],index:number[]=[];
@@ -12,7 +12,8 @@ const strandMesh=(strands:readonly Strand[],base:string,highlight:string,name:st
    const shade=roots.clone().lerp(ends,.20+.64*t).multiplyScalar(r.shade);
    // A subtle central ridge avoids paper-flat hair cards from the chase view.
    for(const side of [-1,0,1]){
-    pos.push(r.x+side*r.width,r.y+(side===0?.006:0),r.z+(side===0?-.003:0));
+    const spread=side*r.width;
+    pos.push(r.x+spread*Math.cos(r.sweep??0),r.y+(side===0?.006:0),r.z-spread*Math.sin(r.sweep??0)+(side===0?-.003:0));
     const c=shade.clone().multiplyScalar(side===0?1.1:side===-1?.94:.98);
     colors.push(c.r,c.g,c.b);
    }
@@ -32,28 +33,31 @@ const strandMesh=(strands:readonly Strand[],base:string,highlight:string,name:st
  return mesh;
 };
 
-/** Layered youthful Asian side-part, optimised for the rear chase camera.
- * A short tapered undercut fills the nape; 26 directional hair ribbons sit
- * OUTSIDE it at different lengths. Unlike the old continuous spherical dome,
- * the silhouette has separated ends, a side-swept crown and a natural nape.
- * Both are opaque static meshes: no new per-frame animation or texture loads.
- */
-export function createDriverHair():THREE.Group{
+export type WindGroom={
+ root:THREE.Group;
+ sync:(wind:number,sway:number,tipSway:number,phase:number)=>void;
+ locks?:THREE.Group[];
+};
+
+/** Silver side-part with a fixed undercut and individually swept ends. */
+export function createDriverHair():WindGroom{
  const group=new THREE.Group();group.name='driver-layered-short-hair';
- const dark=new THREE.Color('#192029'),light=new THREE.Color('#49515a');
+ const dark=new THREE.Color('#737880'),light=new THREE.Color('#d4d4d2');
  const rings=[
   {y:-.155,x:.104,z:.126},
   {y:-.109,x:.127,z:.140},
   {y:-.029,x:.132,z:.138},
   {y:.038,x:.139,z:.138},
+  {y:.094,x:.123,z:.114},
+  {y:.133,x:.090,z:.071},
+  {y:.150,x:.060,z:.041},
+  {y:.153,x:.002,z:.002},
  ] as const;
  const sides=18,position:number[]=[],colors:number[]=[],indices:number[]=[];
  for(let r=0;r<rings.length;r++)for(let i=0;i<sides;i++){
   const angle=2*Math.PI*i/sides,ring=rings[r];
   const side=Math.sin(angle),back=Math.cos(angle);
-  // Taper close to the neck. Keep the undercut almost black, not a glossy
-  // helmet, and let the layered ribbons build the visible upper volume.
-  position.push(side*ring.x+.007*r,ring.y+.003*Math.sin(angle*4),back*ring.z);
+  position.push(side*ring.x+Math.min(.024,.007*r),ring.y+.003*Math.sin(angle*4),back*ring.z);
   const tone=.16+.19*r/3+.08*Math.sin(angle*3.2+i*.27);
   const c=dark.clone().lerp(light,Math.max(.04,tone));
   colors.push(c.r,c.g,c.b);
@@ -74,6 +78,7 @@ export function createDriverHair():THREE.Group{
  // narrow distinct locks swept slightly to the man's right, with staggered
  // tip heights and directional low-contrast vertex highlights.
  const strands:Strand[]=[];
+ const shapes:number[][]=[[],[],[],[]];
  for(let i=0;i<26;i++){
   const angle=(i+.35)*Math.PI*2/26;
   const sx=Math.sin(angle),sz=Math.cos(angle);
@@ -81,21 +86,38 @@ export function createDriverHair():THREE.Group{
   const fall=.190+rear*.076+(i%4)*.012+temple*.010;
   const rows:Row[]=[];
   for(let j=0;j<=5;j++){
-   const t=j/5;
+   const t=j/5,arc=t*Math.PI*.64;
+   const spread=Math.sin(arc),sweep=angle+.56*(1-t);
    rows.push({
-    x:sx*(.068+.096*t)+.025*(1-t)+.015*Math.sin(t*2.8+angle)*t,
-    y:.150-fall*t+.006*Math.sin(i*.81+t*4.4),
-    z:sz*(.045+.105*t)-.019*t+.005*Math.sin(i*.65+t*5),
-    width:(.024+(i%3)*.003)*(1-.71*t),
+    x:Math.sin(sweep)*(.064+.104*spread)+.025*(1-t)+.011*Math.sin(t*2.8+angle)*t,
+    y:.155-fall*t*t+.006*Math.sin(i*.81+t*4.4),
+    z:Math.cos(sweep)*(.045+.112*spread)-.019*t+.005*Math.sin(i*.65+t*5),
+    sweep,width:(.024+(i%3)*.003)*(1-.93*t*t),
     shade:.79+.13*Math.sin(i*2.12)+.12*t,
    });
+   const flex=t*t*(.68+.32*rear),wave=angle*2.7-t*2.4;
+   // Each ridged row has three vertices. The parting is pinned while
+   // the tips lift and separate at different phases around the head.
+   for(let v=0;v<3;v++){
+    shapes[0].push(sx*.023*flex,.066*flex,-.10*flex);
+    shapes[1].push(.072*flex,0,0);
+    for(let k=0;k<2;k++){
+     const ripple=flex*Math.sin(wave+k*Math.PI/2);
+     shapes[2+k].push(.023*ripple,.024*ripple,-.012*ripple);
+    }
+   }
   }
   strands.push({rows});
  }
- const layers=strandMesh(strands,'#19232d','#56616a','driver-side-part-layered-strands');
+ const layers=strandMesh(strands,'#8e939a','#f7f6ef','driver-side-part-layered-strands');
+ setWindShapes(layers.geometry,shapes);layers.updateMorphTargets();
  layers.material.roughness=.82;
  group.add(layers);
- return group;
+ return {root:group,sync(wind,sway,tipSway,phase){
+  const weights=layers.morphTargetInfluences!;
+  weights[0]=wind;weights[1]=THREE.MathUtils.clamp(.35*sway+.65*tipSway,-1.2,1.2);
+  weights[2]=wind*Math.sin(phase+1.3);weights[3]=wind*Math.cos(phase+1.3);
+ }};
 }
 
 /** A full bob swept from an off-centre part. The rings share a single crown
@@ -107,7 +129,6 @@ function blondeCrown(){
  // Relative shapes for back-sweep, lateral load and two phases of a ripple.
  // All share the rest mesh, including a pinned scalp and front hairline.
  const shapes=Array.from({length:4},()=>[0,0,0]);
- const bounds=new THREE.Box3().setFromArray(positions);
  for(let row=1;row<=rings;row++)for(let i=0;i<segments;i++){
   const t=row/rings,angle=i*Math.PI*2/segments;
   // The fringe clears the brows. Side waves roll down around the cheeks
@@ -132,17 +153,6 @@ function blondeCrown(){
    const ripple=bend*Math.sin(phase+k*Math.PI/2);
    shapes[2+k].push(.035*ripple,.024*ripple,-.021*ripple);
   }
-  // Bound each vertex's motion. A mesh-wide morph delta would raise the
-  // stationary parting and inflate the measured height of the whole car.
-  const offset=positions.length-3;
-  for(let axis=0;axis<3;axis++){
-   const j=offset+axis;
-   const margin=Math.abs(shapes[1][j])*1.2+Math.hypot(shapes[2][j],shapes[3][j]);
-   const low=positions[j]+Math.min(0,shapes[0][j])-margin;
-   const high=positions[j]+Math.max(0,shapes[0][j])+margin;
-   bounds.min.setComponent(axis,Math.min(bounds.min.getComponent(axis),low));
-   bounds.max.setComponent(axis,Math.max(bounds.max.getComponent(axis),high));
-  }
   color.copy(root).lerp(gold,.12+.36*wave+.32*streak+.16*Math.sin(arc));
   colors.push(color.r,color.g,color.b);
   const here=1+(row-1)*segments+i,next=1+(row-1)*segments+(i+1)%segments;
@@ -153,12 +163,25 @@ function blondeCrown(){
  g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
  g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
  g.setIndex(indices);g.computeVertexNormals();
+ setWindShapes(g,shapes);
+ const mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.78}));
+ mesh.name='blonde-layered-crown';mesh.castShadow=true;return mesh;
+}
+
+function setWindShapes(g:THREE.BufferGeometry,shapes:number[][]){
+ const rest=g.getAttribute('position'),normals=g.getAttribute('normal');
+ const bounds=new THREE.Box3();
+ for(let i=0;i<rest.count;i++)for(let axis=0;axis<3;axis++){
+  const j=i*3+axis,at=rest.getComponent(i,axis);
+  const margin=Math.abs(shapes[1][j])*1.2+Math.hypot(shapes[2][j],shapes[3][j]);
+  bounds.min.setComponent(axis,Math.min(bounds.min.getComponent(axis),at+Math.min(0,shapes[0][j])-margin));
+  bounds.max.setComponent(axis,Math.max(bounds.max.getComponent(axis),at+Math.max(0,shapes[0][j])+margin));
+ }
  g.morphTargetsRelative=true;
  g.boundingBox=bounds;g.boundingSphere=bounds.getBoundingSphere(new THREE.Sphere());
  g.morphAttributes.position=shapes.map(shape=>new THREE.Float32BufferAttribute(shape,3));
  // Bake each bent shape's lighting normals once. Three applies these same
  // morph weights to the visible and shadow geometry.
- const rest=g.getAttribute('position'),normals=g.getAttribute('normal');
  g.morphAttributes.normal=g.morphAttributes.position.map(delta=>{
   const bent=rest.clone();
   for(let i=0;i<bent.count;i++)bent.setXYZ(i,rest.getX(i)+delta.getX(i),rest.getY(i)+delta.getY(i),rest.getZ(i)+delta.getZ(i));
@@ -167,8 +190,6 @@ function blondeCrown(){
   for(let i=0;i<n.count;i++)n.setXYZ(i,n.getX(i)-normals.getX(i),n.getY(i)-normals.getY(i),n.getZ(i)-normals.getZ(i));
   pose.dispose();return n;
  });
- const mesh=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.78}));
- mesh.name='blonde-layered-crown';mesh.castShadow=true;return mesh;
 }
 
 /** One opaque crown and five double-jointed windblown ends in two batches. */

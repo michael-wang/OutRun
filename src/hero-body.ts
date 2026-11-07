@@ -104,20 +104,19 @@ export function createGTWingMirrorHousing():THREE.BufferGeometry{
  return geo;
 }
 
-/** Baked rear body cowl. The top gently rises behind the two chairs and
- * obscures the lower backrests from the rear camera, without a fake roof.
- * 0.90..1.07m height is below both passengers' shoulder/head silhouettes.
- * Shares the existing paint and is merged into its static mesh batch.
- */
+/** Twin speedster fairings faired into the rear deck, in the shell's paint. */
 export function createRearTonneau():THREE.BufferGeometry{
  const position:number[]=[],index:number[]=[];
- const widths=[-.86,-.66,-.40,-.15,0,.15,.40,.66,.86];
- const spans=[-1.38,-1.21,-1.05];
- for(const z of spans)for(const x of widths){
-  const shoulder=.038*Math.pow(Math.abs(x)/.86,1.5);
-  const bulge=.025*Math.exp(-Math.pow((Math.abs(x)-.40)/.30,2));
-  const t=(z+1.38)/.33;
-  position.push(x,.935+shoulder+bulge+t*.071,z);
+ const widths=[-.86,-.71,-.61,-.51,-.41,-.31,-.21,-.11,0,.11,.21,.31,.41,.51,.61,.71,.86];
+ // From tail to seat: deck height, fairing height and half-width.
+ const spans=[
+  [-1.89,.936,.010,.13],[-1.70,.954,.060,.19],[-1.49,.965,.117,.24],
+  [-1.29,.971,.164,.28],[-1.13,.973,.183,.30],[-1.045,.965,.163,.30],
+  [-.995,.943,.091,.28],[-.98,.921,.012,.26],
+ ];
+ for(const [z,deck,height,radius] of spans)for(const x of widths){
+  const u=Math.min(1,Math.abs(Math.abs(x)-.41)/radius);
+  position.push(x,deck+height*(1-u*u)**2,z);
  }
  for(let row=0;row<spans.length-1;row++)for(let col=0;col<widths.length-1;col++){
   const a=row*widths.length+col,b=a+widths.length;

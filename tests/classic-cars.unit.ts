@@ -13,7 +13,7 @@ it('keeps ONLY the owner-approved Riviera 62 silhouette, classic round lamps and
  expect(bounds.max.x).toBeLessThan(1.22);
  expect(bounds.min.z).toBeGreaterThanOrEqual(-2.36);
  expect(bounds.max.z).toBeLessThanOrEqual(2.35);
- expect(bounds.max.y).toBeLessThan(1.12);
+ expect(bounds.max.y).toBeLessThan(1.18); // painted headrest fairings
  expect(body.index!.count).toBeGreaterThan(180);
  // Four small rounded jewel lamps, matching the approved Riviera.
  expect(lamps.index!.count).toBe(4*16*3);
@@ -83,6 +83,11 @@ it('retains the approved passenger sleeveless dress and left-hand driver',()=>{
   const m=o.material as THREE.MeshStandardMaterial;
   colors.add(m.color.getHexString());
  }});
- expect(colors.has('efd0b9')).toBe(true);
- expect(colors.has('e3b79b')).toBe(true);
+ expect(colors.has('fffdf8')).toBe(true);
+ for(const side of [-1,1]){
+  const arm=passenger.getObjectByName('passenger-arm-'+side)!;
+  const meshes=arm.children.filter((o):o is THREE.Mesh=>o instanceof THREE.Mesh);
+  expect(meshes).toHaveLength(1);
+  expect((meshes[0].material as THREE.MeshStandardMaterial).color.getHexString()).toBe('f4d4c5');
+ }
 });

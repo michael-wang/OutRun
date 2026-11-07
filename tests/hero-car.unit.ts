@@ -126,7 +126,13 @@ it('recesses dark seatbacks behind a painted rear cowl without closing the cockp
   const p=g.getAttribute('position');
   const ys=Array.from({length:p.count},(_,i)=>p.getY(i));
   expect(Math.min(...ys)).toBeGreaterThan(.9);
-  expect(Math.max(...ys)).toBeLessThan(1.10);
+  expect(Math.max(...ys)).toBeLessThan(1.18);
+  const deck=new THREE.Mesh(g);
+  const at=(x:number,z:number)=>new THREE.Raycaster(new THREE.Vector3(x,2,z),new THREE.Vector3(0,-1,0)).intersectObject(deck)[0].point.y;
+  for(const x of [-.41,.41]){
+   expect(at(x,-1.13)-at(0,-1.13)).toBeGreaterThan(.15);
+   expect(at(x,-1.13)-at(x,-1.70)).toBeGreaterThan(.10);
+  }
   const materials=new Set<string>();
   car.traverse(o=>{
    if(o instanceof THREE.Mesh){
