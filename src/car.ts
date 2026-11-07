@@ -246,7 +246,7 @@ function pivotAt(group:THREE.Group,x:number,y:number,z:number){const p=new THREE
 function batch(group:THREE.Group){
   const byMaterial=new Map<THREE.Material,THREE.BufferGeometry[]>();
   for(const child of [...group.children]){
-    if(!(child instanceof THREE.Mesh)||Array.isArray(child.material)||child.material.transparent||child.name==='rear-license-FZR-123')continue;
+    if(!(child instanceof THREE.Mesh)||Array.isArray(child.material)||child.material.transparent||child.name==='rear-license-FZR-123'||child.name==='left-hand-drive-steering-wheel')continue;
     child.updateMatrix();const g=child.geometry.index?child.geometry.toNonIndexed():child.geometry.clone();
     for(const name of Object.keys(g.attributes))if(name!=='position'&&name!=='normal')g.deleteAttribute(name);
     g.applyMatrix4(child.matrix);const list=byMaterial.get(child.material)??[];list.push(g);byMaterial.set(child.material,list);group.remove(child);child.geometry.dispose();
