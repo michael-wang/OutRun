@@ -120,11 +120,14 @@ it('retains the approved Riviera and seals Grand Tourer 67 and Wedge Spider 76',
    expect(hits.length).toBeGreaterThan(0);
    expect(hits[0].point.z).toBeLessThan(-2.35);
   }
-  // The top deck has one closed painted skin, not two conflicting ones.
-  ray.set(new THREE.Vector3(0,2.5,-1.7),new THREE.Vector3(0,-1,0));
-  const deck=ray.intersectObject(body,false);
-  expect(deck.length).toBeGreaterThan(0);
-  expect(deck[0].point.y).toBeGreaterThan(.78);
+  // The roofless cockpit remains open, but the trunk skin is fully
+  // continuous behind it. Raycasting catches holes invisible to bbox tests.
+  for(const x of [-.43,0,.43]){
+   ray.set(new THREE.Vector3(x,2.5,-1.7),new THREE.Vector3(0,-1,0));
+   const deck=ray.intersectObject(body,false);
+   expect(deck.length).toBeGreaterThan(0);
+   expect(deck[0].point.y).toBeGreaterThan(.92);
+  }
  }
  controller.set('riviera-62');
  expect(rivieraTrim.visible).toBe(true); // switching back restores details
