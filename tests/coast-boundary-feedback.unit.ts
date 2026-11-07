@@ -11,8 +11,10 @@ import {ImpactSparks} from '../src/impact-sparks';
 it('distinguishes actual metal, concrete and invisible coast boundaries on both sides',()=>{
  expect(coastContactSurface(500,-1)).toBe('metal');
  expect(coastContactSurface(850,-1)).toBe('soft');
- expect(coastContactSurface(2500,-1)).toBe('concrete');
- expect(coastContactSurface(850,1)).toBe('concrete');
+ expect(coastContactSurface(coastBarrierStoneAt(2508,-1).d,-1)).toBe('concrete');
+ expect(coastContactSurface(coastBarrierStoneAt(852,1).d,1)).toBe('concrete');
+ // Between visible bollards, the fallback is not made of fake stone.
+ expect(coastContactSurface(coastBarrierStoneAt(852,1).d+5.5,1)).toBe('soft');
  expect(coastContactSurface(3990,1)).toBe('soft');
  const g=new GuardrailContact(1.15,2.1,d=>coastDriveBounds(d,8.75));
  const s=createState();s.distance=8720;s.lateral=-12;s.speed=70;
