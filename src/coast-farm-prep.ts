@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {coastNatureGround} from './coast-nature';
-import {FARM_SCARECROWS,FARM_FLOWER_COLORS,type FarmPlot} from './coast-farm-layout';
+import {FARM_SCARECROWS,FARM_FLOWER_COLORS,farmFlowerDetail,type FarmPlot} from './coast-farm-layout';
 import {riceCanopyGeometry} from './coast-rice-canopy';
 import {buildSurfaceLayout,sampleSurfaceData,packSurfaceSamples} from './vendor/three-stylized/surfaceSampler';
 import {prepareFlowerInstances,type PreparedFlowerInstances} from './vendor/three-stylized/Wildflowers';
@@ -64,7 +64,8 @@ export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
     new Uint32Array(g.getIndex()!.array):new Uint16Array(g.getIndex()!.array),
   };
   g.dispose();
- }else{
+ }else if(farmFlowerDetail(plot.band)){
+  // Far terraces skip layout probes entirely; they retain opaque colour.
   // Same two-column surface/UVs as createFarmPlot's sampling clone.
   // Create it here without materials so coverage probes and sampling run off-thread.
   const vertices:number[]=[],uv:number[]=[],indices:number[]=[];
@@ -85,17 +86,14 @@ export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
   const coverage={sample:({uv}:{uv:THREE.Vector2|null})=>
    uv&&uv.x>.035&&uv.x<.965&&uv.y>.015&&uv.y<.985&&((uv.x*20)%1)>.22
    &&!clearPath(plot.start+uv.y*(plot.end-plot.start),plot.left+uv.x*(plot.right-plot.left))?1:0};
-  const density=[1,.55,.28,.10,.07][plot.band],seed=80483+plot.id;
+  const budget=farmFlowerDetail(plot.band)!,seed=80483+plot.id;
   const layout=buildSurfaceLayout(surface,coverage);
-  const grassCount=layout.coveredArea>0?Math.max(1,Math.floor(layout.coveredArea*.18*density)):0;
-  const blades=packSurfaceSamples(sampleSurfaceData(surface,grassCount,seed,coverage,layout));
-  const flowerDensity=1.1*density;
-  const flowerCount=plot.band<3?Math.min([2300,1500,800][plot.band],Math.round(layout.coveredArea*flowerDensity)):0;
-  const flowerSamples=plot.band<3?packSurfaceSamples(sampleSurfaceData(surface,flowerCount,seed,coverage,layout)):new Float32Array();
-  // All flower instance transforms + palette attributes are generated off-thread.
-  // Avoid sending the raw samples back as well: only GPU-ready buffers cross the boundary.
-  const flowerInstances=plot.band<3?prepareFlowerInstances(flowerSamples,seed,FARM_FLOWER_COLORS[plot.band%3]):undefined;
-  result.meadow={blades,flowers:new Float32Array(),...(flowerInstances?{flowerInstances}:{})};
+  const count=layout.coveredArea>0?Math.max(1,Math.floor(layout.coveredArea*budget.bladeDensity)):0;
+  const blades=packSurfaceSamples(sampleSurfaceData(surface,count,seed,coverage,layout));
+  const flowerCount=Math.min(budget.maxFlowers,Math.round(layout.coveredArea*budget.flowerDensity));
+  const samples=packSurfaceSamples(sampleSurfaceData(surface,flowerCount,seed,coverage,layout));
+  const flowerInstances=prepareFlowerInstances(samples,seed,FARM_FLOWER_COLORS[plot.band%3]);
+  result.meadow={blades,flowers:new Float32Array(),flowerInstances};
   geometry.dispose();
  }
  return result;

@@ -93,3 +93,22 @@ it('transfer lists contain each typed array once and do not include THREE object
  expect(new Set(transfers).size).toBe(transfers.length);
  expect(transfers.every(buffer=>buffer instanceof ArrayBuffer)).toBe(true);
 });
+
+it('keeps accepted golden rice and cuts distant flower blade/mesh costs',()=>{
+ const rice=FARM_PLOTS.find(p=>p.kind==='rice'&&p.band===0)!;
+ const far=FARM_PLOTS.find(p=>p.kind==='flowers'&&p.band===2)!;
+ const near=FARM_PLOTS.find(p=>p.kind==='flowers'&&p.band===0)!;
+ expect(prepareFarmPlot(rice,sample).canopy).toBeDefined();
+ expect(prepareFarmPlot(far,sample).meadow).toBeUndefined();
+ const nearPrep=prepareFarmPlot(near,sample);
+ expect(nearPrep.meadow?.flowerInstances).toBeDefined();
+ expect(nearPrep.meadow!.flowerInstances!.matrices.length/16).toBeLessThanOrEqual(1400);
+ const assets=fakeAssets();
+ const patch=createFarmPlot(far,sample,assets.assets,prepareFarmPlot(far,sample));
+ try{
+  expect(patch.group.children.some(c=>c instanceof Grass)).toBe(false);
+  expect(patch.stats().flowers).toBe(0);
+  expect(patch.stats().blades).toBe(0);
+  expect(patch.group.children.some(c=>c instanceof THREE.Mesh)).toBe(true);
+ }finally{patch.dispose();assets.dispose();}
+});

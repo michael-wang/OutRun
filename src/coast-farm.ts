@@ -9,7 +9,7 @@ import {coastNatureGround} from './coast-nature';
 import {riceCanopyGeometry} from './coast-rice-canopy';
 import type {PreparedFarmPlot} from './coast-farm-prep';
 import {farmWarmupRepresentatives} from './farm-warmup-plan';
-import {FARM_SCARECROWS,FARM_FLOWER_COLORS,type FarmPlot} from './coast-farm-layout';
+import {FARM_SCARECROWS,FARM_FLOWER_COLORS,farmFlowerDetail,type FarmPlot} from './coast-farm-layout';
 import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -151,14 +151,21 @@ export function createFarmPlot(plot:FarmPlot,sample:Sample,assets:FarmAssets,pre
  // Keep the exact sampled terrain, including road bend and mild grade. No new terrain generator.
  // The hybrid rice sea is a single animated canopy plus roadside rice heads.
  // Do not allocate an extra terrain mesh/grass system when it cannot be seen.
- const sampling=isRice?null:surface.clone(false);
+ const flowerDetail=isRice?undefined:farmFlowerDetail(plot.band);
+ const sampling=flowerDetail?surface.clone(false):null;
  if(sampling){sampling.geometry=surface.geometry.clone();ownedGeometry.push(sampling.geometry);
   const suv=sampling.geometry.getAttribute('uv');for(let i=0;i<suv.count;i++)suv.setXY(i,suv.getX(i)*8/(plot.right-plot.left),suv.getY(i)*8/(plot.end-plot.start));}
  const residentScarecrows=FARM_SCARECROWS.filter(s=>s.d>=plot.start&&s.d<plot.end&&s.x>plot.left&&s.x<plot.right);
  const clearPath=(d:number,x:number)=>residentScarecrows.some(s=>Math.abs(d-s.d)<2.2&&Math.abs(x-s.x)<3);
- const density=[1,.55,.28,.10,.07][plot.band];
  const coverage={sample:({uv}:{uv:THREE.Vector2|null})=>uv&&uv.x>(plot.kind==='rice'?.015:.035)&&uv.x<(plot.kind==='rice'?.985:.965)&&uv.y>.015&&uv.y<.985&&(plot.kind==='rice'||((uv.x*20)%1)>.22)&&!clearPath(plot.start+uv.y*(plot.end-plot.start),plot.left+uv.x*(plot.right-plot.left))?1:0};
- const meadow=isRice?null:new Grass({surface:sampling!,coverage,terrain:{seed:80483+plot.id},grass:{density:(plot.kind==='rice'?.24:.18)*density,seed:80483+plot.id,shadow:false,blade:{segments:1,minHeight:plot.kind==='rice'?.9:.3,maxHeight:plot.kind==='rice'?1.15:.48,minWidth:.07,maxWidth:.13,lean:.08},colors:{bottom:plot.kind==='rice'?'#7d8330':'#48723e',top:plot.kind==='rice'?'#e5c65b':'#708e49'},brightness:1,lighting:{intensity:.85,backlightStrength:.25},wind:plot.kind==='rice'?riceWind:wind},wildflowers:{enabled:plot.kind==='flowers'&&plot.band<3,density:1.1*density,maxCount:plot.band===0?2300:plot.band===1?1500:800,seed:80483+plot.id}},prepared?.meadow);
+ const meadow=flowerDetail?new Grass({surface:sampling!,coverage,
+  terrain:{seed:80483+plot.id},
+  grass:{density:flowerDetail.bladeDensity,seed:80483+plot.id,shadow:false,
+   blade:{segments:1,minHeight:.3,maxHeight:.48,minWidth:.07,maxWidth:.13,lean:.08},
+   colors:{bottom:'#48723e',top:'#708e49'},brightness:1,
+   lighting:{intensity:.85,backlightStrength:.25},wind},
+  wildflowers:{enabled:true,density:flowerDetail.flowerDensity,
+   maxCount:flowerDetail.maxFlowers,seed:80483+plot.id}},prepared?.meadow):null;
  if(meadow){
  // Grass facade borrows the external surface. Its visual clone is redundant with
  // our always-visible far ground, so remove only that clone, never the source.

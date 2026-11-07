@@ -12,6 +12,16 @@ export const FARM_ZONES=[
 export const COAST_FARM={start:65,end:1780,riceStart:200,riceEnd:900,flowerStart:1200,flowerEnd:1700} as const;
 /** Authored flower-band palette shared by Worker baking and runtime materialization. */
 export const FARM_FLOWER_COLORS=['#ecc341','#e679a7','#a382d8'] as const;
+/** Only the near two flower terraces use costly individual petal/grass meshes.
+ * Far terraces retain the original opaque coloured ground/field rows.
+ * Golden rice (canopy + real near-heads) is deliberately unchanged. */
+export const FARM_FLOWER_DETAIL={
+ 0:{bladeDensity:.105,flowerDensity:.65,maxFlowers:1400},
+ 1:{bladeDensity:.047,flowerDensity:.20,maxFlowers:360},
+} as const;
+export function farmFlowerDetail(band:number){
+ return band===0?FARM_FLOWER_DETAIL[0]:band===1?FARM_FLOWER_DETAIL[1]:undefined;
+}
 // Each scarecrow occupies the middle of a cultivated plot, never the roadside verge.
 export const FARM_SCARECROWS=[
  {d:350,x:76},{d:650,x:125},{d:1450,x:76},{d:1650,x:35},
