@@ -15,11 +15,11 @@ it('distinguishes actual metal, concrete and invisible coast boundaries on both 
  expect(coastContactSurface(850,1)).toBe('concrete');
  expect(coastContactSurface(3990,1)).toBe('soft');
  const g=new GuardrailContact(1.15,2.1,d=>coastDriveBounds(d,8.75));
- const s=createState();s.distance=8550;s.lateral=-12;s.speed=70;
- const collision=g.update(s,8549,-10,.016,true);
+ const s=createState();s.distance=8720;s.lateral=-12;s.speed=70;
+ const collision=g.update(s,8719,-10,.016,true);
  expect(collision).toBeGreaterThan(0);
  expect(g.contactSide).toBe(-1);
- expect(g.contactDistance).toBeGreaterThan(8545);
+ expect(g.contactDistance).toBeGreaterThan(8715);
  expect(coastContactSurface(g.contactDistance,g.contactSide)).toBe('soft');
  g.reset();expect(g.contactDistance).toBe(0);
 });

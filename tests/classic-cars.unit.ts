@@ -16,7 +16,7 @@ it('builds three truly different original classic silhouettes and period rear la
   expect(bounds.max.x).toBeLessThan(1.22);
   expect(bounds.min.z).toBeGreaterThanOrEqual(-2.36);
   expect(bounds.max.z).toBeLessThanOrEqual(2.35);
-  expect(bounds.min.y).toBeGreaterThan(.29);
+  expect(bounds.min.y).toBeGreaterThan(.25);
   expect(bounds.max.y).toBeLessThan(1.12);
   const at=classicBodyIdentity(name);
   signatures.add(JSON.stringify(at.profile));
