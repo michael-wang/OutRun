@@ -2,7 +2,6 @@ import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {buildCoastTownStreets} from './coast-town-streets';
-import {buildCoastMeadow} from './coast-meadow';
 import {coastHomeFacingYaw} from './coast-house-facing';
 import {FARM_HOMES} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
@@ -432,14 +431,6 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    bridgeGap=false;anchorRight=false;
    coastShadowGroup='other';
    part(creek,'#ffffff',0,0,0,1,1,1);
-  }
-  // Worker-baked grass/meadow tufts in gaps between authored fields.
-  // This is ONE opaque coloured geometry per chunk, never a mesh per blade.
-  const meadow=buildCoastMeadow(sample,range.start,range.end);
-  if(meadow){
-   base.set(0,0,0);yaw=0;chunk=Math.floor(range.start/650);
-   bridgeGap=false;anchorRight=false;coastShadowGroup='vegetation';
-   part(meadow,'#ffffff',0,0,0,1,1,1);
   }
   // Short local streets link residential frontages to the covered town
   // drain and highway edge, without altering the main road physics.

@@ -2,7 +2,6 @@ import {it,expect,vi} from 'vitest';
 import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
 import {COAST_VILLAGE_SITES,COAST_TOWN_SIDE_STREETS} from '../src/coast-village-layout';
-import {buildCoastMeadow} from '../src/coast-meadow';
 import {buildCoastTownStreets} from '../src/coast-town-streets';
 import {COAST_DISTRICTS} from '../src/coast-layout';
 import {GamepadInput} from '../src/gamepad';
@@ -28,27 +27,24 @@ it('chooses a few inhabited town streets in gaps between actual buildings',()=>{
  }
 });
 
-it('bakes local streets and lightly layered grass in bounded colour meshes with no shadows',()=>{
+it('uses existing instanced grass assets and no triangle-rock meadow geometry',()=>{
  const streets=buildCoastTownStreets(sample,3400,4000);
- const meadow=buildCoastMeadow(sample,3400,4000);
  expect(streets).not.toBeNull();
- expect(meadow).not.toBeNull();
  try{
-  for(const mesh of [streets!,meadow!]){
-   expect(mesh.userData.noShadowGround).toBe(true);
-   expect(mesh.getAttribute('color').count).toBe(mesh.getAttribute('position').count);
-   expect(mesh.index!.count).toBeGreaterThan(0);
-   expect(mesh.index!.count/3).toBeLessThan(3500);
-   expect([...mesh.getAttribute('position').array].every(Number.isFinite)).toBe(true);
-  }
-  // No street geometry is placed across ocean-side lanes.
-  const xs=streets!.getAttribute('position');
-  expect(Math.min(...Array.from({length:xs.count},(_,i)=>xs.getX(i)))).toBeGreaterThan(13);
-  const roadWorker=readFileSync(new URL('../src/road-worker.ts',import.meta.url),'utf8');
+  expect(streets!.userData.noShadowGround).toBe(true);
+  expect(streets!.getAttribute('color').count).toBe(streets!.getAttribute('position').count);
+  expect(streets!.index!.count).toBeGreaterThan(0);
+  expect(streets!.index!.count/3).toBeLessThan(3500);
+  const scene=readFileSync(new URL('../src/scenery.ts',import.meta.url),'utf8');
+  expect(scene).not.toContain('buildCoastMeadow');
+  const nature=readFileSync(new URL('../src/coast-nature.ts',import.meta.url),'utf8');
+  expect(nature).toContain("plant('Grass_Common_Short'");
+  expect(nature).toContain("mesh.userData.noShadowGround=true");
+  const worker=readFileSync(new URL('../src/road-worker.ts',import.meta.url),'utf8');
   const stream=readFileSync(new URL('../src/streamed-scene.ts',import.meta.url),'utf8');
-  expect(roadWorker).toContain('noShadowGround:!!object.userData.noShadowGround');
+  expect(worker).toContain('noShadowGround:!!object.userData.noShadowGround');
   expect(stream).toContain('mesh.castShadow=!!this.farmSample&&!data.coastDrainWater&&!data.noShadowGround');
- }finally{streets?.dispose();meadow?.dispose();}
+ }finally{streets?.dispose();}
 });
 
 it('gamepad navigation cycles paint without asking browser to click a native select',()=>{

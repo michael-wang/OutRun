@@ -53,7 +53,10 @@ describe('sunset coast nature',()=>{
    }
   }
   expect(checked).toBeGreaterThan(15);
-  expect(checked).toBeLessThan(200);expect(scene.children.length).toBeLessThan(90);
+  // New grass reuses the same cached InstancedMesh model in 200m buckets.
+  expect(checked).toBeLessThan(450);expect(scene.children.length).toBeLessThan(90);
+  expect(scene.children.some(o=>o.name==='coast-instanced-grass')).toBe(true);
+  expect(scene.children.filter(o=>o.name==='coast-instanced-grass').every(o=>o.userData.noShadowGround===true)).toBe(true);
   const again=new THREE.Scene();addCoastNature(again,track.sample,start,end);
   expect(again.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array))).toEqual(scene.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array)));
   geometry.dispose();(mesh.material as THREE.Material).dispose();
