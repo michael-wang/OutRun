@@ -96,7 +96,7 @@ export function createCar(dusk=false) {
     pane.rotation.y=Math.PI;pane.scale.set(.078,.028,1);
     for(const z of [-1.45,1.38]){
       // Subtle sculpted arch brow follows the wheel without a giant polygon.
-      const brow=mesh(new THREE.TorusGeometry(.49,.05,6,20,Math.PI),paint,side*1.052,.46,z);
+      const brow=mesh(new THREE.TorusGeometry(.49,.05,5,16,Math.PI),paint,side*1.052,.46,z);
       brow.rotation.y=Math.PI/2;
       const wheel=createRoadWheel(side,z>0);
       wheel.pivot.position.set(side*1.055,.46,z);
