@@ -104,9 +104,44 @@ function classicTonneau(model:CarModel):THREE.BufferGeometry{
  g.computeVertexNormals();return g;
 }
 
-/** One active, clear-coated paint batch for the BODY and tail cowl. */
+/** An opaque, camera-facing rear body panel on the two rounded 1960s
+ * models. Both previously shared a second tonneau OVER their shell roof:
+ * intersecting/coplanar surfaces made the trunk and bumper look torn open.
+ * The shell itself already has a closed rear deck, so these models need
+ * a clean rear closing panel, not another overlapping roof surface.
+ * The accepted angular 1976 Wedge keeps its original tonneau unchanged.
+ */
+function classicRearFascia():THREE.BufferGeometry{
+ const xs=[-.90,-.77,-.54,-.26,0,.26,.54,.77,.90];
+ const ys=[.36,.49,.62,.75,.88];
+ const positions:number[]=[],indices:number[]=[];
+ for(const y of ys)for(const x of xs){
+  const round=Math.pow(Math.abs(x)/.9,2);
+  positions.push(x,y-.012*round,-2.414+.062*round);
+ }
+ const columns=xs.length;
+ for(let row=0;row<ys.length-1;row++)for(let col=0;col<xs.length-1;col++){
+  const a=row*columns+col,b=a+1,c=a+columns,d=c+1;
+  // Camera looks from -Z. The outward face must point -Z, not into
+  // the car: otherwise FrontSide material culls the whole rear panel.
+  indices.push(a,c,b,b,c,d);
+ }
+ const geometry=new THREE.BufferGeometry();
+ geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ geometry.setIndex(indices);
+ geometry.computeVertexNormals();
+ geometry.name='closed-classic-rear-fascia';
+ return geometry;
+}
+
+/** One active clear-coated body. The 1976 wedge still gets a separate
+ * styled tonneau; the rounded bodies use their existing closed deck plus
+ * a properly oriented, opaque rear fascia. Never overlap two roof skins.
+ */
 export function createClassicBody(model:CarModel):THREE.BufferGeometry{
- const pieces=[classicShell(model),classicTonneau(model)];
+ const pieces=model==='wedge-spider-76'
+  ?[classicShell(model),classicTonneau(model)]
+  :[classicShell(model),classicRearFascia()];
  const merged=mergeGeometries(pieces);
  pieces.forEach(g=>g.dispose());
  if(!merged)throw Error('Failed to bake classic GT body');
