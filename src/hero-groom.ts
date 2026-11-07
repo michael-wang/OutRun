@@ -42,8 +42,8 @@ export function createDriverHair():THREE.Group{
  const group=new THREE.Group();group.name='driver-layered-short-hair';
  const dark=new THREE.Color('#192029'),light=new THREE.Color('#49515a');
  const rings=[
-  {y:-.120,x:.082,z:.083},
-  {y:-.078,x:.104,z:.116},
+  {y:-.155,x:.104,z:.126},
+  {y:-.109,x:.127,z:.140},
   {y:-.029,x:.132,z:.138},
   {y:.038,x:.139,z:.138},
  ] as const;
@@ -78,7 +78,7 @@ export function createDriverHair():THREE.Group{
   const angle=(i+.35)*Math.PI*2/26;
   const sx=Math.sin(angle),sz=Math.cos(angle);
   const rear=Math.max(0,-sz),temple=Math.abs(sx);
-  const fall=.101+rear*.056+(i%4)*.010+temple*.006;
+  const fall=.190+rear*.076+(i%4)*.012+temple*.010;
   const rows:Row[]=[];
   for(let j=0;j<=5;j++){
    const t=j/5;
