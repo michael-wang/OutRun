@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
-import {createSpiderShell} from './hero-body';
-import {createFlatCap,createBlondeBob,createScarfTails} from './hero-groom';
+import {createSpiderShell,createGTWingMirrorHousing} from './hero-body';
+import {createDriverHair,createBlondeBob,createScarfTail} from './hero-groom';
 import {createOccupantMotion} from './occupants';
 import {CAR_PAINT_PRESETS,DEFAULT_CAR_COLOR,type CarColor} from './car-appearance';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -68,9 +68,11 @@ export function createCar(dusk=false) {
     // Low twin rollover hoops rather than a roof or visible rear window.
     for(const x of [-.22,.22])bar([side*.41+x,.92,-1.09],[side*.41+x,1.23,-1.09],.029,silver);
     bar([side*.41-.22,1.23,-1.09],[side*.41+.22,1.23,-1.09],.029,silver);
-    // Sleek, painted mirror housings with real reflective backs.
-    oval(.165,.085,.145,paint,side*1.17,1.015,.44);
-    box(.15,.065,.022,silver,side*1.18,1.02,.295);
+    // Low-profile sculpted wing mirror, rather than a round toy handle.
+    bar([side*.97,.952,.51],[side*1.107,.987,.452],.010,dark);
+    mesh(createGTWingMirrorHousing(),paint,side*1.121,.996,.426);
+    oval(.080,.031,.006,dark,side*1.121,.996,.352);
+    oval(.070,.025,.004,silver,side*1.121,.997,.343);
     for(const z of [-1.45,1.38]){
       // Subtle sculpted arch brow follows the wheel without a giant polygon.
       const brow=mesh(new THREE.TorusGeometry(.49,.05,6,20,Math.PI),paint,side*1.052,.46,z);
@@ -143,17 +145,16 @@ export function createCar(dusk=false) {
       oval(.047,.022,.013,driver?lapel:hair,x+eye*.063,1.493,-.332,head);
     }
     if(driver){
-      const cap=createFlatCap();
-      cap.position.set(x,1.607,-.455);head.add(cap);
-      // One softly folded neck scarf, two narrow fabric tails drifting toward
-      // the rear of the vehicle. This is 2 transforms, not a cloth simulation.
-      const fabric=createScarfTails();
-      fabric.root.position.set(x,1.276,-.577);person.add(fabric.root);
-      scarf.push(...fabric.tails);
-      // Champagne scarf collar is an actual neck wrap; trailing ends remain
-      // separate pivots above the rear deck for visible wind movement.
-      const scarfCloth=material('#f2c982',.66);
-      const collar=mesh(new THREE.TorusGeometry(.110,.029,6,22),scarfCloth,x,1.270,-.494,person);
+      // Dark, shaped rear volume replaces the thin flat cap that read bald.
+      const groom=createDriverHair();
+      groom.position.set(x,1.525,-.464);head.add(groom);
+      // Slim neutral neck wrap and just ONE loose end on the outside
+      // shoulder. No second strip to form a fake life jacket.
+      const fabric=createScarfTail();
+      fabric.root.position.set(x+.084,1.276,-.557);person.add(fabric.root);
+      scarf.push(fabric.tail);
+      const scarfCloth=material('#beb4a9',.77);
+      const collar=mesh(new THREE.TorusGeometry(.082,.013,6,20),scarfCloth,x,1.267,-.495,person);
       collar.rotation.x=Math.PI/2;
     }else{
       const bob=createBlondeBob();bob.root.position.set(x,1.485,-.465);head.add(bob.root);
@@ -195,16 +196,18 @@ export function createCar(dusk=false) {
   box(1.80,.105,.15,dark,0,.32,-2.34);
   box(1.75,.12,.11,paintShade,0,.86,-2.31);
   box(1.78,.17,.105,dark,0,.37,-2.36);
-  const rear=material('#d51c23',.32);rear.emissive.set('#e12d25');
-  const tailIdle=dusk?1.2:.35,tailBraking=3.0;let braking=false;
+  // Dark cherry lenses at idle. Brake is perceptible without blooming
+  // across the rear view; no emissive intensity change per mesh.
+  const rear=material('#781c22',.39);rear.emissive.set('#b83029');
+  const tailIdle=dusk?.14:.035,tailBraking=1.0;let braking=false;
   rear.emissiveIntensity=tailIdle;
   const lamp=material('#fff2cf',.3);lamp.emissive.set('#fff3bf');lamp.emissiveIntensity=dusk?2.5:.6;
   for(const side of [-1,1]){
     // Rear LED hockey-stick, housed in black. Both sides use ONE shared
     // material, so the original brake-light controller still has one update.
-    box(.78,.155,.060,dark,side*.55,.745,-2.345);
-    box(.67,.056,.065,rear,side*.53,.77,-2.387);
-    box(.088,.123,.067,rear,side*.87,.715,-2.387);
+    box(.57,.103,.050,dark,side*.54,.743,-2.345);
+    box(.45,.034,.054,rear,side*.525,.752,-2.387);
+    box(.049,.073,.055,rear,side*.785,.725,-2.387);
     box(.58,.084,.062,lamp,side*.55,.58,2.32);
     // Twin exhaust finishers and low dark air outlets.
     const exhaust=mesh(new THREE.CylinderGeometry(.074,.074,.15,12),silver,side*.66,.30,-2.39);

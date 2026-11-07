@@ -32,30 +32,70 @@ const strandMesh=(strands:readonly Strand[],base:string,highlight:string,name:st
  return mesh;
 };
 
-/** Mature swept cut, not a spherical bowl. Graduated temples, side part and
- * swept strands are one opaque, double-sided draw with shaded vertex colours. */
+/** Thick, naturally side-parted short black hair of a young adult man.
+ * From a rear chase camera the nape must remain DARK and full; a few hair
+ * cards alone made the driver look bald. Two opaque meshes (volume + layers),
+ * no per-frame mesh edits, no alpha sorting or texture download.
+ */
 export function createDriverHair():THREE.Group{
- const group=new THREE.Group();group.name='tailored-driver-hair';
- const strands:Strand[]=[];
- for(let i=0;i<23;i++){
-  const theta=i/23*Math.PI*2;
-  const x=Math.cos(theta)*.105,z=Math.sin(theta)*.095;
+ const root=new THREE.Group();root.name='driver-natural-short-hair';
+ const positions:number[]=[],colors:number[]=[],indices:number[]=[];
+ const base=new THREE.Color('#1b252e'),light=new THREE.Color('#46505a');
+ const sections=[
+  {y:-.081,rx:.119,rz:.122},
+  {y:-.053,rx:.151,rz:.146},
+  {y:-.013,rx:.164,rz:.157},
+  {y:.051,rx:.162,rz:.151},
+  {y:.110,rx:.139,rz:.129},
+  {y:.159,rx:.064,rz:.064},
+ ] as const;
+ const sides=28;
+ for(const [k,ring] of sections.entries())for(let i=0;i<sides;i++){
+  const angle=i*2*Math.PI/sides,side=Math.sin(angle),front=Math.cos(angle);
+  // Low, natural tapered nape, slightly higher parted hairline in front.
+  const y=ring.y+(k<2?Math.max(0,front)*.022:0)+Math.sin(i*5.7+k*.9)*.003;
+  positions.push(side*ring.rx+.018*(k/sections.length),y,front*ring.rz);
+  const variation=.26+.40*k/(sections.length-1)+.12*Math.sin(angle*3.2+.8);
+  const color=base.clone().lerp(light,Math.max(.08,Math.min(.85,variation)));
+  colors.push(color.r,color.g,color.b);
+ }
+ for(let k=0;k<sections.length-1;k++)for(let i=0;i<sides;i++){
+  const a=k*sides+i,b=k*sides+(i+1)%sides,c=a+sides,d=b+sides;
+  indices.push(a,c,b,b,c,d);
+ }
+ const tip=positions.length/3;
+ positions.push(.018,.176,-.016);
+ const peak=light.clone().multiplyScalar(1.04);colors.push(peak.r,peak.g,peak.b);
+ const top=(sections.length-1)*sides;
+ for(let i=0;i<sides;i++)indices.push(top+i,tip,top+(i+1)%sides);
+ const geo=new THREE.BufferGeometry();
+ geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+ geo.setIndex(indices);geo.computeVertexNormals();geo.computeBoundingSphere();
+ const matte=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85,metalness:0,side:THREE.DoubleSide});
+ const scalp=new THREE.Mesh(geo,matte);
+ scalp.name='driver-short-hair-volume';scalp.castShadow=true;root.add(scalp);
+ // A modest swept fringe and individually shaded locks break the helmet
+ // silhouette. These cards all share ONE opaque material/draw.
+ const layers:Strand[]=[];
+ for(let i=0;i<22;i++){
+  const angle=(i+.4)*2*Math.PI/22;
+  const sx=Math.sin(angle)*.09,sz=Math.cos(angle)*.085;
   const rows:Row[]=[];
-  for(let step=0;step<=5;step++){
-   const t=step/5;
+  for(let j=0;j<=6;j++){
+   const t=j/6;
    rows.push({
-    x:x*(.62+.45*t)+.038*t,
-    y:.144-(.08+.03*Math.max(0,-Math.sin(theta)))*t-.012*t*t,
-    z:z*(.57+.54*t)-.065*t,
-    width:(.023+(i%3)*.003)*(1-.72*t),
-    shade:.80+.17*Math.sin(i*6.2+.7)+.05*t,
+    x:sx*(.63+.55*t)+.039*t,
+    y:.148-.088*t+.006*Math.cos(i*1.9),
+    z:sz*(.6+.56*t)-.024*t,
+    width:(.018+(i%3)*.002)*(1-.66*t),
+    shade:.75+.17*Math.sin(i*2.6)+.10*t,
    });
   }
-  strands.push({rows});
+  layers.push({rows});
  }
- group.add(strandMesh(strands,'#11171c','#35393c','driver-swept-hair-sheets'));
- // The sides taper close to the temple, instead of a full hemispheric cap.
- return group;
+ root.add(strandMesh(layers,'#1b242d','#4b5053','driver-short-hair-layered-strands'));
+ return root;
 }
 
 /** Short layered blonde bob. Static crown is a single batched opaque mesh;
@@ -136,96 +176,26 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=
  return {root,locks,sync};
 }
 
-/** Two ribbon-tail scarf pieces, folded downwind, with no cloth solver or
- * per-frame vertex uploads. Waving changes only parent transforms. */
-export function createScarfTails():{root:THREE.Group;tails:THREE.Group[]}{
- const root=new THREE.Group();root.name='driver-silk-scarf';
- const tails:THREE.Group[]=[];
- // Satin champagne is deliberately legible against a navy suit and the red
- // rear deck. Two substantial fabric tails sweep BACK over the rear haunch;
- // their arched silhouette is visible above the deck even in rear chase.
- for(let i=0;i<2;i++){
-  const tail=new THREE.Group();tail.name='driver-scarf-tail-'+i;
-  tail.position.set(i===0?-.068:.065,0,-.045);
-  const rows:Row[]=[];
-  for(let step=0;step<=17;step++){
-   const t=step/17;
-   const windLift=.06+Math.sin(t*Math.PI)*.18-t*.06;
-   rows.push({
-    x:(i===0?-.017:.023)+(i===0?-.125:.095)*t
-      +Math.sin(t*4.6+i*1.7)*.035*t,
-    y:windLift+.025*Math.sin(t*7.4+i),
-    z:-.045-(i===0?.89:1.04)*t,
-    width:(i===0?.090:.073)*(1-.61*t),
-    shade:.83+.13*Math.cos(t*13+i)+.09*t,
-   });
-  }
-  // The near end folds over the collar. Its pieces live in the SAME draw
-  // as the long tail; no isolated fabric nodes or new cloth simulation.
-  const pleat:Row[]=[
-   {x:-.06,y:.005,z:.040,width:.055,shade:.87},
-   {x:-.06,y:.025,z:-.015,width:.070,shade:1},
-   {x:-.055,y:.075,z:-.09,width:.043,shade:1.03},
-  ];
-  const fabric=strandMesh(i===0?[{rows},{rows:pleat}]:[{rows}],
-    i===0?'#bd873f':'#d9a259','#ffe5ab','wind-scarf-fabric-'+i);
-  tail.add(fabric);
-  root.add(tail);tails.push(tail);
- }
- return {root,tails};
-}
-
-/** Tailored low-crown flat cap, not bowl-cut hair. The fitted fabric crown,
- * folded rear band and forward bill share ONE vertex-coloured mesh/draw.
- * Its brim projects toward the car's +Z nose, while the taper/side seams
- * are visible from the rear chase camera.
+/** One understated scarf tail, draped from the OUTSIDE shoulder and drawn
+ * back over the deck. Previous two bright symmetrical streamers looked like
+ * a life jacket. One narrow satin strip plus a tiny separate neck collar.
  */
-export function createFlatCap():THREE.Group{
- const group=new THREE.Group();group.name='driver-tailored-flat-cap';
- const positions:number[]=[],indices:number[]=[],colors:number[]=[];
- const color=(hex:string)=>new THREE.Color(hex);
- const crown=color('#40484b'),upper=color('#77766f'),band=color('#22282d'),bill=color('#343c41');
- const sides=20;
- const rings=[
-  {y:-.056,rx:.133,rz:.116,shade:band},
-  {y:-.038,rx:.147,rz:.128,shade:band},
-  {y:.009,rx:.153,rz:.132,shade:crown},
-  {y:.052,rx:.143,rz:.128,shade:crown},
-  {y:.079,rx:.114,rz:.110,shade:upper},
- ];
- const push=(x:number,y:number,z:number,col:THREE.Color)=>{
-  positions.push(x,y,z);colors.push(col.r,col.g,col.b);
- };
- for(const [r,ring] of rings.entries())for(let j=0;j<sides;j++){
-  const a=j*Math.PI*2/sides;
-  const subtleSeam=(j%5===0?.965:1);
-  push(Math.sin(a)*ring.rx,ring.y+Math.cos(a*4)*.004,
-       Math.cos(a)*ring.rz*subtleSeam,ring.shade);
+export function createScarfTail():{root:THREE.Group;tail:THREE.Group}{
+ const root=new THREE.Group();root.name='driver-silk-scarf';
+ const tail=new THREE.Group();tail.name='driver-scarf-tail-0';
+ tail.position.set(.025,.006,-.028);
+ const rows:Row[]=[];
+ for(let i=0;i<=18;i++){
+  const t=i/18;
+  rows.push({
+   x:.013+.151*t+.021*t*Math.sin(t*4.2),
+   y:.027+.13*Math.sin(Math.PI*t)-.040*t,
+   z:-.025-.82*t,
+   width:(.048-.021*t)*(1-.13*Math.sin(t*3.1)),
+   shade:.79+.10*t+.07*Math.cos(t*18),
+  });
  }
- for(let r=0;r<rings.length-1;r++)for(let j=0;j<sides;j++){
-  const a=r*sides+j,b=r*sides+(j+1)%sides,c=a+sides,d=b+sides;
-  indices.push(a,b,c,b,d,c);
- }
- const peak=positions.length/3;push(0,.095,-.018,upper);
- const top=(rings.length-1)*sides;
- for(let j=0;j<sides;j++)indices.push(top+j,top+(j+1)%sides,peak);
- // Slightly downturned fitted bill, with an under-surface dark edge.
- // These points form one continuous forward-pointing silhouette.
- const billStart=positions.length/3;
- for(const [z,w,y] of [[.096,.140,-.038],[.192,.133,-.048],[.267,.105,-.059]] as const)
-  for(const x of [-1,0,1])push(x*w,y+(x===0?.004:0),z,bill);
- for(let row=0;row<2;row++)for(let k=0;k<2;k++){
-  const a=billStart+row*3+k,b=a+3;
-  indices.push(a,a+1,b,a+1,b+1,b);
- }
- const geometry=new THREE.BufferGeometry();
- geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
- geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
- geometry.setIndex(indices);geometry.computeVertexNormals();geometry.computeBoundingSphere();
- const cap=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({
-  vertexColors:true,roughness:.85,metalness:0,side:THREE.DoubleSide,
- }));
- cap.name='driver-flat-cap-mesh';cap.castShadow=true;cap.receiveShadow=false;
- group.add(cap);
- return group;
+ tail.add(strandMesh([{rows}],'#b6aa9d','#e9ddd0','wind-scarf-fabric-0'));
+ root.add(tail);
+ return {root,tail};
 }

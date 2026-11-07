@@ -26,11 +26,10 @@ export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
     }
    });
    p.syncHair?.();
-   p.scarf?.forEach((tail,i)=>{
-    // The new long silk tails actually lift into the airflow, instead of
-    // swinging unseen below the seat. Still just a pair of pivot updates.
-    tail.rotation.x=wind*(.31+.085*Math.sin(phase*3.7+i*.7));
-    tail.rotation.z=wind*(turn*.12+.105*Math.sin(phase*4.2+i*1.3));
+   // Only one restrained fabric strip moves; keep the neck wrap steady.
+   p.scarf?.forEach(tail=>{
+    tail.rotation.x=wind*(.19+.052*Math.sin(phase*3.5));
+    tail.rotation.z=wind*(turn*.075+.052*Math.sin(phase*4.15));
    });
   });
   wheel.rotation.z=-turn*.32;

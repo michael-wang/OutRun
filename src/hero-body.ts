@@ -68,3 +68,38 @@ export function createSpiderShell():THREE.BufferGeometry{
  geometry.name='hero-spider-contoured-body';
  return geometry;
 }
+
+
+/** Slim aerodynamic GT mirror shell, model-space along the car's +Z axis.
+ * At ~25cm across and 10cm tall this reads as a proper wing mirror rather
+ * than the original cartoon lollipop; the dark glass inlay is batched in
+ * the existing car materials.
+ */
+export function createGTWingMirrorHousing():THREE.BufferGeometry{
+ const rings=[
+  {z:-.071,w:.082,h:.030},
+  {z:-.028,w:.118,h:.049},
+  {z:.033,w:.116,h:.045},
+  {z:.078,w:.048,h:.022},
+ ] as const;
+ const pos:number[]=[],indices:number[]=[];
+ const sides=12;
+ for(const ring of rings)for(let i=0;i<sides;i++){
+  const angle=i*Math.PI*2/sides;
+  pos.push(Math.sin(angle)*ring.w,Math.cos(angle)*ring.h,ring.z);
+ }
+ for(let k=0;k<rings.length-1;k++)for(let i=0;i<sides;i++){
+  const a=k*sides+i,b=k*sides+(i+1)%sides,c=a+sides,d=b+sides;
+  indices.push(a,c,b,b,c,d);
+ }
+ for(let i=1;i<sides-1;i++){
+  indices.push(0,i+1,i);
+  const n=(rings.length-1)*sides;
+  indices.push(n,n+i,n+i+1);
+ }
+ const geo=new THREE.BufferGeometry();
+ geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+ geo.setIndex(indices);geo.computeVertexNormals();geo.computeBoundingBox();
+ geo.name='gt-wing-mirror-shell';
+ return geo;
+}
