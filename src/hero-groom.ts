@@ -32,70 +32,70 @@ const strandMesh=(strands:readonly Strand[],base:string,highlight:string,name:st
  return mesh;
 };
 
-/** Thick, naturally side-parted short black hair of a young adult man.
- * From a rear chase camera the nape must remain DARK and full; a few hair
- * cards alone made the driver look bald. Two opaque meshes (volume + layers),
- * no per-frame mesh edits, no alpha sorting or texture download.
+/** Layered youthful Asian side-part, optimised for the rear chase camera.
+ * A short tapered undercut fills the nape; 28 directional hair ribbons sit
+ * OUTSIDE it at different lengths. Unlike the old continuous spherical dome,
+ * the silhouette has separated ends, a side-swept crown and a natural nape.
+ * Both are opaque static meshes: no new per-frame animation or texture loads.
  */
 export function createDriverHair():THREE.Group{
- const root=new THREE.Group();root.name='driver-natural-short-hair';
- const positions:number[]=[],colors:number[]=[],indices:number[]=[];
- const base=new THREE.Color('#1b252e'),light=new THREE.Color('#46505a');
- const sections=[
-  {y:-.081,rx:.119,rz:.122},
-  {y:-.053,rx:.151,rz:.146},
-  {y:-.013,rx:.164,rz:.157},
-  {y:.051,rx:.162,rz:.151},
-  {y:.110,rx:.139,rz:.129},
-  {y:.159,rx:.064,rz:.064},
+ const group=new THREE.Group();group.name='driver-layered-short-hair';
+ const dark=new THREE.Color('#192029'),light=new THREE.Color('#49515a');
+ const rings=[
+  {y:-.120,x:.082,z:.083},
+  {y:-.078,x:.104,z:.116},
+  {y:-.029,x:.132,z:.138},
+  {y:.038,x:.139,z:.138},
  ] as const;
- const sides=20;
- for(const [k,ring] of sections.entries())for(let i=0;i<sides;i++){
-  const angle=i*2*Math.PI/sides,side=Math.sin(angle),front=Math.cos(angle);
-  // Low, natural tapered nape, slightly higher parted hairline in front.
-  const y=ring.y+(k<2?Math.max(0,front)*.022:0)+Math.sin(i*5.7+k*.9)*.003;
-  positions.push(side*ring.rx+.018*(k/sections.length),y,front*ring.rz);
-  const variation=.26+.40*k/(sections.length-1)+.12*Math.sin(angle*3.2+.8);
-  const color=base.clone().lerp(light,Math.max(.08,Math.min(.85,variation)));
-  colors.push(color.r,color.g,color.b);
+ const sides=18,position:number[]=[],colors:number[]=[],indices:number[]=[];
+ for(let r=0;r<rings.length;r++)for(let i=0;i<sides;i++){
+  const angle=2*Math.PI*i/sides,ring=rings[r];
+  const side=Math.sin(angle),back=Math.cos(angle);
+  // Taper close to the neck. Keep the undercut almost black, not a glossy
+  // helmet, and let the layered ribbons build the visible upper volume.
+  position.push(side*ring.x+.007*r,ring.y+.003*Math.sin(angle*4),back*ring.z);
+  const tone=.16+.19*r/3+.08*Math.sin(angle*3.2+i*.27);
+  const c=dark.clone().lerp(light,Math.max(.04,tone));
+  colors.push(c.r,c.g,c.b);
  }
- for(let k=0;k<sections.length-1;k++)for(let i=0;i<sides;i++){
-  const a=k*sides+i,b=k*sides+(i+1)%sides,c=a+sides,d=b+sides;
+ for(let r=0;r<rings.length-1;r++)for(let i=0;i<sides;i++){
+  const a=r*sides+i,b=r*sides+(i+1)%sides,c=a+sides,d=b+sides;
   indices.push(a,c,b,b,c,d);
  }
- const tip=positions.length/3;
- positions.push(.018,.176,-.016);
- const peak=light.clone().multiplyScalar(1.04);colors.push(peak.r,peak.g,peak.b);
- const top=(sections.length-1)*sides;
- for(let i=0;i<sides;i++)indices.push(top+i,tip,top+(i+1)%sides);
- const geo=new THREE.BufferGeometry();
- geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
- geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
- geo.setIndex(indices);geo.computeVertexNormals();geo.computeBoundingSphere();
- const matte=new THREE.MeshStandardMaterial({vertexColors:true,roughness:.85,metalness:0,side:THREE.DoubleSide});
- const scalp=new THREE.Mesh(geo,matte);
- scalp.name='driver-short-hair-volume';scalp.castShadow=true;root.add(scalp);
- // A modest swept fringe and individually shaded locks break the helmet
- // silhouette. These cards all share ONE opaque material/draw.
- const layers:Strand[]=[];
- for(let i=0;i<11;i++){
-  const angle=(i+.4)*2*Math.PI/11;
-  const sx=Math.sin(angle)*.09,sz=Math.cos(angle)*.085;
+ const geometry=new THREE.BufferGeometry();
+ geometry.setAttribute('position',new THREE.Float32BufferAttribute(position,3));
+ geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+ geometry.setIndex(indices);geometry.computeVertexNormals();geometry.computeBoundingSphere();
+ const undercut=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({
+  vertexColors:true,roughness:.88,metalness:0,side:THREE.DoubleSide,
+ }));
+ undercut.name='driver-tapered-nape';undercut.castShadow=true;group.add(undercut);
+ // Same layer technique as the accepted female bob, but cropped at the ears:
+ // narrow distinct locks swept slightly to the man's right, with staggered
+ // tip heights and directional low-contrast vertex highlights.
+ const strands:Strand[]=[];
+ for(let i=0;i<28;i++){
+  const angle=(i+.35)*Math.PI*2/28;
+  const sx=Math.sin(angle),sz=Math.cos(angle);
+  const rear=Math.max(0,-sz),temple=Math.abs(sx);
+  const fall=.101+rear*.056+(i%4)*.010+temple*.006;
   const rows:Row[]=[];
-  for(let j=0;j<=4;j++){
-   const t=j/4;
+  for(let j=0;j<=6;j++){
+   const t=j/6;
    rows.push({
-    x:sx*(.63+.55*t)+.039*t,
-    y:.148-.088*t+.006*Math.cos(i*1.9),
-    z:sz*(.6+.56*t)-.024*t,
-    width:(.018+(i%3)*.002)*(1-.66*t),
-    shade:.75+.17*Math.sin(i*2.6)+.10*t,
+    x:sx*(.068+.096*t)+.025*(1-t)+.015*Math.sin(t*2.8+angle)*t,
+    y:.150-fall*t+.006*Math.sin(i*.81+t*4.4),
+    z:sz*(.045+.105*t)-.019*t+.005*Math.sin(i*.65+t*5),
+    width:(.024+(i%3)*.003)*(1-.71*t),
+    shade:.79+.13*Math.sin(i*2.12)+.12*t,
    });
   }
-  layers.push({rows});
+  strands.push({rows});
  }
- root.add(strandMesh(layers,'#1b242d','#4b5053','driver-short-hair-layered-strands'));
- return root;
+ const layers=strandMesh(strands,'#19232d','#56616a','driver-side-part-layered-strands');
+ layers.material.roughness=.82;
+ group.add(layers);
+ return group;
 }
 
 /** Short layered blonde bob. Static crown is a single batched opaque mesh;
@@ -174,28 +174,4 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=
  };
  sync();
  return {root,locks,sync};
-}
-
-/** One understated scarf tail, draped from the OUTSIDE shoulder and drawn
- * back over the deck. Previous two bright symmetrical streamers looked like
- * a life jacket. One narrow satin strip plus a tiny separate neck collar.
- */
-export function createScarfTail():{root:THREE.Group;tail:THREE.Group}{
- const root=new THREE.Group();root.name='driver-silk-scarf';
- const tail=new THREE.Group();tail.name='driver-scarf-tail-0';
- tail.position.set(.025,.006,-.028);
- const rows:Row[]=[];
- for(let i=0;i<=18;i++){
-  const t=i/18;
-  rows.push({
-   x:.013+.151*t+.021*t*Math.sin(t*4.2),
-   y:.027+.13*Math.sin(Math.PI*t)-.040*t,
-   z:-.025-.82*t,
-   width:(.048-.021*t)*(1-.13*Math.sin(t*3.1)),
-   shade:.79+.10*t+.07*Math.cos(t*18),
-  });
- }
- tail.add(strandMesh([{rows}],'#b6aa9d','#e9ddd0','wind-scarf-fabric-0'));
- root.add(tail);
- return {root,tail};
 }

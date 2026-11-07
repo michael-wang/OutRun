@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
-import {createSpiderShell,createGTWingMirrorHousing} from './hero-body';
-import {createDriverHair,createBlondeBob,createScarfTail} from './hero-groom';
+import {createSpiderShell,createGTWingMirrorHousing,createRearTonneau} from './hero-body';
+import {createDriverHair,createBlondeBob} from './hero-groom';
 import {createOccupantMotion} from './occupants';
 import {CAR_PAINT_PRESETS,DEFAULT_CAR_COLOR,type CarColor} from './car-appearance';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -23,14 +23,14 @@ export interface CarPaintController {
 export function createCar(dusk=false) {
   const car=new THREE.Group();car.name='coastal-roadster';
   const wheels:ReturnType<typeof createRoadWheel>[]=[];
-  const travelers:{body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],scarf:THREE.Group[],syncHair?:()=>void}[]=[];
+  const travelers:{body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],syncHair?:()=>void}[]=[];
   const material=(color:string,roughness=.5,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
   // One physical clearcoat body shader; all three body paints share it.
   const red=CAR_PAINT_PRESETS[DEFAULT_CAR_COLOR];
   const paint=new THREE.MeshPhysicalMaterial({color:red.hex,metalness:red.metalness,roughness:red.roughness,clearcoat:.82,clearcoatRoughness:.15});
   const paintShade=material('#8e1e27',.4,.35);
   const dark=material('#17212b',.72,.06),silver=material('#b9c4c8',.23,.8);
-  const leather=material('#a87c60',.77),seam=material('#654d40',.82);
+  const leather=material('#29323a',.81),seam=material('#46505b',.83);
   const glass=new THREE.MeshStandardMaterial({color:'#a6d7df',transparent:true,opacity:.32,roughness:.12,metalness:.15,side:THREE.DoubleSide,depthWrite:false});
   function mesh(g:THREE.BufferGeometry,m:THREE.Material,x=0,y=0,z=0,parent:THREE.Group=car){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
   const box=(w:number,h:number,d:number,m:THREE.Material,x:number,y:number,z:number)=>mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z);
@@ -42,6 +42,11 @@ export function createCar(dusk=false) {
   // the painted shoulders rather than a flat, boxlike cabin roof.
   box(1.57,.09,1.76,dark,0,.47,-.23);
   box(.15,.19,1.23,dark,0,.60,-.16);
+  // Low painted rear tonneau hides the old exposed rectangular seatbacks
+  // from the chase view. The seats and cockpit remain truly open from above;
+  // this short body-height cowl is NOT a roof or a roll bar.
+  const tonneau=mesh(createRearTonneau(),paint);
+  tonneau.name='hero-rear-painted-cowl';
   box(.17,.03,.27,silver,0,.70,.01);
   // Sculpted hood creases and rear deck air channels are trim, not decals.
   for(const side of [-1,1]){
@@ -61,9 +66,9 @@ export function createCar(dusk=false) {
     box(.19,.025,.055,silver,side*1.108,.97,-.20);
     // Leather sports seats: contoured back, bolsters, headrest, twin piping.
     oval(.34,.12,.39,leather,side*.41,.64,-.34);
-    const seat=box(.61,.54,.18,leather,side*.41,.87,-.87);seat.rotation.x=-.10;
+    const seat=box(.57,.37,.145,leather,side*.41,.79,-.87);seat.rotation.x=-.10;
     for(const inset of [-.265,.265])bar([side*.41+inset,.68,-.9],[side*.41+inset,1.09,-.88],.045,seam);
-    oval(.22,.135,.115,leather,side*.41,1.18,-.91);
+    oval(.185,.077,.088,leather,side*.41,1.025,-.91);
     for(const x of [-.17,.17])bar([side*.41+x,.71,-.975],[side*.41+x,1.07,-.925],.010,seam);
     // Low twin rollover hoops rather than a roof or visible rear window.
     for(const x of [-.22,.22])bar([side*.41+x,.92,-1.09],[side*.41+x,1.23,-1.09],.029,silver);
@@ -109,7 +114,7 @@ export function createCar(dusk=false) {
     const driver=side===1,person=new THREE.Group();person.name=name;car.add(person);
     const x=side*.41;
     const head=new THREE.Group();head.name=name+'-head';person.add(head);
-    const arms:THREE.Group[]=[],locks:THREE.Group[]=[],scarf:THREE.Group[]=[];
+    const arms:THREE.Group[]=[],locks:THREE.Group[]=[];
     let syncHair:(()=>void)|undefined;
     const skin=material(driver?'#c89a7b':'#e3b79b',.82);
     const suit=material('#252d36',.74,.06);
@@ -149,17 +154,10 @@ export function createCar(dusk=false) {
       oval(.047,.022,.013,driver?lapel:hair,x+eye*.063,1.493,-.332,head);
     }
     if(driver){
-      // Dark, shaped rear volume replaces the thin flat cap that read bald.
+      // Deep black, distinct layered strands rather than a continuous
+      // half-sphere bowl haircut. The suit and plain collar are unchanged.
       const groom=createDriverHair();
       groom.position.set(x,1.525,-.464);head.add(groom);
-      // Slim neutral neck wrap and just ONE loose end on the outside
-      // shoulder. No second strip to form a fake life jacket.
-      const fabric=createScarfTail();
-      fabric.root.position.set(x+.084,1.276,-.557);person.add(fabric.root);
-      scarf.push(fabric.tail);
-      const scarfCloth=material('#beb4a9',.77);
-      const collar=mesh(new THREE.TorusGeometry(.082,.013,6,20),scarfCloth,x,1.267,-.495,person);
-      collar.rotation.x=Math.PI/2;
     }else{
       const bob=createBlondeBob();bob.root.position.set(x,1.485,-.465);head.add(bob.root);
       locks.push(...bob.locks);syncHair=bob.sync;
@@ -193,7 +191,7 @@ export function createCar(dusk=false) {
     // Passenger/driver were oversized against the GT body in the chase
     // camera. Scale around their seat centres, not the car or road physics.
     person.scale.setScalar(.84);
-    travelers.push({body:person,head,arms,locks,scarf,syncHair});
+    travelers.push({body:person,head,arms,locks,syncHair});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
   // are readable at the normal chase distance (unlike single red cubes).

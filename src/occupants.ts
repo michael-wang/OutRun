@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-type Traveler={body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],scarf?:THREE.Group[],syncHair?:()=>void};
+type Traveler={body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],syncHair?:()=>void};
 /** Small presentation pivots, driven only by observed travel and applied input. */
 export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
  let phase=0,wind=0,turn=0,pitch=0,lastSpeed=0;
@@ -26,11 +26,6 @@ export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
     }
    });
    p.syncHair?.();
-   // Only one restrained fabric strip moves; keep the neck wrap steady.
-   p.scarf?.forEach(tail=>{
-    tail.rotation.x=wind*(.19+.052*Math.sin(phase*3.5));
-    tail.rotation.z=wind*(turn*.075+.052*Math.sin(phase*4.15));
-   });
   });
   wheel.rotation.z=-turn*.32;
  }
@@ -40,5 +35,5 @@ export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
   turn+=(THREE.MathUtils.clamp(input,-1,1)-turn)*blend;
   pitch+=(THREE.MathUtils.clamp(-(speed-lastSpeed)/dt*.0015,-.045,.045)-pitch)*blend;
   lastSpeed=speed;pose();
- },reset(){phase=wind=turn=pitch=lastSpeed=0;pose();},inspect:()=>({wind,turn,pitch,phase,people:people.map(p=>({lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.locks.map(l=>({back:l.rotation.x,side:l.rotation.z})),scarf:p.scarf?.map(l=>({back:l.rotation.x,side:l.rotation.z}))??[]}))})};
+ },reset(){phase=wind=turn=pitch=lastSpeed=0;pose();},inspect:()=>({wind,turn,pitch,phase,people:people.map(p=>({lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.locks.map(l=>({back:l.rotation.x,side:l.rotation.z}))}))})};
 }

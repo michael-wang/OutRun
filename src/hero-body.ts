@@ -103,3 +103,29 @@ export function createGTWingMirrorHousing():THREE.BufferGeometry{
  geo.name='gt-wing-mirror-shell';
  return geo;
 }
+
+/** Baked rear body cowl. The top gently rises behind the two chairs and
+ * obscures the lower backrests from the rear camera, without a fake roof.
+ * 0.90..1.07m height is below both passengers' shoulder/head silhouettes.
+ * Shares the existing paint and is merged into its static mesh batch.
+ */
+export function createRearTonneau():THREE.BufferGeometry{
+ const position:number[]=[],index:number[]=[];
+ const widths=[-.86,-.66,-.40,-.15,0,.15,.40,.66,.86];
+ const spans=[-1.38,-1.21,-1.05];
+ for(const z of spans)for(const x of widths){
+  const shoulder=.038*Math.pow(Math.abs(x)/.86,1.5);
+  const bulge=.025*Math.exp(-Math.pow((Math.abs(x)-.40)/.30,2));
+  const t=(z+1.38)/.33;
+  position.push(x,.935+shoulder+bulge+t*.071,z);
+ }
+ for(let row=0;row<spans.length-1;row++)for(let col=0;col<widths.length-1;col++){
+  const a=row*widths.length+col,b=a+widths.length;
+  index.push(a,b,a+1,a+1,b,b+1);
+ }
+ const geometry=new THREE.BufferGeometry();
+ geometry.setAttribute('position',new THREE.Float32BufferAttribute(position,3));
+ geometry.setIndex(index);geometry.computeVertexNormals();geometry.computeBoundingSphere();
+ geometry.name='hero-painted-rear-tonneau';
+ return geometry;
+}
