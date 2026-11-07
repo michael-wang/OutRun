@@ -1,12 +1,17 @@
 import {PassBy,PASS_AUDIO} from './pass-by';
 import type {TrafficActor} from './traffic';
 import {SkidFeedback} from './skid-feedback';
+import nicePassUrl from './assets/passenger-nice-pass.mp3?url';
 /** Original synthesized audio, created only after a user gesture. */
 export class EngineSound {
   readonly passes=new PassBy();
   private passVoices:{source:AudioBufferSourceNode;high:BiquadFilterNode;low:BiquadFilterNode;gain:GainNode;pan:StereoPannerNode}[]=[];
   private context?: AudioContext;
   private master?: GainNode;
+  private passengerVoice?:AudioBuffer;
+  private clap?:AudioBuffer;
+  private voiceLoad?:Promise<void>;
+  private passengerSources=new Set<AudioBufferSourceNode>();
   private engine?: OscillatorNode;
   private engineGain?: GainNode;
   private undertone?: OscillatorNode;
@@ -28,6 +33,17 @@ export class EngineSound {
     if (!this.context) {
       const context = this.context = new AudioContext();
       this.master = context.createGain();
+      const clap=context.createBuffer(1,Math.ceil(context.sampleRate*.14),context.sampleRate);
+      const samples=clap.getChannelData(0);
+      let noiseSeed=149,previousNoise=0;
+      for(let i=0;i<samples.length;i++){
+        noiseSeed=(Math.imul(noiseSeed,1664525)+1013904223)>>>0;
+        const t=i/context.sampleRate,noise=noiseSeed/2147483648-1;
+        const slap=Math.exp(-t*65)+.45*Math.exp(-Math.abs(t-.012)*220);
+        samples[i]=(.48*(noise-previousNoise)+.24*Math.sin(t*2*Math.PI*930))*slap;
+        previousNoise=noise;
+      }
+      this.clap=clap;
       this.master.gain.value = this.muted ? 0 : 0.35;
       this.analyser = context.createAnalyser();
       this.analyser.fftSize = 256;
@@ -61,7 +77,13 @@ export class EngineSound {
       const amount = context.createGain(); amount.gain.value = 35;
       wobble.connect(amount); amount.connect(this.skid.frequency); wobble.start();
     }
-    await this.context.resume();
+    const context=this.context;
+    this.voiceLoad??=fetch(nicePassUrl).then(r=>{
+      if(!r.ok)throw Error('Passenger voice unavailable');
+      return r.arrayBuffer();
+    }).then(bytes=>context.decodeAudioData(bytes)).then(buffer=>{this.passengerVoice=buffer;})
+      .catch(()=>{this.voiceLoad=undefined;});
+    await context.resume();
   }
   impact(strength:number,kind:'vehicle'|'guardrail'|'concrete'|'soft'='guardrail'){
     this.impactCount++;this.lastImpact=kind;if(!this.context)return;const now=this.context.currentTime;
@@ -114,8 +136,16 @@ export class EngineSound {
     this.passVoices.forEach((node,i)=>{const v=voices[i];node.gain.gain.setTargetAtTime(v?Math.min(PASS_AUDIO.peakCap,v.gain*mix):0,now,v && v.gain>0 ? .018 : .025);if(v){node.pan.pan.setTargetAtTime(v.pan,now,.02);node.high.frequency.setTargetAtTime(v.type===0?220:75,now,.03);node.low.frequency.setTargetAtTime(v.cutoff,now,.02);node.source.playbackRate.setTargetAtTime(v.rate,now,.02);}});
   }
   resetPassBy(){this.passes.reset();this.silencePasses();}
+  passengerCue(kind:'voice'|'clap'){
+    const context=this.context,buffer=kind==='voice'?this.passengerVoice:this.clap;
+    if(!context||!this.master||!buffer||this.muted||!this.active||context.state!=='running')return;
+    const source=context.createBufferSource();source.buffer=buffer;source.connect(this.master);
+    this.passengerSources.add(source);
+    source.onended=()=>{this.passengerSources.delete(source);source.disconnect();};source.start();
+  }
+  private stopPassenger(){for(const source of this.passengerSources)source.stop();this.passengerSources.clear();}
   private silencePasses(){this.passes.suspend();if(this.context)for(const v of this.passVoices){v.gain.gain.cancelScheduledValues(this.context.currentTime);v.gain.gain.setTargetAtTime(0,this.context.currentTime,.015);}}
-  setMuted(muted: boolean) { this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
+  setMuted(muted: boolean) { if(muted)this.stopPassenger();this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
   update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number},collisionSlide=0,trafficSkid=0) {
     const intensity=Math.max(trafficSkid,this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer,collisionSlide));
     this.active = true;this.engineRpm=drivetrain?.rpm??Math.min(7200,1000+speed*85);this.engineGear=drivetrain?.gear??1;
@@ -130,7 +160,7 @@ export class EngineSound {
     this.skid!.frequency.setTargetAtTime(510 + intensity * 250, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
-  pause() { this.silencePasses();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  pause() { this.stopPassenger();this.silencePasses();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }

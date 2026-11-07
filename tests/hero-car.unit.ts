@@ -1,4 +1,4 @@
-import {describe,it,expect} from 'vitest';
+import {describe,it,expect,vi} from 'vitest';
 import * as THREE from 'three';
 import {createCar,type CarPaintController} from '../src/car';
 import {CAR_COLORS,CAR_PAINT_PRESETS} from '../src/car-appearance';
@@ -51,13 +51,52 @@ describe('hero spider focal-point art',()=>{
   const left=car.getObjectByName('driver-left-arm-resting-on-door')!;
   const right=car.getObjectByName('driver-right-hand-steering')!;
   expect(Math.abs(left.rotation.z)).toBeLessThan(.01);
-  expect(Math.abs(right.rotation.z)).toBeGreaterThan(.03);
+  expect(right.parent?.name).toBe('left-hand-drive-steering-wheel');
   const h=m.occupants().people[1].hair;
   expect(h).toHaveLength(5);
   expect(h.every((lock:{back:number})=>lock.back>.55&&lock.back<1.05)).toBe(true);
   expect(car.getObjectByName('driver-silk-scarf')).toBeUndefined();
   expect(m.occupants().people[0].scarf).toBeUndefined();
  });
+});
+
+it('keeps the wrist on the rotating rim and the other hand planted through opposite steering locks',()=>{
+ const car=createCar(),motion=car.userData.motion;
+ const wheel=car.getObjectByName('left-hand-drive-steering-wheel')!;
+ const grip=car.getObjectByName('driver-right-hand-steering')!,fore=car.getObjectByName('driver-right-forearm')!;
+ const door=car.getObjectByName('driver-left-arm-resting-on-door')!;
+ const at=(o:THREE.Object3D)=>o.getWorldPosition(new THREE.Vector3());
+ const rest=at(grip),fixed=at(door);
+ for(const input of [1,-1,0]){
+  for(let i=0;i<140;i++)motion.advance(65/60,input,1/60,input*12);
+  car.updateMatrixWorld(true);
+  expect(wheel.rotation.z).toBeCloseTo(input*.98,4);
+  expect(fore.localToWorld(new THREE.Vector3(0,1,0)).distanceTo(at(grip))).toBeLessThan(.0001);
+  expect(at(door).distanceTo(fixed)).toBeLessThan(.0001);
+  if(input>0)expect(at(grip).y).toBeLessThan(rest.y-.1);
+  if(input<0)expect(at(grip).y).toBeGreaterThan(rest.y+.05);
+ }
+ motion.reset();expect(at(grip).distanceTo(rest)).toBeLessThan(.0001);
+});
+
+it('occasionally raises both passenger palms, claps twice and returns them to her lap',()=>{
+ const motionCar=createCar(),m=motionCar.userData.motion;
+ const palms=[-1,1].map(side=>motionCar.getObjectByName('passenger-palm-'+side)!);
+ const at=()=>palms.map(p=>p.getWorldPosition(new THREE.Vector3()));
+ const rest=at(),roll=vi.spyOn(Math,'random').mockReturnValue(.9);
+ const hairTop=new THREE.Box3().setFromObject(motionCar.getObjectByName('layered-blonde-bob')!).max.y;
+ try{
+  expect(m.onCleanPass()).toBe(false);roll.mockReturnValue(.1);
+  expect(m.onCleanPass()).toBe(true);expect(m.onCleanPass()).toBe(false);
+  let beats=0;
+  for(let i=0;i<210;i++)if(m.advance(.5,0,1/120)){
+   const [a,b]=at();expect(a.distanceTo(b)).toBeLessThan(.042);
+   expect(Math.min(a.y,b.y)-hairTop).toBeGreaterThan(.075);beats++;
+  }
+  expect(beats).toBe(2);expect(at()[0].distanceTo(rest[0])).toBeLessThan(.0001);
+  expect(m.onCleanPass()).toBe(false);
+  m.reset();expect(m.occupants().cheerTime).toBe(-1);
+ }finally{roll.mockRestore();}
 });
 
  it('batches five two-joint blonde locks into two instanced draw submissions',()=>{

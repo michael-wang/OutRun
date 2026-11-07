@@ -59,6 +59,7 @@ export class Traffic {
  // Cars cleared by the player may never respawn from a recipe or re-enter
  // from behind after a stop. A scenic replay resets this finite history.
  private passedIds=new Set<number>();
+ private previousPlayer?:number;
  private highwayStart?:number;private highwaySlot=0;private highwayRecipes:TrafficRecipe[]=[];
  enableHighway(start:number){this.highwayStart=start;}
  private history=new Map<number,{distance:number;speed:number;time:number}>();
@@ -153,10 +154,12 @@ export class Traffic {
  /** A normal restart can re-roll moving traffic while keeping terrain and
   * world-owned stopped cars/triangle annotations in sync. Omit variation for
   * deterministic QA/reset tests; ?trafficSeed also locks replay results. */
- reset(variation?:number){this.passedIds.clear();if(variation!==undefined){this.trafficSeed=(this.seed^variation)>>>0;this.schedule=[...trafficRecipe(this.trafficSeed,this.length),...this.stopped];this.lanes=new TrafficLanes(this.trafficSeed,this.dusk);}this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
+ reset(variation?:number){this.previousPlayer=undefined;this.passedIds.clear();if(variation!==undefined){this.trafficSeed=(this.seed^variation)>>>0;this.schedule=[...trafficRecipe(this.trafficSeed,this.length),...this.stopped];this.lanes=new TrafficLanes(this.trafficSeed,this.dusk);}this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.lanes.reset();this.indicators.count=0;this.shadows.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
   this.runningLights?.begin();
   if(time<this.time)this.reset();const dt=time-this.time,previous=this.actors;this.time=time;
+  const before=this.previousPlayer;this.previousPlayer=player;
+  let cleanPass=false;
   // Camera-visible traffic must exist before it enters the image. The old
   // fixed 850m pool boundary was well inside the 1400m mobile chase view.
   const populationAhead=trafficPopulationAhead(camera,this.scene.fog);
@@ -206,6 +209,13 @@ export class Traffic {
   // retired car is never resurrected if the player slows or parks.
   for(const a of candidates){
    if(!trafficHasBeenPassed(a.distance,TRAFFIC_TYPES[a.type].length,player))continue;
+   // Retiring unseen recipes behind a start position is bookkeeping.
+   // Celebrate only a moving car whose rear-clearance threshold we crossed
+   // during continuous travel and which we passed without touching.
+   if(dt>0&&before!==undefined&&player>before&&player-before<=playerSpeed*dt+1&&
+    a.visible&&!a.stationary&&!this.reactions.has(a.id)&&
+    !trafficHasBeenPassed(a.previousDistance??a.distance,TRAFFIC_TYPES[a.type].length,before)&&
+    Math.abs(a.lateral-playerLateral)>TRAFFIC_TYPES[a.type].width/2+1.15)cleanPass=true;
    this.passedIds.add(a.id);
    this.history.delete(a.id);this.lanes.forget(a.id);
   }
@@ -416,6 +426,7 @@ export class Traffic {
   if(this.sunsetCast){this.sunsetCast.count=sunsetCount;this.sunsetCast.instanceMatrix.needsUpdate=true;}
   this.breakdownSmoke.count=smokeCount;this.breakdownSmoke.instanceMatrix.needsUpdate=true;
   if(this.sign){this.sign.count=counts[3];this.sign.instanceMatrix.needsUpdate=true;}this.meshes.forEach((m,i)=>{m.count=counts[i];m.instanceMatrix.needsUpdate=true;});this.outlineMeshes.forEach((m,i)=>{m.count=outlineCounts[i];m.instanceMatrix.needsUpdate=true;});this.crestRims.forEach((m,i)=>{m.count=crestRimCounts[i];m.instanceMatrix.needsUpdate=true;});
+  return cleanPass;
  }
  /** Swept overlap plus persistent separation. Returns a new event only on contact entry. */
  hit(time:number,s:DrivingState,previous:{distance:number;lateral:number},dt:number,halfWidth=1.55,halfLength=2.8,heading=0):TrafficCollision|undefined {

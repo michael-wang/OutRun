@@ -3,6 +3,8 @@ import {createRoadWheel} from './wheels';
 import {createGTWingMirrorHousing} from './hero-body';
 import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry';
 import {createDriverHair,createBlondeBob} from './hero-groom';
+import {createCockpitWheel,createDriverArms} from './hero-hands';
+import {passengerArm} from './passenger-cheer';
 import {createOccupantMotion,type Traveler} from './occupants';
 import {CAR_PAINT_PRESETS,DEFAULT_CAR_COLOR,type CarColor} from './car-appearance';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -95,7 +97,10 @@ export function createCar(dusk=false) {
   }
   box(1.46,.19,.27,dark,0,.85,.51); // dashboard
   box(.38,.035,.12,silver,.43,.95,.47); // instrument hood
-  for(const x of [-.18,.12])oval(.09,.04,.03,dark,x,.91,.40);
+  for(const x of [-.18,.12]){
+    const dial=mesh(new THREE.SphereGeometry(1,8,4),dark,x,.91,.40);
+    dial.scale.set(.09,.04,.03);
+  }
   // Slim tinted screen and brushed aluminium perimeter.
   box(1.44,.075,.07,dark,0,.90,.71);
   // Transparent swept windscreen, no rear glazing or opaque cabin/roof.
@@ -103,9 +108,8 @@ export function createCar(dusk=false) {
   for(const side of [-1,1])bar([side*.78,.9,.78],[side*.68,1.43,.43],.035,silver);
   bar([-.68,1.43,.43],[.68,1.43,.43],.03,silver);
   bar([-.78,.9,.78],[.78,.9,.78],.03,dark);
-  const wheel=mesh(new THREE.TorusGeometry(.17,.026,8,20),dark,.41,1.025,.28);wheel.name='left-hand-drive-steering-wheel';wheel.rotation.x=-.45;
-  bar([.41,.87,.48],[.41,1.015,.28],.030,silver);
-  bar([.29,1.06,.28],[.51,1.03,.28],.015,silver);
+  const wheel=createCockpitWheel();car.add(wheel);
+  bar([.41,.93,.46],wheel.position.toArray(),.030,silver);
   // +Z is the vehicle nose. In the rear chase view positive X appears
   // on SCREEN LEFT. This was the old bug: driver x<0 looked right-seated.
   // Driver +X, passenger -X, wheel +X. Consistent in gameplay and QA.
@@ -113,7 +117,7 @@ export function createCar(dusk=false) {
     const driver=side===1,person=new THREE.Group();person.name=name;car.add(person);
     const x=side*.41;
     const head=new THREE.Group();head.name=name+'-head';person.add(head);
-    const arms:THREE.Group[]=[];
+    const arms:ReturnType<typeof passengerArm>[]=[];
     const skin=material(driver?'#c89a7b':'#f4d4c5',.82);
     const suit=material('#252d36',.74,.06);
     const lapel=material('#38414a',.80);
@@ -153,39 +157,17 @@ export function createCar(dusk=false) {
     }
     const groom=driver?createDriverHair():createBlondeBob();
     groom.root.position.set(x,driver?1.525:1.485,driver?-.464:-.465);head.add(groom.root);
-    // Natural shoulder/elbow joints without a full rig. Left (screen-left)
-    // driver arm hangs over the near door, right arm holds the steering wheel.
-    for(const arm of [-1,1] as const){
-      const shoulder:[number,number,number]=[x+arm*.20,1.173,-.47];
-      const resting=driver&&arm===1;
-      const elbow:[number,number,number]=resting?[.864,1.058,-.35]:
-        driver?[.22,1.025,-.13]:[x+arm*.23,1.01,-.22];
-      const hand:[number,number,number]=resting?[1.095,1.034,-.095]:
-        driver?[.42,1.025,.255]:[x+arm*.12,.84,-.06];
-      const limb=new THREE.Group();person.add(limb);
-      limb.name=resting?'driver-left-arm-resting-on-door':driver?
-        'driver-right-hand-steering':'passenger-arm-'+arm;
-      arms.push(limb);
-      bar(shoulder,elbow,driver?.071:.058,driver?suit:skin,limb);
-      if(!driver){
-        const cap=mesh(new THREE.SphereGeometry(1,8,5),skin,...shoulder,limb);
-        cap.scale.set(.06,.061,.064);
-      }
-      bar(elbow,hand,.042,skin,limb);
-      oval(.051,.039,.056,skin,...hand,limb);
-      if(resting){
-        for(const offset of [-.027,0,.027])
-          bar([hand[0]+offset,hand[1],hand[2]-.019],
-           [hand[0]+offset,hand[1]-.026,hand[2]+.046],.008,skin,limb);
-      }
-      batch(limb);pivotAt(limb,...shoulder);
+    if(!driver)for(const side of [-1,1] as const){
+      const arm=passengerArm(side,skin);arm.root.position.set(x+side*.20,1.173,-.47);
+      person.add(arm.root);arms.push(arm);
     }
     batch(head);pivotAt(head,x,1.30,-.46);
     batch(person);pivotAt(person,x,.80,-.48);
     // Passenger/driver were oversized against the GT body in the chase
     // camera. Scale around their seat centres, not the car or road physics.
     person.scale.setScalar(.84);
-    travelers.push({body:person,head,arms,hair:groom});
+    travelers.push({body:person,head,arms,hair:groom,
+      poseDriverArms:driver?createDriverArms(car,person,wheel,skin,suit):undefined});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
   // are readable at the normal chase distance (unlike single red cubes).
@@ -253,8 +235,8 @@ export function createCar(dusk=false) {
   };
   paintController.set(DEFAULT_CAR_COLOR);
   car.userData.paintController=paintController;
-  const people=createOccupantMotion(travelers,wheel);
-  car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number,rightAcceleration=0)=>{wheels.forEach(w=>w.advance(ds,steer,dt));people.advance(ds,steer,dt,rightAcceleration);},render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
+  const people=createOccupantMotion(travelers);
+  car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number,rightAcceleration=0)=>{wheels.forEach(w=>w.advance(ds,steer,dt));return people.advance(ds,steer,dt,rightAcceleration);},onCleanPass:people.onCleanPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;
 }
 

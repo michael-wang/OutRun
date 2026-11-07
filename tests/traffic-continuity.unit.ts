@@ -4,6 +4,29 @@ import {mkdirSync,writeFileSync} from 'node:fs';
 import {Traffic,trafficRecipe} from '../src/traffic';
 import {createState} from '../src/handling';
 const sample=(d:number)=>({position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(-1,0,0),tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0});
+it('signals a visible moving car clearing the rear bumper exactly once, excluding jumps and contact',()=>{
+ const traffic=new Traffic(new THREE.Scene(),sample,()=>7,3500,1);
+ try{
+  for(const collide of [false,true]){
+   traffic.reset();traffic.update(0,350);
+   const first=traffic.inspect().actors.find(a=>a.id===0)!;
+   const lane=first.lateral>=0?-5:5,dt=1/60,speed=95;
+   let d=first.distance-24,t=0,events=0,hit=false;
+   traffic.reset();expect(traffic.update(0,d,lane,speed)).toBe(false);
+   while(traffic.inspect().actors.some(a=>a.id===0)&&t<2){
+    const before=d;d+=speed*dt;t+=dt;
+    const actor=traffic.inspect().actors.find(a=>a.id===0)!;
+    const x=collide&&!hit?actor.lateral:lane;
+    if(traffic.update(t,d,x,speed))events++;
+    if(collide&&!hit)hit=!!traffic.hit(t,{...createState(),distance:d,lateral:x,speed},{distance:before,lateral:x},dt);
+    expect(traffic.update(t,d,x,speed)).toBe(false); // render pass at the same clock
+   }
+   expect(hit).toBe(collide);expect(events).toBe(collide?0:1);
+  }
+  traffic.reset();traffic.update(0,350);
+  expect(traffic.update(1/60,2100,5,95)).toBe(false);
+ }finally{traffic.dispose();}
+});
 it('tracks actual identities through slowing, overtaking and streaming re-entry',()=>{
  const traffic=new Traffic(new THREE.Scene(),sample,()=>7,70000,1),recipe=trafficRecipe(1,70000),last=new Map<number,{distance:number;time:number;speed:number}>(),jumps:any[]=[],transitions:any[]=[];let ids=new Set<number>();
  for(let i=0;i<6000;i++){
