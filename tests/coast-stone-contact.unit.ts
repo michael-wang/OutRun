@@ -155,7 +155,7 @@ it('uses actual ocean FFT and a calm dusk reflection without repeating canal cel
  m.onBeforeCompile(shader,{} as any);
  try{
   expect(m.name).toBe('coast-ocean-reflected-canal');
-  expect(m.customProgramCacheKey()).toContain('ocean-fft-r5');
+  expect(m.customProgramCacheKey()).toContain('ocean-fft-r6-props');
   expect(shader.vertexShader).toContain('vCoastFlowUV=uv');
   expect(shader.vertexShader).toContain('canalWorld=instanceMatrix*canalWorld');
   expect(shader.vertexShader).not.toContain('transformed.y+=sin');
