@@ -46,6 +46,13 @@ export function createCar(dusk=false) {
   // replace its baked geometry, never generate/keep three car instances.
   const shell=mesh(createClassicBody(DEFAULT_CAR_MODEL),paint);
   shell.name='hero-classic-body-shell';
+  // The four trunk vents and the sharp rear spoiler belong ONLY on the
+  // 1976 wedge. Previously their unconditionally merged meshes poked
+  // through the smoother 1960s tail skins, revealing black interior ribs.
+  const wedgeTrim=new THREE.Group();
+  wedgeTrim.name='wedge-only-rear-trim';
+  wedgeTrim.visible=DEFAULT_CAR_MODEL==='wedge-spider-76';
+  car.add(wedgeTrim);
   // Dark cockpit void and recessed centre tunnel let the sunlight catch
   // the painted shoulders rather than a flat, boxlike cabin roof.
   box(1.57,.09,1.76,dark,0,.47,-.23);
@@ -56,7 +63,7 @@ export function createCar(dusk=false) {
   // Sculpted hood creases and rear deck air channels are trim, not decals.
   for(const side of [-1,1]){
     bar([side*.59,.96,.72],[side*.52,.73,2.15],.014,paintShade);
-    for(const x of [.24,.38])bar([side*x,.98,-1.87],[side*x,1.005,-1.37],.011,dark);
+    for(const x of [.24,.38])bar([side*x,.98,-1.87],[side*x,1.005,-1.37],.011,dark,wedgeTrim);
     // Soft rising haunch behind each seat: small geometry, big silhouette.
     oval(.21,.10,.65,paint,side*.85,.87,-1.62);
   }
@@ -248,9 +255,11 @@ export function createCar(dusk=false) {
   const numberPlate=mesh(new THREE.PlaneGeometry(.733,.190),plateMaterial,0,.570,-2.459);
   numberPlate.name='rear-license-FZR-123';numberPlate.rotation.y=Math.PI;
   // Top deck vents are shallow dark slits; no solid roof.
-  for(let i=0;i<4;i++)box(.80,.023,.04,dark,0,.955-i*.012,-1.50-i*.115);
-  box(1.70,.057,.13,paint,0,.96,-2.00);
+  for(let i=0;i<4;i++)
+   mesh(new THREE.BoxGeometry(.80,.023,.04),dark,0,.955-i*.012,-1.50-i*.115,wedgeTrim);
+  mesh(new THREE.BoxGeometry(1.70,.057,.13),paint,0,.96,-2.00,wedgeTrim);
   car.userData.licensePlate='FZR-123';
+  batch(wedgeTrim); // two cheap shared-material draws, invisible on both 60s GTs
   batch(car);
   // Both original tail lamps share one material after batching; change its uniform only.
   const brakeLights:BrakeLightController={
@@ -279,6 +288,7 @@ export function createCar(dusk=false) {
       // Swap only on explicit selection; release old buffers for mobile.
       const oldBody=shell.geometry,oldLamps=classicLamps.geometry;
       shell.geometry=nextBody;classicLamps.geometry=nextLamps;
+      wedgeTrim.visible=model==='wedge-spider-76';
       oldBody.dispose();oldLamps.dispose();currentModel=model;
     },
     inspect:()=>({model:currentModel,bodyGeometry:shell.geometry.name,rearLamps:classicLamps.geometry.name}),
