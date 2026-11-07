@@ -1,7 +1,8 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {FARM_PLOTS,FARM_FLOWER_DETAIL} from '../src/coast-farm-layout';
-import {prepareFarmPlot,farmPrepTransferables} from '../src/coast-farm-prep';
+import {prepareFarmPlot,farmPrepTransferables,sampleFarmGround} from '../src/coast-farm-prep';
+import {readFarmGround} from '../src/coast-farm-ground';
 import {createFarmPlot,type FarmAssets} from '../src/coast-farm';
 import {RICE_ROW_PITCH,RICE_FIRST_HILL,RICE_HILL_PITCH} from '../src/coast-rice-layout';
 import {Grass} from '../src/vendor/three-stylized/Grass';
@@ -27,6 +28,24 @@ function fakeAssets(){
   dispose(){geometries.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());},
  };
 }
+
+it('replays baked terraces exactly and can transfer the same plot again on a second visit',()=>{
+ const rows=FARM_PLOTS.map(plot=>sampleFarmGround(plot,sample));
+ const packed=new Float32Array(rows.reduce((total,row)=>total+row.length,0));
+ let offset=0;
+ for(const row of rows){packed.set(row,offset);offset+=row.length;}
+ const read=readFarmGround(packed.buffer);
+ expect(()=>readFarmGround(packed.buffer.slice(0,-4))).toThrow('Incomplete');
+ for(const [i,plot] of FARM_PLOTS.entries()){
+  const first=read(plot);
+  structuredClone(first,{transfer:[first.buffer]});
+  expect(read(plot)).toEqual(rows[i]);
+ }
+ for(const kind of ['rice','flowers']){
+  const plot=FARM_PLOTS.find(p=>p.kind===kind&&p.band===0)!;
+  expect(prepareFarmPlot(plot,sample,read(plot))).toEqual(prepareFarmPlot(plot,sample));
+ }
+});
 
 it('worker-prepared rice canopy reproduces mesh layout and colours without main-thread generation',()=>{
  const plot=FARM_PLOTS.find(p=>p.kind==='rice'&&p.band===0)!;

@@ -3,6 +3,7 @@ import {addCoastMeadow} from './coast-meadow';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {farmPlotsInChunk} from './coast-farm-layout';
 import {prepareFarmPlot,farmPrepTransferables} from './coast-farm-prep';
+import {loadFarmGround} from './coast-farm-ground';
 import {addCoastResort} from './coast-resort';
 import {bridgeSpan,bridgeShoulders,onBridge,type BridgeSpan} from './bridge';
 import {rockySections,rockyAt,type RockySection} from './rocky-shoulder';
@@ -22,7 +23,8 @@ import {selectRoadInterchange,interchangeSceneryClear,type RoadInterchange} from
 
 const hasModernShoulders=(v:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
-type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
+type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
+let farmGround:Awaited<ReturnType<typeof loadFarmGround>>|undefined;
 let blenderArt=false;
 let roadLockArt=false;
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;let junction:RoadInterchange|undefined;
@@ -34,6 +36,13 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
  try{
   if(request.type==='faults'){if(import.meta.env.DEV)faults=request.faults;return;}
   if(import.meta.env.DEV&&request.type==='init'&&request.faults)faults=request.faults;
+  if(request.type==='init'){
+   // A slow or offline fetch must never hold up the road or the first field.
+   farmGround=undefined;
+   if(request.bakedFarmGround)void loadFarmGround().then(rows=>{
+    if(generation===request.generation)farmGround=rows;
+   }).catch(()=>{/* The original terrain sampler remains available. */});
+  }
   if(import.meta.env.DEV&&request.type!=='init'&&request.index>=faults.fromIndex){if(faults.delayMs)await new Promise(r=>setTimeout(r,faults.delayMs));if(faults.fail)throw new Error('Injected worker preparation failure');}
 
   if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;roadLockArt=!!request.blenderArt&&stage.generatorVersion==='canyon-roadlock-v1';blenderArt=!!request.blenderArt&&stage.generatorVersion==='designer-canyon-v1';track=createPilotTrack(stage,request.bank);rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=hasModernShoulders(stage.generatorVersion)&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(stage.generatorVersion)?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;junction=selectRoadInterchange(stage,bridge);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
@@ -63,7 +72,8 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    // Finite stage: all expensive, deterministic field samples and canopy vertices
    // are computed here, never synchronously during the driver's render frame.
    const farmPreparationStart=performance.now();
-   const farmPreps=coastUltra?farmPlotsInChunk(request.start,request.end).map(plot=>prepareFarmPlot(plot,current.sample)):[];
+   const plots=coastUltra?farmPlotsInChunk(request.start,request.end):[];
+   const farmPreps=plots.map(plot=>prepareFarmPlot(plot,current.sample,farmGround?.(plot)));
    const farmPrepCpuMs=performance.now()-farmPreparationStart;
    for(const prep of farmPreps)transfer.push(...farmPrepTransferables(prep));
    const visibleScenery=blenderArt?{...scenery,instances:instances.reduce((n,i)=>n+i.matrices.length/16,0),draws:instances.length}:scenery;

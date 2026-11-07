@@ -16,4 +16,11 @@ try{
   await writeFile('public/generated/coast-shore.shore',compressed);
   console.log(`Coast mask ${COAST_SHORE_KEY}: ${(compressed.length/1024/1024).toFixed(2)} MiB; prepared off-device.`);
  }finally{shore.texture.dispose();}
+ const {FARM_PLOTS}=await server.ssrLoadModule('/src/coast-farm-layout.ts');
+ const {sampleFarmGround}=await server.ssrLoadModule('/src/coast-farm-prep.ts');
+ const rows=FARM_PLOTS.map(plot=>Buffer.from(sampleFarmGround(plot,track.sample).buffer));
+ const ground=gzipSync(Buffer.concat(rows),{level:9});
+ await mkdir('src/generated',{recursive:true});
+ await writeFile('src/generated/coast-farm-ground.bin',ground);
+ console.log(`Coastal farm ground: ${FARM_PLOTS.length} plots, ${ground.byteLength} bytes.`);
 }finally{await server.close();}

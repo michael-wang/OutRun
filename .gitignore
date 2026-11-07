@@ -40,6 +40,7 @@ __pycache__/
 
 # Fixed coast mask is baked before dev/build; phones only load the compressed result.
 /public/generated/coast-shore.shore
+/src/generated/coast-farm-ground.bin
 
 # Release-hosted runtime art is verified and copied into the deployment at build time.
 /public/generated/*.glb

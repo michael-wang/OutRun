@@ -18,6 +18,17 @@ export function farmGroundRow(plot:FarmPlot,sample:Sample,d:number,start:number,
  const level=Math.max(ground(left),ground((left+right)/2),ground(right));
  return [level,level];
 }
+export const farmGroundLength=(plot:FarmPlot)=>(Math.ceil((plot.end-plot.start)/4)+1)*2;
+
+export function sampleFarmGround(plot:FarmPlot,sample:Sample){
+ const start=Math.floor(plot.start/1000)*1000;
+ const ground=new Float32Array(farmGroundLength(plot)),rows=ground.length/2-1;
+ for(let i=0;i<=rows;i++){
+  const d=plot.start+(plot.end-plot.start)*i/rows;
+  ground.set(farmGroundRow(plot,sample,d,start,start+1000),i*2);
+ }
+ return ground;
+}
 type NumericCanopy={
  position:Float32Array;uv:Float32Array;color?:Float32Array;normal:Float32Array;
  index:Uint16Array|Uint32Array;
@@ -46,15 +57,13 @@ export function farmPrepTransferables(plot:PreparedFarmPlot):Transferable[]{
 /** Precompute only data that was previously regenerated in every main-thread
  * createFarmPlot() call. Keep the exact interpolation and deterministic seeds.
  * This is also usable at build time for finite authored levels. */
-export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
- const chunkStart=Math.floor(plot.start/1000)*1000,chunkEnd=chunkStart+1000;
- const rows=Math.ceil((plot.end-plot.start)/4),ground=new Float32Array((rows+1)*2);
- for(let i=0;i<=rows;i++){
-  const d=plot.start+(plot.end-plot.start)*i/rows;
-  ground.set(farmGroundRow(plot,sample,d,chunkStart,chunkEnd),i*2);
- }
+export function prepareFarmPlot(plot:FarmPlot,sample:Sample,ground=sampleFarmGround(plot,sample)):PreparedFarmPlot{
+ const rows=ground.length/2-1;
+ let lastDistance:number,rowPose:ReturnType<Sample>;
  const position=(d:number,x:number,lift=0)=>{
-  const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
+  // All vertices across a planted row share the same exact road frame.
+  if(d!==lastDistance){rowPose=sample(d);lastDistance=d;}
+  const v=rowPose.position.clone().addScaledVector(rowPose.right,x);
   const f=THREE.MathUtils.clamp((d-plot.start)/(plot.end-plot.start)*rows,0,rows);
   const i=Math.min(rows-1,Math.floor(f)),t=f-i,u=(x-plot.left)/(plot.right-plot.left);
   v.y=THREE.MathUtils.lerp(THREE.MathUtils.lerp(ground[i*2],ground[i*2+1],u),THREE.MathUtils.lerp(ground[(i+1)*2],ground[(i+1)*2+1],u),t)+lift;
