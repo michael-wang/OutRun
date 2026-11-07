@@ -54,3 +54,17 @@ describe('hero spider focal-point art',()=>{
   expect(scarf.every((tail:{back:number})=>tail.back>.13&&tail.back<.34)).toBe(true);
  });
 });
+
+ it('batches five two-joint blonde locks into two instanced draw submissions',()=>{
+  const car=createCar(),primary=car.getObjectByName('blonde-wind-locks-batched');
+  const tips=car.getObjectByName('blonde-wind-tips-batched');
+  expect(primary).toBeInstanceOf(THREE.InstancedMesh);
+  expect(tips).toBeInstanceOf(THREE.InstancedMesh);
+  expect((primary as THREE.InstancedMesh).count).toBe(5);
+  expect((tips as THREE.InstancedMesh).count).toBe(5);
+  const first=new THREE.Matrix4(),after=new THREE.Matrix4();
+  (primary as THREE.InstancedMesh).getMatrixAt(2,first);
+  for(let i=0;i<120;i++)car.userData.motion.advance(110/60,.9,1/60);
+  (primary as THREE.InstancedMesh).getMatrixAt(2,after);
+  expect(after.equals(first)).toBe(false);
+ });

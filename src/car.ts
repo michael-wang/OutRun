@@ -23,7 +23,7 @@ export interface CarPaintController {
 export function createCar(dusk=false) {
   const car=new THREE.Group();car.name='coastal-roadster';
   const wheels:ReturnType<typeof createRoadWheel>[]=[];
-  const travelers:{body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],scarf:THREE.Group[]}[]=[];
+  const travelers:{body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],scarf:THREE.Group[],syncHair?:()=>void}[]=[];
   const material=(color:string,roughness=.5,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
   // One physical clearcoat body shader; all three body paints share it.
   const red=CAR_PAINT_PRESETS[DEFAULT_CAR_COLOR];
@@ -104,6 +104,7 @@ export function createCar(dusk=false) {
     const x=side*.41;
     const head=new THREE.Group();head.name=name+'-head';person.add(head);
     const arms:THREE.Group[]=[],locks:THREE.Group[]=[],scarf:THREE.Group[]=[];
+    let syncHair:(()=>void)|undefined;
     const skin=material(driver?'#c89a7b':'#e3b79b',.82);
     const suit=material('#252d36',.74,.06);
     const lapel=material('#38414a',.80);
@@ -151,7 +152,7 @@ export function createCar(dusk=false) {
       oval(.082,.047,.085,shirt,x,1.272,-.505,person);
     }else{
       const bob=createBlondeBob();bob.root.position.set(x,1.485,-.465);head.add(bob.root);
-      locks.push(...bob.locks);
+      locks.push(...bob.locks);syncHair=bob.sync;
     }
     // Natural shoulder/elbow joints without a full rig. Left (screen-left)
     // driver arm hangs over the near door, right arm holds the steering wheel.
@@ -179,7 +180,7 @@ export function createCar(dusk=false) {
     }
     batch(head);pivotAt(head,x,1.30,-.46);
     batch(person);pivotAt(person,x,.80,-.48);
-    travelers.push({body:person,head,arms,locks,scarf});
+    travelers.push({body:person,head,arms,locks,scarf,syncHair});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
   // are readable at the normal chase distance (unlike single red cubes).

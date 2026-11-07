@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-type Traveler={body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],scarf?:THREE.Group[]};
+type Traveler={body:THREE.Group,head:THREE.Group,arms:THREE.Group[],locks:THREE.Group[],scarf?:THREE.Group[],syncHair?:()=>void};
 /** Small presentation pivots, driven only by observed travel and applied input. */
 export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
  let phase=0,wind=0,turn=0,pitch=0,lastSpeed=0;
@@ -25,6 +25,7 @@ export function createOccupantMotion(people:Traveler[],wheel:THREE.Mesh){
       tip.rotation.z=wind*(turn*.055+Math.sin(phase*4.7+i*.7)*.085);
     }
    });
+   p.syncHair?.();
    p.scarf?.forEach((tail,i)=>{
     tail.rotation.x=wind*(.22+.05*Math.sin(phase*3.7+i*.7));
     tail.rotation.z=wind*(turn*.10+.07*Math.sin(phase*4.2+i*1.3));

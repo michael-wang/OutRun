@@ -61,7 +61,7 @@ export function createDriverHair():THREE.Group{
 /** Short layered blonde bob. Static crown is a single batched opaque mesh;
  * 5 small, double-jointed edge groups flutter independently with speed.
  * Hair is made of tapered shaded ribbons, not bulky spheres or particles. */
-export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[]}{
+export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[];sync:()=>void}{
  const root=new THREE.Group();root.name='layered-blonde-bob';
  const crown:Strand[]=[];
  for(let i=0;i<26;i++){
@@ -82,34 +82,58 @@ export function createBlondeBob():{root:THREE.Group;locks:THREE.Group[]}{
   crown.push({rows});
  }
  root.add(strandMesh(crown,'#9b672c','#f3ce78','blonde-layered-crown'));
+ // Instanced dual-joint locks: FIVE independently moving clusters,
+ // but only TWO hair draws (root & tip), not ten separate mesh draws.
+ // Root cards share the same shaped strips; matrices vary per lock.
  const locks:THREE.Group[]=[];
+ const upper:Strand[]=[],lower:Strand[]=[];
+ for(let j=0;j<3;j++){
+  const rows:Row[]=[];
+  for(let step=0;step<=8;step++){
+   const t=step/8;
+   rows.push({
+    x:(j-1)*.014+Math.sin(t*2.2+1.04)*.014*t,
+    y:-.015-.18*t-.024*t*t,
+    z:-.012-.085*t+.013*Math.sin(t*Math.PI),
+    width:(.023+.004*j)*(1-.80*t),
+    shade:.84+.10*Math.sin(2+j)+.13*t,
+   });
+  }
+  upper.push({rows:rows.slice(0,5)});
+  lower.push({rows:rows.slice(4).map(row=>({...row,y:row.y+.13}))});
+ }
+ const rootCard=strandMesh(upper,'#94612a','#f6d788','blonde-wind-root-prototype');
+ const tipCard=strandMesh(lower,'#ba8743','#f8dc99','blonde-wind-tip-prototype');
+ const primary=new THREE.InstancedMesh(rootCard.geometry,rootCard.material,5);
+ const secondary=new THREE.InstancedMesh(tipCard.geometry,tipCard.material,5);
+ primary.name='blonde-wind-locks-batched';
+ secondary.name='blonde-wind-tips-batched';
+ primary.castShadow=secondary.castShadow=true;
+ primary.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+ secondary.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+ root.add(primary,secondary);
  for(let i=0;i<5;i++){
   const anchor=new THREE.Group();anchor.name='blonde-hair-lock-'+i;
   anchor.position.set((i-2)*.054,-.025,-.109-(i%2)*.011);
+  anchor.scale.setScalar(1+(i%3)*.042);
   root.add(anchor);
-  const upper:Strand[]=[],lower:Strand[]=[];
-  for(let j=0;j<3;j++){
-   const rows:Row[]=[];
-   for(let step=0;step<=8;step++){
-    const t=step/8;
-    rows.push({
-     x:(j-1)*.014+(i-2)*.006+Math.sin(t*2.2+i*.52)*.014*t,
-     y:-.015-.18*t-.024*t*t,
-     z:-.012-.085*t+.013*Math.sin(t*Math.PI),
-     width:(.023+.004*j)*(1-.80*t),
-     shade:.84+.10*Math.sin(i+j)+.13*t,
-    });
-   }
-   upper.push({rows:rows.slice(0,5)});
-   lower.push({rows:rows.slice(4).map(row=>({...row,y:row.y+.13}))});
-  }
-  anchor.add(strandMesh(upper,'#94612a','#f6d788','blonde-wind-ribbons-'+i));
   const tip=new THREE.Group();tip.name='blonde-tip-joint';tip.position.y=-.13;
-  tip.add(strandMesh(lower,'#ba8743','#f8dc99','blonde-tip-sheets-'+i));
-  anchor.add(tip);
-  locks.push(anchor);
+  anchor.add(tip);locks.push(anchor);
  }
- return {root,locks};
+ const matrix=new THREE.Matrix4();
+ const sync=()=>{
+  for(let i=0;i<locks.length;i++){
+   const anchor=locks[i],tip=anchor.children[0];
+   anchor.updateMatrix();tip.updateMatrix();
+   primary.setMatrixAt(i,anchor.matrix);
+   matrix.multiplyMatrices(anchor.matrix,tip.matrix);
+   secondary.setMatrixAt(i,matrix);
+  }
+  primary.instanceMatrix.needsUpdate=true;
+  secondary.instanceMatrix.needsUpdate=true;
+ };
+ sync();
+ return {root,locks,sync};
 }
 
 /** Two ribbon-tail scarf pieces, folded downwind, with no cloth solver or
