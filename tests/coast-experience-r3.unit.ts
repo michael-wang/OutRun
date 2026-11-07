@@ -87,3 +87,18 @@ it('keeps finish figures secondary, only when the driving session has completed'
  expect(css).toContain('#player-finish-stats[hidden]');
  expect(css).not.toContain('#player-finish-stats{background:');
 });
+
+it('docks the completion UI in the right corner with a low-opacity, outlined HUD style',()=>{
+ const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../src/style.css',import.meta.url),'utf8');
+ const finish=css.slice(css.indexOf('/* Finish-only credits HUD:'));
+ expect(main).toContain('panel.dataset.finished=String(brickCompleted)');
+ expect(main).toContain("panel.setAttribute('aria-label',brickCompleted?'旅程結算':'開始駕駛')");
+ expect(finish).toContain('right:max(16px,env(safe-area-inset-right));');
+ expect(finish).toContain('bottom:max(14px,env(safe-area-inset-bottom));');
+ expect(finish).toContain('grid-template-columns:repeat(2,minmax(0,1fr));');
+ expect(finish).toContain('background:#0b2c3440');
+ expect(finish).toContain('border:1.5px solid #ffd69f');
+ expect(finish).toContain('background:#ffd69f27');
+ expect(finish).toContain('background:#0c303f4d');
+});

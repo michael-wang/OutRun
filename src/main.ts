@@ -348,6 +348,10 @@ function updatePlayerUi(){
   refreshPortraitLaunchUi();
   const panel=$('player-start'),show=mode!=='playing'&&mode!=='countdown'&&!settingsOpen&&!(mode==='paused'&&!brickCompleted);
   document.documentElement.dataset.driveMode=mode;
+  // Only completed journeys use the small lower-right credits HUD; regular
+  // splash and pause menus retain their approved positioning.
+  panel.dataset.finished=String(brickCompleted);
+  panel.setAttribute('aria-label',brickCompleted?'旅程結算':'開始駕駛');
   panel.hidden=!show;
   startupArt.hidden=mode==='playing'||mode==='countdown'||(mode==='paused'&&!brickCompleted)||(elapsed>0&&world.streamer?.ready!==false);
   if(!show)return;
