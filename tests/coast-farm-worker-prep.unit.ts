@@ -91,11 +91,16 @@ it('worker-prepared flower and grass samples retain counts and placement',()=>{
  const a=createFarmPlot(plot,sample,fresh.assets);
  const b=createFarmPlot(plot,sample,fresh.assets,prep);
  try{
+  const bed=b.group.children.find(o=>o instanceof THREE.Mesh&&o.geometry.hasAttribute('flowerLayer')) as THREE.Mesh;
+  expect(bed.geometry.hasAttribute('paddyAcross')).toBe(false);
+  expect(new Set(bed.geometry.getAttribute('flowerLayer').array)).toEqual(new Set([0,1]));
   expect(a.stats().blades).toBe(b.stats().blades);
   expect(a.stats().flowers).toBe(b.stats().flowers);
   const meadowA=a.group.children.find(o=>o instanceof Grass) as Grass;
   const meadowB=b.group.children.find(o=>o instanceof Grass) as Grass;
   expect(meadowA).toBeDefined();expect(meadowB).toBeDefined();
+  const blossom=meadowB.wildflowers!.flowers.geometry;
+  expect(blossom.boundingBox!.max.z-blossom.boundingBox!.min.z).toBeGreaterThan(.5);
   for(const meshName of ['blades','flowers'] as const){
    const pick=(group:Grass)=>meshName==='blades'?group.blades.blades:group.wildflowers!.flowers;
    const aa=pick(meadowA).instanceMatrix.array,bb=pick(meadowB).instanceMatrix.array;
@@ -138,6 +143,7 @@ it('keeps accepted golden rice and cuts distant flower blade/mesh costs',()=>{
   expect(patch.group.children.some(c=>c instanceof Grass)).toBe(false);
   expect(patch.stats().flowers).toBe(0);
   expect(patch.stats().blades).toBe(0);
-  expect(patch.group.children.some(c=>c instanceof THREE.Mesh)).toBe(true);
+  const bed=patch.group.children.find(o=>o instanceof THREE.Mesh&&o.geometry.hasAttribute('flowerLayer')) as THREE.Mesh;
+  expect(new Set(bed.geometry.getAttribute('flowerLayer').array)).toEqual(new Set([0,2]));
  }finally{patch.dispose();assets.dispose();}
 });

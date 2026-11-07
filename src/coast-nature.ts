@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {coastTreeVolume,coastBushVolume} from './coast-volume-foliage';
-import {farmClearing,RICE_YARDS} from './coast-farm-layout';
+import {farmClearing,FARM_YARDS} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastVegetationDensity} from './coast-journey-layout';
 import {coastBeachHeight} from './scenery-cross-section';
@@ -31,7 +31,7 @@ const authoredTrees=[
  ...COAST_HERO_TREE_SITES,
  {d:148,x:72,h:8.5},{d:460,x:267,h:11},{d:760,x:266,h:9.5},
  {d:1310,x:265,h:10.5},{d:1660,x:268,h:9},
- ...RICE_YARDS.map((site,i)=>({d:site.d+5,x:site.x+4.7,h:5.9+(i%3)*.85})),
+ ...FARM_YARDS.map((site,i)=>({d:site.d+5,x:site.x+4.7,h:5.9+(i%3)*.85})),
  {d:391,x:53,h:6.8},{d:687,x:99,h:8.1},{d:4522,x:100,h:6.5},
  {d:7535,x:53,h:7.4},{d:8781,x:99,h:7.3},{d:9036,x:53,h:6.2},
 ];

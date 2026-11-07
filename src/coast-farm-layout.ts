@@ -12,9 +12,8 @@ export const FARM_ZONES=[
 export const COAST_FARM={start:65,end:1780,riceStart:200,riceEnd:900,flowerStart:1200,flowerEnd:1700} as const;
 /** Authored flower-band palette shared by Worker baking and runtime materialization. */
 export const FARM_FLOWER_COLORS=['#ecc341','#e679a7','#a382d8'] as const;
-/** Only the near two flower terraces use costly individual petal/grass meshes.
- * Far terraces retain the original opaque coloured ground/field rows.
- * Golden rice (canopy + real near-heads) is deliberately unchanged. */
+/** Only the near two terraces grow individual flowers and blades.
+ * The outer terraces use textured crowns above the dry planting beds. */
 export const FARM_FLOWER_DETAIL={
  0:{bladeDensity:.105,flowerDensity:.65,maxFlowers:1400},
  1:{bladeDensity:.047,flowerDensity:.20,maxFlowers:360},
@@ -45,25 +44,42 @@ export const RICE_YARDS=[
  {d:4628,x:46,yaw:-.35},{d:5936,x:91,yaw:.56},
  {d:7374,x:46,yaw:.20},{d:8656,x:46,yaw:-.32},{d:8872,x:142,yaw:.55},
 ] as const;
-export type FarmPlot={id:number;start:number;end:number;left:number;right:number;kind:'rice'|'flowers';band:number;yard?:typeof RICE_YARDS[number]};
+export const FLOWER_YARDS=[
+ {d:1338,x:46,yaw:-.28},{d:1562,x:91,yaw:.36},{d:4808,x:46,yaw:.23},
+ {d:6106,x:91,yaw:-.44},{d:7942,x:46,yaw:.30},{d:9395,x:46,yaw:-.38},
+] as const;
+export const FARM_YARDS=[...RICE_YARDS,...FLOWER_YARDS];
+export type FarmPlot={id:number;start:number;end:number;left:number;right:number;kind:'rice'|'flowers';band:number;yard?:typeof FARM_YARDS[number]};
+export function flowerPlotColor(p:FarmPlot){
+ return FARM_FLOWER_COLORS[(Math.floor(p.start/190)+p.band)%FARM_FLOWER_COLORS.length];
+}
+export const FLOWER_ROW_PITCH=2;
+export function flowerCoverage(plot:FarmPlot,clear:(d:number,x:number)=>boolean){
+ return {sample:({uv}:{uv:{x:number;y:number}|null})=>{
+  if(!uv||uv.y<=.015||uv.y>=.985)return 0;
+  const x=uv.x*(plot.right-plot.left),d=plot.start+uv.y*(plot.end-plot.start);
+  return (x/FLOWER_ROW_PITCH)%1>.22&&!clear(d,plot.left+x)?1:0;
+ }};
+}
 const bands=[[20,50],[56,96],[102,148],[154,200],[206,252]];
 export const FARM_PLOTS:FarmPlot[]=[];
 // Interior cross-bunds meet neighbouring terraces at different distances.
 // Retain the exact farm entrances and streaming boundaries.
-function riceDivision(d:number,band:number,limits:readonly number[]){
+function farmDivision(d:number,band:number,limits:readonly number[],stagger:number){
  if(d===limits[0]||d===limits[1]||d%1000===0)return d;
- return d+[13,-6,6,-15,17][band];
+ return d+[13,-6,6,-15,17][band]*stagger;
 }
 for(const zone of FARM_ZONES)for(const kind of ['rice','flowers'] as const)for(let d=zone[kind][0];d<zone[kind][1];d+=100)
  for(const [band,[left,right]] of bands.entries())if(right<=zone.right){
-  const start=kind==='rice'?riceDivision(d,band,zone.rice)+(d%1000===0?1.5:0):d;
-  const end=kind==='rice'?riceDivision(d+100,band,zone.rice)-3:d+96;
-  const yard=kind==='rice'?RICE_YARDS.find(s=>s.d>=start&&s.d<end&&s.x>left&&s.x<right):undefined;
+  // Flower visits have shorter headlands around their central scarecrows.
+  const division=(at:number)=>farmDivision(at,band,zone[kind],kind==='rice'?1:.5);
+  const start=division(d)+(d%1000===0?1.5:0),end=division(d+100)-3;
+  const yard=FARM_YARDS.find(s=>s.d>=start&&s.d<end&&s.x>left&&s.x<right);
   FARM_PLOTS.push({id:FARM_PLOTS.length,start,end,left,right,kind,band,yard});
  }
 /** Piecewise banks in planting coordinates. Keep the planted rows straight
  * inside a field with chamfered corners, angled sides and a dry turning bay. */
-export function ricePlotEdges(p:FarmPlot,d:number){
+export function farmPlotEdges(p:FarmPlot,d:number){
  const t=Math.max(0,Math.min(1,(d-p.start)/(p.end-p.start))),key=p.id;
  const left=p.left+1.1+(1+Math.sin(key*2.3+t*4.3))*1.45+Math.max(0,1-t*5)*(2+key%6);
  let right=p.right-.9-(1+Math.cos(key*1.7+t*3.5))*1.45-Math.max(0,t*5-4)*(3+key%4);

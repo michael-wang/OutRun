@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {ricePlotEdges,type FarmPlot} from './coast-farm-layout';
+import {farmPlotEdges,type FarmPlot} from './coast-farm-layout';
 
 /** Persistent, opaque crop-top LOD. The existing terrain sampler supplies every
  * position; only the crop height is added. No terrain or streaming replacement. */
@@ -7,7 +7,7 @@ export function riceCanopyGeometry(plot:FarmPlot,position:(d:number,x:number,lif
  const nx=Math.ceil((plot.right-plot.left)/2),nz=Math.min(50,Math.ceil((plot.end-plot.start)/2));
  const vertices:number[]=[],uv:number[]=[],colors:number[]=[],indices:number[]=[];
  for(let z=0;z<=nz;z++){
-  const d=plot.start+(plot.end-plot.start)*z/nz,{left,right}=ricePlotEdges(plot,d);
+  const d=plot.start+(plot.end-plot.start)*z/nz,{left,right}=farmPlotEdges(plot,d);
   for(let x=0;x<=nx;x++){
    const lateral=left+(right-left)*x/nx;
    const grain=Math.sin(d*1.73+lateral*2.31)*Math.sin(d*.71-lateral*1.43);
@@ -23,7 +23,7 @@ export function riceCanopyGeometry(plot:FarmPlot,position:(d:number,x:number,lif
   }
  }
  for(let z=0;z<nz;z++){
-  const d=plot.start+(plot.end-plot.start)*(z+.5)/nz,{left,right}=ricePlotEdges(plot,d);
+  const d=plot.start+(plot.end-plot.start)*(z+.5)/nz,{left,right}=farmPlotEdges(plot,d);
   for(let x=0;x<nx;x++){
    const lateral=left+(right-left)*(x+.5)/nx;
    if(clearPath(d,lateral))continue;
@@ -35,10 +35,10 @@ export function riceCanopyGeometry(plot:FarmPlot,position:(d:number,x:number,lif
 
 /** Closed earthen bund. Its inside toe follows the same stations as the water,
  * including the return around each tool yard. */
-export function riceBundGeometry(plot:FarmPlot,position:(d:number,x:number,lift:number)=>THREE.Vector3){
+export function farmBundGeometry(plot:FarmPlot,position:(d:number,x:number,lift:number)=>THREE.Vector3){
  const rows=Math.ceil((plot.end-plot.start)/4),inner:THREE.Vector2[]=[],outer:THREE.Vector2[]=[];
  for(let i=0;i<=rows;i++){
-  const d=plot.start+(plot.end-plot.start)*i/rows,{left,right}=ricePlotEdges(plot,d);
+  const d=plot.start+(plot.end-plot.start)*i/rows,{left,right}=farmPlotEdges(plot,d);
   inner.push(new THREE.Vector2(left,d));outer.push(new THREE.Vector2(right,d));
  }
  const ring=inner.concat(outer.reverse()),vertices:number[]=[],uv:number[]=[],ix:number[]=[];

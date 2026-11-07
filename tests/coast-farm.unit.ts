@@ -6,7 +6,7 @@ import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastNatureGround} from '../src/coast-nature';
 import {COAST_DISTRICTS} from '../src/coast-layout';
-import {FARM_PLOTS,FARM_SCARECROWS,FARM_ZONES,FARM_HOMES,RICE_YARDS,ricePlotEdges,farmPlotsInChunk} from '../src/coast-farm-layout';
+import {FARM_PLOTS,FARM_SCARECROWS,FARM_ZONES,FARM_HOMES,FARM_YARDS,FLOWER_YARDS,farmPlotEdges,farmPlotsInChunk} from '../src/coast-farm-layout';
 import {ruralShowcaseReplacesFarmHome} from '../src/coast-rural-layout';
 const track=createPilotTrack(COAST_ULTRA_STAGE);
 it('owns every field exactly once, outside housing, wholly inside a streamed chunk and on the coastal plain',()=>{
@@ -55,7 +55,7 @@ it('keeps an opaque crop-height canopy across each rice plot while preserving sc
   const cover=g.getAttribute('color');expect(cover.itemSize).toBe(4);
   for(let i=0;i<p.count;i++){
    const x=p.getX(i),z=p.getZ(i),height=p.getY(i)-7-x*.008;
-   const edges=ricePlotEdges(plot,z);
+   const edges=farmPlotEdges(plot,z);
    // World positions are Float32; longitudinal rounding at 9km can move
    // the evaluated slanted edge by a fraction of a millimetre.
    const margin=Math.abs(x-edges.left)<.001||Math.abs(x-edges.right)<.001||z===plot.start||z===plot.end;
@@ -67,7 +67,7 @@ it('keeps an opaque crop-height canopy across each rice plot while preserving sc
   const rows=p.count/(Math.ceil((plot.right-plot.left)/2)+1)-1,step=(plot.end-plot.start)/rows;
   let footprint=0;
   for(let row=0;row<=rows;row++){
-   const {left,right}=ricePlotEdges(plot,plot.start+step*row);
+   const {left,right}=farmPlotEdges(plot,plot.start+step*row);
    footprint+=(right-left)*step*(row===0||row===rows?.5:1);
   }
   expect(area/footprint).toBeGreaterThan(.98);expect(area/footprint).toBeLessThan(1.001);
@@ -83,7 +83,7 @@ it('keeps the first paddy below the road, with level benches rising toward the h
   const d=zone.rice[0]+54,start=Math.floor(d/1000)*1000,road=track.sample(d).position.y;
   let previous=-Infinity;
   for(const plot of FARM_PLOTS.filter(p=>p.kind==='rice'&&d>=p.start&&d<=p.end)){
-   const {left,right}=ricePlotEdges(plot,d);
+   const {left,right}=farmPlotEdges(plot,d);
    const bed=(x:number)=>coastNatureGround(track.sample,d,x,start,start+1000)+.055;
    const h=bed((left+right)/2);
    if(plot.band===0)expect(h).toBeLessThan(road-.65);
@@ -92,8 +92,13 @@ it('keeps the first paddy below the road, with level benches rising toward the h
    previous=h;
   }
  }
- for(const yard of RICE_YARDS){
+});
+
+it('leaves an unplanted working bay outside the bund at every tool shed',()=>{
+ for(const zone of FARM_ZONES)expect(FLOWER_YARDS.some(y=>y.d>=zone.flowers[0]&&y.d<zone.flowers[1])).toBe(true);
+ for(const yard of FARM_YARDS){
   const p=FARM_PLOTS.find(p=>p.yard===yard)!;
-  for(const d of [yard.d-4,yard.d,yard.d+4])expect(ricePlotEdges(p,d).right+1.4).toBeLessThan(yard.x-4);
+  expect(yard.d-5).toBeGreaterThan(p.start);expect(yard.d+5).toBeLessThan(p.end);
+  for(const d of [yard.d-4,yard.d,yard.d+4])expect(farmPlotEdges(p,d).right+1.4).toBeLessThan(yard.x-4);
  }
 });

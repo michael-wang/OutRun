@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {coastNatureGround} from './coast-nature';
-import {FARM_SCARECROWS,FARM_FLOWER_COLORS,farmFlowerDetail,ricePlotEdges,type FarmPlot} from './coast-farm-layout';
+import {FARM_SCARECROWS,flowerCoverage,flowerPlotColor,farmFlowerDetail,farmPlotEdges,type FarmPlot} from './coast-farm-layout';
 import {riceCanopyGeometry} from './coast-rice-canopy';
+import {flowerCanopyGeometry} from './coast-flowers';
 import {buildSurfaceLayout,sampleSurfaceData,packSurfaceSamples} from './vendor/three-stylized/surfaceSampler';
 import {prepareFlowerInstances,type PreparedFlowerInstances} from './vendor/three-stylized/Wildflowers';
 import type {createTrack} from './track';
@@ -13,12 +14,12 @@ export function farmGroundRow(plot:FarmPlot,sample:Sample,d:number,start:number,
  if(plot.kind!=='rice')return [ground(plot.left),ground(plot.right)];
  // A banked road and the coarse hillside triangles can put one end of a
  // terrace slightly above the other. Keep the water level across its width.
- const {left,right}=ricePlotEdges(plot,d);
+ const {left,right}=farmPlotEdges(plot,d);
  const level=Math.max(ground(left),ground((left+right)/2),ground(right));
  return [level,level];
 }
 type NumericCanopy={
- position:Float32Array;uv:Float32Array;color:Float32Array;normal:Float32Array;
+ position:Float32Array;uv:Float32Array;color?:Float32Array;normal:Float32Array;
  index:Uint16Array|Uint32Array;
 };
 /** Worker-owned numeric preparation. No WebGL textures, materials, or DOM. */
@@ -30,7 +31,7 @@ export type PreparedFarmPlot={
 };
 export function farmPrepTransferables(plot:PreparedFarmPlot):Transferable[]{
  const buffers:ArrayBuffer[]=[plot.ground.buffer as ArrayBuffer];
- if(plot.canopy)for(const a of [plot.canopy.position,plot.canopy.uv,plot.canopy.color,plot.canopy.normal,plot.canopy.index])buffers.push(a.buffer as ArrayBuffer);
+ if(plot.canopy)for(const a of [plot.canopy.position,plot.canopy.uv,plot.canopy.color,plot.canopy.normal,plot.canopy.index])if(a)buffers.push(a.buffer as ArrayBuffer);
  if(plot.meadow){
   for(const a of [plot.meadow.blades,plot.meadow.flowers])buffers.push(a.buffer as ArrayBuffer);
   if(plot.meadow.flowerInstances)for(const a of [
@@ -62,25 +63,27 @@ export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
  const residentScarecrows=FARM_SCARECROWS.filter(s=>s.d>=plot.start&&s.d<plot.end&&s.x>plot.left&&s.x<plot.right);
  const clearPath=(d:number,x:number)=>residentScarecrows.some(s=>Math.abs(d-s.d)<2.2&&Math.abs(x-s.x)<3);
  const result:PreparedFarmPlot={id:plot.id,ground};
- if(plot.kind==='rice'){
-  const g=riceCanopyGeometry(plot,position,clearPath);
+ {
+  const g=(plot.kind==='rice'?riceCanopyGeometry:flowerCanopyGeometry)(plot,position,clearPath);
   result.canopy={
    position:new Float32Array(g.getAttribute('position').array),
    uv:new Float32Array(g.getAttribute('uv').array),
-   color:new Float32Array(g.getAttribute('color').array),
+   color:g.hasAttribute('color')?new Float32Array(g.getAttribute('color').array):undefined,
    normal:new Float32Array(g.getAttribute('normal').array),
    index:g.getIndex()!.array instanceof Uint32Array?
     new Uint32Array(g.getIndex()!.array):new Uint16Array(g.getIndex()!.array),
   };
   g.dispose();
- }else if(farmFlowerDetail(plot.band)){
-  // Far terraces skip layout probes entirely; they retain opaque colour.
+ }
+ if(plot.kind==='flowers'&&farmFlowerDetail(plot.band)){
+  // Far terraces only need the textured crown above the soil.
   // Same two-column surface/UVs as createFarmPlot's sampling clone.
   // Create it here without materials so coverage probes and sampling run off-thread.
   const vertices:number[]=[],uv:number[]=[],indices:number[]=[];
   for(let i=0;i<=rows;i++){
    const d=plot.start+(plot.end-plot.start)*i/rows;
-   for(const x of [plot.left,plot.right]){
+   const {left,right}=farmPlotEdges(plot,d);
+   for(const x of [left,right]){
     const p=position(d,x,.055);
     vertices.push(p.x,p.y,p.z);
     uv.push((x-plot.left)/(plot.right-plot.left),(d-plot.start)/(plot.end-plot.start));
@@ -92,16 +95,14 @@ export function prepareFarmPlot(plot:FarmPlot,sample:Sample):PreparedFarmPlot{
   geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
   geometry.setIndex(indices);geometry.computeVertexNormals();
   const surface=new THREE.Mesh(geometry);
-  const coverage={sample:({uv}:{uv:THREE.Vector2|null})=>
-   uv&&uv.x>.035&&uv.x<.965&&uv.y>.015&&uv.y<.985&&((uv.x*20)%1)>.22
-   &&!clearPath(plot.start+uv.y*(plot.end-plot.start),plot.left+uv.x*(plot.right-plot.left))?1:0};
+  const coverage=flowerCoverage(plot,clearPath);
   const budget=farmFlowerDetail(plot.band)!,seed=80483+plot.id;
   const layout=buildSurfaceLayout(surface,coverage);
   const count=layout.coveredArea>0?Math.max(1,Math.floor(layout.coveredArea*budget.bladeDensity)):0;
   const blades=packSurfaceSamples(sampleSurfaceData(surface,count,seed,coverage,layout));
   const flowerCount=Math.min(budget.maxFlowers,Math.round(layout.coveredArea*budget.flowerDensity));
   const samples=packSurfaceSamples(sampleSurfaceData(surface,flowerCount,seed,coverage,layout));
-  const flowerInstances=prepareFlowerInstances(samples,seed,FARM_FLOWER_COLORS[plot.band%3]);
+  const flowerInstances=prepareFlowerInstances(samples,seed,flowerPlotColor(plot));
   result.meadow={blades,flowers:new Float32Array(),flowerInstances};
   geometry.dispose();
  }
