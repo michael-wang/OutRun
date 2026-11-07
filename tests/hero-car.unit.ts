@@ -56,7 +56,8 @@ describe('hero spider focal-point art',()=>{
   expect(h.every((lock:{back:number})=>lock.back>.10&&lock.back<.45)).toBe(true);
   const scarf=m.occupants().people[0].scarf;
   expect(scarf).toHaveLength(2);
-  expect(scarf.every((tail:{back:number})=>tail.back>.13&&tail.back<.34)).toBe(true);
+  // Longer above-deck scarf now lifts visibly with airflow.
+  expect(scarf.every((tail:{back:number})=>tail.back>.18&&tail.back<.48)).toBe(true);
  });
 });
 
@@ -75,7 +76,8 @@ describe('hero spider focal-point art',()=>{
  });
 
 it('keeps the passenger hairstyle but gives the driver a fitted cap and visible fabric motion',()=>{
- const car=createCar(),cap=car.getObjectByName('driver-tailored-flat-cap');
+ const car=createCar();car.updateMatrixWorld(true);
+ const cap=car.getObjectByName('driver-tailored-flat-cap');
  const brim=car.getObjectByName('driver-flat-cap-mesh');
  const girl=car.getObjectByName('layered-blonde-bob');
  expect(cap).toBeDefined();expect(brim).toBeInstanceOf(THREE.Mesh);
@@ -96,6 +98,7 @@ it('keeps the passenger hairstyle but gives the driver a fitted cap and visible 
  const tails=motion.occupants().people[0].scarf;
  expect(tails).toHaveLength(2);
  expect(tails.some((tail:{back:number})=>tail.back>.25)).toBe(true);
+ car.updateMatrixWorld(true);
  const bounds=new THREE.Box3().setFromObject(scarf);
  expect(bounds.min.z).toBeLessThan(-1.25);
  expect(bounds.max.y).toBeGreaterThan(1.23);
