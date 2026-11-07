@@ -9,7 +9,7 @@ import type {createTrack} from './track';
 
 export interface NatureBatch {texture?:string;alpha?:boolean;center:number;near:number;far:number}
 type GeometryData={position:number[];normal:number[];uv:number[];color?:number[]};
-type Model={parts:(GeometryData&{texture?:string;alpha?:boolean})[];far?:GeometryData};
+type Model={parts:(GeometryData&{texture?:string;alpha?:boolean})[]};
 let assets:Record<string,Model>|undefined,loading:Promise<void>|undefined;
 export function loadCoastNature(){
  return loading??=fetch(`${import.meta.env.BASE_URL}assets/coast-nature/models.json`).then(async r=>{
@@ -68,16 +68,16 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
   dummy.position.y=coastNatureGround(sample,d,x,start,end)-.06;
   dummy.rotation.set(0,random(key+32)*Math.PI*2,0);dummy.scale.set(height*(.82+random(key+7)*.3),height,height*(.82+random(key+7)*.3));dummy.updateMatrix();
   const center=Math.floor(d/200)*200+100;
-  const parts=name===COAST_TREE_MODEL?model.parts:[...model.parts,...(model.far?[model.far]:[])];
-  for(const [i,data] of parts.entries()){
-   const isFar=i===model.parts.length,part=data as Model['parts'][number],id=name+':'+i;
+  // All tree meshes are genuine three-dimensional foliage; no far impostors.
+  for(const [i,part] of model.parts.entries()){
+   const data=part,id=name+':'+i;
    let g=geometries.get(id);if(!g){g=geometry(data);geometries.set(id,g);}
-   const matKey=isFar?'far':part.texture??'plain';let m=materials.get(matKey);
+   const matKey=part.texture??'plain';let m=materials.get(matKey);
    if(!m){m=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:!!data.color?.length});materials.set(matKey,m);}
    const bucketKey=id+':'+center;
    let bucket=buckets.get(bucketKey);
-   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,alpha:part.alpha,center,near:isFar?600:0,
-     far:name===COAST_TREE_MODEL?COAST_TREE_DRAW_DISTANCE:isFar?1800:far},
+   if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,alpha:part.alpha,center,near:0,
+     far:name===COAST_TREE_MODEL?COAST_TREE_DRAW_DISTANCE:far},
     shadowGroup:name.startsWith('Rock_')?'rocks':'vegetation'};buckets.set(bucketKey,bucket);}
    bucket.matrices.push(dummy.matrix.clone());
   }

@@ -69,7 +69,19 @@ describe('single full 3D tree model and no added grass',()=>{
   const src=readFileSync('src/coast-nature.ts','utf8');
   expect(src).not.toContain("plant('Grass_Common_Short'");
   expect(src).not.toContain("name==='Grass_Common_Short'");
-  expect(src).toContain("name===COAST_TREE_MODEL?model.parts:");
+  expect(src).toContain('for(const [i,part] of model.parts.entries())');
+  expect(src).not.toContain('model.far');
+  expect(Object.keys(assets).sort()).toEqual(['CommonTree_3','Bush_Common','Rock_Medium_2'].sort());
+  for(const name of ['CommonTree_1','Pine_5','Grass_Common_Short'])
+   expect(assets[name]).toBeUndefined();
+  expect(assets[COAST_TREE_MODEL].far).toBeUndefined();
+  for(const part of assets[COAST_TREE_MODEL].parts){
+   const positions=part.position as number[];
+   const xs=positions.filter((_:number,i:number)=>i%3===0);
+   const zs=positions.filter((_:number,i:number)=>i%3===2);
+   expect(Math.max(...xs)-Math.min(...xs)).toBeGreaterThan(.15);
+   expect(Math.max(...zs)-Math.min(...zs)).toBeGreaterThan(.15);
+  }
   expect(COAST_HERO_TREE_SITES).toHaveLength(5);
   expect(readFileSync('src/scenery.ts','utf8')).not.toContain("part(round,'#496c45'");
  });
