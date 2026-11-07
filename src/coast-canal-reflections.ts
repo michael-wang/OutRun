@@ -20,19 +20,23 @@ export function coastCanalReflectionsAt(d:number):CanalReflectionWeights{
  // A height-weighted, slightly swept vertical reflection, blurred by
  // irregular FFT ripple normals in the fragment shader.
  for(const p of COAST_UTILITY_POLES){
-  const distance=Math.abs(d-(p.d-3.0));
-  if(distance<19){
-   const envelope=Math.max(0,1-distance/(p.height*1.55));
-   pole=Math.max(pole,envelope*envelope);
+  // A standing pole reflects TOWARD the approaching driver in the water.
+  // Old 16m-symmetric masks were too faint, even near the 988m pole.
+  const behind=p.d-d,reach=p.height*3.25;
+  if(behind>=-4&&behind<=reach){
+   const u=Math.max(0,Math.min(1,(behind+4)/(reach+4)));
+   const grow=THREE.MathUtils.smoothstep(behind,-4,2);
+   pole=Math.max(pole,Math.pow(1-u,.62)*grow);
   }
  }
  // The water is physically hidden under a crossing. Draw only the soft
  // shadow/reflection in adjacent OPEN segments, not a square under the lid.
  for(const span of COAST_DRAIN_BRIDGES){
   const separation=Math.abs(d-span.d)-span.width*.5;
-  if(separation>=0&&separation<8.5){
-   const envelope=Math.max(0,1-separation/8.5);
-   bridge=Math.max(bridge,envelope*envelope);
+  if(separation>=0&&separation<14){
+   // Cast the end parapet farther across the adjacent exposed water.
+   const envelope=Math.max(0,1-separation/14);
+   bridge=Math.max(bridge,Math.pow(envelope,.8));
   }
  }
  return {pole,bridge};

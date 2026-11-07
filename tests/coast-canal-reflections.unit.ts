@@ -52,9 +52,26 @@ it('samples authored reflected props in the existing sea FFT/sky canal material'
   expect(shader.fragmentShader).toContain('coastSky(reflected,sun)');
   expect(shader.fragmentShader).toContain('uCoastSlope3');
   expect(shader.fragmentShader).toContain('featureWarp');
-  expect(shader.fragmentShader).toContain('vCoastFlowUV.y+featureWarp');
+  expect(shader.fragmentShader).toContain('vCoastFlowUV.y+featureWarp+acrossShift');
   expect(shader.fragmentShader).not.toContain('bankFoam');
   const cleanup=readFileSync(new URL('../src/streamed-scene.ts',import.meta.url),'utf8');
   expect(cleanup).toContain('localAtlas?.dispose()');
  }finally{texture.dispose();m.dispose();}
+});
+
+it('shows a visibly extended reflected pole at the reported 973m screenshot',()=>{
+ const p=coastCanalReflectionsAt(973);
+ expect(p.pole).toBeGreaterThan(.42);
+ expect(p.bridge).toBe(0);
+ expect(coastCanalReflectionsAt(950).pole).toBeLessThan(p.pole);
+ const m=makeCoastDrainWaterMaterial({value:1});
+ const shader:any={uniforms:{},vertexShader:'#include <common>\n#include <begin_vertex>',
+  fragmentShader:'#include <common>\n#include <color_fragment>'};
+ try{
+  m.onBeforeCompile(shader,{} as any);
+  expect(m.customProgramCacheKey()).toContain('r7-local-reflections');
+  expect(shader.fragmentShader).toContain('float localReflection=clamp(reflectedPole+reflectedBridge,0.0,.60)');
+  expect(shader.fragmentShader).toContain('float bankView=.30+.70');
+  expect(shader.fragmentShader).toContain('float lampGlint=');
+ }finally{(m.userData.coastCanalReflectionTexture as THREE.Texture).dispose();m.dispose();}
 });

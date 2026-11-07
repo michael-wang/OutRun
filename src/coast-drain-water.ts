@@ -23,7 +23,7 @@ export function makeCoastDrainWaterMaterial(
  const reflectedProps=buildCoastCanalReflectionTexture();
  m.userData.coastCanalReflectionTexture=reflectedProps;
  m.name='coast-ocean-reflected-canal';
- m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r6-props';
+ m.customProgramCacheKey=()=> 'coast-reflective-canal-ocean-fft-r7-local-reflections';
  m.onBeforeCompile=shader=>{
   shader.uniforms.uCoastFlowTime=clock;
   shader.uniforms.uCoastSun={value:COAST_SUN};
@@ -91,15 +91,22 @@ color+=vec3(1.0,.63,.27)*sunGlitter*1.8;
 // Soft, local silhouettes only where genuine roadside fixtures exist.
 // FFT and irregular current disrupt the outline and keep the ocean's
 // reflection as the main character, not a new tiled procedural pattern.
-float featureWarp=clamp(fftSlope.y*.42+eddy.y*6.0,-3.5,3.5);
-float featureAt=clamp((vCoastFlowUV.y+featureWarp)/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)},0.0,1.0);
+// Real reflected poles stretch behind the fixture and should be legible
+// from the chase camera, even within a narrow 1.7m channel. Genuine ocean
+// FFT slopes and advected noise distort the silhouette, without adding SSR.
+float featureWarp=clamp(fftSlope.y*1.20+eddy.y*9.0,-4.0,4.0);
+float acrossShift=(vCoastFlowUV.x-.60)*1.35;
+float featureAt=clamp((vCoastFlowUV.y+featureWarp+acrossShift)/${COAST_CANAL_REFLECT_LENGTH.toFixed(1)},0.0,1.0);
 vec2 sceneReflect=texture2D(uCoastReflectedProps,vec2(featureAt,.5)).rg;
-float bankView=smoothstep(.05,.88,vCoastFlowUV.x);
-float reflectedPole=sceneReflect.r*(.10+.035*current1)*bankView;
-float reflectedBridge=sceneReflect.g*(.13+.05*current2);
-// Muted charcoal/stone reflected into the SAME sky/ocean Fresnel body.
-float localReflection=clamp(reflectedPole+reflectedBridge,0.0,.22);
-color=mix(color,vec3(.054,.070,.075),localReflection);
+float bankView=.30+.70*smoothstep(.08,.93,vCoastFlowUV.x);
+float waviness=.72+.28*skyNoise(vec2(vCoastFlowUV.y*.38+uCoastFlowTime*.25,vCoastFlowUV.x*8.5));
+float reflectedPole=sceneReflect.r*(.48+.09*current1)*bankView*waviness;
+float reflectedBridge=sceneReflect.g*(.33+.08*current2)*(.72+.28*bankView)*waviness;
+float localReflection=clamp(reflectedPole+reflectedBridge,0.0,.60);
+color=mix(color,vec3(.045,.057,.060),localReflection);
+// Subtle golden lamp reflection, locked to the original authored poles.
+float lampGlint=pow(sceneReflect.r,6.0)*(.07+.025*current2)*bankView;
+color+=vec3(.80,.47,.22)*lampGlint;
 // No oversized foam stripes, repeated caustic circles or luminous cyan ribbon.
 diffuseColor.rgb=color;`);
  };
