@@ -9,7 +9,7 @@ import {farmPlainMask} from '../src/coast-farm-layout';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastBeachHeight} from '../src/scenery-cross-section';
-import {addCoastNature,loadCoastNature,COAST_HERO_TREE_SITES,COAST_TREE_MODEL,COAST_TREE_DRAW_DISTANCE} from '../src/coast-nature';
+import {addCoastNature,loadCoastNature,loadHeadlandGrove,COAST_HERO_TREE_SITES,COAST_TREE_MODEL,COAST_TREE_DRAW_DISTANCE} from '../src/coast-nature';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
@@ -75,12 +75,27 @@ describe('sunset coast nature',()=>{
   expect(meadowCover(14.75,1774)).toBe(0);
  });
  it('roots batched source models on the rendered hill mesh, with bounded far geometry',async()=>{
-  vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>assets})));
+  const woods=JSON.parse(readFileSync('public/assets/coast-nature/headland-grove.json','utf8'));
+  const fetchModels=vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('headland-grove.json')?woods:assets}));
+  vi.stubGlobal('fetch',fetchModels);
   await loadCoastNature();
+  await loadHeadlandGrove(1000,2000);
+  expect(fetchModels.mock.calls.flat().some(url=>url.endsWith('headland-grove.json'))).toBe(false);
+  await loadHeadlandGrove(2000,3000);
   // Chapter II intentionally has scattered scrub, unlike the former densely
   // wooded 1–2km stretch; use the new quiet-beach chapter for this ground check.
   const start=2000,end=3000,scene=new THREE.Scene();
   addCoastNature(scene,track.sample,start,end);
+  const crowns=scene.children.filter(o=>o.userData.nature?.leafCutout) as THREE.InstancedMesh[];
+  expect(crowns).toHaveLength(2);
+  const size=new THREE.Vector3(),transform=new THREE.Matrix4();
+  let mature=0;
+  for(const mesh of crowns)for(let i=0;i<mesh.count;i++){
+   mesh.getMatrixAt(i,transform);
+   if(size.setFromMatrixScale(transform).y>=7)mature++;
+  }
+  expect(mature).toBe(44);
+  expect(crowns.every(mesh=>mesh.userData.nature.center===2900&&mesh.geometry.index)).toBe(true);
   const terrain=prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],start,end,track.length,false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections).find(m=>m.kind==='grass')!;
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(terrain.positions,3));geometry.setIndex(new THREE.BufferAttribute(terrain.indices,1));
   const mesh=new THREE.Mesh(geometry,new THREE.MeshBasicMaterial({side:THREE.DoubleSide}));mesh.updateMatrixWorld(true);

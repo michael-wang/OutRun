@@ -54,13 +54,18 @@ export class StreamedScene {
    this.natureTextureLoads++;
    texture=new THREE.TextureLoader().load(`${import.meta.env.BASE_URL}assets/coast-nature/${nature.texture}`,
     ()=>{this.natureTextureLoads--;},undefined,()=>{
-     this.natureTextureLoads--;this.errorMessage=`Coastal foliage texture failed: ${nature.texture}`;
+     this.natureTextureLoads--;
+     if(nature.leafCutout){material.visible=false;return;}
+     this.errorMessage=`Coastal foliage texture failed: ${nature.texture}`;
     });
    texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=1;
    texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
    this.natureTextures.set(nature.texture,texture);
   }
   material.map=texture;
+  if(nature.leafCutout){
+   material.alphaTest=.32;material.side=THREE.DoubleSide;
+  }
  }
  private bounds='';
  private annotationMaterials=new Set<THREE.Material>();

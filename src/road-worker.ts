@@ -1,4 +1,4 @@
-import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
+import {loadCoastNature,loadHeadlandGrove,addCoastNature,type NatureBatch} from './coast-nature';
 import {addCoastMeadow} from './coast-meadow';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {farmPlotsInChunk} from './coast-farm-layout';
@@ -50,7 +50,8 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   const t=performance.now(),candidate=stage,current=track,coastUltra=(candidate as TripCandidate).scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
   if(request.type==='scenery'&&roadLockArt){worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions:[],instances:[],scenery:{instances:0,draws:0},clearance:{queries:0,checks:0,rejected:0},cpuMs:performance.now()-t});return;}
   if(request.type==='scenery'){
-   if(coastUltra)await loadCoastNature();
+   if(coastUltra)await Promise.all([loadCoastNature(),loadHeadlandGrove(request.start,request.end)]);
+   if(request.generation!==generation)return;
    const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:(candidate as TripCandidate).scenicLandmarks,scenerySections:(candidate as TripCandidate).scenerySections,
     denseCity:candidate.generatorVersion==='v0.9-r10'||candidate.generatorVersion==='v0.9-r11'||candidate.generatorVersion==='v0.9-r12',
     canyonPrototype:(candidate as TripCandidate).canyonPrototype,designerCut:(candidate as TripCandidate).designerCut,coastUltra});
