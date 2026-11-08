@@ -1,3 +1,4 @@
+import {lightCoastMaterial} from './coast-lamp-lighting';
 import {waffleSignTexture} from './vehicle-model';
 import {makeCoastDrainWaterMaterial,type CoastCanalFftUniforms} from './coast-drain-water';
 import type {NatureBatch} from './coast-nature';
@@ -164,7 +165,12 @@ export class StreamedScene {
  }
  private note(kind:string,index:number,ms:number){this.history.push({kind,index,ms});if(this.history.length>2000)this.history.shift();}
  private chunk(index:number){let chunk=this.chunks.get(index);if(!chunk){chunk={index,objects:[],groups:{},geometries:new Set(),road:'missing',scenery:'missing'};this.chunks.set(index,chunk);}return chunk;}
- private attach(c:Chunk,name:string,object:THREE.Object3D){if(this.clippingPlanes.length)this.clipMaterial(object);let group=c.groups[name];if(!group){group=new THREE.Group();group.name=`chunk-${c.index}-${name}`;group.userData.chunkIndex=c.index;c.groups[name]=group;this.groups[name].add(group);}group.add(object);c.objects.push(object);}
+ private attach(c:Chunk,name:string,object:THREE.Object3D){
+  if(this.farmSample)object.traverse(o=>{if(o instanceof THREE.Mesh){
+   if(Array.isArray(o.material))o.material.forEach(m=>lightCoastMaterial(this.scene,m));
+   else lightCoastMaterial(this.scene,o.material);
+  }});
+  if(this.clippingPlanes.length)this.clipMaterial(object);let group=c.groups[name];if(!group){group=new THREE.Group();group.name=`chunk-${c.index}-${name}`;group.userData.chunkIndex=c.index;c.groups[name]=group;this.groups[name].add(group);}group.add(object);c.objects.push(object);}
  update(distance:number){
   this.position=Math.max(0,Math.min(this.length,distance));const first=Math.floor(Math.max(0,this.position-this.behind)/this.chunkLength),last=Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((this.position+this.ahead)/this.chunkLength));
   for(const c of this.chunks.values())for(const o of c.objects){const n=o.userData.nature as NatureBatch|undefined;if(n)o.visible=natureVisible(n,this.position,this.mobile);}

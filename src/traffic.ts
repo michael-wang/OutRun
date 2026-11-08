@@ -1,3 +1,4 @@
+import {lightCoastMaterial} from './coast-lamp-lighting';
 import {TrafficLights} from './traffic-lights';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import {TrafficLanes} from './traffic-lanes';
@@ -77,6 +78,7 @@ export class Traffic {
  private rampDemoStartedAt?:number;private rampDemoFinished=false;
  private smokeWorldWeights:readonly number[]=[1,0,0];
  constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,private stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false,private geometryShadows=false,sessionVariation=0){
+  if(dusk)lightCoastMaterial(scene,this.material);
   if(dusk)this.runningLights=new TrafficLights(scene,TRAFFIC_LIMIT);
   this.trafficSeed=(seed^sessionVariation)>>>0;
   this.schedule=[...trafficRecipe(this.trafficSeed,length),...stopped];

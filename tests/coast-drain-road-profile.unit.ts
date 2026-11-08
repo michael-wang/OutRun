@@ -1,3 +1,4 @@
+import {coastLampAtlas,COAST_LAMP_RANGE} from '../src/coast-lamp-lighting';
 import {addCoastDusk} from '../src/coast-dusk';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {it,expect} from 'vitest';
@@ -94,10 +95,27 @@ it('keeps the car fully on asphalt on BOTH sides, matching guardrail and stone p
  const rightStone=coastDriveBounds(850,8.75);
  expect(rightStone.right).toBeGreaterThan(COAST_DRAIN_X.outerRoad);
 });
+it('keeps the whole lit footprint of every coastal fixture in the static lookup',()=>{
+ const heads=COAST_UTILITY_POLES.filter(p=>p.lamp).map(p=>{
+  const frame=track.sample(p.d),v=frame.position.clone().addScaledVector(frame.right,p.x-COAST_LAMP_HEAD.reach);
+  v.y=coastBeachHeight(p.x,frame.position.y,frame.right.y,p.d)+p.height-COAST_LAMP_HEAD.drop;
+  return v;
+ });
+ const {texture,firstZ}=coastLampAtlas(heads);
+ try{
+  const data=texture.image.data as Float32Array;
+  for(const head of heads){
+   for(let z=Math.floor(head.z-COAST_LAMP_RANGE);z<=Math.floor(head.z+COAST_LAMP_RANGE);z++){
+    const cell=THREE.MathUtils.clamp(z-firstZ,0,data.length/4-1);
+    expect(Math.abs(data[cell*4+2]-head.z)).toBeLessThan(.001);
+   }
+  }
+ }finally{texture.dispose();}
+});
 it('lights the actual utility fixtures after a jump in either direction',()=>{
  const scene=new THREE.Scene(),dusk=addCoastDusk(scene,track.sample);
  const lights=scene.children.filter((o):o is THREE.PointLight=>o instanceof THREE.PointLight);
- expect(lights).toHaveLength(2);
+ expect(lights).toHaveLength(1);
  for(const d of [906,8640,4060]){
   dusk.update(d);
   const pole=COAST_UTILITY_POLES.find(p=>p.d===d)!,frame=track.sample(d);
