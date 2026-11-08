@@ -1,3 +1,4 @@
+import {sectionMesh,jacketSections,shirtCollar,createSundress} from './hero-tailoring';
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
 import {createGTWingMirrorHousing} from './hero-body';
@@ -33,7 +34,7 @@ export function createCar(dusk=false) {
   const paint=new THREE.MeshPhysicalMaterial({color:red.hex,metalness:red.metalness,roughness:red.roughness,clearcoat:.82,clearcoatRoughness:.15});
   const paintShade=material('#8e1e27',.4,.35);
   const dark=material('#17212b',.72,.06),silver=material('#b9c4c8',.23,.8);
-  const leather=material('#29323a',.81),seam=material('#46505b',.83);
+  const leather=material('#29323a',.81),seatHide=material('#705549',.84);
   const glass=new THREE.MeshStandardMaterial({color:'#a6d7df',transparent:true,opacity:.32,roughness:.12,metalness:.15,side:THREE.DoubleSide,depthWrite:false});
   function mesh(g:THREE.BufferGeometry,m:THREE.Material,x=0,y=0,z=0,parent:THREE.Group=car){const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
   const box=(w:number,h:number,d:number,m:THREE.Material,x:number,y:number,z:number)=>mesh(new THREE.BoxGeometry(w,h,d),m,x,y,z);
@@ -68,12 +69,10 @@ export function createCar(dusk=false) {
     bar([side*1.095,.90,.57],[side*1.05,.53,.59],.011,dark);
     // Door handle integrated into the shoulder.
     box(.19,.025,.055,silver,side*1.108,.97,-.20);
-    // Leather sports seats: contoured back, bolsters, headrest, twin piping.
-    oval(.34,.12,.39,leather,side*.41,.64,-.34);
-    const seat=box(.57,.37,.145,leather,side*.41,.79,-.87);seat.rotation.x=-.10;
-    for(const inset of [-.265,.265])bar([side*.41+inset,.68,-.9],[side*.41+inset,.965,-.88],.020,seam);
-    oval(.185,.077,.088,leather,side*.41,1.025,-.91);
-    for(const x of [-.17,.17])bar([side*.41+x,.71,-.955],[side*.41+x,.963,-.938],.010,seam);
+    // A low saddle-leather bucket rolls down behind the painted fairing.
+    oval(.31,.10,.35,seatHide,side*.41,.64,-.34);
+    mesh(sectionMesh([[.64,.25,.085,-.79],[.83,.26,.080,-.82],
+      [.948,.223,.063,-.84],[.985,.144,.050,-.84],[.996,.073,.028,-.84]],14),seatHide,side*.41);
     // Low-profile sculpted wing mirror, rather than a round toy handle.
     bar([side*.97,.952,.51],[side*1.107,.987,.452],.010,dark);
     mesh(createGTWingMirrorHousing(),paint,side*1.121,.996,.426);
@@ -119,46 +118,45 @@ export function createCar(dusk=false) {
     const head=new THREE.Group();head.name=name+'-head';person.add(head);
     const arms:ReturnType<typeof passengerArm>[]=[];
     const skin=material(driver?'#c89a7b':'#f4d4c5',.82);
-    const suit=material('#252d36',.74,.06);
+    const suit=material('#364758',.88);
     const lapel=material('#38414a',.80);
     const shirt=material(driver?'#e4e3dc':'#fffdf8',driver?.77:.87);
-    const hair=material(driver?'#22282d':'#b9904e',.7);
-    // Narrow adult silhouette and shoulder line. Tailored jacket is built
-    // from smooth conical cloth panels, not spherical Q-version torsos.
+    const brow=driver?lapel:material('#81613f',.85);
+    shirt.side=THREE.DoubleSide;
     if(driver){
-      const jacket=mesh(new THREE.CylinderGeometry(.245,.205,.51,14),suit,x,1.02,-.49,person);jacket.scale.z=.84;
-      oval(.262,.075,.14,suit,x,1.205,-.49,person);
+      mesh(sectionMesh(jacketSections),suit,x,0,0,person);
+      mesh(sectionMesh([[1.25,.077,.072,-.452],[1.302,.068,.066,-.45],
+        [1.366,.068,.067,-.443]],12),skin,x,0,0,person);
+      mesh(shirtCollar(),shirt,x,0,0,person);
     }else{
-      mesh(createSundress(),shirt,x,0,-.49,person);
-      oval(.222,.108,.146,skin,x,1.178,-.49,person);
+      mesh(createSundress(),shirt,x,0,0,person);
     }
-    oval(.125,.068,.125,skin,x,1.29,-.46,person);
-    const neck=mesh(new THREE.CylinderGeometry(.079,.084,.155,12),skin,x,1.29,-.45,person);
-    neck.rotation.x=.03;
-    if(driver){
-      // Contrasting collar and elongated rear seam read clearly on the
-      // chase camera even though front lapels are mostly hidden.
-      for(const offset of [-1,1]){
-        const seamSide=offset*.115;
-        bar([x+seamSide,1.235,-.486],[x+offset*.15,1.02,-.512],.014,lapel,person);
-      }
-      const rearSeam=bar([x,1.17,-.646],[x, .84,-.662],.008,lapel,person);
-      rearSeam.name='tailored-jacket-back-seam';
-      oval(.075,.055,.040,shirt,x,1.266,-.575,person);
-    }
-    // Adult-sized elongated skull with tapered jaw, rather than large ball
-    // head and helmet hair. Realistic silhouette is more important than tiny
-    // facial details at the driving camera distance.
-    oval(.142,.179,.124,skin,x,1.477,-.455,head);
-    oval(.111,.072,.105,skin,x,1.384,-.435,head);
-    oval(.034,.040,.031,skin,x,1.438,-.329,head);
+    // Carry the jaw into the cheekbones in one surface. The forehead
+    // stays inside the cropped hair even when the forelock lifts in a turn.
+    mesh(sectionMesh([[1.323,.048,.055,-.425],[1.351,driver?.094:.083,.091,-.435],
+      [1.399,.117,.110,-.444],[1.448,.137,.121,-.452],[1.49,.14,.122,-.455],
+      [1.546,.126,.111,-.457],[1.601,.089,.078,-.458],[1.633,.032,.032,-.459]],18),skin,x,0,0,head);
+    const nose=oval(.022,.031,.020,skin,x,1.45,-.332,head);
+    nose.rotation.x=.24;
     for(const eye of [-1,1]){
-      oval(.047,.022,.013,driver?lapel:hair,x+eye*.063,1.493,-.332,head);
+      const ear=mesh(new THREE.SphereGeometry(1,8,5),skin,x+eye*.134,1.456,-.459,head);
+      ear.scale.set(.021,.033,.019);
+      if(driver){
+        const lens=oval(.043,.020,.008,lapel,x+eye*.058,1.49,-.344,head);
+        lens.rotation.y=eye*.30;
+        bar([x+eye*.094,1.49,-.353],[x+eye*.135,1.486,-.445],.004,lapel,head);
+      }else{
+        const eyebrow=mesh(new THREE.SphereGeometry(1,8,4),brow,x+eye*.052,1.508,-.345,head);
+        eyebrow.scale.set(.026,.006,.006);
+        eyebrow.rotation.z=-eye*.10;
+        mesh(new THREE.SphereGeometry(1,8,4),brow,x+eye*.052,1.486,-.339,head).scale.set(.016,.008,.005);
+      }
     }
+    if(driver)bar([x-.018,1.49,-.34],[x+.018,1.49,-.34],.004,lapel,head);
     const groom=driver?createDriverHair():createBlondeBob();
     groom.root.position.set(x,driver?1.525:1.485,driver?-.464:-.465);head.add(groom.root);
     if(!driver)for(const side of [-1,1] as const){
-      const arm=passengerArm(side,skin);arm.root.position.set(x+side*.20,1.173,-.47);
+      const arm=passengerArm(side,skin);arm.root.position.x+=x;
       person.add(arm.root);arms.push(arm);
     }
     batch(head);pivotAt(head,x,1.30,-.46);
@@ -238,35 +236,6 @@ export function createCar(dusk=false) {
   const people=createOccupantMotion(travelers);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number,rightAcceleration=0)=>{wheels.forEach(w=>w.advance(ds,steer,dt));return people.advance(ds,steer,dt,rightAcceleration);},onCleanPass:people.onCleanPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;
-}
-
-/** A seated A-line skirt, fitted waist and two broad straps over bare shoulders. */
-function createSundress(){
- const positions:number[]=[],indices:number[]=[],segments=16;
- // Height, width, depth and forward shift over the lap.
- const rings=[[.625,.267,.245,.10],[.78,.228,.20,.04],[.908,.161,.134,0],
-  [1.055,.177,.151,0],[1.138,.194,.154,0],[1.189,.18,.144,0]];
- for(const [row,[y,width,depth,forward]] of rings.entries())for(let i=0;i<segments;i++){
-  const angle=i*2*Math.PI/segments,sx=Math.sin(angle),cz=Math.cos(angle);
-  const fold=row<2?1+.042*Math.cos(7*angle):1;
-  positions.push(width*sx*fold,y-(row===rings.length-1?.032*cz*cz:0),forward+depth*cz*fold);
-  if(row===0)continue;
-  const a=(row-1)*segments+i,b=(row-1)*segments+(i+1)%segments;
-  indices.push(a,b,a+segments,b,b+segments,a+segments);
- }
- for(const side of [-1,1]){
-  const start=positions.length/3;
-  for(let i=0;i<=8;i++){
-   const a=-.25+i*(Math.PI+.50)/8;
-   for(const offset of [-.025,.025]){
-    const x=side*.122+offset,section=Math.sqrt(1-(x/.222)**2);
-    positions.push(x,1.178+.114*section*Math.sin(a),.153*section*Math.cos(a));
-   }
-   if(i){const j=start+(i-1)*2;indices.push(j,j+1,j+2,j+1,j+3,j+2);}
-  }
- }
- const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
- g.setIndex(indices);g.computeVertexNormals();return g;
 }
 
 function pivotAt(group:THREE.Group,x:number,y:number,z:number){const p=new THREE.Vector3(x,y,z);for(const child of group.children)child.position.sub(p);group.position.copy(p);}

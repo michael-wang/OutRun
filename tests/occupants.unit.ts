@@ -1,17 +1,21 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {createCar} from '../src/car';
-it('streams the side-parted short hair back and outward with the roots held at the part',()=>{
+it('keeps the neckline clipped while the longer forelock responds to lateral load',()=>{
  const car=createCar(),motion=car.userData.motion;
- const layers=car.getObjectByName('driver-side-part-layered-strands') as THREE.Mesh;
- const read=(i:number)=>layers.getVertexPosition(i,new THREE.Vector3());
- const root=read(1),tip=read(16);
- const drive=(load:number)=>{for(let i=0;i<120;i++)motion.advance(90/60,0,1/60,load);return read(16);};
+ const crop=car.getObjectByName('driver-side-part-crop') as THREE.Mesh;
+ const shape=crop.geometry.morphAttributes.position[0];
+ let tip=0;
+ for(let i=1;i<shape.count;i++)if(shape.getZ(i)<shape.getZ(tip))tip=i;
+ const read=(i:number)=>crop.getVertexPosition(i,new THREE.Vector3());
+ const rest=read(tip),nape=read(shape.count-1);
+ const drive=(load:number)=>{for(let i=0;i<120;i++)motion.advance(90/60,0,1/60,load);return read(tip);};
  const right=drive(12),left=drive(-12);
- expect(right.z).toBeLessThan(tip.z-.045);
- expect(right.x-left.x).toBeGreaterThan(.07);
- expect(read(1)).toEqual(root);
- motion.reset();expect(read(16)).toEqual(tip);
+ expect(right.z).toBeLessThan(rest.z-.006);
+ expect(right.x-left.x).toBeGreaterThan(.009);
+ expect(right.distanceTo(rest)).toBeLessThan(.035);
+ expect(read(shape.count-1)).toEqual(nape);
+ motion.reset();expect(read(tip)).toEqual(rest);
 });
 it('occupants and hair respond to observed motion without moving the car or wheel centers',()=>{
  const car=createCar(),m=car.userData.motion;

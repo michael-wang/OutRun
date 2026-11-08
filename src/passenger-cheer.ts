@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {passengerYoke} from './hero-tailoring';
 import {handGeometry} from './hero-hands';
 
 export const CLAP_TIMES=[.62,.94] as const;
@@ -8,31 +9,88 @@ export type Cheer='applause'|'wave';
 const smooth=THREE.MathUtils.smoothstep;
 const up=new THREE.Vector3(0,1,0);
 
-/** One skin-material draw for a complete arm. Three rigid bone weights
- * keep the elbow, wrist and palm connected through the overhead gesture. */
+const upperLength=.346,foreLength=.359;
+const shoulderX=.20,shoulderY=1.173,shoulderZ=-.47;
+
+/** The two halves meet on the sagittal plane. Each shoulder opening shares
+ * its perimeter vertices with the arm, so lifting the arm cannot open a seam. */
+function shoulderAndArm(side:1|-1){
+ const p:number[]=[],index:number[]=[],ids:number[]=[],weights:number[]=[];
+ const vertex=(x:number,y:number,z:number,bone:number,other=bone,mix=0)=>{
+  p.push(x,y,z);ids.push(bone,other,0,0);weights.push(1-mix,mix,0,0);
+  return p.length/3-1;
+ };
+ const columns=9;
+ passengerYoke.forEach(([y,w,d,z],row)=>{
+  for(let i=0;i<columns;i++){
+   const a=i*Math.PI/(columns-1);
+   vertex(side*(w*Math.sin(a)-shoulderX),y-shoulderY,z+d*Math.cos(a)-shoulderZ,3);
+   if(!row||!i||(row>=2&&row<=3&&i>=3&&i<=6))continue;
+   const n=row*columns+i;
+   index.push(n-columns-1,n-columns,n-1,n-columns,n,n-1);
+  }
+ });
+ // Traverse the opening from front to back under the arm, then return over the shoulder.
+ const at=(row:number,column:number)=>row*columns+column;
+ const rim=[...[2,3,4,5,6].map(i=>at(1,i)),at(2,6),
+  ...[6,5,4,3,2].map(i=>at(3,i)),at(2,2)];
+ const angles=rim.map(n=>Math.atan2((p[3*n+2]+.015)/.095,(p[3*n+1]-.001)/.060));
+ let previous=rim;
+ // A rounded deltoid blends from the fixed clavicle into the upper arm.
+ // The elbow rings share both joint influences; the hand uses the existing IK.
+ for(const [x,yr,zr,bone,other,mix] of [
+  [.011,.061,.066,3,0,.42],[.044,.058,.059,3,0,.83],[.091,.050,.052,0,0,0],
+  [.185,.045,.047,0,0,0],[upperLength-.038,.040,.042,0,1,.12],
+  [upperLength,.042,.043,0,1,.5],[upperLength+.032,.039,.042,0,1,.88],
+  [upperLength+.095,.041,.043,1,1,0],[upperLength+.21,.035,.036,1,1,0],
+  [upperLength+foreLength,.024,.025,1,1,0]]){
+  const ring=angles.map(a=>vertex(side*x,yr*Math.cos(a),zr*Math.sin(a),bone,other,mix));
+  for(let i=0;i<ring.length;i++){
+   const j=(i+1)%ring.length;index.push(previous[i],previous[j],ring[i],previous[j],ring[j],ring[i]);
+  }
+  previous=ring;
+ }
+ if(side<0)for(let i=0;i<index.length;i+=3)[index[i+1],index[i+2]]=[index[i+2],index[i+1]];
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+ g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(ids,4));
+ g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(weights,4));
+ g.setIndex(index);g.computeVertexNormals();
+ const normal=g.getAttribute('normal'),v=new THREE.Vector3();
+ for(let row=0;row<passengerYoke.length;row++)for(const i of [0,columns-1]){
+  const n=row*columns+i;v.fromBufferAttribute(normal,n);v.x=0;v.normalize();
+  normal.setXYZ(n,0,v.y,v.z);
+ }
+ return g;
+}
+
 export function passengerArm(side:1|-1,skin:THREE.Material){
  const root=new THREE.Group();root.name='passenger-arm-'+side;
- const bones=[new THREE.Bone(),new THREE.Bone(),new THREE.Bone()];
- const upperLength=.346,foreLength=.359;
- const upper=new THREE.CylinderGeometry(.049,.058,1,7).translate(0,.5,0);
- const shoulder=new THREE.SphereGeometry(1,8,5).scale(.060,.061/upperLength,.064);
- const lower=new THREE.CylinderGeometry(.030,.044,1,7).translate(0,.5,0);
- const elbowCap=new THREE.SphereGeometry(1,6,4).scale(.047,.047/foreLength,.047);
- const parts=[upper,shoulder,lower,elbowCap,handGeometry('lap',side===1?-1:1)];
- parts.forEach((g,i)=>{
-  g.deleteAttribute('uv');
-  const n=g.getAttribute('position').count,ids=new Uint16Array(n*4),weights=new Float32Array(n*4);
-  const bone=[0,0,1,1,2][i];
-  for(let j=0;j<n;j++){ids[j*4]=bone;weights[j*4]=1;}
-  g.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(ids,4));
-  g.setAttribute('skinWeight',new THREE.Float32BufferAttribute(weights,4));
- });
- const g=mergeGeometries(parts)!;parts.forEach(p=>p.dispose());
+ const bones=Array.from({length:4},()=>new THREE.Bone());
+ const flesh=shoulderAndArm(side),hand=handGeometry('lap',side===1?-1:1);
+ const ids=new Uint16Array(hand.attributes.position.count*4),weights=new Float32Array(ids.length);
+ for(let i=0;i<ids.length;i+=4){ids[i]=2;weights[i]=1;}
+ hand.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(ids,4));
+ hand.setAttribute('skinWeight',new THREE.Float32BufferAttribute(weights,4));
+ const g=mergeGeometries([flesh,hand])!;flesh.dispose();hand.dispose();
  const arm=new THREE.SkinnedMesh(g,skin);arm.castShadow=true;arm.receiveShadow=true;
+ bones[1].position.x=side*upperLength;
  root.add(arm);arm.add(...bones);arm.bind(new THREE.Skeleton(bones));
+ const xAxis=new THREE.Vector3(),yAxis=new THREE.Vector3(),zAxis=new THREE.Vector3(),basis=new THREE.Matrix4();
+ function orient(bone:THREE.Bone,direction:THREE.Vector3){
+  xAxis.copy(direction).normalize().multiplyScalar(side);
+  yAxis.set(0,0,1).cross(xAxis).normalize();
+  zAxis.crossVectors(xAxis,yAxis);
+  bone.quaternion.setFromRotationMatrix(basis.makeBasis(xAxis,yAxis,zAxis));
+ }
  bones[2].name='passenger-palm-'+side;
  arm.boundingSphere=new THREE.Sphere(new THREE.Vector3(0,.12,.10),.75);
  const bounds=arm.boundingBox=new THREE.Box3(),origin=new THREE.Vector3();
+ const yokeBounds=new THREE.Box3();
+ for(const [y,width,depth,z] of passengerYoke){
+  yokeBounds.expandByPoint(new THREE.Vector3(-side*shoulderX,y-shoulderY,z-depth-shoulderZ));
+  yokeBounds.expandByPoint(new THREE.Vector3(side*(width-shoulderX),y-shoulderY,z+depth-shoulderZ));
+ }
  const elbow=new THREE.Vector3(),wrist=new THREE.Vector3(),axis=new THREE.Vector3(),bend=new THREE.Vector3();
  const lap=new THREE.Quaternion().setFromEuler(new THREE.Euler(.46,-side*.34,side*.10));
  const palmsIn=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(
@@ -65,12 +123,13 @@ export function passengerArm(side:1|-1,skin:THREE.Material){
   bend.set(side*(.27+.65*raise),-.55+.39*raise,-.52+.68*raise);
   bend.addScaledVector(axis,-bend.dot(axis)).normalize();
   elbow.copy(axis).multiplyScalar(along).addScaledVector(bend,Math.sqrt(Math.max(0,upperLength**2-along**2)));
-  bones[0].scale.y=upperLength;bones[0].quaternion.setFromUnitVectors(up,axis.copy(elbow).normalize());
-  bones[1].position.copy(elbow);bones[1].scale.y=foreLength;
-  bones[1].quaternion.setFromUnitVectors(up,axis.subVectors(wrist,elbow).normalize());
+  orient(bones[0],elbow);
+  bones[1].position.copy(elbow);
+  orient(bones[1],axis.subVectors(wrist,elbow));
   bones[2].position.copy(wrist);
-  bounds.set(origin,origin).expandByPoint(elbow).expandByPoint(wrist).expandByScalar(.15);
+  bounds.set(origin,origin).expandByPoint(elbow).expandByPoint(wrist).expandByScalar(.15).union(yokeBounds);
  };
  pose(-1,'applause');
+ root.position.set(side*shoulderX,shoulderY,shoulderZ);
  return {root,pose};
 }

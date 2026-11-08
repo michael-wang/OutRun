@@ -39,87 +39,53 @@ export type WindGroom={
  locks?:THREE.Group[];
 };
 
-/** Chestnut side part with a tapered nape and a brushed-back forelock. */
+/** Close-cut nape and temples below a swept side part. The forelock is
+ * sculpted into the crown; only its longer top moves in the slipstream. */
 export function createDriverHair():WindGroom{
- const group=new THREE.Group();group.name='driver-layered-short-hair';
- const dark=new THREE.Color('#281c19'),light=new THREE.Color('#694938');
- const rings=[
-  {y:-.155,x:.104,z:.126},
-  {y:-.109,x:.127,z:.140},
-  {y:-.029,x:.132,z:.138},
-  {y:.038,x:.139,z:.138},
-  {y:.094,x:.123,z:.114},
-  {y:.133,x:.090,z:.071},
-  {y:.150,x:.060,z:.041},
-  {y:.153,x:.002,z:.002},
- ] as const;
- const sides=18,position:number[]=[],colors:number[]=[],indices:number[]=[];
- for(let r=0;r<rings.length;r++)for(let i=0;i<sides;i++){
-  const angle=2*Math.PI*i/sides,ring=rings[r];
-  const side=Math.sin(angle),back=Math.cos(angle);
-  // Lift the front hairline off the brow and taper down behind the ears.
-  const forehead=THREE.MathUtils.smoothstep(back,.10,.84);
-  const hairline=forehead*Math.max(0,.076-ring.y)*.94;
-  position.push(side*ring.x+Math.min(.024,.007*r),ring.y+hairline,back*ring.z-.018*forehead);
-  const tone=.16+.19*r/3+.08*Math.sin(angle*3.2+i*.27);
-  const c=dark.clone().lerp(light,Math.max(.04,tone));
-  colors.push(c.r,c.g,c.b);
- }
- for(let r=0;r<rings.length-1;r++)for(let i=0;i<sides;i++){
-  const a=r*sides+i,b=r*sides+(i+1)%sides,c=a+sides,d=b+sides;
-  indices.push(a,b,c,b,d,c);
- }
- const geometry=new THREE.BufferGeometry();
- geometry.setAttribute('position',new THREE.Float32BufferAttribute(position,3));
- geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
- geometry.setIndex(indices);geometry.computeVertexNormals();geometry.computeBoundingSphere();
- const undercut=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({
-  vertexColors:true,roughness:.88,metalness:0,side:THREE.DoubleSide,
- }));
- undercut.name='driver-tapered-nape';undercut.castShadow=true;group.add(undercut);
- // Same layer technique as the accepted female bob, but cropped at the ears:
- // narrow distinct locks swept slightly to the man's right, with staggered
- // tip heights and directional low-contrast vertex highlights.
- const strands:Strand[]=[];
- const shapes:number[][]=[[],[],[],[]];
- for(let i=0;i<26;i++){
-  const angle=(i+.35)*Math.PI*2/26;
-  const sx=Math.sin(angle),sz=Math.cos(angle);
-  const rear=Math.max(0,-sz),temple=Math.abs(sx);
-  const forelock=Math.max(0,sz);
-  const fall=.185+rear*.046+(i%4)*.006-forelock*.088;
-  const rows:Row[]=[];
-  for(let j=0;j<=5;j++){
-   const t=j/5,arc=t*Math.PI*.64;
-   const spread=Math.sin(arc),sweep=angle+.83*(1-t);
-   const roll=forelock*Math.sin(Math.PI*t);
-   rows.push({
-    x:Math.sin(sweep)*(.061+.098*spread)+.032*(1-t)-.021*roll,
-    y:.155-fall*t*t+.030*roll+.004*Math.sin(i*.81+t*4.4),
-    z:Math.cos(sweep)*(.045+.111*spread)-.024*t-.018*temple*spread,
-    sweep,width:(.027+(i%3)*.003)*(1-.86*t*t),
-    shade:.79+.13*Math.sin(i*2.12)+.12*t,
-   });
-   const flex=t*t*(.68+.32*rear),wave=angle*2.7-t*2.4;
-   // Each ridged row has three vertices. The parting is pinned while
-   // the tips lift and separate at different phases around the head.
-   for(let v=0;v<3;v++){
-    shapes[0].push(sx*.023*flex,.066*flex,-.10*flex);
-    shapes[1].push(.072*flex,0,0);
-    for(let k=0;k<2;k++){
-     const ripple=flex*Math.sin(wave+k*Math.PI/2);
-     shapes[2+k].push(.023*ripple,.024*ripple,-.012*ripple);
-    }
-   }
+ const root=new THREE.Group();root.name='driver-layered-short-hair';
+ const segments=52,rows=11;
+ const p=[-.014,.145,.004],colors:number[]=[],indices:number[]=[];
+ const shapes=Array.from({length:4},()=>[0,0,0]);
+ const espresso=new THREE.Color('#32231e'),chestnut=new THREE.Color('#876650');
+ const stubble=new THREE.Color('#a37c60');
+ const color=espresso.clone();colors.push(color.r,color.g,color.b);
+ for(let row=1;row<=rows;row++)for(let i=0;i<segments;i++){
+  const t=row/rows,a=i*2*Math.PI/segments,front=Math.cos(a);
+  const sideburn=Math.exp(-((front-.34)**2)/.025);
+  const arc=t*(1.62-.46*front+.095*Math.cos(2*a)+.33*sideburn);
+  const sweep=a+.92*(1-t),sx=Math.sin(sweep),cz=Math.cos(sweep);
+  const height=Math.cos(arc),radial=Math.sin(arc);
+  const crown=THREE.MathUtils.smoothstep(height,.09,.88);
+  const ridge=.5+.5*Math.cos(13*a+.65*Math.sin(a*3)+t*1.8);
+  const part=Math.exp(-((sx*radial-.40)**2)/.008)*(.45+.55*Math.max(0,cz));
+  const lift=crown*(.009*ridge-.010*part+.021*Math.max(0,cz)*radial);
+  const hem=THREE.MathUtils.smoothstep(t,.84,1);
+  p.push(-.014*crown+sx*radial*(.147+.005*crown+.004*ridge-.003*hem),
+   -.048+(.187+lift)*height,.009+cz*radial*(.131+.004*ridge-.003*hem));
+  // A graduated clip at the temples and nape lets the darker combed top read in silhouette.
+  const taper=THREE.MathUtils.smoothstep(t,.63,1);
+  color.copy(espresso).lerp(chestnut,.11+.48*taper+.31*ridge*(1-taper)+crown*(.10-.27*part));
+  color.lerp(stubble,.39*hem*(1-THREE.MathUtils.smoothstep(front,0,.8)));
+  colors.push(color.r,color.g,color.b);
+  const flex=crown*(1-hem)*radial*(.46+.54*Math.max(0,cz));
+  shapes[0].push(0,.012*flex,-.029*flex);
+  shapes[1].push(.023*flex,0,0);
+  for(let k=0;k<2;k++){
+   const ripple=flex*Math.sin(2*a+k*Math.PI/2);
+   shapes[k+2].push(.004*ripple,.006*ripple,-.004*ripple);
   }
-  strands.push({rows});
+  const here=1+(row-1)*segments+i,next=1+(row-1)*segments+(i+1)%segments;
+  if(row===1)indices.push(0,here,next);
+  else indices.push(here-segments,here,next-segments,next-segments,here,next);
  }
- const layers=strandMesh(strands,'#352520','#80593f','driver-side-part-layered-strands');
- setWindShapes(layers.geometry,shapes);layers.updateMorphTargets();
- layers.material.roughness=.68;
- group.add(layers);
- return {root:group,sync(wind,sway,tipSway,phase){
-  const weights=layers.morphTargetInfluences!;
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+ g.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+ g.setIndex(indices);g.computeVertexNormals();setWindShapes(g,shapes);
+ const crop=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.74}));
+ crop.name='driver-side-part-crop';crop.castShadow=true;root.add(crop);
+ return {root,sync(wind,sway,tipSway,phase){
+  const weights=crop.morphTargetInfluences!;
   weights[0]=wind;weights[1]=THREE.MathUtils.clamp(.35*sway+.65*tipSway,-1.2,1.2);
   weights[2]=wind*Math.sin(phase+1.3);weights[3]=wind*Math.cos(phase+1.3);
  }};

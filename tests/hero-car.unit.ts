@@ -152,31 +152,23 @@ it('covers the passenger scalp from the chase camera and above while leaving the
  }
 });
 
-it('builds layered male hair rather than a spherical watermelon cap, with no scarf',()=>{
- const car=createCar();car.updateMatrixWorld(true);
- const hair=car.getObjectByName('driver-layered-short-hair');
- const nape=car.getObjectByName('driver-tapered-nape');
- const strands=car.getObjectByName('driver-side-part-layered-strands');
- const bob=car.getObjectByName('layered-blonde-bob');
- expect(hair).toBeDefined();
- expect(nape).toBeInstanceOf(THREE.Mesh);
- expect(strands).toBeInstanceOf(THREE.Mesh);
- expect(bob).toBeDefined();
- expect(car.getObjectByName('driver-tailored-flat-cap')).toBeUndefined();
- expect(car.getObjectByName('driver-natural-short-hair')).toBeUndefined();
+it('keeps the cropped side part over the scalp with a clean nape and an open face',()=>{
+ const car=createCar(),head=car.getObjectByName('driver-head')!;
+ const hair=car.getObjectByName('driver-layered-short-hair')!;
+ const crop=hair.getObjectByName('driver-side-part-crop')!;
+ const firstHit=(from:THREE.Vector3,to:THREE.Vector3)=>{
+  const origin=hair.localToWorld(from),direction=hair.localToWorld(to).sub(origin).normalize();
+  return new THREE.Raycaster(origin,direction).intersectObject(head,true)[0]?.object;
+ };
+ for(const load of [0,12,-12]){
+  for(let i=0;i<90;i++)car.userData.motion.advance(load?1.4:0,.2,1/60,load);
+  car.updateMatrixWorld(true);
+  for(const x of [-.07,0,.07])for(const z of [-.055,0,.055])
+   expect(firstHit(new THREE.Vector3(x,.5,z),new THREE.Vector3(x,0,z))?.name,`scalp x=${x}, z=${z}, load=${load}`).toBe(crop.name);
+  expect(firstHit(new THREE.Vector3(0,0,-.4),new THREE.Vector3())).toBe(crop);
+  expect(firstHit(new THREE.Vector3(0,-.07,.4),new THREE.Vector3(0,-.07,0))?.parent).toBe(head);
+ }
  expect(car.getObjectByName('driver-silk-scarf')).toBeUndefined();
- expect(car.getObjectByName('wind-scarf-fabric-0')).toBeUndefined();
- const hairBounds=new THREE.Box3().setFromObject(hair!);
- expect(hairBounds.max.y).toBeLessThan(1.66);
- expect(hairBounds.min.y).toBeGreaterThan(1.25);
- expect(hairBounds.getSize(new THREE.Vector3()).z).toBeGreaterThan(.23);
- const napeGeo=(nape as THREE.Mesh).geometry;
- const ribbonGeo=(strands as THREE.Mesh).geometry;
- expect(napeGeo.getAttribute('color')).toBeDefined();
- expect(ribbonGeo.getAttribute('color')).toBeDefined();
- // 26 tapered multi-row cards provide irregular distinct layered ends.
- expect(ribbonGeo.getAttribute('position').count).toBeGreaterThan(440);
- expect(ribbonGeo.index!.count).toBeGreaterThan(750);
 });
 it('recesses dark seatbacks behind a painted rear cowl without closing the cockpit',()=>{
  const car=createCar(),g=createRearTonneau();
