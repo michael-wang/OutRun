@@ -93,6 +93,11 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 
 
 /* Public Road Trip entry over the approved splash artwork. */
+/* On phones the loading overlay covers the first render. Once dismissed,
+   keep the chase camera visible behind the launch prompt and during rotation. */
+@media (pointer:coarse){
+ html[data-player-ui="true"]:not([data-loading]) #startup-art{display:none}
+}
 html[data-player-ui="true"] .l2-lab{display:none!important}
 html[data-player-ui="true"] #player-start{
  position:fixed;z-index:32;top:max(20px,env(safe-area-inset-top));left:50%;

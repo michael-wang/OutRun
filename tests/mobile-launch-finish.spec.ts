@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 const site=new URL(process.env.OUTRUN_SITE_BASE??'/','http://127.0.0.1:4173');
 test.use({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block'});
 
-test('portrait handoff keeps the artwork and progress anchor, then exports the finished drive in fullscreen',async({page})=>{
+test('portrait reveals the parked car before one-tap driving and fullscreen results',async({page})=>{
   test.setTimeout(180000);
   let release!:()=>void;
   const held=new Promise<void>(resolve=>{release=resolve;});
@@ -13,22 +13,15 @@ test('portrait handoff keeps the artwork and progress anchor, then exports the f
   const loading=page.locator('#game-loading');
   await expect(loading).toBeVisible();
   const progress=await page.locator('#loading-track').boundingBox();
-  const art=await loading.evaluate(el=>({
-    url:el.querySelector('img')!.currentSrc,
-    position:getComputedStyle(el.querySelector('img')!).objectPosition,
-    shade:getComputedStyle(el,'::after').backgroundImage,
-  }));
+  await expect(loading.locator('img')).toBeVisible();
   release();
   await expect(loading).toBeHidden({timeout:90000});
   const launch=page.getByRole('button',{name:'開始駕駛!',exact:true});
   await expect(launch).toBeVisible();
-  const ready=await page.locator('#startup-art').evaluate(el=>({
-    url:el.querySelector('img')!.currentSrc,
-    position:getComputedStyle(el.querySelector('img')!).objectPosition,
-    shade:getComputedStyle(el,'::after').backgroundImage,
-  }));
-  expect(ready).toEqual(art);
-  expect(ready.shade).toContain('gradient');
+  await expect(page.locator('#startup-art')).toBeHidden();
+  await expect(page.locator('#view canvas')).toBeInViewport({ratio:1});
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','menu');
+  await expect(page.locator('#drive-distance')).toHaveText('10,300 m');
   const box=await launch.boundingBox();
   expect(Math.abs((box!.y+box!.height)-(progress!.y+progress!.height))).toBeLessThan(2);
   await launch.tap();
@@ -53,14 +46,17 @@ test('portrait handoff keeps the artwork and progress anchor, then exports the f
   expect(await page.evaluate(()=>document.fullscreenElement?.id)).toBe('app');
 });
 
-test('manual rotation starts driving when fullscreen is denied',async({page})=>{
+test('manual rotation starts driving when fullscreen is denied',async({page},testInfo)=>{
   await page.addInitScript(()=>{
     Element.prototype.requestFullscreen=async()=>{throw new Error('Fullscreen denied');};
   });
   await page.goto(site.href);
   await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
+  await page.screenshot({path:testInfo.outputPath('portrait-ready.png')});
   await page.locator('#rotate-launch').tap();
   await expect(page.locator('#rotate-launch-status')).toContainText('請手動橫放手機');
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','menu');
+  await expect(page.locator('#startup-art')).toBeHidden();
   await page.setViewportSize({width:844,height:390});
   await expect(page.locator('#touch')).toHaveClass(/active/,{timeout:30000});
   await expect(page.locator('#drive-fps-diagnostic')).toHaveCount(0);
@@ -76,6 +72,7 @@ test('iPhone portrait offers manual rotation and starts in landscape',async({bro
     await page.goto(site.href);
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
     await expect(page.locator('#rotate-instruction')).toContainText('請將手機轉為橫向');
+    await expect(page.locator('#startup-art')).toBeHidden();
     await expect(page.locator('#rotate-launch')).toBeHidden();
     await page.setViewportSize({width:844,height:390});
     await expect(page.locator('#touch')).toHaveClass(/active/,{timeout:30000});

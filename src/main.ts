@@ -888,8 +888,8 @@ function loop(now:number){
   if(autoLaunchArmed&&(mode==='playing'||mode==='countdown'))autoLaunchArmed=false;
   if(autoLaunchArmed&&!document.hidden&&landscapeReady()&&!settingsOpen&&(!world.streamer||world.streamer.ready)){
     autoLaunchArmed=false;autoLaunchNeedsManual=false;
-    // Same start/restart behavior as the existing Play button, minus a second tap.
-    if(mode==='menu'||brickCompleted)restart();else start();
+    // Enter the drive shown in the portrait preview with the same car and traffic.
+    start();
   }
   pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen,sceneInspector?.isOpen??false,!!sceneInspector);
   const dt=Math.min((now-last)/1000,.25);last=now;

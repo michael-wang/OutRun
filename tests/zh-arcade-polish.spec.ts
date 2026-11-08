@@ -28,17 +28,18 @@ test('public game, pause and controls use Traditional Chinese without exposing Q
   expect(errors).toEqual([]);
 });
 
-test('portrait public start shows Chinese rotation copy over approved portrait art',async({browser})=>{
+test('portrait public start shows Chinese rotation copy over the coast',async({browser})=>{
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   try{
-    const page=await context.newPage();await page.goto('/?playerui=1');
+    const page=await context.newPage();await page.goto('/');
+    await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
     await expect(page.locator('#rotate')).toContainText('橫放手機，準備出發！');
-    await expect(page.locator('#rotate')).toContainText('請將手機轉為橫向');
-    await expect(page.locator('#startup-art')).toBeVisible();
+    await expect(page.locator('#rotate-instruction')).toContainText('橫向');
+    await expect(page.locator('#startup-art')).toBeHidden();
     await expect(page.locator('#rotate-fullscreen')).toBeHidden();
     await page.setViewportSize({width:844,height:390});
     await expect(page.locator('#rotate')).toBeHidden();
-    await expect(page.locator('#player-title')).toHaveText('極速漫遊');
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
   }finally{await context.close();}
 });
 
