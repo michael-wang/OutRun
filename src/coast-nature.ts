@@ -8,7 +8,7 @@ import {coastBeachHeight} from './scenery-cross-section';
 import {roadOffset,shoulderProfile} from './road-profile';
 import type {createTrack} from './track';
 
-export interface NatureBatch {texture?:string;leafCutout?:boolean;center:number;near:number;far:number}
+export interface NatureBatch {texture?:string;leafCutout?:boolean;verge?:boolean;center:number;near:number;far:number}
 type Model={parts:NaturePart[]};
 let assets:Record<string,Model>|undefined,loading:Promise<void>|undefined;
 export function loadCoastNature(){

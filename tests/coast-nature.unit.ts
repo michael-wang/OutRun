@@ -2,7 +2,8 @@ import {describe,it,expect,vi,afterAll} from 'vitest';
 import {readFileSync,existsSync} from 'node:fs';
 import * as THREE from 'three';
 import {coastHillHeight,coastWildness} from '../src/coast-terrain';
-import {meadowCover} from '../src/coast-meadow-layout';
+import {lawnWeight,meadowCover} from '../src/coast-meadow-layout';
+import {addVergeGrass} from '../src/coast-verge-grass';
 import {COAST_DISTRICTS} from '../src/coast-layout';
 import {farmPlainMask} from '../src/coast-farm-layout';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
@@ -46,16 +47,37 @@ describe('sunset coast nature',()=>{
   for(const [start,end] of [[1000,boundary],[boundary,3000]]){
    const terrain=prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],start,end,track.length,false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections).find(m=>m.kind==='grass')!;
    const edge=[];
-   for(let i=0;i<terrain.uvs.length;i+=2)if(terrain.uvs[i+1]===boundary/4)edge.push(terrain.uvs[i]);
+   const frame=track.sample(boundary);
+   for(let i=0;i<terrain.positions.length;i+=3){
+    const dx=terrain.positions[i]-frame.position.x,dz=terrain.positions[i+2]-frame.position.z;
+    if(Math.abs(dx*frame.right.z-dz*frame.right.x)<.003)edge.push(terrain.uvs[2*i/3]);
+   }
    expect(edge.length).toBeGreaterThan(0);expect(edge.at(-1)).toBe(1);seen.push(edge);
   }
   expect(seen[0]).toEqual(seen[1]);
   expect(meadowCover(450,2530)).toBe(1);
   const heights=Array.from({length:25},(_,i)=>coastHillHeight(48,1774+i*8));
   expect(Math.max(...heights)-Math.min(...heights)).toBeGreaterThan(.7);
-  for(const d of [537,1270,3700,9350])expect(meadowCover(45,d)).toBe(0);
+  for(const d of [537,1270,9350])expect(meadowCover(45,d)).toBe(0);
+  expect(meadowCover(45,3700)).toBe(1);
+  expect(lawnWeight(45,3700)).toBe(1);
+  expect(lawnWeight(260,3700)).toBe(0);
   for(const d of [537,1270,1774,3700,9350])expect(meadowCover(365,d)).toBe(1);
-  expect(meadowCover(14.75,1774)).toBe(0);
+  expect(meadowCover(12.62,1774)).toBe(0);
+ });
+ it('plants shorter roadside blades in town using the same bounded batch recipe',()=>{
+  const heights=(start:number)=>{
+   const scene=new THREE.Scene();
+   const stats=addVergeGrass(scene,track.sample,()=>7,d=>shoulderProfile(d,804),start,start+160);
+   expect(stats.instances).toBeGreaterThan(25);
+   expect(stats.draws).toBeLessThanOrEqual(3);
+   return (scene.children as THREE.InstancedMesh[]).flatMap(mesh=>{
+    const m=new THREE.Matrix4();
+    return Array.from({length:mesh.count},(_,i)=>{mesh.getMatrixAt(i,m);return m.elements[5];});
+   });
+  };
+  expect(Math.min(...heights(2200))).toBeGreaterThan(.7);
+  expect(Math.max(...heights(3500))).toBeLessThan(.4);
  });
  it('roots batched source models on the rendered hill mesh, with bounded far geometry',async()=>{
   const fetchModels=vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('headland-grove.json')?woods:assets}));

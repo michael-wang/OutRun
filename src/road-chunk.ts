@@ -1,6 +1,6 @@
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
-import {meadowCover} from './coast-meadow-layout';
+import {lawnWeight,meadowCover} from './coast-meadow-layout';
 import {coastDrainAt,coastDrainOverlaps,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
 import {rockyAt,rockNode,rockWall,type RockySection} from './rocky-shoulder';
@@ -87,9 +87,10 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    // Coast sand's currently unused UV.x can encode the true widened beach
    // cross-section for the wet-sand reflection in the existing PBR material.
    const profileX=coastUltra&&kind==='sand'?coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d):undefined;
-   // UV.x carries the grass material mask across the existing inland terrain.
-   const terrainU=coastUltra&&kind==='grass'?meadowCover(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d):o/4;
-   uvs.push(profileX??terrainU,d/4);
+   if(coastUltra&&kind==='grass'){
+    const x=roadOffset(o,cachedWidth(d),cachedShoulders(d));
+    uvs.push(meadowCover(x,d),lawnWeight(x,d));
+   }else uvs.push(profileX??o/4,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));
     if(coastUltra&&kind==='sand'){

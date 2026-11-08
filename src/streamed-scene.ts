@@ -2,7 +2,7 @@ import {waffleSignTexture} from './vehicle-model';
 import {makeCoastDrainWaterMaterial,type CoastCanalFftUniforms} from './coast-drain-water';
 import type {NatureBatch} from './coast-nature';
 import {natureVisible} from './coast-performance';
-import {shadeMeadowGround} from './coast-meadow-material';
+import {shadeMeadowGround,vergeBladeMaterial} from './coast-meadow-material';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import * as THREE from 'three';
 import type {BankStrength} from './banking';
@@ -248,10 +248,12 @@ export class StreamedScene {
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
   for(const data of instances)tasks.push(()=>{
    const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');
-   const key=`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
+   const key=data.nature?.verge?'verge-grass':`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
    let material=this.materials.get(key);
    if(!material){
-    if(data.coastDrainWater){
+    if(data.nature?.verge){
+     material=vergeBladeMaterial(this.canalFlowTime);
+    }else if(data.coastDrainWater){
      material=makeCoastDrainWaterMaterial(this.canalFlowTime,this.canalFft,this.canalFftEnabled);
     }else{
      const standard=new THREE.MeshStandardMaterial({color:data.color,roughness:.85,vertexColors:data.vertexColors,emissive:data.emissive??0,emissiveIntensity:data.emissiveIntensity??0});
