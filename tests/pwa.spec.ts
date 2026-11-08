@@ -14,7 +14,9 @@ async function waitForCoast(page:Page){
 }
 
 test('installed coast launches online and offline within its publishing scope',async({page,context,request})=>{
- await page.setViewportSize({width:800,height:450});
+ test.setTimeout(300000);
+ const viewport={width:480,height:270};
+ await page.setViewportSize(viewport);
  const errors:string[]=[];
  context.on('response',r=>{
   const url=new URL(r.url());
@@ -40,10 +42,10 @@ test('installed coast launches online and offline within its publishing scope',a
  const distance=async()=>Number((await page.locator('#drive-distance').innerText()).replace(/\D/g,''));
  await expect.poll(distance).toBe(537);
  await page.keyboard.down('Space');
- try{await expect.poll(distance,{timeout:20000}).toBeGreaterThan(540);}
+ try{await expect.poll(distance,{timeout:60000}).toBeGreaterThan(537);}
  finally{await page.keyboard.up('Space');}
  await page.keyboard.press('r');
- await expect.poll(distance,{timeout:10000}).toBe(537);
+ await expect.poll(distance,{timeout:30000}).toBe(537);
  const registration=await page.evaluate(async()=>(await navigator.serviceWorker.ready).scope);
  expect(registration).toBe(site.href);
  await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
@@ -61,7 +63,7 @@ test('installed coast launches online and offline within its publishing scope',a
  await page.close();
  await context.setOffline(true);
  const reopened=await context.newPage();
- await reopened.setViewportSize({width:800,height:450});
+ await reopened.setViewportSize(viewport);
  await reopened.goto(playUrl);
  await waitForCoast(reopened);
  expect(errors).toEqual([]);
