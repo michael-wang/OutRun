@@ -70,6 +70,38 @@ export function createSpiderShell():THREE.BufferGeometry{
 }
 
 
+/** The door skin returns over the sill and down inside the open cockpit.
+ * +Z runs from the rear shut line to the front hinge below the mirror. */
+export function createRoadsterDoor(side:number){
+ const positions:number[]=[],indices:number[]=[];
+ const stations=[
+  // z, inner edge, widest part of the skin, sill height, lower edge
+  [-1.015,.79,1.067,.949,.49],[-.96,.785,1.085,.978,.483],
+  [-.68,.782,1.094,.982,.475],[-.36,.782,1.094,.982,.472],
+  [-.15,.785,1.090,.977,.471],[.27,.789,1.086,.946,.478],
+  [.53,.793,1.078,.929,.49],[.59,.799,1.065,.909,.51],
+ ];
+ const ringSize=8;
+ for(const [row,[z,inner,outer,top,bottom]] of stations.entries()){
+  // A broad upper ledge under the driver's resting arm rolls into the outer panel.
+  const section=[[inner,.70],[inner,top-.035],[inner+.039,top-.004],
+   [.895,top],[outer-.052,top-.022],[outer,top-.112],
+   [outer-.004,bottom+.066],[outer-.031,bottom]];
+  for(const [x,y] of section)positions.push(side*x,y,z);
+  if(!row)continue;
+  for(let i=0;i<ringSize;i++){
+   const a=(row-1)*ringSize+i,b=(row-1)*ringSize+(i+1)%ringSize;
+   indices.push(a,a+ringSize,b,b,a+ringSize,b+ringSize);
+  }
+ }
+ const last=(stations.length-1)*ringSize;
+ for(let i=1;i<ringSize-1;i++)indices.push(0,i,i+1,last,last+i+1,last+i);
+ if(side<0)for(let i=0;i<indices.length;i+=3)[indices[i+1],indices[i+2]]=[indices[i+2],indices[i+1]];
+ const g=new THREE.BufferGeometry();
+ g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ g.setIndex(indices);g.computeVertexNormals();return g;
+}
+
 /** Slim aerodynamic GT mirror shell, model-space along the car's +Z axis.
  * At ~25cm across and 10cm tall this reads as a proper wing mirror rather
  * than the original cartoon lollipop; the dark glass inlay is batched in

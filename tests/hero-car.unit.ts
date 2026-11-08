@@ -214,3 +214,23 @@ it('makes wing mirrors thin and brake lights physically and visually modest',()=
  lights.reset();
  expect(lights.inspect().emissiveIntensity).toBeLessThan(.20);
 });
+it('previews either passenger gesture without advancing or replacing a paused overtake',()=>{
+ const car=createCar(),motion=car.userData.motion;
+ const palms=()=>[-1,1].map(side=>car.getObjectByName('passenger-palm-'+side)!.getWorldPosition(new THREE.Vector3()));
+ const roll=vi.spyOn(Math,'random').mockReturnValue(.1);
+ try{
+  expect(motion.onCleanPass()).toBe('applause');
+  motion.advance(.34,.22,.08);
+  const snapshot=motion.occupants(),paused=palms();
+  motion.posePassenger(.62,'applause');const clap=palms();
+  expect(clap[0].distanceTo(clap[1])).toBeLessThan(.042);
+  motion.posePassenger(.62,'wave');const wave=palms();
+  expect(wave[0].y-wave[1].y).toBeGreaterThan(.6);
+  motion.posePassenger(.62,'applause');
+  expect(palms()[0].distanceTo(clap[0])).toBeLessThan(.0001);
+  motion.posePassenger();
+  expect(motion.occupants()).toEqual(snapshot);
+  expect(palms()[0].distanceTo(paused[0])).toBeLessThan(.0001);
+  expect(motion.onCleanPass()).toBeUndefined();
+ }finally{roll.mockRestore();}
+});

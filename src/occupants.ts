@@ -8,22 +8,22 @@ export function createOccupantMotion(people:Traveler[]){
  let sway=0,swayRate=0,tipSway=0,flutterPhase=0;
  let cheerTime=-1,nextCheer=0;
  let cheer:Cheer='applause';
- function pose(){
+ function pose(time=cheerTime,gesture=cheer){
   people.forEach((p,index)=>{
    p.body.rotation.z=turn*(index===0?.08:.12);p.body.rotation.x=pitch;
    p.head.rotation.y=-turn*.12;p.head.rotation.z=-turn*.035;
-   if(index===1&&cheer==='wave'&&cheerTime>=0)
-    p.head.rotation.y+=.40*THREE.MathUtils.smoothstep(cheerTime,0,.4)*(1-THREE.MathUtils.smoothstep(cheerTime,.88,CHEER_END));
+   if(index===1&&gesture==='wave'&&time>=0)
+    p.head.rotation.y+=.40*THREE.MathUtils.smoothstep(time,0,.4)*(1-THREE.MathUtils.smoothstep(time,.88,CHEER_END));
    p.arms.forEach(arm=>{
-    arm.root.rotation.z=cheerTime<0?turn*.02:0;
-    arm.root.rotation.x=cheerTime<0?pitch*.25:0;
-    arm.pose(cheerTime,cheer);
+    arm.root.rotation.z=time<0?turn*.02:0;
+    arm.root.rotation.x=time<0?pitch*.25:0;
+    arm.pose(time,gesture);
    });
    p.poseDriverArms?.(turn);
    p.hair.sync(wind,sway,tipSway,flutterPhase);
   });
  }
- return {onCleanPass(){
+ return {posePassenger:pose,onCleanPass(){
   if(phase<nextCheer)return;
   const roll=Math.random();
   if(roll>=.28)return;

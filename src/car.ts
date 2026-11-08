@@ -1,7 +1,7 @@
 import {sectionMesh,jacketSections,shirtCollar,createSundress} from './hero-tailoring';
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
-import {createGTWingMirrorHousing} from './hero-body';
+import {createGTWingMirrorHousing,createRoadsterDoor} from './hero-body';
 import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry';
 import {createDriverHair,createBlondeBob} from './hero-groom';
 import {createCockpitWheel,createDriverArms} from './hero-hands';
@@ -61,14 +61,11 @@ export function createCar(dusk=false) {
     oval(.21,.10,.65,paint,side*.85,.87,-1.62);
   }
   for(const side of [-1,1]){
-    // One continuous silver beltline and restrained inset door panels.
-    box(.065,.32,1.68,leather,side*.81,.73,-.23);
-    bar([side*.95,.98,-1.07],[side*.95,.96,.58],.024,silver);
-    bar([side*1.105,.52,-.96],[side*1.115,.89,-.93],.011,dark);
-    bar([side*1.11,.89,-.93],[side*1.095,.90,.57],.011,dark);
-    bar([side*1.095,.90,.57],[side*1.05,.53,.59],.011,dark);
-    // Door handle integrated into the shoulder.
-    box(.19,.025,.055,silver,side*1.108,.97,-.20);
+    mesh(createRoadsterDoor(side),paint);
+    box(.046,.23,1.44,leather,side*.784,.785,-.20);
+    // Flush handle along the exterior skin, aligned with the length of the door.
+    box(.018,.027,.143,dark,side*1.089,.846,-.67);
+    box(.022,.013,.112,silver,side*1.094,.853,-.67);
     // A low saddle-leather bucket rolls down behind the painted fairing.
     oval(.31,.10,.35,seatHide,side*.41,.64,-.34);
     mesh(sectionMesh([[.64,.25,.085,-.79],[.83,.26,.080,-.82],
@@ -234,7 +231,7 @@ export function createCar(dusk=false) {
   paintController.set(DEFAULT_CAR_COLOR);
   car.userData.paintController=paintController;
   const people=createOccupantMotion(travelers);
-  car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number,rightAcceleration=0)=>{wheels.forEach(w=>w.advance(ds,steer,dt));return people.advance(ds,steer,dt,rightAcceleration);},onCleanPass:people.onCleanPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
+  car.userData.wheelPivots=wheels.map(w=>w.pivot);car.userData.motion={advance:(ds:number,steer:number,dt:number,rightAcceleration=0)=>{wheels.forEach(w=>w.advance(ds,steer,dt));return people.advance(ds,steer,dt,rightAcceleration);},posePassenger:people.posePassenger,onCleanPass:people.onCleanPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()};
   return car;
 }
 

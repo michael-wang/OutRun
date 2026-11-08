@@ -95,13 +95,14 @@ export function passengerArm(side:1|-1,skin:THREE.Material){
  const lap=new THREE.Quaternion().setFromEuler(new THREE.Euler(.46,-side*.34,side*.10));
  const palmsIn=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(
   new THREE.Vector3(0,0,side),new THREE.Vector3(side,0,0),up));
- let lastTime=NaN;
+ let lastTime=NaN,lastGesture:Cheer|undefined;
  const wavePalm=new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI/2,0,.12));
  const roll=new THREE.Quaternion(),forward=new THREE.Vector3(0,0,1);
  const pose=(t:number,cheer:Cheer)=>{
   // The inboard hand stays on her lap throughout the one-handed wave.
   if(cheer==='wave'&&side===1)t=-1;
-  if(t===lastTime)return;lastTime=t;
+  if(t<0)cheer='applause'; // Both gestures share the same neutral lap pose.
+  if(t===lastTime&&cheer===lastGesture)return;lastTime=t;lastGesture=cheer;
   const raise=smooth(t,0,.48)*(1-smooth(t,1.08,CHEER_END));
   // Swing forward en route from the lap. Both palms face inward by
   // the time they meet, a little above and in front of her crown.

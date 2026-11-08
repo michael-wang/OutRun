@@ -1,3 +1,4 @@
+import {CHEER_END,CLAP_TIMES,type Cheer} from './passenger-cheer';
 import {journeyChapters} from './scenic-journey';
 import {GAME_VERSION} from './build-info';
 import {disposeScene,sceneDisposal} from './dispose-scene';
@@ -251,6 +252,33 @@ addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setInputMode('touc
 let mode:'menu'|'playing'|'paused'|'countdown'='menu'; let settingsOpen=false; let muted=false; let manual=false;
 let sceneInspector:SceneInspector|undefined;
 let tripPauseDock:TripPauseDock|undefined;
+let passengerPreview:{gesture:Cheer;started:number|null;last:number}|undefined;
+const previewEye=new THREE.Vector3(),previewTarget=new THREE.Vector3();
+function endPassengerPreview(){
+ if(!passengerPreview)return;
+ passengerPreview=undefined;sound.stopPassenger();world.car.userData.motion.posePassenger();
+}
+async function previewPassenger(gesture:Cheer){
+ endPassengerPreview();
+ const clip={gesture,started:null as number|null,last:0};
+ passengerPreview=clip;
+ world.car.userData.motion.posePassenger(0,gesture);
+ if(!muted)await sound.unlock(true).catch(()=>{});
+ if(passengerPreview!==clip)return;
+ clip.started=performance.now();
+ sound.passengerCue(gesture,true);
+}
+function renderPassengerPreview(){
+ const clip=passengerPreview!;
+ const car=world.car;
+ camera.position.copy(car.localToWorld(previewEye.set(-.69,2.06,-2.69)));
+ camera.lookAt(car.localToWorld(previewTarget.set(-.22,1.38,-.44)));
+ if(clip.started===null||clip.last>=CHEER_END)return;
+ const time=Math.min(CHEER_END,(performance.now()-clip.started)/1000);
+ car.userData.motion.posePassenger(time,clip.gesture);
+ if(clip.gesture==='applause'&&CLAP_TIMES.some(at=>clip.last<at&&time>=at))sound.passengerCue('clap',true);
+ clip.last=time;
+}
 // One tap in portrait arms a launch; driving starts only after landscape AND safe road readiness.
 let autoLaunchArmed=false,autoLaunchNeedsManual=false;
 let streamStartRequested=false;
@@ -492,8 +520,8 @@ addEventListener('keydown',e=>{
   if(button&&button.offsetParent!==null){e.preventDefault();button.click();return;}
   if(prefix==='l2'&&/^Digit[1-5]$/.test(e.code)){const difficulty=$('l2-difficulty') as HTMLSelectElement;difficulty.value=e.code.slice(-1);difficulty.dispatchEvent(new Event('change',{bubbles:true}));e.preventDefault();}
 });
-addEventListener('blur',()=>{input.clear();if(mode==='playing'||mode==='countdown'){mode='paused';sound.pause();ui();}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&(mode==='playing'||mode==='countdown')){mode='paused';input.clear();sound.pause();ui();}});
+addEventListener('blur',()=>{endPassengerPreview();input.clear();if(mode==='playing'||mode==='countdown'){mode='paused';sound.pause();ui();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)endPassengerPreview();if(document.hidden&&(mode==='playing'||mode==='countdown')){mode='paused';input.clear();sound.pause();ui();}});
 function resize(){
   placeFpsExport();
   const width=$('app').clientWidth, height=$('app').clientHeight;
@@ -556,7 +584,7 @@ function advance(dt:number,override?:InputState){
   if(cheer)sound.passengerCue(cheer);
  }
  if(motion.advance(travel,state.appliedSteer,dt,rightAcceleration))sound.passengerCue('clap');
- elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId);if(brick&&state.distance>=chapterEnd()&&(!journeyMode||chapterIndex===2)){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else sound.pause();
+ elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId);if(brick&&state.distance>=chapterEnd()&&(!journeyMode||chapterIndex===2)){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else if(!passengerPreview)sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(brick)return height+(Math.abs(lateral)>world.halfAt(state.distance)?-.1:0);
@@ -592,6 +620,7 @@ function render(dt:number,draw=true){
     scenicWeight=applyScenicCamera(targets,p.right,state.distance,CANYON_SCENIC_ZONES,scenicDriftBlend);
   }
   camera.position.copy(targets.eye);camera.lookAt(targets.look);
+  if(passengerPreview)renderPassengerPreview();
   if(import.meta.env.DEV&&inspectionView){
     world.car.updateMatrixWorld(true);
     const offset=inspectionView==='front'?new THREE.Vector3(3,2.7,6):inspectionView==='side'?new THREE.Vector3(6,2.8,0):new THREE.Vector3(0,5.8,-2.3);
@@ -994,7 +1023,7 @@ if(playerUi)for(const id of ['l2-replay','l2-next']){
  if(button)button.hidden=true;
 }
 if(trip)tripPauseDock=new TripPauseDock($('app'),{
- resume:start,replay:restart,
+ resume:start,replay:restart,previewPassenger,endPreview:endPassengerPreview,
  settings:()=>{$('settings').click();},sound:()=>{$('sound').click();},
  fullscreen:()=>{$('fullscreen').click();},
  review:()=>{

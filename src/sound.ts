@@ -14,7 +14,7 @@ export class EngineSound {
   private context?: AudioContext;
   private master?: GainNode;
   private passengerBuffers=new Map<PassengerCue,AudioBuffer>();
-  private loadingClips=new Set<PassengerCue>();
+  private loadingClips=new Map<PassengerCue,Promise<void>>();
   private passengerSources=new Set<AudioBufferSourceNode>();
   private engine?: OscillatorNode;
   private engineGain?: GainNode;
@@ -33,7 +33,7 @@ export class EngineSound {
   private windLevel = 0;
   private active = false;
   readonly skidFeedback=new SkidFeedback();
-  async unlock() {
+  async unlock(waitForPassenger=false) {
     if (!this.context) {
       const context = this.context = new AudioContext();
       this.master = context.createGain();
@@ -73,14 +73,15 @@ export class EngineSound {
     const context=this.context;
     for(const cue of Object.keys(passengerClips) as PassengerCue[]){
       if(this.passengerBuffers.has(cue)||this.loadingClips.has(cue))continue;
-      this.loadingClips.add(cue);
-      void fetch(passengerClips[cue]).then(response=>{
+      const loaded=fetch(passengerClips[cue]).then(response=>{
         if(!response.ok)throw Error('Passenger clip unavailable');
         return response.arrayBuffer();
-      }).then(bytes=>context.decodeAudioData(bytes)).then(buffer=>this.passengerBuffers.set(cue,buffer))
+      }).then(bytes=>context.decodeAudioData(bytes)).then(buffer=>{this.passengerBuffers.set(cue,buffer);})
         .catch(()=>{}).finally(()=>this.loadingClips.delete(cue));
+      this.loadingClips.set(cue,loaded);
     }
     await context.resume();
+    if(waitForPassenger)await Promise.all(this.loadingClips.values());
   }
   impact(strength:number,kind:'vehicle'|'guardrail'|'concrete'|'soft'='guardrail'){
     this.impactCount++;this.lastImpact=kind;if(!this.context)return;const now=this.context.currentTime;
@@ -133,14 +134,14 @@ export class EngineSound {
     this.passVoices.forEach((node,i)=>{const v=voices[i];node.gain.gain.setTargetAtTime(v?Math.min(PASS_AUDIO.peakCap,v.gain*mix):0,now,v && v.gain>0 ? .018 : .025);if(v){node.pan.pan.setTargetAtTime(v.pan,now,.02);node.high.frequency.setTargetAtTime(v.type===0?220:75,now,.03);node.low.frequency.setTargetAtTime(v.cutoff,now,.02);node.source.playbackRate.setTargetAtTime(v.rate,now,.02);}});
   }
   resetPassBy(){this.passes.reset();this.silencePasses();}
-  passengerCue(kind:PassengerCue){
+  passengerCue(kind:PassengerCue,preview=false){
     const context=this.context,buffer=this.passengerBuffers.get(kind);
-    if(!context||!this.master||!buffer||this.muted||!this.active||context.state!=='running')return;
+    if(!context||!this.master||!buffer||this.muted||(!this.active&&!preview)||context.state!=='running')return;
     const source=context.createBufferSource();source.buffer=buffer;source.connect(this.master);
     this.passengerSources.add(source);
     source.onended=()=>{this.passengerSources.delete(source);source.disconnect();};source.start();
   }
-  private stopPassenger(){for(const source of this.passengerSources)source.stop();this.passengerSources.clear();}
+  stopPassenger(){for(const source of this.passengerSources)source.stop();this.passengerSources.clear();}
   private silencePasses(){this.passes.suspend();if(this.context)for(const v of this.passVoices){v.gain.gain.cancelScheduledValues(this.context.currentTime);v.gain.gain.setTargetAtTime(0,this.context.currentTime,.015);}}
   setMuted(muted: boolean) { if(muted)this.stopPassenger();this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
   update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number},collisionSlide=0,trafficSkid=0) {

@@ -1,9 +1,11 @@
+import type {Cheer} from './passenger-cheer';
 import './trip-pause-dock.css';
 import {COAST_SHADOW_TECHNIQUES,coastShadowTechniqueSnapshot,type CoastShadowTechnique} from './coast-shadow-techniques';
 
 /** Road Trip pause controls stay in the corner; full reviews are explicitly opt-in. */
 export interface TripPauseActions {
  resume():void;replay():void;settings():void;
+ previewPassenger(gesture:Cheer):void;endPreview():void;
  sound():void;fullscreen():void;review():void;
 }
 export interface TripShadowAudit {onChange(technique:CoastShadowTechnique,enabled:boolean):void}
@@ -15,7 +17,7 @@ export class TripPauseDock {
  private readonly options:HTMLElement;
  private expanded=false;
  private reviewOpen=false;
- constructor(root:HTMLElement,actions:TripPauseActions,reviewAvailable:boolean,shadowAudit?:TripShadowAudit){
+ constructor(root:HTMLElement,private readonly actions:TripPauseActions,reviewAvailable:boolean,shadowAudit?:TripShadowAudit){
   const element=document.createElement('aside');this.element=element;
   element.id='trip-pause-dock';element.hidden=true;element.setAttribute('aria-label','暫停操作');
   const shadowMarkup=shadowAudit?
@@ -37,6 +39,8 @@ export class TripPauseDock {
     <button id="tp-settings" type="button">操作設定</button>
     <button id="tp-sound" type="button">音效開</button>
     <button id="tp-fullscreen" type="button">全螢幕</button>
+    <button id="tp-applause" type="button">預覽拍手</button>
+    <button id="tp-wave" type="button">預覽揮手</button>
     <button id="tp-review" type="button" aria-expanded="false">評分／匯出</button>
    </div>${shadowMarkup}`;
   root.append(element);
@@ -59,6 +63,8 @@ export class TripPauseDock {
   button('tp-settings').onclick=actions.settings;
   button('tp-sound').onclick=actions.sound;
   button('tp-fullscreen').onclick=actions.fullscreen;
+  button('tp-applause').onclick=()=>actions.previewPassenger('applause');
+  button('tp-wave').onclick=()=>actions.previewPassenger('wave');
   this.reviewButton.onclick=actions.review;
   if(shadowAudit){
    const inputs=element.querySelectorAll<HTMLInputElement>('input[data-shadow-technique]');
@@ -71,6 +77,7 @@ export class TripPauseDock {
   }
  }
  private setExpanded(value:boolean){
+  if(this.expanded&&!value)this.actions.endPreview();
   this.expanded=value;this.options.hidden=!value;
   this.moreButton.setAttribute('aria-expanded',String(value));
   this.moreButton.textContent=value?'收起':'☰ 功能';
