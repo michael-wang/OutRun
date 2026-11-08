@@ -6,9 +6,8 @@
  * Do not drop that flip! The angles below are additional deltas to Math.PI.
  *
  * Positive yaw looks a little toward an APPROACHING driver's viewpoint
- * (roadside plus back along the route). Not every home gets this treatment:
- * loosely farm-oriented parcels, quiet inward courtyards and irregular
- * roadside fronts keep the village from looking like an exhibition row.
+ * (roadside plus back along the route). Back-lane lots also apply their
+ * own street heading so doors still serve the local lane.
  *
  * These choices are pure per-house hashes: stable across Worker chunks and
  * free of per-frame camera or look-at rotations.
@@ -25,18 +24,9 @@ const rand=(key:number,salt:number)=>{
  * A deliberately uneven mix: no alternating regular +/- facade patterns.
  */
 export function coastHomeFacingYaw(key:number,context:CoastHomeContext):number{
- const style=rand(key,0x53f0a1),offset=rand(key,0x718ac4),micro=(rand(key,0x241a9d)-.5)*.11;
+ const offset=rand(key,0x718ac4),micro=(rand(key,0x241a9d)-.5)*.11;
  if(context==='shop')return (offset-.5)*.24+micro;
- if(context==='farm'){
-  if(style<.43)return .43+offset*.42+micro;  // 43% readable on approach
-  if(style<.72)return .14-offset*.51+micro;  // original varied road fronts
-  if(style<.89)return -.53-offset*.74+micro; // faces a side yard/path
-  return -1.95-offset*.30+micro;              // occasional inward-facing farm
- }
- if(style<.31)return .36+offset*.43+micro;
- if(style<.77)return .16-offset*.43+micro;
- if(style<.90)return -.40-offset*.67+micro;
- return 1.0+offset*.26+micro;
+ return (context==='farm'?.40:.32)+offset*.73+micro;
 }
 
 /** Conservative rotated ground footprint in road coordinates.

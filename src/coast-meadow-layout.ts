@@ -33,7 +33,7 @@ export function lawnWeight(x:number,d:number){
  let weight=0;
  for(const {start,end,right} of lawns){
   const gap=Math.max(start-d,d-end,x-right);
-  weight=Math.max(weight,1-smoothstep(0,18,gap));
+  weight=Math.max(weight,1-smoothstep(0,48,gap));
  }
  return weight;
 }

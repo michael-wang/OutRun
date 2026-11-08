@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {natureGeometry,roadsideTrees,TREE_DRAW_DISTANCE,type NaturePart} from './tree-models';
-import {farmClearing,FARM_YARDS} from './coast-farm-layout';
+import {farmClearing,FARM_YARDS,FARM_PLOTS} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastVegetationDensity} from './coast-journey-layout';
 import {coastBeachHeight} from './scenery-cross-section';
@@ -83,10 +83,31 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    bucket.matrices.push(dummy.matrix.clone());
   }
  }
- // Retain the detailed oak at authored foreground sites and a compact pine on distant slopes.
- for(const [i,tree] of authoredTrees.entries())
-  if(tree.d>=start&&tree.d<end)
-   plant(tree.x>200?'RoadPine':'GroveOak',tree.d,tree.x,tree.h,90000+i*97,TREE_DRAW_DISTANCE,true);
+ // Share the same compact crowns within a copse. Seeds and offsets are absolute
+ // so a copse straddling a worker boundary is planted once on each side.
+ function copse(d:number,x:number,h:number,key:number,count:number,radius:number,fieldEdge=false){
+  if(d+radius<start||d-radius>=end)return;
+  for(let j=0;j<count;j++){
+   const k=key+j*97,angle=j*2.4+random(key+5)*6.28+random(k)*.55;
+   const r=j===0?0:radius*Math.sqrt((j-.4)/count);
+   const at=d+r*Math.cos(angle),inland=x+r*Math.sin(angle)*.74;
+   if(at<start||at>=end||inGrove(at)||inland<24)continue;
+   // Authored windbreaks can occupy the strip between two planted terraces.
+   if(fieldEdge&&FARM_PLOTS.some(p=>at>p.start-3&&at<p.end+3&&inland>p.left-3&&inland<p.right+3))continue;
+   plant(random(k+16)<(x>160?.64:.22)?'RoadPine':'RoadOak',at,inland,
+    h*(.68+random(k+4)*.48),k,TREE_DRAW_DISTANCE,fieldEdge);
+  }
+ }
+ for(const [i,tree] of authoredTrees.entries()){
+  if(tree.x>200){
+   copse(tree.d,tree.x,tree.h,90000+i*97,7,18,true);
+  }else if(tree.d>=start&&tree.d<end){
+   plant('GroveOak',tree.d,tree.x,tree.h,90000+i*97,TREE_DRAW_DISTANCE,true);
+  }
+ }
+ // Windbreaks on the uncultivated slopes behind the rice and flower benches.
+ for(const [d,x,h] of [[7008,104,9],[7082,176,12],[7890,286,12],[7980,312,14],[8108,277,10]])
+  copse(d,x,h,d*19,9,23);
  // Five stands at unequal depths: open grass windows between the oak edge
  // and the taller pines tucked up against the hill. All fit one 200 m batch.
  if(start<GROVE_END&&end>GROVE_START){
@@ -102,33 +123,20 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    }
   }
  }
- // Trees/shrubs remain; individual grassy tufts are unapproved and removed.
- for(let i=Math.ceil(start/22);i*22<end;i++){
+ // Concentrate mature trees around fewer seed sites, leaving open views between groups.
+ for(let i=Math.ceil((start-40)/22);i*22<end+22;i++){
   const d=i*22;
-  // Chapter II is an intentionally sparse headland behind the tourist
-  // beach. Keep authored trees at the farm/courtyard and late fishing coast.
   if(coastWildness(d)<.3||random(i*67+231)>coastVegetationDensity(d))continue;
-  const treeAnchors:({at:number;x:number}|undefined)[]=[];
-  for(let j=0;j<3;j++){
+  if(i%3===0&&d>=start&&d<end)
+   plant('Rock_Medium_2',d,23+random(i+19)*53,1+random(i+24)*2.2,i,650);
+  if(i%2!==0)continue;
+  for(let j=0;j<2;j++){
    const key=i*37+j*131,at=d+random(key)*18;
-   if(at>=end||coastWildness(at)<.3)continue;
-   const x=j<2?28+random(key+9)*47:150+random(key+9)*155;
-    if(random(key+18)>.18&&!inGrove(at)){
-     plant(j===2||random(key+61)<.22?'RoadPine':'RoadOak',at,x,(j<2?5:7)+random(key+2)*6,key,TREE_DRAW_DISTANCE);
-     if(j<2)treeAnchors[j]={at,x};
-    }
+   if(inGrove(at)||coastWildness(at)<.3)continue;
+   const upland=j===1,x=upland?158+random(key+9)*147:37+random(key+9)*44;
+   if(farmClearing(at,x))continue;
+   copse(at,x,(upland?9:6)+random(key+2)*4,key,upland?7:4,upland?20:13);
   }
-  // Cluster younger trees around mature specimens.
-  for(let j=0;j<3;j++){
-   const key=i*43+j*193,tree=treeAnchors[j];
-   const at=tree?Math.max(start,Math.min(end-.01,tree.at+(random(key+6)-.5)*7)):d+random(key+6)*18;
-   if(at>=end||coastWildness(at)<.3)continue;
-   const x=tree?tree.x+(random(key+11)-.5)*8
-    :j<2?20+random(key+11)*45:125+random(key+11)*100;
-   if(inGrove(at))plant('GroveOak',at,x,2.2+random(key+3)*2.1,key,TREE_DRAW_DISTANCE);
-   else plant('RoadOak',at,x,1.5+random(key+3)*2.5,key,420);
-  }
-  if(i%3===0)plant('Rock_Medium_2',d,23+random(i+19)*53,1+random(i+24)*2.2,i,650);
  }
  for(const b of buckets.values()){
   const mesh=new THREE.InstancedMesh(b.g,b.m,b.matrices.length);

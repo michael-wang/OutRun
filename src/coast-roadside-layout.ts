@@ -24,10 +24,11 @@ export type CoastDrain=(typeof COAST_SIDE_DRAINS)[number];
  * started at 14.65m BEHIND a sandy 6m shoulder and metal highway rail.
  * This tighter, steep-sided cross-section reads as Taiwanese roadside.
  */
-export const COAST_DRAIN_X={outerRoad:10.12,leftLip:10.26,innerLeft:10.48,innerRight:12.38,rightLip:12.62,outerLand:14.75} as const;
-/** Surface below the lower concrete lip, in metres. */
-export const COAST_DRAIN_FREEBOARD=.34;
+export const COAST_DRAIN_X={outerRoad:10.12,leftLip:10.26,innerLeft:10.42,innerRight:11.74,rightLip:11.91,outerLand:14.75} as const;
+/** Surface below the nominal concrete rim, in metres. */
+export const COAST_DRAIN_FREEBOARD=.40;
 export const COAST_POLE_SETBACK=.55;
+export const COAST_LAMP_HEAD={reach:2.96,drop:1.89} as const;
 const smooth=(a:number,b:number,v:number)=>{const t=Math.max(0,Math.min(1,(v-a)/(b-a)));return t*t*(3-2*t);};
 export function coastDrainAt(d:number):CoastDrain|undefined{
  return COAST_SIDE_DRAINS.find(x=>d>=x.start&&d<x.end);
@@ -131,7 +132,7 @@ for(const [index,[from,to]] of POLE_FILL_GAPS.entries()){
  }
 }
 /** Clearance prevents a pole from standing inside a narrow access bridge.
- * The outer bank starts at x=12.62; poles sit about 0.55m farther inland. */
+ * Poles sit about 0.55m inland of the outer bank. */
 export const COAST_UTILITY_POLES:readonly CoastUtilityPole[]=Object.freeze(
  [...CURATED_POLES,...generated].map(p=>{
   let d=p.d;

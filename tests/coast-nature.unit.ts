@@ -2,6 +2,7 @@ import {describe,it,expect,vi,afterAll} from 'vitest';
 import {readFileSync,existsSync} from 'node:fs';
 import * as THREE from 'three';
 import {coastHillHeight,coastWildness} from '../src/coast-terrain';
+import {COAST_DRAIN_X} from '../src/coast-roadside-layout';
 import {lawnWeight,meadowCover} from '../src/coast-meadow-layout';
 import {addVergeGrass} from '../src/coast-verge-grass';
 import {COAST_DISTRICTS} from '../src/coast-layout';
@@ -63,7 +64,7 @@ describe('sunset coast nature',()=>{
   expect(lawnWeight(45,3700)).toBe(1);
   expect(lawnWeight(260,3700)).toBe(0);
   for(const d of [537,1270,1774,3700,9350])expect(meadowCover(365,d)).toBe(1);
-  expect(meadowCover(12.62,1774)).toBe(0);
+  expect(meadowCover(COAST_DRAIN_X.rightLip,1774)).toBe(0);
  });
  it('plants shorter roadside blades in town using the same bounded batch recipe',()=>{
   const heights=(start:number)=>{

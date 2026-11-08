@@ -12,20 +12,16 @@ import {shoulderProfile} from '../src/road-profile';
 
 const track=createPilotTrack(COAST_ULTRA_STAGE);
 
-it('keeps household orientations individual and gives only a fraction of them the approach-friendly angle',()=>{
- const near=COAST_VILLAGE_SITES.filter(s=>s.kind==='home')
+it('keeps household orientations individual and presents the frontage to approaching drivers',()=>{
+ const near=COAST_VILLAGE_SITES.filter(s=>s.kind==='home'&&!s.rear)
   .map(s=>coastHomeFacingYaw(s.key,'village')+s.yaw);
  const farm=FARM_HOMES.filter(s=>s.d!==1015&&s.d!==1065)
   .map(s=>coastHomeFacingYaw(s.key,'farm')+s.yaw);
  const shops=COAST_VILLAGE_SITES.filter(s=>s.kind!=='home')
   .map(s=>coastHomeFacingYaw(s.key,'shop'));
- expect(near.length).toBeGreaterThan(40);
- expect(near.filter(y=>y>.35).length).toBeGreaterThan(near.length*.17);
- expect(near.filter(y=>y<-.35).length).toBeGreaterThan(2);
- expect(near.filter(y=>Math.abs(y)<.25).length).toBeGreaterThan(near.length*.20);
- expect(new Set(near.map(y=>Math.round(y*180/Math.PI))).size).toBeGreaterThan(20);
- expect(farm.some(y=>y>.35)).toBe(true);
- expect(farm.some(y=>y<-.35)).toBe(true);
+ expect(near.length).toBeGreaterThan(25);
+ for(const yaw of [...near,...farm])expect(houseApproachFrontScore(yaw,35,65)).toBeGreaterThan(.56);
+ expect(new Set(near.map(y=>Math.round(y*180/Math.PI))).size).toBeGreaterThanOrEqual(20);
  expect(shops.every(y=>Math.abs(y)<.20)).toBe(true); // shops remain town-like
  for(const context of ['farm','village','shop'] as const){
   expect(coastHomeFacingYaw(12345,context)).toBe(coastHomeFacingYaw(12345,context));

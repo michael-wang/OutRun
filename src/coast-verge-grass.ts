@@ -53,7 +53,7 @@ export function addVergeGrass(scene:THREE.Scene,sample:ReturnType<typeof createT
  const rows=Math.ceil((end-start)/5),step=(end-start)/rows;
  function station(d:number){
   const p=sample(d),half=halfAt(d),widths=shoulders?.(d);
-  const inTown=COAST_DISTRICTS.some(s=>d>=s.start-25&&d<=s.end+25);
+  const inTown=COAST_DISTRICTS.some(s=>d>=s.start-55&&d<=s.end+55);
   const strips=inTown?districtStrips:vergeStrips;
   return strips.map(raw=>{
    const x=raw===13&&coastDrainAt(d)?COAST_DRAIN_X.outerLand:roadOffset(raw,half,widths);
@@ -75,7 +75,11 @@ export function addVergeGrass(scene:THREE.Scene,sample:ReturnType<typeof createT
     const origin=second?e:a,wb=second?1-t:u,wc=second?1-u:t,wo=1-wb-wc;
     const x=wo*origin.x+wb*b.x+wc*c.x;
     const district=coastDistrictAt(at);
-    if(x<16.2||(!district&&x>30+rand()*12)||meadowCover(x,at)<.75)continue;
+    if(x<16.2||meadowCover(x,at)<.75)continue;
+    if(!district&&x>30+rand()*12){
+     const gap=COAST_DISTRICTS.reduce((n,s)=>Math.min(n,Math.max(s.start-at,at-s.end)),Infinity);
+     if(rand()<THREE.MathUtils.smoothstep(gap,0,48))continue;
+    }
     const street=townStreetAt(at,2.8);
     if(street&&x<street.length+3)continue;
     if(district?.kind==='homes'&&Math.abs(x-TOWN_BACK_LANE.x)<TOWN_BACK_LANE.width*.5+3)continue;

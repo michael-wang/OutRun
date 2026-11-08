@@ -6,7 +6,7 @@ import {coastHomeFacingYaw} from './coast-house-facing';
 import {FARM_HOMES,FARM_YARDS} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek,buildPaddyToolShed} from './coast-rural-vignette';
-import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_DRAIN_X,COAST_LAMP_HEAD,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
 import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
@@ -290,6 +290,13 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    if(floor&&type%2===0){part(boxes,wall,-5,y-.9,z,1.4,.18,2.6);part(boxes,'#665d61',-5.6,y-.45,z,.1,.75,2.6);}
    else if(floor)part(boxes,'#6e5d62',-4.8,y+.92,z,.65,.14,2.3);
   }
+  // Side windows stay visible when passing the frontage or looking down a back lane.
+  for(let floor=0;floor<Math.floor(h/2.8);floor++)for(const side of [-1,1]){
+   const x=side*(1.6+(key%4)*.25),y=1.65+floor*2.8;
+   part(boxes,'#293643',x,y,side*(w*.5+.035),1.75,1.20,.09);
+   if(occupancy&&random(key+floor*13+side*3)>.45)
+    part(boxes,'#dfbd8e',x,y,side*(w*.5+.09),1.48,1.0,.05,0,0,0,.8);
+  }
   // Nearly every small town has these pragmatic, slightly mismatched
   // building-front features. Avoid sub-pixel relief textures on mobile.
   if(!shop&&type>0&&key%3!==0){
@@ -518,7 +525,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    if(pole.lamp){
     part(boxes,'#696f6d',1.42,h-1.63,0,2.85,.15,.17);
     part(boxes,'#68706a',2.93,h-1.73,0,.83,.22,.64);
-    part(boxes,'#f8dfaa',2.96,h-1.89,0,.68,.065,.46,0,0,0,.9);
+    part(boxes,'#f8dfaa',COAST_LAMP_HEAD.reach,h-COAST_LAMP_HEAD.drop,0,.68,.065,.46,0,0,0,.9);
    }
   }
   if(coastPoleLinks(range.start,range.end).length){

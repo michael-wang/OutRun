@@ -1,7 +1,7 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
-import {COAST_UTILITY_POLES,COAST_DRAIN_BRIDGES} from '../src/coast-roadside-layout';
+import {COAST_DRAIN_X,COAST_UTILITY_POLES,COAST_DRAIN_BRIDGES} from '../src/coast-roadside-layout';
 import {
  COAST_CANAL_REFLECT_LENGTH,COAST_CANAL_REFLECT_TEXELS,
  coastCanalReflectionsAt,buildCoastCanalReflectionTexture,
@@ -71,7 +71,7 @@ it('exposes water toward the far bank to the chase camera but hides it under a d
  const ray=new THREE.Raycaster();
  try{
   for(const d of [988,1000,1010,1052]){
-   const frame=sample(d),above=frame.position.clone().addScaledVector(frame.right,12.05);
+   const frame=sample(d),above=frame.position.clone().addScaledVector(frame.right,COAST_DRAIN_X.innerRight-.07);
    above.y+=5;
    ray.set(above,new THREE.Vector3(0,-1,0));
    const target=ray.intersectObject(water)[0].point;

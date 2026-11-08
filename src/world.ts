@@ -281,5 +281,5 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   }else{
    sun.target.position.copy(car.position);
    sun.position.copy(car.position).add(options.dawn?CANYON_DAWN_SUN.clone().multiplyScalar(120):new THREE.Vector3(-60,95,-45));
-  }if(dusk){scene.fog!.color.set('#a8796e');}else if(options.dawn){scene.fog!.color.set('#c7b6ae');}}};
+  }if(dusk){dusk.update(distance);scene.fog!.color.set('#a8796e');}else if(options.dawn){scene.fog!.color.set('#c7b6ae');}}};
 }

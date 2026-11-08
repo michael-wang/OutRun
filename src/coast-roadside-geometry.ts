@@ -78,8 +78,13 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
    // Asphalt finishes at 10.12m. There is NO sandy shoulder or outer metal
    // highway rail: the thin roadside curb immediately meets a tall concrete
    // wall and a 1m deep DARK bottom, like actual rural Taiwanese U-gutters.
-   quad(X.outerRoad,X.leftLip,.055,'#adaaa0');
-   quad(X.leftLip,X.innerLeft,.035,'#a4a399'); // near almost-vertical side
+   // A shallow bevel falls away from the asphalt. A raised kerb here masks
+   // the entire reduced opening at the low chase-camera angle.
+   const edgeY=site.kind==='covered'?.055:.005,lipY=site.kind==='covered'?.035:-.055;
+   batch.quad(ground(sample,from,X.outerRoad,edgeY),ground(sample,from,X.leftLip,lipY),
+    ground(sample,to,X.leftLip,lipY),ground(sample,to,X.outerRoad,edgeY),'#adaaa0');
+   batch.quad(ground(sample,from,X.leftLip,lipY),ground(sample,from,X.innerLeft,.035),
+    ground(sample,to,X.innerLeft,.035),ground(sample,to,X.leftLip,lipY),'#a4a399'); // near almost-vertical side
    quad(X.innerLeft,X.innerRight,.075,'#4b514d'); // damp, muddy floor
    quad(X.innerRight,X.rightLip,.035,'#969991'); // far vertical side
    if(bridge){
@@ -89,11 +94,16 @@ export function buildCoastRoadsideDrain(sample:Sample,start:number,end:number){
      coverPoint(to,X.rightLip,.10),coverPoint(to,X.leftLip,.10),'#b3b0a3');
     batch.quad(coverPoint(from,X.rightLip,.07),coverPoint(from,X.outerLand,.07),
      coverPoint(to,X.outerLand,.07),coverPoint(to,X.rightLip,.07),'#999a8d');
+    // The slab has thickness on the long edges too. The low chase camera
+    // can see beneath a paper-thin deck from the side on a narrow channel.
+    for(const x of [X.leftLip,X.rightLip])
+     batch.quad(coverPoint(from,x,-.22),coverPoint(to,x,-.22),
+      coverPoint(to,x,.10),coverPoint(from,x,.10),'#8a8d88');
     // Low, squared end parapets make the crossing legible from a moving car.
     for(const d of [from,to]){
      if(Math.abs(Math.abs(d-bridge.d)-bridge.width*.5)>.001)continue;
      // The end fascia continues below the deck to its concrete soffit.
-     batch.quad(coverPoint(d,X.leftLip,-.13),coverPoint(d,X.rightLip,-.13),
+     batch.quad(coverPoint(d,X.leftLip,-.22),coverPoint(d,X.rightLip,-.22),
       coverPoint(d,X.rightLip,.35),coverPoint(d,X.leftLip,.35),'#8a8d88');
     }
    }else if(coastDrainCovered(mid)){

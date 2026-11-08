@@ -8,7 +8,7 @@ export function vergeBladeMaterial(time:{value:number},mobile:boolean){
   shader.vertexShader='uniform float vergeTime;\n'+shader.vertexShader
    .replace('#include <color_vertex>',`#include <color_vertex>
     float wild=smoothstep(.35,1.,length(instanceMatrix[1].xyz));
-    vColor.rgb*=mix(vec3(.34,.43,.29),vec3(.68,.72,.61),wild);`)
+    vColor.rgb*=mix(vec3(.54,.61,.49),vec3(.66,.70,.58),wild);`)
    .replace('#include <begin_vertex>',`#include <begin_vertex>
    vec4 root=modelMatrix*instanceMatrix[3];
    float range=distance(root.xz,cameraPosition.xz);
@@ -46,7 +46,7 @@ export function shadeMeadowGround(material:Material,assets:FarmAssets){
     vec3 turf=mix(vec3(.165,.318,.096),vec3(.39,.44,.161),smoothstep(.25,.76,.55*hill+.45*stand.r));
     turf*=.56+.44*stand.r+.47*stand.g+.29*hillside.g;
     float lawn=vMeadowCover.y;
-    turf=mix(turf,vec3(.19,.324,.118)*(.72+.36*stand.g+.22*hill),lawn);
+    turf=mix(turf,vec3(.19,.324,.118)*(.72+.36*stand.g+.22*hill),.36*lawn);
     vec3 eye=cameraPosition-vMeadowWorld;
     float nearCover=1.-smoothstep(75.,155.,dot(abs(eye.xz),vec2(.6,.85)));
     if(nearCover>0.){
@@ -72,7 +72,7 @@ export function shadeMeadowGround(material:Material,assets:FarmAssets){
      float tips=textureGrad(meadowTile,vec2(u,v),
       vec2(dot(dFdx(p),du),dFdx(depth)*dv),vec2(dot(dFdy(p),du),dFdy(depth)*dv)).b;
      float rim=(tips-.502)*smoothstep(.0,.13,stepToEye)*(1.-smoothstep(.86,1.,stepToEye));
-     turf+=nearCover*(1.-.45*lawn)*(vec3(.036,.047,.016)+vec3(.66,.65,.28)*(max(rim,0.)+.34*min(rim,0.)));
+     turf+=nearCover*(1.-.27*lawn)*(vec3(.036,.047,.016)+vec3(.66,.65,.28)*(max(rim,0.)+.34*min(rim,0.)));
     }
     float breeze=.018*sin(dot(p,vec2(.062,.029))+hill*8.+meadowTime*1.05);
     diffuseColor.rgb=mix(diffuseColor.rgb,turf*(1.+breeze),vMeadowCover.x);

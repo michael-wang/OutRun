@@ -47,7 +47,7 @@ export function buildCoastTownStreets(
   const half=site.width*.5;
   // From the far edge of the existing asphalt to the homes, not across
   // the playable road. Conform to the same coastal hill surface as houses.
-  const segmentX=[9.92,10.12,10.26,12.62,14.75,18,23];
+  const segmentX=[9.92,COAST_DRAIN_X.outerRoad,COAST_DRAIN_X.leftLip,COAST_DRAIN_X.rightLip,COAST_DRAIN_X.outerLand,18,23];
   for(let x=23;x+8<site.length;x+=8)segmentX.push(x+8);
   segmentX.push(site.length);
   for(let i=0;i<segmentX.length-1;i++){

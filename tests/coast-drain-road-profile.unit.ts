@@ -1,3 +1,5 @@
+import {addCoastDusk} from '../src/coast-dusk';
+import {coastBeachHeight} from '../src/scenery-cross-section';
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
@@ -6,7 +8,7 @@ import {shoulderProfile} from '../src/road-profile';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {addCoastResort} from '../src/coast-resort';
 import {coastBarrierStyle,coastBarrierClearance,coastDriveBounds} from '../src/coast-layout';
-import {COAST_DRAIN_X,COAST_UTILITY_POLES} from '../src/coast-roadside-layout';
+import {COAST_DRAIN_X,COAST_LAMP_HEAD,COAST_UTILITY_POLES} from '../src/coast-roadside-layout';
 import {GuardrailContact} from '../src/guardrail-contact';
 import {coastBarrierShadowAnchors} from '../src/coast-dusk-shadows';
 import {addJourneyScenery} from '../src/scenery';
@@ -91,6 +93,18 @@ it('keeps the car fully on asphalt on BOTH sides, matching guardrail and stone p
  expect(metal.left).toBeLessThan(beach.left);
  const rightStone=coastDriveBounds(850,8.75);
  expect(rightStone.right).toBeGreaterThan(COAST_DRAIN_X.outerRoad);
+});
+it('lights the actual utility fixtures after a jump in either direction',()=>{
+ const scene=new THREE.Scene(),dusk=addCoastDusk(scene,track.sample);
+ const lights=scene.children.filter((o):o is THREE.PointLight=>o instanceof THREE.PointLight);
+ expect(lights).toHaveLength(2);
+ for(const d of [906,8640,4060]){
+  dusk.update(d);
+  const pole=COAST_UTILITY_POLES.find(p=>p.d===d)!,frame=track.sample(d);
+  const expected=frame.position.clone().addScaledVector(frame.right,pole.x-COAST_LAMP_HEAD.reach);
+  expected.y=coastBeachHeight(pole.x,frame.position.y,frame.right.y,d)+pole.height-COAST_LAMP_HEAD.drop;
+  expect(lights.some(l=>l.position.distanceTo(expected)<.01&&l.intensity>0&&l.distance>20&&!l.castShadow)).toBe(true);
+ }
 });
 it('mounts a warm fixture ON every real canal-side utility pole',()=>{
  const mounted=COAST_UTILITY_POLES.filter(p=>p.lamp);
