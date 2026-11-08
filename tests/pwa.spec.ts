@@ -1,7 +1,8 @@
 import {test,expect,type Page} from '@playwright/test';
 
 const site=new URL(process.env.OUTRUN_SITE_BASE??'/','http://127.0.0.1:4173');
-const playUrl=new URL('?at=537&fpsdiag=1&startupdiag=1',site).href;
+const startDistance=3438;
+const playUrl=new URL(`?at=${startDistance}&fpsdiag=1&startupdiag=1`,site).href;
 
 async function waitForCoast(page:Page){
  await page.waitForFunction(()=>document.querySelector<HTMLElement>('#game-loading')?.hidden&&
@@ -12,6 +13,15 @@ async function waitForCoast(page:Page){
  expect(report.finalReadiness.workerInitialized).toBe(true);
  expect(await page.evaluate(()=>!!(window as any).__driveFpsDiagnostics)).toBe(true);
 }
+
+test.afterEach(async({context},info)=>{
+ if(info.status===info.expectedStatus)return;
+ for(const p of context.pages())console.error('PWA page state',p.url(),await p.evaluate(()=>({
+  loading:document.querySelector('#game-loading')?.getAttribute('data-phase'),
+  distance:document.querySelector('#drive-distance')?.textContent,
+  detail:document.querySelector('#loading-detail')?.textContent
+ })));
+});
 
 test('installed coast launches online and offline within its publishing scope',async({page,context,request})=>{
  test.setTimeout(300000);
@@ -39,13 +49,16 @@ test('installed coast launches online and offline within its publishing scope',a
  await page.goto(playUrl);
  await waitForCoast(page);
  expect(await page.locator('link[rel=manifest]').evaluate((el:HTMLLinkElement)=>el.href)).toBe(manifestUrl.href);
- const distance=async()=>Number((await page.locator('#drive-distance').innerText()).replace(/\D/g,''));
- await expect.poll(distance).toBe(537);
+ const distance=async()=>parseInt((await page.locator('#drive-distance').textContent())!.replaceAll(',',''),10);
+ await expect.poll(distance,{timeout:30000}).toBe(startDistance);
  await page.keyboard.down('Space');
- try{await expect.poll(distance,{timeout:60000}).toBeGreaterThan(537);}
+ try{await expect.poll(distance,{timeout:60000}).toBeGreaterThan(startDistance);}
  finally{await page.keyboard.up('Space');}
- await page.keyboard.press('r');
- await expect.poll(distance,{timeout:30000}).toBe(537);
+ await page.locator('#pause').click();
+ await page.locator('#tp-more').click();
+ await page.locator('#tp-replay').click();
+ await waitForCoast(page);
+ await expect.poll(distance,{timeout:30000}).toBe(startDistance);
  const registration=await page.evaluate(async()=>(await navigator.serviceWorker.ready).scope);
  expect(registration).toBe(site.href);
  await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
