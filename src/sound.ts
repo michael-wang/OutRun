@@ -2,10 +2,10 @@ import {PassBy,PASS_AUDIO} from './pass-by';
 import type {TrafficActor} from './traffic';
 import {SkidFeedback} from './skid-feedback';
 import nicePassUrl from './assets/passenger-nice-pass.mp3?url';
-import flyingUrl from './assets/passenger-flying.mp3?url';
+import ohYeahUrl from './assets/passenger-oh-yeah.mp3?url';
 import clapUrl from './assets/passenger-palm.wav?url';
 import type {Cheer} from './passenger-cheer';
-const passengerClips={applause:nicePassUrl,wave:flyingUrl,clap:clapUrl} as const;
+const passengerClips={applause:nicePassUrl,wave:ohYeahUrl,clap:clapUrl} as const;
 type PassengerCue=Cheer|'clap';
 /** Audio is unlocked by a user gesture. */
 export class EngineSound {
