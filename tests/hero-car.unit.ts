@@ -86,16 +86,36 @@ it('occasionally raises both passenger palms, claps twice and returns them to he
  const rest=at(),roll=vi.spyOn(Math,'random').mockReturnValue(.9);
  const hairTop=new THREE.Box3().setFromObject(motionCar.getObjectByName('layered-blonde-bob')!).max.y;
  try{
-  expect(m.onCleanPass()).toBe(false);roll.mockReturnValue(.1);
-  expect(m.onCleanPass()).toBe(true);expect(m.onCleanPass()).toBe(false);
+  expect(m.onCleanPass()).toBeUndefined();roll.mockReturnValue(.1);
+  expect(m.onCleanPass()).toBe('applause');expect(m.onCleanPass()).toBeUndefined();
   let beats=0;
   for(let i=0;i<210;i++)if(m.advance(.5,0,1/120)){
    const [a,b]=at();expect(a.distanceTo(b)).toBeLessThan(.042);
    expect(Math.min(a.y,b.y)-hairTop).toBeGreaterThan(.075);beats++;
   }
   expect(beats).toBe(2);expect(at()[0].distanceTo(rest[0])).toBeLessThan(.0001);
-  expect(m.onCleanPass()).toBe(false);
+  expect(m.onCleanPass()).toBeUndefined();
   m.reset();expect(m.occupants().cheerTime).toBe(-1);
+ }finally{roll.mockRestore();}
+});
+
+it('waves the outboard hand twice, keeps the other in her lap and saves clap sounds for applause',()=>{
+ const car=createCar(),motion=car.userData.motion;
+ const outer=car.getObjectByName('passenger-palm--1')!,inner=car.getObjectByName('passenger-palm-1')!;
+ const rest=outer.position.clone(),lap=inner.position.clone(),sweeps:number[]=[];
+ const roll=vi.spyOn(Math,'random').mockReturnValue(.2);
+ try{
+  expect(motion.onCleanPass()).toBe('wave');
+  for(let i=0;i<200;i++){
+   expect(motion.advance(0,0,.01)).toBe(false);
+   expect(inner.position.distanceTo(lap)).toBeLessThan(.0001);
+   if(i>=48&&i<110)sweeps.push(outer.position.x);
+  }
+  expect(Math.max(...sweeps)-Math.min(...sweeps)).toBeGreaterThan(.17);
+  expect(outer.position.distanceTo(rest)).toBeLessThan(.0001);
+  for(let i=0;i<13*60;i++)motion.advance(0,0,1/60);
+  expect(motion.onCleanPass()).toBe('applause');
+  motion.reset();expect(motion.occupants().cheerTime).toBe(-1);
  }finally{roll.mockRestore();}
 });
 

@@ -39,10 +39,10 @@ export type WindGroom={
  locks?:THREE.Group[];
 };
 
-/** Silver side-part with a fixed undercut and individually swept ends. */
+/** Chestnut side part with a tapered nape and a brushed-back forelock. */
 export function createDriverHair():WindGroom{
  const group=new THREE.Group();group.name='driver-layered-short-hair';
- const dark=new THREE.Color('#737880'),light=new THREE.Color('#d4d4d2');
+ const dark=new THREE.Color('#281c19'),light=new THREE.Color('#694938');
  const rings=[
   {y:-.155,x:.104,z:.126},
   {y:-.109,x:.127,z:.140},
@@ -57,14 +57,16 @@ export function createDriverHair():WindGroom{
  for(let r=0;r<rings.length;r++)for(let i=0;i<sides;i++){
   const angle=2*Math.PI*i/sides,ring=rings[r];
   const side=Math.sin(angle),back=Math.cos(angle);
-  position.push(side*ring.x+Math.min(.024,.007*r),ring.y+.003*Math.sin(angle*4),back*ring.z);
+  // Lift the front hairline off the brow and taper down behind the ears.
+  const hairline=Math.max(0,back)*.126*Math.max(0,1-r/3);
+  position.push(side*ring.x+Math.min(.024,.007*r),ring.y+hairline,back*ring.z);
   const tone=.16+.19*r/3+.08*Math.sin(angle*3.2+i*.27);
   const c=dark.clone().lerp(light,Math.max(.04,tone));
   colors.push(c.r,c.g,c.b);
  }
  for(let r=0;r<rings.length-1;r++)for(let i=0;i<sides;i++){
   const a=r*sides+i,b=r*sides+(i+1)%sides,c=a+sides,d=b+sides;
-  indices.push(a,c,b,b,c,d);
+  indices.push(a,b,c,b,d,c);
  }
  const geometry=new THREE.BufferGeometry();
  geometry.setAttribute('position',new THREE.Float32BufferAttribute(position,3));
@@ -83,16 +85,18 @@ export function createDriverHair():WindGroom{
   const angle=(i+.35)*Math.PI*2/26;
   const sx=Math.sin(angle),sz=Math.cos(angle);
   const rear=Math.max(0,-sz),temple=Math.abs(sx);
-  const fall=.190+rear*.076+(i%4)*.012+temple*.010;
+  const forelock=Math.max(0,sz);
+  const fall=.185+rear*.046+(i%4)*.006-forelock*.035;
   const rows:Row[]=[];
   for(let j=0;j<=5;j++){
    const t=j/5,arc=t*Math.PI*.64;
-   const spread=Math.sin(arc),sweep=angle+.56*(1-t);
+   const spread=Math.sin(arc),sweep=angle+.83*(1-t);
+   const roll=forelock*Math.sin(Math.PI*t);
    rows.push({
-    x:Math.sin(sweep)*(.064+.104*spread)+.025*(1-t)+.011*Math.sin(t*2.8+angle)*t,
-    y:.155-fall*t*t+.006*Math.sin(i*.81+t*4.4),
-    z:Math.cos(sweep)*(.045+.112*spread)-.019*t+.005*Math.sin(i*.65+t*5),
-    sweep,width:(.024+(i%3)*.003)*(1-.93*t*t),
+    x:Math.sin(sweep)*(.061+.098*spread)+.032*(1-t)-.021*roll,
+    y:.155-fall*t*t+.030*roll+.004*Math.sin(i*.81+t*4.4),
+    z:Math.cos(sweep)*(.045+.111*spread)-.024*t-.018*temple*spread,
+    sweep,width:(.027+(i%3)*.003)*(1-.86*t*t),
     shade:.79+.13*Math.sin(i*2.12)+.12*t,
    });
    const flex=t*t*(.68+.32*rear),wave=angle*2.7-t*2.4;
@@ -109,9 +113,9 @@ export function createDriverHair():WindGroom{
   }
   strands.push({rows});
  }
- const layers=strandMesh(strands,'#8e939a','#f7f6ef','driver-side-part-layered-strands');
+ const layers=strandMesh(strands,'#352520','#80593f','driver-side-part-layered-strands');
  setWindShapes(layers.geometry,shapes);layers.updateMorphTargets();
- layers.material.roughness=.82;
+ layers.material.roughness=.68;
  group.add(layers);
  return {root:group,sync(wind,sway,tipSway,phase){
   const weights=layers.morphTargetInfluences!;

@@ -1,7 +1,7 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {createCar} from '../src/car';
-it('streams the silver short hair back and outward with the roots held at the part',()=>{
+it('streams the side-parted short hair back and outward with the roots held at the part',()=>{
  const car=createCar(),motion=car.userData.motion;
  const layers=car.getObjectByName('driver-side-part-layered-strands') as THREE.Mesh;
  const read=(i:number)=>layers.getVertexPosition(i,new THREE.Vector3());

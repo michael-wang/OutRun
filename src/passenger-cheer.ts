@@ -4,6 +4,7 @@ import {handGeometry} from './hero-hands';
 
 export const CLAP_TIMES=[.62,.94] as const;
 export const CHEER_END=1.62;
+export type Cheer='applause'|'wave';
 const smooth=THREE.MathUtils.smoothstep;
 const up=new THREE.Vector3(0,1,0);
 
@@ -37,14 +38,26 @@ export function passengerArm(side:1|-1,skin:THREE.Material){
  const palmsIn=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(
   new THREE.Vector3(0,0,side),new THREE.Vector3(side,0,0),up));
  let lastTime=NaN;
- const pose=(t:number)=>{
+ const wavePalm=new THREE.Quaternion().setFromEuler(new THREE.Euler(-Math.PI/2,0,.12));
+ const roll=new THREE.Quaternion(),forward=new THREE.Vector3(0,0,1);
+ const pose=(t:number,cheer:Cheer)=>{
+  // The inboard hand stays on her lap throughout the one-handed wave.
+  if(cheer==='wave'&&side===1)t=-1;
   if(t===lastTime)return;lastTime=t;
   const raise=smooth(t,0,.48)*(1-smooth(t,1.08,CHEER_END));
-  const clap=CLAP_TIMES.reduce((peak,at)=>Math.max(peak,1-smooth(Math.abs(t-at),0,.145)),0);
   // Swing forward en route from the lap. Both palms face inward by
   // the time they meet, a little above and in front of her crown.
   const arc=Math.sin(raise*Math.PI);
-  wrist.set(side*(-.08+.10*raise-.201*clap),-.358+1.013*raise-.01*clap,.19-.05*raise+.28*arc);
+  if(cheer==='wave'){
+   const sweep=Math.sin(4*Math.PI*smooth(t,.36,1.19))*raise;
+   wrist.set(.08-.28*raise+.10*sweep,-.358+.967*raise,.19-.12*raise+.22*arc);
+   bones[2].quaternion.slerpQuaternions(lap,wavePalm,raise)
+    .premultiply(roll.setFromAxisAngle(forward,-.44*sweep));
+  }else{
+   const clap=CLAP_TIMES.reduce((peak,at)=>Math.max(peak,1-smooth(Math.abs(t-at),0,.145)),0);
+   wrist.set(side*(-.08+.10*raise-.201*clap),-.358+1.013*raise-.01*clap,.19-.05*raise+.28*arc);
+   bones[2].quaternion.slerpQuaternions(lap,palmsIn,raise);
+  }
   // Keep the longer limbs the same length on her lap and overhead. The
   // elbows open outward as the wrists clear the head, then relax back down.
   const reach=wrist.length(),along=(reach*reach+upperLength**2-foreLength**2)/(2*reach);
@@ -55,9 +68,9 @@ export function passengerArm(side:1|-1,skin:THREE.Material){
   bones[0].scale.y=upperLength;bones[0].quaternion.setFromUnitVectors(up,axis.copy(elbow).normalize());
   bones[1].position.copy(elbow);bones[1].scale.y=foreLength;
   bones[1].quaternion.setFromUnitVectors(up,axis.subVectors(wrist,elbow).normalize());
-  bones[2].position.copy(wrist);bones[2].quaternion.slerpQuaternions(lap,palmsIn,raise);
+  bones[2].position.copy(wrist);
   bounds.set(origin,origin).expandByPoint(elbow).expandByPoint(wrist).expandByScalar(.15);
  };
- pose(-1);
+ pose(-1,'applause');
  return {root,pose};
 }

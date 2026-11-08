@@ -2,15 +2,19 @@ import {PassBy,PASS_AUDIO} from './pass-by';
 import type {TrafficActor} from './traffic';
 import {SkidFeedback} from './skid-feedback';
 import nicePassUrl from './assets/passenger-nice-pass.mp3?url';
-/** Original synthesized audio, created only after a user gesture. */
+import flyingUrl from './assets/passenger-flying.mp3?url';
+import clapUrl from './assets/passenger-palm.wav?url';
+import type {Cheer} from './passenger-cheer';
+const passengerClips={applause:nicePassUrl,wave:flyingUrl,clap:clapUrl} as const;
+type PassengerCue=Cheer|'clap';
+/** Audio is unlocked by a user gesture. */
 export class EngineSound {
   readonly passes=new PassBy();
   private passVoices:{source:AudioBufferSourceNode;high:BiquadFilterNode;low:BiquadFilterNode;gain:GainNode;pan:StereoPannerNode}[]=[];
   private context?: AudioContext;
   private master?: GainNode;
-  private passengerVoice?:AudioBuffer;
-  private clap?:AudioBuffer;
-  private voiceLoad?:Promise<void>;
+  private passengerBuffers=new Map<PassengerCue,AudioBuffer>();
+  private loadingClips=new Set<PassengerCue>();
   private passengerSources=new Set<AudioBufferSourceNode>();
   private engine?: OscillatorNode;
   private engineGain?: GainNode;
@@ -33,17 +37,6 @@ export class EngineSound {
     if (!this.context) {
       const context = this.context = new AudioContext();
       this.master = context.createGain();
-      const clap=context.createBuffer(1,Math.ceil(context.sampleRate*.14),context.sampleRate);
-      const samples=clap.getChannelData(0);
-      let noiseSeed=149,previousNoise=0;
-      for(let i=0;i<samples.length;i++){
-        noiseSeed=(Math.imul(noiseSeed,1664525)+1013904223)>>>0;
-        const t=i/context.sampleRate,noise=noiseSeed/2147483648-1;
-        const slap=Math.exp(-t*65)+.45*Math.exp(-Math.abs(t-.012)*220);
-        samples[i]=(.48*(noise-previousNoise)+.24*Math.sin(t*2*Math.PI*930))*slap;
-        previousNoise=noise;
-      }
-      this.clap=clap;
       this.master.gain.value = this.muted ? 0 : 0.35;
       this.analyser = context.createAnalyser();
       this.analyser.fftSize = 256;
@@ -78,11 +71,15 @@ export class EngineSound {
       wobble.connect(amount); amount.connect(this.skid.frequency); wobble.start();
     }
     const context=this.context;
-    this.voiceLoad??=fetch(nicePassUrl).then(r=>{
-      if(!r.ok)throw Error('Passenger voice unavailable');
-      return r.arrayBuffer();
-    }).then(bytes=>context.decodeAudioData(bytes)).then(buffer=>{this.passengerVoice=buffer;})
-      .catch(()=>{this.voiceLoad=undefined;});
+    for(const cue of Object.keys(passengerClips) as PassengerCue[]){
+      if(this.passengerBuffers.has(cue)||this.loadingClips.has(cue))continue;
+      this.loadingClips.add(cue);
+      void fetch(passengerClips[cue]).then(response=>{
+        if(!response.ok)throw Error('Passenger clip unavailable');
+        return response.arrayBuffer();
+      }).then(bytes=>context.decodeAudioData(bytes)).then(buffer=>this.passengerBuffers.set(cue,buffer))
+        .catch(()=>{}).finally(()=>this.loadingClips.delete(cue));
+    }
     await context.resume();
   }
   impact(strength:number,kind:'vehicle'|'guardrail'|'concrete'|'soft'='guardrail'){
@@ -136,8 +133,8 @@ export class EngineSound {
     this.passVoices.forEach((node,i)=>{const v=voices[i];node.gain.gain.setTargetAtTime(v?Math.min(PASS_AUDIO.peakCap,v.gain*mix):0,now,v && v.gain>0 ? .018 : .025);if(v){node.pan.pan.setTargetAtTime(v.pan,now,.02);node.high.frequency.setTargetAtTime(v.type===0?220:75,now,.03);node.low.frequency.setTargetAtTime(v.cutoff,now,.02);node.source.playbackRate.setTargetAtTime(v.rate,now,.02);}});
   }
   resetPassBy(){this.passes.reset();this.silencePasses();}
-  passengerCue(kind:'voice'|'clap'){
-    const context=this.context,buffer=kind==='voice'?this.passengerVoice:this.clap;
+  passengerCue(kind:PassengerCue){
+    const context=this.context,buffer=this.passengerBuffers.get(kind);
     if(!context||!this.master||!buffer||this.muted||!this.active||context.state!=='running')return;
     const source=context.createBufferSource();source.buffer=buffer;source.connect(this.master);
     this.passengerSources.add(source);
