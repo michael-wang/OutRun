@@ -43,6 +43,5 @@ it('keeps only the FPS JSON export control visible in opt-in diagnostics',()=>{
  expect(source).not.toContain('this.updatePanel(row)');
  expect(source).not.toContain('需人工決定是否發佈 · ');
  expect(styles).toContain('#drive-fps-diagnostic button');
- expect(styles).toContain('bottom:calc(max(24px,env(safe-area-inset-bottom)) + 14px)');
  expect(pauseStyles).toContain('html[data-player-ui="true"] #trip-pause-dock{display:none!important}');
 });

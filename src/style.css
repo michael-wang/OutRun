@@ -124,9 +124,9 @@ html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
 @media (orientation:portrait) and (pointer:coarse){
  html[data-player-ui="true"] #player-start{display:none!important}
  html[data-player-ui="true"] #rotate{
-  z-index:65;justify-content:flex-start;gap:11px;
-  padding:max(100px,12dvh) 24px 24px;
-  background:linear-gradient(180deg,#082f3d8c 0%,#123e431a 43%,transparent 75%);
+  z-index:65;justify-content:flex-end;gap:10px;
+  padding:env(safe-area-inset-top) 7vw var(--portrait-launch-inset);
+  background:transparent;
   text-shadow:0 2px 12px #082c38;pointer-events:none;
  }
  html[data-player-ui="true"] #rotate span{font-size:46px}
@@ -154,9 +154,7 @@ html[data-player-ui="true"] .player-title{font-size:clamp(32px,4.5vw,64px);font-
 html[data-player-ui="true"] #player-play{border-radius:6px;min-height:48px;min-width:220px}
 html[data-player-ui="true"] #player-play:disabled{cursor:wait;opacity:.65}
 html[data-player-ui="true"] #player-loading{max-width:90vw}
-html[data-player-ui="true"] #rotate{background:linear-gradient(180deg,#082f3d55,transparent 50%)}
 @media (orientation:portrait) and (pointer:coarse){
- html[data-player-ui="true"] #rotate{padding-top:max(15dvh,env(safe-area-inset-top));font-size:24px}
  html[data-player-ui="true"] #rotate span{display:none}
 }
 @media (orientation:landscape) and (max-height:500px){
@@ -164,7 +162,6 @@ html[data-player-ui="true"] #rotate{background:linear-gradient(180deg,#082f3d55,
  html[data-player-ui="true"] .player-title{font-size:30px}
  html[data-player-ui="true"] #player-play{min-height:44px;margin-top:3px}
 }
-@media (orientation:portrait){#startup-art img{object-position:25% 75%}}
 @media (orientation:portrait) and (pointer:coarse){
  html[data-player-ui="true"] #player-start:has(#player-retry:not([hidden])){display:flex!important;top:30dvh}
  html[data-player-ui="true"] #player-start:has(#player-retry:not([hidden])) :is(.player-title,#player-subtitle,#player-play,.player-secondary){display:none}
@@ -189,11 +186,11 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
 @media (pointer:coarse) and (orientation:portrait){
   html[data-player-ui="true"] #rotate #rotate-launch:not([hidden]){
     display:inline-flex!important;align-items:center;justify-content:center;
-    pointer-events:auto;min-width:min(300px,82vw);min-height:56px;
-    margin-top:7px;padding:12px 22px;
-    border:0;border-radius:12px;background:#ffd297;color:#173e40;
-    font:800 21px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
-    text-shadow:none;box-shadow:0 7px 26px #082c3880;
+    pointer-events:auto;width:min(100%,320px);min-height:48px;
+    padding:10px 22px;
+    border:2px solid #ffd69f;border-radius:8px;background:#10374080;color:#fff4dd;
+    font:700 19px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+    text-shadow:0 1px 3px #082c38;
     touch-action:manipulation;
   }
   html[data-player-ui="true"] #rotate #rotate-launch-status:not([hidden]){
@@ -452,15 +449,15 @@ header #pause:active{
  color:#153c40;
  transform:none;
 }
-/* Portrait has a central orientation instruction and a full-width CTA.
- * Place the debug export in unused space next to the phone's home bar. */
+/* Keep the floating diagnostic action clear of the bottom launch controls. */
 @media(pointer:coarse) and (orientation:portrait){
  #drive-fps-diagnostic{
-  top:auto;
-  bottom:calc(max(24px,env(safe-area-inset-bottom)) + 14px);
+  top:max(16px,env(safe-area-inset-top));
   right:max(16px,env(safe-area-inset-right));
  }
 }
+#player-start #drive-fps-diagnostic{position:static}
+#player-start #drive-fps-diagnostic button{width:100%;min-height:44px}
 
 
 /* Finish totals are quiet supporting credits, never a panel over the sunset.

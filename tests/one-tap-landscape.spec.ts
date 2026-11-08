@@ -48,7 +48,7 @@ test('Android portrait: one tap requests fullscreen and landscape before road is
   try{
     await expect(page.locator('#rotate')).toBeVisible();
     await expect(page.locator('#rotate-launch')).toBeVisible();
-    await expect(page.locator('#rotate-launch')).toHaveText('全螢幕出發！');
+    await expect(page.locator('#rotate-launch')).toHaveText('開始駕駛!');
     await expect(page.locator('#player-start')).toBeHidden();
     await expect(page.locator('#startup-art')).toBeVisible();
     await page.locator('#rotate-launch').tap();

@@ -1,10 +1,10 @@
 <!doctype html><html lang="zh-Hant" data-loading="true"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><link rel="icon" href="%BASE_URL%icons/coast-192.png"/><link rel="apple-touch-icon" href="%BASE_URL%icons/coast-192.png"><link rel="manifest" href="%BASE_URL%manifest.webmanifest"><meta name="theme-color" content="#123e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>極速漫遊</title><style>
-#startup-art{position:fixed;inset:0;z-index:30;pointer-events:none;background:#3ca9e9}
-#startup-art img{width:100%;height:100%;object-fit:cover;object-position:40% 75%}
+#startup-art{position:fixed;inset:0;z-index:30;pointer-events:none;background:#123e43}
 
 #game-loading{position:fixed;inset:0;z-index:10000;isolation:isolate;overflow:hidden;color:#fff4de;background:linear-gradient(155deg,#edaf75,#2c7585 52%,#102e3e);font:16px/1.6 system-ui,sans-serif}
-#game-loading picture,#game-loading img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:45% 65%}
-#game-loading:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#142c3a12 15%,#102a35a8 65%,#081e2cf5)}
+#game-loading picture,#game-loading img,#startup-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:45% 65%}
+#game-loading:after,#startup-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#142c3a12 15%,#102a35a8 65%,#081e2cf5)}
+#game-loading:after{z-index:-1}
 #game-loading picture{z-index:-2}
 .loading-brand{position:absolute;top:max(30px,env(safe-area-inset-top));left:7vw;margin:0;font-weight:800;letter-spacing:.18em;font-size:clamp(24px,4vw,40px);text-shadow:0 2px 15px #173f4b}
 .loading-brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.3em;opacity:.9}
@@ -44,7 +44,7 @@
 html[data-loading=true] #app{visibility:hidden}
 @keyframes loading-sweep{from{transform:translateX(-100%)}to{transform:translateX(400%)}}
 @keyframes loading-spin{to{transform:rotate(360deg)}}
-@media(orientation:portrait){#game-loading img{object-position:50% 50%}.loading-copy{bottom:max(8vh,env(safe-area-inset-bottom))}.loading-brand{top:max(5vh,env(safe-area-inset-top))}}
+@media(orientation:portrait){:root{--portrait-launch-inset:max(8dvh,env(safe-area-inset-bottom))}#game-loading img,#startup-art img{object-position:center}.loading-copy{bottom:var(--portrait-launch-inset)}.loading-brand{top:max(5vh,env(safe-area-inset-top))}}
 @media(orientation:landscape) and (max-height:500px){.loading-brand{top:20px;font-size:24px}.loading-copy{bottom:22px}.loading-copy h1{font-size:24px;margin-bottom:6px}#loading-detail{margin-bottom:12px}.loading-foot{margin-top:8px}}
 @media(prefers-reduced-motion:reduce){#loading-track:after,.loading-spinner{animation:none}#loading-fill{transition:none}}
 

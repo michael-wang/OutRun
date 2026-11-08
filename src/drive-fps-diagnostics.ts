@@ -54,6 +54,7 @@ type OutstandingQuery={query:WebGLQuery;distanceM:number;seconds:number};
 const captureSeconds=600; // 10-minute journey, bounded memory usage
 
 export class DriveFpsDiagnostics {
+ private exportPanel?:HTMLElement;
  readonly enabled=typeof location!=='undefined'&&new URLSearchParams(location.search).get('fpsdiag')==='1';
  private startAt=0;
  private lastAt=0;
@@ -194,7 +195,11 @@ export class DriveFpsDiagnostics {
   button.setAttribute('aria-label','匯出 FPS 診斷 JSON');
   button.onclick=()=>this.download();
   panel.append(button);document.body.append(panel);
+  this.exportPanel=panel;
   (window as typeof window & {__driveFpsDiagnostics?:DriveFpsDiagnostics}).__driveFpsDiagnostics=this;
+ }
+ placeExportIn(host:HTMLElement){
+  if(this.exportPanel&&this.exportPanel.parentElement!==host)host.append(this.exportPanel);
  }
  private download(){
   const output=JSON.stringify(this.report(),null,2);
