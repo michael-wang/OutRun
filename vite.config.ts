@@ -2,7 +2,7 @@ import {defineConfig, type Plugin} from 'vite';
 import {mkdir, open, realpath, lstat, link, unlink, readdir, readFile, writeFile} from 'node:fs/promises';
 import {join,resolve,sep} from 'node:path';
 import {createHash, randomUUID} from 'node:crypto';
-import {spawn} from 'node:child_process';
+import {execFileSync,spawn} from 'node:child_process';
 import {createReadStream} from 'node:fs';
 
 /** Local-only asset handoff: never copies the GLB into a build or Git. */
@@ -85,4 +85,9 @@ function offlineCoast():Plugin {
   await writeFile(join(dir,'sw.js'),template.replace('BUILD_REVISION',revision).replace('/* BUILD_FILES */ []',JSON.stringify(paths)));
  }};
 }
-export default defineConfig({base:process.env.OUTRUN_SITE_BASE??'/',plugins:[captureArchive(),localBlenderArt(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});
+function buildCommit(){
+ if(process.env.GITHUB_SHA)return process.env.GITHUB_SHA;
+ try{return execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',windowsHide:true,stdio:['ignore','pipe','ignore']}).trim();}
+ catch{return null;}
+}
+export default defineConfig({define:{'import.meta.env.VITE_BUILD_SHA':JSON.stringify(buildCommit())},base:process.env.OUTRUN_SITE_BASE??'/',plugins:[captureArchive(),localBlenderArt(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});

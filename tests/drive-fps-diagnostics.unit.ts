@@ -19,7 +19,7 @@ it('separates coastline approach, first rice, flowers, exit, and later farm visi
  expect(driveRegionAt(9500)).toBe('other-flowers');
 });
 it('reports region-specific frame drops without mixing in non-farm sections',()=>{
- const cpu={callback:8,physics:1,world:2,ocean:1,boatShadow:0.2,mainScene:3,otherRender:0.8};
+ const cpu={trafficUpdate:0,wheelGroundRaycasts:0,effects:0,callback:8,physics:1,world:2,ocean:1,boatShadow:0.2,mainScene:3,otherRender:0.8};
  const row=(region:DriveFpsSecond['region'],fps:number,long:number):DriveFpsSecond=>({
   seconds:1,distanceM:2500,region,fps,frames:50,meanFrameGapMs:20,p95FrameGapMs:24,
   worstFrameGapMs:40,over33ms:2,over50ms:long,over100ms:0,

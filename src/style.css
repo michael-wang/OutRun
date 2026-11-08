@@ -620,3 +620,6 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
  letter-spacing:.02em;white-space:nowrap;
 }
 
+
+#drive-fps-diagnostic output:not(:empty){display:block;padding:4px 8px;background:#123540e8;color:#fff4d8;font:700 12px/1.4 system-ui;text-align:center}
+#tp-fps-test{width:100%;margin-top:6px}

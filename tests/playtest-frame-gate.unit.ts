@@ -30,3 +30,13 @@ it('warns on isolated long frames, escalates >100ms and bounds retained reports'
  expect(gate.report.incidents).toHaveLength(64);
  expect(gate.report.framesOver100ms).toBe(1);
 });
+
+it('counts slow frames in a final partial bucket without treating it as a one-second FPS drop',()=>{
+ const gate=new PlaytestFrameGate();
+ gate.ingest(second(55,5200));
+ gate.ingest({...second(20,5200,150),durationMs:150});
+ expect(gate.report.oneSecondBucketsBelow30).toBe(0);
+ expect(gate.report.verdict).toBe('REVIEW_REQUIRED');
+ expect(gate.report.framesOver100ms).toBe(1);
+ expect(gate.report.minimumFps).toBe(55);
+});

@@ -10,12 +10,13 @@ export class PlaytestFrameGate {
  private incidents:FrameIncident[]=[];
  private samples=0;private fpsBelow30=0;private frame50=0;private frame100=0;
  private minimumFps=Infinity;private largestGap=0;
- ingest(row:{fps:number;seconds:number;distanceM:number;worstFrameGapMs:number;over50ms:number;over100ms:number}){
+ ingest(row:{fps:number;seconds:number;durationMs?:number;distanceM:number;worstFrameGapMs:number;over50ms:number;over100ms:number}){
   if(!Number.isFinite(row.fps)||row.fps<=0)return;
-  this.samples++;this.minimumFps=Math.min(this.minimumFps,row.fps);
+  const fullBucket=row.durationMs===undefined||row.durationMs>=1000;
+  if(fullBucket){this.samples++;this.minimumFps=Math.min(this.minimumFps,row.fps);}
   this.largestGap=Math.max(this.largestGap,row.worstFrameGapMs);
   this.frame50+=row.over50ms;this.frame100+=row.over100ms;
-  const below30=row.fps<FRAME_BUDGET.blockBelowFps;
+  const below30=fullBucket&&row.fps<FRAME_BUDGET.blockBelowFps;
   if(below30)this.fpsBelow30++;
   const kind:FrameIncident['kind']|undefined=below30?'below-30-fps':
    row.worstFrameGapMs>=FRAME_BUDGET.severeFrameMs?'severe-frame':

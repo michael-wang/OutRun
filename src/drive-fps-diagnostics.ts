@@ -1,3 +1,5 @@
+import {FpsMeasurement,cpuPhases,emptyCpu,WARMUP_MS,MEASURE_MS,type CpuPhase,type CpuTotals} from './fps-measurement';
+import {GAME_VERSION} from './build-info';
 import type {WebGLRenderer} from 'three';
 import {PlaytestFrameGate} from './playtest-frame-gate';
 import {FARM_ZONES} from './coast-farm-layout';
@@ -17,9 +19,6 @@ export function driveRegionAt(distance:number):DriveRegion {
  return 'other';
 }
 
-export type CpuPhase='callback'|'physics'|'world'|'ocean'|'boatShadow'|'mainScene'|'otherRender';
-type CpuTotals=Record<CpuPhase,number>;
-const emptyCpu=():CpuTotals=>({callback:0,physics:0,world:0,ocean:0,boatShadow:0,mainScene:0,otherRender:0});
 const average=(rows:number[])=>rows.length?rows.reduce((sum,x)=>sum+x,0)/rows.length:0;
 const round=(n:number)=>Math.round(n*100)/100;
 
@@ -50,19 +49,21 @@ export function summarizeDriveRegions(rows:DriveFpsSecond[]){
 
 type GpuExtension={TIME_ELAPSED_EXT:number;GPU_DISJOINT_EXT:number};
 type GpuSample={seconds:number;distanceM:number;region:DriveRegion;gpuMs:number};
-type OutstandingQuery={query:WebGLQuery;distanceM:number;seconds:number};
+type OutstandingQuery={query:WebGLQuery;distanceM:number;seconds:number;owner?:FpsMeasurement};
 const captureSeconds=600; // 10-minute journey, bounded memory usage
 
 export class DriveFpsDiagnostics {
  private exportPanel?:HTMLElement;
+ private status?:HTMLOutputElement;
+ private run?:FpsMeasurement;
+ private lastWindow?:Record<string,unknown>;
+ private statusSecond=-1;
  readonly enabled=typeof location!=='undefined'&&new URLSearchParams(location.search).get('fpsdiag')==='1';
  private startAt=0;
  private lastAt=0;
  private bucketAt=0;
  private bucketGaps:number[]=[];
  private bucketCpu:CpuTotals=emptyCpu();
- private bucketDraws=0;
- private bucketTriangles=0;
  private samples:DriveFpsSecond[]=[];
  private spikes:{seconds:number;distanceM:number;region:DriveRegion;gapMs:number;cpuMs:CpuTotals}[]=[];
  private currentCpu:CpuTotals=emptyCpu();
@@ -75,7 +76,7 @@ export class DriveFpsDiagnostics {
  private readonly startedWall=new Date().toISOString();
  private readonly frameGate=new PlaytestFrameGate();
 
- constructor(private renderer:WebGLRenderer,private captureExtras:()=>Record<string,unknown>){
+ constructor(private renderer:WebGLRenderer,private captureExtras:()=>Record<string,unknown>,private captureScenario:()=>Record<string,unknown>){
   if(!this.enabled)return;
   const context=renderer.getContext();
   if('beginQuery' in context){
@@ -97,7 +98,7 @@ export class DriveFpsDiagnostics {
    const query=this.gl.createQuery();
    if(!query)return;
    this.gl.beginQuery(this.ext.TIME_ELAPSED_EXT,query);
-   this.runningQuery={query,distanceM,seconds:Math.round((performance.now()-this.startAt)/1000)};
+   this.runningQuery={query,distanceM,owner:this.run?.measureAt!=null?this.run:undefined,seconds:Math.round((performance.now()-this.startAt)/1000)};
   }catch{this.runningQuery=undefined;}
  }
  endGpu(){
@@ -110,25 +111,74 @@ export class DriveFpsDiagnostics {
   if(!this.gl||!this.ext||!this.pending.length)return;
   const candidate=this.pending[0];
   try{
+   if(this.gl.getParameter(this.ext.GPU_DISJOINT_EXT)){
+    for(const item of this.pending)this.gl.deleteQuery(item.query);
+    this.pending.length=0;return;
+   }
    if(!this.gl.getQueryParameter(candidate.query,this.gl.QUERY_RESULT_AVAILABLE))return;
-   const disjoint=this.gl.getParameter(this.ext.GPU_DISJOINT_EXT) as boolean;
    const nano=this.gl.getQueryParameter(candidate.query,this.gl.QUERY_RESULT) as number;
-   if(!disjoint&&Number.isFinite(nano))this.gpuSamples.push({
-    seconds:candidate.seconds,distanceM:candidate.distanceM,
-    region:driveRegionAt(candidate.distanceM),gpuMs:round(nano/1000000),
-   });
+   if(Number.isFinite(nano)){
+    const gpuMs=round(nano/1e6);
+    if(candidate.owner&&candidate.owner===this.run)candidate.owner.gpuMs.push(gpuMs);
+    if(this.samples.length<captureSeconds)this.gpuSamples.push({
+     seconds:candidate.seconds,distanceM:candidate.distanceM,region:driveRegionAt(candidate.distanceM),gpuMs,
+    });
+   }
    this.gl.deleteQuery(candidate.query);this.pending.shift();
   }catch{
    this.gl.deleteQuery(candidate.query);this.pending.shift();
   }
  }
- frame(now:number,playing:boolean,distanceM:number,drawCalls:number,triangles:number){
+ startWindow(){
+  if(!this.enabled)return;
+  const gl=this.renderer.getContext();
+  this.run=new FpsMeasurement(()=>({...this.captureScenario(),
+   viewport:{width:innerWidth,height:innerHeight,devicePixelRatio},
+   drawingBuffer:{width:gl.drawingBufferWidth,height:gl.drawingBufferHeight,pixelRatio:this.renderer.getPixelRatio()},
+   geometryCount:this.renderer.info.memory.geometries,textureCount:this.renderer.info.memory.textures,
+  }));
+  this.statusSecond=-1;
+ }
+ cancelWindow(reason:string){
+  if(!this.run)return;
+  this.run=undefined;this.status!.textContent='測試已中斷 · '+reason;
+ }
+ private measureFrame(now:number,distance:number,speed:number,calls:number,triangles:number){
+  const run=this.run!;
+  const result=run.frame(now,distance,speed,this.currentCpu,calls,triangles);
+  if(result){
+   this.lastWindow={
+    kind:'outrun-standard-fps-v1',version:GAME_VERSION,buildCommit:import.meta.env.VITE_BUILD_SHA??null,
+    device:{userAgent:navigator.userAgent},...result,
+    gpu:{status:!this.ext?'unsupported':run.gpuMs.length?'sampled':'no-valid-samples',
+     samplesMs:run.gpuMs,meanMs:run.gpuMs.length?round(average(run.gpuMs)):null,
+     pendingAtEnd:this.pending.filter(q=>q.owner===run).length},
+    definitions:{fps:'Mean is frames / actual window duration. Median and low percentiles describe instantaneous frame FPS; P01/P05 use nearest rank.',
+     cpu:'Milliseconds per measured frame. callbackTotal includes all phases. trafficUpdate includes physics substeps and visual updates; physics excludes that traffic time. effects covers tire, dust, spark and exhaust preparation. otherRender is remaining render preparation.',
+     draws:'Final scene render counters per frame, excluding earlier offscreen renders.',
+     gpu:'Nonblocking timer for ocean update, boat depth pass and scene render. Only resolved, non-disjoint samples issued inside this window.'},
+   };
+   this.run=undefined;this.status!.textContent='測試完成 · '+result.fps.mean+' FPS';
+   this.download(this.lastWindow,'outrun-standard-fps');
+   return;
+  }
+  const measuring=run.measureAt!==null;
+  const remaining=Math.ceil(((measuring?MEASURE_MS:WARMUP_MS)-(now-(run.measureAt??run.warmAt!)))/1000);
+  // The sign distinguishes the two clocks without writing to the DOM every frame.
+  const clock=measuring?remaining:-remaining;
+  if(clock!==this.statusSecond){
+   this.statusSecond=clock;this.status!.textContent=(measuring?'量測':'暖機')+' · '+remaining+' 秒';
+  }
+ }
+ frame(now:number,playing:boolean,distanceM:number,drawCalls:number,triangles:number,speedKmh:number){
   if(!this.enabled)return;
   this.pollGpu();
   if(!playing||document.hidden){
+   this.cancelWindow('離開駕駛畫面');
    this.lastAt=0;this.bucketGaps=[];this.bucketCpu=emptyCpu();this.currentCpu=emptyCpu();
    return;
   }
+  if(this.run)this.measureFrame(now,distanceM,speedKmh,drawCalls,triangles);
   if(!this.lastAt){
    this.lastAt=now;
    if(!this.startAt)this.startAt=now;
@@ -141,15 +191,16 @@ export class DriveFpsDiagnostics {
    this.bucketAt=now;this.bucketGaps=[];this.bucketCpu=emptyCpu();this.currentCpu=emptyCpu();
    return;
   }
-  if(this.samples.length>=captureSeconds)return;
+  if(this.samples.length>=captureSeconds){this.currentCpu=emptyCpu();return;}
   this.bucketGaps.push(gap);
-  for(const key of Object.keys(this.currentCpu) as CpuPhase[])this.bucketCpu[key]+=this.currentCpu[key];
-  const cpu={...this.currentCpu};this.currentCpu=emptyCpu();
-  this.bucketDraws=drawCalls;this.bucketTriangles=triangles;
+  this.bucketCpu.callback+=this.currentCpu.callback;
+  for(const phase of cpuPhases)this.bucketCpu[phase]+=this.currentCpu[phase];
   if(gap>50&&this.spikes.length<200)this.spikes.push({
    seconds:round((now-this.startAt)/1000),distanceM:Math.round(distanceM),region:driveRegionAt(distanceM),
-   gapMs:round(gap),cpuMs:cpu,
+   gapMs:round(gap),cpuMs:{...this.currentCpu},
   });
+  this.currentCpu.callback=0;
+  for(const phase of cpuPhases)this.currentCpu[phase]=0;
   if(now-this.bucketAt<1000)return;
   const gaps=this.bucketGaps.slice().sort((a,b)=>a-b),count=gaps.length;
   const elapsed=now-this.bucketAt;
@@ -171,7 +222,8 @@ export class DriveFpsDiagnostics {
  }
  report(){
   return {
-   kind:'outrun-drive-fps-diagnostic-v1',
+   kind:'outrun-drive-fps-diagnostic-v1',version:GAME_VERSION,buildCommit:import.meta.env.VITE_BUILD_SHA??null,
+   standardTest:this.lastWindow,
    generatedAt:new Date().toISOString(),startedAt:this.startedWall,
    device:navigator.userAgent,
    viewport:{cssWidth:innerWidth,cssHeight:innerHeight,dpr:devicePixelRatio},
@@ -188,24 +240,25 @@ export class DriveFpsDiagnostics {
  }
  private createPanel(){
   // ?fpsdiag=1: the FPS badge already shows live performance. Keep only
-  // the one control needed to export the complete (and richer) JSON log.
+  // the export control and the active standard-test countdown here.
   const panel=document.createElement('div');panel.id='drive-fps-diagnostic';
   const button=document.createElement('button');button.type='button';
   button.textContent='匯出 FPS JSON';
   button.setAttribute('aria-label','匯出 FPS 診斷 JSON');
   button.onclick=()=>this.download();
-  panel.append(button);document.body.append(panel);
+  this.status=document.createElement('output');
+  panel.append(this.status,button);document.body.append(panel);
   this.exportPanel=panel;
   (window as typeof window & {__driveFpsDiagnostics?:DriveFpsDiagnostics}).__driveFpsDiagnostics=this;
  }
  placeExportIn(host:HTMLElement){
   if(this.exportPanel&&this.exportPanel.parentElement!==host)host.append(this.exportPanel);
  }
- private download(){
-  const output=JSON.stringify(this.report(),null,2);
+ private download(report:unknown=this.report(),prefix='outrun-fps'){
+  const output=JSON.stringify(report,null,2);
   const url=URL.createObjectURL(new Blob([output],{type:'application/json'}));
   const a=document.createElement('a');a.href=url;
-  a.download='outrun-fps-'+new Date().toISOString().replaceAll(':','-')+'.json';
+  a.download=prefix+'-'+new Date().toISOString().replaceAll(':','-')+'.json';
   document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
  }
 }

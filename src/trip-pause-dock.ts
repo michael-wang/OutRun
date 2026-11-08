@@ -4,6 +4,7 @@ import {COAST_SHADOW_TECHNIQUES,coastShadowTechniqueSnapshot,type CoastShadowTec
 
 /** Road Trip pause controls stay in the corner; full reviews are explicitly opt-in. */
 export interface TripPauseActions {
+ startFpsTest?:()=>void;
  resume():void;replay():void;settings():void;
  previewPassenger(gesture:Cheer):void;endPreview():void;
  sound():void;fullscreen():void;review():void;
@@ -42,7 +43,7 @@ export class TripPauseDock {
     <button id="tp-applause" type="button">預覽拍手</button>
     <button id="tp-wave" type="button">預覽揮手</button>
     <button id="tp-review" type="button" aria-expanded="false">評分／匯出</button>
-   </div>${shadowMarkup}`;
+   </div>${shadowMarkup}${actions.startFpsTest?'<button id="tp-fps-test" type="button">開始標準 FPS 測試 · 10＋20 秒</button>':''}`;
   root.append(element);
   const button=(id:string)=>element.querySelector<HTMLButtonElement>('#'+id)!;
   this.resumeButton=button('tp-resume');this.moreButton=button('tp-more');
@@ -57,6 +58,7 @@ export class TripPauseDock {
   ]){const node=button(id);node.dataset.keyHint=keyboard;node.dataset.padHint=pad;
    if(keyboard!=='↵')node.setAttribute('aria-keyshortcuts',keyboard);
   }
+  if(actions.startFpsTest)button('tp-fps-test').onclick=actions.startFpsTest;
   this.resumeButton.onclick=actions.resume;
   this.moreButton.onclick=()=>{if(this.reviewOpen)actions.review();else this.setExpanded(!this.expanded);};
   button('tp-replay').onclick=actions.replay;
