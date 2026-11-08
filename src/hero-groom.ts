@@ -58,8 +58,9 @@ export function createDriverHair():WindGroom{
   const angle=2*Math.PI*i/sides,ring=rings[r];
   const side=Math.sin(angle),back=Math.cos(angle);
   // Lift the front hairline off the brow and taper down behind the ears.
-  const hairline=Math.max(0,back)*.126*Math.max(0,1-r/3);
-  position.push(side*ring.x+Math.min(.024,.007*r),ring.y+hairline,back*ring.z);
+  const forehead=THREE.MathUtils.smoothstep(back,.10,.84);
+  const hairline=forehead*Math.max(0,.076-ring.y)*.94;
+  position.push(side*ring.x+Math.min(.024,.007*r),ring.y+hairline,back*ring.z-.018*forehead);
   const tone=.16+.19*r/3+.08*Math.sin(angle*3.2+i*.27);
   const c=dark.clone().lerp(light,Math.max(.04,tone));
   colors.push(c.r,c.g,c.b);
@@ -86,7 +87,7 @@ export function createDriverHair():WindGroom{
   const sx=Math.sin(angle),sz=Math.cos(angle);
   const rear=Math.max(0,-sz),temple=Math.abs(sx);
   const forelock=Math.max(0,sz);
-  const fall=.185+rear*.046+(i%4)*.006-forelock*.035;
+  const fall=.185+rear*.046+(i%4)*.006-forelock*.088;
   const rows:Row[]=[];
   for(let j=0;j<=5;j++){
    const t=j/5,arc=t*Math.PI*.64;
