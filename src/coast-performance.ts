@@ -16,8 +16,9 @@ export class OceanCadence {
 }
 
 /** Matching near/far tree thresholds avoid a hole at the mobile LOD switch. */
-export function natureVisible(n:{center:number;near:number;far:number},position:number,mobile:boolean){
+export function natureVisible(n:{center:number;near:number;far:number;verge?:boolean},position:number,mobile:boolean){
  const delta=n.center-position,range=Math.abs(delta);
+ if(n.verge)return delta>-250&&range<(mobile?245:n.far);
  const limit=(d:number)=>!mobile?d:d===600?360:d===420?280:d===260?160:d===650?420:d;
  return delta>-250&&range>=limit(n.near)&&range<limit(n.far);
 }

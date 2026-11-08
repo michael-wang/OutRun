@@ -1,7 +1,7 @@
 import {DoubleSide,MeshBasicMaterial,type Material} from 'three';
 import type {FarmAssets} from './coast-farm';
 
-export function vergeBladeMaterial(time:{value:number}){
+export function vergeBladeMaterial(time:{value:number},mobile:boolean){
  const material=new MeshBasicMaterial({vertexColors:true,side:DoubleSide});
  material.onBeforeCompile=shader=>{
   shader.uniforms.vergeTime=time;
@@ -11,10 +11,13 @@ export function vergeBladeMaterial(time:{value:number}){
     vColor.rgb*=mix(vec3(.34,.43,.29),vec3(.68,.72,.61),wild);`)
    .replace('#include <begin_vertex>',`#include <begin_vertex>
    vec4 root=modelMatrix*instanceMatrix[3];
-   float fade=1.-smoothstep(80.,155.,distance(root.xz,cameraPosition.xz));
+   float range=distance(root.xz,cameraPosition.xz);
+   float variation=fract(dot(root.xz,vec2(.1031,.1379)));
+   float fade=1.-smoothstep(${mobile?'75.,145.':'150.,390.'},range-variation*${mobile?'10.':'60.'});
    float sway=sin(dot(root.xz,vec2(.17,.09))+vergeTime*1.8);
-   transformed.x+=sway*.18*transformed.y*length(instanceMatrix[1].xyz);
-   transformed*=fade;`);
+   transformed.x+=fade*sway*.18*transformed.y*length(instanceMatrix[1].xyz);
+   // Collapse each blade onto its own root so tufts keep their footprint.
+   transformed-=(1.-fade)*normal;`);
  };
  return material;
 }

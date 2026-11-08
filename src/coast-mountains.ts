@@ -45,6 +45,7 @@ export function coastMountainHeight(layer:0|1,d:number,u:number){
 /** Mountain backdrop: two meshes like before, same far-depth treatment.
  * Extra silhouette and color detail is baked; no additional material passes. */
 export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],length:number){
+ const meadowTile=new THREE.Uniform<THREE.Texture|null>(null);
  const origin=sample(0).position.clone();
  const axis=sample(length).position.clone().sub(origin).setY(0).normalize();
  const right=new THREE.Vector3(axis.z,0,-axis.x);
@@ -120,9 +121,21 @@ export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof cre
   });
   material.onBeforeCompile=shader=>{
    shader.vertexShader=shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\ngl_Position.z=gl_Position.w*(1.0-0.00008/(1.0+max(0.0,-mvPosition.z)/2000.0));');
+   if(!rear){
+    shader.uniforms.ridgeMeadow=meadowTile;
+    shader.vertexShader='varying vec2 vRidgeGround;\n'+shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
+     vRidgeGround=position.xz+position.y*vec2(.58,-.29);`);
+    shader.fragmentShader='varying vec2 vRidgeGround; uniform sampler2D ridgeMeadow;\n'+
+     shader.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
+      float fold=texture2D(ridgeMeadow,vRidgeGround/310.).r;
+      vec2 grass=texture2D(ridgeMeadow,mat2(.84,.54,-.54,.84)*vRidgeGround/83.+fold*.31).rg;
+      float cover=smoothstep(.25,.75,.6*fold+.4*grass.r);
+      diffuseColor.rgb*=mix(vec3(.77,.82,.81),vec3(1.28,1.20,1.06),cover)*(.84+.35*grass.g);`);
+   }
   };
-  material.customProgramCacheKey=()=> 'coast-mountain-backdrop-v1';
+  material.customProgramCacheKey=()=>rear?'coast-mountain-backdrop-v1':'coast-mid-ridge-grass';
   const mesh=new THREE.Mesh(geometry,material);
   mesh.name='coast-mountains-'+layer;mesh.frustumCulled=false;scene.add(mesh);
  }
+ return meadowTile;
 }

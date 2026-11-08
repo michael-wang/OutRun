@@ -130,11 +130,11 @@ export class StreamedScene {
  get sceneTaskProfile(){return this.taskProfiler?.snapshot()??null;}
  get farmWorkerStats(){return {...this.farmWorkerPrepared,workerCpuMs:Math.round(this.farmWorkerPrepared.workerCpuMs),lastMs:Math.round(this.farmWorkerPrepared.lastMs)};}
  get sceneTaskSpikes(){return this.taskProfiler?.recentSlowTasks()??[];}
- constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false,private farmSample?:Parameters<typeof createFarmPlot>[1]){
+ constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false,private farmSample?:Parameters<typeof createFarmPlot>[1],ridgeMeadow?:THREE.Uniform<THREE.Texture|null>){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
   this.bank=bank;
-  if(this.farmSample)loadCoastFarm().then(assets=>{if(this.disposed){assets.dispose();return;}this.farmAssets=assets;shadeMeadowGround(this.roadMaterials.grass,assets);this.launch();}).catch(e=>{this.errorMessage=`Farm assets failed: ${String(e)}`;console.error(this.errorMessage);});else this.launch();
+  if(this.farmSample)loadCoastFarm().then(assets=>{if(this.disposed){assets.dispose();return;}this.farmAssets=assets;if(ridgeMeadow)ridgeMeadow.value=assets.meadowTile;shadeMeadowGround(this.roadMaterials.grass,assets);this.launch();}).catch(e=>{this.errorMessage=`Farm assets failed: ${String(e)}`;console.error(this.errorMessage);});else this.launch();
   this.update(350);
  }
  private launch(){
@@ -252,7 +252,7 @@ export class StreamedScene {
    let material=this.materials.get(key);
    if(!material){
     if(data.nature?.verge){
-     material=vergeBladeMaterial(this.canalFlowTime);
+     material=vergeBladeMaterial(this.canalFlowTime,this.mobile);
     }else if(data.coastDrainWater){
      material=makeCoastDrainWaterMaterial(this.canalFlowTime,this.canalFft,this.canalFftEnabled);
     }else{

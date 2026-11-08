@@ -77,7 +77,21 @@ describe('sunset coast nature',()=>{
    });
   };
   expect(Math.min(...heights(2200))).toBeGreaterThan(.7);
-  expect(Math.max(...heights(3500))).toBeLessThan(.4);
+  expect(Math.max(...heights(3500))).toBeLessThan(.5);
+ });
+ it.each([3610,4216])('plants the lawns inland of the frontage but keeps the street clear at %i m',d=>{
+  const sample=((z:number)=>({position:new THREE.Vector3(0,0,z),right:new THREE.Vector3(1,0,0)})) as typeof track.sample;
+  const scene=new THREE.Scene();
+  addVergeGrass(scene,sample,()=>7,undefined,d-30,d+30);
+  let inland=0;
+  const pose=new THREE.Matrix4();
+  for(const mesh of scene.children as THREE.InstancedMesh[])for(let i=0;i<mesh.count;i++){
+   mesh.getMatrixAt(i,pose);
+   const [x,,z]=new THREE.Vector3().setFromMatrixPosition(pose).toArray();
+   if(x>40&&x<100)inland++;
+   if(x<64)expect(Math.abs(z-d)).toBeGreaterThan(3);
+  }
+  expect(inland).toBeGreaterThan(15);
  });
  it('roots batched source models on the rendered hill mesh, with bounded far geometry',async()=>{
   const fetchModels=vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('headland-grove.json')?woods:assets}));

@@ -61,7 +61,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
   const dusk=coastUltra?addCoastDusk(scene,sample):undefined;
-  if(coastUltra)addCoastMountains(scene,sample,length);
+  const ridgeMeadow=coastUltra?addCoastMountains(scene,sample,length):undefined;
   if(dusk){hemisphere.color.set('#aab1da');hemisphere.groundColor.set('#66534b');hemisphere.intensity=1.25;
    sun.color.set('#ffc080');sun.intensity=.65;
    // Split the original 1.8 intensity without changing the scene's sun hue
@@ -217,7 +217,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   if(!options.streamStage)ribbon(-29,-27,-10.9,-10.9,surfMaterial,0,length,10);
   const rand=(i:number)=>{const x=Math.sin(i*127.1+43.7)*43758.5453;return x-Math.floor(x);};
   sand.vertexColors=true;grass.vertexColors=true;
-  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,'center-line':mat('#c4a564'),rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial,steel:mat('#b93d29',.7),deck:new THREE.MeshStandardMaterial({color:'#827b6b',roughness:1,side:THREE.DoubleSide}),water:new THREE.MeshStandardMaterial({color:'#278d9e',roughness:.55,side:THREE.DoubleSide})},annotations,options.bank,options.blenderArt,coastUltra?sample:undefined):undefined;
+  const streamer=options.streamStage?new StreamedScene(scene,options.streamStage,length,{asphalt,sand,grass,line,'center-line':mat('#c4a564'),rail,support:supportMaterial,'edge-white':edgeMaterials[0],'edge-red':edgeMaterials[1],surf:surfMaterial,steel:mat('#b93d29',.7),deck:new THREE.MeshStandardMaterial({color:'#827b6b',roughness:1,side:THREE.DoubleSide}),water:new THREE.MeshStandardMaterial({color:'#278d9e',roughness:.55,side:THREE.DoubleSide})},annotations,options.bank,options.blenderArt,coastUltra?sample:undefined,ridgeMeadow):undefined;
   const scenery=streamer?{get instances(){return streamer.sceneryStats.instances;},get draws(){return streamer.sceneryStats.draws;}}:addJourneyScenery(scene,sample,length,options.theme,options.seed,halfAt,options.weightsAt);
   // A connected, low distant ridge instead of isolated giant boulders on the horizon.
   // Enclose the actual route. The former fixed (400,500)/1550m ring intersected
