@@ -1,11 +1,68 @@
-import { test,expect } from '@playwright/test';
-import { writeFileSync } from 'node:fs';
-test('production manifest icons worker and playable build',async({page,request})=>{
- const origin='http://127.0.0.1:4173',errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
- const response=await request.get(`${origin}/manifest.webmanifest`);expect(response.ok()).toBe(true);const manifest=await response.json();expect(manifest.display).toBe('fullscreen');expect(manifest.orientation).toBe('landscape');expect(manifest.scope).toBe('/');expect(manifest.start_url).toBe('/');
- for(const size of [192,512]){const icon=manifest.icons.find((i:any)=>i.sizes===`${size}x${size}`);expect(icon.type).toBe('image/png');const result=await request.get(origin+icon.src);expect(result.ok()).toBe(true);const bytes=await result.body();expect(bytes.subarray(0,8)).toEqual(Buffer.from([137,80,78,71,13,10,26,10]));expect(bytes.readUInt32BE(16)).toBe(size);expect(bytes.readUInt32BE(20)).toBe(size);}
- await page.goto(origin);await expect(page.locator('#l2-play')).toBeVisible();expect(await page.locator('link[rel=manifest]').getAttribute('href')).toBe('/manifest.webmanifest');
- await page.evaluate(async()=>{await navigator.serviceWorker.ready;});await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
- expect(await page.evaluate(()=>(window as any).__drive)).toBeUndefined();await page.locator('#l2-play').click();await expect(page.locator('#l2-lab')).toBeHidden({timeout:30000});await page.keyboard.down('Space');await expect.poll(async()=>Number(await page.locator('#speed strong').innerText())).toBeGreaterThan(0);await page.keyboard.up('Space');
- expect(errors).toEqual([]);writeFileSync('docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/regressions/v0.2/pwa.json',JSON.stringify({manifest,workerControlled:true,productionDriving:true,errors,physicalInstall:'UNVERIFIED'},null,2));
+import {test,expect,type Page} from '@playwright/test';
+
+const site=new URL(process.env.OUTRUN_SITE_BASE??'/','http://127.0.0.1:4173');
+const playUrl=new URL('?at=537&fpsdiag=1&startupdiag=1',site).href;
+
+async function waitForCoast(page:Page){
+ await page.waitForFunction(()=>document.querySelector<HTMLElement>('#game-loading')?.hidden&&
+   (window as any).__startupDiagnostics?.report().completed,null,{timeout:90000});
+ const report=await page.evaluate(()=>(window as any).__startupDiagnostics.report());
+ for(const name of ['coast-ocean-ready','coast-boats-ready'])
+  expect(report.events.find((e:{name:string})=>e.name===name)?.data.active).toBe(true);
+ expect(report.finalReadiness.workerInitialized).toBe(true);
+ expect(await page.evaluate(()=>!!(window as any).__driveFpsDiagnostics)).toBe(true);
+}
+
+test('installed coast launches online and offline within its publishing scope',async({page,context,request})=>{
+ await page.setViewportSize({width:800,height:450});
+ const errors:string[]=[];
+ context.on('response',r=>{
+  const url=new URL(r.url());
+  if(url.origin===site.origin&&(r.status()>=400||!url.pathname.startsWith(site.pathname)))
+   errors.push(r.status()+' '+url.pathname);
+ });
+ context.on('page',p=>p.on('pageerror',e=>errors.push(e.message)));
+ page.on('pageerror',e=>errors.push(e.message));
+ const manifestUrl=new URL('manifest.webmanifest',site);
+ const manifest=await (await request.get(manifestUrl.href)).json();
+ const start=new URL(manifest.start_url,manifestUrl);
+ expect(start.href).toBe(site.href);
+ expect(new URL(manifest.scope,manifestUrl).href).toBe(site.href);
+ expect(manifest.id?new URL(manifest.id,start.origin).href:start.href).toBe(site.href);
+ for(const icon of manifest.icons){
+  const response=await request.get(new URL(icon.src,manifestUrl).href);
+  expect(response.ok()).toBe(true);
+  expect((await response.body()).readUInt32BE(16)).toBe(Number(icon.sizes.split('x')[0]));
+ }
+ await page.goto(playUrl);
+ await waitForCoast(page);
+ expect(await page.locator('link[rel=manifest]').evaluate((el:HTMLLinkElement)=>el.href)).toBe(manifestUrl.href);
+ const distance=async()=>Number((await page.locator('#drive-distance').innerText()).replace(/\D/g,''));
+ await expect.poll(distance).toBe(537);
+ await page.keyboard.down('Space');
+ try{await expect.poll(distance,{timeout:20000}).toBeGreaterThan(540);}
+ finally{await page.keyboard.up('Space');}
+ await page.keyboard.press('r');
+ await expect.poll(distance,{timeout:10000}).toBe(537);
+ const registration=await page.evaluate(async()=>(await navigator.serviceWorker.ready).scope);
+ expect(registration).toBe(site.href);
+ await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
+ const cacheUrls=await page.evaluate(async scope=>{
+  const name=(await caches.keys()).find(n=>n.startsWith('outrun:'+scope+':'))!;
+  return (await (await caches.open(name)).keys()).map(req=>req.url);
+ },site.href);
+ expect(cacheUrls.every(url=>url.startsWith(site.href))).toBe(true);
+ expect(cacheUrls.some(url=>url.includes('road-worker-'))).toBe(true);
+ const audioUrl=cacheUrls.find(url=>url.endsWith('.mp3'))!;
+ expect(await page.evaluate(async url=>{
+  const buffer=await (await fetch(url)).arrayBuffer();
+  return (await new OfflineAudioContext(1,1,44100).decodeAudioData(buffer)).duration;
+ },audioUrl)).toBeGreaterThan(0);
+ await page.close();
+ await context.setOffline(true);
+ const reopened=await context.newPage();
+ await reopened.setViewportSize({width:800,height:450});
+ await reopened.goto(playUrl);
+ await waitForCoast(reopened);
+ expect(errors).toEqual([]);
 });

@@ -1,10 +1,10 @@
 {
-  "id": "/", "name": "極速漫遊", "short_name": "極速漫遊",
+  "name": "極速漫遊", "short_name": "極速漫遊",
   "description": "沿著世界的公路，享受自由自在的極速旅程。",
-  "start_url": "/", "scope": "/", "display": "fullscreen", "orientation": "landscape",
+  "start_url": "./", "scope": "./", "display": "fullscreen", "orientation": "landscape",
   "background_color": "#123e43", "theme_color": "#123e43",
   "icons": [
-    { "src": "/icons/coast-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/coast-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "icons/coast-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/coast-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }

@@ -1,15 +1,36 @@
-// Minimal local PWA worker. Network first avoids silently pinning an old playtest build.
-const CACHE = 'coast-drive-v09-mobile-1';
+// Vite stamps the release and the playable files after producing the bundles.
+const release = 'BUILD_REVISION';
+const files = /* BUILD_FILES */ [];
+const scope = self.registration.scope;
+const prefix = 'outrun:' + scope + ':';
+const cacheName = prefix + release;
+const urls = new Set(files.map(path => new URL(path, scope).href));
+const entry = new URL('index.html', scope).href;
+
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['/', '/manifest.webmanifest', '/icons/coast-192.png', '/icons/coast-512.png'])));
+  event.waitUntil(caches.open(cacheName).then(cache =>
+    cache.addAll([...urls].map(url => new Request(url, {cache: 'no-cache'})))
+  ));
 });
+
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('coast-drive-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil((async () => {
+    const old = (await caches.keys()).filter(name =>
+      (name.startsWith(prefix) && name !== cacheName) ||
+      (new URL(scope).pathname === '/' && name === 'coast-drive-v09-mobile-1')
+    );
+    await Promise.all(old.map(name => caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
+
 self.addEventListener('fetch', event => {
-  if(event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
-  event.respondWith(fetch(event.request).then(response => {
-    if(response.ok){const copy=response.clone();event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request,copy)));}
-    return response;
-  }).catch(async () => (await caches.match(event.request,{ignoreVary:true})) || (event.request.mode === 'navigate' ? await caches.match('/') : null) || Response.error()));
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  url.search = '';
+  const key = url.href === scope && event.request.mode === 'navigate' ? entry : url.href;
+  if (!urls.has(key)) return;
+  event.respondWith(caches.open(cacheName).then(async cache =>
+    (await cache.match(key)) || fetch(event.request)
+  ));
 });

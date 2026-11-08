@@ -13,6 +13,8 @@ jobs:
   build-and-unit:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      OUTRUN_SITE_BASE: /${{ github.event.repository.name }}/
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +25,33 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: TypeScript + Vite production build
+      - name: TypeScript + Vite project-site build
         run: npm run build
       - name: Full maintained unit suite, including audio/shadows/smoke/FPS gate
         run: npm test
+      - run: npx playwright install --with-deps chromium
+      - name: Play the project site online and offline
+        run: npx playwright test tests/pwa.spec.ts
+      - name: Upload the approved branch's site
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build-and-unit
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/configure-pages@v5
+      - id: publish
+        uses: actions/deploy-pages@v4

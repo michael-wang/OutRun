@@ -15,6 +15,21 @@ Codex commits and pushes completed milestones to `dev`. Promote a version to `ma
 
 ## Run locally
 
+### GitHub Pages production preview
+
+The production workflow builds and tests the project-site path on `dev`. An approved push to `main`, or a manual workflow run on `main`, publishes `dist/` to GitHub Pages using the **GitHub Actions** publishing source. Netlify and ordinary local builds use the default root path.
+
+To preview the Pages build in a separate PowerShell session:
+
+```powershell
+$env:OUTRUN_SITE_BASE = '/OutRun/'
+npm run build
+npm run preview
+# Open http://127.0.0.1:4173/OutRun/
+```
+
+### Development server
+
 From the repository directory, install dependencies if needed and start the development server:
 
 ```powershell

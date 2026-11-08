@@ -17,8 +17,9 @@ test('production hides diagnostics and uses only the current PWA cache',async({p
  await page.goto('http://127.0.0.1:4173/?perf=1');
  await expect(page.locator('#perf')).toHaveCount(0);
  await page.evaluate(()=>navigator.serviceWorker.ready);
- await expect.poll(()=>page.evaluate(()=>caches.keys())).toEqual(['coast-drive-v09-mobile-1']);
- await page.waitForFunction(async()=>{const cache=await caches.open('coast-drive-v09-mobile-1');return (await cache.keys()).some(r=>r.url.includes('road-worker-'));});
+ const prefix='outrun:http://127.0.0.1:4173/:';
+ await expect.poll(()=>page.evaluate(async prefix=>(await caches.keys()).filter(key=>key.startsWith(prefix)).length,prefix)).toBe(1);
+ await page.waitForFunction(async()=>{const cache=await caches.open((await caches.keys()).find(k=>k.startsWith('outrun:http://127.0.0.1:4173/:'))!);return (await cache.keys()).some(r=>r.url.includes('road-worker-'));});
 });
 
 test('mobile streaming keeps complete scenery through fast chunk crossings in all worlds',async({browser})=>{

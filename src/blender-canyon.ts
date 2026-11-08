@@ -15,7 +15,7 @@ export async function loadBlenderCanyon(roadLock=false,data?:ArrayBuffer){
  const started=performance.now();
  const asset=roadLock?'canyon_cliff_pass_r4.glb':'canyon_art_only.glb';
  const loader=new GLTFLoader();
- const url=roadLock?runtimeArt.canyon.path:'/__local_art/'+asset;
+ const url=roadLock?import.meta.env.BASE_URL+runtimeArt.canyon.path.slice(1):'/__local_art/'+asset;
  const gltf=data?await loader.parseAsync(data,''):await loader.loadAsync(url);
  const root=gltf.scene;root.name=roadLock?'blender-canyon-cliff-pass-r4':'blender-canyon-v2';
  // glTF is already meters/Y-up in the production track's world coordinates.

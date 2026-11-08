@@ -112,12 +112,13 @@ const files={sail:'boat-sail-a.glb',yacht:'flybridge-yacht.glb'};
 // Keep bytes, not live GPU resources: a replay gets clean scene-owned materials,
 // while sceneDisposal can retire the previous chapter without invalidating a cache.
 const bytes=new Map<string,Promise<ArrayBuffer>>();
+const boatAssetDirectory=import.meta.env.BASE_URL+'assets/coast-boats/';
 function modelBytes(file:string){
- let pending=bytes.get(file);if(!pending){pending=fetch('/assets/coast-boats/'+file).then(r=>{if(!r.ok)throw Error('Boat asset '+file+': '+r.status);return r.arrayBuffer();}).catch(e=>{bytes.delete(file);throw e;});bytes.set(file,pending);}return pending;
+ let pending=bytes.get(file);if(!pending){pending=fetch(boatAssetDirectory+file).then(r=>{if(!r.ok)throw Error('Boat asset '+file+': '+r.status);return r.arrayBuffer();}).catch(e=>{bytes.delete(file);throw e;});bytes.set(file,pending);}return pending;
 }
 
 export async function addCoastBoats(scene:THREE.Scene,sample:Sample,water?:Readonly<Record<string,THREE.IUniform>>,shadow?:CoastBoatShadow){
- const loader=new GLTFLoader(),models=await Promise.all([files.sail,files.yacht].map(async file=>loader.parseAsync(await modelBytes(file),'/assets/coast-boats/')));
+ const loader=new GLTFLoader(),models=await Promise.all([files.sail,files.yacht].map(async file=>loader.parseAsync(await modelBytes(file),boatAssetDirectory)));
  const fishingSource=fishingBoatSource();
  // Match the coast's matte toy-like finish without adding lights or shadows.
  const materials=new Set<THREE.MeshStandardMaterial>();

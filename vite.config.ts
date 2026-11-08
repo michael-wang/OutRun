@@ -1,7 +1,7 @@
 import {defineConfig, type Plugin} from 'vite';
-import {mkdir, open, realpath, lstat, link, unlink} from 'node:fs/promises';
+import {mkdir, open, realpath, lstat, link, unlink, readdir, readFile, writeFile} from 'node:fs/promises';
 import {join,resolve,sep} from 'node:path';
-import {randomUUID} from 'node:crypto';
+import {createHash, randomUUID} from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {createReadStream} from 'node:fs';
 
@@ -67,4 +67,22 @@ function captureArchive():Plugin {
   });
  }};
 }
-export default defineConfig({plugins:[captureArchive(),localBlenderArt()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});
+// Include the current coast and its Worker dependencies on the first offline
+// install. Optional canyon art and source/reference files stay on demand.
+function offlineCoast():Plugin {
+ return {name:'outrun-offline-coast',apply:'build',async writeBundle({dir},bundle){
+  if(!dir)throw Error('Missing site output directory');
+  const files=new Set(Object.keys(bundle));
+  for(const path of await readdir(dir,{recursive:true})){
+   const name=path.split(sep).join('/');
+   if(/^(icons|ui)\/.*\.png$|^assets\/coast-(boats|nature)\/.*\.(glb|png)$/.test(name))files.add(name);
+  }
+  for(const name of ['index.html','manifest.webmanifest','generated/coast-shore.shore','assets/coast-nature/models.json','assets/coast-farm/rice-near.glb','assets/coast-farm/scarecrow.glb'])files.add(name);
+  const paths=[...files].sort(),hash=createHash('sha256');
+  for(const name of paths)hash.update(name).update('\0').update(await readFile(join(dir,name)));
+  const template=await readFile('public/sw.js','utf8');
+  const revision=hash.update(template).digest('hex').slice(0,20);
+  await writeFile(join(dir,'sw.js'),template.replace('BUILD_REVISION',revision).replace('/* BUILD_FILES */ []',JSON.stringify(paths)));
+ }};
+}
+export default defineConfig({base:process.env.OUTRUN_SITE_BASE??'/',plugins:[captureArchive(),localBlenderArt(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});

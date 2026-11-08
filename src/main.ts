@@ -64,7 +64,6 @@ import {coastShadowTechniqueEnabled,coastShadowTechniqueSnapshot,setCoastShadowT
 import {setCoastRoadDynamicShadowEnabled} from './coast-road-shadows';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
-import roadWorkerUrl from './road-worker.ts?worker&url';
 import {StreamHealthHud} from './stream-health-hud';
 import type {FeedbackAnchor} from './l2-feedback';
 startupDiagnostics.mark('main-module-evaluated');
@@ -967,7 +966,7 @@ if(brick&&!l2&&!pilot)labUI=mountBrickLab(brick,{play:()=>{if(mobile()&&!immersi
 ui();resize();requestAnimationFrame(loop);
 function surfaceError(){const ray=new THREE.Raycaster(world.car.position.clone().add(new THREE.Vector3(0,10,0)),new THREE.Vector3(0,-1,0));const road=world.scene.getObjectByName('driving-surface');const hit=journeyLink?.inHighway(state.distance)?ray.intersectObjects(journeyLink.contacts)[0]:road?ray.intersectObject(road)[0]:undefined;return hit?world.car.position.y-.04-hit.point.y:null;}
 if(import.meta.env.PROD && 'serviceWorker' in navigator){
-  const registerOffline=()=>{void navigator.serviceWorker.register('/sw.js').then(async()=>{await navigator.serviceWorker.ready;const cache=await caches.open('coast-drive-v09-mobile-1'),assets=[import.meta.url,roadWorkerUrl,...Array.from(startupArt.querySelectorAll<HTMLImageElement>('img'),x=>x.currentSrc||x.src),...Array.from(document.querySelectorAll<HTMLScriptElement>('script[type="module"][src]'),x=>x.src),...Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href]'),x=>x.href)];await cache.addAll([...new Set(assets)].filter(url=>new URL(url,location.href).origin===location.origin));}).catch(()=>{});};
+  const registerOffline=()=>{void navigator.serviceWorker.register(import.meta.env.BASE_URL+'sw.js',{updateViaCache:'none'}).catch(error=>console.warn('Offline mode unavailable',error));};
   if(document.readyState==='complete')registerOffline();else addEventListener('load',registerOffline,{once:true});
 }
 
