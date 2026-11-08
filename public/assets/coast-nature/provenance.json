@@ -3,12 +3,12 @@
   "edition": "Free Standard",
   "models": [
     {
-      "name": "CommonTree_3",
-      "sha256": "934a3e4e552ab204c2f8c99b77204ad84758bc5ae9a8ac6d6eafd0588d48418a"
-    },
-    {
       "name": "Rock_Medium_2",
       "sha256": "c6b2607172928cb67ec7e8a649d21548eb1d5701c3c975ea343927c0f3e6b372"
     }
+  ],
+  "textures": [
+    "Bark_NormalTree.png",
+    "Rocks_Diffuse.png"
   ]
 }

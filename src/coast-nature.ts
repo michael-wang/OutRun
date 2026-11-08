@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
-import {coastTreeVolume,coastBushVolume} from './coast-volume-foliage';
+import {natureGeometry,roadsideTrees,TREE_DRAW_DISTANCE,type NaturePart} from './tree-models';
 import {farmClearing,FARM_YARDS} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastVegetationDensity} from './coast-journey-layout';
@@ -9,29 +9,19 @@ import {roadOffset,shoulderProfile} from './road-profile';
 import type {createTrack} from './track';
 
 export interface NatureBatch {texture?:string;leafCutout?:boolean;meadow?:'cover'|'detail';center:number;near:number;far:number}
-type GeometryData={position:number[];normal:number[];uv:number[];color?:number[];index?:number[];texture?:string;leafCutout?:boolean};
-type Model={parts:GeometryData[]};
+type Model={parts:NaturePart[]};
 let assets:Record<string,Model>|undefined,loading:Promise<void>|undefined;
 export function loadCoastNature(){
- return loading??=fetch(`${import.meta.env.BASE_URL}assets/coast-nature/models.json`).then(async r=>{
-  if(!r.ok)throw Error(`Coast nature download failed: ${r.status}`);
-  assets=await r.json();
- }).catch(e=>{loading=undefined;throw e;});
+ return loading??=Promise.all(['models.json','headland-grove.json'].map(async file=>{
+  const response=await fetch(`${import.meta.env.BASE_URL}assets/coast-nature/${file}`);
+  if(!response.ok)throw Error(`Coast nature download failed: ${file} (${response.status})`);
+  return await response.json() as Record<string,Model>;
+ })).then(([rocks,trees])=>{assets={...rocks,...trees,...roadsideTrees};})
+ .catch(e=>{loading=undefined;throw e;});
 }
 const random=(n:number)=>{const x=Math.sin(n*127.1+804)*43758.5453;return x-Math.floor(x);};
 const GROVE_START=2800,GROVE_END=3000;
-let grove:Record<string,Model>|undefined,groveLoad:Promise<void>|undefined;
-const inGrove=(d:number)=>!!grove&&d>=GROVE_START&&d<GROVE_END;
-export async function loadHeadlandGrove(start:number,end:number){
- if(start>=GROVE_END||end<=GROVE_START)return;
- return groveLoad??=fetch(`${import.meta.env.BASE_URL}assets/coast-nature/headland-grove.json`).then(async response=>{
-  if(!response.ok)throw Error('Grove mesh unavailable');
-  grove=await response.json();
- }).catch(()=>{groveLoad=undefined;}); // Existing roadside nature still draws on a failed optional download.
-}
-export const COAST_TREE_MODEL='CommonTree_3';
-/** No distant flat/billboard replacement for the approved broadleaf tree. */
-export const COAST_TREE_DRAW_DISTANCE=1450;
+const inGrove=(d:number)=>d>=GROVE_START&&d<GROVE_END;
 export const COAST_HERO_TREE_SITES=[
  {d:1008,x:76,h:8.6},{d:1020,x:152,h:10.4},
  {d:1065,x:104,h:12.0},{d:1092,x:86,h:8.5},
@@ -66,15 +56,6 @@ export function coastNatureGround(sample:ReturnType<typeof createTrack>['sample'
  }
  return coastBeachHeight(x,p.position.y,p.right.y,d);
 }
-const geometry=(data:GeometryData)=>{
- const g=new THREE.BufferGeometry();
- g.setAttribute('position',new THREE.Float32BufferAttribute(data.position,3));
- g.setAttribute('normal',new THREE.Float32BufferAttribute(data.normal,3));
- if(data.uv.length)g.setAttribute('uv',new THREE.Float32BufferAttribute(data.uv,2));
- if(data.color?.length)g.setAttribute('color',new THREE.Float32BufferAttribute(data.color,3));
- if(data.index)g.setIndex(data.index);
- return g;
-};
 /** Fixed 200m batches with shared source meshes/materials. Placement and LOD
  * never depend on worker request order. The streamer culls whole batches. */
 export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],start:number,end:number){
@@ -83,38 +64,32 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
  function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false){
   if(!authored&&farmClearing(d,x))return;
-  const p=sample(d),model=grove?.[name]??assets![name];
-  if(!model&&name!=='Bush_Common')throw Error('Missing coast nature model '+name);
+  const p=sample(d),model=assets![name];
+  if(!model)throw Error('Missing coast nature model '+name);
   dummy.position.copy(p.position).addScaledVector(p.right,x);
   dummy.position.y=coastNatureGround(sample,d,x,start,end)-.06;
   dummy.rotation.set(0,random(key+32)*Math.PI*2,0);dummy.scale.set(height*(.82+random(key+7)*.3),height,height*(.82+random(key+7)*.3));dummy.updateMatrix();
   const center=Math.floor(d/200)*200+100;
-  // Original Leaves_NormalTree_C and Bush_Common were crossed alpha cards,
-  // despite 3D bark. Their actual thin planes caused the flat silhouette.
-  // Replace BOTH foliage variants with opaque irregular convex 3D crowns.
-  const parts:GeometryData[]=name==='Bush_Common'?[coastBushVolume()]
-   :name===COAST_TREE_MODEL?[...model.parts,coastTreeVolume()]
-   :model.parts;
-  for(const [i,part] of parts.entries()){
-   const data=part,id=name+':'+i;
-   let g=geometries.get(id);if(!g){g=geometry(data);geometries.set(id,g);}
+  for(const [i,part] of model.parts.entries()){
+   const id=name+':'+i;
+   let g=geometries.get(id);if(!g){g=natureGeometry(part);geometries.set(id,g);}
    const matKey=part.texture??'plain';let m=materials.get(matKey);
-   if(!m){m=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:!!data.color?.length});materials.set(matKey,m);}
-   const bucketKey=id+':'+center;
+   if(!m){m=new THREE.MeshStandardMaterial({color:0xffffff,vertexColors:!!part.color?.length});materials.set(matKey,m);}
+   const bucketKey=id+':'+center+':'+far;
    let bucket=buckets.get(bucketKey);
    if(!bucket){bucket={g,m,matrices:[],nature:{texture:part.texture,leafCutout:part.leafCutout,center,near:0,
-     far:name===COAST_TREE_MODEL?COAST_TREE_DRAW_DISTANCE:far},
+     far},
     shadowGroup:name.startsWith('Rock_')?'rocks':'vegetation'};buckets.set(bucketKey,bucket);}
    bucket.matrices.push(dummy.matrix.clone());
   }
  }
- // Farmhouse grove uses exactly the same 3D broadleaf as the distant hillside.
+ // Retain the detailed oak at authored foreground sites and a compact pine on distant slopes.
  for(const [i,tree] of authoredTrees.entries())
   if(tree.d>=start&&tree.d<end)
-   plant(COAST_TREE_MODEL,tree.d,tree.x,tree.h,90000+i*97,600,true);
+   plant(tree.x>200?'RoadPine':'GroveOak',tree.d,tree.x,tree.h,90000+i*97,TREE_DRAW_DISTANCE,true);
  // Five stands at unequal depths: open grass windows between the oak edge
  // and the taller pines tucked up against the hill. All fit one 200 m batch.
- if(grove&&start<GROVE_END&&end>GROVE_START){
+ if(start<GROVE_END&&end>GROVE_START){
   const stands=[[2828,48,9],[2860,94,8],[2908,41,10],[2940,127,8],[2973,61,9]];
   for(const [stand,[along,inland,count]] of stands.entries()){
    for(let j=0;j<count;j++){
@@ -123,7 +98,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
     const d=along+radius*22*Math.cos(angle),x=inland+radius*23*Math.sin(angle);
     if(d<start||d>=end)continue;
     const pine=random(key+4)<(inland>75?.80:.32);
-    plant(pine?'GrovePine':'GroveOak',d,x,(pine?11:7)+random(key+8)*6,key,COAST_TREE_DRAW_DISTANCE);
+    plant(pine?'GrovePine':'GroveOak',d,x,(pine?11:7)+random(key+8)*6,key,TREE_DRAW_DISTANCE);
    }
   }
  }
@@ -138,23 +113,20 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    const key=i*37+j*131,at=d+random(key)*18;
    if(at>=end||coastWildness(at)<.3)continue;
    const x=j<2?28+random(key+9)*47:150+random(key+9)*155;
-   // Share the full, layered broadleaf canopy used in the admired
-    // countryside scene. Keep the needle-like pines only on remote hills.
     if(random(key+18)>.18&&!inGrove(at)){
-     plant(COAST_TREE_MODEL,at,x,(j<2?5:7)+random(key+2)*6,key,600);
+     plant(j===2||random(key+61)<.22?'RoadPine':'RoadOak',at,x,(j<2?5:7)+random(key+2)*6,key,TREE_DRAW_DISTANCE);
      if(j<2)treeAnchors[j]={at,x};
     }
   }
-  // Reuse the EXISTING bush/grass instance count, just cluster them around
-  // the broadleaf trees rather than isolating thin trees on bare ground.
+  // Cluster younger trees around mature specimens.
   for(let j=0;j<3;j++){
    const key=i*43+j*193,tree=treeAnchors[j];
    const at=tree?Math.max(start,Math.min(end-.01,tree.at+(random(key+6)-.5)*7)):d+random(key+6)*18;
    if(at>=end||coastWildness(at)<.3)continue;
    const x=tree?tree.x+(random(key+11)-.5)*8
     :j<2?20+random(key+11)*45:125+random(key+11)*100;
-   if(inGrove(at))plant('GroveOak',at,x,2.2+random(key+3)*2.1,key,COAST_TREE_DRAW_DISTANCE);
-   else plant('Bush_Common',at,x,1.5+random(key+3)*2.5,key,420);
+   if(inGrove(at))plant('GroveOak',at,x,2.2+random(key+3)*2.1,key,TREE_DRAW_DISTANCE);
+   else plant('RoadOak',at,x,1.5+random(key+3)*2.5,key,420);
   }
   if(i%3===0)plant('Rock_Medium_2',d,23+random(i+19)*53,1+random(i+24)*2.2,i,650);
  }

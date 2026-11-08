@@ -9,11 +9,14 @@ import {farmPlainMask} from '../src/coast-farm-layout';
 import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
 import {createPilotTrack} from '../src/pilot-composer';
 import {coastBeachHeight} from '../src/scenery-cross-section';
-import {addCoastNature,loadCoastNature,loadHeadlandGrove,COAST_HERO_TREE_SITES,COAST_TREE_MODEL,COAST_TREE_DRAW_DISTANCE} from '../src/coast-nature';
+import {addCoastNature,loadCoastNature,COAST_HERO_TREE_SITES} from '../src/coast-nature';
+import {roadsideTrees,TREE_DRAW_DISTANCE} from '../src/tree-models';
+import {addJourneyScenery} from '../src/scenery';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
 const track=createPilotTrack(stage),assets=JSON.parse(readFileSync('public/assets/coast-nature/models.json','utf8'));
+const woods=JSON.parse(readFileSync('public/assets/coast-nature/headland-grove.json','utf8'));
 afterAll(()=>vi.unstubAllGlobals());
 describe('sunset coast nature',()=>{
  it('returns the fixed sun to four forward-left bays with safe shallow bends',()=>{
@@ -75,18 +78,15 @@ describe('sunset coast nature',()=>{
   expect(meadowCover(14.75,1774)).toBe(0);
  });
  it('roots batched source models on the rendered hill mesh, with bounded far geometry',async()=>{
-  const woods=JSON.parse(readFileSync('public/assets/coast-nature/headland-grove.json','utf8'));
   const fetchModels=vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('headland-grove.json')?woods:assets}));
   vi.stubGlobal('fetch',fetchModels);
-  await loadCoastNature();
-  await loadHeadlandGrove(1000,2000);
-  expect(fetchModels.mock.calls.flat().some(url=>url.endsWith('headland-grove.json'))).toBe(false);
-  await loadHeadlandGrove(2000,3000);
+  await Promise.all([loadCoastNature(),loadCoastNature()]);
+  expect(fetchModels).toHaveBeenCalledTimes(2);
   // Chapter II intentionally has scattered scrub, unlike the former densely
   // wooded 1–2km stretch; use the new quiet-beach chapter for this ground check.
   const start=2000,end=3000,scene=new THREE.Scene();
   addCoastNature(scene,track.sample,start,end);
-  const crowns=scene.children.filter(o=>o.userData.nature?.leafCutout) as THREE.InstancedMesh[];
+  const crowns=scene.children.filter(o=>o.userData.nature?.leafCutout&&o.userData.nature.center===2900) as THREE.InstancedMesh[];
   expect(crowns).toHaveLength(2);
   const size=new THREE.Vector3(),transform=new THREE.Matrix4();
   let mature=0;
@@ -114,53 +114,54 @@ describe('sunset coast nature',()=>{
   // New grass reuses the same cached InstancedMesh model in 200m buckets.
   expect(checked).toBeLessThan(450);expect(scene.children.length).toBeLessThan(90);
   expect(scene.children.some(o=>o.name==='coast-instanced-grass')).toBe(false);
-  expect(COAST_TREE_MODEL).toBe('CommonTree_3');
-  expect(COAST_TREE_DRAW_DISTANCE).toBeGreaterThan(1200);
+  expect(TREE_DRAW_DISTANCE).toBeGreaterThan(1200);
   const again=new THREE.Scene();addCoastNature(again,track.sample,start,end);
   expect(again.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array))).toEqual(scene.children.map(o=>Array.from((o as THREE.InstancedMesh).instanceMatrix.array)));
   geometry.dispose();(mesh.material as THREE.Material).dispose();
  });
 });
 
-describe('single full 3D tree model and no added grass',()=>{
- it('has no grass placements or flat tree swap',()=>{
-  const src=readFileSync('src/coast-nature.ts','utf8');
-  expect(src).not.toContain("plant('Grass_Common_Short'");
-  expect(src).not.toContain("name==='Grass_Common_Short'");
-  expect(src).toContain("name===COAST_TREE_MODEL?[...model.parts,coastTreeVolume()]");
-  expect(src).toContain('coastBushVolume()');
-  expect(src).not.toContain('model.far');
-  expect(Object.keys(assets).sort()).toEqual(['CommonTree_3','Rock_Medium_2'].sort());
-  expect(assets.Bush_Common).toBeUndefined();
-  for(const name of ['CommonTree_1','Pine_5','Grass_Common_Short'])
-   expect(assets[name]).toBeUndefined();
-  expect(assets[COAST_TREE_MODEL].far).toBeUndefined();
-  for(const part of assets[COAST_TREE_MODEL].parts){
-   const positions=part.position as number[];
-   const xs=positions.filter((_:number,i:number)=>i%3===0);
-   const zs=positions.filter((_:number,i:number)=>i%3===2);
-   expect(Math.max(...xs)-Math.min(...xs)).toBeGreaterThan(.15);
-   expect(Math.max(...zs)-Math.min(...zs)).toBeGreaterThan(.15);
+describe('baked trees throughout the game',()=>{
+ it('keeps distinct 3D branches and cutout leaves in both detail budgets',()=>{
+  expect(Object.keys(assets)).toEqual(['Rock_Medium_2']);
+  for(const species of ['Oak','Pine'] as const){
+   const compact=roadsideTrees[('Road'+species) as keyof typeof roadsideTrees],full=woods['Grove'+species];
+   expect(compact.parts).toHaveLength(2);
+   expect(compact.parts.map(p=>p.texture)).toEqual(['Bark_NormalTree.png',species.toLowerCase()+'_color.png']);
+   expect(compact.parts[1].leafCutout).toBe(true);
+   for(const part of compact.parts){
+    expect(part.normal.length).toBe(part.position.length);
+    expect(part.uv.length*3).toBe(part.position.length*2);
+    for(const axis of [0,1,2]){
+     const values=part.position.filter((_,i)=>i%3===axis);
+     expect(Math.max(...values)-Math.min(...values)).toBeGreaterThan(.12);
+    }
+   }
+   const tris=(m:typeof compact)=>m.parts.reduce((n,p)=>n+p.index.length/3,0);
+   expect(tris(compact)).toBeLessThan(1000);
+   expect(tris(compact)).toBeLessThan(tris(full));
   }
-  expect(COAST_HERO_TREE_SITES).toHaveLength(5);
-  expect(readFileSync('src/scenery.ts','utf8')).not.toContain("part(round,'#496c45'");
  });
- it('uses the same 3D crown near farmhouses',async()=>{
-  vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>assets})));
-  await loadCoastNature();
-  const scene=new THREE.Scene();
-  addCoastNature(scene,track.sample,1000,1150);
-  const trees=scene.children.filter(o=>o.name==='coast-nature'&&o.userData.nature?.far===COAST_TREE_DRAW_DISTANCE);
-  expect(trees.length).toBeGreaterThanOrEqual(assets[COAST_TREE_MODEL].parts.length);
-  expect(trees.some(o=>(o as THREE.InstancedMesh).count>=5)).toBe(true);
- });
- it('keeps a bark trunk and opaque volumetric crown at each authored field-edge site',async()=>{
-  vi.stubGlobal('fetch',vi.fn(async()=>({ok:true,json:async()=>assets})));
+ it.each([[1,0,0,'pine_color.png'],[0,1,0,'oak_color.png'],[0,0,1,'oak_color.png']] as const)(
+  'pairs bark and foliage at matching roadside positions for biome %i/%i/%i',(coast,canyon,city,leaf)=>{
+   const scene=new THREE.Scene();
+   addJourneyScenery(scene,track.sample,track.length,0,1,()=>7,()=>[coast,canyon,city],{start:0,end:1000,openRoad:true});
+   const trees:THREE.InstancedMesh[]=[];
+   scene.traverse(o=>{if(o instanceof THREE.InstancedMesh&&o.userData.nature)trees.push(o);});
+   const foliage=trees.filter(o=>o.userData.nature.texture===leaf&&o.userData.nature.leafCutout);
+   expect(foliage.length).toBeGreaterThan(0);
+   for(const crown of foliage){
+    const trunk=trees.find(o=>o.userData.nature.texture==='Bark_NormalTree.png'&&o.userData.nature.center===crown.userData.nature.center);
+    expect(trunk?.instanceMatrix.array).toEqual(crown.instanceMatrix.array);
+   }
+  });
+ it('keeps a bark trunk and textured branching canopy at each authored field-edge site',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('headland-grove.json')?woods:assets})));
   await loadCoastNature();
   const scene=new THREE.Scene();
   for(const start of [0,1000])addCoastNature(scene,track.sample,start,start+1000);
   const matrix=new THREE.Matrix4(),position=new THREE.Vector3();
-  for(const [d,x] of [[148,72],[460,267],[760,266],[1310,265],[1660,268]]){
+  for(const [d,x] of [...COAST_HERO_TREE_SITES.map(t=>[t.d,t.x]),[148,72],[460,267],[760,266],[1310,265],[1660,268]]){
    const frame=track.sample(d),site=frame.position.clone().addScaledVector(frame.right,x);
    const parts:THREE.InstancedMesh[]=[];
    for(const obj of scene.children as THREE.InstancedMesh[])for(let i=0;i<obj.count;i++){
@@ -169,26 +170,7 @@ describe('single full 3D tree model and no added grass',()=>{
    }
    expect(parts).toHaveLength(2);
    expect(parts.some(m=>m.userData.nature.texture==='Bark_NormalTree.png')).toBe(true);
-   expect(parts.some(m=>m.geometry.hasAttribute('color')&&!m.geometry.hasAttribute('uv'))).toBe(true);
+   expect(parts.some(m=>m.userData.nature.leafCutout&&m.geometry.hasAttribute('uv'))).toBe(true);
   }
  });
-});
-
-it('uses actual shaded convex foliage instead of billboards at home and on hills',async()=>{
- const {coastTreeVolume,coastBushVolume}=await import('../src/coast-volume-foliage');
- for(const geometry of [coastTreeVolume(),coastBushVolume()]){
-  expect(geometry.position.length/3).toBeGreaterThan(400);
-  expect(geometry.normal).toHaveLength(geometry.position.length);
-  expect(geometry.color).toHaveLength(geometry.position.length);
-  const xs=geometry.position.filter((_:number,i:number)=>i%3===0);
-  const ys=geometry.position.filter((_:number,i:number)=>i%3===1);
-  const zs=geometry.position.filter((_:number,i:number)=>i%3===2);
-  expect(Math.max(...xs)-Math.min(...xs)).toBeGreaterThan(.39);
-  expect(Math.max(...ys)-Math.min(...ys)).toBeGreaterThan(.35);
-  expect(Math.max(...zs)-Math.min(...zs)).toBeGreaterThan(.40);
- }
- const asset=JSON.parse(readFileSync('public/assets/coast-nature/models.json','utf8'));
- expect(asset.CommonTree_3.parts).toHaveLength(1);
- expect(asset.CommonTree_3.parts[0].texture).toBe('Bark_NormalTree.png');
- expect(asset.Bush_Common).toBeUndefined();
 });

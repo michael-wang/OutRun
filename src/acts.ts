@@ -1,6 +1,6 @@
 import {REFERENCE_TRAVEL,TRACK_LENGTH} from './challenges';
 export const ACTS=[
- {id:'coast',name:'Azure Coast',start:0,end:40*REFERENCE_TRAVEL,ground:'#c4c49a',shoulder:'#dfcea4',sky:'#9bd8ea',fog:'#b7dce5',families:['palms','villas','sea cliffs'],landmarks:[{name:'Beacon Point lighthouse',fraction:.36,offset:-42},{name:'Twin sails',fraction:.73,offset:-105}],beats:'Low, two full-gas sweepers, lighthouse crest'},
+ {id:'coast',name:'Azure Coast',start:0,end:40*REFERENCE_TRAVEL,ground:'#c4c49a',shoulder:'#dfcea4',sky:'#9bd8ea',fog:'#b7dce5',families:['coastal pines','villas','sea cliffs'],landmarks:[{name:'Beacon Point lighthouse',fraction:.36,offset:-42},{name:'Twin sails',fraction:.73,offset:-105}],beats:'Low, two full-gas sweepers, lighthouse crest'},
  {id:'canyon',name:'Golden Canyon',start:40*REFERENCE_TRAVEL,end:80*REFERENCE_TRAVEL,ground:'#c58b55',shoulder:'#dca86b',sky:'#b7d3da',fog:'#d5c4a1',families:['layered mesas','dry branching trees','stone walls'],landmarks:[{name:'Sun Arch',fraction:.47,offset:-85},{name:'The Sentinels',fraction:.7,offset:-90}],beats:'Brake-required right, rising S, tight left, ridge exit'},
  {id:'city',name:'Sunlit Coastal City',start:80*REFERENCE_TRAVEL,end:120*REFERENCE_TRAVEL,ground:'#c8c8ad',shoulder:'#d5cbb2',sky:'#a8d9e8',fog:'#c4dce0',families:['stepped midrises','promenade lamps','harbor skyline'],landmarks:[{name:'Harbor clock tower',fraction:.25,offset:-52},{name:'Port cranes',fraction:.65,offset:-85}],beats:'Broad boulevard, harbor descent, skyline sweep, acceleration'}
 ] as const;

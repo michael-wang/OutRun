@@ -15,6 +15,7 @@ Read **[docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md](docs/ADR_009_BOUNDED_STAG
 
 - **No infinite-world requirement.** 極速漫遊 is a journey of finite, authored levels. Each level must have a bounded resource budget. Scenic composition is constrained by that budget.
 - **Stage-transition buffers** intentionally provide time to retire previous-stage resources and prepare the next stage, with at most a measured, bounded overlap. The next stage's drivable road remains the highest safety priority.
+- Generate all in-game trees with the threejs-nanites tree generator (@dgreenheck/ez-tree). Bake tree variants with `npm run art:trees` and reuse their branch and foliage meshes.
 - Build-time scene baking and resource sharing are encouraged for authored stages; keep procedural runtime generation only where it improves gameplay.
 - Implement the Scene Resource Pipeline incrementally: P0 task attribution / oversized-work control → P1 stage-scoped road/scenery priority windows → P2 shared resources and hybrid flower fields. Do not rewrite all systems in one PR.
 - Do not optimize by removing user-approved golden rice fields or Ultra-Water visuals without device A/B evidence. Use `?startupdiag=1` for startup and `?fpsdiag=1` for driving on physical Pixel 8.
