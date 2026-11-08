@@ -5,7 +5,7 @@ import {Grass} from './vendor/three-stylized/Grass';
 import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-stylized/flowerShapes';
 import {shadeRipeRice,shadePaddyWater} from './coast-rice-material';
 import {createFarmWindTexture} from './coast-farm-wind';
-import {createMeadowTexture} from './coast-meadow-texture';
+import {loadMeadowTexture} from './coast-meadow-texture';
 import {flowerCanopyGeometry,flowerCrownTexture,flowerSoilTexture,shadeFlowerBeds,shapeCoastalFlowers} from './coast-flowers';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 import {seededRandom} from './vendor/three-stylized/utils';
@@ -40,9 +40,13 @@ export async function loadCoastFarm(){
    source.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();
   });const merged=mergeGeometries(parts);parts.forEach(g=>g.dispose());return merged;
  }));
+ const meadowTile=await loadMeadowTexture().catch(error=>{
+  for(const geometry of geometries)geometry.dispose();
+  throw error;
+ });
  const time={value:0},materials=new Map<string,THREE.Material>();
  const texture=fieldTexture(),canopyTexture=riceSeaTexture(),farmWind=createFarmWindTexture(),flowerCrowns=flowerCrownTexture();
- const flowerSoil=flowerSoilTexture(),meadowTile=createMeadowTexture();
+ const flowerSoil=flowerSoilTexture();
  // Stage-local pin for the single shared flower mask. Build it once during
  // resource preparation, before distant field constructors run during driving.
  const flowerMask=acquireSharedFlowerMask();

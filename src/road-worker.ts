@@ -1,5 +1,4 @@
 import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
-import {addCoastMeadow} from './coast-meadow';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {farmPlotsInChunk} from './coast-farm-layout';
 import {prepareFarmPlot,farmPrepTransferables} from './coast-farm-prep';
@@ -57,8 +56,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
     canyonPrototype:(candidate as TripCandidate).canyonPrototype,designerCut:(candidate as TripCandidate).designerCut,coastUltra});
    if(coastUltra){
     const end=Math.min(request.end,current.length),halfAt=(d:number)=>pilotSample(candidate,d).halfWidth;
-    const batches=[addCoastNature(scene,current.sample,request.start,end),addCoastResort(scene,current.sample,halfAt,request.start,end),
-     addCoastMeadow(scene,current.sample,halfAt,shoulders,request.start,end)];
+    const batches=[addCoastNature(scene,current.sample,request.start,end),addCoastResort(scene,current.sample,halfAt,request.start,end)];
     for(const batch of batches){scenery.instances+=batch.instances;scenery.draws+=batch.draws;}
    }
    const templates=new Map<string,{position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array}>(),instances:{waffleSign?:boolean;coastDrainWater?:boolean;noShadowGround?:boolean;nature?:NatureBatch;shadowGroup?:CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array}[]=[],geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();

@@ -2,7 +2,6 @@ import {describe,it,expect,vi,afterAll} from 'vitest';
 import {readFileSync,existsSync} from 'node:fs';
 import * as THREE from 'three';
 import {coastHillHeight,coastWildness} from '../src/coast-terrain';
-import {addCoastMeadow} from '../src/coast-meadow';
 import {meadowCover} from '../src/coast-meadow-layout';
 import {COAST_DISTRICTS} from '../src/coast-layout';
 import {farmPlainMask} from '../src/coast-farm-layout';
@@ -42,35 +41,16 @@ describe('sunset coast nature',()=>{
   }
   for(const zone of COAST_DISTRICTS)for(const d of [zone.start,zone.end])expect(Math.abs(coastHillHeight(155,d-.001)-coastHillHeight(155,d+.001))).toBeLessThan(.001);
  });
- it('plants grass on the rolling meadow triangles, including both sides of a chunk seam',()=>{
-  const shoulders=(d:number)=>shoulderProfile(d,804),scene=new THREE.Scene();
-  for(const [start,end] of [[1000,2000],[2000,3000]]){
-   const stats=addCoastMeadow(scene,track.sample,()=>7,shoulders,start,end);
-   expect(stats.instances).toBeGreaterThan(0);expect(stats.draws).toBeLessThanOrEqual(15);
-   expect(new Set(scene.children.map(c=>c.userData.nature.meadow))).toEqual(new Set(['cover','detail']));
-   const templates=new Set(scene.children.map(c=>(c as THREE.InstancedMesh).geometry));
-   let tips=0,triangles=0;
-   for(const template of templates){
-    const uv=template.getAttribute('uv');
-    for(let i=0;i<uv.count;i++)if(uv.getY(i)===1)tips++;
-    triangles+=template.index!.count/3;
-   }
-   expect(tips).toBeGreaterThanOrEqual(160);
-   expect(triangles).toBeLessThanOrEqual(192);
-   const terrain=prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],start,end,track.length,false,true,[],shoulders,undefined,true,undefined,stage.scenerySections).find(m=>m.kind==='grass')!;
-   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(terrain.positions,3));geo.setIndex(new THREE.BufferAttribute(terrain.indices,1));
-   const ground=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({side:THREE.DoubleSide})),matrix=new THREE.Matrix4(),root=new THREE.Vector3();
-   for(const child of scene.children){
-    const batch=child as THREE.InstancedMesh;
-    if(batch.userData.nature.meadow==='cover')expect(batch.userData.nature.far).toBeGreaterThan(1000);
-    for(const i of [0,Math.floor(batch.count/2),batch.count-1]){
-     batch.getMatrixAt(i,matrix);root.setFromMatrixPosition(matrix);
-     const hit=new THREE.Raycaster(root.clone().add(new THREE.Vector3(0,30,0)),new THREE.Vector3(0,-1,0)).intersectObject(ground)[0];
-     expect(hit.point.y-root.y).toBeCloseTo(.045,2);
-    }
-   }
-   geo.dispose();ground.material.dispose();scene.clear();
+ it('carries the turf mask across chunk seams and over the last hill strip',()=>{
+  const boundary=2000,seen:number[][]=[];
+  for(const [start,end] of [[1000,boundary],[boundary,3000]]){
+   const terrain=prepareRoadChunk(track.sample,()=>7,()=>[1,0,0],start,end,track.length,false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections).find(m=>m.kind==='grass')!;
+   const edge=[];
+   for(let i=0;i<terrain.uvs.length;i+=2)if(terrain.uvs[i+1]===boundary/4)edge.push(terrain.uvs[i]);
+   expect(edge.length).toBeGreaterThan(0);expect(edge.at(-1)).toBe(1);seen.push(edge);
   }
+  expect(seen[0]).toEqual(seen[1]);
+  expect(meadowCover(450,2530)).toBe(1);
   const heights=Array.from({length:25},(_,i)=>coastHillHeight(48,1774+i*8));
   expect(Math.max(...heights)-Math.min(...heights)).toBeGreaterThan(.7);
   for(const d of [537,1270,3700,9350])expect(meadowCover(45,d)).toBe(0);
@@ -111,7 +91,7 @@ describe('sunset coast nature',()=>{
    }
   }
   expect(checked).toBeGreaterThan(15);
-  // New grass reuses the same cached InstancedMesh model in 200m buckets.
+  // Trees and rocks remain in bounded 200 m instance batches.
   expect(checked).toBeLessThan(450);expect(scene.children.length).toBeLessThan(90);
   expect(scene.children.some(o=>o.name==='coast-instanced-grass')).toBe(false);
   expect(TREE_DRAW_DISTANCE).toBeGreaterThan(1200);

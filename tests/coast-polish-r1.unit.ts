@@ -27,7 +27,7 @@ it('chooses a few inhabited town streets in gaps between actual buildings',()=>{
  }
 });
 
-it('uses existing instanced grass assets and no triangle-rock meadow geometry',()=>{
+it('keeps town ground separate from independent vegetation meshes',()=>{
  const streets=buildCoastTownStreets(sample,3400,4000);
  expect(streets).not.toBeNull();
  try{
@@ -42,6 +42,7 @@ it('uses existing instanced grass assets and no triangle-rock meadow geometry',(
   expect(nature).not.toContain('coast-instanced-grass');
   const worker=readFileSync(new URL('../src/road-worker.ts',import.meta.url),'utf8');
   const stream=readFileSync(new URL('../src/streamed-scene.ts',import.meta.url),'utf8');
+  expect(worker).not.toContain('addCoastMeadow');
   expect(worker).toContain('noShadowGround:!!object.userData.noShadowGround');
   expect(stream).toContain('mesh.castShadow=!!this.farmSample&&!data.coastDrainWater&&!data.noShadowGround');
  }finally{streets?.dispose();}

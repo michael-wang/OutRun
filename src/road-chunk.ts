@@ -87,8 +87,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    // Coast sand's currently unused UV.x can encode the true widened beach
    // cross-section for the wet-sand reflection in the existing PBR material.
    const profileX=coastUltra&&kind==='sand'?coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d):undefined;
-   // Inland turf has no UV-mapped albedo. Its first coordinate masks the
-   // meadow shading to exactly the same physical headlands as the blades.
+   // UV.x carries the grass material mask across the existing inland terrain.
    const terrainU=coastUltra&&kind==='grass'?meadowCover(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d):o/4;
    uvs.push(profileX??terrainU,d/4);
    if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}

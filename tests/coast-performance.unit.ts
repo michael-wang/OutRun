@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {MOBILE_MEADOW_COVER,OceanCadence,natureVisible} from '../src/coast-performance';
+import {OceanCadence,natureVisible} from '../src/coast-performance';
 // @ts-ignore Vendored JavaScript has no declarations.
 import {OceanSim} from '../src/ultra-water/water/OceanSim.js';
 
@@ -21,12 +21,6 @@ describe('sustained mobile coast workload',()=>{
   const cadence=new OceanCadence(30);cadence.step(0);
   expect(cadence.step(.08)).toBe(.08);expect(cadence.step(0)).toBeNull();
   expect(cadence.step(.02)).toBe(.02);
- });
- it('submits the entire 200 m grass batch until the mobile blades fade into the terrain',()=>{
-  const cover={meadow:'cover',center:1200,near:0,far:1200} as const;
-  expect(natureVisible(cover,cover.center-MOBILE_MEADOW_COVER.fadeEnd-100,true)).toBe(true);
-  expect(natureVisible(cover,400,true)).toBe(false);
-  expect(natureVisible(cover,400,false)).toBe(true);
  });
  it('keeps exactly one tree LOD visible through the mobile switch',()=>{
   const near={center:1000,near:0,far:600},far={center:1000,near:600,far:1800};

@@ -17,7 +17,7 @@ const clearings=[
 ];
 
 export function meadowCover(x:number,d:number){
- const open=smoothstep(16,22,x)*(1-smoothstep(370,450,x));
+ const open=smoothstep(14.8,18.5,x);
  if(!open)return 0;
  let cover=open;
  for(const {start,end,right} of clearings){
