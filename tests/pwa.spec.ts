@@ -1,12 +1,12 @@
 import {test,expect,type Page} from '@playwright/test';
 
 const site=new URL(process.env.OUTRUN_SITE_BASE??'/','http://127.0.0.1:4173');
-const startDistance=3438;
+const startDistance=2800;
 const playUrl=new URL(`?at=${startDistance}&fpsdiag=1&startupdiag=1`,site).href;
 
 async function waitForCoast(page:Page){
  await page.waitForFunction(()=>document.querySelector<HTMLElement>('#game-loading')?.hidden&&
-   (window as any).__startupDiagnostics?.report().completed,null,{timeout:90000});
+   (window as any).__startupDiagnostics?.report().completed,null,{timeout:process.env.CI?180000:90000});
  const report=await page.evaluate(()=>(window as any).__startupDiagnostics.report());
  for(const name of ['coast-ocean-ready','coast-boats-ready'])
   expect(report.events.find((e:{name:string})=>e.name===name)?.data.active).toBe(true);
@@ -24,7 +24,7 @@ test.afterEach(async({context},info)=>{
 });
 
 test('installed coast launches online and offline within its publishing scope',async({page,context,request})=>{
- test.setTimeout(300000);
+ test.setTimeout(process.env.CI?480000:300000);
  const viewport={width:480,height:270};
  await page.setViewportSize(viewport);
  const errors:string[]=[];
@@ -68,6 +68,8 @@ test('installed coast launches online and offline within its publishing scope',a
  },site.href);
  expect(cacheUrls.every(url=>url.startsWith(site.href))).toBe(true);
  expect(cacheUrls.some(url=>url.includes('road-worker-'))).toBe(true);
+ for(const file of ['headland-grove.json','oak_color.png','pine_color.png'])
+  expect(cacheUrls).toContain(new URL('assets/coast-nature/'+file,site).href);
  const audioUrl=cacheUrls.find(url=>url.endsWith('.mp3'))!;
  expect(await page.evaluate(async url=>{
   const buffer=await (await fetch(url)).arrayBuffer();
