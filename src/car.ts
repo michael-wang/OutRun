@@ -1,7 +1,7 @@
 import {sectionMesh,jacketSections,shirtCollar,createSundress} from './hero-tailoring';
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
-import {createGTWingMirrorHousing,createRoadsterDoor} from './hero-body';
+import {createGTWingMirrorHousing,createDoorLiner,createWheelBrow} from './hero-body';
 import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry';
 import {createDriverHair,createBlondeBob} from './hero-groom';
 import {createCockpitWheel,createDriverArms} from './hero-hands';
@@ -49,29 +49,27 @@ export function createCar(dusk=false) {
   car.add(rivieraTrim);
   // Dark cockpit void and recessed centre tunnel let the sunlight catch
   // the painted shoulders rather than a flat, boxlike cabin roof.
-  box(1.57,.09,1.76,dark,0,.47,-.23);
+  box(1.85,.09,1.76,dark,0,.47,-.23);
   box(.15,.19,1.23,dark,0,.60,-.16);
   // Riviera's approved low painted rear tonneau is fused into the shell.
   box(.17,.03,.27,silver,0,.70,.01);
-  // Sculpted hood creases and rear deck air channels are trim, not decals.
+  // Shallow air channels follow the painted rear deck.
   for(const side of [-1,1]){
-    bar([side*.59,.96,.72],[side*.52,.73,2.15],.014,paintShade);
     for(const x of [.24,.38])bar([side*x,.98,-1.87],[side*x,1.005,-1.37],.011,dark,rivieraTrim);
     // Soft rising haunch behind each seat: small geometry, big silhouette.
     oval(.21,.10,.65,paint,side*.85,.87,-1.62);
   }
   for(const side of [-1,1]){
-    mesh(createRoadsterDoor(side),paint);
-    box(.046,.23,1.44,leather,side*.784,.785,-.20);
+    mesh(createDoorLiner(side),leather);
     // Flush handle along the exterior skin, aligned with the length of the door.
-    box(.018,.027,.143,dark,side*1.089,.846,-.67);
-    box(.022,.013,.112,silver,side*1.094,.853,-.67);
+    box(.018,.027,.143,dark,side*1.065,.852,-.67);
+    box(.022,.013,.112,silver,side*1.068,.858,-.67);
     // A low saddle-leather bucket rolls down behind the painted fairing.
     oval(.31,.10,.35,seatHide,side*.41,.64,-.34);
     mesh(sectionMesh([[.64,.25,.085,-.79],[.83,.26,.080,-.82],
       [.948,.223,.063,-.84],[.985,.144,.050,-.84],[.996,.073,.028,-.84]],14),seatHide,side*.41);
     // Low-profile sculpted wing mirror, rather than a round toy handle.
-    bar([side*.97,.952,.51],[side*1.107,.987,.452],.010,dark);
+    bar([side*.97,.928,.51],[side*1.107,.987,.452],.010,dark);
     mesh(createGTWingMirrorHousing(),paint,side*1.121,.996,.426);
     // Two thin, camera-facing glass/rim discs instead of four dense
     // miniature spheres. The painted 3-D shell supplies the curved shape.
@@ -80,9 +78,7 @@ export function createCar(dusk=false) {
     const pane=mesh(new THREE.CircleGeometry(1,12),silver,side*1.121,.997,.343);
     pane.rotation.y=Math.PI;pane.scale.set(.078,.028,1);
     for(const z of [-1.45,1.38]){
-      // Subtle sculpted arch brow follows the wheel without a giant polygon.
-      const brow=mesh(new THREE.TorusGeometry(.49,.05,5,16,Math.PI),paint,side*1.052,.46,z);
-      brow.rotation.y=Math.PI/2;
+      mesh(createWheelBrow(side),paint,0,.46,z);
       const wheel=createRoadWheel(side,z>0);
       wheel.pivot.position.set(side*1.055,.46,z);
       car.add(wheel.pivot);wheels.push(wheel);
@@ -91,7 +87,7 @@ export function createCar(dusk=false) {
     box(.09,.10,3.45,dark,side*1.025,.36,-.10);
     bar([side*1.085,.66,-1.96],[side*1.10,.65,-1.54],.024,paintShade);
   }
-  box(1.46,.19,.27,dark,0,.85,.51); // dashboard
+  box(1.84,.19,.27,dark,0,.837,.53); // dashboard
   box(.38,.035,.12,silver,.43,.95,.47); // instrument hood
   for(const x of [-.18,.12]){
     const dial=mesh(new THREE.SphereGeometry(1,8,4),dark,x,.91,.40);

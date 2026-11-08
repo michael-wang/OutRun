@@ -1,5 +1,14 @@
 import * as THREE from 'three';
 
+const cabinRear=-1.09,cabinFront=.66;
+const cabinSteps=Math.ceil((cabinFront-cabinRear)/.12);
+
+// The painted lip and leather return meet at this edge, in car coordinates.
+function doorEdge(z:number){
+ const t=THREE.MathUtils.clamp((z-cabinRear)/(cabinFront-cabinRear),0,1);
+ return {x:.905+.013*t,y:.971-.038*t+.030*Math.sin(Math.PI*t)};
+}
+
 /** Sculpted, smoothly shaded GT spider exterior. Local +Z points toward the
  * nose. Geometry is baked ONCE, with no per-frame vertices or skinning.
  *
@@ -11,7 +20,7 @@ import * as THREE from 'three';
 export function createSpiderShell():THREE.BufferGeometry{
  const profiles=[
   [-2.34,.80,.76],[-2.23,.96,.86],[-1.93,1.07,.93],
-  [-1.48,1.10,.965],[-1.09,1.08,.96],[.66,1.07,.89],
+  [-1.48,1.10,.965],[cabinRear,1.08,.96],[cabinFront,1.07,.89],
   [1.05,1.06,.86],[1.58,1.00,.79],[2.31,.72,.61],
  ] as const;
  const rim:readonly (readonly [number,number])[]=[
@@ -36,10 +45,21 @@ export function createSpiderShell():THREE.BufferGeometry{
     w=catmull(p0[1],p1[1],p2[1],p3[1],t),
     h=catmull(p0[2],p1[2],p2[2],p3[2],t);
    rows.push({z});
+   const edge=doorEdge(z);
+   // Ease the narrow door shoulders into the closed rear deck and scuttle.
+   const cabin=THREE.MathUtils.smoothstep(z,cabinRear-.22,cabinRear)*
+    (1-THREE.MathUtils.smoothstep(z,cabinFront,cabinFront+.17));
    for(const [factor,lift] of rim){
     // Hood crown falls toward the nose; wide rear shoulder has clean
     // negative space between the cabin and the painted rear deck.
-    position.push(factor*w,lift>.4?Math.min(h*lift+.002,1.04):lift,z);
+    let x=Math.abs(factor)*w,y=lift>.4?Math.min(h*lift+.002,1.04):lift;
+    if(cabin&&lift>=.88){
+     // Across the crown: inside edge, resting surface, outer rolled shoulder.
+     const inner=lift>1,outer=lift===.88;
+     x=THREE.MathUtils.lerp(x,inner?edge.x:outer?w*.988:edge.x+.052,cabin);
+     y=THREE.MathUtils.lerp(y,edge.y+(inner?-.004:outer?-.050:0),cabin);
+    }
+    position.push(Math.sign(factor)*x,y,z);
    }
   }
  }
@@ -50,7 +70,7 @@ export function createSpiderShell():THREE.BufferGeometry{
   for(let j=0;j<side;j++){
    // Roofless opening across the full cockpit. Not merely a decorative
    // gap in one 12cm segment of the centre deck.
-   if(j===6&&middle>-1.09&&middle<.66)continue;
+   if(j===6&&middle>cabinRear&&middle<cabinFront)continue;
    const a=row*side+j,b=row*side+(j+1)%side,c=b+side,d=a+side;
    index.push(a,c,b,a,d,c);
   }
@@ -70,35 +90,47 @@ export function createSpiderShell():THREE.BufferGeometry{
 }
 
 
-/** The door skin returns over the sill and down inside the open cockpit.
- * +Z runs from the rear shut line to the front hinge below the mirror. */
-export function createRoadsterDoor(side:number){
- const positions:number[]=[],indices:number[]=[];
- const stations=[
-  // z, inner edge, widest part of the skin, sill height, lower edge
-  [-1.015,.79,1.067,.949,.49],[-.96,.785,1.085,.978,.483],
-  [-.68,.782,1.094,.982,.475],[-.36,.782,1.094,.982,.472],
-  [-.15,.785,1.090,.977,.471],[.27,.789,1.086,.946,.478],
-  [.53,.793,1.078,.929,.49],[.59,.799,1.065,.909,.51],
- ];
- const ringSize=8;
- for(const [row,[z,inner,outer,top,bottom]] of stations.entries()){
-  // A broad upper ledge under the driver's resting arm rolls into the outer panel.
-  const section=[[inner,.70],[inner,top-.035],[inner+.039,top-.004],
-   [.895,top],[outer-.052,top-.022],[outer,top-.112],
-   [outer-.004,bottom+.066],[outer-.031,bottom]];
-  for(const [x,y] of section)positions.push(side*x,y,z);
-  if(!row)continue;
-  for(let i=0;i<ringSize;i++){
-   const a=(row-1)*ringSize+i,b=(row-1)*ringSize+(i+1)%ringSize;
-   indices.push(a,a+ringSize,b,b,a+ringSize,b+ringSize);
+/** Cabin-facing trim, stitched to the shell's sill samples at the same Zs. */
+export function createDoorLiner(side:number){
+ const p:number[]=[],indices:number[]=[];
+ for(let row=0;row<=cabinSteps;row++){
+  const z=THREE.MathUtils.lerp(cabinRear,cabinFront,row/cabinSteps),edge=doorEdge(z);
+  p.push(side*edge.x,edge.y-.004,z,side*(edge.x-.008),edge.y-.026,z,
+   side*(edge.x-.009),.66,z,side*edge.x,.49,z);
+  for(let col=0;row>0&&col<3;col++){
+   const a=(row-1)*4+col;
+   indices.push(a,a+1,a+4,a+1,a+5,a+4);
   }
  }
- const last=(stations.length-1)*ringSize;
- for(let i=1;i<ringSize-1;i++)indices.push(0,i,i+1,last,last+i+1,last+i);
+ // Close the footwell below the dash and behind the seat. The rear deck
+ // and scuttle have no thickness of their own when viewed from inside.
+ for(const z of [cabinRear,cabinFront]){
+  const base=p.length/3,edge=doorEdge(z);
+  p.push(0,.49,z,side*edge.x,.49,z,side*edge.x,edge.y-.004,z,0,edge.y-.004,z);
+  if(z===cabinRear)indices.push(base,base+1,base+2,base,base+2,base+3);
+  else indices.push(base,base+2,base+1,base,base+3,base+2);
+ }
  if(side<0)for(let i=0;i<indices.length;i+=3)[indices[i+1],indices[i+2]]=[indices[i+2],indices[i+1]];
- const g=new THREE.BufferGeometry();
- g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+ g.setIndex(indices);g.computeVertexNormals();return g;
+}
+
+/** Rolled wheel opening. The inboard flange meets the body while the lip
+ * clears the tyre at the top and leaves the wheel face visible from the side. */
+export function createWheelBrow(side:number){
+ const p:number[]=[],indices:number[]=[];
+ for(let i=0;i<=20;i++){
+  const a=Math.PI*i/20,up=Math.sin(a),along=Math.cos(a);
+  for(const [x,r] of [[.69,.47],[.908,.504],[1.125,.519],[1.199,.50],[1.20,.482]]){
+   const blend=THREE.MathUtils.smoothstep(x,.69,.908);
+   p.push(side*x,r*up-(1-blend)*.22,r*along);
+  }
+  for(let j=0;i&&j<4;j++){
+   const n=(i-1)*5+j;indices.push(n,n+1,n+5,n+1,n+6,n+5);
+  }
+ }
+ if(side<0)for(let i=0;i<indices.length;i+=3)[indices[i+1],indices[i+2]]=[indices[i+2],indices[i+1]];
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
  g.setIndex(indices);g.computeVertexNormals();return g;
 }
 
