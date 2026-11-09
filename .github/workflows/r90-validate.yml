@@ -1,10 +1,9 @@
 name: Validate OutRun
+# Full release validation and Pages deployment happen only on approved main pushes.
+# Development checks remain available on demand in dev-checks.yml.
 on:
   push:
-    branches: [dev, main]
-  pull_request:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: read
