@@ -117,7 +117,13 @@ document.querySelector('#app')!.innerHTML = `
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div><p id="iphone-fullscreen-hint" role="status" hidden>On iPhone, open this site in Safari. Tap Share → Add to Home Screen, then launch the icon to hide Safari browser bars. Rotate the phone to landscape to drive.</p></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><label id="car-paint-setting" for="car-paint"><span>車身顏色</span><select id="car-paint" aria-label="車身顏色">${CAR_COLORS.map(color=>`<option value="${color}">${CAR_PAINT_PRESETS[color].label}</option>`).join('')}</select></label><div id="car-paint-list" role="listbox" aria-label="車身顏色" hidden>${CAR_COLORS.map(color=>`<button type="button" role="option" data-paint="${color}" aria-selected="false">${CAR_PAINT_PRESETS[color].label}</button>`).join('')}</div><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
 <div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-keyshortcuts="A D" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span><span class="steer-keys" aria-hidden="true"><kbd>A</kbd><kbd>D</kbd></span></div><div class="pedals"><button data-control="gas" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space">${playerUi?'油門':'GAS'}</button><button data-control="brake" data-key-hint="ENTER" aria-keyshortcuts="Enter">${playerUi?'煞車':'BRAKE'}</button></div></div>
-<div id="rotate"><span>↻</span>${playerUi?'橫放手機，準備出發！':'Turn toward the horizon'}<small id="rotate-instruction">${playerUi?'請將手機轉為橫向，即可開始駕駛。':'Rotate your phone to landscape to drive.'}</small><small id="rotate-launch-status" role="status" hidden></small><button id="rotate-launch" type="button" hidden>開始駕駛!</button><small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button></div>
+<div id="rotate">
+ ${playerUi?'<hgroup class="portrait-brand"><h1>極速漫遊</h1><p>海濱公路</p></hgroup>':'<span>↻</span>Turn toward the horizon'}
+ <button id="rotate-launch" type="button" aria-describedby="rotate-instruction" hidden>開始駕駛!</button>
+ <small id="rotate-instruction">${playerUi?'橫放手機即可出發。':'Rotate your phone to landscape to drive.'}</small>
+ <small id="rotate-launch-status" role="status" hidden></small>
+ <small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button>
+</div>
 <section id="player-start" aria-label="Start driving" hidden>
   <div id="player-title" class="player-title">極速漫遊</div>
   <p id="player-subtitle">公路冒險</p>
@@ -459,12 +465,12 @@ function refreshPortraitLaunchUi(){
   button.disabled=autoLaunchArmed;
   const instruction=$('rotate-instruction');
   instruction.hidden=autoLaunchArmed;
-  const hint=available?'點擊下方按鈕，即可切換橫向並開始駕駛。':'請將手機轉為橫向，即可開始駕駛。';
+  const hint=available?'輕點後將切換為橫向。':'橫放手機即可出發。';
   if(instruction.textContent!==hint)instruction.textContent=hint;
   const status=$('rotate-launch-status');
   status.hidden=!autoLaunchArmed;
   if(autoLaunchArmed){
-    const message=autoLaunchNeedsManual?'無法自動旋轉，請手動橫放手機，準備好就會自動出發。':
+    const message=autoLaunchNeedsManual?'請手動橫放手機，即可出發。':
       world.streamer&&!world.streamer.ready?'道路準備中，完成後自動出發…':'正在切換成橫向…';
     if(status.textContent!==message)status.textContent=message;
   }

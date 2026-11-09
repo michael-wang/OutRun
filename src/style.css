@@ -125,17 +125,25 @@ html[data-player-ui="true"][data-drive-mode="menu"] header,
 html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
 html[data-player-ui="true"][data-drive-mode="menu"] #speed,
 html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
-/* Portrait: a short transparent rotation cue leaves the artwork visible. */
+/* Keep the title in the sky and the action at the loading progress position. */
 @media (orientation:portrait) and (pointer:coarse){
  html[data-player-ui="true"] #player-start{display:none!important}
+ html[data-player-ui="true"] #immersive-note{display:none}
  html[data-player-ui="true"] #rotate{
+  --action-inset:max(var(--portrait-launch-inset),calc(env(safe-area-inset-bottom) + 28px));
   z-index:65;justify-content:flex-end;gap:10px;
-  padding:env(safe-area-inset-top) 7vw var(--portrait-launch-inset);
+  padding:env(safe-area-inset-top) 7vw var(--action-inset);
   background:transparent;
   text-shadow:0 2px 12px #082c38;pointer-events:none;
  }
- html[data-player-ui="true"] #rotate span{font-size:46px}
- html[data-player-ui="true"] #rotate small{font-size:14px;line-height:1.5;max-width:min(310px,82vw);color:#fff3dc}
+ .portrait-brand{
+  position:absolute;top:max(5dvh,env(safe-area-inset-top));left:max(7vw,env(safe-area-inset-left));
+  text-align:left;color:#fff4df;
+ }
+ .portrait-brand h1{margin:0;font-size:clamp(25px,7vw,34px);line-height:1.2;letter-spacing:.12em}
+ .portrait-brand p{margin:5px 0 0;font-size:14px;font-weight:600;letter-spacing:.18em;color:#ffd69f}
+ html[data-player-ui="true"] #rotate small{font-size:13px;line-height:1.45;color:#fff3dc}
+ #rotate-launch:not([hidden]) + #rotate-instruction{position:absolute;top:calc(100% - var(--action-inset) + 6px)}
  html[data-player-ui="true"] #rotate button{display:none!important}
 }
 @media (orientation:landscape) and (max-height:500px){
@@ -159,9 +167,6 @@ html[data-player-ui="true"] .player-title{font-size:clamp(32px,4.5vw,64px);font-
 html[data-player-ui="true"] #player-play{border-radius:6px;min-height:48px;min-width:220px}
 html[data-player-ui="true"] #player-play:disabled{cursor:wait;opacity:.65}
 html[data-player-ui="true"] #player-loading{max-width:90vw}
-@media (orientation:portrait) and (pointer:coarse){
- html[data-player-ui="true"] #rotate span{display:none}
-}
 @media (orientation:landscape) and (max-height:500px){
  html[data-player-ui="true"] #player-start{top:max(12px,env(safe-area-inset-top));gap:4px}
  html[data-player-ui="true"] .player-title{font-size:30px}
@@ -181,10 +186,6 @@ html[data-player-ui="true"] .player-title{letter-spacing:.12em}
 html[data-player-ui="true"] #player-subtitle{letter-spacing:.18em}
 html[data-player-ui="true"] #player-play{font-size:clamp(19px,2.5vw,24px)}
 html[data-player-ui="true"] #touch [data-control]{font-size:16px}
-@media (orientation:portrait) and (pointer:coarse){
- html[data-player-ui="true"] #rotate{font-size:clamp(21px,5.5vw,25px)}
- html[data-player-ui="true"] #rotate small{font-size:15px}
-}
 
 
 /* Public portrait: only supported browsers get a one-tap fullscreen + landscape start. */
@@ -197,11 +198,6 @@ html[data-player-ui="true"] #touch [data-control]{font-size:16px}
     font:700 19px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
     text-shadow:0 1px 3px #082c38;
     touch-action:manipulation;
-  }
-  html[data-player-ui="true"] #rotate #rotate-launch-status:not([hidden]){
-    display:block;max-width:min(345px,86vw);padding:8px 12px;
-    border-radius:8px;background:#103b43b5;
-    font-size:14px;line-height:1.55;color:#fff3dc;
   }
 }
 
