@@ -33,7 +33,8 @@ test('portrait public start shows Chinese rotation copy over the coast',async({b
   try{
     const page=await context.newPage();await page.goto('/');
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
-    await expect(page.locator('#rotate')).toContainText('橫放手機，準備出發！');
+    await expect(page.locator('#rotate h1')).toHaveText('極速漫遊');
+    await expect(page.locator('#rotate .portrait-brand p')).toHaveText('海濱公路');
     await expect(page.locator('#rotate-instruction')).toContainText('橫向');
     await expect(page.locator('#startup-art')).toBeHidden();
     await expect(page.locator('#rotate-fullscreen')).toBeHidden();
