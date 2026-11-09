@@ -1,3 +1,4 @@
+import {WheelContactPatch} from './wheel-contact-patch';
 import {CHEER_END,CLAP_TIMES,type Cheer} from './passenger-cheer';
 import {journeyChapters} from './scenic-journey';
 import {GAME_VERSION} from './build-info';
@@ -347,16 +348,74 @@ function applyShadowTechnique(technique:CoastShadowTechnique,enabled:boolean){
  if(checkbox)checkbox.checked=enabled;
 }
 if(chapters&&chapterIndex<2)traffic?.enableHighway(chapterEnd());
-const contactRay=new THREE.Raycaster(),down=new THREE.Vector3(0,-1,0),contactShadows=Array.from({length:4},()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(.34,16),new THREE.MeshBasicMaterial({color:coastUltraMode?0x000000:0x172d28,transparent:true,opacity:.24,depthWrite:false}));m.visible=false;world.scene.add(m);return m;});
-function tireBottom(p:THREE.Group){const center=p.getWorldPosition(new THREE.Vector3()),axis=new THREE.Vector3(1,0,0).transformDirection(p.matrixWorld),vertical=new THREE.Vector3(0,1,0).addScaledVector(axis,-axis.y).normalize();return center.addScaledVector(vertical,-.46).addScaledVector(axis,-Math.sign(axis.y)*.135);}
+const down=new THREE.Vector3(0,-1,0),contactRay=new THREE.Raycaster(new THREE.Vector3(),down,0,12),contactShadows=Array.from({length:4},()=>{const m=new THREE.Mesh(new THREE.CircleGeometry(.34,16),new THREE.MeshBasicMaterial({color:coastUltraMode?0x000000:0x172d28,transparent:true,opacity:.24,depthWrite:false}));m.visible=false;world.scene.add(m);return m;});
+const wheelPatch=new WheelContactPatch();
+const wheelGroups:THREE.Group[]=[];
+const wheelBottom=new THREE.Vector3(),wheelAxis=new THREE.Vector3(),tireRadial=new THREE.Vector3();
+const parentUp=new THREE.Vector3(),wheelDelta=new THREE.Vector3();
+const shadowUp=new THREE.Vector3(0,1,0),shadowNormal=new THREE.Vector3();
+const meshHits:THREE.Intersection[]=[];
 let wheelSurfaces=world.scene.children.filter(o=>o.name==='driving-surface'||o.name==='shoulder');let surfacesReady=false;
+
+function updateWheelBottom(pivot:THREE.Group){
+ pivot.updateWorldMatrix(false,false);
+ wheelAxis.set(1,0,0).transformDirection(pivot.matrixWorld);
+ tireRadial.set(0,1,0).addScaledVector(wheelAxis,-wheelAxis.y).normalize();
+ wheelBottom.setFromMatrixPosition(pivot.matrixWorld)
+  .addScaledVector(tireRadial,-.46).addScaledVector(wheelAxis,-Math.sign(wheelAxis.y)*.135);
+}
+
+function probeWheel(usePatch:boolean){
+ contactRay.ray.origin.copy(wheelBottom);contactRay.ray.origin.y+=4;
+ if(usePatch)return wheelPatch.intersect(contactRay);
+ const hit=world.streamer?world.streamer.raycastContacts(contactRay,state.distance)[0]:
+  contactRay.intersectObjects(wheelSurfaces,true,meshHits)[0];
+ meshHits.length=0;
+ if(!hit)return false;
+ wheelPatch.point.copy(hit.point);
+ if(hit.face)wheelPatch.normal.copy(hit.face.normal).transformDirection(hit.object.matrixWorld);
+ else wheelPatch.normal.copy(shadowUp);
+ wheelPatch.onRoad=hit.object.name==='driving-surface';
+ return true;
+}
+
 function groundWheels(){
- const intersect=()=>world.streamer?world.streamer.raycastContacts(contactRay,state.distance):contactRay.intersectObjects(wheelSurfaces,true);
- const pivots=world.car.userData.wheelPivots as THREE.Group[];for(const p of pivots)p.position.y=.46;
- if(!surfacesReady){world.scene.updateMatrixWorld(true);surfacesReady=true;}else world.car.updateWorldMatrix(true,true);
- wheelContacts=pivots.map((p,index)=>{let bottom=new THREE.Vector3(),hit:THREE.Intersection|undefined;const m=p.parent!.matrixWorld.elements,up=new THREE.Vector3(m[4],m[5],m[6]);
-  for(let i=0;i<2;i++){p.updateWorldMatrix(true,false);bottom=tireBottom(p);contactRay.set(bottom.clone().add(new THREE.Vector3(0,4,0)),down);contactRay.far=12;hit=intersect()[0];if(!hit)break;const normal=hit.face?.normal.clone().transformDirection(hit.object.matrixWorld)??new THREE.Vector3(0,1,0),denominator=normal.dot(up);if(Math.abs(denominator)<.2)break;const correction=THREE.MathUtils.clamp(normal.dot(hit.point.clone().sub(bottom))/denominator,-.4-(p.position.y-.46),.4-(p.position.y-.46));p.position.y+=correction;if(Math.abs(correction)<.001)break;}
-  p.updateWorldMatrix(true,false);bottom=tireBottom(p);contactRay.set(bottom.clone().add(new THREE.Vector3(0,4,0)),down);contactRay.far=12;hit=intersect()[0];const shadow=contactShadows[index];shadow.visible=!!hit&&(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));if(hit&&shadow.visible){const normal=hit.face?.normal.clone().transformDirection(hit.object.matrixWorld)??new THREE.Vector3(0,1,0);if(normal.y<0)normal.negate();shadow.position.copy(hit.point).addScaledVector(normal,.025);shadow.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal);}return {name:p.name,gap:hit?bottom.y-hit.point.y:null,point:bottom.toArray(),surface:hit?.point.toArray()??null,normal:hit?.face?.normal.clone().transformDirection(hit.object.matrixWorld).toArray(),onRoad:hit?.object.name==='driving-surface'};});
+ const pivots=world.car.userData.wheelPivots as THREE.Group[];
+ if(!surfacesReady){world.scene.updateMatrixWorld(true);surfacesReady=true;}
+ const usePatch=world.streamer?wheelPatch.prepare(world.streamer.contactSurfaces(state.distance,wheelGroups),state.distance):false;
+ wheelGroups.length=0;
+ wheelContacts=pivots.map((pivot,index)=>{
+  pivot.position.y=.46;
+  const parent=pivot.parent!;
+  parent.updateWorldMatrix(true,false);
+  parentUp.setFromMatrixColumn(parent.matrixWorld,1);
+  updateWheelBottom(pivot);
+  let hit=probeWheel(usePatch);
+  for(let i=0;hit&&i<2;i++){
+   const denominator=wheelPatch.normal.dot(parentUp);
+   if(Math.abs(denominator)<.2)break;
+   const offset=pivot.position.y-.46;
+   const correction=THREE.MathUtils.clamp(wheelPatch.normal.dot(wheelDelta.subVectors(wheelPatch.point,wheelBottom))/denominator,-.4-offset,.4-offset);
+   const oldY=pivot.position.y;
+   pivot.position.y+=correction;
+   // Only reuse a hit when this pivot did not move at all. A tilted suspension
+   // can cross a triangle or material boundary even on its final small correction.
+   if(pivot.position.y===oldY)break;
+   updateWheelBottom(pivot);
+   hit=probeWheel(usePatch);
+   if(Math.abs(correction)<.001)break;
+  }
+  const shadow=contactShadows[index];
+  shadow.visible=hit&&(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
+  if(shadow.visible){
+   shadowNormal.copy(wheelPatch.normal);
+   if(shadowNormal.y<0)shadowNormal.negate();
+   shadow.position.copy(wheelPatch.point).addScaledVector(shadowNormal,.025);
+   shadow.quaternion.setFromUnitVectors(shadowUp,shadowNormal);
+  }
+  return {name:pivot.name,gap:hit?wheelBottom.y-wheelPatch.point.y:null,point:wheelBottom.toArray(),
+   surface:hit?wheelPatch.point.toArray():null,normal:hit?wheelPatch.normal.toArray():undefined,onRoad:hit&&wheelPatch.onRoad};
+ });
 }
 
 const speedAudit=import.meta.env.DEV?new SpeedAudit():undefined;

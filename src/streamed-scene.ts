@@ -1,3 +1,4 @@
+import {visitContactRows} from './wheel-contact-patch';
 import {lightCoastMaterial} from './coast-lamp-lighting';
 import {waffleSignTexture} from './vehicle-model';
 import {makeCoastDrainWaterMaterial,type CoastCanalFftUniforms} from './coast-drain-water';
@@ -350,7 +351,16 @@ export class StreamedScene {
   return !this.errorMessage&&this.natureTextureLoads===0&&this.nearby.every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});
  }
  get fullyReady(){return !this.errorMessage&&!this.retiring.length&&[...this.desired].every(i=>{const c=this.chunks.get(i);return c?.road==='ready'&&c.scenery==='ready';});}
- contactSurfaces(distance:number){const index=Math.floor(distance/this.chunkLength);return [index-1,index,index+1].flatMap(i=>{const c=this.chunks.get(i);return c?[c.groups['driving-surface'],c.groups.shoulder].filter((g):g is THREE.Group=>!!g):[];});}
+ contactSurfaces(distance:number,groups:THREE.Group[]=[]){
+  groups.length=0;
+  const center=Math.floor(distance/this.chunkLength);
+  for(let i=center-1;i<=center+1;i++){
+   const chunk=this.chunks.get(i);
+   if(chunk?.groups['driving-surface'])groups.push(chunk.groups['driving-surface']);
+   if(chunk?.groups.shoulder)groups.push(chunk.groups.shoulder);
+  }
+  return groups;
+ }
  /** Intersect only the original triangles within 12 m of the car. Restore draw
   * ranges immediately; visual geometry and other inspection raycasts stay intact. */
  raycastContacts(ray:THREE.Raycaster,distance:number){
@@ -360,10 +370,9 @@ export class StreamedScene {
    const mesh=object as THREE.Mesh,geometry=mesh.geometry,ranges=mesh.userData.rayRanges as RoadMeshData['rayRanges'];
    if(!ranges){ray.intersectObject(mesh,false,hits);continue;}
    const saved={...geometry.drawRange};
-   try{for(const r of ranges){if(distance+12<r.start||distance-12>r.end)continue;
-    const rows=r.count/6,step=(r.end-r.start)/rows,first=Math.max(0,Math.floor((distance-12-r.start)/step)),last=Math.min(rows,Math.ceil((distance+12-r.start)/step));
-    geometry.setDrawRange(r.offset+first*6,Math.max(0,last-first)*6);ray.intersectObject(mesh,false,hits);
-   }}finally{geometry.setDrawRange(saved.start,saved.count);}
+   try{visitContactRows(ranges,distance,(start,count)=>{
+    geometry.setDrawRange(start,count);ray.intersectObject(mesh,false,hits);
+   });}finally{geometry.setDrawRange(saved.start,saved.count);}
   }
   return hits.sort((a,b)=>a.distance-b.distance);
  }
