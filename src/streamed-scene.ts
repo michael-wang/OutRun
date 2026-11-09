@@ -1,4 +1,6 @@
 import {visitContactRows} from './wheel-contact-patch';
+import {makeCoastGroundShadowMaterial} from './coast-dusk-shadows';
+import {coastShadowTechniqueEnabled} from './coast-shadow-techniques';
 import {lightCoastMaterial} from './coast-lamp-lighting';
 import {waffleSignTexture} from './vehicle-model';
 import {makeCoastDrainWaterMaterial,type CoastCanalFftUniforms} from './coast-drain-water';
@@ -29,6 +31,16 @@ export interface SceneAnnotation {distance:number;create:()=>THREE.Mesh[]}
 /** Rolling, fixed-size scene allocation. The worker owns numeric preparation;
  * only short object-creation operations are performed on the render thread. */
 export class StreamedScene {
+ private essentialMaterial?:THREE.ShaderMaterial;
+ refreshEssentialShadows(){
+  if(this.essentialMaterial)this.essentialMaterial.visible=!coastShadowTechniqueEnabled('staticMap')&&coastShadowTechniqueEnabled('contactDecals');
+ }
+ get essentialShadowBatches(){
+  if(!this.essentialMaterial?.visible)return 0;
+  let count=0;
+  for(const c of this.chunks.values())for(const o of c.objects)if(o.name==='mobile-static-sunset-shadows')count++;
+  return count;
+ }
  readonly chunkLength=1000;readonly ahead=5000;readonly behind=1000;
  readonly groups:Record<string,THREE.Group>={};
  readonly history:{kind:string;index:number;ms:number}[]=[];
@@ -146,7 +158,7 @@ export class StreamedScene {
   const generation=this.generation;this.worker.onmessage=event=>{if(generation!==this.generation)return;try{this.receive(event.data);}catch(error){this.fail('Worker result failed: '+String(error));}};
   this.worker.onerror=event=>{event.preventDefault();if(generation===this.generation)this.fail(event.message||'Worker runtime failure');};
   this.worker.onmessageerror=()=>{if(generation===this.generation)this.fail('Worker message could not be decoded');};
-  this.worker.postMessage({type:'init',generation:this.generation,stage:this.stage,bank:this.bank,blenderArt:this.blenderArt,bakedFarmGround:this.stage===COAST_ULTRA_STAGE&&this.bank===undefined&&!this.blenderArt,...(import.meta.env.DEV?{faults:this.testFaults}:{})});
+  this.worker.postMessage({type:'init',generation:this.generation,stage:this.stage,bank:this.bank,mobileShadows:this.mobile&&!!this.farmSample,blenderArt:this.blenderArt,bakedFarmGround:this.stage===COAST_ULTRA_STAGE&&this.bank===undefined&&!this.blenderArt,...(import.meta.env.DEV?{faults:this.testFaults}:{})});
   }catch(error){this.fail('Worker launch failed: '+String(error));}
  }
  private fail(message:string){
@@ -217,12 +229,24 @@ export class StreamedScene {
   this.note(road?'road-cpu':'scenery-cpu',data.index,data.cpuMs);
   if(record&&!road)record.generatedInstances=data.instances.reduce((n:number,i:Instance)=>n+i.matrices.length/16,0);this.activeRecord=undefined;
   const tasks=road?this.roadWork(c,data.meshes,data.roadside):this.sceneryWork(c,data.definitions,data.instances,data.farmPreps);
+  if(data.essentialProjection)tasks.push(()=>{
+   const {positions,alpha,index}=data.essentialProjection;
+   const g=new THREE.BufferGeometry();
+   g.setAttribute('position',new THREE.BufferAttribute(positions,3));
+   g.setAttribute('shadowAlpha',new THREE.BufferAttribute(alpha,1));
+   g.setIndex(new THREE.BufferAttribute(index,1));g.computeBoundingSphere();
+   this.essentialMaterial??=makeCoastGroundShadowMaterial();
+   this.refreshEssentialShadows();
+   const mesh=new THREE.Mesh(g,this.essentialMaterial);
+   mesh.name='mobile-static-sunset-shadows';mesh.renderOrder=2;
+   this.attach(c,'scenery',mesh);c.geometries.add(g);this.registerGeometry(g,c.index);
+  });
   const taskPlots=this.taskProfiler&&!road&&this.farmSample&&this.farmAssets
    ?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
   for(const [taskIndex,task] of tasks.entries()){
    const kind:SceneTaskKind=road
     ?taskIndex<data.meshes.length?'road-geometry':taskIndex<data.meshes.length+data.roadside.length?'roadside-instances':'road-annotation'
-    :taskIndex<data.definitions.length?'scenery-geometry':taskIndex<data.definitions.length+data.instances.length?'scenery-instances':'scenery-field';
+    :taskIndex<data.definitions.length||(data.essentialProjection&&taskIndex===tasks.length-1)?'scenery-geometry':taskIndex<data.definitions.length+data.instances.length?'scenery-instances':'scenery-field';
    const plot=kind==='scenery-field'?taskPlots[taskIndex-data.definitions.length-data.instances.length]:undefined;
    this.work.push({index:c.index,priority:road?0:1,record,kind,run:task,
     ...(plot?{detail:plot.kind,resourceId:plot.id}:{})});
@@ -394,7 +418,7 @@ export class StreamedScene {
   return {enabled:this.diagnostics,recordLimit:256,records,distributions,distributionScope:'retained requests; incomplete requests excluded from ready latency',roadAheadM:roadAhead,roadHeadroomSeconds:travelSpeed>0?roadAhead/travelSpeed:null,travelSpeedMps:travelSpeed,nearby:chunks.filter(c=>this.nearby.includes(c.index)),chunks,queues:{road:this.work.filter(w=>w.priority===0).length,scenery:this.work.filter(w=>w.priority===1).length,retirement:this.retiring.length,workerPending:this.pending?1:0,roadUnrequested:[...this.desired].filter(i=>!this.chunks.get(i)||this.chunks.get(i)?.road==='missing').length,sceneryUnrequested:[...this.desired].filter(i=>!this.chunks.get(i)||this.chunks.get(i)?.scenery==='missing').length},discardedResponses:this.discardedResponses,discardedTasks:this.discardedTasks,gpuCompletion:null,visiblePixelCount:null,submissionMeaning:'Instances in meshes submitted within 250ms; not GPU completion, per-instance visibility or occlusion'};
  }
  get stats(){return {retries:this.retries,errors:[...this.failures],fatal:this.errorMessage,pending:this.pending?{...this.pending,ageMs:performance.now()-this.pending.since}:null,currentRoad:this.roadReady(this.position),nextRoad:this.roadReady(this.position+this.chunkLength),nearby:this.nearby,fullyReady:this.fullyReady,sceneryCounts:[...this.sceneryCounts].map(([index,counts])=>({index,...counts})),desired:[...this.desired],chunks:[...this.chunks.values()].map(c=>({index:c.index,road:c.road,scenery:c.scenery})),queued:this.work.length,retiring:this.retiring.length,busy:this.busy,history:[...this.history]};}
- dispose(){this.waffleTexture?.dispose();this.disposed=true;for(const patches of this.farms.values())for(const p of patches)p.dispose();this.farms.clear();this.farmAssets?.dispose();for(const material of new Set([...Object.values(this.roadMaterials),...this.annotationMaterials])){for(const value of Object.values(material))if(value instanceof THREE.Texture)value.dispose();material.dispose();}this.annotationMaterials.clear();this.generation++;this.worker?.terminate();for(const task of this.retiring)task.run();this.retiring=[];for(const c of this.chunks.values()){for(const group of Object.values(c.groups))group?.removeFromParent();for(const o of c.objects)if(o instanceof THREE.InstancedMesh)o.dispose();for(const g of c.geometries)g.dispose();}for(const t of this.natureTextures.values())t.dispose();this.natureTextures.clear();for(const m of this.materials.values()){
+ dispose(){this.essentialMaterial?.dispose();this.waffleTexture?.dispose();this.disposed=true;for(const patches of this.farms.values())for(const p of patches)p.dispose();this.farms.clear();this.farmAssets?.dispose();for(const material of new Set([...Object.values(this.roadMaterials),...this.annotationMaterials])){for(const value of Object.values(material))if(value instanceof THREE.Texture)value.dispose();material.dispose();}this.annotationMaterials.clear();this.generation++;this.worker?.terminate();for(const task of this.retiring)task.run();this.retiring=[];for(const c of this.chunks.values()){for(const group of Object.values(c.groups))group?.removeFromParent();for(const o of c.objects)if(o instanceof THREE.InstancedMesh)o.dispose();for(const g of c.geometries)g.dispose();}for(const t of this.natureTextures.values())t.dispose();this.natureTextures.clear();for(const m of this.materials.values()){
   const localAtlas=m.userData.coastCanalReflectionTexture as THREE.Texture|undefined;
   localAtlas?.dispose();
   m.dispose();

@@ -1,3 +1,4 @@
+import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {CHEER_END,CLAP_TIMES,type Cheer} from './passenger-cheer';
 import {journeyChapters} from './scenic-journey';
@@ -163,6 +164,8 @@ let selectedCarColor=readCarColor();
 const carPaintPicker=new CarPaintPicker($('car-paint') as HTMLSelectElement,$('car-paint-list'));
 startupDiagnostics.mark('world-created'); const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,CHASE_NEAR,matchMedia('(pointer:coarse)').matches?1400:2200);
 if(blenderAsset)world.scene.add(blenderAsset.root);
+const mobileCarProjection=()=>coastUltraMode&&coastProfile==='mobile-fast'?new MobileCarShadow(world.scene):undefined;
+let mobileCarShadow=mobileCarProjection();
 let coastDuskShadows=coastUltraMode&&sunsetShadowsEnabled&&!coastGeometryShadows()
  ?new CoastDuskShadows(world.scene,world.sample,world.length,world.halfAt,trip?.seed??0):undefined;
 // Load the FFT code only for the explicit coastal water trial. Everything
@@ -239,7 +242,7 @@ const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
   shadowTechniques:coastShadowTechniqueSnapshot(),
   coastShadowProfile:coastUltraMode?coastProfile:null,
   shadowResources:{programs:renderer.info.programs?.length,nearMap:!!world.shadowCache?.near.shadow.map,
-   farMap:!!world.shadowCache?.far.shadow.map,legacyProjected:!!coastDuskShadows},
+   farMap:!!world.shadowCache?.far.shadow.map,legacyProjected:!!coastDuskShadows,playerDecal:!!mobileCarShadow?.mesh.visible,staticDecals:world.streamer?.essentialShadowBatches??0},
   effectiveShadows:{
    dynamicMap:renderer.shadowMap.enabled&&!!shadows?.nearShadowEnabled,
    staticMap:renderer.shadowMap.enabled&&!!shadows?.farShadowEnabled,
@@ -349,6 +352,7 @@ function applyShadowTechnique(technique:CoastShadowTechnique,enabled:boolean){
  }else if(technique==='contactDecals'){
   traffic?.setContactShadowsEnabled(enabled);
  }
+ world.streamer?.refreshEssentialShadows();
  // Keep the existing pause checkboxes accurate if the automatic trial is interrupted.
  const checkbox=tripPauseDock?.element.querySelector<HTMLInputElement>(
   `input[data-shadow-technique="${technique}"]`);
@@ -697,6 +701,10 @@ function render(dt:number,draw=true){
     world.car.rotation.x=-Math.atan((grade+slopeChange)*Math.cos(state.heading)+cross*Math.sin(state.heading));
     world.car.rotation.z+=Math.atan(-cross*Math.cos(state.heading));
   }
+  if(mobileCarShadow){
+   mobileCarShadow.mesh.visible=!coastShadowTechniqueEnabled('dynamicMap')&&coastShadowTechniqueEnabled('contactDecals');
+   mobileCarShadow.update(world.sample,world.halfAt,world.length,state.distance,state.lateral);
+  }
   if(coastDuskShadows)coastDuskShadows.update(
    world.car.position,groundHeight(p.position.y,state.lateral)+p.right.y*state.lateral,state.distance);
   const travelHeading=p.roadHeading;
@@ -965,6 +973,7 @@ function adoptChapter(c:PreparedChapter,replay=false){
  const unusedCar=c.world.car;unusedCar.removeFromParent();const temp=new THREE.Scene();temp.add(unusedCar);disposeScene(temp);
  c.world.car=world.car;c.world.scene.add(world.car);for(const shadow of contactShadows)c.world.scene.add(shadow);
  const release=sceneDisposal(world.scene),oldOcean=ultraOcean,oldStream=world.streamer;
+ mobileCarShadow?.dispose();
  coastDuskShadows?.dispose();
  tireEffects.dispose();dustEffects.dispose();impactSparks.dispose();trafficSparks.dispose();traffic?.dispose();cones?.dispose();triangles?.dispose();
  world=c.world;ultraOcean=c.ocean;blenderAsset=c.art;coastBoats=c.boats;journeyLink=c.link;
@@ -983,6 +992,7 @@ function adoptChapter(c:PreparedChapter,replay=false){
    if(coastUltraMode)markCoastShadowCaster(o,'dynamic','player');else o.castShadow=true;
   });
  renderer.shadowMap.enabled=coastUltraMode?coastGeometryShadows():!matchMedia('(pointer:coarse)').matches;
+ mobileCarShadow=mobileCarProjection();
  coastDuskShadows=coastUltraMode&&sunsetShadowsEnabled&&!coastGeometryShadows()
   ?new CoastDuskShadows(world.scene,world.sample,world.length,world.halfAt,trip?.seed??0):undefined;
  // Reused vehicle and wheel-contact decals must not carry their old teal ink.

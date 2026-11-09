@@ -175,16 +175,8 @@ export function buildCoastGroundShadows(
  return {geometry,accepted,rejectedUnderwater,ranges};
 }
 
-export class CoastDuskShadows {
- readonly beach:THREE.Mesh<THREE.BufferGeometry,THREE.ShaderMaterial>;
- readonly player:THREE.Mesh<THREE.PlaneGeometry,THREE.MeshBasicMaterial>;
- readonly anchorCount:number;
- readonly barriers:number;
- readonly props:number;
- private readonly playerGeometry=new THREE.PlaneGeometry(1,1);
- // Black ink never brightens the near-black coastal asphalt.
- private readonly playerMaterial=makeCoastShadowMaterial(.78);
- private readonly staticMaterial=new THREE.ShaderMaterial({
+export function makeCoastGroundShadowMaterial(){
+ return new THREE.ShaderMaterial({
   uniforms:{...THREE.UniformsUtils.clone(THREE.UniformsLib.fog),uColor:{value:new THREE.Color('#302a28')}},
   fog:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,
   polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1,
@@ -206,6 +198,18 @@ export class CoastDuskShadows {
     #include <fog_fragment>
    }`,
  });
+}
+
+export class CoastDuskShadows {
+ readonly beach:THREE.Mesh<THREE.BufferGeometry,THREE.ShaderMaterial>;
+ readonly player:THREE.Mesh<THREE.PlaneGeometry,THREE.MeshBasicMaterial>;
+ readonly anchorCount:number;
+ readonly barriers:number;
+ readonly props:number;
+ private readonly playerGeometry=new THREE.PlaneGeometry(1,1);
+ // Black ink never brightens the near-black coastal asphalt.
+ private readonly playerMaterial=makeCoastShadowMaterial(.78);
+ private readonly staticMaterial=makeCoastGroundShadowMaterial();
  private readonly angle=COAST_SHADOW_YAW;
  private readonly ranges:{d:number;start:number;count:number}[];
  private visibleStatic=0;

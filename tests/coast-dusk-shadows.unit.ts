@@ -2,11 +2,30 @@ import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {CoastDuskShadows,coastShadowOffset,coastShadowLength,coastBeachShadowAnchors,coastBarrierShadowAnchors,buildCoastGroundShadows} from '../src/coast-dusk-shadows';
 import {COAST_SUN} from '../src/coast-dusk';
+import {MobileCarShadow} from '../src/mobile-car-shadow';
 import {COAST_BEACHES,COAST_ROCKS,coastBarrierStyle,coastBarrierStoneAt} from '../src/coast-layout';
 
 const sample=(d:number)=>({
  position:new THREE.Vector3(0,4,d),right:new THREE.Vector3(1,0,0),
  tangent:new THREE.Vector3(0,0,1),
+});
+
+it('keeps the mobile car footprint on banked asphalt, clipped at its edge, and reuses it at rest',()=>{
+ const scene=new THREE.Scene(),shadow=new MobileCarShadow(scene);
+ const bank=(d:number)=>({position:new THREE.Vector3(0,d*.025,d),
+  right:new THREE.Vector3(1,.09,0),tangent:new THREE.Vector3(0,.025,1).normalize()});
+ try{
+  shadow.update(bank,()=>8,500,150,7.8);
+  const pos=shadow.mesh.geometry.attributes.position as THREE.BufferAttribute;
+  for(let i=0;i<pos.count;i++){
+   expect(Math.abs(pos.getX(i))).toBeLessThanOrEqual(8);
+   expect(pos.getY(i)).toBeCloseTo(pos.getZ(i)*.025+pos.getX(i)*.09+.021,4);
+  }
+  const version=pos.version;
+  shadow.update(bank,()=>8,500,150,7.8);expect(pos.version).toBe(version);
+  shadow.update(bank,()=>8,500,151,7.8);expect(pos.version).toBeGreaterThan(version);
+ }finally{shadow.dispose();}
+ expect(scene.children).toHaveLength(0);
 });
 
 it('makes one terrain-following beach/road shadow batch plus a dynamic sunset car shadow',()=>{

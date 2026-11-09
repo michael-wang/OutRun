@@ -3,6 +3,7 @@ import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {buildCoastTownStreets} from './coast-town-streets';
 import {coastHomeFacingYaw} from './coast-house-facing';
+import type {CoastShadowAnchor} from './coast-dusk-shadows';
 import {FARM_HOMES,FARM_YARDS} from './coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek,buildPaddyToolShed} from './coast-rural-vignette';
@@ -89,7 +90,7 @@ export function planJourneyLandmarks(length:number,weightsAt:(d:number)=>readonl
  return sites.sort((a,b)=>a.distance-b.distance);
 }
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut;coastUltra?:boolean}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut;coastUltra?:boolean;essentialShadows?:CoastShadowAnchor[]}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:!range.openRoad&&i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -369,11 +370,15 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const {d,key}=site;if(!inChunk(d))continue;
    beachAnchor(d,site.x);yaw+=site.yaw;
    if(site.kind==='home'){
-    if(clear(10))coastHome(key);
+    if(clear(10)){
+     coastHome(key);
+     if(!site.rear&&site.x<50)range.essentialShadows?.push({kind:'home',d,x:site.x,width:10,length:18});
+    }
     if(!site.rear&&key%3===0){beachAnchor(d-9,site.x-7);if(clear(3)){part(boxes,'#c0aa91',0,.35,0,2,.7,4);part(round,'#527849',0,1.05,0,1.2,.7,2.1);}}
     continue;
    }
    if(clear(5)){
+    range.essentialShadows?.push({kind:'shop',d,x:site.x,width:4.5,length:8});
     if(site.kind==='waffle'){
      waffle??=vehicleGeometry(3);waffleSign??=waffleSignGeometry();waffleSign.userData.waffleSign=true;
      part(waffle,'#ffffff',0,0,0,1.15,1.15,1.15);
@@ -413,6 +418,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    if(ruralShowcaseReplacesFarmHome(site.d))continue;
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,site.x);yaw+=site.yaw;if(!clear(10))continue;
+   if(site.x<50)range.essentialShadows?.push({kind:'home',d:site.d,x:site.x,width:10,length:16});
    // Two of three rural plots use the single-draw Taiwanese brick/plaster
    // farmhouse prefab. The third retains a modest older RC house for real
    // mixed-age village character instead of a cloned museum village.
@@ -556,6 +562,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     const x=-19-rand(j*11+bay.distance)*17;
     if(COAST_REST_SPOTS.some(s=>Math.abs(s.d-d)<11&&Math.abs(s.x-x)<7))continue;
     beachAnchor(d,x);if(!clear(4)||base.y<-4.05)continue;
+    if(x>=-27)range.essentialShadows?.push({kind:'umbrella',d,x,width:4.8,length:8});
     yaw+=rand(d)*1.8;
     part(cylinder,'#aa8960',0,1.6,0,.055,3.2,.055);
     part(canopy,'#fffdf4',0,3.2,0,2.45,2.45,2.45);
