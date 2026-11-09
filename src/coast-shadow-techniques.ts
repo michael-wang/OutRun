@@ -1,5 +1,5 @@
 /**
- * GPU-cost-oriented diagnostic switches for the coast, reset ON per reload.
+ * GPU-cost-oriented diagnostic switches for the coast, initialised once per coast launch.
  * Expected costs are hypotheses, not measured hardware GPU timings.
  */
 export const COAST_SHADOW_TECHNIQUES=[
@@ -11,6 +11,11 @@ export const COAST_SHADOW_TECHNIQUES=[
 ] as const;
 export type CoastShadowTechnique=typeof COAST_SHADOW_TECHNIQUES[number]['id'];
 const state=Object.fromEntries(COAST_SHADOW_TECHNIQUES.map(tech=>[tech.id,true])) as Record<CoastShadowTechnique,boolean>;
+export function applyCoastShadowProfile(coarsePointer:boolean){
+ state.dynamicMap=state.staticMap=!coarsePointer;
+ state.boatDepth=state.rockShader=state.contactDecals=true;
+ return coarsePointer?'mobile-fast':'desktop';
+}
 export function coastShadowTechniqueEnabled(tech:CoastShadowTechnique){return state[tech];}
 export function coastShadowTechniqueSnapshot():Record<CoastShadowTechnique,boolean>{return {...state};}
 export function setCoastShadowTechniqueEnabled(tech:CoastShadowTechnique,enabled:boolean){

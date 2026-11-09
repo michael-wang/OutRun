@@ -62,7 +62,7 @@ import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
 import {TripPauseDock} from './trip-pause-dock';
 import {markCoastShadowCaster} from './coast-shadow-layers';
-import {coastShadowTechniqueEnabled,coastShadowTechniqueSnapshot,setCoastShadowTechniqueEnabled,type CoastShadowTechnique} from './coast-shadow-techniques';
+import {applyCoastShadowProfile,coastShadowTechniqueEnabled,coastShadowTechniqueSnapshot,setCoastShadowTechniqueEnabled,type CoastShadowTechnique} from './coast-shadow-techniques';
 import {setCoastRoadDynamicShadowEnabled} from './coast-road-shadows';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
@@ -82,6 +82,10 @@ let chapterIndex=0,journeyElapsed=0,journeyTransition=false;
 const chapterStart=()=>chapters?.[chapterIndex].start??BRICK_START;
 const chapterEnd=()=>chapters?.[chapterIndex].end??BRICK_START+(brick?.length??0);
 let designerMode=false,coastUltraMode=true;
+// Keep geometry shadow infrastructure available for diagnostics. Only the two
+// caster lights start disabled on touch devices, matching a manually selected B2.
+const coastProfile=applyCoastShadowProfile(matchMedia('(pointer:coarse)').matches);
+setCoastRoadDynamicShadowEnabled(coastShadowTechniqueEnabled('dynamicMap'));
 const sunsetShadowsEnabled=true,geometryShadowRequested=true;
 const coastGeometryShadows=()=>coastUltraMode&&sunsetShadowsEnabled&&geometryShadowRequested;
 let coastUltraWater=true,roadLockMode=false,scenicCameraEnabled=false,blenderMode=false;
@@ -233,6 +237,9 @@ const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
   at:atDistance,trafficSeed:trafficSessionVariation,routeSeed:trip?.seed??null,
   distanceM:state.distance,speedKmh:state.speed*3.6,routeTimeSeconds:elapsed,
   shadowTechniques:coastShadowTechniqueSnapshot(),
+  coastShadowProfile:coastUltraMode?coastProfile:null,
+  shadowResources:{programs:renderer.info.programs?.length,nearMap:!!world.shadowCache?.near.shadow.map,
+   farMap:!!world.shadowCache?.far.shadow.map,legacyProjected:!!coastDuskShadows},
   effectiveShadows:{
    dynamicMap:renderer.shadowMap.enabled&&!!shadows?.nearShadowEnabled,
    staticMap:renderer.shadowMap.enabled&&!!shadows?.farShadowEnabled,
