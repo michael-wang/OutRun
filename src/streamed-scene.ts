@@ -20,7 +20,7 @@ import {SceneTaskProfiler,SCENE_TASK_SOFT_BUDGET_MS,type SceneTaskKind} from './
 
 type RoadData=RoadMeshData&{normals:Float32Array};
 type Definition={id:string;position:Float32Array;normal:Float32Array;uv:Float32Array;color:Float32Array;index:Uint32Array};
-type Instance={waffleSign?:boolean;coastDrainWater?:boolean;noShadowGround?:boolean;nature?:NatureBatch;shadowGroup?:import('./coast-shadow-layers').CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array};
+type Instance={lampGround?:boolean;waffleSign?:boolean;coastDrainWater?:boolean;noShadowGround?:boolean;nature?:NatureBatch;shadowGroup?:import('./coast-shadow-layers').CoastShadowGroup;template:string;color:number;emissive?:number;emissiveIntensity?:number;vertexColors:boolean;matrices:Float32Array};
 type Chunk={index:number;objects:THREE.Object3D[];groups:Partial<Record<string,THREE.Group>>;geometries:Set<THREE.BufferGeometry>;road:'missing'|'working'|'ready';scenery:'missing'|'working'|'ready'};
 type Phase='road'|'scenery';
 type Lifecycle={index:number;start:number;end:number;kind:Phase;generation:number;requestedAt:number;responseAt?:number;workerCpuMs?:number;responseMs?:number;commitStart?:number;commitEnd?:number;commitCpuMs:number;readyAt?:number;generatedInstances?:number;attachedInstances:number;discardedTasks:number;error?:string;retiredAt?:number};
@@ -181,7 +181,7 @@ export class StreamedScene {
  private attach(c:Chunk,name:string,object:THREE.Object3D){
   if(this.farmSample)object.traverse(o=>{if(o instanceof THREE.Mesh){
    if(Array.isArray(o.material))o.material.forEach(m=>lightCoastMaterial(this.scene,m));
-   else lightCoastMaterial(this.scene,o.material);
+   else lightCoastMaterial(this.scene,o.material,!!o.userData.roadKind||!!o.userData.lampGround);
   }});
   if(this.clippingPlanes.length)this.clipMaterial(object);let group=c.groups[name];if(!group){group=new THREE.Group();group.name=`chunk-${c.index}-${name}`;group.userData.chunkIndex=c.index;c.groups[name]=group;this.groups[name].add(group);}group.add(object);c.objects.push(object);}
  update(distance:number){
@@ -279,7 +279,7 @@ export class StreamedScene {
   for(const d of definitions)tasks.push(()=>{const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(d.position,3));if(d.normal.length)g.setAttribute('normal',new THREE.BufferAttribute(d.normal,3));if(d.uv.length)g.setAttribute('uv',new THREE.BufferAttribute(d.uv,2));if(d.color.length)g.setAttribute('color',new THREE.BufferAttribute(d.color,3));if(d.index.length)g.setIndex(new THREE.BufferAttribute(d.index,1));this.registerGeometry(g,c.index);templates.set(d.id,g);c.geometries.add(g);});
   for(const data of instances)tasks.push(()=>{
    const geometry=templates.get(data.template);if(!geometry)throw Error('Missing scenery template');
-   const key=data.nature?.verge?'verge-grass':`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}`;
+   const key=data.nature?.verge?'verge-grass':`${data.color}:${data.vertexColors}:${data.emissive??0}:${data.emissiveIntensity??0}:${data.nature?.texture??""}:${!!data.nature}:${!!data.waffleSign}:${!!data.coastDrainWater}${data.lampGround?':lamp-ground':''}`;
    let material=this.materials.get(key);
    if(!material){
     if(data.nature?.verge){
@@ -301,6 +301,7 @@ export class StreamedScene {
    if(mesh.castShadow)markCoastShadowCaster(mesh,'static',data.shadowGroup??(data.nature?'vegetation':'other'));
    if(data.nature){mesh.userData.nature=data.nature;mesh.name='coast-nature';mesh.visible=natureVisible(data.nature,this.position,this.mobile);}
    if(data.coastDrainWater){mesh.name='coast-drain-flowing-water';mesh.userData.coastDrainWater=true;}
+   if(data.lampGround)mesh.userData.lampGround=true;
    if(data.noShadowGround){mesh.name='coast-inland-ground-detail';mesh.userData.noShadowGround=true;}
    this.attach(c,'scenery',mesh);if(this.diagnostics){const r=[...this.lifecycle].reverse().find(r=>r.index===c.index&&r.kind==='scenery'&&r.retiredAt===undefined);if(r)r.attachedInstances+=mesh.count;mesh.onAfterRender=()=>{mesh.userData.lastRenderSubmission=performance.now();};}});
   if(this.farmSample&&this.farmAssets)for(const plot of farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength))tasks.push(()=>{

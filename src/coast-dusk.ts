@@ -34,14 +34,20 @@ export function addCoastDusk(scene:THREE.Scene,sample:(d:number)=>{position:THRE
  sky.name='coast-dusk-sky';sky.frustumCulled=false;sky.renderOrder=-10;scene.add(sky);
  // The emissive head itself belongs to streamed pole geometry. Cache its real
  // position once. The player's car uses the closest physical fixture.
+ const poleBases=typeof matchMedia!=='undefined'&&!matchMedia('(pointer:coarse)').matches
+  ?new Map<THREE.Vector3,THREE.Vector4>():undefined;
  const fixtures=COAST_UTILITY_POLES.filter(p=>p.lamp).map(p=>{
   const frame=sample(p.d),head=frame.position.clone().addScaledVector(frame.right,p.x-COAST_LAMP_HEAD.reach);
   head.y=coastBeachHeight(p.x,frame.position.y,frame.right.y,p.d)+p.height-COAST_LAMP_HEAD.drop;
+  if(poleBases){
+   const base=frame.position.clone().addScaledVector(frame.right,p.x);
+   poleBases.set(head,new THREE.Vector4(base.x,head.y-p.height+COAST_LAMP_HEAD.drop,base.z,Number(!!p.transformer)));
+  }
   return {d:p.d,head};
  });
  const light=new THREE.PointLight(0xffdaa3,220,COAST_LAMP_RANGE);
  light.name='coast-utility-light';scene.add(light);
- const release=registerCoastLamps(scene,fixtures.map(f=>f.head));
+ const release=registerCoastLamps(scene,fixtures.map(f=>f.head),poleBases);
  const bulbs=fixtures.flatMap(p=>p.head.toArray());
  const haloGeometry=new THREE.BufferGeometry();haloGeometry.setAttribute('position',new THREE.Float32BufferAttribute(bulbs,3));
  const halos=new THREE.Points(haloGeometry,new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,

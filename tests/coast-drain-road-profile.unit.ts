@@ -124,6 +124,23 @@ it('lights the actual utility fixtures after a jump in either direction',()=>{
   expect(lights.some(l=>l.position.distanceTo(expected)<.01&&l.intensity>0&&l.distance>20&&!l.castShadow)).toBe(true);
  }
 });
+it('resolves PC pole bases after sorting the bulbs and keeps the original mobile atlas size',()=>{
+ const heads=[new THREE.Vector3(4,13,165),new THREE.Vector3(-2,12,10)];
+ const poles=new Map(heads.map((head,i)=>[head,new THREE.Vector4(head.x-2.96,head.y-9,head.z,i)]));
+ const mobile=coastLampAtlas(heads),pc=coastLampAtlas(heads,poles);
+ try{
+  expect(mobile.poleShadows).toBe(false);
+  expect(pc.texture.image.height).toBe(mobile.texture.image.height+1);
+  for(const head of heads){
+   const cell=Math.floor(head.z)-pc.firstZ;
+   const index=pc.texture.image.data[cell*4+3];
+   expect(index).toBeGreaterThanOrEqual(pc.cells);
+   const base=new THREE.Vector4().fromArray(pc.texture.image.data,index*4);
+   for(let i=0;i<4;i++)expect(base.getComponent(i)).toBeCloseTo(poles.get(head)!.getComponent(i),4);
+   expect(mobile.texture.image.data[cell*4+3]).toBe(0);
+  }
+ }finally{pc.texture.dispose();mobile.texture.dispose();}
+});
 it('mounts a warm fixture ON every real canal-side utility pole',()=>{
  const mounted=COAST_UTILITY_POLES.filter(p=>p.lamp);
  expect(mounted.map(p=>p.d)).toEqual(expect.arrayContaining([906,4060,4316,8640]));

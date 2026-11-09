@@ -1,3 +1,4 @@
+import {coastLampPoleShadowsActive} from './coast-lamp-lighting';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {CHEER_END,CLAP_TIMES,type Cheer} from './passenger-cheer';
@@ -242,7 +243,8 @@ const driveFpsDiagnostics=new DriveFpsDiagnostics(renderer,()=>{
   shadowTechniques:coastShadowTechniqueSnapshot(),
   coastShadowProfile:coastUltraMode?coastProfile:null,
   shadowResources:{programs:renderer.info.programs?.length,nearMap:!!world.shadowCache?.near.shadow.map,
-   farMap:!!world.shadowCache?.far.shadow.map,legacyProjected:!!coastDuskShadows,playerDecal:!!mobileCarShadow?.mesh.visible,staticDecals:world.streamer?.essentialShadowBatches??0},
+   farMap:!!world.shadowCache?.far.shadow.map,legacyProjected:!!coastDuskShadows,lampPoleOcclusion:coastLampPoleShadowsActive(world.scene),
+   playerDecal:!!mobileCarShadow?.mesh.visible,staticDecals:world.streamer?.essentialShadowBatches??0},
   effectiveShadows:{
    dynamicMap:renderer.shadowMap.enabled&&!!shadows?.nearShadowEnabled,
    staticMap:renderer.shadowMap.enabled&&!!shadows?.farShadowEnabled,
