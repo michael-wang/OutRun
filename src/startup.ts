@@ -53,9 +53,11 @@ async function bootMenu(firstEntry: boolean) {
     button.hidden=false;
     await new Promise<void>(resolve=>{
       button.onclick=()=>{
-        button.disabled=true;
-        if(immersive.canAutoLandscape)void immersive.enter().finally(resolve);
-        else resolve();
+        button.hidden=true;
+        resolve();
+        // Use this tap for fullscreen, but let the prepared menu open even
+        // while the browser is still acknowledging fullscreen or rotation.
+        if(immersive.canAutoLandscape)void immersive.enter();
       };
     });
     button.onclick=null;

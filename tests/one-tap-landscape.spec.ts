@@ -82,6 +82,45 @@ test('iPhone selection waits for manual rotation without requesting fullscreen',
   }finally{await context.close();}
 });
 
+for(const pending of ['fullscreen','orientation'] as const){
+  test('the first tap opens a usable menu while '+pending+' is pending',async({browser})=>{
+    const {page,context}=await mobile(browser);
+    try{
+      await page.evaluate(pending=>{
+        const target=pending==='orientation'?screen.orientation:document.documentElement;
+        const method=pending==='orientation'?'lock':'requestFullscreen';
+        Object.defineProperty(target,method,{configurable:true,value:()=>{
+          document.documentElement.dataset.waitingFor=pending;
+          return new Promise<void>((_,reject)=>{
+            (window as any).__rejectRequest=()=>reject(new Error('Late browser response'));
+          });
+        }});
+      },pending);
+      await page.locator('#boot-enter').tap();
+      await expect(page.locator('html')).toHaveAttribute('data-waiting-for',pending);
+      await page.setViewportSize({width:915,height:412});
+      await expect(page.locator('#boot')).toBeHidden();
+      await expect(page.locator('#racing-menu canvas')).toHaveCount(3);
+      await page.locator('[data-stage=city]').tap();
+      await expect(page.locator('#start-race')).toHaveText(/製作中/);
+      await page.locator('[data-stage=coast]').tap();
+      if(pending==='orientation'){
+        await page.screenshot({path:test.info().outputPath('landscape-first-tap.png')});
+        await page.evaluate(()=>(window as any).__systemExit());
+        await page.setViewportSize({width:412,height:915});
+        await page.evaluate(()=>Object.defineProperty(screen.orientation,'lock',{value:async()=>{}}));
+        await page.getByRole('button',{name:'切換橫向'}).tap();
+        await expect.poll(()=>page.evaluate(()=>(window as any).__fullscreenRequests)).toBe(2);
+        await page.evaluate(()=>(window as any).__rejectRequest());
+        await expect(page.locator('.landscape-fallback')).toBeHidden();
+        await page.setViewportSize({width:915,height:412});
+      }
+      await page.locator('#start-race').tap();
+      await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+    }finally{await context.close();}
+  });
+}
+
 test('system fullscreen exit can be recovered in the selector and a paused drive',async({browser})=>{
   const {page,context}=await mobile(browser);
   try{

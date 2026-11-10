@@ -4,8 +4,17 @@ export class Immersive {
   message = '';
   lockState: 'idle'|'locked'|'unsupported'|'denied' = 'idle';
   pending = false;
+  private requestId = 0;
   constructor(private root: HTMLElement, public changed: () => void) {
-    document.addEventListener('fullscreenchange', () => { this.changed(); });
+    document.addEventListener('fullscreenchange', () => {
+      if(!document.fullscreenElement) {
+        // Android Back can exit before the preceding orientation lock settles.
+        this.requestId++;
+        this.pending=false;
+        this.lockState='idle';
+      }
+      this.changed();
+    });
     matchMedia('(display-mode: fullscreen)').addEventListener('change', () => this.changed());
     matchMedia('(display-mode: standalone)').addEventListener('change', () => this.changed());
   }
@@ -27,25 +36,34 @@ export class Immersive {
       this.changed();
       return;
     }
+    const requestId=++this.requestId;
     this.pending=true; this.message=''; this.changed();
     try {
       if(!this.installed && !this.active) {
         if(!this.root.requestFullscreen) throw new Error('unsupported');
         // Invoked synchronously from a tap, before awaiting any other work.
         await this.root.requestFullscreen({navigationUI:'hide'});
+        if(requestId!==this.requestId)return;
         if(!this.active) throw new Error('not entered');
       }
       const orientation=screen.orientation as LockableOrientation;
       if(!orientation?.lock) {
         this.lockState='unsupported'; this.message='請手動橫放手機。';
       } else {
-        try { await orientation.lock('landscape'); this.lockState='locked'; }
-        catch { this.lockState='denied'; this.message='無法自動切換橫向，請手動橫放手機。'; }
+        await orientation.lock('landscape');
+        if(requestId===this.requestId)this.lockState='locked';
       }
     } catch {
+      if(requestId!==this.requestId)return;
       this.lockState='denied';
       this.message='無法自動切換橫向，請手動橫放手機。';
-    } finally { this.pending=false; this.changed(); }
+    } finally {
+      if(requestId===this.requestId){
+        this.pending=false;
+        this.root.toggleAttribute('data-manual-landscape',this.lockState==='denied'||this.lockState==='unsupported');
+        this.changed();
+      }
+    }
   }
   async toggle() {
     if(this.active) {
@@ -71,15 +89,8 @@ export function landscapeControl() {
     const button=document.createElement('button');
     button.type='button';
     button.textContent='切換橫向';
-    hint.hidden=immersive.lockState!=='denied' && immersive.lockState!=='unsupported';
-    button.onclick=async()=>{
-      button.disabled=true;
-      try{await immersive.enter();}
-      finally{
-        button.disabled=false;
-        hint.hidden=immersive.lockState==='locked';
-      }
-    };
+    hint.className='landscape-fallback';
+    button.onclick=()=>{void immersive.enter();};
     control.append(button);
   }
   control.append(hint);

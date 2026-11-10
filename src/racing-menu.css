@@ -111,6 +111,7 @@ html[data-boot-error] .boot-meter{display:none}
 #boot-enter b{color:#ff8866;margin-left:5px}
 #boot-enter::after{content:"";position:fixed;inset:0}
 .landscape-control{display:none}
+html:not([data-manual-landscape]) .landscape-fallback{display:none}
 @media(pointer:coarse) and (orientation:portrait){
  .landscape-control{display:grid;gap:4px;align-content:center;justify-items:start;pointer-events:auto}
  .landscape-control small{font:500 12px/1.4 system-ui,sans-serif;color:#fff1dc}
