@@ -57,16 +57,41 @@ function rearTrim(){
   const trim=mergeGeometries(faces)!;faces.forEach(face=>face.dispose());return trim;
 }
 /** Fixed-screen-size luminous road label, with its pointer anchored above the roof. */
-function badge(name:string){
- const canvas=document.createElement('canvas');canvas.width=320;canvas.height=172;
+/** Compact illuminated timing plaque, inspired by the game's graphite/amber HUD.
+ * A sharp numbered racer tab replaces the former cartoon speech bubble. */
+function badge(name:string,number:number){
+ const canvas=document.createElement('canvas');canvas.width=512;canvas.height=176;
  const c=canvas.getContext('2d')!;
- c.shadowColor='rgba(0,0,0,.92)';c.shadowBlur=10;c.shadowOffsetY=4;
- c.fillStyle='#fff3a5';c.strokeStyle='#1c2226';c.lineWidth=7;
- c.beginPath();c.moveTo(12,12);c.lineTo(308,12);c.lineTo(308,99);
- c.lineTo(190,99);c.lineTo(160,163);c.lineTo(130,99);c.lineTo(12,99);c.closePath();
- c.fill();c.stroke();c.shadowBlur=0;c.shadowOffsetY=0;
- c.fillStyle='#10171c';c.font='bold 53px "Microsoft JhengHei","PingFang TC",sans-serif';
- c.textAlign='center';c.textBaseline='middle';c.fillText(name,160,56,270);
+ // Beveled, translucent graphite chassis with a narrow underbody pointer.
+ c.shadowColor='rgba(2,9,16,.8)';c.shadowBlur=16;c.shadowOffsetY=5;
+ c.beginPath();c.moveTo(26,15);c.lineTo(462,15);c.lineTo(492,45);
+ c.lineTo(492,112);c.lineTo(282,112);c.lineTo(256,153);
+ c.lineTo(231,112);c.lineTo(14,112);c.lineTo(14,30);c.closePath();
+ const panel=c.createLinearGradient(0,15,0,130);
+ panel.addColorStop(0,'rgba(23,41,52,.98)');panel.addColorStop(1,'rgba(8,22,33,.94)');
+ c.fillStyle=panel;c.fill();
+ c.shadowBlur=0;c.shadowOffsetY=0;
+ c.strokeStyle='#f1cd91';c.lineWidth=3.5;c.stroke();
+ // Fast orange race-line atop the enclosure, faint cyan edge at the base.
+ c.fillStyle='#ffad58';c.fillRect(32,21,434,5);
+ c.fillStyle='#4bbac7';c.fillRect(30,106,200,3);
+ c.fillStyle='#ffb85e';
+ c.beginPath();c.moveTo(242,114);c.lineTo(256,144);c.lineTo(270,114);c.closePath();c.fill();
+ // Brushed-copper racer number cell, in the same tone as the game speedometer.
+ const chip=c.createLinearGradient(32,35,112,100);
+ chip.addColorStop(0,'#ffdb94');chip.addColorStop(1,'#ec824f');
+ c.fillStyle=chip;c.fillRect(32,36,92,62);
+ c.fillStyle='#15212a';c.textAlign='center';c.textBaseline='middle';
+ c.font='italic 900 43px Arial,sans-serif';
+ c.fillText(String(number).padStart(2,'0'),77,68);
+ // Tiny English qualifier above the prominent Chinese driver's name.
+ c.textAlign='left';
+ c.fillStyle='#ffbe79';c.font='bold 18px Arial,sans-serif';c.fillText('RIVAL',144,45);
+ c.fillStyle='#fff6e8';c.font='900 51px "PingFang TC","Microsoft JhengHei",sans-serif';
+ c.fillText(name,143,82,326);
+ // Short racing slashes end the plate without adding an opaque card.
+ c.fillStyle='#ff9a5f';
+ for(let i=0;i<3;i++){c.beginPath();const x=439+i*12;c.moveTo(x,66);c.lineTo(x+5,66);c.lineTo(x-2,83);c.lineTo(x-7,83);c.closePath();c.fill();}
  const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;
  return new T.SpriteMaterial({map,transparent:true,depthWrite:false,depthTest:true,
   sizeAttenuation:false,toneMapped:false,fog:false});
@@ -89,7 +114,7 @@ function assets(){
     head:new T.MeshStandardMaterial({color:0xffebcf,emissive:0xffb673,emissiveIntensity:.48}),
     shade:new T.MeshBasicMaterial({color:0x120f12,transparent:true,opacity:.32,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1})};
 }
-function carModel(a:ReturnType<typeof assets>,color:number,name:string){
+function carModel(a:ReturnType<typeof assets>,color:number,name:string,number:number){
   const root=new T.Group();root.rotation.order='YXZ';
   const paint=new T.MeshStandardMaterial({color,roughness:.29,metalness:.39,side:T.DoubleSide});
   const tail=new T.MeshStandardMaterial({color:0xcd2429,emissive:0xff1522,emissiveIntensity:.5,side:T.DoubleSide});
@@ -97,8 +122,8 @@ function carModel(a:ReturnType<typeof assets>,color:number,name:string){
   wheels.boundingSphere=new T.Sphere(new T.Vector3(),3);
   root.add(new T.Mesh(a.shell,paint),wheels,new T.Mesh(a.glass,a.windows),
     new T.Mesh(a.trim,a.rubber),new T.Mesh(a.rear,tail),new T.Mesh(a.front,a.head),new T.Mesh(a.shadow,a.shade));
-  const label=new T.Sprite(badge(name));label.name='rival-name-tag';
-  label.position.y=1.90;label.center.set(.5,0);root.add(label);
+  const label=new T.Sprite(badge(name,number));label.name='rival-name-tag';
+  label.position.y=2.12;label.center.set(.5,0);root.add(label);
   return {root,tail,label,wheels};
 }
 export class RivalView {
@@ -110,8 +135,8 @@ export class RivalView {
   private wheelPose=new T.Object3D();
   constructor(private race:RivalRace,scene:T.Scene,smoke:TireEffects,private sample:ReturnType<typeof createTrack>['sample']){
     scene.add(this.group);
-    this.cars=race.rivals.map(r=>{
-      const car=carModel(this.assets,r.entry.paint,r.entry.name);car.root.name=r.entry.id;this.group.add(car.root);
+    this.cars=race.rivals.map((r,i)=>{
+      const car=carModel(this.assets,r.entry.paint,r.entry.name,i+1);car.root.name=r.entry.id;this.group.add(car.root);
       return {...car,near:false,effects:new TireEffects(scene,'smoke',smoke)};
     });
   }
@@ -125,7 +150,7 @@ export class RivalView {
   dispose(){for(const car of this.cars){car.effects.dispose();const mat=car.label.material as T.SpriteMaterial;mat.map?.dispose();mat.dispose();}}
   update(focus:number,time:number,countdown:boolean,observed:number,ready:(d:number)=>boolean,camera:T.PerspectiveCamera,viewportHeight:number){
     const pixelUnit=2*Math.tan(T.MathUtils.degToRad(camera.fov)*.5)/Math.max(1,viewportHeight);
-    const tagWidth=104*pixelUnit,tagHeight=56*pixelUnit;
+    const tagWidth=128*pixelUnit,tagHeight=44*pixelUnit;
     this.race.rivals.forEach((r,i)=>{
       const car=this.cars[i],root=car.root,dist=Math.abs(r.distance-focus);
       const visible=dist<720&&ready(r.distance)&&r.finishTime===null;

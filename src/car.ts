@@ -233,7 +233,7 @@ export function createCar(dusk=false) {
       wheels.forEach(w=>w.advance(ds,steer,dt,launchSlip,brakeSlip));
       return people.advance(ds,steer,dt,rightAcceleration);
     },
-    posePassenger:people.posePassenger,onCleanPass:people.onCleanPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()
+    posePassenger:people.posePassenger,onCleanPass:people.onCleanPass,onRivalPass:people.onRivalPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()
   };
   return car;
 }

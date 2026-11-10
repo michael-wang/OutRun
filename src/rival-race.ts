@@ -14,17 +14,18 @@ export interface RacerEntry {
   id:string; name:string; paint:number; gridSide:number; gridOffset:number; gridLaneOffset?:number; driver:DriverProfile; car:CarSpec;
 }
 // All eight entrants (player + seven rivals) use the same physical powertrain.
-// Separate rows and lanes leave a collision-free starting grid, even at 120 Hz.
+// Everyone starts ahead of the player: two cars at +12m, three at +27m and two at +42m.
+// Each row has distinct lanes, leaving a fair chase from eighth place.
 const clubDriver:DriverProfile={anticipation:2.6,reactionTime:.17,overtaking:.76,aggression:.32,riskTolerance:.48};
 export const equalRiviera:CarSpec={lowForce:1,midForce:1,highForce:1,topSpeed:MAX_SPEED,brake:34,cornerGrip:22,width:2.25,length:4.9};
 export const raceEntries:RacerEntry[]=[
-  {id:'RIVAL 1',name:'對手一',paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:0,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 2',name:'對手二',paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:0,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 3',name:'對手三',paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:15,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 4',name:'對手四',paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:15,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 5',name:'對手五',paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:15,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 6',name:'對手六',paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:30,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 7',name:'對手七',paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:30,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 1',name:'對手一',paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:12,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 2',name:'對手二',paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:12,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 3',name:'對手三',paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 4',name:'對手四',paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 5',name:'對手五',paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 6',name:'對手六',paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:42,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 7',name:'對手七',paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:42,driver:clubDriver,car:equalRiviera},
 ];
 export interface RaceBody {distance:number; lateral:number; speed:number}
 export interface Obstacle extends RaceBody {id:string; type?:number; width:number; length:number}

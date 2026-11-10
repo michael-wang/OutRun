@@ -16,8 +16,11 @@ describe('Riviera GT race',()=>{
  it('has seven distinct AI cars with the player powertrain and a non-overlapping grid',()=>{
   const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);race.reset(350);
   expect(race.rivals).toHaveLength(7);
-  expect(new Set(race.rivals.map(r=>r.entry.id)).size).toBe(9);
+  expect(new Set(race.rivals.map(r=>r.entry.id)).size).toBe(7);
   expect(race.rivals.every(r=>r.entry.car===equalRiviera)).toBe(true);
+  // Player occupies the last grid slot with every opponent safely ahead.
+  expect(race.rank(350,null,'PLAYER',{distance:350,lateral:0,speed:0})).toBe(8);
+  expect(race.rivals.every(r=>r.distance>=350+12)).toBe(true);
   for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){
    const a=race.rivals[i],b=race.rivals[j];
    expect(Math.abs(a.distance-b.distance)>equalRiviera.length+1||Math.abs(a.lateral-b.lateral)>equalRiviera.width+.2).toBe(true);
@@ -97,7 +100,7 @@ describe('Riviera GT race',()=>{
    race.step(dt,player,previous);
   });
   expect(Math.abs(race.rivals[0].speed-player.speed)).toBeLessThan(.75);
-  expect(Math.abs(race.rivals[0].distance-player.distance)).toBeLessThan(12);
+  expect(Math.abs(race.rivals[0].distance-player.distance-12)).toBeLessThan(4);
  });
  it('reserves the open middle lane when both drivers approach stopped traffic abreast',()=>{
   const road=()=>({...flat(),half:5.25}),p=parked();

@@ -28,6 +28,7 @@ import { InputController, readSwapped, saveSwapped } from './input';
 import { EngineSound } from './sound';
 import {RivalRace,raceEntries} from './rival-race';
 import {RivalView} from './rival-view';
+import {RivalOvertakes} from './rival-overtakes';
 import {layoutRearRivalTags,formatRaceTime} from './race-hud';
 import {GamepadInput} from './gamepad';
 import {RecentDrivingHistory} from './recent-history';
@@ -327,6 +328,8 @@ const race=new RivalRace(chapterEnd(),d=>{
  return {curvature:p.curvature,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),half:world.halfAt(d)};
 },(d,time,radius)=>[...(traffic?.raceObstacles(d,time,radius)??[]),...(cones?.raceObstacles(d,radius)??[]),...(triangles?.raceObstacles(d,radius)??[])]);
 race.reset(state.distance);
+const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,race.rivals);
+let rivalPassCount=0;
 if(traffic)traffic.rivalLeaders=()=>race.rivals;
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
 const rivalView=new RivalView(race,world.scene,tireEffects,world.sample);
@@ -394,7 +397,8 @@ const backToResults=document.createElement('button');
 backToResults.textContent='返回結算';backToResults.onclick=()=>followRacer(-1);director.append(backToResults);
 raceWatch.onclick=()=>followRacer(race.rivals.findIndex(r=>r.finishTime===null));
 function resetRace(grid=atDistance??BRICK_START){
- race.reset(grid);rivalView.reset();observed=-1;countdown=3;nextRaceHud=0;nextStandingUpdate=0;
+ race.reset(grid);rivalOvertakes.reset(grid,race.rivals);rivalPassCount=0;
+  rivalView.reset();observed=-1;countdown=3;nextRaceHud=0;nextStandingUpdate=0;
   rearLayer.hidden=true;for(const tag of rearLabels.values())tag.hidden=true;standingsPanel.hidden=true;
  traffic?.drawForObserver(null,0);
  if(world.streamer)world.streamer.spectatorDistance=null;
@@ -793,6 +797,8 @@ function advance(dt:number,override?:InputState){
   impactSparks.burst(elapsed+dt,sparkOrigin,stoneFrame.right,stoneFrame.tangent,stoneHit.severity,'concrete');
  }
  const rivalHit=race.step(dt,state,{distance:beforeDistance,lateral:beforeLateral});
+ const rivalPasses=rivalOvertakes.update(state.distance,race.rivals);
+ rivalPassCount+=rivalPasses.length;
  if(rivalHit){
   finishStats.addCollisions();trafficImpact.kick(state,rivalHit);sound.impact(rivalHit.severity,'vehicle');
   const p=world.sample(rivalHit.distance);
@@ -804,7 +810,9 @@ function advance(dt:number,override?:InputState){
  // Lane-relative acceleration plus the turn of the road's own reference frame.
  const rightAcceleration=dt>0?(state.lateralRate-beforeLateralRate)/dt+road.curvature*roadSpeed*roadSpeed:0;
  const motion=world.car.userData.motion;
- if(cleanPass&&!rivalHit&&!collision&&!impact&&!rockHit&&!stoneHit&&!coneCollisions&&!triangleCollisions&&!state.offRoad){
+ // Racing opponents are separate from random road traffic; real overtakes always earn applause.
+ for(const _id of rivalPasses){const cheer=motion.onRivalPass();if(cheer)sound.passengerCue(cheer);}
+ if(cleanPass&&!rivalPasses.length&&!rivalHit&&!collision&&!impact&&!rockHit&&!stoneHit&&!coneCollisions&&!triangleCollisions&&!state.offRoad){
   const cheer=motion.onCleanPass();
   if(cheer)sound.passengerCue(cheer);
  }
@@ -1352,6 +1360,7 @@ if(!mobile())requestAnimationFrame(()=>!signal.aborted&&document.getElementById(
 
 if(import.meta.env.DEV){(window as any).__drive={
   rivalEffects:()=>rivalView.inspectEffects(),
+  rivalPassCount:()=>rivalPassCount,
   rivalTags:()=>rivalView.inspectTags(),
   race:()=>({time:race.time,countdown,observed,playerFinish:race.playerFinish,rank:race.rank(state.distance,race.playerFinish,'PLAYER',state),rivals:race.rivals.map(({entry,obstacles,gearbox,...r})=>({...r,id:entry.id}))}),
   journeyLoadHold:(held:boolean)=>{journeyLoadHeld=held;},
@@ -1433,7 +1442,10 @@ if(import.meta.env.DEV){(window as any).__drive={
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{
     inspectionView=undefined;sound.pause();sound.resetPassBy();traffic?.reset();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();coastStoneContact.reset();history.clear();usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;world.car.userData.motion.reset();
     speedAudit?.reset();
-    resetRace();countdown=0;state={...createState(),...initial};advancePowertrain(state,state.speed,false,0);state.velocityHeading=state.heading;state.worldHeading=world.sample(state.distance).roadHeading+state.heading;updateFootprint(state,world.halfAt(state.distance));brickCompleted=false;elapsed=0;initialized=false;mode='playing';testControls=undefined;input.clear();ui();render(1/60);
+    resetRace();countdown=0;state={...createState(),...initial};advancePowertrain(state,state.speed,false,0);state.velocityHeading=state.heading;state.worldHeading=world.sample(state.distance).roadHeading+state.heading;updateFootprint(state,world.halfAt(state.distance));brickCompleted=false;elapsed=0;initialized=false;mode='playing';testControls=undefined;
+    // QA may jump the player ahead of the field: don't mistake a teleport for seven passes.
+    rivalOvertakes.reset(state.distance,race.rivals);rivalPassCount=0;
+    input.clear();ui();render(1/60);
   },
   recentHistory:()=>history.snapshot(),
   sample:(d:number)=>{const p=world.sample(d);return {bankDegrees:(-Math.atan(p.right.y)*180/Math.PI)||0,halfWidth:world.halfAt(d),lanes:pilot?pilotSample(pilot,d).lanes:brick?brickWidth(brick,d).lanes:3,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),position:p.position.toArray(),curvature:p.curvature,roadHeading:p.roadHeading,tangent:p.tangent.toArray(),challenge:p.challenge};}

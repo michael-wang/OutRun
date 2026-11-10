@@ -14,6 +14,8 @@ test('grid holds all cars and accepts throttle; pause, replay and return reset t
  await enter(page,'trafficSeed=17');
  const before=await race(page);
  expect(before.rivals).toHaveLength(7);
+ expect(before.rank).toBe(8);
+ expect(before.rivals.every((r:any)=>r.distance>=350+12)).toBe(true);
  const labels=await page.evaluate(()=>(window as any).__drive.rivalTags());
  expect(labels.map((x:any)=>x.name)).toEqual(['對手一','對手二','對手三','對手四','對手五','對手六','對手七']);
  expect(labels.every((x:any)=>x.sizeAttenuation===false)).toBe(true);
@@ -157,4 +159,20 @@ test('L1/R1 cycle the debug chase camera without opening legacy feedback or drop
  await expect.poll(async()=>(await race(page)).observed).toBe(6);
  await expect(page.locator('#race-camera-name')).toHaveText('對手七');
  await set(7,false);
+});
+
+test('a real on-road Rival overtake starts the passenger applause, not a random traffic cheer',async({page})=>{
+ await enter(page,'trafficSeed=17');
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
+ const result=await page.evaluate(()=>{
+  const g=(window as any).__drive;
+  g.manual(true);g.reset({distance:350,speed:72,lateral:0});
+  const before=g.rivalPassCount();
+  g.advance(.3,{gas:true,brake:false,steer:0},false);
+  return {before,after:g.rivalPassCount(),occupants:g.occupants(),rank:g.race().rank};
+ });
+ expect(result.before).toBe(0);
+ expect(result.after).toBeGreaterThan(0);
+ expect(result.occupants.cheer).toBe('applause');
+ expect(result.occupants.cheerTime).toBeGreaterThanOrEqual(0);
 });
