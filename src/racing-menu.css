@@ -1,0 +1,122 @@
+[hidden]{display:none!important}
+html,body{margin:0;width:100%;height:100%;background:#15191e}
+#boot,#racing-menu,#game-loading{position:fixed;inset:0;box-sizing:border-box;overflow:hidden;color:#f6f1e5;font-family:"Barlow",Arial,"Microsoft JhengHei",sans-serif}
+#boot{z-index:10001;display:grid;align-content:center;justify-items:center;gap:25px;background:radial-gradient(ellipse at 50% 50%,#252b33,#14171c 72%)}
+.cabinet-logo{display:flex;align-items:center;gap:14px;width:fit-content;color:#f6f1e5}
+.cabinet-logo strong,.stage-heading h1{font-family:"Archivo Narrow","Arial Black",Arial,sans-serif;font-weight:1000;font-style:italic;line-height:.9;letter-spacing:-.065em}
+.cabinet-logo strong{position:relative;font-size:32px}
+.cabinet-logo strong:before{content:"";display:inline-block;background:repeating-linear-gradient(90deg,#fa694d 0 6px,transparent 6px 9px);width:24px;height:.68em;transform:skewX(-21deg);margin-right:5px}
+.cabinet-logo span{font-size:14px;font-weight:800;letter-spacing:.12em;border-left:1px solid #657073;padding-left:14px}
+#boot .cabinet-logo{flex-direction:column;gap:10px}
+#boot .cabinet-logo strong{font-size:clamp(42px,7vw,74px)}
+#boot .cabinet-logo span{border:0;padding:0;font-size:15px;letter-spacing:.38em}
+.boot-meter{height:2px;width:86px;overflow:hidden;background:#393e45}
+.boot-meter:before{content:"";display:block;width:38%;height:100%;background:#ff7353;animation:boot-pass 1.35s ease-in-out infinite alternate}
+@keyframes boot-pass{to{transform:translateX(165%)}}
+#boot-error,#game-loading p{font-size:13px}
+#boot-error button,#stage-retry{background:#ffc09a;border:0;padding:9px 15px;color:#24252c;font-weight:700;border-radius:2px}
+#racing-menu{--accent:#ff7857;--line:#ffffff35;--muted:#aab0b3;z-index:200;display:grid;grid-template-rows:auto minmax(46px,.63fr) minmax(0,2.6fr) auto;row-gap:clamp(5px,1.5vh,16px);
+ padding:max(23px,env(safe-area-inset-top)) max(5.6vw,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(5.6vw,env(safe-area-inset-left));
+ background:radial-gradient(ellipse at 30% 49%,#30383e 0,transparent 60%),linear-gradient(130deg,#20262b,#12161b 90%);isolation:isolate}
+#racing-menu:before{content:"";pointer-events:none;position:absolute;z-index:-1;inset:38% -20% 3%;background:repeating-linear-gradient(90deg,transparent 0 79px,#c8c8b817 80px 81px),repeating-linear-gradient(0deg,transparent 0 50px,#c8c8b81c 51px 52px);transform:perspective(330px) rotateX(57deg);mask-image:radial-gradient(ellipse,#0009,transparent 69%)}
+.cabinet-header,.cabinet-footer{display:flex;align-items:center;justify-content:space-between}
+.cabinet-header{padding-bottom:clamp(10px,2.8vh,26px);border-bottom:1px solid var(--line)}
+.mode-mark,.serial,.stage-status,.stage-index,.stage-names small{font-family:"Barlow",Arial,"Microsoft JhengHei",sans-serif;font-weight:700;letter-spacing:.12em}
+.mode-mark{font-size:11px;display:flex;align-items:center;gap:9px}
+.mode-mark i,.stage-index i{width:18px;height:12px;background:repeating-conic-gradient(#dedfda 0 25%,transparent 0 50%) 0 0/8px 8px;transform:skew(-13deg)}
+.mode-mark small{font:10px monospace;color:var(--muted);letter-spacing:.06em;border-left:1px solid var(--line);padding-left:9px}
+.stage-heading{display:flex;align-items:baseline;align-self:end;gap:18px}
+.stage-heading h1{font-size:clamp(40px,min(7.3vw,9vh),108px);margin:0;white-space:nowrap}
+.stage-heading span{font-size:clamp(13px,1.4vw,21px);font-weight:700;letter-spacing:.14em;color:#c6c6bc}
+.stage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:clamp(12px,2vw,42px);min-height:0}
+#racing-menu button{cursor:pointer;touch-action:manipulation;font-family:inherit}
+#racing-menu .mini-stage{display:grid;grid-template-columns:1fr auto;align-items:center;position:relative;min-width:0;padding:0 0 9px;border:0;border-radius:0;color:inherit;background:none;box-shadow:none;text-align:left}
+.model-view{grid-column:1/-1;display:grid;place-items:center;position:relative}
+.model-view:after{content:"";position:absolute;z-index:-1;width:70%;height:26%;bottom:5%;border-radius:50%;background:radial-gradient(ellipse,#06080885,transparent 72%)}
+.model-view canvas{display:block;width:100%;height:auto;max-height:45vh;object-fit:contain;filter:grayscale(.96) saturate(.27) brightness(.85);transform:scale(.98);transition:transform 240ms ease-out,filter 240ms ease-out}
+[aria-pressed=true] .model-view canvas{filter:none;transform:scale(1.065)}
+.stage-caption,.stage-status{border-top:2px solid #9da5a650;padding-top:12px;height:100%;box-sizing:border-box}
+.stage-caption{display:flex;align-items:baseline;gap:12px}
+.serial{align-self:flex-start;padding-top:4px;font:italic 700 15px Arial,sans-serif;color:#a6aaab}
+.stage-names{display:grid;gap:4px}
+.stage-names strong{font-size:clamp(17px,1.9vw,30px);letter-spacing:.08em;line-height:1.22}
+.stage-names small{color:var(--muted);font-size:clamp(9px,.8vw,13px);text-transform:uppercase}
+.stage-status{font-size:10px;letter-spacing:.08em;line-height:2;color:#b7bab9}
+[aria-pressed=true] :is(.stage-caption,.stage-status){border-color:var(--accent)}
+[aria-pressed=true] :is(.stage-status,.serial){color:#ff9778}
+#racing-menu button:focus-visible{outline:2px solid #ffd8a3;outline-offset:4px}
+.cabinet-footer{border-top:1px solid var(--line);padding-top:clamp(8px,2.2vh,23px)}
+.stage-index{display:flex;align-items:center;gap:8px;font:12px monospace;color:var(--muted)}
+.stage-index b{font-size:18px;color:#eee}
+.stage-index i{width:33px;height:6px;background:repeating-linear-gradient(90deg,var(--accent) 0 7px,transparent 7px 11px);margin-right:3px}
+#start-race{display:flex;align-items:center;justify-content:space-between;gap:30px;min-width:clamp(166px,17vw,250px);min-height:48px;padding:8px 20px;border:0;border-radius:0;background:#ff7958;color:#211b1a;font-size:17px;font-weight:800;letter-spacing:.1em;box-shadow:inset 0 -3px #b44b39}
+#start-race em{font:italic 900 28px/1 Arial}
+#start-race[aria-disabled=true]{background:#393e44;box-shadow:inset 0 -3px #303439;color:#c4c8c9;cursor:default}
+.racing-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+#game-loading{z-index:10000;isolation:isolate;background:#242d36}
+#game-loading picture,#game-loading img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+#game-loading:after{content:"";z-index:-1;position:absolute;inset:0;background:linear-gradient(0deg,#101720e8,transparent 45%)}
+.loading-copy{position:absolute;left:max(5vw,env(safe-area-inset-left));bottom:max(6vh,env(safe-area-inset-bottom));width:min(245px,68vw);text-shadow:0 1px 6px #181c23}
+#stage-loading-name{font-weight:800;letter-spacing:.14em;font-size:18px}
+#loading-title{font-size:12px;font-weight:500;margin:6px 0 11px;letter-spacing:.09em}
+#loading-track{height:3px;background:#fffae645}
+#loading-fill{display:block;height:100%;background:#ffd196;transform:scaleX(0);transform-origin:left;transition:transform .2s}
+#game-loading:not([data-phase=error]) #loading-detail{display:none}
+html[data-loading=true] #app{visibility:hidden}
+@media(orientation:landscape) and (max-height:520px){
+ #racing-menu{padding-top:max(9px,env(safe-area-inset-top));padding-bottom:max(9px,env(safe-area-inset-bottom));row-gap:4px;grid-template-rows:auto auto minmax(0,1fr) auto}
+ .cabinet-header{padding-bottom:7px}.cabinet-logo strong{font-size:23px}.cabinet-logo span{font-size:11px}
+ .stage-heading{margin-top:7px}.stage-heading h1{font-size:clamp(26px,8vh,40px)}
+ .stage-caption,.stage-status{padding-top:6px}.stage-names{gap:2px}.stage-names strong{font-size:16px}
+ #racing-menu .mini-stage{padding-bottom:2px}.model-view canvas{max-height:46vh}
+ .cabinet-footer{padding-top:6px}#start-race{min-height:44px}
+}
+@media(orientation:portrait){
+ #racing-menu{grid-template-rows:auto auto minmax(0,1fr) auto;row-gap:clamp(4px,1.5dvh,16px);padding:max(16px,env(safe-area-inset-top)) max(5vw,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(5vw,env(safe-area-inset-left))}
+ .cabinet-logo{gap:8px}.cabinet-logo strong{font-size:24px}.cabinet-logo span{padding-left:8px;font-size:11px}
+ .mode-mark{font-size:9px;gap:5px}.mode-mark small{display:none}.cabinet-header{padding-bottom:12px}
+ .stage-heading{align-items:baseline;gap:12px}.stage-heading h1{font-size:clamp(32px,9vw,52px)}.stage-heading span{font-size:12px}
+ .stage-grid{grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));gap:0;align-items:stretch}
+ #racing-menu .mini-stage{grid-template-columns:61% 1fr;grid-template-rows:1fr 1fr;align-content:center;column-gap:8px;padding:0;border-bottom:1px solid var(--line)}
+ .model-view{grid-row:1/3;grid-column:1}.model-view canvas{max-height:19.3dvh}
+ .stage-caption,.stage-status{grid-column:2;height:auto;border:0;padding:0}.stage-caption{align-self:end;flex-direction:column;gap:2px}.serial{font-size:12px}
+ .stage-status{align-self:start;margin-top:5px}.stage-names strong{font-size:clamp(18px,5vw,26px)}
+ .cabinet-footer{border:0;padding-top:0}.stage-index{gap:5px}#start-race{min-width:58%;min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){.boot-meter:before{animation:none}.model-view canvas,#loading-fill{transition:none}}
+
+@media (orientation:landscape){.model-view{margin-bottom:7px}}
+
+#loading-track:not([aria-valuenow]){overflow:hidden}
+#loading-track:not([aria-valuenow]) #loading-fill{width:25%;animation:stage-download 1.35s ease-in-out infinite alternate}
+@keyframes stage-download{from{transform:translateX(0)}to{transform:translateX(300%)}}
+#boot:has(#boot-error:not([hidden])) .boot-meter,#game-loading[data-phase=error] #loading-track{display:none}
+@media(prefers-reduced-motion:reduce){#loading-track:not([aria-valuenow]) #loading-fill{animation:none;transform:none}}
+
+
+html[data-boot-error] #boot-error[hidden]{display:block!important}
+html[data-boot-error] .boot-meter{display:none}
+@media(orientation:landscape) and (max-height:360px){
+ .stage-grid{grid-template-rows:minmax(0,1fr)}
+ #racing-menu .mini-stage{height:100%;grid-template-rows:minmax(0,1fr) auto}
+ .model-view{min-height:0;height:calc(100% - 4px);margin-bottom:4px}
+ .model-view canvas{height:100%;max-height:100%;object-fit:contain}
+ .stage-caption{gap:6px}.stage-caption,.stage-status{padding-top:3px}
+ .stage-names small{display:none}
+}
+
+#boot-enter{color:#fff0db;border:1.5px solid #ffb698;background:#a05c422e;padding:11px 18px;min-height:46px;font:700 15px/1.4 system-ui,sans-serif;letter-spacing:.08em;cursor:pointer}
+#boot:has(#boot-enter:not([hidden])){display:flex;align-items:center;justify-content:center}
+#boot-enter{position:absolute;right:max(6vw,calc(env(safe-area-inset-right) + 14px));bottom:max(7dvh,calc(env(safe-area-inset-bottom) + 16px))}
+#boot-enter b{color:#ff8866;margin-left:5px}
+#boot-enter::after{content:"";position:fixed;inset:0}
+.landscape-control{display:none}
+html:not([data-manual-landscape]) .landscape-fallback{display:none}
+@media(pointer:coarse) and (orientation:portrait){
+ .landscape-control{display:grid;gap:4px;align-content:center;justify-items:start;pointer-events:auto}
+ .landscape-control small{font:500 12px/1.4 system-ui,sans-serif;color:#fff1dc}
+ .landscape-control button{min-height:44px;padding:8px 12px;color:#fff0df;background:#18202580;border:1.5px solid #ffbe9c;border-radius:2px;font:700 14px system-ui,sans-serif;cursor:pointer}
+ .cabinet-footer .stage-index{display:none}
+ .cabinet-footer .landscape-control{max-width:40%}
+ #stage-rotate .landscape-control{margin:6px 0 10px}
+}

@@ -1,21 +1,29 @@
-/* The journey should remain visible while paused. */
-#trip-pause-dock{
- position:fixed;z-index:35;top:calc(max(16px,env(safe-area-inset-top)) + 57px);
- left:max(18px,env(safe-area-inset-left));width:min(298px,calc(100vw - 36px));
- padding:8px;border-radius:12px;background:#123540dc;color:#fff4d8;
- border:1px solid #c7d8cf85;box-shadow:0 8px 28px #08252d45;
- font:700 12px/1.3 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
+/* Compact cabinet controls leave the road and the parked car visible. */
+#trip-pause-dock,#preferences.trip-settings-drawer{
+ position:fixed;z-index:45;inset:max(6dvh,env(safe-area-inset-top)) auto auto max(4vw,env(safe-area-inset-left));
+ width:min(288px,46vw);max-height:calc(94dvh - max(8px,env(safe-area-inset-bottom)));overflow:auto;overscroll-behavior:contain;
+ margin:0;padding:16px;transform:none;border:1px solid #edd6bc99;border-top:2px solid #ffb38e;border-radius:2px;
+ background:linear-gradient(135deg,#20282dbf,#15191e99);color:#f6f1e5;box-shadow:0 10px 28px #10141750;
+ font:600 14px/1.35 system-ui,"Microsoft JhengHei",sans-serif;
 }
-#trip-pause-dock .tp-top{display:flex;align-items:center;gap:5px}
-#trip-pause-dock .tp-indicator{flex:1;white-space:nowrap;color:#ffdda0;font-size:12px;padding:0 4px}
-#trip-pause-dock button{min-height:37px;padding:7px 9px;border-radius:7px;font-size:12px;white-space:nowrap}
-#trip-pause-dock #tp-resume{background:#ffd297;color:#123c40;border-color:transparent}
-#trip-pause-dock #tp-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}
-#trip-pause-dock #tp-actions[hidden]{display:none}
-#trip-pause-dock #tp-actions button{min-width:0;white-space:normal}
-#trip-pause-dock #tp-review{grid-column:span 2}
-#trip-pause-dock button:focus-visible{outline:3px solid #ffe9a5;outline-offset:2px}
-
+#trip-pause-dock .tp-title,#preferences.trip-settings-drawer h2{
+ margin:0 0 12px;display:flex;align-items:center;gap:10px;font-size:22px;letter-spacing:.1em
+}
+#trip-pause-dock .tp-title:before,#preferences.trip-settings-drawer h2:before{
+ content:"";width:19px;height:16px;transform:skewX(-17deg);background:repeating-linear-gradient(90deg,#ff7857 0 5px,transparent 5px 8px)
+}
+#trip-pause-dock .tp-list{display:grid;gap:5px}
+#trip-pause-dock button,#preferences.trip-settings-drawer #close-settings{
+ min-height:44px;padding:8px 12px;border:1px solid #f1d9baa8;border-radius:2px;
+ background:#1a212744;color:#fff4e4;text-align:left;font:700 15px/1.3 system-ui,sans-serif
+}
+#trip-pause-dock #tp-resume,#preferences.trip-settings-drawer #close-settings{background:#e19b5f32;border:1.5px solid #ffc092;color:#fff1d9}
+#trip-pause-dock #tp-back{background:transparent;color:#e6cebd}
+#trip-pause-dock button:focus-visible,#preferences.trip-settings-drawer :focus-visible{outline:2px solid #ffcf9e;outline-offset:1px}
+#preferences.trip-settings-drawer{width:min(350px,52vw)}
+#preferences.trip-settings-drawer .eyebrow{display:none}
+#preferences.trip-settings-drawer .setting{font-size:15px}
+#preferences.trip-settings-drawer #close-settings{margin:8px 0 0;text-align:center}
 /* A deliberately opened review is a left drawer, not a central full-screen page. */
 #l2-lab.trip-review-drawer{
  position:fixed;inset:calc(max(16px,env(safe-area-inset-top)) + 125px) auto 12px max(18px,env(safe-area-inset-left));
@@ -30,23 +38,7 @@
 #l2-lab.trip-review-drawer h2{font-size:17px;margin:9px 0}
 #l2-lab.trip-review-drawer .l2-actions button{min-height:36px;padding:7px 9px;font-size:12px}
 
-/* Settings also move to a small left-side panel while pausing a trip. */
-#preferences.trip-settings-drawer{
- position:fixed;inset:calc(max(16px,env(safe-area-inset-top)) + 57px) auto auto max(18px,env(safe-area-inset-left));
- transform:none;width:min(360px,calc(100vw - 36px));max-height:calc(100dvh - 90px);
- padding:18px;overflow:auto;z-index:45;
-}
-#preferences.trip-settings-drawer h2{font-size:24px;margin:8px 0}
-@media(max-height:470px){
- #trip-pause-dock{top:calc(max(6px,env(safe-area-inset-top)) + 47px);padding:5px;width:min(280px,47vw)}
- #trip-pause-dock button{min-height:32px;padding:5px 6px;font-size:11px}
- #trip-pause-dock .tp-indicator{font-size:11px}
- #l2-lab.trip-review-drawer{inset:calc(max(6px,env(safe-area-inset-top)) + 112px) auto 6px 12px;width:min(310px,45vw)}
- #preferences.trip-settings-drawer{top:calc(max(6px,env(safe-area-inset-top)) + 47px);width:min(300px,47vw)}
-}
-
 /* Diagnostic shadow checklist: under pause controls, not over the road. */
-#trip-pause-dock{max-height:calc(100dvh - 84px);overflow-y:auto;overscroll-behavior:contain}
 #tp-shadow-audit{margin-top:7px;padding-top:7px;border-top:1px solid #ffffff36;font-weight:500}
 #tp-shadow-audit summary{list-style:none;cursor:pointer;color:#ffe2ad;font:700 12px/1.4 system-ui,"PingFang TC",sans-serif;min-height:29px;display:flex;align-items:center;padding:3px 5px}
 #tp-shadow-audit summary::-webkit-details-marker{display:none}
@@ -57,7 +49,7 @@
 #tp-shadow-audit input[type="checkbox"]{flex:0 0 auto;width:17px;height:17px;margin:0;accent-color:#ffd297}
 #trip-pause-dock #tp-shadow-reset{min-height:29px;padding:4px 10px;margin-top:7px;background:transparent;color:#ffe4ba;border-color:#ffffff55}
 #trip-pause-dock #tp-shadow-reset:active{background:#ffffff24}
-@media(max-height:470px){#trip-pause-dock{max-height:calc(100dvh - 64px)}#tp-shadow-audit label{min-height:27px;font-size:10px}}
+@media(max-height:470px){#tp-shadow-audit label{min-height:27px;font-size:10px}}
 
 /* One full-width row per GPU technique, with its expected cost. */
 #tp-shadow-audit .tp-shadow-options{grid-template-columns:minmax(0,1fr);gap:3px}

@@ -1,3 +1,4 @@
+import {takeStageAudio} from './stage-audio';
 import {PassBy,PASS_AUDIO} from './pass-by';
 import type {TrafficActor} from './traffic';
 import {SkidFeedback} from './skid-feedback';
@@ -35,7 +36,7 @@ export class EngineSound {
   readonly skidFeedback=new SkidFeedback();
   async unlock(waitForPassenger=false) {
     if (!this.context) {
-      const context = this.context = new AudioContext();
+      const context = this.context = takeStageAudio() ?? new AudioContext();
       this.master = context.createGain();
       this.master.gain.value = this.muted ? 0 : 0.35;
       this.analyser = context.createAnalyser();
@@ -144,8 +145,9 @@ export class EngineSound {
   stopPassenger(){for(const source of this.passengerSources)source.stop();this.passengerSources.clear();}
   private silencePasses(){this.passes.suspend();if(this.context)for(const v of this.passVoices){v.gain.gain.cancelScheduledValues(this.context.currentTime);v.gain.gain.setTargetAtTime(0,this.context.currentTime,.015);}}
   setMuted(muted: boolean) { if(muted)this.stopPassenger();this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
-  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number},collisionSlide=0,trafficSkid=0) {
-    const intensity=Math.max(trafficSkid,this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer,collisionSlide));
+  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number;launchSlip?:number;brakeSlip?:number;offRoad?:boolean},collisionSlide=0,trafficSkid=0) {
+    const longitudinal=drivetrain?.offRoad?0:Math.max(drivetrain?.launchSlip??0,drivetrain?.brakeSlip??0);
+    const intensity=Math.max(trafficSkid,longitudinal,this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer,collisionSlide));
     this.active = true;this.engineRpm=drivetrain?.rpm??Math.min(7200,1000+speed*85);this.engineGear=drivetrain?.gear??1;
     this.engineHz = 28+this.engineRpm*1.1/60+(gas ? 3 : 0); this.skidLevel = intensity*.12;
     this.windLevel=.10*Math.min(1,(speed/(300/3.6))**2);
@@ -159,6 +161,11 @@ export class EngineSound {
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
   pause() { this.stopPassenger();this.silencePasses();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  dispose() {
+    this.pause();
+    const context=this.context ?? takeStageAudio();
+    if(context && context.state!=='closed')void context.close().catch(()=>{});
+  }
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }

@@ -31,7 +31,7 @@ for(const width of [915,568])for(const swapped of [false,true])test(`public HUD 
  expect(await page.evaluate(()=>(window as any).__drive.snapshot().inputs)).toEqual({gas:false,brake:false,steer:0});
  await touch(null,false,false);await touch(.8,true,false);await page.evaluate(()=>(window as any).__drive.advance(.1));expect(await page.evaluate(()=>(window as any).__drive.snapshot().inputs.gas)).toBe(true);await touch(null,false,false);
  // Blurring during a subsequent countdown still cancels resume.
- await page.locator('#pause').tap();await page.locator('#l2-play').tap();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await expect(page.locator('#ready-countdown')).toBeHidden();await expect(page.locator('#touch')).toBeHidden();await expect(page.locator('#l2-play')).toBeVisible();
+ await page.locator('#pause').tap();await page.locator('#l2-play').tap();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await expect(page.locator('#ready-countdown')).toBeHidden();await expect(page.locator('#touch')).toBeVisible();await expect(page.locator('#l2-play')).toBeVisible();
  await context.close();
 });
 test('production public and explicit QA entry retain feedback and camera',async({page})=>{

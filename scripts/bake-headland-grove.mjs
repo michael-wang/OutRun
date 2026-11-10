@@ -50,3 +50,40 @@ for (const [name, preset, species, compact] of [
 await writeFile(destination+'/headland-grove.json', JSON.stringify(models));
 await writeFile('src/generated/roadside-trees.json', JSON.stringify(roadside));
 await copyFile(source+'/LICENSE', destination+'/EZ-Tree-LICENSE.txt');
+
+// A tiny untextured fan palm for the arcade cabinet miniatures. Use the
+// generator's crown placement and leaf axes to fold each billboard into a frond.
+const palm = new Tree();
+const recipe = structuredClone(TreePreset['Oak Medium']);
+recipe.seed = 18;
+Object.assign(recipe.branch, {
+  levels: 0, length: {0: 10}, radius: {0: .38}, sections: {0: 9},
+  segments: {0: 6}, taper: {0: .42}, gnarliness: {0: .05},
+});
+Object.assign(recipe.leaves, {count: 12, start: .94, angle: 78, size: 5.4, sizeVariance: .17, billboard: 'single'});
+palm.loadFromJson(recipe);
+const trunk = palm.branchesMesh.geometry;
+const blade = palm.leavesMesh.geometry.getAttribute('position');
+const point = i => new THREE.Vector3().fromBufferAttribute(blade,i);
+const fronds = [];
+for (let i = 0; i < blade.count; i += 4) {
+  const base = point(i+1).lerp(point(i+2), .5);
+  const tip = point(i).lerp(point(i+3), .5);
+  const side = point(i+2).sub(point(i+1)).normalize();
+  const rows = [];
+  for (let k = 0; k <= 6; k++) {
+    const t = k/6, center = base.clone().lerp(tip,t);
+    center.y += Math.sin(t*Math.PI)*1.45-t*t*1.7;
+    const width = Math.sin(t*Math.PI)*.84+.01;
+    const edge = sign => center.clone().addScaledVector(side,sign*width).add(new THREE.Vector3(0,-width*.32,0));
+    rows.push([edge(-1),center,edge(1)]);
+  }
+  for(let k=1;k<rows.length;k++)for(let j=0;j<2;j++){
+    const a=rows[k-1], b=rows[k];
+    for(const v of [a[j],b[j],a[j+1],b[j],b[j+1],a[j+1]])fronds.push(...v.toArray());
+  }
+}
+const rounded = values => Array.from(values,v=>+v.toFixed(3));
+await writeFile('src/generated/menu-palm.json',JSON.stringify({
+  trunk:rounded(trunk.toNonIndexed().attributes.position.array),fronds:rounded(fronds)
+}));

@@ -5,6 +5,9 @@ test('the public coast starts automatically at zero speed with its approved HUD'
  try{
   const page=await context.newPage();
   await page.goto('/?at=850&trafficSeed=1234');
+  await page.locator('#boot-enter').tap();
+  await page.locator('#start-race').click();
+  await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
   await expect(page.locator('#view canvas')).toBeVisible();
   await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
   await expect(page.locator('#speed')).toBeVisible();
@@ -15,7 +18,7 @@ test('the public coast starts automatically at zero speed with its approved HUD'
   await expect(page.locator('#stage-seed')).toBeHidden();
   await expect(page.locator('#l2-export')).toBeHidden();
   await expect(page.locator('#l2-next')).toBeHidden();
-  await expect(page.locator('#player-new-route')).toBeHidden();
+  await expect(page.locator('#results-menu')).toBeHidden();
  }finally{await context.close();}
 });
 
@@ -24,9 +27,12 @@ test('portrait waits for landscape, then launches automatically without tapping 
  try{
   const page=await context.newPage();
   await page.goto('/');
+  await page.locator('#boot-enter').tap();
+  await page.locator('#start-race').click();
+  await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
   await expect(page.locator('#rotate')).toBeVisible();
   await expect(page.locator('#player-start')).toBeHidden();
-  await expect(page.locator('#rotate-fullscreen')).toBeHidden();
+  await expect(page.locator('#rotate-launch-status button')).toBeVisible();
   await expect(page.locator('#l2-lab')).toBeHidden();
   const style=await page.locator('#rotate').evaluate(el=>({backgroundColor:getComputedStyle(el).backgroundColor,backgroundImage:getComputedStyle(el).backgroundImage}));
   expect(style.backgroundColor).toBe('rgba(0, 0, 0, 0)');
@@ -38,14 +44,17 @@ test('portrait waits for landscape, then launches automatically without tapping 
  }finally{await context.close();}
 });
 
-test('QA at= coordinate opens into a stationary playable coast and retains the inspector',async({page})=>{
+test('diagnostic at= coordinate starts stationary with the public driving HUD',async({page})=>{
  await page.goto('/?at=1360&trafficSeed=2026');
+  await page.locator('#start-race').click();
+  await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
  await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
  const state=await page.evaluate(()=>(window as any).__drive.snapshot());
  expect(state.mode).toBe('playing');
  expect(state.distance).toBe(1360);
  expect(state.speed).toBe(0);
- await expect(page.locator('#qa-tools')).toBeVisible();
+ await expect(page.locator('#drive-distance')).toHaveText('1,360 m');
+ await expect(page.locator('#qa-tools')).toBeHidden();
 });
 
 test('iPhone landscape also auto-launches, with no inert fullscreen button',async({browser})=>{
@@ -58,6 +67,9 @@ test('iPhone landscape also auto-launches, with no inert fullscreen button',asyn
  try{
   const page=await context.newPage();
   await page.goto('/');
+  await page.locator('#boot-enter').tap();
+  await page.locator('#start-race').click();
+  await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
   await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
   await expect(page.locator('#player-install-guide')).toBeHidden();
   await expect(page.locator('#l2-fullscreen')).toBeHidden();

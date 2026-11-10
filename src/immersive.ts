@@ -4,8 +4,17 @@ export class Immersive {
   message = '';
   lockState: 'idle'|'locked'|'unsupported'|'denied' = 'idle';
   pending = false;
-  constructor(private root: HTMLElement, private changed: () => void) {
-    document.addEventListener('fullscreenchange', () => { this.changed(); });
+  private requestId = 0;
+  constructor(private root: HTMLElement, public changed: () => void) {
+    document.addEventListener('fullscreenchange', () => {
+      if(!document.fullscreenElement) {
+        // Android Back can exit before the preceding orientation lock settles.
+        this.requestId++;
+        this.pending=false;
+        this.lockState='idle';
+      }
+      this.changed();
+    });
     matchMedia('(display-mode: fullscreen)').addEventListener('change', () => this.changed());
     matchMedia('(display-mode: standalone)').addEventListener('change', () => this.changed());
   }
@@ -27,24 +36,34 @@ export class Immersive {
       this.changed();
       return;
     }
+    const requestId=++this.requestId;
     this.pending=true; this.message=''; this.changed();
     try {
       if(!this.installed && !this.active) {
         if(!this.root.requestFullscreen) throw new Error('unsupported');
         // Invoked synchronously from a tap, before awaiting any other work.
         await this.root.requestFullscreen({navigationUI:'hide'});
+        if(requestId!==this.requestId)return;
         if(!this.active) throw new Error('not entered');
       }
       const orientation=screen.orientation as LockableOrientation;
       if(!orientation?.lock) {
-        this.lockState='unsupported'; this.message='Rotate your device to landscape. Orientation lock is unavailable.';
+        this.lockState='unsupported'; this.message='請手動橫放手機。';
       } else {
-        try { await orientation.lock('landscape'); this.lockState='locked'; }
-        catch { this.lockState='denied'; this.message='Rotate your device to landscape. Automatic rotation was not allowed.'; }
+        await orientation.lock('landscape');
+        if(requestId===this.requestId)this.lockState='locked';
       }
     } catch {
-      this.message='Fullscreen unavailable. Press F or click Fullscreen to retry. Rotate to landscape if needed.';
-    } finally { this.pending=false; this.changed(); }
+      if(requestId!==this.requestId)return;
+      this.lockState='denied';
+      this.message='無法自動切換橫向，請手動橫放手機。';
+    } finally {
+      if(requestId===this.requestId){
+        this.pending=false;
+        this.root.toggleAttribute('data-manual-landscape',this.lockState==='denied'||this.lockState==='unsupported');
+        this.changed();
+      }
+    }
   }
   async toggle() {
     if(this.active) {
@@ -54,4 +73,26 @@ export class Immersive {
     } else await this.enter();
   }
   snapshot(){return {active:this.active,installed:this.installed,lockState:this.lockState,pending:this.pending,message:this.message};}
+}
+
+export const immersive = new Immersive(document.documentElement, () => {});
+
+/** Lives in the menu, loading surface or portrait drive overlay; CSS only shows
+ * the control on a portrait touch screen. Each retry owns a fresh user gesture. */
+export function landscapeControl() {
+  const control=document.createElement('div');
+  control.className='landscape-control';
+  const hint=document.createElement('small');
+  hint.setAttribute('role','status');
+  hint.textContent=immersive.isIPhone?'請關閉直向鎖定並橫放手機。':'請手動橫放手機。';
+  if(immersive.canAutoLandscape){
+    const button=document.createElement('button');
+    button.type='button';
+    button.textContent='切換橫向';
+    hint.className='landscape-fallback';
+    button.onclick=()=>{void immersive.enter();};
+    control.append(button);
+  }
+  control.append(hint);
+  return control;
 }

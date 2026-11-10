@@ -25,7 +25,7 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
 /* v0.4.1: one absolute-position strip, shared with the keyboard virtual wheel. */
 #touch.active{display:flex}#steering-strip{--steer:0;position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px;width:clamp(260px,35vw,400px);height:88px;padding:12px 16px;border:1px solid #f4e4b69c;border-radius:12px;background:#153e45dc;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .steer-label{font-size:11px;font-weight:700;letter-spacing:3px;text-align:center;color:#ffe2ad}.steer-hint{font-size:8px;letter-spacing:1px;text-align:center;color:#c0d7d3}.steer-rail{position:absolute;left:0;right:0;top:42px;height:3px;background:linear-gradient(90deg,#d4b58466,#fff4d5,#d4b58466);pointer-events:none}.steer-center{position:absolute;left:50%;top:-8px;width:2px;height:19px;background:#fff6dc}.steer-cursor{position:absolute;left:clamp(8px,calc(50% + var(--steer)*50%),calc(100% - 8px));top:-11px;width:16px;height:25px;border-radius:5px;background:#ffd18b;box-shadow:0 0 10px #ffc98055;transform:translateX(-50%)}.steer-label{margin-bottom:15px}.steer-hint{margin-top:5px}
-@media(pointer:fine) and (min-width:1001px){#touch .pedals{display:none}#steering-strip{width:280px;height:74px;opacity:.85}.steer-rail{top:36px}.steer-hint{font-size:7px}}
+@media(pointer:fine) and (min-width:1001px){#steering-strip{width:280px;height:74px;opacity:.85}.steer-rail{top:36px}.steer-hint{font-size:7px}}
 @media(max-width:880px){#steering-strip{width:34vw;min-width:250px;height:80px}.steer-rail{top:38px}}
 
 
@@ -57,23 +57,27 @@ html:not([data-input-mode=gamepad]) #gamepad-status{display:none}
 #photo-folder{display:flex;align-items:center;flex-wrap:wrap;gap:5px}#photo-folder[hidden]{display:none}#photo-folder span{font-size:11px;overflow-wrap:anywhere}#photo-folder button{padding-inline:8px}
 html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,html:not([data-qa="true"]) #photo-button{display:none}
 /* Arcade dashboard: low above steering, inset toward the car and mirrored with touch controls. */
-#speed{--dial-size:160px;--dial-accent:#53dcff;position:fixed;left:max(14vw,env(safe-area-inset-left));bottom:calc(max(24px,env(safe-area-inset-bottom)) + 100px);width:var(--dial-size);height:var(--dial-size);pointer-events:none;text-align:center;color:#fff;isolation:isolate}
+#speed{
+ --dial-size:160px;--dial-accent:#53dcff;
+ position:fixed;left:max(min(14vw,calc(36vw - var(--dial-size)*1.65)),env(safe-area-inset-left));
+ bottom:calc(max(24px,env(safe-area-inset-bottom)) + 116px);
+ width:var(--dial-size);height:var(--dial-size);pointer-events:none;text-align:center;color:#fff;isolation:isolate
+}
 #speed svg{display:block;width:100%;height:100%;overflow:visible}
 #speed .dial-rim{stroke:var(--dial-accent)}
 #speed[data-band=fast]{--dial-accent:#ffb347}
 #speed[data-band=redline]{--dial-accent:#ff6852}
-#speed strong{position:absolute;top:48%;left:0;right:0;font:900 58px/1 Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-2px;color:#ffcc66;text-shadow:0 2px 0 #321d0c}
-#speed span{position:absolute;left:0;right:0;bottom:7%;font-size:11px;font-weight:800;letter-spacing:2px;color:#d1f6ff}
-#gear{position:absolute;top:29%;left:38%;width:24%;padding:2px 0;border:1px solid #4282a3;border-radius:5px;background:#081629;color:#a4f2ff;font-size:20px;line-height:1;font-weight:800}
-#status{position:absolute;top:100%;left:-10%;width:120%;margin-top:5px;font:700 8px/1.2 Arial,sans-serif;letter-spacing:.3px;color:#fff0ce;text-shadow:0 1px 3px #071323}
+#speed .speed-reading{position:absolute;top:53%;left:46%;display:flex;align-items:baseline;gap:3px;white-space:nowrap}
+#speed strong{font:900 calc(var(--dial-size)*.48)/1 Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.045em;color:#ffcc66}
+#speed small{font:700 clamp(10px,calc(var(--dial-size)*.085),14px)/1 Arial,sans-serif;color:#e2f8ff;text-shadow:0 1px 3px #061522,0 0 4px #061522}
+#gear{position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%);padding:1px 5px;border:1px solid;border-radius:4px;color:#a4f2ff;font:800 clamp(12px,calc(var(--dial-size)*.1),16px)/1 Arial,sans-serif;white-space:nowrap}
 @media(pointer:coarse),(max-width:1000px){
- #speed{--dial-size:clamp(104px,29dvh,124px);left:calc(max(24px,env(safe-area-inset-left)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2);right:auto;top:auto;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 50px)}
+ #speed{--dial-size:clamp(104px,29dvh,124px);left:calc(max(24px,env(safe-area-inset-left)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2);right:auto;top:auto;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 72px)}
  #app:has(#touch.swapped) #speed{left:auto;right:calc(max(24px,env(safe-area-inset-right)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2)}
  #steering-strip{height:48px}
- #speed strong{top:44%;font-size:clamp(44px,12dvh,50px)}
- #speed span{bottom:3%;font-size:9px;letter-spacing:1.5px}
- #gear{top:26%;font-size:14px}
- #status{display:none}
+}
+@media(max-width:740px){
+ #speed{left:max(24px,env(safe-area-inset-left))}
 }
 
 /* Player-facing information, with detailed route identifiers reserved for QA. */
@@ -88,16 +92,9 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #app #l2-hud{top:calc(max(16px,env(safe-area-inset-top)) + 96px);left:max(24px,env(safe-area-inset-left));max-width:calc(100vw - 48px);font-size:10px}
 
 /* iPhone Safari: keep rotation and home-screen guidance readable without hiding gameplay. */
-#rotate-iphone-hint,#rotate-immersive-error{max-width:min(440px,84vw);line-height:1.5}
 #iphone-fullscreen-hint,#l2-iphone-fullscreen-hint{font-size:13px;line-height:1.45;max-width:56ch}
 
 
-/* Public Road Trip entry over the approved splash artwork. */
-/* On phones the loading overlay covers the first render. Once dismissed,
-   keep the chase camera visible behind the launch prompt and during rotation. */
-@media (pointer:coarse){
- html[data-player-ui="true"]:not([data-loading]) #startup-art{display:none}
-}
 html[data-player-ui="true"] .l2-lab{display:none!important}
 html[data-player-ui="true"] #player-start{
  position:fixed;z-index:32;top:max(20px,env(safe-area-inset-top));left:50%;
@@ -123,17 +120,15 @@ html[data-player-ui="true"] #player-loading{
 }
 html[data-player-ui="true"][data-drive-mode="menu"] header,
 html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
-html[data-player-ui="true"][data-drive-mode="menu"] #speed,
-html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
 /* Keep the title in the sky and the action at the loading progress position. */
 @media (orientation:portrait) and (pointer:coarse){
  html[data-player-ui="true"] #player-start{display:none!important}
  html[data-player-ui="true"] #immersive-note{display:none}
  html[data-player-ui="true"] #rotate{
-  --action-inset:max(var(--portrait-launch-inset),calc(env(safe-area-inset-bottom) + 28px));
+  --action-inset:max(8dvh,calc(env(safe-area-inset-bottom) + 28px));
   z-index:65;justify-content:flex-end;gap:10px;
   padding:env(safe-area-inset-top) 7vw var(--action-inset);
-  background:transparent;
+  background:linear-gradient(0deg,#09242e99,transparent 27%,transparent 75%,#09242e44);
   text-shadow:0 2px 12px #082c38;pointer-events:none;
  }
  .portrait-brand{
@@ -143,8 +138,9 @@ html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
  .portrait-brand h1{margin:0;font-size:clamp(25px,7vw,34px);line-height:1.2;letter-spacing:.12em}
  .portrait-brand p{margin:5px 0 0;font-size:14px;font-weight:600;letter-spacing:.18em;color:#ffd69f}
  html[data-player-ui="true"] #rotate small{font-size:13px;line-height:1.45;color:#fff3dc}
- #rotate-launch:not([hidden]) + #rotate-instruction{position:absolute;top:calc(100% - var(--action-inset) + 6px)}
- html[data-player-ui="true"] #rotate button{display:none!important}
+ html[data-player-ui="true"] #rotate{align-items:flex-end;padding-right:max(6vw,calc(env(safe-area-inset-right) + 14px))}
+ html[data-player-ui="true"] #rotate .landscape-control{justify-items:end;text-align:right}
+ html[data-player-ui="true"] :is(#speed,#touch,#preferences,#car-paint-list){display:none!important}
 }
 @media (orientation:landscape) and (max-height:500px){
  html[data-player-ui="true"] #player-start{top:max(8px,env(safe-area-inset-top));gap:3px}
@@ -159,8 +155,6 @@ html[data-player-ui="true"] #player-install-help{margin:2px auto 0;padding:7px 1
 /* Approved art stays behind menus and controls, and leaves with the first driving frame. */
 html[data-player-ui="true"] #preferences{z-index:40}
 html[data-player-ui="true"] #preferences p:has(#gamepad-diagnostic),
-html[data-player-ui="true"] #rotate-iphone-hint,
-html[data-player-ui="true"] #rotate-immersive-error,
 html[data-player-ui="true"] #gamepad-status{display:none!important}
 html[data-player-ui="true"] #player-start{top:max(6dvh,env(safe-area-inset-top));gap:10px}
 html[data-player-ui="true"] .player-title{font-size:clamp(32px,4.5vw,64px);font-style:italic;letter-spacing:.09em}
@@ -188,18 +182,6 @@ html[data-player-ui="true"] #player-play{font-size:clamp(19px,2.5vw,24px)}
 html[data-player-ui="true"] #touch [data-control]{font-size:16px}
 
 
-/* Public portrait: only supported browsers get a one-tap fullscreen + landscape start. */
-@media (pointer:coarse) and (orientation:portrait){
-  html[data-player-ui="true"] #rotate #rotate-launch:not([hidden]){
-    display:inline-flex!important;align-items:center;justify-content:center;
-    pointer-events:auto;width:min(100%,320px);min-height:48px;
-    padding:10px 22px;
-    border:2px solid #ffd69f;border-radius:8px;background:#10374080;color:#fff4dd;
-    font:700 19px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
-    text-shadow:0 1px 3px #082c38;
-    touch-action:manipulation;
-  }
-}
 
 
 /* Opt-in streaming health instrument panel. Never enabled for normal public play. */
@@ -276,7 +258,7 @@ html[data-input-mode="keyboard"] #touch .steer-keys{
  pointer-events:none;color:#fff6e8;text-shadow:0 1px 3px #071c27;
 }
 .steer-keys kbd{font:700 12px/1.2 system-ui,sans-serif}
-html[data-input-mode="keyboard"] #touch .pedals{display:flex}
+html[data-input-mode="gamepad"] #touch .pedals button,
 html[data-input-mode="keyboard"] #touch .pedals button{
  width:auto;white-space:nowrap;padding-inline:12px;
 }
@@ -619,3 +601,8 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 
 #drive-fps-diagnostic output:not(:empty){display:block;padding:4px 8px;background:#123540e8;color:#fff4d8;font:700 12px/1.4 system-ui;text-align:center}
 #tp-fps-test{width:100%;margin-top:6px}
+
+html[data-player-ui="true"] #player-start[data-finished="true"] #results-menu{
+ grid-column:1/-1;font-size:13px;min-height:36px
+}
+@media(orientation:landscape){html[data-player-ui="true"] #immersive-note[data-rotation-hint="true"]{display:none}}

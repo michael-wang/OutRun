@@ -1,13 +1,11 @@
-import type {Cheer} from './passenger-cheer';
 import './trip-pause-dock.css';
 import {COAST_SHADOW_TECHNIQUES,coastShadowTechniqueSnapshot,type CoastShadowTechnique} from './coast-shadow-techniques';
 
-/** Road Trip pause controls stay in the corner; full reviews are explicitly opt-in. */
+/** The pause dock has a primary menu and a settings submenu. */
 export interface TripPauseActions {
  startFpsTest?:()=>void;
- resume():void;replay():void;settings():void;
- previewPassenger(gesture:Cheer):void;endPreview():void;
- sound():void;fullscreen():void;review():void;
+ resume():void;exitToMenu():void;settings():void;
+ sound():void;review():void;
 }
 export interface TripShadowAudit {onChange(technique:CoastShadowTechnique,enabled:boolean):void}
 export class TripPauseDock {
@@ -15,10 +13,12 @@ export class TripPauseDock {
  readonly resumeButton:HTMLButtonElement;
  readonly moreButton:HTMLButtonElement;
  readonly reviewButton:HTMLButtonElement;
+ readonly controlsButton:HTMLButtonElement;
+ private readonly primary:HTMLElement;
  private readonly options:HTMLElement;
+ private readonly title:HTMLElement;
  private expanded=false;
- private reviewOpen=false;
- constructor(root:HTMLElement,private readonly actions:TripPauseActions,reviewAvailable:boolean,shadowAudit?:TripShadowAudit){
+ constructor(root:HTMLElement,actions:TripPauseActions,reviewAvailable:boolean,shadowAudit?:TripShadowAudit){
   const element=document.createElement('aside');this.element=element;
   element.id='trip-pause-dock';element.hidden=true;element.setAttribute('aria-label','暫停操作');
   const shadowMarkup=shadowAudit?
@@ -30,44 +30,43 @@ export class TripPauseDock {
     </div>
     <button id="tp-shadow-reset" type="button">全部開啟</button>
    </details>`:'';
-  element.innerHTML=`<div class="tp-top">
-    <span class="tp-indicator">Ⅱ 暫停</span>
-    <button id="tp-resume" type="button">▶ 繼續</button>
-    <button id="tp-more" type="button" aria-expanded="false" aria-controls="tp-actions">☰ 功能</button>
+  element.innerHTML=`<h2 class="tp-title">暫停</h2>
+   <div class="tp-list" id="tp-primary">
+     <button id="tp-resume" type="button">繼續</button>
+     <button id="tp-exit" type="button">回到主選單</button>
+     <button id="tp-more" type="button" aria-controls="tp-actions">設定</button>
    </div>
-   <div id="tp-actions" hidden>
-    <button id="tp-replay" type="button">↻ 再玩一次</button>
-    <button id="tp-settings" type="button">操作設定</button>
-    <button id="tp-sound" type="button">音效開</button>
-    <button id="tp-fullscreen" type="button">全螢幕</button>
-    <button id="tp-applause" type="button">預覽拍手</button>
-    <button id="tp-wave" type="button">預覽揮手</button>
-    <button id="tp-review" type="button" aria-expanded="false">評分／匯出</button>
-   </div>${shadowMarkup}${actions.startFpsTest?'<button id="tp-fps-test" type="button">開始標準 FPS 測試 · 10＋20 秒</button>':''}`;
+   <div class="tp-list" id="tp-actions" hidden>
+     <button id="tp-settings" type="button">操作設定</button>
+     <button id="tp-sound" type="button" aria-pressed="true">音效　開</button>
+     <button id="tp-review" type="button" aria-expanded="false">評分／匯出</button>
+     ${shadowMarkup}${actions.startFpsTest?'<button id="tp-fps-test" type="button">開始標準 FPS 測試 · 10＋20 秒</button>':''}
+     <button id="tp-back" type="button">返回</button>
+   </div>`;
   root.append(element);
   const button=(id:string)=>element.querySelector<HTMLButtonElement>('#'+id)!;
-  this.resumeButton=button('tp-resume');this.moreButton=button('tp-more');
-  this.reviewButton=button('tp-review');this.options=element.querySelector('#tp-actions')!;
+  this.title=element.querySelector('.tp-title')!;
+  this.primary=element.querySelector('#tp-primary')!;
+  this.options=element.querySelector('#tp-actions')!;
+  this.resumeButton=button('tp-resume');
+  this.moreButton=button('tp-more');
+  this.controlsButton=button('tp-settings');
+  this.reviewButton=button('tp-review');
   this.reviewButton.hidden=!reviewAvailable;
-  // Only show keys that actually work. PS4 ✕ means confirm the focused control.
-  for(const [id,keyboard,pad] of [
-   ['tp-resume','P','OPTIONS'],['tp-more','↵','✕'],
-   ['tp-replay','R','✕'],
-   ['tp-settings','C','✕'],['tp-sound','M','✕'],
-   ['tp-fullscreen','F','SHARE'],['tp-review','V','✕'],
-  ]){const node=button(id);node.dataset.keyHint=keyboard;node.dataset.padHint=pad;
-   if(keyboard!=='↵')node.setAttribute('aria-keyshortcuts',keyboard);
+  for(const [id,key,pad] of [
+   ['tp-resume','P','OPTIONS'],['tp-exit','↵','✕'],['tp-more','↵','✕'],
+   ['tp-settings','C','✕'],['tp-sound','M','✕'],['tp-back','Esc','○'],
+  ]){
+   const node=button(id);node.dataset.keyHint=key;node.dataset.padHint=pad;
   }
-  if(actions.startFpsTest)button('tp-fps-test').onclick=actions.startFpsTest;
   this.resumeButton.onclick=actions.resume;
-  this.moreButton.onclick=()=>{if(this.reviewOpen)actions.review();else this.setExpanded(!this.expanded);};
-  button('tp-replay').onclick=actions.replay;
-  button('tp-settings').onclick=actions.settings;
+  button('tp-exit').onclick=actions.exitToMenu;
+  this.moreButton.onclick=()=>{this.openSettings();this.controlsButton.focus();};
+  this.controlsButton.onclick=actions.settings;
+  button('tp-back').onclick=()=>{this.collapse();this.moreButton.focus();};
   button('tp-sound').onclick=actions.sound;
-  button('tp-fullscreen').onclick=actions.fullscreen;
-  button('tp-applause').onclick=()=>actions.previewPassenger('applause');
-  button('tp-wave').onclick=()=>actions.previewPassenger('wave');
   this.reviewButton.onclick=actions.review;
+  if(actions.startFpsTest)button('tp-fps-test').onclick=actions.startFpsTest;
   if(shadowAudit){
    const inputs=element.querySelectorAll<HTMLInputElement>('input[data-shadow-technique]');
    inputs.forEach(input=>input.addEventListener('change',()=>{
@@ -79,11 +78,12 @@ export class TripPauseDock {
   }
  }
  private setExpanded(value:boolean){
-  if(this.expanded&&!value)this.actions.endPreview();
-  this.expanded=value;this.options.hidden=!value;
-  this.moreButton.setAttribute('aria-expanded',String(value));
-  this.moreButton.textContent=value?'收起':'☰ 功能';
+  this.expanded=value;
+  this.primary.hidden=value;
+  this.options.hidden=!value;
+  this.title.textContent=value?'設定':'暫停';
  }
+ openSettings(){this.setExpanded(true);}
  collapse(){this.setExpanded(false);}
  setShadowAuditVisible(visible:boolean){
   const node=this.element.querySelector<HTMLDetailsElement>('#tp-shadow-audit');
@@ -92,12 +92,10 @@ export class TripPauseDock {
  get isExpanded(){return this.expanded;}
  focusResume(){this.resumeButton.focus();}
  update(paused:boolean,muted:boolean,reviewOpen=false){
-  this.element.hidden=!paused;this.reviewOpen=reviewOpen;
-  if(!paused||reviewOpen)this.collapse();
-  if(!paused){const audit=this.element.querySelector<HTMLDetailsElement>('#tp-shadow-audit');if(audit)audit.open=false;}
-  (this.element.querySelector('#tp-sound') as HTMLButtonElement).textContent=muted?'音效關':'音效開';
-  this.moreButton.textContent=reviewOpen?'收起評分':this.expanded?'收起':'☰ 功能';
-  this.moreButton.setAttribute('aria-expanded',String(reviewOpen||this.expanded));
+  this.element.hidden=!paused;
+  const sound=this.element.querySelector<HTMLButtonElement>('#tp-sound')!;
+  sound.textContent=muted?'音效　關':'音效　開';
+  sound.setAttribute('aria-pressed',String(!muted));
   this.reviewButton.textContent='評分／匯出';
   this.reviewButton.setAttribute('aria-expanded',String(reviewOpen));
  }

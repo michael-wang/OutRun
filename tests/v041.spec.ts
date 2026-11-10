@@ -20,7 +20,7 @@ for(const [width,height] of [[1280,720],[960,432],[844,390]])test(`needle gauge 
  for(const swapped of [false,true]){
   if(swapped){await page.locator('#pause').click();await page.locator('#settings').click();await page.locator('#swap').check();await page.locator('#close-settings').click();await page.locator('#resume').click();}
   for(const kmh of [0,80,150,230]){
-   await page.evaluate(kmh=>(window as any).__drive.reset({distance:850,speed:kmh/3.6}),kmh);await expect(page.locator('#speed strong')).toHaveText(String(kmh).padStart(3,'0'));const angle=-135+270*kmh/360;
+   await page.evaluate(kmh=>(window as any).__drive.reset({distance:850,speed:kmh/3.6}),kmh);await expect(page.locator('#speed strong')).toHaveText(String(kmh).padStart(3,'0'));const angle=-146+216*kmh/360;
    const transform=(await page.locator('#speed-needle').getAttribute('transform'))!;expect(Number(transform.match(/rotate\(([^ ]+)/)![1])).toBeCloseTo(angle,8);
    const gauge=(await page.locator('#speed').boundingBox())!,frame=await page.evaluate(()=>(window as any).__drive.framing());if(swapped&&width<1000)expect(gauge.x).toBeGreaterThan(frame.right*width);else expect(gauge.x+gauge.width).toBeLessThan(frame.left*width);expect(gauge.x).toBeGreaterThanOrEqual(20);expect(gauge.y).toBeGreaterThan(60);
    for(const control of ['#steering-strip',...(width<1000?['[data-control=gas]','[data-control=brake]']:[])]){const b=(await page.locator(control).boundingBox())!;expect(gauge.x < b.x+b.width && b.x < gauge.x+gauge.width && gauge.y < b.y+b.height && b.y < gauge.y+gauge.height).toBe(false);}

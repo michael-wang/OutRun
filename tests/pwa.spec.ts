@@ -47,6 +47,14 @@ test('installed coast launches online and offline within its publishing scope',a
   expect((await response.body()).readUInt32BE(16)).toBe(Number(icon.sizes.split('x')[0]));
  }
  await page.goto(playUrl);
+ const startButton=page.locator('#start-race');
+ await expect(startButton).toBeVisible();
+ const footer=await page.locator('.cabinet-footer').boundingBox();
+ for(const preview of await page.locator('.mini-stage').all()){
+  const box=await preview.boundingBox();
+  expect(box!.y+box!.height).toBeLessThanOrEqual(footer!.y);
+ }
+ await startButton.click();
  await waitForCoast(page);
  expect(await page.locator('link[rel=manifest]').evaluate((el:HTMLLinkElement)=>el.href)).toBe(manifestUrl.href);
  const distance=async()=>parseInt((await page.locator('#drive-distance').textContent())!.replaceAll(',',''),10);
@@ -55,8 +63,7 @@ test('installed coast launches online and offline within its publishing scope',a
  try{await expect.poll(distance,{timeout:60000}).toBeGreaterThan(startDistance);}
  finally{await page.keyboard.up('Space');}
  await page.locator('#pause').click();
- await page.locator('#tp-more').click();
- await page.locator('#tp-replay').click();
+ await page.keyboard.press('KeyR');
  await waitForCoast(page);
  await expect.poll(distance,{timeout:30000}).toBe(startDistance);
  const registration=await page.evaluate(async()=>(await navigator.serviceWorker.ready).scope);
@@ -80,6 +87,7 @@ test('installed coast launches online and offline within its publishing scope',a
  const reopened=await context.newPage();
  await reopened.setViewportSize(viewport);
  await reopened.goto(playUrl);
+ await reopened.locator('#start-race').click();
  await waitForCoast(reopened);
  expect(errors).toEqual([]);
 });

@@ -9,13 +9,14 @@ export interface DrivingState extends PowertrainState {
  /** Rendering attitude only; never drives longitudinal or lateral navigation. */
  heading:number;velocityHeading:number;worldHeading:number;steering:number;yawRate:number;
  slipAngle:number;slip:number;offRoad:boolean;footprintEdge:number;curvature:number;
+ launchSlip:number;brakeSlip:number;
  corridorSide:number;steeringTarget:number;drifting:boolean;
  rawSteer:number;effectiveSteer:number;requiredSteer:number;lateralRate:number;weightRoll:number;bank:number;
  appliedSteer:number;steerFrom:number;steerTo:number;steerTime:number;grade:number;gradeAcceleration:number;
 }
 export const MAX_SPEED=360/3.6,ROAD_HALF_WIDTH=7,CORRIDOR_LIMIT=9.6;
 export const createState=():DrivingState=>({...createPowertrain(),distance:0,speed:0,lateral:0,heading:0,velocityHeading:0,worldHeading:0,
- steering:0,yawRate:0,slipAngle:0,slip:0,offRoad:false,footprintEdge:1.13,curvature:0,corridorSide:0,
+ steering:0,yawRate:0,slipAngle:0,slip:0,launchSlip:0,brakeSlip:0,offRoad:false,footprintEdge:1.13,curvature:0,corridorSide:0,
  steeringTarget:0,drifting:false,rawSteer:0,effectiveSteer:0,requiredSteer:0,lateralRate:0,weightRoll:0,bank:0,
  appliedSteer:0,steerFrom:0,steerTo:0,steerTime:0,grade:0,gradeAcceleration:0});
 const clamp=(n:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,n));
@@ -34,7 +35,13 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  // Ordinary roads and the ocean-side edge retain their exact old behavior.
  const rightLimit=rightSafety?Math.min(corridorLimit,rightSafety(s.distance,corridorLimit)):corridorLimit;
  dt=clamp(dt,0,.05);s.curvature=curvature;updateFootprint(s,roadHalfWidth);
- const driving=input.gas&&!input.brake,driveForce=advancePowertrain(s,s.speed,driving,dt);
+ const driving=input.gas&&!input.brake;
+ const kmh=s.speed*3.6;
+ // A rolling throttle pickup cannot start a burnout. Grip returns as the car moves away.
+ s.launchSlip=driving&&(kmh<.5||s.launchSlip>0)?clamp(1-kmh/32,0,1):0;
+ // The brake is digital. Latch a high-speed application and fade it as the tires regain grip.
+ s.brakeSlip=input.brake&&(kmh>=100||s.brakeSlip>0)?clamp((kmh-50)/50,0,1):0;
+ const driveForce=advancePowertrain(s,s.speed,driving,dt);
  s.grade=Number.isFinite(grade)?grade:0;s.gradeAcceleration=s.speed<.001&&!driving?0:-9.81*s.grade/Math.hypot(1,s.grade);
  const acceleration=driveForce-s.roadDrag-s.shiftDrag-(driving?0:3.8-s.roadDrag)+s.gradeAcceleration
   // The slower engine needs a proportional shoulder drag: still a strong,

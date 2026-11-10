@@ -12,12 +12,19 @@ export class InputLatch {
   private analogSource:string|null=null;
   steeringTarget=0;
   effectiveSteer=0;
-  press(source: string, control: Control) { this.sources.set(source, control); }
+  press(source: string, control: Control) {
+    if(this.sources.get(source)===control)return false;
+    this.sources.set(source,control);
+    return true;
+  }
   setAnalog(source:string,value:number){
     if(this.analogSource!==null&&this.analogSource!==source)return;
     this.analogSource=source;this.steeringTarget=Math.max(-1,Math.min(1,value));this.quantize();
   }
-  release(source: string) { this.sources.delete(source);if(source===this.analogSource){this.analogSource=null;this.steeringTarget=0;this.effectiveSteer=0;} }
+  release(source: string) {
+    if(source===this.analogSource){this.analogSource=null;this.steeringTarget=0;this.effectiveSteer=0;}
+    return this.sources.delete(source);
+  }
   clear() { this.sources.clear();this.analogSource=null;this.steeringTarget=0;this.effectiveSteer=0; }
   // A 144px touch strip needs a little more normalized hysteresis to absorb
   // 1–2px finger jitter; keyboard and vehicle calibration stay unchanged.
@@ -46,12 +53,11 @@ export class InputController extends InputLatch {
   private buttons: HTMLElement[];
   private strip:HTMLElement|null;
   private steeringPointer:number|null=null;
-  constructor(root: Document | HTMLElement = document, isDriving:()=>boolean=()=>true) {
+  constructor(root: Document | HTMLElement = document, isDriving:()=>boolean=()=>true, signal?:AbortSignal) {
     super();
     this.buttons = Array.from(root.querySelectorAll<HTMLElement>('[data-control]'));
     this.strip=root.querySelector<HTMLElement>('#steering-strip');
     const paint = () => {
-      this.buttons.forEach(button => button.classList.toggle('pressed', this.held(button.dataset.control as Control)));
       // The analog strip is also a held control: tint only while the pointer
       // or keyboard key is down, never while steering merely recenters.
       const heldSteering=this.steeringPointer!==null||this.held('left')||this.held('right');
@@ -59,8 +65,8 @@ export class InputController extends InputLatch {
     };
     const editing=(target:EventTarget|null)=>target instanceof HTMLElement&&!!target.closest('input,textarea,select,button,a,[contenteditable], [role=button],[role=slider]');
     // A cleared hold must require a fresh press after a pause or feedback dialog.
-    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control&&isDriving()&&!event.isComposing&&!editing(event.target)) { event.preventDefault(); if(!event.repeat)this.press(`key:${event.code}`, control); paint(); } });
-    window.addEventListener('keyup', event => { if(keyControls[event.code]&&isDriving()&&!editing(event.target))event.preventDefault();this.release(`key:${event.code}`); paint(); });
+    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control&&isDriving()&&!event.isComposing&&!editing(event.target)) { event.preventDefault(); if(!event.repeat)this.press(`key:${event.code}`, control); paint(); } },{signal});
+    window.addEventListener('keyup', event => { if(keyControls[event.code]&&isDriving()&&!editing(event.target))event.preventDefault();this.release(`key:${event.code}`); paint(); },{signal});
     this.buttons.forEach(button => {
       button.addEventListener('pointerdown', event => { if(!isDriving())return;event.preventDefault(); button.setPointerCapture(event.pointerId); this.press(`pointer:${event.pointerId}`, button.dataset.control as Control); paint(); });
       const release = (event: PointerEvent) => { this.release(`pointer:${event.pointerId}`); paint(); };
@@ -90,13 +96,26 @@ export class InputController extends InputLatch {
       strip.addEventListener('pointerup',release);strip.addEventListener('pointercancel',release);strip.addEventListener('lostpointercapture',release);
       for(const name of ['contextmenu','selectstart','dragstart','touchstart'])strip.addEventListener(name,event=>event.preventDefault(),{passive:false});
     }
-    window.addEventListener('blur', () => this.clear());
-    document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); });
+    window.addEventListener('blur', () => this.clear(),{signal});
+    document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); },{signal});
   }
   private paintSteering(){
     this.strip?.style.setProperty('--steer',String(this.steeringTarget));this.strip?.style.setProperty('--effective-steer',String(this.effectiveSteer));
     this.strip?.setAttribute('aria-valuenow',String(Math.round(this.steeringTarget*100)));
     this.strip?.setAttribute('aria-valuetext',this.effectiveSteer?`${this.effectiveSteer<0?'Left':'Right'} ${Math.abs(this.effectiveSteer)*STEERING_STEPS} of ${STEERING_STEPS}`:'Neutral');
+  }
+  private paintPedals(){
+    for(const button of this.buttons)button.classList.toggle('pressed',this.held(button.dataset.control as Control));
+  }
+  override press(source:string,control:Control){
+    const changed=super.press(source,control);
+    if(changed)this.paintPedals();
+    return changed;
+  }
+  override release(source:string){
+    const changed=super.release(source);
+    if(changed)this.paintPedals();
+    return changed;
   }
   override update(dt:number){super.update(dt);this.paintSteering();}
   override clear() { super.clear();this.steeringPointer=null;this.paintSteering();this.buttons?.forEach(button => button.classList.remove('pressed'));this.strip?.classList.remove('pressed'); }

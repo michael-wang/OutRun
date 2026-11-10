@@ -23,8 +23,8 @@ it('waits for nearby road AND scenery, nature textures and farm warmup before au
  expect(i).toBeGreaterThan(0);expect(j).toBeGreaterThan(i);
  expect(gate).toContain('stream.ready&&!warm.running');
  expect(gate).toContain('loadingProgress(');
- expect(gate).toContain('loadingFinished(false)');
- expect(gate.indexOf('loadingFinished(false)')).toBeLessThan(gate.indexOf('start();'));
+ expect(gate).toContain('loadingFinished()');
+ expect(gate.indexOf('loadingFinished()')).toBeLessThan(gate.indexOf('start();'));
  expect(gate).toContain("loadingFailed('重新出發");
  expect(streaming).toContain("this.natureTextureLoads===0&&this.nearby.every");
  expect(streaming).toContain("c?.road==='ready'&&c.scenery==='ready'");
