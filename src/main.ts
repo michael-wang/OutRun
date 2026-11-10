@@ -1235,7 +1235,7 @@ function loop(now:number){
      .reduce((total,c)=>total+Number(c.road==='ready')+Number(c.scenery==='ready'),0);
     const total=nearby.length*2;
     const warm=stream.startupDiagnosticState().farmWarm;
-    const prepared=stream.ready&&!warm.running;
+    const prepared=stream.ready; // Shader/GPU warmup is a background task, not a hard loading gate.
     if(prepared){
      loadingProgress(100,'風景已準備好','道路、樹木與海岸已就緒，準備重新出發。');
      replayPreparing=false;
@@ -1252,7 +1252,7 @@ function loop(now:number){
   if(startupPending){
     const stream=world.streamer;
     if(stream?.error){if(startupDiagnostics.enabled)startupDiagnostics.sample(stream.startupDiagnosticState());autoStartOnReady=false;loadingFailed('前方道路載入失敗，請檢查連線後重新載入。');startupPending=false;}
-    else if(!stream||(stream.ready&&!stream.startupDiagnosticState().farmWarm.running)){if(startupDiagnostics.enabled&&stream)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFinished();startupPending=false;}
+    else if(!stream||stream.ready){if(startupDiagnostics.enabled&&stream)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFinished();startupPending=false;}
     else{
       const {nearby,chunks}=stream.stats;
       const done=chunks.filter(c=>nearby.includes(c.index)).reduce((n,c)=>n+Number(c.road==='ready')+Number(c.scenery==='ready'),0),total=nearby.length*2;

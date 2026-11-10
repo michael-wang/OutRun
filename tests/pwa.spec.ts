@@ -19,7 +19,8 @@ test.afterEach(async({context},info)=>{
  for(const p of context.pages())console.error('PWA page state',p.url(),await p.evaluate(()=>({
   loading:document.querySelector('#game-loading')?.getAttribute('data-phase'),
   distance:document.querySelector('#drive-distance')?.textContent,
-  detail:document.querySelector('#loading-detail')?.textContent
+  detail:document.querySelector('#loading-detail')?.textContent,
+  startup:(window as any).__startupDiagnostics?.report()?.finalReadiness ?? null
  })));
 });
 
