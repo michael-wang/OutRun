@@ -1,7 +1,7 @@
 {
   "name": "first-drive",
   "private": true,
-  "version": "0.9.42",
+  "version": "0.9.43-dev.1",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -19,6 +19,7 @@
     "prebuild": "npm run coast:shore && npm run art:prepare"
   },
   "dependencies": {
+    "html2canvas": "1.4.1",
     "three": "^0.180.0"
   },
   "devDependencies": {
