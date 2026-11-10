@@ -15,7 +15,7 @@ for(const [width,height] of [[915,412],[844,390],[960,432],[1024,768],[1280,720]
  for(const kmh of [0,83,100,266,320]){
   await page.evaluate(kmh=>(window as any).__drive.reset({distance:2750,speed:kmh/3.6}),kmh);
   await expect(page.locator('#speed strong')).toHaveText(String(kmh).padStart(3,'0'));
-  const angle=Number((await page.locator('#speed-needle').getAttribute('transform'))!.match(/rotate\(([^ ]+)/)![1]);expect(angle).toBeCloseTo(-135+270*kmh/360,8);
+  const angle=Number((await page.locator('#speed-needle').getAttribute('transform'))!.match(/rotate\(([^ ]+)/)![1]);expect(angle).toBeCloseTo(before?-135+270*kmh/360:-146+216*kmh/360,8);
   await expect(page.locator('#gear')).toHaveText(`G${kmh===0?1:kmh===83?2:kmh===100?3:6}${before?'':'/6'}`);
   const gauge=(await page.locator('#speed').boundingBox())!;
   const reading=before?gauge:(await page.locator('.speed-reading').boundingBox())!,gear=(await page.locator('#gear').boundingBox())!;
@@ -26,7 +26,13 @@ for(const [width,height] of [[915,412],[844,390],[960,432],[1024,768],[1280,720]
    expect(digits.x+digits.width).toBeGreaterThan(gauge.x+gauge.width);
    expect(reading.x+reading.width).toBeLessThanOrEqual(width);
    expect(gear.y).toBeGreaterThan(gauge.y+gauge.height);
-   expect(await page.locator('#speed svg').evaluate(el=>new DOMMatrix(getComputedStyle(el).transform).b)).toBeCloseTo(-Math.SQRT1_2);
+   const labels=await page.locator('#speed svg text').evaluateAll(nodes=>nodes.map(node=>{
+    const matrix=(node as SVGTextElement).getScreenCTM()!;
+    return Math.atan2(matrix.b,matrix.a);
+   }));
+   expect(labels).toEqual(Array(7).fill(0));
+   const rimLength=await page.locator('.dial-rim').evaluate(el=>(el as SVGGeometryElement).getTotalLength());
+   expect(rimLength).toBeCloseTo(97*216*Math.PI/180,0);
   }
   const controls=['#steering-strip','#pause',...(mobile?['[data-control=gas]','[data-control=brake]']:[])];
   for(const selector of controls){const target=page.locator(selector),box=(await target.boundingBox())!;for(const part of [gauge,reading,gear])expect(overlap(part,box),selector).toBe(false);
@@ -42,6 +48,26 @@ for(const [width,height] of [[915,412],[844,390],[960,432],[1024,768],[1280,720]
   if(kmh===83||kmh===266||(width===844&&!swapped))await page.screenshot({path:`${root}/${width}-${swapped?'swapped':'normal'}-${kmh}.png`});
  }
  for(const [kmh,gear] of [[65,2],[155,4],[205,5]]){await page.evaluate(kmh=>(window as any).__drive.reset({distance:2750,speed:kmh/3.6}),kmh);await expect(page.locator('#gear')).toHaveText(`G${gear}${before?'':'/6'}`);}
+ if(!before){
+  await page.evaluate(()=>(window as any).__drive.reset({distance:2750,speed:83/3.6}));
+  await page.locator('#pause').click();
+  await expect(page.locator('#tp-resume')).toBeVisible();
+  await expect(page.locator('#speed strong')).toHaveText('083');
+  await expect(page.locator('#gear')).toHaveText('G2/6');
+  for(const selector of ['#speed','#steering-strip','[data-control=gas]','[data-control=brake]']){
+   await expect(page.locator(selector)).toBeVisible();
+  }
+  await expect(page.locator('#touch')).toHaveJSProperty('inert',true);
+  const gas=(await page.locator('[data-control=gas]').boundingBox())!;
+  await page.mouse.click(gas.x+gas.width/2,gas.y+gas.height/2);
+  const paused=await page.evaluate(()=>{const game=(window as any).__drive;game.advance(.2);return game.snapshot();});
+  expect(paused.mode).toBe('paused');
+  expect(paused.distance).toBe(2750);
+  expect(paused.inputs).toEqual({gas:false,brake:false,steer:0});
+  if(!swapped&&[844,1280].includes(width))await page.screenshot({path:`${root}/${width}-paused.png`});
+  await page.locator('#tp-resume').click();
+  await expect(page.locator('#touch')).toHaveJSProperty('inert',false);
+ }
  if(mobile){const touch=await touchDriver(page,context);await touch(.8,true,false);await page.evaluate(()=>(window as any).__drive.advance(.15));const inputs=await page.evaluate(()=>(window as any).__drive.snapshot().inputs);expect(inputs.gas).toBe(true);expect(inputs.steer).toBeGreaterThan(.5);await touch(null,false,false);}
  writeFileSync(`${root}/${width}-${swapped}.json`,JSON.stringify(rows,null,2));await context.close();
 });

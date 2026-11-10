@@ -63,7 +63,7 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
  bottom:calc(max(24px,env(safe-area-inset-bottom)) + 116px);
  width:var(--dial-size);height:var(--dial-size);pointer-events:none;text-align:center;color:#fff;isolation:isolate
 }
-#speed svg{display:block;width:100%;height:100%;overflow:visible;transform:rotate(-45deg)}
+#speed svg{display:block;width:100%;height:100%;overflow:visible}
 #speed .dial-rim{stroke:var(--dial-accent)}
 #speed[data-band=fast]{--dial-accent:#ffb347}
 #speed[data-band=redline]{--dial-accent:#ff6852}
@@ -127,8 +127,6 @@ html[data-player-ui="true"] #player-loading{
 }
 html[data-player-ui="true"][data-drive-mode="menu"] header,
 html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
-html[data-player-ui="true"][data-drive-mode="menu"] #speed,
-html[data-player-ui="true"][data-drive-mode="paused"] #speed{display:none}
 /* Keep the title in the sky and the action at the loading progress position. */
 @media (orientation:portrait) and (pointer:coarse){
  html[data-player-ui="true"] #player-start{display:none!important}
