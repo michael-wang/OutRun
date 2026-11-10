@@ -1,4 +1,5 @@
 import {advancePowertrain,createPowertrain} from './powertrain';
+import {MAX_SPEED} from './handling';
 import {DEFAULT_PACE,effectivePace} from './pace';
 import {sweptContact,type TrafficCollision} from './traffic-impact';
 
@@ -10,13 +11,22 @@ export interface CarSpec {
   width:number; length:number;
 }
 export interface RacerEntry {
-  id:string; paint:number; gridSide:number; gridOffset:number; driver:DriverProfile; car:CarSpec;
+  id:string; paint:number; gridSide:number; gridOffset:number; gridLaneOffset?:number; driver:DriverProfile; car:CarSpec;
 }
+// All ten entrants (player + nine rivals) use the same physical powertrain.
+// Separate rows and lanes leave a collision-free starting grid, even at 120 Hz.
 const clubDriver:DriverProfile={anticipation:2.6,reactionTime:.17,overtaking:.76,aggression:.32,riskTolerance:.48};
-const rivieraGT:CarSpec={lowForce:1.23,midForce:1.01,highForce:.94,topSpeed:288/3.6,brake:14,cornerGrip:22,width:2.25,length:4.9};
+export const equalRiviera:CarSpec={lowForce:1,midForce:1,highForce:1,topSpeed:MAX_SPEED,brake:34,cornerGrip:22,width:2.25,length:4.9};
 export const raceEntries:RacerEntry[]=[
-  {id:'RIVAL 1',paint:0xcbd0d3,gridSide:-1,gridOffset:9,driver:clubDriver,car:rivieraGT},
-  {id:'RIVAL 2',paint:0xffbe16,gridSide:1,gridOffset:6,driver:clubDriver,car:rivieraGT},
+  {id:'RIVAL 1',paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:0,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 2',paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:0,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 3',paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:15,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 4',paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:15,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 5',paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:15,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 6',paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:30,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 7',paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:30,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 8',paint:0x3db6a9,gridSide:-1,gridLaneOffset:-2,gridOffset:45,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 9',paint:0x427bd2,gridSide:1,gridLaneOffset:2,gridOffset:45,driver:clubDriver,car:equalRiviera},
 ];
 export interface RaceBody {distance:number; lateral:number; speed:number}
 export interface Obstacle extends RaceBody {id:string; type?:number; width:number; length:number}
@@ -50,11 +60,13 @@ export class RivalRace {
     private traffic:(d:number,t:number,radius:number)=>Obstacle[],private entries=raceEntries){}
   reset(start:number){
     this.time=0;this.playerFinish=null;this.contactTimes.clear();
+    const gridBase=Math.min(start,Math.max(0,this.finish-90));
     this.rivals=this.entries.map(entry=>{
       const r=new RivalState(entry);
-      r.distance=start+Math.min(entry.gridOffset,(this.finish-start)*.15);
+      r.distance=gridBase+entry.gridOffset;
       r.half=this.road(r.distance).half;
-      r.targetLane=r.lane=nearestLane(entry.gridSide*r.half*.65,r.half);
+      const count=laneCount(r.half),middle=Math.floor(count/2);
+      r.targetLane=r.lane=clamp(middle+(entry.gridLaneOffset??entry.gridSide*(Math.floor(count/2))),0,count-1);
       r.lateral=r.targetX=laneX(r.lane,r.half);
       r.previousDistance=r.distance;r.previousLateral=r.lateral;
       return r;
@@ -141,7 +153,11 @@ export class RivalRace {
     const gas=r.speed<r.targetSpeed;
     const engine=advancePowertrain(r.gearbox,r.speed,gas,dt);
     r.braking=r.speed>r.targetSpeed+.8;
-    r.speed=clamp(r.speed+(engine*force-r.gearbox.roadDrag-r.gearbox.shiftDrag-9.81*r.grade-(r.braking?c.brake:0))*dt,0,c.topSpeed);
+    // Match the player powertrain, throttle-off drag, braking and grade formula.
+    // Only the driver's target-speed decisions may differ from the player.
+    const resistance=gas?r.gearbox.roadDrag:3.8;
+    const grade=-9.81*r.grade/Math.hypot(1,r.grade);
+    r.speed=clamp(r.speed+(engine*force-resistance-r.gearbox.shiftDrag+grade-(r.braking?c.brake:0))*dt,0,c.topSpeed);
     const steer=clamp((r.targetX-r.lateral)*2,-4.2,4.2);
     r.lateralRate+=clamp(steer-r.lateralRate,-7*dt,7*dt);
     r.lateral=clamp(r.lateral+(r.lateralRate+r.impulse)*dt,-r.half+c.width/2,r.half-c.width/2);

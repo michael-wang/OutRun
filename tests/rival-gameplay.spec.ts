@@ -13,6 +13,7 @@ const shot=(p:Page,name:string)=>p.screenshot({path:test.info().outputPath(name+
 test('grid holds all cars and accepts throttle; pause, replay and return reset the race',async({page})=>{
  await enter(page,'trafficSeed=17');
  const before=await race(page);
+ expect(before.rivals).toHaveLength(9);
  await page.keyboard.down('Space');
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().rpm)).toBeGreaterThan(2500);
  const now=await race(page);
@@ -58,8 +59,8 @@ test('parked player, remote rival chase on loaded scenery, both rivals cross the
  }),{timeout:90000}).toBeLessThan(20);
  await expect(page.locator('#race-data')).toContainText('km/h');
  await shot(page,'remote-rival-debug');
- await expect.poll(async()=>(await advance()).rivals.filter((r:any)=>r.finishTime!==null).length,{intervals:[10],timeout:100000}).toBe(2);
- expect((await race(page)).rank).toBe(3);expect(errors).toEqual([]);
+ await expect.poll(async()=>(await advance()).rivals.filter((r:any)=>r.finishTime!==null).length,{intervals:[10],timeout:100000}).toBe(9);
+ expect((await race(page)).rank).toBe(10);expect(errors).toEqual([]);
 });
 test('a player finishing first can spectate a live rival and leave immediately',async({page})=>{
  await enter(page,'at=10260&trafficSeed=17');
@@ -116,4 +117,38 @@ test('a glancing player contact produces a reciprocal slide and the existing imp
  expect(Math.abs(contact.rival.impulse)).toBeGreaterThan(0);
  expect(contact.speed).toBeLessThan(contact.speedBefore);expect(contact.impact.sparks.particles).toBeGreaterThan(0);
  await shot(page,'rival-contact');
+});
+
+test('L1/R1 cycle the debug chase camera without opening legacy feedback or dropping throttle',async({page})=>{
+ await page.addInitScript(()=>{
+  const pad={id:'Standard controller',mapping:'standard',connected:true,index:0,axes:[0,0,0,0],
+   buttons:Array.from({length:17},()=>({pressed:false,value:0,touched:false}))};
+  Object.defineProperty(navigator,'getGamepads',{value:()=>[pad]});
+  (window as any).__testPad=pad;
+ });
+ await enter(page,'rivaldebug=1&trafficSeed=17');
+ await page.bringToFront();
+ await expect(page.locator('#race-cameras')).toContainText('L1');
+ await expect(page.locator('#race-cameras')).toContainText('R1');
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
+ const set=(button:number,pressed:boolean)=>page.evaluate(({button,pressed})=>{
+  (window as any).__testPad.buttons[button]={pressed,value:pressed?1:0,touched:pressed};
+ },{button,pressed});
+ const press=async(button:number)=>{
+  await set(button,true);await page.waitForTimeout(140);
+  await set(button,false);await page.waitForTimeout(140);
+ };
+ await set(7,true);
+ await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().inputs.gas)).toBe(true);
+ await press(5);
+ await expect.poll(async()=>(await race(page)).observed).toBe(0);
+ await expect(page.locator('#race-camera-name')).toHaveText('RIVAL 1');
+ await expect(page.locator('#l2-feedback-dialog')).toBeHidden();
+ expect(await page.evaluate(()=>(window as any).__drive.snapshot().inputs.gas)).toBe(true);
+ await press(4);
+ await expect.poll(async()=>(await race(page)).observed).toBe(-1);
+ await press(4);
+ await expect.poll(async()=>(await race(page)).observed).toBe(8);
+ await expect(page.locator('#race-camera-name')).toHaveText('RIVAL 9');
+ await set(7,false);
 });

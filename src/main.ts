@@ -342,11 +342,23 @@ function followRacer(index:number){
  if(world.streamer)world.streamer.spectatorDistance=race.rivals[index]?.distance??null;
  ui();
 }
-if(debugRace){
- for(const [i,name] of ['PLAYER',...race.rivals.map(r=>r.entry.id)].entries()){
-  const b=document.createElement('button');b.type='button';b.textContent=name;b.onclick=()=>followRacer(i-1);
-  $('race-cameras').append(b);
+function cycleRacer(direction:-1|1){
+ const racers=race.rivals.length+1;
+ let cursor=observed+1;
+ for(let i=0;i<racers;i++){
+  cursor=(cursor+direction+racers)%racers;
+  const index=cursor-1;
+  if(index<0||race.rivals[index].finishTime===null){followRacer(index);return;}
  }
+}
+if(debugRace){
+ const cameras=$('race-cameras');
+ const prev=document.createElement('button');prev.type='button';
+ prev.textContent='◀ L1';prev.setAttribute('aria-label','上一位參賽者');prev.onclick=()=>cycleRacer(-1);
+ const name=document.createElement('strong');name.id='race-camera-name';name.textContent='PLAYER';
+ const next=document.createElement('button');next.type='button';
+ next.textContent='R1 ▶';next.setAttribute('aria-label','下一位參賽者');next.onclick=()=>cycleRacer(1);
+ cameras.append(prev,name,next);
 }
 const backToResults=document.createElement('button');
 backToResults.textContent='返回結算';backToResults.onclick=()=>followRacer(-1);director.append(backToResults);
@@ -371,7 +383,7 @@ function raceHud(){
   const preparing=watching&&world.streamer&&!world.streamer.spectatorReady(r.distance);
   debugText.textContent=preparing?'正在準備觀戰路段':debugRace?
     r.entry.id+' · P'+rank+' · '+r.behavior+'\n'+Math.round(r.speed*3.6)+' → '+Math.round(r.targetSpeed*3.6)+' km/h · 車道 '+(r.lane+1)+' → '+(r.targetLane+1)+'\n前方 '+r.nearest+(Number.isFinite(r.gap)?' · '+Math.round(r.gap)+' m':''):r.entry.id+' · P'+rank;
-  Array.from($('race-cameras').children).forEach((b,i)=>b.setAttribute('aria-pressed',String(i-1===observed)));
+  const cameraName=document.getElementById('race-camera-name');if(cameraName)cameraName.textContent=focus?.entry.id??'PLAYER';
  }
 }
 function applyShadowTechnique(technique:CoastShadowTechnique,enabled:boolean){
@@ -534,7 +546,7 @@ function ui(){
   positionHud.hidden=mode!=='playing'&&mode!=='countdown';
   director.hidden=!(debugRace||watching);
   backToResults.hidden=!(brickCompleted&&watching);
-  if(mode!=='playing'||settingsOpen)driveFpsDiagnostics.cancelWindow('離開駕駛畫面');placeFpsExport(); $('drive-readout').hidden=settingsOpen||mode==='menu'; tripPauseDock?.update(!!trip&&mode==='paused'&&!brickCompleted&&!settingsOpen,muted,l2UI?.reviewExpanded??false);$('preferences').classList.toggle('trip-settings-drawer',!!trip&&mode==='paused'&&settingsOpen); $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen;
+  if(mode!=='playing'||settingsOpen)driveFpsDiagnostics.cancelWindow('離開駕駛畫面');placeFpsExport(); $('drive-readout').hidden=settingsOpen||mode==='menu'; tripPauseDock?.update(!!trip&&mode==='paused'&&!brickCompleted&&!settingsOpen,muted);$('preferences').classList.toggle('trip-settings-drawer',!!trip&&mode==='paused'&&settingsOpen); $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen;
   const pausedDrive=mode==='paused'&&!brickCompleted&&!replayPreparing;
   const showDrivingHud=!settingsOpen&&(mode==='playing'||mode==='countdown'||pausedDrive);
   if(playerUi)$('speed').hidden=!showDrivingHud;
@@ -626,15 +638,16 @@ addEventListener('keydown',e=>{
   if(e.code==='KeyQ'&&sceneInspector){e.preventDefault();toggleSceneQa();return;}
   if(e.code==='Escape'&&sceneInspector?.isOpen){e.preventDefault();toggleSceneQa();return;}
   if(e.code==='Escape'&&brickCompleted&&observed>=0){e.preventDefault();followRacer(-1);return;}
-  if(e.code==='Escape'&&mode==='paused'&&l2UI?.reviewExpanded){e.preventDefault();l2UI.setReviewExpanded(false);ui();tripPauseDock?.moreButton.focus();return;}
   if(e.code==='Escape'&&mode==='paused'&&tripPauseDock?.isExpanded){e.preventDefault();tripPauseDock.collapse();ui();tripPauseDock.moreButton.focus();return;}
   if(e.code==='F8'&&(mode==='playing'||(trip&&params.has('at')&&mode==='paused'))&&!settingsOpen){e.preventDefault();capturePhoto();return;}
   if(e.code==='Escape'){e.preventDefault();if(settingsOpen){$('close-settings').click();return;}pause();return;}
   if(settingsOpen)return;
-  if((mode==='playing'||brickCompleted)&&l2UI&&(e.code==='KeyG'||e.code==='KeyI')){e.preventDefault();l2UI.openQuick(e.code==='KeyG'?'praise':'issue','keyboard');return;}
+  if(debugRace&&e.code==='KeyV'&&(mode==='playing'||mode==='countdown'||mode==='paused'||brickCompleted)){
+   e.preventDefault();cycleRacer(1);return;
+  }
   if(mode==='playing'){if(e.code==='KeyP'){e.preventDefault();pause();}else if(e.code==='KeyR'){e.preventDefault();restart();}return;}
   if(trip&&mode==='paused'){
-   const direct:Record<string,()=>void>={KeyP:brickCompleted?restart:start,KeyR:restart,KeyN:()=>{if(!playerUi)$('l2-next').click();},KeyV:()=>{if(tripPauseDock&&!tripPauseDock.reviewButton.hidden)tripPauseDock.reviewButton.click();},KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{l2UI?.exportCurrent();}};
+   const direct:Record<string,()=>void>={KeyP:brickCompleted?restart:start,KeyR:restart,KeyN:()=>{if(!playerUi)$('l2-next').click();},KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{telemetry?.save();}};
    if(direct[e.code]){e.preventDefault();direct[e.code]();return;}
   }
   const prefix=pilot||l2?'l2':brick?'brick':'';
@@ -881,20 +894,21 @@ $('photo-button').onclick=capturePhoto;
 const pad=new GamepadInput(input,action=>{
  if(action==='qa'){toggleSceneQa();return;}
  if(brickCompleted&&observed>=0&&(action==='back'||action==='confirm')){followRacer(-1);return;}
- if(trip&&mode==='paused'&&l2UI?.reviewExpanded&&action==='back'){l2UI.setReviewExpanded(false);ui();tripPauseDock?.moreButton.focus();return;}
  if(!settingsOpen&&trip&&mode==='paused'&&tripPauseDock?.isExpanded&&action==='back'){tripPauseDock.collapse();ui();tripPauseDock.moreButton.focus();return;}
  if(sceneInspector?.isOpen&&['confirm','back','pause','up','down','left','right'].includes(action)&&sceneInspector.control(action as 'confirm'|'back'|'pause'|'up'|'down'|'left'|'right'))return;
  if(action==='fullscreen'){void immersive.toggle();return;}
- if(l2UI?.feedbackOpen){l2UI.control(action);return;}
  if(action==='photo'){capturePhoto();return;}
- if(action==='issue'){if(mode==='playing'||brickCompleted){l2UI?.openQuick('issue','gamepad');l2UI?.control('issue');}return;}
- if(action==='praise'){if(mode==='playing'||brickCompleted)l2UI?.openQuick('praise','gamepad');return;}
+ if(action==='camera-prev'||action==='camera-next'){
+  if(debugRace&&!settingsOpen&&(mode==='playing'||mode==='countdown'||mode==='paused'||brickCompleted))
+   cycleRacer(action==='camera-prev'?-1:1);
+  return;
+ }
  if(action==='pause'){if(settingsOpen||l2UI?.feedbackOpen)return;if(mode==='menu'||brickCompleted)restart();else {const wasDriving=mode==='playing';pause();if(wasDriving&&sceneInspector)sceneInspector.toggle.focus();}return;}
  if(settingsOpen&&['confirm','back','up','down','left','right'].includes(action)
   &&carPaintPicker.handle(action as 'confirm'|'back'|'up'|'down'|'left'|'right'))return;
- if(action==='back'){if(l2UI?.feedbackOpen)document.getElementById('l2-feedback-cancel')?.click();else if(settingsOpen)$('close-settings').click();else if(mode==='playing')pause();return;}
+ if(action==='back'){if(settingsOpen)$('close-settings').click();else if(mode==='playing')pause();return;}
  if(mode==='playing')return;
- const scope=(l2UI?.feedbackOpen?document.getElementById('l2-feedback-dialog'):settingsOpen?$('preferences'):trip&&mode==='paused'&&!brickCompleted?(l2UI?.reviewExpanded?document.getElementById('l2-lab'):tripPauseDock?.element):playerUi?$('player-start'):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
+ const scope=(settingsOpen?$('preferences'):trip&&mode==='paused'&&!brickCompleted?tripPauseDock?.element:playerUi?$('player-start'):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
  if(!scope)return;
  const items=Array.from(scope.querySelectorAll<HTMLElement>('button,a,input,select')).filter(x=>x.offsetParent!==null&&!x.hasAttribute('disabled'));
  if(sceneInspector&&!settingsOpen)items.unshift(sceneInspector.toggle);
@@ -1137,7 +1151,7 @@ function loop(now:number){
   prefetchNextChapter();
   if(mode==='playing')highwayHandoff();
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
-  if(!startupPending&&!replayPreparing&&!document.documentElement.dataset.loading)pad.poll((mode==='playing'||mode==='countdown')&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen,sceneInspector?.isOpen??false,!!sceneInspector);
+  if(!startupPending&&!replayPreparing&&!document.documentElement.dataset.loading)pad.poll((mode==='playing'||mode==='countdown')&&!settingsOpen,!!sceneInspector);
   // A gamepad confirm can leave the stage from inside this frame.
   if(signal.aborted)return;
   const dt=Math.min((now-last)/1000,.25);last=now;
@@ -1251,12 +1265,7 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
  }:undefined,
  resume:start,exitToMenu:returnToMainMenu,
  settings:()=>{$('settings').click();},sound:()=>{$('sound').click();},
- review:()=>{
-  const opening=!l2UI?.reviewExpanded;
-  l2UI?.setReviewExpanded(opening);tripPauseDock?.collapse();ui();
-  if(!mobile())(opening?document.getElementById('l2-play'):tripPauseDock?.moreButton)?.focus();
- },
-},!playerUi,coastUltraMode&&coastGeometryShadows()&&params.get('fpsdiag')==='1'?{onChange:applyShadowTechnique}:undefined);
+},coastUltraMode&&coastGeometryShadows()&&params.get('fpsdiag')==='1'?{onChange:applyShadowTechnique}:undefined);
 // Render a legible keycap on the action itself, following the last active input mode.
 // Existing L2 shortcut text is replaced by the same badge rather than doubled.
 for(const [id,key,pad] of [

@@ -38,12 +38,14 @@ export function trafficRecipe(seed:number,length:number):readonly TrafficRecipe[
  const key=seed+':'+length,cached=recipes.get(key);if(cached)return cached;
  const out:TrafficRecipe[]=[];let distance=650+random(seed,0)*70,id=0;
  for(let group=0;distance<length-100;group++){
-  const count=group===0?3:random(seed^0x971,group)<.2?1:2+Math.floor(random(seed^0x91f,group)*3);
+  // Keep the first launch sector clear; thereafter present denser, seeded road traffic.
+  // Groups never occupy every lane and the existing 12-car render pool stays bounded.
+  const count=group===0?3:random(seed^0x971,group)<.14?1:2+Math.floor(random(seed^0x91f,group)*3);
   for(let member=0;member<count;member++){
    const pick=random(seed^0x392,id),type=group===0?member:pick<.55?0:pick<.72?1:pick<.96?2:3;
    out.push({id,type,distance:distance+member*(32+random(seed^0xa5,group)*24),speed:trafficCruise(seed,id,type),group,member});id++;
   }
-  distance+=500+random(seed^0x4c2,group)*400+(random(seed^0x52a,group)<.16?700:0);
+  distance+=275+random(seed^0x4c2,group)*285+(random(seed^0x52a,group)<.09?450:0);
  }
  if(recipes.size>=4)recipes.delete(recipes.keys().next().value!);recipes.set(key,out);return out;
 }

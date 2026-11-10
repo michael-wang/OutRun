@@ -14,6 +14,13 @@ const sample=(d:number)=>({
  tangent:new THREE.Vector3(0,0,1),roadHeading:0,curvature:0,
 });
 
+it('has denser but deterministic highway encounters without growing the render pool',()=>{
+ const a=trafficRecipe(804^17,10000),b=trafficRecipe(804^17,10000);
+ expect(a).toBe(b);
+ expect(a.length).toBeGreaterThan(50);
+ expect(a[0].distance).toBeGreaterThanOrEqual(650);
+ expect(TRAFFIC_LIMIT).toBe(12);
+});
 it('rerolls independently of route and pins a diagnostic traffic seed',()=>{
  expect(newTrafficSessionSeed(new URLSearchParams('trafficSeed=3025'))).toBe(3025);
  expect(newTrafficSessionSeed(new URLSearchParams('trafficSeed=4294967295'))).toBe(4294967295);

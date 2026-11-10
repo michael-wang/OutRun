@@ -5,20 +5,20 @@ import {COAST_SHADOW_TECHNIQUES,coastShadowTechniqueSnapshot,type CoastShadowTec
 export interface TripPauseActions {
  startFpsTest?:()=>void;
  resume():void;exitToMenu():void;settings():void;
- sound():void;review():void;
+ sound():void;
 }
 export interface TripShadowAudit {onChange(technique:CoastShadowTechnique,enabled:boolean):void}
 export class TripPauseDock {
  readonly element:HTMLElement;
  readonly resumeButton:HTMLButtonElement;
  readonly moreButton:HTMLButtonElement;
- readonly reviewButton:HTMLButtonElement;
+
  readonly controlsButton:HTMLButtonElement;
  private readonly primary:HTMLElement;
  private readonly options:HTMLElement;
  private readonly title:HTMLElement;
  private expanded=false;
- constructor(root:HTMLElement,actions:TripPauseActions,reviewAvailable:boolean,shadowAudit?:TripShadowAudit){
+ constructor(root:HTMLElement,actions:TripPauseActions,shadowAudit?:TripShadowAudit){
   const element=document.createElement('aside');this.element=element;
   element.id='trip-pause-dock';element.hidden=true;element.setAttribute('aria-label','暫停操作');
   const shadowMarkup=shadowAudit?
@@ -39,7 +39,6 @@ export class TripPauseDock {
    <div class="tp-list" id="tp-actions" hidden>
      <button id="tp-settings" type="button">操作設定</button>
      <button id="tp-sound" type="button" aria-pressed="true">音效　開</button>
-     <button id="tp-review" type="button" aria-expanded="false">評分／匯出</button>
      ${shadowMarkup}${actions.startFpsTest?'<button id="tp-fps-test" type="button">開始標準 FPS 測試 · 10＋20 秒</button>':''}
      <button id="tp-back" type="button">返回</button>
    </div>`;
@@ -51,8 +50,6 @@ export class TripPauseDock {
   this.resumeButton=button('tp-resume');
   this.moreButton=button('tp-more');
   this.controlsButton=button('tp-settings');
-  this.reviewButton=button('tp-review');
-  this.reviewButton.hidden=!reviewAvailable;
   for(const [id,key,pad] of [
    ['tp-resume','P','OPTIONS'],['tp-exit','↵','✕'],['tp-more','↵','✕'],
    ['tp-settings','C','✕'],['tp-sound','M','✕'],['tp-back','Esc','○'],
@@ -65,7 +62,6 @@ export class TripPauseDock {
   this.controlsButton.onclick=actions.settings;
   button('tp-back').onclick=()=>{this.collapse();this.moreButton.focus();};
   button('tp-sound').onclick=actions.sound;
-  this.reviewButton.onclick=actions.review;
   if(actions.startFpsTest)button('tp-fps-test').onclick=actions.startFpsTest;
   if(shadowAudit){
    const inputs=element.querySelectorAll<HTMLInputElement>('input[data-shadow-technique]');
@@ -91,12 +87,10 @@ export class TripPauseDock {
  }
  get isExpanded(){return this.expanded;}
  focusResume(){this.resumeButton.focus();}
- update(paused:boolean,muted:boolean,reviewOpen=false){
+ update(paused:boolean,muted:boolean){
   this.element.hidden=!paused;
   const sound=this.element.querySelector<HTMLButtonElement>('#tp-sound')!;
   sound.textContent=muted?'音效　關':'音效　開';
   sound.setAttribute('aria-pressed',String(!muted));
-  this.reviewButton.textContent='評分／匯出';
-  this.reviewButton.setAttribute('aria-expanded',String(reviewOpen));
  }
 }

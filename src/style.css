@@ -614,6 +614,10 @@ html[data-player-ui="true"] #player-start[data-finished="true"] #results-menu{
 #race-director{top:max(16%,48px);right:max(3vw,env(safe-area-inset-right));border:1px solid #f0c7aa88;background:#151922bb;padding:6px 9px}
 #race-data{display:block;white-space:pre-line;font-size:12px;font-weight:600}
 #race-director button{min-height:32px;margin:0 2px 4px 0;padding:4px 7px;background:#10151b55;color:#fff1df;border:1px solid #cabbb2;border-radius:1px;font-size:11px}
+#race-cameras{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:min(224px,36vw)}
+#race-camera-name{display:block;flex:1;text-align:center;white-space:nowrap;color:#ffcf92;font:italic 800 12px/1.2 Arial,sans-serif}
+#race-cameras button{white-space:nowrap;flex:0 0 auto}
+#race-director{max-width:min(285px,45vw)}
 #race-director button[aria-pressed=true]{border-color:#ff966b;color:#ffbc99}
 #ready-countdown{top:30%;border:0;border-bottom:3px solid #ff845a;border-radius:0;background:#171a215c;font:italic 900 clamp(38px,8vh,76px)/1 Arial,sans-serif;letter-spacing:-.06em;padding:.06em .3em;color:#fff0d7;pointer-events:none}
 #race-watch{min-height:40px;color:#ffccac;border:1px solid #e7af8d;background:#1e23268a}

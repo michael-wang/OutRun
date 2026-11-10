@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {RivalRace,worldSpeed,crossingTime,raceEntries,type Obstacle} from '../src/rival-race';
+import {RivalRace,worldSpeed,crossingTime,raceEntries,equalRiviera,type Obstacle} from '../src/rival-race';
 import {createState,step} from '../src/handling';
 import {DEFAULT_PACE} from '../src/pace';
 import * as THREE from 'three';
@@ -13,9 +13,19 @@ const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
 function ticks(seconds:number,fn:()=>void){for(let i=0;i<Math.round(seconds/dt);i++)fn();}
 describe('Riviera GT race',()=>{
+ it('has nine distinct AI cars with the player powertrain and a non-overlapping grid',()=>{
+  const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);race.reset(350);
+  expect(race.rivals).toHaveLength(9);
+  expect(new Set(race.rivals.map(r=>r.entry.id)).size).toBe(9);
+  expect(race.rivals.every(r=>r.entry.car===equalRiviera)).toBe(true);
+  for(let i=0;i<9;i++)for(let j=i+1;j<9;j++){
+   const a=race.rivals[i],b=race.rivals[j];
+   expect(Math.abs(a.distance-b.distance)>equalRiviera.length+1||Math.abs(a.lateral-b.lateral)>equalRiviera.width+.2).toBe(true);
+  }
+ });
  it('calibrates wheel force against the actual player gearbox in three speed bands',()=>{
-  for(const [kmh,min,max] of [[10,1.12,1.35],[150,.98,1.05],[255,.7,.99]]){
-   const race=new RivalRace(10350,flat,()=>[]);race.reset(350);
+  for(const [kmh,min,max] of [[10,.97,1.03],[150,.97,1.03],[255,.97,1.03]]){
+   const race=new RivalRace(10350,flat,()=>[],[raceEntries[0]]);race.reset(350);
    const p=createState();p.speed=kmh/3.6;
    const r=race.rivals[0];r.speed=p.speed;const v=p.speed;
    ticks(.5,()=>{const old={distance:p.distance,lateral:p.lateral};step(p,{gas:true,brake:false,steer:0},dt,0,DEFAULT_PACE,7);race.step(dt,p,old);});
@@ -25,7 +35,7 @@ describe('Riviera GT race',()=>{
  it('brakes on approach to a tight bend and clears a stalled or slow car without overlap',()=>{
   for(const speed of [0,10]){
    const p=parked(),hazard:Obstacle={id:'van',speed,lateral:-5.25,distance:530,width:2.2,length:5.5};
-   const race=new RivalRace(4000,d=>({...flat(),curvature:d>720&&d<920?.015:0}),(_d,t)=>[{...hazard,distance:530+t*speed}]);
+   const race=new RivalRace(4000,d=>({...flat(),curvature:d>720&&d<920?.015:0}),(_d,t)=>[{...hazard,distance:530+t*speed}],[raceEntries[0]]);
    race.reset(350);let passed=false,slowed=false,changed=false;
    ticks(35,()=>{race.step(dt,p,p);const r=race.rivals[0],gap=r.distance-(530+race.time*speed);
     if(Math.abs(gap)<5)expect(Math.abs(r.lateral-hazard.lateral)).toBeGreaterThan(2.18);
@@ -35,7 +45,7 @@ describe('Riviera GT race',()=>{
   }
  });
  it('charges both cars for contact, constrains penetration and cools the impulse',()=>{
-  const race=new RivalRace(10350,flat,()=>[]);race.reset(350);
+  const race=new RivalRace(10350,flat,()=>[],[raceEntries[0]]);race.reset(350);
   const r=race.rivals[0],p={distance:r.distance-4.91,lateral:r.lateral,speed:35};r.speed=16;
   const old={...p};p.distance+=.38;
   const hit=race.step(dt,p,old);expect(hit?.kind).toBe('rear');expect(p.speed).toBeLessThan(35);expect(r.speed).toBeLessThan(16.1);
@@ -44,7 +54,7 @@ describe('Riviera GT race',()=>{
  });
  it('orders same-tick crossings by fraction, and keeps running after a player finishes',()=>{
   expect(crossingTime(98,102,100,4,.1)).toBe(4.05);
-  const p={distance:101,lateral:0,speed:60},race=new RivalRace(100,flat,()=>[]);
+  const p={distance:101,lateral:0,speed:60},race=new RivalRace(100,flat,()=>[],[raceEntries[0],raceEntries[1]]);
   race.reset(30);race.rivals[0].distance=99.9;race.rivals[0].speed=60;
   race.step(.04,p,{distance:99.99,lateral:0});
   expect(race.playerFinish).toBeLessThan(race.rivals[0].finishTime!);
@@ -52,7 +62,7 @@ describe('Riviera GT race',()=>{
   ticks(12,()=>race.step(dt,p,p));expect(race.rivals.every(r=>r.finishTime!==null)).toBe(true);
  });
  it('safely changes the race order while catching a slower player from behind',()=>{
-  const p={distance:410,lateral:-5.25,speed:7},race=new RivalRace(10350,flat,()=>[]);race.reset(350);
+  const p={distance:410,lateral:-5.25,speed:7},race=new RivalRace(10350,flat,()=>[],[raceEntries[0],raceEntries[1]]);race.reset(350);
   expect(race.rank(p.distance,null,'PLAYER',p)).toBe(1);
   ticks(14,()=>{const old={...p};p.distance+=worldSpeed(p.speed)*dt;race.step(dt,p,old);
    for(const r of race.rivals)if(Math.abs(r.distance-p.distance)<4.8)expect(Math.abs(r.lateral-p.lateral)).toBeGreaterThan(2.15);});
@@ -66,23 +76,21 @@ describe('Riviera GT race',()=>{
   expect(r.behavior).toBe('防守');expect(r.targetLane).toBe(r.lane+1);
   expect(Math.abs(r.lateral-r.previousLateral)).toBeLessThan(.01);
  });
- it('lets full player throttle recover the launch deficit on an unobstructed straight',()=>{
-  const race=new RivalRace(10350,flat,()=>[]);race.reset(350);
+ it('matches player acceleration on an unobstructed straight',()=>{
+  const race=new RivalRace(10350,flat,()=>[],[raceEntries[0]]);race.reset(350);
   const player=createState();player.distance=350;
-  let launchLead=0,retookLead=false;
-  ticks(110,()=>{
+  ticks(25,()=>{
    const previous={distance:player.distance,lateral:player.lateral};
    step(player,{gas:true,brake:false,steer:0},dt,0,DEFAULT_PACE,7);
    race.step(dt,player,previous);
-   if(race.time<8)launchLead=Math.max(launchLead,race.rivals[1].distance-player.distance);
-   if(race.playerFinish===null&&race.rank(player.distance,null,'PLAYER',player)===1)retookLead=true;
   });
-  expect(launchLead).toBeGreaterThan(raceEntries[1].gridOffset+2);expect(retookLead).toBe(true);
+  expect(Math.abs(race.rivals[0].speed-player.speed)).toBeLessThan(.75);
+  expect(Math.abs(race.rivals[0].distance-player.distance)).toBeLessThan(12);
  });
  it('reserves the open middle lane when both drivers approach stopped traffic abreast',()=>{
   const road=()=>({...flat(),half:5.25}),p=parked();
   const hazards=[-3.5,3.5].map((lateral,i)=>({id:'stalled'+i,lateral,distance:440,speed:0,length:5,width:2.1}));
-  const race=new RivalRace(4000,road,()=>hazards);race.reset(350);
+  const race=new RivalRace(4000,road,()=>hazards,[raceEntries[0],raceEntries[1]]);race.reset(350);
   const [silver,yellow]=race.rivals;
   silver.speed=yellow.speed=26;
   let contested=false;
@@ -122,15 +130,14 @@ describe('Riviera GT race',()=>{
    const recipes=trafficRecipe(seed,end),p=parked();
    const race=new RivalRace(end,d=>{const q=track.sample(d);return {curvature:q.curvature,grade:q.tangent.y,half:pilotSample(COAST_ULTRA_STAGE,d).halfWidth};},
     (center,t,radius)=>recipes.flatMap(row=>{const d=row.distance+row.speed*t;return Math.abs(d-center)<radius?[{id:'T'+row.id,distance:d,lateral:plannedTrafficLateral(seed,row.group,row.member??0,pilotSample(COAST_ULTRA_STAGE,d).halfWidth),width:2.1,length:5,speed:row.speed}]:[];}));
-   race.reset(350);let swapped=false;
+   race.reset(350);
    for(let i=0;i<300*60&&!race.rivals.every(r=>r.finishTime!==null);i++){
     race.step(1/60,p,p);
-    if(race.rivals[1].distance>race.rivals[0].distance)swapped=true;
     for(const r of race.rivals)expect(r.speed).toBeLessThanOrEqual(raceEntries[0].car.topSpeed);
    }
    expect(race.rivals.map(r=>r.finishTime)).not.toContain(null);
-   if(seed===17){expect(swapped).toBe(true);expect(race.rivals[0].finishTime!).toBeLessThan(race.rivals[1].finishTime!);}
-   if(seed===1206)expect(race.rivals[1].finishTime!).toBeLessThan(race.rivals[0].finishTime!);
+   expect(race.rivals).toHaveLength(9);
+   expect(race.rivals.every(r=>Number.isFinite(r.finishTime))).toBe(true);
   }
  },20000);
 });
