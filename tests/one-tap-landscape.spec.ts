@@ -65,7 +65,7 @@ test('one confirm requests landscape, then waits for Worker readiness',async({br
     await expect(page.locator('#game-loading')).toBeVisible();
     await page.evaluate(()=>(window as any).__releaseRoad());
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
-    expect(await page.evaluate(()=>(window as any).__drive.snapshot().mode)).toBe('playing');
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
   }finally{await context.close();}
 });
 

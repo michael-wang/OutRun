@@ -11,6 +11,7 @@ test('the public coast starts automatically at zero speed with its approved HUD'
   await expect(page.locator('#view canvas')).toBeVisible();
   await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
   await expect(page.locator('#speed')).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
   const state=await page.evaluate(()=>(window as any).__drive.snapshot());
   expect(state.mode).toBe('playing');
   expect(state.speed).toBe(0);
@@ -49,6 +50,7 @@ test('diagnostic at= coordinate starts stationary with the public driving HUD',a
   await page.locator('#start-race').click();
   await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
  await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
  const state=await page.evaluate(()=>(window as any).__drive.snapshot());
  expect(state.mode).toBe('playing');
  expect(state.distance).toBe(1360);

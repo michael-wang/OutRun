@@ -22,6 +22,27 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - name: Verify unique stable release identity
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
+            const lock = JSON.parse(fs.readFileSync('package-lock.json','utf8'));
+            if (!/^\d+\.\d+\.\d+$/.test(pkg.version)) throw new Error('Public release must have stable x.y.z version');
+            if (lock.version !== pkg.version || lock.packages[''].version !== pkg.version) throw new Error('Lockfile version mismatch');
+            const tag = 'v' + pkg.version;
+            try {
+              const {data: ref} = await github.rest.git.getRef({...context.repo, ref: 'tags/' + tag});
+              const target = ref.object.type === 'tag'
+                ? (await github.rest.git.getTag({...context.repo, tag_sha: ref.object.sha})).data.object.sha
+                : ref.object.sha;
+              if (target !== context.sha) throw new Error(tag + ' already identifies different release ' + target);
+              core.info(tag + ' already identifies this exact commit; safe retry.');
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              core.info(tag + ' is unused and available.');
+            }
       - name: Install locked dependencies
         run: npm ci
       - name: TypeScript + Vite project-site build
@@ -54,3 +75,37 @@ jobs:
       - uses: actions/configure-pages@v5
       - id: publish
         uses: actions/deploy-pages@v4
+
+  tag-release:
+    needs: deploy
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Annotate successfully deployed version (immutable)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pkg = require('./package.json');
+            const tag = 'v' + pkg.version;
+            const owner = context.repo.owner, repo = context.repo.repo;
+            try {
+              const {data: ref} = await github.rest.git.getRef({owner,repo,ref:'tags/'+tag});
+              const sha = ref.object.type === 'tag'
+                ? (await github.rest.git.getTag({owner,repo,tag_sha:ref.object.sha})).data.object.sha
+                : ref.object.sha;
+              if (sha !== context.sha) throw new Error('Tag belongs to another commit: '+tag);
+              core.info('Existing '+tag+' matches deployed commit: '+context.sha);
+              return;
+            } catch(error) {
+              if (error.status !== 404) throw error;
+            }
+            const {data: annotated} = await github.rest.git.createTag({
+              owner,repo,tag,message:'OutRun '+tag+' — verified GitHub Pages release',
+              object:context.sha,type:'commit',
+              tagger:{name:'OutRun Release Bot',email:'release-bot@users.noreply.github.com',date:new Date().toISOString()}
+            });
+            await github.rest.git.createRef({owner,repo,ref:'refs/tags/'+tag,sha:annotated.sha});
+            core.info('Created annotated '+tag+' for '+context.sha);

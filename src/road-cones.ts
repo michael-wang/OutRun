@@ -70,6 +70,12 @@ export class RoadCones {
    this.sunsetCast.renderOrder=2;scene.add(this.sunsetCast);
   }
  }
+ raceObstacles(center:number,radius:number){
+  return this.recipe.filter(c=>Math.abs(c.distance-center)<radius&&!this.hit.has(c.id)).map(c=>({
+   id:(this.triangles?'△':'C')+c.id,distance:c.distance,lateral:c.lateral??c.side*(this.halfAt(c.distance)-c.inset),
+   speed:0,width:.8,length:.8,
+  }));
+ }
  update(time:number,player:number,lateral:number,speed:number,previous?:{distance:number;lateral:number},halfWidth=1.55){
   let hits=0,count=0;this.shown=[];
   for(const c of this.recipe){

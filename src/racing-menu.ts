@@ -1,3 +1,4 @@
+import {GAME_VERSION} from './build-info';
 import {landscapeControl} from './immersive';
 import { GamepadInput, type PadAction } from './gamepad';
 import { InputLatch } from './input';
@@ -10,7 +11,7 @@ export async function mountMenu(enter: (stage: RacingStage) => void, waitForEntr
   menu.innerHTML=`
     <header class="cabinet-header">
       <div class="cabinet-logo"><strong lang="en">OUTRUN</strong><span>極速漫遊</span></div>
-      <div class="mode-mark"><i></i> ARCADE RACING <small>R0.1</small></div>
+      <div class="mode-mark"><i></i> ARCADE RACING <small>v${GAME_VERSION}</small></div>
     </header>
     <div class="stage-heading"><h1 lang="en">STAGE SELECT</h1><span>選擇賽道</span></div>
     <div class="stage-grid" role="group" aria-label="賽道">

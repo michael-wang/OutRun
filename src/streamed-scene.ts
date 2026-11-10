@@ -184,11 +184,22 @@ export class StreamedScene {
    else lightCoastMaterial(this.scene,o.material,!!o.userData.roadKind||!!o.userData.lampGround);
   }});
   if(this.clippingPlanes.length)this.clipMaterial(object);let group=c.groups[name];if(!group){group=new THREE.Group();group.name=`chunk-${c.index}-${name}`;group.userData.chunkIndex=c.index;c.groups[name]=group;this.groups[name].add(group);}group.add(object);c.objects.push(object);}
+ // At most one additional camera window, independent of the player's safety window.
+ spectatorDistance:number|null=null;
+ spectatorReady(distance:number){
+  for(const d of [distance-25,distance,distance+350,distance+850,distance+1300])
+   if(!this.roadReady(d)||!this.sceneryReady(d))return false;
+  return true;
+ }
  update(distance:number){
   this.position=Math.max(0,Math.min(this.length,distance));const first=Math.floor(Math.max(0,this.position-this.behind)/this.chunkLength),last=Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((this.position+this.ahead)/this.chunkLength));
-  for(const c of this.chunks.values())for(const o of c.objects){const n=o.userData.nature as NatureBatch|undefined;if(n)o.visible=natureVisible(n,this.position,this.mobile);}
-  const bounds=`${first}:${last}`;if(bounds===this.bounds){this.dispatch();return;}this.bounds=bounds;
+  for(const c of this.chunks.values())for(const o of c.objects){const n=o.userData.nature as NatureBatch|undefined;if(n)o.visible=natureVisible(n,this.spectatorDistance??this.position,this.mobile);}
+  const observer=this.spectatorDistance;
+  const viewFirst=observer===null?-1:Math.floor(Math.max(0,observer-80)/this.chunkLength);
+  const viewLast=observer===null?-1:Math.min(Math.ceil(this.length/this.chunkLength)-1,Math.floor((observer+1500)/this.chunkLength));
+  const bounds=observer===null?first+':'+last:[first,last,viewFirst,viewLast].join(':');if(bounds===this.bounds){this.dispatch();return;}this.bounds=bounds;
   this.desired=new Set(Array.from({length:last-first+1},(_,i)=>first+i));
+  if(observer!==null)for(let i=viewFirst;i<=viewLast;i++)this.desired.add(i);
   for(const [index,c] of this.chunks)if(!this.desired.has(index)){
    // Remove the small set of chunk roots immediately, so retired geometry can
    // no longer render or participate in tire raycasts. Dispose GPU buffers in

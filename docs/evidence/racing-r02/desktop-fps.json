@@ -1,0 +1,1649 @@
+{
+  "description": "Desktop Chrome, headless mobile viewport emulation. Sequential 6 s runs. Seed 17. The entryBucket spans the reset and can include earlier frames; seconds contains only subsequent full buckets. Idle begins on grid; rivals launch autonomously. Contact starts player at 351 m behind silver GT at 34 m/s. Matched high-speed runs start at 2800 m with 234 km/h and full throttle.",
+  "runs": [
+    {
+      "build": "R0.1 32c7d1c",
+      "name": "idle",
+      "version": "0.9.41",
+      "viewport": {
+        "cssWidth": 915,
+        "cssHeight": 412,
+        "dpr": 1
+      },
+      "drawingBuffer": {
+        "width": 915,
+        "height": 412
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "entryBucket": {
+        "fps": 59.99,
+        "worstFrameGapMs": 16.8,
+        "drawCalls": 274
+      },
+      "slowFrames": [],
+      "seconds": [
+        {
+          "seconds": 4,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 274,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 2.03,
+            "physics": 0.25,
+            "world": 0.04,
+            "trafficUpdate": 0.21,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0.01,
+            "otherRender": 0.1,
+            "ocean": 0.06,
+            "boatShadow": 0.01,
+            "mainScene": 1.2
+          }
+        },
+        {
+          "seconds": 5,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 274,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 2.12,
+            "physics": 0.26,
+            "world": 0.03,
+            "trafficUpdate": 0.21,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.01,
+            "otherRender": 0.12,
+            "ocean": 0.07,
+            "boatShadow": 0.01,
+            "mainScene": 1.27
+          }
+        },
+        {
+          "seconds": 6,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 274,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 2.01,
+            "physics": 0.22,
+            "world": 0.03,
+            "trafficUpdate": 0.2,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0.01,
+            "otherRender": 0.1,
+            "ocean": 0.07,
+            "boatShadow": 0.01,
+            "mainScene": 1.21
+          }
+        },
+        {
+          "seconds": 7,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 274,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 1.99,
+            "physics": 0.2,
+            "world": 0.04,
+            "trafficUpdate": 0.2,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.01,
+            "otherRender": 0.09,
+            "ocean": 0.07,
+            "boatShadow": 0.02,
+            "mainScene": 1.21
+          }
+        },
+        {
+          "seconds": 8,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 274,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 2.23,
+            "physics": 0.2,
+            "world": 0.04,
+            "trafficUpdate": 0.23,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.1,
+            "ocean": 0.09,
+            "boatShadow": 0.02,
+            "mainScene": 1.37
+          }
+        }
+      ],
+      "trace": [
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        }
+      ]
+    },
+    {
+      "build": "R0.1 32c7d1c",
+      "name": "launch",
+      "version": "0.9.41",
+      "viewport": {
+        "cssWidth": 915,
+        "cssHeight": 412,
+        "dpr": 1
+      },
+      "drawingBuffer": {
+        "width": 915,
+        "height": 412
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "entryBucket": {
+        "fps": 60,
+        "worstFrameGapMs": 16.8,
+        "drawCalls": 277
+      },
+      "slowFrames": [],
+      "seconds": [
+        {
+          "seconds": 10,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 282,
+          "distanceM": 366,
+          "cpuMeanMs": {
+            "callback": 2.33,
+            "physics": 0.29,
+            "world": 0.04,
+            "trafficUpdate": 0.22,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0.03,
+            "otherRender": 0.1,
+            "ocean": 0.05,
+            "boatShadow": 0.02,
+            "mainScene": 1.4
+          }
+        },
+        {
+          "seconds": 11,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 290,
+          "distanceM": 384,
+          "cpuMeanMs": {
+            "callback": 2.26,
+            "physics": 0.31,
+            "world": 0.04,
+            "trafficUpdate": 0.22,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0.01,
+            "otherRender": 0.11,
+            "ocean": 0.06,
+            "boatShadow": 0.01,
+            "mainScene": 1.35
+          }
+        },
+        {
+          "seconds": 12,
+          "fps": 60,
+          "worstFrameGapMs": 16.9,
+          "drawCalls": 292,
+          "distanceM": 411,
+          "cpuMeanMs": {
+            "callback": 2.23,
+            "physics": 0.26,
+            "world": 0.05,
+            "trafficUpdate": 0.21,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.01,
+            "otherRender": 0.11,
+            "ocean": 0.07,
+            "boatShadow": 0.01,
+            "mainScene": 1.35
+          }
+        },
+        {
+          "seconds": 13,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 283,
+          "distanceM": 444,
+          "cpuMeanMs": {
+            "callback": 2.23,
+            "physics": 0.26,
+            "world": 0.04,
+            "trafficUpdate": 0.24,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.1,
+            "ocean": 0.06,
+            "boatShadow": 0.02,
+            "mainScene": 1.33
+          }
+        },
+        {
+          "seconds": 14,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 274,
+          "distanceM": 488,
+          "cpuMeanMs": {
+            "callback": 2.13,
+            "physics": 0.27,
+            "world": 0.03,
+            "trafficUpdate": 0.22,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.02,
+            "otherRender": 0.11,
+            "ocean": 0.06,
+            "boatShadow": 0.01,
+            "mainScene": 1.26
+          }
+        }
+      ],
+      "trace": [
+        {
+          "d": 351,
+          "speedKmh": 17,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 355,
+          "speedKmh": 33,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 361,
+          "speedKmh": 50,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 367,
+          "speedKmh": 48,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 375,
+          "speedKmh": 64,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 386,
+          "speedKmh": 81,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 399,
+          "speedKmh": 96,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 414,
+          "speedKmh": 93,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 429,
+          "speedKmh": 105,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 448,
+          "speedKmh": 117,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 469,
+          "speedKmh": 128,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 493,
+          "speedKmh": 139,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        }
+      ]
+    },
+    {
+      "build": "R0.1 32c7d1c",
+      "name": "high-speed",
+      "version": "0.9.41",
+      "viewport": {
+        "cssWidth": 915,
+        "cssHeight": 412,
+        "dpr": 1
+      },
+      "drawingBuffer": {
+        "width": 915,
+        "height": 412
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "entryBucket": {
+        "fps": 60,
+        "worstFrameGapMs": 16.8,
+        "drawCalls": 328
+      },
+      "slowFrames": [],
+      "seconds": [
+        {
+          "seconds": 4.02,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 318,
+          "distanceM": 3000,
+          "cpuMeanMs": {
+            "callback": 3.13,
+            "physics": 0.34,
+            "world": 0.07,
+            "trafficUpdate": 0.07,
+            "wheelGroundRaycasts": 0.05,
+            "effects": 0.03,
+            "otherRender": 0.12,
+            "ocean": 0.07,
+            "boatShadow": 0.03,
+            "mainScene": 2.21
+          }
+        },
+        {
+          "seconds": 5.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 321,
+          "distanceM": 3100,
+          "cpuMeanMs": {
+            "callback": 3.93,
+            "physics": 0.38,
+            "world": 0.28,
+            "trafficUpdate": 0.1,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0.01,
+            "otherRender": 0.15,
+            "ocean": 0.09,
+            "boatShadow": 0.03,
+            "mainScene": 2.67
+          }
+        },
+        {
+          "seconds": 6.02,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 316,
+          "distanceM": 3205,
+          "cpuMeanMs": {
+            "callback": 3.76,
+            "physics": 0.41,
+            "world": 0.06,
+            "trafficUpdate": 0.07,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.02,
+            "otherRender": 0.15,
+            "ocean": 0.09,
+            "boatShadow": 0.03,
+            "mainScene": 2.71
+          }
+        },
+        {
+          "seconds": 7.03,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 333,
+          "distanceM": 3316,
+          "cpuMeanMs": {
+            "callback": 3.76,
+            "physics": 0.41,
+            "world": 0.05,
+            "trafficUpdate": 0.11,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0.01,
+            "otherRender": 0.14,
+            "ocean": 0.1,
+            "boatShadow": 0.02,
+            "mainScene": 2.66
+          }
+        },
+        {
+          "seconds": 8.03,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 334,
+          "distanceM": 3428,
+          "cpuMeanMs": {
+            "callback": 3.66,
+            "physics": 0.41,
+            "world": 0.04,
+            "trafficUpdate": 0.11,
+            "wheelGroundRaycasts": 0.05,
+            "effects": 0,
+            "otherRender": 0.17,
+            "ocean": 0.08,
+            "boatShadow": 0.03,
+            "mainScene": 2.59
+          }
+        }
+      ],
+      "trace": [
+        {
+          "d": 2849,
+          "speedKmh": 237,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 2899,
+          "speedKmh": 241,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 2951,
+          "speedKmh": 244,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3002,
+          "speedKmh": 239,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3051,
+          "speedKmh": 240,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3102,
+          "speedKmh": 246,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3154,
+          "speedKmh": 252,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3207,
+          "speedKmh": 257,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3263,
+          "speedKmh": 261,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3318,
+          "speedKmh": 266,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3373,
+          "speedKmh": 269,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        },
+        {
+          "d": 3430,
+          "speedKmh": 273,
+          "rivalPuffs": [],
+          "rivalMarks": []
+        }
+      ]
+    },
+    {
+      "build": "R0.2",
+      "name": "idle",
+      "version": "0.9.42-dev.1",
+      "viewport": {
+        "cssWidth": 915,
+        "cssHeight": 412,
+        "dpr": 1
+      },
+      "drawingBuffer": {
+        "width": 915,
+        "height": 412
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "entryBucket": {
+        "fps": 60,
+        "worstFrameGapMs": 16.8,
+        "drawCalls": 296
+      },
+      "slowFrames": [],
+      "seconds": [
+        {
+          "seconds": 4.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 296,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 1.87,
+            "physics": 0.18,
+            "world": 0.03,
+            "trafficUpdate": 0.17,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0,
+            "otherRender": 0.09,
+            "ocean": 0.07,
+            "boatShadow": 0.02,
+            "mainScene": 1.18
+          }
+        },
+        {
+          "seconds": 5.02,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 294,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 1.75,
+            "physics": 0.15,
+            "world": 0.02,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.06,
+            "ocean": 0.06,
+            "boatShadow": 0.01,
+            "mainScene": 1.14
+          }
+        },
+        {
+          "seconds": 6.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 294,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 1.8,
+            "physics": 0.14,
+            "world": 0.02,
+            "trafficUpdate": 0.17,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0,
+            "otherRender": 0.07,
+            "ocean": 0.05,
+            "boatShadow": 0.01,
+            "mainScene": 1.19
+          }
+        },
+        {
+          "seconds": 7.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 294,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 1.69,
+            "physics": 0.14,
+            "world": 0.03,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0,
+            "otherRender": 0.06,
+            "ocean": 0.05,
+            "boatShadow": 0.01,
+            "mainScene": 1.12
+          }
+        },
+        {
+          "seconds": 8.02,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 288,
+          "distanceM": 350,
+          "cpuMeanMs": {
+            "callback": 1.65,
+            "physics": 0.11,
+            "world": 0.02,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0,
+            "otherRender": 0.05,
+            "ocean": 0.06,
+            "boatShadow": 0.01,
+            "mainScene": 1.11
+          }
+        }
+      ],
+      "trace": [
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            6,
+            6
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            4,
+            4
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 350,
+          "speedKmh": 0,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "build": "R0.2",
+      "name": "launch",
+      "version": "0.9.42-dev.1",
+      "viewport": {
+        "cssWidth": 915,
+        "cssHeight": 412,
+        "dpr": 1
+      },
+      "drawingBuffer": {
+        "width": 915,
+        "height": 412
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "entryBucket": {
+        "fps": 60,
+        "worstFrameGapMs": 16.8,
+        "drawCalls": 299
+      },
+      "slowFrames": [],
+      "seconds": [
+        {
+          "seconds": 10.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 304,
+          "distanceM": 367,
+          "cpuMeanMs": {
+            "callback": 2.13,
+            "physics": 0.2,
+            "world": 0.03,
+            "trafficUpdate": 0.15,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.03,
+            "otherRender": 0.08,
+            "ocean": 0.05,
+            "boatShadow": 0.02,
+            "mainScene": 1.4
+          }
+        },
+        {
+          "seconds": 11.02,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 310,
+          "distanceM": 385,
+          "cpuMeanMs": {
+            "callback": 2.21,
+            "physics": 0.23,
+            "world": 0.03,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.01,
+            "otherRender": 0.07,
+            "ocean": 0.07,
+            "boatShadow": 0.01,
+            "mainScene": 1.47
+          }
+        },
+        {
+          "seconds": 12.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 310,
+          "distanceM": 412,
+          "cpuMeanMs": {
+            "callback": 2.11,
+            "physics": 0.17,
+            "world": 0.02,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.08,
+            "ocean": 0.06,
+            "boatShadow": 0.01,
+            "mainScene": 1.41
+          }
+        },
+        {
+          "seconds": 13.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 303,
+          "distanceM": 445,
+          "cpuMeanMs": {
+            "callback": 2,
+            "physics": 0.16,
+            "world": 0.01,
+            "trafficUpdate": 0.19,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.01,
+            "otherRender": 0.08,
+            "ocean": 0.05,
+            "boatShadow": 0.02,
+            "mainScene": 1.33
+          }
+        },
+        {
+          "seconds": 14.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 294,
+          "distanceM": 489,
+          "cpuMeanMs": {
+            "callback": 1.87,
+            "physics": 0.16,
+            "world": 0.02,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.07,
+            "ocean": 0.05,
+            "boatShadow": 0.01,
+            "mainScene": 1.25
+          }
+        }
+      ],
+      "trace": [
+        {
+          "d": 351,
+          "speedKmh": 17,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            6,
+            6
+          ]
+        },
+        {
+          "d": 355,
+          "speedKmh": 34,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 361,
+          "speedKmh": 50,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 367,
+          "speedKmh": 48,
+          "rivalPuffs": [
+            4,
+            4
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 375,
+          "speedKmh": 64,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 386,
+          "speedKmh": 80,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 399,
+          "speedKmh": 96,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 414,
+          "speedKmh": 93,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 429,
+          "speedKmh": 105,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 448,
+          "speedKmh": 117,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 469,
+          "speedKmh": 128,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 493,
+          "speedKmh": 139,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        }
+      ]
+    },
+    {
+      "build": "R0.2",
+      "name": "contact",
+      "version": "0.9.42-dev.1",
+      "viewport": {
+        "cssWidth": 915,
+        "cssHeight": 412,
+        "dpr": 1
+      },
+      "drawingBuffer": {
+        "width": 915,
+        "height": 412
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "entryBucket": {
+        "fps": 60,
+        "worstFrameGapMs": 16.8,
+        "drawCalls": 295
+      },
+      "slowFrames": [],
+      "seconds": [
+        {
+          "seconds": 16.02,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 297,
+          "distanceM": 363,
+          "cpuMeanMs": {
+            "callback": 2.04,
+            "physics": 0.15,
+            "world": 0.04,
+            "trafficUpdate": 0.19,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.07,
+            "ocean": 0.05,
+            "boatShadow": 0.02,
+            "mainScene": 1.36
+          }
+        },
+        {
+          "seconds": 17.02,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 296,
+          "distanceM": 376,
+          "cpuMeanMs": {
+            "callback": 1.84,
+            "physics": 0.14,
+            "world": 0.03,
+            "trafficUpdate": 0.17,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0,
+            "otherRender": 0.07,
+            "ocean": 0.05,
+            "boatShadow": 0.01,
+            "mainScene": 1.22
+          }
+        },
+        {
+          "seconds": 18.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 308,
+          "distanceM": 397,
+          "cpuMeanMs": {
+            "callback": 1.75,
+            "physics": 0.12,
+            "world": 0.01,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.01,
+            "otherRender": 0.07,
+            "ocean": 0.04,
+            "boatShadow": 0.01,
+            "mainScene": 1.17
+          }
+        },
+        {
+          "seconds": 19.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 302,
+          "distanceM": 425,
+          "cpuMeanMs": {
+            "callback": 1.74,
+            "physics": 0.12,
+            "world": 0.02,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0,
+            "otherRender": 0.06,
+            "ocean": 0.05,
+            "boatShadow": 0.01,
+            "mainScene": 1.16
+          }
+        },
+        {
+          "seconds": 20.02,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 300,
+          "distanceM": 461,
+          "cpuMeanMs": {
+            "callback": 1.74,
+            "physics": 0.12,
+            "world": 0.02,
+            "trafficUpdate": 0.16,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.07,
+            "ocean": 0.05,
+            "boatShadow": 0.01,
+            "mainScene": 1.15
+          }
+        }
+      ],
+      "trace": [
+        {
+          "d": 355,
+          "speedKmh": 7,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            10,
+            6
+          ],
+          "impact": -100
+        },
+        {
+          "d": 356,
+          "speedKmh": 13,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            31,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 359,
+          "speedKmh": 27,
+          "rivalPuffs": [
+            47,
+            48
+          ],
+          "rivalMarks": [
+            61,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 364,
+          "speedKmh": 44,
+          "rivalPuffs": [
+            47,
+            4
+          ],
+          "rivalMarks": [
+            91,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 370,
+          "speedKmh": 48,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 378,
+          "speedKmh": 58,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 387,
+          "speedKmh": 74,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 399,
+          "speedKmh": 90,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 414,
+          "speedKmh": 91,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 428,
+          "speedKmh": 100,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 446,
+          "speedKmh": 113,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        },
+        {
+          "d": 466,
+          "speedKmh": 124,
+          "rivalPuffs": [
+            47,
+            0
+          ],
+          "rivalMarks": [
+            96,
+            14
+          ],
+          "impact": -100
+        }
+      ]
+    },
+    {
+      "build": "R0.2",
+      "name": "high-speed",
+      "version": "0.9.42-dev.1",
+      "viewport": {
+        "cssWidth": 915,
+        "cssHeight": 412,
+        "dpr": 1
+      },
+      "drawingBuffer": {
+        "width": 915,
+        "height": 412
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "entryBucket": {
+        "fps": 60,
+        "worstFrameGapMs": 16.8,
+        "drawCalls": 334
+      },
+      "slowFrames": [],
+      "seconds": [
+        {
+          "seconds": 4,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 319,
+          "distanceM": 2998,
+          "cpuMeanMs": {
+            "callback": 2.2,
+            "physics": 0.17,
+            "world": 0.03,
+            "trafficUpdate": 0.07,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0.01,
+            "otherRender": 0.08,
+            "ocean": 0.06,
+            "boatShadow": 0.02,
+            "mainScene": 1.62
+          }
+        },
+        {
+          "seconds": 5,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 319,
+          "distanceM": 3099,
+          "cpuMeanMs": {
+            "callback": 2.27,
+            "physics": 0.2,
+            "world": 0.25,
+            "trafficUpdate": 0.07,
+            "wheelGroundRaycasts": 0.02,
+            "effects": 0.01,
+            "otherRender": 0.07,
+            "ocean": 0.06,
+            "boatShadow": 0.02,
+            "mainScene": 1.46
+          }
+        },
+        {
+          "seconds": 6,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 316,
+          "distanceM": 3203,
+          "cpuMeanMs": {
+            "callback": 2,
+            "physics": 0.2,
+            "world": 0.03,
+            "trafficUpdate": 0.06,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0,
+            "otherRender": 0.08,
+            "ocean": 0.05,
+            "boatShadow": 0.01,
+            "mainScene": 1.42
+          }
+        },
+        {
+          "seconds": 7,
+          "fps": 60,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 332,
+          "distanceM": 3312,
+          "cpuMeanMs": {
+            "callback": 2.08,
+            "physics": 0.21,
+            "world": 0.02,
+            "trafficUpdate": 0.09,
+            "wheelGroundRaycasts": 0.04,
+            "effects": 0.01,
+            "otherRender": 0.07,
+            "ocean": 0.05,
+            "boatShadow": 0.02,
+            "mainScene": 1.45
+          }
+        },
+        {
+          "seconds": 8,
+          "fps": 59.99,
+          "worstFrameGapMs": 16.8,
+          "drawCalls": 334,
+          "distanceM": 3424,
+          "cpuMeanMs": {
+            "callback": 2.25,
+            "physics": 0.25,
+            "world": 0.02,
+            "trafficUpdate": 0.08,
+            "wheelGroundRaycasts": 0.03,
+            "effects": 0,
+            "otherRender": 0.09,
+            "ocean": 0.06,
+            "boatShadow": 0.02,
+            "mainScene": 1.58
+          }
+        }
+      ],
+      "trace": [
+        {
+          "d": 2849,
+          "speedKmh": 237,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            6,
+            6
+          ]
+        },
+        {
+          "d": 2899,
+          "speedKmh": 241,
+          "rivalPuffs": [
+            48,
+            48
+          ],
+          "rivalMarks": [
+            14,
+            14
+          ]
+        },
+        {
+          "d": 2949,
+          "speedKmh": 244,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3000,
+          "speedKmh": 239,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3050,
+          "speedKmh": 240,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3102,
+          "speedKmh": 246,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3154,
+          "speedKmh": 252,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3207,
+          "speedKmh": 257,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3261,
+          "speedKmh": 261,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3316,
+          "speedKmh": 265,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3372,
+          "speedKmh": 269,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        },
+        {
+          "d": 3430,
+          "speedKmh": 273,
+          "rivalPuffs": [
+            0,
+            0
+          ],
+          "rivalMarks": [
+            0,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}
