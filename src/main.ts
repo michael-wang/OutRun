@@ -385,7 +385,7 @@ if(debugRace){
  const cameras=$('race-cameras');
  const prev=document.createElement('button');prev.type='button';
  prev.textContent='◀ L1';prev.setAttribute('aria-label','上一位參賽者');prev.onclick=()=>cycleRacer(-1);
- const name=document.createElement('strong');name.id='race-camera-name';name.textContent='PLAYER';
+ const name=document.createElement('strong');name.id='race-camera-name';name.textContent='玩家';
  const next=document.createElement('button');next.type='button';
  next.textContent='R1 ▶';next.setAttribute('aria-label','下一位參賽者');next.onclick=()=>cycleRacer(1);
  cameras.append(prev,name,next);
@@ -426,9 +426,10 @@ function raceHud(){
  rearLayer.hidden=markers.length===0;
  if(debugRace||watching){
   const r=race.rivals[observed]??race.rivals[0],rank=race.rank(r.distance,r.finishTime,r.entry.id,state);
+  const nearestName=race.rivals.find(other=>other.entry.id===r.nearest)?.entry.name??(r.nearest==='PLAYER'?'玩家':r.nearest);
   const preparing=watching&&world.streamer&&!world.streamer.spectatorReady(r.distance);
   debugText.textContent=preparing?'正在準備觀戰路段':debugRace?
-    r.entry.name+' · P'+rank+' · '+r.behavior+'\n'+Math.round(r.speed*3.6)+' → '+Math.round(r.targetSpeed*3.6)+' km/h · 車道 '+(r.lane+1)+' → '+(r.targetLane+1)+'\n前方 '+r.nearest+(Number.isFinite(r.gap)?' · '+Math.round(r.gap)+' m':''):r.entry.id+' · P'+rank;
+    r.entry.name+' · P'+rank+' · '+r.behavior+'\n'+Math.round(r.speed*3.6)+' → '+Math.round(r.targetSpeed*3.6)+' km/h · 車道 '+(r.lane+1)+' → '+(r.targetLane+1)+'\n前方 '+nearestName+(Number.isFinite(r.gap)?' · '+Math.round(r.gap)+' m':''):r.entry.id+' · P'+rank;
   const cameraName=document.getElementById('race-camera-name');if(cameraName)cameraName.textContent=focus?.entry.name??'玩家';
  }
 }
