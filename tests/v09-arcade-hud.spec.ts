@@ -4,6 +4,42 @@ import {touchDriver} from './touch-driver';
 const before=process.env.OUTRUN_HUD_CAPTURE==='before',root=`${process.env.OUTRUN_HUD_DIR??'docs/evidence/v0.9-final-hud'}/${before?'before':'after'}`;
 const overlap=(a:any,b:any)=>a.x<b.x+b.width&&b.x<a.x+a.width&&a.y<b.y+b.height&&b.y<a.y+a.height;
 
+test('PC gamepad shows both pedals while driving and paused',async({page})=>{
+ await page.setViewportSize({width:1280,height:720});
+ await page.addInitScript(()=>{
+  const pad={id:'Test controller',mapping:'standard',connected:true,axes:[0,0],
+   buttons:Array.from({length:18},()=>({pressed:false,value:0}))};
+  Object.defineProperty(navigator,'getGamepads',{value:()=>[pad]});
+ });
+ const setButton=(index:number,down:boolean)=>page.evaluate(({index,down})=>{
+  Object.assign(navigator.getGamepads()[0]!.buttons[index],{pressed:down,value:Number(down)});
+ },{index,down});
+ await page.goto('/');
+ await page.bringToFront();
+ await page.waitForFunction(()=>(window as any).__drive?.driveState().mode==='playing',null,{timeout:90000});
+ await page.locator('#game-loading').waitFor({state:'hidden',timeout:90000});
+ const gas=page.locator('[data-control=gas]'),brake=page.locator('[data-control=brake]');
+ await setButton(7,true);
+ await expect(page.locator('html')).toHaveAttribute('data-input-mode','gamepad');
+ await expect(gas).toBeVisible();
+ await expect(brake).toBeVisible();
+ await expect(page.locator('#steering-strip')).toBeVisible();
+ expect(await gas.evaluate(el=>getComputedStyle(el,'::after').content)).toContain('R2');
+ expect(await brake.evaluate(el=>getComputedStyle(el,'::after').content)).toContain('L2');
+ await expect(gas).toHaveClass(/pressed/);
+ await page.screenshot({path:test.info().outputPath('pc-gamepad.png')});
+ await setButton(7,false);
+ await expect(gas).not.toHaveClass(/pressed/);
+ await setButton(6,true);
+ await expect(brake).toHaveClass(/pressed/);
+ await setButton(9,true);
+ await expect(page.locator('#tp-resume')).toBeVisible();
+ await expect(page.locator('#touch')).toHaveJSProperty('inert',true);
+ await expect(gas).toBeVisible();
+ await expect(brake).toBeVisible();
+ await expect(brake).not.toHaveClass(/pressed/);
+});
+
 for(const [width,height] of [[915,412],[844,390],[960,432],[1024,768],[1280,720],[667,375],[568,320]])for(const swapped of [false,true])test(`arcade dashboard ${width}x${height} swapped=${swapped}`,async({browser})=>{
  const mobile=width<1000,context=await browser.newContext({viewport:{width,height},hasTouch:mobile,isMobile:mobile}),page=await context.newPage();
  await page.addInitScript(swapped=>{localStorage.setItem('first-drive-controls-swapped',String(swapped));Object.defineProperty(HTMLElement.prototype,'requestFullscreen',{value:undefined,configurable:true});},swapped);
