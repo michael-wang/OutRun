@@ -11,26 +11,29 @@ export interface CarSpec {
   width:number; length:number;
 }
 export interface RacerEntry {
-  id:string; paint:number; gridSide:number; gridOffset:number; gridLaneOffset?:number; driver:DriverProfile; car:CarSpec;
+  id:string; name:string; paint:number; gridSide:number; gridOffset:number; gridLaneOffset?:number; driver:DriverProfile; car:CarSpec;
 }
-// All ten entrants (player + nine rivals) use the same physical powertrain.
+// All eight entrants (player + seven rivals) use the same physical powertrain.
 // Separate rows and lanes leave a collision-free starting grid, even at 120 Hz.
 const clubDriver:DriverProfile={anticipation:2.6,reactionTime:.17,overtaking:.76,aggression:.32,riskTolerance:.48};
 export const equalRiviera:CarSpec={lowForce:1,midForce:1,highForce:1,topSpeed:MAX_SPEED,brake:34,cornerGrip:22,width:2.25,length:4.9};
 export const raceEntries:RacerEntry[]=[
-  {id:'RIVAL 1',paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:0,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 2',paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:0,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 3',paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:15,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 4',paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:15,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 5',paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:15,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 6',paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:30,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 7',paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:30,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 8',paint:0x3db6a9,gridSide:-1,gridLaneOffset:-2,gridOffset:45,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 9',paint:0x427bd2,gridSide:1,gridLaneOffset:2,gridOffset:45,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 1',name:'對手一',paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:0,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 2',name:'對手二',paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:0,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 3',name:'對手三',paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:15,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 4',name:'對手四',paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:15,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 5',name:'對手五',paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:15,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 6',name:'對手六',paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:30,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 7',name:'對手七',paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:30,driver:clubDriver,car:equalRiviera},
 ];
 export interface RaceBody {distance:number; lateral:number; speed:number}
 export interface Obstacle extends RaceBody {id:string; type?:number; width:number; length:number}
 export interface RaceRoad {curvature:number; grade:number; half:number}
+/** Stable internal IDs coexist with player-facing Chinese driver names. */
+export interface RaceStanding {
+ id:string; name:string; rank:number; distance:number;
+ finishTime:number|null; isPlayer:boolean;
+}
 type Behavior='加速'|'煞車'|'跟車'|'超車'|'避障'|'防守'|'完賽';
 export class RivalState {
   distance=0; lateral=0; speed=0; previousDistance=0; previousLateral=0; lateralRate=0;
@@ -223,6 +226,20 @@ export class RivalRace {
     if(this.playerFinish===null)this.playerFinish=crossingTime(oldPlayer.distance,player.distance,this.finish,this.time,dt);
     this.time+=dt;
     return hit;
+  }
+  /** Finishers lead by actual crossing time. Everyone else is live-ranked by progress. */
+  standings(player:RaceBody):RaceStanding[]{
+    const rows:Omit<RaceStanding,'rank'>[]=[
+      {id:'PLAYER',name:'玩家',distance:player.distance,finishTime:this.playerFinish,isPlayer:true},
+      ...this.rivals.map(r=>({id:r.entry.id,name:r.entry.name,distance:r.distance,finishTime:r.finishTime,isPlayer:false})),
+    ];
+    rows.sort((a,b)=>{
+      if(a.finishTime!==null&&b.finishTime!==null)return a.finishTime-b.finishTime||(a.id<b.id?-1:a.id>b.id?1:0);
+      if(a.finishTime!==null)return -1;
+      if(b.finishTime!==null)return 1;
+      return b.distance-a.distance||(a.id<b.id?-1:a.id>b.id?1:0);
+    });
+    return rows.map((r,i)=>({...r,rank:i+1}));
   }
   rank(distance:number,finishTime:number|null,id:string,player:RaceBody){
     const ahead=(d:number,t:number|null,key:string)=>key!==id&&(t!==null?

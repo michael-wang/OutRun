@@ -56,14 +56,20 @@ function rearTrim(){
   for(const side of [-1,1])add(new T.CylinderGeometry(.074,.074,.16,12).rotateX(Math.PI/2).translate(side*.66,.30,-2.39),0x948b85);
   const trim=mergeGeometries(faces)!;faces.forEach(face=>face.dispose());return trim;
 }
-function badge(){
-  const canvas=document.createElement('canvas');canvas.width=144;canvas.height=42;
-  const c=canvas.getContext('2d')!;
-  c.fillStyle='rgba(20,25,30,.77)';c.fillRect(3,4,138,34);
-  c.fillStyle='#ff855f';c.fillRect(3,4,5,34);
-  c.fillStyle='#fff2de';c.font='italic bold 25px Arial';c.textAlign='center';c.fillText('RIVAL',74,30);
-  const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;
-  return new T.SpriteMaterial({map,transparent:true,depthWrite:false,depthTest:true});
+/** Fixed-screen-size luminous road label, with its pointer anchored above the roof. */
+function badge(name:string){
+ const canvas=document.createElement('canvas');canvas.width=320;canvas.height=172;
+ const c=canvas.getContext('2d')!;
+ c.shadowColor='rgba(0,0,0,.92)';c.shadowBlur=10;c.shadowOffsetY=4;
+ c.fillStyle='#fff3a5';c.strokeStyle='#1c2226';c.lineWidth=7;
+ c.beginPath();c.moveTo(12,12);c.lineTo(308,12);c.lineTo(308,99);
+ c.lineTo(190,99);c.lineTo(160,163);c.lineTo(130,99);c.lineTo(12,99);c.closePath();
+ c.fill();c.stroke();c.shadowBlur=0;c.shadowOffsetY=0;
+ c.fillStyle='#10171c';c.font='bold 53px "Microsoft JhengHei","PingFang TC",sans-serif';
+ c.textAlign='center';c.textBaseline='middle';c.fillText(name,160,56,270);
+ const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;
+ return new T.SpriteMaterial({map,transparent:true,depthWrite:false,depthTest:true,
+  sizeAttenuation:false,toneMapped:false,fog:false});
 }
 function assets(){
   const [roof,glass]=canopy();
@@ -81,9 +87,9 @@ function assets(){
   return {shell:coachwork,glass,wheels:wheelGeometry(),trim:rearTrim(),rear:createRivieraTailLamps(),front,shadow,
     rubber:new T.MeshStandardMaterial({vertexColors:true,roughness:.63}), windows:new T.MeshStandardMaterial({color:0x334859,emissive:0x0b1923,roughness:.46,metalness:.1,side:T.DoubleSide}),
     head:new T.MeshStandardMaterial({color:0xffebcf,emissive:0xffb673,emissiveIntensity:.48}),
-    shade:new T.MeshBasicMaterial({color:0x120f12,transparent:true,opacity:.32,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}),badge:badge()};
+    shade:new T.MeshBasicMaterial({color:0x120f12,transparent:true,opacity:.32,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1})};
 }
-function carModel(a:ReturnType<typeof assets>,color:number){
+function carModel(a:ReturnType<typeof assets>,color:number,name:string){
   const root=new T.Group();root.rotation.order='YXZ';
   const paint=new T.MeshStandardMaterial({color,roughness:.29,metalness:.39,side:T.DoubleSide});
   const tail=new T.MeshStandardMaterial({color:0xcd2429,emissive:0xff1522,emissiveIntensity:.5,side:T.DoubleSide});
@@ -91,7 +97,8 @@ function carModel(a:ReturnType<typeof assets>,color:number){
   wheels.boundingSphere=new T.Sphere(new T.Vector3(),3);
   root.add(new T.Mesh(a.shell,paint),wheels,new T.Mesh(a.glass,a.windows),
     new T.Mesh(a.trim,a.rubber),new T.Mesh(a.rear,tail),new T.Mesh(a.front,a.head),new T.Mesh(a.shadow,a.shade));
-  const label=new T.Sprite(a.badge);label.position.y=2.14;label.scale.set(1.65,.48,1);root.add(label);
+  const label=new T.Sprite(badge(name));label.name='rival-name-tag';
+  label.position.y=1.90;label.center.set(.5,0);root.add(label);
   return {root,tail,label,wheels};
 }
 export class RivalView {
@@ -104,14 +111,21 @@ export class RivalView {
   constructor(private race:RivalRace,scene:T.Scene,smoke:TireEffects,private sample:ReturnType<typeof createTrack>['sample']){
     scene.add(this.group);
     this.cars=race.rivals.map(r=>{
-      const car=carModel(this.assets,r.entry.paint);car.root.name=r.entry.id;this.group.add(car.root);
+      const car=carModel(this.assets,r.entry.paint,r.entry.name);car.root.name=r.entry.id;this.group.add(car.root);
       return {...car,near:false,effects:new TireEffects(scene,'smoke',smoke)};
     });
   }
   inspectEffects(){return this.cars.map(car=>car.effects.inspect());}
+  inspectTags(){return this.cars.map((car,i)=>({
+    name:this.race.rivals[i].entry.name,visible:car.root.visible&&car.label.visible,
+    sizeAttenuation:(car.label.material as T.SpriteMaterial).sizeAttenuation,
+    scale:car.label.scale.toArray(),
+  }));}
   reset(){for(const car of this.cars)car.effects.clear();}
-  dispose(){for(const car of this.cars)car.effects.dispose();this.assets.badge.map?.dispose();this.assets.badge.dispose();}
-  update(focus:number,time:number,countdown:boolean,observed:number,ready:(d:number)=>boolean){
+  dispose(){for(const car of this.cars){car.effects.dispose();const mat=car.label.material as T.SpriteMaterial;mat.map?.dispose();mat.dispose();}}
+  update(focus:number,time:number,countdown:boolean,observed:number,ready:(d:number)=>boolean,camera:T.PerspectiveCamera,viewportHeight:number){
+    const pixelUnit=2*Math.tan(T.MathUtils.degToRad(camera.fov)*.5)/Math.max(1,viewportHeight);
+    const tagWidth=104*pixelUnit,tagHeight=56*pixelUnit;
     this.race.rivals.forEach((r,i)=>{
       const car=this.cars[i],root=car.root,dist=Math.abs(r.distance-focus);
       const visible=dist<720&&ready(r.distance)&&r.finishTime===null;
@@ -119,8 +133,10 @@ export class RivalView {
       root.visible=true;
       const p=this.sample(r.distance);root.position.copy(p.position).addScaledVector(p.right,r.lateral);root.position.y+=.04;
       root.rotation.set(-Math.asin(p.tangent.y),-p.roadHeading-Math.atan2(r.lateralRate+r.impulse,Math.max(8,r.speed)),Math.atan(-p.right.y));
-      car.label.visible=observed!==i&&dist<155;
-      const labelScale=Math.min(2,1+dist/100);car.label.scale.set(1.65*labelScale,.48*labelScale,1);
+      // The Sprite material disables perspective size attenuation; off-screen tags
+      // are naturally frustum-culled and road geometry may occlude them.
+      car.label.visible=observed!==i&&r.distance>=focus-2;
+      car.label.scale.set(tagWidth,tagHeight,1);
       if(dist<125||!car.wheels.userData.placed){
         car.wheels.userData.placed=true;
         const rotation=wheelRoll(0,r.distance),burn=wheelRoll(0,Math.min(3,time)*16);

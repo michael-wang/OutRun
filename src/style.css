@@ -621,3 +621,51 @@ html[data-player-ui="true"] #player-start[data-finished="true"] #results-menu{
 #race-director button[aria-pressed=true]{border-color:#ff966b;color:#ffbc99}
 #ready-countdown{top:30%;border:0;border-bottom:3px solid #ff845a;border-radius:0;background:#171a215c;font:italic 900 clamp(38px,8vh,76px)/1 Arial,sans-serif;letter-spacing:-.06em;padding:.06em .3em;color:#fff0d7;pointer-events:none}
 #race-watch{min-height:40px;color:#ffccac;border:1px solid #e7af8d;background:#1e23268a}
+
+/* Racing R0.2b — left-side full-field results; scenery and player car stay central. */
+#race-standings{
+ position:fixed;z-index:18;left:max(15px,env(safe-area-inset-left));top:50%;
+ transform:translateY(-50%);width:min(292px,35vw);max-height:calc(100dvh - 36px);
+ padding:13px 13px 11px;border:1px solid #ffe3aa9c;border-radius:9px;
+ background:rgba(15,25,32,.70);color:#fff8e5;
+ pointer-events:none;overflow-y:auto;text-shadow:0 1px 3px #06101a;
+ font-family:system-ui,"PingFang TC",sans-serif;
+}
+#race-standings-title{
+ padding:0 0 8px;margin-bottom:6px;border-bottom:1px solid #e9d4a272;
+ font-weight:800;letter-spacing:.1em;font-size:15px;
+}
+#race-standings-list{display:grid;gap:3px;margin:0;padding:0;list-style:none}
+#race-standings-list li{
+ display:grid;grid-template-columns:24px minmax(0,1fr) 91px;align-items:center;
+ min-height:28px;gap:6px;padding:2px 5px 2px 7px;
+ border-left:3px solid var(--racer-color,#f2d398);font-size:13px;
+}
+#race-standings-list li[data-player=true]{background:#ffc6742d}
+#race-standings-list .race-place{font-variant-numeric:tabular-nums;color:#ffda8f;font-weight:900}
+#race-standings-list .race-name{font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#race-standings-list .race-time{font:650 12px/1.2 Arial,"PingFang TC",sans-serif;text-align:right;color:#fff4d6;white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* Road-lateral x position is calculated from the racer relative to the player.
+   Marker nodes are reused and updated only at the existing 125ms HUD cadence. */
+#rear-rival-tags{position:fixed;z-index:16;left:0;right:0;bottom:max(9px,env(safe-area-inset-bottom));height:194px;pointer-events:none}
+.rear-rival-tag{
+ position:absolute;transform:translateX(-50%);padding:4px 8px;
+ border:1.5px solid #ffe59c;border-bottom:2px solid var(--rival-accent,#ffde83);
+ border-radius:5px;background:rgba(18,23,28,.88);
+ color:#fff6b9;white-space:nowrap;
+ font:800 13px/1.1 system-ui,"PingFang TC",sans-serif;
+ text-shadow:0 1px 3px #000;box-shadow:0 2px 7px #080b10b3;
+ transition:left .11s linear;
+}
+@media (orientation:landscape) and (max-height:500px){
+ #race-standings{width:min(242px,35vw);left:max(9px,env(safe-area-inset-left));padding:8px 8px 7px}
+ #race-standings-title{font-size:13px;padding-bottom:5px;margin-bottom:4px}
+ #race-standings-list{gap:1px}
+ #race-standings-list li{grid-template-columns:20px minmax(0,1fr) 72px;min-height:24px;font-size:11px;gap:4px;padding:1px 3px 1px 5px}
+ #race-standings-list .race-time{font-size:10px}
+ .rear-rival-tag{font-size:11px;padding:3px 6px}
+}
+@media (orientation:portrait){
+ #race-standings{top:30%;width:min(292px,80vw);max-height:45dvh}
+}

@@ -28,6 +28,7 @@ import { InputController, readSwapped, saveSwapped } from './input';
 import { EngineSound } from './sound';
 import {RivalRace,raceEntries} from './rival-race';
 import {RivalView} from './rival-view';
+import {layoutRearRivalTags,formatRaceTime} from './race-hud';
 import {GamepadInput} from './gamepad';
 import {RecentDrivingHistory} from './recent-history';
 import {advancePowertrain} from './powertrain';
@@ -116,7 +117,7 @@ let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof moun
 
 const entrantCount=1+raceEntries.length;
 document.querySelector('#app')!.innerHTML = `
-<div id="view"></div><div id="race-position" hidden><b>${entrantCount}</b> / ${entrantCount} <small></small></div>
+<div id="view"></div><div id="race-position" hidden><b>${entrantCount}</b> / ${entrantCount} <small></small></div><div id="rear-rival-tags" aria-hidden="true" hidden></div><aside id="race-standings" aria-label="競賽排名" hidden><div id="race-standings-title">全場排名</div><ol id="race-standings-list"></ol></aside>
 <aside id="race-director" hidden><div id="race-cameras"></div><output id="race-data"></output></aside><div class="vignette"></div>
 <div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??TRIP_VERSION}</small></div>
 <div id="drive-readout" hidden><strong id="drive-fps">— FPS</strong><small id="drive-distance">0 m</small><small id="game-version">${GAME_VERSION}</small></div>
@@ -330,6 +331,35 @@ if(traffic)traffic.rivalLeaders=()=>race.rivals;
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
 const rivalView=new RivalView(race,world.scene,tireEffects,world.sample);
 await renderer.compileAsync(rivalView.group,camera,world.scene);
+// Reuse a fixed set of lightweight DOM nodes; there is no per-frame HTML allocation.
+const rearLayer=$('rear-rival-tags'),rearLabels=new Map<string,HTMLDivElement>();
+for(const r of race.rivals){
+ const label=document.createElement('div');label.className='rear-rival-tag';
+ label.dataset.rival=r.entry.id;label.hidden=true;
+ label.style.setProperty('--rival-accent','#'+r.entry.paint.toString(16).padStart(6,'0'));
+ rearLayer.append(label);rearLabels.set(r.entry.id,label);
+}
+const standingsPanel=$('race-standings'),standingsList=$('race-standings-list');
+const standingRows=Array.from({length:entrantCount},()=>{
+ const li=document.createElement('li');li.innerHTML='<b class="race-place"></b><span class="race-name"></span><time class="race-time"></time>';
+ standingsList.append(li);return li;
+});
+let nextStandingUpdate=0;
+function updateStandings(){
+ const now=performance.now();if(now<nextStandingUpdate)return;
+ nextStandingUpdate=now+175;
+ const rows=race.standings(state);
+ $('race-standings-title').textContent=rows.every(r=>r.finishTime!==null)?'完賽排名':'全場排名';
+ for(let i=0;i<standingRows.length;i++){
+  const li=standingRows[i],r=rows[i];
+  li.dataset.player=String(r.isPlayer);
+  li.querySelector<HTMLElement>('.race-place')!.textContent=String(r.rank).padStart(2,'0');
+  li.querySelector<HTMLElement>('.race-name')!.textContent=r.name;
+  li.querySelector<HTMLElement>('.race-time')!.textContent=formatRaceTime(r.finishTime);
+  const paint=r.isPlayer?0xffc980:race.rivals.find(x=>x.entry.id===r.id)!.entry.paint;
+  li.style.setProperty('--racer-color','#'+paint.toString(16).padStart(6,'0'));
+ }
+}
 let countdown=3,observed=-1,nextRaceHud=0;
 const playerCamera=new THREE.PerspectiveCamera();
 const debugRace=params.get('rivaldebug')==='1';
@@ -364,7 +394,8 @@ const backToResults=document.createElement('button');
 backToResults.textContent='返回結算';backToResults.onclick=()=>followRacer(-1);director.append(backToResults);
 raceWatch.onclick=()=>followRacer(race.rivals.findIndex(r=>r.finishTime===null));
 function resetRace(grid=atDistance??BRICK_START){
- race.reset(grid);rivalView.reset();observed=-1;countdown=3;nextRaceHud=0;
+ race.reset(grid);rivalView.reset();observed=-1;countdown=3;nextRaceHud=0;nextStandingUpdate=0;
+  rearLayer.hidden=true;for(const tag of rearLabels.values())tag.hidden=true;standingsPanel.hidden=true;
  traffic?.drawForObserver(null,0);
  if(world.streamer)world.streamer.spectatorDistance=null;
 }
@@ -375,15 +406,30 @@ function raceHud(){
  const watching=observed>=0;
  if(performance.now()<nextRaceHud)return;
  nextRaceHud=performance.now()+125;
- const gaps=race.rivals.filter(r=>r.finishTime===null).map(r=>r.distance-state.distance).sort((a,b)=>Math.abs(a)-Math.abs(b));
- const gap=gaps[0],hint=watching?'':gap>155?'▲ RIVAL · '+Math.round(gap)+' m':gap< -7&&gap> -65?'▼ RIVAL · '+Math.round(-gap)+' m':'';
- if(gapHint.textContent!==hint)gapHint.textContent=hint;
+ // Distant front markers never float on the HUD; the actual 3D tag follows its car.
+ if(gapHint.textContent!=='')gapHint.textContent='';
+ const rearActive=!watching&&!brickCompleted&&!settingsOpen&&(mode==='playing'||mode==='countdown');
+ const markers=rearActive?layoutRearRivalTags(
+  {distance:state.distance,lateral:state.lateral},
+  race.rivals.map(r=>({id:r.entry.id,name:r.entry.name,distance:r.distance,lateral:r.lateral,finishTime:r.finishTime})),
+  world.halfAt(state.distance)): [];
+ const rearById=new Map(markers.map(m=>[m.id,m]));
+ for(const [id,node] of rearLabels){
+  const marker=rearById.get(id);
+  node.hidden=!marker;
+  if(!marker)continue;
+  const title=marker.name+' · '+marker.distanceMeters+'m';
+  if(node.textContent!==title)node.textContent=title;
+  node.style.left=marker.leftPercent+'%';
+  node.style.bottom=(17+marker.row*26)+'px';
+ }
+ rearLayer.hidden=markers.length===0;
  if(debugRace||watching){
   const r=race.rivals[observed]??race.rivals[0],rank=race.rank(r.distance,r.finishTime,r.entry.id,state);
   const preparing=watching&&world.streamer&&!world.streamer.spectatorReady(r.distance);
   debugText.textContent=preparing?'正在準備觀戰路段':debugRace?
-    r.entry.id+' · P'+rank+' · '+r.behavior+'\n'+Math.round(r.speed*3.6)+' → '+Math.round(r.targetSpeed*3.6)+' km/h · 車道 '+(r.lane+1)+' → '+(r.targetLane+1)+'\n前方 '+r.nearest+(Number.isFinite(r.gap)?' · '+Math.round(r.gap)+' m':''):r.entry.id+' · P'+rank;
-  const cameraName=document.getElementById('race-camera-name');if(cameraName)cameraName.textContent=focus?.entry.id??'PLAYER';
+    r.entry.name+' · P'+rank+' · '+r.behavior+'\n'+Math.round(r.speed*3.6)+' → '+Math.round(r.targetSpeed*3.6)+' km/h · 車道 '+(r.lane+1)+' → '+(r.targetLane+1)+'\n前方 '+r.nearest+(Number.isFinite(r.gap)?' · '+Math.round(r.gap)+' m':''):r.entry.id+' · P'+rank;
+  const cameraName=document.getElementById('race-camera-name');if(cameraName)cameraName.textContent=focus?.entry.name??'玩家';
  }
 }
 function applyShadowTechnique(technique:CoastShadowTechnique,enabled:boolean){
@@ -498,6 +544,8 @@ function landscapeReady(){return matchMedia('(orientation:landscape)').matches;}
 function updatePlayerUi(){
   if(!playerUi)return;
   const panel=$('player-start'),show=!(brickCompleted&&observed>=0)&&mode!=='playing'&&mode!=='countdown'&&!settingsOpen&&!(mode==='paused'&&!brickCompleted);
+   standingsPanel.hidden=!(brickCompleted&&show);
+   if(!standingsPanel.hidden)updateStandings();
   document.documentElement.dataset.driveMode=mode;
   // Only completed journeys use the small lower-right credits HUD; regular
   // splash and pause menus retain their approved positioning.
@@ -817,7 +865,7 @@ function render(dt:number,draw=true){
   if(fpsProfiling)driveFpsDiagnostics.cpu('world',performance.now()-worldStart);
   if(!draw)return;
   const raceEffectTime=3-countdown+race.time;
-  rivalView.update(cameraOnRival?followed.distance:state.distance,raceEffectTime,mode==='countdown',observed,actorRoadReady);
+  rivalView.update(cameraOnRival?followed.distance:state.distance,raceEffectTime,mode==='countdown',observed,actorRoadReady,camera,renderer.domElement.clientHeight);
   raceHud();
   const light=$('ready-countdown');
   const showLight=!document.documentElement.dataset.loading&&(mode==='countdown'||mode==='playing'&&race.time<.85);
@@ -1303,6 +1351,7 @@ if(!mobile())requestAnimationFrame(()=>!signal.aborted&&document.getElementById(
 
 if(import.meta.env.DEV){(window as any).__drive={
   rivalEffects:()=>rivalView.inspectEffects(),
+  rivalTags:()=>rivalView.inspectTags(),
   race:()=>({time:race.time,countdown,observed,playerFinish:race.playerFinish,rank:race.rank(state.distance,race.playerFinish,'PLAYER',state),rivals:race.rivals.map(({entry,obstacles,gearbox,...r})=>({...r,id:entry.id}))}),
   journeyLoadHold:(held:boolean)=>{journeyLoadHeld=held;},
   journey:()=>({enabled:journeyMode,index:chapterIndex,transitioning:journeyTransition,totalElapsed:journeyElapsed+elapsed,memory:{...renderer.info.memory},chapters:chapters?.map(c=>({id:c.id,title:c.title,start:c.start,end:c.end})),transitions:journeyTransitions,preparations:journeyPreparations,exitAt:journeyExitAt,loadStarts:journeyLoadStarts,loadHeld:journeyLoadHeld,preparing:preparingChapter,prepared:nextChapter?.index,error:preparationError,highway:journeyLink?.inHighway(state.distance)}),

@@ -13,15 +13,27 @@ const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
 function ticks(seconds:number,fn:()=>void){for(let i=0;i<Math.round(seconds/dt);i++)fn();}
 describe('Riviera GT race',()=>{
- it('has nine distinct AI cars with the player powertrain and a non-overlapping grid',()=>{
+ it('has seven distinct AI cars with the player powertrain and a non-overlapping grid',()=>{
   const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);race.reset(350);
-  expect(race.rivals).toHaveLength(9);
+  expect(race.rivals).toHaveLength(7);
   expect(new Set(race.rivals.map(r=>r.entry.id)).size).toBe(9);
   expect(race.rivals.every(r=>r.entry.car===equalRiviera)).toBe(true);
-  for(let i=0;i<9;i++)for(let j=i+1;j<9;j++){
+  for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){
    const a=race.rivals[i],b=race.rivals[j];
    expect(Math.abs(a.distance-b.distance)>equalRiviera.length+1||Math.abs(a.lateral-b.lateral)>equalRiviera.width+.2).toBe(true);
   }
+ });
+ it('orders the full field by finish time, then by progress, with Chinese display names',()=>{
+  const race=new RivalRace(3000,flat,()=>[]);race.reset(350);
+  expect(race.standings({distance:350,lateral:0,speed:0})).toHaveLength(8);
+  expect(race.rivals.map(r=>r.entry.name)).toEqual(['對手一','對手二','對手三','對手四','對手五','對手六','對手七']);
+  race.playerFinish=50;
+  const r1=race.rivals[0],r2=race.rivals[1];
+  r1.finishTime=47;r2.finishTime=49;
+  const rows=race.standings({distance:3000,lateral:0,speed:0});
+  expect(rows.slice(0,3).map(r=>r.name)).toEqual(['對手一','對手二','玩家']);
+  expect(rows.map(r=>r.rank)).toEqual([1,2,3,4,5,6,7,8]);
+  expect(rows.slice(3).every(r=>r.finishTime===null)).toBe(true);
  });
  it('calibrates wheel force against the actual player gearbox in three speed bands',()=>{
   for(const [kmh,min,max] of [[10,.97,1.03],[150,.97,1.03],[255,.97,1.03]]){
@@ -136,7 +148,7 @@ describe('Riviera GT race',()=>{
     for(const r of race.rivals)expect(r.speed).toBeLessThanOrEqual(raceEntries[0].car.topSpeed);
    }
    expect(race.rivals.map(r=>r.finishTime)).not.toContain(null);
-   expect(race.rivals).toHaveLength(9);
+   expect(race.rivals).toHaveLength(7);
    expect(race.rivals.every(r=>Number.isFinite(r.finishTime))).toBe(true);
   }
  },20000);
