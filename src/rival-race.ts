@@ -18,19 +18,25 @@ export interface RacerEntry {
 // Each row has distinct lanes, leaving a fair chase from eighth place.
 const clubDriver:DriverProfile={anticipation:2.6,reactionTime:.17,overtaking:.76,aggression:.32,riskTolerance:.48};
 export const equalRiviera:CarSpec={lowForce:1,midForce:1,highForce:1,topSpeed:MAX_SPEED,brake:34,cornerGrip:22,width:2.25,length:4.9};
+/** Public driver names follow A → Z, then wrap to A for later expansion. */
+export const RIVAL_DRIVER_NAMES = ["Aaron","Bruno","Cody","Damon","Ethan","Felix","Gavin","Henry","Ivan","Jason","Kevin","Leo","Mason","Noah","Oscar","Peter","Quinn","Ryan","Sean","Theo","Uma","Victor","Will","Xavier","Yuri","Zane"] as const;
+export function rivalDriverName(index:number):string {
+  const slot=((Math.trunc(index)%RIVAL_DRIVER_NAMES.length)+RIVAL_DRIVER_NAMES.length)%RIVAL_DRIVER_NAMES.length;
+  return RIVAL_DRIVER_NAMES[slot];
+}
 export const raceEntries:RacerEntry[]=[
-  {id:'RIVAL 1',name:'對手一',paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:12,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 2',name:'對手二',paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:12,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 3',name:'對手三',paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:27,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 4',name:'對手四',paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:27,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 5',name:'對手五',paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:27,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 6',name:'對手六',paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:42,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 7',name:'對手七',paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:42,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 1',name:rivalDriverName(0),paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:12,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 2',name:rivalDriverName(1),paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:12,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 3',name:rivalDriverName(2),paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 4',name:rivalDriverName(3),paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 5',name:rivalDriverName(4),paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 6',name:rivalDriverName(5),paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:42,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 7',name:rivalDriverName(6),paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:42,driver:clubDriver,car:equalRiviera},
 ];
 export interface RaceBody {distance:number; lateral:number; speed:number}
 export interface Obstacle extends RaceBody {id:string; type?:number; width:number; length:number}
 export interface RaceRoad {curvature:number; grade:number; half:number}
-/** Stable internal IDs coexist with player-facing Chinese driver names. */
+/** Stable internal IDs are independent from player-facing English driver names. */
 export interface RaceStanding {
  id:string; name:string; rank:number; distance:number;
  finishTime:number|null; isPlayer:boolean;

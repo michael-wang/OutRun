@@ -4,7 +4,7 @@ import {createRivieraTailLamps} from './hero-classic-geometry';
 import {createSpiderShell,createWheelBrow,createGTWingMirrorHousing} from './hero-body';
 import {createRoadWheel,wheelRoll} from './wheels';
 import {TireEffects,type TireContact} from './tire-effects';
-import type {RivalRace} from './rival-race';
+import type {RivalRace,RaceStanding} from './rival-race';
 import type {createTrack} from './track';
 import {chaseTargets} from './chase';
 
@@ -56,45 +56,45 @@ function rearTrim(){
   for(const side of [-1,1])add(new T.CylinderGeometry(.074,.074,.16,12).rotateX(Math.PI/2).translate(side*.66,.30,-2.39),0x948b85);
   const trim=mergeGeometries(faces)!;faces.forEach(face=>face.dispose());return trim;
 }
-/** Fixed-screen-size luminous road label, with its pointer anchored above the roof. */
-/** Compact illuminated timing plaque, inspired by the game's graphite/amber HUD.
- * A sharp numbered racer tab replaces the former cartoon speech bubble. */
-function badge(name:string,number:number){
- const canvas=document.createElement('canvas');canvas.width=512;canvas.height=176;
+/** Draw a compact racing plaque: live rank, driver name, and one car pointer.
+ * Never recreate textures when the race order changes; repaint the existing canvas. */
+function drawBadge(canvas:HTMLCanvasElement,name:string,rank:number){
  const c=canvas.getContext('2d')!;
- // Beveled, translucent graphite chassis with a narrow underbody pointer.
- c.shadowColor='rgba(2,9,16,.8)';c.shadowBlur=16;c.shadowOffsetY=5;
- c.beginPath();c.moveTo(26,15);c.lineTo(462,15);c.lineTo(492,45);
- c.lineTo(492,112);c.lineTo(282,112);c.lineTo(256,153);
- c.lineTo(231,112);c.lineTo(14,112);c.lineTo(14,30);c.closePath();
- const panel=c.createLinearGradient(0,15,0,130);
- panel.addColorStop(0,'rgba(23,41,52,.98)');panel.addColorStop(1,'rgba(8,22,33,.94)');
- c.fillStyle=panel;c.fill();
- c.shadowBlur=0;c.shadowOffsetY=0;
- c.strokeStyle='#f1cd91';c.lineWidth=3.5;c.stroke();
- // Fast orange race-line atop the enclosure, faint cyan edge at the base.
- c.fillStyle='#ffad58';c.fillRect(32,21,434,5);
- c.fillStyle='#4bbac7';c.fillRect(30,106,200,3);
- c.fillStyle='#ffb85e';
- c.beginPath();c.moveTo(242,114);c.lineTo(256,144);c.lineTo(270,114);c.closePath();c.fill();
- // Brushed-copper racer number cell, in the same tone as the game speedometer.
- const chip=c.createLinearGradient(32,35,112,100);
- chip.addColorStop(0,'#ffdb94');chip.addColorStop(1,'#ec824f');
- c.fillStyle=chip;c.fillRect(32,36,92,62);
- c.fillStyle='#15212a';c.textAlign='center';c.textBaseline='middle';
- c.font='italic 900 43px Arial,sans-serif';
- c.fillText(String(number).padStart(2,'0'),77,68);
- // Tiny English qualifier above the prominent Chinese driver's name.
- c.textAlign='left';
- c.fillStyle='#ffbe79';c.font='bold 18px Arial,sans-serif';c.fillText('RIVAL',144,45);
- c.fillStyle='#fff6e8';c.font='900 51px "PingFang TC","Microsoft JhengHei",sans-serif';
- c.fillText(name,143,82,326);
- // Short racing slashes end the plate without adding an opaque card.
- c.fillStyle='#ff9a5f';
- for(let i=0;i<3;i++){c.beginPath();const x=439+i*12;c.moveTo(x,66);c.lineTo(x+5,66);c.lineTo(x-2,83);c.lineTo(x-7,83);c.closePath();c.fill();}
+ c.clearRect(0,0,canvas.width,canvas.height);
+ c.save();
+ // Crisp beveled charcoal body, golden border and a short pointer toward the roof.
+ c.shadowColor='rgba(0,8,17,.82)';c.shadowBlur=12;c.shadowOffsetY=5;
+ c.beginPath();c.moveTo(27,21);c.lineTo(473,21);c.lineTo(500,48);
+ c.lineTo(488,120);c.lineTo(284,120);c.lineTo(256,163);
+ c.lineTo(231,120);c.lineTo(24,120);c.lineTo(13,104);c.lineTo(18,41);
+ c.closePath();
+ const bg=c.createLinearGradient(0,22,0,132);
+ bg.addColorStop(0,'#263945');bg.addColorStop(.53,'#122633');bg.addColorStop(1,'#0a1722');
+ c.fillStyle=bg;c.fill();c.shadowBlur=0;c.shadowOffsetY=0;
+ c.strokeStyle='#ffbc66';c.lineWidth=5;c.stroke();
+ // The numbering is one meaningful signal: the opponent's current race place.
+ c.beginPath();c.moveTo(28,34);c.lineTo(138,34);c.lineTo(128,111);c.lineTo(22,111);
+ c.closePath();
+ const gold=c.createLinearGradient(24,33,133,113);
+ gold.addColorStop(0,'#ffe1a0');gold.addColorStop(.55,'#ffbb57');gold.addColorStop(1,'#d87824');
+ c.fillStyle=gold;c.fill();
+ c.fillStyle='#121c25';c.textAlign='center';c.textBaseline='middle';
+ c.font='italic 900 65px "Arial Black",Arial,sans-serif';
+ c.fillText(String(rank).padStart(2,'0'),78,75,106);
+ c.textAlign='left';c.fillStyle='#fff5e5';
+ c.font='italic 900 67px "Arial Black",Arial,sans-serif';
+ c.fillText(name,156,76,309);
+ // A clear outline makes the marker readable against both sunset and mountains.
+ c.strokeStyle='rgba(255,215,151,.30)';c.lineWidth=2;
+ c.beginPath();c.moveTo(148,108);c.lineTo(468,108);c.stroke();
+ c.restore();
+}
+function badge(name:string,rank:number){
+ const canvas=document.createElement('canvas');canvas.width=512;canvas.height=176;
+ drawBadge(canvas,name,rank);
  const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;
- return new T.SpriteMaterial({map,transparent:true,depthWrite:false,depthTest:true,
-  sizeAttenuation:false,toneMapped:false,fog:false});
+ return {canvas,material:new T.SpriteMaterial({map,transparent:true,depthWrite:false,depthTest:true,
+  sizeAttenuation:false,toneMapped:false,fog:false})};
 }
 function assets(){
   const [roof,glass]=canopy();
@@ -122,9 +122,10 @@ function carModel(a:ReturnType<typeof assets>,color:number,name:string,number:nu
   wheels.boundingSphere=new T.Sphere(new T.Vector3(),3);
   root.add(new T.Mesh(a.shell,paint),wheels,new T.Mesh(a.glass,a.windows),
     new T.Mesh(a.trim,a.rubber),new T.Mesh(a.rear,tail),new T.Mesh(a.front,a.head),new T.Mesh(a.shadow,a.shade));
-  const label=new T.Sprite(badge(name,number));label.name='rival-name-tag';
+  const plaque=badge(name,number);
+  const label=new T.Sprite(plaque.material);label.name='rival-name-tag';
   label.position.y=2.12;label.center.set(.5,0);root.add(label);
-  return {root,tail,label,wheels};
+  return {root,tail,label,wheels,badgeCanvas:plaque.canvas,badgeRank:number};
 }
 export class RivalView {
   readonly group=new T.Group();
@@ -142,10 +143,25 @@ export class RivalView {
   }
   inspectEffects(){return this.cars.map(car=>car.effects.inspect());}
   inspectTags(){return this.cars.map((car,i)=>({
-    name:this.race.rivals[i].entry.name,visible:car.root.visible&&car.label.visible,
+    name:this.race.rivals[i].entry.name,rank:car.badgeRank,
+    textureId:(car.label.material as T.SpriteMaterial).map?.uuid,
+    visible:car.root.visible&&car.label.visible,
     sizeAttenuation:(car.label.material as T.SpriteMaterial).sizeAttenuation,
     scale:car.label.scale.toArray(),
   }));}
+  /** Rank changes are checked at the existing 125ms race-HUD cadence.
+   * Only repaint textures when a car's actual place changes. */
+  updateRanks(standings:readonly RaceStanding[]){
+    for(let i=0;i<this.cars.length;i++){
+      const car=this.cars[i],entry=this.race.rivals[i].entry;
+      const rank=standings.find(row=>row.id===entry.id)?.rank;
+      if(rank===undefined||rank===car.badgeRank)continue;
+      drawBadge(car.badgeCanvas,entry.name,rank);
+      car.badgeRank=rank;
+      const texture=(car.label.material as T.SpriteMaterial).map;
+      if(texture)texture.needsUpdate=true;
+    }
+  }
   reset(){for(const car of this.cars)car.effects.clear();}
   dispose(){for(const car of this.cars){car.effects.dispose();const mat=car.label.material as T.SpriteMaterial;mat.map?.dispose();mat.dispose();}}
   update(focus:number,time:number,countdown:boolean,observed:number,ready:(d:number)=>boolean,camera:T.PerspectiveCamera,viewportHeight:number){

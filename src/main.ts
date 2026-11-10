@@ -347,6 +347,7 @@ let rivalPassCount=0;
 if(traffic)traffic.rivalLeaders=()=>race.rivals;
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
 const rivalView=new RivalView(race,world.scene,tireEffects,world.sample);
+rivalView.updateRanks(race.standings(state));
 await renderer.compileAsync(rivalView.group,camera,world.scene);
 // Reuse a fixed set of lightweight DOM nodes; there is no per-frame HTML allocation.
 const rearLayer=$('rear-rival-tags'),rearLabels=new Map<string,HTMLDivElement>();
@@ -414,7 +415,8 @@ backToResults.textContent='返回結算';backToResults.onclick=()=>followRacer(-
 raceWatch.onclick=()=>followRacer(race.rivals.findIndex(r=>r.finishTime===null));
 function resetRace(grid=atDistance??BRICK_START){
  race.reset(grid);rivalOvertakes.reset(grid,race.rivals);rivalPassCount=0;
-  rivalView.reset();observed=-1;countdown=3;nextRaceHud=0;nextStandingUpdate=0;
+  rivalView.reset();rivalView.updateRanks(race.standings({distance:grid,lateral:0,speed:0}));
+  observed=-1;countdown=3;nextRaceHud=0;nextStandingUpdate=0;
   rearLayer.hidden=true;for(const tag of rearLabels.values())tag.hidden=true;standingsPanel.hidden=true;
  traffic?.drawForObserver(null,0);
  if(world.streamer)world.streamer.spectatorDistance=null;
@@ -426,6 +428,7 @@ function raceHud(){
  const watching=observed>=0;
  if(performance.now()<nextRaceHud)return;
  nextRaceHud=performance.now()+125;
+ rivalView.updateRanks(race.standings(state));
  // Race progress belongs beside position and time, not the global version/FPS.
  const tracked=race.rivals[observed]?.distance??state.distance;
  const traveled=Math.max(0,Math.min(world.length-BRICK_START,tracked-BRICK_START));
@@ -456,7 +459,7 @@ function raceHud(){
   const nearestName=race.rivals.find(other=>other.entry.id===r.nearest)?.entry.name??(r.nearest==='PLAYER'?'玩家':r.nearest);
   const preparing=watching&&world.streamer&&!world.streamer.spectatorReady(r.distance);
   debugText.textContent=preparing?'正在準備觀戰路段':debugRace?
-    r.entry.name+' · P'+rank+' · '+r.behavior+'\n'+Math.round(r.speed*3.6)+' → '+Math.round(r.targetSpeed*3.6)+' km/h · 車道 '+(r.lane+1)+' → '+(r.targetLane+1)+'\n前方 '+nearestName+(Number.isFinite(r.gap)?' · '+Math.round(r.gap)+' m':''):r.entry.id+' · P'+rank;
+    r.entry.name+' · P'+rank+' · '+r.behavior+'\n'+Math.round(r.speed*3.6)+' → '+Math.round(r.targetSpeed*3.6)+' km/h · 車道 '+(r.lane+1)+' → '+(r.targetLane+1)+'\n前方 '+nearestName+(Number.isFinite(r.gap)?' · '+Math.round(r.gap)+' m':''):r.entry.name+' · P'+rank;
   const cameraName=document.getElementById('race-camera-name');if(cameraName)cameraName.textContent=focus?.entry.name??'玩家';
  }
 }

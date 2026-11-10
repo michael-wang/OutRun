@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {RivalRace,worldSpeed,crossingTime,raceEntries,equalRiviera,type Obstacle} from '../src/rival-race';
+import {RivalRace,worldSpeed,crossingTime,raceEntries,equalRiviera,rivalDriverName,RIVAL_DRIVER_NAMES,type Obstacle} from '../src/rival-race';
 import {createState,step} from '../src/handling';
 import {DEFAULT_PACE} from '../src/pace';
 import * as THREE from 'three';
@@ -26,15 +26,41 @@ describe('Riviera GT race',()=>{
    expect(Math.abs(a.distance-b.distance)>equalRiviera.length+1||Math.abs(a.lateral-b.lateral)>equalRiviera.width+.2).toBe(true);
   }
  });
- it('orders the full field by finish time, then by progress, with Chinese display names',()=>{
+ it('assigns short A-to-Z names by entry identity and wraps only after Z',()=>{
+  expect(RIVAL_DRIVER_NAMES).toHaveLength(26);
+  for(let i=0;i<52;i++){
+   const name=rivalDriverName(i);
+   expect(name).toMatch(new RegExp('^'+String.fromCharCode(65+i%26)));
+   expect(name.length).toBeLessThanOrEqual(7);
+  }
+  expect(rivalDriverName(0)).toBe('Aaron');
+  expect(rivalDriverName(6)).toBe('Gavin');
+  expect(rivalDriverName(25)).toBe('Zane');
+  expect(rivalDriverName(26)).toBe('Aaron');
+  expect(rivalDriverName(27)).toBe('Bruno');
+ });
+ it('updates live positions without changing each driver name or stable ID',()=>{
+  const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);
+  race.reset(350);
+  const player={distance:350,lateral:0,speed:0};
+  const before=race.standings(player),r=race.rivals[0];
+  const initial=before.find(row=>row.id===r.entry.id)!;
+  r.distance=405;
+  const after=race.standings(player).find(row=>row.id===r.entry.id)!;
+  expect(after.name).toBe(initial.name);
+  expect(after.rank).toBe(1);
+  expect(after.rank).not.toBe(initial.rank);
+  expect(r.entry.id).toBe('RIVAL 1');
+ });
+ it('orders the full field by finish time, then by progress, with English display names',()=>{
   const race=new RivalRace(3000,flat,()=>[]);race.reset(350);
   expect(race.standings({distance:350,lateral:0,speed:0})).toHaveLength(8);
-  expect(race.rivals.map(r=>r.entry.name)).toEqual(['對手一','對手二','對手三','對手四','對手五','對手六','對手七']);
+  expect(race.rivals.map(r=>r.entry.name)).toEqual(['Aaron','Bruno','Cody','Damon','Ethan','Felix','Gavin']);
   race.playerFinish=50;
   const r1=race.rivals[0],r2=race.rivals[1];
   r1.finishTime=47;r2.finishTime=49;
   const rows=race.standings({distance:3000,lateral:0,speed:0});
-  expect(rows.slice(0,3).map(r=>r.name)).toEqual(['對手一','對手二','玩家']);
+  expect(rows.slice(0,3).map(r=>r.name)).toEqual(['Aaron','Bruno','玩家']);
   expect(rows.map(r=>r.rank)).toEqual([1,2,3,4,5,6,7,8]);
   expect(rows.slice(3).every(r=>r.finishTime===null)).toBe(true);
  });
