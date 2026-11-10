@@ -57,23 +57,27 @@ html:not([data-input-mode=gamepad]) #gamepad-status{display:none}
 #photo-folder{display:flex;align-items:center;flex-wrap:wrap;gap:5px}#photo-folder[hidden]{display:none}#photo-folder span{font-size:11px;overflow-wrap:anywhere}#photo-folder button{padding-inline:8px}
 html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,html:not([data-qa="true"]) #photo-button{display:none}
 /* Arcade dashboard: low above steering, inset toward the car and mirrored with touch controls. */
-#speed{--dial-size:160px;--dial-accent:#53dcff;position:fixed;left:max(14vw,env(safe-area-inset-left));bottom:calc(max(24px,env(safe-area-inset-bottom)) + 100px);width:var(--dial-size);height:var(--dial-size);pointer-events:none;text-align:center;color:#fff;isolation:isolate}
-#speed svg{display:block;width:100%;height:100%;overflow:visible}
+#speed{
+ --dial-size:160px;--dial-accent:#53dcff;
+ position:fixed;left:max(min(14vw,calc(36vw - var(--dial-size)*1.65)),env(safe-area-inset-left));
+ bottom:calc(max(24px,env(safe-area-inset-bottom)) + 116px);
+ width:var(--dial-size);height:var(--dial-size);pointer-events:none;text-align:center;color:#fff;isolation:isolate
+}
+#speed svg{display:block;width:100%;height:100%;overflow:visible;transform:rotate(-45deg)}
 #speed .dial-rim{stroke:var(--dial-accent)}
 #speed[data-band=fast]{--dial-accent:#ffb347}
 #speed[data-band=redline]{--dial-accent:#ff6852}
-#speed strong{position:absolute;top:48%;left:0;right:0;font:900 58px/1 Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-2px;color:#ffcc66;text-shadow:0 2px 0 #321d0c}
-#speed span{position:absolute;left:0;right:0;bottom:7%;font-size:11px;font-weight:800;letter-spacing:2px;color:#d1f6ff}
-#gear{position:absolute;top:29%;left:38%;width:24%;padding:2px 0;border:1px solid #4282a3;border-radius:5px;background:#081629;color:#a4f2ff;font-size:20px;line-height:1;font-weight:800}
-#status{position:absolute;top:100%;left:-10%;width:120%;margin-top:5px;font:700 8px/1.2 Arial,sans-serif;letter-spacing:.3px;color:#fff0ce;text-shadow:0 1px 3px #071323}
+#speed .speed-reading{position:absolute;top:53%;left:46%;display:flex;align-items:baseline;gap:3px;white-space:nowrap}
+#speed strong{font:900 calc(var(--dial-size)*.48)/1 Arial,Helvetica,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.045em;color:#ffcc66}
+#speed small{font:700 clamp(10px,calc(var(--dial-size)*.085),14px)/1 Arial,sans-serif;color:#e2f8ff;text-shadow:0 1px 3px #061522,0 0 4px #061522}
+#gear{position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%);padding:1px 5px;border:1px solid;border-radius:4px;color:#a4f2ff;font:800 clamp(12px,calc(var(--dial-size)*.1),16px)/1 Arial,sans-serif;white-space:nowrap}
 @media(pointer:coarse),(max-width:1000px){
- #speed{--dial-size:clamp(104px,29dvh,124px);left:calc(max(24px,env(safe-area-inset-left)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2);right:auto;top:auto;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 50px)}
+ #speed{--dial-size:clamp(104px,29dvh,124px);left:calc(max(24px,env(safe-area-inset-left)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2);right:auto;top:auto;bottom:calc(max(24px,env(safe-area-inset-bottom)) + 72px)}
  #app:has(#touch.swapped) #speed{left:auto;right:calc(max(24px,env(safe-area-inset-right)) + 72px + clamp(24px,6vw,56px) - var(--dial-size)/2)}
  #steering-strip{height:48px}
- #speed strong{top:44%;font-size:clamp(44px,12dvh,50px)}
- #speed span{bottom:3%;font-size:9px;letter-spacing:1.5px}
- #gear{top:26%;font-size:14px}
- #status{display:none}
+}
+@media(max-width:740px){
+ #speed{left:max(24px,env(safe-area-inset-left))}
 }
 
 /* Player-facing information, with detailed route identifiers reserved for QA. */
