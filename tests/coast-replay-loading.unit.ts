@@ -14,14 +14,15 @@ it('puts the existing scenic loading surface OVER the world before a replay jump
  expect(restart).not.toContain("loadingDismissReady()");
 });
 
-it('waits for nearby road AND scenery, nature textures and farm warmup before auto-replay',()=>{
+it('waits for nearby road, scenery and nature textures, without blocking on background farm shader warmup',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
  const streaming=readFileSync(new URL('../src/streamed-scene.ts',import.meta.url),'utf8');
  expect(main).toContain("function start(){if(journeyTransition||replayPreparing)return;");
  const i=main.indexOf('if(replayPreparing&&world.streamer)'),j=main.indexOf('if(startupPending)',i);
  const gate=main.slice(i,j);
  expect(i).toBeGreaterThan(0);expect(j).toBeGreaterThan(i);
- expect(gate).toContain('stream.ready&&!warm.running');
+ expect(gate).toContain('const prepared=stream.ready;');
+ expect(gate).not.toContain('stream.ready&&!warm.running');
  expect(gate).toContain('loadingProgress(');
  expect(gate).toContain('loadingFinished()');
  expect(gate.indexOf('loadingFinished()')).toBeLessThan(gate.indexOf('start();'));
