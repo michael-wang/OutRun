@@ -47,12 +47,12 @@ it('starts the scenic coast without a Play tap or inherited entry speed',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
  const dock=readFileSync(new URL('../src/trip-pause-dock.ts',import.meta.url),'utf8');
  expect(main).toContain('let autoStartOnReady=playerUi;');
- expect(main).toContain("loadingFinished(false);startupPending=false;");
+ expect(main).toContain("loadingFinished();startupPending=false;");
  expect(main).toContain("autoStartOnReady=false;start();");
  expect(main).toContain("state.speed=trip?0:brick.entrySpeed/3.6;");
  expect(main).toContain("brickCompleted?'再玩一次'");
  expect(main).toContain("$('player-restart').hidden=elapsed===0||brickCompleted");
- expect(main).toContain("$('player-new-route').hidden=true");
+ expect(main).toContain("$('results-menu').hidden=!brickCompleted");
  expect(main).toContain("if(playerUi)for(const id of ['l2-replay','l2-next'])");
  expect(dock).not.toContain('tp-new-route');
 });

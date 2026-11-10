@@ -4,7 +4,7 @@ export class Immersive {
   message = '';
   lockState: 'idle'|'locked'|'unsupported'|'denied' = 'idle';
   pending = false;
-  constructor(private root: HTMLElement, private changed: () => void) {
+  constructor(private root: HTMLElement, public changed: () => void) {
     document.addEventListener('fullscreenchange', () => { this.changed(); });
     matchMedia('(display-mode: fullscreen)').addEventListener('change', () => this.changed());
     matchMedia('(display-mode: standalone)').addEventListener('change', () => this.changed());
@@ -55,3 +55,5 @@ export class Immersive {
   }
   snapshot(){return {active:this.active,installed:this.installed,lockState:this.lockState,pending:this.pending,message:this.message};}
 }
+
+export const immersive = new Immersive(document.documentElement, () => {});

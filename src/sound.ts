@@ -1,3 +1,4 @@
+import {takeStageAudio} from './stage-audio';
 import {PassBy,PASS_AUDIO} from './pass-by';
 import type {TrafficActor} from './traffic';
 import {SkidFeedback} from './skid-feedback';
@@ -35,7 +36,7 @@ export class EngineSound {
   readonly skidFeedback=new SkidFeedback();
   async unlock(waitForPassenger=false) {
     if (!this.context) {
-      const context = this.context = new AudioContext();
+      const context = this.context = takeStageAudio() ?? new AudioContext();
       this.master = context.createGain();
       this.master.gain.value = this.muted ? 0 : 0.35;
       this.analyser = context.createAnalyser();

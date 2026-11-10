@@ -1,60 +1,39 @@
-<!doctype html><html lang="zh-Hant" data-loading="true"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><link rel="icon" href="%BASE_URL%icons/coast-192.png"/><link rel="apple-touch-icon" href="%BASE_URL%icons/coast-192.png"><link rel="manifest" href="%BASE_URL%manifest.webmanifest"><meta name="theme-color" content="#123e43"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>極速漫遊</title><style>
-#startup-art{position:fixed;inset:0;z-index:30;pointer-events:none;background:#123e43}
-
-#game-loading{position:fixed;inset:0;z-index:10000;isolation:isolate;overflow:hidden;color:#fff4de;background:linear-gradient(155deg,#edaf75,#2c7585 52%,#102e3e);font:16px/1.6 system-ui,sans-serif}
-#game-loading picture,#game-loading img,#startup-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:45% 65%}
-#game-loading:after,#startup-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#142c3a12 15%,#102a35a8 65%,#081e2cf5)}
-#game-loading:after{z-index:-1}
-#game-loading picture{z-index:-2}
-.loading-brand{position:absolute;top:max(30px,env(safe-area-inset-top));left:7vw;margin:0;font-weight:800;letter-spacing:.18em;font-size:clamp(24px,4vw,40px);text-shadow:0 2px 15px #173f4b}
-.loading-brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.3em;opacity:.9}
-.loading-copy{position:absolute;left:7vw;bottom:max(7vh,env(safe-area-inset-bottom));width:min(500px,86vw)}
-.loading-kicker{color:#ffd19c;letter-spacing:.24em;font-size:11px;margin:0 0 10px}
-.loading-copy h1{margin:0 0 12px;font-size:clamp(26px,4vw,42px);line-height:1.3;font-weight:650;letter-spacing:.05em}
-#loading-detail{margin:0 0 22px;color:#d3e1e0;min-height:2em;font-size:14px}
-.loading-meta{display:flex;justify-content:space-between;gap:10px;font-size:12px;letter-spacing:.06em;margin-bottom:8px}
-#loading-track{height:5px;background:#ffffff30;border-radius:5px;overflow:hidden;position:relative}
-#loading-fill{display:block;height:100%;background:#ffc78e;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
-#loading-track:after{content:"";position:absolute;inset:0 auto 0 0;width:35%;background:linear-gradient(90deg,transparent,#fff8,transparent);animation:loading-sweep 1.8s linear infinite;will-change:transform}
-.loading-foot{display:flex;align-items:center;gap:9px;margin-top:15px;font-size:12px;color:#c2d6d8}
-.loading-spinner{display:inline-block;width:12px;height:12px;border:2px solid #ffffff30;border-top-color:#ffd19c;border-radius:50%;animation:loading-spin 1s linear infinite;will-change:transform}
-#loading-slow{font-size:13px;color:#ffdbac;margin:12px 0 0}
-
-/* Same sunset art, same frame, same soft layer from preparing through ready. */
-.loading-brand small,.loading-kicker,.loading-foot,.loading-meta span:first-child{display:none!important}
-#game-loading:not([data-phase="error"]) #loading-detail{display:none}
-.loading-copy h1{font-size:clamp(22px,3.1vw,34px);font-weight:720;margin-bottom:12px}
-.loading-meta{justify-content:flex-end;margin-bottom:7px}
-#loading-ready{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;
- min-width:min(240px,86vw);min-height:52px;padding:12px 30px;
- border:1px solid #fff1d280;border-radius:11px;background:#ffd39d;
- color:#153a3f;font:750 clamp(18px,2.3vw,22px)/1.3 system-ui,"PingFang TC",sans-serif;
- box-shadow:0 8px 30px #041d2b70;cursor:pointer}
-#loading-ready[hidden]{display:none!important}
-#loading-ready:focus-visible{outline:3px solid #fff;outline-offset:4px}
-#game-loading[data-phase="ready"] #loading-track,
-#game-loading[data-phase="ready"] .loading-meta,
-#game-loading[data-phase="ready"] #loading-slow{display:none!important}
-#loading-rotate{display:none;margin:8px 0 0;color:#fff2dc;font-size:13px}
-@media(orientation:portrait) and (pointer:coarse){#game-loading[data-phase="ready"] #loading-rotate{display:block}}
-#game-loading[data-phase="error"] #loading-detail{display:block}
-#startup-fallback{margin-top:14px;font-size:14px}
-#startup-fallback p{margin:0 0 10px}
-#startup-fallback button{font:inherit;color:#193a40;background:#ffcf99;border:0;border-radius:6px;padding:10px 22px;cursor:pointer}
-html[data-loading=true] #app{visibility:hidden}
-@keyframes loading-sweep{from{transform:translateX(-100%)}to{transform:translateX(400%)}}
-@keyframes loading-spin{to{transform:rotate(360deg)}}
-@media(orientation:portrait){:root{--portrait-launch-inset:max(8dvh,env(safe-area-inset-bottom))}#game-loading img,#startup-art img{object-position:center}.loading-copy{bottom:var(--portrait-launch-inset)}.loading-brand{top:max(5vh,env(safe-area-inset-top))}}
-@media(orientation:landscape) and (max-height:500px){.loading-brand{top:20px;font-size:24px}.loading-copy{bottom:22px}.loading-copy h1{font-size:24px;margin-bottom:6px}#loading-detail{margin-bottom:12px}.loading-foot{margin-top:8px}}
-@media(prefers-reduced-motion:reduce){#loading-track:after,.loading-spinner{animation:none}#loading-fill{transition:none}}
-
-[hidden]{display:none!important}
-</style></head><body><div id="app"></div><picture id="startup-art" aria-hidden="true"><source media="(orientation: portrait)" srcset="%BASE_URL%ui/start-portrait.png"><img src="%BASE_URL%ui/start-landscape.png" alt="" fetchpriority="high" decoding="async"></picture><section id="game-loading" data-phase="loading" aria-label="遊戲載入" aria-busy="true">
-<picture aria-hidden="true"><source media="(orientation: portrait)" srcset="%BASE_URL%ui/start-portrait.png"><img src="%BASE_URL%ui/start-landscape.png" alt="" fetchpriority="high" decoding="async"></picture>
-<p class="loading-brand">極速漫遊</p>
-<div class="loading-copy"><h1 id="loading-title" role="status" aria-live="polite">正在準備旅程…</h1><p id="loading-detail">先讓風景準備好，下一段旅程即將展開。</p>
-<div class="loading-meta"><span id="loading-percent">0%</span></div><div id="loading-track" role="progressbar" aria-label="旅程準備進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="loading-fill"></i></div>
-<button id="loading-ready" type="button" hidden>開始駕駛</button><p id="loading-rotate">橫放手機，畫面更完整</p>
-<div class="loading-foot"><i class="loading-spinner" aria-hidden="true"></i><span id="loading-hint">準備完成後，即可開始駕駛</span></div><p id="loading-slow" hidden>準備時間較長…</p>
-<div id="startup-fallback" hidden><p id="startup-error">準備尚未完成，請重新載入。</p><button onclick="location.reload()">重新載入</button></div>
-<noscript>請啟用 JavaScript，才能載入遊戲。</noscript></div></section><script type="module" src="/src/startup.ts"></script></body></html>
+<!doctype html>
+<html lang="zh-Hant" data-loading="true">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="icon" href="%BASE_URL%icons/coast-192.png"><link rel="apple-touch-icon" href="%BASE_URL%icons/coast-192.png">
+<link rel="manifest" href="%BASE_URL%manifest.webmanifest"><meta name="theme-color" content="#171b21">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>極速漫遊</title>
+<script>
+  // Keep retry usable even when the entry module itself could not download.
+  addEventListener('error', function (event) {
+    if (event.target instanceof HTMLScriptElement && event.target.type === 'module')
+      document.documentElement.dataset.bootError = 'true';
+  }, true);
+</script>
+<link rel="stylesheet" href="/src/racing-menu.css">
+</head>
+<body>
+<div id="app"></div>
+<section id="boot" aria-label="遊戲啟動">
+  <div class="cabinet-logo"><strong lang="en">OUTRUN</strong><span>極速漫遊</span></div>
+  <div class="boot-meter" role="progressbar" aria-label="正在準備關卡選單"></div>
+  <p id="boot-error" hidden>選單無法載入。<button type="button" onclick="location.reload()">重試</button></p>
+  <noscript>請啟用 JavaScript 以進入遊戲。</noscript>
+</section>
+<section id="game-loading" hidden data-phase="loading" aria-label="關卡載入" aria-busy="true">
+  <picture id="stage-art" aria-hidden="true"><source media="(orientation: portrait)"><img alt=""></picture>
+  <div class="loading-copy">
+    <span id="stage-loading-name"></span><h1 id="loading-title" role="status"></h1>
+    <small class="stage-rotate-hint">橫放手機即可出發</small>
+    <p id="loading-detail"></p>
+    <div id="loading-track" role="progressbar" aria-label="關卡準備進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="loading-fill"></i></div>
+    <span id="loading-percent" hidden></span><span id="loading-hint" hidden></span>
+    <p id="loading-slow" hidden></p>
+    <div id="startup-fallback" hidden><p id="startup-error"></p><button id="stage-retry" type="button">重試載入</button></div>
+  </div>
+</section>
+<script type="module" src="/src/startup.ts"></script>
+</body></html>

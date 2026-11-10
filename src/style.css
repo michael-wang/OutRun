@@ -96,12 +96,6 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #iphone-fullscreen-hint,#l2-iphone-fullscreen-hint{font-size:13px;line-height:1.45;max-width:56ch}
 
 
-/* Public Road Trip entry over the approved splash artwork. */
-/* On phones the loading overlay covers the first render. Once dismissed,
-   keep the chase camera visible behind the launch prompt and during rotation. */
-@media (pointer:coarse){
- html[data-player-ui="true"]:not([data-loading]) #startup-art{display:none}
-}
 html[data-player-ui="true"] .l2-lab{display:none!important}
 html[data-player-ui="true"] #player-start{
  position:fixed;z-index:32;top:max(20px,env(safe-area-inset-top));left:50%;
@@ -132,10 +126,10 @@ html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
  html[data-player-ui="true"] #player-start{display:none!important}
  html[data-player-ui="true"] #immersive-note{display:none}
  html[data-player-ui="true"] #rotate{
-  --action-inset:max(var(--portrait-launch-inset),calc(env(safe-area-inset-bottom) + 28px));
+  --action-inset:max(8dvh,calc(env(safe-area-inset-bottom) + 28px));
   z-index:65;justify-content:flex-end;gap:10px;
   padding:env(safe-area-inset-top) 7vw var(--action-inset);
-  background:transparent;
+  background:linear-gradient(0deg,#09242e99,transparent 27%,transparent 75%,#09242e44);
   text-shadow:0 2px 12px #082c38;pointer-events:none;
  }
  .portrait-brand{
@@ -145,7 +139,6 @@ html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
  .portrait-brand h1{margin:0;font-size:clamp(25px,7vw,34px);line-height:1.2;letter-spacing:.12em}
  .portrait-brand p{margin:5px 0 0;font-size:14px;font-weight:600;letter-spacing:.18em;color:#ffd69f}
  html[data-player-ui="true"] #rotate small{font-size:13px;line-height:1.45;color:#fff3dc}
- #rotate-launch:not([hidden]) + #rotate-instruction{position:absolute;top:calc(100% - var(--action-inset) + 6px)}
  html[data-player-ui="true"] #rotate button{display:none!important}
 }
 @media (orientation:landscape) and (max-height:500px){
@@ -190,18 +183,6 @@ html[data-player-ui="true"] #player-play{font-size:clamp(19px,2.5vw,24px)}
 html[data-player-ui="true"] #touch [data-control]{font-size:16px}
 
 
-/* Public portrait: only supported browsers get a one-tap fullscreen + landscape start. */
-@media (pointer:coarse) and (orientation:portrait){
-  html[data-player-ui="true"] #rotate #rotate-launch:not([hidden]){
-    display:inline-flex!important;align-items:center;justify-content:center;
-    pointer-events:auto;width:min(100%,320px);min-height:48px;
-    padding:10px 22px;
-    border:2px solid #ffd69f;border-radius:8px;background:#10374080;color:#fff4dd;
-    font:700 19px/1.25 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
-    text-shadow:0 1px 3px #082c38;
-    touch-action:manipulation;
-  }
-}
 
 
 /* Opt-in streaming health instrument panel. Never enabled for normal public play. */
@@ -621,3 +602,8 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 
 #drive-fps-diagnostic output:not(:empty){display:block;padding:4px 8px;background:#123540e8;color:#fff4d8;font:700 12px/1.4 system-ui;text-align:center}
 #tp-fps-test{width:100%;margin-top:6px}
+
+html[data-player-ui="true"] #player-start[data-finished="true"] #results-menu{
+ grid-column:1/-1;font-size:13px;min-height:36px
+}
+@media(orientation:landscape){html[data-player-ui="true"] #immersive-note[data-rotation-hint="true"]{display:none}}

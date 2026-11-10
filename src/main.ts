@@ -6,7 +6,7 @@ import {journeyChapters} from './scenic-journey';
 import {GAME_VERSION} from './build-info';
 import {disposeScene,sceneDisposal} from './dispose-scene';
 import {attachJourneyLink,highwayExtension,LINK_HALF,LINK_LOAD_START} from './journey-link';
-import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed,loadingDismissReady} from './loading';
+import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed} from './loading';
 import {startupDiagnostics} from './startup-diagnostics';
 import {DriveFpsDiagnostics} from './drive-fps-diagnostics';
 import {canonicalGameQuery} from './runtime-query';
@@ -30,7 +30,7 @@ import { EngineSound } from './sound';
 import {GamepadInput} from './gamepad';
 import {RecentDrivingHistory} from './recent-history';
 import {advancePowertrain} from './powertrain';
-import { Immersive } from './immersive';
+import { immersive } from './immersive';
 import { CHASE, CHASE_NEAR, chaseTargets, chaseComposition, applyScenicCamera, scenicDriftTarget, blendScenicDrift } from './chase';
 import { SpeedAudit } from './speed-audit';
 import { DEFAULT_PACE,effectivePace } from './pace';
@@ -95,7 +95,7 @@ await loadingStep(12,'正在規劃路線','安排這趟旅程的道路、彎道�
 const journeyTracks=chapters?.map(c=>createPilotTrack(c.stage));
 startupDiagnostics.mark('route-plan-ready');
 let trip=COAST_ULTRA_STAGE;
-// The game opens the coast directly. ?at enables optional QA positioning.
+// The selected coast retains its diagnostic starting coordinate.
 const playerUi=!!trip;
 document.documentElement.dataset.playerUi=String(playerUi);
 let stage=trip;
@@ -119,9 +119,7 @@ document.querySelector('#app')!.innerHTML = `
 <div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-keyshortcuts="A D" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span><span class="steer-keys" aria-hidden="true"><kbd>A</kbd><kbd>D</kbd></span></div><div class="pedals"><button data-control="gas" data-pad-hint="R2" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space">${playerUi?'油門':'GAS'}</button><button data-control="brake" data-pad-hint="L2" data-key-hint="ENTER" aria-keyshortcuts="Enter">${playerUi?'煞車':'BRAKE'}</button></div></div>
 <div id="rotate">
  ${playerUi?'<hgroup class="portrait-brand"><h1>極速漫遊</h1><p>海濱公路</p></hgroup>':'<span>↻</span>Turn toward the horizon'}
- <button id="rotate-launch" type="button" aria-describedby="rotate-instruction" hidden>開始駕駛!</button>
- <small id="rotate-instruction">${playerUi?'橫放手機即可出發。':'Rotate your phone to landscape to drive.'}</small>
- <small id="rotate-launch-status" role="status" hidden></small>
+ <small id="rotate-launch-status" role="status">請手動橫放手機，進入駕駛畫面。</small>
  <small id="rotate-iphone-hint" hidden>iPhone: turn off Portrait Orientation Lock if necessary. For fewer browser bars, open in Safari → Share → Add to Home Screen, then launch from the Home Screen.</small><small id="rotate-immersive-error" role="status" hidden></small><button id="rotate-fullscreen">Try fullscreen</button><button id="rotate-pause">Pause / resume</button>
 </div>
 <section id="player-start" aria-label="Start driving" hidden>
@@ -135,12 +133,9 @@ document.querySelector('#app')!.innerHTML = `
   </dl>
   <button id="player-play" class="primary">開始駕駛</button>
   <p id="player-loading" role="status">道路準備中…</p><button id="player-retry" hidden>重試載入</button>
-  <div class="player-secondary"><button id="player-restart" hidden>重新開始</button><button id="player-new-route" hidden>新路線</button><button id="player-options">操作設定</button><button id="player-sound">音效開</button><button id="player-install-guide" hidden>更多畫面空間</button></div>
+  <div class="player-secondary"><button id="player-restart" hidden>重新開始</button><button id="results-menu" hidden>回到主選單</button><button id="player-options">操作設定</button><button id="player-sound">音效開</button><button id="player-install-guide" hidden>更多畫面空間</button></div>
   <p id="player-install-help" role="status" hidden>iPhone Safari：分享 → 加入主畫面，再從主畫面開啟遊戲，即可減少瀏覽器工具列。</p>
 </section>`;
-const startupArt=document.getElementById('startup-art')!;
-document.getElementById('app')!.prepend(startupArt);
-startupArt.hidden=!playerUi;
 document.getElementById('startup-fallback')!.hidden=true;
 const $ = (id:string) => document.getElementById(id)!;
 $('route-title').textContent=blenderMode?(roadLockMode?'Grand Canyon · Cliff Pass R4':'Grand Canyon · Blender v2'):brick?.name??'Coast Road';
@@ -311,8 +306,6 @@ function renderPassengerPreview(){
  if(clip.gesture==='applause'&&CLAP_TIMES.some(at=>clip.last<at&&time>=at))sound.passengerCue('clap',true);
  clip.last=time;
 }
-// One tap in portrait arms a launch; driving starts only after landscape AND safe road readiness.
-let autoLaunchArmed=false,autoLaunchNeedsManual=false;
 let streamStartRequested=false;
 let replayPreparing=false;
 let fpsTestRequested=false;
@@ -448,36 +441,18 @@ function refreshImmersiveUI(){
   $('rotate-iphone-hint').hidden=!help;
   $('rotate-immersive-error').textContent=immersive.message;
   $('rotate-immersive-error').hidden=!immersive.message||help;
+  $('immersive-note').dataset.rotationHint=String(immersive.lockState==='denied'||immersive.lockState==='unsupported');
   $('immersive-note').textContent=immersive.message;
   $('immersive-note').hidden=!immersive.message||help;
 }
-const immersive=new Immersive($('app'),refreshImmersiveUI);
+immersive.changed=refreshImmersiveUI;
 let swapped=readSwapped();
 let refreshPhotoFolder=()=>{};
 function applyLayout(){ $('touch').classList.toggle('swapped',swapped); ($('swap') as HTMLInputElement).checked=swapped; }
 applyLayout();
 function landscapeReady(){return matchMedia('(orientation:landscape)').matches;}
-function refreshPortraitLaunchUi(){
-  if(!playerUi)return;
-  const available=immersive.canAutoLandscape;
-  const button=$('rotate-launch') as HTMLButtonElement;
-  button.hidden=!available||autoLaunchArmed||brickCompleted;
-  button.disabled=autoLaunchArmed;
-  const instruction=$('rotate-instruction');
-  instruction.hidden=autoLaunchArmed;
-  const hint=available?'輕點後將切換為橫向。':'橫放手機即可出發。';
-  if(instruction.textContent!==hint)instruction.textContent=hint;
-  const status=$('rotate-launch-status');
-  status.hidden=!autoLaunchArmed;
-  if(autoLaunchArmed){
-    const message=autoLaunchNeedsManual?'請手動橫放手機，即可出發。':
-      world.streamer&&!world.streamer.ready?'道路準備中，完成後自動出發…':'正在切換成橫向…';
-    if(status.textContent!==message)status.textContent=message;
-  }
-}
 function updatePlayerUi(){
   if(!playerUi)return;
-  refreshPortraitLaunchUi();
   const panel=$('player-start'),show=mode!=='playing'&&mode!=='countdown'&&!settingsOpen&&!(mode==='paused'&&!brickCompleted);
   document.documentElement.dataset.driveMode=mode;
   // Only completed journeys use the small lower-right credits HUD; regular
@@ -485,18 +460,15 @@ function updatePlayerUi(){
   panel.dataset.finished=String(brickCompleted);
   panel.setAttribute('aria-label',brickCompleted?'旅程結算':'開始駕駛');
   panel.hidden=!show;
-  startupArt.hidden=mode==='playing'||mode==='countdown'||(mode==='paused'&&!brickCompleted)||(elapsed>0&&world.streamer?.ready!==false);
   if(!show)return;
   const title=brickCompleted?'旅程完成':elapsed>0?'暫停中':'極速漫遊';
   const subtitle=journeyMode?(brickCompleted?'都市、海岸與峽谷，旅程完成':'黃昏海岸 → 白天都市 → 清晨峽谷'):brickCompleted?'同一條海岸，再玩一次':elapsed>0?'準備好了就繼續出發':'公路冒險';
   if($('player-title').textContent!==title)$('player-title').textContent=title;
   if($('player-subtitle').textContent!==subtitle)$('player-subtitle').textContent=subtitle;
-  const play=$('player-play'),label=autoLaunchArmed||streamStartRequested?'即將出發…':brickCompleted?'再玩一次':elapsed>0?'繼續駕駛':'開始駕駛';
+  const play=$('player-play'),label=streamStartRequested?'即將出發…':brickCompleted?'再玩一次':elapsed>0?'繼續駕駛':'開始駕駛';
   if(play.textContent!==label)play.textContent=label;
-  // Completion has exactly ONE replay action. Route/seed selection belongs
-  // to the future main menu, not a second or third finish button.
   $('player-restart').hidden=elapsed===0||brickCompleted;
-  $('player-new-route').hidden=true;
+  $('results-menu').hidden=!brickCompleted;
   const finishPanel=$('player-finish-stats');finishPanel.hidden=!brickCompleted;
   if(brickCompleted){
    const result=finishStats.summary(elapsed);
@@ -514,7 +486,7 @@ function updatePlayerUi(){
   const preparing=!!world.streamer&&!world.streamer.ready;
   if(!preparing)preparationSince=performance.now();
   const slow=preparing&&performance.now()-preparationSince>45000;
-  (play as HTMLButtonElement).disabled=preparing||autoLaunchArmed;
+  (play as HTMLButtonElement).disabled=preparing;
   $('player-retry').hidden=!slow&&!world.streamer?.error;
   loading.hidden=!preparing&&!world.streamer?.error;
   if(!loading.hidden){const message=world.streamer?.error?'道路載入失敗，請重試。':slow?'道路準備時間較長，請稍候或重新載入。':'道路準備中…';if(loading.textContent!==message)loading.textContent=message;}
@@ -537,8 +509,8 @@ function ui(){
 function start(){if(journeyTransition||replayPreparing)return;if(sceneInspector?.isOpen)sceneInspector.close();l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();void sound.unlock().catch(()=>{});if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;// Resume immediately: pause already neutralizes held inputs; no READY countdown.
  mode='playing';settingsOpen=false;input.clear();ui();
  if(fpsTestRequested){fpsTestRequested=false;driveFpsDiagnostics.startWindow();}
-  loadingDismissReady();renderer.domElement.focus({preventScroll:true});}
-function pause(){if(journeyTransition||replayPreparing)return;if(l2UI?.feedbackOpen)return;if(sceneInspector?.isOpen){sceneInspector.close();ui();return;}if(mode==='paused'){start();return;}l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();mode='paused';input.clear();pad.neutralize();sound.pause();ui();if(!mobile())(trip?tripPauseDock?.resumeButton:document.getElementById(playerUi?'player-play':brick?(l2||pilot?'l2-play':'brick-play'):'resume'))?.focus();}
+  renderer.domElement.focus({preventScroll:true});}
+function pause(){if(journeyTransition||replayPreparing||brickCompleted)return;if(l2UI?.feedbackOpen)return;if(sceneInspector?.isOpen){sceneInspector.close();ui();return;}if(mode==='paused'){start();return;}l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();mode='paused';input.clear();pad.neutralize();sound.pause();ui();if(!mobile())(trip?tripPauseDock?.resumeButton:document.getElementById(playerUi?'player-play':brick?(l2||pilot?'l2-play':'brick-play'):'resume'))?.focus();}
 /** Player-facing restart gets fresh moving traffic; QA reset/jumps keep the
  * current traffic seed for reproducible bug reports. Broken-car geometry and
  * warning markers are world-owned and reroll on the next map load. */
@@ -556,30 +528,17 @@ function restart(){
  finishStats.reset();if(journeyMode){if(mode==='menu'&&elapsed===0){start();return;}void restartJourney();return;}tripPauseDock?.collapse();l2UI?.setReviewExpanded(false);preparationSince=performance.now();sound.pause();sound.resetPassBy();brakeLights.reset();exhaustEffects.reset();pendingExhaustRpm=0;rerollTraffic();cones?.reset();triangles?.reset();tireEffects.clear();dustEffects.clear();impactSparks.clear();trafficSparks.clear();trafficImpact.reset();guardrail.reset();rockContact.reset();coastStoneContact.reset();history.clear();if(stage)reportArea.hidden=true;if(stage)telemetry=new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined);usedExternalControls=false;lastControls={gas:false,brake:false,steer:0};l2UI?.reset();world.car.userData.motion.reset();state=createState();if(brick){state.distance=BRICK_START;state.speed=trip?0:brick.entrySpeed/3.6;testControls=undefined;brickCompleted=false;}if(atDistance!==null){state.distance=atDistance;state.speed=0;}advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading; elapsed=0; initialized=false;if(world.streamer){mode='paused';input.clear();sound.pause();world.streamer.update(state.distance);ui();}
  if(!replayPreparing)start();
 }
-$('player-retry').onclick=()=>location.reload();
+$('player-retry').onclick=()=>$('stage-retry').click();
 $('player-play').onclick=()=>document.getElementById('l2-play')?.click();
-document.getElementById('loading-ready')!.addEventListener('click',()=>$('player-play').click());
 $('player-restart').onclick=()=>document.getElementById('l2-replay')?.click();
-$('player-new-route').onclick=()=>document.getElementById('l2-next')?.click();
+// Reload retires the whole stage, including its workers, audio, GL and event owners.
+$('results-menu').onclick=()=>location.reload();
 $('player-options').onclick=()=>document.getElementById('l2-settings')?.click();
 $('player-sound').onclick=()=>document.getElementById('l2-sound')?.click();
 $('player-install-guide').onclick=()=>{$('player-install-help').hidden=!$('player-install-help').hidden;};
 $('drive').onclick=()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();start();};
 $('resume').onclick=start; $('pause').onclick=pause; $('restart').onclick=restart;
 $('fullscreen').onclick=()=>{input.clear();if(immersive.needsIPhoneHelp){const hint=$('iphone-fullscreen-hint'),labHint=document.getElementById('l2-iphone-fullscreen-hint'),show=hint.hidden&&(!labHint||labHint.hidden);hint.hidden=!show;if(labHint)labHint.hidden=!show;return;}void immersive.toggle();};
-$('rotate-launch').onclick=()=>{
-  if(!playerUi||autoLaunchArmed||!immersive.canAutoLandscape||brickCompleted)return;
-  autoLaunchArmed=true;autoLaunchNeedsManual=false;
-  // Both calls happen synchronously in the real tap handler, before any await.
-  // Fullscreen requires transient user activation; loading finishes separately.
-  void sound.unlock().catch(()=>{});
-  void immersive.enter().then(()=>{
-    if(autoLaunchArmed&&!landscapeReady()){autoLaunchNeedsManual=true;refreshPortraitLaunchUi();}
-  }).catch(()=>{
-    if(autoLaunchArmed){autoLaunchNeedsManual=true;refreshPortraitLaunchUi();}
-  });
-  refreshPortraitLaunchUi();
-};
 $('rotate-fullscreen').onclick=()=>{input.clear();void immersive.enter();};
 $('rotate-pause').onclick=()=>{if(mode==='menu')start();else pause();};
 $('sound').onclick=()=>{muted=!muted;void sound.unlock().catch(()=>{});sound.setMuted(muted);$('sound').textContent=playerUi?(muted?'音效關':'音效開'):(muted?'Sound off':'Sound on');$('sound').setAttribute('aria-pressed',String(!muted));ui();};
@@ -599,7 +558,7 @@ function toggleSceneQa(){
  ui();
 }
 addEventListener('keydown',e=>{
-  if(journeyTransition||e.isComposing||e.repeat||l2UI?.feedbackOpen)return;
+  if(!$('game-loading').hidden||journeyTransition||e.isComposing||e.repeat||l2UI?.feedbackOpen)return;
   if(settingsOpen&&e.code==='Escape'){e.preventDefault();$('close-settings').click();return;}
   if(e.target instanceof HTMLElement&&e.target.closest('input,textarea,select,[contenteditable]'))return;
   if(e.code==='KeyQ'&&sceneInspector){e.preventDefault();toggleSceneQa();return;}
@@ -612,7 +571,7 @@ addEventListener('keydown',e=>{
   if((mode==='playing'||brickCompleted)&&l2UI&&(e.code==='KeyG'||e.code==='KeyI')){e.preventDefault();l2UI.openQuick(e.code==='KeyG'?'praise':'issue','keyboard');return;}
   if(mode==='playing'){if(e.code==='KeyP'){e.preventDefault();pause();}else if(e.code==='KeyR'){e.preventDefault();restart();}return;}
   if(trip&&mode==='paused'){
-   const direct:Record<string,()=>void>={KeyP:start,KeyR:restart,KeyN:()=>{if(!playerUi)$('l2-next').click();},KeyV:()=>{if(tripPauseDock&&!tripPauseDock.reviewButton.hidden)tripPauseDock.reviewButton.click();},KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{l2UI?.exportCurrent();}};
+   const direct:Record<string,()=>void>={KeyP:brickCompleted?restart:start,KeyR:restart,KeyN:()=>{if(!playerUi)$('l2-next').click();},KeyV:()=>{if(tripPauseDock&&!tripPauseDock.reviewButton.hidden)tripPauseDock.reviewButton.click();},KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{l2UI?.exportCurrent();}};
    if(direct[e.code]){e.preventDefault();direct[e.code]();return;}
   }
   const prefix=pilot||l2?'l2':brick?'brick':'';
@@ -694,7 +653,7 @@ function advance(dt:number,override?:InputState){
   if(cheer)sound.passengerCue(cheer);
  }
  if(motion.advance(travel,state.appliedSteer,dt,rightAcceleration,state.launchSlip,state.brakeSlip))sound.passengerCue('clap');
- elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId);if(brick&&state.distance>=chapterEnd()&&(!journeyMode||chapterIndex===2)){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else if(!passengerPreview)sound.pause();
+ elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId);if(brick&&state.distance>=chapterEnd()&&(!journeyMode||chapterIndex===2)){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(playerUi?'player-play':l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else if(!passengerPreview)sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(brick)return height+(Math.abs(lateral)>world.halfAt(state.distance)?-.1:0);
@@ -1070,13 +1029,7 @@ function loop(now:number){
   prefetchNextChapter();
   if(mode==='playing')highwayHandoff();
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
-  if(autoLaunchArmed&&(mode==='playing'||mode==='countdown'))autoLaunchArmed=false;
-  if(autoLaunchArmed&&!document.hidden&&landscapeReady()&&!settingsOpen&&(!world.streamer||world.streamer.ready)){
-    autoLaunchArmed=false;autoLaunchNeedsManual=false;
-    // Enter the drive shown in the portrait preview with the same car and traffic.
-    start();
-  }
-  pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen,sceneInspector?.isOpen??false,!!sceneInspector);
+  if(!startupPending&&!replayPreparing&&!document.documentElement.dataset.loading)pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen,sceneInspector?.isOpen??false,!!sceneInspector);
   const dt=Math.min((now-last)/1000,.25);last=now;
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
@@ -1105,7 +1058,7 @@ function loop(now:number){
     if(prepared){
      loadingProgress(100,'風景已準備好','道路、樹木與海岸已就緒，準備重新出發。');
      replayPreparing=false;
-     loadingFinished(false);
+     loadingFinished();
      start(); // Still covered by the loading artwork until fade-out.
     }else{
      const title=stream.ready?'正在預熱出發場景':'正在重新準備沿途風景';
@@ -1117,8 +1070,8 @@ function loop(now:number){
   }
   if(startupPending){
     const stream=world.streamer;
-    if(stream?.error){if(startupDiagnostics.enabled)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFailed('前方道路載入失敗，請檢查連線後重新載入。');startupPending=false;}
-    else if(!stream||stream.ready){if(startupDiagnostics.enabled&&stream)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFinished(false);startupPending=false;}
+    if(stream?.error){if(startupDiagnostics.enabled)startupDiagnostics.sample(stream.startupDiagnosticState());autoStartOnReady=false;loadingFailed('前方道路載入失敗，請檢查連線後重新載入。');startupPending=false;}
+    else if(!stream||stream.ready){if(startupDiagnostics.enabled&&stream)startupDiagnostics.sample(stream.startupDiagnosticState());loadingFinished();startupPending=false;}
     else{
       const {nearby,chunks}=stream.stats;
       const done=chunks.filter(c=>nearby.includes(c.index)).reduce((n,c)=>n+Number(c.road==='ready')+Number(c.scenery==='ready'),0),total=nearby.length*2;
@@ -1175,9 +1128,7 @@ function feedbackAnchor():FeedbackAnchor{
  const b=(pilot??l2)!,road=pilot?pilotSample(pilot,state.distance):l2Sample(l2!,state.distance);return {id:b.id,revision:b.revision,seed:b.seed,contentFingerprint:b.contentFingerprint,generatorVersion:b.generatorVersion,handlingVersion:'ALB2',...(stage?{stageCode:stage.stageCode,...(trip?{tripCode:trip.tripCode}:{}),l2InstanceId:trip?trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id:(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats[stage.beats.length-1].id),...(trip?{bufferRole:trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role}:{})}:{}),world:pilot?(['coast','canyon','city'] as const)[pilotWeights(pilot,state.distance).indexOf(Math.max(...pilotWeights(pilot,state.distance)))]:b.world,profiles:pilot?structuredClone({placements:trip?[]:pilot.placements,activePlacements:pilotSample(pilot,state.distance).active,worldPhases:pilot.worldPhases}):structuredClone(l2!.profiles),s:state.distance-BRICK_START,trackDistance:state.distance,elapsedSeconds:elapsed,timestampMs:Date.now(),source:'drive',drive:{speedKmh:state.speed*3.6,steerRaw:rawSteer,steerApplied:state.appliedSteer,roadX:state.lateral,height:road.height,grade:road.grade,halfWidth:road.halfWidth,laneCount:road.lanes,offRoad:state.offRoad,gas:controls.gas,brake:controls.brake}};
 }
 l2UI=mountL2Lab((pilot??l2??momentCandidate)!,{play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),capture:feedbackAnchor,history,freeze:()=>{mode='paused';input.clear();testControls=undefined;sound.pause();ui();},resume:start,onFeedback:data=>{telemetry?.mark('feedback',elapsed,state.distance-BRICK_START,data);if(brickCompleted&&telemetry){telemetry.save();showDriveReport();}}},!pilot&&!l2);
-// Public completion/replay is the one primary player button. Legacy L2
-// route-selection/replay controls remain internal and must not compete with
-// it until the dedicated main menu is built.
+// Results own the public replay and return actions. Keep legacy lab controls internal.
 if(playerUi)for(const id of ['l2-replay','l2-next']){
  const button=document.getElementById(id);
  if(button)button.hidden=true;
@@ -1201,7 +1152,7 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
 // Existing L2 shortcut text is replaced by the same badge rather than doubled.
 for(const [id,key,pad] of [
  ['pause','P','OPTIONS'],['player-play','P','OPTIONS'],
- ['player-restart','R','✕'],['player-new-route','N','✕'],
+ ['player-restart','R','✕'],
  ['player-options','C','✕'],['player-sound','M','✕'],
  ['l2-play','P','OPTIONS'],['l2-replay','R','✕'],
  ['l2-next','N','✕'],['l2-settings','C','✕'],
