@@ -346,6 +346,7 @@ const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,ra
 let rivalPassCount=0;
 if(traffic)traffic.rivalLeaders=()=>race.rivals;
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
+race.impactTraffic=(row,severity,side)=>traffic?.impactByRival(row,severity,side);
 const rivalView=new RivalView(race,world.scene,tireEffects,world.sample);
 rivalView.updateRanks(race.standings(state));
 await renderer.compileAsync(rivalView.group,camera,world.scene);
@@ -1420,6 +1421,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   triangles:()=>triangles?.inspect(),
   cones:()=>cones?.inspect(),
   traffic:()=>traffic?.inspect(),
+  trafficWorld:()=>traffic?.inspectWorld(),
   trafficClearance:()=>traffic?.clearance(state.distance,state.lateral,carBounds.x/2,carBounds.z/2,state.heading+trafficImpact.yaw+guardrail.yaw),
   trafficImpact:()=>({velocity:trafficImpact.velocity,slide:trafficImpact.slide,yaw:trafficImpact.yaw,roll:trafficImpact.roll,event:trafficImpact.event,sparks:trafficSparks.inspect()}),
   trafficSchedule:()=>trafficRecipe(((trip?.seed??1)^trafficSessionVariation)>>>0,world.length),

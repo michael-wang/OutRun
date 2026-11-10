@@ -4,6 +4,7 @@ import {createState,step} from '../src/handling';
 import {DEFAULT_PACE} from '../src/pace';
 import * as THREE from 'three';
 import {Traffic,trafficRecipe} from '../src/traffic';
+import {TrafficImpact} from '../src/traffic-impact';
 import {plannedTrafficLateral} from '../src/traffic-flow';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack,pilotSample} from '../src/pilot-composer';
@@ -92,6 +93,21 @@ describe('Riviera GT race',()=>{
   const hit=race.step(dt,p,old);expect(hit?.kind).toBe('rear');expect(p.speed).toBeLessThan(35);expect(r.speed).toBeLessThan(16.1);
   expect(r.distance-p.distance).toBeGreaterThanOrEqual(4.89);
   expect(race.step(dt,p,p)).toBeUndefined();
+ });
+ it('rear contact transfers more speed loss and sideslip to the leading Rival',()=>{
+  const race=new RivalRace(10350,flat,()=>[],[raceEntries[0]]);
+  race.reset(350);
+  const front=race.rivals[0];front.distance=450;front.previousDistance=450;front.speed=18;
+  const p={distance:446.5,lateral:front.lateral,speed:42};
+  const old={distance:440,lateral:front.lateral};
+  const event=race.step(1/120,p,old);
+  expect(event?.kind).toBe('rear');
+  expect(event?.playerIsTrailing).toBe(true);
+  expect(front.speed).toBeLessThan(18);
+  expect(Math.abs(front.impulse)).toBeGreaterThan(3);
+  const motion=new TrafficImpact();
+  motion.kick(p as any,event!);
+  expect(p.speed).toBeGreaterThan(30);
  });
  it('orders same-tick crossings by fraction, and keeps running after a player finishes',()=>{
   expect(crossingTime(98,102,100,4,.1)).toBe(4.05);

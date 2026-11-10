@@ -2,6 +2,7 @@ import {advancePowertrain,createPowertrain} from './powertrain';
 import {MAX_SPEED} from './handling';
 import {DEFAULT_PACE,effectivePace} from './pace';
 import {sweptContact,type TrafficCollision} from './traffic-impact';
+import {rearImpactResponse} from './arcade-contact';
 
 export interface DriverProfile {
   anticipation:number; reactionTime:number; overtaking:number; aggression:number; riskTolerance:number;
@@ -66,10 +67,12 @@ export class RivalRace {
   // its authoritative traffic trajectory behind that racer between decisions.
   yieldTraffic?:(row:Obstacle,distance:number,speed:number,time:number)=>void;
   private contactTimes=new Map<string,number>();
+  private trafficContacts=new Map<string,number>();
+  impactTraffic?:(row:Obstacle,severity:number,side:number)=>void;
   constructor(readonly finish:number,private road:(d:number)=>RaceRoad,
     private traffic:(d:number,t:number,radius:number)=>Obstacle[],private entries=raceEntries){}
   reset(start:number){
-    this.time=0;this.playerFinish=null;this.contactTimes.clear();
+    this.time=0;this.playerFinish=null;this.contactTimes.clear();this.trafficContacts.clear();
     const gridBase=Math.min(start,Math.max(0,this.finish-90));
     this.rivals=this.entries.map(entry=>{
       const r=new RivalState(entry);
@@ -187,7 +190,20 @@ export class RivalRace {
         this.yieldTraffic(o,safe,speed,time);
         o.distance=safe-(time-r.lastDecision)*speed;o.speed=speed;
       }else if(r.previousDistance<=limit+.01&&r.distance>=limit){
-        r.distance=Math.max(r.previousDistance,limit);r.speed=Math.min(r.speed,o.speed/effectivePace(r.speed,DEFAULT_PACE));r.braking=true;
+        r.distance=Math.max(r.previousDistance,limit);r.braking=true;
+        const key=r.entry.id+'/'+o.id;
+        if((this.trafficContacts.get(key)??-10)<this.time-.95){
+          this.trafficContacts.set(key,this.time);
+          const severity=clamp((worldSpeed(r.speed)-o.speed)/45,.15,.95);
+          const response=rearImpactResponse(severity);
+          r.speed*=response.trailingSpeedMultiplier;
+          const side=r.lateral<=o.lateral?-1:1;
+          r.impulse+=side*response.trailingSideSpeed;
+          if(o.id.startsWith('T')&&o.speed>1)this.impactTraffic?.(o,severity,-side);
+        }
+        // Keep a real following gap until a passing lane opens, rather than
+        // instantaneously setting the rear car's speed to the front car's.
+        r.targetSpeed=Math.min(r.targetSpeed,(o.speed+4)/effectivePace(r.speed,DEFAULT_PACE));
       }
     }
     r.slip=Math.max(Math.abs(r.impulse)*.25,r.braking&&k>110?.62:0,clamp((Math.abs(r.curvature)*worldSpeed(r.speed)**2-15)/20,0,.75));
@@ -214,16 +230,29 @@ export class RivalRace {
         const side=Math.sign(dx)||1;
         const relative=Math.abs(r.speed-b.speed);
         if(contact.kind==='rear'){
-          if(dz<0){r.distance=Math.min(r.distance,b.distance-l-.002);r.speed=Math.min(r.speed,b.speed);}
-          else {b.distance=Math.min(b.distance,r.distance-l-.002);b.speed=Math.min(b.speed,r.speed);}
+          if(dz<0)r.distance=Math.min(r.distance,b.distance-l-.002);
+           else b.distance=Math.min(b.distance,r.distance-l-.002);
         }else r.lateral=b.lateral+side*(w+.002);
         const key=i+'/'+j;
         if((this.contactTimes.get(key)??-10)>this.time-.95)continue;
         this.contactTimes.set(key,this.time);
         const severity=clamp(.15+relative/40,.15,.8);
-        r.speed*=1-.09*severity;r.impulse=side*(1+severity*2);
-        if(other){other.speed*=1-.09*severity;other.impulse=-r.impulse;}
-        else hit={actorId:-100-i,type:0,kind:contact.kind,side:-side,severity,distance:r.distance,lateral:(r.lateral+b.lateral)*.5};
+         const rSide=Math.abs(r.lateral)>r.half-r.entry.car.width*.5-.7?-Math.sign(r.lateral):side;
+         if(contact.kind==='rear'){
+          const response=rearImpactResponse(severity),rBehind=dz<0;
+          r.speed*=rBehind?response.trailingSpeedMultiplier:response.leadingSpeedMultiplier;
+          r.impulse=rSide*(rBehind?response.trailingSideSpeed:response.leadingSideSpeed);
+          if(other){
+           other.speed*=rBehind?response.leadingSpeedMultiplier:response.trailingSpeedMultiplier;
+           other.impulse=-rSide*(rBehind?response.leadingSideSpeed:response.trailingSideSpeed);
+          }
+         }else{
+          r.speed*=1-.08*severity;r.impulse=side*(1+severity*2);
+          if(other){other.speed*=1-.08*severity;other.impulse=-r.impulse;}
+         }
+         if(!other)hit={actorId:-100-i,type:0,kind:contact.kind,side:-side,severity,
+          playerIsTrailing:contact.kind==='rear'?dz>0:undefined,
+          distance:r.distance,lateral:(r.lateral+b.lateral)*.5};
       }
     }
     for(const r of this.rivals)if(r.finishTime===null){

@@ -1,13 +1,20 @@
 import type {DrivingState} from './handling';
-export interface TrafficCollision {actorId:number;type:number;kind:'side'|'rear';side:number;distance:number;lateral:number;severity:number;relativeSpeed?:number}
+import {rearImpactResponse} from './arcade-contact';
+export interface TrafficCollision {actorId:number;type:number;kind:'side'|'rear';side:number;distance:number;lateral:number;severity:number;relativeSpeed?:number;playerIsTrailing?:boolean}
 /** Short road-space impulse layered after the unchanged steering integrator. */
 export class TrafficImpact {
  velocity=0;yaw=0;roll=0;slide=0;flash=0;event?:TrafficCollision;
  reset(){this.velocity=this.yaw=this.roll=this.slide=this.flash=0;this.event=undefined;}
  kick(s:DrivingState,event:TrafficCollision){
   this.event=event;const hard=event.kind==='rear',v=event.severity;
-  const heavy=event.type===1||event.type===2;s.speed*=1-(hard?(.18+.4*v)*(heavy?1.08:.9):.04+.16*v);
-  this.velocity=event.side*(hard?4+6*v:2.2+3.5*v);
+  if(hard){
+   const kick=rearImpactResponse(v),behind=event.playerIsTrailing!==false;
+   s.speed*=behind?kick.trailingSpeedMultiplier:kick.leadingSpeedMultiplier;
+   this.velocity=event.side*(behind?kick.trailingSideSpeed:kick.leadingSideSpeed);
+  }else{
+   s.speed*=1-(.04+.16*v);
+   this.velocity=event.side*(2.2+3.5*v);
+  }
   this.flash=.12+.12*v;
  }
  update(s:DrivingState,dt:number,half:number){

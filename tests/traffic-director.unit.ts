@@ -21,6 +21,28 @@ it('has denser but deterministic highway encounters without growing the render p
  expect(a[0].distance).toBeGreaterThanOrEqual(650);
  expect(TRAFFIC_LIMIT).toBe(12);
 });
+it('keeps whole-route moving traffic after player passes and beyond the render pool',()=>{
+ const traffic=new Traffic(new THREE.Scene(),sample,()=>8.75,10000,804,()=>true,[],undefined,true,false,false,17);
+ const total=trafficRecipe(804^17,10000).length;
+ traffic.rivalLeaders=()=>[];
+ traffic.update(0,350,0,0);
+ const starting=traffic.inspectWorld();
+ expect(starting.total).toBe(total);
+ const far=starting.rows.find(row=>row.distance>4000&&row.distance<7000)!;
+ expect(far).toBeTruthy();
+ traffic.update(4,350,0,0);
+ const after=traffic.inspectWorld();
+ expect(after.total).toBe(total);
+ expect(after.rows.find(row=>row.id===far.id)!.distance).toBeGreaterThan(far.distance);
+ // Fly past the same car: visibility is capped but no model entity retires.
+ traffic.update(5,7500,0,80);
+ expect(traffic.inspect().actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);
+ expect(traffic.inspectWorld().total).toBe(total);
+ const remote=traffic.raceObstacles(far.distance+100,5,600);
+ expect(remote.some(r=>r.id==='T'+far.id)).toBe(true);
+ traffic.dispose();
+});
+
 it('rerolls independently of route and pins a diagnostic traffic seed',()=>{
  expect(newTrafficSessionSeed(new URLSearchParams('trafficSeed=3025'))).toBe(3025);
  expect(newTrafficSessionSeed(new URLSearchParams('trafficSeed=4294967295'))).toBe(4294967295);

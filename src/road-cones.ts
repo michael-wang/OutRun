@@ -1,4 +1,5 @@
 import {warningTriangleGeometry,type Breakdown} from './breakdowns';
+import {breakdownLaneLateral} from './race-traffic-world';
 import {coastCurveConeLayout} from './coast-curve-cones';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import * as THREE from 'three';
@@ -49,7 +50,7 @@ export class RoadCones {
   private triangles?:readonly Breakdown[],private sunsetShadows=false,private geometryShadows=false,private coastalBends=false,
  ){
   this.recipe=triangles
-   ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:h.stopSide*(this.halfAt(h.distance)-1.75)})))
+   ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:breakdownLaneLateral(h.stopLane,h.stopSide,this.halfAt(h.distance))})))
    :[...coneLayout(seed,length),...(coastalBends?coastCurveConeLayout(sample,halfAt,length):[])];
   const g=triangles?warningTriangleGeometry():geometry();
   if(triangles)g.rotateY(Math.PI);

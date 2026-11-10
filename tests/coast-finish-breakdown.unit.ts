@@ -10,20 +10,27 @@ const flat=(d:number)=>({
  tangent:new THREE.Vector3(0,0,1),curvature:0,roadHeading:0,
 }) as ReturnType<typeof createPilotTrack>['sample'] extends (d:number)=>infer R?R:never;
 
-it('keeps ONE safe stopped car in the final coast approach, nowhere near credits',()=>{
+it('seeds up to two coastal breakdowns across the whole road, in any lane',()=>{
  const length=10000;
- const broken=breakdownLayout(flat,()=>8.75,length,804,true);
- expect(broken).toHaveLength(COAST_BREAKDOWN.maxCount);
- const d=broken[0].distance;
- expect(d).toBeGreaterThan(length-COAST_BREAKDOWN.firstBeforeEnd);
- expect(d).toBeLessThan(length-COAST_BREAKDOWN.lastBeforeEnd);
- expect(broken[0].stationary).toBe(true);
- expect(d-240).toBeGreaterThan(8000); // warning signs also late
- for(const seed of [1,7,24,804]){
-  const current=breakdownLayout(flat,()=>8.75,length,seed,true);
-  expect(current.length).toBeLessThanOrEqual(1);
-  expect(current.every(x=>x.distance<length-COAST_BREAKDOWN.lastBeforeEnd)).toBe(true);
+ const seed=804,broken=breakdownLayout(flat,()=>8.75,length,seed,true);
+ expect(broken.length).toBeGreaterThan(0);
+ expect(broken.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxCount);
+ const allLanes=new Set<number>();
+ const allSites=new Set<number>();
+ for(const variant of [1,7,24,804,99,1206,3025,4380,8677]){
+  const rows=breakdownLayout(flat,()=>8.75,length,variant,true);
+  for(const b of rows){
+   expect(b.stationary).toBe(true);
+   expect(b.distance).toBeGreaterThanOrEqual(COAST_BREAKDOWN.startClearance);
+   expect(b.distance).toBeLessThan(length-COAST_BREAKDOWN.finishClearance);
+   expect(b.stopLane).toBeGreaterThanOrEqual(0);
+   expect(b.stopLane).toBeLessThan(5);
+   allLanes.add(b.stopLane);allSites.add(b.distance);
+  }
  }
+ expect(allSites.size).toBeGreaterThan(5);
+ expect(allLanes.has(0)).toBe(true);expect(allLanes.has(4)).toBe(true);
+ expect([...allLanes].some(lane=>lane>0&&lane<4)).toBe(true);
 });
 it('preserves earlier non-coast stopped-car design and scans the real coast safely',()=>{
  const legacy=breakdownLayout(flat,()=>8.75,69000,1,false);
@@ -33,9 +40,9 @@ it('preserves earlier non-coast stopped-car design and scans the real coast safe
  const finishAt=BRICK_START+COAST_ULTRA_LENGTH;
  const coastal=breakdownLayout(track.sample,
   d=>pilotSample(COAST_ULTRA_STAGE,d).halfWidth,finishAt,804,true);
- expect(coastal.length).toBeLessThanOrEqual(1);
+ expect(coastal.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxCount);
  for(const car of coastal){
-  expect(car.distance).toBeGreaterThan(finishAt-COAST_BREAKDOWN.firstBeforeEnd);
-  expect(car.distance).toBeLessThan(finishAt-COAST_BREAKDOWN.lastBeforeEnd);
+  expect(car.distance).toBeGreaterThanOrEqual(COAST_BREAKDOWN.startClearance);
+  expect(car.distance).toBeLessThan(finishAt-COAST_BREAKDOWN.finishClearance);
  }
 });
