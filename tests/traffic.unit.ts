@@ -3,10 +3,10 @@ import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {Traffic,trafficLayout,TRAFFIC_LIMIT,TRAFFIC_TYPES} from '../src/traffic';
 const sample=(d:number)=>({position:new THREE.Vector3(0,d*.1,d),right:new THREE.Vector3(1,0,0),tangent:new THREE.Vector3(0,.1,1).normalize(),roadHeading:0,curvature:0});
-describe('sparse road trip traffic',()=>{
- it('uses a rare deterministic waffle replacement without increasing traffic density',()=>{
+describe('bounded, denser road trip traffic',()=>{
+ it('uses a rare deterministic waffle replacement in the denser encounter schedule',()=>{
   const actors=new Map<number,ReturnType<typeof trafficLayout>[number]>();for(let d=350;d<20000;d+=500)for(const a of trafficLayout(1,0,d,69000))actors.set(a.id,a);
-  const all=[...actors.values()],waffles=all.filter(a=>a.type===3);expect(waffles.length).toBeGreaterThan(0);expect(waffles.length).toBeLessThan(all.filter(a=>a.type===0).length/2);expect(all.length).toBeGreaterThan(35);expect(all.length).toBeLessThan(95);
+  const all=[...actors.values()],waffles=all.filter(a=>a.type===3);expect(waffles.length).toBeGreaterThan(0);expect(waffles.length).toBeLessThan(all.filter(a=>a.type===0).length/2);expect(all.length).toBeGreaterThan(95);expect(all.length).toBeLessThan(140);
  });
  it('repeats its seed, moves at distinct speeds and keeps the standing start clear',()=>{
   const first=trafficLayout(1,0,350,69000);expect(first).toEqual(trafficLayout(1,0,350,69000));expect(first).not.toEqual(trafficLayout(2,0,350,69000));expect(first.every(a=>a.distance>600)).toBe(true);
