@@ -68,14 +68,15 @@ export class TireEffects {
   tint.set((.95*w0+.80*w1+.86*w2)/total,(.95*w0+.53*w1+.84*w2)/total,(.92*w0+.22*w1+.79*w2)/total);
  }
  clear(time=0){this.born.fill(-100);this.markBorn.fill(-100);this.opacity.fill(0);this.colors.fill(0);this.linked.fill(false);this.emitted.fill(0);this.particle=this.segment=0;this.emission=this.slipTime=0;this.lastTime=time;this.smoke.visible=this.marks.visible=false;}
- update(time:number,speed:number,skidIntensity:number,contacts:TireContact[],scale:number){
+ update(time:number,speed:number,skidIntensity:number,contacts:TireContact[],scale:number,rearSlip=0){
   const dt=Math.max(0,Math.min(.1,time-this.lastTime));if(time<this.lastTime)this.clear(time);this.lastTime=time;
-  const dust=this.mode==='dust',active=dust?speed>3&&contacts.some(c=>c.onRoad===false&&!!c.surface):skidIntensity>0,amount=THREE.MathUtils.clamp(dust?speed/45:skidIntensity,0,1);
+  const dust=this.mode==='dust',active=dust?speed>3&&contacts.some(c=>c.onRoad===false&&!!c.surface):skidIntensity>0||rearSlip>0;
   if(!active&&!this.smoke.visible&&!this.marks.visible){this.linked.fill(false);this.slipTime=this.emission=0;return;}
   this.slipTime=active?this.slipTime+dt:0;this.emission+=active?dt:0;const emit=active&&this.emission>=.016;if(emit)this.emission=0;
   for(let wheel=0;wheel<4;wheel++){
+   const amount=THREE.MathUtils.clamp(dust?speed/45:Math.max(skidIntensity,wheel<2?rearSlip:0),0,1);
    const c=contacts.find(c=>c.name===WHEEL_NAMES[wheel]);
-   if(!active||!c?.surface||(dust?c.onRoad!==false:!c.onRoad)||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
+   if(!active||amount===0||!c?.surface||(dust?c.onRoad!==false:!c.onRoad)||c.gap===null||Math.abs(c.gap)>.12){this.linked[wheel]=false;continue;}
    this.point.fromArray(c.surface);if(c.normal)this.normal.fromArray(c.normal);else this.normal.set(0,1,0);if(this.normal.y<0)this.normal.negate();this.point.addScaledVector(this.normal,.014);
    this.delta.subVectors(this.point,this.previous[wheel]);const distance=this.delta.length();
     if(emit){

@@ -1,5 +1,5 @@
 /** Six-speed arcade gearbox. Speeds are indicated km/h; travel pace remains separate. */
-export const IDLE_RPM=1000,REDLINE_RPM=7200,SHIFT_SECONDS=.32;
+export const IDLE_RPM=1000,REDLINE_RPM=7200,SHIFT_SECONDS=.52;
 export const UPSHIFT_KMH=[50,95,145,195,245] as const;
 const GEAR_CEILINGS=[50,95,145,195,245,310] as const;
 /** Effective ratios share the same road-speed calibration as the RPM model. */
@@ -37,7 +37,7 @@ export function advancePowertrain(s:PowertrainState,speed:number,throttle:boolea
  const progress=1-s.shiftRemaining/SHIFT_SECONDS;
  s.tractionFactor=s.shiftRemaining>0?(s.shiftDirection>0?upshiftTraction(progress):.38):1;
  // Transient driveline drag is a force, integrated with road drag and grade.
- s.shiftDrag=s.shiftRemaining>0&&s.shiftDirection>0?(1-s.tractionFactor)*(.35+1.15*Math.min(1,speed/(245/3.6))):0;
+ s.shiftDrag=s.shiftRemaining>0&&s.shiftDirection>0?(1-s.tractionFactor)*(3.6+1.3*Math.min(1,speed/(245/3.6))):0;
  s.roadDrag=roadResistance(speed);
  const engineForce=Math.min(9.5,s.engineTorque*s.gearRatio);
  s.driveForce=throttle?engineForce*s.tractionFactor:0;

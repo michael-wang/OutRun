@@ -144,8 +144,9 @@ export class EngineSound {
   stopPassenger(){for(const source of this.passengerSources)source.stop();this.passengerSources.clear();}
   private silencePasses(){this.passes.suspend();if(this.context)for(const v of this.passVoices){v.gain.gain.cancelScheduledValues(this.context.currentTime);v.gain.gain.setTargetAtTime(0,this.context.currentTime,.015);}}
   setMuted(muted: boolean) { if(muted)this.stopPassenger();this.muted = muted; if (this.context && this.master) this.master.gain.setTargetAtTime(muted ? 0 : 0.35, this.context.currentTime, 0.025); }
-  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number},collisionSlide=0,trafficSkid=0) {
-    const intensity=Math.max(trafficSkid,this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer,collisionSlide));
+  update(speed: number, slip: number, gas: boolean,dt=1/60, drivetrain?:{rpm:number;gear:number;shiftRemaining:number;requiredSteer?:number;appliedSteer?:number;launchSlip?:number;brakeSlip?:number;offRoad?:boolean},collisionSlide=0,trafficSkid=0) {
+    const longitudinal=drivetrain?.offRoad?0:Math.max(drivetrain?.launchSlip??0,drivetrain?.brakeSlip??0);
+    const intensity=Math.max(trafficSkid,longitudinal,this.skidFeedback.update(speed,slip,dt,drivetrain?.requiredSteer,drivetrain?.appliedSteer,collisionSlide));
     this.active = true;this.engineRpm=drivetrain?.rpm??Math.min(7200,1000+speed*85);this.engineGear=drivetrain?.gear??1;
     this.engineHz = 28+this.engineRpm*1.1/60+(gas ? 3 : 0); this.skidLevel = intensity*.12;
     this.windLevel=.10*Math.min(1,(speed/(300/3.6))**2);

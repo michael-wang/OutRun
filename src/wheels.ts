@@ -22,8 +22,9 @@ export function createRoadWheel(side:number,front:boolean){
  const ghosts=Array.from({length:3},()=>{const m=new THREE.Mesh(spokesGeometry,blurMaterial);pivot.add(m);return m;});
  rotor.traverse(o=>{if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;}});
  let angle=0,steer=0,previousRendered=0,travel=0,pendingTime=0,blurAngle=0,blurAmount=0;
- return {pivot,advance:(ds:number,applied:number,dt:number)=>{
-  pendingTime+=dt;travel+=ds;angle=wheelRoll(angle,ds);steer+=((front?-THREE.MathUtils.clamp(applied,-1,1)*.3:0)-steer)*(1-Math.exp(-dt/ .07));
+ return {pivot,advance:(ds:number,applied:number,dt:number,launchSlip=0,brakeSlip=0)=>{
+  const rollingDistance=ds*(1-.85*brakeSlip)+(front?0:22*launchSlip*dt);
+  pendingTime+=dt;travel+=ds;angle=wheelRoll(angle,rollingDistance);steer+=((front?-THREE.MathUtils.clamp(applied,-1,1)*.3:0)-steer)*(1-Math.exp(-dt/ .07));
  },render:()=>{
   rotor.rotation.x=angle%(2*Math.PI);pivot.rotation.y=steer;
   const swept=angle-previousRendered,rate=Math.abs(swept)/Math.max(pendingTime,1e-6),blur=THREE.MathUtils.clamp((rate-35)/70,0,1);
