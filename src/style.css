@@ -606,3 +606,14 @@ html[data-player-ui="true"] #player-start[data-finished="true"] #results-menu{
  grid-column:1/-1;font-size:13px;min-height:36px
 }
 @media(orientation:landscape){html[data-player-ui="true"] #immersive-note[data-rotation-hint="true"]{display:none}}
+
+/* Race instruments use the same warm outlined controls as the pause dock. */
+#race-position,#race-director{position:absolute;z-index:16;color:#fff1df;font:700 13px/1.25 system-ui,sans-serif;font-variant-numeric:tabular-nums}
+#race-position{top:max(12px,env(safe-area-inset-top));right:calc(50% + 35px);padding:3px 12px;border-bottom:2px solid #ff946e;background:#171a2180;pointer-events:none}
+#race-position b{font:italic 900 28px/1 Arial,sans-serif}#race-position small{position:absolute;top:100%;left:50%;transform:translateX(-50%);white-space:nowrap;text-shadow:0 1px 3px #000}
+#race-director{top:max(16%,48px);right:max(3vw,env(safe-area-inset-right));border:1px solid #f0c7aa88;background:#151922bb;padding:6px 9px}
+#race-data{display:block;white-space:pre-line;font-size:12px;font-weight:600}
+#race-director button{min-height:32px;margin:0 2px 4px 0;padding:4px 7px;background:#10151b55;color:#fff1df;border:1px solid #cabbb2;border-radius:1px;font-size:11px}
+#race-director button[aria-pressed=true]{border-color:#ff966b;color:#ffbc99}
+#ready-countdown{top:30%;border:0;border-bottom:3px solid #ff845a;border-radius:0;background:#171a215c;font:italic 900 clamp(38px,8vh,76px)/1 Arial,sans-serif;letter-spacing:-.06em;padding:.06em .3em;color:#fff0d7;pointer-events:none}
+#race-watch{min-height:40px;color:#ffccac;border:1px solid #e7af8d;background:#1e23268a}

@@ -1,5 +1,5 @@
 /** Public query contract: old debug URLs never change gameplay modes. */
-export const GAME_QUERY_KEYS=['fpsdiag','startupdiag','at','trafficSeed'] as const;
+export const GAME_QUERY_KEYS=['fpsdiag','startupdiag','at','trafficSeed','rivaldebug'] as const;
 export function canonicalGameQuery(raw:URLSearchParams){
  const result=new URLSearchParams();
  if(raw.get('fpsdiag')==='1')result.set('fpsdiag','1');
@@ -9,5 +9,6 @@ export function canonicalGameQuery(raw:URLSearchParams){
  const trafficSeed=raw.get('trafficSeed');
  if(trafficSeed!==null&&/^[0-9]{1,10}$/.test(trafficSeed)&&Number(trafficSeed)<=0xffffffff)
   result.set('trafficSeed',String(Number(trafficSeed)));
+ if(raw.get('rivaldebug')==='1')result.set('rivaldebug','1');
  return result;
 }

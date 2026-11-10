@@ -74,7 +74,7 @@ html[data-loading=true] #app{visibility:hidden}
 @media(orientation:portrait){
  #racing-menu{grid-template-rows:auto auto minmax(0,1fr) auto;row-gap:clamp(4px,1.5dvh,16px);padding:max(16px,env(safe-area-inset-top)) max(5vw,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(5vw,env(safe-area-inset-left))}
  .cabinet-logo{gap:8px}.cabinet-logo strong{font-size:24px}.cabinet-logo span{padding-left:8px;font-size:11px}
- .mode-mark{font-size:9px;gap:5px}.mode-mark small{display:none}.cabinet-header{padding-bottom:12px}
+ .mode-mark{font-size:9px;gap:5px}.mode-mark small{font-size:8px}.cabinet-header{padding-bottom:12px}
  .stage-heading{align-items:baseline;gap:12px}.stage-heading h1{font-size:clamp(32px,9vw,52px)}.stage-heading span{font-size:12px}
  .stage-grid{grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));gap:0;align-items:stretch}
  #racing-menu .mini-stage{grid-template-columns:61% 1fr;grid-template-rows:1fr 1fr;align-content:center;column-gap:8px;padding:0;border-bottom:1px solid var(--line)}
