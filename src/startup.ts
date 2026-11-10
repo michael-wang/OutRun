@@ -1,6 +1,6 @@
 import { stages, type RacingStage } from './racing-stages';
 import { armStageAudio } from './stage-audio';
-import { immersive } from './immersive';
+import { immersive, landscapeControl } from './immersive';
 
 const boot = document.getElementById('boot')!;
 const surface = document.getElementById('game-loading')!;
@@ -8,6 +8,7 @@ const surface = document.getElementById('game-loading')!;
 async function enter(stage: RacingStage) {
   if (!stage.enter || !stage.loading) return;
   boot.hidden = true;
+  document.getElementById('stage-rotate')!.replaceChildren(landscapeControl());
   surface.hidden = false;
   document.documentElement.dataset.loading = 'true';
   document.getElementById('stage-loading-name')!.textContent = stage.name;
@@ -45,12 +46,27 @@ async function bootMenu() {
     return;
   }
   const { mountMenu } = await import('./racing-menu');
-  mountMenu(stage => {
+  // Returning explicitly from a stage opens the selector directly in the new document.
+  const {returningToMenu, ...state}=history.state ?? {};
+  if(returningToMenu)history.replaceState(state,'');
+  async function waitForEntry() {
+    if(returningToMenu || !matchMedia('(pointer:coarse)').matches)return;
+    const button=document.querySelector<HTMLButtonElement>('#boot-enter')!;
+    boot.querySelector<HTMLElement>('.boot-meter')!.hidden=true;
+    button.hidden=false;
+    await new Promise<void>(resolve=>{
+      button.onclick=()=>{
+        button.disabled=true;
+        if(immersive.canAutoLandscape)void immersive.enter().finally(resolve);
+        else resolve();
+      };
+    });
+    button.onclick=null;
+  }
+  await mountMenu(stage => {
     armStageAudio();
-    if (matchMedia('(pointer:coarse)').matches && !immersive.isIPhone)
-      void immersive.enter();
     void enter(stage);
-  });
+  }, waitForEntry);
   boot.hidden = true;
   delete document.documentElement.dataset.loading;
 }

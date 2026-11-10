@@ -1,9 +1,10 @@
+import {landscapeControl} from './immersive';
 import { GamepadInput, type PadAction } from './gamepad';
 import { InputLatch } from './input';
 import { renderMiniatures } from './racing-miniatures';
 import { stages, type RacingStage } from './racing-stages';
 
-export function mountMenu(enter: (stage: RacingStage) => void) {
+export async function mountMenu(enter: (stage: RacingStage) => void, waitForEntry: () => Promise<void>) {
   const menu=document.createElement('main');
   menu.id='racing-menu';
   menu.innerHTML=`
@@ -26,8 +27,10 @@ export function mountMenu(enter: (stage: RacingStage) => void) {
     <span class="racing-sr" role="status" aria-live="polite"></span>`;
   const buttons=Array.from(menu.querySelectorAll<HTMLButtonElement>('.mini-stage'));
   renderMiniatures(stages,buttons.map(button=>button.querySelector('canvas')!));
+  await waitForEntry();
+  menu.querySelector('.cabinet-footer')!.prepend(landscapeControl());
   const start=menu.querySelector<HTMLButtonElement>('#start-race')!;
-  const status=menu.querySelector<HTMLElement>('[role=status]')!;
+  const status=menu.querySelector<HTMLElement>('.racing-sr')!;
   const events=new AbortController();
   let selected=0, closed=false, frame=0;
   function select(index:number,focus=false) {
@@ -78,6 +81,7 @@ export function mountMenu(enter: (stage: RacingStage) => void) {
   document.addEventListener('visibilitychange',syncGamepads,{signal:events.signal});
   window.addEventListener('keydown',e=>{
     if(!['ArrowLeft','ArrowRight','Enter'].includes(e.key)||e.isComposing||e.altKey||e.ctrlKey||e.metaKey)return;
+    if(e.key==='Enter' && (e.target as HTMLElement)?.closest('.landscape-control'))return;
     e.preventDefault();
     if(!e.repeat)navigate(e.key==='Enter'?'confirm':e.key==='ArrowLeft'?'left':'right');
   },{signal:events.signal});

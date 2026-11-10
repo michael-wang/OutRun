@@ -63,8 +63,7 @@ test('installed coast launches online and offline within its publishing scope',a
  try{await expect.poll(distance,{timeout:60000}).toBeGreaterThan(startDistance);}
  finally{await page.keyboard.up('Space');}
  await page.locator('#pause').click();
- await page.locator('#tp-more').click();
- await page.locator('#tp-replay').click();
+ await page.keyboard.press('KeyR');
  await waitForCoast(page);
  await expect.poll(distance,{timeout:30000}).toBe(startDistance);
  const registration=await page.evaluate(async()=>(await navigator.serviceWorker.ready).scope);

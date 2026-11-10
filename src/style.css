@@ -92,7 +92,6 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #app #l2-hud{top:calc(max(16px,env(safe-area-inset-top)) + 96px);left:max(24px,env(safe-area-inset-left));max-width:calc(100vw - 48px);font-size:10px}
 
 /* iPhone Safari: keep rotation and home-screen guidance readable without hiding gameplay. */
-#rotate-iphone-hint,#rotate-immersive-error{max-width:min(440px,84vw);line-height:1.5}
 #iphone-fullscreen-hint,#l2-iphone-fullscreen-hint{font-size:13px;line-height:1.45;max-width:56ch}
 
 
@@ -139,7 +138,9 @@ html[data-player-ui="true"][data-drive-mode="paused"] header{display:none}
  .portrait-brand h1{margin:0;font-size:clamp(25px,7vw,34px);line-height:1.2;letter-spacing:.12em}
  .portrait-brand p{margin:5px 0 0;font-size:14px;font-weight:600;letter-spacing:.18em;color:#ffd69f}
  html[data-player-ui="true"] #rotate small{font-size:13px;line-height:1.45;color:#fff3dc}
- html[data-player-ui="true"] #rotate button{display:none!important}
+ html[data-player-ui="true"] #rotate{align-items:flex-end;padding-right:max(6vw,calc(env(safe-area-inset-right) + 14px))}
+ html[data-player-ui="true"] #rotate .landscape-control{justify-items:end;text-align:right}
+ html[data-player-ui="true"] :is(#speed,#touch,#preferences,#car-paint-list){display:none!important}
 }
 @media (orientation:landscape) and (max-height:500px){
  html[data-player-ui="true"] #player-start{top:max(8px,env(safe-area-inset-top));gap:3px}
@@ -154,8 +155,6 @@ html[data-player-ui="true"] #player-install-help{margin:2px auto 0;padding:7px 1
 /* Approved art stays behind menus and controls, and leaves with the first driving frame. */
 html[data-player-ui="true"] #preferences{z-index:40}
 html[data-player-ui="true"] #preferences p:has(#gamepad-diagnostic),
-html[data-player-ui="true"] #rotate-iphone-hint,
-html[data-player-ui="true"] #rotate-immersive-error,
 html[data-player-ui="true"] #gamepad-status{display:none!important}
 html[data-player-ui="true"] #player-start{top:max(6dvh,env(safe-area-inset-top));gap:10px}
 html[data-player-ui="true"] .player-title{font-size:clamp(32px,4.5vw,64px);font-style:italic;letter-spacing:.09em}

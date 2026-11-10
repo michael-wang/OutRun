@@ -20,6 +20,10 @@ async function mobile(browser:Browser,ua=androidUA,holdRoad=false){
         document.dispatchEvent(new Event('fullscreenchange'));
       },
     });
+    (window as any).__systemExit=()=>{
+      actualFullscreen=null;
+      document.dispatchEvent(new Event('fullscreenchange'));
+    };
     const orientation=screen.orientation;
     const lock=async(value:string)=>{(window as any).__orientationRequests.push(value);};
     if(orientation)Object.defineProperty(orientation,'lock',{configurable:true,value:lock});
@@ -45,6 +49,9 @@ async function mobile(browser:Browser,ua=androidUA,holdRoad=false){
 test('one confirm requests landscape, then waits for Worker readiness',async({browser})=>{
   const {page,context}=await mobile(browser,androidUA,true);
   try{
+    await expect(page.locator('#racing-menu')).toHaveCount(0);
+    await page.locator('#boot-enter').tap();
+    await expect.poll(()=>page.evaluate(()=>(window as any).__fullscreenRequests)).toBe(1);
     await page.locator('#start-race').tap();
     await expect(page.locator('#game-loading')).toBeVisible();
     const requests=await page.evaluate(()=>({
@@ -65,11 +72,69 @@ test('one confirm requests landscape, then waits for Worker readiness',async({br
 test('iPhone selection waits for manual rotation without requesting fullscreen',async({browser})=>{
   const {page,context}=await mobile(browser,iphoneUA);
   try{
+    await page.locator('#boot-enter').tap();
     await page.locator('#start-race').tap();
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
     await expect(page.locator('#rotate-launch-status')).toContainText('橫放手機');
     await page.setViewportSize({width:844,height:390});
     await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
     expect(await page.evaluate(()=>(window as any).__fullscreenRequests)).toBe(0);
+  }finally{await context.close();}
+});
+
+test('system fullscreen exit can be recovered in the selector and a paused drive',async({browser})=>{
+  const {page,context}=await mobile(browser);
+  try{
+    const calls=()=>page.evaluate(()=>(window as any).__fullscreenRequests);
+    const portrait={width:412,height:915},landscape={width:915,height:412};
+    await expect(page.locator('#boot-enter')).toBeVisible();
+    const bootButton=await page.locator('#boot-enter').boundingBox();
+    expect(bootButton!.y).toBeGreaterThan(page.viewportSize()!.height*.7);
+    expect(bootButton!.x+bootButton!.width/2).toBeGreaterThan(page.viewportSize()!.width*.6);
+    await page.screenshot({path:test.info().outputPath('mobile-ready.png')});
+    // The entire ready screen accepts the gesture, including the logo.
+    await page.touchscreen.tap(25,25);
+    await expect(page.locator('#racing-menu')).toBeVisible();
+    await expect.poll(calls).toBe(1);
+    await page.setViewportSize(landscape);
+    await page.evaluate(()=>(window as any).__systemExit());
+    await page.setViewportSize(portrait);
+    await page.locator('#racing-menu').getByRole('button',{name:'切換橫向'}).tap();
+    await expect.poll(calls).toBe(2);
+    await page.setViewportSize(landscape);
+    await page.locator('#start-race').tap();
+    await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
+    await page.evaluate(()=>(window as any).__systemExit());
+    await page.setViewportSize(portrait);
+    const driveMode=page.locator('html');
+    await expect(driveMode).toHaveAttribute('data-drive-mode','paused');
+    const recover=await page.locator('#rotate button').boundingBox();
+    expect(recover!.x).toBeGreaterThan(portrait.width/2);
+    await page.screenshot({path:test.info().outputPath('recover-portrait.png')});
+    await page.locator('#rotate').getByRole('button',{name:'切換橫向'}).tap();
+    await expect.poll(calls).toBe(3);
+    expect(await page.evaluate(()=>(window as any).__orientationRequests)).toEqual(Array(3).fill('landscape'));
+    await page.setViewportSize(landscape);
+    const dock=page.locator('#trip-pause-dock');
+    await expect(dock.locator('button:visible')).toHaveText(['繼續','回到主選單','設定']);
+    await page.screenshot({path:test.info().outputPath('pause-menu.png')});
+    await dock.getByRole('button',{name:'設定',exact:true}).tap();
+    await expect(dock.locator('button:visible')).toHaveText(['操作設定','音效　開','返回']);
+    await dock.locator('#tp-sound').tap();
+    await expect(dock.locator('#tp-sound')).toHaveAttribute('aria-pressed','false');
+    await page.screenshot({path:test.info().outputPath('pause-settings.png')});
+    await dock.locator('#tp-settings').tap();
+    await expect(page.locator('#swap')).toBeVisible();
+    await page.locator('#close-settings').tap();
+    await expect(dock.locator('#tp-sound')).toBeVisible();
+    await dock.locator('#tp-back').tap();
+    await dock.locator('#tp-resume').tap();
+    await expect(driveMode).toHaveAttribute('data-drive-mode','playing');
+    await page.locator('#pause').tap();
+    await dock.locator('#tp-exit').tap();
+    await expect(page.locator('#racing-menu')).toBeVisible();
+    await expect(page.locator('#view canvas')).toHaveCount(0);
+    expect(page.workers()).toHaveLength(0);
   }finally{await context.close();}
 });

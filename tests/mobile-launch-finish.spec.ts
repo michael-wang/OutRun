@@ -10,6 +10,7 @@ test('touch selection, portrait guide, results, replay and repeated menu returns
   const errors:string[]=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(new URL('?at=10300&fpsdiag=1',site).href);
+  await page.locator('#boot-enter').tap();
   const menu=page.locator('#racing-menu'),start=page.locator('#start-race');
   await expect(menu).toBeVisible();
   await page.screenshot({path:test.info().outputPath('menu-portrait.png')});
@@ -67,6 +68,7 @@ for(const device of ['Android','iPhone']){
       Element.prototype.requestFullscreen=async()=>{throw Error('Fullscreen denied');};
     },device);
     await page.goto(site.href);
+    await page.locator('#boot-enter').tap();
     await page.locator('#start-race').tap();
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
     await expect(page.locator('#rotate-launch-status')).toBeVisible();

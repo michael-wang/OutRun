@@ -5,6 +5,7 @@ test('the public coast starts automatically at zero speed with its approved HUD'
  try{
   const page=await context.newPage();
   await page.goto('/?at=850&trafficSeed=1234');
+  await page.locator('#boot-enter').tap();
   await page.locator('#start-race').click();
   await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
   await expect(page.locator('#view canvas')).toBeVisible();
@@ -26,11 +27,12 @@ test('portrait waits for landscape, then launches automatically without tapping 
  try{
   const page=await context.newPage();
   await page.goto('/');
+  await page.locator('#boot-enter').tap();
   await page.locator('#start-race').click();
   await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
   await expect(page.locator('#rotate')).toBeVisible();
   await expect(page.locator('#player-start')).toBeHidden();
-  await expect(page.locator('#rotate-fullscreen')).toBeHidden();
+  await expect(page.locator('#rotate-launch-status button')).toBeVisible();
   await expect(page.locator('#l2-lab')).toBeHidden();
   const style=await page.locator('#rotate').evaluate(el=>({backgroundColor:getComputedStyle(el).backgroundColor,backgroundImage:getComputedStyle(el).backgroundImage}));
   expect(style.backgroundColor).toBe('rgba(0, 0, 0, 0)');
@@ -65,6 +67,7 @@ test('iPhone landscape also auto-launches, with no inert fullscreen button',asyn
  try{
   const page=await context.newPage();
   await page.goto('/');
+  await page.locator('#boot-enter').tap();
   await page.locator('#start-race').click();
   await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
   await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
