@@ -55,6 +55,8 @@ class FirstLoadDiagnostics {
     this.createPanel();
   }
 
+  dispose(){ this.panel?.remove(); }
+
   private elapsed() { return Math.round((performance.now() - this.startedAt) * 10) / 10; }
 
   mark(name: string, data?: unknown) {
@@ -233,7 +235,18 @@ class FirstLoadDiagnostics {
   }
 }
 
-export const startupDiagnostics = new FirstLoadDiagnostics();
-if (startupDiagnostics.enabled) {
-  (window as typeof window & {__startupDiagnostics?: FirstLoadDiagnostics}).__startupDiagnostics = startupDiagnostics;
+let current: FirstLoadDiagnostics | undefined;
+export function getStartupDiagnostics() {
+  if (!current) {
+    current = new FirstLoadDiagnostics();
+    if (current.enabled) {
+      (window as typeof window & {__startupDiagnostics?: FirstLoadDiagnostics}).__startupDiagnostics = current;
+    }
+  }
+  return current;
+}
+export function endStageDiagnostics() {
+  current?.dispose();
+  current = undefined;
+  delete (window as typeof window & {__startupDiagnostics?: FirstLoadDiagnostics}).__startupDiagnostics;
 }

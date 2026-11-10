@@ -1,4 +1,4 @@
-import {startupDiagnostics} from './startup-diagnostics';
+import {getStartupDiagnostics} from './startup-diagnostics';
 // The loading surface lives in HTML so it also covers module downloads.
 let progress=0,complete=false,failed=false;
 const node=(id:string)=>document.getElementById(id)!;
@@ -31,7 +31,7 @@ export function loadingProgress(value:number,title:string,detail:string){
  track.setAttribute('aria-valuetext',progress ? `${title}，準備進度 ${progress}%` : title);
  if(node('loading-title').textContent!==title)node('loading-title').textContent=title;
  node('loading-detail').textContent=detail;
- startupDiagnostics.progress(progress,title);
+ getStartupDiagnostics().progress(progress,title);
 }
 /** Let the status paint before starting the next synchronous preparation step. */
 export async function loadingStep(value:number,title:string,detail:string){
@@ -49,13 +49,13 @@ export function loadingFailed(message='遊戲無法啟動，請檢查連線後�
  node('loading-slow').hidden=true;
  node('game-loading').setAttribute('aria-busy','false');
  node('loading-hint').textContent='你的旅程還沒開始';
- startupDiagnostics.fail(message);
+ getStartupDiagnostics().fail(message);
 }
 export function loadingFinished(){
  if(complete||failed)return;
  loadingProgress(100,'風景已就緒','');
  complete=true;clearTimeout(slow);clearTimeout(retry);clearTimeout(finish);
- startupDiagnostics.finish();
+ getStartupDiagnostics().finish();
  node('game-loading').setAttribute('aria-busy','false');
  finish=setTimeout(()=>{
   node('game-loading').hidden=true;

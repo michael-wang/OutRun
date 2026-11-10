@@ -23,7 +23,7 @@ async function enter(stage: RacingStage) {
     const loading = await import('./loading');
     loading.loadingStarted('正在載入關卡', '');
     await loading.loadingStep(0, '正在載入關卡', '');
-    try { await stage.enter(); }
+    try { await stage.enter(() => showMenu(false)); }
     catch (error) {
       loading.loadingFailed('關卡資源無法載入，請檢查連線後再試一次。');
       console.error('Stage preparation failed', error);
@@ -37,7 +37,7 @@ async function enter(stage: RacingStage) {
   }
 }
 
-async function bootMenu() {
+async function bootMenu(firstEntry: boolean) {
   const retry = stages.find(stage => stage.enter && stage.id === history.state?.retryStage);
   if (retry) {
     const {retryStage: _, ...rest} = history.state;
@@ -46,11 +46,8 @@ async function bootMenu() {
     return;
   }
   const { mountMenu } = await import('./racing-menu');
-  // Returning explicitly from a stage opens the selector directly in the new document.
-  const {returningToMenu, ...state}=history.state ?? {};
-  if(returningToMenu)history.replaceState(state,'');
   async function waitForEntry() {
-    if(returningToMenu || !matchMedia('(pointer:coarse)').matches)return;
+    if(!firstEntry || !matchMedia('(pointer:coarse)').matches)return;
     const button=document.querySelector<HTMLButtonElement>('#boot-enter')!;
     boot.querySelector<HTMLElement>('.boot-meter')!.hidden=true;
     button.hidden=false;
@@ -71,7 +68,12 @@ async function bootMenu() {
   delete document.documentElement.dataset.loading;
 }
 
-void bootMenu().catch(error => {
-  document.getElementById('boot-error')!.hidden = false;
-  console.error('Stage menu failed', error);
-});
+function showMenu(firstEntry: boolean) {
+  void bootMenu(firstEntry).catch(error => {
+    boot.hidden = false;
+    document.getElementById('boot-error')!.hidden = false;
+    console.error('Stage menu failed', error);
+  });
+}
+
+showMenu(true);

@@ -6,7 +6,7 @@ import {GAME_VERSION} from './build-info';
 import {disposeScene,sceneDisposal} from './dispose-scene';
 import {attachJourneyLink,highwayExtension,LINK_HALF,LINK_LOAD_START} from './journey-link';
 import {loadingStep,loadingProgress,loadingStarted,loadingFinished,loadingFailed} from './loading';
-import {startupDiagnostics} from './startup-diagnostics';
+import {getStartupDiagnostics,endStageDiagnostics} from './startup-diagnostics';
 import {DriveFpsDiagnostics} from './drive-fps-diagnostics';
 import {canonicalGameQuery} from './runtime-query';
 import {sharedFlowerMaskStats} from './vendor/three-stylized/flowerShapes';
@@ -37,7 +37,7 @@ import {speedometerMarkup,needleAngle,gearReadout} from './speedometer';
 import {COURSE,challengeAt,requiredSteering} from './challenges';
 import {ACTS,actWeights} from './acts';
 import {quantizeSteering} from './steering';
-import './style.css';
+import drivingCss from './style.css?inline';
 import {BRICKS,BRICK_START,createBrickTrack,brickCourse,brickWidth} from './bricks';
 import {mountBrickLab} from './brick-lab';
 import {L2_CANDIDATES,createL2Track,l2Course,l2Sample} from './l2-catalog';
@@ -69,6 +69,13 @@ import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import {StreamHealthHud} from './stream-health-hud';
 import type {FeedbackAnchor} from './l2-feedback';
+export async function enterCoast(onExit: () => void) {
+const lifetime=new AbortController();
+const {signal}=lifetime;
+const drivingStyle=document.createElement('style');
+drivingStyle.textContent=drivingCss;
+document.head.prepend(drivingStyle);
+const startupDiagnostics=getStartupDiagnostics();
 startupDiagnostics.mark('main-module-evaluated');
 const params=canonicalGameQuery(new URLSearchParams(location.search));
 // Cars and breakdowns reroll independently from the reproducible scenery seed.
@@ -161,7 +168,7 @@ let world=createWorld(initialBrick?{blenderArt:!!blenderAsset,bank:bankLab?banki
 let selectedCarColor=readCarColor();
 (world.car.userData.paintController as CarPaintController|undefined)?.set(selectedCarColor);
 ($('car-paint') as HTMLSelectElement).value=selectedCarColor;
-const carPaintPicker=new CarPaintPicker($('car-paint') as HTMLSelectElement,$('car-paint-list'));
+const carPaintPicker=new CarPaintPicker($('car-paint') as HTMLSelectElement,$('car-paint-list'),signal);
 startupDiagnostics.mark('world-created'); const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,CHASE_NEAR,matchMedia('(pointer:coarse)').matches?1400:2200);
 if(blenderAsset)world.scene.add(blenderAsset.root);
 const mobileCarProjection=()=>coastUltraMode&&coastProfile==='mobile-fast'?new MobileCarShadow(world.scene):undefined;
@@ -199,7 +206,7 @@ if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 // ?at jumps to a real playable location, never freezes physics.
 const requestedAt=Number(params.get('at'));
 const atDistance=params.has('at')&&Number.isFinite(requestedAt)&&requestedAt>=350&&requestedAt<world.length-20?requestedAt:null;
-const input=new InputController(document,()=>mode==='playing'&&!settingsOpen); const sound=new EngineSound(); let state=createState();if(brick){state.distance=chapterStart();state.speed=trip?0:brick.entrySpeed/3.6;}
+const input=new InputController(document,()=>mode==='playing'&&!settingsOpen,signal); const sound=new EngineSound(); let state=createState();if(brick){state.distance=chapterStart();state.speed=trip?0:brick.entrySpeed/3.6;}
 // Autoplay is not a user gesture. Browsers may leave WebAudio suspended until
 // the first throttle/steer/tap, so unlock sound on that interaction without
 // showing a Play overlay or requiring an extra button.
@@ -211,8 +218,8 @@ function unlockSoundOnGesture(){
   }
  }).catch(()=>{});
 }
-document.addEventListener('pointerdown',unlockSoundOnGesture,{passive:true});
-document.addEventListener('keydown',unlockSoundOnGesture);
+document.addEventListener('pointerdown',unlockSoundOnGesture,{passive:true,signal});
+document.addEventListener('keydown',unlockSoundOnGesture,{signal});
 if(atDistance!==null){state.distance=atDistance;state.speed=0;}
 advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
 world.streamer?.update(state.distance);
@@ -272,8 +279,8 @@ function refreshHints(){
  if(issue&&issue.textContent!==issueText)issue.textContent=issueText;
 }
 function setInputMode(next:typeof inputMode){if(inputMode!==next){inputMode=next;refreshHints();}}
-addEventListener('keydown',e=>{if(!e.isComposing)setInputMode('keyboard');},true);
-addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setInputMode('touch');else if(e.pointerType==='mouse')setInputMode('keyboard');},true);
+addEventListener('keydown',e=>{if(!e.isComposing)setInputMode('keyboard');},{capture:true,signal});
+addEventListener('pointerdown',e=>{if(e.pointerType==='touch')setInputMode('touch');else if(e.pointerType==='mouse')setInputMode('keyboard');},{capture:true,signal});
 let mode:'menu'|'playing'|'paused'|'countdown'='menu'; let settingsOpen=false; let muted=false; let manual=false;
 let sceneInspector:SceneInspector|undefined;
 let tripPauseDock:TripPauseDock|undefined;
@@ -285,8 +292,8 @@ const streamStallEvents:{start:number;end?:number;durationMs?:number;distance:nu
 let streamHeld=false,streamHoldSince=0,streamStalls=0,streamWaitMs=0,contextLost=false;
 const roadOverlay=document.createElement('div');roadOverlay.id='road-loading';roadOverlay.setAttribute('role','status');roadOverlay.style.cssText='position:fixed;inset:35% 12% auto;z-index:150;padding:22px;background:#102a35ee;color:white;text-align:center;border:2px solid #ffd46b;border-radius:12px;pointer-events:none;font:600 18px system-ui';roadOverlay.hidden=true;document.getElementById('app')!.append(roadOverlay);
 function holdRoad(held:boolean){if(held===streamHeld)return;streamHeld=held;if(held){streamStalls++;streamHoldSince=performance.now();if(params.get('fpsdiag')==='1'){streamStallEvents.push({start:streamHoldSince,distance:state.distance,reason:contextLost?'context-lost':world.streamer?.error||'road-coverage'});if(streamStallEvents.length>128)streamStallEvents.shift();}}else{streamWaitMs+=performance.now()-streamHoldSince;const event=streamStallEvents.at(-1);if(event){event.end=performance.now();event.durationMs=event.end-event.start;}}}
-renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();contextLost=true;driveFpsDiagnostics.cancelWindow('繪圖環境中斷');holdRoad(true);sound.pause();});
-renderer.domElement.addEventListener('webglcontextrestored',()=>{contextLost=false;});
+renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();contextLost=true;driveFpsDiagnostics.cancelWindow('繪圖環境中斷');holdRoad(true);sound.pause();},{signal});
+renderer.domElement.addEventListener('webglcontextrestored',()=>{contextLost=false;},{signal});
 
 let testControls:InputState|undefined;let hardDetents=false;let lastControls:InputState={gas:false,brake:false,steer:0};let usedExternalControls=false;
 const highSpeedPace=DEFAULT_PACE;
@@ -499,10 +506,33 @@ function restart(){
 $('player-retry').onclick=()=>$('stage-retry').click();
 $('player-play').onclick=()=>document.getElementById('l2-play')?.click();
 $('player-restart').onclick=()=>document.getElementById('l2-replay')?.click();
-// Reload retires the whole stage, including its workers, audio, GL and event owners.
+// Fullscreen and the orientation lock belong to the document, so retire only the stage.
 function returnToMainMenu(){
- window.history.replaceState({...window.history.state,returningToMenu:true},'');
- location.reload();
+ if(signal.aborted)return;
+ lifetime.abort();
+ cancelAnimationFrame(driveFrame);
+ clearTimeout(photoStatusTimer);
+ immersive.changed=()=>{};
+ pad.dispose();
+ carPaintPicker.dispose();
+ sound.dispose();
+ driveFpsDiagnostics.dispose();
+ endStageDiagnostics();
+ if(sceneInspector?.isOpen)sceneInspector.close();
+ world.streamer?.dispose();
+ ultraOcean?.dispose();
+ traffic?.dispose();
+ cones?.dispose();
+ triangles?.dispose();
+ disposeScene(world.scene);
+ renderer.dispose();
+ renderer.forceContextLoss();
+ $('app').replaceChildren();
+ drivingStyle.remove();
+ for(const key of ['driveMode','playerUi','qa','inputMode'])delete document.documentElement.dataset[key];
+ if(import.meta.env.DEV)delete (window as any).__drive;
+ if(streamDiagnosticMode)delete (window as any).__streamDiagnostics;
+ onExit();
 }
 $('results-menu').onclick=returnToMainMenu;
 $('player-options').onclick=()=>document.getElementById('l2-settings')?.click();
@@ -550,9 +580,9 @@ addEventListener('keydown',e=>{
   const button=vote[e.code]?document.querySelector<HTMLButtonElement>(prefix==='l2'?`[data-l2-vote="${vote[e.code]}"]`:`[data-vote="${vote[e.code]}"]`):document.getElementById(action[e.code]);
   if(button&&button.offsetParent!==null){e.preventDefault();button.click();return;}
   if(prefix==='l2'&&/^Digit[1-5]$/.test(e.code)){const difficulty=$('l2-difficulty') as HTMLSelectElement;difficulty.value=e.code.slice(-1);difficulty.dispatchEvent(new Event('change',{bubbles:true}));e.preventDefault();}
-});
-addEventListener('blur',()=>{input.clear();if(mode==='playing'||mode==='countdown'){mode='paused';sound.pause();ui();}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&(mode==='playing'||mode==='countdown')){mode='paused';input.clear();sound.pause();ui();}});
+},{signal});
+addEventListener('blur',()=>{input.clear();if(mode==='playing'||mode==='countdown'){mode='paused';sound.pause();ui();}},{signal});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&(mode==='playing'||mode==='countdown')){mode='paused';input.clear();sound.pause();ui();}},{signal});
 function resize(){
   placeFpsExport();
   const width=$('app').clientWidth, height=$('app').clientHeight;
@@ -562,9 +592,9 @@ function resize(){
   input.clear();
   if(mobile()&&height>width&&mode==='playing'){mode='paused';sound.pause();ui();}
 }
-addEventListener('resize',resize);addEventListener('orientationchange',resize);
-visualViewport?.addEventListener('resize',resize);
-document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&mode==='playing'){mode='paused';sound.pause();ui();}});
+addEventListener('resize',resize,{signal});addEventListener('orientationchange',resize,{signal});
+visualViewport?.addEventListener('resize',resize,{signal});
+document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&mode==='playing'){mode='paused';sound.pause();ui();}},{signal});
 let physicsTrafficMs=0;
 let sceneDrawCalls=0,sceneTriangles=0;
 function advance(dt:number,override?:InputState){
@@ -738,7 +768,7 @@ function render(dt:number,draw=true){
   $('gear').textContent=gearReadout(state.gear);
 }
 let photoStatusTimer=0;
-const photos=new PhotoCapture(renderer.domElement,()=>render(0),()=>{const p=world.sample(state.distance);return {buildVersion:GAME_VERSION,fps:perf.fps,stageCode:stage?.stageCode??'FREE',seed:stage?.seed??0,capturedAt:new Date().toISOString(),time:elapsed,distance:state.distance,speed:state.speed*3.6,steer:state.appliedSteer,grade:state.grade,roadX:state.lateral,halfWidth:world.halfAt(state.distance),carPosition:world.car.position.toArray(),carRotation:[world.car.rotation.x,world.car.rotation.y,world.car.rotation.z],roadPosition:p.position.toArray(),surfaceGap:surfaceError(),wheels:wheelContacts};},message=>{$('photo-status').textContent=message;$('photo-status').hidden=false;clearTimeout(photoStatusTimer);photoStatusTimer=window.setTimeout(()=>{$('photo-status').hidden=true;},message==='📸 Saved'?2000:7000);});
+const photos=new PhotoCapture(renderer.domElement,()=>render(0),()=>{const p=world.sample(state.distance);return {buildVersion:GAME_VERSION,fps:perf.fps,stageCode:stage?.stageCode??'FREE',seed:stage?.seed??0,capturedAt:new Date().toISOString(),time:elapsed,distance:state.distance,speed:state.speed*3.6,steer:state.appliedSteer,grade:state.grade,roadX:state.lateral,halfWidth:world.halfAt(state.distance),carPosition:world.car.position.toArray(),carRotation:[world.car.rotation.x,world.car.rotation.y,world.car.rotation.z],roadPosition:p.position.toArray(),surfaceGap:surfaceError(),wheels:wheelContacts};},message=>{if(signal.aborted)return;$('photo-status').textContent=message;$('photo-status').hidden=false;clearTimeout(photoStatusTimer);photoStatusTimer=window.setTimeout(()=>{$('photo-status').hidden=true;},message==='📸 Saved'?2000:7000);});
 function capturePhoto(){if(settingsOpen||l2UI?.feedbackOpen||mode==='countdown')return;const meta=photos.capture();if(meta){telemetry?.mark('photo',elapsed,state.distance-BRICK_START,meta);}}
 $('photo-button').onclick=capturePhoto;
 const pad=new GamepadInput(input,action=>{
@@ -978,6 +1008,7 @@ async function restartJourney(){
  catch(error){journeyTransition=false;loadingFailed('重新出發準備失敗，請重新載入再試一次。');console.error('Journey replay failed',error);ui();}
 }
 
+let driveFrame=0;
 let startupPending=true;
 // After the road is ready, the playable coast launches without a second
 // Play/Resume click. On portrait phones, begin as soon as landscape is ready.
@@ -994,11 +1025,13 @@ function loop(now:number){
       if(snapshot)startupDiagnostics.sample(snapshot);
     }
   }
-  if(journeyTransition){last=now;requestAnimationFrame(loop);return;}
+  if(journeyTransition){last=now;driveFrame=requestAnimationFrame(loop);return;}
   prefetchNextChapter();
   if(mode==='playing')highwayHandoff();
   if(streamStartRequested&&world.streamer){if(world.streamer.ready)start();else if(world.streamer.error){const status=document.getElementById('stream-status');if(status)status.textContent=`Scene preparation failed: ${world.streamer.error}`;streamStartRequested=false;}}
   if(!startupPending&&!replayPreparing&&!document.documentElement.dataset.loading)pad.poll(mode==='playing'&&!settingsOpen,!!l2UI?.feedbackOpen,brickCompleted&&!settingsOpen,sceneInspector?.isOpen??false,!!sceneInspector);
+  // A gamepad confirm can leave the stage from inside this frame.
+  if(signal.aborted)return;
   const dt=Math.min((now-last)/1000,.25);last=now;
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
@@ -1081,14 +1114,14 @@ Draws ${renderer.info.render.calls} · ray ${perf.raycastMs.toFixed(1)}ms · ren
    driveFpsDiagnostics.frame(now,mode==='playing'&&!settingsOpen,state.distance,
     sceneDrawCalls,sceneTriangles,state.speed*3.6);
   }
-  requestAnimationFrame(loop);
+  driveFrame=requestAnimationFrame(loop);
 }
 if(brick&&!l2&&!pilot)labUI=mountBrickLab(brick,{play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),exportMoments:()=>l2UI?.exportCurrent()});
-ui();resize();requestAnimationFrame(loop);
+ui();resize();driveFrame=requestAnimationFrame(loop);
 function surfaceError(){const ray=new THREE.Raycaster(world.car.position.clone().add(new THREE.Vector3(0,10,0)),new THREE.Vector3(0,-1,0));const road=world.scene.getObjectByName('driving-surface');const hit=journeyLink?.inHighway(state.distance)?ray.intersectObjects(journeyLink.contacts)[0]:road?ray.intersectObject(road)[0]:undefined;return hit?world.car.position.y-.04-hit.point.y:null;}
 if(import.meta.env.PROD && 'serviceWorker' in navigator){
   const registerOffline=()=>{void navigator.serviceWorker.register(import.meta.env.BASE_URL+'sw.js',{updateViaCache:'none'}).catch(error=>console.warn('Offline mode unavailable',error));};
-  if(document.readyState==='complete')registerOffline();else addEventListener('load',registerOffline,{once:true});
+  if(document.readyState==='complete')registerOffline();else addEventListener('load',registerOffline,{once:true,signal});
 }
 
 function feedbackAnchor():FeedbackAnchor{
@@ -1149,7 +1182,7 @@ if(import.meta.env.DEV){
 function renderDriveReport(report:ReturnType<DriveTelemetry['report']>){const m=report.metrics;reportArea.hidden=false;reportArea.replaceChildren();const heading=document.createElement('h3');heading.textContent='Drive summary · '+report.stageCode;const summary=document.createElement('p');const pct=(x:number,total:number)=>total?(100*x/total).toFixed(1):'0.0';summary.textContent=`${m.time.toFixed(1)} s · peak ${m.peakSpeed.toFixed(0)} km/h · gas ${pct(m.gasSeconds,m.time)}% · braking ${m.brakePresses} / ${m.brakeSeconds.toFixed(1)} s · off road ${m.offroadEpisodes} / ${m.offroadSeconds.toFixed(1)} s · high steer ${pct(m.highSteerSeconds,m.time)}%`;const thresholds=document.createElement('p');thresholds.textContent=m.thresholds.map(x=>`≥${x.speed}: ${pct(x.time,m.time)}% time, ${pct(x.distance,m.distance)}% distance`).join(' · ')+` · fast unbraked bends ${pct(m.fastUnbrakedBend,m.bendDistance)}%`;const detail=document.createElement('pre');detail.textContent=Object.entries(report.beats).map(([id,b])=>`${id}: avg ${b.averageSpeed.toFixed(0)}, min ${b.minSpeed.toFixed(0)}, max ${b.maxSpeed.toFixed(0)} km/h · curve avg ${b.curveAverageSpeed?.toFixed(0)??"—"} · brakes ${b.brakes} · offroad ${b.offroad.toFixed(1)}s`).join('\n');const button=document.createElement('button');button.textContent='Export Drive Report JSON';button.onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`outrun-drive-${report.runId}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};reportArea.append(heading,summary,thresholds,button,detail);}
 function showDriveReport(){if(telemetry)renderDriveReport(telemetry.report());}
 $('free-export').onclick=()=>l2UI?.exportCurrent();$('free-export').hidden=!!brick;
-if(!mobile())requestAnimationFrame(()=>document.getElementById(playerUi?'player-play':pilot||l2?'l2-play':brick?'brick-play':'drive')?.focus());
+if(!mobile())requestAnimationFrame(()=>!signal.aborted&&document.getElementById(playerUi?'player-play':pilot||l2?'l2-play':brick?'brick-play':'drive')?.focus());
 
 if(import.meta.env.DEV){(window as any).__drive={
   journeyLoadHold:(held:boolean)=>{journeyLoadHeld=held;},
@@ -1351,4 +1384,5 @@ if(params.has('at')&&trip&&!journeyMode){
  // Shareable QA coordinates, including when a particular building is missed.
  // The initial position came from ?at. Do not auto-open a QA overlay.
  
+}
 }

@@ -251,6 +251,14 @@ export class DriveFpsDiagnostics {
   this.exportPanel=panel;
   (window as typeof window & {__driveFpsDiagnostics?:DriveFpsDiagnostics}).__driveFpsDiagnostics=this;
  }
+ dispose(){
+  this.endGpu();
+  for(const {query} of this.pending)this.gl?.deleteQuery(query);
+  this.pending=[];
+  this.exportPanel?.remove();
+  const host=window as typeof window & {__driveFpsDiagnostics?:DriveFpsDiagnostics};
+  if(host.__driveFpsDiagnostics===this)delete host.__driveFpsDiagnostics;
+ }
  placeExportIn(host:HTMLElement){
   if(this.exportPanel&&this.exportPanel.parentElement!==host)host.append(this.exportPanel);
  }

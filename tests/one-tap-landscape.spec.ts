@@ -132,9 +132,13 @@ test('system fullscreen exit can be recovered in the selector and a paused drive
     await dock.locator('#tp-resume').tap();
     await expect(driveMode).toHaveAttribute('data-drive-mode','playing');
     await page.locator('#pause').tap();
+    const lockedRoot=await page.evaluateHandle(()=>document.fullscreenElement);
     await dock.locator('#tp-exit').tap();
     await expect(page.locator('#racing-menu')).toBeVisible();
     await expect(page.locator('#view canvas')).toHaveCount(0);
     expect(page.workers()).toHaveLength(0);
+    expect(await lockedRoot.evaluate(el=>el!==null && el===document.fullscreenElement)).toBe(true);
+    expect(await calls()).toBe(3);
+    await lockedRoot.dispose();
   }finally{await context.close();}
 });

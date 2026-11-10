@@ -49,13 +49,21 @@ test('touch selection, portrait guide, results, replay and repeated menu returns
   await results.getByRole('button',{name:'再玩一次'}).tap();
   await finish();
   for(let cycle=0;cycle<2;cycle++){
-    const oldDocument=await page.evaluateHandle(()=>document);
+    const root=await page.evaluateHandle(()=>document.documentElement);
+    const driveContext=await page.locator('#view canvas').evaluateHandle((canvas:HTMLCanvasElement)=>canvas.getContext('webgl2')!);
     await results.getByRole('button',{name:'回到主選單'}).tap();
     await expect(menu).toBeVisible();
     await expect(page.locator('#view canvas')).toHaveCount(0);
     await expect(page.locator('#gamepad-status')).toHaveCount(1);
     expect(page.workers()).toHaveLength(0);
-    await expect(oldDocument.evaluate(el=>el.isConnected)).rejects.toThrow();
+    expect(await root.evaluate(el=>el===document.fullscreenElement)).toBe(true);
+    expect(await page.evaluate(()=>matchMedia('(orientation:landscape)').matches)).toBe(true);
+    expect(await driveContext.evaluate(gl=>gl.isContextLost())).toBe(true);
+    await expect(page.locator('#boot-enter')).toBeHidden();
+    await expect(page.locator('#drive-fps-diagnostic')).toHaveCount(0);
+    if(cycle===0)await page.screenshot({path:test.info().outputPath('landscape-menu-after-finish.png')});
+    await root.dispose();
+    await driveContext.dispose();
     if(cycle===0){await start.tap();await finish();}
   }
   expect(errors).toEqual([]);

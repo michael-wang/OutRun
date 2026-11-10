@@ -11,12 +11,13 @@ export function nextPaint(current:CarColor,step:number):CarColor{
 export class CarPaintPicker{
  private opened=false;
  private buttons:HTMLButtonElement[];
- constructor(private select:HTMLSelectElement,private list:HTMLElement){
+ constructor(private select:HTMLSelectElement,private list:HTMLElement,signal?:AbortSignal){
   this.buttons=Array.from(list.querySelectorAll<HTMLButtonElement>('button[data-paint]'));
   document.body.appendChild(list);list.hidden=true;
   for(const b of this.buttons)b.addEventListener('click',()=>{this.commit(b.dataset.paint as CarColor);this.close();});
-  window.addEventListener('resize',()=>{if(this.opened)this.reposition();});
+  window.addEventListener('resize',()=>{if(this.opened)this.reposition();},{signal});
  }
+ dispose(){this.list.remove();}
  get isOpen(){return this.opened;}
  private reposition(){
   const r=this.select.getBoundingClientRect();

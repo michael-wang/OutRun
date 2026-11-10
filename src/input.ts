@@ -53,7 +53,7 @@ export class InputController extends InputLatch {
   private buttons: HTMLElement[];
   private strip:HTMLElement|null;
   private steeringPointer:number|null=null;
-  constructor(root: Document | HTMLElement = document, isDriving:()=>boolean=()=>true) {
+  constructor(root: Document | HTMLElement = document, isDriving:()=>boolean=()=>true, signal?:AbortSignal) {
     super();
     this.buttons = Array.from(root.querySelectorAll<HTMLElement>('[data-control]'));
     this.strip=root.querySelector<HTMLElement>('#steering-strip');
@@ -65,8 +65,8 @@ export class InputController extends InputLatch {
     };
     const editing=(target:EventTarget|null)=>target instanceof HTMLElement&&!!target.closest('input,textarea,select,button,a,[contenteditable], [role=button],[role=slider]');
     // A cleared hold must require a fresh press after a pause or feedback dialog.
-    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control&&isDriving()&&!event.isComposing&&!editing(event.target)) { event.preventDefault(); if(!event.repeat)this.press(`key:${event.code}`, control); paint(); } });
-    window.addEventListener('keyup', event => { if(keyControls[event.code]&&isDriving()&&!editing(event.target))event.preventDefault();this.release(`key:${event.code}`); paint(); });
+    window.addEventListener('keydown', event => { const control = keyControls[event.code]; if (control&&isDriving()&&!event.isComposing&&!editing(event.target)) { event.preventDefault(); if(!event.repeat)this.press(`key:${event.code}`, control); paint(); } },{signal});
+    window.addEventListener('keyup', event => { if(keyControls[event.code]&&isDriving()&&!editing(event.target))event.preventDefault();this.release(`key:${event.code}`); paint(); },{signal});
     this.buttons.forEach(button => {
       button.addEventListener('pointerdown', event => { if(!isDriving())return;event.preventDefault(); button.setPointerCapture(event.pointerId); this.press(`pointer:${event.pointerId}`, button.dataset.control as Control); paint(); });
       const release = (event: PointerEvent) => { this.release(`pointer:${event.pointerId}`); paint(); };
@@ -96,8 +96,8 @@ export class InputController extends InputLatch {
       strip.addEventListener('pointerup',release);strip.addEventListener('pointercancel',release);strip.addEventListener('lostpointercapture',release);
       for(const name of ['contextmenu','selectstart','dragstart','touchstart'])strip.addEventListener(name,event=>event.preventDefault(),{passive:false});
     }
-    window.addEventListener('blur', () => this.clear());
-    document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); });
+    window.addEventListener('blur', () => this.clear(),{signal});
+    document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); },{signal});
   }
   private paintSteering(){
     this.strip?.style.setProperty('--steer',String(this.steeringTarget));this.strip?.style.setProperty('--effective-steer',String(this.effectiveSteer));
