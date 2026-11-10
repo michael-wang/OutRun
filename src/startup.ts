@@ -1,6 +1,9 @@
 import { stages, type RacingStage } from './racing-stages';
 import { armStageAudio } from './stage-audio';
 import { immersive, landscapeControl } from './immersive';
+import {mountRuntimeReadout} from './runtime-readout';
+
+mountRuntimeReadout();
 
 const boot = document.getElementById('boot')!;
 const surface = document.getElementById('game-loading')!;

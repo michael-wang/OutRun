@@ -15,6 +15,13 @@ test('grid holds all cars and accepts throttle; pause, replay and return reset t
  const before=await race(page);
  expect(before.rivals).toHaveLength(7);
  expect(before.rank).toBe(8);
+ await expect(page.locator('#race-position')).toBeVisible();
+ await expect(page.locator('#race-position')).toContainText('名次');
+ await expect(page.locator('#race-position')).toContainText('時間');
+ await expect(page.locator('#race-position')).toContainText('距離');
+ await expect(page.locator('#race-distance')).toContainText('km');
+ await expect(page.locator('#runtime-readout')).toBeVisible();
+ await expect(page.locator('#drive-fps')).toContainText('FPS');
  expect(before.rivals.every((r:any)=>r.distance>=350+12)).toBe(true);
  const labels=await page.evaluate(()=>(window as any).__drive.rivalTags());
  expect(labels.map((x:any)=>x.name)).toEqual(['對手一','對手二','對手三','對手四','對手五','對手六','對手七']);

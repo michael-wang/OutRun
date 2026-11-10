@@ -84,10 +84,7 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #drive-hud{position:fixed;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);font:700 16px/1.4 system-ui;font-variant-numeric:tabular-nums;white-space:nowrap;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #route-name{position:fixed;top:calc(max(16px,env(safe-area-inset-top)) + 48px);left:max(24px,env(safe-area-inset-left));max-width:29vw;font:11px/1.3 system-ui;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #release-version{display:block;margin-top:3px;font:10px/1.2 system-ui;color:#e1e8e8;text-shadow:0 1px 2px #071323;pointer-events:none}
-#drive-readout{position:fixed;z-index:4;top:max(12px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:5px 8px;border-radius:4px;background:rgba(24,27,30,.48);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
-#drive-readout[hidden]{display:none}
-#drive-fps{font:500 16px/1.2 Arial,sans-serif;color:#c5c8cb}
-#game-version{font:10px/1.2 Arial,sans-serif;color:#aeb4b9}
+
 #app #immersive-note{top:calc(max(12px,env(safe-area-inset-top)) + 54px)}
 #app #l2-hud{top:calc(max(16px,env(safe-area-inset-top)) + 96px);left:max(24px,env(safe-area-inset-left));max-width:calc(100vw - 48px);font-size:10px}
 
@@ -360,7 +357,6 @@ html[data-qa="true"]:has(#scene-inspector:not([hidden])) #stream-health-hud{
 header #pause,
 #touch.active button[data-control],
 #touch.active #steering-strip,
-#drive-readout:not([hidden]),
 #gear{
  background:transparent;
  backdrop-filter:none;
@@ -374,10 +370,6 @@ header #pause,
 }
 #touch.active #steering-strip{
  border-color:rgba(255,234,197,.67);
-}
-#drive-readout:not([hidden]){
- border:1px solid rgba(240,235,219,.50);
- text-shadow:0 1px 3px #061722,0 0 5px #061722;
 }
 #gear{
  border-color:rgba(107,201,232,.68);
@@ -473,88 +465,6 @@ html[data-player-ui="true"] #player-finish-stats dd{
 }
 
 
-/* Finish-only credits HUD: the car, road and sunset own the centre of screen.
-   Works for desktop and landscape phones without covering the car. */
-html[data-player-ui="true"] #player-start[data-finished="true"]{
- top:auto;left:auto;
- right:max(16px,env(safe-area-inset-right));
- bottom:max(14px,env(safe-area-inset-bottom));
- transform:none;
- width:min(284px,calc(100vw - 32px));
- max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
- padding:11px 12px 10px;gap:8px;
- align-items:stretch;text-align:left;
- border:1px solid #ffedcb91;border-radius:10px;
- background:#0b2c3440;box-shadow:0 5px 20px #06191f38;
- color:#fff7e7;pointer-events:auto;overflow-y:auto;
- text-shadow:0 1px 6px #061f28db;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] .player-title{
- font:750 19px/1.15 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
- font-style:normal;letter-spacing:.07em;text-align:left;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-subtitle{
- display:none;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
- gap:9px 10px;width:100%;max-width:none;
- margin:0;padding:8px 0 2px;
- border-top:1px solid #ffe5b76b;
- justify-content:stretch;text-align:left;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats>div{
- min-width:0;align-items:flex-start;gap:2px;padding:0;border:0;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dt{
- font:500 10px/1.25 system-ui,"PingFang TC",sans-serif;
- letter-spacing:.035em;color:#f7e0bd;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dd{
- margin:0;font:650 14px/1.25 system-ui,"PingFang TC",sans-serif;
- color:#fff7e7;white-space:nowrap;
-}
-/* Pronounced strokes, transparent fill: the accepted game HUD language. */
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-play{
- display:block;width:100%;min-width:0;min-height:38px;
- margin:1px 0 0;padding:7px 12px;
- border:1.5px solid #ffd69f;border-radius:7px;
- background:#ffd69f27;color:#fff4dd;box-shadow:none;
- font:700 15px/1.25 system-ui,"PingFang TC",sans-serif;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] .player-secondary{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
- gap:7px;width:100%;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] .player-secondary button{
- width:100%;min-width:0;min-height:34px;
- padding:6px 8px;border:1.5px solid #f7e8ccbd;border-radius:7px;
- background:#0c303f4d;color:#fff3de;
- font:600 11px/1.25 system-ui,"PingFang TC",sans-serif;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play,.player-secondary button):hover{
- background:#ffe0ad48;border-color:#ffe9c8;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play,.player-secondary button):active{
- background:#ffd29766;color:#fff9ef;transform:translateY(1px);
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play,.player-secondary button):focus-visible{
- outline:2px solid #fff5d5;outline-offset:2px;
-}
-@media(orientation:landscape) and (max-height:500px){
- html[data-player-ui="true"] #player-start[data-finished="true"]{
-  right:max(10px,env(safe-area-inset-right));
-  bottom:max(9px,env(safe-area-inset-bottom));
-  width:min(242px,calc(100vw - 20px));
-  padding:8px 10px;gap:5px;border-radius:8px;
- }
- html[data-player-ui="true"] #player-start[data-finished="true"] .player-title{font-size:16px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats{gap:6px 8px;padding-top:6px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dt{font-size:9px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dd{font-size:12px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-play{min-height:34px;font-size:13px;padding:5px 9px}
- html[data-player-ui="true"] #player-start[data-finished="true"] .player-secondary button{min-height:30px;padding:5px;font-size:10px}
-}
 /* Hero-car finish selection: same translucent borders as the rest of the HUD.
    Only visible when opening the existing settings drawer. */
 #car-paint-setting{
@@ -591,12 +501,8 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 #car-paint-list button:focus-visible,#car-paint-list button:focus{
  outline:2px solid #ffdd9c;outline-offset:0;background:#ffdfaa44;
 }
-/* Distance is in the existing compact FPS/build box, never a second HUD. */
-#drive-distance{
- display:block;margin:1px 0 0;
- color:#c5c8cb;font:600 11px/1.25 Arial,sans-serif;
- letter-spacing:.02em;white-space:nowrap;
-}
+/* Raw road distance remains for existing QA/PWA scripts. Public distance is shown in #race-distance. */
+#drive-distance{display:none!important}
 
 
 #drive-fps-diagnostic output:not(:empty){display:block;padding:4px 8px;background:#123540e8;color:#fff4d8;font:700 12px/1.4 system-ui;text-align:center}
@@ -668,4 +574,139 @@ html[data-player-ui="true"] #player-start[data-finished="true"] #results-menu{
 }
 @media (orientation:portrait){
  #race-standings{top:30%;width:min(292px,80vw);max-height:45dvh}
+}
+
+/* Racing R0.2e — one-results-panel arcade finish, always-on runtime metadata,
+   and a unified three-part race instrument. No large HUD cards over the sunset. */
+html[data-player-ui="true"] #drive-hud{display:none!important}
+#race-position{
+ position:fixed;top:max(11px,env(safe-area-inset-top));left:50%;right:auto;
+ transform:translateX(-50%);
+ display:flex;align-items:stretch;gap:0;
+ padding:4px 5px 5px;
+ border:1px solid rgba(255,220,169,.38);border-top:2px solid #ff9365;border-bottom:0;
+ border-radius:4px 4px 0 0;
+ background:linear-gradient(180deg,rgba(13,23,31,.65),rgba(13,23,31,.31));
+ pointer-events:none;white-space:nowrap;text-shadow:0 1px 4px #041018;
+ font-variant-numeric:tabular-nums;box-shadow:none;
+}
+#race-position[hidden]{display:none!important}
+#race-position .race-hud-cell{
+ display:flex;flex-direction:column;justify-content:center;gap:1px;
+ padding:0 clamp(9px,1.45vw,18px);min-width:0;
+ border-right:1px solid #e9b88d61;
+}
+#race-position .race-hud-cell:nth-child(3){border:0}
+#race-position .race-hud-cell>small{
+ position:static;top:auto;left:auto;transform:none;
+ font:700 9px/1.2 system-ui,"PingFang TC",sans-serif;
+ color:#ffca99;letter-spacing:.08em;text-align:left;
+}
+#race-position .race-hud-cell>span,
+#race-position time{
+ display:block;font:750 clamp(12px,1.23vw,17px)/1.14 Arial,"PingFang TC",sans-serif;
+ white-space:nowrap;color:#fff4e5;
+}
+#race-position .race-hud-rank>span{display:flex;align-items:baseline;gap:4px}
+#race-position .race-hud-rank b{font:italic 900 22px/.97 Arial,sans-serif;color:#ffbe7c}
+#race-position .race-hud-rank em{font:700 12px/1 Arial,sans-serif;color:#c7d4d5;font-style:normal}
+#race-position #race-distance{font-size:clamp(11px,1.05vw,15px)}
+
+/* One restrained results board: finish order, times and exactly two actions. */
+#race-standings{
+ z-index:24;left:max(18px,env(safe-area-inset-left));top:50%;
+ transform:translateY(-50%);width:min(325px,37vw);
+ max-height:calc(100dvh - 30px);
+ padding:14px 14px 13px;
+ border:1px solid #edc69a8c;border-top:3px solid #ff9160;
+ border-radius:7px;background:rgba(10,23,30,.84);
+ box-shadow:0 6px 22px #06101545;
+ color:#fff5e6;pointer-events:auto;
+ overflow-y:auto;scrollbar-width:thin;
+ text-shadow:0 1px 2px #03121e;
+}
+#race-standings[hidden]{display:none!important}
+#race-standings .result-eyebrow{
+ color:#ffad79;font:italic 800 9px/1.1 Arial,sans-serif;
+ letter-spacing:.20em;margin-bottom:5px;
+}
+#race-standings .result-heading{
+ display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+ padding-bottom:8px;margin-bottom:7px;
+ border-bottom:1px solid #cdb99766;
+}
+#race-standings #race-standings-title{
+ margin:0;padding:0;border:0;
+ color:#fff0d6;font:800 20px/1.1 system-ui,"PingFang TC",sans-serif;
+ letter-spacing:.09em;
+}
+#race-standings #result-player-rank{
+ color:#ffbe76;font:italic 900 29px/1 Arial,sans-serif;letter-spacing:-.04em;
+}
+#race-standings #result-player-rank small{
+ color:#b6c5c8;font:700 12px/1 Arial,sans-serif;letter-spacing:0;
+}
+#race-standings .result-columns{
+ display:flex;justify-content:space-between;
+ font:650 9px/1.2 system-ui,"PingFang TC",sans-serif;
+ color:#cfcdc6;letter-spacing:.05em;padding:0 5px 4px 8px;
+}
+#race-standings-list{gap:2px}
+#race-standings-list li{
+ min-height:26px;padding:2px 5px 2px 7px;gap:6px;
+ border-left-width:3px;grid-template-columns:25px minmax(0,1fr) 73px;
+ background:transparent;font-size:12px;
+}
+#race-standings-list li[data-player=true]{
+ background:linear-gradient(90deg,#ffbd7738,transparent 95%);
+ outline:1px solid #ffcb8655;outline-offset:-1px;
+}
+#race-standings-list .race-place{color:#ffbe7d;font:italic 900 13px/1 Arial,sans-serif}
+#race-standings-list .race-name{font:750 12px/1.2 system-ui,"PingFang TC",sans-serif}
+#race-standings-list .race-time{font:700 11px/1.2 Arial,"PingFang TC",sans-serif;color:#e3e9e8}
+#race-standings .result-actions{
+ display:grid;grid-template-columns:1fr 1fr;gap:8px;
+ border-top:1px solid #cfb99569;margin-top:10px;padding-top:12px;
+}
+#race-standings .result-actions button{
+ min-width:0;min-height:43px;padding:7px 8px;
+ border:1.5px solid #ead2aa8c;border-radius:5px;
+ background:#18344081;color:#fff0d6;
+ font:750 13px/1.25 system-ui,"PingFang TC",sans-serif;
+ text-shadow:0 1px 2px #071018;
+}
+#race-standings .result-actions #result-replay{
+ background:#ffc18129;border-color:#ffbe8b;color:#ffe2b6;
+}
+#race-standings .result-actions button:hover{background:#ffb6793d;border-color:#ffd8a5}
+#race-standings .result-actions button:focus-visible{outline:2px solid #fff2cf;outline-offset:2px}
+#race-standings .result-actions button:active{background:#ffc18160;transform:translateY(1px)}
+@media(orientation:landscape) and (max-height:520px){
+ #race-position{top:max(7px,env(safe-area-inset-top));padding:3px 3px 4px}
+ #race-position .race-hud-cell{padding:0 10px}
+ #race-position .race-hud-cell>small{font-size:8px}
+ #race-position .race-hud-rank b{font-size:18px}
+ #race-position .race-hud-cell>span,#race-position time{font-size:12px}
+ #race-position #race-distance{font-size:11px}
+ #race-standings{
+  width:min(284px,36vw);left:max(9px,env(safe-area-inset-left));
+  max-height:calc(100dvh - 16px);padding:8px 9px 9px;
+ }
+ #race-standings .result-eyebrow{font-size:8px;margin-bottom:3px}
+ #race-standings .result-heading{padding-bottom:4px;margin-bottom:4px}
+ #race-standings #race-standings-title{font-size:16px}
+ #race-standings #result-player-rank{font-size:22px}
+ #race-standings .result-columns{font-size:8px;padding-bottom:3px}
+ #race-standings-list{gap:0}
+ #race-standings-list li{min-height:23px;padding:1px 4px 1px 5px;grid-template-columns:20px minmax(0,1fr) 61px;gap:4px}
+ #race-standings-list .race-name{font-size:11px}
+ #race-standings-list .race-place{font-size:12px}
+ #race-standings-list .race-time{font-size:10px}
+ #race-standings .result-actions{margin-top:6px;padding-top:7px;gap:6px}
+ #race-standings .result-actions button{min-height:42px;font-size:11px;padding:6px 5px}
+}
+@media(orientation:portrait){
+ #race-position{top:max(55px,calc(env(safe-area-inset-top) + 48px))}
+ #race-position .race-hud-cell{padding:0 8px}
+ #race-standings{top:49%;width:min(300px,85vw);max-height:calc(100dvh - 100px)}
 }

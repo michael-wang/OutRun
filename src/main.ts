@@ -118,10 +118,24 @@ let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof moun
 
 const entrantCount=1+raceEntries.length;
 document.querySelector('#app')!.innerHTML = `
-<div id="view"></div><div id="race-position" hidden><b>${entrantCount}</b> / ${entrantCount} <small></small></div><div id="rear-rival-tags" aria-hidden="true" hidden></div><aside id="race-standings" aria-label="競賽排名" hidden><div id="race-standings-title">全場排名</div><ol id="race-standings-list"></ol></aside>
+<div id="view"></div>
+<div id="race-position" aria-label="比賽進度" hidden>
+  <span class="race-hud-cell race-hud-rank"><small>名次</small><span><b>${entrantCount}</b><em> / ${entrantCount}</em></span></span>
+  <span class="race-hud-cell"><small>時間</small><time id="race-clock">0:00.0</time></span>
+  <span class="race-hud-cell"><small>距離</small><span id="race-distance">0.0 / 10.0 km</span></span>
+  <span id="drive-distance" hidden>0 m</span>
+</div>
+<div id="rear-rival-tags" aria-hidden="true" hidden></div>
+<aside id="race-standings" aria-label="完賽排名" hidden>
+  <div class="result-eyebrow" lang="en">PACIFIC COAST · RESULTS</div>
+  <div class="result-heading"><h2 id="race-standings-title">賽事結果</h2><strong id="result-player-rank">— <small>/ ${entrantCount}</small></strong></div>
+  <div class="result-columns"><span>名次 / 車手</span><span>時間</span></div>
+  <ol id="race-standings-list"></ol>
+  <div class="result-actions"><button id="result-replay" type="button">重玩</button><button id="result-menu" type="button">回到主選單</button></div>
+</aside>
 <aside id="race-director" hidden><div id="race-cameras"></div><output id="race-data"></output></aside><div class="vignette"></div>
 <div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??TRIP_VERSION}</small></div>
-<div id="drive-readout" hidden><strong id="drive-fps">— FPS</strong><small id="drive-distance">0 m</small><small id="game-version">${GAME_VERSION}</small></div>
+
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <div id="qa-tools" aria-label="測試工具列"><button id="photo-button" aria-label="截圖" data-key-hint="F8" data-pad-hint="TOUCHPAD" hidden>📷 截圖</button></div><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
@@ -352,7 +366,9 @@ function updateStandings(){
  const now=performance.now();if(now<nextStandingUpdate)return;
  nextStandingUpdate=now+175;
  const rows=race.standings(state);
- $('race-standings-title').textContent=rows.every(r=>r.finishTime!==null)?'完賽排名':'全場排名';
+ $('race-standings-title').textContent=rows.every(r=>r.finishTime!==null)?'最終排名':'賽事結果';
+ const player=rows.find(r=>r.isPlayer)!;
+ $('result-player-rank').innerHTML=String(player.rank).padStart(2,'0')+' <small>/ '+entrantCount+'</small>';
  for(let i=0;i<standingRows.length;i++){
   const li=standingRows[i],r=rows[i];
   li.dataset.player=String(r.isPlayer);
@@ -366,7 +382,7 @@ function updateStandings(){
 let countdown=3,observed=-1,nextRaceHud=0;
 const playerCamera=new THREE.PerspectiveCamera();
 const debugRace=params.get('rivaldebug')==='1';
-const positionHud=$('race-position'),positionNumber=positionHud.querySelector('b')!,gapHint=positionHud.querySelector('small')!;
+const positionHud=$('race-position'),positionNumber=positionHud.querySelector('b')!,raceClock=$('race-clock'),raceDistance=$('race-distance');
 const director=$('race-director'),debugText=$('race-data'),raceWatch=$('race-watch');
 function followRacer(index:number){
  if(index>=0&&race.rivals[index].finishTime!==null)return;
@@ -410,8 +426,15 @@ function raceHud(){
  const watching=observed>=0;
  if(performance.now()<nextRaceHud)return;
  nextRaceHud=performance.now()+125;
- // Distant front markers never float on the HUD; the actual 3D tag follows its car.
- if(gapHint.textContent!=='')gapHint.textContent='';
+ // Race progress belongs beside position and time, not the global version/FPS.
+ const tracked=race.rivals[observed]?.distance??state.distance;
+ const traveled=Math.max(0,Math.min(world.length-BRICK_START,tracked-BRICK_START));
+ const total=Math.max(1,world.length-BRICK_START);
+ const elapsedRace=Math.max(0,race.time);
+ const clock=Math.floor(elapsedRace/60)+':'+String(Math.floor(elapsedRace%60)).padStart(2,'0')+'.'+Math.floor(elapsedRace*10)%10;
+ const distanceLabel=(traveled/1000).toFixed(1)+' / '+(total/1000).toFixed(1)+' km';
+ if(raceClock.textContent!==clock)raceClock.textContent=clock;
+ if(raceDistance.textContent!==distanceLabel)raceDistance.textContent=distanceLabel;
  const rearActive=!watching&&!brickCompleted&&!settingsOpen&&(mode==='playing'||mode==='countdown');
  const markers=rearActive?layoutRearRivalTags(
   {distance:state.distance,lateral:state.lateral},
@@ -556,7 +579,7 @@ function updatePlayerUi(){
   // splash and pause menus retain their approved positioning.
   panel.dataset.finished=String(brickCompleted);
   panel.setAttribute('aria-label',brickCompleted?'旅程結算':'開始駕駛');
-  panel.hidden=!show;
+  panel.hidden=!show||brickCompleted; // Results have one dedicated compact panel.
   if(!show)return;
   const title=brickCompleted?'第 '+race.rank(state.distance,race.playerFinish,'PLAYER',state)+' 名 / '+entrantCount:elapsed>0?'暫停中':'極速漫遊';
   const subtitle=journeyMode?(brickCompleted?'都市、海岸與峽谷，旅程完成':'黃昏海岸 → 白天都市 → 清晨峽谷'):brickCompleted?'同一條海岸，再玩一次':elapsed>0?'準備好了就繼續出發':'公路冒險';
@@ -565,7 +588,7 @@ function updatePlayerUi(){
   const play=$('player-play'),label=streamStartRequested?'即將出發…':brickCompleted?'再玩一次':elapsed>0?'繼續駕駛':'開始駕駛';
   if(play.textContent!==label)play.textContent=label;
   $('player-restart').hidden=elapsed===0||brickCompleted;
-  $('results-menu').hidden=!brickCompleted;raceWatch.hidden=!brickCompleted||!race.rivals.some(r=>r.finishTime===null);
+  $('results-menu').hidden=!brickCompleted;raceWatch.hidden=true;
   const finishPanel=$('player-finish-stats');finishPanel.hidden=!brickCompleted;
   if(brickCompleted){
    const result=finishStats.summary(race.playerFinish??elapsed);
@@ -590,8 +613,7 @@ function updatePlayerUi(){
 }
 function placeFpsExport(){
   if(driveFpsDiagnostics.enabled){
-    const inResults=playerUi&&brickCompleted&&!settingsOpen&&landscapeReady();
-    driveFpsDiagnostics.placeExportIn(inResults?$('player-start'):document.body);
+    driveFpsDiagnostics.placeExportIn(document.body);
   }
 }
 function ui(){
@@ -599,7 +621,7 @@ function ui(){
   positionHud.hidden=mode!=='playing'&&mode!=='countdown';
   director.hidden=!(debugRace||watching);
   backToResults.hidden=!(brickCompleted&&watching);
-  if(mode!=='playing'||settingsOpen)driveFpsDiagnostics.cancelWindow('離開駕駛畫面');placeFpsExport(); $('drive-readout').hidden=settingsOpen||mode==='menu'; tripPauseDock?.update(!!trip&&mode==='paused'&&!brickCompleted&&!settingsOpen,muted);$('preferences').classList.toggle('trip-settings-drawer',!!trip&&mode==='paused'&&settingsOpen); $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen;
+  if(mode!=='playing'||settingsOpen)driveFpsDiagnostics.cancelWindow('離開駕駛畫面');placeFpsExport(); tripPauseDock?.update(!!trip&&mode==='paused'&&!brickCompleted&&!settingsOpen,muted);$('preferences').classList.toggle('trip-settings-drawer',!!trip&&mode==='paused'&&settingsOpen); $('drive-hud').hidden=$('route-name').hidden=(mode!=='playing'&&mode!=='countdown')||settingsOpen; const displayMode=mode==='countdown'?'playing':mode;labUI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0);l2UI?.update(displayMode,settingsOpen,brickCompleted,brick?(state.distance-BRICK_START)/brick.length:0,elapsed);$('menu').hidden=!!brick||mode!=='menu'||settingsOpen; $('paused').hidden=!!brick||mode!=='paused'||settingsOpen; $('preferences').hidden=!settingsOpen;
   const pausedDrive=mode==='paused'&&!brickCompleted&&!replayPreparing;
   const showDrivingHud=!settingsOpen&&(mode==='playing'||mode==='countdown'||pausedDrive);
   if(playerUi)$('speed').hidden=!showDrivingHud;
@@ -662,6 +684,8 @@ function returnToMainMenu(){
  onExit();
 }
 $('results-menu').onclick=returnToMainMenu;
+$('result-replay').onclick=restart;
+$('result-menu').onclick=returnToMainMenu;
 $('player-options').onclick=()=>document.getElementById('l2-settings')?.click();
 $('player-sound').onclick=()=>document.getElementById('l2-sound')?.click();
 $('player-install-guide').onclick=()=>{$('player-install-help').hidden=!$('player-install-help').hidden;};
@@ -704,7 +728,7 @@ addEventListener('keydown',e=>{
    if(direct[e.code]){e.preventDefault();direct[e.code]();return;}
   }
   const prefix=pilot||l2?'l2':brick?'brick':'';
-  const action:Record<string,string>={KeyP:playerUi?'player-play':prefix?`${prefix}-play`:mode==='menu'?'drive':'resume',KeyR:playerUi?'player-restart':prefix?`${prefix}-replay`:'restart',KeyN:playerUi?'':`${prefix}-next`,KeyB:`${prefix}-prev`,KeyC:playerUi?'player-options':prefix?`${prefix}-settings`:'settings',KeyM:playerUi?'player-sound':prefix?`${prefix}-sound`:'sound',KeyF:prefix?`${prefix}-fullscreen`:'fullscreen',KeyE:`${prefix}-export`};
+  const action:Record<string,string>={KeyP:playerUi?(brickCompleted?'result-replay':'player-play'):prefix?`${prefix}-play`:mode==='menu'?'drive':'resume',KeyR:playerUi?(brickCompleted?'result-replay':'player-restart'):prefix?`${prefix}-replay`:'restart',KeyN:playerUi?'':`${prefix}-next`,KeyB:`${prefix}-prev`,KeyC:playerUi?(brickCompleted?'':'player-options'):prefix?`${prefix}-settings`:'settings',KeyM:playerUi?(brickCompleted?'':'player-sound'):prefix?`${prefix}-sound`:'sound',KeyF:prefix?`${prefix}-fullscreen`:'fullscreen',KeyE:`${prefix}-export`};
   const vote:Record<string,string>={KeyK:'KEEP',KeyW:'REWORK',KeyX:'REJECT'};
   const button=vote[e.code]?document.querySelector<HTMLButtonElement>(prefix==='l2'?`[data-l2-vote="${vote[e.code]}"]`:`[data-vote="${vote[e.code]}"]`):document.getElementById(action[e.code]);
   if(button&&button.offsetParent!==null){e.preventDefault();button.click();return;}
@@ -817,7 +841,7 @@ function advance(dt:number,override?:InputState){
   if(cheer)sound.passengerCue(cheer);
  }
  if(motion.advance(travel,state.appliedSteer,dt,rightAcceleration,state.launchSlip,state.brakeSlip))sound.passengerCue('clap');
- elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId??rivalHit?.actorId,race.rivals);if(brick&&state.distance>=chapterEnd()&&(!journeyMode||chapterIndex===2)){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(playerUi?'player-play':l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else sound.pause();
+ elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(stage&&telemetry?.due(elapsed)){const w=pilotWeights(stage,state.distance),worldName=(['coast','canyon','city'] as const)[w.indexOf(Math.max(...w))],beat=trip?(trip.beats.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.id??`L3-${trip.buffers.find(x=>state.distance-BRICK_START>=x.startS&&state.distance-BRICK_START<x.endS)?.role??'finish'}`):(stage.beats.find(x=>state.distance-BRICK_START<x.endS)?.id??stage.beats.at(-1)!.id);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:pilotSample(stage,state.distance).lanes,active:pilotSample(stage,state.distance).active.map(p=>p.id),roadX:state.lateral,offRoad:state.offRoad,world:worldName,beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId??rivalHit?.actorId,race.rivals);if(brick&&state.distance>=chapterEnd()&&(!journeyMode||chapterIndex===2)){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(playerUi?'result-replay':l2||pilot?'l2-play':'brick-play') as HTMLElement|null)?.focus();}}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(brick)return height+(Math.abs(lateral)>world.halfAt(state.distance)?-.1:0);
@@ -966,7 +990,7 @@ const pad=new GamepadInput(input,action=>{
   &&carPaintPicker.handle(action as 'confirm'|'back'|'up'|'down'|'left'|'right'))return;
  if(action==='back'){if(settingsOpen)$('close-settings').click();else if(mode==='playing')pause();return;}
  if(mode==='playing')return;
- const scope=(settingsOpen?$('preferences'):trip&&mode==='paused'&&!brickCompleted?tripPauseDock?.element:playerUi?$('player-start'):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
+ const scope=(settingsOpen?$('preferences'):trip&&mode==='paused'&&!brickCompleted?tripPauseDock?.element:playerUi?(brickCompleted?$('race-standings'):$('player-start')):document.getElementById(pilot||l2?'l2-lab':brick?'brick-lab':mode==='menu'?'menu':'paused'));
  if(!scope)return;
  const items=Array.from(scope.querySelectorAll<HTMLElement>('button,a,input,select')).filter(x=>x.offsetParent!==null&&!x.hasAttribute('disabled'));
  if(sceneInspector&&!settingsOpen)items.unshift(sceneInspector.toggle);
