@@ -28,3 +28,9 @@ Legacy `trip.ts` and `scenic-director.ts` originally served randomly assembled L
 The coast house at absolute road metre 1085 is declared in `content/stages/coast/scene.json`; its swappable GLB asset path is in `content/prefabs/catalog.json`. The lightweight GLB lives in `public/assets/coast-props/`. The shared loader `src/content/static-props.ts` handles static models, while `src/content/coast-static-props.ts` supplies the existing coast terrain height.
 
 The matching old Worker-generated farmhouse is suppressed by the **same authored replacement metadata**. Swapping/moving this object requires only editing JSON or GLB. See `content/README.md` for QA. This R1 slice does not add an entity framework, general collision physics or wind deformation; accepted road and Ultra Water remain untouched.
+
+## R2a — road content is data, unchanged coast geometry
+
+`content/stages/coast/road.json` is the source of truth for its nine manual turns, the original mild rise and its width. `src/content/authored-road.ts` validates absolute HUD-metre spans and adapts them into the existing sampler. `src/coast-ultra-stage.ts` now has **no canyon-stage inheritance** and supplies stage identity / environment metadata only. The same stage feeds the road worker, baked shoreline, rivals, car handling and collision paths; no duplicate curve planner.
+
+This preserves the currently approved route exactly and clears the way to revise curve strengths by editing road data. **R2 remains in progress:** the older `pilot-composer` and generated profiles are still compatibility machinery. Do not remove them until a full authored spline/fixed-road path has parity and owner playtest acceptance.

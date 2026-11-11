@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "length": 10000,
+  "lanes": 5,
+  "baseHeight": -1.8,
+  "turns": [
+    {
+      "shape": "sweep",
+      "start": 350,
+      "end": 1000,
+      "steer": -0.14,
+      "label": "First sunset bay"
+    },
+    {
+      "shape": "sweep",
+      "start": 2100,
+      "end": 2750,
+      "steer": 0.18,
+      "label": "Village headland"
+    },
+    {
+      "shape": "sweep",
+      "start": 3150,
+      "end": 3800,
+      "steer": -0.18,
+      "label": "Second sunset bay"
+    },
+    {
+      "shape": "sweep",
+      "start": 4900,
+      "end": 5550,
+      "steer": 0.18,
+      "label": "Wooded headland"
+    },
+    {
+      "shape": "sweep",
+      "start": 5850,
+      "end": 6500,
+      "steer": -0.18,
+      "label": "Third sunset bay"
+    },
+    {
+      "shape": "sweep",
+      "start": 7350,
+      "end": 8000,
+      "steer": 0.18,
+      "label": "Market headland"
+    },
+    {
+      "shape": "sweep",
+      "start": 8300,
+      "end": 8950,
+      "steer": -0.18,
+      "label": "Golden-water farewell"
+    },
+    {
+      "shape": "sweep",
+      "start": 8980,
+      "end": 9580,
+      "steer": -0.14,
+      "label": "Fishing point"
+    },
+    {
+      "shape": "sweep",
+      "start": 9650,
+      "end": 10230,
+      "steer": 0.145,
+      "label": "Return along the last cove"
+    }
+  ],
+  "elevations": [
+    {
+      "shape": "gentle-rise",
+      "start": 350,
+      "end": 10350,
+      "base": -1.8,
+      "rise": 1,
+      "label": "Coastal climb"
+    }
+  ],
+  "startDistance": 350
+}

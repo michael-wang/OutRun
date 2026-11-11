@@ -5,3 +5,5 @@
 - `prefabs/catalog.json`: maps prefab names to local GLB paths and minimal rendering flags. A different model must be swappable here without editing engine code.
 - Prefer reusing existing rendering/physics/effects. Do not add a universal entity framework or speculative object capabilities.
 - GLBs must have cleared provenance and reasonable mobile geometry/material counts. If the model has a different local origin, fix the asset or placement data.
+
+- `stages/coast/road.json` is the authored source of road turns/elevation. Distances are **absolute HUD road metres**, shared with scene placements. Do not reintroduce per-turn TypeScript or speculative random composers.

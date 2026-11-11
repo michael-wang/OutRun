@@ -17,3 +17,18 @@ The QA overlay only runs in Vite development with `prefabdebug=1`; it is unavail
 - Later stages can use the same loader with different JSON data and a terrain height adapter; no new entity framework is needed.
 
 R1 acceptance: current coast can be played and the prefab appears at the specified position. Test changing only the JSON model path or a placement coordinate, rebuilding, and inspecting the difference.
+
+## R2a — manually authored road
+
+The coast road is now authored in `content/stages/coast/road.json`; its turns are **data**, not code in `src/coast-ultra-stage.ts`. The file describes:
+
+- `startDistance: 350`, `length: 10000` and `lanes: 5`.
+- `turns`: `start` / `end` in **absolute road metres** (the same coordinate system as the HUD and `scene.json`), signed `steer` demand, `shape` and display label. For example, the first sunset sweep spans HUD metres **350–1000**.
+- `elevations`: absolute road metre spans, base height and signed rise in world metres.
+- The validated adapter `src/content/authored-road.ts` translates this authored data to the *existing* road sampler. Road meshes, AI, vehicle/camera and shoreline baking therefore share the exact same road without special per-stage code.
+
+To edit a curve, change its `start`, `end` or signed `steer` in **road.json**, then reload the development build. The original coast layout is intentionally preserved by this R2a conversion; the actual drift-focused corner redesign starts **after** you accept the data route.
+
+The first slice uses the one existing `sweep` curve and `gentle-rise` elevation, rather than inventing future shapes. When a planned hairpin or 3D spline needs a new capability, add it to the common road evaluator or import/bake its control points through `fixed-road.ts`. Don't put per-curve algorithms back into stage files.
+
+**Not yet done:** fully retiring the historic Pilot/Brick/Trip runtime evaluator and old inactive Lab interfaces; that requires the later fixed-road migration. These are transitional implementation dependencies, **not** requirements for procedural authoring.
