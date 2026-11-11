@@ -1,20 +1,11 @@
 import {BRICK_START} from './bricks';
-import {generateTrip} from './trip';
 import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
-import {CANYON_ROADLOCK_STAGE} from './designer-canyon-roadlock';
 
-/** Keep each accepted road in its native coordinates. Retaining-wall highways join them
- * through identical overlap geometry and a rigid coordinate rebase. */
-export function isScenicJourney(params:URLSearchParams){
- return !['showcase','mode','trip','stage','lab','challenge','pace','velocity'].some(k=>params.has(k));
+/** R0 retirement boundary: the old City/Canyon procedural journey is not a
+ * playable mode. The prior city second-stage recipe has no retained use.
+ * The accepted coast remains while new authored stages await their data format.
+ */
+export function journeyChapters(){
+ return [{id:'coast',title:'海濱公路',time:'黃昏',
+  stage:COAST_ULTRA_STAGE,start:BRICK_START,end:BRICK_START+COAST_ULTRA_STAGE.length}] as const;
 }
-let chapters:ReturnType<typeof buildChapters>|undefined;
-function buildChapters(){
- const city=generateTrip(1,10),phase=city.worldPhases.find(p=>p.world==='city')!;
- return [
-  {id:'coast',title:'海濱公路',time:'黃昏',stage:COAST_ULTRA_STAGE,start:BRICK_START,end:BRICK_START+COAST_ULTRA_STAGE.length},
-  {id:'city',title:'都市叢林',time:'正午',stage:city,start:BRICK_START+phase.startS+500,end:BRICK_START+phase.endS-200},
-  {id:'canyon',title:'大峽谷',time:'翌日清晨',stage:CANYON_ROADLOCK_STAGE,start:BRICK_START,end:BRICK_START+CANYON_ROADLOCK_STAGE.length},
- ] as const;
-}
-export function journeyChapters(){return chapters??=buildChapters();}

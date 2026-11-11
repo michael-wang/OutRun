@@ -45,16 +45,14 @@ import {COURSE,challengeAt,requiredSteering} from './challenges';
 import {ACTS,actWeights} from './acts';
 import {quantizeSteering} from './steering';
 import drivingCss from './style.css?inline';
-import {BRICKS,BRICK_START,createBrickTrack,brickCourse,brickWidth} from './bricks';
+import {BRICK_START,createBrickTrack,brickCourse,brickWidth} from './bricks';
 import {mountBrickLab} from './brick-lab';
 import {L2_CANDIDATES,createL2Track,l2Course,l2Sample} from './l2-catalog';
 import {mountL2Lab} from './l2-lab';
-import {PILOTS,createPilotTrack,pilotCourse,pilotSample,pilotWeights} from './pilot-composer';
+import {createPilotTrack,pilotCourse,pilotSample,pilotWeights} from './pilot-composer';
 import {generateStage} from './stage-one';
-import {generateTrip,TRIP_VERSION} from './trip';
-import {DESIGNER_CANYON_STAGE} from './designer-canyon';
 import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
-import {CANYON_ROADLOCK_STAGE,CANYON_ROADLOCK_MOMENTS,CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
+import {CANYON_ROADLOCK_MOMENTS,CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
 import {TireEffects,type TireContact} from './tire-effects';
@@ -146,7 +144,7 @@ document.querySelector('#app')!.innerHTML = `
   <div class="result-actions"><button id="result-replay" type="button">重玩</button><button id="result-menu" type="button">回到主選單</button></div>
 </aside>
 <aside id="race-director" hidden><div id="race-cameras"></div><output id="race-data"></output></aside><div class="vignette"></div>
-<div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??TRIP_VERSION}</small></div>
+<div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??GAME_VERSION}</small></div>
 
 <header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
@@ -1659,7 +1657,7 @@ if(params.has('at')&&trip&&!journeyMode){
    label:cue.title+' · 張力 '+cue.intensity+'/10 · '+Math.round(cue.start)+'–'+Math.round(cue.end)+'m',
    distance:Math.max(350,cue.start-140),landmarkDistance:cue.start,scenicCue:cue});
  }
- // Road Feature Analysis is already complete in generateTrip(). Only turn
+ // Road Feature Analysis is already prepared in the stage recipe. Only turn
  // immutable recipe metadata into opt-in QA destinations; no per-frame
  // classification, no Worker changes and no new scenery generation.
  for(const feature of trip.roadFeatures??[]){

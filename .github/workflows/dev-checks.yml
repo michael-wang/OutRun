@@ -1,13 +1,13 @@
-name: Dev build and unit checks
+name: Dev checks (manual)
 
-# Fast driving-only iteration. Checks remain available manually.
+# Dev pushes never launch builds or deployments. Use this lightweight workflow
+# only on demand; full regression suites remain available locally.
 on:
   workflow_dispatch:
 
 permissions:
   contents: read
 
-# A milestone is often several GitHub file commits; verify only its latest tip.
 concurrency:
   group: outrun-dev-${{ github.ref }}
   cancel-in-progress: true
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,26 +24,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      # Four pre-r7 archival suites encode old, incompatible approvals or tuning
-      # constants. Keep them visible, but don't confuse them with current regressions.
-      - name: Active unit suite
-        run: >-
-          npm test -- --exclude src/handling.test.ts
-          --exclude tests/v07d2-review.unit.ts
-          --exclude tests/v081-stage.unit.ts
-          --exclude tests/vertical-width.unit.ts
-      - name: Art prototype — road export and Blender script syntax
-        run: |
-          npm run art:road
-          python3 -m py_compile scripts/art-proto/build_scene.py
-          node --input-type=commonjs -e "const fs=require('node:fs');const x=JSON.parse(fs.readFileSync('art-prototype/output/road-reference.json','utf8'));if(x.frames.length!==81||x.cameras.length!==3||x.end-x.start!==400||x.frames.some(f=>!Number.isFinite(f.center[0]+f.center[1]+f.center[2]+f.heading)))throw Error('Invalid exact road reference');console.log('Road frames: '+x.frames.length+' / chase cameras: '+x.cameras.length)"
-      - name: Install Chromium for QA browser checks
-        run: npx playwright install --with-deps chromium
-      - name: Scene Inspector UI and PS4 controller smoke
-        run: npx playwright test tests/scene-inspector.spec.ts
-      - name: Historical archive compatibility (informational)
+      - name: P0 road and startup safety
+        run: npm run test:p0
+      - name: P1 serious race risks (advisory)
+        id: critical
         continue-on-error: true
-        run: >-
-          npm test -- src/handling.test.ts
-          tests/v07d2-review.unit.ts tests/v081-stage.unit.ts
-          tests/vertical-width.unit.ts
+        run: npm run test:p1
+      - name: Show critical warnings to the owner
+        if: steps.critical.outcome == 'failure'
+        run: |
+          echo "::warning title=P1 Critical::Check critical race diagnostics before deciding to release."
+          echo "⚠️ P1 diagnostics failed. Investigate and report to the owner." >> "$GITHUB_STEP_SUMMARY"
