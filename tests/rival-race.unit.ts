@@ -88,9 +88,18 @@ describe('Riviera GT race',()=>{
  });
  it('charges both cars for contact, constrains penetration and cools the impulse',()=>{
   const race=new RivalRace(10350,flat,()=>[],[raceEntries[0]]);race.reset(350);
-  const r=race.rivals[0],p={distance:r.distance-4.91,lateral:r.lateral,speed:35};r.speed=16;
-  const old={...p};p.distance+=.38;
-  const hit=race.step(dt,p,old);expect(hit?.kind).toBe('rear');expect(p.speed).toBeLessThan(35);expect(r.speed).toBeLessThan(16.1);
+  const r=race.rivals[0],p={...createState(),distance:r.distance-4.91,lateral:r.lateral,speed:35};r.speed=16;
+  const old={distance:p.distance,lateral:p.lateral};p.distance+=.38;
+  const hit=race.step(dt,p,old);
+  expect(hit?.kind).toBe('rear');
+  // RivalRace reports contact and applies the Rival impulse; the gameplay
+  // controller separately applies the player's TrafficImpact penalty.
+  expect(p.speed).toBe(35);
+  expect(r.speed).toBeLessThan(16.1);
+  const impact=new TrafficImpact();impact.kick(p,hit!);
+  expect(p.speed).toBeLessThan(35);
+  expect(p.speed).toBeGreaterThan(0);
+  expect(Math.abs(impact.velocity)).toBeGreaterThan(0);
   expect(r.distance-p.distance).toBeGreaterThanOrEqual(4.89);
   expect(race.step(dt,p,p)).toBeUndefined();
  });
@@ -176,9 +185,19 @@ describe('Riviera GT race',()=>{
   const lead=traffic.inspect().actors.find(a=>!a.stationary)!;
   traffic.update(.1,lead.distance+30,0,100);
   expect(traffic.inspect().actors.some(a=>a.id===lead.id)).toBe(false);
-  const row=traffic.raceObstacles(lead.distance,1,500).find(a=>a.id==='T'+lead.id)!;
-  const later=traffic.raceObstacles(row.distance,2,200).find(a=>a.id===row.id)!;
-  expect(row.speed).toBeGreaterThan(0);expect(later.distance-row.distance).toBeCloseTo(row.speed);
+  const row=traffic.raceObstacles(lead.distance,.1,500).find(a=>a.id==='T'+lead.id)!;
+  expect(row).toBeDefined();
+  expect(row.speed).toBeGreaterThan(0);
+  // Rival queries must be pure: they cannot advance the authoritative world clock.
+  const futureQuery=traffic.raceObstacles(row.distance,2,200).find(a=>a.id===row.id)!;
+  expect(futureQuery.distance).toBeCloseTo(row.distance,6);
+  expect(traffic.inspectWorld().time).toBeCloseTo(.1,6);
+  // Only Traffic.update() advances the simulation, even for a retired render actor.
+  traffic.update(1.1,350,0,0);
+  const later=traffic.raceObstacles(row.distance,1.1,200).find(a=>a.id===row.id)!;
+  expect(later).toBeDefined();
+  expect(later.distance).toBeGreaterThan(row.distance);
+  expect(traffic.inspectWorld().time).toBeCloseTo(1.1,6);
   traffic.dispose();
  });
  it('finishes the authored 10 km with the player parked under three traffic seeds',()=>{
