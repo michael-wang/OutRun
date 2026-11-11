@@ -5,6 +5,7 @@ import {buildCoastTownStreets} from './coast-town-streets';
 import {coastHomeFacingYaw} from './coast-house-facing';
 import type {CoastShadowAnchor} from './coast-dusk-shadows';
 import {FARM_HOMES,FARM_YARDS} from './coast-farm-layout';
+import {coastStaticStage,replacesLegacySite} from './content/stage-data';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek,buildPaddyToolShed} from './coast-rural-vignette';
 import {COAST_DRAIN_X,COAST_LAMP_HEAD,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
@@ -443,6 +444,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const ruralPrefabs=new Map<string,THREE.BufferGeometry>();
    if(taiwanFarmPrefab)ruralPrefabs.set('farmhouse',taiwanFarmPrefab);
    for(const site of COAST_RURAL_HOUSES){
+    // The new GLB replaces this legacy house by data (no duplicate mesh).
+    if(replacesLegacySite(coastStaticStage,'coast-rural-house',site.d))continue;
     beachAnchor(site.d,site.x);
     // The PI turn faces each local -X entrance toward the actual road;
     // the authored positive yaw tilts the hero gate toward incoming cars.

@@ -75,7 +75,7 @@ function offlineCoast():Plugin {
   const files=new Set(Object.keys(bundle));
   for(const path of await readdir(dir,{recursive:true})){
    const name=path.split(sep).join('/');
-   if(/^(icons|ui)\/.*\.png$|^assets\/coast-(boats|nature)\/.*\.(glb|png)$/.test(name))files.add(name);
+   if(/^(icons|ui)\/.*\.png$|^assets\/coast-(boats|nature|props)\/.*\.(glb|png)$/.test(name))files.add(name);
   }
   for(const name of ['index.html','manifest.webmanifest','generated/coast-shore.shore','assets/coast-nature/models.json','assets/coast-nature/headland-grove.json','assets/coast-farm/rice-near.glb','assets/coast-farm/scarecrow.glb'])files.add(name);
   const paths=[...files].sort(),hash=createHash('sha256');

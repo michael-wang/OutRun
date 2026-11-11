@@ -1,4 +1,5 @@
 import {coastLampPoleShadowsActive} from './coast-lamp-lighting';
+import {mountCoastStaticProps} from './content/coast-static-props';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {journeyChapters} from './scenic-journey';
@@ -219,6 +220,10 @@ let blenderAsset=blenderMode?await (async()=>{
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const initialBrick=brick,initialPilot=pilot;
 let world=createWorld(initialBrick?{blenderArt:!!blenderAsset,bank:bankLab?banking:undefined,chunked:!!stage,streamStage:bankLab?initialPilot:stage,track:journeyTracks?journeyTracks[0]:initialPilot?createPilotTrack(initialPilot,bankLab?banking:undefined):l2?createL2Track(l2):createBrickTrack(initialBrick),theme:initialBrick.sceneryAct,seed:initialBrick.seed,trafficVariation:trafficSessionVariation,roadWidth:initialBrick.roadWidth,halfAt:d=>initialPilot?pilotSample(initialPilot,d).halfWidth:brickWidth(initialBrick,d).halfWidth,weightsAt:initialPilot?(d=>pilotWeights(initialPilot,d)):undefined,narrowings:stage?stage.placements.filter(p=>p.channel==='width'&&p.parameters.to<p.parameters.from).map(p=>Math.max(BRICK_START+30,BRICK_START+p.startS-180)):initialBrick.lanes.flatMap((k,i)=>i&&k[1]<initialBrick.lanes[i-1][1]?[Math.max(BRICK_START+30,BRICK_START+initialBrick.lanes[i-1][0]*initialBrick.length/initialBrick.nominalDuration-180)]:[]),course:initialPilot?pilotCourse(initialPilot):l2?l2Course(l2):brickCourse(initialBrick),notice:initialBrick.id==='BRK-03'?{distance:BRICK_START+initialBrick.length*5/initialBrick.nominalDuration,text:'LEFT BEND BEYOND'}:undefined}:{}); world.car.rotation.order="YXZ";
+// Authored GLBs are optional art, loaded once before the start gate.
+// Preserve the approved road, traffic, physics and Ultra Water.
+const authoredStaticProps=coastUltraMode?
+ await mountCoastStaticProps(world.scene,world.sample,signal):[];
 let selectedCarColor=readCarColor();
 (world.car.userData.paintController as CarPaintController|undefined)?.set(selectedCarColor);
 ($('car-paint') as HTMLSelectElement).value=selectedCarColor;
@@ -1554,6 +1559,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   perf:()=>({...perf}),
   blenderArt:()=>blenderAsset?.stats??{status:'disabled'},
   coastFarm:()=>world.streamer?.farmStats??[],
+  authoredProps:()=>authoredStaticProps.map(item=>({...item})),
   coastBoats:()=>coastBoats?.inspect(elapsed)??[],
   coastBoatShadow:(enabled?:boolean)=>{if(enabled!==undefined&&ultraOcean){ultraOcean.boatShadow.enabled=enabled;render(0);}return ultraOcean?.boatShadow.stats;},
   coastWater:()=>({mode:ultraOcean?'ultra':coastUltraMode?'basic':'disabled',...ultraOcean?.stats}),

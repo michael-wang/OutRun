@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "prefabs": {
+    "taiwan-farmhouse": {
+      "model": "assets/coast-props/r1-farmhouse.glb",
+      "castShadow": true,
+      "receiveShadow": true
+    }
+  }
+}

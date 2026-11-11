@@ -22,3 +22,9 @@ Legacy `trip.ts` and `scenic-director.ts` originally served randomly assembled L
 - **R3+:** rebuild coast corners for controllable drifts; only then hand-author hero scenery. New stage content follows the same workflow.
 
 **Stop condition:** no mass rename or cosmetic directory reorganization. Favor removing actual dependencies and shrinking the number of modules read for a small content edit. Each milestone must leave the playable coast intact.
+
+## R1 — first data-authored prefab
+
+The coast house at absolute road metre 1085 is declared in `content/stages/coast/scene.json`; its swappable GLB asset path is in `content/prefabs/catalog.json`. The lightweight GLB lives in `public/assets/coast-props/`. The shared loader `src/content/static-props.ts` handles static models, while `src/content/coast-static-props.ts` supplies the existing coast terrain height.
+
+The matching old Worker-generated farmhouse is suppressed by the **same authored replacement metadata**. Swapping/moving this object requires only editing JSON or GLB. See `content/README.md` for QA. This R1 slice does not add an entity framework, general collision physics or wind deformation; accepted road and Ultra Water remain untouched.
