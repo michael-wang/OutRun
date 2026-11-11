@@ -344,7 +344,7 @@ const race=new RivalRace(chapterEnd(),d=>{
 race.reset(state.distance);
 const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,race.rivals);
 let rivalPassCount=0;
-if(traffic)traffic.rivalLeaders=()=>race.rivals;
+if(traffic){traffic.rivalLeaders=()=>race.rivals;traffic.enableRaceMode();}
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
 race.impactTraffic=(row,severity,side)=>traffic?.impactByRival(row,severity,side);
 const rivalView=new RivalView(race,world.scene,tireEffects,world.sample);

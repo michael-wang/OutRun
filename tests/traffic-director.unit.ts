@@ -66,6 +66,27 @@ it('keeps whole-route moving traffic after player passes and beyond the render p
  traffic.dispose();
 });
 
+it('keeps rendered coast traffic aligned with the authoritative race-state lanes',()=>{
+ const traffic=new Traffic(new THREE.Scene(),sample,()=>8.75,10000,804,()=>true,[],undefined,true,false,false,17);
+ traffic.rivalLeaders=()=>[];
+ traffic.enableRaceMode();
+ const before=traffic.inspectWorld().total;
+ for(let i=0;i<160;i++){
+  traffic.update(i*.25,350,0,0);
+  expect(traffic.inspect().actors.length).toBeLessThanOrEqual(TRAFFIC_LIMIT);
+ }
+ const after=traffic.inspectWorld();
+ expect(after.total).toBeGreaterThan(before);
+ for(const actor of traffic.inspect().actors){
+  const body=after.rows.find(c=>c.id===actor.id);
+  if(!body)continue; // The existing interchange demo is separate from course traffic.
+  expect(actor.distance).toBeCloseTo(body.distance,4);
+  expect(actor.speed).toBeCloseTo(body.speed,4);
+  expect(actor.lateral).toBeCloseTo(body.lateral,4);
+ }
+ traffic.dispose();
+});
+
 it('rerolls independently of route and pins a diagnostic traffic seed',()=>{
  expect(newTrafficSessionSeed(new URLSearchParams('trafficSeed=3025'))).toBe(3025);
  expect(newTrafficSessionSeed(new URLSearchParams('trafficSeed=4294967295'))).toBe(4294967295);

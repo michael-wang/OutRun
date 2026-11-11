@@ -1,5 +1,6 @@
 import {approachTrafficSpeed,roadLaneCenters,nearestTrafficLane,plannedTrafficLateral,trafficFollowingTarget,trafficStopBeforeLeader} from './traffic-flow';
 import type {TrafficSlot} from './traffic-flow';
+import {DEFAULT_PACE,effectivePace} from './pace';
 
 /** Course-wide traffic truth. Rendering/streaming are only consumers of this state.
  * A racer cannot drive into an easier world by leaving the player's camera. */
@@ -10,6 +11,8 @@ export interface TrafficWorldRecipe {
 export interface TrafficWorldCar extends TrafficSlot {
  type:number;cruiseSpeed:number;targetSpeed:number;targetLateral:number;
  width:number;group:number;member:number;finished:boolean;sideVelocity:number;
+ stopLane?:number;stopSide?:number;
+ blockedFor:number;reverseLeft:number;escapeUntil:number;escapeCooldown:number;indicateUntil:number;laneChangeUntil:number;
 }
 export interface RaceRoadUser extends TrafficSlot {width:number;finished?:boolean}
 const clamp=(v:number,a:number,b:number)=>Math.max(a,Math.min(v,b));
@@ -24,6 +27,16 @@ export function breakdownLaneLateral(lane:number|undefined,side:number|undefined
  if(lane!==undefined)return lanes[clamp(lane,0,lanes.length-1)];
  return (side??1)*(half-1.75);
 }
+/** Racing traffic cruises around 200 km/h while preserving some faster/slower outliers. */
+export function coastRaceCruise(seed:number,id:number,type:number):number{
+ const speed=randomized(seed^0x719a,id),rare=randomized(seed^0x4ba2,id);
+ const indicated=rare<.06?137+30*speed:rare>.97?247+30*speed:
+  (type===1?180:type===2?203:type===3?188:211)+(speed-.5)*42;
+ // Traffic and race cars must use the same route-distance calibration:
+ // 200 indicated km/h means 200 km/h × the approved arcade travel pace.
+ const meters=indicated/3.6;
+ return meters*effectivePace(meters,DEFAULT_PACE);
+}
 export class RaceTrafficWorld {
  readonly cars:TrafficWorldCar[];
  private readonly byId=new Map<number,TrafficWorldCar>();
@@ -31,9 +44,12 @@ export class RaceTrafficWorld {
  private decisionAt=0;
  private readonly sorted:TrafficWorldCar[]=[];
  private readonly users:RaceRoadUser[]=[];
+ private spawnAt=4;
+ private spawnIndex=0;
+ private nextId=2000000;
  constructor(recipes:readonly TrafficWorldRecipe[],private seed:number,
   private length:number,private halfAt:(distance:number)=>number,
-  private dimensions:(type:number)=>{width:number;length:number}){
+  private dimensions:(type:number)=>{width:number;length:number},private racing=false){
   this.cars=recipes.map(row=>{
    const half=this.halfAt(row.distance);
    const lateral=row.stationary
@@ -43,11 +59,34 @@ export class RaceTrafficWorld {
    const car:TrafficWorldCar={id:row.id,type:row.type,group:row.group,member:row.member??0,
     distance:row.distance,speed:row.stationary?0:row.speed,cruiseSpeed:row.speed,
     targetSpeed:row.stationary?0:row.speed,lateral,targetLateral:lateral,
-    width:d.width,length:d.length,stationary:row.stationary,finished:row.distance>=length-15,sideVelocity:0};
+    width:d.width,length:d.length,stationary:row.stationary,finished:row.distance>=length-15,sideVelocity:0,
+     stopLane:row.stopLane,stopSide:row.stopSide,blockedFor:0,reverseLeft:0,escapeUntil:0,escapeCooldown:0,indicateUntil:0,laneChangeUntil:0};
    this.byId.set(car.id,car);return car;
   });
  }
  get(id:number){return this.byId.get(id);}
+ private spawn(){
+  if(!this.racing)return;
+  const lastRacer=this.users.length?Math.min(...this.users.map(r=>r.distance)):this.length;
+  if(lastRacer>1550){this.spawnAt=Infinity;return;}
+  while(this.spawnAt<=this.time&&this.cars.length<240){
+   const index=this.spawnIndex++,id=this.nextId++;
+   const type=randomized(this.seed^0x4ef,index)<.60?0:randomized(this.seed^0x1ae,index)<.55?2:1;
+   const laneCenters=roadLaneCenters(this.halfAt(300));
+   const lateral=laneCenters[Math.floor(randomized(this.seed^0x331,index)*laneCenters.length)];
+   const crowded=this.cars.some(car=>!car.finished&&Math.abs(car.distance-300)<15&&
+     Math.abs(car.lateral-lateral)<(car.width+2.6)*.5+.4);
+   if(!crowded){
+    const shape=this.dimensions(type),speed=coastRaceCruise(this.seed,id,type);
+    const car:TrafficWorldCar={id,type,group:10000+index,member:0,distance:300,speed,
+     cruiseSpeed:speed,targetSpeed:speed,lateral,targetLateral:lateral,width:shape.width,length:shape.length,
+     stationary:false,finished:false,sideVelocity:0,blockedFor:0,reverseLeft:0,escapeUntil:0,
+     escapeCooldown:0,indicateUntil:0,laneChangeUntil:0};
+    this.cars.push(car);this.byId.set(car.id,car);
+   }
+   this.spawnAt+=4+randomized(this.seed^0x41a,index)*2.5;
+  }
+ }
  /** Player and rival states are supplied each step; never inferred from visibility. */
  advance(time:number,rivals:readonly RaceRoadUser[]=[],player?:RaceRoadUser){
   if(time<this.time-.0001)throw Error('RaceTrafficWorld time went backwards; reset required');
@@ -59,12 +98,23 @@ export class RaceTrafficWorld {
   while(remaining>1e-7){
    const dt=Math.min(.12,remaining);
    this.time+=dt;remaining-=dt;
+   this.spawn();
    if(this.time>=this.decisionAt){this.decide();this.decisionAt=this.time+.16;}
    const current=this.sorted;
    for(const car of current){
     if(car.stationary||car.finished)continue;
+    if(car.reverseLeft>0){
+     car.reverseLeft=Math.max(0,car.reverseLeft-dt);
+     car.distance=Math.max(0,car.distance-5*dt);
+     car.speed=0;
+     if(car.reverseLeft===0)car.indicateUntil=this.time+.35;
+     continue;
+    }
     car.speed=approachTrafficSpeed(car.speed,car.targetSpeed,dt);
-    car.lateral=approach(car.lateral,car.targetLateral,Math.abs(car.sideVelocity)>.3?1.2*dt:3.7*dt);
+    const canSteer=this.time>=car.indicateUntil;
+    const lateralRate=car.escapeUntil>this.time?5.7:3.7;
+    if(canSteer)car.lateral=approach(car.lateral,car.targetLateral,
+      (Math.abs(car.sideVelocity)>.3?1.2:lateralRate)*dt);
     if(Math.abs(car.sideVelocity)>.01){
      const half=this.halfAt(Math.min(this.length-1,Math.max(0,car.distance)));
      car.lateral=clamp(car.lateral+car.sideVelocity*dt,-half+car.width*.5,half-car.width*.5);
@@ -72,6 +122,19 @@ export class RaceTrafficWorld {
     }
     car.distance+=car.speed*dt;
     if(car.distance>=this.length-15){car.finished=true;continue;}
+    if(car.targetSpeed<5&&car.speed<4&&this.time>=car.escapeUntil)car.blockedFor+=dt;
+    else if(car.targetSpeed>8||car.speed>8)car.blockedFor=0;
+    if(car.blockedFor>2.1&&this.time>car.escapeCooldown){
+     const lanes=roadLaneCenters(this.halfAt(car.distance));
+     const lane=nearestTrafficLane(car.lateral,lanes);
+     const dir=randomized(this.seed^0x3af,car.id+Math.floor(this.time))<.5?-1:1;
+     const target=lanes[lane+dir]??lanes[lane-dir]??lanes[lane];
+     if(target!==car.lateral){
+      car.targetLateral=target;car.reverseLeft=.75;
+      car.escapeUntil=this.time+3.3;car.escapeCooldown=this.time+10;car.laneChangeUntil=this.time+3.3;
+     }
+     car.blockedFor=0;
+    }
    }
    // The source for distance/width/headway is the whole race, NOT the render pool.
    // Resolve in road order so a follower never tunnels through a stalled car.
@@ -86,7 +149,7 @@ export class RaceTrafficWorld {
     for(const lead of this.users)if(lead.distance>car.distance&&lead.distance-car.distance<40
       &&Math.abs(lead.lateral-car.lateral)<(lead.width+car.width)*.5+.16
       &&(!nearest||lead.distance<nearest.distance))nearest=lead;
-    if(nearest) {
+    if(nearest&&car.escapeUntil<=this.time) {
      const safe=trafficStopBeforeLeader(car,nearest);
      if(safe<car.distance){car.distance=safe;car.speed=Math.min(car.speed,nearest.speed);}
     }
@@ -111,7 +174,19 @@ export class RaceTrafficWorld {
     &&(!nearest||lead.distance<nearest.distance))nearest=lead;
    const needPass=!!nearest&&nearest.distance-car.distance<Math.min(190,55+Math.max(0,car.speed-nearest.speed)*4.5)
      &&(nearest.speed<car.cruiseSpeed-3||nearest.stationary);
-   if(needPass){
+   if(needPass&&this.racing&&this.time>car.laneChangeUntil
+     &&Math.abs(car.targetLateral-car.lateral)<.3){
+    // Arcade traffic is imperfect. It indicates briefly, then picks an
+    // adjacent lane without perfect knowledge of racers behind or beside it.
+    // This breaks convoys while remaining visibly steerable (no teleport).
+    const lane=nearestTrafficLane(car.lateral,lanes);
+    const prefer=randomized(this.seed^0x7ab,car.id+Math.floor(this.time/3))<.5?-1:1;
+    const target=lanes[lane+prefer]??lanes[lane-prefer];
+    if(target!==undefined&&target!==car.lateral){
+     car.targetLateral=target;car.indicateUntil=this.time+.38;
+     car.laneChangeUntil=this.time+2.8;
+    }
+   }else if(needPass&&!this.racing){
     const lane=nearestTrafficLane(car.lateral,lanes);
     const prefer=randomized(this.seed,car.id)<.5?-1:1;
     for(const dir of [prefer,-prefer]){
@@ -120,7 +195,6 @@ export class RaceTrafficWorld {
        &&Math.abs(other.lateral-target)<(car.width+other.width)*.5+.7
        &&other.distance>car.distance-22&&other.distance<car.distance+45);
      if(conflict)continue;
-     // Never deliberately block every lane alongside an existing traffic wall.
      const free=lanes.filter(x=>[...ordered,...this.users].every(other=>
        other.id===car.id||Math.abs(other.distance-car.distance)>28
        ||Math.abs(other.lateral-x)>(car.width+other.width)*.5+.5));
@@ -154,5 +228,5 @@ export class RaceTrafficWorld {
   return result;
  }
  inspect(){return {time:this.time,total:this.cars.length,active:this.cars.filter(c=>!c.finished).length,
-  finished:this.cars.filter(c=>c.finished).length,rows:this.cars.map(c=>({id:c.id,distance:c.distance,speed:c.speed,lateral:c.lateral,stationary:!!c.stationary,finished:c.finished}))};}
+  finished:this.cars.filter(c=>c.finished).length,rows:this.cars.map(c=>({id:c.id,distance:c.distance,speed:c.speed,lateral:c.lateral,targetLateral:c.targetLateral,blockedFor:c.blockedFor,reverseLeft:c.reverseLeft,escapeUntil:c.escapeUntil,stationary:!!c.stationary,finished:c.finished}))};}
 }

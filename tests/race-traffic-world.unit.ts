@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {RaceTrafficWorld,breakdownLaneLateral} from '../src/race-traffic-world';
+import {RaceTrafficWorld,breakdownLaneLateral,coastRaceCruise} from '../src/race-traffic-world';
 import {roadLaneCenters} from '../src/traffic-flow';
 import {rearImpactResponse} from '../src/arcade-contact';
 import {TrafficImpact} from '../src/traffic-impact';
@@ -82,5 +82,47 @@ describe('arcade rear impact momentum and sideslip',()=>{
   expect(rear.speed).toBeGreaterThan(front.speed);
   expect(Math.abs(frontImpact.velocity)).toBeGreaterThan(Math.abs(rearImpact.velocity));
   expect(rear.speed).toBeGreaterThan(45);
+ });
+});
+
+describe('Racing R0.2h continuous coast traffic',()=>{
+ it('uses world-distance arcade pace for a traffic average near 200 indicated km/h',()=>{
+  const speeds=Array.from({length:1200},(_,id)=>coastRaceCruise(804,id,id%4)*3.6/1.5);
+  const average=speeds.reduce((sum,s)=>sum+s,0)/speeds.length;
+  expect(average).toBeGreaterThan(185);
+  expect(average).toBeLessThan(220);
+  expect(speeds.some(speed=>speed<175)).toBe(true);
+  expect(speeds.some(speed=>speed>240)).toBe(true);
+ });
+ it('adds deterministic arrivals from the road start while a player remains nearby',()=>{
+  const player={id:-9999,distance:350,lateral:0,speed:0,width:2.3,length:4.9};
+  const worldA=new RaceTrafficWorld(fixture,42,10000,()=>8.75,dims,true);
+  const worldB=new RaceTrafficWorld(fixture,42,10000,()=>8.75,dims,true);
+  worldA.advance(45,[],player);worldB.advance(45,[],player);
+  expect(worldA.cars.length).toBeGreaterThan(fixture.length+4);
+  expect(worldA.cars.length).toBeLessThan(240);
+  expect(worldA.cars.some(car=>car.id>=2000000)).toBe(true);
+  expect(worldA.inspect()).toEqual(worldB.inspect());
+  // Once the last racer has cleared the entry corridor no new road traffic is necessary.
+  const count=worldA.cars.length;
+  worldA.advance(46,[],{...player,distance:2500});
+  worldA.advance(70,[],{...player,distance:2500});
+  expect(worldA.cars.length).toBe(count);
+ });
+ it('can initiate a reversible blocked-lane maneuver without teleporting',()=>{
+  const cars=roadLaneCenters(8.75).map((x,id)=>({
+   id:id+100,type:0,distance:560,speed:0,group:-1,stationary:true,stopLane:id,
+  }));
+  const follower={id:50,type:0,distance:544,speed:0,group:1,member:0};
+  const w=new RaceTrafficWorld([...cars,follower],23,10000,()=>8.75,dims,true);
+  w.adopt(50,544,0,0);w.get(50)!.targetLateral=0;
+  w.get(50)!.blockedFor=2.2;
+  const p={id:-9999,distance:350,lateral:-7,speed:0,width:2.3,length:4.9};
+  w.advance(.12,[],p);
+  expect(w.get(50)!.reverseLeft).toBeGreaterThan(0);
+  const before=w.get(50)!.distance;
+  w.advance(.5,[],p);
+  expect(w.get(50)!.distance).toBeLessThan(before);
+  expect(w.get(50)!.targetLateral).not.toBe(0);
  });
 });
