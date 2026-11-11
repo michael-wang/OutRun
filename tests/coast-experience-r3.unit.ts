@@ -88,17 +88,17 @@ it('keeps finish figures secondary, only when the driving session has completed'
  expect(css).not.toContain('#player-finish-stats{background:');
 });
 
-it('docks the completion UI in the right corner with a low-opacity, outlined HUD style',()=>{
+it('keeps the current eight-car results panel compact and off the main driving view',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
  const css=readFileSync(new URL('../src/style.css',import.meta.url),'utf8');
- const finish=css.slice(css.indexOf('/* Finish-only credits HUD:'));
- expect(main).toContain('panel.dataset.finished=String(brickCompleted)');
+ const board=css.slice(css.indexOf('/* One restrained results board:'));
+ expect(main).toContain('id="race-standings"');
+ expect(main).toContain('id="race-standings-list"');
  expect(main).toContain("panel.setAttribute('aria-label',brickCompleted?'旅程結算':'開始駕駛')");
- expect(finish).toContain('right:max(16px,env(safe-area-inset-right));');
- expect(finish).toContain('bottom:max(14px,env(safe-area-inset-bottom));');
- expect(finish).toContain('grid-template-columns:repeat(2,minmax(0,1fr));');
- expect(finish).toContain('background:#0b2c3440');
- expect(finish).toContain('border:1.5px solid #ffd69f');
- expect(finish).toContain('background:#ffd69f27');
- expect(finish).toContain('background:#0c303f4d');
+ expect(board).toContain('#race-standings');
+ expect(board).toContain('left:max(18px,env(safe-area-inset-left))');
+ expect(board).toContain('width:min(325px,37vw)');
+ expect(board).toContain('background:rgba(10,23,30,.84)');
+ expect(board).toContain('#race-standings[hidden]{display:none!important}');
+ expect(board).toContain('grid-template-columns:25px minmax(0,1fr) 73px');
 });
