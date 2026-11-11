@@ -340,7 +340,11 @@ let traffic=trip&&!roadLockMode?new Traffic(world.scene,world.sample,world.halfA
 const race=new RivalRace(chapterEnd(),d=>{
  const p=world.sample(d);
  return {curvature:p.curvature,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),half:world.halfAt(d)};
-},(d,time,radius)=>[...(traffic?.raceObstacles(d,time,radius)??[]),...(cones?.raceObstacles(d,radius)??[]),...(triangles?.raceObstacles(d,radius)??[])]);
+},(d,time,radius)=>{
+  // Only vehicles can block a rival's line. Cones and warning triangles are
+  // lightweight props, not reasons to brake or abandon an overtaking lane.
+  return traffic?.raceObstacles(d,time,radius)??[];
+ });
 race.reset(state.distance);
 const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,race.rivals);
 let rivalPassCount=0;
