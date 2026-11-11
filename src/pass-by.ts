@@ -23,7 +23,7 @@ export class PassBy {
   if(this.time!==undefined&&time<this.time)this.reset();const dt=this.time===undefined?0:time-this.time;this.time=time;
   if(collisionId!==undefined){this.played.add(collisionId);this.blockedUntil=time+.8;this.active.fill(undefined);this.voices.fill(undefined);}
   const ids=new Set(actors.map(a=>a.id));for(const id of this.previous.keys())if(!ids.has(id))this.previous.delete(id);for(const id of this.played)if(!ids.has(id)){this.played.delete(id);this.crossed.delete(id);}
-  let candidate:{actor:TrafficActor;rate:number;z:number;side:number}|undefined;
+  let candidate:{actor:PassActor;rate:number;z:number;side:number}|undefined;
   for(const a of actors){
    const z=a.distance-distance,old=this.previous.get(a.id),rate=old!==undefined&&dt>0?(z-old)/dt:0,side=a.lateral-lateral;
    this.previous.set(a.id,z);const width=a.rival?2.25:TRAFFIC_TYPES[a.type].width;
