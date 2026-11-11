@@ -6,7 +6,7 @@ import {TrafficLanes} from '../src/traffic-lanes';
 import {newTrafficSessionSeed,roadLaneCenters,plannedTrafficLane,plannedTrafficLateral,
  trafficCanEnter,trafficFollowingTarget,approachTrafficSpeed,trafficStopBeforeLeader,
  TRAFFIC_FLOW} from '../src/traffic-flow';
-import {breakdownLayout} from '../src/breakdowns';
+import {breakdownLayout,COAST_BREAKDOWN} from '../src/breakdowns';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack,pilotSample} from '../src/pilot-composer';
 
@@ -181,27 +181,36 @@ it('keeps a practical passing lane during three varied 10km encounter simulation
  }
 });
 
-it('places random roadside breakdowns on safe, visible parts of the real coast',()=>{
+it('places seeded breakdowns in any safe coastal lane, outside start and finish zones',()=>{
  const stage=COAST_ULTRA_STAGE,track=createPilotTrack(stage);
  const half=(d:number)=>pilotSample(stage,d).halfWidth;
  const layouts=[1473,9923,62018].map(salt=>
   breakdownLayout(track.sample,half,track.length,stage.seed^salt,true));
  expect(layouts.some(layout=>layout.length>0)).toBe(true);
  for(const layout of layouts)for(const site of layout){
-  expect(site.distance).toBeGreaterThan(2200); // keep opening vista intact
-  expect(site.distance).toBeLessThan(track.length-800);
+  expect(site.distance).toBeGreaterThanOrEqual(COAST_BREAKDOWN.startClearance);
+  expect(site.distance).toBeLessThan(track.length-COAST_BREAKDOWN.finishClearance);
   expect(Math.abs(track.sample(site.distance).right.y)).toBeLessThan(.15);
   expect(site.speed).toBe(0);
-  expect(Math.abs(site.stopSide)).toBe(1);
+  // stopSide remains metadata; stopLane, not side, chooses the actual lane.
+  const lanes=roadLaneCenters(half(site.distance));
+  expect(Number.isInteger(site.stopLane)).toBe(true);
+  expect(site.stopLane).toBeGreaterThanOrEqual(0);
+  expect(site.stopLane).toBeLessThan(lanes.length);
  }
  expect(new Set(layouts.map(x=>JSON.stringify(x))).size).toBeGreaterThan(1);
 });
 
-it('samples game-speed coastal traffic within pool capacity with near-route breakdowns',()=>{
+it('samples game-speed coastal traffic within pool capacity with seeded any-lane breakdowns',()=>{
  const breakdowns=breakdownLayout(sample,()=>8.75,10000,804^1473,true);
  expect(breakdowns.length).toBeGreaterThanOrEqual(1);
- expect(breakdowns.length).toBeLessThanOrEqual(3);
- expect(breakdowns.every(b=>b.distance>2200&&b.stopSide!==0)).toBe(true);
+ expect(breakdowns.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxCount);
+ expect(breakdowns.every(b=>
+  b.distance>=COAST_BREAKDOWN.startClearance
+  &&b.distance<10000-COAST_BREAKDOWN.finishClearance
+  &&Number.isInteger(b.stopLane)
+  &&b.stopLane>=0
+  &&b.stopLane<roadLaneCenters(8.75).length)).toBe(true);
  const traffic=new Traffic(new THREE.Scene(),sample,()=>8.75,10000,804,()=>true,breakdowns,undefined,true,false,false,1473);
  let count=0;
  for(let i=0;i<250;i++){
