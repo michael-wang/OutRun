@@ -564,9 +564,12 @@ export class Traffic {
   if(this.passedIds.has(id))this.retiredMotion.set(id,{distance,lateral:row.lateral,speed,time});
   else this.history.set(id,{distance,speed,time});
  }
- /** Course-wide traffic interactions persist regardless of observer distance. */
+ /** Course-wide traffic interactions persist regardless of observer distance.
+  * Read-only query: update() is the sole owner of simulation clock advancement.
+  * RivalRace decides using the BEGINNING of a physics tick, after Traffic.update
+  * has already advanced to the END of that tick. Advancing again here would
+  * rewind the clock and throw on the very first GO! frame. */
  raceObstacles(center:number,time:number,radius:number):Obstacle[]{
-  this.raceWorld.advance(time,this.rivalBodies(),this.playerSnapshot);
   const rows:Obstacle[]=this.raceWorld.obstacles(center,radius).map(a=>({
    id:'T'+a.id,type:a.type,distance:a.distance,lateral:a.lateral,speed:a.speed,
    width:a.width,length:a.length,

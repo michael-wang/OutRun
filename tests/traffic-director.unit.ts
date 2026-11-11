@@ -1,6 +1,7 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {Traffic,trafficRecipe,TRAFFIC_LIMIT,TRAFFIC_TYPES} from '../src/traffic';
+import {RivalRace} from '../src/rival-race';
 import {TrafficLanes} from '../src/traffic-lanes';
 import {newTrafficSessionSeed,roadLaneCenters,plannedTrafficLane,plannedTrafficLateral,
  trafficCanEnter,trafficFollowingTarget,approachTrafficSpeed,trafficStopBeforeLeader,
@@ -21,6 +22,28 @@ it('has denser but deterministic highway encounters without growing the render p
  expect(a[0].distance).toBeGreaterThanOrEqual(650);
  expect(TRAFFIC_LIMIT).toBe(12);
 });
+it('does not rewind full-course traffic during the first GO! physics frame',()=>{
+ const traffic=new Traffic(new THREE.Scene(),sample,()=>8.75,10000,804,()=>true,[],undefined,true,false,false,17);
+ const race=new RivalRace(10350,()=>({curvature:0,grade:0,half:8.75}),
+  (distance,time,radius)=>traffic.raceObstacles(distance,time,radius));
+ race.reset(350);
+ traffic.rivalLeaders=()=>race.rivals;
+ const player={distance:350,lateral:0,speed:0},dt=1/120;
+ traffic.update(0,350,0,0);
+ // This mirrors main.ts: traffic advances to elapsed+dt before the Rival AI
+ // queries its obstacles using race.time (the start of the SAME tick).
+ for(let frame=1;frame<=8;frame++){
+  const old={distance:player.distance,lateral:player.lateral};
+  player.speed+=.5;player.distance+=player.speed*dt;
+  traffic.update(frame*dt,player.distance,player.lateral,player.speed);
+  expect(()=>race.step(dt,player,old)).not.toThrow();
+  expect(traffic.inspectWorld().time).toBeCloseTo(frame*dt,6);
+ }
+ expect(race.time).toBeCloseTo(8*dt,6);
+ expect(race.rivals).toHaveLength(7);
+ traffic.dispose();
+});
+
 it('keeps whole-route moving traffic after player passes and beyond the render pool',()=>{
  const traffic=new Traffic(new THREE.Scene(),sample,()=>8.75,10000,804,()=>true,[],undefined,true,false,false,17);
  const total=trafficRecipe(804^17,10000).length;

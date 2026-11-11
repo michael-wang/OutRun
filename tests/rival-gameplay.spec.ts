@@ -37,6 +37,9 @@ test('grid holds all cars and accepts throttle; pause, replay and return reset t
  expect(wheels.every((w:any)=>w.front?w.angle===0:Math.abs(w.angle)>0)).toBe(true);
  await shot(page,'starting-grid');
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().speed)).toBeGreaterThan(14);
+ // Regression: GO must advance the actual race clock beyond its first tick.
+ // A second traffic-clock writer previously threw before 0.01 seconds.
+ await expect.poll(async()=> (await race(page)).time,{timeout:12000}).toBeGreaterThan(1);
  await shot(page,'coast-race');
  await page.keyboard.up('Space');
  await page.locator('#pause').tap();
