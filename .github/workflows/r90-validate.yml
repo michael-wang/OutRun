@@ -4,6 +4,8 @@ name: Validate OutRun
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
@@ -11,7 +13,7 @@ permissions:
 jobs:
   build-and-unit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       OUTRUN_SITE_BASE: /${{ github.event.repository.name }}/
     steps:
@@ -52,6 +54,13 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - name: Play the project site online and offline
         run: npx playwright test tests/pwa.spec.ts
+      - name: Public racing preflight — START, countdown pause, HUD and recovery
+        if: github.event_name == 'pull_request'
+        run: >-
+          npx playwright test
+          tests/race-start-desktop.spec.ts
+          tests/race-pause-and-tags.spec.ts
+          tests/race-recovery.spec.ts
       - name: Upload the approved branch's site
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
