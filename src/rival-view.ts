@@ -7,6 +7,7 @@ import {TireEffects,type TireContact} from './tire-effects';
 import type {RivalRace,RaceStanding} from './rival-race';
 import type {createTrack} from './track';
 import {chaseTargets} from './chase';
+import {mobileRivalPlatePlacement,MOBILE_RIVAL_PLATE_HEIGHT_PX,MOBILE_RIVAL_PLATE_WIDTH_PX,type RaceHudBounds} from './rival-tag-layout';
 
 function canopy(){
   // Beltline, window shoulders and crown follow a single longitudinal loft.
@@ -146,7 +147,7 @@ export class RivalView {
     scene.add(this.group);
     this.cars=race.rivals.map((r,i)=>{
       const car=carModel(this.assets,r.entry.paint,r.entry.name,i+1);car.root.name=r.entry.id;this.group.add(car.root);
-      return {...car,near:false,effects:new TireEffects(scene,'smoke',smoke)};
+      return {...car,near:false,markerDropPx:0,markerHiddenForHud:false,effects:new TireEffects(scene,'smoke',smoke)};
     });
   }
   inspectEffects(){return this.cars.map((car,i)=>({...car.effects.inspect(),skidDemand:this.race.rivals[i].slip,speed:this.race.rivals[i].speed}));}
@@ -156,6 +157,7 @@ export class RivalView {
     visible:car.root.visible&&car.label.visible,
     sizeAttenuation:(car.label.material as T.SpriteMaterial).sizeAttenuation,
     scale:car.label.scale.toArray(),canvasHeight:car.badgeCanvas.height,anchorHeight:car.label.position.y,
+    markerDropPx:car.markerDropPx,markerHiddenForHud:car.markerHiddenForHud,
   }));}
   /** Rank changes are checked at the existing 125ms race-HUD cadence.
    * Only repaint textures when a car's actual place changes. */
@@ -172,9 +174,11 @@ export class RivalView {
   }
   reset(){for(const car of this.cars)car.effects.clear();}
   dispose(){for(const car of this.cars){car.effects.dispose();const mat=car.label.material as T.SpriteMaterial;mat.map?.dispose();mat.dispose();}}
-  update(focus:number,time:number,countdown:boolean,observed:number,ready:(d:number)=>boolean,camera:T.PerspectiveCamera,viewportHeight:number){
+  update(focus:number,time:number,countdown:boolean,observed:number,ready:(d:number)=>boolean,camera:T.PerspectiveCamera,viewportHeight:number,mobileTags=false,hudBounds:RaceHudBounds|null=null){
     const pixelUnit=2*Math.tan(T.MathUtils.degToRad(camera.fov)*.5)/Math.max(1,viewportHeight);
-    const tagWidth=128*pixelUnit,tagHeight=86*pixelUnit;
+    const tagWidth=(mobileTags?MOBILE_RIVAL_PLATE_WIDTH_PX:128)*pixelUnit;
+    const tagHeight=(mobileTags?MOBILE_RIVAL_PLATE_HEIGHT_PX:86)*pixelUnit;
+    if(mobileTags)camera.updateMatrixWorld();
     this.race.rivals.forEach((r,i)=>{
       const car=this.cars[i],root=car.root,dist=Math.abs(r.distance-focus);
       const visible=dist<720&&ready(r.distance)&&r.finishTime===null;
@@ -186,6 +190,22 @@ export class RivalView {
       // are naturally frustum-culled and road geometry may occlude them.
       car.label.visible=observed!==i&&r.distance>=focus-2;
       car.label.scale.set(tagWidth,tagHeight,1);
+      car.label.position.y=1.84;car.label.center.set(.5,0);
+      car.markerDropPx=0;car.markerHiddenForHud=false;
+      if(mobileTags&&hudBounds&&car.label.visible){
+        // Sprite sizeAttenuation=false keeps the badge height in screen pixels.
+        const anchor=this.point.copy(root.position);anchor.y+=1.84;anchor.project(camera);
+        const screenX=(anchor.x+1)*.5*viewportHeight*camera.aspect;
+        const screenY=(1-anchor.y)*.5*viewportHeight;
+        const placement=mobileRivalPlatePlacement(screenX,screenY,hudBounds);
+        car.markerDropPx=placement.downPx;car.markerHiddenForHud=!placement.visible;
+        if(!placement.visible)car.label.visible=false;
+        else if(placement.downPx>0){
+          // Adjust sprite center in screen space: its real 3D depth stays anchored
+          // above the car, so terrain never clips a HUD-avoidance adjustment.
+          car.label.center.y=placement.downPx/MOBILE_RIVAL_PLATE_HEIGHT_PX;
+        }
+      }
       if(dist<125||!car.wheels.userData.placed){
         car.wheels.userData.placed=true;
         const rotation=wheelRoll(0,r.distance),burn=wheelRoll(0,Math.min(3,time)*16);

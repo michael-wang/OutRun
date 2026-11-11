@@ -777,3 +777,10 @@ html[data-input-mode="touch"] #touch.race-tutorial :is(#steering-strip,button[da
 @media (pointer:coarse) and (orientation:portrait){#race-ready{display:none!important}}
 @media (max-height:390px){#race-ready .race-ready-center{top:35%}#race-start{min-height:48px;font-size:27px}}
 @media (prefers-reduced-motion:reduce){#race-start::before{animation:none;opacity:.85}}
+
+/* An arcade pause freezes the visible race, not just the physics clock.
+ * Keep the number, HUD and tutorial in place behind the small pause dock. */
+html[data-player-ui="true"][data-drive-mode="paused"][data-race-paused-phase] header{display:flex}
+html[data-race-paused-phase="countdown"] #touch.race-tutorial .control-cue{
+ animation-play-state:paused;
+}
