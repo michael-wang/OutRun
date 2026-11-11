@@ -33,6 +33,7 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Verify unique stable release identity
+        if: github.event_name == 'push'
         uses: actions/github-script@v7
         with:
           script: |
