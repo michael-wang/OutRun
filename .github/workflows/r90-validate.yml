@@ -66,6 +66,9 @@ jobs:
         run: npx playwright test tests/pwa.spec.ts
       - name: Public racing preflight — START, countdown pause, HUD and recovery
         if: github.event_name == 'pull_request'
+        env:
+          OUTRUN_SITE_BASE: ''
+          OUTRUN_PREFLIGHT: '1'
         run: >-
           npx playwright test
           tests/race-start-desktop.spec.ts

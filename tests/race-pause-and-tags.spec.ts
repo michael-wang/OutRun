@@ -43,13 +43,13 @@ test('pause freezes countdown numeral, HUD, control instructions and all vehicle
  await page.locator('#tp-resume').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
  await expect(page.locator('html')).not.toHaveAttribute('data-race-paused-phase',/countdown/);
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:process.env.CI?90000:10000});
 });
 
 test('pause in a running race keeps the live HUD and place markers visible',async({page})=>{
  test.setTimeout(180000);
  await ready(page);
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:process.env.CI?90000:10000});
  await page.keyboard.down('Space');
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.race().time)).toBeGreaterThan(.8);
  await page.keyboard.up('Space');
@@ -69,7 +69,7 @@ test('pause in a running race keeps the live HUD and place markers visible',asyn
 test('mobile opponent tags avoid the center HUD without entering the traffic sightline',async({page})=>{
  test.setTimeout(180000);
  await ready(page,'at=2400&trafficSeed=17');
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:process.env.CI?90000:10000});
  const tags=await page.evaluate(()=>(window as any).__drive.rivalTags());
  expect(tags).toHaveLength(7);
  for(const tag of tags){

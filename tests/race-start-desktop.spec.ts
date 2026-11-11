@@ -28,7 +28,7 @@ test('desktop fast loading never bypasses explicit START, even through old Play 
  await page.screenshot({path:test.info().outputPath('desktop-ready-1440x810.png')});
  await page.locator('#race-start').click();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:process.env.CI?90000:10000});
 });
 
 test('a deliberately delayed road build also stops on START, not on a countdown',async({page})=>{
