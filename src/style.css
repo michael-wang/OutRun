@@ -764,15 +764,24 @@ html[data-input-mode="touch"] #touch.race-tutorial :is(#steering-strip,button[da
 #touch [data-control="brake"]{--touch-cue:#ff967f}
 .control-cue{display:none}
 #touch.race-tutorial .control-cue{
- display:block;position:absolute;inset:3px 0 auto;pointer-events:none;text-align:center;
- font:800 13px/15px system-ui,"Microsoft JhengHei",sans-serif;letter-spacing:.08em;
- color:var(--touch-cue);text-shadow:0 1px 3px #13171c,0 0 2px #13171c;
+ display:block;position:absolute;top:50%;right:calc(100% + 10px);width:max-content;
+ translate:0 -50%;transform-origin:right center;pointer-events:none;
+ font:900 clamp(28px,4.6vw,46px)/1 system-ui,"Microsoft JhengHei",sans-serif;
+ color:var(--touch-cue);-webkit-text-stroke:3px #211c22;paint-order:stroke fill;
+ text-shadow:0 3px 0 #211c22,0 4px 6px #151019b3;
 }
-#touch.race-tutorial .pedal-symbol{translate:0 5px}
-#touch.race-tutorial .steer-directions{top:calc(50% + 4px)}
+/* Grow inward from the control edge, including in the left-handed layout. */
+#touch.race-tutorial:not(.swapped) #steering-strip .control-cue,
+#touch.race-tutorial.swapped .pedals .control-cue{
+ left:calc(100% + 10px);right:auto;transform-origin:left center;
+}
 @media (prefers-reduced-motion:no-preference){
- #touch.race-tutorial .control-cue{animation:control-cue-pulse 1.5s ease-in-out infinite alternate}
- @keyframes control-cue-pulse{from{opacity:1}to{opacity:.68}}
+ #touch.race-tutorial .control-cue{animation:control-cue-pulse 1s ease-in-out infinite}
+ @keyframes control-cue-pulse{
+  0%,100%{transform:scale(.92);opacity:.78}
+  35%{transform:scale(1.22);opacity:1}
+  65%{transform:scale(1);opacity:1}
+ }
 }
 @media (pointer:coarse) and (orientation:portrait){#race-ready{display:none!important}}
 @media (max-height:390px){#race-ready .race-ready-center{top:35%}#race-start{min-height:48px;font-size:27px}}

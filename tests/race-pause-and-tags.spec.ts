@@ -53,10 +53,15 @@ test('pause in a running race keeps the live HUD and place markers visible',asyn
  await page.keyboard.down('Space');
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.race().time)).toBeGreaterThan(.8);
  await page.keyboard.up('Space');
- const rank=await page.locator('#race-position').textContent();
+ const hud=page.locator('#race-position');
+ const rank=await hud.locator('.race-hud-rank').innerText();
  await page.locator('#pause').tap();
- await expect(page.locator('#race-position')).toBeVisible();
- expect(await page.locator('#race-position').textContent()).toBe(rank);
+ await expect(page.locator('html')).toHaveAttribute('data-race-paused-phase','playing');
+ await expect(hud).toBeVisible();
+ expect(await hud.locator('.race-hud-rank').innerText()).toBe(rank);
+ const frozenHud=await hud.innerText();
+ await page.waitForTimeout(350);
+ expect(await hud.innerText()).toBe(frozenHud);
  expect(await page.locator('#trip-pause-dock').isVisible()).toBe(true);
  await page.screenshot({path:test.info().outputPath('driving-paused-hud-intact.png')});
 });

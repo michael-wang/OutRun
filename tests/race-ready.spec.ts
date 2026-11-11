@@ -24,6 +24,29 @@ async function expectTouchCues(page:Page,highlighted:boolean){
   await expect(page.locator(`[data-control="${control}"] svg`)).toBeVisible();
  }
 }
+async function expectProminentPulse(page:Page){
+ const labels=await page.locator('.control-cue').evaluateAll(nodes=>nodes.map(node=>{
+  const animation=node.getAnimations()[0];
+  const duration=Number(animation.effect!.getTiming().duration);
+  animation.pause();
+  animation.currentTime=0;
+  const rest=node.getBoundingClientRect().width;
+  animation.currentTime=duration*.35;
+  const peak=node.getBoundingClientRect();
+  const control=node.parentElement!.getBoundingClientRect();
+  const leftSide=control.left<innerWidth/2;
+  const result={growth:peak.width/rest,height:peak.height,
+   inward:leftSide?peak.left>=control.right:peak.right<=control.left,
+   onScreen:peak.left>=0&&peak.right<=innerWidth&&peak.top>=0&&peak.bottom<=innerHeight};
+  animation.play();
+  return result;
+ }));
+ for(const label of labels){
+  expect(label.growth).toBeGreaterThan(1.25);
+  expect(label.height).toBeGreaterThan(32);
+  expect(label.inward&&label.onScreen).toBe(true);
+ }
+}
 test('START pulses on the stationary grid and touch outlines last until GO',async({page})=>{
  test.setTimeout(180000);
  await enterReady(page);
@@ -35,6 +58,7 @@ test('START pulses on the stationary grid and touch outlines last until GO',asyn
  expect(before.clock).toBe(0);
  expect(await page.locator('#touch').getAttribute('inert')).not.toBeNull();
  await expectTouchCues(page,true);
+ await expectProminentPulse(page);
  await expect(page.locator('#race-ready')).toHaveText('START ▶');
  await expect(page.locator('[data-control=gas]')).toHaveAttribute('aria-label','油門');
  expect(await page.locator('#race-start').evaluate(el=>getComputedStyle(el,'::before').animationName)).toBe('race-start-pulse');
@@ -79,6 +103,7 @@ test('keyboard Enter begins countdown and remapped hints follow their control',a
  await enterReady(page);
  await expect(page.locator('#touch')).toHaveClass(/swapped/);
  await expectTouchCues(page,true);
+ await expectProminentPulse(page);
  const gas=await page.locator('[data-control=gas]').boundingBox();
  const steering=await page.locator('#steering-strip').boundingBox();
  expect(gas!.x+gas!.width).toBeLessThan(steering!.x);

@@ -344,7 +344,13 @@ let pausedRacePhase:'countdown'|'playing'|null=null;
 const isFrozenCountdown=()=>mode==='paused'&&pausedRacePhase==='countdown';
 const raceOverlayActive=()=>!brickCompleted&&
  (mode==='countdown'||mode==='playing'||mode==='paused'&&pausedRacePhase!==null);
-function rememberRacePhase(){if(mode==='countdown'||mode==='playing')pausedRacePhase=mode;}
+function rememberRacePhase(){
+ if(mode!=='countdown'&&mode!=='playing')return;
+ pausedRacePhase=mode;
+ // Capture the final race time immediately, even between scheduled HUD updates.
+ nextRaceHud=0;
+ raceHud();
+}
 let settingsOpen=false; let muted=false; let manual=false;
 let sceneInspector:SceneInspector|undefined;
 let tripPauseDock:TripPauseDock|undefined;
@@ -872,9 +878,10 @@ function advance(dt:number,override?:InputState){
     state.rpm+=((throttle?4900:1000)-state.rpm)*(1-Math.exp(-dt*6));state.launchSlip=throttle?1:0;
     world.car.userData.motion.advance(0,0,dt,0,state.launchSlip,0);
     sound.update(0,0,throttle,dt,state);
-    countdown=Math.max(0,countdown-dt);
+    countdown-=dt;
+    if(countdown<=1e-6)countdown=0;
     startSignals.advance(countdown,cue=>sound.raceStartCue(cue));
-    if(countdown<=1e-6){countdown=0;mode='playing';if(fpsTestRequested){fpsTestRequested=false;driveFpsDiagnostics.startWindow();}ui();}
+    if(countdown===0){mode='playing';if(fpsTestRequested){fpsTestRequested=false;driveFpsDiagnostics.startWindow();}ui();}
     return;
   }
   if(brickCompleted){
