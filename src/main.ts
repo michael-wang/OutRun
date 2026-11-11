@@ -119,6 +119,15 @@ const momentCandidate={...L2_CANDIDATES[0],...(brick??{}),id:brick?.id??'FREE-DR
 let labUI:ReturnType<typeof mountBrickLab>|undefined,l2UI:ReturnType<typeof mountL2Lab>|undefined,brickCompleted=false;
 
 const entrantCount=1+raceEntries.length;
+// Draw the same scale on each half of the absolute-position steering control.
+const steeringChevrons = `
+  <path class="inner" d="M8 10h3l5 6-5 6H8l5-6z"/>
+  <path class="middle" d="M23 6h5l8 10-8 10h-5l8-10z"/>
+  <path class="outer" d="M42 1h7l12 15-12 15h-7l12-15z"/>`;
+const pedalIcon = `<svg class="pedal-symbol" viewBox="0 0 40 32" aria-hidden="true" focusable="false">
+  <path d="M3 18 18 3h4l15 15H26l-6-6-6 6z"/>
+  <path class="pedal-tail" d="M10 28 20 18l10 10h-8l-2-2-2 2z"/>
+</svg>`;
 document.querySelector('#app')!.innerHTML = `
 <div id="view"></div>
 <div id="race-position" aria-label="比賽進度" hidden>
@@ -143,10 +152,7 @@ document.querySelector('#app')!.innerHTML = `
 <div id="qa-tools" aria-label="測試工具列"><button id="photo-button" aria-label="截圖" data-key-hint="F8" data-pad-hint="TOUCHPAD" hidden>📷 截圖</button></div><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
 <section id="race-ready" aria-label="準備起跑" hidden>
  <div class="race-ready-center">
-  <span class="race-ready-eyebrow">COAST HIGHWAY · READY TO RACE</span>
   <button id="race-start" type="button" aria-label="START，開始三秒起跑倒數">START <span aria-hidden="true">▶</span></button>
-  <span class="race-ready-keyboard">A / D 方向 · SPACE 油門 · ENTER 煞車</span>
-  <span class="race-ready-gamepad">左搖桿 方向 · R2 油門 · L2 煞車 · ✕ START</span>
  </div>
 </section>
 <section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>${designerMode?'Grand Canyon<br>Designer’s Cut':'Take the<br>coast road.'}</h1><p>${designerMode?'手工設計的峽谷公路。沿著道路親自看見河灣。':'Steer through the bends. Lift or brake to find your line.'}</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
@@ -154,13 +160,17 @@ document.querySelector('#app')!.innerHTML = `
 <section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><label id="car-paint-setting" for="car-paint"><span>車身顏色</span><select id="car-paint" aria-label="車身顏色">${CAR_COLORS.map(color=>`<option value="${color}">${CAR_PAINT_PRESETS[color].label}</option>`).join('')}</select></label><div id="car-paint-list" role="listbox" aria-label="車身顏色" hidden>${CAR_COLORS.map(color=>`<button type="button" role="option" data-paint="${color}" aria-selected="false">${CAR_PAINT_PRESETS[color].label}</button>`).join('')}</div><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
 <div id="touch">
  <div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-keyshortcuts="A D" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0">
-  <span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span>
-  <span class="steer-directions" aria-hidden="true"><span>&lt;</span><span>&gt;</span></span>
+  <svg class="steer-directions" viewBox="-66 0 132 32" aria-hidden="true" focusable="false">
+   <g class="steer-left" transform="scale(-1 1)">${steeringChevrons}</g>
+   <path class="steer-neutral" d="m0 12 2.5 4L0 20l-2.5-4z"/>
+   <g class="steer-right">${steeringChevrons}</g>
+  </svg>
+  <i class="steer-cursor" aria-hidden="true"></i>
   <span class="steer-keys" aria-hidden="true"><kbd>A</kbd><kbd>D</kbd></span>
  </div>
  <div class="pedals">
-  <button data-control="gas" aria-label="${playerUi?'油門':'Gas'}" data-pad-hint="R2" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space"><span class="pedal-symbol" aria-hidden="true">^</span></button>
-  <button data-control="brake" aria-label="${playerUi?'煞車':'Brake'}" data-pad-hint="L2" data-key-hint="ENTER" aria-keyshortcuts="Enter"><span class="pedal-symbol" aria-hidden="true">v</span></button>
+  <button data-control="gas" aria-label="${playerUi?'油門':'Gas'}" data-pad-hint="R2" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space">${pedalIcon}</button>
+  <button data-control="brake" aria-label="${playerUi?'煞車':'Brake'}" data-pad-hint="L2" data-key-hint="ENTER" aria-keyshortcuts="Enter">${pedalIcon}</button>
  </div>
 </div>
 <div id="rotate">

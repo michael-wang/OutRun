@@ -27,20 +27,15 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
 @media(pointer:coarse),(max-width:1000px){header nav{margin-left:0;margin-right:auto}#immersive-note{top:70px}}
 /* v0.4.1: one absolute-position strip, shared with the keyboard virtual wheel. */
 #touch.active{display:flex}#steering-strip{--steer:0;position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px;width:clamp(260px,35vw,400px);height:88px;padding:12px 16px;border:1px solid #f4e4b69c;border-radius:12px;background:#153e45dc;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-.steer-label{font-size:11px;font-weight:700;letter-spacing:3px;text-align:center;color:#ffe2ad}.steer-hint{font-size:8px;letter-spacing:1px;text-align:center;color:#c0d7d3}.steer-rail{position:absolute;left:0;right:0;top:42px;height:3px;background:linear-gradient(90deg,#d4b58466,#fff4d5,#d4b58466);pointer-events:none}.steer-center{position:absolute;left:50%;top:-8px;width:2px;height:19px;background:#fff6dc}.steer-cursor{position:absolute;left:clamp(8px,calc(50% + var(--steer)*50%),calc(100% - 8px));top:-11px;width:16px;height:25px;border-radius:5px;background:#ffd18b;box-shadow:0 0 10px #ffc98055;transform:translateX(-50%)}.steer-label{margin-bottom:15px}.steer-hint{margin-top:5px}
-@media(pointer:fine) and (min-width:1001px){#steering-strip{width:280px;height:74px;opacity:.85}.steer-rail{top:36px}.steer-hint{font-size:7px}}
-@media(max-width:880px){#steering-strip{width:34vw;min-width:250px;height:80px}.steer-rail{top:38px}}
+@media(pointer:fine) and (min-width:1001px){#steering-strip{width:280px;height:74px;opacity:.85}}
+@media(max-width:880px){#steering-strip{width:34vw;min-width:250px;height:80px}}
 
 
 
 @media(pointer:coarse),(max-width:1000px){#immersive-note{left:auto;right:max(24px,env(safe-area-inset-right));top:16px;max-width:220px}}
 
-/* Continuous finger position plus a separate effective-notch pip. */
-.steer-rail:after{content:'';position:absolute;left:clamp(8px,calc(50% + var(--effective-steer,0)*50%),calc(100% - 8px));top:15px;width:5px;height:5px;background:#fff5d8;border-radius:50%;transform:translateX(-50%)}
 /* v0.7C.1: the whole capture area is the actual short-travel steering range. */
 #steering-strip{width:min(144px,32vw);min-width:0;height:88px;padding:10px 8px}
-#steering-strip .steer-label{font-size:10px;letter-spacing:.5px;white-space:nowrap}
-#steering-strip .steer-hint{font-size:7px;letter-spacing:0;white-space:nowrap}
 @media(max-width:880px){#steering-strip{width:min(144px,32vw);min-width:0;height:80px}}
 
 
@@ -48,7 +43,7 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
 @media(pointer:coarse),(max-width:1000px){
 
 
- #steering-strip{height:52px;padding:0 8px}#steering-strip .steer-rail{top:50%}
+ #steering-strip{height:52px;padding:0 8px}
 }
 
 #gamepad-status{position:fixed;right:12px;bottom:8px;z-index:25;background:#123e43dd;border-radius:5px;padding:4px 8px;color:#fff;font:11px sans-serif;pointer-events:none} a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffe5a2;outline-offset:3px}
@@ -718,7 +713,6 @@ html[data-player-ui="true"] #drive-hud{display:none!important}
 #race-ready{position:fixed;inset:0;z-index:45;pointer-events:none;font-family:Arial,"Microsoft JhengHei",sans-serif}
 #race-ready[hidden]{display:none!important}
 #race-ready .race-ready-center{position:absolute;top:37%;left:50%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:8px;width:max-content;max-width:86vw;text-align:center;pointer-events:none}
-#race-ready .race-ready-eyebrow{font:italic 800 clamp(9px,1vw,12px)/1.2 Arial,sans-serif;letter-spacing:.16em;color:#ffe1b6;text-shadow:0 2px 7px #12151b}
 #race-start{position:relative;pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:24px;min-width:clamp(186px,22vw,245px);min-height:58px;border:1px solid #ffd8a4;border-radius:3px;padding:9px 23px 10px;background:#ff8d68;color:#27202a;font:italic 950 clamp(28px,3vw,37px)/1 "Arial Black",Arial,sans-serif;letter-spacing:.035em;box-shadow:0 8px 0 #803f37,0 17px 35px #090b12a6;cursor:pointer}
 #race-start span{font:normal 900 16px/1 Arial,sans-serif}
 #race-start:focus-visible{outline:3px solid #fff4c7;outline-offset:5px}
@@ -732,15 +726,35 @@ html[data-player-ui="true"] #drive-hud{display:none!important}
  85%,100%{transform:scale(1.09,1.26);opacity:0}
 }
 #race-start:active::before{visibility:hidden}
-#race-ready .race-ready-keyboard,#race-ready .race-ready-gamepad{display:none;max-width:85vw;font:700 11px/1.4 system-ui,sans-serif;letter-spacing:.03em;color:#fce8ce;text-shadow:0 1px 5px #080a0d}
-html[data-input-mode="keyboard"] #race-ready .race-ready-keyboard{display:block}
-html[data-input-mode="gamepad"] #race-ready .race-ready-gamepad{display:block}
+/* The chevrons grow toward full lock. Light the matching side from the
+ * neutral diamond outward using the same effective input as the car. */
 #touch .steer-directions{
- position:absolute;left:14%;right:14%;bottom:calc(50% + 2px);
- display:flex;justify-content:space-between;pointer-events:none;
- font:800 17px/1 monospace;color:#ffedcd;text-shadow:0 1px 3px #18151b;
+ position:absolute;left:4%;top:50%;width:92%;height:auto;transform:translateY(-50%);
+ pointer-events:none;fill:#fff0d3;stroke:#352a28;stroke-width:1.5;paint-order:stroke fill;
 }
-#touch .pedal-symbol{display:inline-block;vertical-align:middle;pointer-events:none;font:800 24px/1 monospace}
+.steer-left{--amount:calc(-1 * var(--effective-steer,0))}
+.steer-right{--amount:var(--effective-steer,0)}
+.steer-directions g path{
+ fill:color-mix(in srgb,#f8e5c7,#ffb64d clamp(0%,calc((var(--amount) - var(--threshold)) * 500%),100%));
+}
+.steer-directions .inner{--threshold:0;opacity:.78}
+.steer-directions .middle{--threshold:.3;opacity:.9}
+.steer-directions .outer{--threshold:.65}
+.steer-cursor{
+ position:absolute;bottom:3px;left:clamp(6px,calc(50% + var(--steer)*50%),calc(100% - 6px));
+ transform:translateX(-50%);border-inline:4px solid transparent;border-bottom:5px solid #ffc76f;
+ pointer-events:none;visibility:hidden;
+}
+#steering-strip.pressed .steer-cursor{visibility:visible}
+#touch .pedals button{position:relative;display:grid;place-items:center}
+#touch .pedal-symbol{width:38px;height:30px;pointer-events:none;fill:#fff1d9;stroke:#302b2a;stroke-width:1.4;paint-order:stroke fill}
+#touch [data-control="brake"] .pedal-symbol{transform:rotate(180deg)}
+#touch .pedal-tail{fill:var(--touch-cue)}
+#touch .pressed .pedal-symbol{fill:var(--touch-cue)}
+#app #touch .pedals button::after{
+ position:absolute;right:5px;bottom:3px;min-width:0;margin:0;padding:0 2px;
+ font-size:9px;line-height:11px;font-weight:650;border:0;background:none;color:#e9e3d8;
+}
 html[data-input-mode="touch"] #touch.race-tutorial :is(#steering-strip,button[data-control]){
  outline:2px solid var(--touch-cue);outline-offset:-2px;
  box-shadow:inset 0 0 0 4px #201c20a6;

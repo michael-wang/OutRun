@@ -14,8 +14,10 @@ async function expectTouchCues(page:Page,highlighted:boolean){
  const controls=page.locator('#steering-strip, #touch button[data-control]');
  const outlines=await controls.evaluateAll(nodes=>nodes.map(el=>getComputedStyle(el).outlineStyle));
  expect(outlines).toEqual(Array(3).fill(highlighted?'solid':'none'));
- await expect(page.locator('.steer-directions span')).toHaveText(['<','>']);
- await expect(page.locator('.pedal-symbol')).toHaveText(['^','v']);
+ await expect(page.locator('.steer-directions')).toBeVisible();
+ for(const control of ['gas','brake']){
+  await expect(page.locator(`[data-control="${control}"] svg`)).toBeVisible();
+ }
 }
 test('START pulses on the stationary grid and touch outlines last until GO',async({page})=>{
  test.setTimeout(180000);
@@ -28,6 +30,7 @@ test('START pulses on the stationary grid and touch outlines last until GO',asyn
  expect(before.clock).toBe(0);
  expect(await page.locator('#touch').getAttribute('inert')).not.toBeNull();
  await expectTouchCues(page,true);
+ await expect(page.locator('#race-ready')).toHaveText('START ▶');
  await expect(page.locator('[data-control=gas]')).toHaveAttribute('aria-label','油門');
  expect(await page.locator('#race-start').evaluate(el=>getComputedStyle(el,'::before').animationName)).toBe('race-start-pulse');
  await page.screenshot({path:test.info().outputPath('ready-to-race-915x412.png')});
@@ -49,6 +52,22 @@ test('START pulses on the stationary grid and touch outlines last until GO',asyn
  await page.screenshot({path:test.info().outputPath('driving-915x412.png')});
  const cues=await page.evaluate(()=>(window as any).__drive.snapshot().audio.raceStartCues);
  expect(cues).toEqual([3,2,1,'GO']);
+ const strip=page.getByRole('slider',{name:'方向盤'});
+ const box=(await strip.boundingBox())!;
+ const session=await page.context().newCDPSession(page);
+ for(const [index,position] of [0.35,0.02,0.65,0.98].entries()){
+  await session.send('Input.dispatchTouchEvent',{type:index===0?'touchStart':'touchMove',
+   touchPoints:[{x:box.x+box.width*position,y:box.y+box.height/2}]});
+  const direction=position<0.5?'Left':'Right';
+  const strong=position<0.1||position>0.9;
+  await expect(strip).toHaveAttribute('aria-valuetext',`${direction} ${strong?4:1} of 4`);
+  const [left,right]=await strip.locator('g .outer').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).fill));
+  expect(left===right).toBe(!strong);
+ }
+ await page.screenshot({path:test.info().outputPath('steering-full-right.png')});
+ await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+ await expect(strip).toHaveAttribute('aria-valuetext','Neutral');
+ await session.detach();
 });
 test('keyboard Enter begins countdown and remapped hints follow their control',async({page})=>{
  await page.addInitScript(()=>localStorage.setItem('first-drive-controls-swapped','true'));
@@ -87,9 +106,22 @@ test('PS4 Cross confirms START without using throttle or a second focus click',a
   (window as any).__readyPad=pad;
  });
  await enterReady(page);
+ await page.setViewportSize({width:1440,height:810});
  await page.locator('#race-start').focus();
  // Allow the first gamepad poll to observe the neutral Cross button.
  await page.waitForTimeout(120);
+ await page.evaluate(()=>{(window as any).__readyPad.axes[0]=0.4;});
+ await expect(page.locator('html')).toHaveAttribute('data-input-mode','gamepad');
+ await expect(page.locator('#race-ready')).toHaveText('START ▶');
+ for(const control of ['gas','brake']){
+  const sizes=await page.locator(`[data-control="${control}"]`).evaluate(button=>{
+   const badge=getComputedStyle(button,'::after');
+   return {hint:badge.content,font:parseFloat(badge.fontSize),icon:button.querySelector('svg')!.getBoundingClientRect().height};
+  });
+  expect(sizes.hint).toBe(control==='gas'?'"R2"':'"L2"');
+  expect(sizes.icon).toBeGreaterThan(sizes.font*3);
+ }
+ await page.screenshot({path:test.info().outputPath('gamepad-grid-1440x810.png')});
  await page.evaluate(()=>{
   (window as any).__readyPad.buttons[0]={pressed:true,value:1,touched:true};
  });
