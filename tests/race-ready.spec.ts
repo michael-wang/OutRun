@@ -10,7 +10,14 @@ async function enterReady(page:Page){
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready');
  await expect(page.locator('#race-start')).toBeVisible();
 }
-test('loaded course waits indefinitely until START, with instructions beside real controls',async({page})=>{
+async function expectTouchCues(page:Page,highlighted:boolean){
+ const controls=page.locator('#steering-strip, #touch button[data-control]');
+ const outlines=await controls.evaluateAll(nodes=>nodes.map(el=>getComputedStyle(el).outlineStyle));
+ expect(outlines).toEqual(Array(3).fill(highlighted?'solid':'none'));
+ await expect(page.locator('.steer-directions span')).toHaveText(['<','>']);
+ await expect(page.locator('.pedal-symbol')).toHaveText(['^','v']);
+}
+test('START pulses on the stationary grid and touch outlines last until GO',async({page})=>{
  test.setTimeout(180000);
  await enterReady(page);
  const before=await page.evaluate(()=>{
@@ -20,8 +27,9 @@ test('loaded course waits indefinitely until START, with instructions beside rea
  });
  expect(before.clock).toBe(0);
  expect(await page.locator('#touch').getAttribute('inert')).not.toBeNull();
- await expect(page.locator('.race-control-tip-steering')).toBeVisible();
- await expect(page.locator('.race-control-tip-pedals')).toBeVisible();
+ await expectTouchCues(page,true);
+ await expect(page.locator('[data-control=gas]')).toHaveAttribute('aria-label','油門');
+ expect(await page.locator('#race-start').evaluate(el=>getComputedStyle(el,'::before').animationName)).toBe('race-start-pulse');
  await page.screenshot({path:test.info().outputPath('ready-to-race-915x412.png')});
  await page.waitForTimeout(2200);
  await page.keyboard.press('Space');
@@ -34,9 +42,11 @@ test('loaded course waits indefinitely until START, with instructions beside rea
  await page.locator('#race-start').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
  await expect(page.locator('#race-ready')).toBeHidden();
- await expect(page.locator('.race-control-tip-steering')).toBeHidden();
- await expect(page.locator('.race-control-tip-pedals')).toBeHidden();
+ await expectTouchCues(page,true);
+ await page.screenshot({path:test.info().outputPath('countdown-915x412.png')});
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
+ await expectTouchCues(page,false);
+ await page.screenshot({path:test.info().outputPath('driving-915x412.png')});
  const cues=await page.evaluate(()=>(window as any).__drive.snapshot().audio.raceStartCues);
  expect(cues).toEqual([3,2,1,'GO']);
 });
@@ -44,10 +54,12 @@ test('keyboard Enter begins countdown and remapped hints follow their control',a
  await page.addInitScript(()=>localStorage.setItem('first-drive-controls-swapped','true'));
  await enterReady(page);
  await expect(page.locator('#touch')).toHaveClass(/swapped/);
- const pedalHelp=await page.locator('.race-control-tip-pedals').boundingBox();
- const steerHelp=await page.locator('.race-control-tip-steering').boundingBox();
- expect(pedalHelp&&steerHelp).toBeTruthy();
- expect(pedalHelp!.x).toBeLessThan(steerHelp!.x);
+ await expectTouchCues(page,true);
+ const gas=await page.locator('[data-control=gas]').boundingBox();
+ const steering=await page.locator('#steering-strip').boundingBox();
+ expect(gas!.x+gas!.width).toBeLessThan(steering!.x);
+ await page.emulateMedia({reducedMotion:'reduce'});
+ expect(await page.locator('#race-start').evaluate(el=>getComputedStyle(el,'::before').animationName)).toBe('none');
  await page.keyboard.press('Enter');
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
 });

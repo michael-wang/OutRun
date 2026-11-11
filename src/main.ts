@@ -152,7 +152,17 @@ document.querySelector('#app')!.innerHTML = `
 <section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>${designerMode?'Grand Canyon<br>Designer’s Cut':'Take the<br>coast road.'}</h1><p>${designerMode?'手工設計的峽谷公路。沿著道路親自看見河灣。':'Steer through the bends. Lift or brake to find your line.'}</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div><p id="iphone-fullscreen-hint" role="status" hidden>On iPhone, open this site in Safari. Tap Share → Add to Home Screen, then launch the icon to hide Safari browser bars. Rotate the phone to landscape to drive.</p></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><label id="car-paint-setting" for="car-paint"><span>車身顏色</span><select id="car-paint" aria-label="車身顏色">${CAR_COLORS.map(color=>`<option value="${color}">${CAR_PAINT_PRESETS[color].label}</option>`).join('')}</select></label><div id="car-paint-list" role="listbox" aria-label="車身顏色" hidden>${CAR_COLORS.map(color=>`<button type="button" role="option" data-paint="${color}" aria-selected="false">${CAR_PAINT_PRESETS[color].label}</button>`).join('')}</div><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
-<div id="touch"><div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-keyshortcuts="A D" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0"><span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span><span class="steer-keys" aria-hidden="true"><kbd>A</kbd><kbd>D</kbd></span></div><div class="pedals"><button data-control="gas" data-pad-hint="R2" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space">${playerUi?'油門':'GAS'}</button><button data-control="brake" data-pad-hint="L2" data-key-hint="ENTER" aria-keyshortcuts="Enter">${playerUi?'煞車':'BRAKE'}</button></div></div>
+<div id="touch">
+ <div id="steering-strip" class="steering" role="slider" tabindex="0" aria-label="${playerUi?'方向盤':'Steering position'}" aria-keyshortcuts="A D" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0">
+  <span class="steer-rail"><i class="steer-center"></i><i class="steer-cursor"></i></span>
+  <span class="steer-directions" aria-hidden="true"><span>&lt;</span><span>&gt;</span></span>
+  <span class="steer-keys" aria-hidden="true"><kbd>A</kbd><kbd>D</kbd></span>
+ </div>
+ <div class="pedals">
+  <button data-control="gas" aria-label="${playerUi?'油門':'Gas'}" data-pad-hint="R2" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space"><span class="pedal-symbol" aria-hidden="true">^</span></button>
+  <button data-control="brake" aria-label="${playerUi?'煞車':'Brake'}" data-pad-hint="L2" data-key-hint="ENTER" aria-keyshortcuts="Enter"><span class="pedal-symbol" aria-hidden="true">v</span></button>
+ </div>
+</div>
 <div id="rotate">
  ${playerUi?'<hgroup class="portrait-brand"><h1>極速漫遊</h1><p>海濱公路</p></hgroup>':'<span>↻</span>Turn toward the horizon'}
  <div id="rotate-launch-status"></div>
@@ -173,15 +183,6 @@ document.querySelector('#app')!.innerHTML = `
 </section>`;
 document.getElementById('startup-fallback')!.hidden=true;
 const $ = (id:string) => document.getElementById(id)!;
-// Anchor instructions to the controls: switching hands moves the prompts too.
-const steeringTip=document.createElement('div');
-steeringTip.className='race-control-tip race-control-tip-steering';
-steeringTip.innerHTML='<span aria-hidden="true">↔</span><span>左右滑動<br><b>控制方向</b></span>';
-$('steering-strip').append(steeringTip);
-const pedalsTip=document.createElement('div');
-pedalsTip.className='race-control-tip race-control-tip-pedals';
-pedalsTip.innerHTML='<span><b>油門</b>　按住加速</span><span><b>煞車</b>　按住減速</span>';
-$('touch').querySelector('.pedals')!.append(pedalsTip);
 $('route-title').textContent=blenderMode?(roadLockMode?'Grand Canyon · Cliff Pass R4':'Grand Canyon · Blender v2'):brick?.name??'Coast Road';
 updateChapterTitle();
 for(const [id,key] of Object.entries({drive:'P',resume:'P',restart:'R',sound:'M',settings:'C',fullscreen:'F'})){const node=$(id);node.classList.add('shortcut');node.dataset.shortcut=key;node.setAttribute('aria-keyshortcuts',key);}
@@ -667,7 +668,7 @@ function ui(){
   if(playerUi)$('speed').hidden=!showDrivingHud;
   const touch=$('touch');
   touch.classList.toggle('active',showDrivingHud);
-  touch.classList.toggle('race-tutorial',readyVisible);
+  touch.classList.toggle('race-tutorial',readyVisible||(mode==='countdown'&&!settingsOpen));
   touch.inert=(mode!=='playing'&&mode!=='countdown')||settingsOpen;
   $('photo-button').hidden=(mode!=='playing'&&!(trip&&params.has('at')&&mode==='paused'))||settingsOpen; $('ready-countdown').hidden=mode!=='countdown';$('pause').textContent=playerUi?(mode==='playing'?'Ⅱ 暫停':'☰ 選單'):(mode==='playing'?'Ⅱ Menu':'☰ Menu');if(mode!=='playing'&&mode!=='countdown'&&!settingsOpen)refreshPhotoFolder(); updatePlayerUi(); }
 function start(){if(journeyTransition||replayPreparing||mode==='ready'&&!readyEnabled)return;if(mobile()&&!landscapeReady())return;if(sceneInspector?.isOpen)sceneInspector.close();l2UI?.setReviewExpanded(false);tripPauseDock?.collapse();if(world.streamer&&!world.streamer.ready){streamStartRequested=true;const status=document.getElementById('stream-status');if(status)status.textContent=world.streamer.error?`Scene preparation failed: ${world.streamer.error}`:'Preparing the road…';return;}streamStartRequested=false;const status=document.getElementById('stream-status');if(status)status.textContent='';state.appliedSteer=state.steerFrom=state.steerTo=state.steerTime=0;

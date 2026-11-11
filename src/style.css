@@ -719,21 +719,35 @@ html[data-player-ui="true"] #drive-hud{display:none!important}
 #race-ready[hidden]{display:none!important}
 #race-ready .race-ready-center{position:absolute;top:37%;left:50%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:8px;width:max-content;max-width:86vw;text-align:center;pointer-events:none}
 #race-ready .race-ready-eyebrow{font:italic 800 clamp(9px,1vw,12px)/1.2 Arial,sans-serif;letter-spacing:.16em;color:#ffe1b6;text-shadow:0 2px 7px #12151b}
-#race-start{pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:24px;min-width:clamp(186px,22vw,245px);min-height:58px;border:1px solid #ffd8a4;border-radius:3px;padding:9px 23px 10px;background:#ff8d68;color:#27202a;font:italic 950 clamp(28px,3vw,37px)/1 "Arial Black",Arial,sans-serif;letter-spacing:.035em;box-shadow:0 8px 0 #803f37,0 17px 35px #090b12a6;animation:race-start-glow 1.8s ease-in-out infinite}
+#race-start{position:relative;pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:24px;min-width:clamp(186px,22vw,245px);min-height:58px;border:1px solid #ffd8a4;border-radius:3px;padding:9px 23px 10px;background:#ff8d68;color:#27202a;font:italic 950 clamp(28px,3vw,37px)/1 "Arial Black",Arial,sans-serif;letter-spacing:.035em;box-shadow:0 8px 0 #803f37,0 17px 35px #090b12a6;cursor:pointer}
 #race-start span{font:normal 900 16px/1 Arial,sans-serif}
 #race-start:focus-visible{outline:3px solid #fff4c7;outline-offset:5px}
 #race-start:active{transform:translateY(5px);box-shadow:0 3px 0 #803f37,0 9px 22px #090b12a6}
-@keyframes race-start-glow{50%{opacity:.9}}
+#race-start::before{
+ content:"";position:absolute;inset:-4px;border:2px solid #ffe5af;border-radius:5px;
+ pointer-events:none;animation:race-start-pulse 1.6s ease-out infinite;
+}
+@keyframes race-start-pulse{
+ 0%,15%{transform:scale(1);opacity:.95}
+ 85%,100%{transform:scale(1.09,1.26);opacity:0}
+}
+#race-start:active::before{visibility:hidden}
 #race-ready .race-ready-keyboard,#race-ready .race-ready-gamepad{display:none;max-width:85vw;font:700 11px/1.4 system-ui,sans-serif;letter-spacing:.03em;color:#fce8ce;text-shadow:0 1px 5px #080a0d}
 html[data-input-mode="keyboard"] #race-ready .race-ready-keyboard{display:block}
 html[data-input-mode="gamepad"] #race-ready .race-ready-gamepad{display:block}
-#touch .race-control-tip{display:none;position:absolute;pointer-events:none;z-index:3;border:1px solid #efbd8999;border-radius:5px;padding:7px 11px;background:#181d24d9;color:#fff1d5;box-shadow:0 3px 13px #080b1190;font:700 12px/1.45 system-ui,"Microsoft JhengHei",sans-serif;white-space:nowrap;text-shadow:0 1px 3px #17181c}
-#touch .race-control-tip b{color:#ffd091;font-weight:900}
-html[data-input-mode="touch"] #touch.race-tutorial .race-control-tip{display:flex}
-#touch .race-control-tip-steering{left:52%;top:-53px;align-items:center;gap:9px}
-#touch .race-control-tip-steering>span:first-child{font:900 29px/1 Arial,sans-serif;color:#ffcf93}
-#touch .pedals{position:relative}
-#touch .race-control-tip-pedals{right:0;top:-76px;flex-direction:column;gap:2px}
+#touch .steer-directions{
+ position:absolute;left:14%;right:14%;bottom:calc(50% + 2px);
+ display:flex;justify-content:space-between;pointer-events:none;
+ font:800 17px/1 monospace;color:#ffedcd;text-shadow:0 1px 3px #18151b;
+}
+#touch .pedal-symbol{display:inline-block;vertical-align:middle;pointer-events:none;font:800 24px/1 monospace}
+html[data-input-mode="touch"] #touch.race-tutorial :is(#steering-strip,button[data-control]){
+ outline:2px solid var(--touch-cue);outline-offset:-2px;
+ box-shadow:inset 0 0 0 4px #201c20a6;
+}
+#steering-strip{--touch-cue:#ffd17d}
+#touch [data-control="gas"]{--touch-cue:#78efd5}
+#touch [data-control="brake"]{--touch-cue:#ff967f}
 @media (pointer:coarse) and (orientation:portrait){#race-ready{display:none!important}}
-@media (max-height:390px){#race-ready .race-ready-center{top:35%}#race-start{min-height:48px;font-size:27px}#touch .race-control-tip{font-size:10px;padding:4px 8px}#touch .race-control-tip-steering{top:-43px}#touch .race-control-tip-pedals{top:-61px}}
-@media (prefers-reduced-motion:reduce){#race-start{animation:none}}
+@media (max-height:390px){#race-ready .race-ready-center{top:35%}#race-start{min-height:48px;font-size:27px}}
+@media (prefers-reduced-motion:reduce){#race-start::before{animation:none;opacity:.85}}
