@@ -14,6 +14,11 @@ async function expectTouchCues(page:Page,highlighted:boolean){
  const controls=page.locator('#steering-strip, #touch button[data-control]');
  const outlines=await controls.evaluateAll(nodes=>nodes.map(el=>getComputedStyle(el).outlineStyle));
  expect(outlines).toEqual(Array(3).fill(highlighted?'solid':'none'));
+ const labels=controls.locator('.control-cue');
+ await expect(labels).toHaveText(['方向','加速','減速']);
+ await expect(labels.filter({visible:true})).toHaveCount(highlighted?3:0);
+ const animations=await labels.evaluateAll(nodes=>nodes.map(el=>getComputedStyle(el).animationName));
+ expect(animations).toEqual(Array(3).fill(highlighted?'control-cue-pulse':'none'));
  await expect(page.locator('.steer-directions')).toBeVisible();
  for(const control of ['gas','brake']){
   await expect(page.locator(`[data-control="${control}"] svg`)).toBeVisible();
@@ -78,6 +83,8 @@ test('keyboard Enter begins countdown and remapped hints follow their control',a
  const steering=await page.locator('#steering-strip').boundingBox();
  expect(gas!.x+gas!.width).toBeLessThan(steering!.x);
  await page.emulateMedia({reducedMotion:'reduce'});
+ await expect(page.locator('.control-cue:visible')).toHaveCount(3);
+ await expect(page.locator('.control-cue').first()).toHaveCSS('animation-name','none');
  expect(await page.locator('#race-start').evaluate(el=>getComputedStyle(el,'::before').animationName)).toBe('none');
  await page.keyboard.press('Enter');
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
@@ -96,6 +103,7 @@ test('replay waits for START again instead of launching automatically',async({pa
  await expect(page.locator('#race-start')).toBeVisible();
  const time=await page.evaluate(()=>(window as any).__drive.race().time);
  expect(time).toBe(0);
+ await expect(page.locator('.control-cue:visible')).toHaveCount(3);
 });
 
 test('PS4 Cross confirms START without using throttle or a second focus click',async({page})=>{

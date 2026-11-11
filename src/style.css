@@ -762,6 +762,18 @@ html[data-input-mode="touch"] #touch.race-tutorial :is(#steering-strip,button[da
 #steering-strip{--touch-cue:#ffd17d}
 #touch [data-control="gas"]{--touch-cue:#78efd5}
 #touch [data-control="brake"]{--touch-cue:#ff967f}
+.control-cue{display:none}
+#touch.race-tutorial .control-cue{
+ display:block;position:absolute;inset:3px 0 auto;pointer-events:none;text-align:center;
+ font:800 13px/15px system-ui,"Microsoft JhengHei",sans-serif;letter-spacing:.08em;
+ color:var(--touch-cue);text-shadow:0 1px 3px #13171c,0 0 2px #13171c;
+}
+#touch.race-tutorial .pedal-symbol{translate:0 5px}
+#touch.race-tutorial .steer-directions{top:calc(50% + 4px)}
+@media (prefers-reduced-motion:no-preference){
+ #touch.race-tutorial .control-cue{animation:control-cue-pulse 1.5s ease-in-out infinite alternate}
+ @keyframes control-cue-pulse{from{opacity:1}to{opacity:.68}}
+}
 @media (pointer:coarse) and (orientation:portrait){#race-ready{display:none!important}}
 @media (max-height:390px){#race-ready .race-ready-center{top:35%}#race-start{min-height:48px;font-size:27px}}
 @media (prefers-reduced-motion:reduce){#race-start::before{animation:none;opacity:.85}}

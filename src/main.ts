@@ -166,11 +166,16 @@ document.querySelector('#app')!.innerHTML = `
    <g class="steer-right">${steeringChevrons}</g>
   </svg>
   <i class="steer-cursor" aria-hidden="true"></i>
+  <span class="control-cue" aria-hidden="true">方向</span>
   <span class="steer-keys" aria-hidden="true"><kbd>A</kbd><kbd>D</kbd></span>
  </div>
  <div class="pedals">
-  <button data-control="gas" aria-label="${playerUi?'油門':'Gas'}" data-pad-hint="R2" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space">${pedalIcon}</button>
-  <button data-control="brake" aria-label="${playerUi?'煞車':'Brake'}" data-pad-hint="L2" data-key-hint="ENTER" aria-keyshortcuts="Enter">${pedalIcon}</button>
+  <button data-control="gas" aria-label="${playerUi?'油門':'Gas'}" data-pad-hint="R2" data-key-hint="${playerUi?'空白':'SPACE'}" aria-keyshortcuts="Space">
+   <span class="control-cue" aria-hidden="true">加速</span>${pedalIcon}
+  </button>
+  <button data-control="brake" aria-label="${playerUi?'煞車':'Brake'}" data-pad-hint="L2" data-key-hint="ENTER" aria-keyshortcuts="Enter">
+   <span class="control-cue" aria-hidden="true">減速</span>${pedalIcon}
+  </button>
  </div>
 </div>
 <div id="rotate">
