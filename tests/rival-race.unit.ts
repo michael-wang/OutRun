@@ -33,6 +33,22 @@ describe('Rival tire smoke should communicate actual traction events',()=>{
  });
 });
 describe('Riviera GT race',()=>{
+ it('restores all seven opponents, their powertrains and the race timer',()=>{
+  const original=new RivalRace(10350,flat,()=>[]),player=parked();
+  original.reset(350);
+  ticks(2,()=>original.step(dt,player,player));
+  const saved=original.snapshot();
+  const restored=new RivalRace(10350,flat,()=>[]);
+  restored.reset(350);restored.restore(saved);
+  expect(restored.snapshot().rivals).toEqual(saved.rivals.map(row=>({
+   ...row,obstacles:undefined, nextDecision:saved.time,lastDecision:saved.time
+  })).map(({obstacles,...row})=>row));
+  expect(restored.time).toBe(saved.time);
+  const distance=restored.rivals[0].distance;
+  ticks(.4,()=>restored.step(dt,player,player));
+  expect(restored.rivals[0].distance).toBeGreaterThan(distance);
+ });
+
  it('has seven distinct AI cars with the player powertrain and a non-overlapping grid',()=>{
   const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);race.reset(350);
   expect(race.rivals).toHaveLength(7);

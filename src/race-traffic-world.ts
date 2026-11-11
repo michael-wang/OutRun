@@ -298,6 +298,28 @@ export class RaceTrafficWorld {
   for(const car of this.cars)if(!car.finished&&Math.abs(car.distance-center)<=radius)result.push(car);
   return result;
  }
+ snapshot(){
+  return {time:this.time,decisionAt:this.decisionAt,
+    spawnAt:Number.isFinite(this.spawnAt)?this.spawnAt:null,
+    spawnIndex:this.spawnIndex,nextId:this.nextId,
+    cars:this.cars.map(c=>({...c}))};
+ }
+ restore(saved:ReturnType<RaceTrafficWorld['snapshot']>){
+  if(!saved||!Number.isFinite(saved.time)||!Number.isFinite(saved.decisionAt)
+    ||!Array.isArray(saved.cars)||saved.cars.length>240
+    ||!Number.isInteger(saved.spawnIndex)||!Number.isInteger(saved.nextId)
+    ||saved.cars.some(c=>!Number.isInteger(c.id)||!Number.isFinite(c.distance)
+      ||!Number.isFinite(c.lateral)||!Number.isFinite(c.speed)))
+    throw Error('Invalid traffic checkpoint');
+  this.time=saved.time;
+  // The sorted road-order index is ephemeral; rebuild it on the first resumed tick.
+  this.decisionAt=saved.time;
+  this.spawnAt=saved.spawnAt===null?Infinity:saved.spawnAt;
+  this.spawnIndex=saved.spawnIndex;this.nextId=saved.nextId;
+  this.cars.splice(0,this.cars.length,...saved.cars.map(c=>({...c})));
+  this.byId.clear();for(const car of this.cars)this.byId.set(car.id,car);
+  this.sorted.length=0;this.users.length=0;
+ }
  inspect(){return {time:this.time,total:this.cars.length,active:this.cars.filter(c=>!c.finished).length,
   finished:this.cars.filter(c=>c.finished).length,rows:this.cars.map(c=>({id:c.id,distance:c.distance,speed:c.speed,lateral:c.lateral,targetLateral:c.targetLateral,driverStyle:c.driverStyle,laneChanges:c.laneChanges,escapeCount:c.escapeCount,blockedFor:c.blockedFor,reverseLeft:c.reverseLeft,escapeUntil:c.escapeUntil,stationary:!!c.stationary,finished:c.finished}))};}
 }

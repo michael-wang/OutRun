@@ -273,6 +273,30 @@ export class RivalRace {
     this.time+=dt;
     return hit;
   }
+  /** Full seven-rival state is independent of the traffic render pool. */
+  snapshot(){
+    return {time:this.time,playerFinish:this.playerFinish,
+     rivals:this.rivals.map(r=>{
+      const {entry,obstacles,...values}=r;
+      return {id:entry.id,...values,gearbox:{...r.gearbox}};
+     })};
+  }
+  restore(saved:ReturnType<RivalRace['snapshot']>){
+    if(!saved||!Number.isFinite(saved.time)||!Array.isArray(saved.rivals)
+       ||saved.rivals.length!==this.rivals.length
+       ||saved.rivals.some((r,i)=>r.id!==this.rivals[i].entry.id
+           ||!Number.isFinite(r.distance)||!Number.isFinite(r.lateral)
+           ||!Number.isFinite(r.speed)||!Number.isInteger(r.gearbox?.gear)))
+      throw Error('Invalid rival checkpoint');
+    this.time=saved.time;this.playerFinish=saved.playerFinish;
+    this.contactTimes.clear();this.trafficContacts.clear();
+    this.rivals.forEach((r,i)=>{
+      const {id,...values}=saved.rivals[i];
+      Object.assign(r,values);
+      r.obstacles=[];
+      r.nextDecision=this.time;r.lastDecision=this.time;
+    });
+  }
   /** Finishers lead by actual crossing time. Everyone else is live-ranked by progress. */
   standings(player:RaceBody):RaceStanding[]{
     const rows:Omit<RaceStanding,'rank'>[]=[

@@ -129,6 +129,13 @@ export class RoadCones {
   if(this.sunsetCast){this.sunsetCast.count=count;this.sunsetCast.instanceMatrix.needsUpdate=true;}
   return hits;
  }
+ snapshot(){return {hit:[...this.hit],flying:[...this.flying].map(([id,flight])=>[id,{...flight}] as [number,Flight])};}
+ restore(saved:ReturnType<RoadCones['snapshot']>){
+  if(!saved||!Array.isArray(saved.hit)||!Array.isArray(saved.flying))throw Error('Invalid cone checkpoint');
+  this.reset();
+  for(const id of saved.hit)this.hit.add(id);
+  for(const [id,flight] of saved.flying)this.flying.set(id,{...flight});
+ }
  reset(){this.hit.clear();this.flying.clear();this.mesh.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.shown=[];}
  inspect(){return {capacity:48,active:this.mesh.count,sunsetProjectedShadows:this.sunsetCast?.count??0,hit:[...this.hit],flying:[...this.flying.keys()],trajectories:[...this.flying].map(([id,f])=>({id,forward:f.forward,sideways:f.sideways,up:f.up,spin:f.spin})),shown:this.shown,recipe:this.recipe};}
  dispose(){

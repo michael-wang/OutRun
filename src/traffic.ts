@@ -492,6 +492,16 @@ export class Traffic {
   if(this.sign){this.sign.count=counts[3];this.sign.instanceMatrix.needsUpdate=true;}this.meshes.forEach((m,i)=>{m.count=counts[i];m.instanceMatrix.needsUpdate=true;});this.outlineMeshes.forEach((m,i)=>{m.count=outlineCounts[i];m.instanceMatrix.needsUpdate=true;});this.crestRims.forEach((m,i)=>{m.count=crestRimCounts[i];m.instanceMatrix.needsUpdate=true;});
   return cleanPass;
  }
+ /** Render instances are disposable; this is the authoritative whole-race state. */
+ snapshot(){return {time:this.time,trafficSeed:this.trafficSeed,world:this.raceWorld.snapshot()};}
+ restore(saved:ReturnType<Traffic['snapshot']>){
+  if(!saved||saved.trafficSeed!==this.trafficSeed||!Number.isFinite(saved.time)
+    ||Math.abs(saved.time-saved.world.time)>.001)throw Error('Traffic checkpoint mismatch');
+  this.reset();
+  this.raceWorld.restore(saved.world);
+  this.time=saved.time;
+  this.previousPlayer=undefined;this.playerSnapshot=undefined;
+ }
  /** Swept overlap plus persistent separation. Returns a new event only on contact entry. */
  hit(time:number,s:DrivingState,previous:{distance:number;lateral:number},dt:number,halfWidth=1.55,halfLength=2.8,heading=0):TrafficCollision|undefined {
   let event:TrafficCollision|undefined;

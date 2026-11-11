@@ -14,6 +14,18 @@ const fixture=[
 ];
 const world=()=>new RaceTrafficWorld(fixture,42,10000,()=>8.75,dims);
 describe('whole-course traffic authority',()=>{
+ it('recovers full-course moving and broken traffic without inventing a new clock',()=>{
+  const original=world();
+  for(let time=.1;time<=6;time+=.1)original.advance(time);
+  const saved=original.snapshot();
+  const restored=world();restored.restore(saved);
+  expect(restored.inspect()).toEqual(original.inspect());
+  expect(restored.snapshot().cars).toEqual(saved.cars);
+  restored.advance(saved.time+.25);
+  expect(restored.get(1)!.distance).toBeGreaterThan(saved.cars.find(car=>car.id===1)!.distance);
+  expect(restored.get(2)!.stationary).toBe(true);
+ });
+
  it('retains each finite traffic state when the player changes position or camera focus',()=>{
   const w=world();
   const ids=w.cars.map(c=>c.id);
