@@ -14,5 +14,8 @@ it('breakdowns have safe approaches, stay stopped, collide and retain identity',
  a=t.inspect().actors.find(a=>a.id===100000)!;expect(a.distance).toBe(1400);
  const s={...createState(),distance:1401,lateral:5.25,speed:70};
  expect(t.hit(.01,s,{distance:1380,lateral:5.25},.1)?.actorId).toBe(100000);
- t.update(.11,s.distance);expect(t.inspect().actors.find(a=>a.id===100000)!.distance).toBeGreaterThan(1400);
+ t.update(.11,s.distance);
+ // The warned, stationary breakdown car must stay physically parked after impact.
+ expect(t.inspect().actors.find(a=>a.id===100000)!.distance).toBe(1400);
+ expect(t.inspect().actors.find(a=>a.id===100000)!.speed).toBe(0);
  t.reset();expect(t.inspect().historySize).toBe(0);t.dispose();});

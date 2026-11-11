@@ -27,7 +27,9 @@ test('touch selection, portrait guide, results, replay and repeated menu returns
 
   const results=page.getByRole('region',{name:'旅程結算'});
   async function finish(){
-    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+    await page.locator('#race-start').tap();
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
     await expect(page.locator('#game-loading')).toBeHidden();
     await expect(page.locator('#view canvas')).toHaveCount(1);
     await page.keyboard.down('Space');
@@ -80,8 +82,10 @@ for(const device of ['Android','iPhone']){
     await page.locator('#start-race').tap();
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
     await expect(page.locator('#rotate-launch-status')).toBeVisible();
-    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','menu');
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready');
     await page.setViewportSize({width:915,height:412});
-    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
+    await expect(page.locator('#race-start')).toBeVisible();
+    await page.locator('#race-start').tap();
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
   });
 }

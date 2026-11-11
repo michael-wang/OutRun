@@ -1,9 +1,10 @@
 import {describe,it,expect} from 'vitest';
-import {RivalRace,worldSpeed,crossingTime,raceEntries,equalRiviera,type Obstacle} from '../src/rival-race';
+import {RivalRace,worldSpeed,crossingTime,raceEntries,equalRiviera,rivalDriverName,RIVAL_DRIVER_NAMES,rivalSkidDemand,type Obstacle} from '../src/rival-race';
 import {createState,step} from '../src/handling';
 import {DEFAULT_PACE} from '../src/pace';
 import * as THREE from 'three';
 import {Traffic,trafficRecipe} from '../src/traffic';
+import {TrafficImpact} from '../src/traffic-impact';
 import {plannedTrafficLateral} from '../src/traffic-flow';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack,pilotSample} from '../src/pilot-composer';
@@ -12,7 +13,42 @@ const flat=()=>({curvature:0,grade:0,half:7});
 const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
 function ticks(seconds:number,fn:()=>void){for(let i=0;i<Math.round(seconds/dt);i++)fn();}
+describe('Rival tire smoke should communicate actual traction events',()=>{
+ type Sample=Parameters<typeof rivalSkidDemand>[0];
+ const state=(overrides:Partial<Sample>={}):Sample=>({
+  speed:80,targetSpeed:78,braking:false,lateralRate:0,targetX:0,lateral:0,impulse:0,
+  ...overrides,
+ });
+ it('does not smoke continuously just because a car is fast or on a gentle curve',()=>{
+  expect(rivalSkidDemand(state())).toBe(0);
+  expect(rivalSkidDemand(state({braking:true}))).toBe(0);
+  expect(rivalSkidDemand(state({lateralRate:1.8,targetX:3.5}))).toBe(0);
+ });
+ it('responds briefly to hard braking, abrupt steering and collision impulses',()=>{
+  expect(rivalSkidDemand(state({targetSpeed:45,braking:true}))).toBeGreaterThan(.4);
+  expect(rivalSkidDemand(state({lateralRate:4.2,targetX:3.5}))).toBeGreaterThan(.15);
+  expect(rivalSkidDemand(state({impulse:2.4}))).toBeGreaterThan(.4);
+  expect(rivalSkidDemand(state({impulse:.1}))).toBe(0);
+  expect(rivalSkidDemand(state({braking:false,lateralRate:0,impulse:0}))).toBe(0);
+ });
+});
 describe('Riviera GT race',()=>{
+ it('restores all seven opponents, their powertrains and the race timer',()=>{
+  const original=new RivalRace(10350,flat,()=>[]),player=parked();
+  original.reset(350);
+  ticks(2,()=>original.step(dt,player,player));
+  const saved=original.snapshot();
+  const restored=new RivalRace(10350,flat,()=>[]);
+  restored.reset(350);restored.restore(saved);
+  expect(restored.snapshot().rivals).toEqual(saved.rivals.map(row=>({
+   ...row,obstacles:undefined, nextDecision:saved.time,lastDecision:saved.time
+  })).map(({obstacles,...row})=>row));
+  expect(restored.time).toBe(saved.time);
+  const distance=restored.rivals[0].distance;
+  ticks(.4,()=>restored.step(dt,player,player));
+  expect(restored.rivals[0].distance).toBeGreaterThan(distance);
+ });
+
  it('has seven distinct AI cars with the player powertrain and a non-overlapping grid',()=>{
   const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);race.reset(350);
   expect(race.rivals).toHaveLength(7);
@@ -26,15 +62,41 @@ describe('Riviera GT race',()=>{
    expect(Math.abs(a.distance-b.distance)>equalRiviera.length+1||Math.abs(a.lateral-b.lateral)>equalRiviera.width+.2).toBe(true);
   }
  });
- it('orders the full field by finish time, then by progress, with Chinese display names',()=>{
+ it('assigns short A-to-Z names by entry identity and wraps only after Z',()=>{
+  expect(RIVAL_DRIVER_NAMES).toHaveLength(26);
+  for(let i=0;i<52;i++){
+   const name=rivalDriverName(i);
+   expect(name).toMatch(new RegExp('^'+String.fromCharCode(65+i%26)));
+   expect(name.length).toBeLessThanOrEqual(7);
+  }
+  expect(rivalDriverName(0)).toBe('Aaron');
+  expect(rivalDriverName(6)).toBe('Gavin');
+  expect(rivalDriverName(25)).toBe('Zane');
+  expect(rivalDriverName(26)).toBe('Aaron');
+  expect(rivalDriverName(27)).toBe('Bruno');
+ });
+ it('updates live positions without changing each driver name or stable ID',()=>{
+  const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);
+  race.reset(350);
+  const player={distance:350,lateral:0,speed:0};
+  const before=race.standings(player),r=race.rivals[0];
+  const initial=before.find(row=>row.id===r.entry.id)!;
+  r.distance=405;
+  const after=race.standings(player).find(row=>row.id===r.entry.id)!;
+  expect(after.name).toBe(initial.name);
+  expect(after.rank).toBe(1);
+  expect(after.rank).not.toBe(initial.rank);
+  expect(r.entry.id).toBe('RIVAL 1');
+ });
+ it('orders the full field by finish time, then by progress, with English display names',()=>{
   const race=new RivalRace(3000,flat,()=>[]);race.reset(350);
   expect(race.standings({distance:350,lateral:0,speed:0})).toHaveLength(8);
-  expect(race.rivals.map(r=>r.entry.name)).toEqual(['對手一','對手二','對手三','對手四','對手五','對手六','對手七']);
+  expect(race.rivals.map(r=>r.entry.name)).toEqual(['Aaron','Bruno','Cody','Damon','Ethan','Felix','Gavin']);
   race.playerFinish=50;
   const r1=race.rivals[0],r2=race.rivals[1];
   r1.finishTime=47;r2.finishTime=49;
   const rows=race.standings({distance:3000,lateral:0,speed:0});
-  expect(rows.slice(0,3).map(r=>r.name)).toEqual(['對手一','對手二','玩家']);
+  expect(rows.slice(0,3).map(r=>r.name)).toEqual(['Aaron','Bruno','玩家']);
   expect(rows.map(r=>r.rank)).toEqual([1,2,3,4,5,6,7,8]);
   expect(rows.slice(3).every(r=>r.finishTime===null)).toBe(true);
  });
@@ -61,11 +123,35 @@ describe('Riviera GT race',()=>{
  });
  it('charges both cars for contact, constrains penetration and cools the impulse',()=>{
   const race=new RivalRace(10350,flat,()=>[],[raceEntries[0]]);race.reset(350);
-  const r=race.rivals[0],p={distance:r.distance-4.91,lateral:r.lateral,speed:35};r.speed=16;
-  const old={...p};p.distance+=.38;
-  const hit=race.step(dt,p,old);expect(hit?.kind).toBe('rear');expect(p.speed).toBeLessThan(35);expect(r.speed).toBeLessThan(16.1);
+  const r=race.rivals[0],p={...createState(),distance:r.distance-4.91,lateral:r.lateral,speed:35};r.speed=16;
+  const old={distance:p.distance,lateral:p.lateral};p.distance+=.38;
+  const hit=race.step(dt,p,old);
+  expect(hit?.kind).toBe('rear');
+  // RivalRace reports contact and applies the Rival impulse; the gameplay
+  // controller separately applies the player's TrafficImpact penalty.
+  expect(p.speed).toBe(35);
+  expect(r.speed).toBeLessThan(16.1);
+  const impact=new TrafficImpact();impact.kick(p,hit!);
+  expect(p.speed).toBeLessThan(35);
+  expect(p.speed).toBeGreaterThan(0);
+  expect(Math.abs(impact.velocity)).toBeGreaterThan(0);
   expect(r.distance-p.distance).toBeGreaterThanOrEqual(4.89);
   expect(race.step(dt,p,p)).toBeUndefined();
+ });
+ it('rear contact transfers more speed loss and sideslip to the leading Rival',()=>{
+  const race=new RivalRace(10350,flat,()=>[],[raceEntries[0]]);
+  race.reset(350);
+  const front=race.rivals[0];front.distance=450;front.previousDistance=450;front.speed=18;
+  const p={distance:446.5,lateral:front.lateral,speed:42};
+  const old={distance:440,lateral:front.lateral};
+  const event=race.step(1/120,p,old);
+  expect(event?.kind).toBe('rear');
+  expect(event?.playerIsTrailing).toBe(true);
+  expect(front.speed).toBeLessThan(18);
+  expect(Math.abs(front.impulse)).toBeGreaterThan(3);
+  const motion=new TrafficImpact();
+  motion.kick(p as any,event!);
+  expect(p.speed).toBeGreaterThan(30);
  });
  it('orders same-tick crossings by fraction, and keeps running after a player finishes',()=>{
   expect(crossingTime(98,102,100,4,.1)).toBe(4.05);
@@ -134,9 +220,19 @@ describe('Riviera GT race',()=>{
   const lead=traffic.inspect().actors.find(a=>!a.stationary)!;
   traffic.update(.1,lead.distance+30,0,100);
   expect(traffic.inspect().actors.some(a=>a.id===lead.id)).toBe(false);
-  const row=traffic.raceObstacles(lead.distance,1,500).find(a=>a.id==='T'+lead.id)!;
-  const later=traffic.raceObstacles(row.distance,2,200).find(a=>a.id===row.id)!;
-  expect(row.speed).toBeGreaterThan(0);expect(later.distance-row.distance).toBeCloseTo(row.speed);
+  const row=traffic.raceObstacles(lead.distance,.1,500).find(a=>a.id==='T'+lead.id)!;
+  expect(row).toBeDefined();
+  expect(row.speed).toBeGreaterThan(0);
+  // Rival queries must be pure: they cannot advance the authoritative world clock.
+  const futureQuery=traffic.raceObstacles(row.distance,2,200).find(a=>a.id===row.id)!;
+  expect(futureQuery.distance).toBeCloseTo(row.distance,6);
+  expect(traffic.inspectWorld().time).toBeCloseTo(.1,6);
+  // Only Traffic.update() advances the simulation, even for a retired render actor.
+  traffic.update(1.1,350,0,0);
+  const later=traffic.raceObstacles(row.distance,1.1,200).find(a=>a.id===row.id)!;
+  expect(later).toBeDefined();
+  expect(later.distance).toBeGreaterThan(row.distance);
+  expect(traffic.inspectWorld().time).toBeCloseTo(1.1,6);
   traffic.dispose();
  });
  it('finishes the authored 10 km with the player parked under three traffic seeds',()=>{

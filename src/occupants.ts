@@ -6,7 +6,7 @@ export type Traveler={body:THREE.Group,head:THREE.Group,arms:ReturnType<typeof p
 export function createOccupantMotion(people:Traveler[]){
  let phase=0,wind=0,turn=0,pitch=0,lastSpeed=0;
  let sway=0,swayRate=0,tipSway=0,flutterPhase=0;
- let cheerTime=-1,nextCheer=0,pendingRivalCheers=0;
+ let cheerTime=-1,nextCheer=0;
  let cheer:Cheer='applause';
  function pose(time=cheerTime,gesture=cheer){
   people.forEach((p,index)=>{
@@ -24,17 +24,17 @@ export function createOccupantMotion(people:Traveler[]){
   });
  }
  return {posePassenger:pose,onCleanPass(){
-  if(phase<nextCheer||cheerTime>=0||pendingRivalCheers>0)return;
+  if(phase<nextCheer||cheerTime>=0)return;
   const roll=Math.random();
   if(roll>=.28)return;
   const wave=nextCheer===0?roll>=.14:cheer==='applause';
   cheer=wave?'wave':'applause';
   nextCheer=phase+14;cheerTime=0;return cheer;
  },onRivalPass(){
-  // Unlike random civilian traffic praise, each completed Rival pass is earned.
-  // A small bounded queue prevents simultaneous passes from cancelling the pose.
+  // A Rival pass deserves applause only if she is not already celebrating.
+  // No delayed applause: passes made during a gesture are intentionally skipped.
+  if(cheerTime>=0)return;
   nextCheer=Math.max(nextCheer,phase+2);
-  if(cheerTime>=0){pendingRivalCheers=Math.min(3,pendingRivalCheers+1);return;}
   cheer='applause';cheerTime=0;return 'applause' as const;
  },advance(ds:number,input:number,dt:number,rightAcceleration=0){
   if(dt<=0)return false;phase+=dt;const speed=Math.abs(ds)/dt,blend=1-Math.exp(-dt/.16);
@@ -51,13 +51,10 @@ export function createOccupantMotion(people:Traveler[]){
   const before=cheerTime;
   if(cheerTime>=0)cheerTime+=dt;
   const clap=cheer==='applause'&&before>=0&&CLAP_TIMES.some(at=>before<at&&cheerTime>=at);
-  if(cheerTime>=CHEER_END){
-   if(pendingRivalCheers>0){pendingRivalCheers--;cheer='applause';cheerTime=0;}
-   else cheerTime=-1;
-  }
+  if(cheerTime>=CHEER_END)cheerTime=-1;
   lastSpeed=speed;pose();return clap;
- },reset(){phase=wind=turn=pitch=lastSpeed=sway=swayRate=tipSway=flutterPhase=nextCheer=pendingRivalCheers=0;cheer='applause';cheerTime=-1;pose();},
- inspect:()=>({wind,turn,pitch,phase,sway,tipSway,cheerTime,cheer,pendingRivalCheers,people:people.map(p=>({
+ },reset(){phase=wind=turn=pitch=lastSpeed=sway=swayRate=tipSway=flutterPhase=nextCheer=0;cheer='applause';cheerTime=-1;pose();},
+ inspect:()=>({wind,turn,pitch,phase,sway,tipSway,cheerTime,cheer,people:people.map(p=>({
   lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.hair.locks?.map(l=>({back:l.rotation.x,side:l.rotation.z}))??[],
  }))})};
 }

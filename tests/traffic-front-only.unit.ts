@@ -43,12 +43,15 @@ it('removes passed actors and never lets them respawn from the rear after the dr
  expect(traffic.inspect().passedCount).toBe(0);
  traffic.dispose();
 });
-it('starts the scenic coast without a Play tap or inherited entry speed',()=>{
+it('shows Ready to Race without auto-starting or inheriting an entry speed',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
  const dock=readFileSync(new URL('../src/trip-pause-dock.ts',import.meta.url),'utf8');
- expect(main).toContain('let autoStartOnReady=playerUi;');
+ expect(main).toContain('let revealReadyWhenLoaded=playerUi&&!recovery;');
  expect(main).toContain("loadingFinished();startupPending=false;");
- expect(main).toContain("autoStartOnReady=false;start();");
+ expect(main).toContain("revealReadyWhenLoaded=false;mode='ready';readyEnabled=true;ui();");
+ expect(main).toContain('if(!raceStartConfirmed||journeyTransition||replayPreparing');
+ expect(main).toContain("if(mode==='ready'&&readyEnabled&&$('game-loading').hidden)");
+ expect(main).toContain('raceStartConfirmed=true;start();');
  expect(main).toContain("state.speed=trip?0:brick.entrySpeed/3.6;");
  expect(main).toContain("brickCompleted?'再玩一次'");
  expect(main).toContain("$('player-restart').hidden=elapsed===0||brickCompleted");

@@ -4,13 +4,14 @@ export type PadAction='confirm'|'back'|'pause'|'fullscreen'|'up'|'down'|'left'|'
 export class GamepadInput {
  private stickDirection=0;
  private firstMenuSample=true;
+ private firstDriveMenuSample=true;
  private readonly onBlur=()=>this.release();
  dispose(){window.removeEventListener('blur',this.onBlur);this.release();this.status.remove();}
  private previous:boolean[]=[];private needsNeutral=true;private axisActive=false;private meaningfulAxis=0;private readonly status:HTMLElement;private lastChanged='none';
  constructor(private input:InputLatch,private action:(action:PadAction)=>void,private activity:()=>void=()=>{},private disconnected:()=>void=()=>{}){this.status=document.createElement('div');this.status.id='gamepad-status';this.status.setAttribute('role','status');this.status.hidden=true;document.querySelector('#app')!.append(this.status);window.addEventListener('blur',this.onBlur);}
  private releaseDrive(){this.input.release('pad:axis');this.input.release('pad:gas');this.input.release('pad:brake');}
  neutralize(){this.releaseDrive();this.needsNeutral=true;}
- private release(){this.releaseDrive();this.previous=[];this.firstMenuSample=true;this.stickDirection=0;this.axisActive=false;this.meaningfulAxis=0;this.needsNeutral=true;}
+ private release(){this.releaseDrive();this.previous=[];this.firstMenuSample=true;this.firstDriveMenuSample=true;this.stickDirection=0;this.axisActive=false;this.meaningfulAxis=0;this.needsNeutral=true;}
  private textUnsupported(){this.status.textContent='Gamepad connected · unsupported mapping';}
  poll(driving:boolean | 'stage-menu',qaAvailable=false){let pads:(Gamepad|null)[]=[];try{pads=Array.from(navigator.getGamepads?.()??[]);}catch{this.release();return;}const pad=pads.find(p=>p?.connected);this.status.hidden=!pad||driving==='stage-menu';const diagnostic=document.getElementById('gamepad-diagnostic');if(!pad||!document.hasFocus()||document.hidden){if(!pad)this.disconnected();if(diagnostic)diagnostic.textContent='No focused connected gamepad.';this.release();return;}
  const b=(i:number)=>!!pad.buttons[i]&&(pad.buttons[i].pressed||pad.buttons[i].value>.5),pressed=Array.from({length:pad.buttons.length},(_,i)=>b(i)),edge=(i:number)=>pressed[i]&&!this.previous[i];const changed=pressed.flatMap((v,i)=>v!==!!this.previous[i]?[`${i}:${v?'down':'up'}`]:[]);if(changed.length)this.lastChanged=changed.join(', ');if(diagnostic)diagnostic.textContent=`${pad.id || 'Gamepad'} · mapping: ${pad.mapping || 'nonstandard'} · ${pad.buttons.length} buttons · changed: ${this.lastChanged}`;
@@ -39,7 +40,13 @@ export class GamepadInput {
  if(edge(4))this.action('camera-prev');
  if(edge(5))this.action('camera-next');
  if(edge(9))this.action('pause');
- if(!driving){if(edge(0))this.action('confirm');if(edge(1))this.action('back');if(edge(12))this.action('up');if(edge(13))this.action('down');if(edge(14))this.action('left');if(edge(15))this.action('right');this.releaseDrive();}
+ if(!driving){
+  // The same Cross press that chose a stage must NOT start the countdown.
+  // First observe whatever is already held, then require a new press edge.
+  if(this.firstDriveMenuSample){
+   this.firstDriveMenuSample=false;this.previous=pressed;this.releaseDrive();return;
+  }
+  if(edge(0))this.action('confirm');if(edge(1))this.action('back');if(edge(12))this.action('up');if(edge(13))this.action('down');if(edge(14))this.action('left');if(edge(15))this.action('right');this.releaseDrive();}
  else{// Resume without waiting for GAS/BRAKE/stick to be released.
  // Menu inputs were already released above; held triggers should work
  // on the FIRST drive frame, not after several additional presses.

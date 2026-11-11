@@ -26,6 +26,27 @@ it('all four vehicle types keep real displacement, separate contact, recover and
   traffic.update(20,12000);expect(traffic.inspect().reactions).toHaveLength(0);traffic.reset();motion.reset();expect(motion.velocity).toBe(0);expect(traffic.inspect().impacts).toBe(0);traffic.dispose();expect(scene.children).toHaveLength(0);
  }
 });
+it('a rear strike reduces the front moving vehicle more than the follower',()=>{
+ const traffic=new Traffic(new THREE.Scene(),sample,()=>8.75,10000,804);
+ const first=trafficRecipe(804,10000)[0];
+ traffic.update(0,first.distance-70,0,0);
+ traffic.update(.001,first.distance-70,0,0);
+ const car=traffic.inspect().actors.find(r=>r.id===first.id)!;
+ expect(car).toBeDefined();
+ const frontBefore=car.speed;
+ const player={...createState(),distance:car.distance-4.5,lateral:car.lateral,speed:76};
+ const event=traffic.hit(.001,player,{distance:car.distance-15,lateral:car.lateral},.05);
+ expect(event?.kind).toBe('rear');
+ expect(event?.playerIsTrailing).toBe(true);
+ const frontAfter=traffic.inspectWorld().rows.find(row=>row.id===car.id)!.speed;
+ expect(frontAfter).toBeLessThan(frontBefore);
+ const impact=new TrafficImpact();impact.kick(player,event!);
+ const frontLoss=1-frontAfter/frontBefore;
+ const rearLoss=1-player.speed/76;
+ expect(frontLoss).toBeGreaterThan(rearLoss);
+ expect(impact.velocity).not.toBe(0);
+ traffic.dispose();
+});
 it('shared feedback requires sustained actual slide, including a straight road',()=>{
  const s=new SkidFeedback();for(let i=0;i<120;i++)expect(s.update(70,1,1/60,0,1,0)).toBe(0);
  for(let i=0;i<5;i++)expect(s.update(45,0,1/60,0,0,5)).toBe(0);

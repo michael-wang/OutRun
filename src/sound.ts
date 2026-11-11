@@ -1,5 +1,8 @@
 import {takeStageAudio} from './stage-audio';
-import {PassBy,PASS_AUDIO} from './pass-by';
+import type {RaceStartSignal} from './race-start-signals';
+import {PassBy,PASS_AUDIO,type PassActor} from './pass-by';
+import {RivalAudio,type RivalAudioState,type RivalAudioListener} from './rival-audio';
+import type {RivalState} from './rival-race';
 import type {TrafficActor} from './traffic';
 import {SkidFeedback} from './skid-feedback';
 import nicePassUrl from './assets/passenger-nice-pass.mp3?url';
@@ -12,11 +15,16 @@ type PassengerCue=Cheer|'clap';
 export class EngineSound {
   readonly passes=new PassBy();
   private passVoices:{source:AudioBufferSourceNode;high:BiquadFilterNode;low:BiquadFilterNode;gain:GainNode;pan:StereoPannerNode}[]=[];
+  private rivalAudio?:RivalAudio;
+  private readonly rivalInputs:RivalAudioState[]=[];
+  private readonly passActors:PassActor[]=[];
   private context?: AudioContext;
   private master?: GainNode;
   private passengerBuffers=new Map<PassengerCue,AudioBuffer>();
   private loadingClips=new Map<PassengerCue,Promise<void>>();
   private passengerSources=new Set<AudioBufferSourceNode>();
+  private readonly raceSignalVoices=new Set<OscillatorNode>();
+  private readonly raceSignalHistory:RaceStartSignal[]=[];
   private engine?: OscillatorNode;
   private engineGain?: GainNode;
   private undertone?: OscillatorNode;
@@ -66,6 +74,7 @@ export class EngineSound {
       const gravel=context.createBufferSource();gravel.buffer=buffer;gravel.loop=true;gravel.playbackRate.value=.71;const gravelLow=context.createBiquadFilter(),gravelHigh=context.createBiquadFilter();gravelLow.type='lowpass';gravelLow.frequency.value=1250;gravelHigh.type='highpass';gravelHigh.frequency.value=125;this.gravelGain=context.createGain();this.gravelGain.gain.value=0;gravel.connect(gravelHigh);gravelHigh.connect(gravelLow);gravelLow.connect(this.gravelGain);this.gravelGain.connect(this.master);gravel.start();
       // Two persistent, silent-by-default noise voices. No sample copying or per-pass node allocation.
       for(let i=0;i<2;i++){const source=context.createBufferSource(),high=context.createBiquadFilter(),low=context.createBiquadFilter(),gain=context.createGain(),pan=context.createStereoPanner();source.buffer=buffer;source.loop=true;high.type='highpass';high.frequency.value=220;low.type='lowpass';low.frequency.value=3200;gain.gain.value=0;source.connect(high);high.connect(low);low.connect(gain);gain.connect(pan);pan.connect(this.master);source.start(0,i*.37);this.passVoices.push({source,high,low,gain,pan});}
+      this.rivalAudio=new RivalAudio(context,this.master,buffer);
       // A tiny modulation makes sustained squeal less like a UI beep.
       const wobble = context.createOscillator(); wobble.frequency.value = 16;
       const amount = context.createGain(); amount.gain.value = 35;
@@ -84,6 +93,37 @@ export class EngineSound {
     await context.resume();
     if(waitForPassenger)await Promise.all(this.loadingClips.values());
   }
+  /** Familiar 3 low countdown ticks and a higher, sustained GO chime.
+   * Generated in Web Audio, so there are no new assets or per-frame audio work. */
+  raceStartCue(signal:RaceStartSignal):boolean{
+    if(this.muted)return true;
+    const ctx=this.context,master=this.master;
+    if(!ctx||!master||ctx.state!=='running')return false;
+    const go=signal==='GO',now=ctx.currentTime;
+    const duration=go?.45:.18,frequency=go?980:510;
+    const gain=ctx.createGain();
+    gain.gain.setValueAtTime(0,now);
+    gain.gain.linearRampToValueAtTime(go?.28:.24,now+.01);
+    gain.gain.setValueAtTime(go?.28:.24,now+(go?.23:.075));
+    gain.gain.exponentialRampToValueAtTime(.001,now+duration);
+    gain.connect(master);
+    for(const harmonic of [1,2]){
+      const oscillator=ctx.createOscillator();
+      oscillator.type=harmonic===1?'triangle':'sine';
+      oscillator.frequency.setValueAtTime(frequency*harmonic,now);
+      if(go)oscillator.frequency.linearRampToValueAtTime(frequency*harmonic*1.09,now+.13);
+      const voiceLevel=ctx.createGain();voiceLevel.gain.value=harmonic===1?1:.20;
+      oscillator.connect(voiceLevel);voiceLevel.connect(gain);
+      this.raceSignalVoices.add(oscillator);
+      oscillator.onended=()=>{this.raceSignalVoices.delete(oscillator);oscillator.disconnect();voiceLevel.disconnect();
+        if(this.raceSignalVoices.size===0)gain.disconnect();};
+      oscillator.start(now);oscillator.stop(now+duration+.02);
+    }
+    this.raceSignalHistory.push(signal);
+    if(this.raceSignalHistory.length>12)this.raceSignalHistory.shift();
+    return true;
+  }
+  resetRaceStartCues(){this.raceSignalHistory.length=0;}
   impact(strength:number,kind:'vehicle'|'guardrail'|'concrete'|'soft'='guardrail'){
     this.impactCount++;this.lastImpact=kind;if(!this.context)return;const now=this.context.currentTime;
     const envelope=(gain:GainNode,peak:number,life:number)=>{const g=gain.gain;g.cancelScheduledValues(now);g.setValueAtTime(peak,now);g.exponentialRampToValueAtTime(.001,now+life);g.setValueAtTime(0,now+life+.01);};
@@ -126,13 +166,31 @@ export class EngineSound {
     this.gravelLevel+=(target-this.gravelLevel)*(1-Math.exp(-Math.max(0,dt)/.055));
     if(this.context)this.gravelGain!.gain.setTargetAtTime(target,this.context.currentTime,.055);
   }
-  passBy(time:number,distance:number,lateral:number,extent:number,actors:readonly TrafficActor[],collisionId?:number){
-    const voices=this.passes.update(time,distance,lateral,extent,actors,collisionId);
+  /** Merge rival whooshes into the existing two-voice, capped traffic pass-by bus. */
+  passBy(time:number,distance:number,lateral:number,extent:number,actors:readonly TrafficActor[],collisionId?:number,rivals:readonly RivalState[]=[]){
+    const nearby=this.passActors;nearby.length=0;
+    for(const actor of actors)nearby.push(actor);
+    for(let i=0;i<rivals.length;i++){
+      const row=rivals[i];
+      if(row.finishTime!==null||Math.abs(row.distance-distance)>90)continue;
+      nearby.push({id:-10000-i,type:0,distance:row.distance,lateral:row.lateral,visible:true,rival:true});
+    }
+    const voices=this.passes.update(time,distance,lateral,extent,nearby,collisionId);
     // Two close passes share one bounded noise budget; neither drowns the engine.
     const sum=voices.reduce((n,v)=>n+(v?.gain??0),0);
     const mix=Math.min(1,PASS_AUDIO.totalVoiceCap/Math.max(.0001,sum));
     if(!this.context)return;const now=this.context.currentTime;
     this.passVoices.forEach((node,i)=>{const v=voices[i];node.gain.gain.setTargetAtTime(v?Math.min(PASS_AUDIO.peakCap,v.gain*mix):0,now,v && v.gain>0 ? .018 : .025);if(v){node.pan.pan.setTargetAtTime(v.pan,now,.02);node.high.frequency.setTargetAtTime(v.type===0?220:75,now,.03);node.low.frequency.setTargetAtTime(v.cutoff,now,.02);node.source.playbackRate.setTargetAtTime(v.rate,now,.02);}});
+  }
+  /** Spatial audio is a presentation layer: the player and Rival physics are untouched. */
+  rivals(rivals:readonly RivalState[],listener:RivalAudioListener,burnout=false,playing=true){
+    if(!this.rivalAudio)return;
+    const states=this.rivalInputs;states.length=0;
+    for(const r of rivals)states.push({
+      id:r.entry.id,distance:r.distance,lateral:r.lateral,speed:r.speed,
+      rpm:r.gearbox.rpm,slip:r.slip,braking:r.braking,finishTime:r.finishTime,
+    });
+    this.rivalAudio.update(listener,states,burnout,playing&&this.active&&!this.muted);
   }
   resetPassBy(){this.passes.reset();this.silencePasses();}
   passengerCue(kind:PassengerCue,preview=false){
@@ -160,15 +218,17 @@ export class EngineSound {
     this.skid!.frequency.setTargetAtTime(510 + intensity * 250, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
-  pause() { this.stopPassenger();this.silencePasses();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  pause() { for(const voice of this.raceSignalVoices){try{voice.stop();}catch{/* already stopped */}}
+    this.raceSignalVoices.clear();this.stopPassenger();this.silencePasses();this.rivalAudio?.silence();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   dispose() {
     this.pause();
+    this.rivalAudio?.dispose();this.rivalAudio=undefined;
     const context=this.context ?? takeStageAudio();
     if(context && context.state!=='closed')void context.close().catch(()=>{});
   }
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }
-    return { passBy:this.passes.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,coneHitCount:this.coneHitCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
+    return { raceStartCues:[...this.raceSignalHistory],passBy:this.passes.inspect(),rivals:this.rivalAudio?.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,coneHitCount:this.coneHitCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
   }
 }

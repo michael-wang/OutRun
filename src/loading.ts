@@ -17,7 +17,7 @@ export function loadingStarted(title='正在準備重新出發',detail='沿著�
  node('game-loading').setAttribute('aria-busy','true');node('loading-slow').hidden=true;node('startup-fallback').hidden=true;
  node('startup-error').textContent='準備時間較長。你可以繼續等待，或重新載入。';
  node('loading-slow').textContent='風景準備中，請保持此頁開啟。';
- node('loading-hint').textContent='準備完成後，自動重新出發';loadingProgress(0,title,detail);
+ node('loading-hint').textContent='準備完成後，按 START 開始倒數';loadingProgress(0,title,detail);
 }
 
 export function loadingProgress(value:number,title:string,detail:string){

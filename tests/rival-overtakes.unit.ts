@@ -32,16 +32,18 @@ it('does not applaud a rival finishing, jumping, or appearing behind on reset',(
  expect(tracker.update(21,cars)).toEqual([]);
 });
 
-it('queues a guaranteed applause gesture for every opponent overtake',()=>{
+it('applauds the first rival pass and ignores all overtakes during the gesture',()=>{
  const motion=createOccupantMotion([]);
  expect(motion.onRivalPass()).toBe('applause');
- expect(motion.inspect()).toMatchObject({cheer:'applause',cheerTime:0,pendingRivalCheers:0});
- expect(motion.onRivalPass()).toBeUndefined(); // queued while hands are clapping
- expect(motion.inspect().pendingRivalCheers).toBe(1);
- motion.advance(0,0,1.7);
- expect(motion.inspect()).toMatchObject({cheerTime:0,pendingRivalCheers:0});
+ expect(motion.inspect()).toMatchObject({cheer:'applause',cheerTime:0});
+ expect(motion.onRivalPass()).toBeUndefined();
+ expect(motion.onRivalPass()).toBeUndefined();
  motion.advance(0,0,1.7);
  expect(motion.inspect().cheerTime).toBe(-1);
+ // No queued applause after the animation has ended.
+ motion.advance(0,0,2.0);
+ expect(motion.inspect().cheerTime).toBe(-1);
+ expect(motion.onRivalPass()).toBe('applause');
  motion.reset();
- expect(motion.inspect().pendingRivalCheers).toBe(0);
+ expect(motion.inspect().cheerTime).toBe(-1);
 });

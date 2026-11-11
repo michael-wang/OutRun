@@ -16,7 +16,9 @@ it('speedometer keeps meaningful high-contrast geometry but no opaque face',()=>
 
 it('transparent scenic controls use a quiet pressed state, not always-on colored panels',()=>{
  expect(css).toMatch(/header #pause,\s*#touch\.active button\[data-control\],[\s\S]*?background:transparent/);
- expect(css).toContain('#drive-readout:not([hidden])');
+ // The retired drive-readout was replaced by the new three-cell race HUD.
+ expect(css).toContain('#race-position[hidden]{display:none!important}');
+ expect(css).toContain('background:linear-gradient(180deg,rgba(13,23,31,.65),rgba(13,23,31,.31))');
  expect(css).toContain('#touch.active button[data-control]:is(:active,.pressed,.active)');
  expect(css).toContain('#touch.active #steering-strip:is(:active,.pressed)');
  expect(css).toContain('background:rgba(16,55,64,.24)');

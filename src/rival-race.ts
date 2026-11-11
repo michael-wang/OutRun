@@ -2,6 +2,7 @@ import {advancePowertrain,createPowertrain} from './powertrain';
 import {MAX_SPEED} from './handling';
 import {DEFAULT_PACE,effectivePace} from './pace';
 import {sweptContact,type TrafficCollision} from './traffic-impact';
+import {rearImpactResponse} from './arcade-contact';
 
 export interface DriverProfile {
   anticipation:number; reactionTime:number; overtaking:number; aggression:number; riskTolerance:number;
@@ -18,19 +19,25 @@ export interface RacerEntry {
 // Each row has distinct lanes, leaving a fair chase from eighth place.
 const clubDriver:DriverProfile={anticipation:2.6,reactionTime:.17,overtaking:.76,aggression:.32,riskTolerance:.48};
 export const equalRiviera:CarSpec={lowForce:1,midForce:1,highForce:1,topSpeed:MAX_SPEED,brake:34,cornerGrip:22,width:2.25,length:4.9};
+/** Public driver names follow A → Z, then wrap to A for later expansion. */
+export const RIVAL_DRIVER_NAMES = ["Aaron","Bruno","Cody","Damon","Ethan","Felix","Gavin","Henry","Ivan","Jason","Kevin","Leo","Mason","Noah","Oscar","Peter","Quinn","Ryan","Sean","Theo","Uma","Victor","Will","Xavier","Yuri","Zane"] as const;
+export function rivalDriverName(index:number):string {
+  const slot=((Math.trunc(index)%RIVAL_DRIVER_NAMES.length)+RIVAL_DRIVER_NAMES.length)%RIVAL_DRIVER_NAMES.length;
+  return RIVAL_DRIVER_NAMES[slot];
+}
 export const raceEntries:RacerEntry[]=[
-  {id:'RIVAL 1',name:'對手一',paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:12,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 2',name:'對手二',paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:12,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 3',name:'對手三',paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:27,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 4',name:'對手四',paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:27,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 5',name:'對手五',paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:27,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 6',name:'對手六',paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:42,driver:clubDriver,car:equalRiviera},
-  {id:'RIVAL 7',name:'對手七',paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:42,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 1',name:rivalDriverName(0),paint:0xcbd0d3,gridSide:-1,gridLaneOffset:-2,gridOffset:12,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 2',name:rivalDriverName(1),paint:0xffbe16,gridSide:1,gridLaneOffset:1,gridOffset:12,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 3',name:rivalDriverName(2),paint:0x52b9e4,gridSide:-1,gridLaneOffset:-2,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 4',name:rivalDriverName(3),paint:0x19a478,gridSide:1,gridLaneOffset:0,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 5',name:rivalDriverName(4),paint:0xe75b68,gridSide:1,gridLaneOffset:2,gridOffset:27,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 6',name:rivalDriverName(5),paint:0xee8737,gridSide:-1,gridLaneOffset:-1,gridOffset:42,driver:clubDriver,car:equalRiviera},
+  {id:'RIVAL 7',name:rivalDriverName(6),paint:0xa17ad6,gridSide:1,gridLaneOffset:1,gridOffset:42,driver:clubDriver,car:equalRiviera},
 ];
 export interface RaceBody {distance:number; lateral:number; speed:number}
 export interface Obstacle extends RaceBody {id:string; type?:number; width:number; length:number}
 export interface RaceRoad {curvature:number; grade:number; half:number}
-/** Stable internal IDs coexist with player-facing Chinese driver names. */
+/** Stable internal IDs are independent from player-facing English driver names. */
 export interface RaceStanding {
  id:string; name:string; rank:number; distance:number;
  finishTime:number|null; isPlayer:boolean;
@@ -46,6 +53,16 @@ export class RivalState {
 }
 const clamp=(v:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,v));
 export const worldSpeed=(v:number)=>v*effectivePace(v,DEFAULT_PACE);
+/** Emission comes from actual stressful maneuvers, not a continuously-curved road.
+ * Ordinary high-speed cruising/gradual cornering must never smoke indefinitely. */
+export function rivalSkidDemand(r:Pick<RivalState,'speed'|'targetSpeed'|'braking'|'lateralRate'|'targetX'|'lateral'|'impulse'>):number {
+ const contact=clamp((Math.abs(r.impulse)-.28)/2.8,0,.78);
+ const hardBrake=r.braking&&r.speed>38&&r.speed-r.targetSpeed>8
+  ?clamp((r.speed-r.targetSpeed-8)/23,0,.55):0;
+ const activeSwerve=clamp((Math.abs(r.lateralRate)-3)/1.3,0,.45)*
+  clamp((Math.abs(r.targetX-r.lateral)-1.5)/2,0,1);
+ return Math.max(contact,hardBrake,activeSwerve);
+}
 const laneX=(lane:number,half:number)=>-half+(lane+.5)*(2*half/laneCount(half));
 const laneCount=(half:number)=>Math.max(2,Math.round(2*half/3.5));
 const nearestLane=(x:number,half:number)=>clamp(Math.floor((x+half)/(2*half)*laneCount(half)),0,laneCount(half)-1);
@@ -60,10 +77,12 @@ export class RivalRace {
   // its authoritative traffic trajectory behind that racer between decisions.
   yieldTraffic?:(row:Obstacle,distance:number,speed:number,time:number)=>void;
   private contactTimes=new Map<string,number>();
+  private trafficContacts=new Map<string,number>();
+  impactTraffic?:(row:Obstacle,severity:number,side:number)=>void;
   constructor(readonly finish:number,private road:(d:number)=>RaceRoad,
     private traffic:(d:number,t:number,radius:number)=>Obstacle[],private entries=raceEntries){}
   reset(start:number){
-    this.time=0;this.playerFinish=null;this.contactTimes.clear();
+    this.time=0;this.playerFinish=null;this.contactTimes.clear();this.trafficContacts.clear();
     const gridBase=Math.min(start,Math.max(0,this.finish-90));
     this.rivals=this.entries.map(entry=>{
       const r=new RivalState(entry);
@@ -181,10 +200,23 @@ export class RivalRace {
         this.yieldTraffic(o,safe,speed,time);
         o.distance=safe-(time-r.lastDecision)*speed;o.speed=speed;
       }else if(r.previousDistance<=limit+.01&&r.distance>=limit){
-        r.distance=Math.max(r.previousDistance,limit);r.speed=Math.min(r.speed,o.speed/effectivePace(r.speed,DEFAULT_PACE));r.braking=true;
+        r.distance=Math.max(r.previousDistance,limit);r.braking=true;
+        const key=r.entry.id+'/'+o.id;
+        if((this.trafficContacts.get(key)??-10)<this.time-.95){
+          this.trafficContacts.set(key,this.time);
+          const severity=clamp((worldSpeed(r.speed)-o.speed)/45,.15,.95);
+          const response=rearImpactResponse(severity);
+          r.speed*=response.trailingSpeedMultiplier;
+          const side=r.lateral<=o.lateral?-1:1;
+          r.impulse+=side*response.trailingSideSpeed;
+          if(o.id.startsWith('T')&&o.speed>1)this.impactTraffic?.(o,severity,-side);
+        }
+        // Keep a real following gap until a passing lane opens, rather than
+        // instantaneously setting the rear car's speed to the front car's.
+        r.targetSpeed=Math.min(r.targetSpeed,(o.speed+4)/effectivePace(r.speed,DEFAULT_PACE));
       }
     }
-    r.slip=Math.max(Math.abs(r.impulse)*.25,r.braking&&k>110?.62:0,clamp((Math.abs(r.curvature)*worldSpeed(r.speed)**2-15)/20,0,.75));
+    r.slip=rivalSkidDemand(r);
   }
   step(dt:number,player:RaceBody,oldPlayer:{distance:number;lateral:number}):TrafficCollision|undefined{
     let hit:TrafficCollision|undefined;
@@ -208,16 +240,29 @@ export class RivalRace {
         const side=Math.sign(dx)||1;
         const relative=Math.abs(r.speed-b.speed);
         if(contact.kind==='rear'){
-          if(dz<0){r.distance=Math.min(r.distance,b.distance-l-.002);r.speed=Math.min(r.speed,b.speed);}
-          else {b.distance=Math.min(b.distance,r.distance-l-.002);b.speed=Math.min(b.speed,r.speed);}
+          if(dz<0)r.distance=Math.min(r.distance,b.distance-l-.002);
+           else b.distance=Math.min(b.distance,r.distance-l-.002);
         }else r.lateral=b.lateral+side*(w+.002);
         const key=i+'/'+j;
         if((this.contactTimes.get(key)??-10)>this.time-.95)continue;
         this.contactTimes.set(key,this.time);
         const severity=clamp(.15+relative/40,.15,.8);
-        r.speed*=1-.09*severity;r.impulse=side*(1+severity*2);
-        if(other){other.speed*=1-.09*severity;other.impulse=-r.impulse;}
-        else hit={actorId:-100-i,type:0,kind:contact.kind,side:-side,severity,distance:r.distance,lateral:(r.lateral+b.lateral)*.5};
+         const rSide=Math.abs(r.lateral)>r.half-r.entry.car.width*.5-.7?-Math.sign(r.lateral):side;
+         if(contact.kind==='rear'){
+          const response=rearImpactResponse(severity),rBehind=dz<0;
+          r.speed*=rBehind?response.trailingSpeedMultiplier:response.leadingSpeedMultiplier;
+          r.impulse=rSide*(rBehind?response.trailingSideSpeed:response.leadingSideSpeed);
+          if(other){
+           other.speed*=rBehind?response.leadingSpeedMultiplier:response.trailingSpeedMultiplier;
+           other.impulse=-rSide*(rBehind?response.leadingSideSpeed:response.trailingSideSpeed);
+          }
+         }else{
+          r.speed*=1-.08*severity;r.impulse=side*(1+severity*2);
+          if(other){other.speed*=1-.08*severity;other.impulse=-r.impulse;}
+         }
+         if(!other)hit={actorId:-100-i,type:0,kind:contact.kind,side:-side,severity,
+          playerIsTrailing:contact.kind==='rear'?dz>0:undefined,
+          distance:r.distance,lateral:(r.lateral+b.lateral)*.5};
       }
     }
     for(const r of this.rivals)if(r.finishTime===null){
@@ -227,6 +272,30 @@ export class RivalRace {
     if(this.playerFinish===null)this.playerFinish=crossingTime(oldPlayer.distance,player.distance,this.finish,this.time,dt);
     this.time+=dt;
     return hit;
+  }
+  /** Full seven-rival state is independent of the traffic render pool. */
+  snapshot(){
+    return {time:this.time,playerFinish:this.playerFinish,
+     rivals:this.rivals.map(r=>{
+      const {entry,obstacles,...values}=r;
+      return {id:entry.id,...values,gearbox:{...r.gearbox}};
+     })};
+  }
+  restore(saved:ReturnType<RivalRace['snapshot']>){
+    if(!saved||!Number.isFinite(saved.time)||!Array.isArray(saved.rivals)
+       ||saved.rivals.length!==this.rivals.length
+       ||saved.rivals.some((r,i)=>r.id!==this.rivals[i].entry.id
+           ||!Number.isFinite(r.distance)||!Number.isFinite(r.lateral)
+           ||!Number.isFinite(r.speed)||!Number.isInteger(r.gearbox?.gear)))
+      throw Error('Invalid rival checkpoint');
+    this.time=saved.time;this.playerFinish=saved.playerFinish;
+    this.contactTimes.clear();this.trafficContacts.clear();
+    this.rivals.forEach((r,i)=>{
+      const {id,...values}=saved.rivals[i];
+      Object.assign(r,values);
+      r.obstacles=[];
+      r.nextDecision=this.time;r.lastDecision=this.time;
+    });
   }
   /** Finishers lead by actual crossing time. Everyone else is live-ranked by progress. */
   standings(player:RaceBody):RaceStanding[]{

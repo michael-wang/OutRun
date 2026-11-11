@@ -1,15 +1,17 @@
-import {TRAFFIC_TYPES,type TrafficActor} from './traffic';
+import {TRAFFIC_TYPES} from './traffic';
 const clamp=(n:number,lo=0,hi=1)=>Math.max(lo,Math.min(hi,n));
 /** Calibrate passing sound against *relative* road speed, not absolute player speed.
  * Loud crossings should remain an accent under the continuously audible engine. */
 export const PASS_AUDIO={minRelativeSpeed:12,fullRelativeSpeed:115,peakCap:.34,totalVoiceCap:.36,heavyMultiplier:1.17} as const;
-export function passGainFromRelativeSpeed(relativeSpeed:number,type:number){
- const speed=clamp((Math.abs(relativeSpeed)-PASS_AUDIO.minRelativeSpeed)/(PASS_AUDIO.fullRelativeSpeed-PASS_AUDIO.minRelativeSpeed));
- const heavy=type===1?PASS_AUDIO.heavyMultiplier:type===2?1.11:type===3?1.07:1;
+export function passGainFromRelativeSpeed(relativeSpeed:number,type:number,rival=false){
+ const min=rival?6:PASS_AUDIO.minRelativeSpeed;
+ const speed=clamp((Math.abs(relativeSpeed)-min)/(PASS_AUDIO.fullRelativeSpeed-min));
+ const heavy=rival ? .92 : type===1?PASS_AUDIO.heavyMultiplier:type===2?1.11:type===3?1.07:1;
  return Math.min(PASS_AUDIO.peakCap,(.09+.22*speed**1.3)*heavy);
 }
-export interface PassVoice {id:number;type:number;pan:number;gain:number;cutoff:number;rate:number}
-interface Pass {id:number;type:number;direction:number;side:number;started:number;lead:number;trail:number;peak:number}
+export interface PassVoice {id:number;type:number;pan:number;gain:number;cutoff:number;rate:number;rival?:boolean}
+export interface PassActor {id:number;type:number;distance:number;lateral:number;visible:boolean;rival?:boolean}
+interface Pass {id:number;type:number;rival?:boolean;direction:number;side:number;started:number;lead:number;trail:number;peak:number}
 /** Audio presentation only. Measured relative travel includes the game's arcade pace. */
 export class PassBy {
  readonly voices:(PassVoice|undefined)[]=[undefined,undefined];
@@ -17,22 +19,23 @@ export class PassBy {
  private time?:number;private nextStart=0;private blockedUntil=0;starts=0;crossings=0;private crossed=new Set<number>();
  reset(){this.suspend();this.played.clear();this.crossed.clear();this.starts=this.crossings=this.nextStart=this.blockedUntil=0;}
  suspend(){this.active.fill(undefined);this.voices.fill(undefined);this.previous.clear();this.time=undefined;}
- update(time:number,distance:number,lateral:number,extent:number,actors:readonly TrafficActor[],collisionId?:number){
+ update(time:number,distance:number,lateral:number,extent:number,actors:readonly PassActor[],collisionId?:number){
   if(this.time!==undefined&&time<this.time)this.reset();const dt=this.time===undefined?0:time-this.time;this.time=time;
   if(collisionId!==undefined){this.played.add(collisionId);this.blockedUntil=time+.8;this.active.fill(undefined);this.voices.fill(undefined);}
   const ids=new Set(actors.map(a=>a.id));for(const id of this.previous.keys())if(!ids.has(id))this.previous.delete(id);for(const id of this.played)if(!ids.has(id)){this.played.delete(id);this.crossed.delete(id);}
-  let candidate:{actor:TrafficActor;rate:number;z:number;side:number}|undefined;
+  let candidate:{actor:PassActor;rate:number;z:number;side:number}|undefined;
   for(const a of actors){
    const z=a.distance-distance,old=this.previous.get(a.id),rate=old!==undefined&&dt>0?(z-old)/dt:0,side=a.lateral-lateral;
-   this.previous.set(a.id,z);const safe=a.visible&&Math.abs(side)>extent+TRAFFIC_TYPES[a.type].width/2+.3&&Math.abs(side)<7.5;
+   this.previous.set(a.id,z);const width=a.rival?2.25:TRAFFIC_TYPES[a.type].width;
+   const safe=a.visible&&Math.abs(side)>extent+width/2+.25&&Math.abs(side)<8;
    const slot=this.active.findIndex(p=>p?.id===a.id),speed=Math.abs(rate);
    if(slot>=0){
     const p=this.active[slot]!,phase=z*p.direction;
     if(!safe||time-p.started>1.4||phase < -p.trail||phase>p.lead*1.3||(!this.crossed.has(a.id)&&rate*p.direction>=0)) {this.active[slot]=undefined;this.voices[slot]=undefined;continue;}
     if(phase<=0&&!this.crossed.has(a.id)){this.crossed.add(a.id);this.crossings++;}
-    const near=clamp(1-Math.abs(phase)/(phase>=0?p.lead:p.trail)),front=clamp(.5+phase/(p.lead+p.trail)),heavy=p.type!==0;
-    this.voices[slot]={id:a.id,type:a.type,pan:Math.sign(side)*(.70+.27*near),gain:p.peak*near*near,cutoff:heavy?700+front*2700:1300+front*5200,rate:.72+.55*front};
-   }else if(safe&&!this.played.has(a.id)&&speed>=PASS_AUDIO.minRelativeSpeed&&z*rate<0&&Math.abs(z)<=Math.min(24,Math.max(3,speed*(.28-.1*clamp(speed/85))))){
+    const near=clamp(1-Math.abs(phase)/(phase>=0?p.lead:p.trail)),front=clamp(.5+phase/(p.lead+p.trail)),heavy=p.type!==0&&!p.rival;
+    this.voices[slot]={id:a.id,type:a.type,rival:p.rival,pan:Math.sign(side)*(.70+.27*near),gain:p.peak*near*near,cutoff:heavy?700+front*2700:1300+front*(p.rival?6800:5200),rate:.72+.55*front};
+   }else if(safe&&!this.played.has(a.id)&&speed>=(a.rival?6:PASS_AUDIO.minRelativeSpeed)&&z*rate<0&&Math.abs(z)<=Math.min(24,Math.max(3,speed*(.28-.1*clamp(speed/85))))){
     if(time<this.blockedUntil){this.played.add(a.id);continue;}
     if(!candidate||Math.abs(z)<Math.abs(candidate.z))candidate={actor:a,rate,z,side};
    }
@@ -40,7 +43,7 @@ export class PassBy {
   for(let i=0;i<2;i++)if(this.active[i]&&!ids.has(this.active[i]!.id)){this.active[i]=undefined;this.voices[i]=undefined;}
   if(candidate&&time>=this.nextStart){const slot=this.active.findIndex(p=>!p);this.played.add(candidate.actor.id);if(slot>=0){
    const speed=Math.abs(candidate.rate),strength=clamp(speed/85),type=candidate.actor.type;
-   this.active[slot]={id:candidate.actor.id,type,direction:-Math.sign(candidate.rate),side:Math.sign(candidate.side),started:time,lead:Math.min(24,Math.max(3,speed*(.28-.1*strength))),trail:Math.min(28,Math.max(4,speed*(.35-.1*strength))),peak:passGainFromRelativeSpeed(speed,type)};
+   this.active[slot]={id:candidate.actor.id,type,direction:-Math.sign(candidate.rate),side:Math.sign(candidate.side),started:time,lead:Math.min(24,Math.max(3,speed*(.28-.1*strength))),trail:Math.min(28,Math.max(4,speed*(.35-.1*strength))),peak:passGainFromRelativeSpeed(speed,type,candidate.actor.rival),rival:candidate.actor.rival};
    this.starts++;this.nextStart=time+.30;
   }}
   return this.voices;

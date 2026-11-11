@@ -1,4 +1,5 @@
 import {warningTriangleGeometry,type Breakdown} from './breakdowns';
+import {breakdownLaneLateral} from './race-traffic-world';
 import {coastCurveConeLayout} from './coast-curve-cones';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import * as THREE from 'three';
@@ -49,7 +50,7 @@ export class RoadCones {
   private triangles?:readonly Breakdown[],private sunsetShadows=false,private geometryShadows=false,private coastalBends=false,
  ){
   this.recipe=triangles
-   ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:h.stopSide*(this.halfAt(h.distance)-1.75)})))
+   ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:breakdownLaneLateral(h.stopLane,h.stopSide,this.halfAt(h.distance))})))
    :[...coneLayout(seed,length),...(coastalBends?coastCurveConeLayout(sample,halfAt,length):[])];
   const g=triangles?warningTriangleGeometry():geometry();
   if(triangles)g.rotateY(Math.PI);
@@ -69,12 +70,6 @@ export class RoadCones {
    this.sunsetCast.count=0;this.sunsetCast.frustumCulled=false;
    this.sunsetCast.renderOrder=2;scene.add(this.sunsetCast);
   }
- }
- raceObstacles(center:number,radius:number){
-  return this.recipe.filter(c=>Math.abs(c.distance-center)<radius&&!this.hit.has(c.id)).map(c=>({
-   id:(this.triangles?'△':'C')+c.id,distance:c.distance,lateral:c.lateral??c.side*(this.halfAt(c.distance)-c.inset),
-   speed:0,width:.8,length:.8,
-  }));
  }
  update(time:number,player:number,lateral:number,speed:number,previous?:{distance:number;lateral:number},halfWidth=1.55){
   let hits=0,count=0;this.shown=[];
@@ -133,6 +128,13 @@ export class RoadCones {
   this.mesh.count=count;this.mesh.instanceMatrix.needsUpdate=true;
   if(this.sunsetCast){this.sunsetCast.count=count;this.sunsetCast.instanceMatrix.needsUpdate=true;}
   return hits;
+ }
+ snapshot(){return {hit:[...this.hit],flying:[...this.flying].map(([id,flight])=>[id,{...flight}] as [number,Flight])};}
+ restore(saved:ReturnType<RoadCones['snapshot']>){
+  if(!saved||!Array.isArray(saved.hit)||!Array.isArray(saved.flying))throw Error('Invalid cone checkpoint');
+  this.reset();
+  for(const id of saved.hit)this.hit.add(id);
+  for(const [id,flight] of saved.flying)this.flying.set(id,{...flight});
  }
  reset(){this.hit.clear();this.flying.clear();this.mesh.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.shown=[];}
  inspect(){return {capacity:48,active:this.mesh.count,sunsetProjectedShadows:this.sunsetCast?.count??0,hit:[...this.hit],flying:[...this.flying.keys()],trajectories:[...this.flying].map(([id,f])=>({id,forward:f.forward,sideways:f.sideways,up:f.up,spin:f.spin})),shown:this.shown,recipe:this.recipe};}

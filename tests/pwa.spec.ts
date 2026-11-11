@@ -18,6 +18,10 @@ test.afterEach(async({context},info)=>{
  if(info.status===info.expectedStatus)return;
  for(const p of context.pages())console.error('PWA page state',p.url(),await p.evaluate(()=>({
   loading:document.querySelector('#game-loading')?.getAttribute('data-phase'),
+  driveMode:document.documentElement.dataset.driveMode,
+  countdown:document.querySelector('#ready-countdown')?.textContent,
+  visibility:document.visibilityState,
+  webglLost:(document.querySelector('#view canvas') as HTMLCanvasElement|null)?.getContext('webgl2')?.isContextLost(),
   distance:document.querySelector('#drive-distance')?.textContent,
   detail:document.querySelector('#loading-detail')?.textContent,
   startup:(window as any).__startupDiagnostics?.report()?.finalReadiness ?? null
@@ -57,6 +61,11 @@ test('installed coast launches online and offline within its publishing scope',a
  }
  await startButton.click();
  await waitForCoast(page);
+ // The course must never auto-start after loading, including installed PWAs.
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready');
+ await expect(page.locator('#race-start')).toBeVisible();
+ await page.locator('#race-start').click();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:process.env.CI?90000:10000});
  expect(await page.locator('link[rel=manifest]').evaluate((el:HTMLLinkElement)=>el.href)).toBe(manifestUrl.href);
  const distance=async()=>parseInt((await page.locator('#drive-distance').textContent())!.replaceAll(',',''),10);
  await expect.poll(distance,{timeout:30000}).toBe(startDistance);
@@ -66,6 +75,8 @@ test('installed coast launches online and offline within its publishing scope',a
  await page.locator('#pause').click();
  await page.keyboard.press('KeyR');
  await waitForCoast(page);
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready');
+ await expect(page.locator('#race-start')).toBeVisible();
  await expect.poll(distance,{timeout:30000}).toBe(startDistance);
  const registration=await page.evaluate(async()=>(await navigator.serviceWorker.ready).scope);
  expect(registration).toBe(site.href);
@@ -90,5 +101,8 @@ test('installed coast launches online and offline within its publishing scope',a
  await reopened.goto(playUrl);
  await reopened.locator('#start-race').click();
  await waitForCoast(reopened);
+ await expect(reopened.locator('html')).toHaveAttribute('data-drive-mode','ready');
+ await reopened.locator('#race-start').click();
+ await expect(reopened.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:process.env.CI?90000:10000});
  expect(errors).toEqual([]);
 });

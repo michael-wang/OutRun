@@ -120,3 +120,31 @@ html:not([data-manual-landscape]) .landscape-fallback{display:none}
  .cabinet-footer .landscape-control{max-width:40%}
  #stage-rotate .landscape-control{margin:6px 0 10px}
 }
+
+/* Permanent app metadata: survives the Boot, Menu, Stage Loading and race lifecycle. */
+#runtime-readout{
+ position:fixed;z-index:12000;
+ top:max(9px,env(safe-area-inset-top));right:max(11px,env(safe-area-inset-right));
+ padding:5px 9px 6px;
+ min-width:78px;display:grid;justify-items:end;gap:2px;
+ background:rgba(11,21,28,.56);
+ border-right:2px solid #ff9b65;
+ color:#fff5e4;pointer-events:none;white-space:nowrap;
+ text-shadow:0 1px 3px #030c12;
+ font-variant-numeric:tabular-nums;
+}
+#runtime-readout #drive-fps{font:750 12px/1.15 Arial,sans-serif;letter-spacing:.015em}
+#runtime-readout #game-version{font:500 10px/1.1 Arial,sans-serif;letter-spacing:.025em;color:#d2d9dc}
+@media(orientation:landscape) and (max-height:520px){
+ #runtime-readout{top:max(6px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));padding:3px 7px 4px;min-width:72px}
+ #runtime-readout #drive-fps{font-size:11px}
+ #runtime-readout #game-version{font-size:9px}
+}
+
+/* Reserve the upper-right lane for persistent FPS/version on narrow screens. */
+@media (orientation:landscape) and (max-width:1100px){
+ #racing-menu .cabinet-header{padding-right:45px}
+}
+@media (orientation:portrait){
+ #racing-menu .mode-mark{display:none}
+}

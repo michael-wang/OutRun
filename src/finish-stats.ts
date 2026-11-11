@@ -7,6 +7,12 @@ export class FinishStats {
  private peak=0;
  private collisions=0;
  reset(){this.speedMetres=0;this.peak=0;this.collisions=0;}
+ snapshot(){return {speedMetres:this.speedMetres,peak:this.peak,collisions:this.collisions};}
+ restore(saved:ReturnType<FinishStats['snapshot']>){
+  if(!saved||!Number.isFinite(saved.speedMetres)||!Number.isFinite(saved.peak)
+    ||!Number.isInteger(saved.collisions))throw Error('Invalid finish stats checkpoint');
+  this.speedMetres=saved.speedMetres;this.peak=saved.peak;this.collisions=saved.collisions;
+ }
  addFrame(dt:number,metresPerSecond:number){
   if(!Number.isFinite(dt)||dt<=0||!Number.isFinite(metresPerSecond))return;
   const v=Math.max(0,metresPerSecond);

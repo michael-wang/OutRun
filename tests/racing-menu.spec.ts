@@ -22,6 +22,8 @@ test('boot, three previews and input ownership before the coast module',async({p
   await page.route('**/racing-menu-*.js',async route=>{await hold;await route.continue();});
   await page.goto(site.href,{waitUntil:'domcontentloaded'});
   await expect(page.locator('#boot')).toBeVisible();
+  await expect(page.locator('#runtime-readout')).toBeVisible();
+  await expect(page.locator('#game-version')).toHaveText(/^v\d+\.\d+\.\d+(?:-dev\.\d+)?$/);
   await shot(page,'boot');
   release();
   const stage=(id:string)=>page.locator('[data-stage='+id+']');
@@ -67,6 +69,7 @@ test('boot, three previews and input ownership before the coast module',async({p
   await pulse(0);
   await expect(page.locator('#racing-menu')).toHaveCount(0);
   await expect(page.locator('#game-loading')).toBeVisible();
+  await expect(page.locator('#runtime-readout')).toBeVisible();
   await page.locator('#stage-art img').evaluate((img:HTMLImageElement)=>img.decode());
   await shot(page,'stage-loading');
   resume();
@@ -82,8 +85,10 @@ test('a failed stage module can be retried with a clean stage document',async({p
   await expect(page.locator('#stage-retry')).toBeVisible();
   fail=false;
   await page.locator('#stage-retry').click();
-  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
   await expect(page.locator('#game-loading')).toBeHidden();
+  await page.locator('#race-start').click();
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
 });
 
 test('boot retry recovers when the entry script is unavailable',async({page})=>{

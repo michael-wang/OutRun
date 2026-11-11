@@ -1,6 +1,6 @@
 import {test,expect} from '@playwright/test';
 
-test('the public coast starts automatically at zero speed with its approved HUD',async({browser})=>{
+test('the public coast waits for START then begins at zero speed with its approved HUD',async({browser})=>{
  const context=await browser.newContext({viewport:{width:896,height:414},isMobile:true,hasTouch:true});
  try{
   const page=await context.newPage();
@@ -11,7 +11,9 @@ test('the public coast starts automatically at zero speed with its approved HUD'
   await expect(page.locator('#view canvas')).toBeVisible();
   await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
   await expect(page.locator('#speed')).toBeVisible();
-  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+  await page.locator('#race-start').tap();
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
   const state=await page.evaluate(()=>(window as any).__drive.snapshot());
   expect(state.mode).toBe('playing');
   expect(state.speed).toBe(0);
@@ -23,7 +25,7 @@ test('the public coast starts automatically at zero speed with its approved HUD'
  }finally{await context.close();}
 });
 
-test('portrait waits for landscape, then launches automatically without tapping Play',async({browser})=>{
+test('portrait waits for landscape and an intentional START tap',async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
  try{
   const page=await context.newPage();
@@ -41,7 +43,9 @@ test('portrait waits for landscape, then launches automatically without tapping 
   await page.setViewportSize({width:844,height:390});
   await expect(page.locator('#rotate')).toBeHidden({timeout:60000});
   await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
-  await expect.poll(()=>page.evaluate(()=>(window as any).__drive?.snapshot()?.mode)).toBe('playing');
+  await expect.poll(()=>page.evaluate(()=>(window as any).__drive?.snapshot()?.mode)).toBe('ready');
+  await page.locator('#race-start').tap();
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
  }finally{await context.close();}
 });
 
@@ -50,7 +54,9 @@ test('diagnostic at= coordinate starts stationary with the public driving HUD',a
   await page.locator('#start-race').click();
   await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
  await expect(page.locator('#player-start')).toBeHidden({timeout:60000});
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+ await page.locator('#race-start').click();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
  const state=await page.evaluate(()=>(window as any).__drive.snapshot());
  expect(state.mode).toBe('playing');
  expect(state.distance).toBe(1360);
@@ -59,7 +65,7 @@ test('diagnostic at= coordinate starts stationary with the public driving HUD',a
  await expect(page.locator('#qa-tools')).toBeHidden();
 });
 
-test('iPhone landscape also auto-launches, with no inert fullscreen button',async({browser})=>{
+test('iPhone landscape also requires START, with no inert fullscreen button',async({browser})=>{
  const ua='Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Mobile/15E148 Safari/604.1';
  const context=await browser.newContext({viewport:{width:896,height:414},isMobile:true,hasTouch:true,userAgent:ua});
  await context.addInitScript(()=>{
@@ -76,5 +82,8 @@ test('iPhone landscape also auto-launches, with no inert fullscreen button',asyn
   await expect(page.locator('#player-install-guide')).toBeHidden();
   await expect(page.locator('#l2-fullscreen')).toBeHidden();
   await expect(page.locator('#speed')).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready');
+  await page.locator('#race-start').tap();
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
  }finally{await context.close();}
 });

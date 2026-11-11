@@ -65,7 +65,9 @@ test('one confirm requests landscape, then waits for Worker readiness',async({br
     await expect(page.locator('#game-loading')).toBeVisible();
     await page.evaluate(()=>(window as any).__releaseRoad());
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
-    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+    await page.locator('#race-start').tap();
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
   }finally{await context.close();}
 });
 
@@ -77,7 +79,9 @@ test('iPhone selection waits for manual rotation without requesting fullscreen',
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
     await expect(page.locator('#rotate-launch-status')).toContainText('橫放手機');
     await page.setViewportSize({width:844,height:390});
-    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+    await page.locator('#race-start').tap();
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
     expect(await page.evaluate(()=>(window as any).__fullscreenRequests)).toBe(0);
   }finally{await context.close();}
 });
@@ -116,7 +120,9 @@ for(const pending of ['fullscreen','orientation'] as const){
         await page.setViewportSize({width:915,height:412});
       }
       await page.locator('#start-race').tap();
-      await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+      await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+    await page.locator('#race-start').tap();
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
     }finally{await context.close();}
   });
 }
@@ -143,7 +149,9 @@ test('system fullscreen exit can be recovered in the selector and a paused drive
     await page.setViewportSize(landscape);
     await page.locator('#start-race').tap();
     await expect(page.locator('#game-loading')).toBeHidden({timeout:90000});
-    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+    await page.locator('#race-start').tap();
+    await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
     await page.evaluate(()=>(window as any).__systemExit());
     await page.setViewportSize(portrait);
     const driveMode=page.locator('html');

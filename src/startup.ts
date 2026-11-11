@@ -1,11 +1,32 @@
 import { stages, type RacingStage } from './racing-stages';
 import { armStageAudio } from './stage-audio';
 import { immersive, landscapeControl } from './immersive';
+import {mountRuntimeReadout} from './runtime-readout';
+import {GAME_VERSION} from './build-info';
+import {readRaceCheckpoint,type RaceCheckpoint} from './race-recovery';
+
+mountRuntimeReadout();
 
 const boot = document.getElementById('boot')!;
 const surface = document.getElementById('game-loading')!;
 
-async function enter(stage: RacingStage) {
+let activeRace=false;
+// A history entry created after user activation can consume an accidental Back.
+// Safari may still claim an edge swipe; the checkpoint remains the real safety net.
+function armNavigationGuard(){
+ try{
+  if(!window.history.state?.outrunRaceGuard)
+   window.history.pushState({...window.history.state,outrunRaceGuard:true},'');
+ }catch{/* Embedded browsers can deny History API writes. */}
+}
+window.addEventListener('popstate',()=>{
+ if(!activeRace)return;
+ armNavigationGuard();
+ window.dispatchEvent(new Event('outrun:back-attempt'));
+});
+async function enter(stage: RacingStage,recovery?:RaceCheckpoint) {
+ activeRace=true;
+ armNavigationGuard();
   if (!stage.enter || !stage.loading) return;
   boot.hidden = true;
   document.getElementById('stage-rotate')!.replaceChildren(landscapeControl());
@@ -21,14 +42,16 @@ async function enter(stage: RacingStage) {
   };
   try {
     const loading = await import('./loading');
-    loading.loadingStarted('正在載入關卡', '');
+    loading.loadingStarted(recovery?'正在恢復賽事':'正在載入關卡', '');
     await loading.loadingStep(0, '正在載入關卡', '');
-    try { await stage.enter(() => showMenu(false)); }
+    try { await stage.enter(() => {activeRace=false;showMenu(false);},recovery); }
     catch (error) {
+      activeRace=false;
       loading.loadingFailed('關卡資源無法載入，請檢查連線後再試一次。');
       console.error('Stage preparation failed', error);
     }
   } catch (error) {
+    activeRace=false;
     surface.dataset.phase = 'error';
     surface.setAttribute('aria-busy','false');
     document.getElementById('loading-title')!.textContent = '關卡載入失敗';
@@ -38,12 +61,17 @@ async function enter(stage: RacingStage) {
 }
 
 async function bootMenu(firstEntry: boolean) {
+  const recovery=readRaceCheckpoint(GAME_VERSION);
   const retry = stages.find(stage => stage.enter && stage.id === history.state?.retryStage);
   if (retry) {
     const {retryStage: _, ...rest} = history.state;
     history.replaceState(rest, '');
-    await enter(retry);
+    await enter(retry,recovery??undefined);
     return;
+  }
+  if(firstEntry&&recovery){
+    const stage=stages.find(s=>s.id===recovery.stage&&s.enter);
+    if(stage){await enter(stage,recovery);return;}
   }
   const { mountMenu } = await import('./racing-menu');
   async function waitForEntry() {

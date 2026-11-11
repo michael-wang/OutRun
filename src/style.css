@@ -1,5 +1,8 @@
 :root{font-family:Arial,Helvetica,sans-serif;color:#fff9e9;background:#7fc6df;font-synthesis:none}*{box-sizing:border-box}body{margin:0;overflow:hidden}button{font:inherit;cursor:pointer;border:1px solid #ffffff65;background:#173d41d9;color:#fff9e9;border-radius:7px;padding:11px 17px;font-weight:700;touch-action:manipulation}button:hover{background:#246069}button:focus-visible{outline:3px solid #ffe5a2;outline-offset:3px}button:active,button.pressed,button.active{background:#ffc980;color:#153c40;transform:translateY(1px)}[hidden]{display:none!important}#view,canvas{position:fixed;inset:0;width:100%;height:100%}.vignette{position:fixed;inset:0;pointer-events:none;background:linear-gradient(#092f3b38,transparent 25%,transparent 70%,#082f3544)}header{position:fixed;top:max(22px,env(safe-area-inset-top));left:max(28px,env(safe-area-inset-left));right:max(28px,env(safe-area-inset-right));display:flex;justify-content:space-between;align-items:center;gap:10px}.wordmark{font-weight:900;letter-spacing:3px;font-size:18px;text-shadow:0 2px 12px #14494b}.wordmark small{display:block;font-size:9px;letter-spacing:2px;margin-top:6px}nav{display:flex;gap:7px}nav button{font-size:12px;background:#163f459e;backdrop-filter:blur(8px)}.panel{position:fixed;top:50%;left:7%;transform:translateY(-45%);padding:32px 38px;background:#123e43ed;border:1px solid #a5d1c669;border-radius:12px;box-shadow:0 20px 90px #133a4230;width:min(460px,86vw)}.eyebrow{color:#f4cc8d;font-size:10px;font-weight:bold;letter-spacing:2px}h1{font-size:clamp(36px,4.7vw,64px);line-height:1.02;letter-spacing:-2.5px;margin:22px 0}h2{font-size:34px}p{font-size:14px;line-height:1.65;color:#d5e6df}.primary{display:flex;justify-content:space-between;width:100%;background:#ffd297;color:#173e40;border:0;padding:16px 22px;margin:22px 0;font-size:18px}.primary:hover{background:#ffe4b9}.keys{font-size:12px;line-height:1.9}.panel>small{font-size:9px;letter-spacing:1.7px;color:#9dbdb8}.setting{display:flex;align-items:center;gap:12px;font-size:18px}.setting input{width:24px;height:24px;accent-color:#ffc980}#touch{display:none;position:fixed;bottom:max(20px,env(safe-area-inset-bottom));left:max(22px,env(safe-area-inset-left));right:max(22px,env(safe-area-inset-right));pointer-events:none;justify-content:space-between;align-items:flex-end}#touch button{pointer-events:auto;min-width:76px;min-height:65px;backdrop-filter:blur(6px);background:#163f459e;border:1px solid #efffeab3;font-size:24px}#touch button.pressed,#touch button.active{background:#ffd297;color:#123e43}#touch .steering{display:flex;gap:10px}#touch .pedals{display:flex;flex-direction:column;gap:8px}#touch .pedals button{font-size:13px;width:100px}#touch [data-control=gas]{background:#23665bc9}#touch.swapped{flex-direction:row-reverse}#rotate{display:none} @media(pointer:coarse),(max-width:950px){#touch.active{display:flex}header{top:12px;left:18px;right:18px}.wordmark{font-size:14px;letter-spacing:2px}.wordmark small{font-size:8px}nav button{padding:9px 12px;font-size:11px}.panel{padding:22px 28px;width:390px;left:7%;transform:translateY(-42%)}h1{font-size:40px;margin:14px 0}.panel p{margin:8px 0;font-size:12px}.primary{padding:12px 18px;margin:13px 0}.panel .keys{font-size:10px}.eyebrow{font-size:9px}.panel>small{font-size:8px}} @media(max-width:600px) and (orientation:portrait){#rotate{position:fixed;inset:0;background:#123e43f7;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;text-align:center;font-size:22px;z-index:20}#rotate span{font-size:60px;color:#ffd297}#rotate small{font-size:13px;color:#c3ded5}}
 
+/* History overscroll is suppressible in some engines, but not all iOS Safari gestures. */
+html,body,#app{overscroll-behavior-x:none}
+#view,#view canvas,#touch{touch-action:none}
 #app{position:fixed;inset:0;width:100%;height:100dvh;overflow:hidden;background:#7fc6df}#app:fullscreen{height:100%;width:100%}#immersive-note{position:fixed;top:80px;left:max(24px,env(safe-area-inset-left));width:min(310px,45vw);padding:9px 12px;border-radius:6px;background:#123e43e8;color:#fff4dc;font-size:11px;line-height:1.4;pointer-events:none;z-index:3}
 @media(pointer:coarse),(max-width:1000px){header{top:max(12px,env(safe-area-inset-top));left:max(24px,env(safe-area-inset-left));right:max(24px,env(safe-area-inset-right))}nav{gap:5px}nav button{padding:10px 11px;min-height:40px}.wordmark small{display:none}#touch.active{display:flex}#touch{bottom:max(24px,env(safe-area-inset-bottom));left:max(24px,env(safe-area-inset-left));right:max(24px,env(safe-area-inset-right))}#immersive-note{top:63px;font-size:10px;max-width:290px}.panel{max-height:calc(100dvh - 85px);overflow:auto;top:53%;padding:18px 26px}.panel h1{font-size:36px;margin:10px 0}.panel .primary{margin:10px 0}.panel .keys{font-size:10px}}
 @media(pointer:coarse) and (orientation:portrait){#rotate{position:fixed;inset:0;background:#123e43fa;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;text-align:center;font-size:22px;z-index:20}#rotate span{font-size:60px;color:#ffd297}#rotate small{font-size:13px;color:#c3ded5}}@media(max-width:680px){.wordmark{display:none}nav{width:100%;justify-content:space-between}}
@@ -24,20 +27,15 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
 @media(pointer:coarse),(max-width:1000px){header nav{margin-left:0;margin-right:auto}#immersive-note{top:70px}}
 /* v0.4.1: one absolute-position strip, shared with the keyboard virtual wheel. */
 #touch.active{display:flex}#steering-strip{--steer:0;position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px;width:clamp(260px,35vw,400px);height:88px;padding:12px 16px;border:1px solid #f4e4b69c;border-radius:12px;background:#153e45dc;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-.steer-label{font-size:11px;font-weight:700;letter-spacing:3px;text-align:center;color:#ffe2ad}.steer-hint{font-size:8px;letter-spacing:1px;text-align:center;color:#c0d7d3}.steer-rail{position:absolute;left:0;right:0;top:42px;height:3px;background:linear-gradient(90deg,#d4b58466,#fff4d5,#d4b58466);pointer-events:none}.steer-center{position:absolute;left:50%;top:-8px;width:2px;height:19px;background:#fff6dc}.steer-cursor{position:absolute;left:clamp(8px,calc(50% + var(--steer)*50%),calc(100% - 8px));top:-11px;width:16px;height:25px;border-radius:5px;background:#ffd18b;box-shadow:0 0 10px #ffc98055;transform:translateX(-50%)}.steer-label{margin-bottom:15px}.steer-hint{margin-top:5px}
-@media(pointer:fine) and (min-width:1001px){#steering-strip{width:280px;height:74px;opacity:.85}.steer-rail{top:36px}.steer-hint{font-size:7px}}
-@media(max-width:880px){#steering-strip{width:34vw;min-width:250px;height:80px}.steer-rail{top:38px}}
+@media(pointer:fine) and (min-width:1001px){#steering-strip{width:280px;height:74px;opacity:.85}}
+@media(max-width:880px){#steering-strip{width:34vw;min-width:250px;height:80px}}
 
 
 
 @media(pointer:coarse),(max-width:1000px){#immersive-note{left:auto;right:max(24px,env(safe-area-inset-right));top:16px;max-width:220px}}
 
-/* Continuous finger position plus a separate effective-notch pip. */
-.steer-rail:after{content:'';position:absolute;left:clamp(8px,calc(50% + var(--effective-steer,0)*50%),calc(100% - 8px));top:15px;width:5px;height:5px;background:#fff5d8;border-radius:50%;transform:translateX(-50%)}
 /* v0.7C.1: the whole capture area is the actual short-travel steering range. */
 #steering-strip{width:min(144px,32vw);min-width:0;height:88px;padding:10px 8px}
-#steering-strip .steer-label{font-size:10px;letter-spacing:.5px;white-space:nowrap}
-#steering-strip .steer-hint{font-size:7px;letter-spacing:0;white-space:nowrap}
 @media(max-width:880px){#steering-strip{width:min(144px,32vw);min-width:0;height:80px}}
 
 
@@ -45,7 +43,7 @@ header nav{margin-left:0;margin-right:auto}header .wordmark{display:none}
 @media(pointer:coarse),(max-width:1000px){
 
 
- #steering-strip{height:52px;padding:0 8px}#steering-strip .steer-rail{top:50%}
+ #steering-strip{height:52px;padding:0 8px}
 }
 
 #gamepad-status{position:fixed;right:12px;bottom:8px;z-index:25;background:#123e43dd;border-radius:5px;padding:4px 8px;color:#fff;font:11px sans-serif;pointer-events:none} a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #ffe5a2;outline-offset:3px}
@@ -84,10 +82,7 @@ html:not([data-qa="true"]) #l2-hud,html:not([data-qa="true"]) #l2-feedback-bar,h
 #drive-hud{position:fixed;top:max(16px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);font:700 16px/1.4 system-ui;font-variant-numeric:tabular-nums;white-space:nowrap;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #route-name{position:fixed;top:calc(max(16px,env(safe-area-inset-top)) + 48px);left:max(24px,env(safe-area-inset-left));max-width:29vw;font:11px/1.3 system-ui;color:#fff3d6;text-shadow:0 1px 3px #071323;pointer-events:none}
 #release-version{display:block;margin-top:3px;font:10px/1.2 system-ui;color:#e1e8e8;text-shadow:0 1px 2px #071323;pointer-events:none}
-#drive-readout{position:fixed;z-index:4;top:max(12px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:5px 8px;border-radius:4px;background:rgba(24,27,30,.48);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums}
-#drive-readout[hidden]{display:none}
-#drive-fps{font:500 16px/1.2 Arial,sans-serif;color:#c5c8cb}
-#game-version{font:10px/1.2 Arial,sans-serif;color:#aeb4b9}
+
 #app #immersive-note{top:calc(max(12px,env(safe-area-inset-top)) + 54px)}
 #app #l2-hud{top:calc(max(16px,env(safe-area-inset-top)) + 96px);left:max(24px,env(safe-area-inset-left));max-width:calc(100vw - 48px);font-size:10px}
 
@@ -360,7 +355,6 @@ html[data-qa="true"]:has(#scene-inspector:not([hidden])) #stream-health-hud{
 header #pause,
 #touch.active button[data-control],
 #touch.active #steering-strip,
-#drive-readout:not([hidden]),
 #gear{
  background:transparent;
  backdrop-filter:none;
@@ -374,10 +368,6 @@ header #pause,
 }
 #touch.active #steering-strip{
  border-color:rgba(255,234,197,.67);
-}
-#drive-readout:not([hidden]){
- border:1px solid rgba(240,235,219,.50);
- text-shadow:0 1px 3px #061722,0 0 5px #061722;
 }
 #gear{
  border-color:rgba(107,201,232,.68);
@@ -473,88 +463,6 @@ html[data-player-ui="true"] #player-finish-stats dd{
 }
 
 
-/* Finish-only credits HUD: the car, road and sunset own the centre of screen.
-   Works for desktop and landscape phones without covering the car. */
-html[data-player-ui="true"] #player-start[data-finished="true"]{
- top:auto;left:auto;
- right:max(16px,env(safe-area-inset-right));
- bottom:max(14px,env(safe-area-inset-bottom));
- transform:none;
- width:min(284px,calc(100vw - 32px));
- max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
- padding:11px 12px 10px;gap:8px;
- align-items:stretch;text-align:left;
- border:1px solid #ffedcb91;border-radius:10px;
- background:#0b2c3440;box-shadow:0 5px 20px #06191f38;
- color:#fff7e7;pointer-events:auto;overflow-y:auto;
- text-shadow:0 1px 6px #061f28db;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] .player-title{
- font:750 19px/1.15 system-ui,"PingFang TC","Microsoft JhengHei",sans-serif;
- font-style:normal;letter-spacing:.07em;text-align:left;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-subtitle{
- display:none;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
- gap:9px 10px;width:100%;max-width:none;
- margin:0;padding:8px 0 2px;
- border-top:1px solid #ffe5b76b;
- justify-content:stretch;text-align:left;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats>div{
- min-width:0;align-items:flex-start;gap:2px;padding:0;border:0;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dt{
- font:500 10px/1.25 system-ui,"PingFang TC",sans-serif;
- letter-spacing:.035em;color:#f7e0bd;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dd{
- margin:0;font:650 14px/1.25 system-ui,"PingFang TC",sans-serif;
- color:#fff7e7;white-space:nowrap;
-}
-/* Pronounced strokes, transparent fill: the accepted game HUD language. */
-html[data-player-ui="true"] #player-start[data-finished="true"] #player-play{
- display:block;width:100%;min-width:0;min-height:38px;
- margin:1px 0 0;padding:7px 12px;
- border:1.5px solid #ffd69f;border-radius:7px;
- background:#ffd69f27;color:#fff4dd;box-shadow:none;
- font:700 15px/1.25 system-ui,"PingFang TC",sans-serif;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] .player-secondary{
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
- gap:7px;width:100%;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] .player-secondary button{
- width:100%;min-width:0;min-height:34px;
- padding:6px 8px;border:1.5px solid #f7e8ccbd;border-radius:7px;
- background:#0c303f4d;color:#fff3de;
- font:600 11px/1.25 system-ui,"PingFang TC",sans-serif;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play,.player-secondary button):hover{
- background:#ffe0ad48;border-color:#ffe9c8;
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play,.player-secondary button):active{
- background:#ffd29766;color:#fff9ef;transform:translateY(1px);
-}
-html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play,.player-secondary button):focus-visible{
- outline:2px solid #fff5d5;outline-offset:2px;
-}
-@media(orientation:landscape) and (max-height:500px){
- html[data-player-ui="true"] #player-start[data-finished="true"]{
-  right:max(10px,env(safe-area-inset-right));
-  bottom:max(9px,env(safe-area-inset-bottom));
-  width:min(242px,calc(100vw - 20px));
-  padding:8px 10px;gap:5px;border-radius:8px;
- }
- html[data-player-ui="true"] #player-start[data-finished="true"] .player-title{font-size:16px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats{gap:6px 8px;padding-top:6px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dt{font-size:9px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-finish-stats dd{font-size:12px}
- html[data-player-ui="true"] #player-start[data-finished="true"] #player-play{min-height:34px;font-size:13px;padding:5px 9px}
- html[data-player-ui="true"] #player-start[data-finished="true"] .player-secondary button{min-height:30px;padding:5px;font-size:10px}
-}
 /* Hero-car finish selection: same translucent borders as the rest of the HUD.
    Only visible when opening the existing settings drawer. */
 #car-paint-setting{
@@ -591,12 +499,8 @@ html[data-player-ui="true"] #player-start[data-finished="true"] :is(#player-play
 #car-paint-list button:focus-visible,#car-paint-list button:focus{
  outline:2px solid #ffdd9c;outline-offset:0;background:#ffdfaa44;
 }
-/* Distance is in the existing compact FPS/build box, never a second HUD. */
-#drive-distance{
- display:block;margin:1px 0 0;
- color:#c5c8cb;font:600 11px/1.25 Arial,sans-serif;
- letter-spacing:.02em;white-space:nowrap;
-}
+/* Raw road distance remains for existing QA/PWA scripts. Public distance is shown in #race-distance. */
+#drive-distance{display:none!important}
 
 
 #drive-fps-diagnostic output:not(:empty){display:block;padding:4px 8px;background:#123540e8;color:#fff4d8;font:700 12px/1.4 system-ui;text-align:center}
@@ -668,4 +572,224 @@ html[data-player-ui="true"] #player-start[data-finished="true"] #results-menu{
 }
 @media (orientation:portrait){
  #race-standings{top:30%;width:min(292px,80vw);max-height:45dvh}
+}
+
+/* Racing R0.2e — one-results-panel arcade finish, always-on runtime metadata,
+   and a unified three-part race instrument. No large HUD cards over the sunset. */
+html[data-player-ui="true"] #drive-hud{display:none!important}
+#race-position{
+ position:fixed;top:max(11px,env(safe-area-inset-top));left:50%;right:auto;
+ transform:translateX(-50%);
+ display:flex;align-items:stretch;gap:0;
+ padding:4px 5px 5px;
+ border:1px solid rgba(255,220,169,.38);border-top:2px solid #ff9365;border-bottom:0;
+ border-radius:4px 4px 0 0;
+ background:linear-gradient(180deg,rgba(13,23,31,.65),rgba(13,23,31,.31));
+ pointer-events:none;white-space:nowrap;text-shadow:0 1px 4px #041018;
+ font-variant-numeric:tabular-nums;box-shadow:none;
+}
+#race-position[hidden]{display:none!important}
+#race-position .race-hud-cell{
+ display:flex;flex-direction:column;justify-content:center;gap:1px;
+ padding:0 clamp(9px,1.45vw,18px);min-width:0;
+ border-right:1px solid #e9b88d61;
+}
+#race-position .race-hud-cell:nth-child(3){border:0}
+#race-position .race-hud-cell>small{
+ position:static;top:auto;left:auto;transform:none;
+ font:700 9px/1.2 system-ui,"PingFang TC",sans-serif;
+ color:#ffca99;letter-spacing:.08em;text-align:left;
+}
+#race-position .race-hud-cell>span,
+#race-position time{
+ display:block;font:750 clamp(12px,1.23vw,17px)/1.14 Arial,"PingFang TC",sans-serif;
+ white-space:nowrap;color:#fff4e5;
+}
+#race-position .race-hud-rank>span{display:flex;align-items:baseline;gap:4px}
+#race-position .race-hud-rank b{font:italic 900 22px/.97 Arial,sans-serif;color:#ffbe7c}
+#race-position .race-hud-rank em{font:700 12px/1 Arial,sans-serif;color:#c7d4d5;font-style:normal}
+#race-position #race-distance{font-size:clamp(11px,1.05vw,15px)}
+
+/* One restrained results board: finish order, times and exactly two actions. */
+#race-standings{
+ z-index:24;left:max(18px,env(safe-area-inset-left));top:50%;
+ transform:translateY(-50%);width:min(325px,37vw);
+ max-height:calc(100dvh - 30px);
+ padding:14px 14px 13px;
+ border:1px solid #edc69a8c;border-top:3px solid #ff9160;
+ border-radius:7px;background:rgba(10,23,30,.84);
+ box-shadow:0 6px 22px #06101545;
+ color:#fff5e6;pointer-events:auto;
+ overflow-y:auto;scrollbar-width:thin;
+ text-shadow:0 1px 2px #03121e;
+}
+#race-standings[hidden]{display:none!important}
+#race-standings .result-eyebrow{
+ color:#ffad79;font:italic 800 9px/1.1 Arial,sans-serif;
+ letter-spacing:.20em;margin-bottom:5px;
+}
+#race-standings .result-heading{
+ display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+ padding-bottom:8px;margin-bottom:7px;
+ border-bottom:1px solid #cdb99766;
+}
+#race-standings #race-standings-title{
+ margin:0;padding:0;border:0;
+ color:#fff0d6;font:800 20px/1.1 system-ui,"PingFang TC",sans-serif;
+ letter-spacing:.09em;
+}
+#race-standings #result-player-rank{
+ color:#ffbe76;font:italic 900 29px/1 Arial,sans-serif;letter-spacing:-.04em;
+}
+#race-standings #result-player-rank small{
+ color:#b6c5c8;font:700 12px/1 Arial,sans-serif;letter-spacing:0;
+}
+#race-standings .result-columns{
+ display:flex;justify-content:space-between;
+ font:650 9px/1.2 system-ui,"PingFang TC",sans-serif;
+ color:#cfcdc6;letter-spacing:.05em;padding:0 5px 4px 8px;
+}
+#race-standings-list{gap:2px}
+#race-standings-list li{
+ min-height:26px;padding:2px 5px 2px 7px;gap:6px;
+ border-left-width:3px;grid-template-columns:25px minmax(0,1fr) 73px;
+ background:transparent;font-size:12px;
+}
+#race-standings-list li[data-player=true]{
+ background:linear-gradient(90deg,#ffbd7738,transparent 95%);
+ outline:1px solid #ffcb8655;outline-offset:-1px;
+}
+#race-standings-list .race-place{color:#ffbe7d;font:italic 900 13px/1 Arial,sans-serif}
+#race-standings-list .race-name{font:750 12px/1.2 system-ui,"PingFang TC",sans-serif}
+#race-standings-list .race-time{font:700 11px/1.2 Arial,"PingFang TC",sans-serif;color:#e3e9e8}
+#race-standings .result-actions{
+ display:grid;grid-template-columns:1fr 1fr;gap:8px;
+ border-top:1px solid #cfb99569;margin-top:10px;padding-top:12px;
+}
+#race-standings .result-actions button{
+ min-width:0;min-height:43px;padding:7px 8px;
+ border:1.5px solid #ead2aa8c;border-radius:5px;
+ background:#18344081;color:#fff0d6;
+ font:750 13px/1.25 system-ui,"PingFang TC",sans-serif;
+ text-shadow:0 1px 2px #071018;
+}
+#race-standings .result-actions #result-replay{
+ background:#ffc18129;border-color:#ffbe8b;color:#ffe2b6;
+}
+#race-standings .result-actions button:hover{background:#ffb6793d;border-color:#ffd8a5}
+#race-standings .result-actions button:focus-visible{outline:2px solid #fff2cf;outline-offset:2px}
+#race-standings .result-actions button:active{background:#ffc18160;transform:translateY(1px)}
+@media(orientation:landscape) and (max-height:520px){
+ #race-position{top:max(7px,env(safe-area-inset-top));padding:3px 3px 4px}
+ #race-position .race-hud-cell{padding:0 10px}
+ #race-position .race-hud-cell>small{font-size:8px}
+ #race-position .race-hud-rank b{font-size:18px}
+ #race-position .race-hud-cell>span,#race-position time{font-size:12px}
+ #race-position #race-distance{font-size:11px}
+ #race-standings{
+  width:min(284px,36vw);left:max(9px,env(safe-area-inset-left));
+  max-height:calc(100dvh - 16px);padding:8px 9px 9px;
+ }
+ #race-standings .result-eyebrow{font-size:8px;margin-bottom:3px}
+ #race-standings .result-heading{padding-bottom:4px;margin-bottom:4px}
+ #race-standings #race-standings-title{font-size:16px}
+ #race-standings #result-player-rank{font-size:22px}
+ #race-standings .result-columns{font-size:8px;padding-bottom:3px}
+ #race-standings-list{gap:0}
+ #race-standings-list li{min-height:23px;padding:1px 4px 1px 5px;grid-template-columns:20px minmax(0,1fr) 61px;gap:4px}
+ #race-standings-list .race-name{font-size:11px}
+ #race-standings-list .race-place{font-size:12px}
+ #race-standings-list .race-time{font-size:10px}
+ #race-standings .result-actions{margin-top:6px;padding-top:7px;gap:6px}
+ #race-standings .result-actions button{min-height:42px;font-size:11px;padding:6px 5px}
+}
+@media(orientation:portrait){
+ #race-position{top:max(55px,calc(env(safe-area-inset-top) + 48px))}
+ #race-position .race-hud-cell{padding:0 8px}
+ #race-standings{top:49%;width:min(300px,85vw);max-height:calc(100dvh - 100px)}
+}
+
+/* Racing R0.3 — voluntary start gate and control-local onboarding. */
+#race-ready{position:fixed;inset:0;z-index:45;pointer-events:none;font-family:Arial,"Microsoft JhengHei",sans-serif}
+#race-ready[hidden]{display:none!important}
+#race-ready .race-ready-center{position:absolute;top:37%;left:50%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:8px;width:max-content;max-width:86vw;text-align:center;pointer-events:none}
+#race-start{position:relative;pointer-events:auto;display:flex;align-items:center;justify-content:center;gap:24px;min-width:clamp(186px,22vw,245px);min-height:58px;border:1px solid #ffd8a4;border-radius:3px;padding:9px 23px 10px;background:#ff8d68;color:#27202a;font:italic 950 clamp(28px,3vw,37px)/1 "Arial Black",Arial,sans-serif;letter-spacing:.035em;box-shadow:0 8px 0 #803f37,0 17px 35px #090b12a6;cursor:pointer}
+#race-start span{font:normal 900 16px/1 Arial,sans-serif}
+#race-start:focus-visible{outline:3px solid #fff4c7;outline-offset:5px}
+#race-start:active{transform:translateY(5px);box-shadow:0 3px 0 #803f37,0 9px 22px #090b12a6}
+#race-start::before{
+ content:"";position:absolute;inset:-4px;border:2px solid #ffe5af;border-radius:5px;
+ pointer-events:none;animation:race-start-pulse 1.6s ease-out infinite;
+}
+@keyframes race-start-pulse{
+ 0%,15%{transform:scale(1);opacity:.95}
+ 85%,100%{transform:scale(1.09,1.26);opacity:0}
+}
+#race-start:active::before{visibility:hidden}
+/* The chevrons grow toward full lock. Light the matching side from the
+ * neutral diamond outward using the same effective input as the car. */
+#touch .steer-directions{
+ position:absolute;left:4%;top:50%;width:92%;height:auto;transform:translateY(-50%);
+ pointer-events:none;fill:#fff0d3;stroke:#352a28;stroke-width:1.5;paint-order:stroke fill;
+}
+.steer-left{--amount:calc(-1 * var(--effective-steer,0))}
+.steer-right{--amount:var(--effective-steer,0)}
+.steer-directions g path{
+ fill:color-mix(in srgb,#f8e5c7,#ffb64d clamp(0%,calc((var(--amount) - var(--threshold)) * 500%),100%));
+}
+.steer-directions .inner{--threshold:0;opacity:.78}
+.steer-directions .middle{--threshold:.3;opacity:.9}
+.steer-directions .outer{--threshold:.65}
+.steer-cursor{
+ position:absolute;bottom:3px;left:clamp(6px,calc(50% + var(--steer)*50%),calc(100% - 6px));
+ transform:translateX(-50%);border-inline:4px solid transparent;border-bottom:5px solid #ffc76f;
+ pointer-events:none;visibility:hidden;
+}
+#steering-strip.pressed .steer-cursor{visibility:visible}
+#touch .pedals button{position:relative;display:grid;place-items:center}
+#touch .pedal-symbol{width:38px;height:30px;pointer-events:none;fill:#fff1d9;stroke:#302b2a;stroke-width:1.4;paint-order:stroke fill}
+#touch [data-control="brake"] .pedal-symbol{transform:rotate(180deg)}
+#touch .pedal-tail{fill:var(--touch-cue)}
+#touch .pressed .pedal-symbol{fill:var(--touch-cue)}
+#app #touch .pedals button::after{
+ position:absolute;right:5px;bottom:3px;min-width:0;margin:0;padding:0 2px;
+ font-size:9px;line-height:11px;font-weight:650;border:0;background:none;color:#e9e3d8;
+}
+html[data-input-mode="touch"] #touch.race-tutorial :is(#steering-strip,button[data-control]){
+ outline:2px solid var(--touch-cue);outline-offset:-2px;
+ box-shadow:inset 0 0 0 4px #201c20a6;
+}
+#steering-strip{--touch-cue:#ffd17d}
+#touch [data-control="gas"]{--touch-cue:#78efd5}
+#touch [data-control="brake"]{--touch-cue:#ff967f}
+.control-cue{display:none}
+#touch.race-tutorial .control-cue{
+ display:block;position:absolute;top:50%;right:calc(100% + 10px);width:max-content;
+ translate:0 -50%;transform-origin:right center;pointer-events:none;
+ font:900 clamp(28px,4.6vw,46px)/1 system-ui,"Microsoft JhengHei",sans-serif;
+ color:var(--touch-cue);-webkit-text-stroke:3px #211c22;paint-order:stroke fill;
+ text-shadow:0 3px 0 #211c22,0 4px 6px #151019b3;
+}
+/* Grow inward from the control edge, including in the left-handed layout. */
+#touch.race-tutorial:not(.swapped) #steering-strip .control-cue,
+#touch.race-tutorial.swapped .pedals .control-cue{
+ left:calc(100% + 10px);right:auto;transform-origin:left center;
+}
+@media (prefers-reduced-motion:no-preference){
+ #touch.race-tutorial .control-cue{animation:control-cue-pulse 1s ease-in-out infinite}
+ @keyframes control-cue-pulse{
+  0%,100%{transform:scale(.92);opacity:.78}
+  35%{transform:scale(1.22);opacity:1}
+  65%{transform:scale(1);opacity:1}
+ }
+}
+@media (pointer:coarse) and (orientation:portrait){#race-ready{display:none!important}}
+@media (max-height:390px){#race-ready .race-ready-center{top:35%}#race-start{min-height:48px;font-size:27px}}
+@media (prefers-reduced-motion:reduce){#race-start::before{animation:none;opacity:.85}}
+
+/* An arcade pause freezes the visible race, not just the physics clock.
+ * Keep the number, HUD and tutorial in place behind the small pause dock. */
+html[data-player-ui="true"][data-drive-mode="paused"][data-race-paused-phase] header{display:flex}
+html[data-race-paused-phase="countdown"] #touch.race-tutorial .control-cue{
+ animation-play-state:paused;
 }

@@ -5,6 +5,8 @@ async function enter(page:Page,query:string){
  await page.goto('/?'+query);
  await page.locator('#boot-enter').tap();
  await page.locator('#start-race').tap();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+ await page.locator('#race-start').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown',{timeout:90000});
  await expect(page.locator('#game-loading')).toBeHidden();
 }
@@ -15,10 +17,22 @@ test('grid holds all cars and accepts throttle; pause, replay and return reset t
  const before=await race(page);
  expect(before.rivals).toHaveLength(7);
  expect(before.rank).toBe(8);
+ await expect(page.locator('#race-position')).toBeVisible();
+ await expect(page.locator('#race-position')).toContainText('名次');
+ await expect(page.locator('#race-position')).toContainText('時間');
+ await expect(page.locator('#race-position')).toContainText('距離');
+ await expect(page.locator('#race-distance')).toContainText('km');
+ await expect(page.locator('#runtime-readout')).toBeVisible();
+ await expect(page.locator('#drive-fps')).toContainText('FPS');
  expect(before.rivals.every((r:any)=>r.distance>=350+12)).toBe(true);
  const labels=await page.evaluate(()=>(window as any).__drive.rivalTags());
- expect(labels.map((x:any)=>x.name)).toEqual(['對手一','對手二','對手三','對手四','對手五','對手六','對手七']);
+ expect(labels.map((x:any)=>x.name)).toEqual(['Aaron','Bruno','Cody','Damon','Ethan','Felix','Gavin']);
  expect(labels.every((x:any)=>x.sizeAttenuation===false)).toBe(true);
+ // Plaque is raised to keep the road clear; only the long, thin pointer
+ // descends close to the car roof. These settings must not scale with distance.
+ expect(labels.every((x:any)=>x.canvasHeight===344&&x.anchorHeight<2)).toBe(true);
+ expect(labels.every((x:any)=>x.scale[1]/x.scale[0]>.64)).toBe(true);
+ expect(labels.map((x:any)=>x.rank).sort((a:number,b:number)=>a-b)).toEqual([1,2,3,4,5,6,7]);
  await page.keyboard.down('Space');
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().rpm)).toBeGreaterThan(2500);
  const now=await race(page);
@@ -29,20 +43,46 @@ test('grid holds all cars and accepts throttle; pause, replay and return reset t
  expect(wheels.every((w:any)=>w.front?w.angle===0:Math.abs(w.angle)>0)).toBe(true);
  await shot(page,'starting-grid');
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().speed)).toBeGreaterThan(14);
+ // Regression: GO must advance the actual race clock beyond its first tick.
+ // A second traffic-clock writer previously threw before 0.01 seconds.
+ await expect.poll(async()=> (await race(page)).time,{timeout:12000}).toBeGreaterThan(1);
  await shot(page,'coast-race');
  await page.keyboard.up('Space');
  await page.locator('#pause').tap();
  const stopped=await race(page);await page.waitForTimeout(250);expect((await race(page)).time).toBe(stopped.time);
  await page.keyboard.press('KeyR');
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+ await page.locator('#race-start').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
  expect((await race(page)).time).toBe(0);
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
  await page.locator('#pause').tap();await page.locator('#tp-exit').tap();
  await expect(page.locator('#racing-menu')).toBeVisible();expect(page.workers()).toHaveLength(0);
  await page.locator('#start-race').tap();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+ await page.locator('#race-start').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown',{timeout:90000});
  expect((await race(page)).time).toBe(0);
 });
+test('Rival plate numbers track live rank without reallocating GPU textures',async({page})=>{
+ await enter(page,'trafficSeed=17');
+ const initial=await page.evaluate(()=>{
+  const g=(window as any).__drive;
+  return {rank:g.race().rank,tags:g.rivalTags()};
+ });
+ expect(initial.rank).toBe(8);
+ expect(initial.tags.map((t:any)=>t.rank).sort((a:number,b:number)=>a-b)).toEqual([1,2,3,4,5,6,7]);
+ const changed=await page.evaluate(()=>{
+  const g=(window as any).__drive;
+  g.manual(true);g.reset({distance:405,speed:0,lateral:0});
+  return {rank:g.race().rank,tags:g.rivalTags()};
+ });
+ expect(changed.rank).toBe(1);
+ expect(changed.tags.map((t:any)=>t.rank).sort((a:number,b:number)=>a-b)).toEqual([2,3,4,5,6,7,8]);
+ expect(changed.tags.map((t:any)=>t.textureId)).toEqual(initial.tags.map((t:any)=>t.textureId));
+ expect(changed.tags.map((t:any)=>t.name)).toEqual(initial.tags.map((t:any)=>t.name));
+});
+
 test('parked player, remote rival chase on loaded scenery, all seven rivals cross the real finish',async({page})=>{
  test.setTimeout(240000);
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
@@ -56,7 +96,7 @@ test('parked player, remote rival chase on loaded scenery, all seven rivals cros
  await expect(page.locator('#race-data')).toContainText('km/h',{timeout:90000});
  const d=await race(page);
  await expect.poll(()=>page.evaluate(d=>(window as any).__drive.streaming().chunks.some((c:any)=>c.index===Math.floor(d/1000)&&c.road==='ready'&&c.scenery==='ready'),d.rivals[0].distance)).toBe(true);
- await expect(page.locator('#race-camera-name')).toHaveText('對手一');
+ await expect(page.locator('#race-camera-name')).toHaveText('Aaron');
  await expect.poll(()=>page.evaluate(()=>{
   const g=(window as any).__drive,r=g.race().rivals[0];
   const target=g.sample(r.distance).position,eye=g.snapshot().camera.position;
@@ -76,7 +116,7 @@ test('a player finishing first can spectate a live rival and leave immediately',
  await expect(page.locator('#player-title')).toContainText('第 1 名');
  await expect(page.locator('#race-standings-list li')).toHaveCount(8);
  await expect(page.locator('#race-standings-list li').first()).toContainText('玩家');
- await expect(page.locator('#race-standings-list li').last()).toContainText(/對手/);
+ await expect(page.locator('#race-standings-list li').last()).toContainText(/Aaron|Bruno|Cody|Damon|Ethan|Felix|Gavin/);
  await shot(page,'race-results');
  const before=await race(page);
  await page.locator('#race-watch').tap();
@@ -150,14 +190,14 @@ test('L1/R1 cycle the debug chase camera without opening legacy feedback or drop
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().inputs.gas)).toBe(true);
  await press(5);
  await expect.poll(async()=>(await race(page)).observed).toBe(0);
- await expect(page.locator('#race-camera-name')).toHaveText('對手一');
+ await expect(page.locator('#race-camera-name')).toHaveText('Aaron');
  await expect(page.locator('#l2-feedback-dialog')).toBeHidden();
  expect(await page.evaluate(()=>(window as any).__drive.snapshot().inputs.gas)).toBe(true);
  await press(4);
  await expect.poll(async()=>(await race(page)).observed).toBe(-1);
  await press(4);
  await expect.poll(async()=>(await race(page)).observed).toBe(6);
- await expect(page.locator('#race-camera-name')).toHaveText('對手七');
+ await expect(page.locator('#race-camera-name')).toHaveText('Gavin');
  await set(7,false);
 });
 
