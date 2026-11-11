@@ -1,5 +1,6 @@
 import {coastLampPoleShadowsActive} from './coast-lamp-lighting';
 import {mountCoastStaticProps} from './content/coast-static-props';
+import {coastStaticStage} from './content/stage-data';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {journeyChapters} from './scenic-journey';
@@ -230,6 +231,11 @@ let selectedCarColor=readCarColor();
 const carPaintPicker=new CarPaintPicker($('car-paint') as HTMLSelectElement,$('car-paint-list'),signal);
 startupDiagnostics.mark('world-created'); const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,CHASE_NEAR,matchMedia('(pointer:coarse)').matches?1400:2200);
 if(blenderAsset)world.scene.add(blenderAsset.root);
+// Opt-in development marker follows the actual loaded GLB, not a guessed
+// road-side object. No HUD cost or asset dependency in normal play.
+const prefabQa=import.meta.env.DEV&&params.get('prefabdebug')==='1'
+ ?(await import('./content/prefab-qa')).mountPrefabQa(world.scene,coastStaticStage,authoredStaticProps)
+ :undefined;
 const mobileCarProjection=()=>coastUltraMode&&coastProfile==='mobile-fast'?new MobileCarShadow(world.scene):undefined;
 let mobileCarShadow=mobileCarProjection();
 let coastDuskShadows=coastUltraMode&&sunsetShadowsEnabled&&!coastGeometryShadows()
@@ -763,6 +769,7 @@ function returnToMainMenu(){
  sound.dispose();
  driveFpsDiagnostics.dispose();
  endStageDiagnostics();
+ prefabQa?.dispose();
  if(sceneInspector?.isOpen)sceneInspector.close();
  rivalView.dispose();
  world.streamer?.dispose();
@@ -1016,6 +1023,7 @@ function render(dt:number,draw=true){
   if(perfEnabled)worldTotal+=performance.now()-worldStart;
   if(fpsProfiling)driveFpsDiagnostics.cpu('world',performance.now()-worldStart);
   if(!draw)return;
+  prefabQa?.update(camera,state.distance);
   const raceEffectTime=3-countdown+race.time;
   rivalView.update(cameraOnRival?followed.distance:state.distance,raceEffectTime,mode==='countdown'||isFrozenCountdown(),observed,actorRoadReady,camera,renderer.domElement.clientHeight,mobile(),raceHudSafeRect);
   sound.rivals(race.rivals,{distance:state.distance,lateral:state.lateral,speed:state.speed},mode==='countdown',mode==='playing'||mode==='countdown');

@@ -19,3 +19,15 @@ test('R1 coast prefab loads from its stage/prefab JSON at the authored site',asy
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
  await page.screenshot({path:test.info().outputPath('r1-authored-farmhouse-850.png')});
 });
+
+test('dev prefab QA identifies the actual loaded GLB with road metres',async({page})=>{
+ test.setTimeout(180000);
+ await page.goto('/?at=985&prefabdebug=1');
+ await page.locator('#start-race').click();
+ await expect(page.locator('#game-loading')).toBeHidden({timeout:120000});
+ await expect(page.locator('#prefab-qa')).toContainText('GLB 已載入');
+ await expect(page.locator('#prefab-qa')).toContainText('1085m');
+ await expect(page.locator('#prefab-qa')).toContainText('hamlet-farmhouse');
+ await expect(page.locator('.prefab-qa-marker')).toHaveCount(1);
+ await page.screenshot({path:test.info().outputPath('prefab-qa-r1-target-985.png')});
+});
