@@ -5,6 +5,8 @@ async function enter(page:Page,query:string){
  await page.goto('/?'+query);
  await page.locator('#boot-enter').tap();
  await page.locator('#start-race').tap();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+ await page.locator('#race-start').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown',{timeout:90000});
  await expect(page.locator('#game-loading')).toBeHidden();
 }
@@ -49,12 +51,16 @@ test('grid holds all cars and accepts throttle; pause, replay and return reset t
  await page.locator('#pause').tap();
  const stopped=await race(page);await page.waitForTimeout(250);expect((await race(page)).time).toBe(stopped.time);
  await page.keyboard.press('KeyR');
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+ await page.locator('#race-start').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
  expect((await race(page)).time).toBe(0);
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
  await page.locator('#pause').tap();await page.locator('#tp-exit').tap();
  await expect(page.locator('#racing-menu')).toBeVisible();expect(page.workers()).toHaveLength(0);
  await page.locator('#start-race').tap();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
+ await page.locator('#race-start').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown',{timeout:90000});
  expect((await race(page)).time).toBe(0);
 });

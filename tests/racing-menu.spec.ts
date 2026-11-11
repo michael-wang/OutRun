@@ -85,8 +85,10 @@ test('a failed stage module can be retried with a clean stage document',async({p
   await expect(page.locator('#stage-retry')).toBeVisible();
   fail=false;
   await page.locator('#stage-retry').click();
-  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:90000});
   await expect(page.locator('#game-loading')).toBeHidden();
+  await page.locator('#race-start').click();
+  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
 });
 
 test('boot retry recovers when the entry script is unavailable',async({page})=>{

@@ -1,4 +1,5 @@
 import {takeStageAudio} from './stage-audio';
+import type {RaceStartSignal} from './race-start-signals';
 import {PassBy,PASS_AUDIO,type PassActor} from './pass-by';
 import {RivalAudio,type RivalAudioState,type RivalAudioListener} from './rival-audio';
 import type {RivalState} from './rival-race';
@@ -22,6 +23,8 @@ export class EngineSound {
   private passengerBuffers=new Map<PassengerCue,AudioBuffer>();
   private loadingClips=new Map<PassengerCue,Promise<void>>();
   private passengerSources=new Set<AudioBufferSourceNode>();
+  private readonly raceSignalVoices=new Set<OscillatorNode>();
+  private readonly raceSignalHistory:RaceStartSignal[]=[];
   private engine?: OscillatorNode;
   private engineGain?: GainNode;
   private undertone?: OscillatorNode;
@@ -90,6 +93,37 @@ export class EngineSound {
     await context.resume();
     if(waitForPassenger)await Promise.all(this.loadingClips.values());
   }
+  /** Familiar 3 low countdown ticks and a higher, sustained GO chime.
+   * Generated in Web Audio, so there are no new assets or per-frame audio work. */
+  raceStartCue(signal:RaceStartSignal):boolean{
+    if(this.muted)return true;
+    const ctx=this.context,master=this.master;
+    if(!ctx||!master||ctx.state!=='running')return false;
+    const go=signal==='GO',now=ctx.currentTime;
+    const duration=go?.45:.18,frequency=go?980:510;
+    const gain=ctx.createGain();
+    gain.gain.setValueAtTime(0,now);
+    gain.gain.linearRampToValueAtTime(go?.28:.24,now+.01);
+    gain.gain.setValueAtTime(go?.28:.24,now+(go?.23:.075));
+    gain.gain.exponentialRampToValueAtTime(.001,now+duration);
+    gain.connect(master);
+    for(const harmonic of [1,2]){
+      const oscillator=ctx.createOscillator();
+      oscillator.type=harmonic===1?'triangle':'sine';
+      oscillator.frequency.setValueAtTime(frequency*harmonic,now);
+      if(go)oscillator.frequency.linearRampToValueAtTime(frequency*harmonic*1.09,now+.13);
+      const voiceLevel=ctx.createGain();voiceLevel.gain.value=harmonic===1?1:.20;
+      oscillator.connect(voiceLevel);voiceLevel.connect(gain);
+      this.raceSignalVoices.add(oscillator);
+      oscillator.onended=()=>{this.raceSignalVoices.delete(oscillator);oscillator.disconnect();voiceLevel.disconnect();
+        if(this.raceSignalVoices.size===0)gain.disconnect();};
+      oscillator.start(now);oscillator.stop(now+duration+.02);
+    }
+    this.raceSignalHistory.push(signal);
+    if(this.raceSignalHistory.length>12)this.raceSignalHistory.shift();
+    return true;
+  }
+  resetRaceStartCues(){this.raceSignalHistory.length=0;}
   impact(strength:number,kind:'vehicle'|'guardrail'|'concrete'|'soft'='guardrail'){
     this.impactCount++;this.lastImpact=kind;if(!this.context)return;const now=this.context.currentTime;
     const envelope=(gain:GainNode,peak:number,life:number)=>{const g=gain.gain;g.cancelScheduledValues(now);g.setValueAtTime(peak,now);g.exponentialRampToValueAtTime(.001,now+life);g.setValueAtTime(0,now+life+.01);};
@@ -184,7 +218,8 @@ export class EngineSound {
     this.skid!.frequency.setTargetAtTime(510 + intensity * 250, now, 0.06);
     this.skidGain!.gain.setTargetAtTime(this.skidLevel, now, 0.08);
   }
-  pause() { this.stopPassenger();this.silencePasses();this.rivalAudio?.silence();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
+  pause() { for(const voice of this.raceSignalVoices){try{voice.stop();}catch{/* already stopped */}}
+    this.raceSignalVoices.clear();this.stopPassenger();this.silencePasses();this.rivalAudio?.silence();this.active = false;this.skidFeedback.reset();this.skidLevel = 0;this.windLevel=0;this.gravelLevel=0; if (this.context) { for(const gain of [this.crashGain,this.crunchGain,this.gravelGain]){gain?.gain.cancelScheduledValues(this.context.currentTime);gain?.gain.setTargetAtTime(0,this.context.currentTime,.02);}this.impactGain?.gain.cancelScheduledValues(this.context.currentTime);this.impactGain?.gain.setTargetAtTime(0,this.context.currentTime,.02);this.engineGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03); this.skidGain!.gain.setTargetAtTime(0, this.context.currentTime, 0.03);this.windGain!.gain.setTargetAtTime(0,this.context.currentTime,.03); } }
   dispose() {
     this.pause();
     this.rivalAudio?.dispose();this.rivalAudio=undefined;
@@ -194,6 +229,6 @@ export class EngineSound {
   inspect() {
     let rms = 0;
     if (this.analyser) { const data = new Float32Array(this.analyser.fftSize); this.analyser.getFloatTimeDomainData(data); rms = Math.sqrt(data.reduce((sum, value) => sum + value * value, 0) / data.length); }
-    return { passBy:this.passes.inspect(),rivals:this.rivalAudio?.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,coneHitCount:this.coneHitCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
+    return { raceStartCues:[...this.raceSignalHistory],passBy:this.passes.inspect(),rivals:this.rivalAudio?.inspect(),gravelLevel:this.gravelLevel,lastImpact:this.lastImpact,impactCount:this.impactCount,coneHitCount:this.coneHitCount,contextState: this.context?.state ?? 'locked', muted: this.muted, active: this.active, engineHz: this.engineHz, engineRpm:this.engineRpm,gear:this.engineGear,skidIntensity:this.skidFeedback.intensity,skidLevel: this.skidLevel, windLevel:this.windLevel, rms };
   }
 }

@@ -6,7 +6,9 @@ async function raceMenu(page:Page){
  await page.goto('/?trafficSeed=17');
  await page.locator('#boot-enter').tap();
  await page.locator('#start-race').tap();
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:120000});
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:120000});
+ await page.locator('#race-start').tap();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:10000});
 }
 test('phone-call style reload restores race, traffic and time as a paused game',async({page})=>{
  test.setTimeout(240000);
