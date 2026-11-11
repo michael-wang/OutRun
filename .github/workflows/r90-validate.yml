@@ -57,17 +57,18 @@ jobs:
         run: npm ci
       - name: TypeScript + Vite project-site build
         run: npm run build
-      # Only deterministic invariants that can corrupt or prevent a playable race.
-      # Other unit/E2E cases are intentionally advisory and available on demand.
-      - name: Essential safety checks — race state, road reliability and collisions
-        run: >-
-          npm test --
-          tests/race-recovery.unit.ts
-          tests/race-start-signals.unit.ts
-          tests/race-traffic-world.unit.ts
-          tests/stream-reliability.unit.ts
-          tests/rival-race.unit.ts
-          tests/traffic-impact.unit.ts
+      # P0 remains a release gate. P1 is visible and reported, never blocking.
+      - name: P0 — road availability and essential stream safety
+        run: npm run test:p0
+      - name: P1 — critical race diagnostics (advisory)
+        id: critical
+        continue-on-error: true
+        run: npm run test:p1
+      - name: Report P1 problems without blocking the owner's release
+        if: steps.critical.outcome == 'failure'
+        run: |
+          echo "::warning title=P1 Critical diagnostics::Potential serious gameplay regression detected; owner review required, release remains permitted."
+          echo "⚠️ P1 Critical diagnostics failed. Check the test log and notify the owner." >> "$GITHUB_STEP_SUMMARY"
       - name: Upload the approved branch's site
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4

@@ -1,39 +1,20 @@
-# Project OutRun — working agreement
+# 極速漫遊 / OutRun — current project rules
 
-## Branches and releases
+Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; old L1/L2/L3 experiments and the procedural/emotional director are legacy, **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
-- `main` is the latest owner-approved, publicly playable release. Every change to `main` must belong to a new, explicitly approved versioned release; do not make undocumented or silent hotfixes to a released build.
-- `dev` is the active development branch. Work directly on `dev`; do not create additional permanent branches.
-- At the end of each authorized milestone, run appropriate checks, commit the completed work, and push `dev` to GitHub. Ordinary `dev` pushes must not deploy to the public website; complete release CI and GitHub Pages deployment run from `main` only.
-- Promote to `main` only after explicit owner approval. Preserve history; never force-push `main`, `dev`, or a released version tag.
-- Never discard uncommitted work. Before deleting any temporary branch, verify its unique commits are already reachable from a maintained branch or a consciously retained preservation ref; do not generate `archive/codex/*` tags routinely. Historical specs, handoffs and human reviews remain in `docs/` and Git history.
+## Engineering
 
-## Version identity — mandatory for every publicly shared build
+- Optimize for the **smallest relevant context**. Prefer composition over inheritance; avoid speculative frameworks, deep abstractions, duplicate implementations and future-proofing without a concrete use.
+- Separate engine capabilities (geometry, rendering, physics, effects, streaming), game rules (racing, traffic, controls), and stage content (authored geometry, placements, assets). A scene-content edit should not require a gameplay engine edit.
+- Preserve the approved coastal gameplay, physics, water, visuals and Pixel 8 performance unless the task explicitly changes them.
+- Stages are **finite**. Keep road safety, bounded asset lifetime, shared resources and chunked loading. Never drive into missing road. Details: [ADR-009](docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md).
+- Before adding an effect, check existing reusable capabilities. Do not keep old code because it *might* be needed later. First remove dependencies, then delete obsolete code; Git history preserves it.
 
-- **A player reports one version string, and that string alone uniquely identifies the build.** Do not ask players for Git SHAs or additional build identifiers. Display the exact release version (for example `v0.9.41`) unobtrusively in the game's main menu; diagnostic SHA data may remain internal but is not part of the player-facing identity.
-- `package.json` `version` is the single source of truth for the app version (for example `0.9.41`); keep `package-lock.json` consistent. The public display and published version tag prefix this value with `v`. Do not maintain another manually typed release-version constant.
-- **Each public stable release has exactly one immutable annotated Git tag named `vMAJOR.MINOR.PATCH`** (for example `v0.9.41`). The tag must resolve to the **exact `main` commit successfully built, tested and deployed**, whose `package.json` version matches the tag. Verify the target commit after tagging. A GitHub Release using that tag is recommended to preserve release notes and build artifacts.
-- A released version/tag must never be moved, deleted, reused or redeployed with different code or assets. Any post-release fix, even a one-line change, requires a strictly new version, new commit, new tag and new deployment. Do not amend or retag an existing release.
-- Before promotion, verify the next `vX.Y.Z` tag does **not** exist, bump `package.json` and lockfile to the intended release version, and validate the real app, build and tests. After approved `main` deployment succeeds, create/verify the corresponding immutable tag against the deployed `main` SHA; stop and report any mismatch instead of overwriting a tag. When automated release/tag checks are implemented, they must enforce these invariants; until then the release operator must verify them manually. Configure a GitHub tag ruleset to restrict updates and deletions of official `v*` release tags.
-- Development builds must not masquerade as an already released version. If an unreleased `dev` build is shown to testers, give each distinct shared build a unique SemVer prerelease version such as `0.9.42-dev.1`, and display it as `v0.9.42-dev.1`. Do not create official stable `vX.Y.Z` tags for development-only builds.
-- For bug reproduction, use the reported version to find its Git tag and check out that exact source; keep the lockfile and any required build-time assets reproducible. Local tag checkout does not automatically redeploy the public site.
-- `archive/codex/*` are **legacy development-history pointers, not release versions**. They may be removed only after verifying their commits are reachable from `main` or another intentionally retained ref. Keep unrelated artifact tags such as `art-assets-*` unless their separate purpose has been reviewed. Do not automatically replace legacy archive tags with official release tags.
+## Workflow / release
 
-## Product architecture: finite stages, bounded assets (accepted)
-
-Read **[docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md](docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md)** before modifying any level/scenery streaming, GPU warmup, resource lifetime, or stage transitions.
-
-- **No infinite-world requirement.** 極速漫遊 is a journey of finite, authored levels. Each level must have a bounded resource budget. Scenic composition is constrained by that budget.
-- **Stage-transition buffers** intentionally provide time to retire previous-stage resources and prepare the next stage, with at most a measured, bounded overlap. The next stage's drivable road remains the highest safety priority.
-- Generate all in-game trees with the threejs-nanites tree generator (@dgreenheck/ez-tree). Bake tree variants with `npm run art:trees` and reuse their branch and foliage meshes.
-- Build-time scene baking and resource sharing are encouraged for authored stages; keep procedural runtime generation only where it improves gameplay.
-- Implement the Scene Resource Pipeline incrementally: P0 task attribution / oversized-work control → P1 stage-scoped road/scenery priority windows → P2 shared resources and hybrid flower fields. Do not rewrite all systems in one PR.
-- Do not optimize by removing user-approved golden rice fields or Ultra-Water visuals without device A/B evidence. Use `?startupdiag=1` for startup and `?fpsdiag=1` for driving on physical Pixel 8.
-- **Every new scene object, particle effect, water pass, shader or traffic feature needs a mobile FPS gate before release.** On a physical Pixel 8 use `?fpsdiag=1` to record a matched drive; the exported `playtestGate` warns on >50ms frame gaps and marks **`REVIEW_REQUIRED` if any one-second bucket falls below 30 FPS or an individual frame exceeds 100ms**. Never interpret a green GitHub CI build as a measured FPS pass. Only the owner decides whether to promote a version with such warnings.
-- The only supported URL query keys are `fpsdiag`, `startupdiag`, `at`, `trafficSeed` and `rivaldebug` (set to 1 for race observation). Optional shadow-technology checkboxes live under the pause dock only while `?fpsdiag=1`; never instruct testers to use `sunshadow=0`, `showcase=coast`, `qa=1`, `fpsbench`, or `autobench`. The owner has paused performance measurement. See `docs/R91_DUSK_POLISH_QA.md`.
-
-## Scope and verification
-
-The owner authorizes each development milestone. Preserve accepted driving behavior, input controls, screenshot archives, telemetry and human reviews unless the owner explicitly requests a change. Work only in this repository; do not deploy publicly or modify other projects without separate authorization. Test actual gameplay as appropriate and clearly distinguish browser emulation from physical-device results.
-
-Release status (2026-11-11): `main` is the owner-approved **v0.9.42** public build with its immutable `v0.9.42` tag. Racing development continues on `dev` (current eight-entrant arcade racing, `v0.9.43-dev.4`). In racing, the whole-course traffic simulation is authoritative for all competitors; the 12-vehicle render pool, streaming, and camera visibility must never define physical existence or exempt offscreen rivals from traffic. Stalled vehicles may be seeded into any lane with appropriate warning positions. Use `?rivaldebug=1&trafficSeed=945` for AI observation, or `?fpsdiag=1&trafficSeed=17` for matched performance testing. Promotion requires owner approval and a **new** stable version. Preserve existing road/handling/visual baselines; see `docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md` and `docs/R91_DUSK_POLISH_QA.md`.
+- Work on `dev` by default. Only promote to `main` on **explicit owner approval**; never force-push or move released tags. Ordinary `dev` pushes must not deploy.
+- Public releases use an unused stable package version in both `package.json` and lockfile, a new commit and an immutable annotated `vX.Y.Z` tag for the **deployed** `main` commit. Development edits after a release need a unique `-dev.N` prerelease version.
+- **P0 / Blocker:** cannot load, start, or meaningfully play; blocks release.
+- **P1 / Critical:** significant gameplay loss, serious crash or broken recovery; **tell the owner**, who decides whether to publish. P2/P3 cosmetic or tuning defects do not block.
+- Keep release CI lean: dependency install, production build, deterministic P0 checks; P1 checks are advisory. Visual feel, controller behavior and device FPS are primarily owner playtests. Do not turn slow/flaky Playwright screenshots into deployment gates.
+- Run only relevant verification for the task and state clearly what was not run. See [tests guidance](tests/AGENTS.md) for tests-only work.

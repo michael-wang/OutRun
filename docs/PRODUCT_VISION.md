@@ -1,39 +1,15 @@
-# Product vision — Project OutRun
+# 極速漫遊 — current product vision
 
-## Experience
+An original arcade racing road trip inspired by the *feeling* of classic coastal racing games, not a recreation of protected vehicles, tracks or music.
 
-**The feeling:** joyful, sun-drenched, fast, and slightly extravagant. The player cruises a beautiful coastal road in a stylish sports car, sees the world fly by, hears the engine climb, and controls an expressive high-speed drift.
+**Now playable:** v0.9.43 coastal highway at sunset, eight entrants, mixed traffic, steering/accelerator/brake, timed race, optional PS4 controller and touch controls, Ultra Water sea, restart and race recovery.
 
-The inspiration is the **sunny scenic spectacle of Out Run (1986)** mixed with the **responsive drifting and camera energy of OutRun 2 (2003)**. We are recreating a *kind of pleasure*, not copying a specific game, car, track, sound recording, or brand.
+**Next product priority:** Make the **road and its corners** more rewarding. Deliberately design opportunities for controllable drifting, technical S-bends, fast sweeps and clear recovery straights. The owner approves by driving the course, not by abstract intensity scores.
 
-## Three non-negotiable pillars
+**Art direction:** Author road first, then hero scenery, supporting scenery and restrained filler. Important views are planned (curve → reveal → vista), not selected by luck from randomized layouts.
 
-1. **The road trip must be beautiful.** Azure sea, distant mountains, saturated-but-tasteful colors, crisp sunlight, coastal vegetation, and a pleasing horizon. Strong scene composition before extra gameplay systems.
-2. **Driving must feel fast and forgiving.** Responsive steering, a readable curve ahead, enjoyable drifting with audible tire squeal, and the ability to recover rather than spin out constantly.
-3. **Play immediately.** Easy to understand with steering, accelerator, and brake; no gear shifting or simulation jargon required. Same experience on desktop and a two-thumb mobile layout.
+**Engineering:** Keep Three.js and Ultra Water. Create general reusable rendering/game capabilities, then place assets using stage data. Other modeling tools (Blender, 67.js, etc.) may export assets, but must not force a runtime engine migration.
 
-## Art direction
+**Second stage:** Previous city/canyon journey proposals are not a product commitment. The next stage will be rebuilt from the new authoring workflow; no compatibility requirement for old L1/L2/L3 or scenic director.
 
-- **Mood:** Mediterranean summer afternoon, not cyberpunk night; clean, bright, romantic travel.
-- **Style:** modern stylized 3D with coherent materials and controlled proportions. Not photorealism, but **not** crude low-poly placeholders.
-- **Colors:** blue sky and sea; warm pavement; pastel beach buildings or rock cliffs; rich roadside greens; an original vivid sports-car paint. Avoid uniformly over-saturated flat surfaces.
-- **Layering:** detailed 3D car and road; simple 3D guardrails/cliffs/trees/buildings close to camera; 2D billboards/sky/distant mountains when they look better and run faster.
-- **Speed cues:** road stripe movement, passing roadside objects, smooth camera lag, subtle vibration at speed, useful exhaust/tire smoke only when warranted.
-- **Camera:** third-person chase view with a clear forward view of the next bend. Modest, comfortable motion; no nauseating screen shake.
-- **Audio:** upbeat mechanical engine changes with throttle/speed, unmistakable tire squeal while sliding. User can mute; sound unlocks after interaction.
-
-## Feel over simulation
-
-Use intentionally simplified arcade handling instead of fully realistic tires, drivetrain, suspension, and gearbox. The drift should be *learnable*: clear onset, controllable slide, readable recovery. Responsiveness and consistency are worth more than physical accuracy.
-
-## v0.1 definition of success
-
-Within the first minute, a player can drive along one attractive coast road, feel a meaningful turn, hear tires squeal in a controllable drift, and want to try again. The milestone is a **prototype to playtest**, not a full racing game.
-
-## Later, not now
-
-Traffic and other cars; rival racers; time attack; route forks; branching stages; music soundtrack; garage; tuning; damage systems; scoreboards; cloud services. Add these only after human review of First Drive.
-
-## Naming and rights
-
-`Project OutRun` is only the internal project name. `SUNSHIFT GT` is a tentative candidate and has **not** been cleared for trademark/store conflicts. Any publicly tested build must receive original branding and only use cleared original/licensed assets.
+**Shipping:** Individual game, friends-and-family playtests. Block only P0; report P1 and let the owner decide. Keep rapid edit → drive → publish.
