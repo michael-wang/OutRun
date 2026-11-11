@@ -53,6 +53,16 @@ export class RivalState {
 }
 const clamp=(v:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,v));
 export const worldSpeed=(v:number)=>v*effectivePace(v,DEFAULT_PACE);
+/** Emission comes from actual stressful maneuvers, not a continuously-curved road.
+ * Ordinary high-speed cruising/gradual cornering must never smoke indefinitely. */
+export function rivalSkidDemand(r:Pick<RivalState,'speed'|'targetSpeed'|'braking'|'lateralRate'|'targetX'|'lateral'|'impulse'>):number {
+ const contact=clamp((Math.abs(r.impulse)-.28)/2.8,0,.78);
+ const hardBrake=r.braking&&r.speed>38&&r.speed-r.targetSpeed>8
+  ?clamp((r.speed-r.targetSpeed-8)/23,0,.55):0;
+ const activeSwerve=clamp((Math.abs(r.lateralRate)-3)/1.3,0,.45)*
+  clamp((Math.abs(r.targetX-r.lateral)-1.5)/2,0,1);
+ return Math.max(contact,hardBrake,activeSwerve);
+}
 const laneX=(lane:number,half:number)=>-half+(lane+.5)*(2*half/laneCount(half));
 const laneCount=(half:number)=>Math.max(2,Math.round(2*half/3.5));
 const nearestLane=(x:number,half:number)=>clamp(Math.floor((x+half)/(2*half)*laneCount(half)),0,laneCount(half)-1);
@@ -206,7 +216,7 @@ export class RivalRace {
         r.targetSpeed=Math.min(r.targetSpeed,(o.speed+4)/effectivePace(r.speed,DEFAULT_PACE));
       }
     }
-    r.slip=Math.max(Math.abs(r.impulse)*.25,r.braking&&k>110?.62:0,clamp((Math.abs(r.curvature)*worldSpeed(r.speed)**2-15)/20,0,.75));
+    r.slip=rivalSkidDemand(r);
   }
   step(dt:number,player:RaceBody,oldPlayer:{distance:number;lateral:number}):TrafficCollision|undefined{
     let hit:TrafficCollision|undefined;

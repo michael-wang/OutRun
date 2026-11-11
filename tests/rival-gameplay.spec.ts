@@ -26,6 +26,10 @@ test('grid holds all cars and accepts throttle; pause, replay and return reset t
  const labels=await page.evaluate(()=>(window as any).__drive.rivalTags());
  expect(labels.map((x:any)=>x.name)).toEqual(['Aaron','Bruno','Cody','Damon','Ethan','Felix','Gavin']);
  expect(labels.every((x:any)=>x.sizeAttenuation===false)).toBe(true);
+ // Plaque is raised to keep the road clear; only the long, thin pointer
+ // descends close to the car roof. These settings must not scale with distance.
+ expect(labels.every((x:any)=>x.canvasHeight===344&&x.anchorHeight<2)).toBe(true);
+ expect(labels.every((x:any)=>x.scale[1]/x.scale[0]>.64)).toBe(true);
  expect(labels.map((x:any)=>x.rank).sort((a:number,b:number)=>a-b)).toEqual([1,2,3,4,5,6,7]);
  await page.keyboard.down('Space');
  await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().rpm)).toBeGreaterThan(2500);

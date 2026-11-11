@@ -77,6 +77,8 @@ it('keeps rendered coast traffic aligned with the authoritative race-state lanes
  }
  const after=traffic.inspectWorld();
  expect(after.total).toBeGreaterThan(before);
+ expect(new Set(after.rows.filter(car=>!car.stationary).map(car=>car.driverStyle)))
+  .toEqual(new Set(['safe','normal','dangerous']));
  for(const actor of traffic.inspect().actors){
   const body=after.rows.find(c=>c.id===actor.id);
   if(!body)continue; // The existing interchange demo is separate from course traffic.

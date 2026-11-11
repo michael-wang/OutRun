@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {RaceTrafficWorld,breakdownLaneLateral,coastRaceCruise} from '../src/race-traffic-world';
+import {RaceTrafficWorld,breakdownLaneLateral,coastRaceCruise,trafficDriverStyle,TRAFFIC_DRIVER_PROFILES,type TrafficDriverStyle} from '../src/race-traffic-world';
 import {roadLaneCenters} from '../src/traffic-flow';
 import {rearImpactResponse} from '../src/arcade-contact';
 import {TrafficImpact} from '../src/traffic-impact';
@@ -116,7 +116,7 @@ describe('Racing R0.2h continuous coast traffic',()=>{
   const follower={id:50,type:0,distance:544,speed:0,group:1,member:0};
   const w=new RaceTrafficWorld([...cars,follower],23,10000,()=>8.75,dims,true);
   w.adopt(50,544,0,0);w.get(50)!.targetLateral=0;
-  w.get(50)!.blockedFor=2.2;
+  w.get(50)!.driverStyle='dangerous';w.get(50)!.blockedFor=2.5;
   const p={id:-9999,distance:350,lateral:-7,speed:0,width:2.3,length:4.9};
   w.advance(.12,[],p);
   expect(w.get(50)!.reverseLeft).toBeGreaterThan(0);
@@ -124,5 +124,59 @@ describe('Racing R0.2h continuous coast traffic',()=>{
   w.advance(.5,[],p);
   expect(w.get(50)!.distance).toBeLessThan(before);
   expect(w.get(50)!.targetLateral).not.toBe(0);
+ });
+});
+
+describe('Racing R0.2i traffic driver personalities and early overtakes',()=>{
+ it('assigns deterministic stable personalities with meaningfully different cruising speeds',()=>{
+  const styles=Array.from({length:1500},(_,id)=>trafficDriverStyle(804,id));
+  expect(new Set(styles)).toEqual(new Set(['safe','normal','dangerous']));
+  expect(styles.map((style,id)=>style===trafficDriverStyle(804,id)).every(Boolean)).toBe(true);
+  const count=(style:TrafficDriverStyle)=>styles.filter(s=>s===style).length;
+  expect(count('safe')).toBeGreaterThan(260);
+  expect(count('normal')).toBeGreaterThan(650);
+  expect(count('dangerous')).toBeGreaterThan(260);
+  const avg=(style:TrafficDriverStyle)=>{
+   const ids=styles.flatMap((s,id)=>s===style?[id]:[]);
+   return ids.reduce((total,id)=>total+coastRaceCruise(804,id,id%4)*3.6/1.5,0)/ids.length;
+  };
+  expect(avg('safe')).toBeLessThan(avg('normal'));
+  expect(avg('normal')).toBeLessThan(avg('dangerous'));
+  expect(TRAFFIC_DRIVER_PROFILES.dangerous.lookAhead).toBeGreaterThan(TRAFFIC_DRIVER_PROFILES.safe.lookAhead);
+ });
+ const approaching=(style:TrafficDriverStyle,neighbors=false)=>{
+  const recipes=[
+   {id:100,type:0,distance:640,speed:0,group:0,stationary:true,stopLane:2},
+   {id:101,type:0,distance:500,speed:70,group:1,member:0},
+   ...(neighbors?[
+    {id:102,type:0,distance:550,speed:0,group:0,stationary:true,stopLane:1},
+    {id:103,type:0,distance:550,speed:0,group:0,stationary:true,stopLane:3},
+   ]:[]),
+  ];
+  const w=new RaceTrafficWorld(recipes,42,10000,()=>8.75,dims,true);
+  const follower=w.get(101)!;follower.driverStyle=style;w.adopt(101,500,70,0);
+  follower.cruiseSpeed=70;follower.targetSpeed=70;
+  w.advance(.1,[],{id:-99,distance:350,speed:0,lateral:-7,width:2.3,length:4.9});
+  return follower;
+ };
+ it('normal and dangerous drivers seek a faster lane well before contact',()=>{
+  const safe=approaching('safe'),normal=approaching('normal'),dangerous=approaching('dangerous');
+  expect(safe.targetLateral).toBe(0);
+  expect(normal.targetLateral).not.toBe(0);
+  expect(dangerous.targetLateral).not.toBe(0);
+  expect(normal.distance).toBeLessThan(570);
+  expect(normal.laneChanges).toBe(1);
+  expect(dangerous.laneChanges).toBe(1);
+ });
+ it('does not trade a blocked lane for an even shorter gap',()=>{
+  const normal=approaching('normal',true),dangerous=approaching('dangerous',true);
+  expect(normal.targetLateral).toBe(0);
+  expect(dangerous.targetLateral).toBe(0);
+  expect(normal.laneChanges).toBe(0);
+  expect(dangerous.laneChanges).toBe(0);
+ });
+ it('safe drivers wait longer to reverse than impatient aggressive drivers',()=>{
+  expect(TRAFFIC_DRIVER_PROFILES.safe.reverseAfter).toBeGreaterThan(TRAFFIC_DRIVER_PROFILES.normal.reverseAfter);
+  expect(TRAFFIC_DRIVER_PROFILES.normal.reverseAfter).toBeGreaterThan(TRAFFIC_DRIVER_PROFILES.dangerous.reverseAfter);
  });
 });

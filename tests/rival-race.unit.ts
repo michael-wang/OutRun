@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {RivalRace,worldSpeed,crossingTime,raceEntries,equalRiviera,rivalDriverName,RIVAL_DRIVER_NAMES,type Obstacle} from '../src/rival-race';
+import {RivalRace,worldSpeed,crossingTime,raceEntries,equalRiviera,rivalDriverName,RIVAL_DRIVER_NAMES,rivalSkidDemand,type Obstacle} from '../src/rival-race';
 import {createState,step} from '../src/handling';
 import {DEFAULT_PACE} from '../src/pace';
 import * as THREE from 'three';
@@ -13,6 +13,25 @@ const flat=()=>({curvature:0,grade:0,half:7});
 const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
 function ticks(seconds:number,fn:()=>void){for(let i=0;i<Math.round(seconds/dt);i++)fn();}
+describe('Rival tire smoke should communicate actual traction events',()=>{
+ type Sample=Parameters<typeof rivalSkidDemand>[0];
+ const state=(overrides:Partial<Sample>={}):Sample=>({
+  speed:80,targetSpeed:78,braking:false,lateralRate:0,targetX:0,lateral:0,impulse:0,
+  ...overrides,
+ });
+ it('does not smoke continuously just because a car is fast or on a gentle curve',()=>{
+  expect(rivalSkidDemand(state())).toBe(0);
+  expect(rivalSkidDemand(state({braking:true}))).toBe(0);
+  expect(rivalSkidDemand(state({lateralRate:1.8,targetX:3.5}))).toBe(0);
+ });
+ it('responds briefly to hard braking, abrupt steering and collision impulses',()=>{
+  expect(rivalSkidDemand(state({targetSpeed:45,braking:true}))).toBeGreaterThan(.4);
+  expect(rivalSkidDemand(state({lateralRate:4.2,targetX:3.5}))).toBeGreaterThan(.15);
+  expect(rivalSkidDemand(state({impulse:2.4}))).toBeGreaterThan(.4);
+  expect(rivalSkidDemand(state({impulse:.1}))).toBe(0);
+  expect(rivalSkidDemand(state({braking:false,lateralRate:0,impulse:0}))).toBe(0);
+ });
+});
 describe('Riviera GT race',()=>{
  it('has seven distinct AI cars with the player powertrain and a non-overlapping grid',()=>{
   const race=new RivalRace(10350,()=>({...flat(),half:8.75}),()=>[]);race.reset(350);

@@ -62,11 +62,11 @@ function drawBadge(canvas:HTMLCanvasElement,name:string,rank:number){
  const c=canvas.getContext('2d')!;
  c.clearRect(0,0,canvas.width,canvas.height);
  c.save();
- // Crisp beveled charcoal body, golden border and a short pointer toward the roof.
+ // A compact plaque above the horizon. Its thin leader reaches DOWN toward
+ // the car roof, so the readable block no longer masks the upcoming roadway.
  c.shadowColor='rgba(0,8,17,.82)';c.shadowBlur=12;c.shadowOffsetY=5;
  c.beginPath();c.moveTo(27,21);c.lineTo(473,21);c.lineTo(500,48);
- c.lineTo(488,120);c.lineTo(284,120);c.lineTo(256,163);
- c.lineTo(231,120);c.lineTo(24,120);c.lineTo(13,104);c.lineTo(18,41);
+ c.lineTo(488,120);c.lineTo(24,120);c.lineTo(13,104);c.lineTo(18,41);
  c.closePath();
  const bg=c.createLinearGradient(0,22,0,132);
  bg.addColorStop(0,'#263945');bg.addColorStop(.53,'#122633');bg.addColorStop(1,'#0a1722');
@@ -87,10 +87,18 @@ function drawBadge(canvas:HTMLCanvasElement,name:string,rank:number){
  // A clear outline makes the marker readable against both sunset and mountains.
  c.strokeStyle='rgba(255,215,151,.30)';c.lineWidth=2;
  c.beginPath();c.moveTo(148,108);c.lineTo(468,108);c.stroke();
+ // A slender 42px screen-space leader ends just above the target's roof.
+ // It is part of this same canvas and adds zero GPU draw calls.
+ c.shadowBlur=0;c.strokeStyle='rgba(11,20,27,.93)';c.lineWidth=11;
+ c.beginPath();c.moveTo(256,120);c.lineTo(256,302);c.stroke();
+ c.strokeStyle='#ffe2a3';c.lineWidth=5;
+ c.beginPath();c.moveTo(256,120);c.lineTo(256,302);c.stroke();
+ c.beginPath();c.moveTo(241,294);c.lineTo(256,323);c.lineTo(271,294);c.closePath();
+ c.fillStyle='#ffbc66';c.fill();c.strokeStyle='#17252e';c.lineWidth=3;c.stroke();
  c.restore();
 }
 function badge(name:string,rank:number){
- const canvas=document.createElement('canvas');canvas.width=512;canvas.height=176;
+ const canvas=document.createElement('canvas');canvas.width=512;canvas.height=344;
  drawBadge(canvas,name,rank);
  const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;
  return {canvas,material:new T.SpriteMaterial({map,transparent:true,depthWrite:false,depthTest:true,
@@ -124,7 +132,7 @@ function carModel(a:ReturnType<typeof assets>,color:number,name:string,number:nu
     new T.Mesh(a.trim,a.rubber),new T.Mesh(a.rear,tail),new T.Mesh(a.front,a.head),new T.Mesh(a.shadow,a.shade));
   const plaque=badge(name,number);
   const label=new T.Sprite(plaque.material);label.name='rival-name-tag';
-  label.position.y=2.12;label.center.set(.5,0);root.add(label);
+  label.position.y=1.84;label.center.set(.5,0);root.add(label);
   return {root,tail,label,wheels,badgeCanvas:plaque.canvas,badgeRank:number};
 }
 export class RivalView {
@@ -141,13 +149,13 @@ export class RivalView {
       return {...car,near:false,effects:new TireEffects(scene,'smoke',smoke)};
     });
   }
-  inspectEffects(){return this.cars.map(car=>car.effects.inspect());}
+  inspectEffects(){return this.cars.map((car,i)=>({...car.effects.inspect(),skidDemand:this.race.rivals[i].slip,speed:this.race.rivals[i].speed}));}
   inspectTags(){return this.cars.map((car,i)=>({
     name:this.race.rivals[i].entry.name,rank:car.badgeRank,
     textureId:(car.label.material as T.SpriteMaterial).map?.uuid,
     visible:car.root.visible&&car.label.visible,
     sizeAttenuation:(car.label.material as T.SpriteMaterial).sizeAttenuation,
-    scale:car.label.scale.toArray(),
+    scale:car.label.scale.toArray(),canvasHeight:car.badgeCanvas.height,anchorHeight:car.label.position.y,
   }));}
   /** Rank changes are checked at the existing 125ms race-HUD cadence.
    * Only repaint textures when a car's actual place changes. */
@@ -166,7 +174,7 @@ export class RivalView {
   dispose(){for(const car of this.cars){car.effects.dispose();const mat=car.label.material as T.SpriteMaterial;mat.map?.dispose();mat.dispose();}}
   update(focus:number,time:number,countdown:boolean,observed:number,ready:(d:number)=>boolean,camera:T.PerspectiveCamera,viewportHeight:number){
     const pixelUnit=2*Math.tan(T.MathUtils.degToRad(camera.fov)*.5)/Math.max(1,viewportHeight);
-    const tagWidth=128*pixelUnit,tagHeight=44*pixelUnit;
+    const tagWidth=128*pixelUnit,tagHeight=86*pixelUnit;
     this.race.rivals.forEach((r,i)=>{
       const car=this.cars[i],root=car.root,dist=Math.abs(r.distance-focus);
       const visible=dist<720&&ready(r.distance)&&r.finishTime===null;
@@ -194,7 +202,10 @@ export class RivalView {
         car.near=true;
         root.updateMatrixWorld();
         this.contacts.forEach((contact,j)=>{this.point.set(j?1:-1,0,-1.45).applyMatrix4(root.matrixWorld).toArray(contact.surface!);});
-        car.effects.update(time,r.speed,r.slip,this.contacts,1,countdown?.62:r.speed<8&&r.finishTime===null?1-r.speed/8:0);
+        const launchBurn=countdown?.50:
+          this.race.time<4&&r.speed<7&&r.gearbox.driveForce>2
+           ?.45*(1-r.speed/7):0;
+        car.effects.update(time,r.speed,r.slip,this.contacts,1,launchBurn);
       }else if(car.near){car.effects.clear(time);car.near=false;}
     });
   }
