@@ -99,3 +99,15 @@ moves with race time; the A2 encounter is not yet guaranteed to be
 reason to create an unrelated spawn director. Other sectors of the
 10km coastline and scenery remain old placeholders until R5a is
 accepted. Multi-car accident and drift teaching await R5b.
+
+## R5a.1 reminder: directed introduction, random racing highway
+
+Only the A2 civilian introduction is paced as a teaching event.
+After A3, resume normal reproducible random civilian traffic
+(groups, vehicle types, speed and overtakes may vary by trafficSeed).
+The stage defines eligibility and difficulty; it does not enumerate
+every highway car.
+
+The first sweeper should show visibly banked rivals, but remain
+navigable without a forced drift. The longer banked S requires real
+successive left/right steering, not a series of almost straight kinks.

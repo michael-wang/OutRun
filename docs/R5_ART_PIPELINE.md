@@ -147,3 +147,14 @@ bundling Blender or its output into the Three.js game.
 Neither Blender nor GPU-heavy splatting is required for road whitebox.
 The importer is currently a source-level integration artifact; it
 needs local Blender execution before considering the GN step verified.
+
+## New map lighting acceptance: avoid 1D depth shortcuts
+
+The old lamp atlas uses world Z as a one-dimensional nearest-fixture
+lookup. Longer, sharper curves can bring two lights within the same
+projected 38m range; one atlas cell cannot represent both sources.
+World-XZ overlap on winding roads can also pick physically distant
+fixtures that happen to share a Z coordinate. New-map scenic/night
+lighting should evaluate a proper spatial or road-relative lookup
+before locking lamp placements. Keep the Pixel 8 shadow/GPU budget;
+do not solve this by scattering hundreds of live point lights.

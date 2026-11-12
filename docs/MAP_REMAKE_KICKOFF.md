@@ -150,3 +150,35 @@ Useful test jumps: `?at=1390&r5qa=1`,
 `?at=2270&r5qa=1`, `?at=3260&r5qa=1`,
 `?at=3910&r5qa=1`. Run the complete
 `npm run verify:dev` and a Pixel 8 drive before marking accepted.
+
+## R5a.1 — 2026-11-13 driver-feedback revision
+
+This section supersedes the R5a.0 numeric distance checkpoints above.
+The owner wanted immediate arcade spectacle without making the
+opening bend a drift exam. Current `dev` v0.10.2 has:
+
+| Lesson | Absolute HUD metres | Road |
+| --- | --- | --- |
+| A0 | 350–1400 | Straight launch; civilian-free |
+| A1 | 1400–2320 | Longer sweeper, `steer=-0.25`, bank `-12.5°` |
+| A2 | 2320–3050 | One tutorial civilian encounter at/after 2640 |
+| A3 | 3050–4710 | `-0.37` left + `+0.39` right, `-13°/+13°` banks |
+
+After the tutorial, ordinary highway traffic is **seeded-random**,
+not fixed. The next traffic group starts around 5060m and the earliest
+random breakdown is 5800m. A2's first moving car may require
+additional playtest pacing to guarantee an actual on-road overtake;
+a static recipe starting position is not itself an encounter guarantee.
+
+Four reported unit failures were updated based on their real
+dependencies: feedback placement ordering, old sunset-angle locks,
+horizontal vs banked lateral measurements, and overlapping world-Z
+lamp atlas slots. The lamp issue is a known technical limitation of
+the retired near-straight coast layout; validate a world-XZ/road-space
+lookup when designing the new scene lights instead of allowing
+phantom dark patches on winding roads.
+
+New `?r5qa=1` checkpoints:
+`?at=1400`, `?at=2320`, `?at=3050`, `?at=3950`.
+Local `npm run verify:dev` is still required; changed tests have
+NOT been executed in the connector-only environment.

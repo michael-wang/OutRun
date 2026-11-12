@@ -107,9 +107,10 @@ it('selects the nearest available world-Z lamp across overlapping light ranges',
   // A one-fixture-per-cell atlas cannot represent both lamps' FULL 38m
   // footprint in their overlap. Assert what the production shader actually
   // implements: the nearest lamp by world-Z, without missing either region.
-  const nearest=(z:number)=>heads.reduce((best,other)=>
-   Math.abs(other.z-z)<Math.abs(best.z-z)?other:best,heads[0]);
-  const overlaps=[...heads].sort((a,b)=>a.z-b.z).filter((head,i,ordered)=>
+  const ordered=[...heads].sort((a,b)=>a.z-b.z);
+  const nearest=(z:number)=>ordered.reduce((best,other)=>
+   Math.abs(other.z-z)<Math.abs(best.z-z)?other:best,ordered[0]);
+  const overlaps=ordered.filter((head,i)=>
    i>0&&head.z-ordered[i-1].z<2*COAST_LAMP_RANGE);
   for(const head of heads){
    for(let z=Math.floor(head.z-COAST_LAMP_RANGE);z<=Math.floor(head.z+COAST_LAMP_RANGE);z++){

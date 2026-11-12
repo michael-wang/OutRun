@@ -121,3 +121,12 @@ R5a QA: `?r5qa=1` shows exact HUD distances and lesson IDs in Vite
 development. The rest of the original stage is intentionally still
 available while each new map slice is player-tested. Geometry Nodes
 for scene production starts after the road whitebox passes.
+
+## R5a.1 first-map driving revision
+
+Opening lessons are now 350–1400 (launch), 1400–2320
+(banked fast sweep), 2320–3050 (first civilian encounter),
+and 3050–4710 (long banked S). Full details and banking
+parameters live in `road.json` and `onboarding.json`.
+These controls preserve **randomized civilian highway traffic**
+after the scripted early introduction.

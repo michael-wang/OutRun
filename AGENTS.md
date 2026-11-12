@@ -111,10 +111,11 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   Blender 5.3 Gaussian Splat import is an optional static-scene
   reference/POC, not required mobile runtime art or renderer migration.
 
-## R5a (first playable slice, v0.10.1 on dev)
+## R5a.1 (first playable slice, v0.10.2 on dev)
 
 - The first three old road turns have been replaced with A0/A1/A2/A3
-  onboarding beats and two explicit S-curve banks in
+  onboarding beats, a dramatic banked first sweeper, and two
+  authored S-curve bank envelopes in
   `content/stages/coast/road.json`. The rest of the coastline is
   still the old playable placeholder.
 - `content/stages/coast/onboarding.json` is the single source for
@@ -124,7 +125,7 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   separate 300m *civilian* entry feeder, preserving a clear first
   lesson. R5b must implement actual crash-tableau events.
 - `?r5qa=1` is development-only and overlays exact lesson IDs and
-  HUD metres. `?at=1390&r5qa=1` targets A1; `?at=3260&r5qa=1`
+  HUD metres. `?at=1400&r5qa=1` targets A1; `?at=3050&r5qa=1`
   targets A3. Use `?trafficSeed=42` for deterministic encounters.
 - No Blender terrain or Geometry Nodes art is in this first
   whitebox. Verify the road and steering first, then run a single
@@ -139,3 +140,16 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   own road physics, collision, terrain material decisions, or a
   shipping GLB. Blender execution/inspection remains a local Codex
   responsibility until a Blender runtime is available.
+
+## R5a.1: source-of-truth and light-index limitations
+
+- Only the first civilian encounter is curated for teaching. Past the
+  opening S, encounters remain **seeded random** with differing vehicles,
+  gaps and behavior. Don't turn the rest of the road race into a script.
+- Preserve a forgiving high-speed first sweep; use a large, readable
+  bank instead of surprising the player with drift-only curvature.
+- Tests asserting fixed old sunset viewpoints are obsolete after
+  the road remake, but seam/geometry/collision safety is not.
+- Legacy `coastLampAtlas` indexes nearest lamps in world Z only;
+  curved road segments can overlap lighting volumes. A proper
+  2D/road-space lookup belongs to new-map scenic/night-lighting QA.
