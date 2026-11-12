@@ -141,3 +141,22 @@ graphics or route content were changed.
 **Next:** remove dormant journey/lab code from the game module, then retire
 remaining Trip-only QA metadata. Avoid multi-region scaffolding until a
 real stage needs it.
+
+
+## R2h — retired chapter handoff removed from the live game
+
+Removed the unreachable `journeyMode=false` subsystem from `main.ts`:
+chapter preloading and separate-world preparation, infinite highway joins,
+coordinate rebasing, scene swapping and replays across chapters. These were
+disabled for the only playable stage and are **not** a blueprint for future
+multiple scenery regions.
+
+The game now uses the authored coast start/end for its state and rival finish
+and relies on the current stream gate, restart loading, collision and race
+recovery. The opt-in development `journey()` query reports `enabled:false`
+without allocating old chapter state. Historical stand-alone journey-link
+utilities/tests are left for a separate dependency audit, not imported in
+the playable main module.
+
+Future region changes require explicit stage data and localized capabilities,
+not restoration of the discarded procedural multi-world system.
