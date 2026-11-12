@@ -11,11 +11,12 @@ it('accepts only approved diagnostics, positioning and replayable traffic seed',
  expect(canonicalGameQuery(new URLSearchParams('trafficSeed=not-a-number')).toString()).toBe('');
 });
 it('exposes authored-prefab QA only in development builds',()=>{
- expect(DEV_QUERY_KEYS).toEqual(['prefabdebug']);
+ expect(DEV_QUERY_KEYS).toEqual(['prefabdebug','r5qa']);
  const keys=canonicalGameQuery(new URLSearchParams('at=985&prefabdebug=1'));
  expect(keys.get('at')).toBe('985');
  expect(keys.has('prefabdebug')).toBe(import.meta.env.DEV);
  expect(canonicalGameQuery(new URLSearchParams('prefabdebug=0')).has('prefabdebug')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('r5qa=1')).has('r5qa')).toBe(import.meta.env.DEV);
 });
 it('defaults to a playable coast without the 0-speed FPS benchmark',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');

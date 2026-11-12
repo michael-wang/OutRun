@@ -4,6 +4,7 @@ import {coastStaticStage} from './content/stage-data';
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
 import {coastGameplayAt,coastFeedbackPhases} from './content/coast-gameplay-sample';
 import {coastWorkerRoad} from './content/coast-worker-road';
+import {coastLessonAt} from './content/coast-onboarding';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {GAME_VERSION} from './build-info';
@@ -196,6 +197,14 @@ document.querySelector('#app')!.innerHTML = `
 </section>`;
 document.getElementById('startup-fallback')!.hidden=true;
 const $ = (id:string) => document.getElementById(id)!;
+ // Developer-only lesson guide; not loaded into production UI.
+ const r5LessonBadge=import.meta.env.DEV&&params.get('r5qa')==='1'
+  ?document.createElement('output'):null;
+ if(r5LessonBadge){
+  r5LessonBadge.id='r5-lesson-qa';
+  r5LessonBadge.style.cssText='position:fixed;z-index:40;left:16px;top:64px;padding:8px 12px;background:rgba(14,25,29,.82);border:1px solid #e7bb74;color:#ffe3ad;border-radius:6px;font:600 13px/1.45 system-ui;pointer-events:none;max-width:300px';
+  document.getElementById('app')!.append(r5LessonBadge);
+ }
 $('route-title').textContent=brick?.name??'Coast Road';
 for(const [id,key] of Object.entries({drive:'P',resume:'P',restart:'R',sound:'M',settings:'C',fullscreen:'F'})){const node=$(id);node.classList.add('shortcut');node.dataset.shortcut=key;node.setAttribute('aria-keyshortcuts',key);}
 await loadingStep(25,'正在建立駕駛場景','準備公路、車輛與追尾視角。');
@@ -1024,6 +1033,13 @@ function render(dt:number,draw=true){
   if(fpsProfiling)driveFpsDiagnostics.cpu('world',performance.now()-worldStart);
   if(!draw)return;
   prefabQa?.update(camera,state.distance);
+  if(r5LessonBadge){
+   const lesson=coastLessonAt(state.distance);
+   const caption=lesson
+    ?`R5a · ${lesson.id} ${lesson.label} · ${Math.floor(state.distance)} / ${lesson.end}m`
+    :`R5a · 後段舊賽道 · ${Math.floor(state.distance)}m`;
+   if(r5LessonBadge.textContent!==caption)r5LessonBadge.textContent=caption;
+  }
   const raceEffectTime=3-countdown+race.time;
   rivalView.update(cameraOnRival?followed.distance:state.distance,raceEffectTime,mode==='countdown'||isFrozenCountdown(),observed,actorRoadReady,camera,renderer.domElement.clientHeight,mobile(),raceHudSafeRect);
   sound.rivals(race.rivals,{distance:state.distance,lateral:state.lateral,speed:state.speed},mode==='countdown',mode==='playing'||mode==='countdown');
@@ -1409,6 +1425,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   rivalTags:()=>rivalView.inspectTags(),
   race:()=>({time:race.time,countdown,observed,playerFinish:race.playerFinish,rank:race.rank(state.distance,race.playerFinish,'PLAYER',state),rivals:race.rivals.map(({entry,obstacles,gearbox,...r})=>({...r,id:entry.id}))}),
   journey:()=>({enabled:false,totalElapsed:elapsed}),
+  r5Lesson:()=>({distance:state.distance,lesson:coastLessonAt(state.distance),traffic:COAST_STAGE.onboarding.traffic}),
   driveState:()=>({...state,elapsed,mode,trackLength:world.length}),
   streamFrame:()=>({elapsed,distance:state.distance,held:streamHeld,road:world.streamer?.roadReady(state.distance)??true,cameraRoad:world.streamer?.roadReady(Math.max(0,state.distance-40))??true,safe:world.streamer?.canDrive(state.distance,state.speed*effectivePace(state.speed,highSpeedPace))??true,contextLost}),
   centerRoad:()=>{const p=world.sample(state.distance),ray=new THREE.Raycaster(p.position.clone().add(new THREE.Vector3(0,10,0)),down,0,20);return world.streamer?.raycastContacts(ray,state.distance).some(h=>Math.abs(h.point.y-p.position.y)<.08)??true;},

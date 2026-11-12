@@ -1,7 +1,7 @@
 /** Public query contract: old debug URLs never change gameplay modes. */
 export const GAME_QUERY_KEYS=['fpsdiag','startupdiag','at','trafficSeed','rivaldebug'] as const;
 // Private dev-only visual marker for data-authored stage prefabs.
-export const DEV_QUERY_KEYS=['prefabdebug'] as const;
+export const DEV_QUERY_KEYS=['prefabdebug','r5qa'] as const;
 export function canonicalGameQuery(raw:URLSearchParams){
  const result=new URLSearchParams();
  if(raw.get('fpsdiag')==='1')result.set('fpsdiag','1');
@@ -13,5 +13,6 @@ export function canonicalGameQuery(raw:URLSearchParams){
   result.set('trafficSeed',String(Number(trafficSeed)));
  if(raw.get('rivaldebug')==='1')result.set('rivaldebug','1');
  if(import.meta.env.DEV&&raw.get('prefabdebug')==='1')result.set('prefabdebug','1');
+ if(import.meta.env.DEV&&raw.get('r5qa')==='1')result.set('r5qa','1');
  return result;
 }
