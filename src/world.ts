@@ -19,18 +19,17 @@ import {asphaltTexture} from './asphalt-texture';
 import { createCar } from './car';
 import {ACTS,actWeights} from './acts';
 import {addJourneyScenery} from './scenery';
-import {selectRoadInterchange,interchangeRailOpening,interchangeWallVisible,RAMP_RETAINING_WALL_OFFSET,RAMP_WIDTH} from './road-interchange';
+import {interchangeRailOpening,interchangeWallVisible,RAMP_RETAINING_WALL_OFFSET,RAMP_WIDTH,type RoadInterchange} from './road-interchange';
 import { createTrack } from './track';
 import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
-import type {PilotCandidate} from './pilot-composer';
 import type {CoastRuntimeStage} from './content/coast-worker-road';
 import type {ScenerySection} from './scenery-cross-section';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate|CoastRuntimeStage;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:CoastRuntimeStage;interchange?:RoadInterchange;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
@@ -59,8 +58,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const {sample,length}=options.track??createTrack();
   const shadowCache=farSun?new CoastShadowCache(sun,farSun,sample,length):undefined;
   const bridge=shoulders&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(options.streamStage?.generatorVersion??'')?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
-  const junction=options.streamStage&&!('kind' in options.streamStage)
-    ?selectRoadInterchange(options.streamStage,bridge):undefined;
+  // Only authored scene data may opt in to a junction; no Pilot selector.
+  const junction=options.interchange;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
   const dusk=coastUltra?addCoastDusk(scene,sample):undefined;

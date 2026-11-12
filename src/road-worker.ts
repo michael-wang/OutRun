@@ -11,7 +11,7 @@ import {rockySections,rockyAt,type RockySection} from './rocky-shoulder';
 import type {BankStrength} from './banking';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
 import {canyonSceneEnvelope} from './grand-canyon-scene';
-import type {PilotCandidate,createPilotTrack} from './pilot-composer';
+import type {createAuthoredCoastTrack} from './content/authored-track';
 import {coastWorkerRoad} from './content/coast-worker-road';
 import type {ScenerySection} from './scenery-cross-section';
 import type {JourneyLandmark} from './scenery';
@@ -24,12 +24,12 @@ import {addJourneyScenery} from './scenery';
 import * as THREE from 'three';
 import {RoadClearance} from './road-clearance';
 import {roadOffset,TRIP_MARKER_CENTER_M,tripBarrierRawOffset,coastalCliffDropAtLateral} from './road-profile';
-import {selectRoadInterchange,interchangeSceneryClear,type RoadInterchange} from './road-interchange';
+import {interchangeSceneryClear,type RoadInterchange} from './road-interchange';
 
 const hasModernShoulders=(v:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
 type InitRequest={type:'init';generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;faults?:Faults}
- & ({coastStage:'coast';stage?:never}|{stage:PilotCandidate;coastStage?:never});
+ & {coastStage:'coast'};
 type Request=InitRequest|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let farmGround:Awaited<ReturnType<typeof loadFarmGround>>|undefined;
 let blenderArt=false,mobileShadows=false;
@@ -43,7 +43,7 @@ type WorkerSceneStage={
  canyonPrototype?:GrandCanyonScene;
  designerCut?:DesignerCut;
 };
-let generation=-1,stage:WorkerSceneStage|undefined,track:ReturnType<typeof createPilotTrack>|undefined;
+let generation=-1,stage:WorkerSceneStage|undefined,track:ReturnType<typeof createAuthoredCoastTrack>|undefined;
 let halfAt:(distance:number)=>number=()=>7;
 let weightsAt:(distance:number)=>number[]=()=>[1,0,0];
 let roadSamples:THREE.Vector3[]=[];let clearance:RoadClearance;
@@ -64,19 +64,11 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   if(import.meta.env.DEV&&request.type!=='init'&&request.index>=faults.fromIndex){if(faults.delayMs)await new Promise(r=>setTimeout(r,faults.delayMs));if(faults.fail)throw new Error('Injected worker preparation failure');}
 
   if(request.type==='init'){const initStart=performance.now();generation=request.generation;
-   let legacy:PilotCandidate|undefined;
-   if(request.coastStage==='coast'){
-    const coast=coastWorkerRoad(undefined,request.bank);
-    stage=coast.stage;track=coast.track;
-    halfAt=coast.halfAt;weightsAt=coast.weightsAt;
-   }else{
-    // Old Pilot code is loaded only if a non-coast stage requests it.
-    legacy=request.stage;
-    const pilot=await import('./pilot-composer');
-    stage=legacy;track=pilot.createPilotTrack(legacy,request.bank);
-    halfAt=d=>pilot.pilotSample(legacy!,d).halfWidth;
-    weightsAt=d=>pilot.pilotWeights(legacy!,d);
-   }
+   // Only the authored finite coast is a supported live stage. Never load
+   // a Pilot/Trip generator or re-plan road geometry in the Worker.
+   const coast=coastWorkerRoad(undefined,request.bank);
+   stage=coast.stage;track=coast.track;
+   halfAt=coast.halfAt;weightsAt=coast.weightsAt;
    if(!stage||!track)throw Error('Missing road stage in Worker init');
    const current=track;
    roadLockArt=!!request.blenderArt&&stage.generatorVersion==='canyon-roadlock-v1';
@@ -84,7 +76,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,current.length,weightsAt):[];
    bridge=hasModernShoulders(stage.generatorVersion)&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(stage.generatorVersion)
     ?bridgeSpan(current.sample,halfAt,weightsAt,current.length):undefined;
-   junction=legacy?selectRoadInterchange(legacy,bridge):undefined;
+   junction=undefined;
    roadSamples=Array.from({length:Math.ceil(current.length/25)},(_,i)=>current.sample(i*25).position);
    clearance=new RoadClearance(roadSamples,halfAt,stage.id==='ROAD-TRIP-10M');
    worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;

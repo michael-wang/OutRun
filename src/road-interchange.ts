@@ -1,6 +1,3 @@
-import {BRICK_START} from './bricks';
-import type {PilotCandidate} from './pilot-composer';
-import type {BridgeSpan} from './bridge';
 
 export interface RoadInterchange {
  beat:string;side:1;
@@ -14,35 +11,6 @@ export const RAMP_WIDTH=3.5;
 export const RAMP_DROP={entry:11,exit:14} as const;
 export const RAMP_RETAINING_WALL_OFFSET=4.2;
 
-/** Only one proof-of-concept interchange per r7 trip, never retroactively
- * changing its accepted lane/curve/elevation placements or historical seeds. */
-export function selectRoadInterchange(stage:PilotCandidate,bridge?:BridgeSpan):RoadInterchange|undefined{
- if(stage.id!=='ROAD-TRIP-10M'||(stage.generatorVersion!=='v0.9-r7'&&stage.generatorVersion!=='v0.9-r8'&&stage.generatorVersion!=='v0.9-r9'&&stage.generatorVersion!=='v0.9-r10'&&stage.generatorVersion!=='v0.9-r11'&&stage.generatorVersion!=='v0.9-r12'))return undefined;
- const widths=stage.placements.filter(p=>p.channel==='width');
- const pairs:RoadInterchange[]=[];
- for(const p of widths){
-  if(p.id!=='W02'||p.parameters.from!==4||(p.parameters.to!==6&&p.parameters.to!==5))continue;
-  const next=widths.find(q=>q.channel==='width'&&q.id==='W03'&&q.beat===p.beat
-   &&q.startS>p.endS&&q.parameters.from===p.parameters.to&&q.parameters.to===4);
-  if(!next)continue;
-  const start=BRICK_START+p.startS,end=BRICK_START+next.endS;
-  if(start<BRICK_START+700||end>BRICK_START+stage.length-500)continue;
-  if(bridge&&start-300<bridge.end+250&&end+300>bridge.start-250)continue;
-  pairs.push({beat:p.beat,side:1,entry:{start,end:BRICK_START+p.endS},
-   exit:{start:BRICK_START+next.startS,end},lanes:{before:4,wide:p.parameters.to,after:4}});
- }
- if(!pairs.length)return undefined;
- // The single converted five-lane phrase stays selected after generation.
- // Before conversion, prefer an urban/coastal six-lane phrase.
- return pairs.sort((a,b)=>{
-  const rating=(site:RoadInterchange)=>{
-   const d=site.entry.start,phase=stage.worldPhases.find(p=>d-BRICK_START<p.endS)??stage.worldPhases.at(-1);
-   return (site.lanes.wide===5?-100:0)+(phase?.world==='city'?0:phase?.world==='coast'?3:30);
-   // The authored curvature/grade are preserved; this only picks a corridor.
-  };
-  return rating(a)-rating(b)||a.entry.start-b.entry.start;
- })[0];
-}
 /** A single right-side lane (3.5m) widens the mainline without moving its
  * established left edge. The common centerline follows the new cross-section,
  * and the driving/traffic frame subtracts this shift to preserve old lanes. */
