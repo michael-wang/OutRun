@@ -9,3 +9,5 @@
 - `stages/coast/road.json` is the authored source of road turns/elevation. Distances are **absolute HUD road metres**, shared with scene placements. Do not reintroduce per-turn TypeScript or speculative random composers.
 
 - R2c: coast track spans and frames are built by `src/content/authored-track.ts` from road JSON. The `placements` view is legacy compatibility only; do not author it separately.
+
+- R2d: `stages/coast/stage.json` owns name, seed, entry and warning. `road.json` owns turns/height, `scene.json` owns props. Do not add hand-authored route metadata to the legacy `src/coast-ultra-stage.ts` compatibility adapter.

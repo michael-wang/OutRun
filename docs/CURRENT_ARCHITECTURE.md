@@ -65,3 +65,22 @@ and proves that edits to road JSON work with obsolete placements removed.
 **Next:** migrate remaining coast consumers from Pilot/Trip metadata to the
 stage content contract. Retire legacy code only after confirming its remaining
 call sites are genuinely inactive. R2c intentionally does not redesign curves.
+
+## R2d — stage content vs legacy Trip boundary
+
+Coastal authoring is now represented by three simple files:
+`content/stages/coast/stage.json` (identity / race metadata),
+`road.json` (finite route) and `scene.json` (placed prefabs).
+`src/content/coast-stage.ts` composes these with the existing scenic acts
+and validates IDs, finite road, content and chapter coverage. **This content
+contract does not inherit from Pilot, Brick or Trip.**
+
+`src/coast-ultra-stage.ts` is a narrow compatibility bridge which creates
+the *same* `TripCandidate` that existing Worker and game still accept.
+Historical IDs, event metadata, world phase and empty legacy fields remain
+there temporarily; they are not authoring requirements. The R2d P0 tests
+assert the exact accepted runtime identity, feature boundaries and track.
+
+**Next:** migrate the remaining live game/Worker consumers to read a
+narrow runtime stage contract. Only then delete legacy generated fields and
+inactive Pilot/Trip machinery; avoid changing multiple systems at once.

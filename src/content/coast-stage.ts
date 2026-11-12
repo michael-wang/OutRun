@@ -1,0 +1,54 @@
+import stageFile from '../../content/stages/coast/stage.json';
+import {coastAuthoredRoad,validateAuthoredRoad,type AuthoredRoad} from './authored-road';
+import {coastStaticStage,staticPrefabCatalog,validateStageStaticContent,type StageStaticContent} from './stage-data';
+import {COAST_SCENIC_ACTS} from '../coast-journey-layout';
+
+/** Only authoring data lives here. No Pilot, Brick, Trip or legacy route
+ * generator dependencies. The existing runtime adapter is at coast-ultra-stage.ts. */
+export interface CoastStageManifest{
+ schemaVersion:1;
+ id:'coast';
+ name:string;
+ intent:string;
+ seed:number;
+ entrySpeed:number;
+ entry:string;
+ exit:string;
+ warning:{leadMeters:number;text:string};
+}
+export interface CoastStageContent{
+ manifest:CoastStageManifest;
+ road:AuthoredRoad;
+ scene:StageStaticContent;
+ scenicActs:readonly {id:string;start:number;end:number;label:string}[];
+}
+export function validateCoastStage(content:CoastStageContent){
+ const {manifest,road,scene,scenicActs}=content;
+ if(manifest.schemaVersion!==1||manifest.id!=='coast'||manifest.id!==road.id||manifest.id!==scene.id)
+  throw Error('Coast stage/road/scene IDs or schema do not match');
+ if(!manifest.name.trim()||!manifest.intent.trim()||!manifest.entry.trim()||!manifest.exit.trim()||
+    !manifest.warning.text.trim()||!Number.isSafeInteger(manifest.seed)||manifest.seed<0||
+    !Number.isFinite(manifest.entrySpeed)||manifest.entrySpeed<0||
+    !Number.isFinite(manifest.warning.leadMeters)||manifest.warning.leadMeters<0)
+  throw Error('Invalid coastal stage metadata');
+ validateAuthoredRoad(road);
+ validateStageStaticContent(scene,staticPrefabCatalog);
+ // Scenic act distances are relative to course start, unlike road/prop HUD metres.
+ if(!scenicActs.length||scenicActs[0].start!==0||scenicActs.at(-1)!.end!==road.length)
+  throw Error('Coast scenic acts must cover the entire finite stage');
+ let previous=0;
+ for(const act of scenicActs){
+  if(!act.id||!act.label||!Number.isFinite(act.start)||!Number.isFinite(act.end)||
+     act.start!==previous||act.end<=act.start)
+   throw Error('Invalid or discontinuous coastal scenic acts');
+  previous=act.end;
+ }
+}
+
+export const COAST_STAGE:CoastStageContent={
+ manifest:stageFile as CoastStageManifest,
+ road:coastAuthoredRoad,
+ scene:coastStaticStage,
+ scenicActs:COAST_SCENIC_ACTS,
+};
+validateCoastStage(COAST_STAGE);

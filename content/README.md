@@ -51,3 +51,21 @@ is now a derived compatibility projection only, not a geometry dependency.
 For QA, drive from `/?at=985` and `/?at=3150`. The accepted R2b geometry
 and gameplay should appear **identical**. `tests/authored-track.unit.ts`
 provides exact course and dense track-position / bank parity checks.
+
+## R2d — coastal stage content independent of Trip
+
+`content/stages/coast/stage.json` now owns the stage identity and basic race
+metadata (name, seed, entry, warning). The existing `road.json` and
+`scene.json` still own road geometry and the static farmhouse. The small
+`src/content/coast-stage.ts` joins and validates these three sources against
+the existing four scenic acts; it imports **no** Pilot/Trip/Brick generator.
+
+`src/coast-ultra-stage.ts` is now only a **temporary adapter** producing the
+unchanged legacy `TripCandidate` required by game, Worker and diagnostics.
+When editing the coast, change the data files, not that adapter. Runtime IDs
+and historical compatibility tags remain pinned there until consumers migrate.
+No changes to road, traffic, water, scenic act positions or other visuals.
+
+QA: `/?at=985` for the authored farmhouse, `/?at=3150` for the sweep.
+`tests/coast-stage-content.unit.ts` is a P0 guard against data mismatches
+and unintended changes to the existing runtime stage.

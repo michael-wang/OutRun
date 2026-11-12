@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "name": "Azure Coast · Scenic Journey",
+  "intent": "Coastal journey from rice fields and a courtyard through beach, lively market town and fishing farmland.",
+  "seed": 804,
+  "entrySpeed": 140,
+  "entry": "Quiet dusk shoreline",
+  "exit": "Golden-water farewell",
+  "warning": {
+    "leadMeters": 250,
+    "text": "COASTAL SWEEPER · HOLD YOUR LINE"
+  }
+}
