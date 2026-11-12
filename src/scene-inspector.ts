@@ -1,23 +1,16 @@
-import {ROAD_FEATURE_KINDS,ROAD_FEATURE_LABELS,ROAD_FEATURE_REFERENCE,type RoadFeature,type RoadFeatureKind} from './road-features';
-import type {ScenicCue} from './scenic-director';
 import {SECTION_LABELS,SIDE_LABELS,type ScenerySection} from './scenery-cross-section';
-import type {GrandCanyonScene} from './grand-canyon-scene';
-import type {RoadLockMoment} from './designer-canyon-roadlock';
 /** Small, explicitly opt-in QA navigator. It never runs in public play. */
-export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'city-grade'|'bridge'|'breakdown'|'junction'|'road-feature'|'scenic-beat'|'scenery-section'|'canyon-prototype'|'road-lock';
+export type InspectorKind='clock'|'lighthouse'|'canyon-arch'|'bridge'|'breakdown'|'junction'|'scenery-section';
 export interface InspectorStop {
  id:string;kind:InspectorKind;label:string;distance:number;
- landmarkDistance?:number;companions?:number;roadFeature?:RoadFeature;scenicCue?:ScenicCue;scenerySection?:ScenerySection;canyonPrototype?:GrandCanyonScene;roadLockMoment?:RoadLockMoment;
+ landmarkDistance?:number;companions?:number;scenerySection?:ScenerySection;
 }
 export const INSPECTOR_CATEGORIES:{kind:InspectorKind;label:string}[]=[
  {kind:'clock',label:'鐘塔街區'},{kind:'lighthouse',label:'海岸燈塔'},
- {kind:'canyon-arch',label:'山區地標'},{kind:'city-grade',label:'城市坡度'},
+ {kind:'canyon-arch',label:'山區地標'},
  {kind:'bridge',label:'橋梁兩端'},{kind:'breakdown',label:'故障車'},
- {kind:'junction',label:'匯入／出口'},{kind:'road-feature',label:'道路特徵'},
- {kind:'scenic-beat',label:'導演節奏'},
+ {kind:'junction',label:'匯入／出口'},
  {kind:'scenery-section',label:'場景橫斷面'},
- {kind:'canyon-prototype',label:'大峽谷河灣 R2'},
- {kind:'road-lock',label:'峽谷極限賽道'},
 ];
 export function canStepBack(distance:number,roadExists:(distance:number)=>boolean,length:number){
  return Number.isFinite(distance)&&distance>=0&&distance<length&&roadExists(distance);
@@ -38,8 +31,6 @@ export class SceneInspector {
  private readonly audit:HTMLElement;
  private readonly driveButton:HTMLButtonElement;
  private readonly categoryButtons=new Map<InspectorKind,HTMLButtonElement>();
- private readonly featureButtons=new Map<'all'|RoadFeatureKind,HTMLButtonElement>();
- private featureFilter:'all'|RoadFeatureKind='all';
  private kind:InspectorKind='clock';
  private viewMode:'road'|'side'='road';
  private currentIndex=0;
@@ -57,7 +48,6 @@ export class SceneInspector {
   this.panel.setAttribute('role','dialog');this.panel.setAttribute('aria-label','場景檢查');
   this.panel.innerHTML=`<h2>場景檢查 <small>僅 QA</small></h2>
    <div class="si-categories" id="si-categories"></div>
-    <div class="si-feature-filters" id="si-feature-filters" aria-label="道路特徵種類" hidden></div>
    <div class="si-info" id="si-info"></div>
    <div class="si-row">
     <button type="button" data-si="prev">◀ 上一處</button><button type="button" data-si="next">下一處 ▶</button>
@@ -87,16 +77,6 @@ export class SceneInspector {
    button.addEventListener('click',()=>this.setCategory(kind));
    this.panel.querySelector('#si-categories')!.append(button);this.categoryButtons.set(kind,button);
   }
-  // A compact filter is only shown when Road Features is selected.
-   for(const kind of ['all',...ROAD_FEATURE_KINDS] as ('all'|RoadFeatureKind)[]){
-    const count=this.stops.filter(s=>s.kind==='road-feature'&&(kind==='all'||s.roadFeature?.kind===kind)).length;
-    const button=document.createElement('button');
-    button.type='button';button.dataset.siFeature=kind;
-    button.textContent=`${kind==='all'?'全部':ROAD_FEATURE_LABELS[kind]} (${count})`;
-    button.disabled=count===0;button.setAttribute('aria-pressed',String(kind==='all'));
-    button.addEventListener('click',()=>this.setFeatureFilter(kind));
-    this.panel.querySelector('#si-feature-filters')!.append(button);this.featureButtons.set(kind,button);
-   }
    // The left/right controls have real global QA shortcuts; close uses Esc/○.
   for(const [action,key,pad] of [
    ['prev','←','◀'],['next','→','▶'],['close','Esc','○'],
@@ -118,8 +98,7 @@ export class SceneInspector {
   this.setCategory('clock',false);
  }
  private button(name:string){return this.panel.querySelector<HTMLButtonElement>(`[data-si="${name}"]`)!;}
- private byKind(kind:InspectorKind){return this.stops.filter(s=>s.kind===kind&&
-  (kind!=='road-feature'||this.featureFilter==='all'||s.roadFeature?.kind===this.featureFilter));}
+ private byKind(kind:InspectorKind){return this.stops.filter(s=>s.kind===kind);}
  private selected(){return this.byKind(this.kind)[this.currentIndex];}
  get isOpen(){return !this.panel.hidden;}
  open(){this.callbacks.pause();this.panel.hidden=false;this.toggle.setAttribute('aria-expanded','true');this.setView('road');this.refresh(true);this.categoryButtons.get(this.kind)?.focus();}
@@ -130,16 +109,9 @@ export class SceneInspector {
   this.button('view-side').setAttribute('aria-pressed',String(mode==='side'));
   this.callbacks.view(mode);
  }
- private setFeatureFilter(filter:'all'|RoadFeatureKind){
-  this.featureFilter=filter;this.currentIndex=0;
-  for(const [kind,button] of this.featureButtons)button.setAttribute('aria-pressed',String(kind===filter));
-  const first=this.selected();
-  if(first)this.jumpTo(first.distance);else this.refresh(true);
- }
  private setCategory(kind:InspectorKind,jump=true){
   this.scanToken++;this.scanning=false;this.scanSummary='';this.kind=kind;this.currentIndex=0;
   for(const [k,button] of this.categoryButtons)button.setAttribute('aria-pressed',String(k===kind));
-  this.panel.querySelector<HTMLElement>('#si-feature-filters')!.hidden=kind!=='road-feature';
   const site=this.selected();if(site&&jump)this.jumpTo(site.distance);
   else this.refresh(true);
  }
@@ -168,7 +140,7 @@ export class SceneInspector {
   if(!this.isOpen&&!force)return;
   const ready=this.callbacks.ready(),site=this.selected(),entries=this.byKind(this.kind);
   const distance=Math.round(this.callbacks.current());
-  const key=`${ready}:${site?.id??'none'}:${distance}:${this.featureFilter}:${this.scanSummary}`;
+  const key=`${ready}:${site?.id??'none'}:${distance}:${this.scanSummary}`;
   if(!force&&key===this.lastRenderKey)return;
   this.lastRenderKey=key;
   if(force||ready!==this.previousReady){
@@ -185,44 +157,12 @@ export class SceneInspector {
    this.audit.textContent=report?
     `鐘塔配套：${report.faces} 座鐘面、${report.companions}/${report.expected} 棟建築 · ${clockAuditPass(report)?'✓ 通過':'⚠ 需檢查'}。全路線 ${completed} 座可用上一處／下一處逐一巡檢。`:
     `鐘塔巡檢：全路線 ${completed} 座；每座必須有 3 棟建築。選擇鐘塔位置並載入後檢查實際模型。`;
-  }else if(site?.kind==='road-lock'&&site.roadLockMoment){
-   const p=site.roadLockMoment;
-   this.audit.textContent='Grand Canyon Road Lock · '+p.name+'。\\n'+
-    '相對里程 '+p.startS+'–'+p.endS+'m · '+(p.role==='hero'?'英雄段':'操控段')+
-    '。\\n單向四線道；三個必煞大型髮夾彎最高約 36° banking；高差約 310m。'+
-    '\\n地形僅為粗模佔位，這次優先測試煞車、轉向、坡度及高速節奏。';
-  }else if(site?.kind==='canyon-prototype'&&site.canyonPrototype){
-   const c=site.canyonPrototype;
-   this.audit.textContent='Scenery Foundation R2.0 · 大峽谷河灣原型 · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
-    '谷底河流：固定世界高度 '+c.riverY.toFixed(1)+'m；河流寬度 '+c.riverWidth+'m；沿路內側切坡、外側谷地。\n'+
-    (c.vista?'R2.1 Vista Reveal：正常追尾鏡頭預估主景展示點 '+Math.round(c.vista.revealDistance)+'m，'+
-     '河流 '+c.vista.riverInFrameSamples+'/3、對岸岩層 '+c.vista.rimInFrameSamples+'/3 個視角取樣在畫面內'+
-     (c.vista.sightlineConfirmed?' ✓':' ⚠ 尚未完整通過取景')+'。':'R2.0 地形原型，尚無視線分析。')+
-    '\\n沿路段試駕，留意地形層次與自然視線；投影數據不能代替遮擋及手機實玩驗收。';
   }else if(site?.kind==='scenery-section'&&site.scenerySection){
    const c=site.scenerySection;
    this.audit.textContent='Scenery Credibility '+(this.stops.some(s=>s.scenerySection?.urbanCore)?'R1.1':'R1.0')+' · '+SECTION_LABELS[c.kind]+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
     '左側：'+SIDE_LABELS[c.left]+'；右側：'+SIDE_LABELS[c.right]+'。\n'+
     (c.urbanCore?'城市街廓雙側密度相近，外側城市地表更平緩；':'左右地形與建築共用落地高度；')+'180m 漸變避免突然切換海岸與城市。';
-  }else if(site?.kind==='scenic-beat'&&site.scenicCue){
-   const c=site.scenicCue,[low,high]=c.targetIntensity;
-   this.audit.textContent='Scenic Director R1 · '+c.title+' · '+Math.round(c.start)+'–'+Math.round(c.end)+'m。\n'+
-    '目標張力 '+low+'–'+high+'／10，實測 '+c.intensity+'／10；有效轉向 '+c.effectiveTurnSeconds.toFixed(1)+' 秒；'+
-    '峰值／平均 '+Math.round(c.peakSteer*100)+'%／'+Math.round(c.meanSteer*100)+'%；'+
-    '累積轉角 '+c.totalTurnDegrees+'°；有效反向 '+c.reversals+' 次。\n'+
-    '實測分數不會因目標而強制修正；可用「試駕」驗收節奏。';
-  }else if(site?.kind==='road-feature'&&site.roadFeature){
-    const f=site.roadFeature,scene={city:'城市',coast:'海岸',canyon:'山區'}[f.biome];
-    const bearing=f.direction?({'left':'左','right':'右'} as const)[f.direction]:'';
-    const detail=f.kind==='merge'||f.kind==='exit'?` · ${f.lanesBefore}→${f.lanesAfter} 車道`:
-     f.kind==='s-bends'?` · ${f.turns} 個轉向（${f.pattern}）`:
-     f.turnDegrees?` · ${bearing}轉約 ${f.turnDegrees}°`:'';
-    const m=f.analysis,pct=(n:number)=>`${Math.round(n*100)}%`;
-    const tooFast=m.peakSteer>1?' · ⚠ 參考速度下需減速':'';
-    this.audit.textContent=`R0.1 Driving Intensity ${f.intensity}/10 · ${ROAD_FEATURE_LABELS[f.kind]} · ${scene} · ${Math.round(f.start)}–${Math.round(f.end)}m${detail}。\n`+
-     `以 ${ROAD_FEATURE_REFERENCE.speedKmh} km/h、${ROAD_FEATURE_REFERENCE.pace}× 估算：區段 ${m.durationSeconds.toFixed(1)} 秒／有效過彎 ${m.activeTurnSeconds.toFixed(1)} 秒；`+
-     `轉向需求峰值／平均 ${pct(m.peakSteer)}／${pct(m.meanSteer)}；累積轉角 ${m.totalTurnDegrees}°；反向 ${m.reversals} 次${tooFast}。`;
-   }else this.audit.textContent='';
+  }else this.audit.textContent='';
  }
  private async copyPosition(){
   const url=new URL(location.href);

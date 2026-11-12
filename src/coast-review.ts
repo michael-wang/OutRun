@@ -1,4 +1,4 @@
-import './l2-lab.css';
+import './coast-review.css';
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
 import {COAST_FEEDBACK_STORAGE,COAST_PRAISE,coastReviewKey,coastNote,readCoastReview,exportCoastReview,type CoastReview,type CoastVote} from './content/coast-feedback-data';
 import type {FeedbackAnchor,FeedbackEvent,PraiseTag} from './feedback-types';
