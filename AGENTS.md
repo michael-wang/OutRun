@@ -15,7 +15,7 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 ## Workflow / release
 
 - Work on `dev` by default. Only promote to `main` on **explicit owner approval**; never force-push or move released tags. Ordinary `dev` pushes must not deploy.
-- Public releases use an unused stable package version in both `package.json` and lockfile, a new commit and an immutable annotated `vX.Y.Z` tag for the **deployed** `main` commit. Development edits after a release need a unique `-dev.N` prerelease version.
+- Development snapshots increment the patch version in `package.json` and lockfile (`0.9.44`, `0.9.45`, etc.), with no `-dev.N` suffix and **no development tag**. Untagged `dev` version numbers are not public releases. Public releases still require owner approval, a new `main` commit and an immutable annotated `vX.Y.Z` tag for the deployed commit. Reserve `0.10.0` for the accepted full architecture refactor; never reuse a previously tagged version.
 - **P0 / Blocker:** cannot load, start, or meaningfully play; blocks release.
 - **P1 / Critical:** significant gameplay loss, serious crash or broken recovery; **tell the owner**, who decides whether to publish. P2/P3 cosmetic or tuning defects do not block.
 - Keep release CI lean: dependency install, production build, deterministic P0 checks; P1 checks are advisory. Visual feel, controller behavior and device FPS are primarily owner playtests. Do not turn slow/flaky Playwright screenshots into deployment gates.
@@ -28,9 +28,9 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - Authored C02/E02 math is in `src/content/road-shapes.ts`; the game and Worker share `coast-worker-road.ts`. Review the small active flow in `docs/CURRENT_ARCHITECTURE.md` before adding new road logic.
 
 
-- R4a stage effect settings live in `content/stages/coast/effects.json`
+- R4a/R4b stage effect settings live in `content/stages/coast/effects.json`
   and are validated by `src/content/coast-effects.ts`; do not recreate
-  hard-coded ocean/vegetation/flower defaults in their producer modules.
+  hard-coded ocean/vegetation/flower/sunset/shadow profile defaults in their producer modules.
 - When working with local Codex, run `npm run verify:dev` (build + all
   retained unit tests) **before** pushing to GitHub. GitHub release
   validation remains a separate authority for `main`; physical play

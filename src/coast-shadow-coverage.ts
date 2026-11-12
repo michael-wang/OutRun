@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {COAST_SUN} from './coast-dusk';
 import {COAST_STATIC_SHADOW_LAYER,COAST_DYNAMIC_SHADOW_LAYER} from './coast-shadow-layers';
 import {coastShadowTechniqueEnabled} from './coast-shadow-techniques';
+import {COAST_EFFECTS,coastShadowSettings,type CoastShadowStageEffects} from './content/coast-effects';
 
 /** Geometry-accurate live shadows by the car plus region-cached static shadows. */
 export const COAST_NEAR_SHADOW={left:-220,right:220,top:110,bottom:-110,near:1,far:1300} as const;
@@ -10,7 +11,11 @@ export const COAST_SHADOW_LOOKAHEAD_M=680;
 export const COAST_STATIC_SHADOW_STEP_M=240;
 type Sample=(d:number)=>{position:THREE.Vector3};
 
-export function configureCoastShadowLights(near:THREE.DirectionalLight,far:THREE.DirectionalLight,mobile:boolean){
+export function configureCoastShadowLights(
+ near:THREE.DirectionalLight,far:THREE.DirectionalLight,mobile:boolean,
+ settings:CoastShadowStageEffects=COAST_EFFECTS.shadows,
+){
+ const profile=coastShadowSettings(settings,mobile);
  const setup=(light:THREE.DirectionalLight,bounds:typeof COAST_NEAR_SHADOW|typeof COAST_FAR_SHADOW,size:number,bias:number,layer:number)=>{
   light.castShadow=true;light.shadow.mapSize.set(size,size);
   Object.assign(light.shadow.camera,bounds);light.shadow.camera.updateProjectionMatrix();
@@ -18,8 +23,8 @@ export function configureCoastShadowLights(near:THREE.DirectionalLight,far:THREE
   light.shadow.bias=bias;light.shadow.normalBias=.04;
  };
  // Only moving vehicles use the live depth pass. The far texture is cached.
- setup(near,COAST_NEAR_SHADOW,mobile?2048:3072,-.00008,COAST_DYNAMIC_SHADOW_LAYER);
- setup(far,COAST_FAR_SHADOW,mobile?3072:4096,-.00002,COAST_STATIC_SHADOW_LAYER);
+ setup(near,COAST_NEAR_SHADOW,profile.nearMapSize,-.00008,COAST_DYNAMIC_SHADOW_LAYER);
+ setup(far,COAST_FAR_SHADOW,profile.farMapSize,-.00002,COAST_STATIC_SHADOW_LAYER);
  far.shadow.autoUpdate=false;
  far.shadow.needsUpdate=true;
  near.castShadow=coastShadowTechniqueEnabled('dynamicMap');

@@ -27,3 +27,6 @@
   vegetation and flower settings; do not duplicate those constants in
   effect producers. Keep Pixel 8 FFT and flower budgets within the
   validator, and keep shadows unchanged unless explicitly requested.
+- R4b: light colors/direction, haze and GPU shadow launch profiles are
+  stage settings in the same file. Preserve approved mobile-fast defaults;
+  live shadow diagnosis remains a separate runtime switch, not stage content.

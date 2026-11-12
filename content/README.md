@@ -58,4 +58,18 @@ These settings preserve all accepted coast defaults. Change only the
 target field to experiment with a look; the road remains in `road.json`.
 Foliage transition distances are absolute HUD metres. The stage data
 is an interchange representation, not a permanent commitment to JSON.
-Sun, sky and shadow systems are intentionally **not** generalized in R4a.
+Sun, sky and shadow systems were intentionally **not** generalized in R4a.
+
+## R4b — sunset appearance and shadow performance profiles
+
+The same effects file now owns coast sunset direction, sun/hemisphere/fog
+appearance and mobile/desktop shadow technique presets plus map-size budgets.
+It keeps the **exact accepted values**. The shared sun vector still drives
+the dome, water reflections, boat shadows and scene depth shadows.
+The existing diagnostics can temporarily toggle shadow techniques at runtime;
+they are not persisted as stage content.
+
+Pixel 8 baseline: both expensive 3D shadow maps remain OFF, and map texture
+budgets cannot exceed the approved sizes. Enabling them in authored mobile
+content needs explicit device profiling and a validator change. No new Shader,
+draw pass or shadow caster was added in R4b.

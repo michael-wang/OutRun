@@ -69,5 +69,18 @@ One file changes only authored scenery parameters, **not** road layout,
 race logic, terrain topology, lighting direction or shadow caster policy.
 No hypothetical scene/region inheritance layer was introduced.
 The next R4 task should address a concrete new scenery need rather than
-expose every existing visual constant. Shadow refactoring is deliberately
-deferred until Pixel 8 profiling can guard its FPS budget.
+expose every existing visual constant. GPU-expensive shadow *rendering* changes remain deferred until Pixel 8
+profiling can guard its FPS budget.
+
+## R4b — lighting and shadow configuration boundary
+
+The same validated stage effects now hold sunset direction/strength,
+hemisphere and fog, and the mobile/desktop shadow-map launch policy with
+bounded texture sizes. The shared coast sun vector flows into the already
+existing sky/water/scene/boat-shadow components. `coast-shadow-techniques.ts`
+applies the stage preset **once on launch**; the pause/FPS diagnostic toggles
+remain independent and reversible. Mobile 3D shadow maps stay disabled until
+new device measurements support changing that policy.
+
+No scene shader, shadow pass, caster assignment or route handling changes.
+Unchanged lighting defaults should produce an identical scene.

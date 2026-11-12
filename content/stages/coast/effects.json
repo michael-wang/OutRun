@@ -34,5 +34,48 @@
       "flowerDensity": 0.38,
       "maxFlowers": 720
     }
+  },
+  "lighting": {
+    "sunDirection": [
+      0.66,
+      0.085,
+      0.75
+    ],
+    "shadowStretch": 0.7,
+    "hemisphere": {
+      "sky": "#aab1da",
+      "ground": "#66534b",
+      "intensity": 1.25
+    },
+    "sun": {
+      "color": "#ffc080",
+      "nearIntensity": 0.65,
+      "farIntensity": 1.15
+    },
+    "fog": {
+      "color": "#a8796e",
+      "near": 250,
+      "far": 1450
+    }
+  },
+  "shadows": {
+    "mobile": {
+      "dynamicMap": false,
+      "staticMap": false,
+      "boatDepth": true,
+      "rockShader": true,
+      "contactDecals": true,
+      "nearMapSize": 2048,
+      "farMapSize": 3072
+    },
+    "desktop": {
+      "dynamicMap": true,
+      "staticMap": true,
+      "boatDepth": true,
+      "rockShader": true,
+      "contactDecals": true,
+      "nearMapSize": 3072,
+      "farMapSize": 4096
+    }
   }
 }

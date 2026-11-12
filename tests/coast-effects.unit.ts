@@ -1,5 +1,8 @@
 import {expect,it} from 'vitest';
-import {COAST_EFFECTS,oceanVisualSettings,validateCoastEffects} from '../src/content/coast-effects';
+import {COAST_EFFECTS,oceanVisualSettings,coastShadowSettings,validateCoastEffects} from '../src/content/coast-effects';
+import * as THREE from 'three';
+import {COAST_SUN,COAST_SHADOW_STRETCH} from '../src/coast-dusk';
+import {configureCoastShadowLights} from '../src/coast-shadow-coverage';
 import {COAST_STAGE,validateCoastStage} from '../src/content/coast-stage';
 import {coastVegetationDensity} from '../src/coast-journey-layout';
 import {FARM_FLOWER_COLORS,FARM_FLOWER_DETAIL,FARM_PLOTS,farmFlowerDetail,flowerPlotColor} from '../src/coast-farm-layout';
@@ -71,4 +74,49 @@ it('R4a: reject invalid mobile costs, misplaced foliage and palettes early',()=>
  invalid(x=>{x.flowers.palette[0]='not a color';});
  invalid(x=>{x.flowers.near.maxFlowers=5001;});
  invalid(x=>{x.flowers.middle.flowerDensity=NaN;});
+});
+
+it('R4b: preserve accepted sunset, haze and shared sun direction',()=>{
+ const light=COAST_EFFECTS.lighting;
+ expect(COAST_SUN.toArray()).toEqual(new THREE.Vector3(.66,.085,.75).normalize().toArray());
+ expect(COAST_SHADOW_STRETCH).toBe(.70);
+ expect(light.hemisphere).toEqual({sky:'#aab1da',ground:'#66534b',intensity:1.25});
+ expect(light.sun).toEqual({color:'#ffc080',nearIntensity:.65,farIntensity:1.15});
+ expect(light.fog).toEqual({color:'#a8796e',near:250,far:1450});
+});
+
+it('R4b: use stage-owned GPU budgets without adding shadow passes',()=>{
+ const effects=COAST_EFFECTS;
+ expect(coastShadowSettings(effects.shadows,true)).toEqual({
+  dynamicMap:false,staticMap:false,boatDepth:true,rockShader:true,
+  contactDecals:true,nearMapSize:2048,farMapSize:3072,
+ });
+ expect(coastShadowSettings(effects.shadows,false)).toEqual({
+  dynamicMap:true,staticMap:true,boatDepth:true,rockShader:true,
+  contactDecals:true,nearMapSize:3072,farMapSize:4096,
+ });
+ const near=new THREE.DirectionalLight(),far=new THREE.DirectionalLight();
+ const changed=structuredClone(effects.shadows);
+ changed.desktop.nearMapSize=2048;changed.desktop.farMapSize=3072;
+ configureCoastShadowLights(near,far,false,changed);
+ expect(near.shadow.mapSize.x).toBe(2048);
+ expect(far.shadow.mapSize.x).toBe(3072);
+ expect(far.shadow.autoUpdate).toBe(false);
+});
+
+it('R4b: reject invalid light data and mobile shadow cost escalation at stage boundary',()=>{
+ const invalid=(alter:(data:typeof COAST_EFFECTS)=>void)=>{
+  const data=structuredClone(COAST_EFFECTS);alter(data);
+  expect(()=>check(data)).toThrow();
+  expect(()=>validateCoastStage({...COAST_STAGE,effects:data})).toThrow();
+ };
+ invalid(x=>{x.lighting.sunDirection[1]=0;});
+ invalid(x=>{x.lighting.sunDirection[0]=Infinity;});
+ invalid(x=>{x.lighting.sun.color='gold';});
+ invalid(x=>{x.lighting.hemisphere.intensity=-1;});
+ invalid(x=>{x.lighting.fog.far=x.lighting.fog.near;});
+ invalid(x=>{x.shadows.mobile.nearMapSize=4096;});
+ invalid(x=>{x.shadows.mobile.dynamicMap=true;});
+ invalid(x=>{x.shadows.desktop.farMapSize=999;});
+ invalid(x=>{x.shadows.desktop.boatDepth=1 as unknown as boolean;});
 });

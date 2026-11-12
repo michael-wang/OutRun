@@ -1,5 +1,6 @@
 import {addCanyonDawn,CANYON_DAWN_SUN} from './canyon-dawn';
 import {addCoastDusk,COAST_SUN} from './coast-dusk';
+import {COAST_EFFECTS} from './content/coast-effects';
 import {configureCoastShadowLights,CoastShadowCache} from './coast-shadow-coverage';
 import {constrainCoastRoadShadowReceiver} from './coast-road-shadows';
 import {markCoastShadowCaster} from './coast-shadow-layers';
@@ -64,12 +65,17 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
   const dusk=coastUltra?addCoastDusk(scene,sample):undefined;
   const ridgeMeadow=coastUltra?addCoastMountains(scene,sample,length):undefined;
-  if(dusk){hemisphere.color.set('#aab1da');hemisphere.groundColor.set('#66534b');hemisphere.intensity=1.25;
-   sun.color.set('#ffc080');sun.intensity=.65;
-   // Split the original 1.8 intensity without changing the scene's sun hue
-   // or total brightness. Far shadows already exist before near detail arrives.
-   if(farSun){farSun.color.copy(sun.color);farSun.intensity=1.15;}
-   scene.fog!.color.set('#a8796e');scene.fog!.near=250;scene.fog!.far=1450;}
+  if(dusk){
+   const light=COAST_EFFECTS.lighting;
+   hemisphere.color.set(light.hemisphere.sky);
+   hemisphere.groundColor.set(light.hemisphere.ground);
+   hemisphere.intensity=light.hemisphere.intensity;
+   sun.color.set(light.sun.color);sun.intensity=light.sun.nearIntensity;
+   // Existing two-light split, same hue and total brightness as R4a.
+   if(farSun){farSun.color.copy(sun.color);farSun.intensity=light.sun.farIntensity;}
+   scene.fog!.color.set(light.fog.color);
+   scene.fog!.near=light.fog.near;scene.fog!.far=light.fog.far;
+  }
   if(options.dawn){addCanyonDawn(scene);hemisphere.color.set('#c2d7ed');hemisphere.groundColor.set('#9a7765');hemisphere.intensity=1.45;sun.color.set('#ffe0ad');sun.intensity=2.3;scene.fog!.near=450;scene.fog!.far=2600;}
   const asphalt=mat(mountainRoad?'#56534d':'#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
   if(coastUltra){
