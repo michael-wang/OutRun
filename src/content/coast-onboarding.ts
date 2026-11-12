@@ -87,5 +87,6 @@ export function validateCoastOnboarding(plan:CoastOnboarding,road:AuthoredRoad){
 
 /** Pure lookup for development overlays and review data; no runtime state machine. */
 export function coastLessonAt(distance:number,plan:CoastOnboarding=COAST_ONBOARDING){
- return [...plan.lessons,...plan.driftLessons].find(lesson=>distance>=lesson.start&&distance<lesson.end);
+ return plan.lessons.find(lesson=>distance>=lesson.start&&distance<lesson.end)
+  ??plan.driftLessons.find(lesson=>distance>=lesson.start&&distance<lesson.end);
 }

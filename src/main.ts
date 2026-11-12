@@ -1035,9 +1035,13 @@ function render(dt:number,draw=true){
   prefabQa?.update(camera,state.distance);
   if(r5LessonBadge){
    const lesson=coastLessonAt(state.distance);
+   const approaching=COAST_STAGE.onboarding.driftLessons.find(
+    d=>state.distance>=d.start-240&&state.distance<d.start);
    const caption=lesson
-    ?`R5a · ${lesson.id} ${lesson.label} · ${Math.floor(state.distance)} / ${lesson.end}m`
-    :`R5a · 後段舊賽道 · ${Math.floor(state.distance)}m`;
+    ?`R5 · ${lesson.id} ${lesson.label} · ${Math.floor(state.distance)} / ${lesson.end}m`
+    :approaching
+     ?`R5 · ${approaching.id} 甩尾彎將至 · ${Math.ceil(approaching.start-state.distance)}m · 建議 ${approaching.suggestedEntryKmh}km/h`
+     :`R5 · 待重製路段 · ${Math.floor(state.distance)}m`;
    if(r5LessonBadge.textContent!==caption)r5LessonBadge.textContent=caption;
   }
   const raceEffectTime=3-countdown+race.time;

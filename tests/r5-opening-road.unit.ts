@@ -57,7 +57,7 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
  invalid(s=>{s.onboarding.traffic.firstCivilianDistance=950;});
  invalid(s=>{s.onboarding.traffic.nextWaveDistance=3500;});
  invalid(s=>{s.onboarding.breakdownsAfter=4200;});
- invalid(s=>{s.onboarding.lessons[1].start=900;});
+ invalid(s=>{s.onboarding.lessons[1].start=s.road.turns[0].start-50;});
  invalid(s=>{const b=s.road.banks![0];b.ramp=(b.end-b.start)/2;});
  invalid(s=>{s.road.banks![0].degrees=30;});
  invalid(s=>{s.road.turns[1].rampFraction=.5;});
@@ -139,4 +139,16 @@ it('R5b: two drift-demanding authored turns have a long safe recovery gap',async
  }
  expect(coastLessonAt((a5.start+a5.end)/2)?.id).toBe('A5');
  expect(coastLessonAt((a6.start+a6.end)/2)?.id).toBe('A6');
+});
+
+it('R5b: no nonlocal early-road overlap before the new scenic rebuild',()=>{
+ const track=createAuthoredCoastTrack(road,identity),stations=[];
+ for(let d=350;d<=7350;d+=50){
+  const p=track.sample(d).position;
+  stations.push({d,x:p.x,z:p.z});
+ }
+ for(let i=0;i<stations.length;i++)for(let j=i+11;j<stations.length;j++){
+  const a=stations[i],b=stations[j];
+  expect(Math.hypot(a.x-b.x,a.z-b.z),`road self-approach at ${a.d}/${b.d}`).toBeGreaterThan(45);
+ }
 });

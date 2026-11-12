@@ -58,3 +58,15 @@ it("R5a.1: tutorial's first car is curated, but later highway encounters remain 
  expect(laterA.map(r=>[r.distance,r.type,r.speed])).not.toEqual(laterB.map(r=>[r.distance,r.type,r.speed]));
  expect(laterA[0].distance).toBeGreaterThan(plan.lessons[3].end+250);
 });
+
+it('R5b: guided traffic ends before drift lessons, then highway is seeded random',()=>{
+ const {driftLessons,traffic}=plan;
+ expect(traffic.firstCivilianDistance).toBeGreaterThan(plan.lessons[1].end);
+ expect(traffic.nextWaveDistance).toBeGreaterThan(driftLessons[1].end+300);
+ for(const seed of [1,17,804]){
+  const schedule=trafficRecipe(seed,10950,traffic);
+  expect(schedule.filter(x=>x.group===0)).toHaveLength(1);
+  expect(schedule.filter(x=>x.group>0).every(x=>x.distance>=traffic.nextWaveDistance)).toBe(true);
+  expect(schedule.filter(x=>x.group>0).length).toBeGreaterThan(15);
+ }
+});
