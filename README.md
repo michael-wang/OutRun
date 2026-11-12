@@ -14,6 +14,7 @@ npm run dev -- --host 0.0.0.0
 Use the LAN address printed by Vite for mobile device playtesting (subject to firewall). The active supported query parameters are `fpsdiag`, `startupdiag`, `at`, `trafficSeed` and `rivaldebug`. Retired lab/showcase URLs are not product features.
 
 ```powershell
+npm run verify:dev # before pushing to dev: build + all retained unit tests
 npm run build       # TypeScript + Vite
 npm run test:p0     # minimal deterministic release safeguards
 npm run test:p1     # advisory Critical diagnostics
@@ -28,3 +29,10 @@ npm test            # all retained unit tests, manually
 - Read [current architecture](docs/CURRENT_ARCHITECTURE.md) for active dependencies and current stage boundaries; [finite-stage resources](docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md) for streaming invariants; [agent rules](AGENTS.md) for concise engineering constraints.
 
 Old specifications and reports were removed from the active documentation to reduce AI context noise; Git history preserves earlier versions.
+
+
+Normal `dev` pushes and draft PR synchronizations **do not auto-run CI**.
+For local Codex work, use `npm run verify:dev` before pushing. If a
+second independent check is needed, start `Dev checks (manual)` on branch
+`dev` from GitHub Actions. Only an owner-approved push to `main`
+automatically runs release validation and deployment.

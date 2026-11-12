@@ -35,3 +35,8 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   retained unit tests) **before** pushing to GitHub. GitHub release
   validation remains a separate authority for `main`; physical play
   is still owner acceptance.
+
+- CI cost policy: `dev` pushes and draft PR synchronizations never
+  trigger automatic builds. For local Codex first run `npm run verify:dev`
+  before pushing; optionally dispatch `Dev checks (manual)` from Actions.
+  Main-push release validation remains automatic.

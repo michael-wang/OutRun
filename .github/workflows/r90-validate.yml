@@ -1,22 +1,19 @@
 name: Validate OutRun
-# Minimal public release gate. The full regression suite remains manually runnable
-# through dev-checks.yml and local playtesting; browser timing, aesthetics and
-# controller feel are owner-validated, not a reason to block approved releases.
-# GitHub Pages deploy and immutable tag creation happen only on main pushes.
+# Automatic checks are ONLY for owner-approved main releases.
+# Draft PR changes and ordinary dev pushes must not consume CI minutes.
+# Validate locally via npm run verify:dev; manual dev-checks.yml is opt-in.
+# GitHub Pages deploy and immutable tags are restricted to main pushes.
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
 
 permissions:
   contents: read
 
-# Superseded PR checks should not consume minutes installing the same tools.
-# A main release is never cancelled by a later PR or dev push.
+# A main release must not be cancelled by later development activity.
 concurrency:
-  group: outrun-release-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: outrun-release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build-and-unit:
