@@ -99,3 +99,24 @@ stage fields internally; retiring those fields is a later separate slice.
 See [ADR-010](ADR_010_STAGE_DATA_FORMATS.md): human-readable JSON is not an
 engineering goal, binary runtime data is a measured later decision, and AI
 authoring must have queryable/range-based access rather than full-file dumps.
+
+
+## R2f — authored coast Worker no longer samples Pilot/Trip
+
+The coastal road Worker now receives `coastStage:'coast'` and builds its
+track, width and biome inputs through `src/content/coast-worker-road.ts`,
+using `COAST_STAGE.road`. Existing road meshes, traffic clearance, scenery,
+bridge layouts and shadows consume these **same** sampling callbacks.
+
+Legacy `pilot-composer` is a dynamic import only for non-coast stages.
+The coastal Worker does not import or execute Pilot/Trip sampling. Its small
+scene metadata retains the identity flags needed by existing scenery code,
+not the full legacy stage/placement model.
+
+P0 tests compare Worker road poses, banking, half-width, weights and section
+metadata to the accepted R2e route across the full coast and relief buffer.
+Authored route changes no longer require updating the legacy coast adapter.
+
+**Next:** migrate live game consumers off the remaining TripCandidate bridge
+and remove legacy branches after real uses are gone. Multi-region scenery
+remains a future content requirement, not a reason to add an entity framework.

@@ -1,7 +1,7 @@
 {
   "name": "first-drive",
   "private": true,
-  "version": "0.9.44-dev.8",
+  "version": "0.9.44-dev.9",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -17,7 +17,7 @@
     "art:prepare": "node scripts/prepare-runtime-art.mjs",
     "predev": "npm run coast:shore && npm run art:prepare",
     "prebuild": "npm run coast:shore && npm run art:prepare",
-    "test:p0": "vitest run tests/stream-reliability.unit.ts tests/authored-road.unit.ts tests/authored-track.unit.ts tests/coast-stage-content.unit.ts",
+    "test:p0": "vitest run tests/stream-reliability.unit.ts tests/authored-road.unit.ts tests/authored-track.unit.ts tests/coast-stage-content.unit.ts tests/coast-worker-road.unit.ts",
     "test:p1": "vitest run tests/race-recovery.unit.ts tests/race-traffic-world.unit.ts tests/rival-race.unit.ts tests/traffic-impact.unit.ts"
   },
   "dependencies": {

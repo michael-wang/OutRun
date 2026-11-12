@@ -11,9 +11,12 @@ import {rockySections,rockyAt,type RockySection} from './rocky-shoulder';
 import type {BankStrength} from './banking';
 import {CANYON_BEND,canyonBend} from './canyon-identity';
 import {canyonSceneEnvelope} from './grand-canyon-scene';
-import {createPilotTrack,pilotSample,pilotWeights,type PilotCandidate} from './pilot-composer';
-import type {TripCandidate} from './trip';
-import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
+import type {PilotCandidate,createPilotTrack} from './pilot-composer';
+import {coastWorkerRoad} from './content/coast-worker-road';
+import type {ScenerySection} from './scenery-cross-section';
+import type {JourneyLandmark} from './scenery';
+import type {GrandCanyonScene} from './grand-canyon-scene';
+import type {DesignerCut} from './designer-canyon';
 import {prepareRoadChunk} from './road-chunk';
 import {blenderRoadVisuals} from './blender-road-visuals';
 import {insideBlenderFootprint} from './blender-art-coverage';
@@ -32,7 +35,17 @@ let farmGround:Awaited<ReturnType<typeof loadFarmGround>>|undefined;
 let blenderArt=false,mobileShadows=false;
 let roadLockArt=false;
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;let junction:RoadInterchange|undefined;
-let generation=-1,stage:PilotCandidate|undefined,track:ReturnType<typeof createPilotTrack>|undefined;
+/** Worker renderer needs scene metadata, not the Trip/Pilot authoring shape. */
+type WorkerSceneStage={
+ id:string;seed:number;sceneryAct:number;generatorVersion:string;
+ scenerySections?:readonly ScenerySection[];
+ scenicLandmarks?:readonly JourneyLandmark[];
+ canyonPrototype?:GrandCanyonScene;
+ designerCut?:DesignerCut;
+};
+let generation=-1,stage:WorkerSceneStage|undefined,track:ReturnType<typeof createPilotTrack>|undefined;
+let halfAt:(distance:number)=>number=()=>7;
+let weightsAt:(distance:number)=>number[]=()=>[1,0,0];
 let roadSamples:THREE.Vector3[]=[];let clearance:RoadClearance;
 const worker=self as unknown as {onmessage:(event:MessageEvent<Request>)=>void;postMessage:(message:unknown,transfer?:Transferable[])=>void};
 worker.onmessage=async(event:MessageEvent<Request>)=>{
@@ -51,21 +64,41 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   if(import.meta.env.DEV&&request.type!=='init'&&request.index>=faults.fromIndex){if(faults.delayMs)await new Promise(r=>setTimeout(r,faults.delayMs));if(faults.fail)throw new Error('Injected worker preparation failure');}
 
   if(request.type==='init'){const initStart=performance.now();generation=request.generation;
-   // Coast runs from the Worker bundle's authored data, not a cloned Trip.
-   // Legacy/non-coast requests retain their previous explicit stage payload.
-   stage=request.coastStage==='coast'?COAST_ULTRA_STAGE:request.stage;
-   if(!stage)throw Error('Missing road stage in Worker init');
-   roadLockArt=!!request.blenderArt&&stage.generatorVersion==='canyon-roadlock-v1';blenderArt=!!request.blenderArt&&stage.generatorVersion==='designer-canyon-v1';track=createPilotTrack(stage,request.bank);rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=hasModernShoulders(stage.generatorVersion)&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(stage.generatorVersion)?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;junction=selectRoadInterchange(stage,bridge);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
+   let legacy:PilotCandidate|undefined;
+   if(request.coastStage==='coast'){
+    const coast=coastWorkerRoad(undefined,request.bank);
+    stage=coast.stage;track=coast.track;
+    halfAt=coast.halfAt;weightsAt=coast.weightsAt;
+   }else{
+    // Old Pilot code is loaded only if a non-coast stage requests it.
+    legacy=request.stage;
+    const pilot=await import('./pilot-composer');
+    stage=legacy;track=pilot.createPilotTrack(legacy,request.bank);
+    halfAt=d=>pilot.pilotSample(legacy!,d).halfWidth;
+    weightsAt=d=>pilot.pilotWeights(legacy!,d);
+   }
+   if(!stage||!track)throw Error('Missing road stage in Worker init');
+   const current=track;
+   roadLockArt=!!request.blenderArt&&stage.generatorVersion==='canyon-roadlock-v1';
+   blenderArt=!!request.blenderArt&&stage.generatorVersion==='designer-canyon-v1';
+   rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,current.length,weightsAt):[];
+   bridge=hasModernShoulders(stage.generatorVersion)&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(stage.generatorVersion)
+    ?bridgeSpan(current.sample,halfAt,weightsAt,current.length):undefined;
+   junction=legacy?selectRoadInterchange(legacy,bridge):undefined;
+   roadSamples=Array.from({length:Math.ceil(current.length/25)},(_,i)=>current.sample(i*25).position);
+   clearance=new RoadClearance(roadSamples,halfAt,stage.id==='ROAD-TRIP-10M');
+   worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;
+  }
   if(request.generation!==generation||!stage||!track)return;
-  const t=performance.now(),candidate=stage,current=track,coastUltra=(candidate as TripCandidate).scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
+  const t=performance.now(),candidate=stage,current=track,coastUltra=candidate.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
   if(request.type==='scenery'&&roadLockArt){worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions:[],instances:[],scenery:{instances:0,draws:0},clearance:{queries:0,checks:0,rejected:0},cpuMs:performance.now()-t});return;}
   if(request.type==='scenery'){
    if(coastUltra)await loadCoastNature();
    if(request.generation!==generation)return;
    const essentialShadows:CoastShadowAnchor[]|undefined=coastUltra&&mobileShadows?[]:undefined;
-   const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:(candidate as TripCandidate).scenicLandmarks,scenerySections:(candidate as TripCandidate).scenerySections,
+   const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,halfAt,weightsAt,{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:candidate.scenicLandmarks,scenerySections:candidate.scenerySections,
     denseCity:candidate.generatorVersion==='v0.9-r10'||candidate.generatorVersion==='v0.9-r11'||candidate.generatorVersion==='v0.9-r12',
-    canyonPrototype:(candidate as TripCandidate).canyonPrototype,designerCut:(candidate as TripCandidate).designerCut,coastUltra,essentialShadows});
+    canyonPrototype:candidate.canyonPrototype,designerCut:candidate.designerCut,coastUltra,essentialShadows});
    if(coastUltra){
     const end=Math.min(request.end,current.length),halfAt=(d:number)=>pilotSample(candidate,d).halfWidth;
     const batches=[addCoastNature(scene,current.sample,request.start,end),addCoastResort(scene,current.sample,halfAt,request.start,end),
@@ -90,7 +123,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    for(const prep of farmPreps)transfer.push(...farmPrepTransferables(prep));
    let essentialProjection;
    if(essentialShadows?.length){
-    const {geometry}=buildCoastGroundShadows(current.sample,essentialShadows,current.length,d=>pilotSample(candidate,d).halfWidth);
+    const {geometry}=buildCoastGroundShadows(current.sample,essentialShadows,current.length,halfAt);
     const positions=geometry.attributes.position.array as Float32Array,alpha=geometry.attributes.shadowAlpha.array as Float32Array;
     const index=geometry.index!.array as Uint16Array|Uint32Array;
     if(index.length){
@@ -103,7 +136,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    const visibleScenery=blenderArt?{...scenery,instances:instances.reduce((n,i)=>n+i.matrices.length/16,0),draws:instances.length}:scenery;
    worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,farmPreps,farmPrepCpuMs,essentialProjection,scenery:visibleScenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
   }
-  const rawMeshes=prepareRoadChunk(current.sample,d=>pilotSample(candidate,d).halfWidth,d=>pilotWeights(candidate,d),request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||hasModernShoulders(candidate.generatorVersion)))) ,rocks,shoulders,bridge,true,junction,(candidate as TripCandidate).scenerySections,(candidate as TripCandidate).canyonPrototype,blenderArt,candidate.generatorVersion==='canyon-roadlock-v1');
+  const rawMeshes=prepareRoadChunk(current.sample,halfAt,weightsAt,request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||hasModernShoulders(candidate.generatorVersion)))) ,rocks,shoulders,bridge,true,junction,candidate.scenerySections,candidate.canyonPrototype,blenderArt,candidate.generatorVersion==='canyon-roadlock-v1');
   // Full-route static art replaces only visual terrain. Original sand remains a contact surface.
   const meshes=roadLockArt?rawMeshes.filter(m=>!['grass','water','surf','support'].includes(m.kind)).map(m=>m.kind==='sand'?{...m,artContactOnly:true}:m):blenderArt?blenderRoadVisuals(rawMeshes,request.start,request.end):rawMeshes;
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
@@ -112,14 +145,14 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    // R2.1 removes city-style black/yellow posts from the authored canyon.
    // Sparse wooden markers live in the scenery batch instead; guardrails and
    // their existing collision boundaries remain in place.
-   const canyonScene=(candidate as TripCandidate).canyonPrototype;
+   const canyonScene=candidate.canyonPrototype;
    if(canyonScene&&(canyonScene.authored||canyonScene.vista)&&canyonSceneEnvelope(canyonScene,d)>.35)continue;
    const shoulderWidth=shoulders?.(d);
    const markerOffset=(side:-1|1)=>shoulderWidth
      ?roadOffset(tripBarrierRawOffset(side,TRIP_MARKER_CENTER_M,shoulderWidth),width,shoulderWidth)
      :roadOffset(side*12.4,width);
    const cliffLeft=!!shoulderWidth&&coastalCliffDropAtLateral(
-     p.position.y,p.right.y,markerOffset(-1),width,shoulderWidth,pilotWeights(candidate,d)[1],
+     p.position.y,p.right.y,markerOffset(-1),width,shoulderWidth,weightsAt(d)[1],
    )>3;
    if(candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1&&canyonBend(d)){record(0,p.position.clone().addScaledVector(p.right,roadOffset(CANYON_BEND.railOffset,width)).add(new THREE.Vector3(0,.5,0)));continue;}
    if(!coastUltra&&!rockyAt(d,-1,rocks)&&!cliffLeft)record(0,p.position.clone().addScaledVector(p.right,markerOffset(-1)).add(new THREE.Vector3(0,.58,0)));
