@@ -40,7 +40,7 @@ import {GamepadInput} from './gamepad';
 import {RecentDrivingHistory} from './recent-history';
 import {advancePowertrain} from './powertrain';
 import { immersive, landscapeControl } from './immersive';
-import { CHASE, CHASE_NEAR, chaseTargets, chaseComposition, applyScenicCamera, scenicDriftTarget, blendScenicDrift } from './chase';
+import { CHASE, CHASE_NEAR, chaseTargets, chaseComposition } from './chase';
 import { SpeedAudit } from './speed-audit';
 import { DEFAULT_PACE,effectivePace } from './pace';
 import {speedometerMarkup,needleAngle,gearReadout} from './speedometer';
@@ -50,7 +50,6 @@ import {quantizeSteering} from './steering';
 import drivingCss from './style.css?inline';
 import {ROAD_START as BRICK_START} from './road-profile';
 import {mountCoastReview} from './coast-review';
-import {CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
 import {TireEffects,type TireContact} from './tire-effects';
@@ -89,14 +88,14 @@ document.documentElement.dataset.qa='false';
 // must not revive the retired procedural chapter handoff.
 const coastStart=COAST_STAGE.road.startDistance;
 const coastEnd=coastStart+COAST_STAGE.road.length;
-let designerMode=false,coastUltraMode=true;
+const coastUltraMode=true;
 // Keep geometry shadow infrastructure available for diagnostics. Only the two
 // caster lights start disabled on touch devices, matching a manually selected B2.
 const coastProfile=applyCoastShadowProfile(matchMedia('(pointer:coarse)').matches);
 setCoastRoadDynamicShadowEnabled(coastShadowTechniqueEnabled('dynamicMap'));
 const sunsetShadowsEnabled=true,geometryShadowRequested=true;
 const coastGeometryShadows=()=>coastUltraMode&&sunsetShadowsEnabled&&geometryShadowRequested;
-let coastUltraWater=true,roadLockMode=false,scenicCameraEnabled=false,blenderMode=false;
+const coastUltraWater=true;
 await loadingStep(12,'正在規劃路線','安排這趟旅程的道路、彎道與沿途風景。');
 // Worker and live coast game share one authored road runtime contract.
 const coastRuntime=coastWorkerRoad();
@@ -153,7 +152,7 @@ document.querySelector('#app')!.innerHTML = `
   <button id="race-start" type="button" aria-label="START，開始三秒起跑倒數">START <span aria-hidden="true">▶</span></button>
  </div>
 </section>
-<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>${designerMode?'Grand Canyon<br>Designer’s Cut':'Take the<br>coast road.'}</h1><p>${designerMode?'手工設計的峽谷公路。沿著道路親自看見河灣。':'Steer through the bends. Lift or brake to find your line.'}</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
+<section id="menu" class="panel"><div class="eyebrow">A LITTLE SUN. A LONG WAY HOME.</div><h1>Take the<br>coast road.</h1><p>Steer through the bends. Lift or brake to find your line.</p><button id="drive" class="primary">Play <span>↗</span></button><p class="keys">A / D steer &nbsp; Space accelerate<br>Enter brake &nbsp; P / Esc pause &nbsp; R restart</p><small>SCENIC JOURNEY · LOCAL PLAYTEST · v0.8</small></section>
 <section id="paused" class="panel" hidden><div class="eyebrow">TAKE A BREATHER</div><h1>Coast is clear.</h1><button id="resume" class="primary">Play / resume ↗</button><div class="menu-actions"><button id="restart">Restart</button><button id="sound" aria-pressed="true">Sound on</button><button id="settings">Settings</button><button id="fullscreen">Fullscreen</button><button id="free-export">Export feedback</button></div><p id="iphone-fullscreen-hint" role="status" hidden>On iPhone, open this site in Safari. Tap Share → Add to Home Screen, then launch the icon to hide Safari browser bars. Rotate the phone to landscape to drive.</p></section>
 <section id="preferences" class="panel" hidden><div class="eyebrow">${playerUi?'遊戲設定':'MAKE YOURSELF AT HOME'}</div><h2>${playerUi?'操作設定':'Controls'}</h2><label class="setting"><input id="swap" type="checkbox"> ${playerUi?'方向盤置於右側':'Steering on the right'}</label><label id="car-paint-setting" for="car-paint"><span>車身顏色</span><select id="car-paint" aria-label="車身顏色">${CAR_COLORS.map(color=>`<option value="${color}">${CAR_PAINT_PRESETS[color].label}</option>`).join('')}</select></label><div id="car-paint-list" role="listbox" aria-label="車身顏色" hidden>${CAR_COLORS.map(color=>`<button type="button" role="option" data-paint="${color}" aria-selected="false">${CAR_PAINT_PRESETS[color].label}</button>`).join('')}</div><p>${playerUi?'油門與煞車維持上下排列，左右手可互換。':'Accelerator stays above brake on either side.'}</p><p>Gamepad button check: <span id="gamepad-diagnostic">No connected gamepad.</span></p><button id="close-settings" class="primary">${playerUi?'完成':'Done'}</button></section>
 <div id="touch">
@@ -196,7 +195,7 @@ document.querySelector('#app')!.innerHTML = `
 </section>`;
 document.getElementById('startup-fallback')!.hidden=true;
 const $ = (id:string) => document.getElementById(id)!;
-$('route-title').textContent=blenderMode?(roadLockMode?'Grand Canyon · Cliff Pass R4':'Grand Canyon · Blender v2'):brick?.name??'Coast Road';
+$('route-title').textContent=brick?.name??'Coast Road';
 for(const [id,key] of Object.entries({drive:'P',resume:'P',restart:'R',sound:'M',settings:'C',fullscreen:'F'})){const node=$(id);node.classList.add('shortcut');node.dataset.shortcut=key;node.setAttribute('aria-keyshortcuts',key);}
 await loadingStep(25,'正在建立駕駛場景','準備公路、車輛與追尾視角。');
 const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
@@ -208,12 +207,6 @@ renderer.shadowMap.enabled=coastUltraMode?coastGeometryShadows():!matchMedia('(p
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.domElement.tabIndex=-1;renderer.domElement.setAttribute('aria-label','Driving surface');$('view').append(renderer.domElement);
 startupDiagnostics.mark('renderer-created');
-let blenderAsset=blenderMode?await (async()=>{
- await loadingStep(30,'正在載入峽谷地形','下載場景模型與岩壁材質，請稍候。');
- const status=document.createElement('p');status.id='blender-art-status';status.setAttribute('role','status');status.style.cssText='position:fixed;top:12px;left:12px;z-index:300;background:#17343d;color:white;padding:12px';status.textContent='Blender 峽谷美術載入中…';document.body.append(status);
- try{const asset=await (await import('./blender-canyon')).loadBlenderCanyon(roadLockMode);status.remove();return asset;}
- catch(error){status.textContent=roadLockMode?'峽谷場景載入失敗，請確認網路連線後重新載入。':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。';throw error;}
-})():undefined;
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const world=createWorld({
  track:coastRuntime.track,
@@ -237,7 +230,6 @@ let selectedCarColor=readCarColor();
 ($('car-paint') as HTMLSelectElement).value=selectedCarColor;
 const carPaintPicker=new CarPaintPicker($('car-paint') as HTMLSelectElement,$('car-paint-list'),signal);
 startupDiagnostics.mark('world-created'); const camera=new THREE.PerspectiveCamera(CHASE.fov,innerWidth/innerHeight,CHASE_NEAR,matchMedia('(pointer:coarse)').matches?1400:2200);
-if(blenderAsset)world.scene.add(blenderAsset.root);
 // Opt-in development marker follows the actual loaded GLB, not a guessed
 // road-side object. No HUD cost or asset dependency in normal play.
 const prefabQa=import.meta.env.DEV&&params.get('prefabdebug')==='1'
@@ -381,7 +373,7 @@ renderer.domElement.addEventListener('webglcontextrestored',()=>{contextLost=fal
 
 let testControls:InputState|undefined;let hardDetents=false;let lastControls:InputState={gas:false,brake:false,steer:0};let usedExternalControls=false;
 const highSpeedPace=DEFAULT_PACE;
-let bridgeInspection=false;let cameraHeading=0; let scenicDriftBlend=0;let scenicWeight=0;let initialized=false; let elapsed=0; let frames=0;
+let bridgeInspection=false;let cameraHeading=0;const scenicWeight=0;let initialized=false; let elapsed=0; let frames=0;
 const history=new RecentDrivingHistory();
 const finishStats=new FinishStats();
 let lastCheckpointAt=-Infinity;
@@ -406,9 +398,9 @@ let rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,ca
 let coastStoneContact=new CoastStoneContact(world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.sceneryReady(d)??true);
 function trafficRoadReady(d:number){return actorRoadReady(d);}
 function actorRoadReady(d:number){return world.streamer?.roadReady(d)??true;}
-let cones=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),coastUltraMode):undefined;
-let triangles=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
-let traffic=!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,coastRuntime.stage.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation):undefined;
+let cones=new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),coastUltraMode);
+let triangles=new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows());
+let traffic=new Traffic(world.scene,world.sample,world.halfAt,world.length,coastRuntime.stage.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation);
  traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
 const race=new RivalRace(coastEnd,d=>{
  const p=world.sample(d);
@@ -982,7 +974,7 @@ function groundHeight(height:number,lateral:number){
 function render(dt:number,draw=true){
   const fpsProfiling=driveFpsDiagnostics.enabled&&mode==='playing';
   const prepStart=fpsProfiling?performance.now():0;
-  blenderAsset?.update(elapsed);coastBoats?.update(elapsed,camera);
+  coastBoats?.update(elapsed,camera);
   const p=world.sample(state.distance);
   world.car.position.copy(p.position).addScaledVector(p.right,state.lateral);
   world.car.position.y=groundHeight(p.position.y,state.lateral)+p.right.y*state.lateral+.04;
@@ -1001,16 +993,11 @@ function render(dt:number,draw=true){
   if(coastDuskShadows)coastDuskShadows.update(
    world.car.position,groundHeight(p.position.y,state.lateral)+p.right.y*state.lateral,state.distance);
   const travelHeading=p.roadHeading;
-  if(!initialized){cameraHeading=travelHeading;scenicDriftBlend=0;initialized=true;}
+  if(!initialized){cameraHeading=travelHeading;initialized=true;}
   else cameraHeading+=angleDifference(travelHeading-cameraHeading)*(1-Math.exp(-dt*7));
   // Anchor translation to the car. World-position lerp would add v/tau trailing
   // distance and recreate a speed-dependent dolly despite a constant target offset.
   const targets=chaseTargets(world.car.position,cameraHeading,camera.aspect,p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z));
-  scenicWeight=0;
-  if(scenicCameraEnabled){
-    scenicDriftBlend=blendScenicDrift(scenicDriftBlend,scenicDriftTarget(state),dt);
-    scenicWeight=applyScenicCamera(targets,p.right,state.distance,CANYON_SCENIC_ZONES,scenicDriftBlend);
-  }
   camera.position.copy(targets.eye);camera.lookAt(targets.look);
   if(import.meta.env.DEV&&inspectionView){
     world.car.updateMatrixWorld(true);
@@ -1420,14 +1407,12 @@ if(import.meta.env.DEV){(window as any).__drive={
     manual=true;inspectionView=view;render(1/60);
   },
   perf:()=>({...perf}),
-  blenderArt:()=>blenderAsset?.stats??{status:'disabled'},
   coastFarm:()=>world.streamer?.farmStats??[],
   authoredProps:()=>authoredStaticProps.map(item=>({...item})),
   coastBoats:()=>coastBoats?.inspect(elapsed)??[],
   coastBoatShadow:(enabled?:boolean)=>{if(enabled!==undefined&&ultraOcean){ultraOcean.boatShadow.enabled=enabled;render(0);}return ultraOcean?.boatShadow.stats;},
   coastWater:()=>({mode:ultraOcean?'ultra':coastUltraMode?'basic':'disabled',...ultraOcean?.stats}),
   coastNature:()=>{let batches=0,visible=0,instances=0,triangles=0;const materials=new Set(),textures=new Set();world.scene.traverse(o=>{if(!(o instanceof THREE.InstancedMesh)||!o.userData.nature)return;batches++;const m=o.material as THREE.MeshStandardMaterial;materials.add(m);if(m.map)textures.add(m.map);if(o.visible){visible++;instances+=o.count;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3*o.count;}});return {batches,visible,instances,triangles,materials:materials.size,textures:textures.size};},
-  artProbe:(distance:number,lateral=0)=>{if(!blenderAsset)return [];world.scene.updateMatrixWorld(true);const p=world.sample(distance).position.addScaledVector(world.sample(distance).right,lateral);return new THREE.Raycaster(p.clone().add(new THREE.Vector3(0,500,0)),down,0,1000).intersectObject(blenderAsset.root,true).map(h=>({name:h.object.name,gap:h.point.y-p.y}));},
   tireEffects:()=>tireEffects.inspect(),
   railClearance:()=>{const p=world.sample(state.distance),v=new THREE.Vector3();let edge=-Infinity;world.car.updateMatrixWorld(true);world.car.traverse(o=>{if(!(o instanceof THREE.Mesh))return;const a=o.geometry.getAttribute('position');for(let i=0;i<a.count;i++){v.fromBufferAttribute(a,i).applyMatrix4(o.matrixWorld).sub(p.position);edge=Math.max(edge,v.dot(p.right));}});return CANYON_BEND.railOffset-CANYON_BEND.railHalfThickness-edge;},
   surfaceFeedback:()=>({dust:dustEffects.inspect(),guard:guardrail.inspect(state.heading),sparks:impactSparks.inspect()}),
@@ -1486,7 +1471,7 @@ if(import.meta.env.DEV){(window as any).__drive={
     const xs=points.map(p=>(p.x+1)/2),ys=points.map(p=>(1-p.y)/2);
     return {left:Math.min(...xs),right:Math.max(...xs),top:Math.min(...ys),bottom:Math.max(...ys),width:Math.max(...xs)-Math.min(...xs)};
   },
-  snapshot:()=>({...state,bankDegrees:(-Math.atan(world.sample(state.distance).right.y)*180/Math.PI)||0,roadHalfWidth:world.halfAt(state.distance),laneCount:COAST_STAGE.road.lanes,highSpeedPace,effectivePace:effectivePace(state.speed,highSpeedPace),travelSpeed:state.speed*effectivePace(state.speed,highSpeedPace),mode,elapsed,frames,inputs:input.snapshot(),audio:sound.inspect(),trackLength:world.length,position:world.car.position.toArray(),swapped,surfaceError:surfaceError(),camera:{...chaseComposition(camera.aspect),position:camera.position.toArray(),direction:camera.getWorldDirection(new THREE.Vector3()).toArray(),scenicEnabled:scenicCameraEnabled,scenicWeight},immersive:immersive.snapshot(),rightScreenDelta:world.car.position.clone().add(world.sample(state.distance).right).project(camera).x-world.car.position.clone().project(camera).x}),
+  snapshot:()=>({...state,bankDegrees:(-Math.atan(world.sample(state.distance).right.y)*180/Math.PI)||0,roadHalfWidth:world.halfAt(state.distance),laneCount:COAST_STAGE.road.lanes,highSpeedPace,effectivePace:effectivePace(state.speed,highSpeedPace),travelSpeed:state.speed*effectivePace(state.speed,highSpeedPace),mode,elapsed,frames,inputs:input.snapshot(),audio:sound.inspect(),trackLength:world.length,position:world.car.position.toArray(),swapped,surfaceError:surfaceError(),camera:{...chaseComposition(camera.aspect),position:camera.position.toArray(),direction:camera.getWorldDirection(new THREE.Vector3()).toArray(),scenicEnabled:false,scenicWeight},immersive:immersive.snapshot(),rightScreenDelta:world.car.position.clone().add(world.sample(state.distance).right).project(camera).x-world.car.position.clone().project(camera).x}),
   manual:(value:boolean)=>{manual=value;},
   advance:(seconds:number,override?:InputState,draw=true)=>{for(let i=0;i<Math.ceil(seconds*120);i++){advance(1/120,override);render(1/120,false);}render(1/120,draw);},
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{
