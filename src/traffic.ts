@@ -333,6 +333,7 @@ export class Traffic {
     const body=this.raceWorld.get(a.id);
     if(!body)continue;
     a.distance=body.distance;a.speed=body.speed;a.lateral=body.lateral;
+    a.stopYaw=body.stopYaw;
     a.changing=Math.abs(body.targetLateral-body.lateral)>.2;
     a.signal=a.changing&&Math.floor(time/.30)%2===0
       ?Math.sign(body.targetLateral-body.lateral):0;
@@ -560,7 +561,9 @@ export class Traffic {
    if(kind==='rear')a.speed*=playerBehind
     ?Math.max(.62,response.leadingSpeedMultiplier-(mass<1.5?.02:0))
     :response.trailingSpeedMultiplier;
-   this.raceWorld.impact(a.id,a.speed,a.lateral);
+   if(a.incidentId==='A4'&&a.stationary)
+    this.raceWorld.bumpIncident(a.id,Math.max(10,relative),-side);
+   else this.raceWorld.impact(a.id,a.speed,a.lateral);
    const leader=this.actors.filter(b=>b.id!==a.id&&b.distance>a.distance&&Math.abs(b.lateral-a.lateral)<2.7).sort((a,b)=>a.distance-b.distance)[0];
    const room=leader?Math.max(0,leader.distance-a.distance-18):120;
    reaction.boost=kind==='rear'&&playerBehind&&!a.stationary?Math.min(3,relative*.12,room/.85):0;reaction.touching=true;reaction.lastHit=time;this.reactions.set(a.id,reaction);
@@ -602,7 +605,12 @@ export class Traffic {
  impactByRival(row:Obstacle,severity:number,side:number){
   if(row.type===undefined)return;
   const id=Number(row.id.slice(1)),body=this.raceWorld.get(id);
-  if(!body||body.stationary||body.finished)return;
+  if(!body||body.finished)return;
+  if(body.incidentId==='A4'){
+   this.raceWorld.bumpIncident(id,Math.max(12,severity*75),side);
+   return;
+  }
+  if(body.stationary)return;
   const kick=rearImpactResponse(severity);
   const actor=this.actors.find(a=>a.id===id);
   if(actor){
@@ -634,6 +642,8 @@ export class Traffic {
   * RivalRace decides using the BEGINNING of a physics tick, after Traffic.update
   * has already advanced to the END of that tick. Advancing again here would
   * rewind the clock and throw on the very first GO! frame. */
+ /** Motion of nearby civilian bodies, used by dynamic road warnings. */
+ hazardSweeps(){return this.raceWorld.hazardSweeps;}
  raceObstacles(center:number,time:number,radius:number):Obstacle[]{
   const rows:Obstacle[]=this.raceWorld.obstacles(center,radius).map(a=>({
    id:'T'+a.id,type:a.type,distance:a.distance,lateral:a.lateral,speed:a.speed,

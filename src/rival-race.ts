@@ -209,7 +209,7 @@ export class RivalRace {
           r.speed*=response.trailingSpeedMultiplier;
           const side=r.lateral<=o.lateral?-1:1;
           r.impulse+=side*response.trailingSideSpeed;
-          if(o.id.startsWith('T')&&o.speed>1)this.impactTraffic?.(o,severity,-side);
+          if(o.id.startsWith('T'))this.impactTraffic?.(o,severity,-side);
         }
         // Keep a real following gap until a passing lane opens, rather than
         // instantaneously setting the rear car's speed to the front car's.
