@@ -14,7 +14,7 @@ export function coastWorkerRoad(content:CoastStageContent=COAST_STAGE,bank?:Bank
   id:COAST_RUNTIME_IDENTITY.id,
   seed:manifest.seed,
   sceneryAct:0,
-  generatorVersion:COAST_RUNTIME_IDENTITY.generatorVersion,
+  generatorVersion:COAST_RUNTIME_IDENTITY.generatorVersion as string,
   scenerySections:[{
    id:'coast-ultra-left-sea',kind:'coastal-left',
    start:road.startDistance,end:road.startDistance+road.length,

@@ -1,5 +1,10 @@
 import {canyonSceneEnvelope,type GrandCanyonScene} from './grand-canyon-scene';
-import {canyonVistaClearance} from './canyon-vista';
+/** A purely spatial view-clearance rule; no abandoned Pilot camera planner. */
+function canyonVistaClearance(scene:GrandCanyonScene,d:number,raw:number){
+ const vista=scene.vista;
+ return !!vista&&raw< -16&&d>=vista.revealDistance-110&&
+  d<=vista.focusDistance+55;
+}
 
 export type CanyonPropKind='talus'|'sage'|'scree-bank'|'road-post'|'low-terrace';
 export interface CanyonPropSlot {
