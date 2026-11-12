@@ -84,3 +84,18 @@ assert the exact accepted runtime identity, feature boundaries and track.
 **Next:** migrate the remaining live game/Worker consumers to read a
 narrow runtime stage contract. Only then delete legacy generated fields and
 inactive Pilot/Trip machinery; avoid changing multiple systems at once.
+
+
+## R2e — lean coastal Worker init, pending full runtime migration
+
+`StreamedScene` now sends `coastStage:'coast'` instead of transferring
+the entire derived `TripCandidate` during coastal Worker init. The Worker
+resolves the equivalent versioned coastal runtime compatibility adapter locally.
+Non-coast mode retains the previous payload. No gameplay, road, traffic,
+scenery or fallback behavior was intentionally changed.
+
+This is an **init transport boundary** only: the Worker still consumes legacy
+stage fields internally; retiring those fields is a later separate slice.
+See [ADR-010](ADR_010_STAGE_DATA_FORMATS.md): human-readable JSON is not an
+engineering goal, binary runtime data is a measured later decision, and AI
+authoring must have queryable/range-based access rather than full-file dumps.

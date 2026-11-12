@@ -158,7 +158,13 @@ export class StreamedScene {
   const generation=this.generation;this.worker.onmessage=event=>{if(generation!==this.generation)return;try{this.receive(event.data);}catch(error){this.fail('Worker result failed: '+String(error));}};
   this.worker.onerror=event=>{event.preventDefault();if(generation===this.generation)this.fail(event.message||'Worker runtime failure');};
   this.worker.onmessageerror=()=>{if(generation===this.generation)this.fail('Worker message could not be decoded');};
-  this.worker.postMessage({type:'init',generation:this.generation,stage:this.stage,bank:this.bank,mobileShadows:this.mobile&&!!this.farmSample,blenderArt:this.blenderArt,bakedFarmGround:this.stage===COAST_ULTRA_STAGE&&this.bank===undefined&&!this.blenderArt,...(import.meta.env.DEV?{faults:this.testFaults}:{})});
+  this.worker.postMessage({type:'init',generation:this.generation,
+    // Resolve the authored coast from the Worker's versioned content bundle.
+    // Do not structured-clone derived Pilot/Trip metadata for this stage.
+    ...(this.stage===COAST_ULTRA_STAGE?{coastStage:'coast' as const}:{stage:this.stage}),
+    bank:this.bank,mobileShadows:this.mobile&&!!this.farmSample,blenderArt:this.blenderArt,
+    bakedFarmGround:this.stage===COAST_ULTRA_STAGE&&this.bank===undefined&&!this.blenderArt,
+    ...(import.meta.env.DEV?{faults:this.testFaults}:{})});
   }catch(error){this.fail('Worker launch failed: '+String(error));}
  }
  private fail(message:string){

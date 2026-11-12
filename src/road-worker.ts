@@ -13,6 +13,7 @@ import {CANYON_BEND,canyonBend} from './canyon-identity';
 import {canyonSceneEnvelope} from './grand-canyon-scene';
 import {createPilotTrack,pilotSample,pilotWeights,type PilotCandidate} from './pilot-composer';
 import type {TripCandidate} from './trip';
+import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
 import {prepareRoadChunk} from './road-chunk';
 import {blenderRoadVisuals} from './blender-road-visuals';
 import {insideBlenderFootprint} from './blender-art-coverage';
@@ -24,7 +25,9 @@ import {selectRoadInterchange,interchangeSceneryClear,type RoadInterchange} from
 
 const hasModernShoulders=(v:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
-type Request={type:'init';generation:number;stage:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;faults?:Faults}|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
+type InitRequest={type:'init';generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;faults?:Faults}
+ & ({coastStage:'coast';stage?:never}|{stage:PilotCandidate;coastStage?:never});
+type Request=InitRequest|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let farmGround:Awaited<ReturnType<typeof loadFarmGround>>|undefined;
 let blenderArt=false,mobileShadows=false;
 let roadLockArt=false;
@@ -47,7 +50,12 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   }
   if(import.meta.env.DEV&&request.type!=='init'&&request.index>=faults.fromIndex){if(faults.delayMs)await new Promise(r=>setTimeout(r,faults.delayMs));if(faults.fail)throw new Error('Injected worker preparation failure');}
 
-  if(request.type==='init'){const initStart=performance.now();generation=request.generation;stage=request.stage;roadLockArt=!!request.blenderArt&&stage.generatorVersion==='canyon-roadlock-v1';blenderArt=!!request.blenderArt&&stage.generatorVersion==='designer-canyon-v1';track=createPilotTrack(stage,request.bank);rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=hasModernShoulders(stage.generatorVersion)&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(stage.generatorVersion)?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;junction=selectRoadInterchange(stage,bridge);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
+  if(request.type==='init'){const initStart=performance.now();generation=request.generation;
+   // Coast runs from the Worker bundle's authored data, not a cloned Trip.
+   // Legacy/non-coast requests retain their previous explicit stage payload.
+   stage=request.coastStage==='coast'?COAST_ULTRA_STAGE:request.stage;
+   if(!stage)throw Error('Missing road stage in Worker init');
+   roadLockArt=!!request.blenderArt&&stage.generatorVersion==='canyon-roadlock-v1';blenderArt=!!request.blenderArt&&stage.generatorVersion==='designer-canyon-v1';track=createPilotTrack(stage,request.bank);rocks=stage.generatorVersion==='v0.9-r6'?rockySections(stage.seed,track.length,d=>pilotWeights(stage!,d)):[];bridge=hasModernShoulders(stage.generatorVersion)&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(stage.generatorVersion)?bridgeSpan(track.sample,d=>pilotSample(stage!,d).halfWidth,d=>pilotWeights(stage!,d),track.length):undefined;junction=selectRoadInterchange(stage,bridge);roadSamples=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track!.sample(i*25).position);clearance=new RoadClearance(roadSamples,d=>pilotSample(stage!,d).halfWidth,stage.id==='ROAD-TRIP-10M');worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;}
   if(request.generation!==generation||!stage||!track)return;
   const t=performance.now(),candidate=stage,current=track,coastUltra=(candidate as TripCandidate).scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
   if(request.type==='scenery'&&roadLockArt){worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions:[],instances:[],scenery:{instances:0,draws:0},clearance:{queries:0,checks:0,rejected:0},cpuMs:performance.now()-t});return;}
