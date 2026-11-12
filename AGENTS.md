@@ -110,3 +110,22 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   Prefer Geometry Nodes, light meshes, LOD and glTF for gameplay scenes.
   Blender 5.3 Gaussian Splat import is an optional static-scene
   reference/POC, not required mobile runtime art or renderer migration.
+
+## R5a (first playable slice, v0.10.1 on dev)
+
+- The first three old road turns have been replaced with A0/A1/A2/A3
+  onboarding beats and two explicit S-curve banks in
+  `content/stages/coast/road.json`. The rest of the coastline is
+  still the old playable placeholder.
+- `content/stages/coast/onboarding.json` is the single source for
+  teaching windows, the first civilian encounter, the traffic gap
+  around the S, and the earliest possible random breakdown.
+- The eight racing rivals still launch together. R5a disables the
+  separate 300m *civilian* entry feeder, preserving a clear first
+  lesson. R5b must implement actual crash-tableau events.
+- `?r5qa=1` is development-only and overlays exact lesson IDs and
+  HUD metres. `?at=1390&r5qa=1` targets A1; `?at=3260&r5qa=1`
+  targets A3. Use `?trafficSeed=42` for deterministic encounters.
+- No Blender terrain or Geometry Nodes art is in this first
+  whitebox. Verify the road and steering first, then run a single
+  Geometry Nodes asset experiment for scenery before scaling production.

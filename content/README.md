@@ -107,3 +107,17 @@ speed. Every rival has a stable plume seed, which changes launch timing
 and small local curls. No new particles or draw calls are added.
 The architecture is ready for R4 acceptance and a later `v0.10.0`
 minor bump; that bump and public release are not automatic.
+
+## R5a first-map onboarding
+
+`stages/coast/road.json` owns the initial whitebox curves and
+two manually authored S-curve bank envelopes. `stages/coast/onboarding.json`
+owns A0–A3 lesson ranges, initial civilian traffic pacing, and
+minimum random breakdown distance. These are validated by
+`src/content/coast-stage.ts` and consumed directly by `Traffic`
+and `createWorld`, without a new procedural Scenic Director.
+
+R5a QA: `?r5qa=1` shows exact HUD distances and lesson IDs in Vite
+development. The rest of the original stage is intentionally still
+available while each new map slice is player-tested. Geometry Nodes
+for scene production starts after the road whitebox passes.

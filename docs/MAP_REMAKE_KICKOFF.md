@@ -130,3 +130,23 @@ Scenic Director. `R5a` is a player-review candidate, not final road art.
 Existing coast assets beyond the whitebox remain transitional; no visual
 acceptance of the old mountain sheets is implied. R5b will create staged
 accident scenes and the first drift lessons after R5a driving feedback.
+
+### R5a implementation status
+
+R5a development candidate `v0.10.1` replaces the former three
+opening coast turns with: A0 350–1390m straight, A1 1390–2270m
+easy sweep, A2 2270–3260m first civilian-traffic encounter sector,
+and A3 3260–4460m banked S. Two `showcase` bank envelopes target
+approximately -10° and +10° via the existing shared road sampler.
+
+The civilian race schedule starts with one seeded actor at/after
+2590m and holds its second wave until 4790m; the old 300m
+racing-mode entry generator is disabled only for first-map
+onboarding. Random breakdowns cannot begin until 5600m.
+The first accident scene and drift turns are **R5b**, not R5a.
+
+Use development-only `/?r5qa=1` to display live lesson markers.
+Useful test jumps: `?at=1390&r5qa=1`,
+`?at=2270&r5qa=1`, `?at=3260&r5qa=1`,
+`?at=3910&r5qa=1`. Run the complete
+`npm run verify:dev` and a Pixel 8 drive before marking accepted.

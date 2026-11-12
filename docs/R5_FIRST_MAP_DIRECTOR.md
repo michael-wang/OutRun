@@ -84,3 +84,18 @@ not a design spreadsheet or a static Blender view.
 
 Related: `MAP_REMAKE_KICKOFF.md`,
 `NEXT_SURFACE_CONTACT.md`, `R5_ART_PIPELINE.md`.
+
+## R5a code handoff
+
+Current `dev` game build `v0.10.1` implements the road geometry and
+bank envelopes of beats A0–A3, with a stage-authored first traffic
+schedule and initial crash-free corridor. The new lesson contract
+is in `content/stages/coast/onboarding.json` and validated alongside
+the road. QA labels with exact metres require `?r5qa=1` in Vite dev.
+
+**Limitations:** Civilian traffic is pre-scheduled in world-space and
+moves with race time; the A2 encounter is not yet guaranteed to be
+*overtaken* within A2. That timing is a player-test parameter, not a
+reason to create an unrelated spawn director. Other sectors of the
+10km coastline and scenery remain old placeholders until R5a is
+accepted. Multi-car accident and drift teaching await R5b.
