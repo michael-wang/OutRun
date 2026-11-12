@@ -58,7 +58,7 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
  invalid(s=>{s.onboarding.traffic.nextWaveDistance=3500;});
  invalid(s=>{s.onboarding.breakdownsAfter=4200;});
  invalid(s=>{s.onboarding.lessons[1].start=900;});
- invalid(s=>{s.road.banks![0].ramp=400;});
+ invalid(s=>{const b=s.road.banks![0];b.ramp=(b.end-b.start)/2;});
  invalid(s=>{s.road.banks![0].degrees=30;});
  const broken=structuredClone(road);broken.banks![1].start=broken.banks![0].start+1;
  expect(()=>validateAuthoredRoad(broken)).toThrow();

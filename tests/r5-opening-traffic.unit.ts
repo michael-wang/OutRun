@@ -46,7 +46,7 @@ it('R5a: roadside breakdowns cannot interrupt the initial teaching corridor',()=
  }
 });
 
-it('R5a.1: tutorial's first car is curated, but later highway encounters remain seeded random',()=>{
+it("R5a.1: tutorial's first car is curated, but later highway encounters remain seeded random",()=>{
  const scheduleA=trafficRecipe(804^11,10950,plan.traffic);
  const scheduleB=trafficRecipe(804^12,10950,plan.traffic);
  expect(scheduleA.filter(r=>r.group===0)).toHaveLength(1);
