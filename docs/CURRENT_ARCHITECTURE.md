@@ -162,3 +162,23 @@ Future region changes require explicit stage data and localized capabilities,
 not restoration of the discarded procedural multi-world system.
 
 R2h finish cleanup: live player completion uses the authored coastal `coastEnd` directly. No remaining chapter/Journey identifiers in `main.ts`.
+
+
+## R2i — live coastal telemetry and QA no longer sample Pilot/L2
+
+Main coastal drive/telemetry uses `coastGameplayAt()` derived from the
+authored road and scenic acts: zone beat, lane count, active curve labels,
+and the read-only legacy feedback placement view. Sampled at 10 Hz, with
+no Pilot/Trip sampling. Feedback anchors read the actual `world.sample()`
+pose; the legacy export identity fields are retained for existing saved QA.
+
+Removed the permanently unreachable Brick Lab mount, the undefined L2
+candidate/fallback and the obsolete city-grade inspector scan. The active
+`mountL2Lab` review controls remain temporarily for player input, review
+and saved feedback; its compatibility stage is **not** used for geometry,
+traffic or telemetry.
+
+The new P0 parity test compares the authored telemetry/QA view to legacy
+values along the full accepted coastline, including exact turn/act boundaries.
+No road, lighting, traffic or physics changes. The brief startup lag accepted
+at `v0.9.44-dev.13` is tracked separately in GitHub Issue #32 (P2).
