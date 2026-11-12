@@ -121,3 +121,19 @@ Do not build a generic wind-field editor or a second FFT for crops
 merely to close architecture. Future stages may author small local
 field/wind overrides once they have a concrete visual requirement.
 Startup P2 lag remains independently tracked.
+
+## R4e — smoke finish; next physical-material seam
+
+Per-emitter smoke has distinct stable tonal variation, local velocity
+curls and a stronger, irregular puff silhouette. Its global drift still
+samples one shared coast breeze, one call per active smoke pool per frame.
+The existing 192/48-particle pools and two geometry buffers are retained.
+The effect is visual only and does not affect skid marks.
+
+The next proposed road contact work is **not part of R4**. The current
+code already has separate `GuardrailContact`, `CoastStoneContact`,
+`coastContactSurface`, `WheelContactPatch` and `EngineSound` hooks.
+See `docs/NEXT_SURFACE_CONTACT.md` for the precise future seam; defer
+implementation until the first concrete material or bump task.
+The R4 architecture milestone still needs local build/test and
+owner play acceptance before promoting the minor version.

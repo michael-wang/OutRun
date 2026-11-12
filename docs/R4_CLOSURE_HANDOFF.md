@@ -46,3 +46,17 @@ approved for minor release. Development build: `v0.9.46`.
 The environment provides a bounded field; each scenic or airborne
 consumer owns the response. Gameplay steering and AI are never
 accidentally affected by cosmetic wind.
+
+## R4e note — final smoke art polish
+
+`v0.9.47` refines the starting-grid smoke: visible puff silhouettes
+instead of broad translucent discs; warmer/cooler grey variation from
+stable per-rival seeds; local eddies on top of the same prevailing wind.
+Particle capacity, road marks, collision rules and rendering passes do
+not increase. These are *implementation* claims; real visual and
+Pixel 8 FPS acceptance remains outstanding.
+
+Future material-specific friction, sparks, grass fragments and uneven
+road surfaces are NOT a missing R4 feature. They are captured in
+`docs/NEXT_SURFACE_CONTACT.md` and will be implemented against real
+track content after the architecture milestone.

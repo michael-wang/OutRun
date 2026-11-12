@@ -68,3 +68,14 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - Once the R4d build, retained tests and owner playtests pass, the entire
   R4 architecture milestone can be closed and the next minor bumped to
   `v0.10.0`. No automatic `main` promotion.
+
+## R4e finishing pass / next material capabilities
+
+- `TireEffects` keeps one bounded instanced shader/material family and
+  deterministic smoke palettes/curls per rival. All plumes share the same
+  real sea breeze, but local turbulence and shading may differ. Do not
+  change drift physics or create one independent GPU program per car.
+- The next engine/material work is **not** a prerequisite to `v0.10.0`.
+  See `docs/NEXT_SURFACE_CONTACT.md`: surface identity (per wheel),
+  obstacle geometry, impact response, sound, particles, and road relief
+  must meet via small explicit inputs, without a generic entity system.
