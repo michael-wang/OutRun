@@ -244,7 +244,7 @@ let coastDuskShadows=coastUltraMode&&sunsetShadowsEnabled&&!coastGeometryShadows
 await loadingStep(48,coastUltraWater?'正在準備海岸':'正在準備光影',coastUltraWater?'載入已準備好的海岸資料與海浪效果。':'準備場景光線與畫面效果。');
 startupDiagnostics.mark('coast-ocean-start');
 let ultraOcean=coastUltraWater?await import('./coast-ocean')
- .then(({UltraCoastOcean})=>UltraCoastOcean.create(renderer,world.scene,world,p=>loadingProgress(48+p*30,'正在準備海岸','載入海岸資料，接著準備海浪與夕陽。')))
+ .then(({UltraCoastOcean})=>UltraCoastOcean.create(renderer,world.scene,world,p=>loadingProgress(48+p*30,'正在準備海岸','載入海岸資料，接著準備海浪與夕陽。'),COAST_STAGE.effects.ocean))
  .catch(error=>{console.error('Ultra-Water unavailable; using basic sea',error);return null;}):null;
 startupDiagnostics.mark('coast-ocean-ready',{active:!!ultraOcean});
 if(ultraOcean){

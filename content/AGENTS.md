@@ -22,3 +22,8 @@
   tooling before selecting binary runtime chunks. See ADR-010.
 - Current technical map: `docs/CURRENT_ARCHITECTURE.md`. R3 completion:
   `docs/R3_ROAD_SYSTEM_CLOSURE.md`.
+
+- R4a: `stages/coast/effects.json` contains validated Ultra Water,
+  vegetation and flower settings; do not duplicate those constants in
+  effect producers. Keep Pixel 8 FFT and flower budgets within the
+  validator, and keep shadows unchanged unless explicitly requested.

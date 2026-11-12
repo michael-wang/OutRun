@@ -1,4 +1,5 @@
 import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
+import {COAST_EFFECTS,oceanVisualSettings,type OceanStageEffects} from './content/coast-effects';
 import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
@@ -213,22 +214,23 @@ export class UltraCoastOcean {
  private readonly renderer:THREE.WebGLRenderer;
  readonly boatShadow:CoastBoatShadow;
 
- static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},onProgress:(p:number)=>void){
+ static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},onProgress:(p:number)=>void,settings:OceanStageEffects=COAST_EFFECTS.ocean){
   const shore=await loadCoastShore(onProgress);
-  try{return new UltraCoastOcean(renderer,scene,coast,shore);}
+  try{return new UltraCoastOcean(renderer,scene,coast,shore,COAST_SEA_LEVEL,settings);}
   catch(error){shore.texture.dispose();throw error;}
  }
- private constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},shore:ReturnType<typeof unpackCoastShore>,level=COAST_SEA_LEVEL){
+ private constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},shore:ReturnType<typeof unpackCoastShore>,level=COAST_SEA_LEVEL,settings:OceanStageEffects=COAST_EFFECTS.ocean){
   if(!renderer.capabilities.isWebGL2)throw new Error('Ultra-Water experiment requires WebGL2');
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
   this.boatShadow=new CoastBoatShadow(renderer,this.mobile?512:1024);
   this.boatShadow.enabled=new URLSearchParams(location.search).get('sunshadow')!=='0';
+  const visual=oceanVisualSettings(settings,this.mobile);
   const oceanParams=defaultOceanParams();
-  oceanParams.windSpeed=6;
-  oceanParams.waveScale=.55;
-  oceanParams.swellScale=.3;
-  this.sim=new OceanSim(renderer,oceanParams,{resolution:this.mobile?128:256,anisotropy:this.mobile?1:renderer.capabilities.getMaxAnisotropy()});
+  oceanParams.windSpeed=visual.windSpeed;
+  oceanParams.waveScale=visual.waveScale;
+  oceanParams.swellScale=visual.swellScale;
+  this.sim=new OceanSim(renderer,oceanParams,{resolution:visual.resolution,anisotropy:this.mobile?1:renderer.capabilities.getMaxAnisotropy()});
   const rockPositions=COAST_ROCKS.map(r=>{
    const p=coast.sample(r.d),v=p.position.clone().addScaledVector(p.right,coastRockX(r));
    return new THREE.Vector4(v.x,v.z,r.r,r.d*.017);

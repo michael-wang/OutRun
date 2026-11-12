@@ -1,3 +1,5 @@
+import {COAST_EFFECTS,type VegetationStageEffects} from './content/coast-effects';
+
 /** Absolute-route scenic direction for the 10 km coastal journey.
  * Existing road curvature, sea simulation and mountains remain unchanged.
  * Scene authors (housing, crops, vegetation, beach life, boats) use one set
@@ -20,7 +22,11 @@ const smooth=(a:number,b:number,v:number)=>{
 };
 /** Sparse dry scrub behind the visitor beach; preserve trees around farmland
  * and houses. Worker-only deterministic plant budget, not a live LOD effect. */
-export function coastVegetationDensity(d:number){
- const quiet=smooth(1810,1990,d)*(1-smooth(3240,3410,d));
- return .73*(1-quiet)+.16*quiet;
+export function coastVegetationDensity(
+ d:number,settings:VegetationStageEffects=COAST_EFFECTS.vegetation,
+){
+ const zone=settings.quietBeach;
+ const quiet=smooth(zone.start,zone.fullStart,d)*
+  (1-smooth(zone.fullEnd,zone.end,d));
+ return settings.baseDensity*(1-quiet)+zone.density*quiet;
 }

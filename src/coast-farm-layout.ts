@@ -1,3 +1,5 @@
+import {COAST_EFFECTS} from './content/coast-effects';
+
 /** The farming story begins immediately: a broad opening rice plain and
  * flowers, two *small* farm breaks amid town streets, then a larger working
  * countryside on the fishing coast. Every plot stays within one 1km chunk.
@@ -11,12 +13,12 @@ export const FARM_ZONES=[
 ] as const;
 export const COAST_FARM={start:65,end:1780,riceStart:200,riceEnd:900,flowerStart:FARM_ZONES[0].flowerApproach,flowerEnd:1700} as const;
 /** Authored flower-band palette shared by Worker baking and runtime materialization. */
-export const FARM_FLOWER_COLORS=['#ecc341','#e679a7','#a382d8'] as const;
+export const FARM_FLOWER_COLORS=COAST_EFFECTS.flowers.palette;
 /** Only the near two terraces grow individual flowers and blades.
  * The outer terraces use textured crowns above the dry planting beds. */
 export const FARM_FLOWER_DETAIL={
- 0:{bladeDensity:.105,flowerDensity:1.10,maxFlowers:2400},
- 1:{bladeDensity:.047,flowerDensity:.38,maxFlowers:720},
+ 0:COAST_EFFECTS.flowers.near,
+ 1:COAST_EFFECTS.flowers.middle,
 } as const;
 export function farmFlowerDetail(band:number){
  return band===0?FARM_FLOWER_DETAIL[0]:band===1?FARM_FLOWER_DETAIL[1]:undefined;
@@ -50,8 +52,8 @@ export const FLOWER_YARDS=[
 ] as const;
 export const FARM_YARDS=[...RICE_YARDS,...FLOWER_YARDS];
 export type FarmPlot={id:number;start:number;end:number;left:number;right:number;kind:'rice'|'flowers';band:number;yard?:typeof FARM_YARDS[number]};
-export function flowerPlotColor(p:FarmPlot){
- return FARM_FLOWER_COLORS[(Math.floor(p.start/190)+p.band)%FARM_FLOWER_COLORS.length];
+export function flowerPlotColor(p:FarmPlot,palette:readonly string[]=FARM_FLOWER_COLORS){
+ return palette[(Math.floor(p.start/190)+p.band)%palette.length];
 }
 export const FLOWER_ROW_PITCH=2;
 export function flowerCoverage(plot:FarmPlot,clear:(d:number,x:number)=>boolean){

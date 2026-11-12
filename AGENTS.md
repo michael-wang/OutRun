@@ -26,3 +26,12 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 ## R3 closure
 - Only `content/stages/coast` is a playable stage. Removed Brick/L2/Pilot/Stage01/Trip generators and their old reviews and Journey-mode tests: do not restore dead pipelines.
 - Authored C02/E02 math is in `src/content/road-shapes.ts`; the game and Worker share `coast-worker-road.ts`. Review the small active flow in `docs/CURRENT_ARCHITECTURE.md` before adding new road logic.
+
+
+- R4a stage effect settings live in `content/stages/coast/effects.json`
+  and are validated by `src/content/coast-effects.ts`; do not recreate
+  hard-coded ocean/vegetation/flower defaults in their producer modules.
+- When working with local Codex, run `npm run verify:dev` (build + all
+  retained unit tests) **before** pushing to GitHub. GitHub release
+  validation remains a separate authority for `main`; physical play
+  is still owner acceptance.

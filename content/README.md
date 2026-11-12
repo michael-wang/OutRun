@@ -46,3 +46,16 @@ handling. See `docs/R3_ROAD_SYSTEM_CLOSURE.md`.
 JSON is a temporary authoring/interchange choice. It does not have
 precedence over more efficient, indexed or binary runtime data when
 representative stage scale demonstrates the need; see ADR-010.
+
+
+## R4a — configurable scene effects
+
+`stages/coast/effects.json` holds versioned **visual settings** for
+Ultra Water FFT/wind/wave, beach vegetation density and its smooth
+transition, and flower colors plus near/middle instance budgets.
+`src/content/coast-effects.ts` validates it before streaming.
+These settings preserve all accepted coast defaults. Change only the
+target field to experiment with a look; the road remains in `road.json`.
+Foliage transition distances are absolute HUD metres. The stage data
+is an interchange representation, not a permanent commitment to JSON.
+Sun, sky and shadow systems are intentionally **not** generalized in R4a.

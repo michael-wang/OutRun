@@ -1,0 +1,74 @@
+import {expect,it} from 'vitest';
+import {COAST_EFFECTS,oceanVisualSettings,validateCoastEffects} from '../src/content/coast-effects';
+import {COAST_STAGE,validateCoastStage} from '../src/content/coast-stage';
+import {coastVegetationDensity} from '../src/coast-journey-layout';
+import {FARM_FLOWER_COLORS,FARM_FLOWER_DETAIL,FARM_PLOTS,farmFlowerDetail,flowerPlotColor} from '../src/coast-farm-layout';
+
+const road=COAST_STAGE.road;
+const check=(effects=COAST_EFFECTS)=>validateCoastEffects(effects,road.startDistance,road.length);
+
+it('R4a: the accepted stage effects are valid and share the stage boundary',()=>{
+ expect(()=>check()).not.toThrow();
+ expect(COAST_STAGE.effects).toBe(COAST_EFFECTS);
+ expect(()=>validateCoastStage(COAST_STAGE)).not.toThrow();
+ expect(COAST_EFFECTS.schemaVersion).toBe(1);
+ expect(COAST_EFFECTS.id).toBe('coast');
+});
+
+it('R4a: Ultra Water keeps accepted FFT and wave settings on desktop and mobile',()=>{
+ expect(oceanVisualSettings(COAST_EFFECTS.ocean,true)).toEqual({
+  windSpeed:6,waveScale:.55,swellScale:.3,resolution:128,
+ });
+ expect(oceanVisualSettings(COAST_EFFECTS.ocean,false)).toEqual({
+  windSpeed:6,waveScale:.55,swellScale:.3,resolution:256,
+ });
+ const changed={...COAST_EFFECTS.ocean,windSpeed:9,waveScale:.3,fftMobile:64};
+ expect(oceanVisualSettings(changed,true)).toMatchObject({
+  windSpeed:9,waveScale:.3,resolution:64,
+ });
+});
+
+it('R4a: quiet-beach foliage retains the exact original smooth transition',()=>{
+ for(const [distance,expected] of [
+  [1100,.73],[1810,.73],[1990,.16],[2350,.16],
+  [3100,.16],[3240,.16],[3410,.73],[5000,.73],
+ ] as const)expect(coastVegetationDensity(distance)).toBeCloseTo(expected,12);
+ const edited={...COAST_EFFECTS.vegetation,baseDensity:.9,
+  quietBeach:{...COAST_EFFECTS.vegetation.quietBeach,density:.05}};
+ expect(coastVegetationDensity(2350,edited)).toBeCloseTo(.05,12);
+ expect(coastVegetationDensity(1100,edited)).toBeCloseTo(.9,12);
+});
+
+it('R4a: flower palette and two detail bands are stage-configurable',()=>{
+ expect(FARM_FLOWER_COLORS).toEqual(['#ecc341','#e679a7','#a382d8']);
+ expect(FARM_FLOWER_DETAIL[0]).toEqual({
+  bladeDensity:.105,flowerDensity:1.10,maxFlowers:2400,
+ });
+ expect(FARM_FLOWER_DETAIL[1]).toEqual({
+  bladeDensity:.047,flowerDensity:.38,maxFlowers:720,
+ });
+ expect(farmFlowerDetail(0)).toBe(COAST_EFFECTS.flowers.near);
+ expect(farmFlowerDetail(1)).toBe(COAST_EFFECTS.flowers.middle);
+ expect(farmFlowerDetail(2)).toBeUndefined();
+ const plot=FARM_PLOTS.find(p=>p.kind==='flowers')!;
+ const original=flowerPlotColor(plot);
+ expect(original).toMatch(/^#[0-9a-f]{6}$/i);
+ expect(flowerPlotColor(plot,['#111111','#222222','#333333'])).not.toBe(original);
+});
+
+it('R4a: reject invalid mobile costs, misplaced foliage and palettes early',()=>{
+ const invalid=(alter:(data:typeof COAST_EFFECTS)=>void)=>{
+  const data=structuredClone(COAST_EFFECTS);alter(data);
+  expect(()=>check(data)).toThrow();
+  expect(()=>validateCoastStage({...COAST_STAGE,effects:data})).toThrow();
+ };
+ invalid(x=>{x.ocean.windSpeed=Infinity;});
+ invalid(x=>{x.ocean.fftMobile=100;});
+ invalid(x=>{x.ocean.fftMobile=512;});
+ invalid(x=>{x.vegetation.baseDensity=1.5;});
+ invalid(x=>{x.vegetation.quietBeach.fullStart=x.vegetation.quietBeach.start;});
+ invalid(x=>{x.vegetation.quietBeach.end=road.startDistance+road.length+1;});
+ invalid(x=>{x.flowers.palette[0]='not a color';});
+ invalid(x=>{x.flowers.near.maxFlowers=5001;});
+ invalid(x=>{x.flowers.middle.flowerDensity=NaN;});
+});

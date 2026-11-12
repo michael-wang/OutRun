@@ -2,6 +2,7 @@ import stageFile from '../../content/stages/coast/stage.json';
 import {coastAuthoredRoad,validateAuthoredRoad,type AuthoredRoad} from './authored-road';
 import {coastStaticStage,staticPrefabCatalog,validateStageStaticContent,type StageStaticContent} from './stage-data';
 import {COAST_SCENIC_ACTS} from '../coast-journey-layout';
+import {COAST_EFFECTS,validateCoastEffects,type CoastStageEffects} from './coast-effects';
 
 /** Historic identity used for feedback / telemetry storage compatibility,
  * not a base class, Stage generator or new authoring requirement. */
@@ -10,8 +11,7 @@ export const COAST_RUNTIME_IDENTITY={
  generatorVersion:'v0.9-r10',contentFingerprint:'coast-farewell-headlands-r2-804',
 } as const;
 
-/** Only authoring data lives here. No Pilot, Brick, Trip or legacy route
- * generator dependencies. The existing runtime adapter is at coast-ultra-stage.ts. */
+/** Authored content only. No Pilot, Brick, Trip or procedural route generator. */
 export interface CoastStageManifest{
  schemaVersion:1;
  id:'coast';
@@ -27,10 +27,11 @@ export interface CoastStageContent{
  manifest:CoastStageManifest;
  road:AuthoredRoad;
  scene:StageStaticContent;
+ effects:CoastStageEffects;
  scenicActs:readonly {id:string;start:number;end:number;label:string}[];
 }
 export function validateCoastStage(content:CoastStageContent){
- const {manifest,road,scene,scenicActs}=content;
+ const {manifest,road,scene,effects,scenicActs}=content;
  if(manifest.schemaVersion!==1||manifest.id!=='coast'||manifest.id!==road.id||manifest.id!==scene.id)
   throw Error('Coast stage/road/scene IDs or schema do not match');
  if(!manifest.name.trim()||!manifest.intent.trim()||!manifest.entry.trim()||!manifest.exit.trim()||
@@ -40,6 +41,7 @@ export function validateCoastStage(content:CoastStageContent){
   throw Error('Invalid coastal stage metadata');
  validateAuthoredRoad(road);
  validateStageStaticContent(scene,staticPrefabCatalog);
+ validateCoastEffects(effects,road.startDistance,road.length);
  // Scenic act distances are relative to course start, unlike road/prop HUD metres.
  if(!scenicActs.length||scenicActs[0].start!==0||scenicActs.at(-1)!.end!==road.length)
   throw Error('Coast scenic acts must cover the entire finite stage');
@@ -56,6 +58,7 @@ export const COAST_STAGE:CoastStageContent={
  manifest:stageFile as CoastStageManifest,
  road:coastAuthoredRoad,
  scene:coastStaticStage,
+ effects:COAST_EFFECTS,
  scenicActs:COAST_SCENIC_ACTS,
 };
 validateCoastStage(COAST_STAGE);

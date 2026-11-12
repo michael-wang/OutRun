@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "ocean": {
+    "windSpeed": 6,
+    "waveScale": 0.55,
+    "swellScale": 0.3,
+    "fftMobile": 128,
+    "fftDesktop": 256
+  },
+  "vegetation": {
+    "baseDensity": 0.73,
+    "quietBeach": {
+      "start": 1810,
+      "fullStart": 1990,
+      "fullEnd": 3240,
+      "end": 3410,
+      "density": 0.16
+    }
+  },
+  "flowers": {
+    "palette": [
+      "#ecc341",
+      "#e679a7",
+      "#a382d8"
+    ],
+    "near": {
+      "bladeDensity": 0.105,
+      "flowerDensity": 1.1,
+      "maxFlowers": 2400
+    },
+    "middle": {
+      "bladeDensity": 0.047,
+      "flowerDensity": 0.38,
+      "maxFlowers": 720
+    }
+  }
+}

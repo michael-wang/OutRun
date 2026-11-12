@@ -54,3 +54,20 @@ The retired canyon art route is no longer a dynamic import, and
 Build-time canyon GLB downloading, inactive regional camera flags and
 local Blender prototype serving were removed. Disabled city and canyon
 stage-select images remain presentation placeholders, not gameplay.
+
+
+## R4a — first configurable scenery capability slice
+
+`content/stages/coast/effects.json` owns the **accepted** Ultra Water
+wind/wave scales and FFT budgets, coastal vegetation-density transition,
+and flower palette and two detail budgets. These are validated in
+`src/content/coast-effects.ts` alongside the finite Stage data. The
+existing water simulator, coast foliage producer and farm plot materials
+consume those settings; their numerical defaults are unchanged.
+
+One file changes only authored scenery parameters, **not** road layout,
+race logic, terrain topology, lighting direction or shadow caster policy.
+No hypothetical scene/region inheritance layer was introduced.
+The next R4 task should address a concrete new scenery need rather than
+expose every existing visual constant. Shadow refactoring is deliberately
+deferred until Pixel 8 profiling can guard its FPS budget.
