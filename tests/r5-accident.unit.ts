@@ -64,6 +64,7 @@ it('R5b.1: regular traffic, rivals and player reference the same angled obstacle
    const model=TRAFFIC_TYPES[car.type];
    expect(authoritative.stationary).toBe(true);
    expect(authoritative.stopYaw).toBe(car.stopYaw);
+   expect(authoritative.lateral).toBeCloseTo(roadLaneCenters(halfAt(car.distance))[car.stopLane]+(car.stopOffset??0));
    expect(authoritative.width).toBeGreaterThan(model.width);
    expect(authoritative.length).toBeGreaterThan(0);
   }
@@ -126,4 +127,20 @@ it('R5b.2: a rival callback genuinely displaces the same crash car used by every
   expect(moved.incidentMotion?.hits).toBe(1);
   expect(moved.stationary).toBe(true);
  }finally{traffic.dispose();}
+});
+
+it('R5b.2: seeded later accidents keep a real two-lane escape corridor for 256 seeds',()=>{
+ const later={...site,layout:'seeded-lanes' as const};
+ const lanes=roadLaneCenters(halfAt(later.distance));
+ for(let seed=0;seed<256;seed++){
+  const cars=coastAccidentLayout(halfAt,later,seed);
+  const open=lanes.filter(x=>cars.every(c=>{
+   const model=TRAFFIC_TYPES[c.type];
+   const yaw=Math.abs(c.stopYaw);
+   const occupiedHalf=(model.width*Math.cos(yaw)+model.length*Math.sin(yaw))*.5;
+   const center=lanes[c.stopLane]+(c.stopOffset??0);
+   return Math.abs(x-center)>occupiedHalf+1.13+.15;
+  }));
+  expect(open.length,`seed ${seed}`).toBeGreaterThanOrEqual(later.minimumOpenLanes);
+ }
 });

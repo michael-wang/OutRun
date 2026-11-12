@@ -227,3 +227,22 @@ AI obstacle dimensions and a single warning sequence.
 As before, complete TypeScript / Vitest and actual Pixel 8
 playthrough require the local workstation; do not declare
 technical QA green solely because GitHub accepted source.
+
+## R5b.2 — easier first incident; physical world interactions
+
+Version `v0.10.5` (development only) moves the first accident
+to the right outside lane with two gently angled cars, leaving
+a broad left-side bypass. Later incidents may be seeded into
+different lanes, but the tutorial remains predictable.
+
+Incident impacts by player/rival/civilian update one persistent
+TrafficWorld car body and its yaw; triangles share their existing
+bounded fly/tumble pool for all road users. New tests cover
+the right-lane corridor, seeded later safety, vehicle momentum,
+checkpoint persistence and first gamepad input edges.
+
+**Local Codex verification required:** run
+`npm run verify:dev` and focused R5 incident/gamepad tests
+before play acceptance, and test first-time gamepad confirmation,
+a rival hitting a reflector and a right-lane accident at
+`?at=4170&r5qa=1&trafficSeed=42`.

@@ -179,3 +179,30 @@ variation.
 Player acceptance: it must require a conscious steering
 choice in the curve, without an impossible full-width blockade,
 vehicle pop-in, ghost collision or loss of visibility.
+
+## R5b.2 — accessible first accident and shared physical contact
+
+The owner's first playtest found the centre-lane pileup too difficult
+for a first demonstration. **A4 is now two slightly angled, staggered
+small cars in the rightmost lane only.** The left three lanes remain
+comfortably open. The goal is learning to recognize an incident,
+not having to thread a narrow needle at speed.
+
+This exception applies **only** to the first teaching accident.
+Future accidents can choose seeded lane groups (still reserving
+at least two safe passing lanes) without changing the normal
+random civilian traffic policy.
+
+Player, rival and civilian impacts now act on the **same** parked
+car world state: small arcade forward/lateral impulses and yaw
+rotation decay over time, remain persistent through race checkpoints,
+and never promote the wreck to a normally accelerating AI car.
+The existing one-shot RoadCones tumble physics also accepts actual
+road-space sweeps from rival/civilian bodies, so warning triangles
+can be struck and flung instead of being player-only.
+
+The gamepad's two first-press traps are removed: the initial
+pressed-edge sample is no longer consumed, and the first menu
+confirm activates the default action instead of only focusing it.
+Cross-screen **held** confirm still does not repeat because the
+same previous-button state survives the transition.

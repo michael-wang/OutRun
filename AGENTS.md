@@ -204,3 +204,20 @@ Codex should check out latest `dev`, run `npm run verify:dev`,
 fix **all** failing tests in the same task, then push the corrected
 commit. GitHub `dev` push must not trigger expensive CI.
 Never mark a source-only static audit as passing Vitest.
+
+## R5b.2 player-feedback constraints
+
+- The first A4 accident is a forgiving RIGHT OUTSIDE lane teaching
+  event with two angled cars; normal seeded highway traffic and
+  later random-lane incident capability remain intact.
+- Movable wreck impulses live only in `RaceTrafficWorld`, which
+  owns all traffic and race obstacle state. Don't move rendering
+  instances independently or run an additional rigid-body engine.
+- Warning reflector collisions are processed from player sweeps
+  and rival/civilian sweeps against the same one-shot pool.
+  Off-camera contacts remain authoritative.
+- Gamepad: first fresh confirm MUST act on the first press;
+  held button across screen transition MUST NOT confirm twice.
+  Include menu first-press and first driving-frame regression tests.
+- Repo-only commits still need local `npm run verify:dev`
+  performed by Codex before calling the work technically verified.

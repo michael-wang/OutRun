@@ -157,3 +157,17 @@ are consumed through the existing Traffic + RoadCones
 system with shared obstacle/collision state, not merely
 drawn by a scenery prefab. The outer two passing lanes
 remain free for every allowed variant.
+
+## R5b.2 physical crash tutorial
+
+The first `onboarding.json.accident.layout` is `right-lane`:
+two irregularly angled/staggered stopped cars in the rightmost
+lane, leaving an easy left-side passing path. The
+`seeded-lanes` variant remains available for later accident
+scenes with bounded, seeded configurations.
+
+Wreck motion/rotation is owned by the existing race TrafficWorld
+and saved in race snapshots; RoadCones warning signs share the
+same knock-and-flight animation for player, rival and civilian
+contacts. No Geometry Nodes scenery object is a replacement
+for these physical obstacle bodies.
