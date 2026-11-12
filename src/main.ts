@@ -105,6 +105,7 @@ startupDiagnostics.mark('route-plan-ready');
 // everything used by the live coast; no TripCandidate is loaded here.
 const trip={...COAST_RUNTIME_IDENTITY,seed:COAST_STAGE.manifest.seed,
  name:COAST_STAGE.manifest.name,length:COAST_STAGE.road.length,
+ entrySpeed:COAST_STAGE.manifest.entrySpeed,
  scenerySections:coastRuntime.stage.scenerySections,
  scenicLandmarks:coastRuntime.stage.scenicLandmarks};
 // The selected coast retains its diagnostic starting coordinate.
