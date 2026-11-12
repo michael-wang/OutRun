@@ -63,6 +63,8 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
  invalid(s=>{s.road.turns[1].rampFraction=.5;});
  invalid(s=>{s.onboarding.driftLessons[0].start=4800;});
  invalid(s=>{s.onboarding.driftLessons[1].suggestedEntryKmh=260;});
+ invalid(s=>{s.onboarding.accident.distance=s.onboarding.accident.start+20;});
+ invalid(s=>{s.road.turns[3].steer=0.1;});
  const broken=structuredClone(road);broken.banks![1].start=broken.banks![0].start+1;
  expect(()=>validateAuthoredRoad(broken)).toThrow();
 });
@@ -114,7 +116,7 @@ it('R5a.2: the left-to-right S has no neutral straight and retains smooth joins'
 });
 
 it('R5b: two drift-demanding authored turns have a long safe recovery gap',async()=>{
- const [first,second]=road.turns.slice(3,5);
+ const [first,second]=road.turns.slice(4,6);
  const [a5,a6]=plan.driftLessons;
  expect(first.start).toBe(a5.start);
  expect(first.end).toBe(a5.end);

@@ -11,8 +11,13 @@ export interface CoastLesson{
  id:'A0'|'A1'|'A2'|'A3';
  start:number;end:number;label:string;goal:string;
 }
-/** Planned A4 accident is a separate scenic/traffic feature, not yet built.
- * A5/A6 are drivable road whiteboxes in this R5b slice. */
+/** A4 is an authored curving-road accident with seeded 2–3 stopped cars.
+ * It shares Traffic's normal obstacle/physics pipeline. */
+export interface CoastAccident{
+ id:'A4';start:number;end:number;distance:number;label:string;
+ minimumOpenLanes:2|3;
+}
+/** A5/A6 are drivable road whiteboxes after the accident. */
 export interface CoastDriftLesson{
  id:'A5'|'A6';start:number;end:number;label:string;goal:string;
  suggestedEntryKmh:number;
@@ -20,6 +25,7 @@ export interface CoastDriftLesson{
 export interface CoastOnboarding{
  schemaVersion:1;id:'coast';revision:string;
  lessons:CoastLesson[];
+ accident:CoastAccident;
  driftLessons:CoastDriftLesson[];
  traffic:FirstMapTraffic;
  breakdownsAfter:number;
@@ -53,23 +59,31 @@ export function validateCoastOnboarding(plan:CoastOnboarding,road:AuthoredRoad){
     (road.turns[2].rampFraction??.2)>.1||
     Math.sign(road.turns[1].steer)===Math.sign(road.turns[2].steer))
   throw Error('Opening lessons do not match authored road geometry');
+ const accident=plan.accident,incidentCurve=road.turns[3];
+ if(!accident||accident.id!=='A4'||!accident.label?.trim()||!incidentCurve||
+    accident.start!==incidentCurve.start||accident.end!==incidentCurve.end||
+    accident.start<sBend.end+60||accident.distance<accident.start+150||
+    accident.distance>accident.end-110||
+    ![2,3].includes(accident.minimumOpenLanes)||
+    Math.abs(incidentCurve.steer)<.20||Math.abs(incidentCurve.steer)>.55)
+  throw Error('Invalid curved first-map accident');
  const drifts=plan.driftLessons;
  if(!Array.isArray(drifts)||drifts.length!==2)
   throw Error('Expected exactly two first-map drift lessons');
  for(const [i,lesson] of drifts.entries()){
-  const curve=road.turns[i+3];
+  const curve=road.turns[i+4];
   if(lesson.id!==(i===0?'A5':'A6')||!curve||
      lesson.start!==curve.start||lesson.end!==curve.end||
      !lesson.label?.trim()||!lesson.goal?.trim()||
      !Number.isFinite(lesson.suggestedEntryKmh)||
      lesson.suggestedEntryKmh<120||lesson.suggestedEntryKmh>250||
-     lesson.start<(i===0?sBend.end+500:drifts[0].end+350)||
+     lesson.start<(i===0?accident.end+180:drifts[0].end+350)||
      Math.abs(curve.steer)<.65||Math.abs(curve.steer)>1.3)
    throw Error('Invalid first-map drift teaching window');
  }
  if(drifts[0].suggestedEntryKmh<=drifts[1].suggestedEntryKmh||
-    Math.abs(road.turns[3].steer)>=Math.abs(road.turns[4].steer)||
-    Math.sign(road.turns[3].steer)===Math.sign(road.turns[4].steer))
+    Math.abs(road.turns[4].steer)>=Math.abs(road.turns[5].steer)||
+    Math.sign(road.turns[4].steer)===Math.sign(road.turns[5].steer))
   throw Error('Drift lessons must progressively build difficulty');
  const t=plan.traffic;
  if(!t||!Number.isFinite(t.firstCivilianDistance)||
@@ -88,5 +102,6 @@ export function validateCoastOnboarding(plan:CoastOnboarding,road:AuthoredRoad){
 /** Pure lookup for development overlays and review data; no runtime state machine. */
 export function coastLessonAt(distance:number,plan:CoastOnboarding=COAST_ONBOARDING){
  return plan.lessons.find(lesson=>distance>=lesson.start&&distance<lesson.end)
+  ??(distance>=plan.accident.start&&distance<plan.accident.end?plan.accident:undefined)
   ??plan.driftLessons.find(lesson=>distance>=lesson.start&&distance<lesson.end);
 }

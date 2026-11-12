@@ -30,6 +30,13 @@
     },
     {
       "shape": "sweep",
+      "start": 4410,
+      "end": 4890,
+      "steer": -0.32,
+      "label": "R5 A4 · Curving crash-site avoidance"
+    },
+    {
+      "shape": "sweep",
       "start": 5100,
       "end": 5640,
       "steer": 0.82,

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "coast",
-  "revision": "R5b.0",
+  "revision": "R5b.1",
   "lessons": [
     {
       "id": "A0",
@@ -55,5 +55,13 @@
       "goal": "Brake earlier, hold the line and accelerate on exit",
       "suggestedEntryKmh": 175
     }
-  ]
+  ],
+  "accident": {
+    "id": "A4",
+    "start": 4410,
+    "end": 4890,
+    "distance": 4635,
+    "label": "彎道事故現場",
+    "minimumOpenLanes": 2
+  }
 }

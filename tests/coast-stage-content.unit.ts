@@ -8,7 +8,7 @@ it('P0: all authored coast manifest/road/scene/acts are valid',()=>{
  expect(COAST_STAGE.manifest.id).toBe('coast');
  expect(COAST_STAGE.scene.staticProps.find(p=>p.id==='hamlet-farmhouse')?.roadDistance).toBe(1085);
  expect(COAST_STAGE.road.startDistance).toBe(ROAD_START);
- expect(COAST_STAGE.road.turns).toHaveLength(9);
+ expect(COAST_STAGE.road.turns).toHaveLength(10);
  expect(COAST_STAGE.scenicActs.at(-1)?.end).toBe(COAST_STAGE.road.length);
 });
 
