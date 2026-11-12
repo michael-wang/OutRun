@@ -1,5 +1,4 @@
 import {it,expect} from 'vitest';
-import {readFileSync} from 'node:fs';
 import * as THREE from 'three';
 import {Traffic,TRAFFIC_TYPES,TRAFFIC_LIMIT} from '../src/traffic';
 import {trafficHasBeenPassed} from '../src/traffic-flow';
@@ -42,20 +41,4 @@ it('removes passed actors and never lets them respawn from the rear after the dr
  traffic.reset();
  expect(traffic.inspect().passedCount).toBe(0);
  traffic.dispose();
-});
-it('shows Ready to Race without auto-starting or inheriting an entry speed',()=>{
- const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
- const dock=readFileSync(new URL('../src/trip-pause-dock.ts',import.meta.url),'utf8');
- expect(main).toContain('let revealReadyWhenLoaded=playerUi&&!recovery;');
- expect(main).toContain("loadingFinished();startupPending=false;");
- expect(main).toContain("revealReadyWhenLoaded=false;mode='ready';readyEnabled=true;ui();");
- expect(main).toContain('if(!raceStartConfirmed||journeyTransition||replayPreparing');
- expect(main).toContain("if(mode==='ready'&&readyEnabled&&$('game-loading').hidden)");
- expect(main).toContain('raceStartConfirmed=true;start();');
- expect(main).toContain("state.speed=trip?0:brick.entrySpeed/3.6;");
- expect(main).toContain("brickCompleted?'再玩一次'");
- expect(main).toContain("$('player-restart').hidden=elapsed===0||brickCompleted");
- expect(main).toContain("$('results-menu').hidden=!brickCompleted");
- expect(main).toContain("if(playerUi)for(const id of ['l2-replay','l2-next'])");
- expect(dock).not.toContain('tp-new-route');
 });

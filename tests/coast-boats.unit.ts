@@ -2,11 +2,10 @@ import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
 import {COAST_BOATS,coastBoatPosition} from '../src/coast-boats';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {coastBeachX} from '../src/coast-layout';
 import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
-const track=createPilotTrack(COAST_ULTRA_STAGE);
+const track=coastWorkerRoad().track;
 
 it('keeps the expanded fleet safely offshore along the real curved coast for full patrols',()=>{
  expect(COAST_BOATS.filter(b=>b.kind==='sail')).toHaveLength(6);

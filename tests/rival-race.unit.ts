@@ -6,9 +6,9 @@ import * as THREE from 'three';
 import {Traffic,trafficRecipe} from '../src/traffic';
 import {TrafficImpact} from '../src/traffic-impact';
 import {plannedTrafficLateral} from '../src/traffic-flow';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample} from '../src/pilot-composer';
-import {BRICK_START} from '../src/bricks';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {COAST_STAGE} from '../src/content/coast-stage';
+import {ROAD_START} from '../src/road-profile';
 const flat=()=>({curvature:0,grade:0,half:7});
 const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
@@ -236,11 +236,11 @@ describe('Riviera GT race',()=>{
   traffic.dispose();
  });
  it('finishes the authored 10 km with the player parked under three traffic seeds',()=>{
-  const track=createPilotTrack(COAST_ULTRA_STAGE),end=BRICK_START+COAST_ULTRA_STAGE.length;
+  const runtime=coastWorkerRoad(),track=runtime.track,end=ROAD_START+COAST_STAGE.road.length;
   for(const seed of [17,945,1206]){
    const recipes=trafficRecipe(seed,end),p=parked();
-   const race=new RivalRace(end,d=>{const q=track.sample(d);return {curvature:q.curvature,grade:q.tangent.y,half:pilotSample(COAST_ULTRA_STAGE,d).halfWidth};},
-    (center,t,radius)=>recipes.flatMap(row=>{const d=row.distance+row.speed*t;return Math.abs(d-center)<radius?[{id:'T'+row.id,distance:d,lateral:plannedTrafficLateral(seed,row.group,row.member??0,pilotSample(COAST_ULTRA_STAGE,d).halfWidth),width:2.1,length:5,speed:row.speed}]:[];}));
+   const race=new RivalRace(end,d=>{const q=track.sample(d);return {curvature:q.curvature,grade:q.tangent.y,half:runtime.halfAt(d)};},
+    (center,t,radius)=>recipes.flatMap(row=>{const d=row.distance+row.speed*t;return Math.abs(d-center)<radius?[{id:'T'+row.id,distance:d,lateral:plannedTrafficLateral(seed,row.group,row.member??0,runtime.halfAt(d)),width:2.1,length:5,speed:row.speed}]:[];}));
    race.reset(350);
    for(let i=0;i<300*60&&!race.rivals.every(r=>r.finishTime!==null);i++){
     race.step(1/60,p,p);
