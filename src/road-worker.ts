@@ -100,7 +100,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
     denseCity:candidate.generatorVersion==='v0.9-r10'||candidate.generatorVersion==='v0.9-r11'||candidate.generatorVersion==='v0.9-r12',
     canyonPrototype:candidate.canyonPrototype,designerCut:candidate.designerCut,coastUltra,essentialShadows});
    if(coastUltra){
-    const end=Math.min(request.end,current.length),halfAt=(d:number)=>pilotSample(candidate,d).halfWidth;
+    const end=Math.min(request.end,current.length);
     const batches=[addCoastNature(scene,current.sample,request.start,end),addCoastResort(scene,current.sample,halfAt,request.start,end),
      addVergeGrass(scene,current.sample,halfAt,shoulders,request.start,end)];
     for(const batch of batches){scenery.instances+=batch.instances;scenery.draws+=batch.draws;}
@@ -141,7 +141,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   const meshes=roadLockArt?rawMeshes.filter(m=>!['grass','water','surf','support'].includes(m.kind)).map(m=>m.kind==='sand'?{...m,artContactOnly:true}:m):blenderArt?blenderRoadVisuals(rawMeshes,request.start,request.end):rawMeshes;
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();
   let markerBank=0,markerYaw=0;const record=(which:number,p:THREE.Vector3,yaw=markerYaw)=>{dummy.position.copy(p);dummy.rotation.set(0,yaw,markerBank,'YXZ');dummy.scale.set(1,1,1);dummy.updateMatrix();matrices[which].push(...dummy.matrix.elements);};
-  for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=pilotSample(candidate,d).halfWidth,yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;markerYaw=shoulders?-p.roadHeading:0;if(onBridge(d,bridge)||candidate.generatorVersion==='canyon-roadlock-v1'||coastUltra)continue;
+  for(let d=Math.ceil(request.start/12)*12;d<request.end;d+=12){const p=current.sample(d),width=halfAt(d),yaw=Math.atan2(p.tangent.x,p.tangent.z);markerBank=shoulders?-Math.atan(p.right.y):0;markerYaw=shoulders?-p.roadHeading:0;if(onBridge(d,bridge)||candidate.generatorVersion==='canyon-roadlock-v1'||coastUltra)continue;
    // R2.1 removes city-style black/yellow posts from the authored canyon.
    // Sparse wooden markers live in the scenery batch instead; guardrails and
    // their existing collision boundaries remain in place.
