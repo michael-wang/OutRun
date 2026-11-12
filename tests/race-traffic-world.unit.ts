@@ -192,3 +192,32 @@ describe('Racing R0.2i traffic driver personalities and early overtakes',()=>{
   expect(TRAFFIC_DRIVER_PROFILES.normal.reverseAfter).toBeGreaterThan(TRAFFIC_DRIVER_PROFILES.dangerous.reverseAfter);
  });
 });
+
+
+describe('R5b.2 authoritative movable accident',()=>{
+ const wreck={id:910000,type:0,distance:4635,speed:0,group:-40,
+  stationary:true,stopLane:4,stopSide:1,stopYaw:.13,stopOffset:-.12,incidentId:'A4' as const};
+ const world=()=>new RaceTrafficWorld([wreck],42,10350,()=>8.75,dims,true,false);
+ it('moves an impacted wreck without letting the race AI drive it away',()=>{
+  const a=world(),before=a.get(wreck.id)!;
+  const original={distance:before.distance,yaw:before.stopYaw,lateral:before.lateral};
+  expect(a.bumpIncident(wreck.id,80,-1)).toBe(true);
+  expect(a.bumpIncident(wreck.id,80,-1)).toBe(false);
+  a.advance(.3);
+  const after=a.get(wreck.id)!;
+  expect(after.distance).toBeGreaterThan(original.distance+.1);
+  expect(after.stopYaw).not.toEqual(original.yaw);
+  expect(after.lateral).not.toEqual(original.lateral);
+  expect(after.stationary).toBe(true);
+  expect(after.incidentMotion?.hits).toBe(1);
+  const saved=a.snapshot(),restored=world();restored.restore(saved);
+  a.advance(1);restored.advance(1);
+  expect(restored.get(wreck.id)).toEqual(a.get(wreck.id));
+ });
+ it('does not fake physical motion on an unrelated stopped car',()=>{
+  const ordinary={...wreck,id:999,incidentId:undefined,stopYaw:0};
+  const a=new RaceTrafficWorld([ordinary],42,10350,()=>8.75,dims,true,false);
+  expect(a.bumpIncident(999,80,1)).toBe(false);
+  a.advance(.3);expect(a.get(999)?.distance).toBe(4635);
+ });
+});

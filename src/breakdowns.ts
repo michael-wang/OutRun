@@ -9,7 +9,7 @@ export interface Breakdown{
  id:number;type:number;distance:number;speed:number;group:number;
  stationary:true;stopSide:number;stopLane:number;
  /** Original staged incident cars are shared with physics and traffic AI. */
- stopYaw?:number;incidentId?:'A4';
+ stopYaw?:number;stopOffset?:number;incidentId?:'A4';
 }
 /** Seeded coast hazards can appear in any lane along the full course. */
 export const COAST_BREAKDOWN={startClearance:1000,finishClearance:300,maxCount:2} as const;
