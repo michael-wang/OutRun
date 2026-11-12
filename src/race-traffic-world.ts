@@ -6,7 +6,7 @@ import {DEFAULT_PACE,effectivePace} from './pace';
  * A racer cannot drive into an easier world by leaving the player's camera. */
 export interface TrafficWorldRecipe {
  id:number;type:number;distance:number;speed:number;group:number;member?:number;
- stationary?:boolean;stopSide?:number;stopLane?:number;
+ stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4';
 }
 /** Stable road-driver personality, independent of rendering or vehicle model. */
 export type TrafficDriverStyle='safe'|'normal'|'dangerous';
@@ -27,7 +27,7 @@ export interface TrafficWorldCar extends TrafficSlot {
  driverStyle:TrafficDriverStyle;
  type:number;cruiseSpeed:number;targetSpeed:number;targetLateral:number;
  width:number;group:number;member:number;finished:boolean;sideVelocity:number;
- stopLane?:number;stopSide?:number;
+ stopLane?:number;stopSide?:number;stopYaw?:number;incidentId?:'A4';
  blockedFor:number;reverseLeft:number;escapeUntil:number;escapeCooldown:number;indicateUntil:number;laneChangeUntil:number;
  laneChanges:number;escapeCount:number;
 }
@@ -79,13 +79,16 @@ export class RaceTrafficWorld {
    const lateral=row.stationary
     ?breakdownLaneLateral(row.stopLane,row.stopSide,half)
     :plannedTrafficLateral(seed,row.group,row.member??0,half);
-   const d=this.dimensions(row.type);
+   const d=this.dimensions(row.type),yaw=row.stationary?(row.stopYaw??0):0;
+   // The traffic AI sees the projected footprint of each angled wreck.
+   const width=Math.abs(d.width*Math.cos(yaw))+Math.abs(d.length*Math.sin(yaw));
+   const length=Math.abs(d.length*Math.cos(yaw))+Math.abs(d.width*Math.sin(yaw));
    const car:TrafficWorldCar={id:row.id,type:row.type,group:row.group,member:row.member??0,
     driverStyle:trafficDriverStyle(seed,row.id),
     distance:row.distance,speed:row.stationary?0:row.speed,cruiseSpeed:row.speed,
     targetSpeed:row.stationary?0:row.speed,lateral,targetLateral:lateral,
-    width:d.width,length:d.length,stationary:row.stationary,finished:row.distance>=length-15,sideVelocity:0,
-     stopLane:row.stopLane,stopSide:row.stopSide,blockedFor:0,reverseLeft:0,escapeUntil:0,escapeCooldown:0,indicateUntil:0,laneChangeUntil:0,laneChanges:0,escapeCount:0};
+    width,length,stationary:row.stationary,finished:row.distance>=this.length-15,sideVelocity:0,
+     stopLane:row.stopLane,stopSide:row.stopSide,stopYaw:row.stopYaw,incidentId:row.incidentId,blockedFor:0,reverseLeft:0,escapeUntil:0,escapeCooldown:0,indicateUntil:0,laneChangeUntil:0,laneChanges:0,escapeCount:0};
    this.byId.set(car.id,car);return car;
   });
  }

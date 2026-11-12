@@ -23,9 +23,9 @@ import type {createTrack} from './track';
 export const TRAFFIC_LIMIT=12;
 export {TRAFFIC_TYPES} from './vehicle-model';
 const random=(seed:number,id:number)=>{let x=(seed^Math.imul(id+1,0x9e3779b1))>>>0;x=Math.imul(x^(x>>>16),0x85ebca6b);x=Math.imul(x^(x>>>13),0xc2b2ae35);return ((x^(x>>>16))>>>0)/4294967296;};
-export interface TrafficActor {stationary?:boolean;stopSide?:number;stopLane?:number;id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;previousDistance?:number;previousLateral?:number;previousVisible?:boolean;nominalDistance?:number;cruiseSpeed?:number;group?:number;member?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
+export interface TrafficActor {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4';id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;previousDistance?:number;previousLateral?:number;previousVisible?:boolean;nominalDistance?:number;cruiseSpeed?:number;group?:number;member?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
 /** One immutable recipe per seed/route; only the existing bounded window becomes meshes. */
-interface TrafficRecipe {stationary?:boolean;stopSide?:number;stopLane?:number;id:number;type:number;distance:number;speed:number;group:number;member?:number}
+interface TrafficRecipe {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4';id:number;type:number;distance:number;speed:number;group:number;member?:number}
 const recipes=new Map<string,TrafficRecipe[]>();
 export function trafficCruise(seed:number,id:number,type:number){
  const r=random(seed^0x719a,id),rare=random(seed^0x4ba2,id);
@@ -433,7 +433,8 @@ export class Traffic {
    const frontDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance+spec.axle):0;
    const rearDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance-spec.axle):0;
    const frontY=front.position.y+front.right.y*a.lateral+frontDrop,rearY=rear.position.y+rear.right.y*a.lateral+rearDrop,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
-   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();if(this.shadows.visible){this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035+(frontDrop+rearDrop)/2;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);}
+   const visualYaw=(a.stopYaw??0)+(reaction?.yaw??0);
+   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+visualYaw,bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();if(this.shadows.visible){this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035+(frontDrop+rearDrop)/2;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+visualYaw,bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);}
    if(this.sunsetCast){
     const length=coastShadowLength(trafficOutlineHeight(a.type));
     this.sunsetPose.position.copy(p.position).addScaledVector(p.right,a.lateral).add(coastShadowOffset(length));
@@ -522,8 +523,9 @@ export class Traffic {
   for(const a of this.actors){
    if(!a.visible||!a.previousVisible||(this.junction&&a.id===INTERCHANGE_DEMO_CAR_ID&&a.distance<this.junction.entry.end))continue;
    const spec=TRAFFIC_TYPES[a.type],r=this.reactions.get(a.id);
+   const carYaw=(a.stopYaw??0)+(r?.yaw??0);
    // Conservative yaw envelopes keep the visible bodies apart throughout the response.
-   const width=halfWidth*Math.abs(Math.cos(heading))+halfLength*Math.abs(Math.sin(heading))+spec.width/2*Math.abs(Math.cos(r?.yaw??0))+spec.length/2*Math.abs(Math.sin(r?.yaw??0))+.12,length=halfLength*Math.abs(Math.cos(heading))+halfWidth*Math.abs(Math.sin(heading))+spec.length/2*Math.abs(Math.cos(r?.yaw??0))+spec.width/2*Math.abs(Math.sin(r?.yaw??0))+.12;
+   const width=halfWidth*Math.abs(Math.cos(heading))+halfLength*Math.abs(Math.sin(heading))+spec.width/2*Math.abs(Math.cos(carYaw))+spec.length/2*Math.abs(Math.sin(carYaw))+.12,length=halfLength*Math.abs(Math.cos(heading))+halfWidth*Math.abs(Math.sin(heading))+spec.length/2*Math.abs(Math.cos(carYaw))+spec.width/2*Math.abs(Math.sin(carYaw))+.12;
    const closing=(s.distance-previous.distance-(a.distance-(a.previousDistance??a.distance)))/Math.max(dt,.001);const x=s.lateral-a.lateral,z=s.distance-a.distance;
    if(r&&(Math.abs(x)>width+.7||Math.abs(z)>length+2))r.touching=false;
    const contact=sweptContact(previous.lateral-(a.previousLateral??a.lateral),previous.distance-(a.previousDistance??a.distance),x,z,width,length);
@@ -533,7 +535,7 @@ export class Traffic {
      playerFrom:[previous.distance,previous.lateral],playerTo:[s.distance,s.lateral],
      trafficFrom:[a.previousDistance??a.distance,a.previousLateral??a.lateral],
      trafficTo:[a.distance,a.lateral],envelope:[width,length],
-     playerHeading:heading,trafficYaw:r?.yaw??0});
+     playerHeading:heading,trafficYaw:carYaw});
     if(this.contactDebug.length>16)this.contactDebug.shift();
    }
    const side=Math.abs(x)>.2?Math.sign(x):(a.lateral>0?-1:1),kind=contact.kind;
@@ -567,7 +569,7 @@ export class Traffic {
   }
   return event;
  }
- clearance(distance:number,lateral:number,halfWidth:number,halfLength:number,heading:number){return this.actors.filter(a=>a.visible).map(a=>{const spec=TRAFFIC_TYPES[a.type],yaw=this.reactions.get(a.id)?.yaw??0;return {id:a.id,gap:Math.max(Math.abs(distance-a.distance)-halfLength*Math.abs(Math.cos(heading))-halfWidth*Math.abs(Math.sin(heading))-spec.length/2*Math.abs(Math.cos(yaw))-spec.width/2*Math.abs(Math.sin(yaw)),Math.abs(lateral-a.lateral)-halfWidth*Math.abs(Math.cos(heading))-halfLength*Math.abs(Math.sin(heading))-spec.width/2*Math.abs(Math.cos(yaw))-spec.length/2*Math.abs(Math.sin(yaw)))};});}
+ clearance(distance:number,lateral:number,halfWidth:number,halfLength:number,heading:number){return this.actors.filter(a=>a.visible).map(a=>{const spec=TRAFFIC_TYPES[a.type],yaw=(a.stopYaw??0)+(this.reactions.get(a.id)?.yaw??0);return {id:a.id,gap:Math.max(Math.abs(distance-a.distance)-halfLength*Math.abs(Math.cos(heading))-halfWidth*Math.abs(Math.sin(heading))-spec.length/2*Math.abs(Math.cos(yaw))-spec.width/2*Math.abs(Math.sin(yaw)),Math.abs(lateral-a.lateral)-halfWidth*Math.abs(Math.cos(heading))-halfLength*Math.abs(Math.sin(heading))-spec.width/2*Math.abs(Math.cos(yaw))-spec.length/2*Math.abs(Math.sin(yaw)))};});}
  get skidIntensity(){let intensity=0;for(const r of this.reactions.values())intensity=Math.max(intensity,r.skid.intensity);return intensity;}
  contactPoints(){const matrix=new THREE.Matrix4(),counts=[0,0,0,0],out:{id:number;distance:number;point:number[]}[]=[];for(const a of this.actors){if(!a.visible)continue;this.meshes[a.type].getMatrixAt(counts[a.type]++,matrix);const spec=TRAFFIC_TYPES[a.type];for(const side of [-1,1])for(const end of [-1,1])out.push({id:a.id,distance:a.distance+end*spec.axle,point:new THREE.Vector3(side*(spec.width/2-.04),0,end*spec.axle).applyMatrix4(matrix).toArray()});}return out;}
  /** Render only the otherwise unrepresented traffic around a remote chase camera. */
