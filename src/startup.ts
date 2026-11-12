@@ -4,6 +4,7 @@ import { immersive, landscapeControl } from './immersive';
 import {mountRuntimeReadout} from './runtime-readout';
 import {GAME_VERSION} from './build-info';
 import {readRaceCheckpoint,type RaceCheckpoint} from './race-recovery';
+import {revealStageSelect} from './stage-navigation';
 
 mountRuntimeReadout();
 
@@ -44,7 +45,13 @@ async function enter(stage: RacingStage,recovery?:RaceCheckpoint) {
     const loading = await import('./loading');
     loading.loadingStarted(recovery?'正在恢復賽事':'正在載入關卡', '');
     await loading.loadingStep(0, '正在載入關卡', '');
-    try { await stage.enter(() => {activeRace=false;showMenu(false);},recovery); }
+    try { await stage.enter(() => {
+      activeRace=false;
+      // The loading overlay is z-index 10000 and would hide the actual
+      // stage selector (z-index 200) even though showMenu() re-mounted it.
+      revealStageSelect(surface,document.documentElement);
+      showMenu(false);
+    },recovery); }
     catch (error) {
       activeRace=false;
       loading.loadingFailed('關卡資源無法載入，請檢查連線後再試一次。');
