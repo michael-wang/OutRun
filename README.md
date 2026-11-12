@@ -17,7 +17,7 @@ Use the LAN address printed by Vite for mobile device playtesting (subject to fi
 npm run build       # TypeScript + Vite
 npm run test:p0     # minimal deterministic release safeguards
 npm run test:p1     # advisory Critical diagnostics
-npm test            # full legacy / regression suite, manually
+npm test            # all retained unit tests, manually
 ```
 
 ## Project rules
@@ -25,6 +25,6 @@ npm test            # full legacy / regression suite, manually
 - `dev`: ongoing work. `main`: the last owner-approved public release; no ordinary `dev` deploy.
 - **P0 launch/playability blockers prevent release. P1 Critical problems must be reported, but are the owner's decision.** Other issues never delay personal playtests by default.
 - Hand-authored finite courses and scenery are the direction. Three.js and Ultra Water stay. Future stages will be created with reusable engine capabilities + stage data rather than another procedural L1/L2/L3 runtime.
-- Read [current architecture](docs/CURRENT_ARCHITECTURE.md) for dependencies and migration steps; [finite-stage resources](docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md) for streaming invariants; [agent rules](AGENTS.md) for concise engineering constraints.
+- Read [current architecture](docs/CURRENT_ARCHITECTURE.md) for active dependencies and current stage boundaries; [finite-stage resources](docs/ADR_009_BOUNDED_STAGES_SCENE_PIPELINE.md) for streaming invariants; [agent rules](AGENTS.md) for concise engineering constraints.
 
 Old specifications and reports were removed from the active documentation to reduce AI context noise; Git history preserves earlier versions.

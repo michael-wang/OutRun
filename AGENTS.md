@@ -1,6 +1,7 @@
 # 極速漫遊 / OutRun — current project rules
 
-Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; old L1/L2/L3 experiments and the procedural/emotional director are legacy, **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
+Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
+canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
 ## Engineering
 

@@ -37,8 +37,9 @@ joins were deleted, not hidden behind URL flags. Git history preserves them.
 
 ## Next work
 
-R3 code migration and cleanup: see
-[R3 closure notes](R3_ROAD_SYSTEM_CLOSURE.md) for scope and verification.
+R3 code migration and unit/regression CI are complete. See
+[R3 closure notes](R3_ROAD_SYSTEM_CLOSURE.md) for exact evidence and
+remaining owner-device acceptance.
 R4: only as needed, decouple rice/flowers, water, shadows and vegetation from
 coast-only conditions so hero scenery can be configured.
 **New scenery regions/road extension are not yet agreed requirements**:
@@ -46,3 +47,10 @@ retain room for them without building speculative scaffolding.
 
 Follow ADR-009 for streaming/lifecycle and ADR-010 for storage/tool
 efficiency. P2 startup lag remains [Issue #32](https://github.com/michael-wang/OutRun/issues/32).
+
+
+The retired canyon art route is no longer a dynamic import, and
+`prebuild`/`predev` only bake the authored **coastal shoreline**.
+Build-time canyon GLB downloading, inactive regional camera flags and
+local Blender prototype serving were removed. Disabled city and canyon
+stage-select images remain presentation placeholders, not gameplay.

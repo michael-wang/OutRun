@@ -1,6 +1,6 @@
 # R3 — Authored road architecture closure (2026-11-12)
 
-**Status:** code migration complete, CI and owner acceptance pending.
+**Status:** R3 code migration and CI verified; owner Pixel 8 acceptance pending.
 
 ## The playable route
 
@@ -21,7 +21,8 @@ driving if a drivable chunk is unavailable.
 `src/coast-review.ts` and `src/content/coast-feedback-data.ts` handle the
 small coast-only feedback UI without L2/Pilot catalogs. Legacy on-device
 feedback storage/export fields remain compatible; the old placement array is
-materialized **only as a read-only export projection**.
+used only as a **read-only compatibility projection** for feedback,
+telemetry and cache keys; never as an editable road source.
 
 ## Removed, not archived in runtime
 
@@ -50,3 +51,30 @@ Do not restore the retired multi-world/procedural pipeline.
 
 Pending P2: brief startup lag observed by owner, GitHub Issue #32. Profile
 cold/warm startup before applying any speculative performance fix.
+
+## Final regression evidence
+
+- `v0.9.44-dev.29` — GitHub Actions run
+  [43214634284](https://github.com/michael-wang/OutRun/actions/runs/43214634284):
+  production build, P0, P1 and the **full retained Vitest suite** passed:
+  **99 test files / 420 unit tests**.
+- `v0.9.44-dev.30` — GitHub Actions run
+  [43217426106](https://github.com/michael-wang/OutRun/actions/runs/43217426106):
+  production build, P0 and P1 passed after removing the unreachable canyon
+  route/art loader, associated 94 KB fixed road source and the 31 MB pinned
+  canyon art preparation/download. No deploy or release tag was triggered.
+- The one-time full-suite step on the PR was then removed. Keep release
+  checks lean (build + P0 + advisory P1); use `npm test` manually for
+  large architecture changes. Browser timing, aesthetics and feel remain
+  manual, device-specific acceptance.
+
+The main playable route's geometry, visual resources, driving physics,
+traffic, race rules and stage distance were intentionally left unchanged.
+The stage-select city/canyon miniatures labeled `製作中` are **UI
+placeholders**, not active stage engines or promises for a specific future
+architecture.
+
+**Owner verification still required:** cold start, full race to the 10 km
+finish, restart / Loading recovery, pause, basic traffic and the mobile
+GLB/Ultra Water visuals. The prior startup LAG remains separately deferred
+as [Issue #32](https://github.com/michael-wang/OutRun/issues/32).

@@ -1,25 +1,24 @@
-# Stage Content (authoring only)
+# Coastal stage content rules
 
-- This directory is data, not a new engine. Prefer changing a stage JSON, Prefab JSON or GLB instead of touching TypeScript.
-- `stages/coast/scene.json`: the placement source of truth (absolute road metres, lateral offset, yaw in radians, scale). Do not make item-specific if-statements in the renderer.
-- `prefabs/catalog.json`: maps prefab names to local GLB paths and minimal rendering flags. A different model must be swappable here without editing engine code.
-- Prefer reusing existing rendering/physics/effects. Do not add a universal entity framework or speculative object capabilities.
-- GLBs must have cleared provenance and reasonable mobile geometry/material counts. If the model has a different local origin, fix the asset or placement data.
-
-- `stages/coast/road.json` is the authored source of road turns/elevation. Distances are **absolute HUD road metres**, shared with scene placements. Do not reintroduce per-turn TypeScript or speculative random composers.
-
-- R2c: coast track spans and frames are built by `src/content/authored-track.ts` from road JSON. The `placements` view is legacy compatibility only; do not author it separately.
-
-- R2d: `stages/coast/stage.json` owns name, seed, entry and warning. `road.json` owns turns/height, `scene.json` owns props. Do not add hand-authored route metadata to the legacy `src/coast-ultra-stage.ts` compatibility adapter.
-
-- Data encoding is replaceable. Do not keep JSON merely for human readability; index/query large authored stages by distance and asset kind. See `docs/ADR_010_STAGE_DATA_FORMATS.md` before introducing binary runtime chunks.
-
-- R2f: coastal Worker road preparation uses authored road/track samplers directly; avoid reintroducing Pilot/Trip as its source.
-
-- R2g: both live game and Worker consume `coastWorkerRoad()` from authored stage content. The playable road/traffic path must not call Pilot/Trip geometry builders.
-
-- R2i: game telemetry and QA derive stage beats, lane counts, and curve labels from `coastGameplayAt()` reading authored stage data, never from Pilot samples. Legacy review exports are compatibility only.
-
-- R2j: the active coastal feedback UI reads `COAST_STAGE` and `COAST_RUNTIME_IDENTITY`; `coast-ultra-stage.ts` is historical test compatibility, not a stage authoring requirement. Avoid importing L2/Pilot catalogs into the playable game.
-
-- R3 closed: no more `coast-ultra-stage.ts`, random Trip or Pilot placement planner. `road.json` controls curvature/height/lanes, `scene.json` controls placed models; the existing road sampler and Worker share the same authored data.
+- Stage content is data, not a second engine. Keep the authored stage in
+  `content/stages/coast/{stage,road,scene}.json` and the prefab registry
+  in `content/prefabs/catalog.json`.
+- `stage.json` owns stage identity, seed and starting conditions.
+  `road.json` owns finite road turns, elevation and lane count.
+  `scene.json` owns static prefab placements.
+- Road and static-prop positions use **absolute HUD metres**. Yaw is
+  road-relative in radians. Fix asset origins in the model or placement;
+  avoid model-specific if-statements in rendering code.
+- GLB swaps require only a catalog path change, without engine changes.
+  Keep the terrain-height and resource-disposal adapters working.
+- Accepted road easing is implemented in `src/content/road-shapes.ts`.
+  The game and Worker share `src/content/coast-worker-road.ts`.
+  Do not restore deleted Trip/Pilot/Brick random road planners, dormant
+  chapter handoffs or the abandoned canyon art preload.
+- Prefer existing reusable engine effects; do not invent speculative
+  regions, base classes or a generic entity framework.
+- JSON is a **provisional interchange**, not an efficiency/readability
+  requirement. Profile representative dense scenes and build range-query
+  tooling before selecting binary runtime chunks. See ADR-010.
+- Current technical map: `docs/CURRENT_ARCHITECTURE.md`. R3 completion:
+  `docs/R3_ROAD_SYSTEM_CLOSURE.md`.
