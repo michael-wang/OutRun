@@ -1,5 +1,5 @@
 import {warningTriangleGeometry,type Breakdown} from './breakdowns';
-import {breakdownLaneLateral} from './race-traffic-world';
+import {breakdownLaneLateral,type TrafficRoadSweep} from './race-traffic-world';
 import {coastCurveConeLayout} from './coast-curve-cones';
 import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
 import * as THREE from 'three';
@@ -78,6 +78,40 @@ export class RoadCones {
    this.sunsetCast.renderOrder=2;scene.add(this.sunsetCast);
   }
  }
+ /** One deterministic impulse shared by player, rival and civilian collisions. */
+ private knock(c:ConeRecipe,time:number,speed:number){
+  if(this.hit.has(c.id))return false;
+  this.hit.add(c.id);
+  const rand=trafficRandom(c.id,1),sideRand=trafficRandom(c.id,2),spinRand=trafficRandom(c.id,3);
+  this.flying.set(c.id,{
+   time,forward:Math.max(12,Math.min(84,speed*(.67+.33*rand))),
+   sideways:(sideRand<.5?-1:1)*(4+sideRand*10),
+   up:6+rand*7,
+   spin:(spinRand<.5?-1:1)*(9+rand*13),
+   tilt:(spinRand<.5?-1:1)*(8+rand*13),
+  });
+  return true;
+ }
+ /** Resolve road-space sweeps even when outside the player's streamed view. */
+ hitByVehicles(time:number,vehicles:readonly TrafficRoadSweep[]){
+  if(!this.triangles)return 0;
+  let hits=0;
+  for(const c of this.recipe){
+   if(this.hit.has(c.id))continue;
+   const x=c.lateral??c.side*(this.halfAt(c.distance)-c.inset);
+   for(const v of vehicles){
+    const dz=v.distance-v.previousDistance;
+    const t=Math.abs(dz)<1e-6?0:
+     THREE.MathUtils.clamp((c.distance-v.previousDistance)/dz,0,1);
+    const near=v.previousDistance+dz*t;
+    const lateral=v.previousLateral+(v.lateral-v.previousLateral)*t;
+    if(Math.abs(near-c.distance)>3.2||Math.abs(lateral-x)>v.halfWidth+1.15)continue;
+    if(this.knock(c,time,v.speed))hits++;
+    break;
+   }
+  }
+  return hits;
+ }
  update(time:number,player:number,lateral:number,speed:number,previous?:{distance:number;lateral:number},halfWidth=1.55){
   let hits=0,count=0;this.shown=[];
   for(const c of this.recipe){
@@ -92,16 +126,7 @@ export class RoadCones {
     const t=Math.max(0,Math.min(1,(c.distance-previous.distance)/(Math.abs(delta)<1e-6?1e-6:delta)));
     const near=previous.distance+delta*t,px=previous.lateral+(lateral-previous.lateral)*t;
     if(Math.abs(near-c.distance)<3.2&&Math.abs(px-x)<halfWidth+(this.triangles?1.15:.43)){
-     this.hit.add(c.id);
-     const rand=trafficRandom(c.id,1),sideRand=trafficRandom(c.id,2),spinRand=trafficRandom(c.id,3);
-     this.flying.set(c.id,{
-      time,forward:Math.max(12,Math.min(84,speed*(.67+.33*rand))),
-      sideways:(sideRand<.5?-1:1)*(4+sideRand*10),
-      up:6+rand*7,
-      spin:(spinRand<.5?-1:1)*(9+spinRand*17),
-      tilt:(spinRand<.5?-1:1)*(8+rand*13),
-     });
-     hits++;
+     if(this.knock(c,time,speed))hits++;
     }
    }
    const f=this.flying.get(c.id),age=f?Math.max(0,time-f.time):0;

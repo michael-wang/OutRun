@@ -92,3 +92,22 @@ it('R5b.2: later accident layouts can vary seeded lane choices',()=>{
   expect(cars.every(c=>c.distance>=later.start+140&&c.distance<=later.end-110)).toBe(true);
  }
 });
+
+it('R5b.2: civilian and rival sweeps knock the same physical reflectors airborne',()=>{
+ const cars=generate(42),scene=new THREE.Scene();
+ const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,cars);
+ try{
+  const first=signs.recipe[0],second=signs.recipe[1];
+  const hit=(id:number,where:number,lateral:number,time:number)=>
+   signs.hitByVehicles(time,[{
+    id,previousDistance:where-18,previousLateral:lateral,
+    distance:where+18,lateral,speed:72,halfWidth:1.1,
+   }]);
+  expect(hit(12,first.distance,-7,1)).toBe(0);
+  expect(hit(12,first.distance,first.lateral!,1)).toBe(1);
+  expect(hit(-1001,first.distance,first.lateral!,1.01)).toBe(0);
+  expect(hit(-1002,second.distance,second.lateral!,2)).toBe(1);
+  expect(signs.snapshot().flying).toHaveLength(2);
+  expect(signs.snapshot().flying.every(([,flight])=>flight.forward>0&&flight.up>0)).toBe(true);
+ }finally{signs.dispose();}
+});
