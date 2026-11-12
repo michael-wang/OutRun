@@ -1,41 +1,41 @@
 {
   "schemaVersion": 1,
   "id": "coast",
-  "revision": "R5a",
+  "revision": "R5a.1",
   "lessons": [
     {
       "id": "A0",
       "start": 350,
-      "end": 1390,
+      "end": 1400,
       "label": "直線加速",
       "goal": "Learn throttle and read speed"
     },
     {
       "id": "A1",
-      "start": 1390,
-      "end": 2270,
-      "label": "舒適大彎",
-      "goal": "Steer smoothly without drifting"
+      "start": 1400,
+      "end": 2320,
+      "label": "高速傾斜大彎",
+      "goal": "Feel multiple racing rivals bank without requiring drift"
     },
     {
       "id": "A2",
-      "start": 2270,
-      "end": 3260,
+      "start": 2320,
+      "end": 3050,
       "label": "初次超車",
-      "goal": "Pass one civilian vehicle with open lanes"
+      "goal": "Pass the first sparse civilian traffic encounter"
     },
     {
       "id": "A3",
-      "start": 3260,
-      "end": 4460,
-      "label": "傾斜 S 彎",
-      "goal": "Feel the banked left/right steering transition"
+      "start": 3050,
+      "end": 4710,
+      "label": "加長傾斜 S 彎",
+      "goal": "Read sustained alternating curvature and banking"
     }
   ],
   "traffic": {
-    "firstCivilianDistance": 2590,
+    "firstCivilianDistance": 2640,
     "firstWaveCount": 1,
-    "nextWaveDistance": 4790
+    "nextWaveDistance": 5060
   },
-  "breakdownsAfter": 5600
+  "breakdownsAfter": 5800
 }

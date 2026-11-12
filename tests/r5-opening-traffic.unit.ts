@@ -45,3 +45,16 @@ it('R5a: roadside breakdowns cannot interrupt the initial teaching corridor',()=
   expect(rows.every(r=>r.distance>=plan.breakdownsAfter)).toBe(true);
  }
 });
+
+it('R5a.1: tutorial's first car is curated, but later highway encounters remain seeded random',()=>{
+ const scheduleA=trafficRecipe(804^11,10950,plan.traffic);
+ const scheduleB=trafficRecipe(804^12,10950,plan.traffic);
+ expect(scheduleA.filter(r=>r.group===0)).toHaveLength(1);
+ expect(scheduleB.filter(r=>r.group===0)).toHaveLength(1);
+ const laterA=scheduleA.filter(r=>r.group>0);
+ const laterB=scheduleB.filter(r=>r.group>0);
+ expect(laterA.length).toBeGreaterThan(15);
+ expect(laterB.length).toBeGreaterThan(15);
+ expect(laterA.map(r=>[r.distance,r.type,r.speed])).not.toEqual(laterB.map(r=>[r.distance,r.type,r.speed]));
+ expect(laterA[0].distance).toBeGreaterThan(plan.lessons[3].end+250);
+});

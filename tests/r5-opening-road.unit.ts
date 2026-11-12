@@ -19,19 +19,22 @@ it('P0 R5a: opening four lessons are safe, ordered and matched to the authored r
  }
  expect(coastLessonAt(plan.lessons.at(-1)!.end)).toBeUndefined();
  expect(sampleAuthoredRoad(road,750).demand).toBe(0);
+ expect(sampleAuthoredRoad(road,1200).demand).toBe(0);
  expect(sampleAuthoredRoad(road,road.turns[0].start-10).demand).toBe(0);
  expect(sampleAuthoredRoad(road,road.turns[0].end+10).demand).toBe(0);
  expect(Math.abs(road.turns[0].steer)).toBeLessThan(Math.abs(road.turns[1].steer));
 });
 
 it('P0 R5a: banked S has two opposite, finite physical cross slopes in the shared track',()=>{
- expect(road.banks).toHaveLength(2);
+ expect(road.banks).toHaveLength(3);
  const track=createAuthoredCoastTrack(road,identity);
- const left=track.sample((road.banks![0].start+road.banks![0].end)/2);
- const right=track.sample((road.banks![1].start+road.banks![1].end)/2);
- expect(left.right.y).toBeGreaterThan(.07);
- expect(right.right.y).toBeLessThan(-.07);
- for(let d=350;d<=4460;d+=13){
+ const sweeper=track.sample((road.banks![0].start+road.banks![0].end)/2);
+ const left=track.sample((road.banks![1].start+road.banks![1].end)/2);
+ const right=track.sample((road.banks![2].start+road.banks![2].end)/2);
+ expect(sweeper.right.y).toBeGreaterThan(.15);
+ expect(left.right.y).toBeGreaterThan(.15);
+ expect(right.right.y).toBeLessThan(-.15);
+ for(let d=350;d<=4710;d+=13){
   const p=track.sample(d);
   expect(p.position.toArray().every(Number.isFinite)).toBe(true);
   expect(p.right.toArray().every(Number.isFinite)).toBe(true);
@@ -59,4 +62,27 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
  invalid(s=>{s.road.banks![0].degrees=30;});
  const broken=structuredClone(road);broken.banks![1].start=broken.banks![0].start+1;
  expect(()=>validateAuthoredRoad(broken)).toThrow();
+});
+
+it('R5a.1: dramatic beginner sweeper and longer S keep coherent entry/exit transitions',()=>{
+ const [sweep,left,right]=road.turns;
+ expect(sweep.start).toBe(1400);
+ expect(sweep.end-sweep.start).toBeGreaterThanOrEqual(900);
+ expect(Math.abs(sweep.steer)).toBeGreaterThanOrEqual(.24);
+ expect(Math.abs(sweep.steer)).toBeLessThan(.32); // deliberately not drift-required
+ expect(left.end-left.start).toBeGreaterThanOrEqual(750);
+ expect(right.end-right.start).toBeGreaterThanOrEqual(750);
+ expect(Math.abs(left.steer)).toBeGreaterThan(.35);
+ expect(Math.abs(right.steer)).toBeGreaterThan(.35);
+ expect(left.steer*right.steer).toBeLessThan(0);
+ expect(plan.lessons[2].start).toBe(sweep.end);
+ expect(plan.lessons[3].end).toBe(right.end);
+ const track=createAuthoredCoastTrack(road,identity);
+ for(const turn of [sweep,left,right]){
+  for(const edge of [turn.start,turn.end]){
+   const prev=track.sample(edge-.1),next=track.sample(edge+.1);
+   expect(prev.position.distanceTo(next.position)).toBeLessThan(.35);
+   expect(Math.abs(prev.right.y-next.right.y)).toBeLessThan(.02);
+  }
+ }
 });
