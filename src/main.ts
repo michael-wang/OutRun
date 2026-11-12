@@ -1148,7 +1148,7 @@ const pad=new GamepadInput(input,action=>{
  if(!scope)return;
  const items=Array.from(scope.querySelectorAll<HTMLElement>('button,a,input,select')).filter(x=>x.offsetParent!==null&&!x.hasAttribute('disabled'));
  if(sceneInspector&&!settingsOpen)items.unshift(sceneInspector.toggle);
- if(action==='confirm'){const active=document.activeElement as HTMLElement;if(items.includes(active))active.click();else items[0]?.focus();return;}
+ if(action==='confirm'){const active=document.activeElement as HTMLElement;if(items.includes(active))active.click();else items[0]?.click();return;}
  const index=items.indexOf(document.activeElement as HTMLElement),delta=action==='up'||action==='left'?-1:1;items[(index<0?0:(index+delta+items.length)%items.length)]?.focus();
 },()=>setInputMode('gamepad'),()=>{if(inputMode==='gamepad')setInputMode(mobile()?'touch':'keyboard');});
 const perfEnabled=false; // retired URL profiler

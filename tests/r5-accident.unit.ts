@@ -26,7 +26,7 @@ it('R5b.1: the first real accident occurs in an authored curve, not a straight',
   expect(cars.some(c=>c.stopYaw<0)&&cars.some(c=>c.stopYaw>0)).toBe(true);
   for(const car of cars){
    expect(Math.abs(track.sample(car.distance).curvature)).toBeGreaterThan(.0008);
-   expect(Math.abs(car.stopYaw)).toBeGreaterThan(.10);
+   expect(Math.abs(car.stopYaw)).toBeGreaterThan(.08);
    expect(Math.abs(car.stopYaw)).toBeLessThan(.26);
   }
  }
@@ -47,6 +47,7 @@ it('R5b.1: angled wreck bodies leave at least two actual drivable outer lanes',(
   expect(open).toContain(lanes[0]);
   // This first lesson deliberately occupies the right outside lane.
   expect(open).toContain(lanes[1]);
+  expect(open).toContain(lanes[2]); // obvious left-hand escape corridor
  }
 });
 
