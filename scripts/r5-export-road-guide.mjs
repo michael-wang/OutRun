@@ -15,7 +15,9 @@ try{
  const {road,onboarding}=COAST_STAGE;
  const {track,halfAt}=coastWorkerRoad();
  // Export the accepted road whitebox through A6, including the first two drifts.
- const start=road.startDistance,end=onboarding.driftLessons.at(-1)!.end;
+ const lastDrift=onboarding.driftLessons.at(-1);
+ if(!lastDrift)throw new Error('Missing R5 drift guide endpoint');
+ const start=road.startDistance,end=lastDrift.end;
  const stations=new Set([start,end]);
  for(let d=start;d<=end;d+=20)stations.add(d);
  for(const lesson of onboarding.lessons)stations.add(lesson.start),stations.add(lesson.end);
