@@ -56,3 +56,28 @@ describe('bounded contact-driven tire effects',()=>{
   fx.update(.016,65,1,contacts(999999),200);expect(fx.inspect().segments).toBe(0);fx.dispose();
  });
 });
+
+describe('R4c smoke drift in shared wind',()=>{
+ it('advects smoke after birth without moving tire marks or adding geometry',()=>{
+  const still=new THREE.Scene(),breezy=new THREE.Scene();
+  const a=new TireEffects(still),b=new TireEffects(breezy);
+  b.setWind(()=>({x:3,z:0}));
+  for(let i=1;i<35;i++){const c=contacts(i*.6);a.update(i/60,65,1,c,200);b.update(i/60,65,1,c,200);}
+  const centers=(scene:THREE.Scene)=>((scene.getObjectByName('tire-smoke') as THREE.Mesh).geometry.getAttribute('center'));
+  const marks=(scene:THREE.Scene)=>((scene.getObjectByName('tire-marks') as THREE.Mesh).geometry.getAttribute('position'));
+  expect(centers(breezy).getX(4)-centers(still).getX(4)).toBeGreaterThan(.08);
+  expect(centers(breezy).getZ(4)).toBeCloseTo(centers(still).getZ(4),5);
+  expect(Array.from(marks(breezy).array)).toEqual(Array.from(marks(still).array));
+  expect(b.inspect()).toMatchObject({particleCapacity:192,segmentCapacity:768,geometries:2});
+  a.dispose();b.dispose();
+ });
+ it('inherits an installed wind callback when rivals share the parent material',()=>{
+  const scene=new THREE.Scene(),player=new TireEffects(scene);
+  player.setWind(()=>({x:2,z:0}));
+  const rival=new TireEffects(scene,'smoke',player);
+  for(let i=1;i<28;i++)rival.update(i/60,65,1,contacts(i*.6),200);
+  expect(rival.inspect().particles).toBeGreaterThan(0);
+  expect(rival.inspect()).toMatchObject({particleCapacity:48,geometries:2});
+  rival.dispose();player.dispose();
+ });
+});

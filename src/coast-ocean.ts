@@ -1,5 +1,5 @@
 import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
-import {COAST_EFFECTS,oceanVisualSettings,type OceanStageEffects} from './content/coast-effects';
+import {COAST_EFFECTS,oceanVisualSettings,coastShadowSettings,type OceanStageEffects} from './content/coast-effects';
 import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
@@ -224,7 +224,8 @@ export class UltraCoastOcean {
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
   this.boatShadow=new CoastBoatShadow(renderer,this.mobile?512:1024);
-  this.boatShadow.enabled=new URLSearchParams(location.search).get('sunshadow')!=='0';
+  // The old ?sunshadow option was overwritten by main.ts at startup.
+  this.boatShadow.enabled=coastShadowSettings(COAST_EFFECTS.shadows,this.mobile).boatDepth;
   const visual=oceanVisualSettings(settings,this.mobile);
   const oceanParams=defaultOceanParams();
   oceanParams.windSpeed=visual.windSpeed;

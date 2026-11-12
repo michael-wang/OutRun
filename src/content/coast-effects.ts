@@ -17,6 +17,10 @@ export interface FlowerDetailBudget{
 export interface FlowerStageEffects{
  palette:string[];near:FlowerDetailBudget;middle:FlowerDetailBudget;
 }
+/** The stage breeze is shared by scenery shaders and world-space particles. */
+export interface CoastWindStageEffects{
+ direction:[number,number];speed:number;gustStrength:number;
+}
 /** R4b: stage-owned sunset appearance, not an additional render pipeline. */
 export interface CoastLightingStageEffects{
  sunDirection:[number,number,number];shadowStretch:number;
@@ -36,6 +40,7 @@ export interface CoastStageEffects{
  schemaVersion:1;id:'coast';
  ocean:OceanStageEffects;vegetation:VegetationStageEffects;flowers:FlowerStageEffects;
  lighting:CoastLightingStageEffects;shadows:CoastShadowStageEffects;
+ wind:CoastWindStageEffects;
 }
 export const COAST_EFFECTS=effectsFile as CoastStageEffects;
 
@@ -97,17 +102,23 @@ export function validateCoastEffects(effect:CoastStageEffects,roadStart:number,r
      profile.nearMapSize>profile.farMapSize)
    throw Error('Invalid coast shadow texture budget');
  }
+ const wind=effect.wind,heading=wind?.direction;
+ if(!wind||!Array.isArray(heading)||heading.length!==2||
+    !heading.every(v=>typeof v==='number'&&Number.isFinite(v)&&Math.abs(v)<=1)||
+    Math.abs(Math.hypot(heading[0],heading[1])-1)>.005||
+    !bounded(wind.speed,12)||!bounded(wind.gustStrength,1))
+  throw Error('Invalid shared coast wind field');
  // Until Pixel 8 is re-profiled, the accepted mobile cost policy is mandatory.
  if(shadows.mobile.dynamicMap||shadows.mobile.staticMap)
   throw Error('Mobile depth shadow maps require a new device FPS acceptance');
 }
 
-/** Pure inputs for the existing OceanSim, also inspectable without WebGL. */
 /** Select a validated launch-time GPU policy; diagnostic A/B switches stay separate. */
 export function coastShadowSettings(effect:CoastShadowStageEffects,mobile:boolean){
  return mobile?effect.mobile:effect.desktop;
 }
 
+/** Pure inputs for the existing OceanSim, also inspectable without WebGL. */
 export function oceanVisualSettings(effect:OceanStageEffects,mobile:boolean){
  return {windSpeed:effect.windSpeed,waveScale:effect.waveScale,
   swellScale:effect.swellScale,resolution:mobile?effect.fftMobile:effect.fftDesktop};

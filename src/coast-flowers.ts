@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {farmWindGLSL} from './coast-farm-wind';
+import {farmWindGLSL,COAST_WIND_HEADING_GLSL} from './coast-wind';
 import {farmPlotEdges,FLOWER_ROW_PITCH,type FarmPlot} from './coast-farm-layout';
 import {seededRandom} from './vendor/three-stylized/utils';
 
@@ -68,7 +68,8 @@ export function shadeFlowerBeds(shader:Shader,time:{value:number},wind:THREE.Tex
   vFlowerLayer=flowerLayer;vGustLight=0.;
   if(flowerLayer>.5){
    vec2 gust=farmGust((modelMatrix*vec4(position,1.)).xz);
-   transformed.xz+=vec2(.17+.32*gust.x,.22*gust.y);
+   vec2 heading=${COAST_WIND_HEADING_GLSL};
+    transformed.xz+=heading*(.17+.32*gust.x)+vec2(-heading.y,heading.x)*(.22*gust.y);
    transformed.y-=.08*abs(gust.x);vGustLight=gust.x;
   }`);
  shader.fragmentShader=varyings+'uniform sampler2D flowerCrowns;\n'+shader.fragmentShader;
@@ -134,7 +135,8 @@ export function shapeCoastalFlowers(mesh:THREE.InstancedMesh<THREE.PlaneGeometry
    vec4 worldPosition=basis*vec4(transformed,1.);
    vec2 gust=farmGust(basis[3].xz);
    float tip=position.y*position.y*length(basis[1].xyz);
-   worldPosition.xz+=vec2(.12+.44*gust.x,.29*gust.y)*tip;
+   vec2 heading=${COAST_WIND_HEADING_GLSL};
+    worldPosition.xz+=(heading*(.12+.44*gust.x)+vec2(-heading.y,heading.x)*(.29*gust.y))*tip;
    worldPosition.y-=.12*abs(gust.x)*tip;
    vBloom=(flowerPart<.5?aFoliageColor:flowerPart<1.5?aPetalColor:aCentreColor)
     *tone*(.96+.055*aVariant+.075*gust.x);

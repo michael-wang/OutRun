@@ -3,6 +3,7 @@ import {COAST_EFFECTS,oceanVisualSettings,coastShadowSettings,validateCoastEffec
 import * as THREE from 'three';
 import {COAST_SUN,COAST_SHADOW_STRETCH} from '../src/coast-dusk';
 import {configureCoastShadowLights} from '../src/coast-shadow-coverage';
+import {sampleCoastWind} from '../src/coast-wind';
 import {COAST_STAGE,validateCoastStage} from '../src/content/coast-stage';
 import {coastVegetationDensity} from '../src/coast-journey-layout';
 import {FARM_FLOWER_COLORS,FARM_FLOWER_DETAIL,FARM_PLOTS,farmFlowerDetail,flowerPlotColor} from '../src/coast-farm-layout';
@@ -119,4 +120,23 @@ it('R4b: reject invalid light data and mobile shadow cost escalation at stage bo
  invalid(x=>{x.shadows.mobile.dynamicMap=true;});
  invalid(x=>{x.shadows.desktop.farMapSize=999;});
  invalid(x=>{x.shadows.desktop.boatDepth=1 as unknown as boolean;});
+});
+
+it('R4c: shared coast breeze is directional, bounded and stage-validated',()=>{
+ expect(COAST_EFFECTS.wind).toEqual({direction:[1,0],speed:2.6,gustStrength:.35});
+ for(const [x,z,time] of [[0,0,0],[120,450,1.25],[-12,7500,8]]){
+  const w=sampleCoastWind(x,z,time);
+  expect(Number.isFinite(w.x)&&Number.isFinite(w.z)).toBe(true);
+  expect(w.x).toBeGreaterThan(0);
+  expect(Math.hypot(w.x,w.z)).toBeLessThan(6);
+ }
+ const invalid=(alter:(data:typeof COAST_EFFECTS)=>void)=>{
+  const data=structuredClone(COAST_EFFECTS);alter(data);
+  expect(()=>check(data)).toThrow();
+  expect(()=>validateCoastStage({...COAST_STAGE,effects:data})).toThrow();
+ };
+ invalid(x=>{x.wind.direction=[0,0];});
+ invalid(x=>{x.wind.direction=[2,1];});
+ invalid(x=>{x.wind.speed=-1;});
+ invalid(x=>{x.wind.gustStrength=Infinity;});
 });

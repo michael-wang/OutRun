@@ -52,7 +52,8 @@ import {ROAD_START as BRICK_START} from './road-profile';
 import {mountCoastReview} from './coast-review';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
-import {TireEffects,type TireContact} from './tire-effects';
+import {TireEffects,type TireContact,type WindSampler} from './tire-effects';
+import {sampleCoastWind} from './coast-wind';
 import {CoastDuskShadows} from './coast-dusk-shadows';
 import {Traffic,trafficRecipe} from './traffic';
 import {newTrafficSessionSeed} from './traffic-flow';
@@ -389,6 +390,12 @@ let telemetry=stage?new DriveTelemetry(stage.stageCode,stage.seed,stage.generato
 let inspectionView:'front'|'side'|'cockpit'|undefined;
 let wheelContacts:(TireContact & {point:number[]})[]=[];
 let tireEffects=new TireEffects(world.scene),dustEffects=new TireEffects(world.scene,'dust'),impactSparks=new ImpactSparks(world.scene);
+// Farm shaders read elapsed, so all particles sample the same paused/resumed
+// world-space breeze. The tire module remains independent of stage content.
+const coastWindSampler:WindSampler|undefined=coastUltraMode
+ ?(x,z,_particleTime)=>sampleCoastWind(x,z,elapsed):undefined;
+tireEffects.setWind(coastWindSampler);
+dustEffects.setWind(coastWindSampler);
 tireEffects.setDuskSmoke(coastUltraMode);
 let carBounds=new THREE.Box3().setFromObject(world.car).getSize(new THREE.Vector3()),guardrail=new GuardrailContact(carBounds.x/2,carBounds.z/2,world.boundaries),sparkOrigin=new THREE.Vector3(),trafficImpact=new TrafficImpact(),trafficSparks=new ImpactSparks(world.scene,true),trafficSparkOrigin=new THREE.Vector3();
 let brakeLights=world.car.userData.brakeLights as BrakeLightController;
@@ -401,6 +408,7 @@ function actorRoadReady(d:number){return world.streamer?.roadReady(d)??true;}
 let cones=new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),coastUltraMode);
 let triangles=new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows());
 let traffic=new Traffic(world.scene,world.sample,world.halfAt,world.length,coastRuntime.stage.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation);
+traffic.setWind(coastWindSampler);
  traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
 const race=new RivalRace(coastEnd,d=>{
  const p=world.sample(d);

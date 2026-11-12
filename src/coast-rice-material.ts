@@ -1,5 +1,5 @@
 import type {DataTexture,MeshStandardMaterial} from 'three';
-import {farmWindGLSL} from './coast-farm-wind';
+import {farmWindGLSL,COAST_WIND_HEADING_GLSL} from './coast-wind';
 import {COAST_SUN} from './coast-dusk';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 
@@ -18,7 +18,8 @@ export function shadeRipeRice(shader:RiceShader,time:{value:number},wind:DataTex
    ${crop?`mat4 riceBasis=modelMatrix*instanceMatrix;
     vec2 riceWorld=(riceBasis*vec4(position,1.)).xz;`
     :`vec2 riceWorld=(modelMatrix*vec4(position,1.)).xz;`}
-   vec2 gust=farmGust(riceWorld),windDir=normalize(vec2(1.,gust.y));
+   vec2 gust=farmGust(riceWorld),windHeading=${COAST_WIND_HEADING_GLSL};
+   vec2 windDir=normalize(windHeading+vec2(-windHeading.y,windHeading.x)*gust.y);
    vec2 localWind=${crop?'vec2(dot(normalize(riceBasis[0].xz),windDir),dot(normalize(riceBasis[2].xz),windDir))':'windDir'};
    float lean=clamp(.29+gust.x,-.76,1.04);
    float h=${crop?'max(position.y,0.)':'mix(.14,.83,smoothstep(.04,.22,color.a))'};

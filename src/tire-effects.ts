@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+/** Optional injection: the particle renderer never imports coastal content. */
+export type WindSampler=(x:number,z:number,time:number)=>{x:number;z:number};
 export interface TireContact {name:string;gap:number|null;surface:number[]|null;normal?:number[];onRoad?:boolean}
 const PARTICLES=192,SEGMENTS=768,LIFE=1.35,MARK_LIFE=18;
 const CORNERS=[0,1,2,2,1,3],SMOKE_ATTRIBUTES=['center','size','alpha','age','variation'],WHEEL_NAMES=['rear-wheel--1','rear-wheel-1','front-wheel--1','front-wheel-1'];
@@ -10,10 +12,12 @@ export class TireEffects {
  private velocity:Float32Array;private smokePrevious=Array.from({length:4},()=>new THREE.Vector3());
  private born:Float64Array;private strength:Float32Array;
  private markPos:Float32Array;private colors:Float32Array;private markBorn:Float64Array;private markStrength:Float32Array;
+ private wind?:WindSampler;
  private smoke:THREE.Mesh;private marks:THREE.Mesh;private particle=0;private segment=0;private lastTime=0;private emission=0;private slipTime=0;
  private previous=Array.from({length:4},()=>new THREE.Vector3());private previousNormal=Array.from({length:4},()=>new THREE.Vector3(0,1,0));private linked=[false,false,false,false];private emitted=[0,0,0,0];
  private point=new THREE.Vector3();private normal=new THREE.Vector3();private side=new THREE.Vector3();private oldSide=new THREE.Vector3();private delta=new THREE.Vector3();private vertices=Array.from({length:4},()=>new THREE.Vector3());
  constructor(scene:THREE.Scene,private mode:'smoke'|'dust'='smoke',private shared?:TireEffects){
+  this.wind=shared?.wind;
   const particles=shared?48:PARTICLES,segments=shared?96:SEGMENTS;
   this.ages=new Float32Array(particles);
   this.smokePos=new Float32Array(particles*3);
@@ -56,6 +60,8 @@ export class TireEffects {
   this.marks=new THREE.Mesh(this.markGeo,shared?.marks.material??new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
   this.smoke.name=mode==='dust'?'tire-dust':'tire-smoke';this.marks.name=mode==='dust'?'dust-unused-marks':'tire-marks';this.smoke.frustumCulled=this.marks.frustumCulled=false;this.smoke.renderOrder=3;this.marks.renderOrder=1;scene.add(this.marks,this.smoke);this.clear();
  }
+ /** Wind only acts on airborne particles, never on skid-mark geometry. */
+ setWind(sampler?:WindSampler){this.wind=sampler;}
  /** Smoke follows the current biome. Only the sunset coast uses the
   * approved warm-grey palette; terrain dust has its own separate palette. */
  setSceneSmoke(weights:readonly number[],sunsetCoast=false){
@@ -112,8 +118,12 @@ export class TireEffects {
    }
    this.smokePrevious[wheel].copy(this.point);if(!this.linked[wheel]||distance>.35){this.previous[wheel].copy(this.point);this.previousNormal[wheel].copy(this.normal);}this.linked[wheel]=true;
   }
+  // One sample for this emitter, regardless of its fixed particle capacity.
+  const anchor=contacts.find(c=>c.surface)?.surface;
+  const breeze=this.wind?.(anchor?.[0]??this.smokePrevious[0].x,
+   anchor?.[2]??this.smokePrevious[0].z,time);
   let smokeCount=0,markCount=0;
-  for(let i=0;i<this.born.length;i++){const age=time-this.born[i],alive=age>=0&&age<LIFE;this.ages[i]=Math.max(0,age);this.opacity[i]=alive?.72*this.strength[i]*Math.pow(1-age/LIFE,1.15):0;this.sizes[i]=alive?(.88+age*.45)*(.75+.45*this.variation[i]):0;if(alive){smokeCount++;if(age>0){this.smokePos[i*3]+=this.velocity[i*3]*dt;this.smokePos[i*3+2]+=this.velocity[i*3+2]*dt;this.smokePos[i*3+1]+=this.velocity[i*3+1]*dt;}const drag=Math.exp(-dt*1.5);this.velocity[i*3]*=drag;this.velocity[i*3+2]*=drag;this.velocity[i*3+1]*=drag;this.smokePos[i*3+1]+=dt*Math.max(0,age-.4)*.23;}}
+  for(let i=0;i<this.born.length;i++){const age=time-this.born[i],alive=age>=0&&age<LIFE;this.ages[i]=Math.max(0,age);this.opacity[i]=alive?.72*this.strength[i]*Math.pow(1-age/LIFE,1.15):0;this.sizes[i]=alive?(.88+age*.45)*(.75+.45*this.variation[i]):0;if(alive){smokeCount++;if(age>0){const airborne=Math.min(1,age/.35);this.smokePos[i*3]+=(this.velocity[i*3]+(breeze?.x??0)*airborne)*dt;this.smokePos[i*3+2]+=(this.velocity[i*3+2]+(breeze?.z??0)*airborne)*dt;this.smokePos[i*3+1]+=this.velocity[i*3+1]*dt;}const drag=Math.exp(-dt*1.5);this.velocity[i*3]*=drag;this.velocity[i*3+2]*=drag;this.velocity[i*3+1]*=drag;this.smokePos[i*3+1]+=dt*Math.max(0,age-.4)*.23;}}
   for(let i=0;i<this.markBorn.length;i++){const age=time-this.markBorn[i],alpha=age>=0&&age<MARK_LIFE?.92*this.markStrength[i]*Math.min(1,(MARK_LIFE-age)/4):0;if(alpha>0)markCount++;for(let j=0;j<6;j++){const o=i*24+j*4;this.colors[o]=.018;this.colors[o+1]=.018;this.colors[o+2]=.018;this.colors[o+3]=alpha;}}
   this.smoke.visible=smokeCount>0;this.marks.visible=markCount>0;void scale;
   for(const key of SMOKE_ATTRIBUTES)this.smokeGeo.attributes[key].needsUpdate=true;this.markGeo.attributes.position.needsUpdate=true;this.markGeo.attributes.color.needsUpdate=true;
