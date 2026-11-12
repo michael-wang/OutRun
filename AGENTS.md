@@ -221,3 +221,18 @@ Never mark a source-only static audit as passing Vitest.
   Include menu first-press and first driving-frame regression tests.
 - Repo-only commits still need local `npm run verify:dev`
   performed by Codex before calling the work technically verified.
+
+## R5b.3 — warning signs / stage exit bug regressions
+
+- RivalRace must include **A4 warning triangles** in its normal
+  forward obstacle query so rivals brake or shift lanes before hitting.
+  If evasion fails, only the ONE shared RoadCones flight pool knocks the
+  sign airborne; removed signs must stop blocking AI path planning.
+- Never allow the triangular reflector to sink after impact:
+  ballistic height is clamped at zero, rotation freezes at landing,
+  and transformed triangle vertices are kept above the banked road.
+- Exiting through pause `回到主選單` must hide the full-screen
+  `#game-loading` overlay before re-mounting the stage selector,
+  or the stage select is present but covered by the old loading art.
+- Run `npm run verify:dev` and exercise these cases with local
+  Codex and one real PS4/PC gamepad before shipping main.

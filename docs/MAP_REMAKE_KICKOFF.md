@@ -246,3 +246,25 @@ checkpoint persistence and first gamepad input edges.
 before play acceptance, and test first-time gamepad confirmation,
 a rival hitting a reflector and a right-lane accident at
 `?at=4170&r5qa=1&trafficSeed=42`.
+
+## R5b.3 — right-lane sign anticipation / landing / main menu
+
+Owner video reported a right-lane opponent driving straight through
+a warning reflector, a struck sign disappearing beneath the road,
+and pause > 回到主選單 displaying the start-stage artwork rather than
+the stage selector.
+
+Fixes in development v0.10.6:
+- The existing rival lane planner can see active reflector hazards
+  ahead and will anticipate/avoid them when road space allows.
+  Actual misses still trigger the original pooled fly/tumble physics,
+  and one knocked-away sign leaves the rival planning queue.
+- Rotate the reflector during flight, stop rotation at ground contact,
+  clamp parabola to non-negative height, and raise only as needed to
+  keep its transformed vertices above the banked road.
+- On stage exit, hide the stale global high-z-index loading overlay,
+  clear its loading state, and remount the stage selector.
+
+New unit tests target AI warning anticipation, post-impact grounding,
+and exit overlay visibility. Local Vitest/build and play acceptance
+are necessary before considering the 0.10.6 fixes verified.

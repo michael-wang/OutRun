@@ -6,6 +6,7 @@ import {coastAccidentLayout} from '../src/content/coast-accident';
 import {roadLaneCenters} from '../src/traffic-flow';
 import {TRAFFIC_TYPES,Traffic} from '../src/traffic';
 import {RoadCones} from '../src/road-cones';
+import {RivalRace,raceEntries} from '../src/rival-race';
 
 const {track,halfAt}=coastWorkerRoad(),site=COAST_STAGE.onboarding.accident;
 const generate=(seed:number)=>coastAccidentLayout(halfAt,site,seed);
@@ -190,5 +191,27 @@ it('R5b.3: a fallen, rotated warning triangle never sinks into the banked asphal
    expect(minY,`triangle above road at flight age ${elapsed}`).toBeGreaterThanOrEqual(base-.002);
    if(elapsed>1.8)expect(minY-base).toBeLessThan(.15);
   }
+ }finally{signs.dispose();}
+});
+
+it('R5b.3: a right-lane rival anticipates warning triangles instead of blindly driving through',()=>{
+ const scene=new THREE.Scene(),stopped=generate(42);
+ const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,stopped);
+ try{
+  const first=signs.recipe[0];
+  const rivals=new RivalRace(track.length,
+   d=>({curvature:track.sample(d).curvature,grade:0,half:halfAt(d)}),
+   (d,_time,radius)=>signs.raceObstacles(d,radius),
+   [raceEntries[4]]);
+  rivals.reset(350);
+  const r=rivals.rivals[0];
+  r.distance=first.distance-125;
+  r.previousDistance=r.distance;
+  r.lateral=7;r.lane=4;r.targetLane=4;r.targetX=7;
+  r.speed=62;r.nextDecision=0;
+  const player={distance:350,lateral:-7,speed:0};
+  rivals.step(.05,player,player);
+  expect(r.obstacles.some(o=>o.id==='W'+first.id)).toBe(true);
+  expect(r.targetLane<4||r.targetSpeed<r.speed).toBe(true);
  }finally{signs.dispose();}
 });
