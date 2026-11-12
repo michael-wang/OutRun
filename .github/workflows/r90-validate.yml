@@ -70,6 +70,11 @@ jobs:
         run: |
           echo "::warning title=P1 Critical diagnostics::Potential serious gameplay regression detected; owner review required, release remains permitted."
           echo "⚠️ P1 Critical diagnostics failed. Check the test log and notify the owner." >> "$GITHUB_STEP_SUMMARY"
+      # R3 closeout-only sweep; remove this PR-only step after the
+      # obsolete fixture audit so release CI remains lean.
+      - name: R3 closure — full retained Vitest suite (temporary)
+        if: github.event_name == 'pull_request'
+        run: npm test
       - name: Upload the approved branch's site
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4

@@ -1,7 +1,7 @@
 {
   "name": "first-drive",
   "private": true,
-  "version": "0.9.44-dev.27",
+  "version": "0.9.44-dev.28",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -10,9 +10,6 @@
     "test:e2e": "npm run build && playwright test",
     "preview": "vite preview --host 127.0.0.1",
     "art:trees": "node scripts/bake-headland-grove.mjs",
-    "art:road": "node scripts/art-proto/export-road.mjs",
-    "art:blockout": "node scripts/art-proto/make.mjs",
-    "art:roadlock": "node scripts/art-proto/export-road.mjs --roadlock --output art-prototype/output/roadlock-road-reference.json",
     "coast:shore": "node scripts/bake-coast-shore.mjs",
     "art:prepare": "node scripts/prepare-runtime-art.mjs",
     "predev": "npm run coast:shore && npm run art:prepare",
