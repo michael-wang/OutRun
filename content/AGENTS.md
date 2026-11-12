@@ -37,3 +37,8 @@
   heading. Don't create a second wind-direction constant for new content.
 - Keep OceanSim's `ocean.windSpeed` distinct from real air velocity:
   the first tunes FFT wave excitation, the second advects particles.
+
+- R4d: `heroWaves.rice` and `heroWaves.flowers` set *visual*
+  wind-band wavelength, speed, sway and contrast; they do not alter the
+  physical shared wind or ocean FFT. Render them within the existing
+  field materials, never as a second ocean simulation.

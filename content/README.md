@@ -91,3 +91,19 @@ breakdown-engine smoke are separate legacy visuals, not yet wind-aware.
 
 `ocean.windSpeed` remains an OceanSim **wave forcing** setting, not
 physical air speed. See `docs/R4_LIGHT_SHADOW_WIND_AUDIT.md`.
+
+## R4d — at-speed hero wind bands
+
+`effects.json.heroWaves` holds separate rice / flower visual profiles.
+The shader samples the **existing** RG8 gust and world-XZ stage wind
+heading, then layers a coherent wave of larger wavelength. Stronger
+rice movement and weaker flower movement are deliberately exaggerated
+for the chase camera. `travelSpeedMps` is wave-*phase* travel only:
+the underlying wind velocity, car physics and the Ultra Water FFT
+spectrum are unchanged.
+
+The startup tire smoke cadence is deliberately reduced at low vehicle
+speed. Every rival has a stable plume seed, which changes launch timing
+and small local curls. No new particles or draw calls are added.
+The architecture is ready for R4 acceptance and a later `v0.10.0`
+minor bump; that bump and public release are not automatic.

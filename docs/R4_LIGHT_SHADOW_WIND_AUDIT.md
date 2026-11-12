@@ -59,3 +59,24 @@ The legacy `CoastDuskShadows` draw path and old diagnostic caster-group
 mutations are candidates for deletion only after verifying the shared
 streamed mobile fallback remains correct and owner-device FPS/visual
 acceptance is available. Avoid speculative shadow-layer unification.
+
+## R4d visual decision: readable motion over duplicated simulation
+
+- The existing Tessendorf FFT ocean is preserved. Rice and flowers
+  use an extra coherent phase ridge inside their existing vertex
+  shaders, modulated by the original local gust pattern. This gives
+  broad moving bands at driving speed without additional FFT buffers
+  or particle simulation. Flower wave amplitude/contrast are lower
+  than rice, all values stage-authored in `heroWaves`.
+- Stable per-rival smoke seeds now affect birth randomness, small
+  local velocity curls and launch cadence. Burnout emission and
+  opacity are reduced when near-stationary, preventing the solid
+  translucent wall seen in starting-grid screenshots.
+- The per-stage global breeze is physical velocity for airborne
+  effects; rice/flower phase speed is cinematic art direction. A
+  future stage's local wind zones can layer on top of the global
+  field with bounded blending, but this has no immediate requirement
+  and is **not** part of the first playable coast.
+- R4a–R4d content, scene effects and environmental inputs are ready
+  for owner-device acceptance. No `main` promotion, public release
+  or `0.10.0` minor bump is implied by source commits.

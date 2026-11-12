@@ -53,3 +53,18 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - Light/shadow overlaps and inactive legacy fallback paths are documented
   in `docs/R4_LIGHT_SHADOW_WIND_AUDIT.md`; remove only with targeted
   tests and visual/FPS acceptance.
+
+## R4d: readability and acceptance
+
+- `heroWaves.{rice,flowers}` in coast effect data are *visual* wave
+  parameters. The `travelSpeedMps` phase velocity is **not** the air
+  velocity sampled by particles and must not change car physics.
+- Keep sea Tessendorf FFT exclusively in Ultra Water. Field waves are
+  wind-aligned shader bands using the existing gust field and shader
+  time: no new FFT render targets, texture uploads or worker.
+- Rivals' starting smoke is intentionally sparser and deterministically
+  distinct per car. Preserve the same bounded particle geometry and
+  independent skid marks.
+- Once the R4d build, retained tests and owner playtests pass, the entire
+  R4 architecture milestone can be closed and the next minor bumped to
+  `v0.10.0`. No automatic `main` promotion.

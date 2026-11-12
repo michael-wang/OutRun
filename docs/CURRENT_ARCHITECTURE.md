@@ -98,3 +98,26 @@ The ocean's `windSpeed` remains separately tuned FFT wave forcing.
 `docs/R4_LIGHT_SHADOW_WIND_AUDIT.md` records which historic shadow/light
 layers are complementary and which are redundant or inactive. Avoid
 deleting the active mobile projected fallback by accident.
+
+## R4d — final visual slice and handoff
+
+The current single coast stage now has a self-contained authoring
+boundary: finite road and static scene, plus a validated set of ocean,
+vegetation, flowers, global breeze, hero field waves, dusk lighting
+and bounded mobile/desktop shadow presets. Rice and flowers use
+wind-aligned travelling bands in their existing materials; sea FFT,
+road handling and traffic remain unchanged. Particle wind is
+injectable without making the general emitter depend on stage code.
+
+Owner acceptance for R4d: normal starting smoke must not become one
+featureless rectangle, rivals must have different small plumes, and
+field ripples must be visible **while driving**, not only when parked.
+Use Pixel 8 FPS and PC visual checks to catch regressions. Build +
+retained unit tests still need to run locally (Github `dev` CI is
+manual only). The post-R4 milestone is `v0.10.0` after acceptance,
+never before; `main` needs separate owner approval.
+
+Do not build a generic wind-field editor or a second FFT for crops
+merely to close architecture. Future stages may author small local
+field/wind overrides once they have a concrete visual requirement.
+Startup P2 lag remains independently tracked.
