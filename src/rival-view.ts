@@ -147,7 +147,9 @@ export class RivalView {
     scene.add(this.group);
     this.cars=race.rivals.map((r,i)=>{
       const car=carModel(this.assets,r.entry.paint,r.entry.name,i+1);car.root.name=r.entry.id;this.group.add(car.root);
-      return {...car,near:false,markerDropPx:0,markerHiddenForHud:false,effects:new TireEffects(scene,'smoke',smoke)};
+      const effects=new TireEffects(scene,'smoke',smoke);
+      effects.setEmitterSeed(i+1);
+      return {...car,near:false,markerDropPx:0,markerHiddenForHud:false,effects};
     });
   }
   inspectEffects(){return this.cars.map((car,i)=>({...car.effects.inspect(),skidDemand:this.race.rivals[i].slip,speed:this.race.rivals[i].speed}));}

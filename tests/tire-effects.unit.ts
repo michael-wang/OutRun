@@ -81,3 +81,27 @@ describe('R4c smoke drift in shared wind',()=>{
   rival.dispose();player.dispose();
  });
 });
+ 
+describe('R4d: heterogeneous stationary launch plumes',()=>{
+ it('keeps fixed geometry and road marks while staggering rival smoke',()=>{
+  const aScene=new THREE.Scene(),bScene=new THREE.Scene();
+  const a=new TireEffects(aScene),b=new TireEffects(bScene);
+  a.setEmitterSeed(1);b.setEmitterSeed(4);
+  for(let i=1;i<=48;i++){
+   const c=contacts(0);
+   a.update(i/60,0,0,c,200,.5);
+   b.update(i/60,0,0,c,200,.5);
+  }
+  const ca=a.inspect(),cb=b.inspect();
+  expect(ca.particles).toBeGreaterThan(6);
+  expect(ca.particles).toBeLessThan(60);
+  expect(cb.particles).toBeGreaterThan(6);
+  expect(cb.particles).toBeLessThan(60);
+  expect(ca.particles).not.toBe(cb.particles);
+  expect(ca.segments).toBe(0);expect(cb.segments).toBe(0);
+  const centers=(scene:THREE.Scene)=>((scene.getObjectByName('tire-smoke') as THREE.Mesh).geometry.getAttribute('center'));
+  expect(centers(aScene).getX(4)).not.toBe(centers(bScene).getX(4));
+  expect(ca.geometries).toBe(2);
+  a.dispose();b.dispose();
+ });
+});
