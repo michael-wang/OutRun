@@ -1,5 +1,7 @@
 import coastRoadFile from '../../content/stages/coast/road.json';
 import type {Placement} from '../pilot-composer';
+import {curvatureKnots,elevationKnots,profile,type Knot} from '../l1-profiles';
+import {LANE_WIDTH} from '../road-profile';
 
 /** Authored stage content is the source of truth. The legacy spline evaluator
  * remains a rendering detail until R2's fixed-road migration. */
@@ -62,6 +64,12 @@ export function validateAuthoredRoad(road:AuthoredRoad){
   if(elevation.shape!=='gentle-rise'||!Number.isFinite(elevation.base)||
      !Number.isFinite(elevation.rise)||!elevation.label)
    throw Error('Invalid authored elevation');
+ // A snapped road is a P0: don't let independent height spans jump apart.
+ let held=road.baseHeight;
+ for(const elevation of road.elevations){
+  if(Math.abs(elevation.base-held)>1e-6)throw Error('Discontinuous authored elevation');
+  held=elevation.base+elevation.rise;
+ }
 }
 
 /** A deliberately small compatibility adapter. No procedural or random
@@ -85,3 +93,53 @@ export function authoredRoadPlacements(road:AuthoredRoad):Placement[]{
 
 export const coastAuthoredRoad=coastRoadFile as AuthoredRoad;
 validateAuthoredRoad(coastAuthoredRoad);
+
+type PreparedSegment={start:number;end:number;knots:Knot[]};
+type PreparedRoad={
+ turns:PreparedSegment[];
+ elevations:(PreparedSegment & {endHeight:number})[];
+};
+// Immutable stage JSON is prepared once per loaded stage, not once per car,
+// road vertex or Worker chunk. HMR imports a fresh road object.
+const preparedRoads=new WeakMap<AuthoredRoad,PreparedRoad>();
+function prepareRoad(road:AuthoredRoad):PreparedRoad{
+ const cached=preparedRoads.get(road);
+ if(cached)return cached;
+ validateAuthoredRoad(road);
+ const prepared:PreparedRoad={
+  turns:road.turns.map(turn=>({
+   start:turn.start,end:turn.end,
+   knots:curvatureKnots('C02',{effort:Math.abs(turn.steer),
+    direction:turn.steer>0?1:-1,start:0,end:1,secondary:.7}),
+  })),
+  elevations:road.elevations.map(part=>({
+   start:part.start,end:part.end,endHeight:part.base+part.rise,
+   knots:elevationKnots('E02',{base:part.base,amplitude:Math.abs(part.rise),
+    direction:part.rise>=0?1:-1,shelfStart:.32,shelfEnd:.68}),
+  })),
+ };
+ preparedRoads.set(road,prepared);
+ return prepared;
+}
+
+/** Road sampler for authored finite stages. The existing C02/E02 curves are
+ * shared mathematical capabilities, not a second road placement planner.
+ * Distance is absolute; the road is clamped at its finite ends. */
+export function sampleAuthoredRoad(road:AuthoredRoad,distance:number){
+ const prepared=prepareRoad(road);
+ const d=Math.max(road.startDistance,Math.min(road.startDistance+road.length,distance));
+ let demand=0,height=road.baseHeight,grade=0;
+ for(const turn of prepared.turns){
+  if(d<turn.start)break;
+  if(d>turn.end)continue;
+  demand=profile(turn.knots,(d-turn.start)/(turn.end-turn.start)).value;
+ }
+ for(const part of prepared.elevations){
+  if(d<part.start)break;
+  if(d>part.end){height=part.endHeight;grade=0;continue;}
+  const q=profile(part.knots,(d-part.start)/(part.end-part.start));
+  height=q.value;
+  grade=q.derivative/(part.end-part.start);
+ }
+ return {demand,height,grade,lanes:road.lanes,halfWidth:road.lanes*LANE_WIDTH/2};
+}

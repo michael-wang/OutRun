@@ -1,5 +1,5 @@
 import {expect,it} from 'vitest';
-import {coastAuthoredRoad,authoredRoadPlacements,validateAuthoredRoad,type AuthoredRoad}
+import {coastAuthoredRoad,authoredRoadPlacements,sampleAuthoredRoad,validateAuthoredRoad,type AuthoredRoad}
  from '../src/content/authored-road';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {createPilotTrack,pilotSample} from '../src/pilot-composer';
@@ -59,4 +59,45 @@ it('rejects bad or overlapping segments before any road chunk loads',()=>{
  invalid(x=>{x.turns[0].shape='invalid' as 'sweep';});
  invalid(x=>{x.lanes=0 as 5;});
  invalid(x=>{x.elevations[0].end=x.startDistance+x.length+1;});
+});
+
+it('R2b: direct stage samples match the accepted legacy route, including knot boundaries',()=>{
+ const legacy={...COAST_ULTRA_STAGE,authoredRoad:undefined};
+ const points=new Set<number>([0,349.99,350,1085,3150,6800,10350,10400]);
+ for(let d=350;d<=10350;d+=11)points.add(d);
+ for(const section of [...coastAuthoredRoad.turns,...coastAuthoredRoad.elevations])
+  for(const knot of [section.start,section.end])
+   for(const epsilon of [-.001,0,.001])points.add(knot+epsilon);
+ for(const d of [...points].sort((a,b)=>a-b)){
+  const actual=pilotSample(COAST_ULTRA_STAGE,d),expected=pilotSample(legacy,d);
+  for(const key of ['demand','height','grade','lanes','halfWidth'] as const)
+   expect(actual[key],`distance ${d}: ${key}`).toBeCloseTo(expected[key],10);
+  expect(actual.active,`distance ${d}: active segments`).toEqual(expected.active);
+ }
+ // The public road pose is what camera, collisions, rivals and meshes share.
+ const current=createPilotTrack(COAST_ULTRA_STAGE),previous=createPilotTrack(legacy);
+ expect(current.length).toBe(previous.length);
+ for(let d=0;d<=current.length;d+=125){
+  const actual=current.sample(d),expected=previous.sample(d);
+  expect(actual.position.distanceTo(expected.position),`road pose at ${d}`).toBeLessThan(1e-6);
+  expect(actual.right.y,`road bank at ${d}`).toBeCloseTo(expected.right.y,9);
+  expect(actual.curvature,`road curvature at ${d}`).toBeCloseTo(expected.curvature,9);
+ }
+});
+
+it('R2b: runtime geometry reads edited road JSON even if legacy placements are stale',()=>{
+ const edited=structuredClone(coastAuthoredRoad) as AuthoredRoad;
+ edited.turns[0].steer=-.72;
+ edited.elevations[0].rise=2.7;
+ const changed={...COAST_ULTRA_STAGE,authoredRoad:edited};
+ const d=650;
+ expect(pilotSample(changed,d).demand).toBeCloseTo(sampleAuthoredRoad(edited,d).demand,12);
+ expect(pilotSample(changed,d).demand).not.toBeCloseTo(pilotSample({...changed,authoredRoad:undefined},d).demand,5);
+ expect(pilotSample(changed,5000).height).not.toBeCloseTo(pilotSample(COAST_ULTRA_STAGE,5000).height,5);
+});
+
+it('R2b: reject elevations that would snap the road vertically',()=>{
+ const edited=structuredClone(coastAuthoredRoad) as AuthoredRoad;
+ edited.elevations[0].base+=2;
+ expect(()=>validateAuthoredRoad(edited)).toThrow('Discontinuous authored elevation');
 });

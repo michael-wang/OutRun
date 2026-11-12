@@ -1,4 +1,5 @@
 import {curvatureKnots,elevationKnots,widthKnots,profile,type CurvatureId,type ElevationId,type WidthId,type CurveParameters,type ElevationParameters,type WidthParameters,type Knot} from './l1-profiles';
+import {sampleAuthoredRoad,type AuthoredRoad} from './content/authored-road';
 import {selectRoadInterchange,interchangeCenterOffset} from './road-interchange';
 import {LANE_WIDTH} from './road-profile';
 import {curvatureForDemand,REFERENCE_TRAVEL,CHALLENGES,COURSE} from './challenges';
@@ -13,7 +14,7 @@ export type Placement =
  | {channel:'width';id:WidthId;startS:number;endS:number;parameters:WidthParameters;transition:'smooth';beat:string};
 export type WorldName='coast'|'canyon'|'city';
 export interface WorldPhase {startS:number;endS:number;world:WorldName;beat:string}
-export interface PilotCandidate extends ChallengeBrick {fixedRoad?:readonly FixedRoadFrame[];bankFeatures?:BankFeature[];world:WorldName;generatorVersion:string;contentFingerprint:string;baseHeight:number;baseLanes:2|4|5|6|8;placements:Placement[];worldPhases:WorldPhase[]}
+export interface PilotCandidate extends ChallengeBrick {fixedRoad?:readonly FixedRoadFrame[];authoredRoad?:AuthoredRoad;bankFeatures?:BankFeature[];world:WorldName;generatorVersion:string;contentFingerprint:string;baseHeight:number;baseLanes:2|4|5|6|8;placements:Placement[];worldPhases:WorldPhase[]}
 export const PILOT_GENERATOR='v0.7D.1-r2',PILOT_STORAGE='outrun-l2-pilots-v071d1';
 const c=(id:CurvatureId,startS:number,endS:number,effort:number,direction:1|-1,beat:string):Placement=>({channel:'curvature',id,startS,endS,parameters:{effort,direction,start:0,end:1,secondary:.7},transition:'smooth',beat});
 const e=(id:ElevationId,startS:number,endS:number,base:number,amplitude:number,direction:1|-1,beat:string):Placement=>({channel:'elevation',id,startS,endS,parameters:{base,amplitude,direction,shelfStart:.32,shelfEnd:.68},transition:'smooth',beat});
@@ -60,6 +61,11 @@ function profileIndex(placements:Placement[]){
 }
 export function pilotSample(b:PilotCandidate,distance:number){
  if(b.fixedRoad){const p=fixedRoadPose(b.fixedRoad,distance);return {demand:p.curvature/curvatureForDemand(1),height:p.height,grade:p.grade,lanes:b.baseLanes,halfWidth:b.baseLanes*LANE_WIDTH/2,active:[] as Placement[]};}
+ if(b.authoredRoad){
+  const s=Math.max(0,Math.min(b.length,distance-b.authoredRoad.startDistance));
+  return {...sampleAuthoredRoad(b.authoredRoad,distance),
+   active:b.placements.filter(p=>s>=p.startS&&s<=p.endS)};
+ }
  const s=Math.max(0,Math.min(b.length,distance-BRICK_START)),boundaries=profileIndex(b.placements);
  let lo=0,hi=boundaries.length;
  while(lo<hi){const mid=(lo+hi)>>>1;if(boundaries[mid].distance<=s)lo=mid+1;else hi=mid;}

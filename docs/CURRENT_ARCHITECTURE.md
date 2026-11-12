@@ -34,3 +34,11 @@ The matching old Worker-generated farmhouse is suppressed by the **same authored
 `content/stages/coast/road.json` is the source of truth for its nine manual turns, the original mild rise and its width. `src/content/authored-road.ts` validates absolute HUD-metre spans and adapts them into the existing sampler. `src/coast-ultra-stage.ts` now has **no canyon-stage inheritance** and supplies stage identity / environment metadata only. The same stage feeds the road worker, baked shoreline, rivals, car handling and collision paths; no duplicate curve planner.
 
 This preserves the currently approved route exactly and clears the way to revise curve strengths by editing road data. **R2 remains in progress:** the older `pilot-composer` and generated profiles are still compatibility machinery. Do not remove them until a full authored spline/fixed-road path has parity and owner playtest acceptance.
+
+## R2b — direct road sampler, one content source
+
+The coast stage now exposes `authoredRoad` directly, and `pilotSample` selects `sampleAuthoredRoad` for that stage. Curvature, elevation, grade and lane width are read from `road.json`, including in the road Worker. A one-time cache prepares the existing C02/E02 mathematical knot shapes without rebuilding curves every frame; the shape and accepted route are unchanged.
+
+`placements` remains a **derived compatibility projection** for the old course/AI metadata and inactive stages. The legacy sampler is retained only for non-authored candidates and parity tests. Never hand-edit the derived placements. R2b tests sample the entire route and knot boundaries against the R2a accepted road, and reject height discontinuities before loading any chunk.
+
+**Next:** move the remaining course/track contract off Pilot/Brick, then retire unused generators and labs. Do not delete the old code while the playable coast still imports it.

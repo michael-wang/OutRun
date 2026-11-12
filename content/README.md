@@ -32,3 +32,9 @@ To edit a curve, change its `start`, `end` or signed `steer` in **road.json**, t
 The first slice uses the one existing `sweep` curve and `gentle-rise` elevation, rather than inventing future shapes. When a planned hairpin or 3D spline needs a new capability, add it to the common road evaluator or import/bake its control points through `fixed-road.ts`. Don't put per-curve algorithms back into stage files.
 
 **Not yet done:** fully retiring the historic Pilot/Brick/Trip runtime evaluator and old inactive Lab interfaces; that requires the later fixed-road migration. These are transitional implementation dependencies, **not** requirements for procedural authoring.
+
+## R2b — runtime road sampling
+
+`sampleAuthoredRoad` now consumes the stage road JSON directly at runtime. Road rendering, the Worker, player and traffic continue to sample the *same* route; the old `placements` array is a derived compatibility view, not a separate authoring source. The previously accepted R2a coastal geometry is unchanged.
+
+QA: compare familiar coastline and farm house at `/?at=985`, then drive the long sweep from `/?at=3150`. No new gameplay or scenery is expected in this architecture milestone. The P0 `tests/authored-road.unit.ts` includes a whole-route numerical comparison to the prior sampler.

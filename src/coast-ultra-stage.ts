@@ -8,6 +8,7 @@ import type {TripCandidate} from './trip';
 /** Finite coast stage; the road is authored in content/stages/coast/road.json.
  * Retain legacy stage/geometry IDs until the Worker and surface contracts are
  * migrated, so the accepted road, traffic and Ultra Water remain unchanged. */
+if(coastAuthoredRoad.startDistance!==BRICK_START)throw Error('Coast launch must match the existing game start distance');
 export const COAST_ULTRA_LENGTH=coastAuthoredRoad.length;
 const duration=COAST_ULTRA_LENGTH/REFERENCE_TRAVEL;
 export const COAST_ULTRA_STAGE:TripCandidate={
@@ -22,6 +23,7 @@ export const COAST_ULTRA_STAGE:TripCandidate={
  baseHeight:coastAuthoredRoad.baseHeight,
  baseLanes:coastAuthoredRoad.lanes,
  roadWidth:coastAuthoredRoad.lanes*LANE_WIDTH,
+ authoredRoad:coastAuthoredRoad,
  placements:authoredRoadPlacements(coastAuthoredRoad),
  bankFeatures:[],
  fixedRoad:undefined,
