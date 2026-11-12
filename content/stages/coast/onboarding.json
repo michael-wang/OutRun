@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "revision": "R5a",
+  "lessons": [
+    {
+      "id": "A0",
+      "start": 350,
+      "end": 1390,
+      "label": "直線加速",
+      "goal": "Learn throttle and read speed"
+    },
+    {
+      "id": "A1",
+      "start": 1390,
+      "end": 2270,
+      "label": "舒適大彎",
+      "goal": "Steer smoothly without drifting"
+    },
+    {
+      "id": "A2",
+      "start": 2270,
+      "end": 3260,
+      "label": "初次超車",
+      "goal": "Pass one civilian vehicle with open lanes"
+    },
+    {
+      "id": "A3",
+      "start": 3260,
+      "end": 4460,
+      "label": "傾斜 S 彎",
+      "goal": "Feel the banked left/right steering transition"
+    }
+  ],
+  "traffic": {
+    "firstCivilianDistance": 2590,
+    "firstWaveCount": 1,
+    "nextWaveDistance": 4790
+  },
+  "breakdownsAfter": 5600
+}

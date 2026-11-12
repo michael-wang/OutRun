@@ -3,6 +3,7 @@ import {coastAuthoredRoad,validateAuthoredRoad,type AuthoredRoad} from './author
 import {coastStaticStage,staticPrefabCatalog,validateStageStaticContent,type StageStaticContent} from './stage-data';
 import {COAST_SCENIC_ACTS} from '../coast-journey-layout';
 import {COAST_EFFECTS,validateCoastEffects,type CoastStageEffects} from './coast-effects';
+import {COAST_ONBOARDING,validateCoastOnboarding,type CoastOnboarding} from './coast-onboarding';
 
 /** Historic identity used for feedback / telemetry storage compatibility,
  * not a base class, Stage generator or new authoring requirement. */
@@ -28,10 +29,11 @@ export interface CoastStageContent{
  road:AuthoredRoad;
  scene:StageStaticContent;
  effects:CoastStageEffects;
+ onboarding:CoastOnboarding;
  scenicActs:readonly {id:string;start:number;end:number;label:string}[];
 }
 export function validateCoastStage(content:CoastStageContent){
- const {manifest,road,scene,effects,scenicActs}=content;
+ const {manifest,road,scene,effects,onboarding,scenicActs}=content;
  if(manifest.schemaVersion!==1||manifest.id!=='coast'||manifest.id!==road.id||manifest.id!==scene.id)
   throw Error('Coast stage/road/scene IDs or schema do not match');
  if(!manifest.name.trim()||!manifest.intent.trim()||!manifest.entry.trim()||!manifest.exit.trim()||
@@ -42,6 +44,7 @@ export function validateCoastStage(content:CoastStageContent){
  validateAuthoredRoad(road);
  validateStageStaticContent(scene,staticPrefabCatalog);
  validateCoastEffects(effects,road.startDistance,road.length);
+ validateCoastOnboarding(onboarding,road);
  // Scenic act distances are relative to course start, unlike road/prop HUD metres.
  if(!scenicActs.length||scenicActs[0].start!==0||scenicActs.at(-1)!.end!==road.length)
   throw Error('Coast scenic acts must cover the entire finite stage');
@@ -59,6 +62,7 @@ export const COAST_STAGE:CoastStageContent={
  road:coastAuthoredRoad,
  scene:coastStaticStage,
  effects:COAST_EFFECTS,
+ onboarding:COAST_ONBOARDING,
  scenicActs:COAST_SCENIC_ACTS,
 };
 validateCoastStage(COAST_STAGE);

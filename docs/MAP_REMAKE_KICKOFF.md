@@ -113,3 +113,20 @@ challenging racing/roadwork beats.
 Art workflow, Blender usage and project responsibilities are detailed
 in [`R5_ART_PIPELINE.md`](R5_ART_PIPELINE.md).
 No implementation of these new stages is implied by documentation.
+
+## R5a implementation checkpoint (2026-11-13)
+
+The first authored road revision deliberately replaces only the first three
+coast turns, preserving the still-playable remainder for iteration.
+Opening route (absolute HUD metres):
+- A0 **350–1390** — acceleration straight, no civilian traffic.
+- A1 **1390–2270** — mild long sweeper, no drift needed.
+- A2 **2270–3260** — first sparse civilian vehicle, open passing lanes.
+- A3 **3260–4460** — two opposite sweeps, locally authored ±10° banking.
+Road/lesson boundaries and civilian rollout are now authored in
+`road.json` + `onboarding.json`, not duplicated as a procedural
+Scenic Director. `R5a` is a player-review candidate, not final road art.
+
+Existing coast assets beyond the whitebox remain transitional; no visual
+acceptance of the old mountain sheets is implied. R5b will create staged
+accident scenes and the first drift lessons after R5a driving feedback.

@@ -49,7 +49,7 @@ export function createAuthoredCoastTrack(
  const coastWeights=[1,0,0] as const;
  const bankAt=seamlessBank(course.at(-1)!.end,
   d=>generatedBank(curvatureForDemand(sampleAuthoredRoad(road,d).demand),coastWeights,3),
-  stage.bankFeatures??[]);
+  stage.bankFeatures??road.banks??[]);
  return createTrack({course,
   heightAt:d=>sampleAuthoredRoad(road,d),
   demandAt:d=>sampleAuthoredRoad(road,d).demand,

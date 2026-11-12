@@ -12,6 +12,10 @@ export interface AuthoredTurn{
  steer:number;
  label:string;
 }
+/** Optional manually placed cross-slope accents, in absolute route metres. */
+export interface AuthoredBank{
+ kind:'showcase';start:number;end:number;ramp:number;degrees:number;
+}
 export interface AuthoredElevation{
  shape:'gentle-rise';
  start:number;
@@ -30,6 +34,7 @@ export interface AuthoredRoad{
  baseHeight:number;
  turns:AuthoredTurn[];
  elevations:AuthoredElevation[];
+ banks?:AuthoredBank[];
 }
 
 function validSpan(label:string,start:number,end:number,first:number,last:number){
@@ -56,6 +61,16 @@ export function validateAuthoredRoad(road:AuthoredRoad){
   throw Error('Missing authored road segments');
  checkSorted('turn',road.turns,road.startDistance,road.startDistance+road.length);
  checkSorted('elevation',road.elevations,road.startDistance,road.startDistance+road.length);
+ if(road.banks){
+  if(!Array.isArray(road.banks))throw Error('Invalid authored bank list');
+  checkSorted('bank',road.banks,road.startDistance,road.startDistance+road.length);
+  for(const feature of road.banks){
+   if(feature.kind!=='showcase'||!Number.isFinite(feature.ramp)||
+      feature.ramp<=0||feature.ramp*2>=feature.end-feature.start||
+      !Number.isFinite(feature.degrees)||Math.abs(feature.degrees)>18)
+    throw Error('Invalid authored bank');
+  }
+ }
  for(const turn of road.turns)
   if(turn.shape!=='sweep'||!Number.isFinite(turn.steer)||turn.steer===0||!turn.label)
    throw Error('Invalid authored turn');

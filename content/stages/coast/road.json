@@ -7,24 +7,24 @@
   "turns": [
     {
       "shape": "sweep",
-      "start": 350,
-      "end": 1000,
-      "steer": -0.14,
-      "label": "First sunset bay"
+      "start": 1390,
+      "end": 2270,
+      "steer": -0.17,
+      "label": "R5a A1 · Easy coastal sweeper"
     },
     {
       "shape": "sweep",
-      "start": 2100,
-      "end": 2750,
-      "steer": 0.18,
-      "label": "Village headland"
-    },
-    {
-      "shape": "sweep",
-      "start": 3150,
+      "start": 3260,
       "end": 3800,
-      "steer": -0.18,
-      "label": "Second sunset bay"
+      "steer": -0.29,
+      "label": "R5a A3 · Banked S, left"
+    },
+    {
+      "shape": "sweep",
+      "start": 3910,
+      "end": 4460,
+      "steer": 0.3,
+      "label": "R5a A3 · Banked S, right"
     },
     {
       "shape": "sweep",
@@ -79,5 +79,21 @@
       "label": "Coastal climb"
     }
   ],
-  "startDistance": 350
+  "startDistance": 350,
+  "banks": [
+    {
+      "kind": "showcase",
+      "start": 3320,
+      "end": 3790,
+      "ramp": 125,
+      "degrees": -10
+    },
+    {
+      "kind": "showcase",
+      "start": 3930,
+      "end": 4450,
+      "ramp": 125,
+      "degrees": 10
+    }
+  ]
 }
