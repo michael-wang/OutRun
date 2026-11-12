@@ -221,3 +221,17 @@ describe('R5b.2 authoritative movable accident',()=>{
   a.advance(.3);expect(a.get(999)?.distance).toBe(4635);
  });
 });
+
+
+it('R5b.2: civilian swept vehicle-to-wreck contact moves that wreck in the full race world',()=>{
+ const wreck={id:910000,type:0,distance:4635,speed:0,group:-40,
+  stationary:true,stopLane:4,stopSide:1,stopYaw:.13,incidentId:'A4' as const};
+ const following={id:55,type:0,distance:4626,speed:85,group:1,member:0};
+ const world=new RaceTrafficWorld([wreck,following],42,10350,()=>8.75,dims,true,false);
+ world.adopt(55,4626,85,7);
+ world.advance(.12);
+ expect(world.get(wreck.id)?.incidentMotion?.hits).toBeGreaterThan(0);
+ expect(world.get(wreck.id)?.stationary).toBe(true);
+ expect(world.get(55)?.speed).toBeLessThan(85);
+ expect(world.hazardSweeps.some(s=>s.id===55)).toBe(true);
+});

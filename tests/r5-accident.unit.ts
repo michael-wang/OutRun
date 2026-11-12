@@ -111,3 +111,19 @@ it('R5b.2: civilian and rival sweeps knock the same physical reflectors airborne
   expect(signs.snapshot().flying.every(([,flight])=>flight.forward>0&&flight.up>0)).toBe(true);
  }finally{signs.dispose();}
 });
+
+
+it('R5b.2: a rival callback genuinely displaces the same crash car used by every actor',()=>{
+ const scene=new THREE.Scene(),cars=generate(42);
+ const traffic=new Traffic(scene,track.sample,halfAt,track.length,804,
+  ()=>true,cars,undefined,true,false,false,42,COAST_STAGE.onboarding.traffic);
+ try{
+  traffic.enableRaceMode();
+  const obstacle=traffic.raceObstacles(site.distance,0,200).find(o=>o.id==='T910000')!;
+  expect(obstacle).toBeDefined();
+  traffic.impactByRival(obstacle,.8,-1);
+  const moved=traffic.snapshot().world.cars.find(c=>c.id===910000)!;
+  expect(moved.incidentMotion?.hits).toBe(1);
+  expect(moved.stationary).toBe(true);
+ }finally{traffic.dispose();}
+});

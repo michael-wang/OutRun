@@ -18,12 +18,12 @@ export function coastAccidentLayout(
  // lane. Later encounters may seed 2–3 cars across other lanes.
  const count=tutorial?2:Math.min(lanes.length-site.minimumOpenLanes,
   trafficRandom(seed^0xa41,71)<.5?2:3);
- const start=Math.max(0,Math.floor((lanes.length-count)/2));
- const indices=tutorial?Array(count).fill(lanes.length-1):
-  Array.from({length:count},(_,i)=>{
-   const lane=(start+i+Math.floor(trafficRandom(seed^0xa45,18)*lanes.length))%lanes.length;
-   return lane;
-  });
+ // Later events may put a seeded group on either side of the highway.
+ // Occupy adjacent lanes with one coherent wreck scene, leaving a real
+ // two-lane escape corridor instead of random all-lane scatter.
+ const start=tutorial?lanes.length-1:
+  Math.floor(trafficRandom(seed^0xa45,18)*(lanes.length-count+1));
+ const indices=Array.from({length:count},(_,i)=>tutorial?lanes.length-1:start+i);
  const offsets=tutorial?[-18,23]:[-16,14,39];
  const types=tutorial?[0,0]:[0,2,0];
  return indices.map((lane,i)=>{
