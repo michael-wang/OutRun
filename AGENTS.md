@@ -195,3 +195,12 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   duplicate warnings for each incident actor.
 - A5/A6 drift roads have passed owner play acceptance;
   DO NOT move or retune them while polishing this scene.
+
+## CI and Codex local verification
+
+This GitHub-only editing environment cannot run the owner's Windows
+local Vite/Vitest/Playwright or Pixel 8 tests. For code changes, local
+Codex should check out latest `dev`, run `npm run verify:dev`,
+fix **all** failing tests in the same task, then push the corrected
+commit. GitHub `dev` push must not trigger expensive CI.
+Never mark a source-only static audit as passing Vitest.

@@ -175,3 +175,15 @@ The road-guide export now covers **350–6760m**, including both
 drift bends, their recovery straight and the new immediate S
 transition. The Geometry Nodes prototype remains purely offline
 and never overrides the game's real road, barriers or collisions.
+
+### R5b.1 incident coordinates
+
+The shared road-guide export now includes exact samples at
+A4's entry, accident centre (4635m), and exit, as well as
+both drift lesson boundaries. Blender/Geometry Nodes can use
+those markers when the road and obstacle scene are accepted,
+but must not independently create a second physical accident
+mesh disconnected from Traffic's obstacle collision state.
+
+Local Codex (Windows) owns production build, full Vitest
+and Pixel 8 device profiling before R5b.1 is accepted.

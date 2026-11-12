@@ -20,6 +20,9 @@ try{
  for(let d=start;d<=end;d+=20)stations.add(d);
  for(const lesson of onboarding.lessons)stations.add(lesson.start),stations.add(lesson.end);
  for(const bank of road.banks??[])stations.add(bank.start),stations.add(bank.end);
+ for(const drift of onboarding.driftLessons)stations.add(drift.start),stations.add(drift.end);
+ const accident=onboarding.accident;
+ stations.add(accident.start);stations.add(accident.distance);stations.add(accident.end);
  const samples=[...stations].sort((a,b)=>a-b).map(distance=>{
   const pose=track.sample(distance),roadWidth=halfAt(distance)*2;
   return {

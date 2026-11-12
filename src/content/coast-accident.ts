@@ -20,7 +20,7 @@ export function coastAccidentLayout(
  // staggered longitudinally and yawed, never stacked in one solid wall.
  const start=Math.max(1,Math.floor((lanes.length-count)/2));
  const indices=Array.from({length:count},(_,i)=>start+i);
- const offsets=[-16,14,39],types=[0,0,2];
+ const offsets=[-16,14,39],types=[0,2,0]; // A car, a skewed utility truck, optionally a second car
  return indices.map((lane,i)=>{
   const distance=site.distance+offsets[i]+(trafficRandom(seed^0xa42,i)-.5)*7;
   const stopYaw=(i%2===0?1:-1)*(.14+.10*trafficRandom(seed^0xa43,i));
