@@ -38,3 +38,16 @@ The first slice uses the one existing `sweep` curve and `gentle-rise` elevation,
 `sampleAuthoredRoad` now consumes the stage road JSON directly at runtime. Road rendering, the Worker, player and traffic continue to sample the *same* route; the old `placements` array is a derived compatibility view, not a separate authoring source. The previously accepted R2a coastal geometry is unchanged.
 
 QA: compare familiar coastline and farm house at `/?at=985`, then drive the long sweep from `/?at=3150`. No new gameplay or scenery is expected in this architecture milestone. The P0 `tests/authored-road.unit.ts` includes a whole-route numerical comparison to the prior sampler.
+
+
+## R2c — authored course and track
+
+`src/content/authored-track.ts` builds the coast's road spans and actual
+drivable track directly from `road.json`. The old Pilot course builder is no
+longer involved for the coast; player/camera, road Worker, collision and
+scenery all continue to use the resulting shared track. Legacy `placements`
+is now a derived compatibility projection only, not a geometry dependency.
+
+For QA, drive from `/?at=985` and `/?at=3150`. The accepted R2b geometry
+and gameplay should appear **identical**. `tests/authored-track.unit.ts`
+provides exact course and dense track-position / bank parity checks.

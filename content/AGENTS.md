@@ -7,3 +7,5 @@
 - GLBs must have cleared provenance and reasonable mobile geometry/material counts. If the model has a different local origin, fix the asset or placement data.
 
 - `stages/coast/road.json` is the authored source of road turns/elevation. Distances are **absolute HUD road metres**, shared with scene placements. Do not reintroduce per-turn TypeScript or speculative random composers.
+
+- R2c: coast track spans and frames are built by `src/content/authored-track.ts` from road JSON. The `placements` view is legacy compatibility only; do not author it separately.

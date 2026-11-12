@@ -42,3 +42,26 @@ The coast stage now exposes `authoredRoad` directly, and `pilotSample` selects `
 `placements` remains a **derived compatibility projection** for the old course/AI metadata and inactive stages. The legacy sampler is retained only for non-authored candidates and parity tests. Never hand-edit the derived placements. R2b tests sample the entire route and knot boundaries against the R2a accepted road, and reject height discontinuities before loading any chunk.
 
 **Next:** move the remaining course/track contract off Pilot/Brick, then retire unused generators and labs. Do not delete the old code while the playable coast still imports it.
+
+
+## R2c — coast course and track no longer come from Pilot/Brick
+
+`src/content/authored-track.ts` directly translates `content/stages/coast/road.json`
+into the spans used by the existing shared `createTrack` integrator. It does
+not depend on Pilot, Brick, Trip or their placement planner. Its coast banking
+uses the existing math and the existing fixed coastline weights; the familiar
+600m post-finish relief still provides a road safety buffer.
+
+`pilotCourse` and `createPilotTrack` dispatch an `authoredRoad` stage
+to this new path, so the current game/Worker and inactive historic stages can
+coexist during migration. From this point, hand-edited `placements` **cannot**
+change the coast route. Keep the derived placements only for compatibility
+metadata until all consumers stop importing them.
+
+The blocking R2c test compares the direct road's full poses (position, tangent,
+bank, heading, curvature, segment metadata) against the accepted R2b evaluator,
+and proves that edits to road JSON work with obsolete placements removed.
+
+**Next:** migrate remaining coast consumers from Pilot/Trip metadata to the
+stage content contract. Retire legacy code only after confirming its remaining
+call sites are genuinely inactive. R2c intentionally does not redesign curves.
