@@ -105,3 +105,46 @@ describe('R4d: heterogeneous stationary launch plumes',()=>{
   a.dispose();b.dispose();
  });
 });
+
+describe('R4e: individual smoke cloud silhouette and emitter identity',()=>{
+ it('keeps one shader program, two geometries, but gives rivals distinct tint and silhouette',()=>{
+  const one=new THREE.Scene(),two=new THREE.Scene();
+  const a=new TireEffects(one),b=new TireEffects(two);
+  a.setEmitterSeed(1);b.setEmitterSeed(2);
+  const input=contacts(0);
+  for(let i=1;i<=70;i++){
+   a.update(i/60,0,0,input,200,.7);
+   b.update(i/60,0,0,input,200,.7);
+  }
+  const mesh=(scene:THREE.Scene)=>scene.getObjectByName('tire-smoke') as THREE.Mesh;
+  const ma=mesh(one).material as THREE.ShaderMaterial;
+  const mb=mesh(two).material as THREE.ShaderMaterial;
+  expect(ma.fragmentShader).toBe(mb.fragmentShader);
+  expect(ma.fragmentShader).toContain('float core=');
+  expect(ma.fragmentShader).toContain('warmCool');
+  const tonesA=mesh(one).geometry.getAttribute('tone');
+  const tonesB=mesh(two).geometry.getAttribute('tone');
+  expect(tonesA.getX(3)).not.toBe(tonesB.getX(3));
+  expect(a.inspect().emitterTone).not.toBe(b.inspect().emitterTone);
+  expect(a.inspect().particles).toBeGreaterThan(5);
+  expect(b.inspect().particles).toBeGreaterThan(5);
+  expect(a.inspect()).toMatchObject({geometries:2,particleCapacity:192});
+  expect(b.inspect()).toMatchObject({geometries:2,particleCapacity:192});
+  a.dispose();b.dispose();
+ });
+ it('samples one shared wind per emitter/frame while local cloud swirls differ',()=>{
+  const a=new THREE.Scene(),b=new THREE.Scene(),one=new TireEffects(a),two=new TireEffects(b);
+  let calls=0;
+  const common=()=>{calls++;return {x:2.6,z:0};};
+  one.setEmitterSeed(1);two.setEmitterSeed(7);
+  one.setWind(common);two.setWind(common);
+  for(let i=1;i<=40;i++){one.update(i/60,0,0,contacts(0),200,.7);two.update(i/60,0,0,contacts(0),200,.7);}
+  expect(calls).toBe(80);
+  const centers=(scene:THREE.Scene)=>(scene.getObjectByName('tire-smoke') as THREE.Mesh).geometry.getAttribute('center');
+  expect(centers(a).getX(4)).not.toBe(centers(b).getX(4));
+  expect(centers(a).getZ(4)).not.toBe(centers(b).getZ(4));
+  expect(one.inspect().segments).toBe(0);
+  expect(two.inspect().segments).toBe(0);
+  one.dispose();two.dispose();
+ });
+});
