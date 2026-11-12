@@ -15,6 +15,8 @@ export interface CoastLesson{
  * It shares Traffic's normal obstacle/physics pipeline. */
 export interface CoastAccident{
  id:'A4';start:number;end:number;distance:number;label:string;
+ /** First tutorial accident is predictable; later incidents use seeded lanes. */
+ layout:'right-lane'|'seeded-lanes';
  minimumOpenLanes:2|3;
 }
 /** A5/A6 are drivable road whiteboxes after the accident. */
@@ -62,6 +64,7 @@ export function validateCoastOnboarding(plan:CoastOnboarding,road:AuthoredRoad){
  const accident=plan.accident,incidentCurve=road.turns[3];
  if(!accident||accident.id!=='A4'||!accident.label?.trim()||!incidentCurve||
     accident.start!==incidentCurve.start||accident.end!==incidentCurve.end||
+    !['right-lane','seeded-lanes'].includes(accident.layout)||
     !Number.isFinite(accident.distance)||
     accident.start<sBend.end+60||accident.distance<accident.start+150||
     accident.distance>accident.end-110||

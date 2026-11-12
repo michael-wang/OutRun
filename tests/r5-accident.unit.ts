@@ -20,7 +20,7 @@ it('R5b.1: the first real accident occurs in an authored curve, not a straight',
   expect(cars.length).toBeLessThanOrEqual(3);
   expect(generate(seed)).toEqual(cars);
   expect(cars.every(c=>c.stationary&&c.speed===0&&c.incidentId==='A4')).toBe(true);
-  expect(new Set(cars.map(c=>c.stopLane)).size).toBe(cars.length);
+  expect(cars.every(c=>c.stopLane===roadLaneCenters(halfAt(site.distance)).length-1)).toBe(true);
   expect(new Set(cars.map(c=>c.id)).size).toBe(cars.length);
   expect(cars.every(c=>c.distance>=site.start+140&&c.distance<=site.end-120)).toBe(true);
   expect(cars.some(c=>c.stopYaw<0)&&cars.some(c=>c.stopYaw>0)).toBe(true);
@@ -45,7 +45,8 @@ it('R5b.1: angled wreck bodies leave at least two actual drivable outer lanes',(
   }));
   expect(open.length,`genuine open lanes for seed ${seed}`).toBeGreaterThanOrEqual(site.minimumOpenLanes);
   expect(open).toContain(lanes[0]);
-  expect(open).toContain(lanes.at(-1));
+  // This first lesson deliberately occupies the right outside lane.
+  expect(open).toContain(lanes[1]);
  }
 });
 
@@ -79,4 +80,14 @@ it('R5b.1: one warning sequence guides the bend, not nine obstructive sign sets'
   expect(signs.recipe.map(s=>Math.round(first.distance-s.distance))).toEqual([310,195,90]);
   expect(signs.recipe.every(s=>s.distance<site.distance)).toBe(true);
  }finally{signs.dispose();}
+});
+
+it('R5b.2: later accident layouts can vary seeded lane choices',()=>{
+ const later={...site,layout:'seeded-lanes' as const};
+ const samples=[1,7,42,804].map(seed=>coastAccidentLayout(halfAt,later,seed));
+ expect(new Set(samples.map(cars=>cars.map(c=>c.stopLane).join(','))).size).toBeGreaterThan(1);
+ for(const cars of samples){
+  expect(cars.length).toBeGreaterThanOrEqual(2);
+  expect(cars.every(c=>c.distance>=later.start+140&&c.distance<=later.end-110)).toBe(true);
+ }
 });
