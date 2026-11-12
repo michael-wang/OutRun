@@ -2,13 +2,12 @@ import {it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
 import {Vector3} from 'three';
 import {riceCanopyGeometry} from '../src/coast-rice-canopy';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {coastNatureGround} from '../src/coast-nature';
 import {COAST_DISTRICTS} from '../src/coast-layout';
 import {FARM_PLOTS,FARM_SCARECROWS,FARM_ZONES,FARM_HOMES,FARM_YARDS,FLOWER_YARDS,farmPlotEdges,farmPlotsInChunk} from '../src/coast-farm-layout';
 import {ruralShowcaseReplacesFarmHome} from '../src/coast-rural-layout';
-const track=createPilotTrack(COAST_ULTRA_STAGE);
+const track=coastWorkerRoad().track;
 it('owns every field exactly once, outside housing, wholly inside a streamed chunk and on the coastal plain',()=>{
  const ids=Array.from({length:11},(_,i)=>farmPlotsInChunk(i*1000,(i+1)*1000)).flat().map(p=>p.id);
  expect(new Set(ids).size).toBe(FARM_PLOTS.length);expect(ids.length).toBe(FARM_PLOTS.length);

@@ -1,7 +1,5 @@
 import {describe,it,expect} from 'vitest';
 import * as THREE from 'three';
-import {generateTrip} from '../src/trip';
-import {BRICK_START} from '../src/bricks';
 import {addJourneyScenery} from '../src/scenery';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {planScenerySections,scenerySectionAt,sceneryGroundMixAt,
@@ -33,43 +31,21 @@ const bodies=(sections:readonly ScenerySection[])=>{
 };
 
 describe('Scenery Credibility R1.0 — city cross-section and physical grounding',()=>{
- it('preserves the exact playable r8 recipe and archives it under a separate seed code',()=>{
-  for(const seed of [1,2,7]){
-   const old=generateTrip(seed,8),stage=generateTrip(seed,9);
-   expect(old.generatorVersion).toBe('v0.9-r8');
-   expect(old.scenerySections).toBeUndefined();
-   expect(old.tripCode).toContain('-ALB8');
-   expect(stage.generatorVersion).toBe('v0.9-r9');
-   expect(stage.tripCode).toContain('-ALB9');
-   expect(stage.contentFingerprint).not.toBe(old.contentFingerprint);
-   expect(stage.placements).toEqual(old.placements);
-   expect(stage.beats).toEqual(old.beats);
-   expect(stage.bankFeatures).toEqual(old.bankFeatures);
-   expect(stage.worldPhases).toEqual(old.worldPhases);
-   expect(stage.scenicLandmarks).toEqual(old.scenicLandmarks);
-   expect(stage.roadFeatures).toEqual(old.roadFeatures);
-   expect(stage.scenicCues).toEqual(old.scenicCues);
-   expect(generateTrip(seed,8)).toEqual(old);
-   expect(generateTrip(seed,9)).toEqual(stage);
-  }
- },30000);
- it('makes the majority of seeded city beats bilateral, with both intentional waterfront orientations',()=>{
-  for(const seed of [1,2,7]){
-   const trip=generateTrip(seed,9),sections=trip.scenerySections!;
-   expect(sections).toHaveLength(32);
-   expect(Object.isFrozen(sections)).toBe(true);
-   expect(sections).toEqual(planScenerySections(trip.beats));
-   const city=sections.filter(s=>s.left==='city'||s.right==='city'||s.left==='hillside');
-   const enclosed=city.filter(s=>s.kind==='urban-both'||s.kind==='urban-hillside');
-   expect(enclosed.length).toBeGreaterThan(city.length/2);
-   expect(city.some(s=>s.kind==='waterfront-left')).toBe(true);
-   expect(city.some(s=>s.kind==='waterfront-right')).toBe(true);
-   for(const section of sections){
-    expect(Object.isFrozen(section)).toBe(true);
-    expect(section.end).toBeGreaterThan(section.start);
-    expect(SECTION_LABELS[section.kind].length).toBeGreaterThan(3);
-    expect(scenerySectionAt(sections,(section.start+section.end)/2)).toEqual(section);
-   }
+ it('plans section roles from explicit authored beats, without Trip generators',()=>{
+  const beats=[
+   {id:'coast',startS:0,endS:1800,world:'coast' as const},
+   {id:'city-1',startS:1800,endS:3600,world:'city' as const},
+   {id:'city-2',startS:3600,endS:5400,world:'city' as const},
+   {id:'canyon',startS:5400,endS:7000,world:'canyon' as const},
+  ];
+  const sections=planScenerySections(beats);
+  expect(Object.isFrozen(sections)).toBe(true);
+  expect(sections.map(s=>s.kind)).toEqual(['coastal-left','urban-both','urban-both','canyon']);
+  expect(sections.map(s=>s.start)).toEqual([350,2150,3950,5750]);
+  for(const section of sections){
+   expect(Object.isFrozen(section)).toBe(true);
+   expect(SECTION_LABELS[section.kind].length).toBeGreaterThan(3);
+   expect(scenerySectionAt(sections,(section.start+section.end)/2)).toEqual(section);
   }
  });
  it('eases role transitions over absolute route distance with no stream chunk seam discontinuity',()=>{

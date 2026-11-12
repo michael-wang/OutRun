@@ -1,15 +1,14 @@
 import {coastBeachX} from '../src/coast-layout';
 import {afterAll,describe,it,expect} from 'vitest';
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {coastBeachHeight,COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
 import {bakeCoastShore} from '../src/coast-shore';
 import {packCoastShore,unpackCoastShore} from '../src/coast-shore-asset';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
-const track=createPilotTrack(stage),shore=bakeCoastShore(track.sample,track.length);
+const runtime=coastWorkerRoad(),track=runtime.track,stage=runtime.stage,shore=bakeCoastShore(track.sample,track.length);
 afterAll(()=>shore.texture.dispose());
 function field(x:number,z:number,channel=0){
  const {data,width,height}=shore.texture.image as {data:Uint16Array;width:number;height:number};

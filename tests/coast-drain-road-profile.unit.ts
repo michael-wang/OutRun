@@ -3,8 +3,7 @@ import {addCoastDusk} from '../src/coast-dusk';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {shoulderProfile} from '../src/road-profile';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {addCoastResort} from '../src/coast-resort';
@@ -15,10 +14,10 @@ import {coastBarrierShadowAnchors} from '../src/coast-dusk-shadows';
 import {addJourneyScenery} from '../src/scenery';
 import {step,createState} from '../src/handling';
 
-const track=createPilotTrack(stage),half=(d:number)=>pilotSample(stage,d).halfWidth;
+const runtime=coastWorkerRoad(),track=runtime.track,stage=runtime.stage,half=runtime.halfAt;
 const shoulder=(d:number)=>shoulderProfile(d,804);
 function road(from:number,to:number){
- return prepareRoadChunk(track.sample,half,d=>pilotWeights(stage,d),from,to,track.length,
+ return prepareRoadChunk(track.sample,half,runtime.weightsAt,from,to,track.length,
   false,true,[],shoulder,undefined,true,undefined,stage.scenerySections);
 }
 function lateralPositions(mesh:{positions:Float32Array},d:number){
@@ -148,7 +147,7 @@ it('mounts a warm fixture ON every real canal-side utility pole',()=>{
  for(const d of [906,4060,8640]){
   const scene=new THREE.Scene();
   const result=addJourneyScenery(scene,track.sample,track.length,stage.sceneryAct,stage.seed,
-   half,d=>pilotWeights(stage,d),{
+   half,runtime.weightsAt,{
     start:Math.floor(d/1000)*1000,end:Math.floor(d/1000)*1000+1000,
     openRoad:true,coastUltra:true,shoulders:shoulder,scenerySections:stage.scenerySections,
    });

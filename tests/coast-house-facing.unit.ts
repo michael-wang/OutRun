@@ -6,11 +6,10 @@ import {COAST_RURAL_HOUSES,COAST_RURAL_SHOWCASE,RURAL_CREEK} from '../src/coast-
 import {COAST_VILLAGE_SITES} from '../src/coast-village-layout';
 import {FARM_HOMES,FARM_PLOTS} from '../src/coast-farm-layout';
 import {addJourneyScenery} from '../src/scenery';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {shoulderProfile} from '../src/road-profile';
 
-const track=createPilotTrack(COAST_ULTRA_STAGE);
+const runtime=coastWorkerRoad(),track=runtime.track;
 
 it('keeps household orientations individual and presents the frontage to approaching drivers',()=>{
  const near=COAST_VILLAGE_SITES.filter(s=>s.kind==='home'&&!s.rear)
@@ -50,9 +49,9 @@ it('puts the hero courtyard gate in a three-quarter approaching-camera view',()=
  }
 });
 it('keeps a real gate-facing transform in the actual batched scenery, without new draw calls',()=>{
- const scene=new THREE.Scene(),stage=COAST_ULTRA_STAGE;
+ const scene=new THREE.Scene(),stage=runtime.stage;
  const result=addJourneyScenery(scene,track.sample,track.length,stage.sceneryAct,stage.seed,
-  d=>pilotSample(stage,d).halfWidth,d=>pilotWeights(stage,d),{
+  runtime.halfAt,runtime.weightsAt,{
    start:1000,end:1100,openRoad:true,coastUltra:true,
    shoulders:d=>shoulderProfile(d,804),scenerySections:stage.scenerySections,
   });

@@ -8,8 +8,7 @@ import {
 } from '../src/coast-canal-reflections';
 import {makeCoastDrainWaterMaterial} from '../src/coast-drain-water';
 import {buildCoastRoadsideDrain,buildCoastRoadsideWater} from '../src/coast-roadside-geometry';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {chaseTargets} from '../src/chase';
 
 it('reflects nearby authored poles and bridge parapets, not repeating fake scenery',()=>{
@@ -64,7 +63,7 @@ it('samples authored reflected props in the existing sea FFT/sky canal material'
 });
 
 it('exposes water toward the far bank to the chase camera but hides it under a driveway',()=>{
- const {sample}=createPilotTrack(COAST_ULTRA_STAGE);
+ const {sample}=coastWorkerRoad().track;
  const mat=new THREE.MeshBasicMaterial({side:THREE.DoubleSide});
  const walls=new THREE.Mesh(buildCoastRoadsideDrain(sample,950,1080)!,mat);
  const water=new THREE.Mesh(buildCoastRoadsideWater(sample,950,1080)!,mat);
