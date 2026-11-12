@@ -2,7 +2,7 @@
 
 An original arcade racing road trip inspired by the *feeling* of classic coastal racing games, not a recreation of protected vehicles, tracks or music.
 
-**Now playable:** v0.9.43 coastal highway at sunset, eight entrants, mixed traffic, steering/accelerator/brake, timed race, optional PS4 controller and touch controls, Ultra Water sea, restart and race recovery.
+**Now playable:** v0.10.0 development coastal highway at sunset, eight entrants, mixed traffic, steering/accelerator/brake, timed race, optional PS4 controller and touch controls, Ultra Water sea, restart and race recovery.
 
 **Next product priority:** Make the **road and its corners** more rewarding. Deliberately design opportunities for controllable drifting, technical S-bends, fast sweeps and clear recovery straights. The owner approves by driving the course, not by abstract intensity scores.
 

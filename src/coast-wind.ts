@@ -68,6 +68,10 @@ export function sampleCoastGust(x:number,z:number,time:number):[number,number]{
 export function sampleCoastWind(
  x:number,z:number,time:number,wind:CoastWindStageEffects=COAST_EFFECTS.wind,
 ):{x:number;z:number}{
+ // A calm field must return canonical +0 components, rather than -0
+ // from multiplying a negative vector component by zero. Physically
+ // identical, but signed zero is observable in serialisation and tests.
+ if(wind.speed===0)return {x:0,z:0};
  const gust=sampleCoastGust(x,z,time);
  const dx=wind.direction[0],dz=wind.direction[1],sway=gust[1];
  const vx=dx-dz*sway,vz=dz+dx*sway,unit=1/Math.hypot(vx,vz);

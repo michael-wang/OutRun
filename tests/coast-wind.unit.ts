@@ -19,7 +19,12 @@ it('R4c: the velocity is world-space and independent of the ocean wave forcing',
  expect(Number.isFinite(a.x)&&Number.isFinite(a.z)).toBe(true);
  expect(a.x).toBeGreaterThan(0);
  expect(a).not.toEqual(b);
- expect(sampleCoastWind(210,175,2,{direction:[1,0],speed:0,gustStrength:0})).toEqual({x:0,z:0});
+ const calm=sampleCoastWind(210,175,2,{direction:[1,0],speed:0,gustStrength:0});
+ expect(calm).toEqual({x:0,z:0});
+ expect(Object.is(calm.x,0)&&Object.is(calm.z,0)).toBe(true);
+ // A reversed breeze must ALSO be positively zero when disabled.
+ const reversedCalm=sampleCoastWind(210,175,2,{direction:[-1,0],speed:0,gustStrength:0});
+ expect(Object.is(reversedCalm.x,0)&&Object.is(reversedCalm.z,0)).toBe(true);
  expect(sampleCoastWind(210,175,2,{direction:[-1,0],speed:2,gustStrength:0}).x).toBeLessThan(0);
 });
  

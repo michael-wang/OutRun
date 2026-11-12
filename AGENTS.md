@@ -15,7 +15,7 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 ## Workflow / release
 
 - Work on `dev` by default. Only promote to `main` on **explicit owner approval**; never force-push or move released tags. Ordinary `dev` pushes must not deploy.
-- Development snapshots increment the patch version in `package.json` and lockfile (`0.9.44`, `0.9.45`, etc.), with no `-dev.N` suffix and **no development tag**. Untagged `dev` version numbers are not public releases. Public releases still require owner approval, a new `main` commit and an immutable annotated `vX.Y.Z` tag for the deployed commit. Reserve `0.10.0` for the accepted full architecture refactor; never reuse a previously tagged version.
+- Development snapshots increment the patch version in `package.json` and lockfile (`0.9.44`, `0.9.45`, etc.), with no `-dev.N` suffix and **no development tag**. Untagged `dev` version numbers are not public releases. Public releases still require owner approval, a new `main` commit and an immutable annotated `vX.Y.Z` tag for the deployed commit. The owner accepted R4 architecture on 2026-11-12; `dev` now uses untagged `0.10.0` (not a public release). Never reuse a previously tagged version.
 - **P0 / Blocker:** cannot load, start, or meaningfully play; blocks release.
 - **P1 / Critical:** significant gameplay loss, serious crash or broken recovery; **tell the owner**, who decides whether to publish. P2/P3 cosmetic or tuning defects do not block.
 - Keep release CI lean: dependency install, production build, deterministic P0 checks; P1 checks are advisory. Visual feel, controller behavior and device FPS are primarily owner playtests. Do not turn slow/flaky Playwright screenshots into deployment gates.
@@ -65,9 +65,9 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - Rivals' starting smoke is intentionally sparser and deterministically
   distinct per car. Preserve the same bounded particle geometry and
   independent skid marks.
-- Once the R4d build, retained tests and owner playtests pass, the entire
-  R4 architecture milestone can be closed and the next minor bumped to
-  `v0.10.0`. No automatic `main` promotion.
+- R4 architecture is owner-accepted on 2026-11-12. The known R4c signed-zero
+  assertion was corrected in `0.10.0`; rerun the full local tests before
+  considering any public release. No automatic `main` promotion.
 
 ## R4e finishing pass / next material capabilities
 
@@ -79,3 +79,15 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   See `docs/NEXT_SURFACE_CONTACT.md`: surface identity (per wheel),
   obstacle geometry, impact response, sound, particles, and road relief
   must meet via small explicit inputs, without a generic entity system.
+ 
+## R5 next phase — authored map remake
+
+- Prioritize road driving feel: bold sustained sweeps, truly distinct S-bends,
+  larger deliberate banking and height transitions, and readable recovery
+  straights. Build and drive the road whitebox before placing hero scenery.
+- See `docs/MAP_REMAKE_KICKOFF.md` for the first authoring/acceptance slice.
+  Do not revive the procedural Scenic Director or historical second-stage data.
+- Mountain and foreground geometry need consistent spatial depth. Avoid
+  using a near-visible midground as an infinitely distant fake backdrop;
+  inspect motion parallax at speed as well as screenshots. Current old coast
+  mountain implementation is not a required map-remake target.

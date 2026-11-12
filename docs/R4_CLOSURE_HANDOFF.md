@@ -1,7 +1,9 @@
 # R4 — scene capability refactor handoff
 
-Status: **implementation ready for R4d owner acceptance**, not yet
-approved for minor release. Development build: `v0.9.46`.
+Status: **R4 owner acceptance confirmed 2026-11-12**. Development
+version now `v0.10.0` on `dev`, not tagged/released on `main`.
+The R4c signed-zero test reported at 437/438 passing has been corrected;
+full local verification remains outstanding after that fix.
 
 ## Finished scope
 
@@ -37,9 +39,8 @@ approved for minor release. Development build: `v0.9.46`.
 - Human acceptance: PC and Pixel 8 coast start and driving. Check
   start-grid smoke individuality, 0–100 km/h response, 200–300 km/h
   field-wave readability, sunset/water parity, and no phone FPS loss.
-- Release: after owner acceptance, bump **development** version to
-  `0.10.0`. Public `main` and immutable tag require separate
-  explicit owner approval.
+- Development milestone `0.10.0` has been applied after owner acceptance.
+  Public `main` and immutable tag require separate explicit owner approval.
 
 ## Guiding rule
 
@@ -60,3 +61,16 @@ Future material-specific friction, sparks, grass fragments and uneven
 road surfaces are NOT a missing R4 feature. They are captured in
 `docs/NEXT_SURFACE_CONTACT.md` and will be implemented against real
 track content after the architecture milestone.
+ 
+## Accepted — 2026-11-12 (owner)
+
+R4 visual and gameplay acceptance passed on `0.9.47`.
+One benign `-0` versus `+0` deep-equality test was outstanding;
+`0.10.0` canonicalises calm wind components and adds a regression
+assertion. Build + retained unit tests must still pass locally before
+the milestone is considered technically verified.
+
+Owner reported a midground/foreground mountain motion-parallax
+discrepancy near the later coast highway. Because map remake is next,
+the existing mountain geometry stays intact; the new map must
+validate *relative motion through the chase camera* before art lock.

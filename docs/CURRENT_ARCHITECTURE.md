@@ -1,4 +1,4 @@
-# Current architecture — after R3 closure (2026-11-12)
+# Current architecture — R4 accepted / map remake handoff (2026-11-12)
 
 ## Goal and boundaries
 
@@ -137,3 +137,22 @@ See `docs/NEXT_SURFACE_CONTACT.md` for the precise future seam; defer
 implementation until the first concrete material or bump task.
 The R4 architecture milestone still needs local build/test and
 owner play acceptance before promoting the minor version.
+ 
+## R4 acceptance → R5 map remake (2026-11-12)
+
+Owner accepted R4a–R4e (scene authoring, visual parameters, wind and
+smoke). The final R4c unit-test failure reported was a signed-zero
+(`-0` versus `0`) edge case in calm `sampleCoastWind`, now returned
+as canonical positive zero. The owner observed 437 passing tests
+plus one failed assertion before the fix; the full suite must be
+rerun locally to confirm green, not assumed from source review.
+
+Development version is now **untagged `0.10.0` on `dev`**.
+`main` and all deployed release tags remain unchanged until
+the owner explicitly approves a public release.
+
+The next active workstream is **hand-authored map remake**:
+`docs/MAP_REMAKE_KICKOFF.md`. New road design is approved by
+driving whitebox before scenery. See the mountain parallax
+acceptance notes there; do not polish the old midground mountains
+for a soon-to-be-replaced map.
