@@ -72,7 +72,8 @@ export class RaceTrafficWorld {
  private nextId=2000000;
  constructor(recipes:readonly TrafficWorldRecipe[],private seed:number,
   private length:number,private halfAt:(distance:number)=>number,
-  private dimensions:(type:number)=>{width:number;length:number},private racing=false){
+  private dimensions:(type:number)=>{width:number;length:number},private racing=false,
+   private readonly entryTraffic=true){
   this.cars=recipes.map(row=>{
    const half=this.halfAt(row.distance);
    const lateral=row.stationary
@@ -90,7 +91,7 @@ export class RaceTrafficWorld {
  }
  get(id:number){return this.byId.get(id);}
  private spawn(){
-  if(!this.racing)return;
+  if(!this.racing||!this.entryTraffic)return;
   const lastRacer=this.users.length?Math.min(...this.users.map(r=>r.distance)):this.length;
   if(lastRacer>1550){this.spawnAt=Infinity;return;}
   while(this.spawnAt<=this.time&&this.cars.length<240){

@@ -13,11 +13,12 @@ export interface Breakdown{
 export const COAST_BREAKDOWN={startClearance:1000,finishClearance:300,maxCount:2} as const;
 export function breakdownLayout(
  sample:Sample,halfAt:(d:number)=>number,length:number,seed:number,coast=false,
+ minimumDistance=coast?COAST_BREAKDOWN.startClearance:1800,
 ):Breakdown[]{
  const out:Breakdown[]=[];
  let next=coast
-   ?COAST_BREAKDOWN.startClearance+trafficRandom(seed,901)*1100
-   :1800+trafficRandom(seed,901)*450;
+   ?Math.max(COAST_BREAKDOWN.startClearance,minimumDistance)+trafficRandom(seed,901)*1100
+   :Math.max(1800,minimumDistance)+trafficRandom(seed,901)*450;
   const last=length-(coast?COAST_BREAKDOWN.finishClearance:900);
  for(let d=Math.ceil(next/25)*25;d<last;d+=25){
   if(d<next)continue;

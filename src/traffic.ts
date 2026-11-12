@@ -11,6 +11,7 @@ import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {TRAFFIC_TYPES,vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import {TireEffects,type TireContact,type WindSampler} from './tire-effects';
+import type {FirstMapTraffic} from './content/coast-onboarding';
 import {SkidFeedback} from './skid-feedback';
 import {sweptContact,type TrafficCollision} from './traffic-impact';
 import {worldSpeed,type Obstacle,type RivalState} from './rival-race';
@@ -36,18 +37,25 @@ export function trafficCruise(seed:number,id:number,type:number){
  if(type===2)return (rare>.91?180+55*r:85+60*r)/3.6;
  return (type===1?75+45*r:65+40*r)/3.6;
 }
-export function trafficRecipe(seed:number,length:number):readonly TrafficRecipe[]{
- const key=seed+':'+length,cached=recipes.get(key);if(cached)return cached;
- const out:TrafficRecipe[]=[];let distance=650+random(seed,0)*70,id=0;
+export function trafficRecipe(seed:number,length:number,opening?:FirstMapTraffic):readonly TrafficRecipe[]{
+ const key=seed+':'+length+':' +
+  (opening?`${opening.firstCivilianDistance}:${opening.firstWaveCount}:${opening.nextWaveDistance}`:'legacy');
+ const cached=recipes.get(key);if(cached)return cached;
+ const out:TrafficRecipe[]=[];
+ let distance=(opening?.firstCivilianDistance??650)+random(seed,0)*70,id=0;
  for(let group=0;distance<length-100;group++){
   // Keep the first launch sector clear; thereafter present denser, seeded road traffic.
   // Groups never occupy every lane and the existing 12-car render pool stays bounded.
-  const count=group===0?3:random(seed^0x971,group)<.14?1:2+Math.floor(random(seed^0x91f,group)*3);
+  const count=group===0?(opening?.firstWaveCount??3):random(seed^0x971,group)<.14?1:2+Math.floor(random(seed^0x91f,group)*3);
   for(let member=0;member<count;member++){
    const pick=random(seed^0x392,id),type=group===0?member:pick<.55?0:pick<.72?1:pick<.96?2:3;
    out.push({id,type,distance:distance+member*(32+random(seed^0xa5,group)*24),speed:trafficCruise(seed,id,type),group,member});id++;
   }
-  distance+=275+random(seed^0x4c2,group)*285+(random(seed^0x52a,group)<.09?450:0);
+  if(group===0&&opening){
+    distance=opening.nextWaveDistance+random(seed^0x4c2,group)*70;
+   }else{
+    distance+=275+random(seed^0x4c2,group)*285+(random(seed^0x52a,group)<.09?450:0);
+   }
  }
  if(recipes.size>=4)recipes.delete(recipes.keys().next().value!);recipes.set(key,out);return out;
 }
@@ -97,11 +105,11 @@ export class Traffic {
  private rampDemoStartedAt?:number;private rampDemoFinished=false;
  private smokeWorldWeights:readonly number[]=[1,0,0];
  private smokeWind?:WindSampler;
- constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,private stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false,private geometryShadows=false,sessionVariation=0){
+ constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,private stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false,private geometryShadows=false,sessionVariation=0,private readonly onboarding?:FirstMapTraffic){
   if(dusk)lightCoastMaterial(scene,this.material);
   if(dusk)this.runningLights=new TrafficLights(scene,TRAFFIC_LIMIT);
   this.trafficSeed=(seed^sessionVariation)>>>0;
-  this.schedule=[...trafficRecipe(this.trafficSeed,length),...stopped];
+  this.schedule=[...trafficRecipe(this.trafficSeed,length,this.onboarding),...stopped];
   this.raceWorld=this.makeRaceWorld();
   this.lanes=new TrafficLanes(this.trafficSeed,dusk);this.indicators=new THREE.InstancedMesh(new THREE.BoxGeometry(.46,.25,.08),new THREE.MeshBasicMaterial({color:'#ffb000',toneMapped:false}),TRAFFIC_LIMIT*4);this.indicators.name='traffic-turn-signals';this.indicators.count=0;this.indicators.frustumCulled=false;scene.add(this.indicators);
   // One soft contact-shadow draw for the whole traffic pool; no player-relative shadow-map cutoff.
@@ -186,14 +194,14 @@ export class Traffic {
   const coast=this.racing&&this.dusk;
   const source=coast?this.schedule.map(row=>({...row,speed:row.stationary?0:coastRaceCruise(this.trafficSeed,row.id,row.type)})):this.schedule;
   return new RaceTrafficWorld(source,this.trafficSeed,this.length,this.halfAt,
-    type=>({width:TRAFFIC_TYPES[type].width,length:TRAFFIC_TYPES[type].length}),coast);
+    type=>({width:TRAFFIC_TYPES[type].width,length:TRAFFIC_TYPES[type].length}),coast,!this.onboarding);
  }
  /** Non-racing contexts keep the existing local traffic behavior. */
  enableRaceMode(){if(this.racing)return;this.racing=true;this.raceWorld=this.makeRaceWorld();}
  private rivalBodies():RaceRoadUser[]{return (this.rivalLeaders?.()??[]).filter(r=>r.finishTime===null)
   .map((r,i)=>({id:-1000-i,distance:r.distance,lateral:r.lateral,
    speed:worldSpeed(r.speed),width:r.entry.car.width,length:r.entry.car.length}));}
- reset(variation?:number){this.previousPlayer=undefined;this.passedIds.clear();this.retiredMotion.clear();if(variation!==undefined){this.trafficSeed=(this.seed^variation)>>>0;this.schedule=[...trafficRecipe(this.trafficSeed,this.length),...this.stopped];this.lanes=new TrafficLanes(this.trafficSeed,this.dusk);}this.raceWorld=this.makeRaceWorld();this.playerSnapshot=undefined;
+ reset(variation?:number){this.previousPlayer=undefined;this.passedIds.clear();this.retiredMotion.clear();if(variation!==undefined){this.trafficSeed=(this.seed^variation)>>>0;this.schedule=[...trafficRecipe(this.trafficSeed,this.length,this.onboarding),...this.stopped];this.lanes=new TrafficLanes(this.trafficSeed,this.dusk);}this.raceWorld=this.makeRaceWorld();this.playerSnapshot=undefined;
   this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.contactDebug.length=0;this.lanes.reset();this.indicators.count=0;this.shadows.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
   this.runningLights?.begin();

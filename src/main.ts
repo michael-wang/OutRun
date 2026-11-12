@@ -216,6 +216,7 @@ const world=createWorld({
  theme:coastRuntime.stage.sceneryAct,
  seed:coastRuntime.stage.seed,
  trafficVariation:trafficSessionVariation,
+ breakdownStart:COAST_STAGE.onboarding.breakdownsAfter,
  roadWidth:coastRuntime.halfAt(COAST_STAGE.road.startDistance)*2,
  halfAt:coastRuntime.halfAt,
  weightsAt:coastRuntime.weightsAt,
@@ -407,7 +408,7 @@ function trafficRoadReady(d:number){return actorRoadReady(d);}
 function actorRoadReady(d:number){return world.streamer?.roadReady(d)??true;}
 let cones=new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),coastUltraMode);
 let triangles=new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows());
-let traffic=new Traffic(world.scene,world.sample,world.halfAt,world.length,coastRuntime.stage.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation);
+let traffic=new Traffic(world.scene,world.sample,world.halfAt,world.length,coastRuntime.stage.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation,COAST_STAGE.onboarding.traffic);
 traffic.setWind(coastWindSampler);
  traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
 const race=new RivalRace(coastEnd,d=>{
@@ -1437,7 +1438,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   trafficWorld:()=>traffic?.inspectWorld(),
   trafficClearance:()=>traffic?.clearance(state.distance,state.lateral,carBounds.x/2,carBounds.z/2,state.heading+trafficImpact.yaw+guardrail.yaw),
   trafficImpact:()=>({velocity:trafficImpact.velocity,slide:trafficImpact.slide,yaw:trafficImpact.yaw,roll:trafficImpact.roll,event:trafficImpact.event,sparks:trafficSparks.inspect()}),
-  trafficSchedule:()=>trafficRecipe(((trip?.seed??1)^trafficSessionVariation)>>>0,world.length),
+  trafficSchedule:()=>trafficRecipe(((trip?.seed??1)^trafficSessionVariation)>>>0,world.length,COAST_STAGE.onboarding.traffic),
   trafficContacts:()=>traffic?.contactPoints().map(c=>{const ray=new THREE.Raycaster(new THREE.Vector3().fromArray(c.point).add(new THREE.Vector3(0,4,0)),down,0,8),hit=world.streamer?.raycastContacts(ray,c.distance)[0];return {...c,gap:hit?c.point[1]-hit.point.y:null};}),
   acts:()=>ACTS,
   streamFaults:(faults:{delayMs:number;fromIndex:number;fail:boolean})=>world.streamer?.debugFaults(faults),
