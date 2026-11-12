@@ -22,3 +22,11 @@ it('R4c: the velocity is world-space and independent of the ocean wave forcing',
  expect(sampleCoastWind(210,175,2,{direction:[1,0],speed:0,gustStrength:0})).toEqual({x:0,z:0});
  expect(sampleCoastWind(210,175,2,{direction:[-1,0],speed:2,gustStrength:0}).x).toBeLessThan(0);
 });
+ 
+it('R4d: visual wave uses the existing gust and stage clock, not another FFT',async()=>{
+ const {farmHeroWaveGLSL}=await import('../src/coast-wind');
+ expect(farmHeroWaveGLSL).toContain('float farmHeroWave(');
+ expect(farmHeroWaveGLSL).toContain('dot(worldXZ,heading)');
+ expect(farmHeroWaveGLSL).toContain('speedMps*farmTime');
+ expect(farmHeroWaveGLSL).toContain('gust.y*.9');
+});

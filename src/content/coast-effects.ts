@@ -21,6 +21,14 @@ export interface FlowerStageEffects{
 export interface CoastWindStageEffects{
  direction:[number,number];speed:number;gustStrength:number;
 }
+/** Readable wind-aligned waves in the existing crop/flower vertex shaders.
+ * Phase speed is an ARTISTIC effect, not real airflow speed. */
+export interface CoastHeroWaveStyle{
+ wavelengthM:number;travelSpeedMps:number;swayStrength:number;colorPulse:number;
+}
+export interface CoastHeroWaves{
+ rice:CoastHeroWaveStyle;flowers:CoastHeroWaveStyle;
+}
 /** R4b: stage-owned sunset appearance, not an additional render pipeline. */
 export interface CoastLightingStageEffects{
  sunDirection:[number,number,number];shadowStretch:number;
@@ -40,7 +48,7 @@ export interface CoastStageEffects{
  schemaVersion:1;id:'coast';
  ocean:OceanStageEffects;vegetation:VegetationStageEffects;flowers:FlowerStageEffects;
  lighting:CoastLightingStageEffects;shadows:CoastShadowStageEffects;
- wind:CoastWindStageEffects;
+ wind:CoastWindStageEffects;heroWaves:CoastHeroWaves;
 }
 export const COAST_EFFECTS=effectsFile as CoastStageEffects;
 
@@ -108,6 +116,14 @@ export function validateCoastEffects(effect:CoastStageEffects,roadStart:number,r
     Math.abs(Math.hypot(heading[0],heading[1])-1)>.005||
     !bounded(wind.speed,12)||!bounded(wind.gustStrength,1))
   throw Error('Invalid shared coast wind field');
+ const waves=effect.heroWaves;
+ if(!waves?.rice||!waves.flowers)throw Error('Missing hero field wave styles');
+ for(const style of [waves.rice,waves.flowers]){
+  if(!bounded(style.wavelengthM,200)||style.wavelengthM<12||
+     !bounded(style.travelSpeedMps,42)||style.travelSpeedMps<1||
+     !bounded(style.swayStrength,.9)||!bounded(style.colorPulse,.3))
+   throw Error('Invalid hero field wave parameters');
+ }
  // Until Pixel 8 is re-profiled, the accepted mobile cost policy is mandatory.
  if(shadows.mobile.dynamicMap||shadows.mobile.staticMap)
   throw Error('Mobile depth shadow maps require a new device FPS acceptance');

@@ -140,3 +140,11 @@ it('R4c: shared coast breeze is directional, bounded and stage-validated',()=>{
  invalid(x=>{x.wind.speed=-1;});
  invalid(x=>{x.wind.gustStrength=Infinity;});
 });
+ 
+it('R4d: finite hero wave settings are authored per field type and validated',()=>{
+ expect(COAST_EFFECTS.heroWaves.rice.wavelengthM).toBeGreaterThan(COAST_EFFECTS.heroWaves.flowers.wavelengthM);
+ expect(COAST_EFFECTS.heroWaves.rice.colorPulse).toBeGreaterThan(COAST_EFFECTS.heroWaves.flowers.colorPulse);
+ const invalid=structuredClone(COAST_EFFECTS);invalid.heroWaves.rice.wavelengthM=0;
+ expect(()=>check(invalid)).toThrow('Invalid hero field wave parameters');
+ expect(()=>validateCoastStage({...COAST_STAGE,effects:invalid})).toThrow();
+});

@@ -74,3 +74,15 @@ export function sampleCoastWind(
  const speed=wind.speed*Math.max(0,1+wind.gustStrength*gust[0]);
  return {x:vx*unit*speed,z:vz*unit*speed};
 }
+ 
+/** A single hero-scale phase ridge, using the SAME wind direction, gust
+ * texture and stage time as the detailed rice/flower deformation.
+ * One extra sin per vertex; no new FFT, texture, pass or particle system. */
+export const farmHeroWaveGLSL=/* glsl */`
+ float farmHeroWave(vec2 worldXZ,vec2 gust,float wavelengthM,float speedMps){
+  vec2 heading=${COAST_WIND_HEADING_GLSL};
+  float advance=dot(worldXZ,heading)-speedMps*farmTime;
+  float cross=dot(worldXZ,vec2(-heading.y,heading.x));
+  return sin(6.2831853*advance/wavelengthM+cross*.011+gust.y*.9);
+ }
+`;

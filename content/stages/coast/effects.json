@@ -85,5 +85,19 @@
     ],
     "speed": 2.6,
     "gustStrength": 0.35
+  },
+  "heroWaves": {
+    "rice": {
+      "wavelengthM": 82,
+      "travelSpeedMps": 21,
+      "swayStrength": 0.46,
+      "colorPulse": 0.18
+    },
+    "flowers": {
+      "wavelengthM": 54,
+      "travelSpeedMps": 14,
+      "swayStrength": 0.23,
+      "colorPulse": 0.11
+    }
   }
 }

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import {farmWindGLSL,COAST_WIND_HEADING_GLSL} from './coast-wind';
+import {farmWindGLSL,farmHeroWaveGLSL,COAST_WIND_HEADING_GLSL} from './coast-wind';
+import {COAST_EFFECTS} from './content/coast-effects';
 import {farmPlotEdges,FLOWER_ROW_PITCH,type FarmPlot} from './coast-farm-layout';
 import {seededRandom} from './vendor/three-stylized/utils';
 
@@ -61,16 +62,19 @@ export function flowerSoilTexture(){
 
 type Shader=Parameters<THREE.MeshStandardMaterial['onBeforeCompile']>[0];
 export function shadeFlowerBeds(shader:Shader,time:{value:number},wind:THREE.Texture,crowns:THREE.Texture){
+ const wave=COAST_EFFECTS.heroWaves.flowers;
  Object.assign(shader.uniforms,{farmTime:time,farmWind:{value:wind},flowerCrowns:{value:crowns}});
- const varyings='varying float vFlowerLayer; varying float vGustLight;\n';
- shader.vertexShader=varyings+'attribute float flowerLayer;\n'+farmWindGLSL+shader.vertexShader;
+ const varyings='varying float vFlowerLayer; varying float vGustLight; varying float vHeroWave;\n';
+ shader.vertexShader=varyings+'attribute float flowerLayer;\n'+farmWindGLSL+farmHeroWaveGLSL+shader.vertexShader;
  shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
-  vFlowerLayer=flowerLayer;vGustLight=0.;
+  vFlowerLayer=flowerLayer;vGustLight=0.;vHeroWave=0.;
   if(flowerLayer>.5){
-   vec2 gust=farmGust((modelMatrix*vec4(position,1.)).xz);
+   vec2 fieldXZ=(modelMatrix*vec4(position,1.)).xz;
+   vec2 gust=farmGust(fieldXZ);
+   float ridge=farmHeroWave(fieldXZ,gust,${wave.wavelengthM.toFixed(1)},${wave.travelSpeedMps.toFixed(1)});
    vec2 heading=${COAST_WIND_HEADING_GLSL};
-    transformed.xz+=heading*(.17+.32*gust.x)+vec2(-heading.y,heading.x)*(.22*gust.y);
-   transformed.y-=.08*abs(gust.x);vGustLight=gust.x;
+    transformed.xz+=heading*(.17+.32*gust.x+ridge*${wave.swayStrength.toFixed(3)})+vec2(-heading.y,heading.x)*(.22*gust.y);
+   transformed.y-=.08*abs(gust.x);vGustLight=gust.x;vHeroWave=ridge;
   }`);
  shader.fragmentShader=varyings+'uniform sampler2D flowerCrowns;\n'+shader.fragmentShader;
  shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`
@@ -83,13 +87,14 @@ export function shadeFlowerBeds(shader:Shader,time:{value:number},wind:THREE.Tex
    float lod=vFlowerLayer>1.5?1.:smoothstep(42.,156.,length(vViewPosition));
    if(coverage*lod<.22)discard;
    diffuseColor.rgb=(vColor.rgb*mask.r+vec3(.095,.18,.07)*mask.g+vec3(.80,.53,.15)*mask.b)
-     /max(.32,coverage)*(.94+.09*vGustLight);
+     /max(.32,coverage)*(.94+.09*vGustLight+${wave.colorPulse.toFixed(3)}*vHeroWave);
   }`);
 }
 
 /** Reuse the instance transforms and flower palette prepared by the Worker.
  * A folded corolla, central disk and two leaves read from the chase camera. */
 export function shapeCoastalFlowers(mesh:THREE.InstancedMesh<THREE.PlaneGeometry,THREE.ShaderMaterial>,wind:THREE.Texture){
+ const wave=COAST_EFFECTS.heroWaves.flowers;
  const points:number[]=[],parts:number[]=[],tones:number[]=[],indices:number[]=[];
  function vertex(x:number,y:number,z:number,part:number,tone:number){
   points.push(x,y,z);parts.push(part);tones.push(tone);return parts.length-1;
@@ -120,7 +125,7 @@ export function shapeCoastalFlowers(mesh:THREE.InstancedMesh<THREE.PlaneGeometry
  g.computeBoundingBox();g.computeBoundingSphere();
  const m=mesh.material;
  m.uniforms.farmWind={value:wind};m.uniforms.farmTime=m.uniforms.uTime;
- m.vertexShader=farmWindGLSL+`
+ m.vertexShader=farmWindGLSL+farmHeroWaveGLSL+`
   attribute float flowerPart,tone,aVariant;
   attribute vec3 aPetalColor,aFoliageColor,aCentreColor;
   varying vec3 vBloom;
@@ -134,12 +139,13 @@ export function shapeCoastalFlowers(mesh:THREE.InstancedMesh<THREE.PlaneGeometry
    transformed.z*=length(basis[0].xyz)/max(.001,length(basis[2].xyz));
    vec4 worldPosition=basis*vec4(transformed,1.);
    vec2 gust=farmGust(basis[3].xz);
+   float ridge=farmHeroWave(basis[3].xz,gust,${wave.wavelengthM.toFixed(1)},${wave.travelSpeedMps.toFixed(1)});
    float tip=position.y*position.y*length(basis[1].xyz);
    vec2 heading=${COAST_WIND_HEADING_GLSL};
-    worldPosition.xz+=(heading*(.12+.44*gust.x)+vec2(-heading.y,heading.x)*(.29*gust.y))*tip;
+    worldPosition.xz+=(heading*(.12+.44*gust.x+ridge*${wave.swayStrength.toFixed(3)})+vec2(-heading.y,heading.x)*(.29*gust.y))*tip;
    worldPosition.y-=.12*abs(gust.x)*tip;
    vBloom=(flowerPart<.5?aFoliageColor:flowerPart<1.5?aPetalColor:aCentreColor)
-    *tone*(.96+.055*aVariant+.075*gust.x);
+    *tone*(.96+.055*aVariant+.075*gust.x+${wave.colorPulse.toFixed(3)}*ridge);
    gl_Position = projectionMatrix*viewMatrix*worldPosition;
   }`;
  m.fragmentShader=`varying vec3 vBloom;
