@@ -5,7 +5,7 @@ import {FARM_ZONES,FARM_PLOTS,FARM_HOMES} from '../src/coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES} from '../src/coast-rural-layout';
 import {COAST_REST_SPOTS,COAST_VILLAGE_SITES} from '../src/coast-village-layout';
 import {COAST_BOATS} from '../src/coast-boats';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
+import {COAST_STAGE} from '../src/content/coast-stage';
 
 it('directs four contiguous parts of one ten-kilometre coastal journey',()=>{
  expect(COAST_SCENIC_ACTS.map(x=>x.id)).toEqual([
@@ -17,7 +17,7 @@ it('directs four contiguous parts of one ten-kilometre coastal journey',()=>{
   expect(COAST_SCENIC_ACTS[i].start).toBe(COAST_SCENIC_ACTS[i-1].end);
  for(const d of [0,1799,1800,3399,3400,6999,7000,9999])
   expect(coastScenicActAt(d)).toBe(COAST_SCENIC_ACTS.find(x=>d>=x.start&&d<x.end));
- expect(COAST_ULTRA_STAGE.beats.map(x=>[x.startS,x.endS])).toEqual(
+ expect(COAST_STAGE.scenicActs.map(x=>[x.start,x.end])).toEqual(
   COAST_SCENIC_ACTS.map(x=>[x.start,x.end]));
 });
 

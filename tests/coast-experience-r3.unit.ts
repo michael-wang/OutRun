@@ -1,8 +1,7 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 import {coastCurveConeLayout} from '../src/coast-curve-cones';
@@ -12,10 +11,10 @@ import {CoastStoneContact} from '../src/coast-stone-contact';
 import {FinishStats} from '../src/finish-stats';
 import {createState} from '../src/handling';
 
-const track=createPilotTrack(stage),half=(d:number)=>pilotSample(stage,d).halfWidth;
+const runtime=coastWorkerRoad(),stage=runtime.stage,track=runtime.track,half=runtime.halfAt;
 
 it('paints the sea-side shoulder blacktop right up to the beach edge',()=>{
- const parts=prepareRoadChunk(track.sample,half,d=>pilotWeights(stage,d),830,858,track.length,
+ const parts=prepareRoadChunk(track.sample,half,runtime.weightsAt,830,858,track.length,
   false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections);
  const asphalt=parts.find(x=>x.kind==='asphalt')!,sand=parts.find(x=>x.kind==='sand')!;
  const frame=track.sample(844),v=new THREE.Vector3();

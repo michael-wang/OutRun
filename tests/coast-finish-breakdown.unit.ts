@@ -1,14 +1,14 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {breakdownLayout,COAST_BREAKDOWN} from '../src/breakdowns';
-import {createPilotTrack,pilotSample} from '../src/pilot-composer';
-import {COAST_ULTRA_STAGE,COAST_ULTRA_LENGTH} from '../src/coast-ultra-stage';
-import {BRICK_START} from '../src/bricks';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {COAST_STAGE} from '../src/content/coast-stage';
+import {ROAD_START} from '../src/road-profile';
 
 const flat=(d:number)=>({
  position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(1,0,0),
  tangent:new THREE.Vector3(0,0,1),curvature:0,roadHeading:0,
-}) as ReturnType<typeof createPilotTrack>['sample'] extends (d:number)=>infer R?R:never;
+}) as ReturnType<typeof coastWorkerRoad>['track']['sample'] extends (d:number)=>infer R?R:never;
 
 it('seeds up to two coastal breakdowns across the whole road, in any lane',()=>{
  const length=10000;
@@ -36,10 +36,10 @@ it('preserves earlier non-coast stopped-car design and scans the real coast safe
  const legacy=breakdownLayout(flat,()=>8.75,69000,1,false);
  expect(legacy.length).toBeGreaterThan(1);
  expect(legacy[0].distance).toBeLessThan(3500);
- const track=createPilotTrack(COAST_ULTRA_STAGE);
- const finishAt=BRICK_START+COAST_ULTRA_LENGTH;
+ const track=coastWorkerRoad().track;
+ const finishAt=ROAD_START+COAST_STAGE.road.length;
  const coastal=breakdownLayout(track.sample,
-  d=>pilotSample(COAST_ULTRA_STAGE,d).halfWidth,finishAt,804,true);
+  coastWorkerRoad().halfAt,finishAt,804,true);
  expect(coastal.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxCount);
  for(const car of coastal){
   expect(car.distance).toBeGreaterThanOrEqual(COAST_BREAKDOWN.startClearance);

@@ -1,14 +1,13 @@
 import {it,expect} from 'vitest';
 import {TrafficLanes,coastalLaneRebase} from '../src/traffic-lanes';
 import {prepareRoadChunk} from '../src/road-chunk';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {shoulderProfile} from '../src/road-profile';
 import {Vector3} from 'three';
 
 it('paints exactly four internal separators for five equal coastal lanes',()=>{
- const track=createPilotTrack(COAST_ULTRA_STAGE),d=1200,p=track.sample(d+1);
- const mesh=prepareRoadChunk(track.sample,()=>8.75,()=>[1,0,0],d,d+3,track.length,false,true,[],x=>shoulderProfile(x,804),undefined,true,undefined,COAST_ULTRA_STAGE.scenerySections).find(m=>m.kind==='line')!;
+ const track=coastWorkerRoad().track,d=1200,p=track.sample(d+1);
+ const mesh=prepareRoadChunk(track.sample,()=>8.75,()=>[1,0,0],d,d+3,track.length,false,true,[],x=>shoulderProfile(x,804),undefined,true,undefined,coastWorkerRoad().stage.scenerySections).find(m=>m.kind==='line')!;
  const centers=new Set<number>();for(let i=0;i<mesh.positions.length;i+=3){const v=new Vector3().fromArray(mesh.positions,i).sub(p.position),x=v.dot(p.right);if(Math.abs(x)<7)centers.add(Math.round(x*4)/4);}
  for(const x of [-5.25,-1.75,1.75,5.25])expect([...centers].some(c=>Math.abs(c-x)<.3)).toBe(true);
  expect([...centers].some(c=>Math.abs(c)<1)).toBe(false);

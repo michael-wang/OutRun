@@ -1,20 +1,19 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {COAST_STAGE} from '../src/content/coast-stage';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle,coastBarrierStoneAt,COAST_BEACHES} from '../src/coast-layout';
 import {addCoastResort} from '../src/coast-resort';
 import {addCoastMountains} from '../src/coast-mountains';
 import {farmClearing} from '../src/coast-farm-layout';
-const track=createPilotTrack(stage);
-const halfAt=(d:number)=>pilotSample(stage,d).halfWidth;
+const runtime=coastWorkerRoad(),track=runtime.track,halfAt=runtime.halfAt,stage=runtime.stage;
 const road=(start:number,end:number)=>prepareRoadChunk(track.sample,halfAt,()=>[1,0,0],start,end,track.length,false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections);
 
 it('uses five full-width coastal lanes throughout the native scenic road',()=>{
- expect(stage.baseLanes).toBe(5);expect(stage.roadWidth).toBe(17.5);
- for(let d=350;d<=10350;d+=50){expect(pilotSample(stage,d).lanes).toBe(5);expect(halfAt(d)).toBe(8.75);}
+ expect(COAST_STAGE.road.lanes).toBe(5);expect(COAST_STAGE.road.lanes*3.5).toBe(17.5);
+ for(let d=350;d<=10350;d+=50){expect(COAST_STAGE.road.lanes).toBe(5);expect(halfAt(d)).toBe(8.75);}
 });
 
 it('replaces racing curbs and tall continuous rails; keeps crossings at districts and the farm visit',()=>{

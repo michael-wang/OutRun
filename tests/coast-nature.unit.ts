@@ -7,8 +7,7 @@ import {lawnWeight,meadowCover} from '../src/coast-meadow-layout';
 import {addVergeGrass} from '../src/coast-verge-grass';
 import {COAST_DISTRICTS} from '../src/coast-layout';
 import {farmPlainMask} from '../src/coast-farm-layout';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {addCoastNature,loadCoastNature,COAST_HERO_TREE_SITES} from '../src/coast-nature';
 import {roadsideTrees,TREE_DRAW_DISTANCE} from '../src/tree-models';
@@ -16,7 +15,7 @@ import {addJourneyScenery} from '../src/scenery';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
-const track=createPilotTrack(stage),assets=JSON.parse(readFileSync('public/assets/coast-nature/models.json','utf8'));
+const runtime=coastWorkerRoad(),track=runtime.track,stage=runtime.stage,assets=JSON.parse(readFileSync('public/assets/coast-nature/models.json','utf8'));
 const woods=JSON.parse(readFileSync('public/assets/coast-nature/headland-grove.json','utf8'));
 afterAll(()=>vi.unstubAllGlobals());
 describe('sunset coast nature',()=>{
