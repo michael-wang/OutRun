@@ -145,9 +145,12 @@ it('town side roads cross the covered gutter flush and utility poles avoid their
   const g=buildCoastTownStreets(sample,chunk,chunk+1000)!;
   try{
    const attr=g.getAttribute('position'),centre=sample(site.d);
+   // Clearance is measured in the horizontal road plane. Projecting a
+   // full 3D vertex on the banked right vector overestimates the setback.
+   const horizontalRight=centre.right.clone().setY(0).normalize();
    const offsets=Array.from({length:attr.count},(_,i)=>{
     const p=new THREE.Vector3().fromBufferAttribute(attr,i);
-    return p.sub(centre.position).dot(centre.right);
+    return p.sub(centre.position).setY(0).dot(horizontalRight);
    });
    expect(offsets.some(x=>x<COAST_DRAIN_X.leftLip-.2)).toBe(true);
    expect(offsets.some(x=>x>COAST_DRAIN_X.rightLip+.2)).toBe(true);

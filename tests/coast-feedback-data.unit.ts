@@ -36,5 +36,11 @@ it('P0: reviewed road exports update with authored content only',()=>{
  const row=exportCoastReview(emptyCoastReview(),revised).records[0];
  expect(row.seed).toBe(271);
  const current=exportCoastReview(emptyCoastReview()).records[0];
- expect(row.placements[0].parameters).not.toEqual(current.placements[0].parameters);
+ // The new R5a course begins with a straight, and elevation is now
+ // ordered before the first curve. Inspect semantic identity, not slot 0.
+ const editedCurve=row.placements.find(p=>p.channel==='curvature');
+ const baselineCurve=current.placements.find(p=>p.channel==='curvature');
+ expect(editedCurve).toBeDefined();
+ expect(baselineCurve).toBeDefined();
+ expect(editedCurve!.parameters).not.toEqual(baselineCurve!.parameters);
 });
