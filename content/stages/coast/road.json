@@ -7,38 +7,40 @@
   "turns": [
     {
       "shape": "sweep",
-      "start": 1400,
-      "end": 2320,
+      "start": 900,
+      "end": 1900,
       "steer": -0.25,
-      "label": "R5a A1 · Grand banked coastal sweeper"
+      "label": "R5 A1 · Grand banked coastal sweeper"
     },
     {
       "shape": "sweep",
-      "start": 3050,
-      "end": 3810,
+      "start": 2700,
+      "end": 3520,
       "steer": -0.37,
-      "label": "R5a A3 · Long banked S, left"
+      "rampFraction": 0.08,
+      "label": "R5 A3 · Continuous banked S left"
     },
     {
       "shape": "sweep",
-      "start": 3950,
-      "end": 4710,
+      "start": 3520,
+      "end": 4340,
       "steer": 0.39,
-      "label": "R5a A3 · Long banked S, right"
+      "rampFraction": 0.08,
+      "label": "R5 A3 · Immediate banked S right"
     },
     {
       "shape": "sweep",
-      "start": 4900,
-      "end": 5550,
-      "steer": 0.18,
-      "label": "Wooded headland"
+      "start": 5100,
+      "end": 5640,
+      "steer": 0.82,
+      "label": "R5 A5 · First forgiving drift"
     },
     {
       "shape": "sweep",
-      "start": 5850,
-      "end": 6500,
-      "steer": -0.18,
-      "label": "Third sunset bay"
+      "start": 6280,
+      "end": 6760,
+      "steer": -1.02,
+      "label": "R5 A6 · Second technical drift"
     },
     {
       "shape": "sweep",
@@ -83,23 +85,23 @@
   "banks": [
     {
       "kind": "showcase",
-      "start": 1440,
-      "end": 2280,
-      "ramp": 165,
+      "start": 940,
+      "end": 1860,
+      "ramp": 155,
       "degrees": -12.5
     },
     {
       "kind": "showcase",
-      "start": 3080,
-      "end": 3790,
-      "ramp": 145,
+      "start": 2720,
+      "end": 3520,
+      "ramp": 110,
       "degrees": -13
     },
     {
       "kind": "showcase",
-      "start": 3970,
-      "end": 4690,
-      "ramp": 145,
+      "start": 3520,
+      "end": 4320,
+      "ramp": 110,
       "degrees": 13
     }
   ]

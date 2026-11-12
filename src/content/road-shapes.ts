@@ -9,9 +9,10 @@ export function profile(knots:readonly Knot[],t:number){
  return {value:lo+(hi-lo)*(.5-.5*Math.cos(Math.PI*u)),
   derivative:t<=a||t>=b?0:(hi-lo)*Math.PI*Math.sin(Math.PI*u)/(2*(b-a))};
 }
-export function sweepKnots(steer:number):Knot[]{
- // C02 used duplicated boundary knots; retain them for bit-for-bit parity.
- return [[0,0],[0,0],[.2,steer],[.8,steer],[1,0],[1,0]];
+export function sweepKnots(steer:number,rampFraction=.2):Knot[]{
+ // C02's accepted default remains bit-for-bit identical. For an authored
+ // contiguous S, a shorter nonzero transition removes the fake straight.
+ return [[0,0],[0,0],[rampFraction,steer],[1-rampFraction,steer],[1,0],[1,0]];
 }
 export function riseKnots(base:number,rise:number):Knot[]{
  // E02 used a 12% approach / 12% exit shelf.

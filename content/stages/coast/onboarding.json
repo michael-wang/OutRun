@@ -1,41 +1,59 @@
 {
   "schemaVersion": 1,
   "id": "coast",
-  "revision": "R5a.1",
+  "revision": "R5b.0",
   "lessons": [
     {
       "id": "A0",
       "start": 350,
-      "end": 1400,
-      "label": "直線加速",
-      "goal": "Learn throttle and read speed"
+      "end": 900,
+      "label": "直線起跑",
+      "goal": "Build speed and learn throttle"
     },
     {
       "id": "A1",
-      "start": 1400,
-      "end": 2320,
+      "start": 900,
+      "end": 1900,
       "label": "高速傾斜大彎",
-      "goal": "Feel multiple racing rivals bank without requiring drift"
+      "goal": "Learn a banked high-speed sweep without drifting"
     },
     {
       "id": "A2",
-      "start": 2320,
-      "end": 3050,
-      "label": "初次超車",
-      "goal": "Pass the first sparse civilian traffic encounter"
+      "start": 1900,
+      "end": 2700,
+      "label": "第一次超車",
+      "goal": "Read a sparse civilian car and pass safely"
     },
     {
       "id": "A3",
-      "start": 3050,
-      "end": 4710,
-      "label": "加長傾斜 S 彎",
-      "goal": "Read sustained alternating curvature and banking"
+      "start": 2700,
+      "end": 4340,
+      "label": "連續傾斜 S 彎",
+      "goal": "Immediately turn right after the left turn"
     }
   ],
   "traffic": {
-    "firstCivilianDistance": 2640,
+    "firstCivilianDistance": 2200,
     "firstWaveCount": 1,
-    "nextWaveDistance": 5060
+    "nextWaveDistance": 7120
   },
-  "breakdownsAfter": 5800
+  "breakdownsAfter": 7560,
+  "driftLessons": [
+    {
+      "id": "A5",
+      "start": 5100,
+      "end": 5640,
+      "label": "第一個甩尾彎",
+      "goal": "Lift or brake before the corner; wide recovery exit",
+      "suggestedEntryKmh": 205
+    },
+    {
+      "id": "A6",
+      "start": 6280,
+      "end": 6760,
+      "label": "第二個甩尾彎",
+      "goal": "Brake earlier, hold the line and accelerate on exit",
+      "suggestedEntryKmh": 175
+    }
+  ]
 }

@@ -10,6 +10,9 @@ export interface AuthoredTurn{
  end:number;
  /** Signed steering demand; positive/negative selects bend direction. */
  steer:number;
+ /** How quickly this bend reaches/releases full demand. Default C02 = 0.2.
+  * An immediate S uses 0.08 so it doesn't feel like a hidden straight. */
+ rampFraction?:number;
  label:string;
 }
 /** Optional manually placed cross-slope accents, in absolute route metres. */
@@ -72,7 +75,9 @@ export function validateAuthoredRoad(road:AuthoredRoad){
   }
  }
  for(const turn of road.turns)
-  if(turn.shape!=='sweep'||!Number.isFinite(turn.steer)||turn.steer===0||!turn.label)
+  if(turn.shape!=='sweep'||!Number.isFinite(turn.steer)||turn.steer===0||!turn.label||
+     (turn.rampFraction!==undefined&&(!Number.isFinite(turn.rampFraction)||
+       turn.rampFraction<.04||turn.rampFraction>.25)))
    throw Error('Invalid authored turn');
  for(const elevation of road.elevations)
   if(elevation.shape!=='gentle-rise'||!Number.isFinite(elevation.base)||
@@ -133,7 +138,7 @@ function prepareRoad(road:AuthoredRoad):PreparedRoad{
  const prepared:PreparedRoad={
   turns:road.turns.map(turn=>({
    start:turn.start,end:turn.end,
-   knots:sweepKnots(turn.steer),
+   knots:sweepKnots(turn.steer,turn.rampFraction),
   })),
   elevations:road.elevations.map(part=>({
    start:part.start,end:part.end,endHeight:part.base+part.rise,

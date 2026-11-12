@@ -28,7 +28,7 @@ describe('sunset coast nature',()=>{
   for(let d=350;d<=10350;d+=25){
    const p=track.sample(d),angle=p.roadHeading+sunAzimuth;
    expect(Number.isFinite(angle+p.curvature+p.right.y)).toBe(true);
-   expect(Math.abs(p.curvature)).toBeLessThan(.003);
+   expect(Math.abs(p.curvature)).toBeLessThan(.006); // includes authored drift corners
    minimum=Math.min(minimum,angle);maximum=Math.max(maximum,angle);
   }
   // Player orientation relative to the same sun changes significantly.

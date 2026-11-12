@@ -19,7 +19,7 @@ it('P0 R5a: opening four lessons are safe, ordered and matched to the authored r
  }
  expect(coastLessonAt(plan.lessons.at(-1)!.end)).toBeUndefined();
  expect(sampleAuthoredRoad(road,750).demand).toBe(0);
- expect(sampleAuthoredRoad(road,1200).demand).toBe(0);
+ expect(sampleAuthoredRoad(road,850).demand).toBe(0);
  expect(sampleAuthoredRoad(road,road.turns[0].start-10).demand).toBe(0);
  expect(sampleAuthoredRoad(road,road.turns[0].end+10).demand).toBe(0);
  expect(Math.abs(road.turns[0].steer)).toBeLessThan(Math.abs(road.turns[1].steer));
@@ -60,13 +60,16 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
  invalid(s=>{s.onboarding.lessons[1].start=900;});
  invalid(s=>{const b=s.road.banks![0];b.ramp=(b.end-b.start)/2;});
  invalid(s=>{s.road.banks![0].degrees=30;});
+ invalid(s=>{s.road.turns[1].rampFraction=.5;});
+ invalid(s=>{s.onboarding.driftLessons[0].start=4800;});
+ invalid(s=>{s.onboarding.driftLessons[1].suggestedEntryKmh=260;});
  const broken=structuredClone(road);broken.banks![1].start=broken.banks![0].start+1;
  expect(()=>validateAuthoredRoad(broken)).toThrow();
 });
 
 it('R5a.1: dramatic beginner sweeper and longer S keep coherent entry/exit transitions',()=>{
  const [sweep,left,right]=road.turns;
- expect(sweep.start).toBe(1400);
+ expect(sweep.start).toBe(900);
  expect(sweep.end-sweep.start).toBeGreaterThanOrEqual(900);
  expect(Math.abs(sweep.steer)).toBeGreaterThanOrEqual(.24);
  expect(Math.abs(sweep.steer)).toBeLessThan(.32); // deliberately not drift-required
@@ -85,4 +88,55 @@ it('R5a.1: dramatic beginner sweeper and longer S keep coherent entry/exit trans
    expect(Math.abs(prev.right.y-next.right.y)).toBeLessThan(.02);
   }
  }
+});
+
+it('R5a.2: the left-to-right S has no neutral straight and retains smooth joins',()=>{
+ const [sweep,left,right]=road.turns;
+ expect(road.startDistance).toBe(350);
+ expect(sweep.start).toBe(900);
+ expect(left.end).toBe(right.start);
+ expect(left.rampFraction).toBeLessThan(.1);
+ expect(right.rampFraction).toBeLessThan(.1);
+ expect(sampleAuthoredRoad(road,left.end).demand).toBeCloseTo(0,12);
+ expect(sampleAuthoredRoad(road,left.end-50).demand).toBeLessThan(-.2);
+ expect(sampleAuthoredRoad(road,right.start+50).demand).toBeGreaterThan(.2);
+ const track=createAuthoredCoastTrack(road,identity);
+ for(let d=left.end-110;d<=right.start+110;d+=5){
+  const p=track.sample(d);
+  expect(p.position.toArray().every(Number.isFinite)).toBe(true);
+  expect(p.right.toArray().every(Number.isFinite)).toBe(true);
+ }
+ for(const d of [left.end-1,left.end,left.end+1]){
+  const a=track.sample(d-.01),b=track.sample(d+.01);
+  expect(a.position.distanceTo(b.position)).toBeLessThan(.04);
+  expect(Math.abs(a.right.y-b.right.y)).toBeLessThan(.01);
+ }
+});
+
+it('R5b: two drift-demanding authored turns have a long safe recovery gap',async()=>{
+ const [first,second]=road.turns.slice(3,5);
+ const [a5,a6]=plan.driftLessons;
+ expect(first.start).toBe(a5.start);
+ expect(first.end).toBe(a5.end);
+ expect(second.start).toBe(a6.start);
+ expect(second.end).toBe(a6.end);
+ expect(a5.suggestedEntryKmh).toBeGreaterThan(a6.suggestedEntryKmh);
+ expect(Math.abs(second.steer)).toBeGreaterThan(Math.abs(first.steer));
+ expect(first.steer*second.steer).toBeLessThan(0);
+ expect(second.start-first.end).toBeGreaterThan(500);
+ const track=createAuthoredCoastTrack(road,identity);
+ const {requiredSteering}=await import('../src/challenges');
+ for(const turn of [first,second]){
+  const apex=track.sample((turn.start+turn.end)/2);
+  // At high cruising speed the steering demand is intentionally above
+  // the available authority: lift/brake early instead of blindly full throttle.
+  expect(requiredSteering(apex.curvature,280/3.6)).toBeGreaterThan(1);
+  expect(Math.abs(apex.right.y)).toBeLessThan(.38);
+  for(const edge of [turn.start,turn.end]){
+   const before=track.sample(edge-.05),after=track.sample(edge+.05);
+   expect(before.position.distanceTo(after.position)).toBeLessThan(.12);
+  }
+ }
+ expect(coastLessonAt((a5.start+a5.end)/2)?.id).toBe('A5');
+ expect(coastLessonAt((a6.start+a6.end)/2)?.id).toBe('A6');
 });
