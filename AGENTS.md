@@ -91,3 +91,22 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   using a near-visible midground as an infinitely distant fake backdrop;
   inspect motion parallax at speed as well as screenshots. Current old coast
   mountain implementation is not a required map-remake target.
+
+## R5 first-map onboarding and art workflow
+
+- The first coast remake is a **progressive driving introduction**, not
+  a maximal-intensity corner demo. Lesson sequence: straight acceleration,
+  non-drift sweeper, first civilian traffic, banked S-curve, first avoidable
+  multi-car accident, two progressively harder drift corners. Afterward
+  alternate hero scenery with racing challenges and finish sprint.
+- Eight race rivals remain from the start; control *civilian* traffic
+  and staged hazard unlock zones independently, with reproducible seeds.
+  Do not spawn unavoidable accidents or completely block the tutorial.
+- Read `docs/R5_FIRST_MAP_DIRECTOR.md` before road/traffic changes and
+  `docs/R5_ART_PIPELINE.md` before Blender asset workflow changes.
+  For new geometry, author one road-space truth shared by Worker, player,
+  AI, renderer and collision. Validate at speed and on Pixel 8.
+- Blender is an **offline production tool**, not a second gameplay engine.
+  Prefer Geometry Nodes, light meshes, LOD and glTF for gameplay scenes.
+  Blender 5.3 Gaussian Splat import is an optional static-scene
+  reference/POC, not required mobile runtime art or renderer migration.

@@ -4,29 +4,44 @@ Status: **next active development phase**, R4 accepted.
 This is an art/engineering brief for the first road whitebox, **not**
 a finished map specification or a reason to rebuild the renderer.
 
-## North star
+## North star — teach first, thrill next
 
-Make the **road itself** worth driving. Build one authored playable
-road from the existing finite-stage content pipeline; prove the
-driving rhythm before investing in buildings, fields or mountain art.
-Original OutRun/OutRun 2 SP are references for arcade *feeling*,
-not routes, assets, licensed cars or music to reproduce.
+**This is the game's FIRST map.** Its opening must teach the controls by
+making the player successful, without heavy pop-up tutorials or punishing
+technical corners. Subsequent acts alternate scenic wonder with racing
+challenge; the closing act culminates in a recognizable finish sprint.
+The road remains enjoyable, but the *opening objective is confidence*,
+not maximum corner intensity.
 
-### First whitebox slice
+Original OutRun/OutRun 2 SP are references for the arcade *feeling*, not
+routes, assets, licensed cars or music to reproduce.
 
-- Hand-author a deliberately short, representative sequence with:
-  a recoverable opening, one genuinely sustained fast sweeping turn,
-  one technical left-right S-bend that is not two negligible kinks,
-  one clear altitude/bank reveal, and a long sightline to recover.
-- Retain the existing arcade player, rival/traffic and bounded
-  road-streaming safety. No new generic road generator, Scenic Director
-  or historical second-stage adapter.
-- Evaluate turns through the actual chase camera at driving speeds,
-  not solely through a bird's-eye spline preview. Start with four
-  clear lanes unless a specific gameplay scene needs a different count.
-- Large forms first: curves, banking and elevation must read at speed.
-  Only after road acceptance, add hero vista placements and rhythm,
-  then supporting environmental detail, and finally small filler.
+### First whitebox slice: onboarding without scenery dependency
+
+- Begin with an unobstructed acceleration straight and a broad, fast
+  **non-drift** sweeper.
+- After that first corner, gradually reveal ordinary civilian traffic.
+  The **eight racing rivals remain present from the starting grid**.
+- Introduce a legible banked S-curve to teach satisfying alternating
+  steering before increasing difficulty.
+- After the S-curve, teach obstacle recognition with a staged roadside
+  accident; begin with an easily read, avoidable formation.
+- Only after that sequence place two drift-demanding corners. The first
+  must be visibly approachable with wide recovery space and a rewarding
+  accelerating exit; the second can request more precision.
+- Keep four lanes as the initial road whitebox baseline unless a specific
+  scene clearly needs more. Lane reductions/expansions and construction
+  hazards come after the core driving lessons.
+- Use the actual chase camera, real driving speed, stopping/approach
+  distance, and test footage to choose the stage positions. Do **not**
+  lock these seven lessons into a guessed percentage of the route: at
+  200–300 km/h too little distance can become just seconds of play.
+- Road geometry, streaming and collision share one logical sampler. Do
+  not revive the random Scenic Director or historical second-stage code.
+
+The detailed authored teaching/event script, with ownership and
+collision safety requirements, is in
+[`R5_FIRST_MAP_DIRECTOR.md`](R5_FIRST_MAP_DIRECTOR.md).
 
 ## Critical motion-parallax check — new acceptance gate
 
@@ -81,7 +96,20 @@ to trying the whitebox. Material-contact seams are in
 
 ## Next acceptance
 
-**R5a:** drive a focused road whitebox with strong, readable curve
-rhythm and one bank/elevation reveal; use real in-game footage and
-landmark/distance labels for easy feedback. Once that passes,
-replace the rest of the route and only then plan scenic hero beats.
+**R5a:** prove the first three movement lessons in a focused road
+whitebox: acceleration straight, comfortable non-drift sweeper, and
+banked S-curve. Roadside civilian traffic should first appear after
+the opening sweeper. Use distance/lesson debug markers and real
+player-camera video so acceptance is unambiguous.
+
+**R5b:** first staged accident followed by two progressively harder
+drift corners, then expand the authored course.
+
+**R5c:** hero scenery and alternation between relaxing vista beats and
+challenging racing/roadwork beats.
+
+**R5d:** clear final acceleration/sprint and finish-line payoff.
+
+Art workflow, Blender usage and project responsibilities are detailed
+in [`R5_ART_PIPELINE.md`](R5_ART_PIPELINE.md).
+No implementation of these new stages is implied by documentation.
