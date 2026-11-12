@@ -168,3 +168,10 @@ roadside collision meshes or new Geometry Nodes cliffs.
 Do not let the Blender road guide become a second source
 of collision geometry. A future art pass must also preserve
 the visible S crossover and corner sightlines at speed.
+
+### R5b extension
+
+The road-guide export now covers **350–6760m**, including both
+drift bends, their recovery straight and the new immediate S
+transition. The Geometry Nodes prototype remains purely offline
+and never overrides the game's real road, barriers or collisions.

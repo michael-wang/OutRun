@@ -14,8 +14,8 @@ try{
  const {coastLessonAt}=await server.ssrLoadModule('/src/content/coast-onboarding.ts');
  const {road,onboarding}=COAST_STAGE;
  const {track,halfAt}=coastWorkerRoad();
- // Export R5a only until the remainder of the first map is accepted.
- const start=road.startDistance,end=onboarding.lessons.at(-1).end;
+ // Export the accepted road whitebox through A6, including the first two drifts.
+ const start=road.startDistance,end=onboarding.driftLessons.at(-1)!.end;
  const stations=new Set([start,end]);
  for(let d=start;d<=end;d+=20)stations.add(d);
  for(const lesson of onboarding.lessons)stations.add(lesson.start),stations.add(lesson.end);
@@ -40,5 +40,5 @@ try{
  const folder='art-prototype/output',filename=join(folder,'r5-road-guide.json');
  await mkdir(folder,{recursive:true});
  await writeFile(filename,JSON.stringify(artifact,null,2));
- console.log(`R5a road guide: ${samples.length} stations in ${filename} (${start}-${end}m)`);
+ console.log(`R5b road guide: ${samples.length} stations in ${filename} (${start}-${end}m)`);
 }finally{await server.close();}
