@@ -21,9 +21,22 @@ function road(from:number,to:number){
   false,true,[],shoulder,undefined,true,undefined,stage.scenerySections);
 }
 function lateralPositions(mesh:{positions:Float32Array},d:number){
- const center=track.sample(d),p=new THREE.Vector3();
- return Array.from({length:mesh.positions.length/3},(_,i)=>
-  p.fromArray(mesh.positions,i*3).sub(center.position).dot(center.right));
+ // Chunk vertices span d +/- 11m. A single mid-frame projection invents
+ // extra lateral width around R5's new banked bends. Compare each point
+ // against its closest LOCAL road frame in the horizontal world plane.
+ const frames=Array.from({length:12},(_,i)=>track.sample(d-11+i*2));
+ const p=new THREE.Vector3();
+ return Array.from({length:mesh.positions.length/3},(_,i)=>{
+  p.fromArray(mesh.positions,i*3);
+  let nearest=frames[0],distance=Infinity;
+  for(const frame of frames){
+   const dx=p.x-frame.position.x,dz=p.z-frame.position.z,dist=dx*dx+dz*dz;
+   if(dist<distance){distance=dist;nearest=frame;}
+  }
+  const norm=Math.hypot(nearest.right.x,nearest.right.z);
+  return ((p.x-nearest.position.x)*nearest.right.x+
+   (p.z-nearest.position.z)*nearest.right.z)/norm;
+ });
 }
 it('replaces BEIGE shoulder with asphalt apron, a real gap for the ditch, and dry earth behind it',()=>{
  for(const d of [850,3990,8550]){

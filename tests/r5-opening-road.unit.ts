@@ -130,7 +130,7 @@ it('R5b: two drift-demanding authored turns have a long safe recovery gap',async
   const apex=track.sample((turn.start+turn.end)/2);
   // At high cruising speed the steering demand is intentionally above
   // the available authority: lift/brake early instead of blindly full throttle.
-  expect(requiredSteering(apex.curvature,280/3.6)).toBeGreaterThan(1);
+  expect(Math.abs(requiredSteering(apex.curvature,280/3.6))).toBeGreaterThan(1);
   expect(Math.abs(apex.right.y)).toBeLessThan(.38);
   for(const edge of [turn.start,turn.end]){
    const before=track.sample(edge-.05),after=track.sample(edge+.05);
