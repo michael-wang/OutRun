@@ -179,3 +179,19 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - These are code/data commits, not a claim of local Vite,
   Vitest, browser or Pixel 8 verification. Use
   `npm run verify:dev` before accepting R5b.
+
+## R5b.1 A4 incident rules
+
+- The new A4 is a **moderate curving-road** obstruction,
+  not just two cars on a straight. It uses the same world
+  sample as the driver, the Traffic pool and rival obstacle AI.
+- `coastAccidentLayout()` places 2–3 real stationary vehicle
+  actors with seeded positions and yaw, leaving at least
+  TWO full lanes physically passable. Preserve these safety
+  guarantees when changing seed variants.
+- `stopYaw` must agree across traffic body matrices,
+  shadow pose, swept collision and AI projected bounds.
+- One three-triangle warning approach is enough; don't
+  duplicate warnings for each incident actor.
+- A5/A6 drift roads have passed owner play acceptance;
+  DO NOT move or retune them while polishing this scene.

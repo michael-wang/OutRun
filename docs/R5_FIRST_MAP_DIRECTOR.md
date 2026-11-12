@@ -143,13 +143,39 @@ transition shoulders while keeping finite and continuous
 steering. The rest of the road preserves the original smooth
 C02 easing. Banking is authored by `road.json` envelopes.
 
-R5b includes the **two drift road geometries only** in this
-slice. An actual A4 crashed-vehicle tableau, incident warnings,
-road closures and any new surface material responses are
-separate implementation/acceptance work. This is intentional:
+R5b originally added the two drift road geometries before the
+incident. R5b.1 now adds a real A4 accident tableau and warnings
+on an additional moderate road bend. New surface material
+responses and longer roadwork closures remain deferred. This is intentional:
 the road/driving line is approved before adding hazards.
 
 Test seeds are reproducible but do not make ordinary highway
 traffic static. The first coached civilian introduction is
 curated; afterwards random schedule generation and driver AI
 remain the same approach as before.
+
+## R5b.1 — curved accident scene (implementation, 2026-11-13)
+
+A4 is now a true moderate bend at **4410–4890m**, with the
+accident centred near **4635m**, not a parked-car display on a
+straight. Two or three seeded vehicles are parked at visibly
+different yaw angles and longitudinal offsets in the middle
+of the existing five-lane road. Two outside passing lanes
+remain genuinely usable. This is the first deliberate
+obstacle-reading lesson, following the S and preceding the
+already accepted first drift at 5100m.
+
+The stopped cars are inserted into the **same** authoritative
+traffic state already used by the player, rivals and civilian
+traffic. Their projected widths inform AI avoidance and swept
+collision, and rendering uses those same yaw values.
+A single three-sign approach warns the driver before the incident;
+there are no nine overlapping warning triangle rows. The
+scene has no random CPU crash physics or new draw pass.
+Randomized normal highway traffic resumes after the drift
+teaching sequence; the accident uses only bounded seeded
+variation.
+
+Player acceptance: it must require a conscious steering
+choice in the curve, without an impossible full-width blockade,
+vehicle pop-in, ghost collision or loss of visibility.

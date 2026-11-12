@@ -146,3 +146,14 @@ The first civilian is a guided encounter; subsequent traffic
 is never hand-listed. Seed differences still change its
 vehicle groups, type, speed and behaviors. Road and
 terrain must use the same `coastWorkerRoad` geometry.
+
+## R5b.1 curving traffic incident
+
+`onboarding.json.accident` now describes the fixed authored
+A4 road window at 4410–4890m, and its incident site near
+4635m. Within it, `coast-accident.ts` creates two or three
+seeded, angled, **physical** stopped-vehicle recipes. They
+are consumed through the existing Traffic + RoadCones
+system with shared obstacle/collision state, not merely
+drawn by a scenery prefab. The outer two passing lanes
+remain free for every allowed variant.

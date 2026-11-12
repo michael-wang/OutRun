@@ -62,6 +62,7 @@ export function validateCoastOnboarding(plan:CoastOnboarding,road:AuthoredRoad){
  const accident=plan.accident,incidentCurve=road.turns[3];
  if(!accident||accident.id!=='A4'||!accident.label?.trim()||!incidentCurve||
     accident.start!==incidentCurve.start||accident.end!==incidentCurve.end||
+    !Number.isFinite(accident.distance)||
     accident.start<sBend.end+60||accident.distance<accident.start+150||
     accident.distance>accident.end-110||
     ![2,3].includes(accident.minimumOpenLanes)||

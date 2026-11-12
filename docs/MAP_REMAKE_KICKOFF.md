@@ -210,3 +210,20 @@ R5b drift QA in Vite dev:
 The existing terrain and mountain art past the opening is
 provisional. Do not invest more in it before confirming the
 whitebox road and future hero-vista placements.
+
+## R5b.1 — an accident that must be steered around
+
+The formerly straight A4 slot is now a modest authored
+curve (4410–4890m, steer -0.32) containing two or three
+staggered, slightly angled **real** stopped vehicles near
+4635m. The two originally accepted drift turns are unchanged.
+The existing traffic physics, rendering pool, rivals and
+warning-triangle instancing are reused. An extra road geometry
+authoring step is needed in Blender guides after road acceptance.
+
+Tests are maintained in the same commits, including seeded
+accident placements, a minimum of two truly passable lanes,
+AI obstacle dimensions and a single warning sequence.
+As before, complete TypeScript / Vitest and actual Pixel 8
+playthrough require the local workstation; do not declare
+technical QA green solely because GitHub accepted source.
