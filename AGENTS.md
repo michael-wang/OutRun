@@ -28,9 +28,9 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - Authored C02/E02 math is in `src/content/road-shapes.ts`; the game and Worker share `coast-worker-road.ts`. Review the small active flow in `docs/CURRENT_ARCHITECTURE.md` before adding new road logic.
 
 
-- R4a/R4b stage effect settings live in `content/stages/coast/effects.json`
+- R4a/R4b/R4c stage effect settings live in `content/stages/coast/effects.json`
   and are validated by `src/content/coast-effects.ts`; do not recreate
-  hard-coded ocean/vegetation/flower/sunset/shadow profile defaults in their producer modules.
+  hard-coded ocean/vegetation/flower/sunset/shadow/wind defaults in their producer modules.
 - When working with local Codex, run `npm run verify:dev` (build + all
   retained unit tests) **before** pushing to GitHub. GitHub release
   validation remains a separate authority for `main`; physical play
@@ -40,3 +40,16 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
   trigger automatic builds. For local Codex first run `npm run verify:dev`
   before pushing; optionally dispatch `Dev checks (manual)` from Actions.
   Main-push release validation remains automatic.
+
+## R4c shared environmental wind
+
+- `content/stages/coast/effects.json.wind` is the directional world-XZ air
+  velocity. `src/coast-wind.ts` owns the accepted RG8 gust pattern and its
+  CPU sampler. No per-particle gust sampling or ad hoc wind randomisers.
+- Airborne effects receive an optional wind callback; do not tie weather to
+  steering, collisions or the graphics engine. Keep skid marks anchored.
+- `ocean.windSpeed` is a wave-spectrum excitation setting, **not**
+  physical wind speed in metres per second. Do not conflate the two.
+- Light/shadow overlaps and inactive legacy fallback paths are documented
+  in `docs/R4_LIGHT_SHADOW_WIND_AUDIT.md`; remove only with targeted
+  tests and visual/FPS acceptance.

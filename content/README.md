@@ -73,3 +73,21 @@ Pixel 8 baseline: both expensive 3D shadow maps remain OFF, and map texture
 budgets cannot exceed the approved sizes. Enabling them in authored mobile
 content needs explicit device profiling and a validator change. No new Shader,
 draw pass or shadow caster was added in R4b.
+
+## R4c — world breeze and wind-aware airborne effects
+
+`stages/coast/effects.json.wind` specifies a world-XZ unit heading, air
+speed in metres per second, and gust response. The former
+`coast-farm-wind.ts` is now `src/coast-wind.ts`: the original 64×64 RG8
+texture and gust pattern remain, but a cheap CPU sampler also reads the same
+noise source and time field. Rice and flower Shader gusts are unchanged
+for the accepted coast heading; ornamental grass now follows that heading.
+
+Players, rivals, traffic collisions and off-road dust use injected world
+wind without changing tire marks, vehicle handling, collision rules or
+the particle/draw-call budget. The sample is once per active emitter per
+frame, not per smoke puff. The short exhaust-shift sprites and stationary
+breakdown-engine smoke are separate legacy visuals, not yet wind-aware.
+
+`ocean.windSpeed` remains an OceanSim **wave forcing** setting, not
+physical air speed. See `docs/R4_LIGHT_SHADOW_WIND_AUDIT.md`.

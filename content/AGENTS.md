@@ -30,3 +30,10 @@
 - R4b: light colors/direction, haze and GPU shadow launch profiles are
   stage settings in the same file. Preserve approved mobile-fast defaults;
   live shadow diagnosis remains a separate runtime switch, not stage content.
+
+- R4c: `effects.json.wind` defines the shared world-XZ breeze; the
+  deterministic noise texture and CPU sampler in `coast-wind.ts` drive
+  both farm shaders and particle advection. Flower grass uses the same
+  heading. Don't create a second wind-direction constant for new content.
+- Keep OceanSim's `ocean.windSpeed` distinct from real air velocity:
+  the first tunes FFT wave excitation, the second advects particles.

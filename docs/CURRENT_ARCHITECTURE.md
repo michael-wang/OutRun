@@ -84,3 +84,17 @@ new device measurements support changing that policy.
 
 No scene shader, shadow pass, caster assignment or route handling changes.
 Unchanged lighting defaults should produce an identical scene.
+
+## R4c — stage wind injected into particles
+
+`src/coast-wind.ts` holds the existing farm RG8 gust texture and GPU
+formula, plus a CPU sampler for airborne smoke. `effects.json.wind`
+owns the single prevailing heading and physical air speed; the coast
+farm shaders and one-sample-per-emitter CPU particles use the same
+world-space gust and `elapsed` clock. `TireEffects` only accepts an
+optional callback, so it knows nothing about coast stages.
+
+The ocean's `windSpeed` remains separately tuned FFT wave forcing.
+`docs/R4_LIGHT_SHADOW_WIND_AUDIT.md` records which historic shadow/light
+layers are complementary and which are redundant or inactive. Avoid
+deleting the active mobile projected fallback by accident.
