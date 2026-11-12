@@ -160,3 +160,5 @@ the playable main module.
 
 Future region changes require explicit stage data and localized capabilities,
 not restoration of the discarded procedural multi-world system.
+
+R2h finish cleanup: live player completion uses the authored coastal `coastEnd` directly. No remaining chapter/Journey identifiers in `main.ts`.
