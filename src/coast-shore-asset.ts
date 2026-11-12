@@ -1,12 +1,16 @@
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE as stage} from './coast-ultra-stage';
+import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
+import {authoredRoadPlacements} from './content/authored-road';
+import {LANE_WIDTH} from './road-profile';
 import {COAST_BEACHES,COAST_SAND_POINTS} from './coast-layout';
 
 // This authored coast is fixed. Bake it on the developer machine, not on phones.
 // Bump the format version if the shoreline interpretation changes.
 const version=1;
 let hash=2166136261;
-for(const c of JSON.stringify([version,stage.contentFingerprint,stage.length,stage.baseHeight,stage.roadWidth,stage.placements,COAST_BEACHES,COAST_SAND_POINTS]))hash=Math.imul(hash^c.charCodeAt(0),16777619);
+for(const c of JSON.stringify([version,COAST_RUNTIME_IDENTITY.contentFingerprint,COAST_STAGE.road.length,
+ COAST_STAGE.road.baseHeight,COAST_STAGE.road.lanes*LANE_WIDTH,authoredRoadPlacements(COAST_STAGE.road),
+ COAST_BEACHES,COAST_SAND_POINTS]))hash=Math.imul(hash^c.charCodeAt(0),16777619);
 export const COAST_SHORE_KEY=(hash>>>0).toString(16);
 type Shore={texture:THREE.DataTexture;bounds:THREE.Vector4};
 
