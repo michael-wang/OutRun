@@ -5,11 +5,10 @@ import {gzipSync} from 'node:zlib';
 // Run before dev/build. Generated binary stays out of Git and ships with dist.
 const server=await createServer({configFile:false,server:{middlewareMode:true},appType:'custom',logLevel:'error',optimizeDeps:{noDiscovery:true,include:[]}});
 try{
- const {COAST_ULTRA_STAGE}=await server.ssrLoadModule('/src/coast-ultra-stage.ts');
- const {createPilotTrack}=await server.ssrLoadModule('/src/pilot-composer.ts');
+ const {coastWorkerRoad}=await server.ssrLoadModule('/src/content/coast-worker-road.ts');
  const {bakeCoastShore}=await server.ssrLoadModule('/src/coast-shore.ts');
  const {packCoastShore,COAST_SHORE_KEY}=await server.ssrLoadModule('/src/coast-shore-asset.ts');
- const track=createPilotTrack(COAST_ULTRA_STAGE),shore=bakeCoastShore(track.sample,track.length);
+ const track=coastWorkerRoad().track,shore=bakeCoastShore(track.sample,track.length);
  try{
   const compressed=gzipSync(packCoastShore(shore),{level:9});
   await mkdir('public/generated',{recursive:true});
