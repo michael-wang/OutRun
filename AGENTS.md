@@ -129,3 +129,13 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - No Blender terrain or Geometry Nodes art is in this first
   whitebox. Verify the road and steering first, then run a single
   Geometry Nodes asset experiment for scenery before scaling production.
+
+## R5a art-guide bridge
+
+- `npm run r5:road-guide` exports the game/Worker's exact road
+  sampler into an ignored local JSON guide.
+- `scripts/blender/r5_guides.py` loads the guide as Blender curves
+  and creates a **preview** Geometry Nodes scatter. It does not
+  own road physics, collision, terrain material decisions, or a
+  shipping GLB. Blender execution/inspection remains a local Codex
+  responsibility until a Blender runtime is available.

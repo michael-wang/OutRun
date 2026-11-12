@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
     "verify:dev": "npm run build && npm test",
+    "r5:road-guide": "node scripts/r5-export-road-guide.mjs",
     "test:e2e": "npm run build && playwright test",
     "preview": "vite preview --host 127.0.0.1",
     "art:trees": "node scripts/bake-headland-grove.mjs",

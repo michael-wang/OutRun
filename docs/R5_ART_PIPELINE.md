@@ -121,3 +121,29 @@ Official references:
 
 R5 map should not require Gaussian Splats, a giant procedural
 world-generator or a new rendering engine in order to look beautiful.
+
+## R5a implemented offline road-guide interchange
+
+We added the first **Geometry Nodes authoring bridge**, without
+bundling Blender or its output into the Three.js game.
+
+1. Run `npm run r5:road-guide`. This uses Vite SSR to call the
+   **same** `coastWorkerRoad().track.sample()` as the game and Worker.
+   It exports A0–A3 points, bank angle, road width and lesson IDs to
+   `art-prototype/output/r5-road-guide.json` (ignored by Git).
+2. With Blender installed locally, run:
+   `blender -b --python scripts/blender/r5_guides.py -- art-prototype/output/r5-road-guide.json art-prototype/output/r5-road-guide.blend`.
+   The script converts Three.js Y-up into Blender Z-up, creates
+   centerline and shoulder guide curves, and adds a minimal
+   **Geometry Nodes rock-scatter preview** along the inland verge.
+3. These are reference curves and non-colliding rock proxies, **not
+   runtime road geometry or production scenery**. Do not export
+   the preview as the playable road, and do not take the placeholder
+   rock surface as a final art style.
+4. Once R5a road shape is accepted, use these guides for one
+   well-chosen material/geometry prototype with realistic PBR textures
+   and mobile LOD. Then measure Pixel 8 before scaling up.
+
+Neither Blender nor GPU-heavy splatting is required for road whitebox.
+The importer is currently a source-level integration artifact; it
+needs local Blender execution before considering the GN step verified.
