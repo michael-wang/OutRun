@@ -25,7 +25,7 @@ it('R2j: old local storage is recovered without loading L2/Pilot catalogs',()=>{
  expect(readCoastReview(JSON.stringify({[key]:row}))).toEqual(row);
  expect(readCoastReview('corrupted')).toEqual(emptyCoastReview());
  expect(readCoastReview(JSON.stringify({[key]:{...row,difficulty:99,
-  overallNote:'a'.repeat(400)}})).toMatchObject({difficulty:null,overallNote:'a'.repeat(360)});
+  overallNote:'a'.repeat(400)}}))).toMatchObject({difficulty:null,overallNote:'a'.repeat(360)});
 });
 
 it('R2j: feedback content edits are exported from authored stage data',()=>{
