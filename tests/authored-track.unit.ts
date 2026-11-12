@@ -1,49 +1,56 @@
 import {expect,it} from 'vitest';
 import {coastAuthoredRoad,type AuthoredRoad} from '../src/content/authored-road';
 import {authoredRoadCourse,createAuthoredCoastTrack} from '../src/content/authored-track';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotCourse} from '../src/pilot-composer';
+import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from '../src/content/coast-stage';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 
-const legacy={...COAST_ULTRA_STAGE,authoredRoad:undefined};
-
-it('R2c: the road JSON builds exactly the accepted road spans',()=>{
- expect(authoredRoadCourse(coastAuthoredRoad,COAST_ULTRA_STAGE)).toEqual(pilotCourse(legacy));
- expect(pilotCourse(COAST_ULTRA_STAGE)).toEqual(pilotCourse(legacy));
+const identity={id:COAST_RUNTIME_IDENTITY.id,name:COAST_STAGE.manifest.name,sceneryAct:0};
+it('P0: course spans cover the whole road without gaps or overlapping segments',()=>{
+ const parts=authoredRoadCourse(coastAuthoredRoad,identity);
+ expect(parts[0].start).toBe(0);
+ expect(parts.at(-1)!.end).toBe(coastAuthoredRoad.startDistance+coastAuthoredRoad.length+600);
+ for(let i=1;i<parts.length;i++)expect(parts[i].start).toBe(parts[i-1].end);
+ for(const part of parts)expect(part.length).toBeGreaterThan(0);
+ const turns=parts.filter(p=>p.targetRequiredSteering!==0);
+ expect(turns).toHaveLength(coastAuthoredRoad.turns.length);
+ expect(turns.map(p=>p.label)).toEqual(coastAuthoredRoad.turns.map(t=>t.label));
 });
 
-it('R2c: direct coast track preserves position, heading, slope, bank and events',()=>{
- const before=createPilotTrack(legacy),after=createAuthoredCoastTrack(coastAuthoredRoad,COAST_ULTRA_STAGE);
- expect(after.length).toBe(before.length);
- const samples=new Set([0,350,1085,3150,6800,10350,10950]);
- for(let d=0;d<=before.length;d+=23)samples.add(d);
- for(const turn of coastAuthoredRoad.turns)
-  for(const edge of [turn.start,turn.end])
-   for(const delta of [-.01,0,.01])samples.add(edge+delta);
- for(const d of [...samples].sort((a,b)=>a-b)){
-  const a=after.sample(d),b=before.sample(d);
-  expect(a.position.distanceTo(b.position),`position at ${d}`).toBeLessThan(1e-6);
-  expect(a.tangent.distanceTo(b.tangent),`tangent at ${d}`).toBeLessThan(1e-7);
-  expect(a.right.distanceTo(b.right),`bank at ${d}`).toBeLessThan(1e-7);
-  expect(a.roadHeading,`heading at ${d}`).toBeCloseTo(b.roadHeading,9);
-  expect(a.curvature,`curvature at ${d}`).toBeCloseTo(b.curvature,9);
-  expect(a.challenge,`road span at ${d}`).toEqual(b.challenge);
+it('P0: track heading, elevation, curve and bank remain finite and continuous',()=>{
+ const track=createAuthoredCoastTrack(coastAuthoredRoad,identity);
+ const points=new Set([0,350,1085,3150,6800,10350,10950]);
+ for(let d=0;d<=track.length;d+=29)points.add(d);
+ for(const segment of [...coastAuthoredRoad.turns,...coastAuthoredRoad.elevations])
+  for(const edge of [segment.start,segment.end])
+   for(const n of [-.001,0,.001])points.add(edge+n);
+ for(const d of [...points].sort((a,b)=>a-b)){
+  const pose=track.sample(d),q=track.sample(Math.min(track.length,d+.001));
+  expect(pose.position.toArray().every(Number.isFinite)).toBe(true);
+  expect(pose.tangent.toArray().every(Number.isFinite)).toBe(true);
+  expect(pose.right.toArray().every(Number.isFinite)).toBe(true);
+  expect(pose.position.distanceTo(q.position),`continuity at ${d}`).toBeLessThan(.1);
+  expect(Math.abs(pose.right.y),`bank at ${d}`).toBeLessThan(.4);
  }
 });
 
-it('R2c: the live coast road ignores obsolete Pilot placements',()=>{
- const noPlacements={...COAST_ULTRA_STAGE,placements:[]};
- expect(pilotCourse(noPlacements)).toEqual(pilotCourse(COAST_ULTRA_STAGE));
- const current=createPilotTrack(COAST_ULTRA_STAGE),detached=createPilotTrack(noPlacements);
- for(const d of [350,650,1085,3150,6800,10350])
-  expect(detached.sample(d).position.distanceTo(current.sample(d).position)).toBeLessThan(1e-6);
+it('P0: the active Worker and renderer share exact authored poses',()=>{
+ const track=createAuthoredCoastTrack(coastAuthoredRoad,identity);
+ const worker=coastWorkerRoad();
+ for(let d=0;d<=track.length;d+=113){
+  const a=track.sample(d),b=worker.track.sample(d);
+  expect(a.position.distanceTo(b.position),`position ${d}`).toBeLessThan(1e-8);
+  expect(a.right.y).toBe(b.right.y);
+  expect(a.curvature).toBe(b.curvature);
+  expect(a.challenge).toEqual(b.challenge);
+ }
 });
 
-it('R2c: editing JSON changes the track even when compatibility placements stay old',()=>{
- const road=structuredClone(coastAuthoredRoad) as AuthoredRoad;
- road.turns[0].steer=-.72;
- road.elevations[0].rise=2.5;
- const edited=createPilotTrack({...COAST_ULTRA_STAGE,authoredRoad:road});
- const baseline=createPilotTrack(COAST_ULTRA_STAGE);
- expect(edited.sample(650).curvature).not.toBeCloseTo(baseline.sample(650).curvature,8);
- expect(edited.sample(5000).position.y).not.toBeCloseTo(baseline.sample(5000).position.y,8);
+it('P0: edits to the JSON road can add stronger sweeps without code changes',()=>{
+ const edited=structuredClone(coastAuthoredRoad) as AuthoredRoad;
+ edited.turns[0].steer=-.72;
+ edited.elevations[0].rise=2.5;
+ const revised=createAuthoredCoastTrack(edited,identity),baseline=createAuthoredCoastTrack(coastAuthoredRoad,identity);
+ const mid=(edited.turns[0].start+edited.turns[0].end)/2;
+ expect(revised.sample(mid).curvature).not.toBeCloseTo(baseline.sample(mid).curvature,8);
+ expect(revised.sample(5000).position.y).not.toBeCloseTo(baseline.sample(5000).position.y,8);
 });

@@ -1,5 +1,4 @@
 import {it,expect,vi,afterEach} from 'vitest';import * as THREE from 'three';import {StreamedScene} from '../src/streamed-scene';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
 import {coastWorkerRoad} from '../src/content/coast-worker-road';
 class FakeWorker {static all:FakeWorker[]=[];onmessage:any;onerror:any;onmessageerror:any;requests:any[]=[];terminated=false;constructor(){FakeWorker.all.push(this);}postMessage(x:any){this.requests.push(x);}terminate(){this.terminated=true;}send(x:any){this.onmessage({data:{generation:this.requests[0].generation,...x}});}}
 function setup(){FakeWorker.all=[];vi.stubGlobal('Worker',FakeWorker);const scene=new THREE.Scene(),m=new THREE.MeshBasicMaterial(),s=new StreamedScene(scene,coastWorkerRoad().stage,10000,new Proxy({},{get:()=>m}) as any);FakeWorker.all[0].send({type:'initialized',cpuMs:1});return s;}

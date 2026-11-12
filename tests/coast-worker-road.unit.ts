@@ -1,49 +1,35 @@
 import {expect,it} from 'vitest';
 import {COAST_STAGE,type CoastStageContent} from '../src/content/coast-stage';
 import {coastWorkerRoad} from '../src/content/coast-worker-road';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotCourse,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {sampleAuthoredRoad} from '../src/content/authored-road';
 
-it('R2f: the coastal Worker metadata is derived from content rather than Trip',()=>{
- const actual=coastWorkerRoad(),legacy=COAST_ULTRA_STAGE;
- expect(actual.stage.kind).toBe('authored-coast');
- expect(actual.stage.id).toBe(legacy.id);
- expect(actual.course).toEqual(pilotCourse(legacy));
- expect(actual.stage.generatorVersion).toBe(legacy.generatorVersion);
- expect(actual.stage.seed).toBe(legacy.seed);
- expect(actual.stage.sceneryAct).toBe(legacy.sceneryAct);
- expect(actual.stage.scenerySections).toEqual(legacy.scenerySections);
- expect(actual.stage.scenicLandmarks).toEqual(legacy.scenicLandmarks);
- for(const field of ['placements','worldPhases','beats','buffers','fixedRoad','authoredRoad'])
-  expect(actual.stage).not.toHaveProperty(field);
+it('P0: Worker metadata stays small, without Pilot/Trip objects',()=>{
+ const runtime=coastWorkerRoad();
+ expect(runtime.stage.kind).toBe('authored-coast');
+ expect(Object.keys(runtime.stage).sort()).toEqual([
+  'generatorVersion','id','kind','sceneryAct','scenerySections','scenicLandmarks','seed',
+ ].sort());
 });
 
-it('R2f: Worker road matches the accepted geometry, bank, width and biome',()=>{
- const direct=coastWorkerRoad(),legacy=COAST_ULTRA_STAGE;
- const before=createPilotTrack(legacy);
- expect(direct.track.length).toBe(before.length);
- const distances=new Set<number>([0,350,1085,3150,6800,10350,10950]);
- for(let d=0;d<=before.length;d+=37)distances.add(d);
- for(const turn of COAST_STAGE.road.turns)
-  for(const edge of [turn.start,turn.end])
-   for(const delta of [-.01,0,.01])distances.add(edge+delta);
- for(const d of [...distances].sort((a,b)=>a-b)){
-  const a=direct.track.sample(d),b=before.sample(d);
-  expect(a.position.distanceTo(b.position),`position at ${d}`).toBeLessThan(1e-6);
-  expect(a.right.y,`bank at ${d}`).toBeCloseTo(b.right.y,9);
-  expect(a.roadHeading,`heading at ${d}`).toBeCloseTo(b.roadHeading,9);
-  expect(a.curvature,`curvature at ${d}`).toBeCloseTo(b.curvature,9);
-  expect(direct.halfAt(d),`halfWidth at ${d}`).toBeCloseTo(pilotSample(legacy,d).halfWidth,9);
-  expect(direct.weightsAt(d),`biome at ${d}`).toEqual(pilotWeights(legacy,d));
+it('P0: Worker owns the same deterministic road and coast biome for each metre',()=>{
+ const runtime=coastWorkerRoad(),road=COAST_STAGE.road;
+ for(let d=0;d<=runtime.track.length;d+=37){
+  const pose=runtime.track.sample(d);
+  expect(pose.position.toArray().every(Number.isFinite)).toBe(true);
+  expect(runtime.halfAt(d)).toBe(sampleAuthoredRoad(road,d).halfWidth);
+  expect(runtime.weightsAt(d)).toEqual([1,0,0]);
  }
+ expect(runtime.track.length).toBe(road.startDistance+road.length+600);
 });
 
-it('R2f: road and metadata edits work without derived Pilot placements',()=>{
- const changed:CoastStageContent={...COAST_STAGE,
-  manifest:{...COAST_STAGE.manifest,seed:912,name:'Another sunset coast'},
-  road:{...COAST_STAGE.road,turns:COAST_STAGE.road.turns.map((t,i)=>i===0?{...t,steer:-.6}:t)},
+it('P0: editing road and scene seed changes Worker output without a generator',()=>{
+ const revised:CoastStageContent={...COAST_STAGE,
+  manifest:{...COAST_STAGE.manifest,seed:912,name:'Revised sunset coast'},
+  road:{...COAST_STAGE.road,turns:COAST_STAGE.road.turns.map((t,i)=>
+   i===0?{...t,steer:-.6}:t)},
  };
- const updated=coastWorkerRoad(changed),old=coastWorkerRoad();
- expect(updated.stage.seed).toBe(912);
- expect(updated.track.sample(650).curvature).not.toBeCloseTo(old.track.sample(650).curvature,8);
+ const next=coastWorkerRoad(revised),before=coastWorkerRoad();
+ expect(next.stage.seed).toBe(912);
+ const first=revised.road.turns[0],mid=(first.start+first.end)/2;
+ expect(next.track.sample(mid).curvature).not.toBeCloseTo(before.track.sample(mid).curvature,8);
 });
