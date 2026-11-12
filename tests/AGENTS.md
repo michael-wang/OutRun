@@ -8,3 +8,5 @@ The test suite is a tool, not the definition of a successful personal-game relea
 - Favor behavior and invariants over assertions tied to source text, private variable names or exact DOM structure. Drop tests for retired features once their dependencies are removed.
 - Do not hide a real P0 as a flaky test. Distinguish test-environment limitations from observable game failures.
 - `npm run test:p0`, `npm run test:p1`, `npm test` (entire historical suite); `npm run build` checks TypeScript and production output.
+
+- R3 closed: compare the authored road and Worker contract directly; retired Pilot/Trip seeds and Brick/L2 review labs are not test inputs. Preserve current coastal scenery, AI/traffic, guardrail and road-safety regressions.

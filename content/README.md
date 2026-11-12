@@ -69,3 +69,11 @@ No changes to road, traffic, water, scenic act positions or other visuals.
 QA: `/?at=985` for the authored farmhouse, `/?at=3150` for the sweep.
 `tests/coast-stage-content.unit.ts` is a P0 guard against data mismatches
 and unintended changes to the existing runtime stage.
+
+
+## R3 closure (2026-11-12)
+The old Pilot/Brick/Trip generators and history labs are removed. See
+`docs/R3_ROAD_SYSTEM_CLOSURE.md`. Native road data and the worker use
+`src/content/coast-worker-road.ts`; do not recreate legacy `placements`
+as an editable source. The archived compatibility view for feedback exports
+is derived on demand from the current authored road.

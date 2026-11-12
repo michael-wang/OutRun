@@ -21,3 +21,5 @@
 - R2i: game telemetry and QA derive stage beats, lane counts, and curve labels from `coastGameplayAt()` reading authored stage data, never from Pilot samples. Legacy review exports are compatibility only.
 
 - R2j: the active coastal feedback UI reads `COAST_STAGE` and `COAST_RUNTIME_IDENTITY`; `coast-ultra-stage.ts` is historical test compatibility, not a stage authoring requirement. Avoid importing L2/Pilot catalogs into the playable game.
+
+- R3 closed: no more `coast-ultra-stage.ts`, random Trip or Pilot placement planner. `road.json` controls curvature/height/lanes, `scene.json` controls placed models; the existing road sampler and Worker share the same authored data.

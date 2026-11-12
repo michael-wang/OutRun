@@ -1,209 +1,48 @@
-# Current architecture — R0 decision map (2026-11-12)
+# Current architecture — after R3 closure (2026-11-12)
 
-## Goal
-The engine provides composable, reusable **capabilities**; authored stage data determines *what* and *where*. Choose **composition over inheritance**, shallow interfaces, no speculative abstractions and the smallest context required for a task.
+## Goal and boundaries
 
-- **Engine:** static/instanced meshes, deformers/wind, lighting/shadows, water, resource loading/streaming, collision and road samples.
-- **Game:** player handling, opponents, traffic, scoring, input, HUD, race recovery.
-- **Content:** finite road description, placed GLB/prefabs, scenery zones, effects parameters. No stage-specific engine source edits just to place a boat, house or rock.
-- **Editor tools:** Blender or experimental 67.js create assets; Three.js remains the runtime. Keep Ultra Water and the approved coast.
+- **Engine:** Three.js geometry/road sampling, renderer, shadows, water,
+  collision, chunked preparation/streaming, resource lifetime.
+- **Game:** steering/physics, traffic and rivals, score, race checkpoints,
+  controller, HUD and QA/feedback.
+- **Content:** finite authored road, explicit stage metadata, placed prefabs,
+  scenic acts and assets; no stage-specific procedural road lottery.
+- **Tools:** may edit/interchange any efficient versioned format; JSON is
+  provisional and not a human-readability goal (ADR-010).
 
-## Current dependencies — do not delete blindly
+The accepted 10km coastal road is currently the **only playable stage**.
+Composition > inheritance, prefer small nearby sources, no speculative
+entity or region abstraction. Do not change accepted coast visuals or handling
+as a side effect of refactoring.
 
-The v0.9.43 coast still uses `coast-ultra-stage.ts` → `pilot-composer.ts` → `l1-profiles.ts` and `bricks.ts` / `challenges.ts` for **road coordinates and types**. The worker and collision both sample that same road. Do not delete them until a replacement road contract is in use.
+## Active data path
 
-Legacy `trip.ts` and `scenic-director.ts` originally served randomly assembled L1/L2/L3 journeys. They are **not a design requirement**. The previous city second stage is retired; no migration or behavior-preservation obligation. The old L2/Brick review labs, speculative road generation and inactive journey transition code may be removed **after** the accepted coast can run without importing them.
+`content/stages/coast/{stage,road,scene}.json` ->
+`src/content/coast-stage.ts` ->
+`src/content/road-shapes.ts` and `authored-road.ts` ->
+`src/content/authored-track.ts` ->
+`src/content/coast-worker-road.ts` ->
+`src/world.ts` + `src/road-worker.ts` (same road sample) ->
+`src/streamed-scene.ts` (bounded chunks and safety gate).
 
-## R0, then next tasks
+The exact authored coast C02/E02 easing math is preserved. Game telemetry
+and review access `coast-gameplay-sample.ts` and `coast-review.ts`, never a
+Pilot/Trip candidate. Static GLBs are placed via the shared `static-props.ts`
+loader and the coast terrain adapter. Long-lived coast effects remain their
+existing capabilities until specific R4 requests.
 
-- **R0 (now):** remove obsolete documents and instructions, separate P0/P1 gates, retire unused stage definitions without modifying actual coast behavior. Keep old reviews/evidence in Git history; screenshots used for visual comparison can remain in evidence.
-- **R1:** define the minimal capability catalog and Stage/Prefab/Asset data contract, proven by replacing one static scene object using data only.
-- **R2:** make authored road the sole source of truth for camera, geometry, rivals and collisions (use existing `fixed-road.ts` where helpful), then remove replaced procedural generators and old Lab code.
-- **R3+:** rebuild coast corners for controllable drifts; only then hand-author hero scenery. New stage content follows the same workflow.
+Historical unused Brick/L2/Pilot/Stage/Trip composers, labs and old journey
+joins were deleted, not hidden behind URL flags. Git history preserves them.
 
-**Stop condition:** no mass rename or cosmetic directory reorganization. Favor removing actual dependencies and shrinking the number of modules read for a small content edit. Each milestone must leave the playable coast intact.
+## Next work
 
-## R1 — first data-authored prefab
+R3 code migration and cleanup: see
+[R3 closure notes](R3_ROAD_SYSTEM_CLOSURE.md) for scope and verification.
+R4: only as needed, decouple rice/flowers, water, shadows and vegetation from
+coast-only conditions so hero scenery can be configured.
+**New scenery regions/road extension are not yet agreed requirements**:
+retain room for them without building speculative scaffolding.
 
-The coast house at absolute road metre 1085 is declared in `content/stages/coast/scene.json`; its swappable GLB asset path is in `content/prefabs/catalog.json`. The lightweight GLB lives in `public/assets/coast-props/`. The shared loader `src/content/static-props.ts` handles static models, while `src/content/coast-static-props.ts` supplies the existing coast terrain height.
-
-The matching old Worker-generated farmhouse is suppressed by the **same authored replacement metadata**. Swapping/moving this object requires only editing JSON or GLB. See `content/README.md` for QA. This R1 slice does not add an entity framework, general collision physics or wind deformation; accepted road and Ultra Water remain untouched.
-
-## R2a — road content is data, unchanged coast geometry
-
-`content/stages/coast/road.json` is the source of truth for its nine manual turns, the original mild rise and its width. `src/content/authored-road.ts` validates absolute HUD-metre spans and adapts them into the existing sampler. `src/coast-ultra-stage.ts` now has **no canyon-stage inheritance** and supplies stage identity / environment metadata only. The same stage feeds the road worker, baked shoreline, rivals, car handling and collision paths; no duplicate curve planner.
-
-This preserves the currently approved route exactly and clears the way to revise curve strengths by editing road data. **R2 remains in progress:** the older `pilot-composer` and generated profiles are still compatibility machinery. Do not remove them until a full authored spline/fixed-road path has parity and owner playtest acceptance.
-
-## R2b — direct road sampler, one content source
-
-The coast stage now exposes `authoredRoad` directly, and `pilotSample` selects `sampleAuthoredRoad` for that stage. Curvature, elevation, grade and lane width are read from `road.json`, including in the road Worker. A one-time cache prepares the existing C02/E02 mathematical knot shapes without rebuilding curves every frame; the shape and accepted route are unchanged.
-
-`placements` remains a **derived compatibility projection** for the old course/AI metadata and inactive stages. The legacy sampler is retained only for non-authored candidates and parity tests. Never hand-edit the derived placements. R2b tests sample the entire route and knot boundaries against the R2a accepted road, and reject height discontinuities before loading any chunk.
-
-**Next:** move the remaining course/track contract off Pilot/Brick, then retire unused generators and labs. Do not delete the old code while the playable coast still imports it.
-
-
-## R2c — coast course and track no longer come from Pilot/Brick
-
-`src/content/authored-track.ts` directly translates `content/stages/coast/road.json`
-into the spans used by the existing shared `createTrack` integrator. It does
-not depend on Pilot, Brick, Trip or their placement planner. Its coast banking
-uses the existing math and the existing fixed coastline weights; the familiar
-600m post-finish relief still provides a road safety buffer.
-
-`pilotCourse` and `createPilotTrack` dispatch an `authoredRoad` stage
-to this new path, so the current game/Worker and inactive historic stages can
-coexist during migration. From this point, hand-edited `placements` **cannot**
-change the coast route. Keep the derived placements only for compatibility
-metadata until all consumers stop importing them.
-
-The blocking R2c test compares the direct road's full poses (position, tangent,
-bank, heading, curvature, segment metadata) against the accepted R2b evaluator,
-and proves that edits to road JSON work with obsolete placements removed.
-
-**Next:** migrate remaining coast consumers from Pilot/Trip metadata to the
-stage content contract. Retire legacy code only after confirming its remaining
-call sites are genuinely inactive. R2c intentionally does not redesign curves.
-
-## R2d — stage content vs legacy Trip boundary
-
-Coastal authoring is now represented by three simple files:
-`content/stages/coast/stage.json` (identity / race metadata),
-`road.json` (finite route) and `scene.json` (placed prefabs).
-`src/content/coast-stage.ts` composes these with the existing scenic acts
-and validates IDs, finite road, content and chapter coverage. **This content
-contract does not inherit from Pilot, Brick or Trip.**
-
-`src/coast-ultra-stage.ts` is a narrow compatibility bridge which creates
-the *same* `TripCandidate` that existing Worker and game still accept.
-Historical IDs, event metadata, world phase and empty legacy fields remain
-there temporarily; they are not authoring requirements. The R2d P0 tests
-assert the exact accepted runtime identity, feature boundaries and track.
-
-**Next:** migrate the remaining live game/Worker consumers to read a
-narrow runtime stage contract. Only then delete legacy generated fields and
-inactive Pilot/Trip machinery; avoid changing multiple systems at once.
-
-
-## R2e — lean coastal Worker init, pending full runtime migration
-
-`StreamedScene` now sends `coastStage:'coast'` instead of transferring
-the entire derived `TripCandidate` during coastal Worker init. The Worker
-resolves the equivalent versioned coastal runtime compatibility adapter locally.
-Non-coast mode retains the previous payload. No gameplay, road, traffic,
-scenery or fallback behavior was intentionally changed.
-
-This is an **init transport boundary** only: the Worker still consumes legacy
-stage fields internally; retiring those fields is a later separate slice.
-See [ADR-010](ADR_010_STAGE_DATA_FORMATS.md): human-readable JSON is not an
-engineering goal, binary runtime data is a measured later decision, and AI
-authoring must have queryable/range-based access rather than full-file dumps.
-
-
-## R2f — authored coast Worker no longer samples Pilot/Trip
-
-The coastal road Worker now receives `coastStage:'coast'` and builds its
-track, width and biome inputs through `src/content/coast-worker-road.ts`,
-using `COAST_STAGE.road`. Existing road meshes, traffic clearance, scenery,
-bridge layouts and shadows consume these **same** sampling callbacks.
-
-Legacy `pilot-composer` is a dynamic import only for non-coast stages.
-The coastal Worker does not import or execute Pilot/Trip sampling. Its small
-scene metadata retains the identity flags needed by existing scenery code,
-not the full legacy stage/placement model.
-
-P0 tests compare Worker road poses, banking, half-width, weights and section
-metadata to the accepted R2e route across the full coast and relief buffer.
-Authored route changes no longer require updating the legacy coast adapter.
-
-**Next:** migrate live game consumers off the remaining TripCandidate bridge
-and remove legacy branches after real uses are gone. Multi-region scenery
-remains a future content requirement, not a reason to add an entity framework.
-
-
-## R2g — live game + World now use the authored coast runtime
-
-The coastal game's **active path** now uses the same `coastWorkerRoad()` runtime
-as the Worker: `track`, `course`, `halfAt`, `weightsAt` and a narrow
-`kind:'authored-coast'` stage descriptor, all sourced from `COAST_STAGE`.
-Main `createWorld` no longer calls Pilot/Trip for live coast geometry.
-World accepts either this narrow stage or an archived Pilot; StreamedScene
-recognizes authored coast by kind rather than reference equality with
-`COAST_ULTRA_STAGE`. This removes a direct live module dependency.
-
-Primary race distance, road-chunk loading, scenery identity, traffic,
-cones, and developer road measurements use the authored source. The old
-`TripCandidate` remains for diagnostics / legacy lab and dormant journey
-compatibility; it has **not** been deleted. No gameplay parameters,
-graphics or route content were changed.
-
-**Next:** remove dormant journey/lab code from the game module, then retire
-remaining Trip-only QA metadata. Avoid multi-region scaffolding until a
-real stage needs it.
-
-
-## R2h — retired chapter handoff removed from the live game
-
-Removed the unreachable `journeyMode=false` subsystem from `main.ts`:
-chapter preloading and separate-world preparation, infinite highway joins,
-coordinate rebasing, scene swapping and replays across chapters. These were
-disabled for the only playable stage and are **not** a blueprint for future
-multiple scenery regions.
-
-The game now uses the authored coast start/end for its state and rival finish
-and relies on the current stream gate, restart loading, collision and race
-recovery. The opt-in development `journey()` query reports `enabled:false`
-without allocating old chapter state. Historical stand-alone journey-link
-utilities/tests are left for a separate dependency audit, not imported in
-the playable main module.
-
-Future region changes require explicit stage data and localized capabilities,
-not restoration of the discarded procedural multi-world system.
-
-R2h finish cleanup: live player completion uses the authored coastal `coastEnd` directly. No remaining chapter/Journey identifiers in `main.ts`.
-
-
-## R2i — live coastal telemetry and QA no longer sample Pilot/L2
-
-Main coastal drive/telemetry uses `coastGameplayAt()` derived from the
-authored road and scenic acts: zone beat, lane count, active curve labels,
-and the read-only legacy feedback placement view. Sampled at 10 Hz, with
-no Pilot/Trip sampling. Feedback anchors read the actual `world.sample()`
-pose; the legacy export identity fields are retained for existing saved QA.
-
-Removed the permanently unreachable Brick Lab mount, the undefined L2
-candidate/fallback and the obsolete city-grade inspector scan. The active
-`mountL2Lab` review controls remain temporarily for player input, review
-and saved feedback; its compatibility stage is **not** used for geometry,
-traffic or telemetry.
-
-The new P0 parity test compares the authored telemetry/QA view to legacy
-values along the full accepted coastline, including exact turn/act boundaries.
-No road, lighting, traffic or physics changes. The brief startup lag accepted
-at `v0.9.44-dev.13` is tracked separately in GitHub Issue #32 (P2).
-
-
-## R2j — live review and QA independent of legacy Trip/Pilot
-
-The live coast imports `mountCoastReview`, not `mountL2Lab`, and it no
-longer imports `COAST_ULTRA_STAGE`. The new review UI keeps its existing
-Play/Replay/Settings/Sound/Fullscreen DOM hooks, praise/issue timing and
-local feedback export/storage, but reads `COAST_STAGE` and a small stable
-`COAST_RUNTIME_IDENTITY` instead of a `TripCandidate`. Past reviews in
-`outrun-trip-v09` are reused. Exporting preserves the old feedback schema,
-baking compatibility arrays **only on export** from the authored stage.
-
-The former Pilot/L2/Brick review catalog no longer loads with the playable
-coast. The historic modules are retained for separate code/test archaeology;
-they remain unused at runtime. The old canyon prototype, procedural scenic
-cue and speculative feature QA entries were also removed from the active
-coast inspector. The coast's authored scenery section, bridge, breakdown and
-road QA destinations remain.
-
-Legacy identity values are shared with the historical adapter for tests and
-storage compatibility; they are **not authoring constraints**.
-No driving physics, road, traffic, sunset or scenery was modified.
-
-**Next:** audit unreferenced legacy modules/tests for safe deletion. Before
-road remaking, the visible coastline still needs owner-approved design changes.
+Follow ADR-009 for streaming/lifecycle and ADR-010 for storage/tool
+efficiency. P2 startup lag remains [Issue #32](https://github.com/michael-wang/OutRun/issues/32).
