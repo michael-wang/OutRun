@@ -1,7 +1,7 @@
 import {REFERENCE_TRAVEL} from './challenges';
 import {BRICK_START} from './bricks';
 import {LANE_WIDTH} from './road-profile';
-import {COAST_STAGE,type CoastStageContent} from './content/coast-stage';
+import {COAST_STAGE,COAST_RUNTIME_IDENTITY,type CoastStageContent} from './content/coast-stage';
 import {authoredRoadPlacements} from './content/authored-road';
 import type {TripCandidate} from './trip';
 
@@ -14,11 +14,10 @@ export function toLegacyCoastStage(content:CoastStageContent):TripCandidate{
  if(road.startDistance!==BRICK_START)throw Error('Coast launch must match existing game start distance');
  const duration=road.length/REFERENCE_TRAVEL;
  return {
-  id:'ROAD-TRIP-10M',
-  revision:28,sceneryAct:0,seed:manifest.seed,world:'coast',generatorVersion:'v0.9-r10',
+  ...COAST_RUNTIME_IDENTITY,
+  sceneryAct:0,seed:manifest.seed,world:'coast',
   name:manifest.name,intent:manifest.intent,
-  emotionalRole:'coastal-water-playtest',contentFingerprint:'coast-farewell-headlands-r2-804',
-  stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
+  emotionalRole:'coastal-water-playtest',
   length:road.length,
   baseHeight:road.baseHeight,
   baseLanes:road.lanes,

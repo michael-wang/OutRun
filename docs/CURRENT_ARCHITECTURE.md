@@ -182,3 +182,28 @@ The new P0 parity test compares the authored telemetry/QA view to legacy
 values along the full accepted coastline, including exact turn/act boundaries.
 No road, lighting, traffic or physics changes. The brief startup lag accepted
 at `v0.9.44-dev.13` is tracked separately in GitHub Issue #32 (P2).
+
+
+## R2j — live review and QA independent of legacy Trip/Pilot
+
+The live coast imports `mountCoastReview`, not `mountL2Lab`, and it no
+longer imports `COAST_ULTRA_STAGE`. The new review UI keeps its existing
+Play/Replay/Settings/Sound/Fullscreen DOM hooks, praise/issue timing and
+local feedback export/storage, but reads `COAST_STAGE` and a small stable
+`COAST_RUNTIME_IDENTITY` instead of a `TripCandidate`. Past reviews in
+`outrun-trip-v09` are reused. Exporting preserves the old feedback schema,
+baking compatibility arrays **only on export** from the authored stage.
+
+The former Pilot/L2/Brick review catalog no longer loads with the playable
+coast. The historic modules are retained for separate code/test archaeology;
+they remain unused at runtime. The old canyon prototype, procedural scenic
+cue and speculative feature QA entries were also removed from the active
+coast inspector. The coast's authored scenery section, bridge, breakdown and
+road QA destinations remain.
+
+Legacy identity values are shared with the historical adapter for tests and
+storage compatibility; they are **not authoring constraints**.
+No driving physics, road, traffic, sunset or scenery was modified.
+
+**Next:** audit unreferenced legacy modules/tests for safe deletion. Before
+road remaking, the visible coastline still needs owner-approved design changes.

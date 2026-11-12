@@ -1,7 +1,8 @@
-import {COAST_STAGE,type CoastStageContent} from './coast-stage';
+import {COAST_STAGE,COAST_RUNTIME_IDENTITY,type CoastStageContent} from './coast-stage';
 import {sampleAuthoredRoad} from './authored-road';
 import {createAuthoredCoastTrack,authoredRoadCourse} from './authored-track';
 import type {ScenerySection} from '../scenery-cross-section';
+import type {JourneyLandmark} from '../scenery';
 import type {BankStrength} from '../banking';
 
 /** Shared main-thread / Worker runtime, derived from authored coast content.
@@ -10,16 +11,16 @@ export function coastWorkerRoad(content:CoastStageContent=COAST_STAGE,bank?:Bank
  const {road,manifest}=content;
  const stage={
   kind:'authored-coast' as const,
-  id:'ROAD-TRIP-10M',
+  id:COAST_RUNTIME_IDENTITY.id,
   seed:manifest.seed,
   sceneryAct:0,
-  generatorVersion:'v0.9-r10',
+  generatorVersion:COAST_RUNTIME_IDENTITY.generatorVersion,
   scenerySections:[{
    id:'coast-ultra-left-sea',kind:'coastal-left',
    start:road.startDistance,end:road.startDistance+road.length,
    left:'sea',right:'coastal-land',
   }] satisfies ScenerySection[],
-  scenicLandmarks:[],
+  scenicLandmarks:[] as JourneyLandmark[],
  };
  const identity={id:stage.id,name:manifest.name,sceneryAct:stage.sceneryAct};
  const track=createAuthoredCoastTrack(road,identity,bank);

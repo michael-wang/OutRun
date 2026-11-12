@@ -3,6 +3,13 @@ import {coastAuthoredRoad,validateAuthoredRoad,type AuthoredRoad} from './author
 import {coastStaticStage,staticPrefabCatalog,validateStageStaticContent,type StageStaticContent} from './stage-data';
 import {COAST_SCENIC_ACTS} from '../coast-journey-layout';
 
+/** Historic identity used for feedback / telemetry storage compatibility,
+ * not a base class, Stage generator or new authoring requirement. */
+export const COAST_RUNTIME_IDENTITY={
+ id:'ROAD-TRIP-10M',revision:28,stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
+ generatorVersion:'v0.9-r10',contentFingerprint:'coast-farewell-headlands-r2-804',
+} as const;
+
 /** Only authoring data lives here. No Pilot, Brick, Trip or legacy route
  * generator dependencies. The existing runtime adapter is at coast-ultra-stage.ts. */
 export interface CoastStageManifest{

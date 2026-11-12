@@ -1,7 +1,7 @@
 import {coastLampPoleShadowsActive} from './coast-lamp-lighting';
 import {mountCoastStaticProps} from './content/coast-static-props';
 import {coastStaticStage} from './content/stage-data';
-import {COAST_STAGE} from './content/coast-stage';
+import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
 import {coastGameplayAt,coastFeedbackPhases} from './content/coast-gameplay-sample';
 import {coastWorkerRoad} from './content/coast-worker-road';
 import {MobileCarShadow} from './mobile-car-shadow';
@@ -49,9 +49,8 @@ import {ACTS,actWeights} from './acts';
 import {quantizeSteering} from './steering';
 import drivingCss from './style.css?inline';
 import {BRICK_START} from './bricks';
-import {mountL2Lab} from './l2-lab';
-import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
-import {CANYON_ROADLOCK_MOMENTS,CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
+import {mountCoastReview} from './coast-review';
+import {CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
 import {TireEffects,type TireContact} from './tire-effects';
@@ -61,7 +60,6 @@ import {newTrafficSessionSeed} from './traffic-flow';
 import {FinishStats} from './finish-stats';
 import {planJourneyLandmarks,CLOCK_COMPANION_COLOR,CLOCK_DISTRICT_COMPANIONS} from './scenery';
 import {SceneInspector,type InspectorStop} from './scene-inspector';
-import {ROAD_FEATURE_LABELS} from './road-features';
 import {SECTION_LABELS} from './scenery-cross-section';
 import {canyonArchInspectionDistance} from './canyon-arch-preview';
 import {interchangeCenterOffset} from './road-interchange';
@@ -103,14 +101,19 @@ await loadingStep(12,'正在規劃路線','安排這趟旅程的道路、彎道�
 // Worker and live coast game share one authored road runtime contract.
 const coastRuntime=coastWorkerRoad();
 startupDiagnostics.mark('route-plan-ready');
-const trip=COAST_ULTRA_STAGE;
+// Narrow game/QA identity. The authored content and shared runtime supply
+// everything used by the live coast; no TripCandidate is loaded here.
+const trip={...COAST_RUNTIME_IDENTITY,seed:COAST_STAGE.manifest.seed,
+ name:COAST_STAGE.manifest.name,length:COAST_STAGE.road.length,
+ scenerySections:coastRuntime.stage.scenerySections,
+ scenicLandmarks:coastRuntime.stage.scenicLandmarks};
 // The selected coast retains its diagnostic starting coordinate.
 const playerUi=!!trip;
 document.documentElement.dataset.playerUi=String(playerUi);
 const stage=trip;
 const pilot=stage;
 const brick=pilot;
-let l2UI:ReturnType<typeof mountL2Lab>|undefined,brickCompleted=false;
+let l2UI:ReturnType<typeof mountCoastReview>|undefined,brickCompleted=false;
 
 const entrantCount=1+raceEntries.length;
 // Draw the same scale on each half of the absolute-position steering control.
@@ -1322,7 +1325,7 @@ function feedbackAnchor():FeedbackAnchor{
    laneCount:sample.lanes,offRoad:state.offRoad,gas:controls.gas,brake:controls.brake},
  };
 }
-l2UI=mountL2Lab(trip,{play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),capture:feedbackAnchor,history,freeze:()=>{rememberRacePhase();mode='paused';input.clear();testControls=undefined;sound.pause();ui();},resume:start,onFeedback:data=>{telemetry?.mark('feedback',elapsed,state.distance-BRICK_START,data);if(brickCompleted&&telemetry){telemetry.save();showDriveReport();}}},false);
+l2UI=mountCoastReview({play:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();if(mode==='menu'||brickCompleted)restart();else start();},replay:()=>{if(mobile()&&!immersive.isIPhone)void immersive.enter();restart();},settings:()=>$('settings').click(),sound:()=>$('sound').click(),fullscreen:()=>$('fullscreen').click(),capture:feedbackAnchor,history,freeze:()=>{rememberRacePhase();mode='paused';input.clear();testControls=undefined;sound.pause();ui();},resume:start,onFeedback:data=>{telemetry?.mark('feedback',elapsed,state.distance-BRICK_START,data);if(brickCompleted&&telemetry){telemetry.save();showDriveReport();}}});
 // Results own the public replay and return actions. Keep legacy lab controls internal.
 if(playerUi)for(const id of ['l2-replay','l2-next']){
  const button=document.getElementById(id);
@@ -1500,38 +1503,10 @@ if(import.meta.env.DEV){(window as any).__drive={
 /* Opt-in QA Scene Inspector: exact route/biome sites, not a second world generator. */
 if(params.has('at')&&trip){
  const stops:InspectorStop[]=[];
- if(roadLockMode)for(const moment of CANYON_ROADLOCK_MOMENTS){
-  stops.push({id:'roadlock-'+moment.id,kind:'road-lock',
-   label:moment.name+' · '+(350+moment.startS)+'–'+(350+moment.endS)+'m',
-   distance:Math.max(350,350+moment.startS-125),
-   landmarkDistance:350+moment.startS,roadLockMoment:moment});
- }
- if(trip.canyonPrototype){
-  const scene=trip.canyonPrototype;
-  stops.push({id:scene.id,kind:'canyon-prototype',label:scene.title+' · '+Math.round(scene.start)+'–'+Math.round(scene.end)+'m',
-   distance:Math.max(350,scene.vista?.approachDistance??scene.start-200),
-   landmarkDistance:scene.vista?.revealDistance??scene.start,canyonPrototype:scene});
- }
  for(const section of trip.scenerySections??[]){
   stops.push({id:section.id,kind:'scenery-section',
    label:SECTION_LABELS[section.kind]+' · '+Math.round(section.start)+'–'+Math.round(section.end)+'m',
    distance:Math.max(350,section.start-120),landmarkDistance:section.start,scenerySection:section});
- }
- for(const cue of trip.scenicCues??[]){
-  stops.push({id:cue.id,kind:'scenic-beat',
-   label:cue.title+' · 張力 '+cue.intensity+'/10 · '+Math.round(cue.start)+'–'+Math.round(cue.end)+'m',
-   distance:Math.max(350,cue.start-140),landmarkDistance:cue.start,scenicCue:cue});
- }
- // Road Feature Analysis is already prepared in the stage recipe. Only turn
- // immutable recipe metadata into opt-in QA destinations; no per-frame
- // classification, no Worker changes and no new scenery generation.
- for(const feature of trip.roadFeatures??[]){
-  const lead=feature.kind==='merge'||feature.kind==='exit'?220:
-   feature.kind==='u-turn'?230:feature.kind==='long-straight'?80:160;
-  stops.push({id:feature.id,kind:'road-feature',
-   label:`${ROAD_FEATURE_LABELS[feature.kind]} · 張力 ${feature.intensity}/10 · ${Math.round(feature.start)}–${Math.round(feature.end)}m`,
-   distance:Math.max(350,feature.start-lead),landmarkDistance:feature.start,
-   roadFeature:feature});
  }
  const landmarks=trip.scenicLandmarks??planJourneyLandmarks(world.length,d=>world.weightsAt(d),world.bridge);
  for(const site of landmarks){
