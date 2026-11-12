@@ -1,7 +1,7 @@
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY,type CoastStageContent} from './coast-stage';
 import {authoredRoadPlacements} from './authored-road';
 import {coastFeedbackPhases} from './coast-gameplay-sample';
-import type {FeedbackEvent} from '../l2-feedback';
+import type {FeedbackEvent} from '../feedback-types';
 
 /** Stable storage/export identity for the one authored, playable coast. */
 export const COAST_FEEDBACK_STORAGE='outrun-trip-v09';

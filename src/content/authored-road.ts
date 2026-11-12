@@ -1,6 +1,5 @@
 import coastRoadFile from '../../content/stages/coast/road.json';
-import type {Placement} from '../pilot-composer';
-import {curvatureKnots,elevationKnots,profile,type Knot} from '../l1-profiles';
+import {sweepKnots,riseKnots,profile,type Knot} from './road-shapes';
 import {LANE_WIDTH} from '../road-profile';
 
 /** Authored stage content is the source of truth. The legacy spline evaluator
@@ -72,17 +71,27 @@ export function validateAuthoredRoad(road:AuthoredRoad){
  }
 }
 
+/** Read-only representation for existing review JSON exports.
+ * This is NOT a generated route, nor a dependency on Pilot or Brick. */
+export type AuthoredPlacement=
+ | {channel:'curvature';id:'C02';startS:number;endS:number;
+    parameters:{effort:number;direction:1|-1;start:number;end:number;secondary:number};
+    transition:'smooth';beat:string}
+ | {channel:'elevation';id:'E02';startS:number;endS:number;
+    parameters:{base:number;amplitude:number;direction:1|-1;shelfStart:number;shelfEnd:number};
+    transition:'smooth';beat:string};
+
 /** A deliberately small compatibility adapter. No procedural or random
  * authoring; all road shape decisions live in road.json. */
-export function authoredRoadPlacements(road:AuthoredRoad):Placement[]{
+export function authoredRoadPlacements(road:AuthoredRoad):AuthoredPlacement[]{
  validateAuthoredRoad(road);
- const placements:Placement[]=[
-  ...road.turns.map((turn):Placement=>({
+ const placements:AuthoredPlacement[]=[
+  ...road.turns.map((turn):AuthoredPlacement=>({
    channel:'curvature',id:'C02',startS:turn.start-road.startDistance,endS:turn.end-road.startDistance,
    parameters:{effort:Math.abs(turn.steer),direction:turn.steer>0?1:-1,start:0,end:1,secondary:.7},
    transition:'smooth',beat:turn.label,
   })),
-  ...road.elevations.map((part):Placement=>({
+  ...road.elevations.map((part):AuthoredPlacement=>({
    channel:'elevation',id:'E02',startS:part.start-road.startDistance,endS:part.end-road.startDistance,
    parameters:{base:part.base,amplitude:Math.abs(part.rise),direction:part.rise>=0?1:-1,shelfStart:.32,shelfEnd:.68},
    transition:'smooth',beat:part.label,
@@ -109,13 +118,11 @@ function prepareRoad(road:AuthoredRoad):PreparedRoad{
  const prepared:PreparedRoad={
   turns:road.turns.map(turn=>({
    start:turn.start,end:turn.end,
-   knots:curvatureKnots('C02',{effort:Math.abs(turn.steer),
-    direction:turn.steer>0?1:-1,start:0,end:1,secondary:.7}),
+   knots:sweepKnots(turn.steer),
   })),
   elevations:road.elevations.map(part=>({
    start:part.start,end:part.end,endHeight:part.base+part.rise,
-   knots:elevationKnots('E02',{base:part.base,amplitude:Math.abs(part.rise),
-    direction:part.rise>=0?1:-1,shelfStart:.32,shelfEnd:.68}),
+   knots:riseKnots(part.base,part.rise),
   })),
  };
  preparedRoads.set(road,prepared);

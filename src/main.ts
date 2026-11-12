@@ -48,7 +48,7 @@ import {COURSE,challengeAt,requiredSteering} from './challenges';
 import {ACTS,actWeights} from './acts';
 import {quantizeSteering} from './steering';
 import drivingCss from './style.css?inline';
-import {BRICK_START} from './bricks';
+import {ROAD_START as BRICK_START} from './road-profile';
 import {mountCoastReview} from './coast-review';
 import {CANYON_SCENIC_ZONES} from './designer-canyon-roadlock';
 import {DriveTelemetry} from './drive-telemetry';
@@ -70,7 +70,7 @@ import {setCoastRoadDynamicShadowEnabled} from './coast-road-shadows';
 import type {BrakeLightController} from './car';
 import {ExhaustEffects,isHighRevUpshift} from './exhaust-effects';
 import {StreamHealthHud} from './stream-health-hud';
-import type {FeedbackAnchor} from './l2-feedback';
+import type {FeedbackAnchor} from './feedback-types';
 export async function enterCoast(onExit: () => void,recovery?:RaceCheckpoint) {
 const lifetime=new AbortController();
 const {signal}=lifetime;

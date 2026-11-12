@@ -2,8 +2,9 @@ import {coastProfileX} from './coast-layout';
 import {coastHillHeight,farmBasinCut} from './coast-terrain';
 import {coastRuralCreekCut} from './coast-rural-layout';
 import {coastDrainDepth} from './coast-roadside-layout';
-import {BRICK_START} from './bricks';
-import type {StageBeat} from './stage-one';
+import {ROAD_START} from './road-profile';
+/** Legacy section projection accepts plain authored beat descriptors. */
+export interface SceneryBeat {id:string;startS:number;endS:number;world:'coast'|'city'|'canyon'}
 
 export type ScenerySectionKind=
  'coastal-left'|'canyon'|'urban-both'|'urban-hillside'|'waterfront-left'|'waterfront-right';
@@ -48,21 +49,21 @@ export function sceneryFarReach(curvature:number){
 /** Beat-scoped environment roles. Nothing changes the driven geometry or
  * route/world boundaries. A fixed city sequence guarantees genuinely
  * enclosed stretches without removing scenic waterfront exceptions. */
-export function planScenerySections(beats:readonly StageBeat[]):readonly ScenerySection[]{
+export function planScenerySections(beats:readonly SceneryBeat[]):readonly ScenerySection[]{
  let cityIndex=0;
  return Object.freeze(beats.map(beat=>{
   const kind:ScenerySectionKind=beat.world==='city'?cityKinds[cityIndex++%cityKinds.length]:
    beat.world==='canyon'?'canyon':'coastal-left';
   const [left,right]=sides[kind];
-  return Object.freeze({id:'section-'+beat.id,kind,start:BRICK_START+beat.startS,
-   end:BRICK_START+beat.endS,left,right});
+  return Object.freeze({id:'section-'+beat.id,kind,start:ROAD_START+beat.startS,
+   end:ROAD_START+beat.endS,left,right});
  }));
 }
 /** R1.1: coast is still the place to see the sea. City beats, including
  * city/sea transitions, are enclosed on BOTH sides. A rare hillside section
  * changes the architecture, not the existence of the opposite street wall.
  * r9 planScenerySections() intentionally stays unchanged for exact replay. */
-export function planUrbanEnclosureSections(beats:readonly StageBeat[]):readonly ScenerySection[]{
+export function planUrbanEnclosureSections(beats:readonly SceneryBeat[]):readonly ScenerySection[]{
  let cityIndex=0;
  return Object.freeze(planScenerySections(beats).map(section=>{
   if(section.kind==='coastal-left'||section.kind==='canyon')return section;
