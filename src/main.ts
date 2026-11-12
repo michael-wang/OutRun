@@ -427,7 +427,8 @@ const race=new RivalRace(coastEnd,d=>{
 },(d,time,radius)=>{
   // Only vehicles can block a rival's line. Cones and warning triangles are
   // lightweight props, not reasons to brake or abandon an overtaking lane.
-  return traffic?.raceObstacles(d,time,radius)??[];
+  return [...(traffic?.raceObstacles(d,time,radius)??[]),
+   ...(triangles?.raceObstacles(d,radius)??[])];
  });
 race.reset(state.distance);
 const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,race.rivals);
@@ -435,6 +436,8 @@ let rivalPassCount=0;
 if(traffic){traffic.rivalLeaders=()=>race.rivals;traffic.enableRaceMode();}
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
 race.impactTraffic=(row,severity,side)=>traffic?.impactByRival(row,severity,side);
+race.impactWarning=(row,severity)=>triangles?.knockByRival(
+ Number(row.id.slice(1)),race.time,Math.max(12,severity*75));
 const rivalView=new RivalView(race,world.scene,tireEffects,world.sample);
 rivalView.updateRanks(race.standings(state));
 await renderer.compileAsync(rivalView.group,camera,world.scene);

@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {createTrack} from './track';
+import type {Obstacle} from './rival-race';
 import {trafficRandom} from './traffic-lanes';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
@@ -44,6 +45,7 @@ export class RoadCones {
  private sunsetCast?:THREE.InstancedMesh;private sunsetPose=new THREE.Object3D();
  private pose=new THREE.Object3D();
  private shown:number[]=[];
+ private rotatedVertex=new THREE.Vector3();
  constructor(
   private sample:Sample,private halfAt:(d:number)=>number,scene:THREE.Scene,
   seed:number,private length:number,private ready:(d:number)=>boolean=()=>true,
@@ -92,6 +94,23 @@ export class RoadCones {
   });
   return true;
  }
+ /** The rivals must SEE warning signs as small, avoidable stationary hazards
+  * before they physically drive into them. A knocked-away sign disappears
+  * from the planning model, matching the existing one-shot flight state. */
+ raceObstacles(center:number,radius:number):Obstacle[]{
+  if(!this.triangles)return [];
+  return this.recipe.filter(c=>!this.hit.has(c.id)&&Math.abs(c.distance-center)<=radius)
+   .map(c=>({id:'W'+c.id,distance:c.distance,
+    lateral:c.lateral??c.side*(this.halfAt(c.distance)-c.inset),
+    speed:0,width:2.3,length:1.0}));
+ }
+ /** A rival that failed to evade still knocks the SAME prop out of the way
+  * rather than braking forever in front of an immovable visual triangle. */
+ knockByRival(id:number,time:number,speed:number){
+  if(!this.triangles)return false;
+  const sign=this.recipe.find(c=>c.id===id);
+  return !!sign&&this.knock(sign,time,speed);
+ }
  /** Resolve road-space sweeps even when outside the player's streamed view. */
  hitByVehicles(time:number,vehicles:readonly TrafficRoadSweep[]){
   if(!this.triangles)return 0;
@@ -136,12 +155,27 @@ export class RoadCones {
    const sideways=f?f.sideways*.42*(1-Math.exp(-age/.42)):0;
    const d=Math.min(this.length-.001,c.distance+forward),p=this.sample(d);
    this.pose.position.copy(p.position).addScaledVector(p.right,x+sideways);
-   this.pose.position.y+=f?Math.max(0,f.up*age-8*age*age):this.triangles?.06:.03;
+   // Freeze tumbling on ground contact. The old ballistic parabola became
+   // negative after landing, pulling the entire sign THROUGH the asphalt.
+   const airborneUntil=f?f.up/8:0,rotationAge=f?Math.min(age,airborneUntil):0;
    this.pose.rotation.set(
-    f?age*f.tilt:this.triangles?0:-Math.atan(p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z)),
-    -p.roadHeading+(f?age*f.spin*.28:0),
-    -Math.atan(p.right.y)+(f?age*f.spin:0),'YXZ',
+    f?rotationAge*f.tilt:this.triangles?0:-Math.atan(p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z)),
+    -p.roadHeading+(f?rotationAge*f.spin*.28:0),
+    -Math.atan(p.right.y)+(f?rotationAge*f.spin:0),'YXZ',
    );
+   const flightHeight=f?Math.max(0,f.up*age-8*age*age):this.triangles?.06:.03;
+   if(f&&this.triangles){
+    // Even with the origin above ground, a rotated triangular tip could
+    // clip below the road. Project its REAL vertices after rotation and
+    // lift only enough to keep its lowest point on the banked surface.
+    const positions=this.mesh.geometry.getAttribute('position');
+    let minimum=0;
+    for(let i=0;i<positions.count;i++){
+     this.rotatedVertex.fromBufferAttribute(positions,i).applyQuaternion(this.pose.quaternion);
+     minimum=Math.min(minimum,this.rotatedVertex.y);
+    }
+    this.pose.position.y+=Math.max(flightHeight,.045-minimum);
+   }else this.pose.position.y+=flightHeight;
    this.pose.updateMatrix();
    if(count<48){
     this.mesh.setMatrixAt(count,this.pose.matrix);

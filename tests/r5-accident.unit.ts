@@ -144,3 +144,51 @@ it('R5b.2: seeded later accidents keep a real two-lane escape corridor for 256 s
   expect(open.length,`seed ${seed}`).toBeGreaterThanOrEqual(later.minimumOpenLanes);
  }
 });
+
+it('R5b.3: right-side warnings are visible to racer AI before contact',()=>{
+ const scene=new THREE.Scene(),stopped=generate(42);
+ const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,stopped);
+ try{
+  const first=signs.recipe[0];
+  const obstacles=signs.raceObstacles(first.distance-95,180);
+  expect(obstacles.some(o=>o.id==='W'+first.id)).toBe(true);
+  const warning=obstacles.find(o=>o.id==='W'+first.id)!;
+  expect(warning.speed).toBe(0);
+  expect(warning.width).toBeGreaterThan(2);
+  expect(warning.lateral).toBe(first.lateral);
+  expect(signs.knockByRival(first.id,1,80)).toBe(true);
+  expect(signs.knockByRival(first.id,1.01,80)).toBe(false);
+  expect(signs.raceObstacles(first.distance-95,180).some(o=>o.id==='W'+first.id)).toBe(false);
+ }finally{signs.dispose();}
+});
+
+it('R5b.3: a fallen, rotated warning triangle never sinks into the banked asphalt',()=>{
+ const scene=new THREE.Scene(),stopped=generate(42);
+ const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,stopped);
+ const mesh=scene.getObjectByName('breakdown-warning-objects') as THREE.InstancedMesh;
+ try{
+  const first=signs.recipe[0];
+  expect(signs.knockByRival(first.id,1,70)).toBe(true);
+  const verts=mesh.geometry.getAttribute('position'),matrix=new THREE.Matrix4();
+  const point=new THREE.Vector3();
+  for(const elapsed of [.2,.8,1.2,1.8,2.3]){
+   const time=1+elapsed;
+   signs.update(time,first.distance-10,0,0);
+   const index=signs.inspect().shown.indexOf(first.id);
+   expect(index).toBeGreaterThanOrEqual(0);
+   mesh.getMatrixAt(index,matrix);
+   const flight=signs.snapshot().flying.find(([id])=>id===first.id)![1];
+   const forward=flight.forward*.72*(1-Math.exp(-elapsed/.72));
+   const sideways=flight.sideways*.42*(1-Math.exp(-elapsed/.42));
+   const road=track.sample(first.distance+forward);
+   const base=road.position.y+road.right.y*(first.lateral!+sideways);
+   let minY=Infinity;
+   for(let i=0;i<verts.count;i++){
+    point.fromBufferAttribute(verts,i).applyMatrix4(matrix);
+    minY=Math.min(minY,point.y);
+   }
+   expect(minY,`triangle above road at flight age ${elapsed}`).toBeGreaterThanOrEqual(base-.002);
+   if(elapsed>1.8)expect(minY-base).toBeLessThan(.15);
+  }
+ }finally{signs.dispose();}
+});
