@@ -111,3 +111,45 @@ every highway car.
 The first sweeper should show visibly banked rivals, but remain
 navigable without a forced drift. The longer banked S requires real
 successive left/right steering, not a series of almost straight kinks.
+
+## R5a.2 / R5b first drift whitebox (2026-11-13)
+
+This supersedes the numerical R5a/R5a.1 ranges and preliminary
+R5b draft above. The lesson sequence is now physically authored:
+
+| Beat | Absolute HUD distance | First playable objective |
+| --- | --- | --- |
+| A0 | 350–900 | Shorter acceleration; enter race action sooner |
+| A1 | 900–1900 | Strongly banked but comfortable sweeper, still no drift |
+| A2 | 1900–2700 | One seeded civilian intro; open overtaking room |
+| A3 | 2700–4340 | Left 2700–3520, **immediate** right 3520–4340; 13° banks |
+| A4 | 4340–5100 (reserved) | **Accident scene not built yet**, future authored hazard |
+| A5 | 5100–5640 | First forgiving high-speed drift, demand +0.82 |
+| Recovery | 5640–6280 | Clear, long acceleration recovery |
+| A6 | 6280–6760 | Harder opposite drift, demand -1.02 |
+| Random race | >=7120 | Resume the established seeded-random civilian highway |
+
+The first drift has a generous lead-in/out and an advisory
+suggested entry speed of 205 km/h. The second requires earlier
+braking and carries a 175 km/h advisory. These are **not**
+physics-enforced speed caps, HUD tutorials or claims that every
+driver must skid. Driving feedback determines actual difficulty.
+
+The old C02 curve has a 20% cosine entry and exit easing.
+An S with separate sweeps therefore feels straight for too
+long around the reversal even with zero explicit gap.
+For the authored S alone `rampFraction=.08` reduces those
+transition shoulders while keeping finite and continuous
+steering. The rest of the road preserves the original smooth
+C02 easing. Banking is authored by `road.json` envelopes.
+
+R5b includes the **two drift road geometries only** in this
+slice. An actual A4 crashed-vehicle tableau, incident warnings,
+road closures and any new surface material responses are
+separate implementation/acceptance work. This is intentional:
+the road/driving line is approved before adding hazards.
+
+Test seeds are reproducible but do not make ordinary highway
+traffic static. The first coached civilian introduction is
+curated; afterwards random schedule generation and driver AI
+remain the same approach as before.

@@ -158,3 +158,13 @@ fixtures that happen to share a Z coordinate. New-map scenic/night
 lighting should evaluate a proper spatial or road-relative lookup
 before locking lamp placements. Keep the Pixel 8 shadow/GPU budget;
 do not solve this by scattering hundreds of live point lights.
+
+## First drift whitebox before high-cost scenery
+
+The two R5b drift corners have been authored in the same
+finite road source as A0–A3. Run and review them through
+the chase camera **before** designing accident setpieces,
+roadside collision meshes or new Geometry Nodes cliffs.
+Do not let the Blender road guide become a second source
+of collision geometry. A future art pass must also preserve
+the visible S crossover and corner sightlines at speed.

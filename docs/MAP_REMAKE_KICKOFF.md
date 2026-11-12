@@ -182,3 +182,31 @@ New `?r5qa=1` checkpoints:
 `?at=1400`, `?at=2320`, `?at=3050`, `?at=3950`.
 Local `npm run verify:dev` is still required; changed tests have
 NOT been executed in the connector-only environment.
+
+## R5a.2 / R5b playable road update (2026-11-13)
+
+Following actual player feedback, the first straight was too
+long and the left/right S transition felt like an extra straight.
+Current development `v0.10.3` shortens A0 to 350–900m,
+begins the banked first sweep at 900m, and connects the S
+segments **exactly at 3520m** with a shorter C02 transition.
+
+The two road-only drift lessons are now authored at
+**5100–5640m** and **6280–6760m**, with clear recovery
+between them. No A4 crashed-car event is yet implemented.
+Normal civilian traffic is random (seed-deterministic)
+after the full A0/A6 teaching corridor, beginning around
+7120m. Random breakdowns are delayed to >=7560m so
+they do not unexpectedly occupy the drift lessons.
+
+R5b drift QA in Vite dev:
+- `/?at=4850&r5qa=1&trafficSeed=42` — approach first
+  drift and see the dev-only entry-speed cue.
+- `/?at=6000&r5qa=1&trafficSeed=42` — approach second
+  drift after a long recovery.
+- `/?at=2700&r5qa=1&trafficSeed=42` — evaluate the
+  contiguous left/right S without a neutral road segment.
+
+The existing terrain and mountain art past the opening is
+provisional. Do not invest more in it before confirming the
+whitebox road and future hero-vista placements.

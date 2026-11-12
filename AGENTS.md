@@ -153,3 +153,29 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 - Legacy `coastLampAtlas` indexes nearest lamps in world Z only;
   curved road segments can overlap lighting volumes. A proper
   2D/road-space lookup belongs to new-map scenic/night-lighting QA.
+
+## R5a.2 / R5b drift whitebox — dev v0.10.3
+
+- R5a lesson windows: A0 350–900m acceleration; A1 900–1900m
+  big banked sweep; A2 1900–2700m first sparse civilian; A3
+  2700–4340m continuous S. Left curve END = right curve START
+  at 3520m, no 140m artificial straight. Its authored C02
+  `rampFraction=.08` shortens only the S's transition; other
+  bends retain the original 0.2 C02 default.
+- R5b drift whitebox: A5 5100–5640m demand +.82, A6
+  6280–6760m demand -1.02. Keep a long clear recovery between
+  them, with the second requiring greater driving precision.
+  Developer-only `?r5qa=1` can preview both lessons; the first
+  road-side accident (A4) is still a future physical hazard task.
+- Only the first civilian introduction is curated, at/after
+  2200m. General highway traffic resumes seeded randomness
+  at/after 7120m, following the second drift; random breakdowns
+  are excluded until/after 7560m. Do not hard-code ordinary
+  traffic encounters beyond the teaching corridor.
+- Geometry and collider share the authored road and Worker
+  sampler. Drift curves should never collide with a nonlocal
+  part of their road, create an unstreamable chunk or make
+  the player face a sudden scenery obstacle.
+- These are code/data commits, not a claim of local Vite,
+  Vitest, browser or Pixel 8 verification. Use
+  `npm run verify:dev` before accepting R5b.

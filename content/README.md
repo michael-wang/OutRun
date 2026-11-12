@@ -130,3 +130,19 @@ and 3050–4710 (long banked S). Full details and banking
 parameters live in `road.json` and `onboarding.json`.
 These controls preserve **randomized civilian highway traffic**
 after the scripted early introduction.
+
+## R5a.2 / R5b drift road content
+
+`road.json` contains the reauthored short opening, immediate
+S crossover (optional `rampFraction` on both S sweeps),
+and two first-map drift road curves. `onboarding.json` owns
+A0–A3 timing, A5/A6 speed hints, the first civilian
+introduction, the random-higherway resumption boundary, and
+the earliest random breakdown. All distances are **absolute
+HUD metres**. The first crashed-car tableau (A4) is
+**reserved but not yet implemented**.
+
+The first civilian is a guided encounter; subsequent traffic
+is never hand-listed. Seed differences still change its
+vehicle groups, type, speed and behaviors. Road and
+terrain must use the same `coastWorkerRoad` geometry.
