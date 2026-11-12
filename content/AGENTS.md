@@ -15,3 +15,5 @@
 - Data encoding is replaceable. Do not keep JSON merely for human readability; index/query large authored stages by distance and asset kind. See `docs/ADR_010_STAGE_DATA_FORMATS.md` before introducing binary runtime chunks.
 
 - R2f: coastal Worker road preparation uses authored road/track samplers directly; avoid reintroducing Pilot/Trip as its source.
+
+- R2g: both live game and Worker consume `coastWorkerRoad()` from authored stage content. The playable road/traffic path must not call Pilot/Trip geometry builders.

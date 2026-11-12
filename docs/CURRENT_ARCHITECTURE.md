@@ -120,3 +120,24 @@ Authored route changes no longer require updating the legacy coast adapter.
 **Next:** migrate live game consumers off the remaining TripCandidate bridge
 and remove legacy branches after real uses are gone. Multi-region scenery
 remains a future content requirement, not a reason to add an entity framework.
+
+
+## R2g — live game + World now use the authored coast runtime
+
+The coastal game's **active path** now uses the same `coastWorkerRoad()` runtime
+as the Worker: `track`, `course`, `halfAt`, `weightsAt` and a narrow
+`kind:'authored-coast'` stage descriptor, all sourced from `COAST_STAGE`.
+Main `createWorld` no longer calls Pilot/Trip for live coast geometry.
+World accepts either this narrow stage or an archived Pilot; StreamedScene
+recognizes authored coast by kind rather than reference equality with
+`COAST_ULTRA_STAGE`. This removes a direct live module dependency.
+
+Primary race distance, road-chunk loading, scenery identity, traffic,
+cones, and developer road measurements use the authored source. The old
+`TripCandidate` remains for diagnostics / legacy lab and dormant journey
+compatibility; it has **not** been deleted. No gameplay parameters,
+graphics or route content were changed.
+
+**Next:** remove dormant journey/lab code from the game module, then retire
+remaining Trip-only QA metadata. Avoid multi-region scaffolding until a
+real stage needs it.

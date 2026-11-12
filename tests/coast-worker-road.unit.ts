@@ -2,11 +2,13 @@ import {expect,it} from 'vitest';
 import {COAST_STAGE,type CoastStageContent} from '../src/content/coast-stage';
 import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {createPilotTrack,pilotCourse,pilotSample,pilotWeights} from '../src/pilot-composer';
 
 it('R2f: the coastal Worker metadata is derived from content rather than Trip',()=>{
  const actual=coastWorkerRoad(),legacy=COAST_ULTRA_STAGE;
+ expect(actual.stage.kind).toBe('authored-coast');
  expect(actual.stage.id).toBe(legacy.id);
+ expect(actual.course).toEqual(pilotCourse(legacy));
  expect(actual.stage.generatorVersion).toBe(legacy.generatorVersion);
  expect(actual.stage.seed).toBe(legacy.seed);
  expect(actual.stage.sceneryAct).toBe(legacy.sceneryAct);

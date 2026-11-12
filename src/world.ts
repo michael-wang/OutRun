@@ -25,17 +25,19 @@ import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
 import type {PilotCandidate} from './pilot-composer';
-import type {TripCandidate} from './trip';
+import type {CoastRuntimeStage} from './content/coast-worker-road';
+import type {ScenerySection} from './scenery-cross-section';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate|CoastRuntimeStage;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
   // Authored canyon backdrops reach beyond 1km. Change haze, not chase optics.
   if(options.blenderArt){scene.fog.near=450;scene.fog.far=2400;}
-  const coastUltra=(options.streamStage as TripCandidate|undefined)?.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false;
+  const stageSections=(options.streamStage as {scenerySections?:readonly ScenerySection[]}|undefined)?.scenerySections;
+  const coastUltra=stageSections?.some(s=>s.id==='coast-ultra-left-sea')??false;
   const hemisphere=new THREE.HemisphereLight('#e3f7ff','#a09162',1.65);scene.add(hemisphere);
   const sun=new THREE.DirectionalLight('#fff0c9',2.8); sun.position.set(-180,280,-100); scene.add(sun);
   // One real-geometry shadow camera was limited to 200m x 47m and depth 500m:
@@ -57,7 +59,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const {sample,length}=options.track??createTrack();
   const shadowCache=farSun?new CoastShadowCache(sun,farSun,sample,length):undefined;
   const bridge=shoulders&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(options.streamStage?.generatorVersion??'')?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
-  const junction=options.streamStage?selectRoadInterchange(options.streamStage,bridge):undefined;
+  const junction=options.streamStage&&!('kind' in options.streamStage)
+    ?selectRoadInterchange(options.streamStage,bridge):undefined;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
   const dusk=coastUltra?addCoastDusk(scene,sample):undefined;
@@ -165,7 +168,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   // Coast hazards must be positioned relative to the REAL scenic finish,
   // not the extra 600m of track-generation relief used after credits.
   const breakdowns=options.streamStage?.generatorVersion==='canyon-roadlock-v1'?[]:(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion)))?breakdownLayout(sample,halfAt,
-   coastUltra?((options.streamStage as TripCandidate|undefined)?.scenerySections?.find(section=>section.id==='coast-ultra-left-sea')?.end??length):length,
+   coastUltra?(stageSections?.find(section=>section.id==='coast-ultra-left-sea')?.end??length):length,
    (options.seed??1)^(options.trafficVariation??0),!!coastUltra):[];
   const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion))?[]:breakdownAnnotations(sample,halfAt,breakdowns);
   if(!options.streamStage){

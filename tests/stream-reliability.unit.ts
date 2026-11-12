@@ -1,5 +1,6 @@
 import {it,expect,vi,afterEach} from 'vitest';import * as THREE from 'three';import {StreamedScene} from '../src/streamed-scene';
 import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 class FakeWorker {static all:FakeWorker[]=[];onmessage:any;onerror:any;onmessageerror:any;requests:any[]=[];terminated=false;constructor(){FakeWorker.all.push(this);}postMessage(x:any){this.requests.push(x);}terminate(){this.terminated=true;}send(x:any){this.onmessage({data:{generation:this.requests[0].generation,...x}});}}
 function setup(){FakeWorker.all=[];vi.stubGlobal('Worker',FakeWorker);const scene=new THREE.Scene(),m=new THREE.MeshBasicMaterial(),s=new StreamedScene(scene,{} as any,10000,new Proxy({},{get:()=>m}) as any);FakeWorker.all[0].send({type:'initialized',cpuMs:1});return s;}
 function road(w:FakeWorker,index:number){w.send({type:'prepared',index,cpuMs:1,roadside:[new Float32Array(),new Float32Array(),new Float32Array(),new Float32Array()],meshes:[{kind:'asphalt',positions:new Float32Array([0,0,0,10,0,0,0,0,1000]),indices:new Uint32Array([0,1,2]),normals:new Float32Array([0,1,0,0,1,0,0,1,0]),uvs:new Float32Array(),colors:new Float32Array()}]});}
@@ -61,7 +62,7 @@ it.each([false,true])('coastal batches share textures, wait for images, switch L
 it('R2e: coast Worker init uses an ID without cloning Pilot/Trip metadata',()=>{
  FakeWorker.all=[];vi.stubGlobal('Worker',FakeWorker);
  const scene=new THREE.Scene(),material=new THREE.MeshBasicMaterial();
- const stream=new StreamedScene(scene,COAST_ULTRA_STAGE,10950,
+ const stream=new StreamedScene(scene,coastWorkerRoad().stage,10950,
   new Proxy({},{get:()=>material}) as any);
  const init=FakeWorker.all[0].requests[0];
  expect(init).toMatchObject({type:'init',coastStage:'coast'});

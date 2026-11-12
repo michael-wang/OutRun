@@ -1,6 +1,8 @@
 import {coastLampPoleShadowsActive} from './coast-lamp-lighting';
 import {mountCoastStaticProps} from './content/coast-static-props';
 import {coastStaticStage} from './content/stage-data';
+import {COAST_STAGE} from './content/coast-stage';
+import {coastWorkerRoad} from './content/coast-worker-road';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {journeyChapters} from './scenic-journey';
@@ -94,8 +96,8 @@ document.documentElement.dataset.qa='false';
 const journeyMode=false; // Retired URL journeys: ordinary launch goes to the coast.
 const chapters=journeyMode?journeyChapters():undefined;
 let chapterIndex=0,journeyElapsed=0,journeyTransition=false;
-const chapterStart=()=>chapters?.[chapterIndex].start??BRICK_START;
-const chapterEnd=()=>chapters?.[chapterIndex].end??BRICK_START+(brick?.length??0);
+const chapterStart=()=>chapters?.[chapterIndex].start??COAST_STAGE.road.startDistance;
+const chapterEnd=()=>chapters?.[chapterIndex].end??COAST_STAGE.road.startDistance+COAST_STAGE.road.length;
 let designerMode=false,coastUltraMode=true;
 // Keep geometry shadow infrastructure available for diagnostics. Only the two
 // caster lights start disabled on touch devices, matching a manually selected B2.
@@ -106,6 +108,8 @@ const coastGeometryShadows=()=>coastUltraMode&&sunsetShadowsEnabled&&geometrySha
 let coastUltraWater=true,roadLockMode=false,scenicCameraEnabled=false,blenderMode=false;
 await loadingStep(12,'正在規劃路線','安排這趟旅程的道路、彎道與沿途風景。');
 const journeyTracks=chapters?.map(c=>createPilotTrack(c.stage));
+// Worker and live coast game share one authored road runtime contract.
+const coastRuntime=coastWorkerRoad();
 startupDiagnostics.mark('route-plan-ready');
 let trip=COAST_ULTRA_STAGE;
 // The selected coast retains its diagnostic starting coordinate.
@@ -219,8 +223,19 @@ let blenderAsset=blenderMode?await (async()=>{
  catch(error){status.textContent=roadLockMode?'峽谷場景載入失敗，請確認網路連線後重新載入。':'Blender 美術載入失敗：請確認本機 canyon_art_only.glb。';throw error;}
 })():undefined;
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
-const initialBrick=brick,initialPilot=pilot;
-let world=createWorld(initialBrick?{blenderArt:!!blenderAsset,bank:bankLab?banking:undefined,chunked:!!stage,streamStage:bankLab?initialPilot:stage,track:journeyTracks?journeyTracks[0]:initialPilot?createPilotTrack(initialPilot,bankLab?banking:undefined):l2?createL2Track(l2):createBrickTrack(initialBrick),theme:initialBrick.sceneryAct,seed:initialBrick.seed,trafficVariation:trafficSessionVariation,roadWidth:initialBrick.roadWidth,halfAt:d=>initialPilot?pilotSample(initialPilot,d).halfWidth:brickWidth(initialBrick,d).halfWidth,weightsAt:initialPilot?(d=>pilotWeights(initialPilot,d)):undefined,narrowings:stage?stage.placements.filter(p=>p.channel==='width'&&p.parameters.to<p.parameters.from).map(p=>Math.max(BRICK_START+30,BRICK_START+p.startS-180)):initialBrick.lanes.flatMap((k,i)=>i&&k[1]<initialBrick.lanes[i-1][1]?[Math.max(BRICK_START+30,BRICK_START+initialBrick.lanes[i-1][0]*initialBrick.length/initialBrick.nominalDuration-180)]:[]),course:initialPilot?pilotCourse(initialPilot):l2?l2Course(l2):brickCourse(initialBrick),notice:initialBrick.id==='BRK-03'?{distance:BRICK_START+initialBrick.length*5/initialBrick.nominalDuration,text:'LEFT BEND BEYOND'}:undefined}:{}); world.car.rotation.order="YXZ";
+let world=createWorld({
+ track:coastRuntime.track,
+ streamStage:coastRuntime.stage,
+ chunked:true,
+ theme:coastRuntime.stage.sceneryAct,
+ seed:coastRuntime.stage.seed,
+ trafficVariation:trafficSessionVariation,
+ roadWidth:coastRuntime.halfAt(COAST_STAGE.road.startDistance)*2,
+ halfAt:coastRuntime.halfAt,
+ weightsAt:coastRuntime.weightsAt,
+ course:coastRuntime.course,
+ narrowings:[],
+}); world.car.rotation.order="YXZ";
 // Authored GLBs are optional art, loaded once before the start gate.
 // Preserve the approved road, traffic, physics and Ultra Water.
 const authoredStaticProps=coastUltraMode?
@@ -401,9 +416,9 @@ let rockContact=new RockContact(world.rockSections,world.halfAt,carBounds.x/2,ca
 let coastStoneContact=new CoastStoneContact(world.halfAt,carBounds.x/2,carBounds.z/2,d=>world.streamer?.sceneryReady(d)??true);
 function trafficRoadReady(d:number){return !!journeyLink?.inHighway(d)||actorRoadReady(d);}
 function actorRoadReady(d:number){return (!chapters||d>=chapterStart()&&d<=chapterEnd())&&(world.streamer?.roadReady(d)??true);}
-let cones=trip&&!roadLockMode&&trip.revision>=5?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),coastUltraMode):undefined;
-let triangles=trip&&!roadLockMode&&trip.revision>=6?new RoadCones(world.sample,world.halfAt,world.scene,trip.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
-let traffic=trip&&!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,trip.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation):undefined;
+let cones=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,undefined,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),coastUltraMode):undefined;
+let triangles=!roadLockMode?new RoadCones(world.sample,world.halfAt,world.scene,coastRuntime.stage.seed,world.length,actorRoadReady,world.breakdowns,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows()):undefined;
+let traffic=!roadLockMode?new Traffic(world.scene,world.sample,world.halfAt,world.length,coastRuntime.stage.seed,trafficRoadReady,world.breakdowns,world.junction,coastUltraMode,coastUltraMode&&sunsetShadowsEnabled,coastGeometryShadows(),trafficSessionVariation):undefined;
  traffic?.setContactShadowsEnabled(!coastUltraMode||coastShadowTechniqueEnabled('contactDecals'));
 const race=new RivalRace(chapterEnd(),d=>{
  const p=world.sample(d);
@@ -1600,7 +1615,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   occupants:()=>world.car.userData.motion.occupants(),
   brakeLights:()=>brakeLights.inspect(),
   exhaust:()=>exhaustEffects.inspect(),
-  challenges:()=>pilot?pilotCourse(pilot):l2?l2Course(l2):brick?brickCourse(brick):COURSE,
+  challenges:()=>coastRuntime.course,
   supportAudit:()=>{const group=world.scene.getObjectByName('road-support')!,children=(world.streamer?group.children.flatMap(c=>c.children):group.children).filter((o):o is THREE.Mesh=>o instanceof THREE.Mesh).sort((a,b)=>(a.userData.chunkIndex??0)-(b.userData.chunkIndex??0));let maxSeam=0,nonFinite=0,maxTopError=0;for(let i=0;i<children.length;i++){const pos=children[i].geometry.getAttribute('position'),index=children[i].userData.chunkIndex??i,span=world.streamer?.chunkLength??1200,start=index*span,end=Math.min(world.length,start+span),n=pos.count/4-1;for(let row=0;row<=n;row++){const d=start+(end-start)*row/n,p=world.sample(d),width=world.halfAt(d);for(let side=0;side<2;side++){const expected=p.position.clone().addScaledVector(p.right,(side?1:-1)*(width+(world.shoulders?(side?world.shoulders(d).right:world.shoulders(d).left):6)));expected.y-=.1;maxTopError=Math.max(maxTopError,expected.distanceTo(new THREE.Vector3().fromBufferAttribute(pos,row*4+side*2)));}} for(let j=0;j<pos.count;j++)if(!Number.isFinite(pos.getX(j)+pos.getY(j)+pos.getZ(j)))nonFinite++;if(i&&(!world.streamer||index===children[i-1].userData.chunkIndex+1)){const prev=children[i-1].geometry.getAttribute('position');for(let j=0;j<4;j++){const a=new THREE.Vector3().fromBufferAttribute(prev,prev.count-4+j),b=new THREE.Vector3().fromBufferAttribute(pos,j);maxSeam=Math.max(maxSeam,a.distanceTo(b));}}}return{chunks:children.length,maxSeam,maxTopError,nonFinite};},
   roadChunks:()=>{const road=world.scene.getObjectByName('driving-surface')!;return {count:road.children.length,cullable:road.children.every(o=>o.frustumCulled)};},
   telemetry:()=>telemetry?.report(),
@@ -1631,7 +1646,7 @@ if(import.meta.env.DEV){(window as any).__drive={
     const xs=points.map(p=>(p.x+1)/2),ys=points.map(p=>(1-p.y)/2);
     return {left:Math.min(...xs),right:Math.max(...xs),top:Math.min(...ys),bottom:Math.max(...ys),width:Math.max(...xs)-Math.min(...xs)};
   },
-  snapshot:()=>({...state,bankDegrees:(-Math.atan(world.sample(state.distance).right.y)*180/Math.PI)||0,roadHalfWidth:world.halfAt(state.distance),laneCount:pilot?pilotSample(pilot,state.distance).lanes:brick?brickWidth(brick,state.distance).lanes:3,highSpeedPace,effectivePace:effectivePace(state.speed,highSpeedPace),travelSpeed:state.speed*effectivePace(state.speed,highSpeedPace),mode,elapsed,frames,inputs:input.snapshot(),audio:sound.inspect(),trackLength:world.length,position:world.car.position.toArray(),swapped,surfaceError:surfaceError(),camera:{...chaseComposition(camera.aspect),position:camera.position.toArray(),direction:camera.getWorldDirection(new THREE.Vector3()).toArray(),scenicEnabled:scenicCameraEnabled,scenicWeight},immersive:immersive.snapshot(),rightScreenDelta:world.car.position.clone().add(world.sample(state.distance).right).project(camera).x-world.car.position.clone().project(camera).x}),
+  snapshot:()=>({...state,bankDegrees:(-Math.atan(world.sample(state.distance).right.y)*180/Math.PI)||0,roadHalfWidth:world.halfAt(state.distance),laneCount:COAST_STAGE.road.lanes,highSpeedPace,effectivePace:effectivePace(state.speed,highSpeedPace),travelSpeed:state.speed*effectivePace(state.speed,highSpeedPace),mode,elapsed,frames,inputs:input.snapshot(),audio:sound.inspect(),trackLength:world.length,position:world.car.position.toArray(),swapped,surfaceError:surfaceError(),camera:{...chaseComposition(camera.aspect),position:camera.position.toArray(),direction:camera.getWorldDirection(new THREE.Vector3()).toArray(),scenicEnabled:scenicCameraEnabled,scenicWeight},immersive:immersive.snapshot(),rightScreenDelta:world.car.position.clone().add(world.sample(state.distance).right).project(camera).x-world.car.position.clone().project(camera).x}),
   manual:(value:boolean)=>{manual=value;},
   advance:(seconds:number,override?:InputState,draw=true)=>{for(let i=0;i<Math.ceil(seconds*120);i++){advance(1/120,override);render(1/120,false);}render(1/120,draw);},
   reset:(initial:{distance?:number;speed?:number;lateral?:number;heading?:number})=>{
@@ -1643,7 +1658,7 @@ if(import.meta.env.DEV){(window as any).__drive={
     input.clear();ui();render(1/60);
   },
   recentHistory:()=>history.snapshot(),
-  sample:(d:number)=>{const p=world.sample(d);return {bankDegrees:(-Math.atan(p.right.y)*180/Math.PI)||0,halfWidth:world.halfAt(d),lanes:pilot?pilotSample(pilot,d).lanes:brick?brickWidth(brick,d).lanes:3,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),position:p.position.toArray(),curvature:p.curvature,roadHeading:p.roadHeading,tangent:p.tangent.toArray(),challenge:p.challenge};}
+  sample:(d:number)=>{const p=world.sample(d);return {bankDegrees:(-Math.atan(p.right.y)*180/Math.PI)||0,halfWidth:world.halfAt(d),lanes:COAST_STAGE.road.lanes,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),position:p.position.toArray(),curvature:p.curvature,roadHeading:p.roadHeading,tangent:p.tangent.toArray(),challenge:p.challenge};}
 };}
 // Retired challenge / pace / velocity / stage URL overlays.
 /* Opt-in QA Scene Inspector: exact route/biome sites, not a second world generator. */
