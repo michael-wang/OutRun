@@ -50,7 +50,14 @@ export class RoadCones {
   private triangles?:readonly Breakdown[],private sunsetShadows=false,private geometryShadows=false,private coastalBends=false,
  ){
   this.recipe=triangles
-   ?triangles.flatMap(h=>[240,120,40].map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,inset:1.75,lateral:breakdownLaneLateral(h.stopLane,h.stopSide,this.halfAt(h.distance))})))
+   ?triangles.flatMap(h=>{
+      // A multiple-vehicle accident gets ONE warning approach, not nine
+      // duplicate signs across the driver's curved overtaking corridor.
+      if(h.incidentId==='A4'&&h.id!==910000)return [];
+      return (h.incidentId==='A4'?[310,195,90]:[240,120,40])
+       .map((lead,i)=>({id:h.id*3+i,distance:h.distance-lead,side:h.stopSide,
+        inset:1.75,lateral:breakdownLaneLateral(h.stopLane,h.stopSide,this.halfAt(h.distance))}));
+     })
    :[...coneLayout(seed,length),...(coastalBends?coastCurveConeLayout(sample,halfAt,length):[])];
   const g=triangles?warningTriangleGeometry():geometry();
   if(triangles)g.rotateY(Math.PI);

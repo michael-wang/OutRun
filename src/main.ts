@@ -226,6 +226,7 @@ const world=createWorld({
  seed:coastRuntime.stage.seed,
  trafficVariation:trafficSessionVariation,
  breakdownStart:COAST_STAGE.onboarding.breakdownsAfter,
+ accident:COAST_STAGE.onboarding.accident,
  roadWidth:coastRuntime.halfAt(COAST_STAGE.road.startDistance)*2,
  halfAt:coastRuntime.halfAt,
  weightsAt:coastRuntime.weightsAt,
