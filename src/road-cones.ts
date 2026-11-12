@@ -87,7 +87,7 @@ export class RoadCones {
    time,forward:Math.max(12,Math.min(84,speed*(.67+.33*rand))),
    sideways:(sideRand<.5?-1:1)*(4+sideRand*10),
    up:6+rand*7,
-   spin:(spinRand<.5?-1:1)*(9+rand*13),
+   spin:(spinRand<.5?-1:1)*(9+spinRand*17),
    tilt:(spinRand<.5?-1:1)*(8+rand*13),
   });
   return true;

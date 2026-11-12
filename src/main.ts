@@ -962,6 +962,16 @@ function advance(dt:number,override?:InputState){
   impactSparks.burst(elapsed+dt,sparkOrigin,stoneFrame.right,stoneFrame.tangent,stoneHit.severity,'concrete');
  }
  const rivalHit=race.step(dt,state,{distance:beforeDistance,lateral:beforeLateral});
+ // A4 warning reflectors fly when hit by real rivals or civilian traffic,
+ // not only by the player. Everyone uses the same single-flight pool.
+ if(triangles){
+  const rivals=race.rivals.filter(r=>r.finishTime===null).map((r,i)=>({
+   id:-1000-i,previousDistance:r.previousDistance,previousLateral:r.previousLateral,
+   distance:r.distance,lateral:r.lateral,
+   speed:r.speed*effectivePace(r.speed,highSpeedPace),halfWidth:r.entry.car.width*.5,
+  }));
+  triangles.hitByVehicles(elapsed+dt,[...(traffic?.hazardSweeps()??[]),...rivals]);
+ }
  const rivalPasses=rivalOvertakes.update(state.distance,race.rivals);
  rivalPassCount+=rivalPasses.length;
  if(rivalHit){
