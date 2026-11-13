@@ -43,19 +43,21 @@ export interface RaceStanding {
  id:string; name:string; rank:number; distance:number;
  finishTime:number|null; isPlayer:boolean;
 }
-type Behavior='加速'|'煞車'|'跟車'|'超車'|'避障'|'防守'|'完賽';
+type Behavior='加速'|'煞車'|'跟車'|'超車'|'避障'|'防守'|'甩尾'|'完賽';
 export class RivalState {
   distance=0; lateral=0; speed=0; previousDistance=0; previousLateral=0; lateralRate=0;
   lane=0; targetLane=0; targetX=0; targetSpeed=0; half=7; grade=0; curvature=0;
   finishTime:number|null=null; behavior:Behavior='加速'; nextDecision=0; lastDecision=0;
   obstacles:Obstacle[]=[]; nearest='—'; gap=Infinity; braking=false; slip=0; impulse=0; laneHold=0;
-  driftYaw=0;
+  driftYaw=0; driftClear=false;
   get width(){return this.entry.car.width*Math.cos(this.driftYaw)+this.entry.car.length*Math.abs(Math.sin(this.driftYaw));}
   get length(){return this.entry.car.length*Math.cos(this.driftYaw)+this.entry.car.width*Math.abs(Math.sin(this.driftYaw));}
   readonly gearbox=createPowertrain();
   constructor(readonly entry:RacerEntry){}
 }
 const clamp=(v:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,v));
+const driftBend=(curvature:number)=>clamp((Math.abs(curvature)/CURVATURE_PER_STEER-.48)/.36,0,1);
+const MAX_DRIFT_YAW=.54;
 export const worldSpeed=(v:number)=>v*effectivePace(v,DEFAULT_PACE);
 /** Emission comes from actual stressful maneuvers, not a continuously-curved road.
  * Ordinary high-speed cruising/gradual cornering must never smoke indefinitely. */
@@ -105,13 +107,17 @@ export class RivalRace {
     r.grade=road.grade;r.half=road.half;r.curvature=road.curvature;
     r.lane=nearestLane(r.lateral,r.half);
     const horizon=Math.max(60,travel*driver.anticipation);
-    let corner=car.topSpeed,apex=road.curvature;
+    let corner=car.topSpeed,driftCorner=car.topSpeed,apex=road.curvature;
     for(let i=0;i<=6;i++){
       const lead=horizon*i/6;
       const sample=i?this.road(Math.min(this.finish,r.distance+lead)):road;
       const limit=Math.sqrt(car.cornerGrip/Math.max(.00001,Math.abs(sample.curvature)));
       const indicated=limit/effectivePace(Math.min(r.speed,limit),DEFAULT_PACE);
       const entry=Math.sqrt(indicated*indicated+2*car.brake*lead/DEFAULT_PACE);
+      // Carry speed through an arcade slide. Both plans still brake for
+      // tighter radii and use the same distance to the upcoming sample.
+      const carry=1+(.20+.12*driver.riskTolerance)*driftBend(sample.curvature);
+      driftCorner=Math.min(driftCorner,Math.sqrt((indicated*carry)**2+2*car.brake*lead/DEFAULT_PACE));
       if(entry<corner){corner=entry;apex=sample.curvature;}
     }
     r.obstacles=this.traffic(r.distance,this.time,horizon+60);
@@ -160,7 +166,22 @@ export class RivalRace {
     }
     r.targetLane=lane;r.targetX=laneX(lane,r.half);r.gap=current.front;r.nearest=current.id;
     const target=space[lane];
-    let limit=corner;
+    // Reserve the rotated body plus its outward slip before choosing the
+    // faster plan. A car closing alongside can occupy that space next tick.
+    const yaw=MAX_DRIFT_YAW,slideWidth=car.width*Math.cos(yaw)+car.length*Math.sin(yaw);
+    const slideRoom=slideWidth*.5+.75;
+    // Set up inside the verge on the approach, including for an outside grid lane.
+    if(driftCorner>corner+.5&&lane===r.lane)
+      r.targetX=clamp(r.targetX,-r.half+slideRoom,r.half-slideRoom);
+    r.driftClear=lane===r.lane&&Math.abs(r.targetX-r.lateral)<.85&&Math.abs(r.impulse)<.6&&
+      Math.abs(r.lateral)+slideWidth*.5<=r.half&&
+      !cars.some(other=>{
+        if(Math.abs(other.lateral-r.lateral)>slideRoom+other.width*.5)return false;
+        const gap=other.distance-r.distance,next=gap+(other.speed-travel)*1.1;
+        const clearance=(car.length+other.length)*.5+4;
+        return Math.min(gap,next)<clearance&&Math.max(gap,next)>-clearance;
+      });
+    let limit=r.driftClear?driftCorner:corner;
     const following=(s:typeof target)=>{
       if(s.front<desiredGap)return Math.max(0,s.speed+.9*(s.front-desiredGap))/effectivePace(r.speed,DEFAULT_PACE);
       const room=Math.max(0,s.front-desiredGap);
@@ -187,11 +208,12 @@ export class RivalRace {
     r.speed=clamp(r.speed+(engine*force-resistance-r.gearbox.shiftDrag+grade-(r.braking?c.brake:0))*dt,0,c.topSpeed);
     // Commit to a controlled slide only on a loaded technical bend with a
     // clear lane. Release on exit, when changing lane, or when closing on traffic.
-    const bend=clamp((Math.abs(r.curvature)/CURVATURE_PER_STEER-.48)/.38,0,1);
+    const bend=driftBend(r.curvature);
     const gripLoad=worldSpeed(r.speed)**2*Math.abs(r.curvature)/c.cornerGrip;
-    const slide=r.targetLane===r.lane&&r.gap>30?bend*clamp((gripLoad-.48)/.48,0,1):0;
-    r.driftYaw+=(Math.sign(r.curvature)*slide*.24-r.driftYaw)*(1-Math.exp(-dt*5));
-    const steer=clamp((r.targetX-r.lateral)*2-4*r.driftYaw,-4.2,4.2);
+    const slide=r.driftClear?bend*clamp((gripLoad-.48)/.62,0,1):0;
+    r.driftYaw+=(Math.sign(r.curvature)*slide*MAX_DRIFT_YAW-r.driftYaw)*(1-Math.exp(-dt*5));
+    if(slide>.35)r.behavior='甩尾';
+    const steer=clamp((r.targetX-r.lateral)*2-2.2*r.driftYaw,-4.2,4.2);
     r.lateralRate+=clamp(steer-r.lateralRate,-7*dt,7*dt);
     r.lateral=clamp(r.lateral+(r.lateralRate+r.impulse)*dt,-r.half+r.width/2,r.half-r.width/2);
     r.impulse*=Math.exp(-dt*3);
@@ -234,6 +256,7 @@ export class RivalRace {
       r.previousDistance=r.distance;r.previousLateral=r.lateral;
       if(r.finishTime!==null){
         // Roll clear of the painted line on the post-finish road. Ranking stays locked.
+        r.driftYaw*=Math.exp(-dt*5);r.slip=0;
         r.speed=Math.max(0,r.speed-10*dt);
         r.distance=Math.min(this.finish+550,r.distance+worldSpeed(r.speed)*dt);
         continue;

@@ -214,7 +214,8 @@ export class RivalView {
         for(let j=0;j<4;j++){
           const side=j%2?1:-1,rear=j<2;
           this.wheelPose.position.set(side*1.055,.46,rear?-1.45:1.38);
-          this.wheelPose.rotation.set(side*(rotation+(rear?burn:0)),side<0?Math.PI:0,0,'YXZ');
+          const countersteer=rear?0:r.driftYaw*.72;
+          this.wheelPose.rotation.set(side*(rotation+(rear?burn:0)),(side<0?Math.PI:0)+countersteer,0,'YXZ');
           this.wheelPose.updateMatrix();car.wheels.setMatrixAt(j,this.wheelPose.matrix);
         }
         car.wheels.instanceMatrix.needsUpdate=true;

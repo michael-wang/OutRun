@@ -14,6 +14,36 @@ const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
 function ticks(seconds:number,fn:()=>void){for(let i=0;i<Math.round(seconds/dt);i++)fn();}
 describe('Rival tire smoke should communicate actual traction events',()=>{
+ it('carries speed through clear technical bends but uses the grip line with a car alongside',()=>{
+  const {track,halfAt}=coastWorkerRoad(),player=parked();
+  for(const turn of COAST_STAGE.road.turns.slice(4,6)){
+   function run(beside:boolean){
+    const race=new RivalRace(track.length,d=>({curvature:track.sample(d).curvature,grade:0,half:halfAt(d)}),
+     ()=>[],[raceEntries[3]]);
+    race.reset(turn.start-180);
+    const r=race.rivals[0];r.speed=73;
+    let apexSpeed=0,peak=0,startTime=0,entered=false;
+    while(r.distance<turn.end&&race.time<12){
+     // An adjacent pace car has room when both cars hold normal grip,
+     // but would overlap the additional space reserved for a slide.
+     const traffic=beside?{distance:r.distance,lateral:3.65,speed:r.speed}:player;
+     const old={...traffic};
+     race.step(dt,traffic,old);
+     if(!entered&&r.distance>=turn.start){entered=true;startTime=race.time;}
+     if(!apexSpeed&&r.distance>=(turn.start+turn.end)/2)apexSpeed=r.speed;
+     peak=Math.max(peak,Math.sign(turn.steer)*r.driftYaw);
+     expect(Math.abs(r.lateral)+r.width/2).toBeLessThanOrEqual(r.half);
+    }
+    expect(r.distance).toBeGreaterThanOrEqual(turn.end);
+    return {apexSpeed,peak,time:race.time-startTime};
+   }
+   const clear=run(false),crowded=run(true);
+   expect(clear.peak).toBeGreaterThan(.4);
+   expect(crowded.peak).toBe(0);
+   expect(clear.apexSpeed-crowded.apexSpeed).toBeGreaterThan(7);
+   expect(crowded.time-clear.time).toBeGreaterThan(.45);
+  }
+ });
  it('slides on both loaded drift corners and regains straight-line grip on exit',()=>{
   const {track,halfAt}=coastWorkerRoad(),player=parked();
   for(const turn of COAST_STAGE.road.turns.slice(4,6)){
