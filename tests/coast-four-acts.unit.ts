@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {COAST_SCENIC_ACTS,coastScenicActAt,coastVegetationDensity} from '../src/coast-journey-layout';
-import {COAST_BEACHES,COAST_DISTRICTS,COAST_BEACH_STALLS,COAST_LANDINGS} from '../src/coast-layout';
+import {COAST_BEACHES,COAST_DISTRICTS,COAST_BEACH_STALLS,COAST_LANDINGS,COAST_REEF_ROCKS,COAST_ROCKS,coastRockX} from '../src/coast-layout';
 import {FARM_ZONES,FARM_PLOTS,FARM_HOMES} from '../src/coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES} from '../src/coast-rural-layout';
 import {COAST_REST_SPOTS,COAST_VILLAGE_SITES} from '../src/coast-village-layout';
@@ -89,6 +89,22 @@ it('keeps authored harbour sheds and beach stalls on land and clear of every roa
   const height=coastBeachHeight(site.x,p.position.y,p.right.y,site.d);
   expect(height-COAST_SEA_LEVEL,`submerged site at ${site.d}`).toBeGreaterThan(site.radius===4?1:0);
   expect(clearance.clear(p.position.addScaledVector(p.right,site.x),site.radius),`rejected site at ${site.d}`).toBe(true);
+ }
+});
+
+it('keeps a continuous surf coast with clear road access between the beach and sailing bay',()=>{
+ const zone=COAST_STAGE.effects.ocean.reefBreakers;
+ const rocks=[...COAST_ROCKS,...COAST_REEF_ROCKS].filter(r=>r.d>=zone.start&&r.d<=zone.end).sort((a,b)=>a.d-b.d);
+ const {track,halfAt}=coastWorkerRoad();
+ const points=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track.sample(i*25).position);
+ points.push(track.sample(track.length).position);
+ const clearance=new RoadClearance(points,halfAt,true);
+ expect(rocks.at(-1)!.d-rocks[0].d).toBeGreaterThan(500);
+ for(const [i,rock] of rocks.entries()){
+  if(i)expect(rock.d-rocks[i-1].d).toBeLessThan(45);
+  const p=track.sample(rock.d),x=coastRockX(rock);
+  expect(coastBeachHeight(x,p.position.y,p.right.y,rock.d)).toBeLessThan(COAST_SEA_LEVEL);
+  expect(clearance.clear(p.position.addScaledVector(p.right,x),rock.r*1.6+2)).toBe(true);
  }
 });
 

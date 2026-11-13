@@ -1,4 +1,4 @@
-import {COAST_BEACHES,COAST_BEACH_STALLS,COAST_LANDINGS,COAST_ROCKS,coastBeachX,coastRockX} from './coast-layout';
+import {COAST_BEACHES,COAST_BEACH_STALLS,COAST_LANDINGS,COAST_REEF_ROCKS,COAST_ROCKS,coastBeachX,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {buildCoastTownStreets} from './coast-town-streets';
@@ -648,6 +648,18 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boulder,'#8d9185',0,site.r*.34,0,site.r,site.r*.94,site.r*.85,.13,rand(site.d)*6,.1);
     part(boulder,'#a5a48f',site.r*.5,0,site.r*.65,site.r*.48,site.r*.44,site.r*.42);
    }
+  }
+  for(const site of COAST_REEF_ROCKS){
+   if(!inChunk(site.d))continue;
+   beachAnchor(site.d,coastRockX(site));
+   const r=site.r;
+   if(!clear(r*1.6+2))continue;
+   const h=.55+rand(site.d+1)*.62;
+   // Embed long fractured slabs in the shoal, with just the crest exposed
+   // on the outer row even where the seabed slopes below the waterline.
+   const rise=r*h,depth=Math.max(0,COAST_SEA_LEVEL-rise*.5-base.y);
+   part(boulder,'#72766d',0,rise*.18+depth*.5,0,r*1.45,rise+depth*.5,r*.85,.17,rand(site.d)*6,.13);
+   part(boulder,'#8d9185',r*.76,depth*.5,r*.64,r*.74,rise*.60+depth*.5,r*.59,.12,rand(site.d+2)*6);
   }
   coastShadowGroup='other';
  }

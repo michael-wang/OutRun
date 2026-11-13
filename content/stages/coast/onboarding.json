@@ -14,8 +14,8 @@
       "id": "A1",
       "start": 780,
       "end": 1480,
-      "label": "高速傾斜大彎",
-      "goal": "Learn a banked high-speed sweep without drifting"
+      "label": "高速大彎",
+      "goal": "Hold a smooth line through a level high-speed sweep"
     },
     {
       "id": "A2",

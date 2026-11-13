@@ -10,7 +10,7 @@
       "start": 780,
       "end": 1480,
       "steer": 0.2,
-      "label": "R5 A1 · Grand banked coastal sweeper"
+      "label": "R5 A1 · Flat coastal sweeper"
     },
     {
       "shape": "sweep",
@@ -228,10 +228,10 @@
   "banks": [
     {
       "kind": "showcase",
-      "start": 680,
-      "end": 1580,
-      "ramp": 160,
-      "degrees": 18
+      "start": 360,
+      "end": 1690,
+      "ramp": 100,
+      "degrees": 0
     },
     {
       "kind": "showcase",
@@ -245,21 +245,21 @@
       "start": 2245,
       "end": 2725,
       "ramp": 140,
-      "degrees": 18
+      "degrees": 2
     },
     {
       "kind": "showcase",
       "start": 8320,
       "end": 8820,
       "ramp": 165,
-      "degrees": 18
+      "degrees": 7
     },
     {
       "kind": "showcase",
       "start": 12035,
       "end": 12565,
       "ramp": 160,
-      "degrees": 18
+      "degrees": 3
     }
   ]
 }

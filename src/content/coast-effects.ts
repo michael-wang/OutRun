@@ -5,6 +5,7 @@ import effectsFile from '../../content/stages/coast/effects.json';
 export interface OceanStageEffects{
  windSpeed:number;waveScale:number;swellScale:number;
  fftMobile:number;fftDesktop:number;
+ reefBreakers:{start:number;end:number;waveGain:number;sprayGain:number};
 }
 export interface VegetationStageEffects{
  baseDensity:number;
@@ -61,6 +62,10 @@ export function validateCoastEffects(effect:CoastStageEffects,roadStart:number,r
  if(!ocean||!bounded(ocean.windSpeed,45)||!bounded(ocean.waveScale,4)||
     !bounded(ocean.swellScale,3))
   throw Error('Invalid coast ocean parameters');
+ const reef=ocean.reefBreakers;
+ if(!reef||!(reef.start>=roadStart&&reef.end<=roadStart+roadLength&&reef.end>reef.start+100)||
+    !bounded(reef.waveGain,6)||reef.waveGain<1||!bounded(reef.sprayGain,3)||reef.sprayGain<1)
+  throw Error('Invalid local reef breakers');
  const fft=(n:number)=>Number.isInteger(n)&&n>=64&&n<=512&&(n&(n-1))===0;
  if(!fft(ocean.fftMobile)||!fft(ocean.fftDesktop)||
     ocean.fftMobile>ocean.fftDesktop)

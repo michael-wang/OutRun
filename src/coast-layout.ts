@@ -58,15 +58,27 @@ export const COAST_BEACH_STALLS=COAST_MARKET_BEACHES.flatMap(centre=>
  [-128,-111,-78,-28,3,19].map((offset,i)=>({d:centre+offset,x:-21-i%2*3})));
 export const COAST_LANDINGS=[4490,4570,4775,8920].map(d=>({d,x:-25,radius:7}));
 
-/** Shared by instanced rocks, water clipping, wash foam and spray. */
+/** Ten main breakers carry the detailed water contact and long sunset shadows.
+ * The reefs between them share the local surf and the streamed rock batches. */
 export const COAST_ROCKS=[
  {d:2110,r:4.4,out:2},{d:2155,r:2.7,out:5},
  {d:12085,r:6.5,out:2},{d:12115,r:4.1,out:4},
- {d:6480,r:6.4,out:3},{d:6510,r:4.7,out:10},
- {d:6542,r:8.6,out:4},{d:6561,r:5.6,out:12},
+ {d:6372,r:5.4,out:8},{d:6508,r:6.7,out:15},
+ {d:6660,r:7.3,out:7},{d:6818,r:6.4,out:12},
  {d:9780,r:5.8,out:2},{d:9810,r:3.6,out:5},
 ] as const;
-export const coastRockX=(rock:typeof COAST_ROCKS[number])=>coastBeachX(-26,rock.d)-rock.out;
+// Unequal strings of skerries: low tables close to the wet sand and heavier
+// blocks offshore. The gaps between strings admit a clear line of white water.
+export const COAST_REEF_ROCKS=[
+ [6320,3.1,3],[6332,2.3,9],[6356,3.7,18],[6379,2.8,22],[6389,4.1,5],
+ [6420,3.4,10],[6431,5.0,18],[6438,2.2,2],[6455,2.8,6],[6479,4.7,12],
+ [6495,3.5,2],[6518,4.3,4],[6532,3.5,23],[6561,5.6,12],[6574,2.6,4],
+ [6592,3.2,6],[6614,4.9,22],[6621,2.6,7],[6645,3.8,3],[6673,4.2,17],
+ [6692,2.8,5],[6707,3.7,13],[6725,5.1,21],[6737,2.7,4],[6752,3.7,11],
+ [6782,4.6,19],[6793,2.5,3],[6828,3.8,5],[6850,4.1,15],[6867,2.9,8],
+ [6884,3.2,6],
+].map(([d,r,out])=>({d,r,out}));
+export const coastRockX=(rock:{d:number;out:number})=>coastBeachX(-26,rock.d)-rock.out;
 
 /** Compact town → housing → farm openings → markets → quiet gaps.
  * No permanent market or dense housing before 3.4km or after 7km.

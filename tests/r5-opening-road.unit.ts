@@ -28,16 +28,19 @@ it('P0 R5a: opening four lessons are safe, ordered and matched to the authored r
 it('P0 R5a: banked S has two opposite, finite physical cross slopes in the shared track',()=>{
  expect(road.banks!.filter(b=>b.start<plan.lessons.at(-1)!.end)).toHaveLength(3);
  const track=createAuthoredCoastTrack(road,identity);
- const sweeper=track.sample((road.banks![0].start+road.banks![0].end)/2);
+ for(let d=road.startDistance;d<=road.turns[0].end;d+=5)
+  expect(track.sample(d).right.y,`opening crossfall at ${d}m`).toBeCloseTo(0,7);
  const entry=road.turns[0].start;
  expect(track.sample(entry-60).curvature).toBe(0);
- expect(track.sample(entry-60).right.y).toBeLessThan(-.015);
- expect(track.sample(entry).right.y).toBeLessThan(-.09);
  const left=track.sample((road.banks![1].start+road.banks![1].end)/2);
  const right=track.sample((road.banks![2].start+road.banks![2].end)/2);
- expect(sweeper.right.y).toBeLessThan(-.28);
  expect(left.right.y).toBeGreaterThan(.15);
- expect(right.right.y).toBeLessThan(-.15);
+ expect(right.right.y).toBeLessThan(0);
+ // Limit the rise at the seaward shoulder along the approach and the vista.
+ for(const [start,end,maxRise] of [[2245,2645,.55],[8410,8810,1.5],[12120,12520,.75]]){
+  for(let d=start;d<=end;d+=5)
+   expect(-11*track.sample(d).right.y,`blocked coast at ${d}m`).toBeLessThan(maxRise);
+ }
  for(let d=350;d<=4710;d+=13){
   const p=track.sample(d);
   expect(p.position.toArray().every(Number.isFinite)).toBe(true);

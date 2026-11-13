@@ -6,7 +6,13 @@
     "waveScale": 0.55,
     "swellScale": 0.3,
     "fftMobile": 128,
-    "fftDesktop": 256
+    "fftDesktop": 256,
+    "reefBreakers": {
+      "start": 6280,
+      "end": 6940,
+      "waveGain": 5,
+      "sprayGain": 2.3
+    }
   },
   "vegetation": {
     "baseDensity": 0.73,

@@ -69,6 +69,8 @@ it('R4a: reject invalid mobile costs, misplaced foliage and palettes early',()=>
  invalid(x=>{x.ocean.windSpeed=Infinity;});
  invalid(x=>{x.ocean.fftMobile=100;});
  invalid(x=>{x.ocean.fftMobile=512;});
+ invalid(x=>{x.ocean.reefBreakers.end=x.ocean.reefBreakers.start;});
+ invalid(x=>{x.ocean.reefBreakers.waveGain=Infinity;});
  invalid(x=>{x.vegetation.baseDensity=1.5;});
  invalid(x=>{x.vegetation.quietBeach.fullStart=x.vegetation.quietBeach.start;});
  invalid(x=>{x.vegetation.quietBeach.end=road.startDistance+road.length+1;});
