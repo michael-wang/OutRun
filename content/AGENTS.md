@@ -6,7 +6,8 @@
   in `content/prefabs/catalog.json`.
 - `stage.json` owns stage identity, seed and starting conditions.
   `road.json` owns finite road turns, elevation and lane count.
-  `scene.json` owns static prefab placements.
+  `scene.json` contains the **generated runtime projection** of static prefab placements;
+  author site positions in `scenic-layout.json`, not by hand-editing the generated output.
 - Road and static-prop positions use **absolute HUD metres**. Yaw is
   road-relative in radians. Fix asset origins in the model or placement;
   avoid model-specific if-statements in rendering code.
