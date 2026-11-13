@@ -26,6 +26,12 @@ Inside the new ZIP:
 
 Images are AI-authored *concepts*, **not** orthographic projections of an existing physically consistent model. Reconcile minor geometric contradictions by preserving the front-view identity and coherent 3D shape.
 
+## 2026-11-14 budget correction — NT$0, supersedes paid suggestions below
+
+The owner has explicitly set **zero additional spending** on AI or 3D production. Do not use fal paid inference, Meshy/Tripo subscriptions, cloud GPU credits, purchased models, or trials that require a credit card. **The complete current local execution plan is [Zero-cost 3D Pipeline](../../COAST_CHARACTER_ZERO_COST_3D_PIPELINE.md), tracked in Issue #38.** Any earlier references on this page to a paid cloud model are historical and no longer authorized.
+
+Codex should test a **local open-weight shape model** on the RTX 5070 Ti (verify driver / 16GB VRAM / CUDA compatibility first), preferably Hunyuan3D-2 shape-only; consider MIT TripoSG if license or install issues block it. Keep all dependencies, weights and candidate GLBs outside tracked game content. Import the actual mesh into Blender, render front/45°/side/back and STOP for owner art approval. Do not confuse "free model" with unconditional worldwide commercial shipping rights; document licenses.
+
 ## Codex next action: obtain/inspect an ACTUAL editable mesh
 
 Execute [Issue #38](https://github.com/michael-wang/OutRun/issues/38) — not the old #37 — in two strictly separated steps:
@@ -33,7 +39,7 @@ Execute [Issue #38](https://github.com/michael-wang/OutRun/issues/38) — not th
 **Step A: One bounded 3D generation + Blender validation (CURRENT).**
 
 - Unpack approved ZIP and verify hashes. Use the isolated **front image** for a first image-to-3D candidate; optionally add 45°/profile only if the chosen model officially supports those camera angles and you verify left/right convention. Never upload the entire multi-character Style B board or the three-view contact sheet as the subject.
-- First choice when an authorized provider account is already available: fal **`fal-ai/hunyuan-3d/v3.1/pro/image-to-3d`** (official docs: https://fal.ai/models/fal-ai/hunyuan-3d/v3.1/pro/image-to-3d/api). It supports `input_image_url`, `left_front_image_url`/`right_front_image_url`, `left_image_url`/`right_image_url`, returns `model_glb`; costs vary by PBR/multiview. **Do not spend credits, create subscriptions or upload private API keys without owner-approved credentials and cost.** If blocked, report the exact setup needed and do not substitute another scripted geometric face.
+- **Local only, no paid provider:** Hunyuan3D-2 shape-only on the owner's GPU, or TripoSG MIT as a fallback. Preflight CUDA 12.8+/PyTorch with RTX 5070 Ti Blackwell compatibility, use isolated installs outside the repo, and follow the [zero-cost pipeline](../../COAST_CHARACTER_ZERO_COST_3D_PIPELINE.md). A paid inference fallback is prohibited.
 - A suitable licensed artist-authored character-base mesh adjusted in Blender is an acceptable fallback, with source/license preserved, but not another hand-coded math/ellipse face.
 - Download candidate GLB into ignored local staging and **import in Blender**. Check REAL geometry under rotation: eyes/lids, nose, smile, sculpted hair volume, side profile and back of head (the back is not covered by the concept), transparent/painted-on details, neck/bust transition, separate earrings. Refine artistically in Blender **only when already near target**, not by writing a new giant procedural facial script. Save editable `.blend` source.
 - In `docs/art-review/h1ar3d/`, create a short README and **actual Blender renders**: front, 45°, side, back, and one warm golden-hour 45°; include a comparison with the approved references. No AI-enhanced fake screenshots, no painted image planes passed off as geometry. Capture a simple viewport wireframe or Blender scene hierarchy for evidence.
