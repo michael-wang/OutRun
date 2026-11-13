@@ -64,7 +64,7 @@ it('fades coastal grass warmth before the inland foothills',()=>{
 it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  const scene=new THREE.Scene();addCoastMountains(scene,track.sample,track.length);
  expect(scene.children).toHaveLength(2);
- const origin=track.sample(0).position,axis=track.sample(track.length).position.clone().sub(origin).setY(0).normalize(),right=new THREE.Vector3(axis.z,0,-axis.x);if(right.dot(track.sample(5000).right)<0)right.negate();
+ const origin=track.sample(0).position,legacyEnd=Math.min(track.length,10950),axis=track.sample(legacyEnd).position.clone().sub(origin).setY(0).normalize(),right=new THREE.Vector3(axis.z,0,-axis.x);if(right.dot(track.sample(5000).right)<0)right.negate();
  let triangles=0;
  for(const mesh of scene.children as THREE.Mesh[]){
   const p=mesh.geometry.attributes.position;let peak=0;

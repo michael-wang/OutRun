@@ -5,6 +5,8 @@ import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
 import {coastGameplayAt,coastFeedbackPhases} from './content/coast-gameplay-sample';
 import {coastWorkerRoad} from './content/coast-worker-road';
 import {coastLessonAt} from './content/coast-onboarding';
+import {coastHeroNear} from './content/coast-direction';
+import {coastScenicActAt} from './coast-journey-layout';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {GAME_VERSION} from './build-info';
@@ -1044,11 +1046,14 @@ function render(dt:number,draw=true){
    const lesson=coastLessonAt(state.distance);
    const approaching=COAST_STAGE.onboarding.driftLessons.find(
     d=>state.distance>=d.start-240&&state.distance<d.start);
+   const chapter=coastScenicActAt(state.distance-coastStart),hero=coastHeroNear(state.distance);
    const caption=lesson
     ?`R5 · ${lesson.id} ${lesson.label} · ${Math.floor(state.distance)} / ${lesson.end}m`
     :approaching
      ?`R5 · ${approaching.id} 甩尾彎將至 · ${Math.ceil(approaching.start-state.distance)}m · 建議 ${approaching.suggestedEntryKmh}km/h`
-     :`R5 · 待重製路段 · ${Math.floor(state.distance)}m`;
+     :hero
+      ?`R5c · ${hero.label} · ${Math.round(hero.distance-state.distance)}m · ${chapter.label}`
+      :`R5c · ${chapter.label} · ${Math.floor(state.distance)}m`;
    if(r5LessonBadge.textContent!==caption)r5LessonBadge.textContent=caption;
   }
   const raceEffectTime=3-countdown+race.time;
@@ -1436,7 +1441,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   rivalTags:()=>rivalView.inspectTags(),
   race:()=>({time:race.time,countdown,observed,playerFinish:race.playerFinish,rank:race.rank(state.distance,race.playerFinish,'PLAYER',state),rivals:race.rivals.map(({entry,obstacles,gearbox,...r})=>({...r,id:entry.id}))}),
   journey:()=>({enabled:false,totalElapsed:elapsed}),
-  r5Lesson:()=>({distance:state.distance,lesson:coastLessonAt(state.distance),traffic:COAST_STAGE.onboarding.traffic}),
+  r5Lesson:()=>({distance:state.distance,lesson:coastLessonAt(state.distance),chapter:coastScenicActAt(state.distance-coastStart),hero:coastHeroNear(state.distance),traffic:COAST_STAGE.onboarding.traffic}),
   driveState:()=>({...state,elapsed,mode,trackLength:world.length}),
   streamFrame:()=>({elapsed,distance:state.distance,held:streamHeld,road:world.streamer?.roadReady(state.distance)??true,cameraRoad:world.streamer?.roadReady(Math.max(0,state.distance-40))??true,safe:world.streamer?.canDrive(state.distance,state.speed*effectivePace(state.speed,highSpeedPace))??true,contextLost}),
   centerRoad:()=>{const p=world.sample(state.distance),ray=new THREE.Raycaster(p.position.clone().add(new THREE.Vector3(0,10,0)),down,0,20);return world.streamer?.raycastContacts(ray,state.distance).some(h=>Math.abs(h.point.y-p.position.y)<.08)??true;},

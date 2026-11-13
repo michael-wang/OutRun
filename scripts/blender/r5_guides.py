@@ -54,6 +54,18 @@ def main():
     bpy.context.scene.collection.children.link(collection)
 
     curve("R5_RoadCenter_REFERENCE_ONLY", [row["position"] for row in samples], collection)
+    # Show each true world-space hero location as an ART-DIRECTION anchor.
+    # These are not colliders, road surface or final scenic geometry.
+    for hero in guide.get("heroSlots", []):
+        marker = bpy.data.objects.new("HERO_" + hero["id"], None)
+        marker.empty_display_type = "SPHERE"
+        marker.empty_display_size = 18
+        marker.location = game_to_blender(hero["position"])
+        marker["roadDistance"] = hero["distance"]
+        marker["lookAheadM"] = hero["lookAheadM"]
+        marker["lookingTo"] = hero["side"]
+        marker["brief"] = hero["brief"]
+        collection.objects.link(marker)
 
     def shifted(row, lateral):
         return [row["position"][k] + row["right"][k] * lateral for k in range(3)]
@@ -100,7 +112,7 @@ def main():
 
     output.parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.wm.save_as_mainfile(filepath=str(output.resolve()))
-    print(f"R5a Blender guide built: {len(samples)} source samples; {output}")
+    print(f"R5c Blender guide built: {len(samples)} source samples; {output}")
 
 
 if __name__ == "__main__":

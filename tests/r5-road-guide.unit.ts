@@ -7,5 +7,6 @@ it('R5b: the offline Blender guide exporter is executable JavaScript, not a TS-o
  expect(result.status,result.stderr).toBe(0);
  const script=readFileSync('scripts/r5-export-road-guide.mjs','utf8');
  expect(script).toContain('stations.add(accident.distance)');
- expect(script).toContain('const start=road.startDistance,end=lastDrift.end;');
+ expect(script).toContain('const start=road.startDistance,end=road.startDistance+road.length;');
+ expect(script).toContain('heroSlots:direction.heroSlots.map(hero=>');
 });
