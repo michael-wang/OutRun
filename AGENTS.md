@@ -3,6 +3,12 @@
 Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
 canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
+## Coastal art production (November 14)
+
+- Art direction: **board A for all stylized semi-realistic 3D objects; board C TOP BANNER ONLY for sunset coastal mood**. Read `docs/COAST_ART_BIBLE.md`, `docs/COAST_HERO_VEHICLE_ART.md` and `art/reference/coast/README.md`. Reference PNGs are pending one-time binary import; a README is not an image.
+- The recurrent Riviera 62, driver/passenger, rivals and traffic are **S-tier focal assets**. Keep approved identity; audit before remodelling. This vehicle/character track runs early, in parallel with scenery.
+- Make scenic content portable: asset library → `content/scenery/packages.json` → `content/stages/coast/scenic-layout.json`. Run `npm run scenic:build` to regenerate the existing runtime `scene.json` and hero positions in `direction.json`. Do not hard-code a site kilometre into an asset. See `docs/COAST_PORTABLE_SITES.md` for R0 limits.
+
 ## Engineering
 
 - Optimize for the **smallest relevant context**. Prefer composition over inheritance; avoid speculative frameworks, deep abstractions, duplicate implementations and future-proofing without a concrete use.
