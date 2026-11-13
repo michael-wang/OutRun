@@ -1,13 +1,13 @@
 {
   "name": "first-drive",
   "private": true,
-  "version": "0.10.16",
+  "version": "0.10.17",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
-    "verify:dev": "npm run build && npm test",
+    "verify:dev": "npm run scenic:check && npm run scenic:test && npm run build && npm test",
     "r5:road-guide": "node scripts/r5-export-road-guide.mjs",
     "test:e2e": "npm run build && playwright test",
     "preview": "vite preview --host 127.0.0.1",
@@ -16,7 +16,10 @@
     "predev": "npm run coast:shore",
     "prebuild": "npm run coast:shore",
     "test:p0": "vitest run tests/stream-reliability.unit.ts tests/authored-road.unit.ts tests/authored-track.unit.ts tests/coast-stage-content.unit.ts tests/coast-effects.unit.ts tests/coast-worker-road.unit.ts tests/coast-gameplay-sample.unit.ts tests/coast-feedback-data.unit.ts",
-    "test:p1": "vitest run tests/race-recovery.unit.ts tests/race-traffic-world.unit.ts tests/rival-race.unit.ts tests/traffic-impact.unit.ts"
+    "test:p1": "vitest run tests/race-recovery.unit.ts tests/race-traffic-world.unit.ts tests/rival-race.unit.ts tests/traffic-impact.unit.ts",
+    "scenic:check": "node scripts/build-scenic-layout.mjs --check",
+    "scenic:build": "node scripts/build-scenic-layout.mjs --write",
+    "scenic:test": "node scripts/test-scenic-layout.mjs"
   },
   "dependencies": {
     "html2canvas": "1.4.1",
