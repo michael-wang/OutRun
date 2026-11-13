@@ -1,7 +1,16 @@
-# Coastal Highway — Scenery Production Plan v1.0
+# Coastal Highway — Scenery Production Plan v1.1
 Date: 2026-11-14
 Status: approved direction recorded; **production stages are proposed, not claimed complete**.
-Companion decision: docs/COAST_ART_BIBLE.md.
+Companion decisions: docs/COAST_ART_BIBLE.md, docs/COAST_PORTABLE_SITES.md and docs/COAST_HERO_VEHICLE_ART.md.
+
+## v1.1 priority/architecture amendments (2026-11-14)
+
+1. **Separate asset / site kit / road placement.** Author reusable GLB models in the prefab catalog, compose small site kits in `content/scenery/packages.json`, and place them in `content/stages/coast/scenic-layout.json`. Run `npm run scenic:build` to project the agreed site positions into existing `scene.json` and director `direction.json`. Never bake HUD metres into asset models. For cliffs, piers, shorelines or ocean objects, add site-specific adapters only when a real pilot requires them: moving scenery may require terrain re-fitting but not re-modeling the boats/houses.
+2. **Player + rivals + people are S-tier recurring hero assets**, above one-off decorative buildings. Parallel H0-H3 track in `docs/COAST_HERO_VEHICLE_ART.md`: audit actual in-game look, improve the accepted Riviera and occupants where proven needed, then rival family and matching traffic, including measured Pixel 8 cost. Do not defer this track until all nine landscapes are complete.
+3. **One-time reference image handoff:** `art/reference/coast/README.md` specifies the two checked-in PNG targets and exact local import. The source images currently live in the ChatGPT ZIP; reference README alone is not proof binary files are in Git.
+4. **Current delivery order:** (a) Julia content/placement separation and vehicle visual audit brief; (b) Codex short H0 in-game capture + import approved images, and independent road-to-Blender rehearsal; (c) owner/Julia inspect hero vehicle improvements and 1–2 scenery GLB samples; (d) two site slices; (e) scenery production. Gate large-scale asset variants on approval.
+5. Existing P0–P8 stages remain valid for the **world scenery** track. Add the H0-H3 vehicle track in parallel; it is not a P6 afterthought.
+
 
 ## 0. Current source of truth / avoid stale road plans
 
@@ -51,7 +60,7 @@ Julia cannot operate the owner's Windows Blender GUI or local Playwright/device 
   3. One roadside kit (guardrail/linked bollard and pole; preserve collision rules).
   4. One 3D coastal tree **or** headland rock, whichever is most useful to the pilot shot.
 - Include source provenance, model origin, actual metre scale, texture/material inventory and one simpler distance LOD where sensible.
-- DO NOT remodel Riviera 62, driver, rivals or traffic by default. Evaluate them against the accepted style first; revisit only visible mismatches.
+- Treat Riviera 62, driver/passenger, rivals and traffic as S-tier via the parallel H0-H3 track. Audit before remodelling; improve documented visual mismatches in focused tickets. They are not anonymous background props.
 - **Gate:** Julia + owner approve appearance in actual dusk gameplay at speed, not a Blender still alone. Unapproved prototypes must not be multiplied.
 
 ### P3 — Two controlled vertical slices (Codex makes; Julia reviews; owner drives)
@@ -142,9 +151,9 @@ Not initial dependencies: Gaussian Splats, WebGPU renderer migration, a procedur
 
 As of 2026-11-14 the owner reported **81% remaining, resets in five days**. Treat as an operational limit, not a linear guaranteed budget conversion.
 
-**Before reset, cap scope to at most two well-bounded Codex work packages:**
+**Before reset, cap scope to at most two well-bounded Codex work packages (no mass modelling):**
 - **Ticket A — technical rehearsal only:** run exact current road-guide + Blender import locally, prove one GLB round trip, inspect existing art masking and object scale; neutral/in-game captures; short cost/benchmark report. Reuse existing scripts; do not mass-build.
-- **Ticket B — only if A works:** build farmhouse + guardrail roadside set to board A style at the HUD 1085m pilot, with exactly one controlled variant or LOD. Show visuals and real game screenshot. Avoid unrelated map/traffic/renderer refactors.
+- **Ticket B — revised priority:** import the two approved reference PNGs locally into Git and capture H0 vehicle/occupant/rival/traffic comparison shots at fixed dusk/seed. Return the **top three visible mismatches** and costs without undertaking a complete remodel. The farmhouse/guardrail pilot is queued **after** the bridge and H0 art decisions, not the default pre-reset Codex sink.
 
 Julia does concept direction, all nine shot briefs, issue triage and acceptance gates before Codex gets a task. Codex should receive a *single self-contained ticket*, do local build/tests before pushing, and return: commit, modified files, exact preview URL/HUD station, 2–3 screenshots, FPS/metrics if relevant, pass/fail and unresolved items.
 
@@ -163,5 +172,4 @@ After each ticket, inspect remaining Codex quota. Preserve a substantial reserve
 
 ## 7. Immediate next step
 
-Julia: finish storyboard for the ten chapters and four representative object briefs with specific neutral view + in-game screenshots.
-Codex Ticket A (above) is the next EXECUTION task, *not* a request to create an entire world. Owner reviews first pilot style before Ticket B and mass-production.
+Julia: maintain portable site content, create the ten-chapter storyboard, and curate H0 vehicle look-dev shot comparisons. Codex's next bounded tasks are the local road→Blender rehearsal (#34) and S-tier visual audit/reference image import (new H0 ticket). Do not spend the pre-reset budget on mass house/boat generation. Farmhouse pilot #35 stays queued until the art and pipeline gates are satisfied.
