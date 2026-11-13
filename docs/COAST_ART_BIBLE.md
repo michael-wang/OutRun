@@ -68,6 +68,10 @@ Both protagonists are recurring heroes, not faceless decorative occupants. They 
 - Populated beach/market props that form a visual wall at 300 km/h.
 - A gorgeous static Blender screenshot that lacks usable runtime performance, road sightline or scene streaming.
 
+## H1a visual failure rule (2026-11-14)
+
+The owner rejected the `v0.10.18` female passenger's mathematically generated face and thick strip hair: technically valid meshes, but poor likeness and art quality compared with Style Option B. For hero faces, do **not** treat a higher-poly Three.js procedural face, successful tests or stable FPS as visual acceptance. Require a visually approved 3D portrait (front, 3/4, profile) from a real DCC-authored mesh **before** game hookup. Use the [art recovery brief](COAST_CHARACTER_ART_RECOVERY.md) / [Issue #38](https://github.com/michael-wang/OutRun/issues/38). Source/license checks and mobile LOD are subsequent gates, not substitutes for art direction.
+
 ## How a new asset is approved
 
 **Concept → one 3D prototype → in-game shot → owner YES/NO → controlled variants.**
