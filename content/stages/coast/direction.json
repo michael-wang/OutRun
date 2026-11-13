@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "revision": "R5c-director-30km",
+  "chapters": [
+    {
+      "id": "rural-opening",
+      "start": 0,
+      "end": 1800,
+      "label": "海岸田園",
+      "focus": "rice-flower-courtyard",
+      "role": "onboarding"
+    },
+    {
+      "id": "quiet-beach",
+      "start": 1800,
+      "end": 3400,
+      "label": "悠閒沙灘",
+      "focus": "beach-sparse-inland",
+      "role": "onboarding"
+    },
+    {
+      "id": "town-and-market",
+      "start": 3400,
+      "end": 7000,
+      "label": "小鎮與夜市",
+      "focus": "housing-market-farm-pockets",
+      "role": "onboarding"
+    },
+    {
+      "id": "wide-ocean",
+      "start": 7000,
+      "end": 10400,
+      "label": "海灣展開",
+      "focus": "golden-water-sailboats",
+      "role": "vista"
+    },
+    {
+      "id": "cliff-challenge",
+      "start": 10400,
+      "end": 15400,
+      "label": "海岬追逐",
+      "focus": "clifftop-road-silhouette",
+      "role": "pressure"
+    },
+    {
+      "id": "rice-plateau",
+      "start": 15400,
+      "end": 19600,
+      "label": "高地稻浪",
+      "focus": "rice-flower-terraced-horizon",
+      "role": "vista"
+    },
+    {
+      "id": "switchback-risk",
+      "start": 19600,
+      "end": 23000,
+      "label": "山海連彎",
+      "focus": "risk-gates-recovery",
+      "role": "pressure"
+    },
+    {
+      "id": "golden-bridge",
+      "start": 23000,
+      "end": 26500,
+      "label": "夕陽跨海",
+      "focus": "open-water-bridge-vista",
+      "role": "vista"
+    },
+    {
+      "id": "final-contest",
+      "start": 26500,
+      "end": 28900,
+      "label": "最終追逐",
+      "focus": "two-last-chance-turns",
+      "role": "pressure"
+    },
+    {
+      "id": "finish-sprint",
+      "start": 28900,
+      "end": 30000,
+      "label": "終點衝刺",
+      "focus": "long-straight-finish",
+      "role": "finish"
+    }
+  ],
+  "heroSlots": [
+    {
+      "id": "bay-entrance",
+      "distance": 9650,
+      "side": "left",
+      "lookAheadM": 500,
+      "label": "海灣帆影",
+      "brief": "Keep open sky and sea visible for a full-speed approach."
+    },
+    {
+      "id": "sea-cliff",
+      "distance": 11700,
+      "side": "left",
+      "lookAheadM": 700,
+      "label": "海岬峭壁",
+      "brief": "Actual 3D height/depth and rail silhouette against ocean. No flat backdrop."
+    },
+    {
+      "id": "rice-plateau",
+      "distance": 16250,
+      "side": "right",
+      "lookAheadM": 680,
+      "label": "高原稻浪",
+      "brief": "Field wind waves, long depth layers, wide comfortable driving."
+    },
+    {
+      "id": "sunset-bridge",
+      "distance": 24200,
+      "side": "left",
+      "lookAheadM": 900,
+      "label": "夕陽跨海橋",
+      "brief": "Single monumental bridge-and-sea vista; low continuous road protection."
+    },
+    {
+      "id": "finish-beacon",
+      "distance": 29700,
+      "side": "ahead",
+      "lookAheadM": 1100,
+      "label": "終點地標",
+      "brief": "Finish icon visible across long sprint, not hidden by a sharp bend."
+    }
+  ],
+  "contestGates": [
+    {
+      "id": "cliff-gate",
+      "start": 12850,
+      "end": 15100,
+      "label": "峭壁技術追逐",
+      "goal": "Brake, select a line and attack the exit. Never rubber-band by rank."
+    },
+    {
+      "id": "switchback-gate",
+      "start": 19800,
+      "end": 22750,
+      "label": "山海連彎",
+      "goal": "Two opposite hard corners with overtaking under braking and recovery space."
+    },
+    {
+      "id": "last-chance",
+      "start": 27200,
+      "end": 28900,
+      "label": "最終逆轉窗口",
+      "goal": "Two legible late-braking chances, then an unbroken finish straight."
+    }
+  ]
+}

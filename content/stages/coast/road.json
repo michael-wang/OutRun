@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "coast",
-  "length": 10000,
+  "length": 30000,
   "lanes": 5,
   "baseHeight": -1.8,
   "turns": [
@@ -51,31 +51,109 @@
     },
     {
       "shape": "sweep",
-      "start": 7350,
-      "end": 8000,
+      "start": 7520,
+      "end": 8760,
       "steer": 0.18,
-      "label": "Market headland"
+      "label": "海灣展開｜大幅高速長彎"
     },
     {
       "shape": "sweep",
-      "start": 8300,
-      "end": 8950,
-      "steer": -0.18,
-      "label": "Golden-water farewell"
-    },
-    {
-      "shape": "sweep",
-      "start": 8980,
-      "end": 9580,
+      "start": 9050,
+      "end": 10200,
       "steer": -0.14,
-      "label": "Fishing point"
+      "label": "黃金海岸｜俯瞰海面"
     },
     {
       "shape": "sweep",
-      "start": 9650,
-      "end": 10230,
-      "steer": 0.145,
-      "label": "Return along the last cove"
+      "start": 11200,
+      "end": 11920,
+      "steer": -0.31,
+      "label": "海岬爬升｜觀景入彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 12130,
+      "end": 12900,
+      "steer": 0.49,
+      "label": "峭壁長彎｜超車窗口"
+    },
+    {
+      "shape": "sweep",
+      "start": 13250,
+      "end": 14020,
+      "steer": -0.84,
+      "label": "峭壁技術彎｜制動選線"
+    },
+    {
+      "shape": "sweep",
+      "start": 14250,
+      "end": 14950,
+      "steer": 0.57,
+      "label": "海岬反向彎｜出彎追趕"
+    },
+    {
+      "shape": "sweep",
+      "start": 15600,
+      "end": 17200,
+      "steer": 0.13,
+      "label": "高原稻浪｜風景慢展開"
+    },
+    {
+      "shape": "sweep",
+      "start": 18100,
+      "end": 19020,
+      "steer": -0.21,
+      "label": "丘陵緩彎｜再加速"
+    },
+    {
+      "shape": "sweep",
+      "start": 19850,
+      "end": 20550,
+      "steer": -0.75,
+      "label": "山海連彎一｜高風險選線"
+    },
+    {
+      "shape": "sweep",
+      "start": 20620,
+      "end": 21480,
+      "steer": 0.82,
+      "rampFraction": 0.08,
+      "label": "山海連彎二｜立即反向"
+    },
+    {
+      "shape": "sweep",
+      "start": 21900,
+      "end": 22720,
+      "steer": -0.62,
+      "label": "山海連彎三｜重新進攻"
+    },
+    {
+      "shape": "sweep",
+      "start": 23600,
+      "end": 25200,
+      "steer": 0.11,
+      "label": "夕陽跨海橋｜開闊長彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 25700,
+      "end": 26800,
+      "steer": -0.24,
+      "label": "海岸回程｜高速控線"
+    },
+    {
+      "shape": "sweep",
+      "start": 27300,
+      "end": 28000,
+      "steer": 0.56,
+      "label": "最終追逐｜第一個超車機會"
+    },
+    {
+      "shape": "sweep",
+      "start": 28140,
+      "end": 28860,
+      "steer": -0.88,
+      "label": "最終追逐｜最後技術彎"
     }
   ],
   "elevations": [
@@ -86,6 +164,70 @@
       "base": -1.8,
       "rise": 1,
       "label": "Coastal climb"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 10350,
+      "end": 12700,
+      "base": -0.8,
+      "rise": 32,
+      "label": "海岬山坡爬升"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 12700,
+      "end": 15200,
+      "base": 31.2,
+      "rise": 24,
+      "label": "峭壁高地頂點"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 15200,
+      "end": 18000,
+      "base": 55.2,
+      "rise": -16,
+      "label": "稻田高原舒緩下坡"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 18000,
+      "end": 21500,
+      "base": 39.2,
+      "rise": -31,
+      "label": "海岸山海俯衝"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 21500,
+      "end": 24700,
+      "base": 8.2,
+      "rise": 15,
+      "label": "夕陽跨海橋引橋"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 24700,
+      "end": 27200,
+      "base": 23.2,
+      "rise": -13,
+      "label": "回到海岸"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 27200,
+      "end": 29100,
+      "base": 10.2,
+      "rise": 12,
+      "label": "終局追逐稜線"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 29100,
+      "end": 30350,
+      "base": 22.2,
+      "rise": -18,
+      "label": "終點俯衝"
     }
   ],
   "startDistance": 350,
@@ -110,6 +252,48 @@
       "end": 4320,
       "ramp": 110,
       "degrees": 13
+    },
+    {
+      "kind": "showcase",
+      "start": 7600,
+      "end": 8680,
+      "ramp": 200,
+      "degrees": 8
+    },
+    {
+      "kind": "showcase",
+      "start": 12200,
+      "end": 12840,
+      "ramp": 150,
+      "degrees": 11
+    },
+    {
+      "kind": "showcase",
+      "start": 13330,
+      "end": 13920,
+      "ramp": 120,
+      "degrees": -15
+    },
+    {
+      "kind": "showcase",
+      "start": 20700,
+      "end": 21380,
+      "ramp": 130,
+      "degrees": 13
+    },
+    {
+      "kind": "showcase",
+      "start": 23750,
+      "end": 25080,
+      "ramp": 250,
+      "degrees": 7
+    },
+    {
+      "kind": "showcase",
+      "start": 28220,
+      "end": 28780,
+      "ramp": 125,
+      "degrees": -14
     }
   ]
 }
