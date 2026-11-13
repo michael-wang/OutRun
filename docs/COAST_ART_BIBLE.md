@@ -1,4 +1,4 @@
-# Coastal Highway — Art Bible v1.0
+# Coastal Highway — Art Bible v1.1
 Date: 2026-11-14
 Status: owner-selected art direction; first in-game asset samples still require owner approval.
 Scope: the original arcade racing game 極速漫遊 / OutRun, coastal playable stage only.
@@ -8,7 +8,7 @@ Scope: the original arcade racing game 極速漫遊 / OutRun, coastal playable s
 1. **Objects: sample board A (FIRST generated board in the Nov 14 conversation).** Use its coherent, polished, stylized semi-realistic 3D objects as the primary reference: red roadster, ordinary compact traffic car, driver/passenger, farm house, sailboat, roadside set.
 2. **World mood and key art: board C (THIRD board), TOP BANNER ONLY.** Use the sweeping coastal road, richly layered sunset, blue sea, cape/cliff silhouette and cinematic sense of escape and freedom. This is atmosphere and composition, not an instruction to turn the game into a static poster.
 3. Do NOT adopt the more photographic surface/character rendering of board C for gameplay assets; do NOT drift into toy-like or highly anime proportions.
-4. The boards are conceptual visual targets, **not** ready-to-ship 3D models and not precise measured color/material specifications. Save approved PNG references into a repository art-reference folder when accessible, preserving attribution; the canonical decisions are recorded here regardless of image availability.
+4. The boards are conceptual visual targets, **not** ready-to-ship 3D models and not precise measured color/material specifications. The intended tracked filenames are `art/reference/coast/01_STYLE_A_objects.png` and `02_STYLE_C_world_banner.png`. **As of this edit, the PNG binaries still need a one-time local import by Codex/owner.** Read `art/reference/coast/README.md` and verify checksums before claiming they are in Git.
 
 **North star:** Beautiful at 200–300 km/h from the real chase camera on Pixel 8. Clear silhouettes, coherent materials, credible spatial scale, attractive golden-hour travel atmosphere, and racing sightlines come before microscopic details.
 
@@ -23,6 +23,10 @@ Scope: the original arcade racing game 極速漫遊 / OutRun, coastal playable s
 - **Environment:** stylized, believable lived-in coastal Taiwan-inspired countryside/harbour atmosphere rather than a collage of unrelated European resort, American suburb and exaggerated tropical cartoon design. Keep the current location flexible; regional vernacular should be consistent within a chapter.
 - **Motion:** waves, rice/flower bands, wind and human gestures should feel like one shared environment. Reuse accepted Ultra Water, wind and effect systems instead of introducing local competing simulations.
 - **Depth:** true world-space near/mid/far hills and cliffs, sensible occlusion and moving parallax; no visibly near landforms masquerading as infinite backdrop sheets.
+
+## Focal-point asset priority (S tier)
+
+**Player Riviera 62, its driver/passenger, rivals and recurring traffic are a first-class high-effort art track, not a minor set of background props.** They are seen for most or all of the race and deserve repeated look-dev and runtime inspection. See `docs/COAST_HERO_VEHICLE_ART.md`. Audit existing `src/car.ts` and `src/rival-view.ts` materials, silhouette, proportions, faces, hair, wheel/paint response and visual consistency **before** deciding whether to revise them. Protect the accepted Riviera 62 and character identities. Spend geometry/shadow performance carefully, especially for eight rivals; do not automatically remake working models.
 
 ## Families and leading samples
 
