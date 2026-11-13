@@ -51,6 +51,14 @@ B3. Add the head/hair to the existing left-drive Riviera 62, using existing `src
 
 B4. Pixel 8 drive test at fixed seed: stationary, speed transitions, ~280–300km/h straight, sustained L/R bends, acceleration release. Compare visible **rear and side hairstyle**, clipping, shader warm-up/stream stalls, draw calls, GPU/CPU frame time/percentiles, retained memory, and existing game FPS baseline. Test load/restart/disposal. Do not alter game-wide shadow/map settings to mask new head cost.
 
+## Additional requirement (owner): directional overtake shout, LEFT and RIGHT (future)
+
+The owner wants the blonde passenger to **turn and shout at a car being overtaken on whichever side it occupies**. This should be treated as a defining personality animation, not a facial close-up accessory. The art is intended to be read from the actual third-person chase camera: upper back and shoulders, head/neck turn, expressive open mouth, and hair's inertia.
+
+**This does not broaden Pass A into gameplay work.** While authoring hair controls, ensure we do not lock the head to the torso or make side-turns destroy the hair. Keep a usable neck/head yaw pivot, modest upper-body twist/shoulder pose, independent side/back locks; check that the visible swept bob retains silhouette when the head glances left and right. A quick ± head-turn pose while previewing hair is useful *if it fits the existing bounded hair study*, but full gesture/voice/trigger is a later task.
+
+Later runtime integration: [directional overtake reaction plan](COAST_HEROINE_OVERTAKE_REACTION.md). **Do not** change `RivalOvertakes` scoring or implement the event in Pass A. A final pass is recognized only at longitudinal clearance, which is later than the desired side-by-side moment; the animation should start while beside an actually closing opponent, with cooldown, independent from score/rank and with correct lateral side.
+
 ## Art acceptance / stopping conditions
 
 - **Primary goal:** normal follow-camera back hair silhouette and dynamic movement. The owner should recognize the same heroine even while moving at 300 km/h.
