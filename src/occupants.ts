@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type {WindGroom} from './hero-groom';
 import {CLAP_TIMES,CHEER_END,type Cheer,type passengerArm} from './passenger-cheer';
-export type Traveler={body:THREE.Group,head:THREE.Group,arms:ReturnType<typeof passengerArm>[],hair:WindGroom,poseDriverArms?:(turn:number)=>void};
+export type Traveler={body:THREE.Group,head:THREE.Group,arms:ReturnType<typeof passengerArm>[],hair:WindGroom,smile?:(weight:number)=>void,poseDriverArms?:(turn:number)=>void};
 /** Small presentation pivots, driven only by observed travel and applied input. */
 export function createOccupantMotion(people:Traveler[]){
  let phase=0,wind=0,turn=0,pitch=0,lastSpeed=0;
@@ -20,6 +20,7 @@ export function createOccupantMotion(people:Traveler[]){
     arm.pose(time,gesture);
    });
    p.poseDriverArms?.(turn);
+   p.smile?.(.58+(time<0?0:.42*Math.sin(Math.PI*Math.min(time/CHEER_END,1))));
    p.hair.sync(wind,sway,tipSway,flutterPhase);
   });
  }

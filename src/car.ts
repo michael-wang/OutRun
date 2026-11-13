@@ -1,3 +1,4 @@
+import {createPassengerFace,type PassengerDetail} from './passenger-face';
 import {sectionMesh,jacketSections,shirtCollar,createSundress} from './hero-tailoring';
 import * as THREE from 'three';
 import {createRoadWheel} from './wheels';
@@ -24,7 +25,7 @@ export interface CarPaintController {
  * anchor stay unchanged while the focal-point body/cockpit receive detail.
  * Static meshes are merged by material alongside the articulated occupants.
  */
-export function createCar(dusk=false) {
+export function createCar(dusk=false, passengerDetail:PassengerDetail='driving') {
   const car=new THREE.Group();car.name='coastal-roadster';
   const wheels:ReturnType<typeof createRoadWheel>[]=[];
   const travelers:Traveler[]=[];
@@ -114,7 +115,7 @@ export function createCar(dusk=false) {
     const suit=material('#364758',.88);
     const lapel=material('#38414a',.80);
     const shirt=material(driver?'#e4e3dc':'#fffdf8',driver?.77:.87);
-    const brow=driver?lapel:material('#81613f',.85);
+    let face:ReturnType<typeof createPassengerFace>|undefined;
     shirt.side=THREE.DoubleSide;
     if(driver){
       mesh(sectionMesh(jacketSections),suit,x,0,0,person);
@@ -124,40 +125,38 @@ export function createCar(dusk=false) {
     }else{
       mesh(createSundress(),shirt,x,0,0,person);
     }
-    // Carry the jaw into the cheekbones in one surface. The forehead
-    // stays inside the cropped hair even when the forelock lifts in a turn.
-    mesh(sectionMesh([[1.323,.048,.055,-.425],[1.351,driver?.094:.083,.091,-.435],
-      [1.399,.117,.110,-.444],[1.448,.137,.121,-.452],[1.49,.14,.122,-.455],
-      [1.546,.126,.111,-.457],[1.601,.089,.078,-.458],[1.633,.032,.032,-.459]],18),skin,x,0,0,head);
-    const nose=oval(.022,.031,.020,skin,x,1.45,-.332,head);
-    nose.rotation.x=.24;
-    for(const eye of [-1,1]){
-      const ear=mesh(new THREE.SphereGeometry(1,8,5),skin,x+eye*.134,1.456,-.459,head);
-      ear.scale.set(.021,.033,.019);
-      if(driver){
+    if(driver){
+      mesh(sectionMesh([[1.323,.048,.055,-.425],[1.351,.094,.091,-.435],
+        [1.399,.117,.110,-.444],[1.448,.137,.121,-.452],[1.49,.14,.122,-.455],
+        [1.546,.126,.111,-.457],[1.601,.089,.078,-.458],[1.633,.032,.032,-.459]],18),skin,x,0,0,head);
+      const nose=oval(.022,.031,.020,skin,x,1.45,-.332,head);
+      nose.rotation.x=.24;
+      for(const eye of [-1,1]){
+        const ear=mesh(new THREE.SphereGeometry(1,8,5),skin,x+eye*.134,1.456,-.459,head);
+        ear.scale.set(.021,.033,.019);
         const lens=oval(.043,.020,.008,lapel,x+eye*.058,1.49,-.344,head);
         lens.rotation.y=eye*.30;
         bar([x+eye*.094,1.49,-.353],[x+eye*.135,1.486,-.445],.004,lapel,head);
-      }else{
-        const eyebrow=mesh(new THREE.SphereGeometry(1,8,4),brow,x+eye*.052,1.508,-.345,head);
-        eyebrow.scale.set(.026,.006,.006);
-        eyebrow.rotation.z=-eye*.10;
-        mesh(new THREE.SphereGeometry(1,8,4),brow,x+eye*.052,1.486,-.339,head).scale.set(.016,.008,.005);
       }
+      bar([x-.018,1.49,-.34],[x+.018,1.49,-.34],.004,lapel,head);
+    }else{
+      face=createPassengerFace(passengerDetail);face.position.set(x,1.465,-.455);
     }
-    if(driver)bar([x-.018,1.49,-.34],[x+.018,1.49,-.34],.004,lapel,head);
-    const groom=driver?createDriverHair():createBlondeBob();
+    const groom=driver?createDriverHair():createBlondeBob(passengerDetail);
     groom.root.position.set(x,driver?1.525:1.485,driver?-.464:-.465);head.add(groom.root);
     if(!driver)for(const side of [-1,1] as const){
       const arm=passengerArm(side,skin);arm.root.position.x+=x;
       person.add(arm.root);arms.push(arm);
     }
-    batch(head);pivotAt(head,x,1.30,-.46);
+    batch(head);
+    if(face)head.add(face); // Preserve the indexed face, vertex colours and expression morph.
+    pivotAt(head,x,1.30,-.46);
     batch(person);pivotAt(person,x,.80,-.48);
     // Passenger/driver were oversized against the GT body in the chase
     // camera. Scale around their seat centres, not the car or road physics.
     person.scale.setScalar(.84);
     travelers.push({body:person,head,arms,hair:groom,
+      smile:face?value=>{face.morphTargetInfluences![0]=value;}:undefined,
       poseDriverArms:driver?createDriverArms(car,person,wheel,skin,suit):undefined});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
