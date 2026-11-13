@@ -3,12 +3,13 @@ Date: 2026-11-14
 Status: owner-selected art direction; first in-game asset samples still require owner approval.
 Scope: the original arcade racing game 極速漫遊 / OutRun, coastal playable stage only.
 
-## Approved reference combination
+## Approved visual reference
 
-1. **Objects: sample board A (FIRST generated board in the Nov 14 conversation).** Use its coherent, polished, stylized semi-realistic 3D objects as the primary reference: red roadster, ordinary compact traffic car, driver/passenger, farm house, sailboat, roadside set.
-2. **World mood and key art: board C (THIRD board), TOP BANNER ONLY.** Use the sweeping coastal road, richly layered sunset, blue sea, cape/cliff silhouette and cinematic sense of escape and freedom. This is atmosphere and composition, not an instruction to turn the game into a static poster.
-3. Do NOT adopt the more photographic surface/character rendering of board C for gameplay assets; do NOT drift into toy-like or highly anime proportions.
-4. The boards are conceptual visual targets, **not** ready-to-ship 3D models and not precise measured color/material specifications. The intended tracked filenames are `art/reference/coast/01_STYLE_A_objects.png` and `02_STYLE_C_world_banner.png`. **As of this edit, the PNG binaries still need a one-time local import by Codex/owner.** Read `art/reference/coast/README.md` and verify checksums before claiming they are in Git.
+The owner selected **Style Option B** on 2026-11-14. The full board sets the look for vehicles, people, roadside objects and the coastal sunset. [Approved board](../art/reference/coast/03_STYLE_B_coastal_highway.png)
+
+- Give the roadster and compact car rounded shoulder volumes and a few broad highlights. Preserve the Riviera 62 silhouette and design cues.
+- Build expression with readable brows, cheeks, mouths and grouped locks of hair. Show clothing through posture and a few large folds.
+- Use the warm rim light, cool water and layered headlands in the banner to judge composition at driving speed. Calibrate materials in the existing dusk light.
 
 **North star:** Beautiful at 200–300 km/h from the real chase camera on Pixel 8. Clear silhouettes, coherent materials, credible spatial scale, attractive golden-hour travel atmosphere, and racing sightlines come before microscopic details.
 

@@ -8,7 +8,7 @@ The player Riviera 62 and its driver/passenger occupy the chase-camera foregroun
 
 ## Style target and identity
 
-- Primary approved reference: `art/reference/coast/01_STYLE_A_objects.png` (when imported; see reference README). Glossy but controlled car paint, clean surfaces, stylized semi-realistic faces and clothes, unified reflections and light direction.
+- Primary approved reference: `art/reference/coast/03_STYLE_B_coastal_highway.png` (Style Option B). Look for slightly chunkier forms, broad paint highlights, expressive faces, grouped hair and simplified clothing in shared dusk light.
 - Existing Riviera 62 stays: distinctive body/roofless silhouette, left-hand drive, small occupants relative to car, red and white paints, FZR-123 plate.
 - Driver: young Asian man, layered medium/long dark hair, suit, left hand resting on door where accepted. Passenger: blonde, layered short hairstyle, sleeveless dress. Preserve previously approved design decisions.
 - Rivals may be different models/palettes but must share the same tire scale, specular response, clearcoat language, glass, lights and amount of visual simplification.
@@ -42,3 +42,5 @@ Neutral turntable and in-game high-speed review are both required. Verify rear/f
 ## Production ownership
 
 Julia: visual comparisons, art direction, priority and accept/reject criteria. Codex: local captures, mesh/material edits, test/build, GPU profiling. Owner: player-level appearance and handling acceptance. H0/H1 may overlap P1 blockout but **hero polish is a first-class deliverable**, not postponed behind all 14km scenery.
+
+H0 capture set and ranked H1 proposals: [dusk gameplay audit](art-review/h0/README.md).

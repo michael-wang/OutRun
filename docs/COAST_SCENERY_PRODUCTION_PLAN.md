@@ -7,7 +7,7 @@ Companion decisions: docs/COAST_ART_BIBLE.md, docs/COAST_PORTABLE_SITES.md and d
 
 1. **Separate asset / site kit / road placement.** Author reusable GLB models in the prefab catalog, compose small site kits in `content/scenery/packages.json`, and place them in `content/stages/coast/scenic-layout.json`. Run `npm run scenic:build` to project the agreed site positions into existing `scene.json` and director `direction.json`. Never bake HUD metres into asset models. For cliffs, piers, shorelines or ocean objects, add site-specific adapters only when a real pilot requires them: moving scenery may require terrain re-fitting but not re-modeling the boats/houses.
 2. **Player + rivals + people are S-tier recurring hero assets**, above one-off decorative buildings. Parallel H0-H3 track in `docs/COAST_HERO_VEHICLE_ART.md`: audit actual in-game look, improve the accepted Riviera and occupants where proven needed, then rival family and matching traffic, including measured Pixel 8 cost. Do not defer this track until all nine landscapes are complete.
-3. **One-time reference image handoff:** `art/reference/coast/README.md` specifies the two checked-in PNG targets and exact local import. The source images currently live in the ChatGPT ZIP; reference README alone is not proof binary files are in Git.
+3. **Visual reference:** `art/reference/coast/README.md` identifies the owner-selected Style Option B image and its SHA-256.
 4. **Current delivery order:** (a) Julia content/placement separation and vehicle visual audit brief; (b) Codex short H0 in-game capture + import approved images, and independent road-to-Blender rehearsal; (c) owner/Julia inspect hero vehicle improvements and 1–2 scenery GLB samples; (d) two site slices; (e) scenery production. Gate large-scale asset variants on approval.
 5. Existing P0–P8 stages remain valid for the **world scenery** track. Add the H0-H3 vehicle track in parallel; it is not a P6 afterthought.
 
@@ -40,7 +40,7 @@ Julia cannot operate the owner's Windows Blender GUI or local Playwright/device 
 
 ### P0 — Inventory, art contract and performance baseline (Julia-led; minimal Codex)
 - Establish the current version, latest road/direction/effects, old generators, current third-party licenses, performance test stations and existing GLB catalog.
-- Register the accepted board A asset style and board C banner-only mood in docs/COAST_ART_BIBLE.md. Capture/check-in approved PNG references when accessible.
+- Use the checked-in Style Option B reference for assets and coastal mood.
 - Define a small standard report: HUD metre, traffic seed, near/mid/far shots, moving clip, Pixel 8 FPS/frame-time delta, draw calls, geometry/material/texture/GLB cost, load stalls.
 - **Gate:** no ambiguity about which road, which visuals are preserved and which are replacement candidates.
 
@@ -106,7 +106,7 @@ Expand only accepted pilots into asset families with deliberate spacing:
 - **Gate:** PC and Pixel 8 can drive end-to-end, with no missing road, severe streaming stalls or material compilation surprises. Report exact before/after conditions.
 
 ### P8 — Final art pass, QA and release candidate (Julia reviews; Codex fixes; owner accepts)
-- Compare entire route's visual hierarchy, transitions, horizon, composition, color rhythm, day-to-dusk continuity and the chosen board A / banner C art direction.
+- Compare entire route's visual hierarchy, transitions, horizon, composition, color rhythm, day-to-dusk continuity and the chosen Style Option B art direction.
 - At all pressure gates, validate apex visibility, barrier silhouettes, traffic and braking room, collision integrity and stable seed playback.
 - Use owner-reported Pixel 8, Sony and PC screenshots/videos plus local build/test evidence. Run npm run verify:dev before push.
 - Document and intentionally defer P2 polish; keep source credits/licenses intact. NO main promotion without explicit owner approval.
@@ -153,7 +153,7 @@ As of 2026-11-14 the owner reported **81% remaining, resets in five days**. Trea
 
 **Before reset, cap scope to at most two well-bounded Codex work packages (no mass modelling):**
 - **Ticket A — technical rehearsal only:** run exact current road-guide + Blender import locally, prove one GLB round trip, inspect existing art masking and object scale; neutral/in-game captures; short cost/benchmark report. Reuse existing scripts; do not mass-build.
-- **Ticket B — revised priority:** import the two approved reference PNGs locally into Git and capture H0 vehicle/occupant/rival/traffic comparison shots at fixed dusk/seed. Return the **top three visible mismatches** and costs without undertaking a complete remodel. The farmhouse/guardrail pilot is queued **after** the bridge and H0 art decisions, not the default pre-reset Codex sink.
+- **Ticket B — revised priority:** use the checked-in Style Option B reference and capture H0 vehicle/occupant/rival/traffic comparison shots at fixed dusk/seed. Return the **top three visible mismatches** and costs without undertaking a complete remodel. The farmhouse/guardrail pilot is queued **after** the bridge and H0 art decisions, not the default pre-reset Codex sink.
 
 Julia does concept direction, all nine shot briefs, issue triage and acceptance gates before Codex gets a task. Codex should receive a *single self-contained ticket*, do local build/tests before pushing, and return: commit, modified files, exact preview URL/HUD station, 2–3 screenshots, FPS/metrics if relevant, pass/fail and unresolved items.
 
@@ -163,7 +163,7 @@ After each ticket, inspect remaining Codex quota. Preserve a substantial reserve
 
 ## 6. Acceptance checklist / definition of done
 
-- **Art:** matches board A asset language and C banner atmosphere; geometry scale credible; repeatable family grammar, not isolated one-offs.
+- **Art:** matches the Style Option B asset language and coastal atmosphere; geometry scale credible; repeatable family grammar, not isolated one-offs.
 - **Camera:** main subject readable on approach from actual high-speed chase camera; proper true 3D parallax/occlusion, no hidden turn or ocean wall.
 - **Safety:** matching visible coast rail/bollards and collision contacts; road/AI/Worker identical geometry truth; no impossible traffic events.
 - **Runtime:** no unbounded models, road holes, unhandled failure or unnecessary shader versions; stable ownership/disposal; measured Pixel 8 delta at reproducible HUD stations.

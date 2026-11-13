@@ -18,7 +18,7 @@ Every hero has an immutable **site ID** and a movable road anchor. The visual st
 | `bay-entrance` (7770) | Ocean opens wide after a bend; first near sail catches sunlight, several smaller sails recede across the bay. | Near: modest seaward guardrail with open view. Middle: one clearly readable leisure sailboat, shallow headland. Far: two or three smaller sail silhouettes and distant coast. | Sailboat family, reusable bay composition kit. Boat must sit at real waterline; low shoreline transition conforms to placement. This is the first ocean/boat **movability test**. |
 | `sea-cliff` (8850) | Sweeping elevated road carves along a high irregular headland, backlit against the ocean. | Near: rail profile readable before the corner. Middle: true 3D cliff edge with a credible vertical drop. Far: layered dark mountain masses with parallax. | Headland terrain adapter and rock kit. **Pressure-gate corner:** keep apex and escape visual cues unblocked. Do not store a giant fixed-at-8850 mesh. |
 | `rice-plateau` (10000) | Bright flowers give way to long, wind-rippled rice fields; tiny houses anchor the landscape. | Near: flower terrace/retaining stone. Middle: broad rice bands and 1–2 compact rural buildings. Far: darker layered hills and a narrow sea glint. | Reuse approved rice/flower wind shaders and house kit. Avoid near-field texture grass on PC; not a tiling clone village. |
-| `sunset-seawall` (12400) | Signature sweeping coastal road and sunset-reflective sea: **banner C composition**, built as genuine 3D view. | Near: continuous low rail/seawall, roadway silhouette. Middle: open sea, surf & an asymmetric coastal cape. Far: sunset, dark hills and town pinlights. | Hero terrain/water/rail assembly; shared sunset preset rather than orange-baked materials. Long 600m approach with deliberately sparse props. |
+| `sunset-seawall` (12400) | Signature sweeping coastal road and sunset-reflective sea: **Style B banner composition**, built as genuine 3D view. | Near: continuous low rail/seawall, roadway silhouette. Middle: open sea, surf & an asymmetric coastal cape. Far: sunset, dark hills and town pinlights. | Hero terrain/water/rail assembly; shared sunset preset rather than orange-baked materials. Long 600m approach with deliberately sparse props. |
 | `finish-beacon` (14200) | A distinct nautical finish marker first reads small, then resolves against the harbor skyline. | Near: consistent official finish furniture. Middle: lighthouse-like harbour beacon or stylish gantry silhouette. Far: distant harbour and sunset haze. | Reuse harbour family. Do not cover the sprint line or alter finish/physics data. |
 
 ## Non-hero connective scenery: ten chapters
@@ -30,7 +30,7 @@ Every hero has an immutable **site ID** and a movable road anchor. The visual st
 `cliff-challenge` — a mountain and guardrail silhouette that intensifies braking, not a foreground wall.
 `rice-plateau` — decompress from cliff into long bright fields, then gradually return to tension.
 `switchback-risk` — protective rails, cliff and inland village massing; no decorative apex blockage.
-`golden-bridge` — build the banner-C sunset composition and hold it through the broad bend.
+`golden-bridge` — build the Style B sunset composition and hold it through the broad bend.
 `final-contest` — harbour-market lights as rhythm cues, leave overtaking lanes readable.
 `finish-sprint` — one unambiguous distant finish landmark, no obstacle comedy.
 

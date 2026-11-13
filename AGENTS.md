@@ -5,7 +5,7 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 
 ## Coastal art production (November 14)
 
-- Art direction: **board A for all stylized semi-realistic 3D objects; board C TOP BANNER ONLY for sunset coastal mood**. Read `docs/COAST_ART_BIBLE.md`, `docs/COAST_HERO_VEHICLE_ART.md` and `art/reference/coast/README.md`. Reference PNGs are pending one-time binary import; a README is not an image.
+- Art direction: **Style Option B for vehicles, people, scenery and coastal sunset mood**. Read `docs/COAST_ART_BIBLE.md`, `docs/COAST_HERO_VEHICLE_ART.md` and `art/reference/coast/README.md`. The reference README lists the approved PNG and its checksum.
 - The recurrent Riviera 62, driver/passenger, rivals and traffic are **S-tier focal assets**. Keep approved identity; audit before remodelling. This vehicle/character track runs early, in parallel with scenery.
 - Make scenic content portable: asset library → `content/scenery/packages.json` → `content/stages/coast/scenic-layout.json`. Run `npm run scenic:build` to regenerate the existing runtime `scene.json` and hero positions in `direction.json`. Do not hard-code a site kilometre into an asset. See `docs/COAST_PORTABLE_SITES.md` for R0 limits.
 
@@ -271,6 +271,6 @@ Never mark a source-only static audit as passing Vitest.
 
 ## R5d — coastal scenery art direction / production (2026-11-14)
 
-- **Owner-selected aesthetic is canonical:** read [Coastal Art Bible](docs/COAST_ART_BIBLE.md) before any new scene, character, vehicle, house, boat or prop art. Use the FIRST reference board's coherent stylized semi-realistic objects and the THIRD board's top-banner sunset-coast composition/mood. These are *art references*, not GLB assets and not authorization to redesign Riviera 62.
+- **Owner-selected aesthetic is canonical:** read [Coastal Art Bible](docs/COAST_ART_BIBLE.md) before any new scene, character, vehicle, house, boat or prop art. Use the Style Option B board for its slightly chunkier forms, simplified materials and warm coastal sunset. These are *art references*, not GLB assets and not authorization to redesign Riviera 62.
 - **Scenery production work order:** [Coastal Scenery Production Plan](docs/COAST_SCENERY_PRODUCTION_PLAN.md) defines art/engineering ownership, phased gates, pilot anchors, visual/safety/performance acceptance and Codex usage protection. Start with approved pilots, not full-route prop scatter or speculative engines.
 - The active authored coast is **14,200m from HUD 350 to 14,550**, with ten chapter offsets, nine absolute-HUD hero slots and three pressure gates in `content/stages/coast/direction.json`. Historical 30km R5c documents are not a current road plan. Before touching Blender exports, use the current shared road guide and check existing visual masks; preserve road/Worker/AI/collision single source, visible seaward protection, and Pixel 8 budgets.
