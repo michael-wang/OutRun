@@ -236,9 +236,11 @@ Never mark a source-only static audit as passing Vitest.
 - Run `npm run verify:dev` and exercise these cases with local
   Codex and one real PS4/PC gamepad before shipping main.
 
-## Current sunset sprint — dev v0.10.9
+## Current sunset sprint — dev v0.10.11
 
-- The first 6.76km teach the same seven lessons on a reoriented coastline.
+- The first 4.0km of racing teach the seven lessons (stations 350–4350m).
+  The slow bus already moves during the opening sweeper. Test catching it on
+  the exit before the S. All coastal incidents share one approach per group.
   The race covers 14,200m from HUD 350m to 14,550m with 600m of relief.
   Current geometry and lesson windows supersede the historical R5a/R5b coordinates.
 - Road turns/elevations/banks are authored in

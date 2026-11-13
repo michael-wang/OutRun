@@ -95,7 +95,9 @@ export function validateCoastOnboarding(plan:CoastOnboarding,road:AuthoredRoad){
     !Number.isFinite(t.firstCruiseKmh)||t.firstCruiseKmh<30||t.firstCruiseKmh>90||
     !Number.isFinite(t.nextWaveDistance)||
     ![1,2].includes(t.firstWaveCount)||
-    t.firstCivilianDistance<pass.start+100||
+    // The bus is already moving during the launch. Its initial station
+    // lies inside the sweeper so drivers catch it on the exit.
+    t.firstCivilianDistance<sweep.start+150||
     t.firstCivilianDistance>=pass.end||
     t.nextWaveDistance<drifts[1].end+300||
     t.nextWaveDistance>=road.startDistance+road.length-100||

@@ -7,7 +7,7 @@ import {sweptContact} from './traffic-impact';
  * A racer cannot drive into an easier world by leaving the player's camera. */
 export interface TrafficWorldRecipe {
  id:number;type:number;distance:number;speed:number;group:number;member?:number;
- stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;stopOffset?:number;incidentId?:'A4';
+ stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;stopOffset?:number;incidentId?:'A4'|number;
 }
 /** Stable road-driver personality, independent of rendering or vehicle model. */
 export type TrafficDriverStyle='safe'|'normal'|'dangerous';
@@ -28,7 +28,7 @@ export interface TrafficWorldCar extends TrafficSlot {
  driverStyle:TrafficDriverStyle;
  type:number;cruiseSpeed:number;targetSpeed:number;targetLateral:number;
  width:number;group:number;member:number;finished:boolean;sideVelocity:number;
- stopLane?:number;stopSide?:number;stopYaw?:number;stopOffset?:number;incidentId?:'A4';
+ stopLane?:number;stopSide?:number;stopYaw?:number;stopOffset?:number;incidentId?:'A4'|number;
  incidentMotion?:{forward:number;side:number;spin:number;hits:number;lastAt:number};
  blockedFor:number;reverseLeft:number;escapeUntil:number;escapeCooldown:number;indicateUntil:number;laneChangeUntil:number;
  laneChanges:number;escapeCount:number;
@@ -100,14 +100,14 @@ export class RaceTrafficWorld {
      stopLane:row.stopLane,stopSide:row.stopSide,stopYaw:row.stopYaw,stopOffset:row.stopOffset,incidentId:row.incidentId,blockedFor:0,reverseLeft:0,escapeUntil:0,escapeCooldown:0,indicateUntil:0,laneChangeUntil:0,laneChanges:0,escapeCount:0};
    this.byId.set(car.id,car);return car;
   });
-  this.incidents.push(...this.cars.filter(c=>c.incidentId==='A4'));
+  this.incidents.push(...this.cars.filter(c=>c.incidentId!==undefined));
  }
  get(id:number){return this.byId.get(id);}
  /** Bump the real incident body. A parked car stays a traffic obstacle but
   * may slide/rotate under an arcade impulse; the camera never owns motion. */
  bumpIncident(id:number,sourceSpeed:number,side:number){
   const c=this.byId.get(id);
-  if(!c||!c.stationary||c.incidentId!=='A4'||c.finished||!Number.isFinite(sourceSpeed))return false;
+  if(!c||!c.stationary||c.incidentId===undefined||c.finished||!Number.isFinite(sourceSpeed))return false;
   if(this.time-(c.incidentMotion?.lastAt??-Infinity)<.30)return false;
   const push=clamp(Math.max(0,sourceSpeed)*.16,1.8,16),sign=side<0?-1:1;
   c.incidentMotion={
@@ -383,7 +383,7 @@ export class RaceTrafficWorld {
   this.spawnIndex=saved.spawnIndex;this.nextId=saved.nextId;
   this.cars.splice(0,this.cars.length,...saved.cars.map(c=>({...c,incidentMotion:c.incidentMotion?{...c.incidentMotion}:undefined})));
   this.byId.clear();for(const car of this.cars)this.byId.set(car.id,car);
-  this.incidents.length=0;this.incidents.push(...this.cars.filter(c=>c.incidentId==='A4'));
+  this.incidents.length=0;this.incidents.push(...this.cars.filter(c=>c.incidentId!==undefined));
   this.hazardSweeps.length=0;
   this.sorted.length=0;this.users.length=0;
  }

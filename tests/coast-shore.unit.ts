@@ -24,8 +24,8 @@ describe('coastal road stays above a real beach',()=>{
   expect(final).toBe(14550);
   const heading=(d:number)=>track.sample(d).roadHeading;
   expect(Math.abs(heading(10980)-heading(10720))).toBeGreaterThan(.3);
-  expect(Math.abs(heading(13870)-heading(13550))).toBeGreaterThan(.5);
-  for(let d=13870;d<=final;d+=10)
+  expect(Math.abs(heading(13900)-heading(13550))).toBeGreaterThan(.5);
+  for(let d=13900;d<=final;d+=10)
    expect(Math.abs(track.sample(d).curvature)).toBeLessThan(1e-6);
   expect(Math.abs(heading(final)-heading(13900))).toBeLessThan(.001);
  });

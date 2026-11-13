@@ -226,7 +226,7 @@ it('places seeded breakdowns in any safe coastal lane, outside start and finish 
 it('samples game-speed coastal traffic within pool capacity with seeded any-lane breakdowns',()=>{
  const breakdowns=breakdownLayout(sample,()=>8.75,10000,804^1473,true);
  expect(breakdowns.length).toBeGreaterThanOrEqual(1);
- expect(breakdowns.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxCount);
+ expect(breakdowns.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxSites*2);
  expect(breakdowns.every(b=>
   b.distance>=COAST_BREAKDOWN.startClearance
   &&b.distance<10000-COAST_BREAKDOWN.finishClearance

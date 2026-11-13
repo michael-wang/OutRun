@@ -19,7 +19,7 @@ it('P0 R5a: opening four lessons are safe, ordered and matched to the authored r
  }
  expect(coastLessonAt(plan.lessons.at(-1)!.end)).toBeUndefined();
  expect(sampleAuthoredRoad(road,750).demand).toBe(0);
- expect(sampleAuthoredRoad(road,850).demand).toBe(0);
+ expect(sampleAuthoredRoad(road,650).demand).toBe(0);
  expect(sampleAuthoredRoad(road,road.turns[0].start-10).demand).toBe(0);
  expect(sampleAuthoredRoad(road,road.turns[0].end+10).demand).toBe(0);
  expect(Math.abs(road.turns[0].steer)).toBeLessThan(Math.abs(road.turns[1].steer));
@@ -29,6 +29,10 @@ it('P0 R5a: banked S has two opposite, finite physical cross slopes in the share
  expect(road.banks).toHaveLength(3);
  const track=createAuthoredCoastTrack(road,identity);
  const sweeper=track.sample((road.banks![0].start+road.banks![0].end)/2);
+ const entry=road.turns[0].start;
+ expect(track.sample(entry-60).curvature).toBe(0);
+ expect(track.sample(entry-60).right.y).toBeLessThan(-.015);
+ expect(track.sample(entry).right.y).toBeLessThan(-.09);
  const left=track.sample((road.banks![1].start+road.banks![1].end)/2);
  const right=track.sample((road.banks![2].start+road.banks![2].end)/2);
  expect(sweeper.right.y).toBeLessThan(-.15);
@@ -54,7 +58,7 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
   const data=structuredClone(COAST_STAGE);alter(data);
   expect(()=>validateCoastStage(data)).toThrow();
  };
- invalid(s=>{s.onboarding.traffic.firstCivilianDistance=950;});
+ invalid(s=>{s.onboarding.traffic.firstCivilianDistance=800;});
  invalid(s=>{s.onboarding.traffic.nextWaveDistance=3500;});
  invalid(s=>{s.onboarding.breakdownsAfter=4200;});
  invalid(s=>{s.onboarding.lessons[1].start=s.road.turns[0].start-50;});
@@ -71,8 +75,8 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
 
 it('R5a.1: dramatic beginner sweeper and longer S keep coherent entry/exit transitions',()=>{
  const [sweep,left,right]=road.turns;
- expect(sweep.start).toBe(900);
- expect(sweep.end-sweep.start).toBeGreaterThanOrEqual(350);
+ expect(sweep.start).toBe(780);
+ expect(sweep.end-sweep.start).toBeGreaterThanOrEqual(680);
  expect(Math.abs(sweep.steer)).toBeGreaterThanOrEqual(.20);
  expect(Math.abs(sweep.steer)).toBeLessThan(.32); // deliberately not drift-required
  expect(left.end-left.start).toBeGreaterThanOrEqual(320);
@@ -95,7 +99,7 @@ it('R5a.1: dramatic beginner sweeper and longer S keep coherent entry/exit trans
 it('R5a.2: the left-to-right S has no neutral straight and retains smooth joins',()=>{
  const [sweep,left,right]=road.turns;
  expect(road.startDistance).toBe(350);
- expect(sweep.start).toBe(900);
+ expect(sweep.start).toBe(780);
  expect(left.end).toBe(right.start);
  expect(left.rampFraction).toBeLessThan(.1);
  expect(right.rampFraction).toBeLessThan(.1);
@@ -125,7 +129,7 @@ it('R5b: two drift-demanding authored turns have a long safe recovery gap',async
  expect(a5.suggestedEntryKmh).toBeGreaterThan(a6.suggestedEntryKmh);
  expect(Math.abs(second.steer)).toBeGreaterThan(Math.abs(first.steer));
  expect(first.steer*second.steer).toBeLessThan(0);
- expect(second.start-first.end).toBeGreaterThan(500);
+ expect(second.start-first.end).toBeGreaterThanOrEqual(350);
  const track=createAuthoredCoastTrack(road,identity);
  const {requiredSteering}=await import('../src/challenges');
  for(const turn of [first,second]){

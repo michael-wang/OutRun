@@ -23,9 +23,9 @@ import type {createTrack} from './track';
 export const TRAFFIC_LIMIT=12;
 export {TRAFFIC_TYPES} from './vehicle-model';
 const random=(seed:number,id:number)=>{let x=(seed^Math.imul(id+1,0x9e3779b1))>>>0;x=Math.imul(x^(x>>>16),0x85ebca6b);x=Math.imul(x^(x>>>13),0xc2b2ae35);return ((x^(x>>>16))>>>0)/4294967296;};
-export interface TrafficActor {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4';id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;previousDistance?:number;previousLateral?:number;previousVisible?:boolean;nominalDistance?:number;cruiseSpeed?:number;group?:number;member?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
+export interface TrafficActor {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4'|number;id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;previousDistance?:number;previousLateral?:number;previousVisible?:boolean;nominalDistance?:number;cruiseSpeed?:number;group?:number;member?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
 /** One immutable recipe per seed/route; only the existing bounded window becomes meshes. */
-interface TrafficRecipe {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4';id:number;type:number;distance:number;speed:number;group:number;member?:number}
+interface TrafficRecipe {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4'|number;id:number;type:number;distance:number;speed:number;group:number;member?:number}
 const recipes=new Map<string,TrafficRecipe[]>();
 export function trafficCruise(seed:number,id:number,type:number){
  const r=random(seed^0x719a,id),rare=random(seed^0x4ba2,id);
@@ -205,7 +205,7 @@ export class Traffic {
  enableRaceMode(){if(this.racing)return;this.racing=true;this.raceWorld=this.makeRaceWorld();}
  private rivalBodies():RaceRoadUser[]{return (this.rivalLeaders?.()??[]).filter(r=>r.finishTime===null)
   .map((r,i)=>({id:-1000-i,distance:r.distance,lateral:r.lateral,
-   speed:worldSpeed(r.speed),width:r.entry.car.width,length:r.entry.car.length}));}
+   speed:worldSpeed(r.speed),width:r.width,length:r.length}));}
  reset(variation?:number){this.previousPlayer=undefined;this.passedIds.clear();this.retiredMotion.clear();if(variation!==undefined){this.trafficSeed=(this.seed^variation)>>>0;this.schedule=[...trafficRecipe(this.trafficSeed,this.length,this.onboarding),...this.stopped];this.lanes=new TrafficLanes(this.trafficSeed,this.dusk);}this.raceWorld=this.makeRaceWorld();this.playerSnapshot=undefined;
   this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.contactDebug.length=0;this.lanes.reset();this.indicators.count=0;this.shadows.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
@@ -566,7 +566,7 @@ export class Traffic {
    if(kind==='rear')a.speed*=playerBehind
     ?Math.max(.62,response.leadingSpeedMultiplier-(mass<1.5?.02:0))
     :response.trailingSpeedMultiplier;
-   if(a.incidentId==='A4'&&a.stationary)
+   if(a.incidentId!==undefined&&a.stationary)
     this.raceWorld.bumpIncident(a.id,Math.max(10,relative),-side);
    else this.raceWorld.impact(a.id,a.speed,a.lateral);
    const leader=this.actors.filter(b=>b.id!==a.id&&b.distance>a.distance&&Math.abs(b.lateral-a.lateral)<2.7).sort((a,b)=>a.distance-b.distance)[0];
@@ -611,7 +611,7 @@ export class Traffic {
   if(row.type===undefined)return;
   const id=Number(row.id.slice(1)),body=this.raceWorld.get(id);
   if(!body||body.finished)return;
-  if(body.incidentId==='A4'){
+  if(body.incidentId!==undefined){
    this.raceWorld.bumpIncident(id,Math.max(12,severity*75),side);
    return;
   }

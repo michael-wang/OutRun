@@ -13,8 +13,8 @@ const generate=(seed:number)=>coastAccidentLayout(halfAt,site,seed);
 
 it('R5b.1: the first real accident occurs in an authored curve, not a straight',()=>{
  expect(()=>validateCoastStage(COAST_STAGE)).not.toThrow();
- expect(site.start).toBe(4410);
- expect(site.end).toBe(4890);
+ expect(site.start).toBe(2735);
+ expect(site.end).toBe(3125);
  for(const seed of [1,7,42,804,912384]){
   const cars=generate(seed);
   expect(cars.length).toBeGreaterThanOrEqual(2);

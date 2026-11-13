@@ -6,52 +6,52 @@
     {
       "id": "A0",
       "start": 350,
-      "end": 900,
+      "end": 780,
       "label": "直線起跑",
       "goal": "Build speed and learn throttle"
     },
     {
       "id": "A1",
-      "start": 900,
-      "end": 1250,
+      "start": 780,
+      "end": 1480,
       "label": "高速傾斜大彎",
       "goal": "Learn a banked high-speed sweep without drifting"
     },
     {
       "id": "A2",
-      "start": 1250,
-      "end": 3100,
+      "start": 1480,
+      "end": 1820,
       "label": "變換車道，超越公車",
       "goal": "Read a sparse civilian car and pass safely"
     },
     {
       "id": "A3",
-      "start": 3100,
-      "end": 3800,
+      "start": 1820,
+      "end": 2645,
       "label": "連續傾斜 S 彎",
       "goal": "Immediately turn right after the left turn"
     }
   ],
   "traffic": {
-    "firstCivilianDistance": 1480,
+    "firstCivilianDistance": 1180,
     "firstWaveCount": 1,
-    "nextWaveDistance": 7120,
-    "firstCruiseKmh": 62
+    "nextWaveDistance": 5070,
+    "firstCruiseKmh": 58
   },
-  "breakdownsAfter": 7560,
+  "breakdownsAfter": 5250,
   "driftLessons": [
     {
       "id": "A5",
-      "start": 5100,
-      "end": 5380,
+      "start": 3305,
+      "end": 3650,
       "label": "第一個甩尾彎",
       "goal": "Lift or brake before the corner; wide recovery exit",
       "suggestedEntryKmh": 205
     },
     {
       "id": "A6",
-      "start": 6470,
-      "end": 6760,
+      "start": 4000,
+      "end": 4350,
       "label": "第二個甩尾彎",
       "goal": "Brake earlier, hold the line and accelerate on exit",
       "suggestedEntryKmh": 175
@@ -59,9 +59,9 @@
   ],
   "accident": {
     "id": "A4",
-    "start": 4410,
-    "end": 4890,
-    "distance": 4635,
+    "start": 2735,
+    "end": 3125,
+    "distance": 2930,
     "label": "彎道事故現場",
     "minimumOpenLanes": 2,
     "layout": "right-lane"

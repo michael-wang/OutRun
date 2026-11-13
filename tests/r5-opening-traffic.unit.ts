@@ -14,7 +14,7 @@ const sample=(d:number)=>({
 it('R5a: seeded sparse civilian introduction follows A1; next group starts beyond A3',()=>{
  for(const seed of [1,804,804^1234,912384]){
   const rows=trafficRecipe(seed,10950,plan.traffic);
-  expect(rows[0].distance).toBeGreaterThan(plan.lessons[1].end);
+  expect(rows[0].distance).toBeGreaterThan(plan.lessons[1].start);
   expect(rows[0].distance).toBeGreaterThanOrEqual(plan.traffic.firstCivilianDistance);
   expect(rows.filter(r=>r.group===0)).toHaveLength(plan.traffic.firstWaveCount);
   expect(rows.filter(r=>r.group>0).every(r=>r.distance>=plan.traffic.nextWaveDistance)).toBe(true);
@@ -65,7 +65,7 @@ it("R5a.1: tutorial's first car is curated, but later highway encounters remain 
 
 it('R5b: guided traffic ends before drift lessons, then highway is seeded random',()=>{
  const {driftLessons,traffic}=plan;
- expect(traffic.firstCivilianDistance).toBeGreaterThan(plan.lessons[1].end);
+ expect(traffic.firstCivilianDistance).toBeGreaterThan(plan.lessons[1].start);
  expect(traffic.nextWaveDistance).toBeGreaterThan(driftLessons[1].end+300);
  for(const seed of [1,17,804]){
   const schedule=trafficRecipe(seed,10950,traffic);

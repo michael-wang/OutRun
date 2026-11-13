@@ -3,7 +3,7 @@ import {writeFile} from 'node:fs/promises';
 
 test.use({viewport:{width:960,height:540},hasTouch:true,serviceWorkers:'block'});
 async function openCoast(page:Page){
- await page.goto('/?at=4200&r5qa=1&trafficSeed=42');
+ await page.goto('/?at=2500&r5qa=1&trafficSeed=42');
  const boot=page.locator('#boot-enter');
  if(await page.evaluate(()=>matchMedia('(pointer:coarse)').matches))await boot.tap();
  await page.locator('#start-race').click();
@@ -32,7 +32,7 @@ test('a racing rival sweeps the A4 sign and its mesh stays flat in the real scen
   const g=(window as any).__drive;
   const sign=g.triangles().recipe.find((s:any)=>s.id===910000*3);
   g.manual(true);
-  // Stationary player in the clear lane. The rival field launches from the real 4200m grid.
+  // Stationary player in the clear lane. The rival field launches from the real 2500m grid.
   g.reset({distance:sign.distance-8,lateral:-5,speed:0});
   return sign;
  });
@@ -106,6 +106,23 @@ test('a racing rival sweeps the A4 sign and its mesh stays flat in the real scen
   await writeFile(info.outputPath('pose-'+age+'.json'),JSON.stringify(metrics,null,2));
   await info.attach('pose-'+age,{body:JSON.stringify(metrics),contentType:'application/json'});
  }
+});
+
+test('pause restart returns the field to the grid and begins a fresh countdown',async({page})=>{
+ await openCoast(page);
+ await page.locator('#race-start').click();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
+ await page.locator('#pause').click();
+ const restart=page.locator('#tp-restart');
+ await expect(restart).toHaveText('重新開始');await restart.click();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
+ const grid=await page.evaluate(()=>{
+  const g=(window as any).__drive;
+  return {distance:g.driveState().distance,time:g.race().time,rivals:g.race().rivals.map((r:any)=>r.distance)};
+ });
+ expect(grid.distance).toBe(350);expect(grid.time).toBe(0);
+ expect(grid.rivals).toEqual([362,362,377,377,377,392,392]);
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
 });
 
 for(const input of ['gamepad','keyboard','mouse','touch'] as const){

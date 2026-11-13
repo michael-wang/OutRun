@@ -29,7 +29,7 @@ it('keeps the low sun offshore and clear of both ridges throughout the teaching 
  const ray=new THREE.Raycaster(),sea=new THREE.Vector3();
  let forwardViews=0,samples=0;
  try{
-  for(let d=road.startDistance;d<=6760;d+=25){
+  for(let d=road.startDistance;d<=COAST_STAGE.onboarding.driftLessons[1].end;d+=25){
    const p=track.sample(d);
    sea.copy(p.right).setY(0).normalize().negate();
    expect(sea.dot(COAST_SUN),`inland sun at ${d}m`).toBeGreaterThan(0);
@@ -51,12 +51,12 @@ it('R5c: the sunset sprint reaches its finish beyond all seven teaching windows'
  expect(road.length).toBe(14200);
  expect(finish).toBe(14550);
  expect(track.length).toBe(finish+600);
- expect(road.turns).toHaveLength(24);
+ expect(road.turns).toHaveLength(26);
  expect(road.turns.slice(0,6).map(t=>[t.start,t.end,t.steer])).toEqual([
-  [900,1250,.20],[3100,3420,-.37],[3420,3800,.39],
-  [4410,4890,.32],[5100,5380,-.82],[6470,6760,1.02],
+  [780,1480,.20],[1820,2245,-.36],[2245,2645,.38],
+  [2735,3125,-.30],[3305,3650,.78],[4000,4350,-.93],
  ]);
- expect(track.sample(finish).position.y).toBeCloseTo(track.sample(13870).position.y);
+ expect(track.sample(finish).position.y).toBeCloseTo(track.sample(13900).position.y);
  expect(road.banks).toHaveLength(3);
  for(let d=road.startDistance;d<=finish;d+=127){
   const p=track.sample(d);
@@ -98,7 +98,7 @@ it('R5c: difficult sections genuinely require braking at 280km/h, without rubber
   const steering=requiredSteering(track.sample(d).curvature,280/3.6);
   expect(Math.abs(steering),`risk gate at ${d}`).toBeGreaterThan(1);
  }
- for(let d=13870;d<=finish;d+=20)
+ for(let d=13900;d<=finish;d+=20)
   expect(Math.abs(track.sample(d).curvature),`clean sprint at ${d}`).toBeLessThan(1e-6);
 });
 

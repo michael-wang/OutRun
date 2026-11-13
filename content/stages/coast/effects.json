@@ -37,9 +37,9 @@
   },
   "lighting": {
     "sunDirection": [
-      0.29237,
+      0.190809,
       0.085,
-      0.9563
+      0.981627
     ],
     "shadowStretch": 0.7,
     "hemisphere": {

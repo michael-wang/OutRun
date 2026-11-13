@@ -281,7 +281,7 @@ await loadingStep(82,'正在準備出發路段','載入前方公路與沿途景�
 if(import.meta.env.DEV)world.streamer?.instrumentUploads(renderer);
 // ?at jumps to a real playable location, never freezes physics.
 const requestedAt=Number(params.get('at'));
-const atDistance=params.has('at')&&Number.isFinite(requestedAt)&&requestedAt>=350&&requestedAt<world.length-20?requestedAt:null;
+let atDistance=params.has('at')&&Number.isFinite(requestedAt)&&requestedAt>=350&&requestedAt<world.length-20?requestedAt:null;
 const input=new InputController(document,()=>(mode==='playing'||mode==='countdown')&&!settingsOpen,signal); const sound=new EngineSound(); let state=createState();if(brick){state.distance=coastStart;state.speed=0;}
 // Autoplay is not a user gesture. Browsers may leave WebAudio suspended until
 // the first throttle/steer/tap, so unlock sound on that interaction without
@@ -752,6 +752,11 @@ function pause(){if(mode==='ready'||replayPreparing||brickCompleted)return;if(l2
  * current traffic seed for reproducible bug reports. Broken-car geometry and
  * warning markers are world-owned and reroll on the next map load. */
 function rerollTraffic(){if(!fpsTestRequested&&!params.has('trafficSeed'))trafficSessionVariation=newTrafficSessionSeed();traffic?.reset(trafficSessionVariation);}
+function restartFromGrid(){
+ if(replayPreparing)return;
+ atDistance=null;restart();raceStartConfirmed=true;
+ if(!replayPreparing)start();
+}
 function restart(){
  if(replayPreparing)return;
  clearRaceCheckpoint();
@@ -852,7 +857,7 @@ addEventListener('keydown',e=>{
   }
   if(mode==='playing'){if(e.code==='KeyP'){e.preventDefault();pause();}else if(e.code==='KeyR'){e.preventDefault();restart();}return;}
   if(trip&&mode==='paused'){
-   const direct:Record<string,()=>void>={KeyP:brickCompleted?restart:start,KeyR:restart,KeyN:()=>{if(!playerUi)$('l2-next').click();},KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{telemetry?.save();}};
+   const direct:Record<string,()=>void>={KeyP:brickCompleted?restart:start,KeyR:brickCompleted?restart:restartFromGrid,KeyN:()=>{if(!playerUi)$('l2-next').click();},KeyC:()=>{$('settings').click();},KeyM:()=>{$('sound').click();},KeyF:()=>{$('fullscreen').click();},KeyE:()=>{telemetry?.save();}};
    if(direct[e.code]){e.preventDefault();direct[e.code]();return;}
   }
   const prefix='l2';
@@ -966,7 +971,7 @@ function advance(dt:number,override?:InputState){
   const rivals=race.rivals.filter(r=>r.finishTime===null).map((r,i)=>({
    id:-1000-i,previousDistance:r.previousDistance,previousLateral:r.previousLateral,
    distance:r.distance,lateral:r.lateral,
-   speed:r.speed*effectivePace(r.speed,highSpeedPace),halfWidth:r.entry.car.width*.5,
+   speed:r.speed*effectivePace(r.speed,highSpeedPace),halfWidth:r.width*.5,
   }));
   triangles.hitByVehicles(elapsed+dt,[...(traffic?.hazardSweeps()??[]),...rivals]);
  }
@@ -1271,7 +1276,8 @@ function loop(now:number){
      loadingProgress(100,'風景已準備好','道路、樹木與海岸已就緒，準備重新出發。');
      replayPreparing=false;
      loadingFinished();
-     mode='ready';readyEnabled=true;ui(); // Only START may begin the next countdown.
+     mode='ready';readyEnabled=true;ui();
+     if(raceStartConfirmed)start();
     }else{
      const title=stream.ready?'正在預熱出發場景':'正在重新準備沿途風景';
      const detail=stream.ready?'風景已載入，正在完成場景預熱。':
@@ -1366,7 +1372,7 @@ if(trip)tripPauseDock=new TripPauseDock($('app'),{
   fpsTestRequested=true;
   restart();
  }:undefined,
- resume:start,exitToMenu:returnToMainMenu,
+ resume:start,restart:restartFromGrid,exitToMenu:returnToMainMenu,
  settings:()=>{$('settings').click();},sound:()=>{$('sound').click();},
 },coastUltraMode&&coastGeometryShadows()&&params.get('fpsdiag')==='1'?{onChange:applyShadowTechnique}:undefined);
 // A tab discarded during a phone call must reopen at the same place, paused.

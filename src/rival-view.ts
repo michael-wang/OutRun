@@ -187,7 +187,7 @@ export class RivalView {
       if(!visible){if(root.visible)car.effects.clear(time);root.visible=false;return;}
       root.visible=true;
       const p=this.sample(r.distance);root.position.copy(p.position).addScaledVector(p.right,r.lateral);root.position.y+=.04;
-      root.rotation.set(-Math.asin(p.tangent.y),-p.roadHeading-Math.atan2(r.lateralRate+r.impulse,Math.max(8,r.speed)),Math.atan(-p.right.y));
+      root.rotation.set(-Math.asin(p.tangent.y),-p.roadHeading-r.driftYaw-Math.atan2(r.lateralRate+r.impulse,Math.max(8,r.speed)),Math.atan(-p.right.y));
       // The Sprite material disables perspective size attenuation; off-screen tags
       // are naturally frustum-culled and road geometry may occlude them.
       car.label.visible=observed!==i&&r.distance>=focus-2;

@@ -14,6 +14,27 @@ const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
 function ticks(seconds:number,fn:()=>void){for(let i=0;i<Math.round(seconds/dt);i++)fn();}
 describe('Rival tire smoke should communicate actual traction events',()=>{
+ it('slides on both loaded drift corners and regains straight-line grip on exit',()=>{
+  const {track,halfAt}=coastWorkerRoad(),player=parked();
+  for(const turn of COAST_STAGE.road.turns.slice(4,6)){
+   const race=new RivalRace(track.length,d=>({curvature:track.sample(d).curvature,grade:0,half:halfAt(d)}),()=>[],[raceEntries[0]]);
+   race.reset(turn.start);
+   const r=race.rivals[0];r.speed=60;
+   let peak=0;
+   while(r.distance<turn.end){
+    race.step(dt,player,player);
+    peak=Math.max(peak,Math.sign(turn.steer)*r.driftYaw);
+    if(Math.abs(r.driftYaw)>.12){
+     expect(r.width).toBeGreaterThan(r.entry.car.width+.45);
+     expect(r.slip).toBeGreaterThan(.3);
+    }
+    expect(race.time).toBeLessThan(15);
+   }
+   expect(peak).toBeGreaterThan(.12);
+   ticks(.6,()=>race.step(dt,player,player));
+   expect(Math.abs(r.driftYaw)).toBeLessThan(.06);
+  }
+ });
  type Sample=Parameters<typeof rivalSkidDemand>[0];
  const state=(overrides:Partial<Sample>={}):Sample=>({
   speed:80,targetSpeed:78,braking:false,lateralRate:0,targetX:0,lateral:0,impulse:0,
