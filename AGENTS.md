@@ -6,6 +6,7 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 ## Coastal art production (November 14)
 
 - Art direction: **Style Option B for vehicles, people, scenery and coastal sunset mood**. Read `docs/COAST_ART_BIBLE.md`, `docs/COAST_HERO_VEHICLE_ART.md` and `art/reference/coast/README.md`. The reference README lists the approved PNG and its checksum.
+- Female protagonist: the owner-approved heroine 3-view sheet is **new canonical character identity** (see `docs/art-review/h1ar/README.md`, Issue #38); do NOT remodel this identity from the older Style B sample or treat old procedural H1a face as accepted. First produce real Blender-editable 3D mesh and owner-approved renders, not game integration.
 - The recurrent Riviera 62, driver/passenger, rivals and traffic are **S-tier focal assets**. Keep approved identity; audit before remodelling. This vehicle/character track runs early, in parallel with scenery.
 - Make scenic content portable: asset library → `content/scenery/packages.json` → `content/stages/coast/scenic-layout.json`. Run `npm run scenic:build` to regenerate the existing runtime `scene.json` and hero positions in `direction.json`. Do not hard-code a site kilometre into an asset. See `docs/COAST_PORTABLE_SITES.md` for R0 limits.
 
