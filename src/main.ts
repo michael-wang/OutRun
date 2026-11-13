@@ -55,7 +55,7 @@ import {ROAD_START as BRICK_START} from './road-profile';
 import {mountCoastReview} from './coast-review';
 import {DriveTelemetry} from './drive-telemetry';
 import {PhotoCapture} from './photo-capture';
-import {TireEffects,type TireContact,type WindSampler} from './tire-effects';
+import {TireEffects,driftTrailIntensity,type TireContact,type WindSampler} from './tire-effects';
 import {sampleCoastWind} from './coast-wind';
 import {CoastDuskShadows} from './coast-dusk-shadows';
 import {Traffic,trafficRecipe} from './traffic';
@@ -1092,8 +1092,9 @@ function render(dt:number,draw=true){
   sound.surface(state.speed,mode==='playing'?wheelContacts.filter(c=>c.onRoad===false&&c.surface&&c.gap!==null&&Math.abs(c.gap)<.12).length:0,dt);
   const effectsStart=fpsProfiling?performance.now():0;
   const driving=mode==='playing';
+  const playerTrail=driving?driftTrailIntensity(state.slipAngle):0;
   tireEffects.update(raceEffectTime,state.speed,Math.max(sound.skidFeedback.intensity,driving?state.brakeSlip:0),
-    wheelContacts,renderer.domElement.height*camera.projectionMatrix.elements[5]/2,(driving||mode==='countdown')?state.launchSlip:0);
+    wheelContacts,renderer.domElement.height*camera.projectionMatrix.elements[5]/2,(driving||mode==='countdown')?state.launchSlip:0,playerTrail);
   if(wheelContacts.some(c=>c.onRoad===false&&!!c.surface))dustEffects.setDustTint(world.weightsAt(state.distance));
   dustEffects.update(elapsed,state.speed,0,wheelContacts,1);
   sparkOrigin.copy(p.position).addScaledVector(p.right,world.boundaries?guardrail.contactEdge:CANYON_BEND.railOffset);

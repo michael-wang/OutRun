@@ -3,6 +3,22 @@ import * as THREE from 'three';
 import {TireEffects,type TireContact} from '../src/tire-effects';
 const contacts=(z:number,road=true):TireContact[]=>['rear','front'].flatMap(axle=>[-1,1].map(side=>({name:`${axle}-wheel-${side}`,gap:0,surface:[side,0,z],normal:[0,1,0],onRoad:road})));
 describe('bounded contact-driven tire effects',()=>{
+ it('emits player drift trails from grounded rear tires with no brake, burnout or audio skid input',()=>{
+  const scene=new THREE.Scene(),fx=new TireEffects(scene);
+  try{
+   for(let i=1;i<=40;i++){
+    const wheels=contacts(i*1.5);
+    wheels[0].onRoad=i>20;
+    fx.update(i/60,60,0,wheels,1,0,1);
+    if(i===20)expect(fx.inspect().emittedByWheel[0]).toBe(0);
+   }
+   const [left,right,...front]=fx.inspect().emittedByWheel;
+   expect(left).toBeGreaterThan(0);expect(right).toBeGreaterThan(left);
+   expect(front).toEqual([0,0]);
+   fx.update(2,60,0,contacts(180),1);
+   expect(fx.inspect().particles).toBe(0);
+  }finally{fx.dispose();}
+ });
  it('uses dusk tint only for sunset coast and adapts canyon/city palettes without altering dust',()=>{
   const scene=new THREE.Scene(),fx=new TireEffects(scene),dust=new TireEffects(scene,'dust');
   try{

@@ -3,7 +3,7 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {createRivieraTailLamps} from './hero-classic-geometry';
 import {createSpiderShell,createWheelBrow,createGTWingMirrorHousing} from './hero-body';
 import {createRoadWheel,wheelRoll} from './wheels';
-import {TireEffects,type TireContact} from './tire-effects';
+import {TireEffects,driftTrailIntensity,type TireContact} from './tire-effects';
 import type {RivalRace,RaceStanding} from './rival-race';
 import type {createTrack} from './track';
 import {chaseTargets} from './chase';
@@ -221,7 +221,7 @@ export class RivalView {
         car.wheels.instanceMatrix.needsUpdate=true;
       }
       car.tail.emissiveIntensity=r.braking?2.8:.52;
-      const driftTrail=Math.min(1,Math.max(0,(Math.abs(r.driftYaw)-.075)/.24));
+      const driftTrail=driftTrailIntensity(r.driftYaw);
       if(dist<240){
         car.near=true;
         root.updateMatrixWorld();
