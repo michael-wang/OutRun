@@ -221,14 +221,15 @@ export class RivalView {
         car.wheels.instanceMatrix.needsUpdate=true;
       }
       car.tail.emissiveIntensity=r.braking?2.8:.52;
-      if(dist<125){
+      const driftTrail=Math.min(1,Math.max(0,(Math.abs(r.driftYaw)-.075)/.24));
+      if(dist<240){
         car.near=true;
         root.updateMatrixWorld();
         this.contacts.forEach((contact,j)=>{this.point.set(j?1:-1,0,-1.45).applyMatrix4(root.matrixWorld).toArray(contact.surface!);});
         const launchBurn=countdown?.50:
           this.race.time<4&&r.speed<7&&r.gearbox.driveForce>2
            ?.45*(1-r.speed/7):0;
-        car.effects.update(time,r.speed,r.slip,this.contacts,1,launchBurn);
+        car.effects.update(time,r.speed,dist<125||driftTrail>0?r.slip:0,this.contacts,1,dist<125?launchBurn:0,driftTrail);
       }else if(car.near){car.effects.clear(time);car.near=false;}
     });
   }

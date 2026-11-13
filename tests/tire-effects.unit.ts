@@ -71,6 +71,27 @@ describe('R4c smoke drift in shared wind',()=>{
   expect(b.inspect()).toMatchObject({particleCapacity:192,segmentCapacity:768,geometries:2});
   a.dispose();b.dispose();
  });
+ it('lays two continuous rival trails through a bend and fades them without bridging lost contact',()=>{
+  const scene=new THREE.Scene(),parent=new TireEffects(scene),rival=new TireEffects(scene,'smoke',parent);
+  const geometry=(scene.children.filter(o=>o.name==='tire-smoke')[1] as THREE.Mesh).geometry;
+  const span=geometry.getAttribute('trailSpan'),alpha=geometry.getAttribute('alpha');
+  const wheels=(z:number)=>contacts(z).slice(0,2).map(c=>({...c,surface:[c.surface![0]+z*z*.001,0,z]}));
+  try{
+   for(let i=0;i<=60;i++)rival.update(i/60,65,1,wheels(i*1.5),1,0,1);
+   const [left,right,frontLeft,frontRight]=rival.inspect().emittedByWheel;
+   expect(left).toBeGreaterThanOrEqual(18);expect(right).toBe(left);
+   expect(frontLeft+frontRight).toBe(0);
+   const live=Array.from({length:span.count},(_,i)=>i).filter(i=>alpha.getX(i)>.01);
+   expect(live.reduce((distance,i)=>distance+span.getZ(i),0)).toBeGreaterThan(140);
+   expect(live.some(i=>span.getX(i)>.5)).toBe(true);
+   rival.update(1.02,65,0,[],1);
+   rival.update(1.04,65,1,wheels(400),1,0,1);
+   for(let i=0;i<span.count;i++)expect(Math.abs(span.getZ(i))).toBeLessThan(8);
+   rival.update(2.5,65,0,[],1);
+   expect(rival.inspect()).toMatchObject({particles:0,particleCapacity:48,geometries:2});
+   expect(rival.inspect().segments).toBeGreaterThan(0);
+  }finally{rival.dispose();parent.dispose();}
+ });
  it('inherits an installed wind callback when rivals share the parent material',()=>{
   const scene=new THREE.Scene(),player=new TireEffects(scene);
   player.setWind(()=>({x:2,z:0}));
