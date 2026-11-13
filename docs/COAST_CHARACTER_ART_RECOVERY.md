@@ -2,6 +2,14 @@
 
 Date: 2026-11-14. Status: **H1a v0.10.18 is technically verified but VISUALLY REJECTED by the owner**. Do not promote the appearance to main, do not clone the face into the male driver, and do not continue the same parametric-face refinement loop.
 
+## 2026-11-14 owner-approved new heroine identity (supersedes 2D exploration status)
+
+The owner explicitly approved Julia's **NEW blonde passenger front / 45° / profile concept** as exactly the desired heroine. **This is now the authoritative design for her face, hair, earrings and cream halter/sleeveless neckline.** The existing Style Option B stays the broad coastal art direction and reference for all other asset families; where the original Style B female differs from the newly approved sheet, the new heroine design wins.
+
+The handoff is `OutRun_H1aR_APPROVED_3D_REFERENCE_2026-11-14.zip` provided in ChatGPT. Its verified image list/checksums and one-prototype reconstruction plan are in [approved heroine H1aR handoff](art-review/h1ar/README.md) and [Issue #38](https://github.com/michael-wang/OutRun/issues/38). Older references saying the new 2D concept is not approved are **outdated**. The **3D sculpt and game asset remain unapproved and not yet produced**.
+
+**Immediate action:** Codex makes one authentic editable 3D model candidate and renders it in Blender. Do NOT redo the 2D design, generate a new math face, or connect to gameplay before visual approval.
+
 ## Verified failure, not a renderer defect diagnosis
 
 - The approved reference is [Style Option B](../art/reference/coast/03_STYLE_B_coastal_highway.png), especially its passenger portrait.
