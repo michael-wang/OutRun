@@ -1,5 +1,6 @@
 # Coastal stage content rules
 
+- **Movable scenic sites (R0):** `scenic-layout.json` owns nine hero HUD anchors and site placement; `content/scenery/packages.json` owns reusable, metre-free kits. Run `npm run scenic:build` after modifying either and `npm run scenic:check && npm run scenic:test` before push. `direction.json` hero positions and `scene.json` GLB positions are generated projections, not independent authoring sources. See `docs/COAST_PORTABLE_SITES.md`. This R0 tool does NOT relocate legacy TS scenery, water boundaries or collision.
 - Stage content is data, not a second engine. Keep the authored stage in
   `content/stages/coast/{stage,road,scene}.json` and the prefab registry
   in `content/prefabs/catalog.json`.
