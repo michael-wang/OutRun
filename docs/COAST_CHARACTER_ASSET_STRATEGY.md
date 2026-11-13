@@ -4,6 +4,10 @@ Status: owner direction; H0 visual review complete; H1/H2 3D work pending owner 
 Reference: [Style Option B](../art/reference/coast/03_STYLE_B_coastal_highway.png).
 Related: [H0 game captures](art-review/h0/README.md), [vehicle art track](COAST_HERO_VEHICLE_ART.md).
 
+## Character-specific owner approval: new heroine (2026-11-14)
+
+Julia's **new front / 45° / side blonde passenger concept** was explicitly approved by owner as the final **2D visual identity**. Do not reimagine her in the broad original Style B board; use [approved handoff](art-review/h1ar/README.md) and [3D lookdev ticket #38](https://github.com/michael-wang/OutRun/issues/38). Facial geometry, proper rear hair topology, expression and actual GLB are **not** approved yet. Use one authentic DCC/AI-to-3D mesh candidate and a Blender front/45/profile/rear gate before implementation. The old H1a `v0.10.18` TS face failed that art gate.
+
 ## Product requirement: the same two people must look good in the cockpit AND standing for a front-facing photograph
 
 The owner expects possible full-body standing portraits, race end photographs and character presentations in the future. The currently simplified, seated-only faces are not sufficient as final character identity. Their faces need to be **attractive, readable, three-dimensional and consistent with the chosen slightly chunky, charming stylized arcade look**, without turning into realistic portraits or large-eyed anime.
