@@ -21,6 +21,10 @@ At `docs/art-review/h0/05-cockpit.jpg`, the current eyes read as dots/flat black
 
 At `02-driving.jpg` the head/hair silhouettes must still work while moving; preserve that. At `03-front.jpg` and `04-side.jpg`, vehicle polish is a separate follow-up; avoid mixing it into the first character H1 iteration.
 
+## 2026-11-14 H1a visual rejection — superseding gate
+
+The owner **rejected the art** produced by `v0.10.18` / `03e3025`, despite green code tests. The face remains a mathematical Three.js construct, not a DCC-authored sculpt. Do not keep refining mathematical eyeballs/lips or proceed to the male head. The new canonical recovery path is [DCC-first lookdev and owner approval](COAST_CHARACTER_ART_RECOVERY.md), tracked in [Issue #38](https://github.com/michael-wang/OutRun/issues/38). All portrait/character modeling work **must pass the three-angle visual gate before any driving-version/LOD/game integration**. The older text below describes earlier assumptions where the procedural fallback was acceptable; those assumptions are now superseded for hero faces.
+
 ## Suggested modeling strategy (minimal risk to existing architecture)
 
 Current production vehicle and occupants are procedural Three.js geometry in `src/car.ts`, `src/hero-groom.ts`, `src/hero-tailoring.ts` and `src/occupants.ts`, not a preexisting, shared Blender rig. The current driver/passenger head groups already have separate pivots and wind-groom update logic.
