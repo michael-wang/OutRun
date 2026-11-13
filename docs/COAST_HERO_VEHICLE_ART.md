@@ -14,6 +14,10 @@ The player Riviera 62 and its driver/passenger occupy the chase-camera foregroun
 - Rivals may be different models/palettes but must share the same tire scale, specular response, clearcoat language, glass, lights and amount of visual simplification.
 - Traffic cars should read instantly at speed, with simpler geometry/LODs than the player and important rivals. Do not make them all miniature toys.
 
+## Character art identity — portrait capable / gameplay optimized
+
+Owner requires the driver and passenger to look attractive and expressive **from the front while standing for future photographs**. They also need an economical, upper-body-only representation when driving. This is **one identity and design master per person, with separate portrait/fullbody and optimized driving variants**, not independent lookalikes. The face and grouped hair must survive front/3/4/profile close-ups, not just 200 km/h chase view. The current face primitives in H0 are not photo-ready; minor eyebrow/mouth tweaks are only hypotheses, not final sign-off. First accept a **female face + hair** prototype, then a male head, then optimize race variants; only build full-body figures when a photo scene requires them. Preserve existing pivots, seated gestures, wind hair and mobile performance. Full contract: [Character Master Strategy](COAST_CHARACTER_ASSET_STRATEGY.md).
+
 ## H0 — audit first (Julia spec, Codex captures; NO major model changes)
 
 Capture under the SAME existing coast dusk world lighting, chase FOV and camera at:
