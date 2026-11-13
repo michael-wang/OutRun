@@ -7,10 +7,10 @@ import {coastReviewKey,emptyCoastReview,readCoastReview,exportCoastReview} from 
 it('P0: feedback storage keeps the accepted historical identity and schema',()=>{
  const id=COAST_RUNTIME_IDENTITY;
  expect(id.id).toBe('ROAD-TRIP-10M');
- expect(id.revision).toBe(28);
+ expect(id.revision).toBe(30);
  expect(id.stageCode).toBe('COAST-RESORT-R8');
  expect(id.generatorVersion).toBe('v0.9-r10');
- expect(coastReviewKey()).toBe('l2:'+id.id+':r28:'+id.contentFingerprint);
+ expect(coastReviewKey()).toBe('l2:'+id.id+':r30:'+id.contentFingerprint);
  const row=exportCoastReview(emptyCoastReview()).records[0];
  expect(row.id).toBe(id.id);
  expect(row.seed).toBe(COAST_STAGE.manifest.seed);

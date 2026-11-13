@@ -17,8 +17,8 @@ export const COAST_BOATS:readonly Boat[]=[
  ['town-sail-one','sail',3560,112,17],['town-sail-two','sail',4010,168,16],
  ['town-yacht','yacht',4470,170,18],['town-sail-three','sail',5110,122,16],
  ['town-sail-four','sail',5780,175,16],['town-yacht-two','yacht',6430,158,19],
- ['fishing-one','fishing',7100,122,16],['fishing-two','fishing',7540,160,16],
- ['fishing-three','fishing',7950,125,15],['fishing-four','fishing',8400,185,17],
+ ['fishing-one','fishing',7100,122,16],['bay-sail-west','sail',7710,160,16],
+ ['bay-sail-east','sail',7950,125,15],['fishing-four','fishing',8400,185,17],
  ['fishing-five','fishing',9000,150,16],['fishing-six','fishing',9640,120,16],
 ].map((row,i)=>{const [id,kind,distance,offshore,length]=row as [string,Boat['kind'],number,number,number];return {
  id,kind,distance,offshore,length,travel:65+i%3*15,

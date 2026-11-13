@@ -160,7 +160,10 @@ describe('Riviera GT race',()=>{
   race.step(.04,p,{distance:99.99,lateral:0});
   expect(race.playerFinish).toBeLessThan(race.rivals[0].finishTime!);
   expect(race.rank(p.distance,race.playerFinish,'PLAYER',p)).toBe(1);
+  const firstRivalTime=race.rivals[0].finishTime;
   ticks(12,()=>race.step(dt,p,p));expect(race.rivals.every(r=>r.finishTime!==null)).toBe(true);
+  expect(race.rivals[0].distance).toBeGreaterThan(100);
+  expect(race.rivals[0].finishTime).toBe(firstRivalTime);
  });
  it('safely changes the race order while catching a slower player from behind',()=>{
   const p={distance:410,lateral:-5.25,speed:7},race=new RivalRace(10350,flat,()=>[],[raceEntries[0],raceEntries[1]]);race.reset(350);
@@ -235,7 +238,7 @@ describe('Riviera GT race',()=>{
   expect(traffic.inspectWorld().time).toBeCloseTo(1.1,6);
   traffic.dispose();
  });
- it('finishes the authored 10 km with the player parked under three traffic seeds',()=>{
+ it('finishes the authored coastal race with the player parked under three traffic seeds',()=>{
   const runtime=coastWorkerRoad(),track=runtime.track,end=ROAD_START+COAST_STAGE.road.length;
   for(const seed of [17,945,1206]){
    const recipes=trafficRecipe(seed,end),p=parked();

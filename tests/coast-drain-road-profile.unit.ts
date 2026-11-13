@@ -59,7 +59,7 @@ it('delivers distinct Taiwan roadside treatments instead of one highway guardrai
  expect(coastBarrierClearance(850,1)).toBe(1.05);
  expect(coastBarrierStyle(3990,1)).toBe('none');
  expect(coastBarrierStyle(8550,1)).toBe('none');
- expect(coastBarrierStyle(3990,-1)).toBe('none'); // sea vista is open away from tourist bays
+ expect(coastBarrierStyle(3990,-1)).toBe('rail'); // low visible protection along the open coast
  for(const [start,end,right] of [[840,930,'block'],[3980,4080,'none'],[8540,8660,'none']] as const){
   const scene=new THREE.Scene();addCoastResort(scene,track.sample,half,start,end);
   const centers:number[]=[];
@@ -100,10 +100,10 @@ it('keeps the car fully on asphalt on BOTH sides, matching guardrail and stone p
   expect(state.lateral).toBeLessThanOrEqual(bounds.right-1.15+.1);
   expect(contact.inspect().impacts).toBe(1);
  }
- const beach=coastDriveBounds(850,8.75);
- expect(beach.left).toBe(-11);
+ const beach=coastDriveBounds(2500,8.75);
+ expect(beach.left).toBeCloseTo(-8.75-coastBarrierClearance(2500,-1)-.38);
  const metal=coastDriveBounds(500,8.75);
- expect(metal.left).toBeLessThan(beach.left);
+ expect(metal.left).toBeCloseTo(-8.75-coastBarrierClearance(500,-1)+.05);
  const rightStone=coastDriveBounds(850,8.75);
  expect(rightStone.right).toBeGreaterThan(COAST_DRAIN_X.outerRoad);
 });

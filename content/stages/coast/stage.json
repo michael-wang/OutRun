@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "coast",
-  "name": "Azure Coast · Scenic Grand Tour",
-  "intent": "First-map driving lessons; sea-bay vistas, clifftop pursuit, highland rice, a monumental golden bridge and a finish sprint.",
+  "name": "Azure Coast · Sunset Sprint",
+  "intent": "Sunset on the sea, progressive driving lessons, three passing opportunities and a harbour sprint.",
   "seed": 804,
   "entrySpeed": 140,
   "entry": "Quiet dusk shoreline",

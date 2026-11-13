@@ -222,7 +222,12 @@ export class RivalRace {
     let hit:TrafficCollision|undefined;
     for(const r of this.rivals){
       r.previousDistance=r.distance;r.previousLateral=r.lateral;
-      if(r.finishTime!==null)continue;
+      if(r.finishTime!==null){
+        // Roll clear of the painted line on the post-finish road. Ranking stays locked.
+        r.speed=Math.max(0,r.speed-10*dt);
+        r.distance=Math.min(this.finish+550,r.distance+worldSpeed(r.speed)*dt);
+        continue;
+      }
       if(this.time>=r.nextDecision)this.decide(r,player);
       this.move(r,dt);
     }
@@ -267,7 +272,7 @@ export class RivalRace {
     }
     for(const r of this.rivals)if(r.finishTime===null){
       r.finishTime=crossingTime(r.previousDistance,r.distance,this.finish,this.time,dt);
-      if(r.finishTime!==null){r.distance=this.finish;r.speed=0;r.behavior='完賽';}
+      if(r.finishTime!==null){r.braking=true;r.behavior='完賽';}
     }
     if(this.playerFinish===null)this.playerFinish=crossingTime(oldPlayer.distance,player.distance,this.finish,this.time,dt);
     this.time+=dt;

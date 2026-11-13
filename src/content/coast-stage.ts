@@ -9,8 +9,8 @@ import {COAST_DIRECTION,validateCoastDirection,type CoastDirection} from './coas
 /** Historic identity used for feedback / telemetry storage compatibility,
  * not a base class, Stage generator or new authoring requirement. */
 export const COAST_RUNTIME_IDENTITY={
- id:'ROAD-TRIP-10M',revision:29,stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
- generatorVersion:'v0.9-r10',contentFingerprint:'r5c-scenic-grand-tour-30km-804',
+ id:'ROAD-TRIP-10M',revision:30,stageCode:'COAST-RESORT-R8',tripCode:'COAST-RESORT-R8',
+ generatorVersion:'v0.9-r10',contentFingerprint:'sunset-sprint-14km-804',
 } as const;
 
 /** Authored content only. No Pilot, Brick, Trip or procedural route generator. */

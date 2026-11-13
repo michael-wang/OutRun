@@ -27,6 +27,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
 import type {CoastRuntimeStage} from './content/coast-worker-road';
 import {coastAccidentLayout} from './content/coast-accident';
+import {coastFinish} from './content/coast-finish';
 import type {CoastAccident} from './content/coast-onboarding';
 import type {ScenerySection} from './scenery-cross-section';
 
@@ -181,6 +182,8 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   if(options.accident)breakdowns.unshift(...coastAccidentLayout(
    halfAt,options.accident,(options.seed??1)^(options.trafficVariation??0)));
   const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion))?[]:breakdownAnnotations(sample,halfAt,breakdowns);
+  const coastSection=stageSections?.find(section=>section.id==='coast-ultra-left-sea');
+  if(coastSection)annotations.push(coastFinish(coastSection.end,sample,halfAt(coastSection.end)));
   if(!options.streamStage){
   for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of options.track?[300,160]:[160,80]){
     const p=sample(extreme.start-lead),base=p.position.clone().addScaledVector(p.right,offsetAt(extreme.start-lead,15));

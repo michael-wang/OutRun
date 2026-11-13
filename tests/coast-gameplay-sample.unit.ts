@@ -24,7 +24,7 @@ it('P0: gameplay beat labels and curve IDs are derived from authored scene data'
 
 it('P0: scenic act edits immediately affect gameplay metadata',()=>{
  const edited={...COAST_STAGE,scenicActs:COAST_STAGE.scenicActs.map(a=>({...a}))};
- edited.scenicActs[0].end=1600;edited.scenicActs[1].start=1600;
- expect(coastGameplayAt(2050,edited).l2InstanceId).toBe('COAST-SCENIC-2');
- expect(coastGameplayAt(2050,COAST_STAGE).l2InstanceId).toBe('COAST-SCENIC-1');
+ edited.scenicActs[0].end=1200;edited.scenicActs[1].start=1200;
+ expect(coastGameplayAt(1700,edited).l2InstanceId).toBe('COAST-SCENIC-2');
+ expect(coastGameplayAt(1700,COAST_STAGE).l2InstanceId).toBe('COAST-SCENIC-1');
 });

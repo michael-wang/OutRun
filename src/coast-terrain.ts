@@ -10,10 +10,16 @@ export const COAST_HILL_STRIPS=[13,18,23,29,36,48,51,53,55,58,70,88,94,97,99,101
 export function farmBasinCut(x:number,d:number,roadBank:number){
  if(x<=15)return 0;
  for(const zone of FARM_ZONES){
-  if(d>zone.flowerApproach-8&&d<zone.flowers[1]+8){
-   const along=smoothstep(zone.flowerApproach-8,zone.flowerApproach,d)*(1-smoothstep(zone.flowers[1],zone.flowers[1]+8,d));
-   const across=smoothstep(15,19,x)*Math.max(0,1-farmTerraceHeight(x)/1.5);
-   return along*across*(1.50+13*roadBank+.004*(x-13));
+  // Outer terrain rows are sampled every 20 m. Finish the transition one
+  // row before planting so edge triangles are level under the entire field.
+  if(d>zone.flowerApproach-43&&d<zone.flowers[1]+43){
+   const coarse=smoothstep(zone.flowerApproach-43,zone.flowerApproach-21,d)*(1-smoothstep(zone.flowers[1]+21,zone.flowers[1]+43,d));
+   const fine=smoothstep(zone.flowerApproach-12,zone.flowerApproach-5,d)*(1-smoothstep(zone.flowers[1]+5,zone.flowers[1]+12,d));
+   const along=fine+(coarse-fine)*smoothstep(100,130,x);
+   const terraceMask=smoothstep(15,19,x)*(1-smoothstep(zone.flowerRight+12,zone.flowerRight+100,x));
+   const basin=Math.max(0,1-farmTerraceHeight(x)/1.5);
+   // Level all planted terraces against road banking, including the higher inland rows.
+   if(along>0)return along*terraceMask*(13*roadBank+basin*(1.50+.004*(x-13)));
   }
   const [a,b]=zone.rice;
   if(d<=a-22||d>=b+22||x>=zone.right+52)continue;

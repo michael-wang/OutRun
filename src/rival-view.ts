@@ -183,7 +183,7 @@ export class RivalView {
     if(mobileTags)camera.updateMatrixWorld();
     this.race.rivals.forEach((r,i)=>{
       const car=this.cars[i],root=car.root,dist=Math.abs(r.distance-focus);
-      const visible=dist<720&&ready(r.distance)&&r.finishTime===null;
+      const visible=dist<720&&ready(r.distance)&&(r.finishTime===null||this.race.time-r.finishTime<8);
       if(!visible){if(root.visible)car.effects.clear(time);root.visible=false;return;}
       root.visible=true;
       const p=this.sample(r.distance);root.position.copy(p.position).addScaledVector(p.right,r.lateral);root.position.y+=.04;

@@ -125,7 +125,7 @@ it('adds deterministic but non-periodic stone imperfections without moving into 
 
 
 it('R5c: the visible seaward guardrail matches the real coast collision bound',()=>{
- for(const d of [350,1200,2560,4100,7500,10500,16250,20500,24200,29700]){
+ for(const d of [350,1200,2560,4100,7500,10500,10800,11710,12930,14550]){
   const style=coastBarrierStyle(d,-1);
   expect(style==='rail'||style==='block').toBe(true);
   const limit=coastDriveBounds(d,8.75).left;

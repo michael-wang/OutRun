@@ -81,8 +81,8 @@ it('follows the exact coast-resort 12m block/rail cadence and correct authored s
  expect(block).toBeDefined();
  expect(seaRail).toBeDefined();
  expect(markers.filter(m=>m.kind==='rock'&&m.x<0)).toHaveLength(0);
- expect(seaRail!.d).toBeGreaterThan(475);
- expect(seaRail!.d).toBeLessThan(680);
+ expect(markers.filter(m=>m.kind==='rail-beam'&&m.x<0).map(m=>m.d)).toEqual(
+  Array.from({length:Math.ceil(1000/12)},(_,i)=>i*12).filter(d=>coastBarrierStyle(d,-1)==='rail'));
  expect(markers.some(m=>m.d===0&&coastBarrierStyle(0)==='opening')).toBe(false);
  const a=coastBeachShadowAnchors(804),b=coastBeachShadowAnchors(805);
  const first=COAST_BEACHES[0];

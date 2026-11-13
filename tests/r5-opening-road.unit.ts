@@ -31,7 +31,7 @@ it('P0 R5a: banked S has two opposite, finite physical cross slopes in the share
  const sweeper=track.sample((road.banks![0].start+road.banks![0].end)/2);
  const left=track.sample((road.banks![1].start+road.banks![1].end)/2);
  const right=track.sample((road.banks![2].start+road.banks![2].end)/2);
- expect(sweeper.right.y).toBeGreaterThan(.15);
+ expect(sweeper.right.y).toBeLessThan(-.15);
  expect(left.right.y).toBeGreaterThan(.15);
  expect(right.right.y).toBeLessThan(-.15);
  for(let d=350;d<=4710;d+=13){
@@ -72,11 +72,11 @@ it('P0 R5a: stage authoring rejects impossible teaching or banking configuration
 it('R5a.1: dramatic beginner sweeper and longer S keep coherent entry/exit transitions',()=>{
  const [sweep,left,right]=road.turns;
  expect(sweep.start).toBe(900);
- expect(sweep.end-sweep.start).toBeGreaterThanOrEqual(900);
- expect(Math.abs(sweep.steer)).toBeGreaterThanOrEqual(.24);
+ expect(sweep.end-sweep.start).toBeGreaterThanOrEqual(350);
+ expect(Math.abs(sweep.steer)).toBeGreaterThanOrEqual(.20);
  expect(Math.abs(sweep.steer)).toBeLessThan(.32); // deliberately not drift-required
- expect(left.end-left.start).toBeGreaterThanOrEqual(750);
- expect(right.end-right.start).toBeGreaterThanOrEqual(750);
+ expect(left.end-left.start).toBeGreaterThanOrEqual(320);
+ expect(right.end-right.start).toBeGreaterThanOrEqual(360);
  expect(Math.abs(left.steer)).toBeGreaterThan(.35);
  expect(Math.abs(right.steer)).toBeGreaterThan(.35);
  expect(left.steer*right.steer).toBeLessThan(0);

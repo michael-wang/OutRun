@@ -527,8 +527,8 @@ function raceHud(){
  rivalView.updateRanks(race.standings(state));
  // Race progress belongs beside position and time, not the global version/FPS.
  const tracked=race.rivals[observed]?.distance??state.distance;
- const traveled=Math.max(0,Math.min(world.length-BRICK_START,tracked-BRICK_START));
- const total=Math.max(1,world.length-BRICK_START);
+ const traveled=Math.max(0,Math.min(coastEnd-coastStart,tracked-coastStart));
+ const total=Math.max(1,coastEnd-coastStart);
  const elapsedRace=Math.max(0,race.time);
  const clock=Math.floor(elapsedRace/60)+':'+String(Math.floor(elapsedRace%60)).padStart(2,'0')+'.'+Math.floor(elapsedRace*10)%10;
  const distanceLabel=(traveled/1000).toFixed(1)+' / '+(total/1000).toFixed(1)+' km';

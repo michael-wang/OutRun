@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "coast",
-  "revision": "R5b.2",
+  "revision": "sunset-sprint",
   "lessons": [
     {
       "id": "A0",
@@ -13,21 +13,21 @@
     {
       "id": "A1",
       "start": 900,
-      "end": 1900,
+      "end": 1250,
       "label": "高速傾斜大彎",
       "goal": "Learn a banked high-speed sweep without drifting"
     },
     {
       "id": "A2",
-      "start": 1900,
-      "end": 2700,
+      "start": 1250,
+      "end": 3100,
       "label": "第一次超車",
       "goal": "Read a sparse civilian car and pass safely"
     },
     {
       "id": "A3",
-      "start": 2700,
-      "end": 4340,
+      "start": 3100,
+      "end": 3800,
       "label": "連續傾斜 S 彎",
       "goal": "Immediately turn right after the left turn"
     }
@@ -42,14 +42,14 @@
     {
       "id": "A5",
       "start": 5100,
-      "end": 5640,
+      "end": 5380,
       "label": "第一個甩尾彎",
       "goal": "Lift or brake before the corner; wide recovery exit",
       "suggestedEntryKmh": 205
     },
     {
       "id": "A6",
-      "start": 6280,
+      "start": 6470,
       "end": 6760,
       "label": "第二個甩尾彎",
       "goal": "Brake earlier, hold the line and accelerate on exit",

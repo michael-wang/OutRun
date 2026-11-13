@@ -236,10 +236,11 @@ Never mark a source-only static audit as passing Vitest.
 - Run `npm run verify:dev` and exercise these cases with local
   Codex and one real PS4/PC gamepad before shipping main.
 
-## R5c implemented road director — dev v0.10.8
+## Current sunset sprint — dev v0.10.9
 
-- The accepted first 6.76km remain untouched; the **whole first-map
-  race** is now 30km of stage progress, HUD finish 30350m.
+- The first 6.76km teach the same seven lessons on a reoriented coastline.
+  The race covers 14,200m from HUD 350m to 14,550m with 600m of relief.
+  Current geometry and lesson windows supersede the historical R5a/R5b coordinates.
 - Road turns/elevations/banks are authored in
   `content/stages/coast/road.json`; ten named acts, five hero
   slots and three overtake-pressure gates are authored in
@@ -252,9 +253,9 @@ Never mark a source-only static audit as passing Vitest.
   the wet-sand/FFT appearance simply because the road grew longer.
 - Legacy far mountains are bounded to the old coast footprint;
   physically plausible Hero Scenery must be created later in
-  Blender/Geometry Nodes using the shared 30km road-guide export.
+  Blender/Geometry Nodes using the shared road-guide export.
 - Road whitebox acceptance is separate from Hero art acceptance.
-  Read `docs/R5C_30KM_ROAD_DIRECTOR.md`, test all checkpoints
+  The 30km R5c brief is historical. Test the current hero slots and contest gates
   at driving speeds, and run `npm run verify:dev` on the local
   Codex workstation before marking R5c QA green. Never auto-push
   to `main`.

@@ -58,7 +58,7 @@ export function createShoreSegmentIndex(lines:readonly IndexedShoreEdge[]){
        ((x-seg.ax)*seg.dx+(z-seg.az)*seg.dz)*seg.inv));
       const ex=x-seg.ax-seg.dx*t,ez=z-seg.az-seg.dz*t;
       const dist=ex*ex+ez*ez;
-      if(dist<best){best=dist;index=seg.index;fraction=t;}
+      if(dist<best||(dist===best&&seg.index<index)){best=dist;index=seg.index;fraction=t;}
      }
      return;
     }

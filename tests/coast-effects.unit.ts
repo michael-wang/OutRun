@@ -79,7 +79,7 @@ it('R4a: reject invalid mobile costs, misplaced foliage and palettes early',()=>
 
 it('R4b: preserve accepted sunset, haze and shared sun direction',()=>{
  const light=COAST_EFFECTS.lighting;
- expect(COAST_SUN.toArray()).toEqual(new THREE.Vector3(.66,.085,.75).normalize().toArray());
+ expect(COAST_SUN.toArray()).toEqual(new THREE.Vector3(...COAST_EFFECTS.lighting.sunDirection).normalize().toArray());
  expect(COAST_SHADOW_STRETCH).toBe(.70);
  expect(light.hemisphere).toEqual({sky:'#aab1da',ground:'#66534b',intensity:1.25});
  expect(light.sun).toEqual({color:'#ffc080',nearIntensity:.65,farIntensity:1.15});

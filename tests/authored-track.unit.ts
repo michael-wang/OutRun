@@ -49,6 +49,7 @@ it('P0: edits to the JSON road can add stronger sweeps without code changes',()=
  const edited=structuredClone(coastAuthoredRoad) as AuthoredRoad;
  edited.turns[0].steer=-.72;
  edited.elevations[0].rise=2.5;
+ for(let i=1;i<edited.elevations.length;i++)edited.elevations[i].base=edited.elevations[i-1].base+edited.elevations[i-1].rise;
  const revised=createAuthoredCoastTrack(edited,identity),baseline=createAuthoredCoastTrack(coastAuthoredRoad,identity);
  const mid=(edited.turns[0].start+edited.turns[0].end)/2;
  expect(revised.sample(mid).curvature).not.toBeCloseTo(baseline.sample(mid).curvature,8);

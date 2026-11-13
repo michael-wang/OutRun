@@ -43,6 +43,7 @@ it('P0: changing authored road controls actual geometry, not generated placement
  const p=authoredRoadPlacements(road);
  expect(p).toHaveLength(road.turns.length+road.elevations.length);
  road.turns[0].steer=-.72;road.elevations[0].rise=2.7;
+ for(let i=1;i<road.elevations.length;i++)road.elevations[i].base=road.elevations[i-1].base+road.elevations[i-1].rise;
  const distance=(road.turns[0].start+road.turns[0].end)/2;
  expect(sampleAuthoredRoad(road,distance).demand).toBeCloseTo(-.72,10);
  expect(sampleAuthoredRoad(road,distance).demand).not.toBeCloseTo(sampleAuthoredRoad(coastAuthoredRoad,distance).demand,5);
