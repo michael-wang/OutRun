@@ -4,6 +4,7 @@ import type {AuthoredRoad} from './authored-road';
 /** R5a first-map *content*: simple authored windows, not a random director. */
 export interface FirstMapTraffic{
  firstCivilianDistance:number;
+ firstCruiseKmh:number;
  firstWaveCount:1|2;
  nextWaveDistance:number;
 }
@@ -91,6 +92,7 @@ export function validateCoastOnboarding(plan:CoastOnboarding,road:AuthoredRoad){
   throw Error('Drift lessons must progressively build difficulty');
  const t=plan.traffic;
  if(!t||!Number.isFinite(t.firstCivilianDistance)||
+    !Number.isFinite(t.firstCruiseKmh)||t.firstCruiseKmh<30||t.firstCruiseKmh>90||
     !Number.isFinite(t.nextWaveDistance)||
     ![1,2].includes(t.firstWaveCount)||
     t.firstCivilianDistance<pass.start+100||

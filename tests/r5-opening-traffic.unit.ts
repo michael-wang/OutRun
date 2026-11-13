@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {COAST_STAGE} from '../src/content/coast-stage';
 import {trafficRecipe,Traffic} from '../src/traffic';
 import {breakdownLayout} from '../src/breakdowns';
+import {worldSpeed} from '../src/rival-race';
 
 const plan=COAST_STAGE.onboarding;
 const sample=(d:number)=>({
@@ -29,6 +30,9 @@ it('R5a: the race intro does not spawn new civilian cars at the 300m entry',()=>
   traffic.rivalLeaders=()=>[];
   traffic.enableRaceMode();
   const before=traffic.inspectWorld();
+  const bus=before.rows.find(row=>row.id===0)!;
+  expect(trafficRecipe(seed,10950,plan.traffic)[0].type).toBe(1);
+  expect(bus.speed).toBeCloseTo(worldSpeed(plan.traffic.firstCruiseKmh/3.6));
   expect(before.total).toBe(trafficRecipe(seed,10950,plan.traffic).length);
   traffic.update(25,350,0,0);
   const after=traffic.inspectWorld();

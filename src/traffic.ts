@@ -39,7 +39,7 @@ export function trafficCruise(seed:number,id:number,type:number){
 }
 export function trafficRecipe(seed:number,length:number,opening?:FirstMapTraffic):readonly TrafficRecipe[]{
  const key=seed+':'+length+':' +
-  (opening?`${opening.firstCivilianDistance}:${opening.firstWaveCount}:${opening.nextWaveDistance}`:'legacy');
+  (opening?`${opening.firstCivilianDistance}:${opening.firstCruiseKmh}:${opening.firstWaveCount}:${opening.nextWaveDistance}`:'legacy');
  const cached=recipes.get(key);if(cached)return cached;
  const out:TrafficRecipe[]=[];
  let distance=(opening?.firstCivilianDistance??650)+random(seed,0)*70,id=0;
@@ -48,8 +48,10 @@ export function trafficRecipe(seed:number,length:number,opening?:FirstMapTraffic
   // Groups never occupy every lane and the existing 12-car render pool stays bounded.
   const count=group===0?(opening?.firstWaveCount??3):random(seed^0x971,group)<.14?1:2+Math.floor(random(seed^0x91f,group)*3);
   for(let member=0;member<count;member++){
-   const pick=random(seed^0x392,id),type=group===0?member:pick<.55?0:pick<.72?1:pick<.96?2:3;
-   out.push({id,type,distance:distance+member*(32+random(seed^0xa5,group)*24),speed:trafficCruise(seed,id,type),group,member});id++;
+   const teachingBus=!!opening&&group===0&&member===0;
+   const pick=random(seed^0x392,id),type=teachingBus?1:group===0?member:pick<.55?0:pick<.72?1:pick<.96?2:3;
+   const speed=teachingBus?worldSpeed(opening.firstCruiseKmh/3.6):trafficCruise(seed,id,type);
+   out.push({id,type,distance:distance+member*(32+random(seed^0xa5,group)*24),speed,group,member});id++;
   }
   if(group===0&&opening){
     distance=opening.nextWaveDistance+random(seed^0x4c2,group)*70;
@@ -192,7 +194,10 @@ export class Traffic {
   * deterministic QA/reset tests; ?trafficSeed also locks replay results. */
  private makeRaceWorld(){
   const coast=this.racing&&this.dusk;
-  const source=coast?this.schedule.map(row=>({...row,speed:row.stationary?0:coastRaceCruise(this.trafficSeed,row.id,row.type)})):this.schedule;
+  const source=coast?this.schedule.map(row=>{
+   if(row.stationary||(this.onboarding&&row.group===0&&row.member===0))return row;
+   return {...row,speed:coastRaceCruise(this.trafficSeed,row.id,row.type)};
+  }):this.schedule;
   return new RaceTrafficWorld(source,this.trafficSeed,this.length,this.halfAt,
     type=>({width:TRAFFIC_TYPES[type].width,length:TRAFFIC_TYPES[type].length}),coast,!this.onboarding);
  }

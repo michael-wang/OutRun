@@ -8,10 +8,19 @@ import {requiredSteering} from '../src/challenges';
 import {COAST_SCENIC_ACTS} from '../src/coast-journey-layout';
 import {COAST_SUN} from '../src/coast-dusk';
 import {addCoastMountains} from '../src/coast-mountains';
+import {COAST_SEA_LEVEL} from '../src/scenery-cross-section';
 
 const {road,direction}=COAST_STAGE;
 const rt=coastWorkerRoad(),track=rt.track;
 const finish=road.startDistance+road.length;
+
+it('stays within five metres of the sea except for a single short headland',()=>{
+ for(let d=road.startDistance;d<=finish;d+=10){
+  const clearance=track.sample(d).position.y-COAST_SEA_LEVEL;
+  expect(clearance).toBeGreaterThan(0);
+  expect(clearance).toBeLessThanOrEqual(d>=10690&&d<=11230?8.1:5);
+ }
+});
 
 it('keeps the low sun offshore and clear of both ridges throughout the teaching corridor',()=>{
  const scene=new THREE.Scene();
@@ -42,7 +51,7 @@ it('R5c: the sunset sprint reaches its finish beyond all seven teaching windows'
  expect(road.length).toBe(14200);
  expect(finish).toBe(14550);
  expect(track.length).toBe(finish+600);
- expect(road.turns).toHaveLength(17);
+ expect(road.turns).toHaveLength(24);
  expect(road.turns.slice(0,6).map(t=>[t.start,t.end,t.steer])).toEqual([
   [900,1250,.20],[3100,3420,-.37],[3420,3800,.39],
   [4410,4890,.32],[5100,5380,-.82],[6470,6760,1.02],

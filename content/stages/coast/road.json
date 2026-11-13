@@ -50,11 +50,25 @@
       "label": "R5 A6 · Second technical drift"
     },
     {
-      "start": 6940,
-      "end": 7770,
-      "steer": -0.34,
       "shape": "sweep",
-      "label": "帆船灣展開"
+      "start": 6800,
+      "end": 7030,
+      "steer": -0.48,
+      "label": "出岬望帆"
+    },
+    {
+      "shape": "sweep",
+      "start": 7130,
+      "end": 7410,
+      "steer": -0.42,
+      "label": "帆船灣沿岸"
+    },
+    {
+      "shape": "sweep",
+      "start": 7840,
+      "end": 8120,
+      "steer": -0.12,
+      "label": "沿沙嘴出灣"
     },
     {
       "start": 8450,
@@ -71,11 +85,32 @@
       "label": "岬口反打"
     },
     {
-      "start": 9830,
-      "end": 10460,
-      "steer": -0.12,
       "shape": "sweep",
-      "label": "稻浪巡航"
+      "start": 9250,
+      "end": 9490,
+      "steer": 0.44,
+      "label": "花田入口右彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 9510,
+      "end": 9850,
+      "steer": -0.49,
+      "label": "沿田埂反左"
+    },
+    {
+      "shape": "sweep",
+      "start": 10010,
+      "end": 10290,
+      "steer": 0.32,
+      "label": "稻田出口右彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 10380,
+      "end": 10620,
+      "steer": -0.36,
+      "label": "田尾收線"
     },
     {
       "start": 10720,
@@ -99,11 +134,25 @@
       "label": "山脊展望"
     },
     {
-      "start": 12150,
-      "end": 12550,
-      "steer": -0.12,
       "shape": "sweep",
-      "label": "夕陽海堤"
+      "start": 11770,
+      "end": 12050,
+      "steer": -0.38,
+      "label": "沿海堤切向浪線"
+    },
+    {
+      "shape": "sweep",
+      "start": 12100,
+      "end": 12420,
+      "steer": 0.42,
+      "label": "繞過潮間岩角"
+    },
+    {
+      "shape": "sweep",
+      "start": 12530,
+      "end": 12840,
+      "steer": -0.27,
+      "label": "沙灣出口"
     },
     {
       "start": 12930,
@@ -138,35 +187,27 @@
     },
     {
       "shape": "gentle-rise",
-      "start": 10350,
-      "end": 10700,
+      "start": 10690,
+      "end": 10930,
       "base": -0.15,
-      "rise": 6,
-      "label": "稻田緩升"
+      "rise": 3.2,
+      "label": "礁岬短升"
     },
     {
       "shape": "gentle-rise",
-      "start": 10900,
-      "end": 11380,
-      "base": 5.85,
-      "rise": 13,
-      "label": "山腰上坡"
+      "start": 10930,
+      "end": 11230,
+      "base": 3.05,
+      "rise": -3.2,
+      "label": "回到潮線"
     },
     {
       "shape": "gentle-rise",
-      "start": 11710,
-      "end": 12450,
-      "base": 18.85,
-      "rise": -10,
-      "label": "海堤下坡"
-    },
-    {
-      "shape": "gentle-rise",
-      "start": 12600,
-      "end": 12850,
-      "base": 8.85,
-      "rise": -4,
-      "label": "港口進場"
+      "start": 11480,
+      "end": 11720,
+      "base": -0.15,
+      "rise": -0.65,
+      "label": "下到沙灣"
     }
   ],
   "startDistance": 350,

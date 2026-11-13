@@ -55,7 +55,7 @@
       "id": "switchback-risk",
       "start": 10370,
       "end": 11360,
-      "label": "山腰反向彎",
+      "label": "礁岬反向彎",
       "focus": "mountain-village",
       "role": "pressure"
     },
@@ -89,7 +89,7 @@
       "id": "bay-entrance",
       "distance": 7770,
       "side": "left",
-      "lookAheadM": 550,
+      "lookAheadM": 410,
       "label": "海灣帆影",
       "brief": "Keep open sky and sea visible for a full-speed approach."
     },
@@ -106,8 +106,8 @@
       "distance": 10000,
       "side": "right",
       "lookAheadM": 550,
-      "label": "高原稻浪",
-      "brief": "Field wind waves, long depth layers, wide comfortable driving."
+      "label": "濱海稻浪",
+      "brief": "Flower terraces on entry, rice paddies on the exit of the reverse bend."
     },
     {
       "id": "sunset-seawall",
@@ -115,7 +115,7 @@
       "side": "left",
       "lookAheadM": 600,
       "label": "夕陽海堤",
-      "brief": "Open sea and sunlight on the left throughout the descending approach."
+      "brief": "Two low shoreline bends alternate breaking surf at the rocks with an open sandy beach."
     },
     {
       "id": "finish-beacon",
@@ -138,7 +138,7 @@
       "id": "switchback-gate",
       "start": 10720,
       "end": 11710,
-      "label": "山腰反向彎",
+      "label": "礁岬反向彎",
       "goal": "Two opposite hard corners with overtaking under braking and recovery space."
     },
     {

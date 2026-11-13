@@ -9,7 +9,7 @@ export const FARM_ZONES=[
  {start:4450,end:4900,right:152,rice:[4500,4700],flowers:[4750,4850],flowerApproach:4750,flowerRight:252,main:false},
  {start:5740,end:6190,right:152,rice:[5800,6000],flowers:[6040,6140],flowerApproach:6040,flowerRight:252,main:false},
  {start:7140,end:8230,right:200,rice:[7200,7600],flowers:[7800,8100],flowerApproach:7700,flowerRight:252,main:false},
- {start:8390,end:9760,right:252,rice:[8500,9100],flowers:[9300,9600],flowerApproach:9200,flowerRight:340,main:false},
+ {start:9150,end:10530,right:252,rice:[9800,10400],flowers:[9300,9600],flowerApproach:9200,flowerRight:340,main:false},
 ] as const;
 export const COAST_FARM={start:65,end:1780,riceStart:200,riceEnd:900,flowerStart:FARM_ZONES[0].flowerApproach,flowerEnd:1700} as const;
 /** Authored flower-band palette shared by Worker baking and runtime materialization. */
@@ -29,7 +29,7 @@ export const FARM_SCARECROWS=[
  {d:4550,x:76},{d:4800,x:76},
  {d:5850,x:76},{d:6090,x:76},
  {d:7250,x:76},{d:7450,x:125},{d:7850,x:76},{d:8050,x:35},
- {d:8550,x:76},{d:8750,x:125},{d:8950,x:76},{d:9350,x:76},{d:9550,x:35},
+ {d:9850,x:76},{d:10050,x:125},{d:10250,x:76},{d:9350,x:76},{d:9550,x:35},
 ] as const;
 // Farmsteads occupy existing breaks before/after crops, never cut a hole in the
 // golden canopy. Keep each yard on one of the flat planting benches.
@@ -38,13 +38,13 @@ export const FARM_HOMES=[
  {d:4465,x:35},{d:4870,x:35},
  {d:5755,x:35},{d:6170,x:35},
  {d:7160,x:35},{d:8160,x:35},
- {d:8430,x:35},{d:9670,x:35},
+ {d:10450,x:35},{d:9670,x:35},
 ].map((site,i)=>({...site,key:81000+i*71,yaw:Math.sin(i*4.3)*.12}));
 /** Dry working bays cut into the outer bund, with room for a cart and a shade tree. */
 export const RICE_YARDS=[
  {d:572,x:46,yaw:.42},{d:833,x:91,yaw:-.24},
  {d:4628,x:46,yaw:-.35},{d:5936,x:91,yaw:.56},
- {d:7374,x:46,yaw:.20},{d:8656,x:46,yaw:-.32},{d:8872,x:142,yaw:.55},
+ {d:7374,x:46,yaw:.20},{d:9956,x:46,yaw:-.32},{d:10172,x:142,yaw:.55},
 ] as const;
 export const FLOWER_YARDS=[
  {d:1338,x:46,yaw:-.28},{d:1562,x:91,yaw:.36},{d:4808,x:46,yaw:.23},

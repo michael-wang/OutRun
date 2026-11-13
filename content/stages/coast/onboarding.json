@@ -21,7 +21,7 @@
       "id": "A2",
       "start": 1250,
       "end": 3100,
-      "label": "第一次超車",
+      "label": "變換車道，超越公車",
       "goal": "Read a sparse civilian car and pass safely"
     },
     {
@@ -33,9 +33,10 @@
     }
   ],
   "traffic": {
-    "firstCivilianDistance": 2200,
+    "firstCivilianDistance": 1480,
     "firstWaveCount": 1,
-    "nextWaveDistance": 7120
+    "nextWaveDistance": 7120,
+    "firstCruiseKmh": 62
   },
   "breakdownsAfter": 7560,
   "driftLessons": [

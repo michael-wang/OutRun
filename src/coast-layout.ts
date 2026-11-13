@@ -27,6 +27,8 @@ export const COAST_SAND_POINTS=[
  {start:8730,tip:9130,end:9340,reach:46},
  {start:9510,tip:9780,end:10030,reach:54},
  {start:10060,tip:10240,end:10520,reach:30},
+ {start:11640,tip:11850,end:12050,reach:28},
+ {start:12410,tip:12600,end:12880,reach:38},
 ] as const;
 export function coastBeachExtra(d:number){
  let extra=0;
@@ -54,10 +56,10 @@ export function coastProfileX(x:number,d:number){
 /** Shared by instanced rocks, water clipping, wash foam and spray. */
 export const COAST_ROCKS=[
  {d:2110,r:4.4,out:2},{d:2155,r:2.7,out:5},
- {d:3260,r:5.1,out:3},{d:3295,r:3.4,out:6},
+ {d:12085,r:6.5,out:2},{d:12115,r:4.1,out:4},
  {d:4950,r:4.7,out:1},{d:4990,r:2.9,out:7},
  {d:7760,r:5.3,out:3},{d:7800,r:3.2,out:7},
- {d:9380,r:4.8,out:2},{d:9425,r:3.1,out:6},
+ {d:9780,r:5.8,out:2},{d:9810,r:3.6,out:5},
 ] as const;
 export const coastRockX=(rock:typeof COAST_ROCKS[number])=>coastBeachX(-26,rock.d)-rock.out;
 
