@@ -29,6 +29,10 @@ The owner selected **Style Option B** on 2026-11-14. The full board sets the loo
 
 **Player Riviera 62, its driver/passenger, rivals and recurring traffic are a first-class high-effort art track, not a minor set of background props.** They are seen for most or all of the race and deserve repeated look-dev and runtime inspection. See `docs/COAST_HERO_VEHICLE_ART.md`. Audit existing `src/car.ts` and `src/rival-view.ts` materials, silhouette, proportions, faces, hair, wheel/paint response and visual consistency **before** deciding whether to revise them. Protect the accepted Riviera 62 and character identities. Spend geometry/shadow performance carefully, especially for eight rivals; do not automatically remake working models.
 
+## Character photography readiness
+
+Both protagonists are recurring heroes, not faceless decorative occupants. They must eventually be credible in a full-body standing front-facing photo. Author one visual character identity per person with a photo-capable head; derive a cheaper seated driving representation (no invisible legs). Preserve consistent face/hair/clothing between profiles. Use Style Option B's expressive grouped hair and facial proportions without photorealism or giant anime eyes. Formal design/acceptance: [Character Master Strategy](COAST_CHARACTER_ASSET_STRATEGY.md). Current H0 faces still need substantial work for close-up use.
+
 ## Families and leading samples
 
 | Family | First validation asset | Variants after approval | Primary visual test |
