@@ -2,6 +2,7 @@ import {coastBeachX} from '../src/coast-layout';
 import {afterAll,describe,it,expect} from 'vitest';
 import * as THREE from 'three';
 import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {COAST_STAGE} from '../src/content/coast-stage';
 import {coastBeachHeight,COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
 import {bakeCoastShore} from '../src/coast-shore';
 import {packCoastShore,unpackCoastShore} from '../src/coast-shore-asset';
@@ -18,12 +19,15 @@ function field(x:number,z:number,channel=0){
  return THREE.MathUtils.lerp(THREE.MathUtils.lerp(at(i,j),at(i+1,j),tx),THREE.MathUtils.lerp(at(i,j+1),at(i+1,j+1),tx),tz);
 }
 describe('coastal road stays above a real beach',()=>{
- it('rounds the fishing point, reverses toward the sunset and straightens before the finish',()=>{
+ it('drives a full 30km coastline with competitive bends and a clean final sprint',()=>{
+  const final=COAST_STAGE.road.startDistance+COAST_STAGE.road.length;
+  expect(final).toBe(30350);
   const heading=(d:number)=>track.sample(d).roadHeading;
-  expect(heading(8950)-heading(9600)).toBeGreaterThan(.30);
-  expect(heading(10250)-heading(9600)).toBeGreaterThan(.30);
-  expect(Math.abs(heading(10350)-heading(8950))).toBeLessThan(.035);
-  for(let d=10250;d<=10350;d+=10)expect(Math.abs(track.sample(d).curvature)).toBeLessThan(1e-6);
+  expect(Math.abs(heading(21500)-heading(19000))).toBeGreaterThan(.3);
+  expect(Math.abs(heading(28860)-heading(28140))).toBeGreaterThan(.5);
+  for(let d=28900;d<=final;d+=10)
+   expect(Math.abs(track.sample(d).curvature)).toBeLessThan(1e-6);
+  expect(Math.abs(heading(final)-heading(29000))).toBeLessThan(.001);
  });
  it('varies the waterline on each long straight and turns the baked surf with the sand points',()=>{
   for(const [start,end] of [[1000,2100],[2750,3150],[3800,4900],[5550,5850],[6500,7350],[8000,8300]]){

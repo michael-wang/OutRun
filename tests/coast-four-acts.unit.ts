@@ -7,15 +7,21 @@ import {COAST_REST_SPOTS,COAST_VILLAGE_SITES} from '../src/coast-village-layout'
 import {COAST_BOATS} from '../src/coast-boats';
 import {COAST_STAGE} from '../src/content/coast-stage';
 
-it('directs four contiguous parts of one ten-kilometre coastal journey',()=>{
+it('directs ten contiguous acts: tutorial, hero vistas, pressure and finish sprint',()=>{
  expect(COAST_SCENIC_ACTS.map(x=>x.id)).toEqual([
-  'rural-opening','quiet-beach','town-and-market','fishing-farewell',
+  'rural-opening','quiet-beach','town-and-market',
+  'wide-ocean','cliff-challenge','rice-plateau','switchback-risk',
+  'golden-bridge','final-contest','finish-sprint',
  ]);
  expect(COAST_SCENIC_ACTS[0].start).toBe(0);
- expect(COAST_SCENIC_ACTS.at(-1)!.end).toBe(10000);
+ expect(COAST_SCENIC_ACTS.at(-1)!.end).toBe(COAST_STAGE.road.length);
+ expect(COAST_SCENIC_ACTS.map(x=>x.role)).toEqual([
+  'onboarding','onboarding','onboarding','vista','pressure',
+  'vista','pressure','vista','pressure','finish',
+ ]);
  for(let i=1;i<COAST_SCENIC_ACTS.length;i++)
   expect(COAST_SCENIC_ACTS[i].start).toBe(COAST_SCENIC_ACTS[i-1].end);
- for(const d of [0,1799,1800,3399,3400,6999,7000,9999])
+ for(const d of [0,1799,1800,3399,3400,6999,7000,9999,12800,17000,21000,24300,28200,29999])
   expect(coastScenicActAt(d)).toBe(COAST_SCENIC_ACTS.find(x=>d>=x.start&&d<x.end));
  expect(COAST_STAGE.scenicActs.map(x=>[x.start,x.end])).toEqual(
   COAST_SCENIC_ACTS.map(x=>[x.start,x.end]));
@@ -70,7 +76,7 @@ it('groups homes and night markets in the middle, with modest farm clearings',()
  expect(COAST_BOATS.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end&&b.kind==='sail').length).toBeGreaterThanOrEqual(4);
 });
 
-it('finishes amid fishing boats, working crops and only small tourist coves',()=>{
+it('preserves the fishing-village pocket before the new hero coastline',()=>{
  const chapter=COAST_SCENIC_ACTS[3];
  const fishing=COAST_BOATS.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end&&b.kind==='fishing');
  expect(fishing.length).toBeGreaterThanOrEqual(6);
