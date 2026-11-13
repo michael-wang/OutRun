@@ -25,9 +25,9 @@ it('shows successive sails ahead on the sea side through the named bay approach'
 it('keeps the expanded fleet safely offshore along the real curved coast for full patrols',()=>{
  expect(COAST_BOATS).toHaveLength(16);
  expect(COAST_BOATS.filter(b=>b.kind==='sail')).toHaveLength(11);
- expect(COAST_BOATS.filter(b=>b.kind==='yacht')).toHaveLength(3);
- expect(COAST_BOATS.filter(b=>b.kind==='fishing')).toHaveLength(2);
- expect(COAST_BOATS.filter(b=>b.kind==='fishing').every(b=>b.distance>=7000)).toBe(true);
+ expect(COAST_BOATS.filter(b=>b.kind==='yacht')).toHaveLength(1);
+ expect(COAST_BOATS.filter(b=>b.kind==='fishing')).toHaveLength(4);
+ expect(COAST_BOATS.filter(b=>b.kind==='fishing').every(b=>(b.distance>=4350&&b.distance<4950)||b.distance>=8450)).toBe(true);
  expect(COAST_BOATS.filter(b=>b.distance<1800)).toHaveLength(1);
  for(let i=1;i<COAST_BOATS.length;i++)expect(COAST_BOATS[i].distance-COAST_BOATS[i-1].distance).toBeLessThan(1200);
  const shore=Array.from({length:Math.ceil(track.length/20)},(_,i)=>{const d=i*20,p=track.sample(d);return {road:p.position,right:p.right.clone().setY(0).normalize(),edge:coastBeachX(COAST_SHORE_OFFSET,d)};});

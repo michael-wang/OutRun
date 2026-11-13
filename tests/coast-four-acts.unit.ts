@@ -1,10 +1,13 @@
 import {it,expect} from 'vitest';
 import {COAST_SCENIC_ACTS,coastScenicActAt,coastVegetationDensity} from '../src/coast-journey-layout';
-import {COAST_BEACHES,COAST_DISTRICTS} from '../src/coast-layout';
+import {COAST_BEACHES,COAST_DISTRICTS,COAST_BEACH_STALLS,COAST_LANDINGS} from '../src/coast-layout';
 import {FARM_ZONES,FARM_PLOTS,FARM_HOMES} from '../src/coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES} from '../src/coast-rural-layout';
 import {COAST_REST_SPOTS,COAST_VILLAGE_SITES} from '../src/coast-village-layout';
 import {COAST_BOATS} from '../src/coast-boats';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {RoadClearance} from '../src/road-clearance';
+import {coastBeachHeight,COAST_SEA_LEVEL} from '../src/scenery-cross-section';
 import {COAST_STAGE} from '../src/content/coast-stage';
 
 it('directs ten contiguous acts: tutorial, hero vistas, pressure and finish sprint',()=>{
@@ -76,12 +79,25 @@ it('groups homes and night markets in the middle, with modest farm clearings',()
  expect(COAST_BOATS.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end&&b.kind==='sail').length).toBeGreaterThanOrEqual(4);
 });
 
+it('keeps authored harbour sheds and beach stalls on land and clear of every road segment',()=>{
+ const {track,halfAt}=coastWorkerRoad();
+ const points=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track.sample(i*25).position);
+ points.push(track.sample(track.length).position);
+ const clearance=new RoadClearance(points,halfAt,true);
+ for(const site of [...COAST_LANDINGS,...COAST_BEACH_STALLS.map(s=>({...s,radius:4}))]){
+  const p=track.sample(site.d);
+  const height=coastBeachHeight(site.x,p.position.y,p.right.y,site.d);
+  expect(height-COAST_SEA_LEVEL,`submerged site at ${site.d}`).toBeGreaterThan(site.radius===4?1:0);
+  expect(clearance.clear(p.position.addScaledVector(p.right,site.x),site.radius),`rejected site at ${site.d}`).toBe(true);
+ }
+});
+
 it('preserves the fishing-village pocket before the new hero coastline',()=>{
  const chapter={start:7000,end:10000};
  const fishing=COAST_BOATS.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end&&b.kind==='fishing');
  expect(fishing.length).toBeGreaterThanOrEqual(2);
  expect(COAST_BOATS.filter(b=>b.kind==='sail'&&b.distance>=7000&&b.distance<8450)).toHaveLength(5);
- expect(COAST_BOATS.every(b=>b.kind!=='fishing'||b.distance>=chapter.start)).toBe(true);
+ expect(COAST_BOATS.every(b=>b.kind!=='fishing'||(b.distance>=4350&&b.distance<4950)||b.distance>=8450)).toBe(true);
  const lateFarms=FARM_ZONES.filter(z=>z.start>=chapter.start&&z.end<=10720);
  expect(lateFarms).toHaveLength(2);
  expect(lateFarms.every(z=>z.right>=200)).toBe(true);

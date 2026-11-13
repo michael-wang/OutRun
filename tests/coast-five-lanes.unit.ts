@@ -8,9 +8,18 @@ import {Vector3} from 'three';
 it('paints exactly four internal separators for five equal coastal lanes',()=>{
  const track=coastWorkerRoad().track,d=1200,p=track.sample(d+1);
  const mesh=prepareRoadChunk(track.sample,()=>8.75,()=>[1,0,0],d,d+3,track.length,false,true,[],x=>shoulderProfile(x,804),undefined,true,undefined,coastWorkerRoad().stage.scenerySections).find(m=>m.kind==='line')!;
- const centers=new Set<number>();for(let i=0;i<mesh.positions.length;i+=3){const v=new Vector3().fromArray(mesh.positions,i).sub(p.position),x=v.dot(p.right);if(Math.abs(x)<7)centers.add(Math.round(x*4)/4);}
- for(const x of [-5.25,-1.75,1.75,5.25])expect([...centers].some(c=>Math.abs(c-x)<.3)).toBe(true);
- expect([...centers].some(c=>Math.abs(c)<1)).toBe(false);
+ // Lane width is measured in plan. right.y carries the rise per horizontal
+ // metre. A 3D dot would scale the lateral coordinate by 1 + slope².
+ const across=p.right.clone().setY(0).normalize(),separators=[-5.25,-1.75,1.75,5.25];
+ const found=new Set<number>();
+ for(let i=0;i<mesh.positions.length;i+=3){
+  const x=new Vector3().fromArray(mesh.positions,i).sub(p.position).dot(across);
+  if(Math.abs(x)>=7)continue;
+  const stripe=separators.find(center=>Math.abs(x-center)<.2);
+  expect(stripe,`unexpected lane paint at ${x}m`).toBeDefined();
+  found.add(stripe!);
+ }
+ expect([...found].sort((a,b)=>a-b)).toEqual(separators);
 });
 it('keeps coastal traffic targets on five-lane centers and smoothly rebases the highway taper',()=>{
  for(let seed=0;seed<10;seed++){

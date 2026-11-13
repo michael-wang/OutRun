@@ -26,7 +26,7 @@ it('P0 R5a: opening four lessons are safe, ordered and matched to the authored r
 });
 
 it('P0 R5a: banked S has two opposite, finite physical cross slopes in the shared track',()=>{
- expect(road.banks).toHaveLength(3);
+ expect(road.banks!.filter(b=>b.start<plan.lessons.at(-1)!.end)).toHaveLength(3);
  const track=createAuthoredCoastTrack(road,identity);
  const sweeper=track.sample((road.banks![0].start+road.banks![0].end)/2);
  const entry=road.turns[0].start;
@@ -35,7 +35,7 @@ it('P0 R5a: banked S has two opposite, finite physical cross slopes in the share
  expect(track.sample(entry).right.y).toBeLessThan(-.09);
  const left=track.sample((road.banks![1].start+road.banks![1].end)/2);
  const right=track.sample((road.banks![2].start+road.banks![2].end)/2);
- expect(sweeper.right.y).toBeLessThan(-.15);
+ expect(sweeper.right.y).toBeLessThan(-.28);
  expect(left.right.y).toBeGreaterThan(.15);
  expect(right.right.y).toBeLessThan(-.15);
  for(let d=350;d<=4710;d+=13){

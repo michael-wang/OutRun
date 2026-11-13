@@ -231,21 +231,35 @@
       "start": 680,
       "end": 1580,
       "ramp": 160,
-      "degrees": 11.5
+      "degrees": 18
     },
     {
       "kind": "showcase",
       "start": 1720,
       "end": 2245,
       "ramp": 150,
-      "degrees": -12
+      "degrees": -13.5
     },
     {
       "kind": "showcase",
       "start": 2245,
       "end": 2725,
       "ramp": 140,
-      "degrees": 12
+      "degrees": 18
+    },
+    {
+      "kind": "showcase",
+      "start": 8320,
+      "end": 8820,
+      "ramp": 165,
+      "degrees": 18
+    },
+    {
+      "kind": "showcase",
+      "start": 12035,
+      "end": 12565,
+      "ramp": 160,
+      "degrees": 18
     }
   ]
 }

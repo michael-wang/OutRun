@@ -236,7 +236,7 @@ Never mark a source-only static audit as passing Vitest.
 - Run `npm run verify:dev` and exercise these cases with local
   Codex and one real PS4/PC gamepad before shipping main.
 
-## Current sunset sprint — dev v0.10.11
+## Current sunset sprint — dev v0.10.12
 
 - The first 4.0km of racing teach the seven lessons (stations 350–4350m).
   The slow bus already moves during the opening sweeper. Test catching it on
@@ -244,7 +244,7 @@ Never mark a source-only static audit as passing Vitest.
   The race covers 14,200m from HUD 350m to 14,550m with 600m of relief.
   Current geometry and lesson windows supersede the historical R5a/R5b coordinates.
 - Road turns/elevations/banks are authored in
-  `content/stages/coast/road.json`; ten named acts, five hero
+  `content/stages/coast/road.json`; ten named acts, nine hero
   slots and three overtake-pressure gates are authored in
   `content/stages/coast/direction.json`. No general Scenic
   Manager, random road re-generation or rank-dependent speed boost.

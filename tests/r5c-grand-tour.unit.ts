@@ -57,7 +57,7 @@ it('R5c: the sunset sprint reaches its finish beyond all seven teaching windows'
   [2735,3125,-.30],[3305,3650,.78],[4000,4350,-.93],
  ]);
  expect(track.sample(finish).position.y).toBeCloseTo(track.sample(13900).position.y);
- expect(road.banks).toHaveLength(3);
+ expect(road.banks).toHaveLength(5);
  for(let d=road.startDistance;d<=finish;d+=127){
   const p=track.sample(d);
   expect(p.position.toArray().every(Number.isFinite)).toBe(true);
@@ -78,6 +78,7 @@ it('R5c: the map director alternates scenic, pressure and the last sprint',()=>{
  ]);
  expect(direction.chapters.at(-1)?.end).toBe(road.length);
  expect(direction.heroSlots.map(h=>h.id)).toEqual([
+  'working-harbour','coastal-woods','beach-market','boulder-surf',
   'bay-entrance','sea-cliff','rice-plateau','sunset-seawall','finish-beacon',
  ]);
  expect(direction.contestGates).toHaveLength(3);
@@ -85,7 +86,7 @@ it('R5c: the map director alternates scenic, pressure and the last sprint',()=>{
   const target=track.sample(hero.distance);
   expect(target.position.toArray().every(Number.isFinite)).toBe(true);
   expect(coastHeroNear(hero.distance)?.id).toBe(hero.id);
-  expect(hero.distance-hero.lookAheadM).toBeGreaterThan(6700);
+  expect(hero.distance-hero.lookAheadM).toBeGreaterThanOrEqual(COAST_STAGE.onboarding.driftLessons[1].end);
  }
  const bad=structuredClone(direction);bad.chapters.at(-1)!.end-=1;
  expect(()=>validateCoastDirection(bad,road)).toThrow();

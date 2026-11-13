@@ -1,5 +1,6 @@
 import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
 import {COAST_EFFECTS,oceanVisualSettings,coastShadowSettings,type OceanStageEffects} from './content/coast-effects';
+import {addCoastSwimmers} from './coast-swimmers';
 import {COAST_ROCKS,coastRockX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
@@ -104,7 +105,7 @@ uniform sampler2D uSlope1;
 uniform sampler2D uSlope2;
 uniform sampler2D uSlope3;
 uniform vec3 uSun;
-uniform vec4 uRocks[10];
+uniform vec3 uRocks[10];
 uniform float uRockShadowStrength;
 in vec3 vWorld;
 in float vChurn;
@@ -193,7 +194,7 @@ void main(){
    }
   }
   float wash=exp(-pow((dist-r*.85)/1.5,2.0));
-  float pulse=.35+.65*pow(.5+.5*sin(uTime*1.4+uRocks[i].w),3.0);
+  float pulse=.25+.75*smoothstep(-.55,.9,sin(phase));
   foam=max(foam,wash*pulse*(.6+.4*lace));
  }
  color=mix(color,vec3(.64,.64,.57),clamp(foam,0.0,.94));
@@ -234,7 +235,7 @@ export class UltraCoastOcean {
   this.sim=new OceanSim(renderer,oceanParams,{resolution:visual.resolution,anisotropy:this.mobile?1:renderer.capabilities.getMaxAnisotropy()});
   const rockPositions=COAST_ROCKS.map(r=>{
    const p=coast.sample(r.d),v=p.position.clone().addScaledVector(p.right,coastRockX(r));
-   return new THREE.Vector4(v.x,v.z,r.r,r.d*.017);
+   return new THREE.Vector3(v.x,v.z,r.r);
   });
   this.uniforms={
    ...this.boatShadow.uniforms,
@@ -257,30 +258,46 @@ export class UltraCoastOcean {
   this.mesh.frustumCulled=false;
   this.mesh.renderOrder=1;
   scene.add(this.mesh);
+  addCoastSwimmers(scene,coast.sample,this.uniforms,shoreGLSL);
   // A single small point batch for local spray; illustrative wave impacts, no fluid solver.
   const sprayPositions:number[]=[],seeds:number[]=[];
   for(const [i,r] of rockPositions.entries())for(let j=0;j<32;j++){
-   sprayPositions.push(r.x,level+.12,r.y);seeds.push((j+.5)/32,r.z,r.w,i*.73+j*2.39996);
+   sprayPositions.push(r.x,level+.12,r.y);seeds.push((j+.5)/32,r.z,i*.73+j*2.39996);
   }
   const sprayGeometry=new THREE.BufferGeometry();
   sprayGeometry.setAttribute('position',new THREE.Float32BufferAttribute(sprayPositions,3));
-  sprayGeometry.setAttribute('seed',new THREE.Float32BufferAttribute(seeds,4));
+  sprayGeometry.setAttribute('seed',new THREE.Float32BufferAttribute(seeds,3));
   const sprayMaterial=new THREE.ShaderMaterial({
-   uniforms:{uTime:this.uniforms.uTime},transparent:true,depthWrite:false,
+   uniforms:this.uniforms,transparent:true,depthWrite:false,
    vertexShader:`
-    uniform float uTime;attribute vec4 seed;varying float alpha;
+    ${shoreGLSL}
+    attribute vec3 seed;varying float alpha;varying float mist;
     void main(){
-     float cycle=fract((uTime*1.4+seed.z)/6.28318+seed.x*.17);
-     float t=clamp(cycle/.33,0.0,1.0),angle=seed.w;
+     vec2 outwards=shoreAt(position.xz).zw;
+     vec2 flank=outwards*cos(sin(seed.z)*1.2)+vec2(-outwards.y,outwards.x)*sin(sin(seed.z)*1.2);
      vec3 p=position;
-     p.xz+=vec2(cos(angle),sin(angle))*(seed.y*.86+t*1.6);
-     p.y+=sin(t*3.14159)*(1.4+seed.x*1.8);
+     p.xz+=flank*seed.y*.90;
+     vec2 face=position.xz+outwards*seed.y*.9;
+     float phase=shorePhase(shoreAt(face).x,face);
+     float cycle=fract((phase-.75)/6.28318-seed.x*.07);
+     float t=clamp(cycle/.36,0.0,1.0);
+     mist=step(.60,seed.x);
+     float spread=sin(seed.z*3.7)*.4+.6;
+     p.xz+=flank*t*(2.5+spread*1.7);
+     p.y+=4.0*t*(1.0-t)*(1.5+spread*2.8+mist*1.5)*clamp(seed.y/4.5,1.,1.8);
      vec4 mv=modelViewMatrix*vec4(p,1.0);
      gl_Position=projectionMatrix*mv;
-     gl_PointSize=clamp(190.0/(-mv.z),1.0,9.0);
-     alpha=sin(t*3.14159)*.65*(1.0-smoothstep(150.0,450.0,-mv.z));
+     gl_PointSize=clamp(mix(1450.,500.,mist)/(-mv.z),1.2,36.0);
+     alpha=sin(t*3.14159)*.94*(1.0-smoothstep(150.0,450.0,-mv.z));
     }`,
-   fragmentShader:`varying float alpha;void main(){float a=alpha*(1.0-smoothstep(.12,.5,length(gl_PointCoord-.5)));gl_FragColor=vec4(.88,.96,.96,a);}`,
+   fragmentShader:`varying float alpha;varying float mist;
+    void main(){
+     vec2 uv=gl_PointCoord-.5;
+     float edge=length(uv*vec2(1.15,1.));
+     float scallop=.035*cos(atan(uv.y,uv.x)*5.);
+     float a=alpha*(1.-smoothstep(.06,.46+scallop,edge));
+     gl_FragColor=vec4(.86,.94,.96,a*mix(.76,.96,mist));
+    }`,
   });
   const spray=new THREE.Points(sprayGeometry,sprayMaterial);spray.name='coast-rock-spray';spray.frustumCulled=false;scene.add(spray);
  }

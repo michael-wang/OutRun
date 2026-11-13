@@ -8,20 +8,20 @@ import type {CoastBoatShadow} from './coast-boat-shadow';
 type Sample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};
 export type Boat={id:string;kind:'sail'|'yacht'|'fishing';distance:number;offshore:number;travel:number;sway:number;speed:number;phase:number;length:number;draft:number};
 /** Five nearshore sailing patrols lead the driver through the bay.
- * Working boats occupy the more open water beyond its exit. */
+ * Working boats use shorter patrols near the quay and open water beyond the bay. */
 export const COAST_BOATS:readonly Boat[]=[
  ['opening-distant-sail','sail',1290,210,16],
  ['beach-yacht','yacht',2070,130,18],['beach-sail','sail',2740,175,16],
  ['town-sail-one','sail',3560,112,17],['town-sail-two','sail',4010,168,16],
- ['town-yacht','yacht',4470,170,18],['town-sail-three','sail',5110,122,16],
- ['town-sail-four','sail',5780,175,16],['town-yacht-two','yacht',6430,158,19],
+ ['quay-trawler','fishing',4520,67,20],['quay-longliner','fishing',4780,64,17],['town-sail-three','sail',5110,122,16],
+ ['town-sail-four','sail',5900,175,16],
  ['bay-sail-entry','sail',7080,72,27],['bay-sail-inlet','sail',7420,72,29],
  ['bay-sail-west','sail',7770,72,31],['bay-sail-east','sail',8080,72,28],
  ['bay-sail-point','sail',8415,72,30],
  ['fishing-five','fishing',9000,150,16],['fishing-six','fishing',9640,120,16],
 ].map((row,i)=>{const [id,kind,distance,offshore,length]=row as [string,Boat['kind'],number,number,number];return {
- id,kind,distance,offshore,length,travel:id.startsWith('bay-sail')?32:65+i%3*15,
- sway:id.startsWith('bay-sail')?12:(kind==='sail'?38:kind==='fishing'?14:18)+i%3*6,
+ id,kind,distance,offshore,length,travel:id.startsWith('quay-')?24:id.startsWith('bay-sail')?32:65+i%3*15,
+ sway:id.startsWith('quay-')?7:id.startsWith('bay-sail')?12:(kind==='sail'?38:kind==='fishing'?14:18)+i%3*6,
  speed:kind==='sail'?.8:kind==='fishing'?.55:1.2,
  phase:1.1+i*.31,draft:length*(kind==='sail'?.15:kind==='fishing'?.09:.075),
 };});
@@ -51,7 +51,7 @@ export function coastBoatPosition(boat:Boat,time:number,sample:Sample){
 
 /** A recognizable working fishing craft, not a luxury yacht painted grey.
  * A compact low-poly hull, sheltered wheelhouse, outriggers, crates and mast.
- * One shared source geometry set is cloned for the six fishing boats.
+ * One shared source geometry set is cloned across the fishing fleet.
  */
 function fishingBoatSource(){
  const root=new THREE.Group();root.name='fishing-boat';
@@ -87,7 +87,7 @@ function fishingBoatSource(){
  box(2.6,.18,1.0,0,1.55,-3.45,rope);
  for(const z of [-3.1,-2.25])box(.8,.45,.75,0,1.78,z,trim);
  // Merge the complete hull/deck/rigging by the six shared paint materials.
- // Six fishing vessels must not become hundreds of tiny WebGL draw calls.
+ // Working boats must not become hundreds of tiny WebGL draw calls.
  const buckets=new Map<THREE.Material,THREE.BufferGeometry[]>();
  for(const child of root.children){
   if(!(child instanceof THREE.Mesh))continue;

@@ -31,8 +31,8 @@
       "id": "wide-ocean",
       "start": 4000,
       "end": 8100,
-      "label": "帆船灣",
-      "focus": "sails-beach",
+      "label": "漁港到帆船灣",
+      "focus": "harbour-woods-beach-rocks-sails",
       "role": "vista"
     },
     {
@@ -85,6 +85,38 @@
     }
   ],
   "heroSlots": [
+    {
+      "id": "working-harbour",
+      "distance": 4600,
+      "side": "left",
+      "lookAheadM": 250,
+      "label": "漁港卸魚碼頭",
+      "brief": "Fishing sheds, loading booms and working boats line the quay."
+    },
+    {
+      "id": "coastal-woods",
+      "distance": 5420,
+      "side": "right",
+      "lookAheadM": 310,
+      "label": "濱海防風林",
+      "brief": "An oak edge opens onto taller trees behind the coastal town."
+    },
+    {
+      "id": "beach-market",
+      "distance": 5980,
+      "side": "left",
+      "lookAheadM": 310,
+      "label": "海水浴場",
+      "brief": "Food stalls and umbrellas lead to swimmers in the shallows."
+    },
+    {
+      "id": "boulder-surf",
+      "distance": 6580,
+      "side": "left",
+      "lookAheadM": 305,
+      "label": "浪打巨石",
+      "brief": "Look along the waterline for crests breaking over the boulder group."
+    },
     {
       "id": "bay-entrance",
       "distance": 7770,

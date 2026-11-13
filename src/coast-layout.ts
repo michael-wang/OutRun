@@ -53,12 +53,17 @@ export function coastProfileX(x:number,d:number){
  const e=coastBeachExtra(d);
  return x<-26-e?x+e:-11+(x+11)*15/(15+e);
 }
+export const COAST_MARKET_BEACHES=[2560,6020] as const;
+export const COAST_BEACH_STALLS=COAST_MARKET_BEACHES.flatMap(centre=>
+ [-128,-111,-78,-28,3,19].map((offset,i)=>({d:centre+offset,x:-21-i%2*3})));
+export const COAST_LANDINGS=[4490,4570,4775,8920].map(d=>({d,x:-25,radius:7}));
+
 /** Shared by instanced rocks, water clipping, wash foam and spray. */
 export const COAST_ROCKS=[
  {d:2110,r:4.4,out:2},{d:2155,r:2.7,out:5},
  {d:12085,r:6.5,out:2},{d:12115,r:4.1,out:4},
- {d:4950,r:4.7,out:1},{d:4990,r:2.9,out:7},
- {d:7760,r:5.3,out:3},{d:7800,r:3.2,out:7},
+ {d:6480,r:6.4,out:3},{d:6510,r:4.7,out:10},
+ {d:6542,r:8.6,out:4},{d:6561,r:5.6,out:12},
  {d:9780,r:5.8,out:2},{d:9810,r:3.6,out:5},
 ] as const;
 export const coastRockX=(rock:typeof COAST_ROCKS[number])=>coastBeachX(-26,rock.d)-rock.out;
