@@ -12,6 +12,16 @@ Decision: 2026-11-14. **Owner budget for additional paid AI / 3D services is exa
 
 **NO** paid cloud GPU, subscription, prepaid credits, free trials requiring a credit card, commercial API inference, model purchases, purchased assets, or exposure of API tokens. Freely downloadable open-weight models and no-cost licensed Blender assets are allowed. Owner approval is not required for the zero-cost local workflow but is required for visual acceptance. Document license terms before considering shipping; 'free inference' does not automatically mean unrestricted worldwide commercial distribution.
 
+## Version clarification (2026-11-14; replaces 2.0 default)
+
+**HunyuanImage-3.0 is a 2D image generation/editing model, NOT an image-to-3D mesh model.** Do not install it for this task: its official base hardware recommendation is multiple 80GB GPUs (not a 16GB RTX 5070 Ti). Official: https://github.com/Tencent-Hunyuan/HunyuanImage-3.0
+
+**Newest openly downloadable Tencent 3D model verified:** **Hunyuan3D-2.1** (2025-06-13), official https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1. Newer Tencent HY 3D 3.0 / 3.1 services are **hosted commercial APIs**, not known locally runnable downloadable open weights; no paid API calls. According to the official 2.1 README, shape generation needs **~10GB VRAM**, texture generation **~21GB**, complete pipeline **~29GB**. On the local RTX 5070 Ti 16GB, try **2.1 shape-only** first *if compatible*, not full PBR texture. If Windows, CUDA extension or VRAM problems block it, fall back to 2.0/2mini shape-only (~6GB) or a legal TripoSG route. Never conflate the "2.0/2.1" repo naming with "Image-3.0" or assume the newest version is always the right local fit.
+
+**RTX 50-series caveat:** 2.1's original README pins PyTorch 2.5.1+cu124, predating Blackwell; this cannot be copied without checking current supported wheel/extension builds. Preflight and official PyTorch CUDA 12.8+ binaries first, and stop if native compiled modules don't support sm_120; do not burn Codex hours on speculative CUDA rebuilds.
+
+**License warning for public game:** Hunyuan3D-2.1's *Tencent Community License* explicitly excludes the EU, UK and South Korea from its Territory and includes restrictions referring to outputs. Fine for a bounded locally conducted trial in Taiwan; **do not assume generated assets are cleared for worldwide OutRun releases**. Have Codex record source/terms, do not ship such assets to those markets until the license issue is resolved. TripoSG MIT code is a possible alternate path but verify all model weight and auxiliary licenses separately. Official: https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1/blob/main/LICENSE
+
 ## Local first: RTX 5070 Ti (16GB) image-to-3D candidate
 
 Codex's H1a report measured on an **RTX 5070 Ti** desktop. Actual available VRAM and environment need a new local check.
@@ -29,7 +39,7 @@ The RTX 5070 Ti is NVIDIA **Blackwell / sm_120**. Do not blindly install a PyTor
 
 **Attempt one local inference backend**, ideally in a separate venv and cloned sibling folder outside OutRun:
 
-- **Primary trial: Tencent Hunyuan3D-2 / shape-only**. Official source: https://github.com/Tencent-Hunyuan/Hunyuan3D-2. Their documented minimum is ~6GB VRAM for shape only; full shape+texture is quoted at ~16GB total and may OOM on the 16GB card, so do **NOT** enable the full texture pipeline initially. The repo contains an image→mesh script/pipeline; export local GLB/OBJ, import it into Blender and render. An independently maintained Windows/low-VRAM port exists: https://github.com/deepbeepmeep/Hunyuan3D-2GP, but review third-party code/versions before running it; not a magic one-click guarantee.
+- **Primary trial: Tencent Hunyuan3D-2.1 / shape-only** (https://github.com/Tencent-Hunyuan/Hunyuan3D-2.1), ~10GB VRAM. Do NOT enable full 2.1 texture (~21GB by itself, ~29GB combined). RTX 5070 Ti 16GB is nominally suitable for shape inference but native sm_120 and modern PyTorch/CUDA compatibility must be verified, not assumed. Import candidate mesh into Blender and render. If 2.1 cannot be installed without environment gymnastics, fallback **Hunyuan3D-2.0 / 2mini shape-only** (https://github.com/Tencent-Hunyuan/Hunyuan3D-2), ~6GB shape; or proceed to TripoSG. The community Windows port https://github.com/deepbeepmeep/Hunyuan3D-2GP is third-party software and requires vetting; do not install blindly.
 - **Fallback when environment/licenses make Hunyuan unsuitable: TripoSG**, official MIT repo https://github.com/VAST-AI-Research/TripoSG, reports >=8GB VRAM and a `python -m scripts.inference_triposg --image-input PATH --output-path PATH.glb` entry point. This produces a **shape candidate**, not automatically a perfect fully textured game-ready animated heroine.
 - **Lightweight fallback:** Stable Fast 3D https://github.com/Stability-AI/stable-fast-3d, ~6GB VRAM and textured GLB; Windows support experimental, and its Community License imposes commercial terms/thresholds that MUST be reviewed for potential release. Prefer MIT/CC assets if license friction is significant.
 
