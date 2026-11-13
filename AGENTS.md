@@ -262,3 +262,9 @@ Never mark a source-only static audit as passing Vitest.
   at driving speeds, and run `npm run verify:dev` on the local
   Codex workstation before marking R5c QA green. Never auto-push
   to `main`.
+
+## R5d — coastal scenery art direction / production (2026-11-14)
+
+- **Owner-selected aesthetic is canonical:** read [Coastal Art Bible](docs/COAST_ART_BIBLE.md) before any new scene, character, vehicle, house, boat or prop art. Use the FIRST reference board's coherent stylized semi-realistic objects and the THIRD board's top-banner sunset-coast composition/mood. These are *art references*, not GLB assets and not authorization to redesign Riviera 62.
+- **Scenery production work order:** [Coastal Scenery Production Plan](docs/COAST_SCENERY_PRODUCTION_PLAN.md) defines art/engineering ownership, phased gates, pilot anchors, visual/safety/performance acceptance and Codex usage protection. Start with approved pilots, not full-route prop scatter or speculative engines.
+- The active authored coast is **14,200m from HUD 350 to 14,550**, with ten chapter offsets, nine absolute-HUD hero slots and three pressure gates in `content/stages/coast/direction.json`. Historical 30km R5c documents are not a current road plan. Before touching Blender exports, use the current shared road guide and check existing visual masks; preserve road/Worker/AI/collision single source, visible seaward protection, and Pixel 8 budgets.
