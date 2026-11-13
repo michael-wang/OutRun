@@ -18,8 +18,12 @@ export function addCoastResort(scene:THREE.Scene,sample:ReturnType<typeof create
    if(style==='block'){
     const stone=coastBarrierStoneAt(d,side);
     part('block',stone.d,side,stone.height/2,.56,stone.height,stone.length);
+    // Link seaward stones with a low continuous beam. No more invisible
+    // wall between isolated bollards; keep ocean visible over the railing.
+    if(side===-1)part('rail',d,side,.51,.15,.15,12.15);
    }else{
-    for(const y of [.42,.70])part('rail',d,side,y,.12,.10,10.8);
+    // Slightly overlapping 12m modules close the old 1.2m visual gaps.
+    for(const y of [.42,.70])part('rail',d,side,y,.12,.10,12.15);
     for(const offset of [-5,0,5])part('rail',d+offset,side,.36,.13,.72,.13);
    }
   }

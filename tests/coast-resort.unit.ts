@@ -4,7 +4,7 @@ import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {COAST_STAGE} from '../src/content/coast-stage';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
-import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle,coastBarrierStoneAt,COAST_BEACHES} from '../src/coast-layout';
+import {COAST_CROSSWALKS,coastDistrictAt,coastBarrierStyle,coastBarrierStoneAt,coastBarrierClearance,coastDriveBounds,COAST_BEACHES} from '../src/coast-layout';
 import {addCoastResort} from '../src/coast-resort';
 import {addCoastMountains} from '../src/coast-mountains';
 import {farmClearing} from '../src/coast-farm-layout';
@@ -18,7 +18,8 @@ it('uses five full-width coastal lanes throughout the native scenic road',()=>{
 
 it('replaces racing curbs and tall continuous rails; keeps crossings at districts and the farm visit',()=>{
  for(const at of COAST_CROSSWALKS){
-  expect(!!coastDistrictAt(at)||farmClearing(at,20)||COAST_BEACHES.some(b=>Math.abs(at-b.distance)<b.radius*.8)).toBe(true);expect(coastBarrierStyle(at)).toBe('opening');
+  expect(!!coastDistrictAt(at)||farmClearing(at,20)||COAST_BEACHES.some(b=>Math.abs(at-b.distance)<b.radius*.8)).toBe(true);
+  expect(['rail','block']).toContain(coastBarrierStyle(at,-1)); // continuous visible sea boundary
   const meshes=road(at-8,at+8);
   expect(meshes.some(m=>['edge-red','edge-white','rail'].includes(m.kind))).toBe(false);
   const paint=meshes.find(m=>m.kind==='line')!,p=track.sample(at);
@@ -86,7 +87,7 @@ it('bakes two high inland mountain layers with a small fixed mesh budget',()=>{
  expect(triangles).toBeLessThan(14000);
 });
 
-it('uses beach stones and occasional metal guardrails, preserving open seaward vistas',()=>{
+it('protects the entire sea-side with low visible rails and linked promenade blocks',()=>{
  for(const bay of COAST_BEACHES){
   const half=Math.min(440,bay.radius*.70);
   for(let d=Math.ceil((bay.distance-half+24)/12)*12;d<bay.distance+half-24;d+=12)
@@ -94,8 +95,7 @@ it('uses beach stones and occasional metal guardrails, preserving open seaward v
     expect(coastBarrierStyle(d,-1)).toBe('block');
  }
  for(let d=240;d<=1740;d+=12)
-  if(!COAST_CROSSWALKS.some(at=>Math.abs(d-at)<14))
-   expect(coastBarrierStyle(d,-1)).toBe(d>=475&&d<680?'rail':'none');
+  expect(coastBarrierStyle(d,-1)).toBe('rail');
  expect(coastBarrierStyle(4100,1)).toBe('none'); // covered town drain; no rail
  expect(coastBarrierStyle(850,1)).toBe('block'); // rural concrete stones
  expect(coastBarrierStyle(8550,1)).toBe('none'); // unguarded fishing countryside
@@ -103,7 +103,7 @@ it('uses beach stones and occasional metal guardrails, preserving open seaward v
  expect(coastBarrierStyle(3300,1)).toBe('none'); // open visitor-coast drainage
  expect(coastBarrierStyle(2740,1)).toBe('none'); // visitor-coast gutter with no railing
  for(const at of COAST_CROSSWALKS){
-  expect(coastBarrierStyle(at,-1)).toBe('opening');
+  expect(['rail','block']).toContain(coastBarrierStyle(at,-1));
   expect(coastBarrierStyle(at,1)).toBe('opening');
  }
  const styles=Array.from({length:834},(_,i)=>coastBarrierStyle(i*12,-1));
@@ -121,4 +121,20 @@ it('adds deterministic but non-periodic stone imperfections without moving into 
  expect(a.height).toBeLessThan(.5);
  expect(coastBarrierStoneAt(1560,-1)).not.toEqual(a);
  expect(coastBarrierStoneAt(1548,1).d).not.toEqual(a.d);
+});
+
+
+it('R5c: the visible seaward guardrail matches the real coast collision bound',()=>{
+ for(const d of [350,1200,2560,4100,7500,10500,16250,20500,24200,29700]){
+  const style=coastBarrierStyle(d,-1);
+  expect(style==='rail'||style==='block').toBe(true);
+  const limit=coastDriveBounds(d,8.75).left;
+  const visible=-8.75-coastBarrierClearance(d,-1);
+  expect(Math.abs(limit-visible)).toBeLessThan(.50);
+ }
+ const scene=new THREE.Scene(),stats=addCoastResort(scene,track.sample,halfAt,12000,12120);
+ expect(stats.draws).toBeGreaterThan(0);
+ const mesh=scene.children.find(x=>x instanceof THREE.InstancedMesh&&x.geometry.name==='coast-rail') as THREE.InstancedMesh;
+ expect(mesh.count).toBeGreaterThan(15);
+ scene.traverse(o=>{if(o instanceof THREE.InstancedMesh){o.geometry.dispose();(o.material as THREE.Material).dispose();}});
 });

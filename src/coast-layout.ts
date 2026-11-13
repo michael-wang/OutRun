@@ -94,6 +94,14 @@ export function coastBarrierClearance(d:number,side:-1|1=-1){
 }
 const TRIP_BARRIER_INNER_FALLBACK=3.6+.28;
 export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
+ if(side===-1){
+  // An invisible left ocean wall is not acceptable in the first map.
+  // Continuous, low visible protection lets the player understand why
+  // they cannot leave the coastal highway without blocking the sea view.
+  // Promenades get concrete/steel posts and a low linking beam.
+  if(COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70)))return 'block';
+  return 'rail';
+ }
  if(coastCrosswalkNear(d,14))return 'opening';
  if(side===1){
   const drain=coastDrainAt(d);
@@ -102,22 +110,13 @@ export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
    return 'none'; // town lid and remote unguarded rural ditch
   }
  }
- if(side===-1){
-  // Beach activity keeps low walkable concrete. The remote coast gets
-  // occasional short, inexpensive metal rails, with generous open sea views.
-  // Remove the former large dark land-side rock barriers completely.
-  if(COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70)))return 'block';
-  const ruralRails=[[475,680],[3370,3490],[4760,4910],[6990,7250],[8450,8640],[9320,9500]];
-  return ruralRails.some(([a,b])=>d>=a&&d<b)?'rail':'none';
- }
  return coastDistrictAt(d)!==undefined||coastCrosswalkNear(d,65)?'block':'rail';
 }
-/** Road-edge protection is continuous physically, not visually: a short
- * steel rail or individual concrete stone takes the impact wherever visible;
- * otherwise a conservative invisible edge prevents the player from driving
- * across an open beach or into the irrigation canal. The invisible fallback
- * sits BEHIND a stone's near side so its swept contact remains meaningful.
- * The bounds are at the edge itself; GuardrailContact handles car dimensions.
+/** The sea-side collision limit is backed by continuous VISIBLE protection:
+ * low steel guardrails between public beaches, linked bollard/beam parapets
+ * on promenades. Inland drainage/junction safety rules remain unchanged.
+ * GuardrailContact handles player-body dimensions; CoastStoneContact checks
+ * individual concrete blocks before the continuous boundary contact.
  */
 export function coastDriveBounds(d:number,half:number){
  const sea=coastBarrierStyle(d,-1);
