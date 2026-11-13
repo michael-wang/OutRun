@@ -224,13 +224,12 @@ Never mark a source-only static audit as passing Vitest.
 
 ## R5b.3 — warning signs / stage exit bug regressions
 
-- RivalRace must include **A4 warning triangles** in its normal
-  forward obstacle query so rivals brake or shift lanes before hitting.
-  If evasion fails, only the ONE shared RoadCones flight pool knocks the
-  sign airborne; removed signs must stop blocking AI path planning.
-- Never allow the triangular reflector to sink after impact:
-  ballistic height is clamped at zero, rotation freezes at landing,
-  and transformed triangle vertices are kept above the banked road.
+- R5b.4 supersedes the R5b.3 sign decision. RivalRace plans around
+  traffic and displaced wrecks. Player, rival and civilian sweeps can
+  knock warning signs through the shared RoadCones pool at race speed.
+- Each small prop takes one impulse per race. After the throw, its
+  displaced pose persists through streaming and checkpoint recovery.
+  Reflectors settle face-down or face-up on the banked, pitched surface.
 - Exiting through pause `回到主選單` must hide the full-screen
   `#game-loading` overlay before re-mounting the stage selector,
   or the stage select is present but covered by the old loading art.

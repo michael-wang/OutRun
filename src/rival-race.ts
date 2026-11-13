@@ -79,7 +79,6 @@ export class RivalRace {
   private contactTimes=new Map<string,number>();
   private trafficContacts=new Map<string,number>();
   impactTraffic?:(row:Obstacle,severity:number,side:number)=>void;
-  impactWarning?:(row:Obstacle,severity:number)=>void;
   constructor(readonly finish:number,private road:(d:number)=>RaceRoad,
     private traffic:(d:number,t:number,radius:number)=>Obstacle[],private entries=raceEntries){}
   reset(start:number){
@@ -211,7 +210,6 @@ export class RivalRace {
           const side=r.lateral<=o.lateral?-1:1;
           r.impulse+=side*response.trailingSideSpeed;
           if(o.id.startsWith('T'))this.impactTraffic?.(o,severity,-side);
-          if(o.id.startsWith('W'))this.impactWarning?.(o,severity);
         }
         // Keep a real following gap until a passing lane opens, rather than
         // instantaneously setting the rear car's speed to the front car's.

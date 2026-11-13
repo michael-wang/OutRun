@@ -68,11 +68,13 @@ async function enter(stage: RacingStage,recovery?:RaceCheckpoint) {
 }
 
 async function bootMenu(firstEntry: boolean) {
-  const recovery=readRaceCheckpoint(GAME_VERSION);
+  const recovery=firstEntry ? readRaceCheckpoint(GAME_VERSION) : null;
   const retry = stages.find(stage => stage.enter && stage.id === history.state?.retryStage);
-  if (retry) {
+  if (history.state?.retryStage) {
     const {retryStage: _, ...rest} = history.state;
     history.replaceState(rest, '');
+  }
+  if (firstEntry && retry) {
     await enter(retry,recovery??undefined);
     return;
   }

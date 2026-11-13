@@ -146,72 +146,106 @@ it('R5b.2: seeded later accidents keep a real two-lane escape corridor for 256 s
  }
 });
 
-it('R5b.3: right-side warnings are visible to racer AI before contact',()=>{
- const scene=new THREE.Scene(),stopped=generate(42);
- const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,stopped);
+it('uses real vehicle obstacles for race decisions and sweeps light props without a speed penalty',()=>{
+ const cars=generate(42),scene=new THREE.Scene();
+ const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,cars);
+ const traffic=new Traffic(scene,track.sample,halfAt,track.length,804,()=>true,cars,undefined,true,false,false,42,COAST_STAGE.onboarding.traffic);
  try{
-  const first=signs.recipe[0];
-  const obstacles=signs.raceObstacles(first.distance-95,180);
-  expect(obstacles.some(o=>o.id==='W'+first.id)).toBe(true);
-  const warning=obstacles.find(o=>o.id==='W'+first.id)!;
-  expect(warning.speed).toBe(0);
-  expect(warning.width).toBeGreaterThan(2);
-  expect(warning.lateral).toBe(first.lateral);
-  expect(signs.knockByRival(first.id,1,80)).toBe(true);
-  expect(signs.knockByRival(first.id,1.01,80)).toBe(false);
-  expect(signs.raceObstacles(first.distance-95,180).some(o=>o.id==='W'+first.id)).toBe(false);
- }finally{signs.dispose();}
-});
-
-it('R5b.3: a fallen, rotated warning triangle never sinks into the banked asphalt',()=>{
- const scene=new THREE.Scene(),stopped=generate(42);
- const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,stopped);
- const mesh=scene.getObjectByName('breakdown-warning-objects') as THREE.InstancedMesh;
- try{
-  const first=signs.recipe[0];
-  expect(signs.knockByRival(first.id,1,70)).toBe(true);
-  const verts=mesh.geometry.getAttribute('position'),matrix=new THREE.Matrix4();
-  const point=new THREE.Vector3();
-  for(const elapsed of [.2,.8,1.2,1.8,2.3]){
-   const time=1+elapsed;
-   signs.update(time,first.distance-10,0,0);
-   const index=signs.inspect().shown.indexOf(first.id);
-   expect(index).toBeGreaterThanOrEqual(0);
-   mesh.getMatrixAt(index,matrix);
-   const flight=signs.snapshot().flying.find(([id])=>id===first.id)![1];
-   const forward=flight.forward*.72*(1-Math.exp(-elapsed/.72));
-   const sideways=flight.sideways*.42*(1-Math.exp(-elapsed/.42));
-   const road=track.sample(first.distance+forward);
-   const base=road.position.y+road.right.y*(first.lateral!+sideways);
-   let minY=Infinity;
-   for(let i=0;i<verts.count;i++){
-    point.fromBufferAttribute(verts,i).applyMatrix4(matrix);
-    minY=Math.min(minY,point.y);
-   }
-   expect(minY,`triangle above road at flight age ${elapsed}`).toBeGreaterThanOrEqual(base-.002);
-   if(elapsed>1.8)expect(minY-base).toBeLessThan(.15);
+  traffic.enableRaceMode();
+  const road=(d:number)=>({curvature:track.sample(d).curvature,grade:0,half:halfAt(d)});
+  const race=new RivalRace(track.length,road,(d,t,r)=>traffic.raceObstacles(d,t,r),[raceEntries[4]]);
+  const reference=new RivalRace(track.length,road,()=>[],[raceEntries[4]]);
+  const player={distance:350,lateral:-7,speed:0},first=signs.recipe[0];
+  for(const sim of [race,reference]){
+   sim.reset(350);
+   Object.assign(sim.rivals[0],{distance:first.distance-14,lateral:first.lateral,targetX:first.lateral,speed:62});
   }
- }finally{signs.dispose();}
+  for(let i=0;i<40;i++){
+   race.step(1/120,player,player);reference.step(1/120,player,player);
+   const r=race.rivals[0],control=reference.rivals[0];
+   signs.hitByVehicles(race.time,[{...r,id:-1000,halfWidth:r.entry.car.width/2}]);
+   expect([r.targetSpeed,r.speed,r.targetLane]).toEqual([control.targetSpeed,control.speed,control.targetLane]);
+  }
+  expect(signs.inspect().hit).toContain(first.id);
+  const wreck=traffic.raceObstacles(site.distance,0,200).find(o=>o.id==='T910000')!;
+  const r=race.rivals[0];
+  Object.assign(r,{distance:wreck.distance-55,lateral:wreck.lateral,speed:62,nextDecision:0});
+  race.step(1/120,player,player);
+  expect(r.targetLane<4||r.targetSpeed<r.speed).toBe(true);
+  let contacts=0;
+  race.impactTraffic=(o,severity,side)=>{contacts++;traffic.impactByRival(o,severity,side);};
+  r.distance=wreck.distance-(r.entry.car.length+wreck.length)/2-.1;
+  race.step(1/120,player,player);
+  expect(contacts).toBe(1);
+  expect(r.speed).toBeLessThan(60);
+ }finally{traffic.dispose();signs.dispose();}
 });
 
-it('R5b.3: a right-lane rival anticipates warning triangles instead of blindly driving through',()=>{
- const scene=new THREE.Scene(),stopped=generate(42);
- const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,stopped);
+it.each([1,7,42])('keeps the actual thrown meshes on the pitched, banked road through reset/restore (seed %i)',seed=>{
+ const scene=new THREE.Scene(),cars=generate(seed);
+ // Include a steeply banked S section as well as the actual incident approach.
+ for(const distance of [cars[0].distance,3350]){
+  const signs=new RoadCones(track.sample,halfAt,scene,804,track.length,()=>true,[{...cars[0],id:910000,distance}]);
+  try{
+   const mesh=scene.getObjectByName('breakdown-warning-objects') as THREE.InstancedMesh;
+   const first=signs.recipe[0],x=first.lateral!,verts=mesh.geometry.getAttribute('position');
+   const matrix=new THREE.Matrix4();
+   const read=(age:number)=>{
+    signs.update(1+age,first.distance-10,0,0);
+    const index=signs.inspect().shown.indexOf(first.id);
+    expect(index).toBeGreaterThanOrEqual(0);
+    mesh.getMatrixAt(index,matrix);
+    expect(matrix.elements.every(Number.isFinite)).toBe(true);
+   };
+   expect(signs.update(1,first.distance+5,x,70,{distance:first.distance-5,lateral:x})).toBe(1);
+   const saved=signs.snapshot(),f=saved.flying[0][1];
+   const touch=f.up/8;
+   let resting:number[]|undefined;
+   for(const age of [.2,.8,1.2,touch,touch+.25,1.8,2.3,3,5,10,12]){
+    read(age);
+    const t=Math.min(age,touch+.55);
+    const d=first.distance+f.forward*.72*(1-Math.exp(-t/.72));
+    const road=track.sample(d),normal=road.right.clone().cross(road.tangent).normalize();
+    const heights=Array.from({length:verts.count},(_,i)=>new THREE.Vector3()
+     .fromBufferAttribute(verts,i).applyMatrix4(matrix).sub(road.position).dot(normal));
+    expect(Math.min(...heights)).toBeGreaterThanOrEqual(-.002);
+    if(age>=touch)expect(Math.min(...heights)).toBeLessThan(.15);
+    if(age>=touch+.55){
+     expect(Math.max(...heights)-Math.min(...heights)).toBeLessThan(.002);
+     const face=new THREE.Vector3(0,0,1).transformDirection(matrix);
+     expect(Math.abs(face.dot(normal))).toBeGreaterThan(.99999);
+     if(resting)expect(matrix.elements).toEqual(resting);
+     resting=matrix.elements.slice();
+    }
+   }
+   for(const age of [.3,4,11]){
+    read(age);const before=matrix.elements.slice();
+    signs.reset();expect(mesh.count).toBe(0);
+    signs.restore(JSON.parse(JSON.stringify(saved)));read(age);
+    expect(matrix.elements).toEqual(before);
+   }
+   signs.update(12,first.distance+800,0,0);expect(mesh.count).toBe(0);
+   read(12);expect(matrix.elements).toEqual(resting);
+   expect(mesh.instanceMatrix.count).toBe(48);
+   signs.reset();read(0);
+   expect(signs.inspect().hit).toHaveLength(0);
+   expect(Math.abs(new THREE.Vector3(0,0,1).transformDirection(matrix).y)).toBeLessThan(.2);
+  }finally{signs.dispose();}
+ }
+});
+
+it('keeps a struck cone on its side after the draw window streams away and back',()=>{
+ const scene=new THREE.Scene(),cones=new RoadCones(track.sample,halfAt,scene,804,track.length);
  try{
-  const first=signs.recipe[0];
-  const rivals=new RivalRace(track.length,
-   d=>({curvature:track.sample(d).curvature,grade:0,half:halfAt(d)}),
-   (d,_time,radius)=>signs.raceObstacles(d,radius),
-   [raceEntries[4]]);
-  rivals.reset(350);
-  const r=rivals.rivals[0];
-  r.distance=first.distance-125;
-  r.previousDistance=r.distance;
-  r.lateral=7;r.lane=4;r.targetLane=4;r.targetX=7;
-  r.speed=62;r.nextDecision=0;
-  const player={distance:350,lateral:-7,speed:0};
-  rivals.step(.05,player,player);
-  expect(r.obstacles.some(o=>o.id==='W'+first.id)).toBe(true);
-  expect(r.targetLane<4||r.targetSpeed<r.speed).toBe(true);
- }finally{signs.dispose();}
+  const c=cones.recipe[0],x=c.side*(halfAt(c.distance)-c.inset);
+  expect(cones.update(0,c.distance+1,x,70,{distance:c.distance-5,lateral:x})).toBe(1);
+  cones.update(4,c.distance+900,0,0);
+  cones.update(12,c.distance,0,0);
+  const mesh=scene.getObjectByName('road-cones') as THREE.InstancedMesh;
+  const index=cones.inspect().shown.indexOf(c.id);
+  expect(index).toBeGreaterThanOrEqual(0);
+  const matrix=new THREE.Matrix4();mesh.getMatrixAt(index,matrix);
+  expect(Math.abs(new THREE.Vector3(0,1,0).transformDirection(matrix).y)).toBeLessThan(.5);
+  expect(mesh.instanceMatrix.count).toBe(48);
+ }finally{cones.dispose();}
 });

@@ -19,20 +19,23 @@ it('accepts the very first fresh confirm and does not repeat a held button after
  vi.stubGlobal('navigator',{getGamepads:()=>[pad]});
  const actions:string[]=[],input=new InputLatch();
  const controller=new GamepadInput(input,a=>actions.push(a));
+ let menu:GamepadInput|undefined;
  try{
   buttons[0].pressed=true;controller.poll(false);
   expect(actions).toEqual(['confirm']); // First press is NOT eaten.
-  controller.poll('stage-menu');
+  controller.dispose();
+  menu=new GamepadInput(input,a=>actions.push(a));
+  menu.poll('stage-menu');
   expect(actions).toEqual(['confirm']); // Held cross must not trigger again.
-  buttons[0].pressed=false;controller.poll('stage-menu');
-  buttons[0].pressed=true;controller.poll('stage-menu');
+  buttons[0].pressed=false;menu.poll('stage-menu');
+  buttons[0].pressed=true;menu.poll('stage-menu');
   expect(actions).toEqual(['confirm','confirm']);
-  controller.poll(false);
+  menu.poll(false);
   expect(actions).toHaveLength(2);
-  buttons[0].pressed=false;controller.poll(false);
-  buttons[0].pressed=true;controller.poll(false);
+  buttons[0].pressed=false;menu.poll(false);
+  buttons[0].pressed=true;menu.poll(false);
   expect(actions).toHaveLength(3);
- }finally{controller.dispose();}
+ }finally{menu?.dispose();}
 });
 
 it('reads held gas/brake on the first driving frame, with no neutralization press',()=>{

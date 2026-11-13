@@ -424,20 +424,13 @@ traffic.setWind(coastWindSampler);
 const race=new RivalRace(coastEnd,d=>{
  const p=world.sample(d);
  return {curvature:p.curvature,grade:p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z),half:world.halfAt(d)};
-},(d,time,radius)=>{
-  // Only vehicles can block a rival's line. Cones and warning triangles are
-  // lightweight props, not reasons to brake or abandon an overtaking lane.
-  return [...(traffic?.raceObstacles(d,time,radius)??[]),
-   ...(triangles?.raceObstacles(d,radius)??[])];
- });
+},(d,time,radius)=>traffic.raceObstacles(d,time,radius));
 race.reset(state.distance);
 const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,race.rivals);
 let rivalPassCount=0;
 if(traffic){traffic.rivalLeaders=()=>race.rivals;traffic.enableRaceMode();}
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
 race.impactTraffic=(row,severity,side)=>traffic?.impactByRival(row,severity,side);
-race.impactWarning=(row,severity)=>triangles?.knockByRival(
- Number(row.id.slice(1)),race.time,Math.max(12,severity*75));
 const rivalView=new RivalView(race,world.scene,tireEffects,world.sample);
 rivalView.updateRanks(race.standings(state));
 await renderer.compileAsync(rivalView.group,camera,world.scene);
@@ -1073,7 +1066,7 @@ function render(dt:number,draw=true){
   tireEffects.setSceneSmoke(activeSmokeBiome,coastUltraMode);
   traffic?.setSmokeScene(activeSmokeBiome);
   const sceneryCenter=cameraOnRival?followed.distance:state.distance;
-  cones?.update(race.time,sceneryCenter,state.lateral,state.speed);triangles?.update(race.time,sceneryCenter,state.lateral,state.speed);
+  cones?.update(elapsed,sceneryCenter,state.lateral,state.speed);triangles?.update(elapsed,sceneryCenter,state.lateral,state.speed);
   const trafficStart=fpsProfiling?performance.now():0;
   traffic?.update(race.time,state.distance,state.lateral,state.speed*effectivePace(state.speed,highSpeedPace),cameraOnRival?playerCamera:camera,renderer.domElement.height);
   if(observed>=0)traffic?.drawForObserver(cameraOnRival?followed.distance:null,race.time);
