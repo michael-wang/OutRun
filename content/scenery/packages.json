@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "packages": {
+    "rural-hamlet-pilot": {
+      "description": "Portable farmhouse proof. Add approved buildings and vegetation after visual review.",
+      "members": [
+        {
+          "id": "farmhouse",
+          "prefab": "taiwan-farmhouse",
+          "forwardM": 0,
+          "rightM": 0,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        }
+      ]
+    }
+  }
+}
