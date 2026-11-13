@@ -1,44 +1,51 @@
-# H1aR — Female passenger character look-dev, NOT game integration
+# H1aR — Approved heroine appearance → real 3D prototype (LOOKDEV)
 
-Date: 2026-11-14
-Owner's current approved reference: **Style Option B** — [art reference PNG](../../../art/reference/coast/03_STYLE_B_coastal_highway.png).
-Current game implementation H1a (`v0.10.18`) remains **VISUALLY REJECTED**, despite passing technical tests.
-Execution task: [Issue #38](https://github.com/michael-wang/OutRun/issues/38).
-Root cause/production method: [Character Art Recovery](../../COAST_CHARACTER_ART_RECOVERY.md).
+Date: 2026-11-14. **2D CHARACTER DESIGN APPROVED BY OWNER. 3D MODEL NOT YET PRODUCED/APPROVED.**
 
-## Julia's completed first step
+## Reference precedence (IMPORTANT — now supersedes previous exploratory status)
 
-Julia generated (1) a cinematic character mood concept and (2) a clean front/45-degree/profile **2D character reference** based on Style B. These are **proposals, not approved art and NOT 3D meshes**. Their purpose is to reduce ambiguous text descriptions before a DCC/image-to-3D experiment.
+1. **Female protagonist's exact visual identity**: the owner explicitly approved the NEW front/45°/profile concept made by Julia as **"this is exactly my heroine"**. Preserve her *face, almond-shaped warm-brown eyes, eyelids, natural small nose, subtle confident smile, softly tapered jaw, short layered swept blonde bob, broad sculpted hair locks, golden diamond earrings and cream halter/sleeveless neckline*. Do NOT generate a different face or hairstyle merely to resemble a generic 3D character.
+2. **Whole-world art style**: the original [Style Option B](../../../art/reference/coast/03_STYLE_B_coastal_highway.png) continues to control vehicle, buildings, environment, palette and broad stylized arcade 3D treatment. Where the older Style B female differs from the newly approved heroine (e.g. eyes/accessories/neckline), the **new approved heroine wins** for THIS person.
+3. Earlier H1a coded-face attempt (`v0.10.18`) is VISUALLY REJECTED. Do not refine `src/passenger-face.ts` or ship its appearance as the final heroine.
 
-User handoff package: `OutRun_H1aR_Lookdev_2026-11-14.zip` (available in the Nov 14 ChatGPT conversation; owner downloads once and places in the local repo root for Codex to use). Contents:
+### Approved source archive
 
-- `00_APPROVED_STYLE_B_female_reference.jpg` — crop of the original canonical Style B; compare everything to it.
-- `01_NEW_THREE_VIEW_CONCEPT.png` — new image with front, 45°, and profile in similar lighting.
-- `02_front.png`, `03_three-quarter.png`, `04_profile.png` — convenience crops of that sheet.
-- `05_CINEMATIC_CHARACTER_HEAD_MOOD.jpg` — secondary mood/appearance idea only (the misleading pseudo-UV/mesh diagrams were excluded).
-- `manifest.json` and `README.md` — checksums and limitations.
+User download: **`OutRun_H1aR_APPROVED_3D_REFERENCE_2026-11-14.zip`**, given in ChatGPT on Nov 14. This archive **replaces** the earlier exploratory `OutRun_H1aR_Lookdev_2026-11-14.zip` whose README incorrectly says "not approved" now that the owner has chosen the look.
 
-**Do not assume these files are present in the GitHub repo.** This README documents the handoff, not a successful binary upload.
+Put ZIP **outside Git** or in ignored local staging; do not commit ZIP, gigantic generated candidates or API secrets.
 
-### Style precedence / avoid drift
+Inside the new ZIP:
 
-The original Style Option B concept board remains the ONLY **approved** art identity. The newly generated views may be stylized differently (e.g. larger eyes, optional earrings/halter neckline) and are **not** authorization to change the approved white sleeveless outfit or character proportions. They are a test input for approving an isolated, actually sculpted character head. AI-generated perspective panels are **not guaranteed true orthographic views or perfectly consistent 3D measurements**; validate shape after a model is obtained.
+| File | Role | SHA-256 |
+| --- | --- | --- |
+| `01_APPROVED_FRONT.png` | **Primary canonical character identity** and candidate image-to-3D front input | `58b7ba936a981a0c58847d306742018f4f0e556ad3f8328c08ddb04c0931551d` |
+| `02_APPROVED_THREE_QUARTER.png` | Front-oblique proportions and face/hair continuity | `9e61e0b86ec7eaa49966d56cf9193edcde532805d23bd3b60c3b6476ed5bb06e` |
+| `03_APPROVED_PROFILE.png` | Profile nose/chin/hairline; **nose points screen-left** | `c011cbb08aaa27fd6b5ad47c965033c0ad1be469813b57960ecf8964fe2a04a7` |
+| `04_APPROVED_THREE_VIEW_SHEET.png` | Comparison only, NOT image-to-3D input | `7b0e29254250ea481bfdc0dc943f3987d5c2c332481866ddd532c0d52b03b727` |
+| `05_STYLE_B_ORIGINAL_REFERENCE.jpg` | Art world style reference, NOT primary heroine identity | `4a3e215eadf61fd685169269ec17c8bc241d221ef916d475265423f008541d67` |
 
-## Actual 3D tool trial — bounded, gated
+Images are AI-authored *concepts*, **not** orthographic projections of an existing physically consistent model. Reconcile minor geometric contradictions by preserving the front-view identity and coherent 3D shape.
 
-To progress to a real editable head mesh, prefer:
-1. If the owner connects a suitable 3D-capable provider (e.g. fal in ChatGPT), test **one** candidate with a cropped single portrait or supported multiview inputs; take care that multiple views represent the same expression and head shape. fal currently advertises Hunyuan3D 3.1 Pro Image-to-3D with optional multiview and GLB return, Trellis 2 and other options; **check current pricing and capabilities before a paid run**. No automatic credit spend. Provider page: https://fal.ai/models/fal-ai/hunyuan-3d/v3.1/pro/image-to-3d
-2. OR import an artist-sculpted commercial-safe stylized base head with verified license into Blender and edit to match reference, without needing a provider connection.
-3. Inspect the **real editable mesh in Blender** from front/45/profile under neutral and coast-dusk lighting, with no Photoshop-style cutout tricks. Assess eyelids, cheekbones, mouth, nose profile, hair shape and material response. If poor, **discard promptly** rather than repair with a new coded ellipse/triangle maze.
-4. **STOP for owner + Julia visual acceptance BEFORE** driving-LOD, rigging, Three.js integration, speed/frame-time benchmarking, or further character models.
+## Codex next action: obtain/inspect an ACTUAL editable mesh
 
-## QA deliverable (future, not yet done)
+Execute [Issue #38](https://github.com/michael-wang/OutRun/issues/38) — not the old #37 — in two strictly separated steps:
 
-- Source .blend/mesh file and GLB if trial actually succeeds (none delivered by this documentation).
-- Paired renders: original B crop vs true 3D head, frontal, 45°, side; clear pass/fail and remaining artistic gaps.
-- Model origin, license, editable pipeline and approximate geometry/texture costs.
-- A brief recommendation for the next action; **no game/source mutation** in this gate.
+**Step A: One bounded 3D generation + Blender validation (CURRENT).**
 
-## Reason for this workflow
+- Unpack approved ZIP and verify hashes. Use the isolated **front image** for a first image-to-3D candidate; optionally add 45°/profile only if the chosen model officially supports those camera angles and you verify left/right convention. Never upload the entire multi-character Style B board or the three-view contact sheet as the subject.
+- First choice when an authorized provider account is already available: fal **`fal-ai/hunyuan-3d/v3.1/pro/image-to-3d`** (official docs: https://fal.ai/models/fal-ai/hunyuan-3d/v3.1/pro/image-to-3d/api). It supports `input_image_url`, `left_front_image_url`/`right_front_image_url`, `left_image_url`/`right_image_url`, returns `model_glb`; costs vary by PBR/multiview. **Do not spend credits, create subscriptions or upload private API keys without owner-approved credentials and cost.** If blocked, report the exact setup needed and do not substitute another scripted geometric face.
+- A suitable licensed artist-authored character-base mesh adjusted in Blender is an acceptable fallback, with source/license preserved, but not another hand-coded math/ellipse face.
+- Download candidate GLB into ignored local staging and **import in Blender**. Check REAL geometry under rotation: eyes/lids, nose, smile, sculpted hair volume, side profile and back of head (the back is not covered by the concept), transparent/painted-on details, neck/bust transition, separate earrings. Refine artistically in Blender **only when already near target**, not by writing a new giant procedural facial script. Save editable `.blend` source.
+- In `docs/art-review/h1ar3d/`, create a short README and **actual Blender renders**: front, 45°, side, back, and one warm golden-hour 45°; include a comparison with the approved references. No AI-enhanced fake screenshots, no painted image planes passed off as geometry. Capture a simple viewport wireframe or Blender scene hierarchy for evidence.
 
-The prior H1a already passed `npm run verify:dev`, had lower face draw calls and acceptable geometry counts, yet looked far from Style B. Visual acceptance must now precede engineering work. Avoid burning limited Codex quota on another technically impeccable but visually unacceptable result.
+**Step B: visual review gate (STOP).** Present renders, model source/licensing, GLB/Blend paths, approximate triangle/texture complexity, any provider credits spent, and most significant remaining mismatches to Julia + owner. **Do not proceed to game integration, retopo, rigging, morph targets, LOD, or full-body modeling until the actual 3D asset is explicitly approved.**
+
+### Explicit rejection conditions
+
+Reject generic doll-face, heavily anime-proportioned/flat eyes, painted-on teeth, lumpy/sharp nose, banana/wedge hair, hair lacking its distinctive sweeping silhouette, faceted cheeks, a perfect 2D front with unusable side/back, grotesquely merged earrings/neckline, and plastic skin. Lighting and textures matter but cannot hide broken anatomy.
+
+## Process and efficiency
+
+Existing game H1a remains as-is during the model trial. The true deliverable is a reviewable 3D sculpt, **not code volume, tests or a screenshot based on 2D planes**. No scene/road/vehicle changes, `main` release, or lengthy full-game tests for a Blender-only experiment. Do not burn Codex quota on repeated AI retries: test at most **one** candidate, report if it fails. Separate subsequent game integration into a later accepted task.
+
+Read [art recovery](../../COAST_CHARACTER_ART_RECOVERY.md) and [character master strategy](../../COAST_CHARACTER_ASSET_STRATEGY.md).
