@@ -235,3 +235,26 @@ Never mark a source-only static audit as passing Vitest.
   or the stage select is present but covered by the old loading art.
 - Run `npm run verify:dev` and exercise these cases with local
   Codex and one real PS4/PC gamepad before shipping main.
+
+## R5c implemented road director — dev v0.10.8
+
+- The accepted first 6.76km remain untouched; the **whole first-map
+  race** is now 30km of stage progress, HUD finish 30350m.
+- Road turns/elevations/banks are authored in
+  `content/stages/coast/road.json`; ten named acts, five hero
+  slots and three overtake-pressure gates are authored in
+  `content/stages/coast/direction.json`. No general Scenic
+  Manager, random road re-generation or rank-dependent speed boost.
+- Sea-side safety **always** has visible low guardrail/linked beach
+  bollards and matching physical boundary/contact materials.
+- Offline coast shore map now uses an exact 2D segment AABB index,
+  instead of an extremely costly Z-only full scan. Never change
+  the wet-sand/FFT appearance simply because the road grew longer.
+- Legacy far mountains are bounded to the old coast footprint;
+  physically plausible Hero Scenery must be created later in
+  Blender/Geometry Nodes using the shared 30km road-guide export.
+- Road whitebox acceptance is separate from Hero art acceptance.
+  Read `docs/R5C_30KM_ROAD_DIRECTOR.md`, test all checkpoints
+  at driving speeds, and run `npm run verify:dev` on the local
+  Codex workstation before marking R5c QA green. Never auto-push
+  to `main`.

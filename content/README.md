@@ -171,3 +171,17 @@ and saved in race snapshots; RoadCones warning signs share the
 same knock-and-flight animation for player, rival and civilian
 contacts. No Geometry Nodes scenery object is a replacement
 for these physical obstacle bodies.
+
+## R5c 30km first-map grand tour
+
+`stages/coast/road.json` now owns 30,000m of progress (absolute
+HUD start 350m; race finish 30,350m). First six accepted turns
+are unchanged; later turns and altitude/bank profiles create
+distinct scenic and competitive windows. `direction.json`
+owns ten contiguous story chapters, five Hero Scenery location
+briefs and three non-rubber-band racing risk gates.
+
+All geometry remains road-sampler-driven, including the Blender
+reference export. Coast-side style is always visibly protected
+by low rail or linked promenade stones. Actual Hero meshes
+and new large terrain are deferred to subsequent Blender work.

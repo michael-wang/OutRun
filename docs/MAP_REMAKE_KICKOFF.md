@@ -268,3 +268,19 @@ Fixes in development v0.10.6:
 New unit tests target AI warning anticipation, post-impact grounding,
 and exit overlay visibility. Local Vitest/build and play acceptance
 are necessary before considering the 0.10.6 fixes verified.
+
+## R5c road director — grand tour instead of the 10km cap
+
+Owner authorizes replacing the rest of the old coastal road with
+a longer first-map experience where scenery gives breathing room,
+then racing gates offer genuine chances to catch or be overtaken.
+**Implemented:** 30km authored road progress, five Hero locations,
+three competitive gates, big rolling altitude changes, a continuous
+low seaward rail and a longer finish sprint. Accepted R5b curves
+and incident scene remain unchanged.
+
+The old 10km terrain and village placements are **not** magically
+new 30km Hero Scenery. The next production stage is 3D art/
+Geometry Nodes at selected validated slots, after Codex and owner
+approve the road rhythm. Full brief:
+[`R5C_30KM_ROAD_DIRECTOR.md`](R5C_30KM_ROAD_DIRECTOR.md).

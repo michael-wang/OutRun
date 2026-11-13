@@ -156,3 +156,16 @@ The next active workstream is **hand-authored map remake**:
 driving whitebox before scenery. See the mountain parallax
 acceptance notes there; do not polish the old midground mountains
 for a soon-to-be-replaced map.
+
+## R5c — 30km authored route and scenic-direction data
+
+Road content now defines a 30km playable race (HUD 350–30350),
+with smooth height/bank, 21 turns, ten scenic-purpose chapters,
+five Hero anchor locations, three risk windows and visible
+coast-side protection. `COAST_DIRECTION` only validates/renders
+metadata; `COAST_STAGE.road` stays authoritative for Worker,
+physics, traffic and rendering. Shore baking switched to exact
+XZ segment indexing for offline performance. The old 10km
+mountain sheets were bounded rather than stretched.
+All-new Hero assets remain a separate Blender/Geometry Nodes
+scenery task, not accomplished by the road whitebox.

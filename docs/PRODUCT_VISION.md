@@ -13,3 +13,13 @@ An original arcade racing road trip inspired by the *feeling* of classic coastal
 **Second stage:** Previous city/canyon journey proposals are not a product commitment. The next stage will be rebuilt from the new authoring workflow; no compatibility requirement for old L1/L2/L3 or scenic director.
 
 **Shipping:** Individual game, friends-and-family playtests. Block only P0; report P1 and let the owner decide. Keep rapid edit → drive → publish.
+
+**R5c first-map expansion:** The accepted initial driving tutorial
+now flows into a 30km scenic/competitive grand tour: bay views,
+cliff chase, inland rice plateau, mountain/shore switchbacks,
+open-water bridge opportunity, two late technical turns and a
+true finish sprint. Five Hero Scenery locations are marked but
+their large 3D assets are not yet modeled. The entire ocean
+edge has low visible protective railing, so the driving boundary
+is visually credible. Rival competitiveness comes from actual
+braking, line selection and traffic, never rank-based rubber banding.

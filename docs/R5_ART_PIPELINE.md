@@ -187,3 +187,14 @@ mesh disconnected from Traffic's obstacle collision state.
 
 Local Codex (Windows) owns production build, full Vitest
 and Pixel 8 device profiling before R5b.1 is accepted.
+
+## R5c full-length Geometry Nodes handoff
+
+`npm run r5:road-guide` now exports the whole 30km route and the
+five Hero location anchors, with road-space transforms, chapter
+roles and risk gates. `scripts/blender/r5_guides.py` creates
+an Empty marker for each Hero. This is a reference-only planning
+tool, NOT a 30km default rock-scattering prescription.
+Start with one cliff or bay prototype, finish mobile PBR/LOD
+acceptance, then reuse that toolkit in other chapter contexts.
+Include moving-camera parallax in every Hero acceptance.
