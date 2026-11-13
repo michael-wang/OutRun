@@ -11,6 +11,10 @@ The owner selected **Style Option B** on 2026-11-14. The full board sets the loo
 - Build expression with readable brows, cheeks, mouths and grouped locks of hair. Show clothing through posture and a few large folds.
 - Use the warm rim light, cool water and layered headlands in the banner to judge composition at driving speed. Calibrate materials in the existing dusk light.
 
+## Approved heroine identity (character-specific override)
+
+On 2026-11-14 the owner **approved the new blonde passenger 2D front / three-quarter / profile character sheet** as exactly the heroine to build. See [approved reference handoff](art-review/h1ar/README.md). Her face, warm-brown eyes, smiling expression, flowing layered golden bob, gold geometric earrings and white/ivory halter neckline should follow this newer sheet, even where it differs from the original Style Option B woman. Style Option B remains authoritative for **overall world** aesthetic. Do not label the existing procedural H1a 3D face as accepted; it was rejected. Next gate is one true Blender-editable head/bust with front, 45°, profile, rear renders before any gameplay integration. Source ZIP is transferred locally by owner/Codex and is not yet committed as binary to Git.
+
 **North star:** Beautiful at 200–300 km/h from the real chase camera on Pixel 8. Clear silhouettes, coherent materials, credible spatial scale, attractive golden-hour travel atmosphere, and racing sightlines come before microscopic details.
 
 ## Style vocabulary / invariants
