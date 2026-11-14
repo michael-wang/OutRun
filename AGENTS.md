@@ -1,5 +1,12 @@
 # 極速漫遊 / OutRun — current project rules
 
+## CURRENT OWNER ART GATE — standing proportions; keep seated heroine (2026-11-15)
+
+**New highest-priority Codex task: [Issue #52 — R7S standalone Blender standing-body art correction](https://github.com/michael-wang/OutRun/issues/52).** Owner considers the heroine acceptable in the playable Riviera seat, but **the showcase standing fullbody has visibly poor mannequin/tube proportions and unflattering garment silhouette**. This is not a neckline/strap issue. `scripts/blender/build_r7h.py` constructs the whole torso and legs from a few elliptical rings (sections line ~56, leg rings ~95), the likely root cause; don't just scale the tube or keep hand-editing the eight rings.
+
+**PREVIOUS Issue #51 B-2 costume design is already implemented in dev v0.10.30:** two shoulder-supported ivory ribbons run from bodice over shoulders to rear waist, NO neck loop; rear edge is at 1.000m and lower back covered. Keep B-2, frozen R6d hair + WILD, existing face/eyes, 1.0 seated people, current 8m camera, 5 game gestures, ALL runtime code/GLBs **unchanged** during R7S. **Make only ONE genuinely sculpted/refitted fullbody STANDING Blender study**, from current body (don't regenerate face), with anatomically coherent torso/hips/thighs/knees/calves/ankles, fitted ivory dress and heels. Save as a NEW ignored Blender artifact, show matched fullbody orthographic before/after + relaxed pose, STOP for owner art gate. No new fullbody race integration, no `verify:dev` if no code changes, no `main`. NT$0; conserve Codex quota. Last-good in-car figure must not regress.
+
+
 ## CURRENT REVIEW CANDIDATE — R7H Rev. B-2 shoulder ribbons, v0.10.30 (2026-11-15)
 
 **Owner explicitly resolved the reference conflict: use attached B-2, NO neck loop.** Two ivory ribbons start at the front bodice, pass over the shoulders and converge toward the back waist. This supersedes Issue #51's earlier nape-to-waist wording and the ZIP's older construction notes. The rear center edge is 1.000m (10cm below v0.10.29), with continuous lower-back coverage. See [B-2 review](docs/art-review/r7h-revb/README.md). Only costume geometry changed; exact non-cloth attributes, morphs, skin bind, clips and R6d hair are audited unchanged. Editable v0.10.29 master is preserved; use `scripts/blender/revise_r7h_revb.py` for this revision, not the older `build_r7h.py` recipe. STOP for Julia/owner art acceptance. No further character, hair or vehicle work authorized.
