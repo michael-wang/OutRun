@@ -1,4 +1,6 @@
 # Coastal Highway — Cabriolet Cabin Wind & Hero Framing R0
+> **Owner R6 decision (2026-11-14): superseded as a staged rollout.** DO NOT execute P0 framing, then P1 wind, then later spring/tip geometry as separate tickets. Instead implement **both characters at scale 1.0 + freely retuned Spring Bone mid-to-tip golden hair + continuous open-top cabin relative-wind** in ONE playable dev pass via [Issue #45](https://github.com/michael-wang/OutRun/issues/45) and [canonical R6 specification](COAST_HEROINE_R6_INTEGRATED_PASS.md). The analysis below remains technical background only; its earlier P0/P1 sequencing, QA-only 0.92/1.0 scale comparison, and preference for Shape Keys A no longer dictate current construction. Pixel 8 original-size playtest and renderer performance guardrails still apply.
+
 Date: 2026-11-14
 Owner/Julia design direction. Status: next-sprint specification / research. **No new game features or device benchmark have been implemented by this document.** Audience: Julia + Codex.
 Related: [technique-first production principles](ART_TECH_CO_DESIGN_PRINCIPLES.md), [hair physics A/B postmortem](COAST_HEROINE_HAIR_TECH_REVIEW.md), [approved character identity](art-review/h1ar/README.md).
