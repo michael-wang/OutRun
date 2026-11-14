@@ -1,6 +1,12 @@
 # 極速漫遊 / OutRun — current project rules
 
-## NOW AUTHORIZED — R7 Body Foundation P0 with MPFB (2026-11-15)
+## CURRENT ART WORK — R7 Clothing P1 on approved MPFB body (2026-11-15)
+
+**Body foundation #53 ART/ENGINEERING PASS**: actual Blender four-view/wireframe/rig outputs prove the MPFB 2.0.18 model has a continuous human basemesh, separate feet/fingers/pelvis, functioning 53-bone rig (26,756 tris). It is accepted as a **BODY SUBSTRATE ONLY**. MPFB's TEMP face/head is not the final heroine identity, and the figure without clothes does not mean the final heroine art is approved. Do NOT generate any more bodies, graft old procedure limbs, retopo a broken Hunyuan skirt, or move head/hair now.
+
+**Active next bounded Codex task: [Issue #54 — independently made ivory B-2 dress](https://github.com/michael-wang/OutRun/issues/54)**. Use MPFB MakeClothes/helper-skirt or the smallest genuinely separate Blender clothing-mesh/weight-transfer route; the dress MUST be its own skinned garment over an intact human body, not replace the pelvis or be sliced from the old Hunyuan mesh. Outfit: two bands FROM FRONT BODICE over shoulders DOWN to BACK WAIST (NO neck loop), open upper/middle back and covered lower waist, flattering ivory asymmetrical wrap and gathered side knot. ONE garment candidate + front/profile/back45/rear and pose bend proof, then STOP for owner/Julia. No face graft, hairstyle, five game gestures, whole-body GLB into runtime or male/car modifications yet. **DEV v0.10.30 playable heroine is frozen**, no `src/`, `public/assets/`, version or `main` changes. NT$0, offline-only so no verify:dev needed. The prior #53 body task is COMPLETE, not an instruction to recreate another candidate.
+
+## HISTORICAL COMPLETE — R7 Body Foundation P0 with MPFB (2026-11-15)
 
 **CURRENT NEXT LOCAL CODEX TASK: [Issue #53](https://github.com/michael-wang/OutRun/issues/53)**. Complete human anatomical basemesh+rig FIRST, using **official free MPFB (MakeHuman Plugin for Blender)** with existing Blender 4.5. Do **NOT** continue R7T mesh grafting, old ellipse-ring body generation or run Hunyuan3D on the same clothed image again. R7T provenance [audit](docs/art-review/r7t-audit/README.md) CONFIRMED old R7H procedural arms/hands/shoes and overlapping garment joined to incomplete Hunyuan torso and manually reconstructed mirrored legs; a CLOTHED surface was falsely treated as a complete body under the dress.
 
