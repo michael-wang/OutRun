@@ -1,0 +1,24 @@
+{
+  "source": "C:\\astra-dev\\outrun\\docs\\art-review\\r7h-revb\\approved-b2.png",
+  "sourceSha256": "f6f31f2be9cb268a0e814ce4e0ab23b2921dee00f71829ff8d8d6eed8f9ef781",
+  "cropBox": [
+    389,
+    0,
+    555,
+    495
+  ],
+  "foregroundBoundsInCrop": [
+    5,
+    7,
+    145,
+    491
+  ],
+  "nativeFigurePixels": [
+    140,
+    484
+  ],
+  "input": "C:\\astra-dev\\tools\\outrun-r7s-3d\\front-rgba.png",
+  "inputSha256": "e6c06c9783a0d2e2abc34bf5664dc3b87559242f4a37f9487742e8fec7fef8a1",
+  "processing": "Original RGB crop; warm-vs-purple mask (R-B>7,R>85), largest connected silhouette, recover enclosed highlight islands <100 native pixels, Lanczos resize and transparent 1024 square padding. No generated or repainted body.",
+  "limitations": "Hand on hip; near-overlapping legs and shoes; upsampling does not add source detail."
+}

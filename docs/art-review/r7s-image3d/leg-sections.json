@@ -1,0 +1,54 @@
+{
+  "method": "Horizontal sections of the unedited generated mesh below the skirt. One contour where two separate legs are expected indicates joined volumes, not just camera overlap.",
+  "sections": [
+    {
+      "displayHeightM": 0.2,
+      "rawY": -0.7824587522873336,
+      "sectionContours": 1,
+      "pointsPerContour": [
+        250
+      ]
+    },
+    {
+      "displayHeightM": 0.3,
+      "rawY": -0.6646892370376397,
+      "sectionContours": 1,
+      "pointsPerContour": [
+        269
+      ]
+    },
+    {
+      "displayHeightM": 0.4,
+      "rawY": -0.5469197217879458,
+      "sectionContours": 1,
+      "pointsPerContour": [
+        337
+      ]
+    },
+    {
+      "displayHeightM": 0.5,
+      "rawY": -0.42915020653825176,
+      "sectionContours": 1,
+      "pointsPerContour": [
+        350
+      ]
+    },
+    {
+      "displayHeightM": 0.6,
+      "rawY": -0.31138069128855783,
+      "sectionContours": 1,
+      "pointsPerContour": [
+        357
+      ]
+    },
+    {
+      "displayHeightM": 0.7,
+      "rawY": -0.1936111760388638,
+      "sectionContours": 2,
+      "pointsPerContour": [
+        411,
+        153
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "model": "Hunyuan3D-2.1 Shape-only",
+  "seed": 42,
+  "steps": 40,
+  "guidance": 5.0,
+  "octree": 384,
+  "num_chunks": 6000,
+  "decoder": "FlashVDM / marching cubes",
+  "weights": "C:\\astra-dev\\tools\\outrun-h1ar3d\\model.fp16.ckpt",
+  "existingLauncher": "C:\\astra-dev\\tools\\outrun-h1ar3d\\infer.py",
+  "inputSha256": "e6c06c9783a0d2e2abc34bf5664dc3b87559242f4a37f9487742e8fec7fef8a1",
+  "startedUtc": "2026-11-14T18:53:16.137995+00:00",
+  "attempt": 1,
+  "secondsLoadToRaw": 46.01944020000519,
+  "peakAllocatedGiB": 7.658145904541016,
+  "peakReservedGiB": 8.0234375,
+  "torch": "2.7.1+cu128",
+  "cuda": "12.8",
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "vertices": 115228,
+  "faces": 402268,
+  "bounds": [
+    [
+      -0.3076595067977905,
+      -1.0003323554992676,
+      -0.21282871067523956
+    ],
+    [
+      0.28366005420684814,
+      0.9718926548957825,
+      0.1833692044019699
+    ]
+  ],
+  "rawSha256": "45216135da2885e36c0f9379d68976834531d9dd71b6bc0b9ad9b95a9e59473f",
+  "completed": true
+}

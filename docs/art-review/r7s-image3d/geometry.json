@@ -1,0 +1,18 @@
+{
+  "rawFaces": 402268,
+  "removedRepeatedIndexFaces": 171808,
+  "removedInvalidCellSpans": 0,
+  "smallRepairFaces": 0,
+  "vertices": 115228,
+  "triangles": 230460,
+  "watertight": true,
+  "windingConsistent": true,
+  "boundaryEdges": 0,
+  "nonmanifoldEdges": 0,
+  "componentFaceCounts": [
+    230460
+  ],
+  "bytes": 4149160,
+  "sha256": "58239c868d062488f9259616c98cdf03939a9032ecd55a938a226dfbf6c4e456",
+  "shapeEditing": "None; only known marching-cubes index/span cleanup and small triangular/quad hole repair. Raw output preserved."
+}
