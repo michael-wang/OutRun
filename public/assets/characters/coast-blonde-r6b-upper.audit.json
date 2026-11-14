@@ -1,0 +1,11 @@
+{
+  "verticesBefore": 1592,
+  "verticesAfter": 4376,
+  "trianglesBefore": 2279,
+  "trianglesAfter": 7424,
+  "maxInsetMeters": 0.003999991808086634,
+  "bones": 25,
+  "materials": 1,
+  "lowerUnchangedBelowMeters": 0.065,
+  "bytes": 295944
+}

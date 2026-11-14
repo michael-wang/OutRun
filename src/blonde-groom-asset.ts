@@ -18,10 +18,11 @@ export function preloadBlondeGroom(spring=true):Promise<boolean>{
   springPending=(async()=>{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);
    try{
-    // Default R6b keeps the original Spring rig and WILD wind but loosens only the middle locks.
-    // Local comparison: ?hairWind=wild&hairMid=old restores the unchanged R6 skin.
+    // Upper sculpt keeps R6b skin/wind; dev-only rollback preserves both earlier assets.
     const oldMiddle=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairMid')==='old';
-    const filename=oldMiddle?'coast-blonde-r6.glb':'coast-blonde-r6b.glb';
+    const oldUpper=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairUpper')==='old';
+    const filename=oldMiddle?'coast-blonde-r6.glb':oldUpper?'coast-blonde-r6b.glb':'coast-blonde-r6b-upper.glb';
+    const triangleBudget=oldMiddle||oldUpper?2500:7500;
     const response=await fetch(`${import.meta.env.BASE_URL}assets/characters/${filename}`,{signal:controller.signal});
     if(!response.ok)throw new Error(`Spring hair HTTP ${response.status}`);
     const gltf=await new GLTFLoader().parseAsync(await response.arrayBuffer(),'');
@@ -29,7 +30,7 @@ export function preloadBlondeGroom(spring=true):Promise<boolean>{
     const mesh=meshes[0];
     if(meshes.length!==1||!(mesh instanceof THREE.SkinnedMesh)||mesh.skeleton.bones.length!==25||
        !(mesh.material instanceof THREE.MeshStandardMaterial)||mesh.material.transparent||
-       (mesh.geometry.index?.count??mesh.geometry.attributes.position.count)>7500)
+       (mesh.geometry.index?.count??mesh.geometry.attributes.position.count)>triangleBudget*3)
      throw new Error('Invalid R6 hair asset');
     for(let c=0;c<6;c++)for(let d=0;d<4;d++)if(!gltf.scene.getObjectByName(`lock-${c}-${d}`))throw new Error('Missing hair bone');
     springTemplate=gltf.scene;return true;
