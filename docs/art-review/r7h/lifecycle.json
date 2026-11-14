@@ -1,0 +1,17 @@
+{
+  "active": "shoutLeft",
+  "pausePreserved": true,
+  "resumed": {
+    "mode": "playing",
+    "action": null
+  },
+  "restarted": {
+    "action": null,
+    "distance": 350
+  },
+  "reentered": {
+    "action": null,
+    "mode": "playing"
+  },
+  "errors": []
+}

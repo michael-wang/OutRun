@@ -41,6 +41,7 @@ import {RaceStartSignals} from './race-start-signals';
 import {RivalView} from './rival-view';
 import type {RaceHudBounds} from './rival-tag-layout';
 import {RivalOvertakes} from './rival-overtakes';
+import {HeroineOpportunities} from './heroine-opportunities';
 import {layoutRearRivalTags,formatRaceTime} from './race-hud';
 import {GamepadInput} from './gamepad';
 import {RecentDrivingHistory} from './recent-history';
@@ -225,8 +226,10 @@ startupDiagnostics.mark('renderer-created');
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const previousHeroLook=import.meta.env.DEV&&params.get('r6')==='previous';
 await preloadBlondeGroom(!previousHeroLook);
-// R7A is an owner-authorized playable DEV art candidate, pending visual signoff.
-if(import.meta.env.DEV&&!previousHeroLook&&params.get('heroine')!=='previous')await preloadHeroineBust();
+// R7H is an owner-authorized playable DEV art candidate; R7A remains a rollback.
+if(import.meta.env.DEV&&!previousHeroLook&&params.get('heroine')!=='previous'){
+ if(!await preloadHeroineBust(params.get('heroine')==='r7a'?'r7a':'r7h'))await preloadHeroineBust('r7a');
+}
 const world=createWorld({
  previousHeroLook,
  track:coastRuntime.track,
@@ -437,6 +440,8 @@ const race=new RivalRace(coastEnd,d=>{
 },(d,time,radius)=>traffic.raceObstacles(d,time,radius));
 race.reset(state.distance);
 const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,race.rivals);
+const heroineOpportunities=new HeroineOpportunities(),heroineTargetPosition=new THREE.Vector3();
+let heroineFinishPresentation=0;
 let rivalPassCount=0;
 if(traffic){traffic.rivalLeaders=()=>race.rivals;traffic.enableRaceMode();}
 race.yieldTraffic=(row,distance,speed,time)=>traffic?.yieldBehindRival(row,distance,speed,time);
@@ -517,6 +522,7 @@ const backToResults=document.createElement('button');
 backToResults.textContent='返回結算';backToResults.onclick=()=>followRacer(-1);director.append(backToResults);
 raceWatch.onclick=()=>followRacer(race.rivals.findIndex(r=>r.finishTime===null));
 function resetRace(grid=atDistance??BRICK_START){
+ heroineOpportunities.reset();heroineFinishPresentation=0;
  race.reset(grid);rivalOvertakes.reset(grid,race.rivals);rivalPassCount=0;
  startSignals.reset();sound.resetRaceStartCues();
   rivalView.reset();rivalView.updateRanks(race.standings({distance:grid,lateral:0,speed:0}));
@@ -678,7 +684,7 @@ function landscapeReady(){return matchMedia('(orientation:landscape)').matches;}
 function updatePlayerUi(){
   if(!playerUi)return;
   const panel=$('player-start'),show=!(brickCompleted&&observed>=0)&&mode!=='playing'&&mode!=='countdown'&&mode!=='ready'&&!settingsOpen&&!(mode==='paused'&&!brickCompleted);
-   standingsPanel.hidden=!(brickCompleted&&show);
+   standingsPanel.hidden=!(brickCompleted&&show)||heroineFinishPresentation>0;
    if(!standingsPanel.hidden)updateStandings();
   document.documentElement.dataset.driveMode=mode;
   // Only completed journeys use the small lower-right credits HUD; regular
@@ -803,7 +809,7 @@ function returnToMainMenu(){
  traffic?.dispose();
  cones?.dispose();
  triangles?.dispose();
- disposeScene(world.scene);
+ world.car.userData.motion.dispose();disposeScene(world.scene);
  renderer.dispose();
  renderer.forceContextLoss();
  $('app').replaceChildren();
@@ -922,6 +928,11 @@ function advance(dt:number,override?:InputState){
     return;
   }
   if(brickCompleted){
+    if(heroineFinishPresentation>0&&!document.hidden&&!settingsOpen&&!contextLost){
+      world.car.userData.motion.advance(0,0,dt,0,0,0,cabinInput);
+      heroineFinishPresentation=Math.max(0,heroineFinishPresentation-dt);
+      if(heroineFinishPresentation===0)ui();
+    }
     if(!document.hidden&&(!mobile()||landscapeReady())&&!contextLost&&race.rivals.some(r=>r.finishTime===null)){
       holdRoad(false);race.step(dt,state,state);
       if(observed>=0&&race.rivals[observed].finishTime!==null)followRacer(-1);
@@ -997,6 +1008,15 @@ function advance(dt:number,override?:InputState){
  // Lane-relative acceleration plus the turn of the road's own reference frame.
  const rightAcceleration=dt>0?(state.lateralRate-beforeLateralRate)/dt+road.curvature*roadSpeed*roadSpeed:0;
  const motion=world.car.userData.motion;
+ if(motion.hasHeroine){
+  const blocked=!!(rivalHit||collision||impact||rockHit||stoneHit||coneCollisions||triangleCollisions||state.offRoad||race.playerFinish!==null);
+  const opportunity=heroineOpportunities.update(dt,race.rivals.map(r=>{
+   const sample=world.sample(r.distance);heroineTargetPosition.copy(sample.position).addScaledVector(sample.right,r.lateral);
+   world.car.worldToLocal(heroineTargetPosition);
+   return {id:r.entry.id,lead:r.distance-state.distance,localX:heroineTargetPosition.x,finished:r.finishTime!==null};
+  }),blocked||!!motion.heroineActive);
+  if(blocked)motion.cancelHeroine();else if(opportunity)motion.heroineAction(opportunity.action);
+ }
  // Racing opponents are separate from random road traffic; real overtakes always earn applause.
  for(const _id of rivalPasses){const cheer=motion.onRivalPass();if(cheer)sound.passengerCue(cheer);}
  if(cleanPass&&!rivalPasses.length&&!rivalHit&&!collision&&!impact&&!rockHit&&!stoneHit&&!coneCollisions&&!triangleCollisions&&!state.offRoad){
@@ -1011,7 +1031,7 @@ function advance(dt:number,override?:InputState){
  cabinInput.velocityZ=dt>0?(worldZ-road.position.z-road.right.z*beforeLateral)/dt:0;
  cabinInput.yaw=-afterRoad.roadHeading-state.heading;cabinInput.time=elapsed;
  if(motion.advance(travel,state.appliedSteer,dt,rightAcceleration,state.launchSlip,state.brakeSlip,cabinInput))sound.passengerCue('clap');
- elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(telemetry?.due(elapsed)){const sceneSample=coastGameplayAt(state.distance);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:sceneSample.lanes,active:sceneSample.active,roadX:state.lateral,offRoad:state.offRoad,world:sceneSample.world,beat:sceneSample.beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId??rivalHit?.actorId,race.rivals);if(brick&&state.distance>=coastEnd){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;clearRaceCheckpoint();pausedRacePhase=null;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(playerUi?'result-replay':'l2-play') as HTMLElement|null)?.focus();}}else sound.pause();
+ elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(telemetry?.due(elapsed)){const sceneSample=coastGameplayAt(state.distance);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:sceneSample.lanes,active:sceneSample.active,roadX:state.lateral,offRoad:state.offRoad,world:sceneSample.world,beat:sceneSample.beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId??rivalHit?.actorId,race.rivals);if(brick&&state.distance>=coastEnd){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;if(motion.heroineAction('victory'))heroineFinishPresentation=2.2;clearRaceCheckpoint();pausedRacePhase=null;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(playerUi?'result-replay':'l2-play') as HTMLElement|null)?.focus();}}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){
   if(brick)return height+(Math.abs(lateral)>world.halfAt(state.distance)?-.1:0);
@@ -1410,6 +1430,7 @@ if(recovery){
   updateFootprint(state,world.halfAt(state.distance));
   elapsed=recovery.elapsed;rivalPassCount=recovery.rivalPassCount;
   rivalOvertakes.reset(state.distance,race.rivals);
+  heroineOpportunities.reset();
   rivalView.reset();rivalView.updateRanks(race.standings(state));
   countdown=0;mode='paused';pausedRacePhase='playing';raceStartConfirmed=true;settingsOpen=false;initialized=false;
   input.clear();pad.neutralize();sound.pause();world.streamer?.update(state.distance);
@@ -1459,6 +1480,19 @@ $('free-export').onclick=()=>l2UI?.exportCurrent();$('free-export').hidden=!!bri
 if(!mobile())requestAnimationFrame(()=>!signal.aborted&&document.getElementById(playerUi?'player-play':'l2-play')?.focus());
 
 if(import.meta.env.DEV){(window as any).__drive={
+  heroinePose:(action:import('./heroine-performance').HeroineAction,time:number)=>{world.car.userData.motion.previewHeroine(action,time);render(0);},
+  // Deterministic visual QA fixture; the ordinary race never calls this hook.
+  heroineTarget:(side:'left'|'right',lead=1,speed=state.speed)=>{
+    const r=race.rivals[0],sample=world.sample(state.distance+lead);
+    world.car.updateWorldMatrix(true,false);
+    const point=world.car.localToWorld(new THREE.Vector3(side==='left'?5:-5,0,lead));
+    r.distance=state.distance+lead;r.lateral=point.sub(sample.position).dot(sample.right);
+    r.speed=speed;r.finishTime=null;
+    render(0);
+    const target=sample.position.clone().addScaledVector(sample.right,r.lateral);target.y+=1;
+    const screen=target.clone().project(camera);
+    return {id:r.entry.id,side,lead,localX:world.car.worldToLocal(target).x,screen:[screen.x,screen.y]};
+  },
   rivalEffects:()=>rivalView.inspectEffects(),
   rivalPassCount:()=>rivalPassCount,
   rivalTags:()=>rivalView.inspectTags(),

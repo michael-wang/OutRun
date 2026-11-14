@@ -1,5 +1,9 @@
 # 極速漫遊 / OutRun — current project rules
 
+## R7H review candidate — v0.10.28 (2026-11-15)
+
+Issue #50 is implemented on dev for owner/Julia art review. See `docs/art-review/r7h/README.md` for fullbody/race sources, five rear-camera gestures, event/lifecycle evidence and remaining art limitations. DEV defaults to the R7H race GLB; `heroine=r7a` retains the prior model. R6d hair asset, Spring Bones, wild wind, 1.0 people and chase camera are frozen. Side targets follow actual rear view: +X driver/LEFT, -X passenger/RIGHT. Do not begin male/vehicle/hair work until explicitly requested. Pixel 8 was not connected; no mobile performance acceptance is claimed. Older R6 direction below is historical and does not authorize a new hair pass.
+
 Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
 canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 

@@ -1,0 +1,2666 @@
+{
+  "events": [
+    {
+      "side": "right",
+      "rows": [
+        {
+          "t": 0,
+          "action": null,
+          "lead": 9.541567745255634,
+          "score": 0
+        },
+        {
+          "t": 0.05,
+          "action": null,
+          "lead": 7.1037547612186245,
+          "score": 0
+        },
+        {
+          "t": 0.1,
+          "action": null,
+          "lead": 4.686631439136818,
+          "score": 0
+        },
+        {
+          "t": 0.15000000000000002,
+          "action": "shoutRight",
+          "lead": 2.290237876289666,
+          "score": 0
+        },
+        {
+          "t": 0.2,
+          "action": "shoutRight",
+          "lead": -0.08540813983927364,
+          "score": 0
+        },
+        {
+          "t": 0.25,
+          "action": "shoutRight",
+          "lead": -2.440305898512179,
+          "score": 0
+        },
+        {
+          "t": 0.30000000000000004,
+          "action": "shoutRight",
+          "lead": -4.774468352314216,
+          "score": 0
+        },
+        {
+          "t": 0.35000000000000003,
+          "action": "shoutRight",
+          "lead": -7.087919845977012,
+          "score": 1
+        },
+        {
+          "t": 0.4,
+          "action": "shoutRight",
+          "lead": -9.380694544081507,
+          "score": 1
+        },
+        {
+          "t": 0.45,
+          "action": "shoutRight",
+          "lead": -11.652835347446398,
+          "score": 1
+        },
+        {
+          "t": 0.5,
+          "action": "shoutRight",
+          "lead": -13.904393139767762,
+          "score": 1
+        },
+        {
+          "t": 0.55,
+          "action": "shoutRight",
+          "lead": -16.135426230262965,
+          "score": 1
+        },
+        {
+          "t": 0.6000000000000001,
+          "action": "shoutRight",
+          "lead": -18.345999880351883,
+          "score": 1
+        },
+        {
+          "t": 0.65,
+          "action": "shoutRight",
+          "lead": -20.53618596408296,
+          "score": 1
+        },
+        {
+          "t": 0.7000000000000001,
+          "action": "shoutRight",
+          "lead": -22.70606268607753,
+          "score": 1
+        },
+        {
+          "t": 0.75,
+          "action": "shoutRight",
+          "lead": -24.855714294536483,
+          "score": 1
+        },
+        {
+          "t": 0.8,
+          "action": "shoutRight",
+          "lead": -26.985230831589433,
+          "score": 1
+        },
+        {
+          "t": 0.8500000000000001,
+          "action": "shoutRight",
+          "lead": -29.09470792310549,
+          "score": 1
+        },
+        {
+          "t": 0.9,
+          "action": "shoutRight",
+          "lead": -31.186586583936787,
+          "score": 1
+        },
+        {
+          "t": 0.9500000000000001,
+          "action": "shoutRight",
+          "lead": -33.27620828049612,
+          "score": 1
+        },
+        {
+          "t": 1,
+          "action": "shoutRight",
+          "lead": -35.38947730423024,
+          "score": 1
+        },
+        {
+          "t": 1.05,
+          "action": "shoutRight",
+          "lead": -37.5366048977985,
+          "score": 1
+        },
+        {
+          "t": 1.1,
+          "action": "shoutRight",
+          "lead": -39.71769900759682,
+          "score": 1
+        },
+        {
+          "t": 1.1500000000000001,
+          "action": "shoutRight",
+          "lead": -41.932602323725405,
+          "score": 1
+        },
+        {
+          "t": 1.2000000000000002,
+          "action": "shoutRight",
+          "lead": -44.181154432311814,
+          "score": 1
+        },
+        {
+          "t": 1.25,
+          "action": "shoutRight",
+          "lead": -46.46319190120357,
+          "score": 1
+        },
+        {
+          "t": 1.3,
+          "action": "shoutRight",
+          "lead": -48.776425211638525,
+          "score": 1
+        },
+        {
+          "t": 1.35,
+          "action": "shoutRight",
+          "lead": -51.10498105737088,
+          "score": 1
+        },
+        {
+          "t": 1.4000000000000001,
+          "action": "shoutRight",
+          "lead": -53.42664474320736,
+          "score": 1
+        },
+        {
+          "t": 1.4500000000000002,
+          "action": "shoutRight",
+          "lead": -55.73287557415233,
+          "score": 1
+        },
+        {
+          "t": 1.5,
+          "action": "shoutRight",
+          "lead": -58.02332044321247,
+          "score": 1
+        },
+        {
+          "t": 1.55,
+          "action": "shoutRight",
+          "lead": -60.297957772975224,
+          "score": 1
+        },
+        {
+          "t": 1.6,
+          "action": "shoutRight",
+          "lead": -62.55677564334337,
+          "score": 1
+        },
+        {
+          "t": 1.6500000000000001,
+          "action": "shoutRight",
+          "lead": -64.79976969366226,
+          "score": 1
+        },
+        {
+          "t": 1.7000000000000002,
+          "action": "shoutRight",
+          "lead": -67.02694180932713,
+          "score": 1
+        },
+        {
+          "t": 1.75,
+          "action": "shoutRight",
+          "lead": -69.23829927438737,
+          "score": 1
+        },
+        {
+          "t": 1.8,
+          "action": "shoutRight",
+          "lead": -71.43385417768195,
+          "score": 1
+        },
+        {
+          "t": 1.85,
+          "action": "shoutRight",
+          "lead": -73.61362302318548,
+          "score": 1
+        },
+        {
+          "t": 1.9000000000000001,
+          "action": "shoutRight",
+          "lead": -75.77762648693215,
+          "score": 1
+        },
+        {
+          "t": 1.9500000000000002,
+          "action": null,
+          "lead": -77.92588924739948,
+          "score": 1
+        },
+        {
+          "t": 2,
+          "action": null,
+          "lead": -80.05843981496992,
+          "score": 1
+        },
+        {
+          "t": 2.0500000000000003,
+          "action": null,
+          "lead": -82.17531044932912,
+          "score": 1
+        },
+        {
+          "t": 2.1,
+          "action": null,
+          "lead": -84.27653710009372,
+          "score": 1
+        },
+        {
+          "t": 2.15,
+          "action": null,
+          "lead": -86.3621593155176,
+          "score": 1
+        },
+        {
+          "t": 2.2,
+          "action": null,
+          "lead": -88.43222017461358,
+          "score": 1
+        },
+        {
+          "t": 2.25,
+          "action": null,
+          "lead": -90.48676625015423,
+          "score": 1
+        },
+        {
+          "t": 2.3000000000000003,
+          "action": null,
+          "lead": -92.52584756913393,
+          "score": 1
+        },
+        {
+          "t": 2.35,
+          "action": null,
+          "lead": -94.54951752071611,
+          "score": 1
+        },
+        {
+          "t": 2.4000000000000004,
+          "action": null,
+          "lead": -96.55783282377752,
+          "score": 1
+        },
+        {
+          "t": 2.45,
+          "action": null,
+          "lead": -98.55085349748106,
+          "score": 1
+        },
+        {
+          "t": 2.5,
+          "action": null,
+          "lead": -100.52864278476409,
+          "score": 1
+        },
+        {
+          "t": 2.5500000000000003,
+          "action": null,
+          "lead": -102.49126709185293,
+          "score": 1
+        },
+        {
+          "t": 2.6,
+          "action": null,
+          "lead": -104.43879595475073,
+          "score": 1
+        },
+        {
+          "t": 2.6500000000000004,
+          "action": null,
+          "lead": -106.37130199966123,
+          "score": 1
+        },
+        {
+          "t": 2.7,
+          "action": null,
+          "lead": -108.28886084668147,
+          "score": 1
+        },
+        {
+          "t": 2.75,
+          "action": null,
+          "lead": -110.19155107461711,
+          "score": 1
+        },
+        {
+          "t": 2.8000000000000003,
+          "action": null,
+          "lead": -112.07945418828012,
+          "score": 1
+        },
+        {
+          "t": 2.85,
+          "action": null,
+          "lead": -113.95265453667389,
+          "score": 1
+        },
+        {
+          "t": 2.9000000000000004,
+          "action": null,
+          "lead": -115.81123924792291,
+          "score": 1
+        },
+        {
+          "t": 2.95,
+          "action": null,
+          "lead": -117.65529819231733,
+          "score": 1
+        },
+        {
+          "t": 3,
+          "action": null,
+          "lead": -119.48492393924516,
+          "score": 1
+        },
+        {
+          "t": 3.0500000000000003,
+          "action": null,
+          "lead": -121.2985953168054,
+          "score": 1
+        },
+        {
+          "t": 3.1,
+          "action": null,
+          "lead": -123.08576712239346,
+          "score": 1
+        },
+        {
+          "t": 3.1500000000000004,
+          "action": null,
+          "lead": -124.83001392223059,
+          "score": 1
+        },
+        {
+          "t": 3.2,
+          "action": null,
+          "lead": -126.52808953495105,
+          "score": 1
+        },
+        {
+          "t": 3.25,
+          "action": null,
+          "lead": -128.18021077825642,
+          "score": 1
+        },
+        {
+          "t": 3.3000000000000003,
+          "action": null,
+          "lead": -129.7866031760077,
+          "score": 1
+        },
+        {
+          "t": 3.35,
+          "action": null,
+          "lead": -131.3474937833962,
+          "score": 1
+        },
+        {
+          "t": 3.4000000000000004,
+          "action": null,
+          "lead": -132.86316773300086,
+          "score": 1
+        },
+        {
+          "t": 3.45,
+          "action": null,
+          "lead": -134.33810900957133,
+          "score": 1
+        },
+        {
+          "t": 3.5,
+          "action": null,
+          "lead": -135.78858494480846,
+          "score": 1
+        },
+        {
+          "t": 3.5500000000000003,
+          "action": null,
+          "lead": -137.2297849451279,
+          "score": 1
+        },
+        {
+          "t": 3.6,
+          "action": null,
+          "lead": -138.66506458258937,
+          "score": 1
+        },
+        {
+          "t": 3.6500000000000004,
+          "action": null,
+          "lead": -140.0945335953179,
+          "score": 1
+        },
+        {
+          "t": 3.7,
+          "action": null,
+          "lead": -141.51826970688535,
+          "score": 1
+        },
+        {
+          "t": 3.75,
+          "action": null,
+          "lead": -142.9363433944245,
+          "score": 1
+        },
+        {
+          "t": 3.8000000000000003,
+          "action": null,
+          "lead": -144.34882111980505,
+          "score": 1
+        },
+        {
+          "t": 3.85,
+          "action": null,
+          "lead": -145.75576738658629,
+          "score": 1
+        },
+        {
+          "t": 3.9000000000000004,
+          "action": null,
+          "lead": -147.1572459977251,
+          "score": 1
+        },
+        {
+          "t": 3.95,
+          "action": null,
+          "lead": -148.55332085402824,
+          "score": 1
+        },
+        {
+          "t": 4,
+          "action": null,
+          "lead": -149.94405647683834,
+          "score": 1
+        },
+        {
+          "t": 4.05,
+          "action": null,
+          "lead": -151.3295183287196,
+          "score": 1
+        },
+        {
+          "t": 4.1000000000000005,
+          "action": null,
+          "lead": -152.70977294907016,
+          "score": 1
+        },
+        {
+          "t": 4.15,
+          "action": null,
+          "lead": -154.0848880751778,
+          "score": 1
+        },
+        {
+          "t": 4.2,
+          "action": null,
+          "lead": -155.45493271440637,
+          "score": 1
+        },
+        {
+          "t": 4.25,
+          "action": null,
+          "lead": -156.8199771326913,
+          "score": 1
+        },
+        {
+          "t": 4.3,
+          "action": null,
+          "lead": -158.18009284028858,
+          "score": 1
+        },
+        {
+          "t": 4.3500000000000005,
+          "action": null,
+          "lead": -159.5353525937503,
+          "score": 1
+        },
+        {
+          "t": 4.4,
+          "action": null,
+          "lead": -160.88583038322577,
+          "score": 1
+        },
+        {
+          "t": 4.45,
+          "action": null,
+          "lead": -162.2316013556797,
+          "score": 1
+        },
+        {
+          "t": 4.5,
+          "action": null,
+          "lead": -163.57274180014838,
+          "score": 1
+        },
+        {
+          "t": 4.55,
+          "action": null,
+          "lead": -164.90932913362758,
+          "score": 1
+        },
+        {
+          "t": 4.6000000000000005,
+          "action": null,
+          "lead": -166.24144183604722,
+          "score": 1
+        },
+        {
+          "t": 4.65,
+          "action": null,
+          "lead": -167.56915940284807,
+          "score": 1
+        },
+        {
+          "t": 4.7,
+          "action": null,
+          "lead": -168.89256232650177,
+          "score": 1
+        },
+        {
+          "t": 4.75,
+          "action": null,
+          "lead": -170.2117320719044,
+          "score": 1
+        },
+        {
+          "t": 4.800000000000001,
+          "action": null,
+          "lead": -171.526750994562,
+          "score": 1
+        },
+        {
+          "t": 4.8500000000000005,
+          "action": null,
+          "lead": -172.83770232297047,
+          "score": 1
+        },
+        {
+          "t": 4.9,
+          "action": null,
+          "lead": -174.1446701437403,
+          "score": 1
+        },
+        {
+          "t": 4.95,
+          "action": null,
+          "lead": -175.447739338646,
+          "score": 1
+        },
+        {
+          "t": 5,
+          "action": null,
+          "lead": -176.7469955398492,
+          "score": 1
+        },
+        {
+          "t": 5.050000000000001,
+          "action": null,
+          "lead": -178.04252511385448,
+          "score": 1
+        },
+        {
+          "t": 5.1000000000000005,
+          "action": null,
+          "lead": -179.33441513984417,
+          "score": 1
+        },
+        {
+          "t": 5.15,
+          "action": null,
+          "lead": -180.62275333304797,
+          "score": 1
+        },
+        {
+          "t": 5.2,
+          "action": null,
+          "lead": -181.90762803041207,
+          "score": 1
+        },
+        {
+          "t": 5.25,
+          "action": null,
+          "lead": -183.1891281789176,
+          "score": 1
+        },
+        {
+          "t": 5.300000000000001,
+          "action": null,
+          "lead": -184.4685195856914,
+          "score": 1
+        },
+        {
+          "t": 5.3500000000000005,
+          "action": null,
+          "lead": -185.75579848685038,
+          "score": 1
+        },
+        {
+          "t": 5.4,
+          "action": null,
+          "lead": -187.0698720121859,
+          "score": 1
+        },
+        {
+          "t": 5.45,
+          "action": null,
+          "lead": -188.4184313065707,
+          "score": 1
+        },
+        {
+          "t": 5.5,
+          "action": null,
+          "lead": 8.802842903309738,
+          "score": 1
+        },
+        {
+          "t": 5.55,
+          "action": null,
+          "lead": 5.572496184975535,
+          "score": 1
+        },
+        {
+          "t": 5.6,
+          "action": "kissRight",
+          "lead": 2.3092140891826602,
+          "score": 1
+        },
+        {
+          "t": 5.65,
+          "action": "kissRight",
+          "lead": -0.9867483554148748,
+          "score": 1
+        },
+        {
+          "t": 5.7,
+          "action": "kissRight",
+          "lead": -4.3133766574710535,
+          "score": 1
+        },
+        {
+          "t": 5.75,
+          "action": "kissRight",
+          "lead": -7.657435124276162,
+          "score": 2
+        },
+        {
+          "t": 5.8,
+          "action": "kissRight",
+          "lead": -11.000786117642292,
+          "score": 2
+        },
+        {
+          "t": 5.85,
+          "action": "kissRight",
+          "lead": -14.343911548139658,
+          "score": 2
+        },
+        {
+          "t": 5.9,
+          "action": "kissRight",
+          "lead": -17.689552723207726,
+          "score": 2
+        },
+        {
+          "t": 5.95,
+          "action": "kissRight",
+          "lead": -21.037667370601866,
+          "score": 2
+        },
+        {
+          "t": 6,
+          "action": "kissRight",
+          "lead": -24.388193638447774,
+          "score": 2
+        },
+        {
+          "t": 6.05,
+          "action": "kissRight",
+          "lead": -27.741059338979994,
+          "score": 2
+        },
+        {
+          "t": 6.1,
+          "action": "kissRight",
+          "lead": -31.09618799664395,
+          "score": 2
+        },
+        {
+          "t": 6.15,
+          "action": "kissRight",
+          "lead": -34.453501678822704,
+          "score": 2
+        },
+        {
+          "t": 6.2,
+          "action": "kissRight",
+          "lead": -37.81292218448789,
+          "score": 2
+        },
+        {
+          "t": 6.25,
+          "action": "kissRight",
+          "lead": -41.17437155851758,
+          "score": 2
+        },
+        {
+          "t": 6.3,
+          "action": "kissRight",
+          "lead": -44.537772311849494,
+          "score": 2
+        },
+        {
+          "t": 6.35,
+          "action": "kissRight",
+          "lead": -47.90215293353913,
+          "score": 2
+        },
+        {
+          "t": 6.4,
+          "action": "kissRight",
+          "lead": -51.265485552221435,
+          "score": 2
+        },
+        {
+          "t": 6.45,
+          "action": "kissRight",
+          "lead": -54.627986612377754,
+          "score": 2
+        },
+        {
+          "t": 6.5,
+          "action": "kissRight",
+          "lead": -57.98976508719488,
+          "score": 2
+        },
+        {
+          "t": 6.55,
+          "action": "kissRight",
+          "lead": -61.35082961220451,
+          "score": 2
+        },
+        {
+          "t": 6.6,
+          "action": "kissRight",
+          "lead": -64.71114615024499,
+          "score": 2
+        },
+        {
+          "t": 6.65,
+          "action": "kissRight",
+          "lead": -68.07066345833664,
+          "score": 2
+        },
+        {
+          "t": 6.7,
+          "action": "kissRight",
+          "lead": -71.42932369579921,
+          "score": 2
+        },
+        {
+          "t": 6.75,
+          "action": "kissRight",
+          "lead": -74.78706677290029,
+          "score": 2
+        },
+        {
+          "t": 6.8,
+          "action": "kissRight",
+          "lead": -78.14383213350857,
+          "score": 2
+        },
+        {
+          "t": 6.85,
+          "action": "kissRight",
+          "lead": -81.49900192359928,
+          "score": 2
+        },
+        {
+          "t": 6.9,
+          "action": "kissRight",
+          "lead": -84.83855604779274,
+          "score": 2
+        },
+        {
+          "t": 6.95,
+          "action": "kissRight",
+          "lead": -88.15680430000975,
+          "score": 2
+        },
+        {
+          "t": 7,
+          "action": "kissRight",
+          "lead": -91.4536612711263,
+          "score": 2
+        },
+        {
+          "t": 7.05,
+          "action": "kissRight",
+          "lead": -94.72906978020092,
+          "score": 2
+        },
+        {
+          "t": 7.1,
+          "action": "kissRight",
+          "lead": -97.98299359368184,
+          "score": 2
+        },
+        {
+          "t": 7.15,
+          "action": "kissRight",
+          "lead": -101.21541268601186,
+          "score": 2
+        },
+        {
+          "t": 7.2,
+          "action": "kissRight",
+          "lead": -104.42632011215483,
+          "score": 2
+        },
+        {
+          "t": 7.25,
+          "action": "kissRight",
+          "lead": -107.61571988534615,
+          "score": 2
+        },
+        {
+          "t": 7.3,
+          "action": "kissRight",
+          "lead": -110.78362556136153,
+          "score": 2
+        },
+        {
+          "t": 7.35,
+          "action": "kissRight",
+          "lead": -113.93005925813986,
+          "score": 2
+        },
+        {
+          "t": 7.4,
+          "action": null,
+          "lead": -117.05505092594603,
+          "score": 2
+        },
+        {
+          "t": 7.45,
+          "action": null,
+          "lead": -120.15863780904965,
+          "score": 2
+        },
+        {
+          "t": 7.5,
+          "action": null,
+          "lead": -123.24086404230366,
+          "score": 2
+        },
+        {
+          "t": 7.550000000000001,
+          "action": null,
+          "lead": -126.3017803205089,
+          "score": 2
+        },
+        {
+          "t": 7.6,
+          "action": null,
+          "lead": -129.34144358069943,
+          "score": 2
+        },
+        {
+          "t": 7.65,
+          "action": null,
+          "lead": -132.35991675683408,
+          "score": 2
+        },
+        {
+          "t": 7.7,
+          "action": null,
+          "lead": -135.36305318241375,
+          "score": 2
+        },
+        {
+          "t": 7.75,
+          "action": null,
+          "lead": -138.37110751320915,
+          "score": 2
+        },
+        {
+          "t": 7.800000000000001,
+          "action": null,
+          "lead": -141.40742041232397,
+          "score": 2
+        },
+        {
+          "t": 7.85,
+          "action": null,
+          "lead": -144.47647797385798,
+          "score": 2
+        },
+        {
+          "t": 7.9,
+          "action": null,
+          "lead": -147.57810230174982,
+          "score": 2
+        },
+        {
+          "t": 7.95,
+          "action": null,
+          "lead": -150.71210326615756,
+          "score": 2
+        },
+        {
+          "t": 8,
+          "action": null,
+          "lead": -153.8782880918111,
+          "score": 2
+        },
+        {
+          "t": 8.05,
+          "action": null,
+          "lead": -157.07638964302714,
+          "score": 2
+        },
+        {
+          "t": 8.1,
+          "action": null,
+          "lead": -160.30082999533715,
+          "score": 2
+        },
+        {
+          "t": 8.15,
+          "action": null,
+          "lead": -163.53118735815588,
+          "score": 2
+        },
+        {
+          "t": 8.2,
+          "action": null,
+          "lead": -166.7484153386281,
+          "score": 2
+        },
+        {
+          "t": 8.25,
+          "action": null,
+          "lead": -169.9483498980794,
+          "score": 2
+        },
+        {
+          "t": 8.3,
+          "action": null,
+          "lead": -173.13090749308458,
+          "score": 2
+        },
+        {
+          "t": 8.35,
+          "action": null,
+          "lead": -176.29604151174726,
+          "score": 2
+        },
+        {
+          "t": 8.4,
+          "action": null,
+          "lead": -179.4437146006967,
+          "score": 2
+        },
+        {
+          "t": 8.45,
+          "action": null,
+          "lead": -182.5738968704395,
+          "score": 2
+        },
+        {
+          "t": 8.5,
+          "action": null,
+          "lead": -185.68656473800866,
+          "score": 2
+        },
+        {
+          "t": 8.55,
+          "action": null,
+          "lead": -188.78170018544597,
+          "score": 2
+        },
+        {
+          "t": 8.6,
+          "action": null,
+          "lead": -191.85929026909798,
+          "score": 2
+        },
+        {
+          "t": 8.65,
+          "action": null,
+          "lead": -194.91932675479893,
+          "score": 2
+        },
+        {
+          "t": 8.7,
+          "action": null,
+          "lead": -197.96180589882988,
+          "score": 2
+        },
+        {
+          "t": 8.75,
+          "action": null,
+          "lead": -200.98672829835186,
+          "score": 2
+        },
+        {
+          "t": 8.8,
+          "action": null,
+          "lead": -203.99409875235324,
+          "score": 2
+        },
+        {
+          "t": 8.85,
+          "action": null,
+          "lead": -206.9839261613738,
+          "score": 2
+        },
+        {
+          "t": 8.9,
+          "action": null,
+          "lead": -209.95622346366872,
+          "score": 2
+        },
+        {
+          "t": 8.95,
+          "action": null,
+          "lead": -212.9110075783242,
+          "score": 2
+        },
+        {
+          "t": 9,
+          "action": null,
+          "lead": -215.84829931551712,
+          "score": 2
+        },
+        {
+          "t": 9.05,
+          "action": null,
+          "lead": -218.76812333370708,
+          "score": 2
+        },
+        {
+          "t": 9.1,
+          "action": null,
+          "lead": -221.6705081010632,
+          "score": 2
+        },
+        {
+          "t": 9.15,
+          "action": null,
+          "lead": -224.55548582368374,
+          "score": 2
+        },
+        {
+          "t": 9.2,
+          "action": null,
+          "lead": -227.42309238608095,
+          "score": 2
+        },
+        {
+          "t": 9.25,
+          "action": null,
+          "lead": -230.27336731161677,
+          "score": 2
+        },
+        {
+          "t": 9.3,
+          "action": null,
+          "lead": -233.1063537185055,
+          "score": 2
+        },
+        {
+          "t": 9.35,
+          "action": null,
+          "lead": -235.9220982343113,
+          "score": 2
+        },
+        {
+          "t": 9.4,
+          "action": null,
+          "lead": -238.72065095482276,
+          "score": 2
+        },
+        {
+          "t": 9.45,
+          "action": null,
+          "lead": -241.50206540449108,
+          "score": 2
+        },
+        {
+          "t": 9.5,
+          "action": null,
+          "lead": -244.2663984607775,
+          "score": 2
+        },
+        {
+          "t": 9.55,
+          "action": null,
+          "lead": -247.01371029041093,
+          "score": 2
+        },
+        {
+          "t": 9.600000000000001,
+          "action": null,
+          "lead": -249.74406430588124,
+          "score": 2
+        },
+        {
+          "t": 9.65,
+          "action": null,
+          "lead": -252.45752711720297,
+          "score": 2
+        },
+        {
+          "t": 9.7,
+          "action": null,
+          "lead": -255.1541684409699,
+          "score": 2
+        },
+        {
+          "t": 9.75,
+          "action": null,
+          "lead": -257.8340610554342,
+          "score": 2
+        },
+        {
+          "t": 9.8,
+          "action": null,
+          "lead": -260.4972807573554,
+          "score": 2
+        },
+        {
+          "t": 9.850000000000001,
+          "action": null,
+          "lead": -263.1439062821696,
+          "score": 2
+        },
+        {
+          "t": 9.9,
+          "action": null,
+          "lead": -265.7740192367669,
+          "score": 2
+        },
+        {
+          "t": 9.95,
+          "action": null,
+          "lead": -268.38770405334617,
+          "score": 2
+        },
+        {
+          "t": 10,
+          "action": null,
+          "lead": -270.985047938736,
+          "score": 2
+        },
+        {
+          "t": 10.05,
+          "action": null,
+          "lead": -273.56614078056464,
+          "score": 2
+        },
+        {
+          "t": 10.100000000000001,
+          "action": null,
+          "lead": -276.13107510074906,
+          "score": 2
+        },
+        {
+          "t": 10.15,
+          "action": null,
+          "lead": -278.67994601103555,
+          "score": 2
+        },
+        {
+          "t": 10.2,
+          "action": null,
+          "lead": -281.21285113167914,
+          "score": 2
+        },
+        {
+          "t": 10.25,
+          "action": null,
+          "lead": -283.72989052329604,
+          "score": 2
+        },
+        {
+          "t": 10.3,
+          "action": null,
+          "lead": -286.23116664038344,
+          "score": 2
+        },
+        {
+          "t": 10.350000000000001,
+          "action": null,
+          "lead": -288.71678428049654,
+          "score": 2
+        },
+        {
+          "t": 10.4,
+          "action": null,
+          "lead": -291.1868504902818,
+          "score": 2
+        },
+        {
+          "t": 10.45,
+          "action": null,
+          "lead": -293.64147451951567,
+          "score": 2
+        },
+        {
+          "t": 10.5,
+          "action": null,
+          "lead": -296.0807677774128,
+          "score": 2
+        },
+        {
+          "t": 10.55,
+          "action": null,
+          "lead": -298.5048437522305,
+          "score": 2
+        },
+        {
+          "t": 10.600000000000001,
+          "action": null,
+          "lead": -300.9138179444062,
+          "score": 2
+        },
+        {
+          "t": 10.65,
+          "action": null,
+          "lead": -303.3078078216413,
+          "score": 2
+        },
+        {
+          "t": 10.7,
+          "action": null,
+          "lead": -305.6869327698223,
+          "score": 2
+        },
+        {
+          "t": 10.75,
+          "action": null,
+          "lead": -308.05131400119944,
+          "score": 2
+        },
+        {
+          "t": 10.8,
+          "action": null,
+          "lead": -310.40107451068525,
+          "score": 2
+        },
+        {
+          "t": 10.850000000000001,
+          "action": null,
+          "lead": -312.7363390345372,
+          "score": 2
+        },
+        {
+          "t": 10.9,
+          "action": null,
+          "lead": -315.05723397282236,
+          "score": 2
+        },
+        {
+          "t": 10.95,
+          "action": null,
+          "lead": -317.3638873255941,
+          "score": 2
+        }
+      ]
+    },
+    {
+      "side": "left",
+      "rows": [
+        {
+          "t": 0,
+          "action": null,
+          "lead": 9.541567745255634,
+          "score": 0
+        },
+        {
+          "t": 0.05,
+          "action": null,
+          "lead": 7.1037547612186245,
+          "score": 0
+        },
+        {
+          "t": 0.1,
+          "action": null,
+          "lead": 4.686631439136818,
+          "score": 0
+        },
+        {
+          "t": 0.15000000000000002,
+          "action": "shoutLeft",
+          "lead": 2.290237876289666,
+          "score": 0
+        },
+        {
+          "t": 0.2,
+          "action": "shoutLeft",
+          "lead": -0.08540813983927364,
+          "score": 0
+        },
+        {
+          "t": 0.25,
+          "action": "shoutLeft",
+          "lead": -2.440305898512179,
+          "score": 0
+        },
+        {
+          "t": 0.30000000000000004,
+          "action": "shoutLeft",
+          "lead": -4.774468352314216,
+          "score": 0
+        },
+        {
+          "t": 0.35000000000000003,
+          "action": "shoutLeft",
+          "lead": -7.087919845977012,
+          "score": 1
+        },
+        {
+          "t": 0.4,
+          "action": "shoutLeft",
+          "lead": -9.380694544081507,
+          "score": 1
+        },
+        {
+          "t": 0.45,
+          "action": "shoutLeft",
+          "lead": -11.652835347446398,
+          "score": 1
+        },
+        {
+          "t": 0.5,
+          "action": "shoutLeft",
+          "lead": -13.904393139767762,
+          "score": 1
+        },
+        {
+          "t": 0.55,
+          "action": "shoutLeft",
+          "lead": -16.135426230262965,
+          "score": 1
+        },
+        {
+          "t": 0.6000000000000001,
+          "action": "shoutLeft",
+          "lead": -18.345999880351883,
+          "score": 1
+        },
+        {
+          "t": 0.65,
+          "action": "shoutLeft",
+          "lead": -20.53618596408296,
+          "score": 1
+        },
+        {
+          "t": 0.7000000000000001,
+          "action": "shoutLeft",
+          "lead": -22.70606268607753,
+          "score": 1
+        },
+        {
+          "t": 0.75,
+          "action": "shoutLeft",
+          "lead": -24.855714294536483,
+          "score": 1
+        },
+        {
+          "t": 0.8,
+          "action": "shoutLeft",
+          "lead": -26.985230831589433,
+          "score": 1
+        },
+        {
+          "t": 0.8500000000000001,
+          "action": "shoutLeft",
+          "lead": -29.09470792310549,
+          "score": 1
+        },
+        {
+          "t": 0.9,
+          "action": "shoutLeft",
+          "lead": -31.186586583936787,
+          "score": 1
+        },
+        {
+          "t": 0.9500000000000001,
+          "action": "shoutLeft",
+          "lead": -33.27620828049612,
+          "score": 1
+        },
+        {
+          "t": 1,
+          "action": "shoutLeft",
+          "lead": -35.38947730423024,
+          "score": 1
+        },
+        {
+          "t": 1.05,
+          "action": "shoutLeft",
+          "lead": -37.5366048977985,
+          "score": 1
+        },
+        {
+          "t": 1.1,
+          "action": "shoutLeft",
+          "lead": -39.71769900759682,
+          "score": 1
+        },
+        {
+          "t": 1.1500000000000001,
+          "action": "shoutLeft",
+          "lead": -41.932602323725405,
+          "score": 1
+        },
+        {
+          "t": 1.2000000000000002,
+          "action": "shoutLeft",
+          "lead": -44.181154432311814,
+          "score": 1
+        },
+        {
+          "t": 1.25,
+          "action": "shoutLeft",
+          "lead": -46.46319190120357,
+          "score": 1
+        },
+        {
+          "t": 1.3,
+          "action": "shoutLeft",
+          "lead": -48.776425211638525,
+          "score": 1
+        },
+        {
+          "t": 1.35,
+          "action": "shoutLeft",
+          "lead": -51.10498105737088,
+          "score": 1
+        },
+        {
+          "t": 1.4000000000000001,
+          "action": "shoutLeft",
+          "lead": -53.42664474320736,
+          "score": 1
+        },
+        {
+          "t": 1.4500000000000002,
+          "action": "shoutLeft",
+          "lead": -55.73287557415233,
+          "score": 1
+        },
+        {
+          "t": 1.5,
+          "action": "shoutLeft",
+          "lead": -58.02332044321247,
+          "score": 1
+        },
+        {
+          "t": 1.55,
+          "action": "shoutLeft",
+          "lead": -60.297957772975224,
+          "score": 1
+        },
+        {
+          "t": 1.6,
+          "action": "shoutLeft",
+          "lead": -62.55677564334337,
+          "score": 1
+        },
+        {
+          "t": 1.6500000000000001,
+          "action": "shoutLeft",
+          "lead": -64.79976969366226,
+          "score": 1
+        },
+        {
+          "t": 1.7000000000000002,
+          "action": "shoutLeft",
+          "lead": -67.02694180932713,
+          "score": 1
+        },
+        {
+          "t": 1.75,
+          "action": "shoutLeft",
+          "lead": -69.23829927438737,
+          "score": 1
+        },
+        {
+          "t": 1.8,
+          "action": "shoutLeft",
+          "lead": -71.43385417768195,
+          "score": 1
+        },
+        {
+          "t": 1.85,
+          "action": "shoutLeft",
+          "lead": -73.61362302318548,
+          "score": 1
+        },
+        {
+          "t": 1.9000000000000001,
+          "action": "shoutLeft",
+          "lead": -75.77762648693215,
+          "score": 1
+        },
+        {
+          "t": 1.9500000000000002,
+          "action": null,
+          "lead": -77.92588924739948,
+          "score": 1
+        },
+        {
+          "t": 2,
+          "action": null,
+          "lead": -80.05843981496992,
+          "score": 1
+        },
+        {
+          "t": 2.0500000000000003,
+          "action": null,
+          "lead": -82.17531044932912,
+          "score": 1
+        },
+        {
+          "t": 2.1,
+          "action": null,
+          "lead": -84.27653710009372,
+          "score": 1
+        },
+        {
+          "t": 2.15,
+          "action": null,
+          "lead": -86.3621593155176,
+          "score": 1
+        },
+        {
+          "t": 2.2,
+          "action": null,
+          "lead": -88.43222017461358,
+          "score": 1
+        },
+        {
+          "t": 2.25,
+          "action": null,
+          "lead": -90.48676625015423,
+          "score": 1
+        },
+        {
+          "t": 2.3000000000000003,
+          "action": null,
+          "lead": -92.52584756913393,
+          "score": 1
+        },
+        {
+          "t": 2.35,
+          "action": null,
+          "lead": -94.54951752071611,
+          "score": 1
+        },
+        {
+          "t": 2.4000000000000004,
+          "action": null,
+          "lead": -96.55783282377752,
+          "score": 1
+        },
+        {
+          "t": 2.45,
+          "action": null,
+          "lead": -98.55085349748106,
+          "score": 1
+        },
+        {
+          "t": 2.5,
+          "action": null,
+          "lead": -100.52864278476409,
+          "score": 1
+        },
+        {
+          "t": 2.5500000000000003,
+          "action": null,
+          "lead": -102.49126709185293,
+          "score": 1
+        },
+        {
+          "t": 2.6,
+          "action": null,
+          "lead": -104.43879595475073,
+          "score": 1
+        },
+        {
+          "t": 2.6500000000000004,
+          "action": null,
+          "lead": -106.37130199966123,
+          "score": 1
+        },
+        {
+          "t": 2.7,
+          "action": null,
+          "lead": -108.28886084668147,
+          "score": 1
+        },
+        {
+          "t": 2.75,
+          "action": null,
+          "lead": -110.19155107461711,
+          "score": 1
+        },
+        {
+          "t": 2.8000000000000003,
+          "action": null,
+          "lead": -112.07945418828012,
+          "score": 1
+        },
+        {
+          "t": 2.85,
+          "action": null,
+          "lead": -113.95265453667389,
+          "score": 1
+        },
+        {
+          "t": 2.9000000000000004,
+          "action": null,
+          "lead": -115.81123924792291,
+          "score": 1
+        },
+        {
+          "t": 2.95,
+          "action": null,
+          "lead": -117.65529819231733,
+          "score": 1
+        },
+        {
+          "t": 3,
+          "action": null,
+          "lead": -119.48492393924516,
+          "score": 1
+        },
+        {
+          "t": 3.0500000000000003,
+          "action": null,
+          "lead": -121.2985953168054,
+          "score": 1
+        },
+        {
+          "t": 3.1,
+          "action": null,
+          "lead": -123.08576712239346,
+          "score": 1
+        },
+        {
+          "t": 3.1500000000000004,
+          "action": null,
+          "lead": -124.83001392223059,
+          "score": 1
+        },
+        {
+          "t": 3.2,
+          "action": null,
+          "lead": -126.52808953495105,
+          "score": 1
+        },
+        {
+          "t": 3.25,
+          "action": null,
+          "lead": -128.18021077825642,
+          "score": 1
+        },
+        {
+          "t": 3.3000000000000003,
+          "action": null,
+          "lead": -129.7866031760077,
+          "score": 1
+        },
+        {
+          "t": 3.35,
+          "action": null,
+          "lead": -131.3474937833962,
+          "score": 1
+        },
+        {
+          "t": 3.4000000000000004,
+          "action": null,
+          "lead": -132.86316773300086,
+          "score": 1
+        },
+        {
+          "t": 3.45,
+          "action": null,
+          "lead": -134.33810900957133,
+          "score": 1
+        },
+        {
+          "t": 3.5,
+          "action": null,
+          "lead": -135.78858494480846,
+          "score": 1
+        },
+        {
+          "t": 3.5500000000000003,
+          "action": null,
+          "lead": -137.2297849451279,
+          "score": 1
+        },
+        {
+          "t": 3.6,
+          "action": null,
+          "lead": -138.66506458258937,
+          "score": 1
+        },
+        {
+          "t": 3.6500000000000004,
+          "action": null,
+          "lead": -140.0945335953179,
+          "score": 1
+        },
+        {
+          "t": 3.7,
+          "action": null,
+          "lead": -141.51826970688535,
+          "score": 1
+        },
+        {
+          "t": 3.75,
+          "action": null,
+          "lead": -142.9363433944245,
+          "score": 1
+        },
+        {
+          "t": 3.8000000000000003,
+          "action": null,
+          "lead": -144.34882111980505,
+          "score": 1
+        },
+        {
+          "t": 3.85,
+          "action": null,
+          "lead": -145.75576738658629,
+          "score": 1
+        },
+        {
+          "t": 3.9000000000000004,
+          "action": null,
+          "lead": -147.1572459977251,
+          "score": 1
+        },
+        {
+          "t": 3.95,
+          "action": null,
+          "lead": -148.55332085402824,
+          "score": 1
+        },
+        {
+          "t": 4,
+          "action": null,
+          "lead": -149.94405647683834,
+          "score": 1
+        },
+        {
+          "t": 4.05,
+          "action": null,
+          "lead": -151.3295183287196,
+          "score": 1
+        },
+        {
+          "t": 4.1000000000000005,
+          "action": null,
+          "lead": -152.70977294907016,
+          "score": 1
+        },
+        {
+          "t": 4.15,
+          "action": null,
+          "lead": -154.0848880751778,
+          "score": 1
+        },
+        {
+          "t": 4.2,
+          "action": null,
+          "lead": -155.45493271440637,
+          "score": 1
+        },
+        {
+          "t": 4.25,
+          "action": null,
+          "lead": -156.8199771326913,
+          "score": 1
+        },
+        {
+          "t": 4.3,
+          "action": null,
+          "lead": -158.18009284028858,
+          "score": 1
+        },
+        {
+          "t": 4.3500000000000005,
+          "action": null,
+          "lead": -159.5353525937503,
+          "score": 1
+        },
+        {
+          "t": 4.4,
+          "action": null,
+          "lead": -160.88583038322577,
+          "score": 1
+        },
+        {
+          "t": 4.45,
+          "action": null,
+          "lead": -162.2316013556797,
+          "score": 1
+        },
+        {
+          "t": 4.5,
+          "action": null,
+          "lead": -163.57274180014838,
+          "score": 1
+        },
+        {
+          "t": 4.55,
+          "action": null,
+          "lead": -164.90932913362758,
+          "score": 1
+        },
+        {
+          "t": 4.6000000000000005,
+          "action": null,
+          "lead": -166.24144183604722,
+          "score": 1
+        },
+        {
+          "t": 4.65,
+          "action": null,
+          "lead": -167.56915940284807,
+          "score": 1
+        },
+        {
+          "t": 4.7,
+          "action": null,
+          "lead": -168.89256232650177,
+          "score": 1
+        },
+        {
+          "t": 4.75,
+          "action": null,
+          "lead": -170.2117320719044,
+          "score": 1
+        },
+        {
+          "t": 4.800000000000001,
+          "action": null,
+          "lead": -171.526750994562,
+          "score": 1
+        },
+        {
+          "t": 4.8500000000000005,
+          "action": null,
+          "lead": -172.83770232297047,
+          "score": 1
+        },
+        {
+          "t": 4.9,
+          "action": null,
+          "lead": -174.1446701437403,
+          "score": 1
+        },
+        {
+          "t": 4.95,
+          "action": null,
+          "lead": -175.447739338646,
+          "score": 1
+        },
+        {
+          "t": 5,
+          "action": null,
+          "lead": -176.7469955398492,
+          "score": 1
+        },
+        {
+          "t": 5.050000000000001,
+          "action": null,
+          "lead": -178.04252511385448,
+          "score": 1
+        },
+        {
+          "t": 5.1000000000000005,
+          "action": null,
+          "lead": -179.33441513984417,
+          "score": 1
+        },
+        {
+          "t": 5.15,
+          "action": null,
+          "lead": -180.62275333304797,
+          "score": 1
+        },
+        {
+          "t": 5.2,
+          "action": null,
+          "lead": -181.90762803041207,
+          "score": 1
+        },
+        {
+          "t": 5.25,
+          "action": null,
+          "lead": -183.1891281789176,
+          "score": 1
+        },
+        {
+          "t": 5.300000000000001,
+          "action": null,
+          "lead": -184.4685195856914,
+          "score": 1
+        },
+        {
+          "t": 5.3500000000000005,
+          "action": null,
+          "lead": -185.75579848685038,
+          "score": 1
+        },
+        {
+          "t": 5.4,
+          "action": null,
+          "lead": -187.0698720121859,
+          "score": 1
+        },
+        {
+          "t": 5.45,
+          "action": null,
+          "lead": -188.4184313065707,
+          "score": 1
+        },
+        {
+          "t": 5.5,
+          "action": null,
+          "lead": 8.802842903309738,
+          "score": 1
+        },
+        {
+          "t": 5.55,
+          "action": null,
+          "lead": 5.572496184975535,
+          "score": 1
+        },
+        {
+          "t": 5.6,
+          "action": "kissLeft",
+          "lead": 2.3092140891826602,
+          "score": 1
+        },
+        {
+          "t": 5.65,
+          "action": "kissLeft",
+          "lead": -0.9867483554148748,
+          "score": 1
+        },
+        {
+          "t": 5.7,
+          "action": "kissLeft",
+          "lead": -4.3133766574710535,
+          "score": 1
+        },
+        {
+          "t": 5.75,
+          "action": "kissLeft",
+          "lead": -7.657435124276162,
+          "score": 2
+        },
+        {
+          "t": 5.8,
+          "action": "kissLeft",
+          "lead": -11.000786117642292,
+          "score": 2
+        },
+        {
+          "t": 5.85,
+          "action": "kissLeft",
+          "lead": -14.343911548139658,
+          "score": 2
+        },
+        {
+          "t": 5.9,
+          "action": "kissLeft",
+          "lead": -17.689552723207726,
+          "score": 2
+        },
+        {
+          "t": 5.95,
+          "action": "kissLeft",
+          "lead": -21.037667370601866,
+          "score": 2
+        },
+        {
+          "t": 6,
+          "action": "kissLeft",
+          "lead": -24.388193638447774,
+          "score": 2
+        },
+        {
+          "t": 6.05,
+          "action": "kissLeft",
+          "lead": -27.741059338979994,
+          "score": 2
+        },
+        {
+          "t": 6.1,
+          "action": "kissLeft",
+          "lead": -31.09618799664395,
+          "score": 2
+        },
+        {
+          "t": 6.15,
+          "action": "kissLeft",
+          "lead": -34.453501678822704,
+          "score": 2
+        },
+        {
+          "t": 6.2,
+          "action": "kissLeft",
+          "lead": -37.81292218448789,
+          "score": 2
+        },
+        {
+          "t": 6.25,
+          "action": "kissLeft",
+          "lead": -41.17437155851758,
+          "score": 2
+        },
+        {
+          "t": 6.3,
+          "action": "kissLeft",
+          "lead": -44.537772311849494,
+          "score": 2
+        },
+        {
+          "t": 6.35,
+          "action": "kissLeft",
+          "lead": -47.90215293353913,
+          "score": 2
+        },
+        {
+          "t": 6.4,
+          "action": "kissLeft",
+          "lead": -51.265485552221435,
+          "score": 2
+        },
+        {
+          "t": 6.45,
+          "action": "kissLeft",
+          "lead": -54.627986612377754,
+          "score": 2
+        },
+        {
+          "t": 6.5,
+          "action": "kissLeft",
+          "lead": -57.98976508719488,
+          "score": 2
+        },
+        {
+          "t": 6.55,
+          "action": "kissLeft",
+          "lead": -61.35082961220451,
+          "score": 2
+        },
+        {
+          "t": 6.6,
+          "action": "kissLeft",
+          "lead": -64.71114615024499,
+          "score": 2
+        },
+        {
+          "t": 6.65,
+          "action": "kissLeft",
+          "lead": -68.07066345833664,
+          "score": 2
+        },
+        {
+          "t": 6.7,
+          "action": "kissLeft",
+          "lead": -71.42932369579921,
+          "score": 2
+        },
+        {
+          "t": 6.75,
+          "action": "kissLeft",
+          "lead": -74.78706677290029,
+          "score": 2
+        },
+        {
+          "t": 6.8,
+          "action": "kissLeft",
+          "lead": -78.14383213350857,
+          "score": 2
+        },
+        {
+          "t": 6.85,
+          "action": "kissLeft",
+          "lead": -81.49900192359928,
+          "score": 2
+        },
+        {
+          "t": 6.9,
+          "action": "kissLeft",
+          "lead": -84.83855604779274,
+          "score": 2
+        },
+        {
+          "t": 6.95,
+          "action": "kissLeft",
+          "lead": -88.15680430000975,
+          "score": 2
+        },
+        {
+          "t": 7,
+          "action": "kissLeft",
+          "lead": -91.4536612711263,
+          "score": 2
+        },
+        {
+          "t": 7.05,
+          "action": "kissLeft",
+          "lead": -94.72906978020092,
+          "score": 2
+        },
+        {
+          "t": 7.1,
+          "action": "kissLeft",
+          "lead": -97.98299359368184,
+          "score": 2
+        },
+        {
+          "t": 7.15,
+          "action": "kissLeft",
+          "lead": -101.21541268601186,
+          "score": 2
+        },
+        {
+          "t": 7.2,
+          "action": "kissLeft",
+          "lead": -104.42632011215483,
+          "score": 2
+        },
+        {
+          "t": 7.25,
+          "action": "kissLeft",
+          "lead": -107.61571988534615,
+          "score": 2
+        },
+        {
+          "t": 7.3,
+          "action": "kissLeft",
+          "lead": -110.78362556136153,
+          "score": 2
+        },
+        {
+          "t": 7.35,
+          "action": "kissLeft",
+          "lead": -113.93005925813986,
+          "score": 2
+        },
+        {
+          "t": 7.4,
+          "action": null,
+          "lead": -117.05505092594603,
+          "score": 2
+        },
+        {
+          "t": 7.45,
+          "action": null,
+          "lead": -120.15863780904965,
+          "score": 2
+        },
+        {
+          "t": 7.5,
+          "action": null,
+          "lead": -123.24086404230366,
+          "score": 2
+        },
+        {
+          "t": 7.550000000000001,
+          "action": null,
+          "lead": -126.3017803205089,
+          "score": 2
+        },
+        {
+          "t": 7.6,
+          "action": null,
+          "lead": -129.34144358069943,
+          "score": 2
+        },
+        {
+          "t": 7.65,
+          "action": null,
+          "lead": -132.35991675683408,
+          "score": 2
+        },
+        {
+          "t": 7.7,
+          "action": null,
+          "lead": -135.36305318241375,
+          "score": 2
+        },
+        {
+          "t": 7.75,
+          "action": null,
+          "lead": -138.37110751320915,
+          "score": 2
+        },
+        {
+          "t": 7.800000000000001,
+          "action": null,
+          "lead": -141.40742041232397,
+          "score": 2
+        },
+        {
+          "t": 7.85,
+          "action": null,
+          "lead": -144.47647797385798,
+          "score": 2
+        },
+        {
+          "t": 7.9,
+          "action": null,
+          "lead": -147.57810230174982,
+          "score": 2
+        },
+        {
+          "t": 7.95,
+          "action": null,
+          "lead": -150.71210326615756,
+          "score": 2
+        },
+        {
+          "t": 8,
+          "action": null,
+          "lead": -153.8782880918111,
+          "score": 2
+        },
+        {
+          "t": 8.05,
+          "action": null,
+          "lead": -157.07638964302714,
+          "score": 2
+        },
+        {
+          "t": 8.1,
+          "action": null,
+          "lead": -160.30082999533715,
+          "score": 2
+        },
+        {
+          "t": 8.15,
+          "action": null,
+          "lead": -163.53118735815588,
+          "score": 2
+        },
+        {
+          "t": 8.2,
+          "action": null,
+          "lead": -166.7484153386281,
+          "score": 2
+        },
+        {
+          "t": 8.25,
+          "action": null,
+          "lead": -169.9483498980794,
+          "score": 2
+        },
+        {
+          "t": 8.3,
+          "action": null,
+          "lead": -173.13090749308458,
+          "score": 2
+        },
+        {
+          "t": 8.35,
+          "action": null,
+          "lead": -176.29604151174726,
+          "score": 2
+        },
+        {
+          "t": 8.4,
+          "action": null,
+          "lead": -179.4437146006967,
+          "score": 2
+        },
+        {
+          "t": 8.45,
+          "action": null,
+          "lead": -182.5738968704395,
+          "score": 2
+        },
+        {
+          "t": 8.5,
+          "action": null,
+          "lead": -185.68656473800866,
+          "score": 2
+        },
+        {
+          "t": 8.55,
+          "action": null,
+          "lead": -188.78170018544597,
+          "score": 2
+        },
+        {
+          "t": 8.6,
+          "action": null,
+          "lead": -191.85929026909798,
+          "score": 2
+        },
+        {
+          "t": 8.65,
+          "action": null,
+          "lead": -194.91932675479893,
+          "score": 2
+        },
+        {
+          "t": 8.7,
+          "action": null,
+          "lead": -197.96180589882988,
+          "score": 2
+        },
+        {
+          "t": 8.75,
+          "action": null,
+          "lead": -200.98672829835186,
+          "score": 2
+        },
+        {
+          "t": 8.8,
+          "action": null,
+          "lead": -203.99409875235324,
+          "score": 2
+        },
+        {
+          "t": 8.85,
+          "action": null,
+          "lead": -206.9839261613738,
+          "score": 2
+        },
+        {
+          "t": 8.9,
+          "action": null,
+          "lead": -209.95622346366872,
+          "score": 2
+        },
+        {
+          "t": 8.95,
+          "action": null,
+          "lead": -212.9110075783242,
+          "score": 2
+        },
+        {
+          "t": 9,
+          "action": null,
+          "lead": -215.84829931551712,
+          "score": 2
+        },
+        {
+          "t": 9.05,
+          "action": null,
+          "lead": -218.76812333370708,
+          "score": 2
+        },
+        {
+          "t": 9.1,
+          "action": null,
+          "lead": -221.6705081010632,
+          "score": 2
+        },
+        {
+          "t": 9.15,
+          "action": null,
+          "lead": -224.55548582368374,
+          "score": 2
+        },
+        {
+          "t": 9.2,
+          "action": null,
+          "lead": -227.42309238608095,
+          "score": 2
+        },
+        {
+          "t": 9.25,
+          "action": null,
+          "lead": -230.27336731161677,
+          "score": 2
+        },
+        {
+          "t": 9.3,
+          "action": null,
+          "lead": -233.1063537185055,
+          "score": 2
+        },
+        {
+          "t": 9.35,
+          "action": null,
+          "lead": -235.9220982343113,
+          "score": 2
+        },
+        {
+          "t": 9.4,
+          "action": null,
+          "lead": -238.72065095482276,
+          "score": 2
+        },
+        {
+          "t": 9.45,
+          "action": null,
+          "lead": -241.50206540449108,
+          "score": 2
+        },
+        {
+          "t": 9.5,
+          "action": null,
+          "lead": -244.2663984607775,
+          "score": 2
+        },
+        {
+          "t": 9.55,
+          "action": null,
+          "lead": -247.01371029041093,
+          "score": 2
+        },
+        {
+          "t": 9.600000000000001,
+          "action": null,
+          "lead": -249.74406430588124,
+          "score": 2
+        },
+        {
+          "t": 9.65,
+          "action": null,
+          "lead": -252.45752711720297,
+          "score": 2
+        },
+        {
+          "t": 9.7,
+          "action": null,
+          "lead": -255.1541684409699,
+          "score": 2
+        },
+        {
+          "t": 9.75,
+          "action": null,
+          "lead": -257.8340610554342,
+          "score": 2
+        },
+        {
+          "t": 9.8,
+          "action": null,
+          "lead": -260.4972807573554,
+          "score": 2
+        },
+        {
+          "t": 9.850000000000001,
+          "action": null,
+          "lead": -263.1439062821696,
+          "score": 2
+        },
+        {
+          "t": 9.9,
+          "action": null,
+          "lead": -265.7740192367669,
+          "score": 2
+        },
+        {
+          "t": 9.95,
+          "action": null,
+          "lead": -268.38770405334617,
+          "score": 2
+        },
+        {
+          "t": 10,
+          "action": null,
+          "lead": -270.985047938736,
+          "score": 2
+        },
+        {
+          "t": 10.05,
+          "action": null,
+          "lead": -273.56614078056464,
+          "score": 2
+        },
+        {
+          "t": 10.100000000000001,
+          "action": null,
+          "lead": -276.13107510074906,
+          "score": 2
+        },
+        {
+          "t": 10.15,
+          "action": null,
+          "lead": -278.67994601103555,
+          "score": 2
+        },
+        {
+          "t": 10.2,
+          "action": null,
+          "lead": -281.21285113167914,
+          "score": 2
+        },
+        {
+          "t": 10.25,
+          "action": null,
+          "lead": -283.72989052329604,
+          "score": 2
+        },
+        {
+          "t": 10.3,
+          "action": null,
+          "lead": -286.23116664038344,
+          "score": 2
+        },
+        {
+          "t": 10.350000000000001,
+          "action": null,
+          "lead": -288.71678428049654,
+          "score": 2
+        },
+        {
+          "t": 10.4,
+          "action": null,
+          "lead": -291.1868504902818,
+          "score": 2
+        },
+        {
+          "t": 10.45,
+          "action": null,
+          "lead": -293.64147451951567,
+          "score": 2
+        },
+        {
+          "t": 10.5,
+          "action": null,
+          "lead": -296.0807677774128,
+          "score": 2
+        },
+        {
+          "t": 10.55,
+          "action": null,
+          "lead": -298.5048437522305,
+          "score": 2
+        },
+        {
+          "t": 10.600000000000001,
+          "action": null,
+          "lead": -300.9138179444062,
+          "score": 2
+        },
+        {
+          "t": 10.65,
+          "action": null,
+          "lead": -303.3078078216413,
+          "score": 2
+        },
+        {
+          "t": 10.7,
+          "action": null,
+          "lead": -305.6869327698223,
+          "score": 2
+        },
+        {
+          "t": 10.75,
+          "action": null,
+          "lead": -308.05131400119944,
+          "score": 2
+        },
+        {
+          "t": 10.8,
+          "action": null,
+          "lead": -310.40107451068525,
+          "score": 2
+        },
+        {
+          "t": 10.850000000000001,
+          "action": null,
+          "lead": -312.7363390345372,
+          "score": 2
+        },
+        {
+          "t": 10.9,
+          "action": null,
+          "lead": -315.05723397282236,
+          "score": 2
+        },
+        {
+          "t": 10.95,
+          "action": null,
+          "lead": -317.3638873255941,
+          "score": 2
+        }
+      ]
+    }
+  ],
+  "finish": {
+    "first": {
+      "action": "victory",
+      "finish": 0.02141717757701086,
+      "hidden": true
+    },
+    "after": {
+      "action": null,
+      "hidden": false
+    }
+  },
+  "errors": []
+}

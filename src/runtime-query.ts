@@ -19,6 +19,6 @@ export function canonicalGameQuery(raw:URLSearchParams){
  if(import.meta.env.DEV&&raw.get('hairMid')==='old')result.set('hairMid','old');
  if(import.meta.env.DEV&&raw.get('hairUpper')==='old')result.set('hairUpper','old');
  if(import.meta.env.DEV&&['r6c','r6d','r6f','r6g'].includes(raw.get('hairStyle')??''))result.set('hairStyle',raw.get('hairStyle')!);
- if(import.meta.env.DEV&&raw.get('heroine')==='previous')result.set('heroine','previous');
+ if(import.meta.env.DEV&&['previous','r7a'].includes(raw.get('heroine')??''))result.set('heroine',raw.get('heroine')!);
  return result;
 }
