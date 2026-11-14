@@ -1,4 +1,6 @@
 # Coastal Highway — Hair motion technology review / technical decision R0
+> **Owner R6 override (2026-11-14): retry Spring Bones as a full artistic implementation, not a strict identical-geometry 979-triangle B test.** The Issue #43 B result remains technically valid but did NOT test independently optimized *medium-to-tip weights, tapered strands, richer cabin turbulence and 1.0-size characters together*. Spring B may now be tuned differently to maximize beauty, with real Pixel 8 profiling, in the single [Issue #45](https://github.com/michael-wang/OutRun/issues/45) integrated playable pass. This supersedes the earlier postmortem's instruction to hold Spring Bones until a separate A-only art gate. Full construction specification: [R6](COAST_HEROINE_R6_INTEGRATED_PASS.md).
+
 Date: 2026-11-14
 Decision owner: Julia + gameplay owner. Status: research/architecture recommendation only; no runtime benchmark completed, and no new 3D model produced here.
 
