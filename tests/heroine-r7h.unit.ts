@@ -25,10 +25,12 @@ it('keeps the frozen hair pivot aligned through all five clips, pauses, stalls a
   }
  }
  body.updateMatrixWorld(true);
- const back=body.localToWorld(new THREE.Vector3(0,1.10,-1));
- const ray=new THREE.Raycaster(back,new THREE.Vector3(0,0,1));
- const hit=ray.intersectObject(body,true)[0];expect(hit).toBeDefined();
- expect(((hit.object as THREE.Mesh).material as THREE.Material).name).toBe('R7H skin');
+ // The updated half-back cut leaves the upper back open and covers lower back.
+ for(const [height,material] of [[1.20,'R7H skin'],[1.04,'R7H ivory satin'],[.94,'R7H ivory satin']] as const){
+  const back=body.localToWorld(new THREE.Vector3(0,height,-1));
+  const hit=new THREE.Raycaster(back,new THREE.Vector3(0,0,1)).intersectObject(body,true)[0];
+  expect(hit).toBeDefined();expect(((hit.object as THREE.Mesh).material as THREE.Material).name).toBe(material);
+ }
  expect(Math.abs(head.rotation.x)).toBeLessThan(.001);
  for(const action of ['shoutRight','kissRight','shoutLeft','kissLeft','victory']){
   motion.previewHeroine(action,.8);car.updateMatrixWorld(true);

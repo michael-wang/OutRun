@@ -1,7 +1,7 @@
-import bpy,math
+import bpy,math,os
 from pathlib import Path
 from mathutils import Vector,Matrix
-ROOT=Path.cwd();out=ROOT/'docs/art-review/r7h';out.mkdir(exist_ok=True)
+ROOT=Path.cwd();out=ROOT/os.environ.get('OUTRUN_HEROINE_REVIEW','docs/art-review/r7h');out.mkdir(exist_ok=True)
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/'art-prototype/output/r7h-heroine-fullbody.blend'))
 rig=bpy.data.objects['heroine-r7h-rig'];body=bpy.data.objects['heroine-body']
 for owner in [rig,body.data.shape_keys]:

@@ -1,5 +1,9 @@
 # 極速漫遊 / OutRun — current project rules
 
+## R7H garment coverage correction — v0.10.29 (2026-11-15)
+
+Latest owner direction supersedes the deep waist-level back opening below: ivory halter MINI DRESS with **bare shoulders / upper back only**, a continuous back panel rising below the shoulder blades, and fully covered lower back. No diagonal straps or separate underwear-like band. Only garment geometry changed; face/body, frozen R6d hair/wild, five clips, 1.0 scale, camera and overtake logic remain unchanged. See `docs/art-review/r7h-coverage/README.md` for before/after evidence. STOP for Julia/owner review.
+
 ## R7H review candidate — v0.10.28 (2026-11-15)
 
 Issue #50 is implemented on dev for owner/Julia art review. See `docs/art-review/r7h/README.md` for fullbody/race sources, five rear-camera gestures, event/lifecycle evidence and remaining art limitations. DEV defaults to the R7H race GLB; `heroine=r7a` retains the prior model. R6d hair asset, Spring Bones, wild wind, 1.0 people and chase camera are frozen. Side targets follow actual rear view: +X driver/LEFT, -X passenger/RIGHT. Do not begin male/vehicle/hair work until explicitly requested. Pixel 8 was not connected; no mobile performance acceptance is claimed. Older R6 direction below is historical and does not authorize a new hair pass.

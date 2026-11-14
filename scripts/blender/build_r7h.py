@@ -2,10 +2,10 @@
 No inference, face regeneration, hair editing or external dependencies.
 Run from repository root with Blender 4.5 -b -t 4 -P this script.
 """
-import bpy,bmesh,math,json,hashlib
+import bpy,bmesh,math,json,hashlib,os
 from pathlib import Path
 from mathutils import Vector,Matrix,Quaternion
-ROOT=Path.cwd(); OUT=ROOT/'art-prototype/output'; REVIEW=ROOT/'docs/art-review/r7h'
+ROOT=Path.cwd(); OUT=ROOT/'art-prototype/output'; REVIEW=ROOT/os.environ.get('OUTRUN_HEROINE_REVIEW','docs/art-review/r7h')
 OUT.mkdir(parents=True,exist_ok=True); REVIEW.mkdir(parents=True,exist_ok=True)
 SOURCE=OUT/'r7a-heroine-upper-body.blend'
 source_hash=hashlib.sha256(SOURCE.read_bytes()).hexdigest()
@@ -157,14 +157,15 @@ def ribbon(name,path,width,depth,mat,color):
   taper=.55+.45*math.sin(math.pi*j/(len(path)-1))**.35
   rows.append([Vector(p)+across*width*taper*math.cos(i*math.tau/8)+normal*depth*math.sin(i*math.tau/8) for i in range(8)])
  return surface(name,rows,mat,color)
-# One secured backless wrap dress: upper front panel narrows to halter; back
-# terminates at the waist. There are no diagonal back straps in this topology.
+# Half-open-back wrap dress: raise the continuous back panel below the shoulder
+# blades, blending through the sides into the unchanged front halter neckline.
+# This is part of the dress, not a separate band or diagonal back straps.
 dressrows=[]
 for row in range(19):
  t=row/18;rr=[]
  for i in range(64):
   a=i*math.tau/64;s=math.sin(a);c=math.cos(a)
-  front=max(c,0);top=.855+.035*abs(s)+.375*front**1.25
+  front=max(c,0);top=.855+.035*abs(s)+.375*front**1.25+.245*(1-front)**2
   bottom=.48+.055*s+.018*math.cos(2*a)
   y=bottom+(top-bottom)*t
   if y<sections[0][0]:w=.197;d=.135

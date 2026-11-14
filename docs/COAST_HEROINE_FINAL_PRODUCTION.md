@@ -1,4 +1,6 @@
 # R7H — 女主角最終角色製作規格 / Heroine Completion Contract
+
+**Owner correction, 2026-11-15 / v0.10.29:** the newer supplied half-open-back reference supersedes the waist-level deep back opening in the original brief below. Keep shoulders and upper back exposed, but raise the continuous ivory dress back panel to below the shoulder blades and fully cover the lower back. No diagonal straps. Preserve the character, hair, animation and gameplay. See [garment correction review](art-review/r7h-coverage/README.md).
 Date: 2026-11-15
 Status: **OWNER APPROVED — ready for Codex local Blender + game implementation.**
 Goal: finish one lovable, expressive heroine who truly belongs in Coastal Highway Racing. This is a character production milestone, **not another concept generation / hair experiment**.
