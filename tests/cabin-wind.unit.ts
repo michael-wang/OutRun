@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {cabinWind} from '../src/cabin-wind';
+import {cabinWind,experimentalHairWind,hairWindPreset} from '../src/cabin-wind';
 const base={airX:0,airZ:0,velocityX:0,velocityZ:30,yaw:0,time:2};
 describe('relative open-cabin airflow',()=>{
  it('subtracts actual world travel once, is rotation invariant and preserves crosswind',()=>{
@@ -21,4 +21,19 @@ describe('relative open-cabin airflow',()=>{
   }
   expect(cabinWind({...base,velocityX:NaN})).toEqual({x:0,y:0,z:0,exposure:0});
  });
+});
+it('samples continuous, distinct lock turbulence with stronger wild forcing and calm idle',()=>{
+ expect(hairWindPreset('unknown')).toBe('baseline');
+ const flow=cabinWind(base);
+ for(const preset of ['dramatic','wild'] as const){
+  const sequences=Array.from({length:6},(_,chain)=>Array.from({length:360},(_,i)=>experimentalHairWind(preset,flow,25,i/60,chain,2,.3,0,{x:0,y:0,z:0})));
+  sequences.forEach(seq=>seq.forEach((f,i)=>{
+   expect(Object.values(f).every(Number.isFinite)).toBe(true);
+   if(i)expect(Math.hypot(f.x-seq[i-1].x,f.y-seq[i-1].y,f.z-seq[i-1].z)).toBeLessThan(.7);
+  }));
+  expect(sequences[0]).not.toEqual(sequences[1]);
+  expect(experimentalHairWind(preset,{x:0,y:0,z:0,exposure:0},0,8,0,2,0,0,{x:0,y:0,z:0})).toEqual({x:0,y:0,z:0});
+ }
+ const energy=(p:'dramatic'|'wild')=>Array.from({length:360},(_,i)=>experimentalHairWind(p,flow,25,i/60,1,2,0,0,{x:0,y:0,z:0})).reduce((n,f)=>n+f.x*f.x+f.y*f.y+f.z*f.z,0);
+ expect(energy('wild')).toBeGreaterThan(energy('dramatic')*1.8);
 });

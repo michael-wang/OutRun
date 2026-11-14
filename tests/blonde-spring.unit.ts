@@ -38,3 +38,19 @@ it('falls back to Morph A if the spring asset cannot load',async()=>{
  try{const asset=await import('../src/blonde-groom-asset');expect(await asset.preloadBlondeGroom()).toBe(true);
  expect(asset.createBlenderBlondeGroom()!.root.getObjectByName('blender-blonde-bob')).toBeTruthy();}finally{warn.mockRestore();}
 });
+it.each(['dramatic','wild'] as const)('%s leaves the R6 crown fixed and recovers after braking without new geometry',async preset=>{
+ vi.resetModules();const bytes=readFileSync(new URL('../public/assets/characters/coast-blonde-r6.glb',import.meta.url));
+ vi.stubGlobal('fetch',vi.fn(async()=>new Response(bytes)));
+ const asset=await import('../src/blonde-groom-asset');await asset.preloadBlondeGroom();
+ const {createCar}=await import('../src/car');const car=createCar(),m=car.userData.motion;
+ const crown=car.getObjectByName('fixed-crown')!,rest=crown.quaternion.clone();
+ const air={airX:0,airZ:0,velocityX:0,velocityZ:25,yaw:0,time:0,preset};
+ for(let i=0;i<240;i++){air.time=i/60;m.advance(25/60,.3,1/60,4,0,0,air);}
+ const peak=m.occupants().people[1].spring;
+ expect(Math.max(...peak.angles)).toBeGreaterThan(.25);expect(crown.quaternion.angleTo(rest)).toBe(0);
+ expect(car.getObjectByName('passenger')!.scale.x).toBe(1);
+ air.velocityZ=0;
+ for(let i=0;i<480;i++){air.time=4+i/60;m.advance(0,0,1/60,0,0,0,air);}
+ expect(Math.max(...m.occupants().people[1].spring.angles)).toBeLessThan(.02);
+ m.reset();expect(m.occupants().people[1].spring.brakeWake).toBe(0);
+});

@@ -9,6 +9,8 @@ R6 v0.10.20 is playable on dev but **NOT accepted**: 1.0 driver/passenger presen
 
 **Active proposed recovery: [Issue #46](https://github.com/michael-wang/OutRun/issues/46).** Keep 1.0 seated characters and existing useful cabin wind, diagnose Morph vs Spring with same scale/perf scene, make one redesigned slender/tapered golden side/nape-tip Morph-first asset, and restore Pixel8 frame time. Avoid repeated blind spring retuning or generic hair engines; preserve last-good and R6 rollback. Owner may alter this next-step selection.
 
+**Owner override for v0.10.21:** first run one effects-first, wind-only R6 Spring experiment using dev `hairWind=baseline|dramatic|wild`. Keep the R6 mesh/rig, 1.0 characters and chase camera; Pixel 8 FPS is not this experiment's gate. Do not execute the proposed Morph redesign in this round. See `docs/art-review/r6-wind/README.md`; visual acceptance and next technique choice remain with the owner/Julia, and the existing mobile performance rejection is not cleared.
+
 ## Coastal art production (November 14)
 
 - Art direction: **Style Option B for vehicles, people, scenery and coastal sunset mood**. Read `docs/COAST_ART_BIBLE.md`, `docs/COAST_HERO_VEHICLE_ART.md` and `art/reference/coast/README.md`. The reference README lists the approved PNG and its checksum.
