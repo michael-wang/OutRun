@@ -3,6 +3,10 @@
 Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
 canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
+## CURRENT OWNER-AUTHORIZED IMPLEMENTATION — R6 integrated heroine hair (2026-11-14)
+
+**Canonical active task: [Issue #45](https://github.com/michael-wang/OutRun/issues/45) and [R6 integrated spec](docs/COAST_HEROINE_R6_INTEGRATED_PASS.md).** Implement **both characters at 1.0 body scale**, **art-directed independently tuned Spring Bones for the blonde's graceful thin medium-to-tip locks**, and **a dynamically turbulent convertible cabin wind field** in ONE playable `dev` pass. The owner expressly authorizes combining all three variables and comparing whole before/after appearance instead of separate per-variable art gates. Older HOLD/QUEUED instructions in #42/#44 and earlier staged wind docs are superseded. Preserve working GLB preload/fallback, fixed 8m camera and Pixel 8 render budget; one local verify and one dev push, no paid tools, no main. Avoid new facial/driver/traffic/scenery features. This R6 instruction takes precedence over the older early-stage heroine exploratory workflow below.
+
 ## Coastal art production (November 14)
 
 - Art direction: **Style Option B for vehicles, people, scenery and coastal sunset mood**. Read `docs/COAST_ART_BIBLE.md`, `docs/COAST_HERO_VEHICLE_ART.md` and `art/reference/coast/README.md`. The reference README lists the approved PNG and its checksum.
