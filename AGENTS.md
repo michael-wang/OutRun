@@ -1,5 +1,11 @@
 # 極速漫遊 / OutRun — current project rules
 
+## CURRENT R7T STOP — investigate bad fullbody assembly before any more modeling (2026-11-15)
+
+User rejected a local R7T interim screenshot: disconnected/cut forearms and palms, torn dress around hem, and tubular-looking legs despite earlier Hunyuan body being more natural. The R7S Hunyuan image-to-shape original had FUSED LOWER LEGS and indistinct hands; older R7H scripts/blender/build_r7h.py had mathematical ellipse-ring arms/legs. A HYBRID GRAFT of the old procedural limbs onto the Hunyuan torso is a serious but UNCONFIRMED hypothesis. GitHub dev remains at R7S report as of Julia's check; do not claim R7T committed or shipping.
+
+**NEXT Codex work: source-provenance DIAGNOSTIC ONLY** — see [Issue #52 latest owner/Julia comment](https://github.com/michael-wang/OutRun/issues/52). In local Blender inspect exact origin of head, hair, torso, arms, hands, legs, shoes, dress; show source-colored isolated Hunyuan/body/clothing/combined screenshots and cause of discontinuities. No further retopo or new Hunyuan generation, no color/garment patches, no new fullbody GLB in runtime until owner/Julia review. Preserve failed R7T local file for diagnosis and accepted in-car R7H B-2 version bit-for-bit. No npm verify/build/version bump for a pure offline inspection, no main. Conserve Codex quota.
+
 ## CURRENT OWNER-AUTHORIZED R7S PRODUCTION PIVOT — IMAGE-to-3D BEFORE BLENDER (2026-11-15)
 
 **One authorized Shape-only attempt is now complete; STOP for owner/Julia review.** See [R7S image-to-3D evidence](docs/art-review/r7s-image3d/README.md). Torso/waist/hip improved, but legs are fused, hands/shoes lose detail and the unseen B-2 back ribbons are incorrect. Do not retry generation, sculpt a procedural body, or integrate this candidate without new authorization. Original v0.10.30 game assets and Blender master are unchanged.
