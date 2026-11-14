@@ -27,6 +27,7 @@ import {ImpactSparks} from './impact-sparks';
 import {CANYON_BEND} from './canyon-identity';
 import * as THREE from 'three';
 import { createWorld } from './world';
+import {preloadBlondeGroom} from './blonde-groom-asset';
 import type {CarPaintController} from './car';
 import {CAR_COLORS,CAR_PAINT_PRESETS,isCarColor,readCarColor,saveCarColor} from './car-appearance';
 import {CarPaintPicker} from './car-paint-picker';
@@ -220,6 +221,7 @@ renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.domElement.tabIndex=-1;renderer.domElement.setAttribute('aria-label','Driving surface');$('view').append(renderer.domElement);
 startupDiagnostics.mark('renderer-created');
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
+await preloadBlondeGroom();
 const world=createWorld({
  track:coastRuntime.track,
  streamStage:coastRuntime.stage,

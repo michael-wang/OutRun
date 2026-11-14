@@ -1,0 +1,267 @@
+{
+  "device": "RTX 5070 Ti / Windows / Chrome 157 / 1600x900 / DPR 1",
+  "scenario": "trafficSeed=42, 7590m start, 120 km/h cruise, 10 sec driving, omit first 2 buckets; no video recorder",
+  "limitations": "Single short A/B run, warm desktop GPU; not a Pixel 8 or thermal test. GPU timer includes ocean FFT, boat shadows, and main scene. No claim of statistically significant improvement.",
+  "reports": {
+    "old": {
+      "summary": {
+        "measuredSeconds": 8,
+        "meanFps": 59.9975,
+        "worstBucketP95FrameGapMs": 16.8,
+        "cpuCallbackMeanMs": 3.0225000000000004,
+        "gpuSamples": 16,
+        "gpuMeanMs": 3.9293750000000003,
+        "gpuP95Ms": 5.98,
+        "finalGeometryCount": 359,
+        "finalTextureCount": 61
+      },
+      "rows": [
+        {
+          "seconds": 6,
+          "distanceM": 7709,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.19,
+          "drawCalls": 395,
+          "triangles": 820904,
+          "geometryCount": 324,
+          "textureCount": 61
+        },
+        {
+          "seconds": 7,
+          "distanceM": 7750,
+          "fps": 59.99,
+          "frames": 60,
+          "p95FrameGapMs": 16.7,
+          "cpuCallbackMs": 3.09,
+          "drawCalls": 401,
+          "triangles": 890833,
+          "geometryCount": 332,
+          "textureCount": 61
+        },
+        {
+          "seconds": 8,
+          "distanceM": 7791,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.7,
+          "cpuCallbackMs": 2.91,
+          "drawCalls": 401,
+          "triangles": 887175,
+          "geometryCount": 334,
+          "textureCount": 61
+        },
+        {
+          "seconds": 9,
+          "distanceM": 7832,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.09,
+          "drawCalls": 407,
+          "triangles": 863144,
+          "geometryCount": 344,
+          "textureCount": 61
+        },
+        {
+          "seconds": 10,
+          "distanceM": 7873,
+          "fps": 59.99,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 2.93,
+          "drawCalls": 403,
+          "triangles": 843266,
+          "geometryCount": 347,
+          "textureCount": 61
+        },
+        {
+          "seconds": 11,
+          "distanceM": 7914,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 2.93,
+          "drawCalls": 400,
+          "triangles": 798360,
+          "geometryCount": 355,
+          "textureCount": 61
+        },
+        {
+          "seconds": 12,
+          "distanceM": 7954,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.7,
+          "cpuCallbackMs": 3.1,
+          "drawCalls": 377,
+          "triangles": 774058,
+          "geometryCount": 359,
+          "textureCount": 61
+        },
+        {
+          "seconds": 13,
+          "distanceM": 7995,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.7,
+          "cpuCallbackMs": 2.94,
+          "drawCalls": 371,
+          "triangles": 775360,
+          "geometryCount": 359,
+          "textureCount": 61
+        }
+      ],
+      "gpuMs": [
+        2.84,
+        3.11,
+        3.55,
+        3.58,
+        3.59,
+        3.62,
+        3.62,
+        3.65,
+        3.73,
+        3.8,
+        3.82,
+        4.04,
+        4.23,
+        4.76,
+        4.95,
+        5.98
+      ],
+      "errors": []
+    },
+    "new": {
+      "summary": {
+        "measuredSeconds": 8,
+        "meanFps": 59.99625,
+        "worstBucketP95FrameGapMs": 16.8,
+        "cpuCallbackMeanMs": 3.21375,
+        "gpuSamples": 16,
+        "gpuMeanMs": 3.981875,
+        "gpuP95Ms": 6.43,
+        "finalGeometryCount": 357,
+        "finalTextureCount": 61
+      },
+      "rows": [
+        {
+          "seconds": 6,
+          "distanceM": 7709,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.56,
+          "drawCalls": 393,
+          "triangles": 819799,
+          "geometryCount": 322,
+          "textureCount": 61
+        },
+        {
+          "seconds": 7,
+          "distanceM": 7749,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.7,
+          "cpuCallbackMs": 3.27,
+          "drawCalls": 400,
+          "triangles": 889752,
+          "geometryCount": 330,
+          "textureCount": 61
+        },
+        {
+          "seconds": 8,
+          "distanceM": 7790,
+          "fps": 59.99,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.2,
+          "drawCalls": 398,
+          "triangles": 885894,
+          "geometryCount": 332,
+          "textureCount": 61
+        },
+        {
+          "seconds": 9,
+          "distanceM": 7831,
+          "fps": 59.99,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.21,
+          "drawCalls": 405,
+          "triangles": 862521,
+          "geometryCount": 342,
+          "textureCount": 61
+        },
+        {
+          "seconds": 10.02,
+          "distanceM": 7873,
+          "fps": 60,
+          "frames": 61,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.12,
+          "drawCalls": 401,
+          "triangles": 842161,
+          "geometryCount": 345,
+          "textureCount": 61
+        },
+        {
+          "seconds": 11.02,
+          "distanceM": 7914,
+          "fps": 59.99,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.06,
+          "drawCalls": 398,
+          "triangles": 797255,
+          "geometryCount": 353,
+          "textureCount": 61
+        },
+        {
+          "seconds": 12.02,
+          "distanceM": 7954,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.12,
+          "drawCalls": 375,
+          "triangles": 772953,
+          "geometryCount": 357,
+          "textureCount": 61
+        },
+        {
+          "seconds": 13.02,
+          "distanceM": 7995,
+          "fps": 60,
+          "frames": 60,
+          "p95FrameGapMs": 16.8,
+          "cpuCallbackMs": 3.17,
+          "drawCalls": 369,
+          "triangles": 774255,
+          "geometryCount": 357,
+          "textureCount": 61
+        }
+      ],
+      "gpuMs": [
+        1.19,
+        2.95,
+        3.11,
+        3.27,
+        3.39,
+        3.58,
+        3.59,
+        3.87,
+        4.02,
+        4.1,
+        4.52,
+        4.56,
+        4.93,
+        4.94,
+        5.26,
+        6.43
+      ],
+      "errors": []
+    }
+  }
+}

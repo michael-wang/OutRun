@@ -5,6 +5,7 @@ import {createRoadWheel} from './wheels';
 import {createGTWingMirrorHousing,createDoorLiner,createWheelBrow} from './hero-body';
 import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry';
 import {createDriverHair,createBlondeBob} from './hero-groom';
+import {createBlenderBlondeGroom} from './blonde-groom-asset';
 import {createCockpitWheel,createDriverArms} from './hero-hands';
 import {passengerArm} from './passenger-cheer';
 import {createOccupantMotion,type Traveler} from './occupants';
@@ -142,7 +143,7 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving')
     }else{
       face=createPassengerFace(passengerDetail);face.position.set(x,1.465,-.455);
     }
-    const groom=driver?createDriverHair():createBlondeBob(passengerDetail);
+    const groom=driver?createDriverHair():(createBlenderBlondeGroom()??createBlondeBob(passengerDetail));
     groom.root.position.set(x,driver?1.525:1.485,driver?-.464:-.465);head.add(groom.root);
     if(!driver)for(const side of [-1,1] as const){
       const arm=passengerArm(side,skin);arm.root.position.x+=x;
