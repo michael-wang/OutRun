@@ -3,21 +3,22 @@ import {VRMSpringBoneManager,VRMSpringBoneJoint,VRMSpringBoneCollider,VRMSpringB
 import type {WindGroom} from './hero-groom';
 import {cabinWind,experimentalHairWind,type CabinWindInput} from './cabin-wind';
 
-/** Existing Spring solver for legacy 6x3 and the dev R6f 16x4 art rig. */
+/** Existing Spring solver; R6g distinguishes wrapping primary locks and feathers. */
 export function springBlonde(root:THREE.Group):WindGroom{
+ const layered=root.getObjectByName('R6g_blonde_rig');
  const expanded=root.getObjectByName('R6f_blonde_rig');
- const chainCount=expanded?16:6,depthCount=expanded?4:3;
- const slots:number[]=expanded?.userData.windSlots??Array.from({length:6},(_,i)=>i);
+ const chainCount=layered?18:expanded?16:6,depthCount=expanded?4:3;
+ const slots:number[]=(layered??expanded)?.userData.windSlots??Array.from({length:6},(_,i)=>i);
  const manager=new VRMSpringBoneManager(),joints:VRMSpringBoneJoint[]=[];
  const neck=new VRMSpringBoneCollider(new VRMSpringBoneColliderShapeSphere({radius:.052,offset:new THREE.Vector3(0,-.12,.012)}));
  root.add(neck);
  const colliders=[neck];
- if(expanded){const head=new VRMSpringBoneCollider(new VRMSpringBoneColliderShapeSphere({radius:.12,offset:new THREE.Vector3(0,.015,0)}));root.add(head);colliders.push(head);}
+ if(expanded||layered){const head=new VRMSpringBoneCollider(new VRMSpringBoneColliderShapeSphere({radius:.12,offset:new THREE.Vector3(0,.015,0)}));root.add(head);colliders.push(head);}
  for(let chain=0;chain<chainCount;chain++)for(let depth=0;depth<depthCount;depth++){
   const bone=root.getObjectByName(`lock-${chain}-${depth}`)!,child=root.getObjectByName(`lock-${chain}-${depth+1}`)!;
   const joint=new VRMSpringBoneJoint(bone,child,{
-   stiffness:expanded?[3.4,2.2,1.4,.9][depth]*(.85+.30*Math.sin(chain*1.7)**2):[4.2,2.3,1.35][depth]*(.96+.015*chain),
-   dragForce:expanded?[.32,.24,.18,.14][depth]*(.90+.13*Math.cos(chain*.9)**2):[.40,.29,.24][depth],
+   stiffness:layered?(chain<8?[8,5,2.8]:[5.2,2.8,1.5])[depth]*(.94+.12*Math.sin(chain*1.7)**2):expanded?[3.4,2.2,1.4,.9][depth]*(.85+.30*Math.sin(chain*1.7)**2):[4.2,2.3,1.35][depth]*(.96+.015*chain),
+   dragForce:layered?(chain<8?[.48,.36,.28]:[.37,.27,.20])[depth]:expanded?[.32,.24,.18,.14][depth]*(.90+.13*Math.cos(chain*.9)**2):[.40,.29,.24][depth],
    gravityPower:0,gravityDir:new THREE.Vector3(),hitRadius:.003,
   },[{colliders}]);manager.addJoint(joint);joints.push(joint);
  }
@@ -65,6 +66,9 @@ export function springBlonde(root:THREE.Group):WindGroom{
       f.x+=(target.x-f.x)*blend;f.y+=(target.y-f.y)*blend;f.z+=(target.z-f.z)*blend;
       force.copy(f).clampLength(0,depth===0?(expanded?1.4:.85):preset==='wild'?3.2:2.1);
      }
+     // Same cabin field, explicit layer exposure: stable broad forms carry the
+     // silhouette, short exterior feathers carry most of the flutter.
+     if(layered)force.multiplyScalar((chain<8?[.18,.45,.72]:[.46,.86,1.05])[depth]);
      force.applyQuaternion(orientation);
      j.settings.gravityPower=force.length();j.settings.gravityDir.copy(force).normalize();
     }

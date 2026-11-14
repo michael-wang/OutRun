@@ -19,6 +19,8 @@ On 2026-11-14 the owner **approved the new blonde passenger 2D front / three-qua
 
 ## Style vocabulary / invariants
 
+R6g owner steering: use the [new multi-view heroine sheet](art-review/r6g/owner-reference.png) as the highest-priority **hair** reference. Its rounded bob, overlapping flowing primary shapes, small lower feather tips and warm gold hierarchy supersede the general board for this hair experiment. This is not permission to remodel the face or other assets; the R6g prototype still requires visual acceptance.
+
 - **Shape:** recognizable real-world proportions, slightly art-directed simplification; strong primary volumes, selected bevels, readable landmarks, no unnecessary miniature detail.
 - **Character:** approachable, refined, simplified realistic facial anatomy; not photoreal portraits and not chibi/anime toy figures. Preserve the existing male driver / blonde passenger identity and proportions approved for the Riviera 62.
 - **Surface:** clean and controlled glTF-compatible materials. Rich paint on the hero vehicle, gentle glazing, convincing but simplified stucco/stone/roof tile/metal/cloth; avoid dirty photogrammetry, noisy grunge, excessive reflectance, fake plastic appearance.

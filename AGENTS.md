@@ -3,7 +3,13 @@
 Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
 canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
-## CURRENT OWNER-APPROVED ART EXPERIMENT — R6f extreme blonde hair (2026-11-14)
+## CURRENT OWNER-AUTHORIZED ART EXPERIMENT — R6g controlled layered bob (2026-11-14)
+
+**Latest owner request supersedes the R6f extreme direction below:** one layered short bob with a recessed warm honey inner mass, 8 primary locks and 10 short feather locks. Keep 1.0 people, original 8m chase camera, existing Spring Bones and wild cabin field; give primary locks firmer roots and restrained mid/tip response, feathers stronger flutter. No new framework, face changes, paid tools or main promotion. The owner's newly attached multi-view heroine sheet takes priority for HAIR over the general Style B board: `docs/art-review/r6g/owner-reference.png` (SHA-256 `481c9518d889bd3fa006c9935567e3f3b8720002beaff9f58ab516e7bc946c4a`). Face/identity remodelling is not authorized by this hair reference update.
+
+**R6g v0.10.25 is one review candidate, not art acceptance.** See `docs/art-review/r6g/README.md`, actual three-version comparisons and wild video. 18 chains / 54 active joints / 10,120 triangles. Default dev uses R6g; `hairStyle=r6d` and `hairStyle=r6f` restore preserved assets and dynamics. Production stays R6d. Stop after this prototype for owner + Julia review; do not autonomously continue modelling or treat passing unit tests as a beauty gate.
+
+### Historical R6f scope (completed, superseded)
 
 **Active task: [Issue #48](https://github.com/michael-wang/OutRun/issues/48) — 12–20 independently sprung leaf-like hair locks + deep amber-gold inner layer.** Owner intentionally chooses an "unreasonable" art-first experiment after previous cautious attempts. DO NOT quietly revert to R6d's 5 cover locks, a massive static hair shell, only 6 synchronously moving clumps, or a fixed 18-joint/3–5k triangle ceiling. The **major visible blonde hairstyle** should become distinctly curved, overlapping, tapered leaf-like strands with varied honey/amber/blonde vertex colors, and **EVERY strand is spring-driven** with a pinned root, visible mid response and lively pointed tip. The dark gold underlayer supports intentionally visible gaps and visually reads as inner hair, not exposed peach scalp. One existing Spring Bone system, no full cloth/weather engine.
 

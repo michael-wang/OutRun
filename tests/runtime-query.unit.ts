@@ -27,6 +27,7 @@ it('exposes authored-prefab QA only in development builds',()=>{
  expect(canonicalGameQuery(new URLSearchParams('hairUpper=invalid')).has('hairUpper')).toBe(false);
  expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6c')).has('hairStyle')).toBe(import.meta.env.DEV);
  expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6d')).has('hairStyle')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6f')).has('hairStyle')).toBe(import.meta.env.DEV);
  expect(canonicalGameQuery(new URLSearchParams('hairStyle=invalid')).has('hairStyle')).toBe(false);
 });
 it('defaults to a playable coast without the 0-speed FPS benchmark',()=>{

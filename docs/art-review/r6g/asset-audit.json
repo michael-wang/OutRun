@@ -1,0 +1,160 @@
+{
+  "primaryLocks": 8,
+  "secondaryLocks": 10,
+  "independentChains": 18,
+  "activeJoints": 54,
+  "bones": 73,
+  "triangles": 10120,
+  "vertices": 5098,
+  "capTriangles": 1120,
+  "capVertices": 562,
+  "capTrianglePercent": 11.067193675889328,
+  "bytes": 370812,
+  "materials": 1,
+  "strands": [
+    {
+      "name": "sweeping-fringe",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.094,
+      "lengthMeters": 0.3347318076254604
+    },
+    {
+      "name": "left-temple-wrap",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.104,
+      "lengthMeters": 0.34864885221729947
+    },
+    {
+      "name": "left-back-wrap",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.108,
+      "lengthMeters": 0.3566225568845526
+    },
+    {
+      "name": "rear-left-sweep",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.107,
+      "lengthMeters": 0.38073121581470654
+    },
+    {
+      "name": "rear-right-wrap",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.102,
+      "lengthMeters": 0.3409632093319035
+    },
+    {
+      "name": "right-temple-wrap",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.1,
+      "lengthMeters": 0.3171816696816457
+    },
+    {
+      "name": "short-part-fringe",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.078,
+      "lengthMeters": 0.276166313006535
+    },
+    {
+      "name": "nape-overlap",
+      "layer": "primary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.079,
+      "lengthMeters": 0.2587171931703965
+    },
+    {
+      "name": "left-ear-edge",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.032,
+      "lengthMeters": 0.18346846868007027
+    },
+    {
+      "name": "left-ear-feather",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.027,
+      "lengthMeters": 0.16372493990219247
+    },
+    {
+      "name": "left-nape-feather",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.031,
+      "lengthMeters": 0.15460781809061744
+    },
+    {
+      "name": "back-left-edge",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.03,
+      "lengthMeters": 0.15578689802121237
+    },
+    {
+      "name": "back-centre-edge",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.029,
+      "lengthMeters": 0.14137359763424676
+    },
+    {
+      "name": "back-right-edge",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.031,
+      "lengthMeters": 0.1611574874485613
+    },
+    {
+      "name": "right-nape-feather",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.03,
+      "lengthMeters": 0.15401207407196765
+    },
+    {
+      "name": "right-ear-feather",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.028,
+      "lengthMeters": 0.17905161254237045
+    },
+    {
+      "name": "left-side-flick",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.025,
+      "lengthMeters": 0.15819042685989784
+    },
+    {
+      "name": "right-side-flick",
+      "layer": "secondary",
+      "vertices": 252,
+      "triangles": 500,
+      "widthMeters": 0.025,
+      "lengthMeters": 0.16668442329939792
+    }
+  ]
+}
