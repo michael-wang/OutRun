@@ -1,6 +1,12 @@
 # 極速漫遊 / OutRun — current project rules
 
-## R7H garment coverage correction — v0.10.29 (2026-11-15)
+## CURRENT OWNER-APPROVED NEXT WORK — R7H Rev. B halter ribbons (2026-11-15)
+
+**Active next local Codex task is [Issue #51](https://github.com/michael-wang/OutRun/issues/51), costume-only**. Owner prefers R7H v0.10.29 to the earlier overly open-backed design but wants the **rear ivory dress panel lowered modestly** (~8–12cm trial below the current 1.100m upper edge; NOT all the way to the old waist-baring .855m), while **TWO true ivory halter satin ribbons** run from the front neckline around back of neck diagonally down to left/right rear waist seam, making an elegant inverted-V. Lower back stays covered. The previous v0.10.29 prohibition on rear straps is superseded. Required latest visual reference is the user-supplied `OutRun_R7H_RevB_Ribbon_Back_Reference.zip` and [canonical Rev B specification](docs/COAST_HEROINE_FINAL_PRODUCTION.md). Do not claim to have inspected the ZIP if it has not been provided to local Codex.
+
+No face, hair, motion, five gestures, overtake event, seat, car or game changes. Keep accepted R6d hair + WILD, characters 1.0 and 8m chase. Rebuild both fullbody and race garment versions from existing Blender master, preserve v0.10.29 assets as fallback, one local `verify:dev`, one dev push, no `main`, NT$0. Do not start male or Riviera work. Art review is the actual rear chase/standing left pose and back45 attachment; Pixel 8 release perf still unconfirmed.
+
+## HISTORICAL (SUPERSEDED): R7H garment coverage correction — v0.10.29 (2026-11-15)
 
 Latest owner direction supersedes the deep waist-level back opening below: ivory halter MINI DRESS with **bare shoulders / upper back only**, a continuous back panel rising below the shoulder blades, and fully covered lower back. No diagonal straps or separate underwear-like band. Only garment geometry changed; face/body, frozen R6d hair/wild, five clips, 1.0 scale, camera and overtake logic remain unchanged. See `docs/art-review/r7h-coverage/README.md` for before/after evidence. STOP for Julia/owner review.
 
