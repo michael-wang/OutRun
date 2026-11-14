@@ -1,0 +1,32 @@
+{
+  "1": {
+    "evaluated_vertices": 125130,
+    "triangles": 250256,
+    "inside_over_1mm": 0,
+    "deepest_nearest_signed_distance_m": 0
+  },
+  "21": {
+    "evaluated_vertices": 125130,
+    "triangles": 250256,
+    "inside_over_1mm": 632,
+    "deepest_nearest_signed_distance_m": 0.03847670927643776
+  },
+  "101": {
+    "evaluated_vertices": 125130,
+    "triangles": 250256,
+    "inside_over_1mm": 0,
+    "deepest_nearest_signed_distance_m": 0
+  },
+  "121": {
+    "evaluated_vertices": 125130,
+    "triangles": 250256,
+    "inside_over_1mm": 0,
+    "deepest_nearest_signed_distance_m": 0
+  },
+  "141": {
+    "evaluated_vertices": 125130,
+    "triangles": 250256,
+    "inside_over_1mm": 0,
+    "deepest_nearest_signed_distance_m": 0
+  }
+}
