@@ -221,8 +221,10 @@ renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.domElement.tabIndex=-1;renderer.domElement.setAttribute('aria-label','Driving surface');$('view').append(renderer.domElement);
 startupDiagnostics.mark('renderer-created');
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
-await preloadBlondeGroom();
+const previousHeroLook=import.meta.env.DEV&&params.get('r6')==='previous';
+await preloadBlondeGroom(!previousHeroLook);
 const world=createWorld({
+ previousHeroLook,
  track:coastRuntime.track,
  streamStage:coastRuntime.stage,
  chunked:true,
@@ -893,6 +895,7 @@ visualViewport?.addEventListener('resize',resize,{signal});
 document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&(mode==='playing'||mode==='countdown')){rememberRacePhase();mode='paused';sound.pause();ui();}},{signal});
 let physicsTrafficMs=0;
 let sceneDrawCalls=0,sceneTriangles=0;
+const cabinInput={airX:0,airZ:0,velocityX:0,velocityZ:0,yaw:0,time:0};
 function advance(dt:number,override?:InputState){
   const stream=world.streamer;
   if(observed>=0&&race.rivals[observed].finishTime!==null)followRacer(-1);
@@ -996,7 +999,14 @@ function advance(dt:number,override?:InputState){
   const cheer=motion.onCleanPass();
   if(cheer)sound.passengerCue(cheer);
  }
- if(motion.advance(travel,state.appliedSteer,dt,rightAcceleration,state.launchSlip,state.brakeSlip))sound.passengerCue('clap');
+ const afterRoad=world.sample(state.distance);
+ const worldX=afterRoad.position.x+afterRoad.right.x*state.lateral,worldZ=afterRoad.position.z+afterRoad.right.z*state.lateral;
+ const breeze=sampleCoastWind(worldX,worldZ,elapsed);
+ cabinInput.airX=breeze.x;cabinInput.airZ=breeze.z;
+ cabinInput.velocityX=dt>0?(worldX-road.position.x-road.right.x*beforeLateral)/dt:0;
+ cabinInput.velocityZ=dt>0?(worldZ-road.position.z-road.right.z*beforeLateral)/dt:0;
+ cabinInput.yaw=-afterRoad.roadHeading-state.heading;cabinInput.time=elapsed;
+ if(motion.advance(travel,state.appliedSteer,dt,rightAcceleration,state.launchSlip,state.brakeSlip,cabinInput))sound.passengerCue('clap');
  elapsed+=dt;finishStats.addFrame(dt,state.speed);if(stage&&telemetry)telemetry.observe({t:elapsed,s:state.distance-BRICK_START,brake:controls.brake,gas:controls.gas,offRoad:state.offRoad,steer:state.appliedSteer,gear:state.gear});if(l2UI&&history.due(elapsed))history.record(feedbackAnchor());if(telemetry?.due(elapsed)){const sceneSample=coastGameplayAt(state.distance);telemetry.record({t:elapsed,s:state.distance-BRICK_START,speed:state.speed*3.6,gear:state.gear,rpm:state.rpm,gas:controls.gas,brake:controls.brake,steer:state.appliedSteer,rawSteer:controls.rawSteer??controls.steer,curvature:road.curvature,requiredSteer:state.requiredSteer,grade:state.grade,halfWidth:world.halfAt(state.distance),lanes:sceneSample.lanes,active:sceneSample.active,roadX:state.lateral,offRoad:state.offRoad,world:sceneSample.world,beat:sceneSample.beat,input:external?'scripted':inputMode});}sound.update(state.speed,state.slip,controls.gas&&!controls.brake,dt,state,trafficImpact.slide,traffic?.skidIntensity??0);sound.passBy(elapsed,state.distance,state.lateral,carBounds.x/2*Math.abs(Math.cos(state.heading))+carBounds.z/2*Math.abs(Math.sin(state.heading)),traffic?.audioActors()??[],collision?.actorId??rivalHit?.actorId,race.rivals);if(brick&&state.distance>=coastEnd){if(l2UI){const finish=feedbackAnchor();history.record(finish,true);l2UI.complete(finish);}brickCompleted=true;clearRaceCheckpoint();pausedRacePhase=null;mode='paused';input.clear();testControls=undefined;sound.pause();if(telemetry){telemetry.save();showDriveReport();}ui();if(!mobile())(document.getElementById(playerUi?'result-replay':'l2-play') as HTMLElement|null)?.focus();}}else sound.pause();
 }
 function groundHeight(height:number,lateral:number){

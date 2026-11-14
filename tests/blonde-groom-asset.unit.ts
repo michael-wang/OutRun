@@ -15,28 +15,28 @@ describe('accepted Blender blonde driving LOD',()=>{
    signal.addEventListener('abort',()=>reject(new Error('aborted')));
   })));
   try{
-   const loading=asset.preloadBlondeGroom();await vi.advanceTimersByTimeAsync(6000);
-   expect(await loading).toBe(false);expect(asset.createBlenderBlondeGroom()).toBeUndefined();
+   const loading=asset.preloadBlondeGroom(false);await vi.advanceTimersByTimeAsync(6000);
+   expect(await loading).toBe(false);expect(asset.createBlenderBlondeGroom(false)).toBeUndefined();
   }finally{warning.mockRestore();}
  });
  it('fails safely, retries next entry, and shares one preload across callers',async()=>{
   vi.resetModules();const asset=await import('../src/blonde-groom-asset');
   const warning=vi.spyOn(console,'warn').mockImplementation(()=>{});
   try{
-   expect(asset.createBlenderBlondeGroom()).toBeUndefined();
+   expect(asset.createBlenderBlondeGroom(false)).toBeUndefined();
    vi.stubGlobal('fetch',vi.fn(async()=>new Response('missing',{status:404})));
-   expect(await asset.preloadBlondeGroom()).toBe(false);
-   expect(asset.createBlenderBlondeGroom()).toBeUndefined();
-   fetchAsset();const first=asset.preloadBlondeGroom();
-   expect(asset.preloadBlondeGroom()).toBe(first);expect(await first).toBe(true);
-   expect(await asset.preloadBlondeGroom()).toBe(true);expect(fetch).toHaveBeenCalledTimes(1);
+   expect(await asset.preloadBlondeGroom(false)).toBe(false);
+   expect(asset.createBlenderBlondeGroom(false)).toBeUndefined();
+   fetchAsset();const first=asset.preloadBlondeGroom(false);
+   expect(asset.preloadBlondeGroom(false)).toBe(first);expect(await first).toBe(true);
+   expect(await asset.preloadBlondeGroom(false)).toBe(true);expect(fetch).toHaveBeenCalledTimes(1);
   }finally{warning.mockRestore();}
  });
 
  it('replaces the old hair within the unchanged 14k complete car budget, including instances',async()=>{
   vi.resetModules();fetchAsset();const asset=await import('../src/blonde-groom-asset');
-  await asset.preloadBlondeGroom();const {createCar}=await import('../src/car');
-  const car=createCar(),hair=car.getObjectByName('blender-blonde-bob') as THREE.Mesh;
+  await asset.preloadBlondeGroom(false);const {createCar}=await import('../src/car');
+  const car=createCar(false,'driving',true),hair=car.getObjectByName('blender-blonde-bob') as THREE.Mesh;
   expect(hair).toBeInstanceOf(THREE.Mesh);
   expect(car.getObjectByName('layered-blonde-bob')).toBeUndefined();
   expect(car.getObjectByName('passenger')!.position.x).toBeLessThan(0);
@@ -59,7 +59,7 @@ describe('accepted Blender blonde driving LOD',()=>{
 
  it('pins the crown, bends back with speed and gives tips signed lateral movement',async()=>{
   vi.resetModules();fetchAsset();const asset=await import('../src/blonde-groom-asset');
-  await asset.preloadBlondeGroom();const groom=asset.createBlenderBlondeGroom()!;
+  await asset.preloadBlondeGroom(false);const groom=asset.createBlenderBlondeGroom(false)!;
   const mesh=groom.root.children[0] as THREE.Mesh;
   const sample=()=>Array.from({length:mesh.geometry.attributes.position.count},(_,i)=>mesh.getVertexPosition(i,new THREE.Vector3()));
   const rest=sample();groom.sync(.347,0,0,1);const low=sample();
@@ -80,15 +80,15 @@ describe('accepted Blender blonde driving LOD',()=>{
 
  it('owns independent GPU resources and survives disposal/re-entry without another fetch',async()=>{
   vi.resetModules();fetchAsset();const asset=await import('../src/blonde-groom-asset');
-  await asset.preloadBlondeGroom();
-  const a=asset.createBlenderBlondeGroom()!,b=asset.createBlenderBlondeGroom()!;
+  await asset.preloadBlondeGroom(false);
+  const a=asset.createBlenderBlondeGroom(false)!,b=asset.createBlenderBlondeGroom(false)!;
   const am=a.root.children[0] as THREE.Mesh,bm=b.root.children[0] as THREE.Mesh;
   expect(am.geometry).not.toBe(bm.geometry);expect(am.material).not.toBe(bm.material);
   a.sync(1,1,1,1);expect(bm.morphTargetInfluences!.every(v=>v===0)).toBe(true);
   const dispose=vi.spyOn(am.geometry,'dispose'),scene=new THREE.Scene();scene.add(a.root);
   disposeScene(scene);expect(dispose).toHaveBeenCalledOnce();
-  expect(await asset.preloadBlondeGroom()).toBe(true);
-  const c=asset.createBlenderBlondeGroom()!;expect(c.root.children).toHaveLength(1);
+  expect(await asset.preloadBlondeGroom(false)).toBe(true);
+  const c=asset.createBlenderBlondeGroom(false)!;expect(c.root.children).toHaveLength(1);
   expect(fetch).toHaveBeenCalledTimes(1);
  });
 });

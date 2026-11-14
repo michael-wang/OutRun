@@ -5,6 +5,7 @@ import {createRoadWheel} from './wheels';
 import {createGTWingMirrorHousing,createDoorLiner,createWheelBrow} from './hero-body';
 import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry';
 import {createDriverHair,createBlondeBob} from './hero-groom';
+import type {CabinWindInput} from './cabin-wind';
 import {createBlenderBlondeGroom} from './blonde-groom-asset';
 import {createCockpitWheel,createDriverArms} from './hero-hands';
 import {passengerArm} from './passenger-cheer';
@@ -26,7 +27,7 @@ export interface CarPaintController {
  * anchor stay unchanged while the focal-point body/cockpit receive detail.
  * Static meshes are merged by material alongside the articulated occupants.
  */
-export function createCar(dusk=false, passengerDetail:PassengerDetail='driving') {
+export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',previousLook=false) {
   const car=new THREE.Group();car.name='coastal-roadster';
   const wheels:ReturnType<typeof createRoadWheel>[]=[];
   const travelers:Traveler[]=[];
@@ -143,7 +144,7 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving')
     }else{
       face=createPassengerFace(passengerDetail);face.position.set(x,1.465,-.455);
     }
-    const groom=driver?createDriverHair():(createBlenderBlondeGroom()??createBlondeBob(passengerDetail));
+    const groom=driver?createDriverHair():(createBlenderBlondeGroom(!previousLook)??createBlondeBob(passengerDetail));
     groom.root.position.set(x,driver?1.525:1.485,driver?-.464:-.465);head.add(groom.root);
     if(!driver)for(const side of [-1,1] as const){
       const arm=passengerArm(side,skin);arm.root.position.x+=x;
@@ -153,9 +154,14 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving')
     if(face)head.add(face); // Preserve the indexed face, vertex colours and expression morph.
     pivotAt(head,x,1.30,-.46);
     batch(person);pivotAt(person,x,.80,-.48);
-    // Passenger/driver were oversized against the GT body in the chase
-    // camera. Scale around their seat centres, not the car or road physics.
-    person.scale.setScalar(.84);
+    // R6 restores full character scale; the previous presentation is QA rollback.
+    person.scale.setScalar(previousLook ? .84 : 1);
+    if(!previousLook){
+      // Full-size bodies sit 35mm into the cushion. The passenger's raised
+      // outside arm needs 90mm inboard to clear the door liner through a lean.
+      person.position.y-=.035;
+      if(!driver)person.position.x+=.09;
+    }
     travelers.push({body:person,head,arms,hair:groom,
       smile:face?value=>{face.morphTargetInfluences![0]=value;}:undefined,
       poseDriverArms:driver?createDriverArms(car,person,wheel,skin,suit):undefined});
@@ -229,9 +235,9 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving')
   const people=createOccupantMotion(travelers);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);
   car.userData.motion={
-    advance:(ds:number,steer:number,dt:number,rightAcceleration=0,launchSlip=0,brakeSlip=0)=>{
+    advance:(ds:number,steer:number,dt:number,rightAcceleration=0,launchSlip=0,brakeSlip=0,air?:CabinWindInput)=>{
       wheels.forEach(w=>w.advance(ds,steer,dt,launchSlip,brakeSlip));
-      return people.advance(ds,steer,dt,rightAcceleration);
+      return people.advance(ds,steer,dt,rightAcceleration,air);
     },
     posePassenger:people.posePassenger,onCleanPass:people.onCleanPass,onRivalPass:people.onRivalPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()
   };

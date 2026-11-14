@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type {PassengerDetail} from './passenger-face';
+import type {CabinWindInput} from './cabin-wind';
 
 type Row={x:number;y:number;z:number;width:number;shade:number;sweep?:number};
 type Strand={rows:Row[]};
@@ -40,6 +41,9 @@ const strandMesh=(strands:readonly Strand[],base:string,highlight:string,name:st
 export type WindGroom={
  root:THREE.Group;
  sync:(wind:number,sway:number,tipSway:number,phase:number)=>void;
+ step?:(dt:number,input?:CabinWindInput)=>void;
+ reset?:()=>void;
+ inspect?:()=>unknown;
  locks?:THREE.Group[];
 };
 

@@ -1,7 +1,7 @@
 {
   "name": "first-drive",
   "private": true,
-  "version": "0.10.19",
+  "version": "0.10.20",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -22,6 +22,7 @@
     "scenic:test": "node scripts/test-scenic-layout.mjs"
   },
   "dependencies": {
+    "@pixiv/three-vrm-springbone": "3.5.5",
     "html2canvas": "1.4.1",
     "three": "^0.180.0"
   },
