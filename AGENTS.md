@@ -1,6 +1,10 @@
 # 極速漫遊 / OutRun — current project rules
 
-## CURRENT OWNER-APPROVED NEXT WORK — R7H Rev. B halter ribbons (2026-11-15)
+## CURRENT REVIEW CANDIDATE — R7H Rev. B-2 shoulder ribbons, v0.10.30 (2026-11-15)
+
+**Owner explicitly resolved the reference conflict: use attached B-2, NO neck loop.** Two ivory ribbons start at the front bodice, pass over the shoulders and converge toward the back waist. This supersedes Issue #51's earlier nape-to-waist wording and the ZIP's older construction notes. The rear center edge is 1.000m (10cm below v0.10.29), with continuous lower-back coverage. See [B-2 review](docs/art-review/r7h-revb/README.md). Only costume geometry changed; exact non-cloth attributes, morphs, skin bind, clips and R6d hair are audited unchanged. Editable v0.10.29 master is preserved; use `scripts/blender/revise_r7h_revb.py` for this revision, not the older `build_r7h.py` recipe. STOP for Julia/owner art acceptance. No further character, hair or vehicle work authorized.
+
+## HISTORICAL (SUPERSEDED BY B-2): R7H Rev. B halter ribbons (2026-11-15)
 
 **Active next local Codex task is [Issue #51](https://github.com/michael-wang/OutRun/issues/51), costume-only**. Owner prefers R7H v0.10.29 to the earlier overly open-backed design but wants the **rear ivory dress panel lowered modestly** (~8–12cm trial below the current 1.100m upper edge; NOT all the way to the old waist-baring .855m), while **TWO true ivory halter satin ribbons** run from the front neckline around back of neck diagonally down to left/right rear waist seam, making an elegant inverted-V. Lower back stays covered. The previous v0.10.29 prohibition on rear straps is superseded. Required latest visual reference is the user-supplied `OutRun_R7H_RevB_Ribbon_Back_Reference.zip` and [canonical Rev B specification](docs/COAST_HEROINE_FINAL_PRODUCTION.md). Do not claim to have inspected the ZIP if it has not been provided to local Codex.
 

@@ -1,0 +1,74 @@
+{
+  "variant": "after",
+  "counts": {
+    "back": {
+      "frame": 5903,
+      "calls": 477,
+      "triangles": 768035,
+      "points": 714,
+      "lines": 0
+    },
+    "rear45": {
+      "frame": 5904,
+      "calls": 96,
+      "triangles": 357254,
+      "points": 714,
+      "lines": 0
+    },
+    "chase": {
+      "frame": 5905,
+      "calls": 469,
+      "triangles": 780108,
+      "points": 714,
+      "lines": 0
+    },
+    "shoutRight": {
+      "frame": 5928,
+      "calls": 469,
+      "triangles": 780108,
+      "points": 714,
+      "lines": 0
+    },
+    "kissRight": {
+      "frame": 5951,
+      "calls": 469,
+      "triangles": 780108,
+      "points": 714,
+      "lines": 0
+    },
+    "shoutLeft": {
+      "frame": 5974,
+      "calls": 469,
+      "triangles": 780108,
+      "points": 714,
+      "lines": 0
+    },
+    "kissLeft": {
+      "frame": 5997,
+      "calls": 469,
+      "triangles": 780108,
+      "points": 714,
+      "lines": 0
+    },
+    "victory": {
+      "frame": 6020,
+      "calls": 469,
+      "triangles": 780108,
+      "points": 714,
+      "lines": 0
+    }
+  },
+  "scale": [
+    [
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1
+    ]
+  ],
+  "errors": []
+}

@@ -26,7 +26,7 @@ it('keeps the frozen hair pivot aligned through all five clips, pauses, stalls a
  }
  body.updateMatrixWorld(true);
  // The updated half-back cut leaves the upper back open and covers lower back.
- for(const [height,material] of [[1.20,'R7H skin'],[1.04,'R7H ivory satin'],[.94,'R7H ivory satin']] as const){
+ for(const [height,material] of [[1.20,'R7H skin'],[1.04,'R7H skin'],[.97,'R7H ivory satin'],[.94,'R7H ivory satin']] as const){
   const back=body.localToWorld(new THREE.Vector3(0,height,-1));
   const hit=new THREE.Raycaster(back,new THREE.Vector3(0,0,1)).intersectObject(body,true)[0];
   expect(hit).toBeDefined();expect(((hit.object as THREE.Mesh).material as THREE.Material).name).toBe(material);

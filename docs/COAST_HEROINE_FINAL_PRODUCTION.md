@@ -1,7 +1,11 @@
 # R7H — 女主角最終角色製作規格 / Heroine Completion Contract
 
+## Latest explicit owner clarification — B-2, v0.10.30
+
+The owner chose **「依附圖 B-2：取消繞頸，跨肩後向腰部收攏」** after the conflict between the attached B-2 illustration and Issue #51 / ZIP text was identified. This overrides ALL earlier halter/neck-loop instructions below. Use two volumetric ivory ribbons from the front bodice over the shoulders, converging toward the back waist; no neck loop, crossed X or independent horizontal bra band. Keep the lower back covered. The delivered trial lowers the center back edge from 1.100m to 1.000m and preserves the existing face/body, animations, scale, frozen hair and wild wind. [Review evidence and provenance](art-review/r7h-revb/README.md). Await Julia/owner acceptance after this costume-only pass.
+
 **Historical owner correction (SUPERSEDED BY R7H Rev. B), 2026-11-15 / v0.10.29:** the newer supplied half-open-back reference supersedes the waist-level deep back opening in the original brief below. Keep shoulders and upper back exposed, but raise the continuous ivory dress back panel to below the shoulder blades and fully cover the lower back. The former no-straps decision is superseded by R7H Rev. B. Preserve the character, hair, animation and gameplay. See [garment correction review](art-review/r7h-coverage/README.md).
-## LATEST OWNER-APPROVED COSTUME REVISION — R7H Rev. B (2026-11-15)
+## Historical Rev. B brief — nape construction superseded by B-2 (2026-11-15)
 
 **This section overrides the older 2026-11-15 v0.10.29 “NO rear straps” coverage rule and the initial deeply open-backed concept below.** The latest illustration is provided to Codex in `OutRun_R7H_RevB_Ribbon_Back_Reference.zip` (contains `R7H_RevB_Design.png`, the user's v0.10.29 BEFORE screenshot and construction notes). Latest design PNG SHA-256: `7e2e4284ce00a0509cc8b47a99f574f9d49bb2793595ad77298a6dda21136da7`.
 
