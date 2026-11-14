@@ -2,6 +2,19 @@
 Date: 2026-11-14
 Decision owner: Julia + gameplay owner. Status: research/architecture recommendation only; no runtime benchmark completed, and no new 3D model produced here.
 
+## Postmortem — Issue #43 completed 2026-11-14 (supersedes speculative preference below)
+
+**Measured decision: DO NOT adopt the current Spring Bone B.** Codex's [exact A/B report](art-review/hair-spring-ab/README.md) and owner-uploaded 13.3s near-camera video confirm the physics is functional, but the normal game chase view does not show a meaningful beauty/readability advantage. The earlier line "Spring Bones preferred experiment" below describes the hypothesis *before it was tested*, not a production mandate.
+
+- Identical A/B: **979 triangles / 709 vertices**, one opaque material, six tip chains in B (19 bones / 12 active joints), same camera/lighting/inputs. The 979-tri proxy came from an earlier **12,000-triangle accepted hair study**; it is not a proof that 979 is the artistic sweet spot. Both variants also shared a modest 42% local narrowing of the tip region, so the narrowing cannot be credited to Spring Bones.
+- PC sampled B about **+0.29ms CPU per 60Hz frame** (two 120Hz sim steps), GPU effectively similar; Pixel 8 never measured. B **max local displacement 6.58cm**, smaller than A **9.38cm**. That indicates a conservative visible outcome, but by itself does not establish wrong spring stiffness/weight placement.
+- The spring affected six short side/nape tip regions. **Unknown from report:** exact skin-weight influence across root/mid/tip, local stiffness/drag per joint and how much wind turbulence reaches each chain. Don't diagnose the precise rig failure or mandate wider root movement without inspecting the saved `.blend` / controller.
+- At **8m / 960×540**, the model's blonde hair spans only around **20–30 pixels**. Subpixel individual fibers will vanish or shimmer. The accepted 2D concept uses **large flowing main locks plus a few slender tapered end silhouettes, layered value/gold highlights, and varied timing**, not the physical simulation of every fiber.
+- **New artistic direction:** stabilize crown and most swept bangs; redesign a small number of *mid-to-end* feathered locks with visibly tapered tips and separated arcs; ensure any shape-induced movement is readable at chase size; use highlights/secondary tone to suggest delicacy, without overdraw/transparency. Only then compare motion options.
+- A damped spring under a strictly constant speed-relative wind tends toward equilibrium. **Continuous highway flutter needs small, changing gust/turbulence inputs**, even if springs are physically sound. Existing `flutterPhase` provides such a signal, but its effective strength and phase dispersion were not validated from the report. If another targeted motion test becomes warranted, inspect this before adding bones.
+
+**Follow-up:** one **geometry-and-value-first** art check, *with the existing Morph A*, before any additional spring solver work. If it is beautiful and reads at chase size, keep A. Only if its timing is still convincingly deficient consider testing the SAME improved mesh under both physics controllers. No full cloth solver. Preserve Codex quota and NT$0 service cost.
+
 ## User's question and bottom line
 
 The owner asks whether natural wind-blown heroine hair should behave like a soft cloth rather than be hand-authored by moving specific vertices. **Yes about the secondary-motion physics; no to a full cloth solver for this short, thick, stylized blonde bob.**
