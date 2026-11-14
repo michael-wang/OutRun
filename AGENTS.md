@@ -11,6 +11,10 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 
 **NEXT: [R7 — heroine + driver upper-body identity and in-game seating](docs/COAST_HERO_ASSET_R7_PLAN.md).** Prioritize real approved 3D faces/heads + torsos, shoulder and clothing consistency, proper male character asset, expressive left/right head-turn pivots, and alignment with R6d hair; then art-direct an improvement pass on the Riviera 62 player car. NO more over-optimizing the hair. Budget NT$0 added services; Codex quota last reported around 50%. First get actual front / 45° / side + rear chase screenshots and owner approval before trying major car remodeling.
 
+## R7A dev candidate — v0.10.27
+
+Owner authorized Issue #49 female upper-body integration on dev. The approved coloured Blender bust now supplies the face/neck/shoulders/halter/earrings; see `docs/art-review/r7a/README.md` for actual six-view comparisons, source hashes and remaining shoulder/cloth seam defects. R6d hair/wild, 1.0 occupants and chase camera stay frozen. DEV defaults to this candidate; `heroine=previous` restores the preceding passenger. Production still uses the preceding passenger pending art and mobile acceptance. Local verify:dev passed 118 files / 512 tests; no Pixel 8 FPS claim. STOP for owner + Julia art review. Do not begin male character, Riviera 62 redesign or another hair pass without new authorization.
+
 ## Coastal art production (November 14)
 
 **R6f delivered experiment, dev v0.10.24:** 16 independently sprung locks / 64 active joints / 8,000 triangles, dev-only default; `hairStyle=r6d` restores unchanged R6d. See `docs/art-review/r6f/README.md` for actual comparisons and negative art assessment: motion is independent, but excessive dark inner-layer exposure makes the hairstyle sparse and is NOT an accepted visual improvement. One prototype completed; stop for owner + Julia review, no automatic additional modelling. Wild field, 1.0 people and chase camera unchanged. Production remains R6d; Pixel 8 not retested.

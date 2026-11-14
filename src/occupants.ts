@@ -2,17 +2,18 @@ import * as THREE from 'three';
 import type {WindGroom} from './hero-groom';
 import type {CabinWindInput} from './cabin-wind';
 import {CLAP_TIMES,CHEER_END,type Cheer,type passengerArm} from './passenger-cheer';
-export type Traveler={body:THREE.Group,head:THREE.Group,arms:ReturnType<typeof passengerArm>[],hair:WindGroom,smile?:(weight:number)=>void,poseDriverArms?:(turn:number)=>void};
+export type Traveler={body:THREE.Group,head:THREE.Group,arms:ReturnType<typeof passengerArm>[],hair:WindGroom,smile?:(weight:number)=>void,poseHead?:(rotation:THREE.Euler)=>void,poseDriverArms?:(turn:number)=>void};
 /** Small presentation pivots, driven only by observed travel and applied input. */
 export function createOccupantMotion(people:Traveler[]){
  let phase=0,wind=0,turn=0,pitch=0,lastSpeed=0;
  let sway=0,swayRate=0,tipSway=0,flutterPhase=0;
  let cheerTime=-1,nextCheer=0;
  let cheer:Cheer='applause';
+ let passengerLook=0;
  function pose(time=cheerTime,gesture=cheer){
   people.forEach((p,index)=>{
    p.body.rotation.z=turn*(index===0?.08:.12);p.body.rotation.x=pitch;
-   p.head.rotation.y=-turn*.12;p.head.rotation.z=-turn*.035;
+   p.head.rotation.y=-turn*.12+(index===1?passengerLook:0);p.head.rotation.z=-turn*.035;
    if(index===1&&gesture==='wave'&&time>=0)
     p.head.rotation.y+=.40*THREE.MathUtils.smoothstep(time,0,.4)*(1-THREE.MathUtils.smoothstep(time,.88,CHEER_END));
    p.arms.forEach(arm=>{
@@ -21,11 +22,12 @@ export function createOccupantMotion(people:Traveler[]){
     arm.pose(time,gesture);
    });
    p.poseDriverArms?.(turn);
+   p.poseHead?.(p.head.rotation);
    p.smile?.(.58+(time<0?0:.42*Math.sin(Math.PI*Math.min(time/CHEER_END,1))));
    p.hair.sync(wind,sway,tipSway,flutterPhase);
   });
  }
- return {posePassenger:pose,onCleanPass(){
+ return {posePassenger:pose,setPassengerLook(yaw:number){passengerLook=Number.isFinite(yaw)?THREE.MathUtils.clamp(yaw,-.6,.6):0;pose();},onCleanPass(){
   if(phase<nextCheer||cheerTime>=0)return;
   const roll=Math.random();
   if(roll>=.28)return;
@@ -55,7 +57,7 @@ export function createOccupantMotion(people:Traveler[]){
   const clap=cheer==='applause'&&before>=0&&CLAP_TIMES.some(at=>before<at&&cheerTime>=at);
   if(cheerTime>=CHEER_END)cheerTime=-1;
   lastSpeed=speed;pose();people.forEach(p=>p.hair.step?.(dt,air));return clap;
- },reset(){phase=wind=turn=pitch=lastSpeed=sway=swayRate=tipSway=flutterPhase=nextCheer=0;cheer='applause';cheerTime=-1;pose();people.forEach(p=>p.hair.reset?.());},
+ },reset(){phase=wind=turn=pitch=lastSpeed=sway=swayRate=tipSway=flutterPhase=nextCheer=passengerLook=0;cheer='applause';cheerTime=-1;pose();people.forEach(p=>p.hair.reset?.());},
  inspect:()=>({wind,turn,pitch,phase,sway,tipSway,cheerTime,cheer,people:people.map(p=>({
   lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.hair.locks?.map(l=>({back:l.rotation.x,side:l.rotation.z}))??[],spring:p.hair.inspect?.(),
  }))})};

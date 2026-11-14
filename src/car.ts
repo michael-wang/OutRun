@@ -7,6 +7,7 @@ import {createRivieraBody,createRivieraTailLamps} from './hero-classic-geometry'
 import {createDriverHair,createBlondeBob} from './hero-groom';
 import type {CabinWindInput} from './cabin-wind';
 import {createBlenderBlondeGroom} from './blonde-groom-asset';
+import {createHeroineBust} from './heroine-bust-asset';
 import {createCockpitWheel,createDriverArms} from './hero-hands';
 import {passengerArm} from './passenger-cheer';
 import {createOccupantMotion,type Traveler} from './occupants';
@@ -118,6 +119,13 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
     const lapel=material('#38414a',.80);
     const shirt=material(driver?'#e4e3dc':'#fffdf8',driver?.77:.87);
     let face:ReturnType<typeof createPassengerFace>|undefined;
+    const heroine=!driver&&!previousLook?createHeroineBust():undefined;
+    if(heroine){
+      // Linear colours sampled from the approved sculpt's shoulder and ivory
+      // regions: existing animated arms/lower dress meet the coloured bust.
+      skin.color.setRGB(.730461,.327778,.187821);skin.roughness=.72;
+      shirt.color.setRGB(.859902,.717636,.551863);shirt.roughness=.83;
+    }
     shirt.side=THREE.DoubleSide;
     if(driver){
       mesh(sectionMesh(jacketSections),suit,x,0,0,person);
@@ -125,7 +133,10 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
         [1.366,.068,.067,-.443]],12),skin,x,0,0,person);
       mesh(shirtCollar(),shirt,x,0,0,person);
     }else{
-      mesh(createSundress(),shirt,x,0,0,person);
+      const holder=heroine?new THREE.Group():person;
+      if(heroine){holder.name='heroine-lower-dress';person.add(holder);}
+      const dress=mesh(createSundress(!heroine),shirt,x,0,0,holder);
+      if(heroine)dress.receiveShadow=false;
     }
     if(driver){
       mesh(sectionMesh([[1.323,.048,.055,-.425],[1.351,.094,.091,-.435],
@@ -141,17 +152,19 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
         bar([x+eye*.094,1.49,-.353],[x+eye*.135,1.486,-.445],.004,lapel,head);
       }
       bar([x-.018,1.49,-.34],[x+.018,1.49,-.34],.004,lapel,head);
-    }else{
+    }else if(!heroine){
       face=createPassengerFace(passengerDetail);face.position.set(x,1.465,-.455);
     }
     const groom=driver?createDriverHair():(createBlenderBlondeGroom(!previousLook)??createBlondeBob(passengerDetail));
     groom.root.position.set(x,driver?1.525:1.485,driver?-.464:-.465);head.add(groom.root);
     if(!driver)for(const side of [-1,1] as const){
-      const arm=passengerArm(side,skin);arm.root.position.x+=x;
+      const arm=passengerArm(side,skin,!heroine);arm.root.position.x+=x;
+      if(heroine)arm.root.traverse(o=>{if(o instanceof THREE.Mesh)o.receiveShadow=false;});
       person.add(arm.root);arms.push(arm);
     }
     batch(head);
     if(face)head.add(face); // Preserve the indexed face, vertex colours and expression morph.
+    if(heroine){heroine.root.position.x=x;person.add(heroine.root);}
     pivotAt(head,x,1.30,-.46);
     batch(person);pivotAt(person,x,.80,-.48);
     // R6 restores full character scale; the previous presentation is QA rollback.
@@ -163,7 +176,8 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
       if(!driver)person.position.x+=.09;
     }
     travelers.push({body:person,head,arms,hair:groom,
-      smile:face?value=>{face.morphTargetInfluences![0]=value;}:undefined,
+      smile:heroine?value=>heroine.expression(value,Math.max(0,(value-.58)*.7)):face?value=>{face.morphTargetInfluences![0]=value;}:undefined,
+      poseHead:heroine?.poseHead,
       poseDriverArms:driver?createDriverArms(car,person,wheel,skin,suit):undefined});
   }
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
@@ -239,7 +253,7 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
       wheels.forEach(w=>w.advance(ds,steer,dt,launchSlip,brakeSlip));
       return people.advance(ds,steer,dt,rightAcceleration,air);
     },
-    posePassenger:people.posePassenger,onCleanPass:people.onCleanPass,onRivalPass:people.onRivalPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()
+    posePassenger:people.posePassenger,setPassengerLook:people.setPassengerLook,onCleanPass:people.onCleanPass,onRivalPass:people.onRivalPass,render:()=>wheels.forEach(w=>w.render()),reset:()=>{wheels.forEach(w=>w.reset());people.reset();},inspect:()=>wheels.map(w=>w.inspect()),occupants:()=>people.inspect()
   };
   return car;
 }

@@ -28,6 +28,7 @@ import {CANYON_BEND} from './canyon-identity';
 import * as THREE from 'three';
 import { createWorld } from './world';
 import {preloadBlondeGroom} from './blonde-groom-asset';
+import {preloadHeroineBust} from './heroine-bust-asset';
 import {hairWindPreset} from './cabin-wind';
 import type {CarPaintController} from './car';
 import {CAR_COLORS,CAR_PAINT_PRESETS,isCarColor,readCarColor,saveCarColor} from './car-appearance';
@@ -224,6 +225,8 @@ startupDiagnostics.mark('renderer-created');
 await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const previousHeroLook=import.meta.env.DEV&&params.get('r6')==='previous';
 await preloadBlondeGroom(!previousHeroLook);
+// R7A is an owner-authorized playable DEV art candidate, pending visual signoff.
+if(import.meta.env.DEV&&!previousHeroLook&&params.get('heroine')!=='previous')await preloadHeroineBust();
 const world=createWorld({
  previousHeroLook,
  track:coastRuntime.track,
