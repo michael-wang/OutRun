@@ -3,9 +3,11 @@
 Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
 canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
-## CURRENT OWNER-AUTHORIZED IMPLEMENTATION — R6 integrated heroine hair (2026-11-14)
+## R6 ART REVIEW — active recovery direction (2026-11-14)
 
-**Canonical active task: [Issue #45](https://github.com/michael-wang/OutRun/issues/45) and [R6 integrated spec](docs/COAST_HEROINE_R6_INTEGRATED_PASS.md).** Implement **both characters at 1.0 body scale**, **art-directed independently tuned Spring Bones for the blonde's graceful thin medium-to-tip locks**, and **a dynamically turbulent convertible cabin wind field** in ONE playable `dev` pass. The owner expressly authorizes combining all three variables and comparing whole before/after appearance instead of separate per-variable art gates. Older HOLD/QUEUED instructions in #42/#44 and earlier staged wind docs are superseded. Preserve working GLB preload/fallback, fixed 8m camera and Pixel 8 render budget; one local verify and one dev push, no paid tools, no main. Avoid new facial/driver/traffic/scenery features. This R6 instruction takes precedence over the older early-stage heroine exploratory workflow below.
+R6 v0.10.20 is playable on dev but **NOT accepted**: 1.0 driver/passenger presentation is a positive; 18-joint Spring Blonde is still not flowing gracefully, and on Pixel 8 same-run FPS dropped 22.87 -> 18.05 (P95 66.6 -> 82.9ms). Real game framebuffer only 732x262 (DPR1), despite 2400x1080 physical screen capture. DO NOT promote R6 to main or assert mobile art/perf PASS.
+
+**Active proposed recovery: [Issue #46](https://github.com/michael-wang/OutRun/issues/46).** Keep 1.0 seated characters and existing useful cabin wind, diagnose Morph vs Spring with same scale/perf scene, make one redesigned slender/tapered golden side/nape-tip Morph-first asset, and restore Pixel8 frame time. Avoid repeated blind spring retuning or generic hair engines; preserve last-good and R6 rollback. Owner may alter this next-step selection.
 
 ## Coastal art production (November 14)
 
