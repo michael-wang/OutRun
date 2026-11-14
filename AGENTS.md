@@ -3,13 +3,11 @@
 Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
 canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
-## R6 ART REVIEW — active recovery direction (2026-11-14)
+## R6b CURRENT ART DIRECTION — v0.10.21 WILD tips approved, mid needs motion (2026-11-14)
 
-R6 v0.10.20 is playable on dev but **NOT accepted**: 1.0 driver/passenger presentation is a positive; 18-joint Spring Blonde is still not flowing gracefully, and on Pixel 8 same-run FPS dropped 22.87 -> 18.05 (P95 66.6 -> 82.9ms). Real game framebuffer only 732x262 (DPR1), despite 2400x1080 physical screen capture. DO NOT promote R6 to main or assert mobile art/perf PASS.
+**Active next work: [Issue #46](https://github.com/michael-wang/OutRun/issues/46), now retitled R6b.** Owner + Julia visually accepted the **rear/terminal flowing blonde tips in v0.10.21 `?hairWind=wild`**, seen in both Codex 22s and owner 47s real-game PC clips. **Mid hair still looks like a stiff cap**; gently loosen only selected OUTER middle locks. The earlier Morph-first plan in #46 and this document is SUPERSEDED: KEEP Spring Bones and existing wildly gusting cabin wind. The Blender export `scripts/blender/export_r6_blonde.py` heavily weights mid-to-upper layers to `fixed-crown`, and existing first spring joint gets much weaker forces than tips; inspect visual weight mask before changing it. Do not just turn up wind, add bones, or rewrite the physics. Keep 1.0 people and unchanged 8m chase camera.
 
-**Active proposed recovery: [Issue #46](https://github.com/michael-wang/OutRun/issues/46).** Keep 1.0 seated characters and existing useful cabin wind, diagnose Morph vs Spring with same scale/perf scene, make one redesigned slender/tapered golden side/nape-tip Morph-first asset, and restore Pixel8 frame time. Avoid repeated blind spring retuning or generic hair engines; preserve last-good and R6 rollback. Owner may alter this next-step selection.
-
-**Owner override for v0.10.21:** first run one effects-first, wind-only R6 Spring experiment using dev `hairWind=baseline|dramatic|wild`. Keep the R6 mesh/rig, 1.0 characters and chase camera; Pixel 8 FPS is not this experiment's gate. Do not execute the proposed Morph redesign in this round. See `docs/art-review/r6-wind/README.md`; visual acceptance and next technique choice remain with the owner/Julia, and the existing mobile performance rejection is not cleared.
+**R6 wild is an ART prototype only**: previous R6 Pixel8 measured a 22.87→18.05 FPS regression; v0.10.21 wild has NOT had Pixel8 FPS retested. For this design pass owner explicitly prioritizes visual effect over FPS; do NOT claim public release readiness, and do not promote `main`. Codex usage ~54%; bounded one mid-hair art iteration, focused tests and one dev push, NT$0.
 
 ## Coastal art production (November 14)
 
