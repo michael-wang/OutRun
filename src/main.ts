@@ -896,7 +896,7 @@ visualViewport?.addEventListener('resize',resize,{signal});
 document.addEventListener('fullscreenchange',()=>{input.clear();resize();if(!document.fullscreenElement&&(mode==='playing'||mode==='countdown')){rememberRacePhase();mode='paused';sound.pause();ui();}},{signal});
 let physicsTrafficMs=0;
 let sceneDrawCalls=0,sceneTriangles=0;
-const cabinInput={airX:0,airZ:0,velocityX:0,velocityZ:0,yaw:0,time:0,preset:hairWindPreset(import.meta.env.DEV?params.get('hairWind'):null)};
+const cabinInput={airX:0,airZ:0,velocityX:0,velocityZ:0,yaw:0,time:0,preset:hairWindPreset(import.meta.env.DEV?(params.get('hairWind')??'wild'):null)};
 function advance(dt:number,override?:InputState){
   const stream=world.streamer;
   if(observed>=0&&race.rivals[observed].finishTime!==null)followRacer(-1);

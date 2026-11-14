@@ -18,14 +18,14 @@ export function preloadBlondeGroom(spring=true):Promise<boolean>{
   springPending=(async()=>{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);
    try{
-    // One loader; preserved R6/R6b/R6c assets remain dev-only art comparisons.
-    const oldMiddle=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairMid')==='old';
-    const oldUpper=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairUpper')==='old';
-    const r6c=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairStyle')==='r6c';
-    const r6d=typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairStyle')==='r6d';
-    const r6f=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairStyle')==='r6f';
-    const r6g=import.meta.env.DEV&&!oldMiddle&&!oldUpper&&!r6c&&!r6d&&!r6f;
-    const filename=oldMiddle?'coast-blonde-r6.glb':oldUpper?'coast-blonde-r6b.glb':r6c?'coast-blonde-r6b-upper.glb':r6d?'coast-blonde-r6d.glb':r6f?'coast-blonde-r6f.glb':r6g?'coast-blonde-r6g.glb':'coast-blonde-r6d.glb';
+    // R6d is the owner-frozen hair appearance. R6f/R6g remain DEV-only QA history.
+    // Keep one loader and preserve the previous GLBs for reproducible comparisons.
+    const query=import.meta.env.DEV&&typeof window!=='undefined'?new URLSearchParams(window.location.search):null;
+    const oldMiddle=query?.get('hairMid')==='old';
+    const oldUpper=query?.get('hairUpper')==='old';
+    const style=query?.get('hairStyle');
+    const r6c=style==='r6c',r6f=style==='r6f',r6g=style==='r6g';
+    const filename=oldMiddle?'coast-blonde-r6.glb':oldUpper?'coast-blonde-r6b.glb':r6c?'coast-blonde-r6b-upper.glb':r6f?'coast-blonde-r6f.glb':r6g?'coast-blonde-r6g.glb':'coast-blonde-r6d.glb';
     const triangleBudget=oldMiddle||oldUpper?2500:r6c?7500:r6f||r6g?20000:5000;
     const response=await fetch(`${import.meta.env.BASE_URL}assets/characters/${filename}`,{signal:controller.signal});
     if(!response.ok)throw new Error(`Spring hair HTTP ${response.status}`);
