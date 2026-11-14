@@ -81,7 +81,8 @@ hair.vertex_groups.clear()
 groups={n:hair.vertex_groups.new(name=n) for n in ['fixed-crown']+[b for c in chains for b in c['bones']]}
 for i,p in enumerate(v):
     c=chains[group[i]]
-    flex=float((1-smooth(-.015,.075,p[2]))*smooth(-.04,.025,p[1])*(1-smooth(math.radians(94),math.radians(113),abs(np.arctan2(p[0],p[1])))))
+    # R6b: flex the exposed upper/middle back locks; keep crown >= .108m and all low tips unchanged.
+    flex=float((1-smooth(.010,.108,p[2]))*smooth(-.04,.025,p[1])*(1-smooth(math.radians(94),math.radians(113),abs(np.arctan2(p[0],p[1])))))
     along=float(np.clip((c['top']-p[2])/(c['top']-c['bottom'])*3,0,2))
     lo=min(1,int(along)); blend=along-lo
     weights={'fixed-crown':1-flex,c['bones'][lo]:flex*(1-blend),c['bones'][lo+1]:flex*blend}

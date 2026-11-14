@@ -1,7 +1,7 @@
 /** Public query contract: old debug URLs never change gameplay modes. */
 export const GAME_QUERY_KEYS=['fpsdiag','startupdiag','at','trafficSeed','rivaldebug'] as const;
 // Private dev-only visual marker for data-authored stage prefabs.
-export const DEV_QUERY_KEYS=['prefabdebug','r5qa','r6','hairWind'] as const;
+export const DEV_QUERY_KEYS=['prefabdebug','r5qa','r6','hairWind','hairMid'] as const;
 export function canonicalGameQuery(raw:URLSearchParams){
  const result=new URLSearchParams();
  if(raw.get('fpsdiag')==='1')result.set('fpsdiag','1');
@@ -16,5 +16,6 @@ export function canonicalGameQuery(raw:URLSearchParams){
  if(import.meta.env.DEV&&raw.get('r5qa')==='1')result.set('r5qa','1');
  if(import.meta.env.DEV&&raw.get('r6')==='previous')result.set('r6','previous');
  if(import.meta.env.DEV&&['baseline','dramatic','wild'].includes(raw.get('hairWind')??''))result.set('hairWind',raw.get('hairWind')!);
+ if(import.meta.env.DEV&&raw.get('hairMid')==='old')result.set('hairMid','old');
  return result;
 }

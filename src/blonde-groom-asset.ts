@@ -18,7 +18,11 @@ export function preloadBlondeGroom(spring=true):Promise<boolean>{
   springPending=(async()=>{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);
    try{
-    const response=await fetch(`${import.meta.env.BASE_URL}assets/characters/coast-blonde-r6.glb`,{signal:controller.signal});
+    // Default R6b keeps the original Spring rig and WILD wind but loosens only the middle locks.
+    // Local comparison: ?hairWind=wild&hairMid=old restores the unchanged R6 skin.
+    const oldMiddle=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairMid')==='old';
+    const filename=oldMiddle?'coast-blonde-r6.glb':'coast-blonde-r6b.glb';
+    const response=await fetch(`${import.meta.env.BASE_URL}assets/characters/${filename}`,{signal:controller.signal});
     if(!response.ok)throw new Error(`Spring hair HTTP ${response.status}`);
     const gltf=await new GLTFLoader().parseAsync(await response.arrayBuffer(),'');
     const meshes:THREE.Mesh[]=[];gltf.scene.traverse(o=>{if(o instanceof THREE.Mesh)meshes.push(o);});
