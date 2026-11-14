@@ -1,0 +1,136 @@
+{
+  "before": {
+    "variant": "before",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 3559,
+      "bones": 25
+    },
+    "draw": {
+      "hairCalls": 1,
+      "frame": {
+        "frame": 6557,
+        "calls": 120,
+        "triangles": 581695,
+        "points": 668,
+        "lines": 0
+      },
+      "vertices": 2242
+    },
+    "exposure": [
+      {
+        "view": "chase",
+        "capPercent": 0,
+        "hairPixels": 1964
+      },
+      {
+        "view": "front45",
+        "capPercent": 0,
+        "hairPixels": 185969
+      },
+      {
+        "view": "rear45",
+        "capPercent": 0,
+        "hairPixels": 238612
+      },
+      {
+        "view": "side",
+        "capPercent": 0,
+        "hairPixels": 430473
+      },
+      {
+        "view": "back",
+        "capPercent": 0,
+        "hairPixels": 448495
+      }
+    ],
+    "errors": []
+  },
+  "after": {
+    "variant": "after",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 8000,
+      "bones": 81
+    },
+    "draw": {
+      "hairCalls": 1,
+      "frame": {
+        "frame": 6601,
+        "calls": 120,
+        "triangles": 586136,
+        "points": 668,
+        "lines": 0
+      },
+      "vertices": 4034
+    },
+    "exposure": [
+      {
+        "view": "chase",
+        "capPercent": 33.8851526125194,
+        "hairPixels": 1933
+      },
+      {
+        "view": "front45",
+        "capPercent": 43.86383551742404,
+        "hairPixels": 201991
+      },
+      {
+        "view": "rear45",
+        "capPercent": 32.320397946494055,
+        "hairPixels": 250888
+      },
+      {
+        "view": "side",
+        "capPercent": 33.9278853542339,
+        "hairPixels": 416448
+      },
+      {
+        "view": "back",
+        "capPercent": 26.370159816428895,
+        "hairPixels": 445386
+      }
+    ],
+    "errors": []
+  }
+}

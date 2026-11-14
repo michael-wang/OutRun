@@ -22,18 +22,22 @@ export function preloadBlondeGroom(spring=true):Promise<boolean>{
     const oldMiddle=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairMid')==='old';
     const oldUpper=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairUpper')==='old';
     const r6c=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairStyle')==='r6c';
-    const filename=oldMiddle?'coast-blonde-r6.glb':oldUpper?'coast-blonde-r6b.glb':r6c?'coast-blonde-r6b-upper.glb':'coast-blonde-r6d.glb';
-    const triangleBudget=oldMiddle||oldUpper?2500:r6c?7500:5000;
+    const r6d=typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairStyle')==='r6d';
+    const r6f=import.meta.env.DEV&&!oldMiddle&&!oldUpper&&!r6c&&!r6d;
+    const filename=oldMiddle?'coast-blonde-r6.glb':oldUpper?'coast-blonde-r6b.glb':r6c?'coast-blonde-r6b-upper.glb':r6f?'coast-blonde-r6f.glb':'coast-blonde-r6d.glb';
+    const triangleBudget=oldMiddle||oldUpper?2500:r6c?7500:r6f?20000:5000;
     const response=await fetch(`${import.meta.env.BASE_URL}assets/characters/${filename}`,{signal:controller.signal});
     if(!response.ok)throw new Error(`Spring hair HTTP ${response.status}`);
     const gltf=await new GLTFLoader().parseAsync(await response.arrayBuffer(),'');
     const meshes:THREE.Mesh[]=[];gltf.scene.traverse(o=>{if(o instanceof THREE.Mesh)meshes.push(o);});
     const mesh=meshes[0];
-    if(meshes.length!==1||!(mesh instanceof THREE.SkinnedMesh)||mesh.skeleton.bones.length!==25||
+    const expanded=gltf.scene.getObjectByName('R6f_blonde_rig');
+    if(expanded&&(!Array.isArray(expanded.userData.windSlots)||expanded.userData.windSlots.length!==16||!expanded.userData.windSlots.every((v:unknown)=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=6)))throw new Error('Invalid R6f wind slots');
+    if(meshes.length!==1||!(mesh instanceof THREE.SkinnedMesh)||mesh.skeleton.bones.length!==(expanded?81:25)||
        !(mesh.material instanceof THREE.MeshStandardMaterial)||mesh.material.transparent||
        (mesh.geometry.index?.count??mesh.geometry.attributes.position.count)>triangleBudget*3)
      throw new Error('Invalid R6 hair asset');
-    for(let c=0;c<6;c++)for(let d=0;d<4;d++)if(!gltf.scene.getObjectByName(`lock-${c}-${d}`))throw new Error('Missing hair bone');
+    for(let c=0;c<(expanded?16:6);c++)for(let d=0;d<(expanded?5:4);d++)if(!gltf.scene.getObjectByName(`lock-${c}-${d}`))throw new Error('Missing hair bone');
     springTemplate=gltf.scene;return true;
    }catch(error){console.warn('R6 hair unavailable; falling back to previous blonde groom.',error);}
    finally{clearTimeout(timer);}

@@ -3,17 +3,23 @@ import {VRMSpringBoneManager,VRMSpringBoneJoint,VRMSpringBoneCollider,VRMSpringB
 import type {WindGroom} from './hero-groom';
 import {cabinWind,experimentalHairWind,type CabinWindInput} from './cabin-wind';
 
-/** Six short authored chains; GPU skinning, no CPU vertex writes or full VRM. */
+/** Existing Spring solver for legacy 6x3 and the dev R6f 16x4 art rig. */
 export function springBlonde(root:THREE.Group):WindGroom{
+ const expanded=root.getObjectByName('R6f_blonde_rig');
+ const chainCount=expanded?16:6,depthCount=expanded?4:3;
+ const slots:number[]=expanded?.userData.windSlots??Array.from({length:6},(_,i)=>i);
  const manager=new VRMSpringBoneManager(),joints:VRMSpringBoneJoint[]=[];
  const neck=new VRMSpringBoneCollider(new VRMSpringBoneColliderShapeSphere({radius:.052,offset:new THREE.Vector3(0,-.12,.012)}));
  root.add(neck);
- for(let chain=0;chain<6;chain++)for(let depth=0;depth<3;depth++){
+ const colliders=[neck];
+ if(expanded){const head=new VRMSpringBoneCollider(new VRMSpringBoneColliderShapeSphere({radius:.12,offset:new THREE.Vector3(0,.015,0)}));root.add(head);colliders.push(head);}
+ for(let chain=0;chain<chainCount;chain++)for(let depth=0;depth<depthCount;depth++){
   const bone=root.getObjectByName(`lock-${chain}-${depth}`)!,child=root.getObjectByName(`lock-${chain}-${depth+1}`)!;
   const joint=new VRMSpringBoneJoint(bone,child,{
-   stiffness:[4.2,2.3,1.35][depth]*(.96+.015*chain),dragForce:[.40,.29,.24][depth],
+   stiffness:expanded?[3.4,2.2,1.4,.9][depth]*(.85+.30*Math.sin(chain*1.7)**2):[4.2,2.3,1.35][depth]*(.96+.015*chain),
+   dragForce:expanded?[.32,.24,.18,.14][depth]*(.90+.13*Math.cos(chain*.9)**2):[.40,.29,.24][depth],
    gravityPower:0,gravityDir:new THREE.Vector3(),hitRadius:.003,
-  },[{colliders:[neck]}]);manager.addJoint(joint);joints.push(joint);
+  },[{colliders}]);manager.addJoint(joint);joints.push(joint);
  }
  const force=new THREE.Vector3(),orientation=new THREE.Quaternion(),air={x:0,y:0,z:0,exposure:0};
  const rest=joints.map(j=>j.bone.quaternion.clone());
@@ -47,20 +53,22 @@ export function springBlonde(root:THREE.Group):WindGroom{
     const gust=Math.min(1,Math.hypot(flow.x,flow.z)/24);
     for(let i=0;i<joints.length;i++){
      const j=joints[i];
-     const chain=Math.floor(i/3),depth=i%3,phase=clock*(6.7+chain*.29)-chain*.83-depth*.62;
+     const chain=Math.floor(i/depthCount),depth=i%depthCount,phase=clock*(6.7+chain*.29)-chain*.83-depth*.62;
      force.set(flow.x*.030+load*(.26+.05*depth)+gust*.065*Math.sin(phase),
       flow.y*.024+gust*.025*Math.sin(phase*.79),flow.z*.028*(.78+.12*depth)+gust*.055*Math.cos(phase*.91));
      if(preset==='baseline')force.clampLength(0,1.3);
      else{
-      experimentalHairWind(preset,flow,speed,clock,chain,depth,load,brakeWake,target);
+      // Sample the SAME wild field at each lock's exposure/phase. R6f's four
+      // joints use mid/mid/tip/tip bands, rather than freezing upper sections.
+      experimentalHairWind(preset,flow,speed,clock,slots[chain],expanded?(depth<2?1:2):depth,load,brakeWake,target);
       const lag=.018+chain*.007+depth*.016,blend=1-Math.exp(-h/lag),f=filtered[i];
       f.x+=(target.x-f.x)*blend;f.y+=(target.y-f.y)*blend;f.z+=(target.z-f.z)*blend;
-      force.copy(f).clampLength(0,depth===0?.85:preset==='wild'?3.2:2.1);
+      force.copy(f).clampLength(0,depth===0?(expanded?1.4:.85):preset==='wild'?3.2:2.1);
      }
      force.applyQuaternion(orientation);
      j.settings.gravityPower=force.length();j.settings.gravityDir.copy(force).normalize();
     }
     manager.update(h);
    }
-  },inspect:()=>({kind:'spring',preset,joints:joints.length,air:{...air},brakeWake,angles:joints.map((j,i)=>j.bone.quaternion.angleTo(rest[i]))})};
+  },inspect:()=>({kind:'spring',preset,chains:chainCount,depth:depthCount,joints:joints.length,air:{...air},brakeWake,angles:joints.map((j,i)=>j.bone.quaternion.angleTo(rest[i]))})};
 }
