@@ -17,6 +17,12 @@ The current locally held source reported by Codex:
 Confirm exact existence before use. Large source files and model weights stay outside the tracked OutRun repo.
 Canonical 2D appearance: `docs/art-review/h1ar/README.md`. Primary game aesthetic: `art/reference/coast/03_STYLE_B_coastal_highway.png`.
 
+## 2026-11-14 owner priority override — HAIR FIRST, IN-GAME ACCEPTANCE
+
+The owner explicitly asked for only one near-term deliverable: **the gold hair continuously blowing visibly in the PLAYER'S NORMAL CHASE CAMERA**. Face, full-body sculpt, future side shouting and environment art do not belong to this sprint. This supersedes the original order below where a whole lightweight head/bust was made before game integration.
+
+**Now execute [Issue #42](https://github.com/michael-wang/OutRun/issues/42):** extract/optimize the accepted six-lock hair proxy into a GLB, replace only the original parametric hair in the current already seated passenger, drive it with existing `WindGroom` inputs, and deliver one playable `dev` hair-in-car slice for owner visual QA at 0/120/280–300 km/h and both corners. Keep the old face and dress temporarily. Preserve the original colored Blender bust and original hair files for future reuse. Do not put 12k proxy triangles on top of a ~14k whole-car budget unmeasured, and do not fake tests passing by raising the cap. Original Pass B details remain valid later, **not prerequisites to seeing hair move in the race**.
+
 ## New pipeline: two separate passes, no full-game work in Pass A
 
 ### Pass A — prove moving hair *in Blender*, with a lightweight proxy (next Codex ticket)
