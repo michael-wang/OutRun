@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "length": 14200,
+  "lanes": 5,
+  "baseHeight": -1.15,
+  "turns": [
+    {
+      "shape": "sweep",
+      "start": 780,
+      "end": 1480,
+      "steer": 0.2,
+      "label": "R5 A1 · Flat coastal sweeper"
+    },
+    {
+      "shape": "sweep",
+      "start": 1820,
+      "end": 2245,
+      "steer": -0.36,
+      "rampFraction": 0.08,
+      "label": "R5 A3 · Continuous banked S left"
+    },
+    {
+      "shape": "sweep",
+      "start": 2245,
+      "end": 2645,
+      "steer": 0.38,
+      "rampFraction": 0.08,
+      "label": "R5 A3 · Immediate banked S right"
+    },
+    {
+      "shape": "sweep",
+      "start": 2735,
+      "end": 3125,
+      "steer": -0.3,
+      "label": "R5 A4 · Curving crash-site avoidance"
+    },
+    {
+      "shape": "sweep",
+      "start": 3305,
+      "end": 3650,
+      "steer": 0.78,
+      "label": "R5 A5 · First forgiving drift"
+    },
+    {
+      "shape": "sweep",
+      "start": 4000,
+      "end": 4350,
+      "steer": -0.93,
+      "label": "R5 A6 · Second technical drift"
+    },
+    {
+      "shape": "sweep",
+      "start": 4380,
+      "end": 5250,
+      "steer": 0.29,
+      "label": "漁村海岸長彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 5300,
+      "end": 6120,
+      "steer": -0.18,
+      "label": "田園追逐長右彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 6170,
+      "end": 7010,
+      "steer": 0.16,
+      "label": "沙灣展開"
+    },
+    {
+      "shape": "sweep",
+      "start": 7070,
+      "end": 7530,
+      "steer": -0.27,
+      "label": "出岬望帆"
+    },
+    {
+      "shape": "sweep",
+      "start": 7590,
+      "end": 8400,
+      "steer": -0.075,
+      "label": "帆船灣沿岸"
+    },
+    {
+      "start": 8410,
+      "end": 8810,
+      "steer": 0.88,
+      "shape": "sweep",
+      "label": "岬口重煞"
+    },
+    {
+      "start": 8820,
+      "end": 9220,
+      "steer": -0.89,
+      "shape": "sweep",
+      "label": "岬口反打"
+    },
+    {
+      "shape": "sweep",
+      "start": 9230,
+      "end": 9540,
+      "steer": 0.38,
+      "label": "花田入口右彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 9550,
+      "end": 9950,
+      "steer": -0.43,
+      "label": "沿田埂反左"
+    },
+    {
+      "shape": "sweep",
+      "start": 9960,
+      "end": 10320,
+      "steer": 0.31,
+      "label": "稻田出口右彎"
+    },
+    {
+      "shape": "sweep",
+      "start": 10330,
+      "end": 10690,
+      "steer": -0.31,
+      "label": "田尾收線"
+    },
+    {
+      "start": 10700,
+      "end": 11030,
+      "steer": -0.93,
+      "shape": "sweep",
+      "label": "山腰重左"
+    },
+    {
+      "start": 11030,
+      "end": 11410,
+      "steer": 0.86,
+      "shape": "sweep",
+      "label": "上坡反右"
+    },
+    {
+      "start": 11420,
+      "end": 11750,
+      "steer": 0.19,
+      "shape": "sweep",
+      "label": "山脊展望"
+    },
+    {
+      "shape": "sweep",
+      "start": 11760,
+      "end": 12110,
+      "steer": -0.35,
+      "label": "沿海堤切向浪線"
+    },
+    {
+      "shape": "sweep",
+      "start": 12120,
+      "end": 12520,
+      "steer": 0.36,
+      "label": "繞過潮間岩角"
+    },
+    {
+      "shape": "sweep",
+      "start": 12530,
+      "end": 12900,
+      "steer": -0.25,
+      "label": "沙灣出口"
+    },
+    {
+      "start": 12910,
+      "end": 13170,
+      "steer": 0.4,
+      "shape": "sweep",
+      "label": "港口寬入口"
+    },
+    {
+      "start": 13170,
+      "end": 13510,
+      "steer": 0.96,
+      "shape": "sweep",
+      "label": "夜市收緊彎"
+    },
+    {
+      "start": 13520,
+      "end": 13900,
+      "steer": -1.02,
+      "shape": "sweep",
+      "label": "港口最後反打"
+    }
+  ],
+  "elevations": [
+    {
+      "shape": "gentle-rise",
+      "start": 350,
+      "end": 10350,
+      "base": -1.15,
+      "rise": 1,
+      "label": "Coastal climb"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 10690,
+      "end": 10930,
+      "base": -0.15,
+      "rise": 3.2,
+      "label": "礁岬短升"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 10930,
+      "end": 11230,
+      "base": 3.05,
+      "rise": -3.2,
+      "label": "回到潮線"
+    },
+    {
+      "shape": "gentle-rise",
+      "start": 11480,
+      "end": 11720,
+      "base": -0.15,
+      "rise": -0.65,
+      "label": "下到沙灣"
+    }
+  ],
+  "startDistance": 350,
+  "banks": [
+    {
+      "kind": "showcase",
+      "start": 360,
+      "end": 1690,
+      "ramp": 100,
+      "degrees": 0
+    },
+    {
+      "kind": "showcase",
+      "start": 1720,
+      "end": 2245,
+      "ramp": 150,
+      "degrees": -13.5
+    },
+    {
+      "kind": "showcase",
+      "start": 2245,
+      "end": 2725,
+      "ramp": 140,
+      "degrees": 2
+    },
+    {
+      "kind": "showcase",
+      "start": 8320,
+      "end": 8820,
+      "ramp": 165,
+      "degrees": 7
+    },
+    {
+      "kind": "showcase",
+      "start": 12035,
+      "end": 12565,
+      "ramp": 160,
+      "degrees": 3
+    }
+  ]
+}

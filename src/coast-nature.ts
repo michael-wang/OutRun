@@ -4,7 +4,7 @@ import {natureGeometry,roadsideTrees,TREE_DRAW_DISTANCE,type NaturePart} from '.
 import {farmClearing,FARM_YARDS,FARM_PLOTS} from './coast-farm-layout';
 import {coastWildness,COAST_HILL_STRIPS} from './coast-terrain';
 import {coastVegetationDensity} from './coast-journey-layout';
-import {coastBeachHeight} from './scenery-cross-section';
+import {COAST_SEA_LEVEL,coastBeachHeight} from './scenery-cross-section';
 import {roadOffset,shoulderProfile} from './road-profile';
 import type {createTrack} from './track';
 
@@ -67,7 +67,9 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
   const p=sample(d),model=assets![name];
   if(!model)throw Error('Missing coast nature model '+name);
   dummy.position.copy(p.position).addScaledVector(p.right,x);
-  dummy.position.y=coastNatureGround(sample,d,x,start,end)-.06;
+  const ground=x<0?coastBeachHeight(x,p.position.y,p.right.y,d):coastNatureGround(sample,d,x,start,end);
+  if(x<0&&ground<COAST_SEA_LEVEL+1.1)return;
+  dummy.position.y=ground-.06;
   dummy.rotation.set(0,random(key+32)*Math.PI*2,0);dummy.scale.set(height*(.82+random(key+7)*.3),height,height*(.82+random(key+7)*.3));dummy.updateMatrix();
   const center=Math.floor(d/200)*200+100;
   for(const [i,part] of model.parts.entries()){
@@ -103,6 +105,21 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    copse(tree.d,tree.x,tree.h,90000+i*97,7,18,true);
   }else if(tree.d>=start&&tree.d<end){
    plant('GroveOak',tree.d,tree.x,tree.h,90000+i*97,TREE_DRAW_DISTANCE,true);
+  }
+ }
+ // Bring the canopy to the verge at each end. Through town the taller row
+ // sits behind the roofs and leaves the side street open.
+ for(const [d,x,h] of [[5325,38,14],[5374,61,17],[5414,67,19],[5454,61,16],
+  [5492,72,18],[5592,69,18],[5634,61,17],[5688,48,15],[5714,37,12]])
+  copse(d,x,h,d*23,9,16);
+ // The sandy headland carries the windbreak across the driver's view for
+ // a few seconds, then opens onto the bathing beach.
+ for(const centre of [5530,5563,5598,5630,5671,5710]){
+  if(centre+16<start||centre-16>=end)continue;
+  for(let i=0;i<9;i++){
+   const key=centre*19+i*43,at=centre+(random(key)-.5)*32;
+   if(at<start||at>=end)continue;
+   plant(i%4?'RoadPine':'RoadOak',at,-23-random(key+1)*16,7+random(key+2)*6,key,TREE_DRAW_DISTANCE);
   }
  }
  // Windbreaks on the uncultivated slopes behind the rice and flower benches.

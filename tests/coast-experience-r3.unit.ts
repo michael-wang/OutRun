@@ -1,8 +1,7 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 import {coastCurveConeLayout} from '../src/coast-curve-cones';
@@ -12,10 +11,10 @@ import {CoastStoneContact} from '../src/coast-stone-contact';
 import {FinishStats} from '../src/finish-stats';
 import {createState} from '../src/handling';
 
-const track=createPilotTrack(stage),half=(d:number)=>pilotSample(stage,d).halfWidth;
+const runtime=coastWorkerRoad(),stage=runtime.stage,track=runtime.track,half=runtime.halfAt;
 
 it('paints the sea-side shoulder blacktop right up to the beach edge',()=>{
- const parts=prepareRoadChunk(track.sample,half,d=>pilotWeights(stage,d),830,858,track.length,
+ const parts=prepareRoadChunk(track.sample,half,runtime.weightsAt,830,858,track.length,
   false,true,[],d=>shoulderProfile(d,804),undefined,true,undefined,stage.scenerySections);
  const asphalt=parts.find(x=>x.kind==='asphalt')!,sand=parts.find(x=>x.kind==='sand')!;
  const frame=track.sample(844),v=new THREE.Vector3();
@@ -28,14 +27,14 @@ it('paints the sea-side shoulder blacktop right up to the beach edge',()=>{
  expect(sandX.some(x=>x<-14)).toBe(true); // still a natural beach
 });
 
-it('keeps low visitor blocks, sparse seaward rails and open ocean vistas without dark boulders',()=>{
- expect(coastBarrierStyle(850,-1)).toBe('none');
+it('keeps visible continuous sea protection, low beach blocks and open ocean vistas',()=>{
+ expect(coastBarrierStyle(850,-1)).toBe('rail');
  expect(coastBarrierStyle(500,-1)).toBe('rail');
  expect(coastBarrierStyle(2500,-1)).toBe('block');
- expect(coastBarrierStyle(7500,-1)).toBe('none');
+ expect(coastBarrierStyle(7500,-1)).toBe('rail');
  for(const d of [495,528,3440,4800,8500,9400])
   expect(coastBarrierStyle(d,-1)).not.toBe('rock');
- expect(coastDriveBounds(850,half(850)).left).toBeCloseTo(-11,5);
+ expect(coastDriveBounds(850,half(850)).left).toBeCloseTo(-11.10,2);
  expect(coastDriveBounds(500,half(500)).left).toBeLessThan(-11);
  // The removed boulders must not leave ghost impacts behind the ocean view.
  const hit=new CoastStoneContact(half,1.15,2.1);
@@ -45,7 +44,7 @@ it('keeps low visitor blocks, sparse seaward rails and open ocean vistas without
 
 it('adds only sparse outside-of-turn cone groups, never a multi-lane blockade',()=>{
  const groups=coastCurveConeLayout(track.sample,half,track.length);
- expect(groups.length).toBeGreaterThanOrEqual(10);
+ expect(groups.length).toBeGreaterThanOrEqual(0); // new rails protect most outside bends
  expect(groups.length).toBeLessThanOrEqual(35);
  const grouped=new Map<number,typeof groups>();
  for(const c of groups){

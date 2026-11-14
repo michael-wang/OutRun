@@ -1,12 +1,13 @@
 import {approachTrafficSpeed,roadLaneCenters,nearestTrafficLane,plannedTrafficLateral,trafficFollowingTarget,trafficStopBeforeLeader} from './traffic-flow';
 import type {TrafficSlot} from './traffic-flow';
 import {DEFAULT_PACE,effectivePace} from './pace';
+import {sweptContact} from './traffic-impact';
 
 /** Course-wide traffic truth. Rendering/streaming are only consumers of this state.
  * A racer cannot drive into an easier world by leaving the player's camera. */
 export interface TrafficWorldRecipe {
  id:number;type:number;distance:number;speed:number;group:number;member?:number;
- stationary?:boolean;stopSide?:number;stopLane?:number;
+ stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;stopOffset?:number;incidentId?:'A4'|number;
 }
 /** Stable road-driver personality, independent of rendering or vehicle model. */
 export type TrafficDriverStyle='safe'|'normal'|'dangerous';
@@ -27,11 +28,17 @@ export interface TrafficWorldCar extends TrafficSlot {
  driverStyle:TrafficDriverStyle;
  type:number;cruiseSpeed:number;targetSpeed:number;targetLateral:number;
  width:number;group:number;member:number;finished:boolean;sideVelocity:number;
- stopLane?:number;stopSide?:number;
+ stopLane?:number;stopSide?:number;stopYaw?:number;stopOffset?:number;incidentId?:'A4'|number;
+ incidentMotion?:{forward:number;side:number;spin:number;hits:number;lastAt:number};
  blockedFor:number;reverseLeft:number;escapeUntil:number;escapeCooldown:number;indicateUntil:number;laneChangeUntil:number;
  laneChanges:number;escapeCount:number;
 }
 export interface RaceRoadUser extends TrafficSlot {width:number;finished?:boolean}
+/** Road-space sweeps are only collected within the small incident neighborhood. */
+export interface TrafficRoadSweep{
+ id:number;previousDistance:number;previousLateral:number;
+ distance:number;lateral:number;speed:number;halfWidth:number;
+}
 const clamp=(v:number,a:number,b:number)=>Math.max(a,Math.min(v,b));
 const approach=(from:number,to:number,step:number)=>from+clamp(to-from,-step,step);
 const randomized=(seed:number,id:number)=>{
@@ -67,30 +74,66 @@ export class RaceTrafficWorld {
  private decisionAt=0;
  private readonly sorted:TrafficWorldCar[]=[];
  private readonly users:RaceRoadUser[]=[];
+ readonly hazardSweeps:TrafficRoadSweep[]=[];
+ private readonly incidents:TrafficWorldCar[]=[];
  private spawnAt=4;
  private spawnIndex=0;
  private nextId=2000000;
  constructor(recipes:readonly TrafficWorldRecipe[],private seed:number,
   private length:number,private halfAt:(distance:number)=>number,
-  private dimensions:(type:number)=>{width:number;length:number},private racing=false){
+  private dimensions:(type:number)=>{width:number;length:number},private racing=false,
+   private readonly entryTraffic=true){
   this.cars=recipes.map(row=>{
    const half=this.halfAt(row.distance);
    const lateral=row.stationary
-    ?breakdownLaneLateral(row.stopLane,row.stopSide,half)
+    ?breakdownLaneLateral(row.stopLane,row.stopSide,half)+(row.stopOffset??0)
     :plannedTrafficLateral(seed,row.group,row.member??0,half);
-   const d=this.dimensions(row.type);
+   const d=this.dimensions(row.type),yaw=row.stationary?(row.stopYaw??0):0;
+   // The traffic AI sees the projected footprint of each angled wreck.
+   const width=Math.abs(d.width*Math.cos(yaw))+Math.abs(d.length*Math.sin(yaw));
+   const length=Math.abs(d.length*Math.cos(yaw))+Math.abs(d.width*Math.sin(yaw));
    const car:TrafficWorldCar={id:row.id,type:row.type,group:row.group,member:row.member??0,
     driverStyle:trafficDriverStyle(seed,row.id),
     distance:row.distance,speed:row.stationary?0:row.speed,cruiseSpeed:row.speed,
     targetSpeed:row.stationary?0:row.speed,lateral,targetLateral:lateral,
-    width:d.width,length:d.length,stationary:row.stationary,finished:row.distance>=length-15,sideVelocity:0,
-     stopLane:row.stopLane,stopSide:row.stopSide,blockedFor:0,reverseLeft:0,escapeUntil:0,escapeCooldown:0,indicateUntil:0,laneChangeUntil:0,laneChanges:0,escapeCount:0};
+    width,length,stationary:row.stationary,finished:row.distance>=this.length-15,sideVelocity:0,
+     stopLane:row.stopLane,stopSide:row.stopSide,stopYaw:row.stopYaw,stopOffset:row.stopOffset,incidentId:row.incidentId,blockedFor:0,reverseLeft:0,escapeUntil:0,escapeCooldown:0,indicateUntil:0,laneChangeUntil:0,laneChanges:0,escapeCount:0};
    this.byId.set(car.id,car);return car;
   });
+  this.incidents.push(...this.cars.filter(c=>c.incidentId!==undefined));
  }
  get(id:number){return this.byId.get(id);}
+ /** Bump the real incident body. A parked car stays a traffic obstacle but
+  * may slide/rotate under an arcade impulse; the camera never owns motion. */
+ bumpIncident(id:number,sourceSpeed:number,side:number){
+  const c=this.byId.get(id);
+  if(!c||!c.stationary||c.incidentId===undefined||c.finished||!Number.isFinite(sourceSpeed))return false;
+  if(this.time-(c.incidentMotion?.lastAt??-Infinity)<.30)return false;
+  const push=clamp(Math.max(0,sourceSpeed)*.16,1.8,16),sign=side<0?-1:1;
+  c.incidentMotion={
+   forward:Math.max(c.incidentMotion?.forward??0,push),
+   side:(c.incidentMotion?.side??0)+sign*clamp(push*.26,.45,3),
+   spin:(c.incidentMotion?.spin??0)+sign*clamp(push*.045,.13,.55),
+   hits:(c.incidentMotion?.hits??0)+1,lastAt:this.time,
+  };
+  return true;
+ }
+ private moveIncident(c:TrafficWorldCar,dt:number){
+  const m=c.incidentMotion;if(!m)return;
+  c.distance=Math.min(this.length-20,c.distance+m.forward*dt);
+  const bound=Math.max(.2,this.halfAt(c.distance)-c.width*.5-.10);
+  c.lateral=clamp(c.lateral+m.side*dt,-bound,bound);
+  c.targetLateral=c.lateral;
+  c.stopYaw=clamp((c.stopYaw??0)+m.spin*dt,-.62,.62);
+  const spec=this.dimensions(c.type),yaw=c.stopYaw;
+  c.width=Math.abs(spec.width*Math.cos(yaw))+Math.abs(spec.length*Math.sin(yaw));
+  c.length=Math.abs(spec.length*Math.cos(yaw))+Math.abs(spec.width*Math.sin(yaw));
+  m.forward*=Math.exp(-3.2*dt);m.side*=Math.exp(-4*dt);m.spin*=Math.exp(-4*dt);
+  if(Math.max(Math.abs(m.forward),Math.abs(m.side),Math.abs(m.spin))<.012)
+   m.forward=m.side=m.spin=0;
+ }
  private spawn(){
-  if(!this.racing)return;
+  if(!this.racing||!this.entryTraffic)return;
   const lastRacer=this.users.length?Math.min(...this.users.map(r=>r.distance)):this.length;
   if(lastRacer>1550){this.spawnAt=Infinity;return;}
   while(this.spawnAt<=this.time&&this.cars.length<240){
@@ -116,6 +159,7 @@ export class RaceTrafficWorld {
  advance(time:number,rivals:readonly RaceRoadUser[]=[],player?:RaceRoadUser){
   if(time<this.time-.0001)throw Error('RaceTrafficWorld time went backwards; reset required');
   if(time<=this.time)return;
+  this.hazardSweeps.length=0;
   this.users.length=0;for(const r of rivals)if(!r.finished)this.users.push(r);
   if(player&&!player.finished)this.users.push(player);
   let remaining=time-this.time;
@@ -127,7 +171,9 @@ export class RaceTrafficWorld {
    if(this.time>=this.decisionAt){this.decide();this.decisionAt=this.time+.16;}
    const current=this.sorted;
    for(const car of current){
-    if(car.stationary||car.finished)continue;
+    if(car.finished)continue;
+    if(car.stationary){if(car.incidentId)this.moveIncident(car,dt);continue;}
+    const previousDistance=car.distance,previousLateral=car.lateral;
     if(car.reverseLeft>0){
      car.reverseLeft=Math.max(0,car.reverseLeft-dt);
      car.distance=Math.max(0,car.distance-5*dt);
@@ -147,6 +193,25 @@ export class RaceTrafficWorld {
      car.sideVelocity*=Math.exp(-dt*2.5);
     }
     car.distance+=car.speed*dt;
+    // Normally the lane AI avoids parked cars. If the swept body DOES
+    // reach an incident, transfer momentum to that same authoritative wreck.
+    for(const wreck of this.incidents){
+     if(wreck.finished||Math.abs(car.distance-wreck.distance)>32)continue;
+     const width=(car.width+wreck.width)*.5+.12,length=(car.length+wreck.length)*.5+.12;
+     if(!sweptContact(previousLateral-wreck.lateral,previousDistance-wreck.distance,
+       car.lateral-wreck.lateral,car.distance-wreck.distance,width,length))continue;
+     if(this.bumpIncident(wreck.id,car.speed,car.lateral<=wreck.lateral?1:-1)){
+      car.speed*=.48;car.sideVelocity+=(car.lateral<=wreck.lateral?-1:1)*1.8;
+     }
+     car.distance=Math.min(car.distance,wreck.distance-length-.05);
+     car.targetSpeed=Math.min(car.targetSpeed,car.speed);
+     break;
+    }
+    if(this.incidents.length&&this.incidents.some(w=>
+       Math.abs(car.distance-w.distance)<500||Math.abs(previousDistance-w.distance)<500)
+       &&this.hazardSweeps.length<1024)
+     this.hazardSweeps.push({id:car.id,previousDistance,previousLateral,
+      distance:car.distance,lateral:car.lateral,speed:car.speed,halfWidth:car.width*.5});
     if(car.distance>=this.length-15){car.finished=true;continue;}
     if(car.targetSpeed<5&&car.speed<4&&this.time>=car.escapeUntil)car.blockedFor+=dt;
     else if(car.targetSpeed>8||car.speed>8)car.blockedFor=0;
@@ -302,7 +367,7 @@ export class RaceTrafficWorld {
   return {time:this.time,decisionAt:this.decisionAt,
     spawnAt:Number.isFinite(this.spawnAt)?this.spawnAt:null,
     spawnIndex:this.spawnIndex,nextId:this.nextId,
-    cars:this.cars.map(c=>({...c}))};
+    cars:this.cars.map(c=>({...c,incidentMotion:c.incidentMotion?{...c.incidentMotion}:undefined}))};
  }
  restore(saved:ReturnType<RaceTrafficWorld['snapshot']>){
   if(!saved||!Number.isFinite(saved.time)||!Number.isFinite(saved.decisionAt)
@@ -316,8 +381,10 @@ export class RaceTrafficWorld {
   this.decisionAt=saved.time;
   this.spawnAt=saved.spawnAt===null?Infinity:saved.spawnAt;
   this.spawnIndex=saved.spawnIndex;this.nextId=saved.nextId;
-  this.cars.splice(0,this.cars.length,...saved.cars.map(c=>({...c})));
+  this.cars.splice(0,this.cars.length,...saved.cars.map(c=>({...c,incidentMotion:c.incidentMotion?{...c.incidentMotion}:undefined})));
   this.byId.clear();for(const car of this.cars)this.byId.set(car.id,car);
+  this.incidents.length=0;this.incidents.push(...this.cars.filter(c=>c.incidentId!==undefined));
+  this.hazardSweeps.length=0;
   this.sorted.length=0;this.users.length=0;
  }
  inspect(){return {time:this.time,total:this.cars.length,active:this.cars.filter(c=>!c.finished).length,

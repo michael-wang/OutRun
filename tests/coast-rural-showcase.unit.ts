@@ -1,8 +1,7 @@
 import {it,expect} from 'vitest';
 import {COAST_HERO_TREE_SITES} from '../src/coast-nature';
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {shoulderProfile} from '../src/road-profile';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {addJourneyScenery} from '../src/scenery';
@@ -10,7 +9,7 @@ import {FARM_PLOTS,FARM_HOMES} from '../src/coast-farm-layout';
 import {COAST_RURAL_HOUSES,COAST_RURAL_SHOWCASE,RURAL_CREEK,coastRuralCreekCut,ruralShowcaseReplacesFarmHome} from '../src/coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek} from '../src/coast-rural-vignette';
 
-const track=createPilotTrack(COAST_ULTRA_STAGE);
+const runtime=coastWorkerRoad(),track=runtime.track;
 
 it('authors a compact, crop-safe farming hamlet with a reproducible QA approach',()=>{
  expect(COAST_RURAL_SHOWCASE.approachAt).toBe(850);
@@ -57,9 +56,9 @@ it('sculpts the creek into grass, keeps rice growing and aligns visible water',(
  g.dispose();
 });
 it('survives actual coast scenery worker-style batching without old homes overlapping',()=>{
- const scene=new THREE.Scene(),stage=COAST_ULTRA_STAGE;
+ const scene=new THREE.Scene(),stage=runtime.stage;
  const result=addJourneyScenery(scene,track.sample,track.length,stage.sceneryAct,stage.seed,
-  d=>pilotSample(stage,d).halfWidth,d=>pilotWeights(stage,d),
+  runtime.halfAt,runtime.weightsAt,
   {start:1000,end:1100,openRoad:true,coastUltra:true,
    shoulders:d=>shoulderProfile(d,804),scenerySections:stage.scenerySections});
  const meshes:THREE.InstancedMesh[]=[];

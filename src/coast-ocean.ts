@@ -1,5 +1,7 @@
 import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
-import {COAST_ROCKS,coastRockX} from './coast-layout';
+import {COAST_EFFECTS,oceanVisualSettings,coastShadowSettings,type OceanStageEffects} from './content/coast-effects';
+import {addCoastSwimmers} from './coast-swimmers';
+import {COAST_REEF_ROCKS,COAST_ROCKS,coastRockX,coastBeachX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
 import {COAST_SEA_LEVEL} from './scenery-cross-section';
@@ -44,6 +46,15 @@ const shoreGLSL=/* glsl */`
 uniform sampler2D uShore;
 uniform vec4 uShoreBounds;
 uniform float uTime;
+uniform vec4 uReefAxis; // shoreline start and unit direction in world XZ
+uniform vec3 uReefProfile; // alongshore length, wave gain, spray gain
+float reefExposure(vec2 xz,float offshore){
+ vec2 delta=xz-uReefAxis.xy;
+ float along=dot(delta,uReefAxis.zw);
+ float across=abs(dot(delta,vec2(-uReefAxis.w,uReefAxis.z)));
+ return smoothstep(0.,45.,along)*(1.-smoothstep(uReefProfile.x-45.,uReefProfile.x,along))
+       *(1.-smoothstep(100.,155.,across))*smoothstep(0.,5.,offshore)*(1.-smoothstep(27.,52.,offshore));
+}
 vec4 shoreAt(vec2 xz){return texture(uShore,(xz-uShoreBounds.xy)/uShoreBounds.zw);}
 float hash21(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise2(vec2 p){
@@ -53,7 +64,7 @@ float noise2(vec2 p){
 float shorePhase(float d,vec2 xz){return d*.46+uTime*1.4+noise2(xz*.035)*1.7+sin(xz.x*.018+xz.y*.012)*.5;}
 float shoreWave(float d,vec2 xz){
  float p=shorePhase(d,xz);
- return (sin(p)+.3*sin(2.0*p-.6))*.32*exp(-max(0.0,d)/38.0)*smoothstep(-2.0,2.0,d);
+ return (sin(p)+.3*sin(2.0*p-.6))*.32*mix(1.,uReefProfile.y,reefExposure(xz,d))*exp(-max(0.0,d)/38.0)*smoothstep(-2.0,2.0,d);
 }
 `;
 const vertex=/* glsl */`
@@ -103,7 +114,7 @@ uniform sampler2D uSlope1;
 uniform sampler2D uSlope2;
 uniform sampler2D uSlope3;
 uniform vec3 uSun;
-uniform vec4 uRocks[10];
+uniform vec3 uRocks[10];
 uniform float uRockShadowStrength;
 in vec3 vWorld;
 in float vChurn;
@@ -129,7 +140,9 @@ void main(){
    texture(uSlope2,vWorld.xz/12.0).xy+
    texture(uSlope3,vWorld.xz/2.1).xy*.24;
  slope*=mix(.12,1.0,nearshore);
- slope+=shore.zw*(cos(shorePhase(shore.x,vWorld.xz))+.6*cos(2.0*shorePhase(shore.x,vWorld.xz)-.6))*.15*exp(-max(0.0,shore.x)/38.0);
+ float phase=shorePhase(shore.x,vWorld.xz);
+ float exposure=reefExposure(vWorld.xz,shore.x);
+ slope+=shore.zw*(cos(phase)+.6*cos(2.0*phase-.6))*.15*exp(-max(0.0,shore.x)/38.0)*mix(1.,uReefProfile.y,exposure);
  vec3 normal=normalize(vec3(-slope.x,1.0,-slope.y));
  vec3 viewDir=normalize(cameraPosition-vWorld);
  vec3 sunDir=normalize(uSun);
@@ -160,7 +173,6 @@ void main(){
  float foam=(1.0-smoothstep(.48,.93,vChurn))*.4*nearshore;
  foam*=.82+.18*hash12(floor(vWorld.xz*.9+uTime*.4));
  // Breaking crests advance toward the beach, losing energy on the wet sand.
- float phase=shorePhase(shore.x,vWorld.xz);
  float breakup=noise2(vWorld.xz*.65+vec2(uTime*.14,-uTime*.19));
  float crest=smoothstep(.35,.93,sin(phase)+breakup*.35);
  float trail=smoothstep(-.45,.8,sin(phase-.65))*.28;
@@ -192,10 +204,11 @@ void main(){
    }
   }
   float wash=exp(-pow((dist-r*.85)/1.5,2.0));
-  float pulse=.35+.65*pow(.5+.5*sin(uTime*1.4+uRocks[i].w),3.0);
+  float pulse=.25+.75*smoothstep(-.55,.9,sin(phase));
   foam=max(foam,wash*pulse*(.6+.4*lace));
  }
- color=mix(color,vec3(.64,.64,.57),clamp(foam,0.0,.94));
+ foam=max(foam,exposure*smoothstep(-.16,.78,sin(phase)+breakup*.36)*(.67+.33*lace));
+ color=mix(color,mix(vec3(.64,.64,.57),vec3(.92,.95,.93),exposure),clamp(foam,0.0,.98));
  color*=1.0-uRockShadowStrength*rockShadow*.80;
  // The parent game uses a bright coastal horizon; blend distant water into it.
  float fog=1.0-exp(-vDistance*.00038);
@@ -213,26 +226,36 @@ export class UltraCoastOcean {
  private readonly renderer:THREE.WebGLRenderer;
  readonly boatShadow:CoastBoatShadow;
 
- static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},onProgress:(p:number)=>void){
+ static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},onProgress:(p:number)=>void,settings:OceanStageEffects=COAST_EFFECTS.ocean){
   const shore=await loadCoastShore(onProgress);
-  try{return new UltraCoastOcean(renderer,scene,coast,shore);}
+  try{return new UltraCoastOcean(renderer,scene,coast,shore,COAST_SEA_LEVEL,settings);}
   catch(error){shore.texture.dispose();throw error;}
  }
- private constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},shore:ReturnType<typeof unpackCoastShore>,level=COAST_SEA_LEVEL){
+ private constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},shore:ReturnType<typeof unpackCoastShore>,level=COAST_SEA_LEVEL,settings:OceanStageEffects=COAST_EFFECTS.ocean){
   if(!renderer.capabilities.isWebGL2)throw new Error('Ultra-Water experiment requires WebGL2');
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
   this.boatShadow=new CoastBoatShadow(renderer,this.mobile?512:1024);
-  this.boatShadow.enabled=new URLSearchParams(location.search).get('sunshadow')!=='0';
+  // The old ?sunshadow option was overwritten by main.ts at startup.
+  this.boatShadow.enabled=coastShadowSettings(COAST_EFFECTS.shadows,this.mobile).boatDepth;
+  const visual=oceanVisualSettings(settings,this.mobile);
   const oceanParams=defaultOceanParams();
-  oceanParams.windSpeed=6;
-  oceanParams.waveScale=.55;
-  oceanParams.swellScale=.3;
-  this.sim=new OceanSim(renderer,oceanParams,{resolution:this.mobile?128:256,anisotropy:this.mobile?1:renderer.capabilities.getMaxAnisotropy()});
-  const rockPositions=COAST_ROCKS.map(r=>{
+  oceanParams.windSpeed=visual.windSpeed;
+  oceanParams.waveScale=visual.waveScale;
+  oceanParams.swellScale=visual.swellScale;
+  this.sim=new OceanSim(renderer,oceanParams,{resolution:visual.resolution,anisotropy:this.mobile?1:renderer.capabilities.getMaxAnisotropy()});
+  const rockPosition=(r:{d:number;out:number;r:number})=>{
    const p=coast.sample(r.d),v=p.position.clone().addScaledVector(p.right,coastRockX(r));
-   return new THREE.Vector4(v.x,v.z,r.r,r.d*.017);
-  });
+   return new THREE.Vector3(v.x,v.z,r.r);
+  };
+  const rockPositions=COAST_ROCKS.map(rockPosition);
+  const reef=settings.reefBreakers;
+  const waterline=(d:number)=>{
+   const p=coast.sample(d),point=p.position.clone().addScaledVector(p.right,coastBeachX(-26,d));
+   return new THREE.Vector2(point.x,point.z);
+  };
+  const start=waterline(reef.start),axis=waterline(reef.end).sub(start),reefLength=axis.length();
+  axis.normalize();
   this.uniforms={
    ...this.boatShadow.uniforms,
    uDisp0:{value:null},uDisp1:{value:null},uDisp2:{value:null},
@@ -242,6 +265,8 @@ export class UltraCoastOcean {
    uSun:{value:COAST_SUN.clone()},
    uRockShadowStrength:{value:this.boatShadow.enabled?1:0},
    uTime:{value:0},uRocks:{value:rockPositions},
+   uReefAxis:{value:new THREE.Vector4(start.x,start.y,axis.x,axis.y)},
+   uReefProfile:{value:new THREE.Vector3(reefLength,reef.waveGain,reef.sprayGain)},
    uShore:{value:shore.texture},uShoreBounds:{value:shore.bounds},
   };
   const material=new THREE.ShaderMaterial({
@@ -254,30 +279,56 @@ export class UltraCoastOcean {
   this.mesh.frustumCulled=false;
   this.mesh.renderOrder=1;
   scene.add(this.mesh);
+  addCoastSwimmers(scene,coast.sample,this.uniforms,shoreGLSL);
   // A single small point batch for local spray; illustrative wave impacts, no fluid solver.
   const sprayPositions:number[]=[],seeds:number[]=[];
-  for(const [i,r] of rockPositions.entries())for(let j=0;j<32;j++){
-   sprayPositions.push(r.x,level+.12,r.y);seeds.push((j+.5)/32,r.z,r.w,i*.73+j*2.39996);
+  // Smaller outcrops share the wave field. Only exposed heads emit plumes.
+  const breakers=[...rockPositions,...COAST_REEF_ROCKS.filter(r=>r.r>=4).map(rockPosition)];
+  for(const [i,r] of breakers.entries())for(let j=0;j<32;j++){
+   sprayPositions.push(r.x,level+.12,r.y);seeds.push((j+.5)/32,r.z,i*.73+j*2.39996);
   }
   const sprayGeometry=new THREE.BufferGeometry();
   sprayGeometry.setAttribute('position',new THREE.Float32BufferAttribute(sprayPositions,3));
-  sprayGeometry.setAttribute('seed',new THREE.Float32BufferAttribute(seeds,4));
+  sprayGeometry.setAttribute('seed',new THREE.Float32BufferAttribute(seeds,3));
   const sprayMaterial=new THREE.ShaderMaterial({
-   uniforms:{uTime:this.uniforms.uTime},transparent:true,depthWrite:false,
+   uniforms:this.uniforms,transparent:true,depthWrite:false,
    vertexShader:`
-    uniform float uTime;attribute vec4 seed;varying float alpha;
+    ${shoreGLSL}
+    attribute vec3 seed;varying float alpha;varying float mist;varying float turbulence;
     void main(){
-     float cycle=fract((uTime*1.4+seed.z)/6.28318+seed.x*.17);
-     float t=clamp(cycle/.33,0.0,1.0),angle=seed.w;
+     if(distance(position.xz,cameraPosition.xz)>550.){
+      gl_Position=vec4(2.,2.,2.,1.);gl_PointSize=1.;alpha=0.;mist=0.;turbulence=0.;return;
+     }
+     vec2 outwards=shoreAt(position.xz).zw;
+     vec2 flank=outwards*cos(sin(seed.z)*1.2)+vec2(-outwards.y,outwards.x)*sin(sin(seed.z)*1.2);
      vec3 p=position;
-     p.xz+=vec2(cos(angle),sin(angle))*(seed.y*.86+t*1.6);
-     p.y+=sin(t*3.14159)*(1.4+seed.x*1.8);
+     p.xz+=flank*seed.y*.90;
+     vec2 face=position.xz+outwards*seed.y*.9;
+     float depth=shoreAt(face).x;
+     float gain=mix(1.,uReefProfile.z,reefExposure(face,depth));
+     float phase=shorePhase(depth,face);
+     float cycle=fract((phase-.75)/6.28318-seed.x*mix(.07,.22,(gain-1.)/2.));
+     float t=clamp(cycle/.36,0.0,1.0);
+     mist=step(.48,seed.x);
+     turbulence=seed.z;
+     float spread=sin(seed.z*3.7)*.4+.6;
+     p.xz+=flank*t*(2.5+spread*1.7)*gain;
+     p.xz-=outwards*(gain-1.)*seed.y*t*1.8;
+     p.y+=4.0*t*(1.0-t)*(1.5+spread*2.8+mist*1.5)*clamp(seed.y/4.5,1.,1.8)*gain;
      vec4 mv=modelViewMatrix*vec4(p,1.0);
      gl_Position=projectionMatrix*mv;
-     gl_PointSize=clamp(190.0/(-mv.z),1.0,9.0);
-     alpha=sin(t*3.14159)*.65*(1.0-smoothstep(150.0,450.0,-mv.z));
+     gl_PointSize=clamp(mix(1420.,520.,mist)*gain*sqrt(gain)/max(1.,-mv.z),1.2,48.0);
+     alpha=sin(t*3.14159)*.94*(1.0-smoothstep(150.0,450.0,-mv.z));
     }`,
-   fragmentShader:`varying float alpha;void main(){float a=alpha*(1.0-smoothstep(.12,.5,length(gl_PointCoord-.5)));gl_FragColor=vec4(.88,.96,.96,a);}`,
+   fragmentShader:`varying float alpha;varying float mist;varying float turbulence;
+    void main(){
+     vec2 uv=gl_PointCoord-.5;
+     uv.x+=uv.y*sin(turbulence)*.4;
+     float edge=length(uv*vec2(mix(1.25,2.1,mist),1.));
+     float ripple=sin(uv.y*23.+turbulence)*sin(uv.x*31.-turbulence);
+     float a=alpha*(1.-smoothstep(.02,.46+.075*ripple,edge));
+     gl_FragColor=vec4(mix(vec3(.69,.80,.82),vec3(.96,.97,.93),.56+.35*ripple),a*mix(.74,.92,mist));
+    }`,
   });
   const spray=new THREE.Points(sprayGeometry,sprayMaterial);spray.name='coast-rock-spray';spray.frustumCulled=false;scene.add(spray);
  }

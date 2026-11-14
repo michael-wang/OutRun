@@ -1,15 +1,15 @@
 import {coastBeachX} from '../src/coast-layout';
 import {afterAll,describe,it,expect} from 'vitest';
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {COAST_STAGE} from '../src/content/coast-stage';
 import {coastBeachHeight,COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
 import {bakeCoastShore} from '../src/coast-shore';
 import {packCoastShore,unpackCoastShore} from '../src/coast-shore-asset';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
-const track=createPilotTrack(stage),shore=bakeCoastShore(track.sample,track.length);
+const runtime=coastWorkerRoad(),track=runtime.track,stage=runtime.stage,shore=bakeCoastShore(track.sample,track.length);
 afterAll(()=>shore.texture.dispose());
 function field(x:number,z:number,channel=0){
  const {data,width,height}=shore.texture.image as {data:Uint16Array;width:number;height:number};
@@ -19,12 +19,15 @@ function field(x:number,z:number,channel=0){
  return THREE.MathUtils.lerp(THREE.MathUtils.lerp(at(i,j),at(i+1,j),tx),THREE.MathUtils.lerp(at(i,j+1),at(i+1,j+1),tx),tz);
 }
 describe('coastal road stays above a real beach',()=>{
- it('rounds the fishing point, reverses toward the sunset and straightens before the finish',()=>{
+ it('drives a full sunset sprint with competitive bends and a clean final sprint',()=>{
+  const final=COAST_STAGE.road.startDistance+COAST_STAGE.road.length;
+  expect(final).toBe(14550);
   const heading=(d:number)=>track.sample(d).roadHeading;
-  expect(heading(8950)-heading(9600)).toBeGreaterThan(.30);
-  expect(heading(10250)-heading(9600)).toBeGreaterThan(.30);
-  expect(Math.abs(heading(10350)-heading(8950))).toBeLessThan(.035);
-  for(let d=10250;d<=10350;d+=10)expect(Math.abs(track.sample(d).curvature)).toBeLessThan(1e-6);
+  expect(Math.abs(heading(10980)-heading(10720))).toBeGreaterThan(.3);
+  expect(Math.abs(heading(13900)-heading(13550))).toBeGreaterThan(.5);
+  for(let d=13900;d<=final;d+=10)
+   expect(Math.abs(track.sample(d).curvature)).toBeLessThan(1e-6);
+  expect(Math.abs(heading(final)-heading(13900))).toBeLessThan(.001);
  });
  it('varies the waterline on each long straight and turns the baked surf with the sand points',()=>{
   for(const [start,end] of [[1000,2100],[2750,3150],[3800,4900],[5550,5850],[6500,7350],[8000,8300]]){
@@ -55,7 +58,7 @@ describe('coastal road stays above a real beach',()=>{
   }finally{loaded.texture.dispose();}
  });
  it('keeps dry sand beside the complete road and a continuous sand-to-seabed slope',()=>{
-  for(let d=350;d<=350+stage.length;d+=10){
+  for(let d=350;d<=COAST_STAGE.road.startDistance+COAST_STAGE.road.length;d+=10){
    const p=track.sample(d);
    // Dry shoulder stays >1m above mean sea even on the banked bends;
    // nearshore waves stay below 0.42m and are clipped at the wet-sand line.
@@ -67,7 +70,7 @@ describe('coastal road stays above a real beach',()=>{
   }
  });
  it('excludes every lane and the inland terrain from water on bends as well as straights',()=>{
-  for(let d=350;d<=350+stage.length;d+=10){
+  for(let d=350;d<=COAST_STAGE.road.startDistance+COAST_STAGE.road.length;d+=10){
    const p=track.sample(d);
    for(const x of [-7,0,7,30,80]){
     const v=p.position.clone().addScaledVector(p.right,x);

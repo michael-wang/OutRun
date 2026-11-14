@@ -1,5 +1,6 @@
 import {addCanyonDawn,CANYON_DAWN_SUN} from './canyon-dawn';
 import {addCoastDusk,COAST_SUN} from './coast-dusk';
+import {COAST_EFFECTS} from './content/coast-effects';
 import {configureCoastShadowLights,CoastShadowCache} from './coast-shadow-coverage';
 import {constrainCoastRoadShadowReceiver} from './coast-road-shadows';
 import {markCoastShadowCaster} from './coast-shadow-layers';
@@ -19,23 +20,27 @@ import {asphaltTexture} from './asphalt-texture';
 import { createCar } from './car';
 import {ACTS,actWeights} from './acts';
 import {addJourneyScenery} from './scenery';
-import {selectRoadInterchange,interchangeRailOpening,interchangeWallVisible,RAMP_RETAINING_WALL_OFFSET,RAMP_WIDTH} from './road-interchange';
+import {interchangeRailOpening,interchangeWallVisible,RAMP_RETAINING_WALL_OFFSET,RAMP_WIDTH,type RoadInterchange} from './road-interchange';
 import { createTrack } from './track';
 import {COURSE} from './challenges';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import {StreamedScene,type SceneAnnotation} from './streamed-scene';
-import type {PilotCandidate} from './pilot-composer';
-import type {TripCandidate} from './trip';
+import type {CoastRuntimeStage} from './content/coast-worker-road';
+import {coastAccidentLayout} from './content/coast-accident';
+import {coastFinish} from './content/coast-finish';
+import type {CoastAccident} from './content/coast-onboarding';
+import type {ScenerySection} from './scenery-cross-section';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:PilotCandidate;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;breakdownStart?:number;accident?:CoastAccident;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:CoastRuntimeStage;interchange?:RoadInterchange;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean;previousHeroLook?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
   // Authored canyon backdrops reach beyond 1km. Change haze, not chase optics.
   if(options.blenderArt){scene.fog.near=450;scene.fog.far=2400;}
-  const coastUltra=(options.streamStage as TripCandidate|undefined)?.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false;
+  const stageSections=(options.streamStage as {scenerySections?:readonly ScenerySection[]}|undefined)?.scenerySections;
+  const coastUltra=stageSections?.some(s=>s.id==='coast-ultra-left-sea')??false;
   const hemisphere=new THREE.HemisphereLight('#e3f7ff','#a09162',1.65);scene.add(hemisphere);
   const sun=new THREE.DirectionalLight('#fff0c9',2.8); sun.position.set(-180,280,-100); scene.add(sun);
   // One real-geometry shadow camera was limited to 200m x 47m and depth 500m:
@@ -57,17 +62,23 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const {sample,length}=options.track??createTrack();
   const shadowCache=farSun?new CoastShadowCache(sun,farSun,sample,length):undefined;
   const bridge=shoulders&&!['designer-canyon-v1','canyon-roadlock-v1'].includes(options.streamStage?.generatorVersion??'')?bridgeSpan(sample,halfAt,weightsAt,length):undefined;
-  const junction=options.streamStage?selectRoadInterchange(options.streamStage,bridge):undefined;
+  // Only authored scene data may opt in to a junction; no Pilot selector.
+  const junction=options.interchange;
   const mat=(color:string,roughness=1)=>new THREE.MeshStandardMaterial({color,roughness});
   const mountainRoad=options.streamStage?.generatorVersion==='canyon-roadlock-v1';
   const dusk=coastUltra?addCoastDusk(scene,sample):undefined;
   const ridgeMeadow=coastUltra?addCoastMountains(scene,sample,length):undefined;
-  if(dusk){hemisphere.color.set('#aab1da');hemisphere.groundColor.set('#66534b');hemisphere.intensity=1.25;
-   sun.color.set('#ffc080');sun.intensity=.65;
-   // Split the original 1.8 intensity without changing the scene's sun hue
-   // or total brightness. Far shadows already exist before near detail arrives.
-   if(farSun){farSun.color.copy(sun.color);farSun.intensity=1.15;}
-   scene.fog!.color.set('#a8796e');scene.fog!.near=250;scene.fog!.far=1450;}
+  if(dusk){
+   const light=COAST_EFFECTS.lighting;
+   hemisphere.color.set(light.hemisphere.sky);
+   hemisphere.groundColor.set(light.hemisphere.ground);
+   hemisphere.intensity=light.hemisphere.intensity;
+   sun.color.set(light.sun.color);sun.intensity=light.sun.nearIntensity;
+   // Existing two-light split, same hue and total brightness as R4a.
+   if(farSun){farSun.color.copy(sun.color);farSun.intensity=light.sun.farIntensity;}
+   scene.fog!.color.set(light.fog.color);
+   scene.fog!.near=light.fog.near;scene.fog!.far=light.fog.far;
+  }
   if(options.dawn){addCanyonDawn(scene);hemisphere.color.set('#c2d7ed');hemisphere.groundColor.set('#9a7765');hemisphere.intensity=1.45;sun.color.set('#ffe0ad');sun.intensity=2.3;scene.fog!.near=450;scene.fog!.far=2600;}
   const asphalt=mat(mountainRoad?'#56534d':'#4c5657'), sand=mat('#ffffff'), grass=mat('#ffffff'), line=mat('#fff5ce'), rail=mat('#d8d8bf');
   if(coastUltra){
@@ -165,9 +176,14 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   // Coast hazards must be positioned relative to the REAL scenic finish,
   // not the extra 600m of track-generation relief used after credits.
   const breakdowns=options.streamStage?.generatorVersion==='canyon-roadlock-v1'?[]:(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion)))?breakdownLayout(sample,halfAt,
-   coastUltra?((options.streamStage as TripCandidate|undefined)?.scenerySections?.find(section=>section.id==='coast-ultra-left-sea')?.end??length):length,
-   (options.seed??1)^(options.trafficVariation??0),!!coastUltra):[];
+   coastUltra?(stageSections?.find(section=>section.id==='coast-ultra-left-sea')?.end??length):length,
+   (options.seed??1)^(options.trafficVariation??0),!!coastUltra,options.breakdownStart):[];
+  // A4 enters the same Traffic + rival collision world as regular stalled cars.
+  if(options.accident)breakdowns.unshift(...coastAccidentLayout(
+   halfAt,options.accident,(options.seed??1)^(options.trafficVariation??0)));
   const annotations:SceneAnnotation[]=(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion))?[]:breakdownAnnotations(sample,halfAt,breakdowns);
+  const coastSection=stageSections?.find(section=>section.id==='coast-ultra-left-sea');
+  if(coastSection)annotations.push(coastFinish(coastSection.end,sample,halfAt(coastSection.end)));
   if(!options.streamStage){
   for(const extreme of course.filter(c=>Math.abs(c.targetRequiredSteering)>1))for(const lead of options.track?[300,160]:[160,80]){
     const p=sample(extreme.start-lead),base=p.position.clone().addScaledVector(p.right,offsetAt(extreme.start-lead,15));
@@ -238,7 +254,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   const clouds=[];for(let i=0;i<24;i++){const angle=i*2.4;for(let j=0;j<4;j++)clouds.push({p:new THREE.Vector3(400+Math.cos(angle)*1700+j*50,280+rand(i)*170,500+Math.sin(angle)*1700),s:new THREE.Vector3(70,18+rand(j+i)*15,35),r:new THREE.Euler()});}
   // These old low-altitude cloud blobs intersect the new high plateau vistas.
   if(!coastUltra&&!(mountainRoad&&options.blenderArt))instances(new THREE.SphereGeometry(1,10,6),new THREE.MeshBasicMaterial({color:'#f5f7e9',fog:false}),clouds);
-  const car=options.deferCar?new THREE.Group():createCar(!!dusk);
+  const car=options.deferCar?new THREE.Group():createCar(!!dusk,'driving',options.previousHeroLook);
   if(coastUltra)car.traverse(o=>{if(o instanceof THREE.Mesh&&o.castShadow)markCoastShadowCaster(o,'dynamic','player');});
   scene.add(car);
   // Keep the original contact mesh in the car's bounding box so collision

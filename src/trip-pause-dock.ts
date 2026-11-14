@@ -4,7 +4,7 @@ import {COAST_SHADOW_TECHNIQUES,coastShadowTechniqueSnapshot,type CoastShadowTec
 /** The pause dock has a primary menu and a settings submenu. */
 export interface TripPauseActions {
  startFpsTest?:()=>void;
- resume():void;exitToMenu():void;settings():void;
+ resume():void;restart():void;exitToMenu():void;settings():void;
  sound():void;
 }
 export interface TripShadowAudit {onChange(technique:CoastShadowTechnique,enabled:boolean):void}
@@ -33,6 +33,7 @@ export class TripPauseDock {
   element.innerHTML=`<h2 class="tp-title">暫停</h2>
    <div class="tp-list" id="tp-primary">
      <button id="tp-resume" type="button">繼續</button>
+     <button id="tp-restart" type="button">重新開始</button>
      <button id="tp-exit" type="button">回到主選單</button>
      <button id="tp-more" type="button" aria-controls="tp-actions">設定</button>
    </div>
@@ -51,12 +52,13 @@ export class TripPauseDock {
   this.moreButton=button('tp-more');
   this.controlsButton=button('tp-settings');
   for(const [id,key,pad] of [
-   ['tp-resume','P','OPTIONS'],['tp-exit','↵','✕'],['tp-more','↵','✕'],
+   ['tp-resume','P','OPTIONS'],['tp-restart','R','✕'],['tp-exit','↵','✕'],['tp-more','↵','✕'],
    ['tp-settings','C','✕'],['tp-sound','M','✕'],['tp-back','Esc','○'],
   ]){
    const node=button(id);node.dataset.keyHint=key;node.dataset.padHint=pad;
   }
   this.resumeButton.onclick=actions.resume;
+  button('tp-restart').onclick=actions.restart;
   button('tp-exit').onclick=actions.exitToMenu;
   this.moreButton.onclick=()=>{this.openSettings();this.controlsButton.focus();};
   this.controlsButton.onclick=actions.settings;

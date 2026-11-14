@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "heroAnchors": [
+    { "id": "working-harbour", "roadDistance": 4600 },
+    { "id": "coastal-woods", "roadDistance": 5420 },
+    { "id": "beach-market", "roadDistance": 5980 },
+    { "id": "boulder-surf", "roadDistance": 6580 },
+    { "id": "bay-entrance", "roadDistance": 7770 },
+    { "id": "sea-cliff", "roadDistance": 8850 },
+    { "id": "rice-plateau", "roadDistance": 10000 },
+    { "id": "sunset-seawall", "roadDistance": 12400 },
+    { "id": "finish-beacon", "roadDistance": 14200 }
+  ],
+  "sites": [
+    {
+      "id": "hamlet",
+      "package": "rural-hamlet-pilot",
+      "roadDistance": 1085,
+      "lateral": 45,
+      "yaw": 0.62,
+      "scale": 1,
+      "replaces": {
+        "member": "farmhouse",
+        "source": "coast-rural-house",
+        "distance": 1085
+      }
+    }
+  ]
+}

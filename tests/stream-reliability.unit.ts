@@ -1,6 +1,7 @@
 import {it,expect,vi,afterEach} from 'vitest';import * as THREE from 'three';import {StreamedScene} from '../src/streamed-scene';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 class FakeWorker {static all:FakeWorker[]=[];onmessage:any;onerror:any;onmessageerror:any;requests:any[]=[];terminated=false;constructor(){FakeWorker.all.push(this);}postMessage(x:any){this.requests.push(x);}terminate(){this.terminated=true;}send(x:any){this.onmessage({data:{generation:this.requests[0].generation,...x}});}}
-function setup(){FakeWorker.all=[];vi.stubGlobal('Worker',FakeWorker);const scene=new THREE.Scene(),m=new THREE.MeshBasicMaterial(),s=new StreamedScene(scene,{} as any,10000,new Proxy({},{get:()=>m}) as any);FakeWorker.all[0].send({type:'initialized',cpuMs:1});return s;}
+function setup(){FakeWorker.all=[];vi.stubGlobal('Worker',FakeWorker);const scene=new THREE.Scene(),m=new THREE.MeshBasicMaterial(),s=new StreamedScene(scene,coastWorkerRoad().stage,10000,new Proxy({},{get:()=>m}) as any);FakeWorker.all[0].send({type:'initialized',cpuMs:1});return s;}
 function road(w:FakeWorker,index:number){w.send({type:'prepared',index,cpuMs:1,roadside:[new Float32Array(),new Float32Array(),new Float32Array(),new Float32Array()],meshes:[{kind:'asphalt',positions:new Float32Array([0,0,0,10,0,0,0,0,1000]),indices:new Uint32Array([0,1,2]),normals:new Float32Array([0,1,0,0,1,0,0,1,0]),uvs:new Float32Array(),colors:new Float32Array()}]});}
 afterEach(()=>{vi.unstubAllGlobals();vi.restoreAllMocks();});
 it('dispatches upcoming roads before scenery and requires attached committed surfaces',()=>{const s=setup(),w=FakeWorker.all[0];expect(w.requests.at(-1).index).toBe(0);road(w,0);expect(s.roadReady(350)).toBe(false);for(let i=0;i<5;i++)s.pump();expect(s.roadReady(350)).toBe(true);expect(s.canDrive(850,180)).toBe(false);expect(w.requests.at(-1)).toMatchObject({type:'prepare',index:1});road(w,1);for(let i=0;i<5;i++)s.pump();expect(s.canDrive(850,180)).toBe(true);expect(w.requests.some(r=>r.type==='scenery')).toBe(false);s.dispose();});
@@ -54,4 +55,29 @@ it.each([false,true])('coastal batches share textures, wait for images, switch L
  s.update(700);expect(near.visible).toBe(!mobile);expect(far.visible).toBe(mobile);
  s.update(900);expect(near.visible).toBe(true);expect(far.visible).toBe(false);
  s.dispose();expect(disposed).toHaveBeenCalledTimes(1);
+});
+
+
+it('R2e: coast Worker init uses an ID without cloning Pilot/Trip metadata',()=>{
+ FakeWorker.all=[];vi.stubGlobal('Worker',FakeWorker);
+ const scene=new THREE.Scene(),material=new THREE.MeshBasicMaterial();
+ const stream=new StreamedScene(scene,coastWorkerRoad().stage,10950,
+  new Proxy({},{get:()=>material}) as any);
+ const init=FakeWorker.all[0].requests[0];
+ expect(init).toMatchObject({type:'init',coastStage:'coast'});
+ expect(init).not.toHaveProperty('stage');
+ expect(init.bakedFarmGround).toBe(true);
+ stream.dispose();material.dispose();
+});
+
+it('R3: legacy stage objects cannot silently enter authored streaming',()=>{
+ FakeWorker.all=[];vi.stubGlobal('Worker',FakeWorker);
+ const scene=new THREE.Scene(),material=new THREE.MeshBasicMaterial();
+ const invalid={...coastWorkerRoad().stage,kind:'legacy-pilot'} as any;
+ const stream=new StreamedScene(scene,invalid,10950,
+  new Proxy({},{get:()=>material}) as any);
+ expect(FakeWorker.all).toHaveLength(3);
+ expect(stream.error).toContain('Only authored coast');
+ expect(stream.canDrive(350,10)).toBe(false);
+ stream.dispose();material.dispose();
 });

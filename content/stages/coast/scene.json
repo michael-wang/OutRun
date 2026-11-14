@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "staticProps": [
+    {
+      "id": "hamlet-farmhouse",
+      "prefab": "taiwan-farmhouse",
+      "roadDistance": 1085,
+      "lateral": 45,
+      "yaw": 0.62,
+      "scale": 1,
+      "heightOffset": 0,
+      "replaces": {
+        "source": "coast-rural-house",
+        "distance": 1085
+      }
+    }
+  ]
+}

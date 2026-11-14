@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import type {WindGroom} from './hero-groom';
+import type {CabinWindInput} from './cabin-wind';
 import {CLAP_TIMES,CHEER_END,type Cheer,type passengerArm} from './passenger-cheer';
-export type Traveler={body:THREE.Group,head:THREE.Group,arms:ReturnType<typeof passengerArm>[],hair:WindGroom,poseDriverArms?:(turn:number)=>void};
+export type Traveler={body:THREE.Group,head:THREE.Group,arms:ReturnType<typeof passengerArm>[],hair:WindGroom,smile?:(weight:number)=>void,poseDriverArms?:(turn:number)=>void};
 /** Small presentation pivots, driven only by observed travel and applied input. */
 export function createOccupantMotion(people:Traveler[]){
  let phase=0,wind=0,turn=0,pitch=0,lastSpeed=0;
@@ -20,6 +21,7 @@ export function createOccupantMotion(people:Traveler[]){
     arm.pose(time,gesture);
    });
    p.poseDriverArms?.(turn);
+   p.smile?.(.58+(time<0?0:.42*Math.sin(Math.PI*Math.min(time/CHEER_END,1))));
    p.hair.sync(wind,sway,tipSway,flutterPhase);
   });
  }
@@ -36,7 +38,7 @@ export function createOccupantMotion(people:Traveler[]){
   if(cheerTime>=0)return;
   nextCheer=Math.max(nextCheer,phase+2);
   cheer='applause';cheerTime=0;return 'applause' as const;
- },advance(ds:number,input:number,dt:number,rightAcceleration=0){
+ },advance(ds:number,input:number,dt:number,rightAcceleration=0,air?:CabinWindInput){
   if(dt<=0)return false;phase+=dt;const speed=Math.abs(ds)/dt,blend=1-Math.exp(-dt/.16);
   wind+=(THREE.MathUtils.smoothstep(speed,0,84)-wind)*blend;
   flutterPhase+=dt*(4.5+5.5*wind);
@@ -52,9 +54,9 @@ export function createOccupantMotion(people:Traveler[]){
   if(cheerTime>=0)cheerTime+=dt;
   const clap=cheer==='applause'&&before>=0&&CLAP_TIMES.some(at=>before<at&&cheerTime>=at);
   if(cheerTime>=CHEER_END)cheerTime=-1;
-  lastSpeed=speed;pose();return clap;
- },reset(){phase=wind=turn=pitch=lastSpeed=sway=swayRate=tipSway=flutterPhase=nextCheer=0;cheer='applause';cheerTime=-1;pose();},
+  lastSpeed=speed;pose();people.forEach(p=>p.hair.step?.(dt,air));return clap;
+ },reset(){phase=wind=turn=pitch=lastSpeed=sway=swayRate=tipSway=flutterPhase=nextCheer=0;cheer='applause';cheerTime=-1;pose();people.forEach(p=>p.hair.reset?.());},
  inspect:()=>({wind,turn,pitch,phase,sway,tipSway,cheerTime,cheer,people:people.map(p=>({
-  lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.hair.locks?.map(l=>({back:l.rotation.x,side:l.rotation.z}))??[],
+  lean:p.body.rotation.z,head:p.head.rotation.y,hair:p.hair.locks?.map(l=>({back:l.rotation.x,side:l.rotation.z}))??[],spring:p.hair.inspect?.(),
  }))})};
 }

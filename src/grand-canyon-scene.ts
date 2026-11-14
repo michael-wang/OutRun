@@ -1,6 +1,3 @@
-import {BRICK_START} from './bricks';
-import {pilotSample,pilotWeights,type PilotCandidate} from './pilot-composer';
-import type {StageBeat} from './stage-one';
 
 /** R2.0's single authored landscape template, chosen once per seed.
  * No landscape selection or earthwork is performed in the driving loop. */
@@ -36,32 +33,6 @@ export interface GrandCanyonScene {
 const smooth=(t:number)=>{const x=Math.max(0,Math.min(1,t));return x*x*(3-2*x);};
 const lerp=(a:number,b:number,t:number)=>a+(b-a)*t;
 
-/** Prefer a canyon sweeper away from transition boundaries, rather than
- * fabricating a bend or moving any accepted r10 road placement. */
-export function planGrandCanyonScene(stage:PilotCandidate&{beats:readonly StageBeat[]}):GrandCanyonScene|undefined{
- const candidates=stage.beats.filter(b=>b.world==='canyon'&&b.endS-b.startS>=1450)
-  .filter(b=>{
-   const a=BRICK_START+b.startS+160,z=BRICK_START+b.endS-160;
-   return [a,(a+z)/2,z].every(d=>pilotWeights(stage,d)[1]>.85);
-  });
- const sorted=[...candidates].sort((a,b)=>{
-  const score=(x:StageBeat)=>(x.role.includes('高速長彎')?0:x.role.includes('舒展')?1:2);
-  return score(a)-score(b)||a.startS-b.startS;
- });
- const beat=sorted[0];
- if(!beat)return undefined;
- const span=Math.min(1480,beat.endS-beat.startS-200);
- const start=Math.round((BRICK_START+(beat.startS+beat.endS-span)/2)/20)*20;
- const end=start+span;
- let lowest=Infinity;
- for(let d=start;d<=end;d+=40)lowest=Math.min(lowest,pilotSample(stage,d).height);
- lowest=Math.min(lowest,pilotSample(stage,end).height);
- return Object.freeze({
-  id:'grand-canyon-river-bend' as const,title:'大峽谷河灣' as const,
-  beat:beat.id,start,end,valleySide:-1 as const,
-  riverY:Math.round((lowest-50)*100)/100,riverWidth:20,seed:stage.seed,
- });
-}
 export function canyonSceneEnvelope(scene:GrandCanyonScene,d:number):number{
  if(d<=scene.start||d>=scene.end)return 0;
  return smooth(Math.min(1,(d-scene.start)/180))*smooth(Math.min(1,(scene.end-d)/180));

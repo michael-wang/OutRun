@@ -3,6 +3,7 @@ import {MAX_SPEED} from './handling';
 import {DEFAULT_PACE,effectivePace} from './pace';
 import {sweptContact,type TrafficCollision} from './traffic-impact';
 import {rearImpactResponse} from './arcade-contact';
+import {CURVATURE_PER_STEER} from './challenges';
 
 export interface DriverProfile {
   anticipation:number; reactionTime:number; overtaking:number; aggression:number; riskTolerance:number;
@@ -42,16 +43,21 @@ export interface RaceStanding {
  id:string; name:string; rank:number; distance:number;
  finishTime:number|null; isPlayer:boolean;
 }
-type Behavior='加速'|'煞車'|'跟車'|'超車'|'避障'|'防守'|'完賽';
+type Behavior='加速'|'煞車'|'跟車'|'超車'|'避障'|'防守'|'甩尾'|'完賽';
 export class RivalState {
   distance=0; lateral=0; speed=0; previousDistance=0; previousLateral=0; lateralRate=0;
   lane=0; targetLane=0; targetX=0; targetSpeed=0; half=7; grade=0; curvature=0;
   finishTime:number|null=null; behavior:Behavior='加速'; nextDecision=0; lastDecision=0;
   obstacles:Obstacle[]=[]; nearest='—'; gap=Infinity; braking=false; slip=0; impulse=0; laneHold=0;
+  driftYaw=0; driftClear=false;
+  get width(){return this.entry.car.width*Math.cos(this.driftYaw)+this.entry.car.length*Math.abs(Math.sin(this.driftYaw));}
+  get length(){return this.entry.car.length*Math.cos(this.driftYaw)+this.entry.car.width*Math.abs(Math.sin(this.driftYaw));}
   readonly gearbox=createPowertrain();
   constructor(readonly entry:RacerEntry){}
 }
 const clamp=(v:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,v));
+const driftBend=(curvature:number)=>clamp((Math.abs(curvature)/CURVATURE_PER_STEER-.48)/.36,0,1);
+const MAX_DRIFT_YAW=.54;
 export const worldSpeed=(v:number)=>v*effectivePace(v,DEFAULT_PACE);
 /** Emission comes from actual stressful maneuvers, not a continuously-curved road.
  * Ordinary high-speed cruising/gradual cornering must never smoke indefinitely. */
@@ -101,29 +107,33 @@ export class RivalRace {
     r.grade=road.grade;r.half=road.half;r.curvature=road.curvature;
     r.lane=nearestLane(r.lateral,r.half);
     const horizon=Math.max(60,travel*driver.anticipation);
-    let corner=car.topSpeed,apex=road.curvature;
+    let corner=car.topSpeed,driftCorner=car.topSpeed,apex=road.curvature;
     for(let i=0;i<=6;i++){
       const lead=horizon*i/6;
       const sample=i?this.road(Math.min(this.finish,r.distance+lead)):road;
       const limit=Math.sqrt(car.cornerGrip/Math.max(.00001,Math.abs(sample.curvature)));
       const indicated=limit/effectivePace(Math.min(r.speed,limit),DEFAULT_PACE);
       const entry=Math.sqrt(indicated*indicated+2*car.brake*lead/DEFAULT_PACE);
+      // Carry speed through an arcade slide. Both plans still brake for
+      // tighter radii and use the same distance to the upcoming sample.
+      const carry=1+(.20+.12*driver.riskTolerance)*driftBend(sample.curvature);
+      driftCorner=Math.min(driftCorner,Math.sqrt((indicated*carry)**2+2*car.brake*lead/DEFAULT_PACE));
       if(entry<corner){corner=entry;apex=sample.curvature;}
     }
     r.obstacles=this.traffic(r.distance,this.time,horizon+60);
     const cars:Obstacle[]=[...r.obstacles];
     if(this.playerFinish===null)cars.push({...player,id:'PLAYER',width:2.3,length:4.9,speed:worldSpeed(player.speed)});
     for(const other of this.rivals)if(other!==r&&other.finishTime===null){
-      cars.push({id:other.entry.id,distance:other.distance,lateral:other.lateral,speed:worldSpeed(other.speed),width:other.entry.car.width,length:other.entry.car.length});
+      cars.push({id:other.entry.id,distance:other.distance,lateral:other.lateral,speed:worldSpeed(other.speed),width:other.width,length:other.length});
     }
     const laneWidth=2*r.half/laneCount(r.half);
     const count=laneCount(r.half);
     const space=Array.from({length:count},()=>({front:Infinity,speed:Infinity,rear:Infinity,id:'—',blocked:false}));
     for(const carAhead of cars){
       const delta=carAhead.distance-r.distance;
-      const gap=Math.abs(delta)-(car.length+carAhead.length)*.5;
+      const gap=Math.abs(delta)-(r.length+carAhead.length)*.5;
       for(let lane=0;lane<count;lane++){
-        if(Math.abs(laneX(lane,r.half)-carAhead.lateral)>(car.width+carAhead.width)*.5+.28)continue;
+        if(Math.abs(laneX(lane,r.half)-carAhead.lateral)>(r.width+carAhead.width)*.5+.28)continue;
         const s=space[lane];
         if(delta>=0&&gap<s.front){s.front=gap;s.speed=carAhead.speed;s.id=carAhead.id;}
         if(delta<0)s.rear=Math.min(s.rear,gap);
@@ -156,7 +166,22 @@ export class RivalRace {
     }
     r.targetLane=lane;r.targetX=laneX(lane,r.half);r.gap=current.front;r.nearest=current.id;
     const target=space[lane];
-    let limit=corner;
+    // Reserve the rotated body plus its outward slip before choosing the
+    // faster plan. A car closing alongside can occupy that space next tick.
+    const yaw=MAX_DRIFT_YAW,slideWidth=car.width*Math.cos(yaw)+car.length*Math.sin(yaw);
+    const slideRoom=slideWidth*.5+.75;
+    // Set up inside the verge on the approach, including for an outside grid lane.
+    if(driftCorner>corner+.5&&lane===r.lane)
+      r.targetX=clamp(r.targetX,-r.half+slideRoom,r.half-slideRoom);
+    r.driftClear=lane===r.lane&&Math.abs(r.targetX-r.lateral)<.85&&Math.abs(r.impulse)<.6&&
+      Math.abs(r.lateral)+slideWidth*.5<=r.half&&
+      !cars.some(other=>{
+        if(Math.abs(other.lateral-r.lateral)>slideRoom+other.width*.5)return false;
+        const gap=other.distance-r.distance,next=gap+(other.speed-travel)*1.1;
+        const clearance=(car.length+other.length)*.5+4;
+        return Math.min(gap,next)<clearance&&Math.max(gap,next)>-clearance;
+      });
+    let limit=r.driftClear?driftCorner:corner;
     const following=(s:typeof target)=>{
       if(s.front<desiredGap)return Math.max(0,s.speed+.9*(s.front-desiredGap))/effectivePace(r.speed,DEFAULT_PACE);
       const room=Math.max(0,s.front-desiredGap);
@@ -181,14 +206,21 @@ export class RivalRace {
     const resistance=gas?r.gearbox.roadDrag:3.8;
     const grade=-9.81*r.grade/Math.hypot(1,r.grade);
     r.speed=clamp(r.speed+(engine*force-resistance-r.gearbox.shiftDrag+grade-(r.braking?c.brake:0))*dt,0,c.topSpeed);
-    const steer=clamp((r.targetX-r.lateral)*2,-4.2,4.2);
+    // Commit to a controlled slide only on a loaded technical bend with a
+    // clear lane. Release on exit, when changing lane, or when closing on traffic.
+    const bend=driftBend(r.curvature);
+    const gripLoad=worldSpeed(r.speed)**2*Math.abs(r.curvature)/c.cornerGrip;
+    const slide=r.driftClear?bend*clamp((gripLoad-.48)/.62,0,1):0;
+    r.driftYaw+=(Math.sign(r.curvature)*slide*MAX_DRIFT_YAW-r.driftYaw)*(1-Math.exp(-dt*5));
+    if(slide>.35)r.behavior='甩尾';
+    const steer=clamp((r.targetX-r.lateral)*2-2.2*r.driftYaw,-4.2,4.2);
     r.lateralRate+=clamp(steer-r.lateralRate,-7*dt,7*dt);
-    r.lateral=clamp(r.lateral+(r.lateralRate+r.impulse)*dt,-r.half+c.width/2,r.half-c.width/2);
+    r.lateral=clamp(r.lateral+(r.lateralRate+r.impulse)*dt,-r.half+r.width/2,r.half-r.width/2);
     r.impulse*=Math.exp(-dt*3);
     r.distance+=worldSpeed(r.speed)*dt;
     for(const o of r.obstacles){
       const front=o.distance+(this.time-r.lastDecision+dt)*o.speed;
-      const length=(c.length+o.length)*.5+.08,width=(c.width+o.width)*.5+.12;
+      const length=(r.length+o.length)*.5+.08,width=(r.width+o.width)*.5+.12;
       const limit=front-length;
       if(Math.abs(r.distance-front)<length&&Math.abs(r.lateral-o.lateral)<width&&Math.abs(r.previousLateral-o.lateral)>=width){
         r.lateral=o.lateral+Math.sign(r.previousLateral-o.lateral)*width;r.lateralRate=r.impulse=0;
@@ -209,20 +241,26 @@ export class RivalRace {
           r.speed*=response.trailingSpeedMultiplier;
           const side=r.lateral<=o.lateral?-1:1;
           r.impulse+=side*response.trailingSideSpeed;
-          if(o.id.startsWith('T')&&o.speed>1)this.impactTraffic?.(o,severity,-side);
+          if(o.id.startsWith('T'))this.impactTraffic?.(o,severity,-side);
         }
         // Keep a real following gap until a passing lane opens, rather than
         // instantaneously setting the rear car's speed to the front car's.
         r.targetSpeed=Math.min(r.targetSpeed,(o.speed+4)/effectivePace(r.speed,DEFAULT_PACE));
       }
     }
-    r.slip=rivalSkidDemand(r);
+    r.slip=Math.max(rivalSkidDemand(r),Math.abs(r.driftYaw)*2.8);
   }
   step(dt:number,player:RaceBody,oldPlayer:{distance:number;lateral:number}):TrafficCollision|undefined{
     let hit:TrafficCollision|undefined;
     for(const r of this.rivals){
       r.previousDistance=r.distance;r.previousLateral=r.lateral;
-      if(r.finishTime!==null)continue;
+      if(r.finishTime!==null){
+        // Roll clear of the painted line on the post-finish road. Ranking stays locked.
+        r.driftYaw*=Math.exp(-dt*5);r.slip=0;
+        r.speed=Math.max(0,r.speed-10*dt);
+        r.distance=Math.min(this.finish+550,r.distance+worldSpeed(r.speed)*dt);
+        continue;
+      }
       if(this.time>=r.nextDecision)this.decide(r,player);
       this.move(r,dt);
     }
@@ -233,8 +271,8 @@ export class RivalRace {
         if(other?other.finishTime!==null:this.playerFinish!==null)continue;
         const b=other??player,old=other?{distance:other.previousDistance,lateral:other.previousLateral}:oldPlayer;
         const dx=r.previousLateral-old.lateral,dz=r.previousDistance-old.distance;
-        const w=(r.entry.car.width+(other?.entry.car.width??2.28))*.5;
-        const l=(r.entry.car.length+(other?.entry.car.length??4.9))*.5;
+        const w=(r.width+(other?.width??2.28))*.5;
+        const l=(r.length+(other?.length??4.9))*.5;
         const contact=sweptContact(dx,dz,r.lateral-b.lateral,r.distance-b.distance,w,l);
         if(!contact)continue;
         const side=Math.sign(dx)||1;
@@ -267,7 +305,7 @@ export class RivalRace {
     }
     for(const r of this.rivals)if(r.finishTime===null){
       r.finishTime=crossingTime(r.previousDistance,r.distance,this.finish,this.time,dt);
-      if(r.finishTime!==null){r.distance=this.finish;r.speed=0;r.behavior='完賽';}
+      if(r.finishTime!==null){r.braking=true;r.behavior='完賽';}
     }
     if(this.playerFinish===null)this.playerFinish=crossingTime(oldPlayer.distance,player.distance,this.finish,this.time,dt);
     this.time+=dt;

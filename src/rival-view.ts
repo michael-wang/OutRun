@@ -3,7 +3,7 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {createRivieraTailLamps} from './hero-classic-geometry';
 import {createSpiderShell,createWheelBrow,createGTWingMirrorHousing} from './hero-body';
 import {createRoadWheel,wheelRoll} from './wheels';
-import {TireEffects,type TireContact} from './tire-effects';
+import {TireEffects,driftTrailIntensity,type TireContact} from './tire-effects';
 import type {RivalRace,RaceStanding} from './rival-race';
 import type {createTrack} from './track';
 import {chaseTargets} from './chase';
@@ -147,7 +147,9 @@ export class RivalView {
     scene.add(this.group);
     this.cars=race.rivals.map((r,i)=>{
       const car=carModel(this.assets,r.entry.paint,r.entry.name,i+1);car.root.name=r.entry.id;this.group.add(car.root);
-      return {...car,near:false,markerDropPx:0,markerHiddenForHud:false,effects:new TireEffects(scene,'smoke',smoke)};
+      const effects=new TireEffects(scene,'smoke',smoke);
+      effects.setEmitterSeed(i+1);
+      return {...car,near:false,markerDropPx:0,markerHiddenForHud:false,effects};
     });
   }
   inspectEffects(){return this.cars.map((car,i)=>({...car.effects.inspect(),skidDemand:this.race.rivals[i].slip,speed:this.race.rivals[i].speed}));}
@@ -181,11 +183,11 @@ export class RivalView {
     if(mobileTags)camera.updateMatrixWorld();
     this.race.rivals.forEach((r,i)=>{
       const car=this.cars[i],root=car.root,dist=Math.abs(r.distance-focus);
-      const visible=dist<720&&ready(r.distance)&&r.finishTime===null;
+      const visible=dist<720&&ready(r.distance)&&(r.finishTime===null||this.race.time-r.finishTime<8);
       if(!visible){if(root.visible)car.effects.clear(time);root.visible=false;return;}
       root.visible=true;
       const p=this.sample(r.distance);root.position.copy(p.position).addScaledVector(p.right,r.lateral);root.position.y+=.04;
-      root.rotation.set(-Math.asin(p.tangent.y),-p.roadHeading-Math.atan2(r.lateralRate+r.impulse,Math.max(8,r.speed)),Math.atan(-p.right.y));
+      root.rotation.set(-Math.asin(p.tangent.y),-p.roadHeading-r.driftYaw-Math.atan2(r.lateralRate+r.impulse,Math.max(8,r.speed)),Math.atan(-p.right.y));
       // The Sprite material disables perspective size attenuation; off-screen tags
       // are naturally frustum-culled and road geometry may occlude them.
       car.label.visible=observed!==i&&r.distance>=focus-2;
@@ -212,20 +214,22 @@ export class RivalView {
         for(let j=0;j<4;j++){
           const side=j%2?1:-1,rear=j<2;
           this.wheelPose.position.set(side*1.055,.46,rear?-1.45:1.38);
-          this.wheelPose.rotation.set(side*(rotation+(rear?burn:0)),side<0?Math.PI:0,0,'YXZ');
+          const countersteer=rear?0:r.driftYaw*.72;
+          this.wheelPose.rotation.set(side*(rotation+(rear?burn:0)),(side<0?Math.PI:0)+countersteer,0,'YXZ');
           this.wheelPose.updateMatrix();car.wheels.setMatrixAt(j,this.wheelPose.matrix);
         }
         car.wheels.instanceMatrix.needsUpdate=true;
       }
       car.tail.emissiveIntensity=r.braking?2.8:.52;
-      if(dist<125){
+      const driftTrail=driftTrailIntensity(r.driftYaw);
+      if(dist<240){
         car.near=true;
         root.updateMatrixWorld();
         this.contacts.forEach((contact,j)=>{this.point.set(j?1:-1,0,-1.45).applyMatrix4(root.matrixWorld).toArray(contact.surface!);});
         const launchBurn=countdown?.50:
           this.race.time<4&&r.speed<7&&r.gearbox.driveForce>2
            ?.45*(1-r.speed/7):0;
-        car.effects.update(time,r.speed,r.slip,this.contacts,1,launchBurn);
+        car.effects.update(time,r.speed,dist<125||driftTrail>0?r.slip:0,this.contacts,1,dist<125?launchBurn:0,driftTrail);
       }else if(car.near){car.effects.clear(time);car.near=false;}
     });
   }

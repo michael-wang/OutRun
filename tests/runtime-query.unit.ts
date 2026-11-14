@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
-import {GAME_QUERY_KEYS,canonicalGameQuery} from '../src/runtime-query';
+import {GAME_QUERY_KEYS,DEV_QUERY_KEYS,canonicalGameQuery} from '../src/runtime-query';
 it('accepts only approved diagnostics, positioning and replayable traffic seed',()=>{
  expect(GAME_QUERY_KEYS).toEqual(['fpsdiag','startupdiag','at','trafficSeed','rivaldebug']);
  expect(canonicalGameQuery(new URLSearchParams('showcase=coast&qa=1&fpsbench=1&autobench=1&fpsdiag=1&startupdiag=1&at=6500')).toString()).toBe('fpsdiag=1&startupdiag=1&at=6500');
@@ -9,6 +9,18 @@ it('accepts only approved diagnostics, positioning and replayable traffic seed',
  expect(canonicalGameQuery(new URLSearchParams('at=850&trafficSeed=2026&foo=1')).toString()).toBe('at=850&trafficSeed=2026');
  expect(canonicalGameQuery(new URLSearchParams('rivaldebug=1')).toString()).toBe('rivaldebug=1');
  expect(canonicalGameQuery(new URLSearchParams('trafficSeed=not-a-number')).toString()).toBe('');
+});
+it('exposes authored-prefab QA only in development builds',()=>{
+ expect(DEV_QUERY_KEYS).toEqual(['prefabdebug','r5qa','r6','hairWind']);
+ const keys=canonicalGameQuery(new URLSearchParams('at=985&prefabdebug=1'));
+ expect(keys.get('at')).toBe('985');
+ expect(keys.has('prefabdebug')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('prefabdebug=0')).has('prefabdebug')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('r5qa=1')).has('r5qa')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('r6=previous')).has('r6')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('r6=unknown')).has('r6')).toBe(false);
+ for(const preset of ['baseline','dramatic','wild'])expect(canonicalGameQuery(new URLSearchParams('hairWind='+preset)).has('hairWind')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairWind=unknown')).has('hairWind')).toBe(false);
 });
 it('defaults to a playable coast without the 0-speed FPS benchmark',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');

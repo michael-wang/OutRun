@@ -10,12 +10,11 @@ import {shadeMeadowGround,vergeBladeMaterial} from './coast-meadow-material';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import * as THREE from 'three';
 import type {BankStrength} from './banking';
-import type {PilotCandidate} from './pilot-composer';
+import type {CoastRuntimeStage} from './content/coast-worker-road';
 import type {RoadMeshData} from './road-chunk';
 import {loadCoastFarm,createFarmPlot,warmFarmMeshes,type FarmAssets,type FarmPatch} from './coast-farm';
 import {farmPlotsInChunk} from './coast-farm-layout';
 import type {PreparedFarmPlot} from './coast-farm-prep';
-import {COAST_ULTRA_STAGE} from './coast-ultra-stage';
 import {SceneTaskProfiler,SCENE_TASK_SOFT_BUDGET_MS,type SceneTaskKind} from './scene-task-profiler';
 
 type RoadData=RoadMeshData&{normals:Float32Array};
@@ -144,7 +143,7 @@ export class StreamedScene {
  get sceneTaskProfile(){return this.taskProfiler?.snapshot()??null;}
  get farmWorkerStats(){return {...this.farmWorkerPrepared,workerCpuMs:Math.round(this.farmWorkerPrepared.workerCpuMs),lastMs:Math.round(this.farmWorkerPrepared.lastMs)};}
  get sceneTaskSpikes(){return this.taskProfiler?.recentSlowTasks()??[];}
- constructor(private scene:THREE.Scene,private stage:PilotCandidate,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false,private farmSample?:Parameters<typeof createFarmPlot>[1],ridgeMeadow?:THREE.Uniform<THREE.Texture|null>){
+ constructor(private scene:THREE.Scene,private stage:CoastRuntimeStage,private length:number,private roadMaterials:Record<RoadMeshData['kind'],THREE.Material>,private annotations:SceneAnnotation[]=[],bank?:BankStrength,private blenderArt=false,private farmSample?:Parameters<typeof createFarmPlot>[1],ridgeMeadow?:THREE.Uniform<THREE.Texture|null>){
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
   this.bank=bank;
@@ -158,7 +157,13 @@ export class StreamedScene {
   const generation=this.generation;this.worker.onmessage=event=>{if(generation!==this.generation)return;try{this.receive(event.data);}catch(error){this.fail('Worker result failed: '+String(error));}};
   this.worker.onerror=event=>{event.preventDefault();if(generation===this.generation)this.fail(event.message||'Worker runtime failure');};
   this.worker.onmessageerror=()=>{if(generation===this.generation)this.fail('Worker message could not be decoded');};
-  this.worker.postMessage({type:'init',generation:this.generation,stage:this.stage,bank:this.bank,mobileShadows:this.mobile&&!!this.farmSample,blenderArt:this.blenderArt,bakedFarmGround:this.stage===COAST_ULTRA_STAGE&&this.bank===undefined&&!this.blenderArt,...(import.meta.env.DEV?{faults:this.testFaults}:{})});
+  if(this.stage.kind!=='authored-coast')throw Error('Only authored coast stages can stream');
+  this.worker.postMessage({type:'init',generation:this.generation,
+    // Worker resolves the same authored stage ID without cloning its contents.
+    coastStage:'coast' as const,
+    bank:this.bank,mobileShadows:this.mobile&&!!this.farmSample,blenderArt:this.blenderArt,
+    bakedFarmGround:this.bank===undefined&&!this.blenderArt,
+    ...(import.meta.env.DEV?{faults:this.testFaults}:{})});
   }catch(error){this.fail('Worker launch failed: '+String(error));}
  }
  private fail(message:string){

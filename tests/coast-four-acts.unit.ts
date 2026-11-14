@@ -1,23 +1,32 @@
 import {it,expect} from 'vitest';
 import {COAST_SCENIC_ACTS,coastScenicActAt,coastVegetationDensity} from '../src/coast-journey-layout';
-import {COAST_BEACHES,COAST_DISTRICTS} from '../src/coast-layout';
+import {COAST_BEACHES,COAST_DISTRICTS,COAST_BEACH_STALLS,COAST_LANDINGS,COAST_REEF_ROCKS,COAST_ROCKS,coastRockX} from '../src/coast-layout';
 import {FARM_ZONES,FARM_PLOTS,FARM_HOMES} from '../src/coast-farm-layout';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES} from '../src/coast-rural-layout';
 import {COAST_REST_SPOTS,COAST_VILLAGE_SITES} from '../src/coast-village-layout';
 import {COAST_BOATS} from '../src/coast-boats';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {RoadClearance} from '../src/road-clearance';
+import {coastBeachHeight,COAST_SEA_LEVEL} from '../src/scenery-cross-section';
+import {COAST_STAGE} from '../src/content/coast-stage';
 
-it('directs four contiguous parts of one ten-kilometre coastal journey',()=>{
+it('directs ten contiguous acts: tutorial, hero vistas, pressure and finish sprint',()=>{
  expect(COAST_SCENIC_ACTS.map(x=>x.id)).toEqual([
-  'rural-opening','quiet-beach','town-and-market','fishing-farewell',
+  'rural-opening','quiet-beach','town-and-market',
+  'wide-ocean','cliff-challenge','rice-plateau','switchback-risk',
+  'golden-bridge','final-contest','finish-sprint',
  ]);
  expect(COAST_SCENIC_ACTS[0].start).toBe(0);
- expect(COAST_SCENIC_ACTS.at(-1)!.end).toBe(10000);
+ expect(COAST_SCENIC_ACTS.at(-1)!.end).toBe(COAST_STAGE.road.length);
+ expect(COAST_SCENIC_ACTS.map(x=>x.role)).toEqual([
+  'onboarding','onboarding','onboarding','vista','pressure',
+  'vista','pressure','vista','pressure','finish',
+ ]);
  for(let i=1;i<COAST_SCENIC_ACTS.length;i++)
   expect(COAST_SCENIC_ACTS[i].start).toBe(COAST_SCENIC_ACTS[i-1].end);
- for(const d of [0,1799,1800,3399,3400,6999,7000,9999])
+ for(const d of COAST_SCENIC_ACTS.flatMap(act=>[act.start,act.end-1]))
   expect(coastScenicActAt(d)).toBe(COAST_SCENIC_ACTS.find(x=>d>=x.start&&d<x.end));
- expect(COAST_ULTRA_STAGE.beats.map(x=>[x.startS,x.endS])).toEqual(
+ expect(COAST_STAGE.scenicActs.map(x=>[x.start,x.end])).toEqual(
   COAST_SCENIC_ACTS.map(x=>[x.start,x.end]));
 });
 
@@ -45,7 +54,7 @@ it('opens with uninterrupted sea and a field-first courtyard landmark',()=>{
 });
 
 it('keeps the second act a visitor beach with sparse inland scrub',()=>{
- const chapter=COAST_SCENIC_ACTS[1];
+ const chapter={start:1800,end:3400}; // beach placements use absolute road metres
  const active=COAST_BEACHES.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end);
  expect(active).toHaveLength(1);
  expect(active[0].extra).toBeGreaterThan(40);
@@ -56,7 +65,7 @@ it('keeps the second act a visitor beach with sparse inland scrub',()=>{
 });
 
 it('groups homes and night markets in the middle, with modest farm clearings',()=>{
- const chapter=COAST_SCENIC_ACTS[2],districts=COAST_DISTRICTS.filter(z=>z.start>=chapter.start&&z.end<=chapter.end);
+ const chapter={start:3400,end:7000},districts=COAST_DISTRICTS.filter(z=>z.start>=chapter.start&&z.end<=chapter.end);
  expect(districts.filter(z=>z.kind==='market').length).toBeGreaterThanOrEqual(3);
  expect(districts.filter(z=>z.kind==='homes').length).toBeGreaterThanOrEqual(3);
  expect(COAST_VILLAGE_SITES.filter(x=>x.kind==='waffle'&&x.d>=chapter.start&&x.d<chapter.end).length).toBeGreaterThanOrEqual(3);
@@ -70,12 +79,42 @@ it('groups homes and night markets in the middle, with modest farm clearings',()
  expect(COAST_BOATS.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end&&b.kind==='sail').length).toBeGreaterThanOrEqual(4);
 });
 
-it('finishes amid fishing boats, working crops and only small tourist coves',()=>{
- const chapter=COAST_SCENIC_ACTS[3];
+it('keeps authored harbour sheds and beach stalls on land and clear of every road segment',()=>{
+ const {track,halfAt}=coastWorkerRoad();
+ const points=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track.sample(i*25).position);
+ points.push(track.sample(track.length).position);
+ const clearance=new RoadClearance(points,halfAt,true);
+ for(const site of [...COAST_LANDINGS,...COAST_BEACH_STALLS.map(s=>({...s,radius:4}))]){
+  const p=track.sample(site.d);
+  const height=coastBeachHeight(site.x,p.position.y,p.right.y,site.d);
+  expect(height-COAST_SEA_LEVEL,`submerged site at ${site.d}`).toBeGreaterThan(site.radius===4?1:0);
+  expect(clearance.clear(p.position.addScaledVector(p.right,site.x),site.radius),`rejected site at ${site.d}`).toBe(true);
+ }
+});
+
+it('keeps a continuous surf coast with clear road access between the beach and sailing bay',()=>{
+ const zone=COAST_STAGE.effects.ocean.reefBreakers;
+ const rocks=[...COAST_ROCKS,...COAST_REEF_ROCKS].filter(r=>r.d>=zone.start&&r.d<=zone.end).sort((a,b)=>a.d-b.d);
+ const {track,halfAt}=coastWorkerRoad();
+ const points=Array.from({length:Math.ceil(track.length/25)},(_,i)=>track.sample(i*25).position);
+ points.push(track.sample(track.length).position);
+ const clearance=new RoadClearance(points,halfAt,true);
+ expect(rocks.at(-1)!.d-rocks[0].d).toBeGreaterThan(500);
+ for(const [i,rock] of rocks.entries()){
+  if(i)expect(rock.d-rocks[i-1].d).toBeLessThan(45);
+  const p=track.sample(rock.d),x=coastRockX(rock);
+  expect(coastBeachHeight(x,p.position.y,p.right.y,rock.d)).toBeLessThan(COAST_SEA_LEVEL);
+  expect(clearance.clear(p.position.addScaledVector(p.right,x),rock.r*1.6+2)).toBe(true);
+ }
+});
+
+it('preserves the fishing-village pocket before the new hero coastline',()=>{
+ const chapter={start:7000,end:10000};
  const fishing=COAST_BOATS.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end&&b.kind==='fishing');
- expect(fishing.length).toBeGreaterThanOrEqual(6);
- expect(COAST_BOATS.every(b=>b.kind!=='fishing'||b.distance>=chapter.start)).toBe(true);
- const lateFarms=FARM_ZONES.filter(z=>z.start>=chapter.start&&z.end<=chapter.end);
+ expect(fishing.length).toBeGreaterThanOrEqual(2);
+ expect(COAST_BOATS.filter(b=>b.kind==='sail'&&b.distance>=7000&&b.distance<8450)).toHaveLength(5);
+ expect(COAST_BOATS.every(b=>b.kind!=='fishing'||(b.distance>=4350&&b.distance<4950)||b.distance>=8450)).toBe(true);
+ const lateFarms=FARM_ZONES.filter(z=>z.start>=chapter.start&&z.end<=10720);
  expect(lateFarms).toHaveLength(2);
  expect(lateFarms.every(z=>z.right>=200)).toBe(true);
  expect(COAST_BEACHES.filter(b=>b.distance>=chapter.start).every(b=>b.radius<300)).toBe(true);

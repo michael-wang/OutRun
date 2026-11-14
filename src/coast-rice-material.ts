@@ -1,5 +1,6 @@
 import type {DataTexture,MeshStandardMaterial} from 'three';
-import {farmWindGLSL} from './coast-farm-wind';
+import {farmWindGLSL,farmHeroWaveGLSL,COAST_WIND_HEADING_GLSL} from './coast-wind';
+import {COAST_EFFECTS} from './content/coast-effects';
 import {COAST_SUN} from './coast-dusk';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
 
@@ -12,15 +13,19 @@ const plantingGrid=/* glsl */`
 `;
 
 export function shadeRipeRice(shader:RiceShader,time:{value:number},wind:DataTexture,crop:boolean){
+ const wave=COAST_EFFECTS.heroWaves.rice;
  Object.assign(shader.uniforms,{farmTime:time,farmWind:{value:wind},riceSun:{value:COAST_SUN}});
- shader.vertexShader=shader.vertexShader.replace('#include <common>',`#include <common>\nuniform vec3 riceSun; varying float vEarLight;\n${farmWindGLSL}`)
+ shader.vertexShader=shader.vertexShader.replace('#include <common>',`#include <common>\nuniform vec3 riceSun; varying float vEarLight; varying float vHeroWave;\n${farmWindGLSL}\n${farmHeroWaveGLSL}`)
   .replace('#include <beginnormal_vertex>',`#include <beginnormal_vertex>
    ${crop?`mat4 riceBasis=modelMatrix*instanceMatrix;
     vec2 riceWorld=(riceBasis*vec4(position,1.)).xz;`
     :`vec2 riceWorld=(modelMatrix*vec4(position,1.)).xz;`}
-   vec2 gust=farmGust(riceWorld),windDir=normalize(vec2(1.,gust.y));
+   vec2 gust=farmGust(riceWorld),windHeading=${COAST_WIND_HEADING_GLSL};
+   float heroWave=farmHeroWave(riceWorld,gust,${wave.wavelengthM.toFixed(1)},${wave.travelSpeedMps.toFixed(1)});
+   vHeroWave=heroWave;
+   vec2 windDir=normalize(windHeading+vec2(-windHeading.y,windHeading.x)*gust.y);
    vec2 localWind=${crop?'vec2(dot(normalize(riceBasis[0].xz),windDir),dot(normalize(riceBasis[2].xz),windDir))':'windDir'};
-   float lean=clamp(.29+gust.x,-.76,1.04);
+   float lean=clamp(.29+gust.x+heroWave*${wave.swayStrength.toFixed(3)},-.76,1.04);
    float h=${crop?'max(position.y,0.)':'mix(.14,.83,smoothstep(.04,.22,color.a))'};
    float angle=lean*${crop?'h/1.30':'1.'};
    float bend=sin(angle), upright=cos(angle);
@@ -39,7 +44,7 @@ export function shadeRipeRice(shader:RiceShader,time:{value:number},wind:DataTex
     :`transformed.xz+=localWind*h*bend;
     transformed.y+=h*(upright-1.);`}
   `);
- shader.fragmentShader='varying float vEarLight;\n'+(crop?'':plantingGrid)+shader.fragmentShader;
+ shader.fragmentShader='varying float vEarLight; varying float vHeroWave;\n'+(crop?'':plantingGrid)+shader.fragmentShader;
  shader.fragmentShader=shader.fragmentShader
   .replace('#include <color_fragment>',`#include <color_fragment>
    ${crop?'':`vec2 metres=vMapUv*4.;
@@ -54,6 +59,7 @@ export function shadeRipeRice(shader:RiceShader,time:{value:number},wind:DataTex
     // A bowed stand exposes more husks to the low sun above the green leaves.
     diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.72,.59,.32),.10+vEarLight*.16);`}
    diffuseColor.rgb*=mix(vec3(.90,.89,.83),vec3(1.03,1.01,.95),vEarLight);
+   diffuseColor.rgb*=1.0+vHeroWave*${wave.colorPulse.toFixed(3)};
   `)
   .replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
    totalEmissiveRadiance+=diffuseColor.rgb*(vec3(.30,.28,.22)+vEarLight*vec3(.12,.11,.08));

@@ -10,7 +10,8 @@ import {INTERCHANGE_DEMO_CAR_ID,interchangeCenterOffset,interchangeTrafficShift,
 import * as THREE from 'three';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {TRAFFIC_TYPES,vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
-import {TireEffects,type TireContact} from './tire-effects';
+import {TireEffects,type TireContact,type WindSampler} from './tire-effects';
+import type {FirstMapTraffic} from './content/coast-onboarding';
 import {SkidFeedback} from './skid-feedback';
 import {sweptContact,type TrafficCollision} from './traffic-impact';
 import {worldSpeed,type Obstacle,type RivalState} from './rival-race';
@@ -22,9 +23,9 @@ import type {createTrack} from './track';
 export const TRAFFIC_LIMIT=12;
 export {TRAFFIC_TYPES} from './vehicle-model';
 const random=(seed:number,id:number)=>{let x=(seed^Math.imul(id+1,0x9e3779b1))>>>0;x=Math.imul(x^(x>>>16),0x85ebca6b);x=Math.imul(x^(x>>>13),0xc2b2ae35);return ((x^(x>>>16))>>>0)/4294967296;};
-export interface TrafficActor {stationary?:boolean;stopSide?:number;stopLane?:number;id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;previousDistance?:number;previousLateral?:number;previousVisible?:boolean;nominalDistance?:number;cruiseSpeed?:number;group?:number;member?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
+export interface TrafficActor {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4'|number;id:number;type:number;distance:number;speed:number;lane:number;lateral:number;visible:boolean;y:number;grade:number;previousDistance?:number;previousLateral?:number;previousVisible?:boolean;nominalDistance?:number;cruiseSpeed?:number;group?:number;member?:number;signal?:number;changing?:boolean;unsignaled?:boolean}
 /** One immutable recipe per seed/route; only the existing bounded window becomes meshes. */
-interface TrafficRecipe {stationary?:boolean;stopSide?:number;stopLane?:number;id:number;type:number;distance:number;speed:number;group:number;member?:number}
+interface TrafficRecipe {stationary?:boolean;stopSide?:number;stopLane?:number;stopYaw?:number;incidentId?:'A4'|number;id:number;type:number;distance:number;speed:number;group:number;member?:number}
 const recipes=new Map<string,TrafficRecipe[]>();
 export function trafficCruise(seed:number,id:number,type:number){
  const r=random(seed^0x719a,id),rare=random(seed^0x4ba2,id);
@@ -36,18 +37,27 @@ export function trafficCruise(seed:number,id:number,type:number){
  if(type===2)return (rare>.91?180+55*r:85+60*r)/3.6;
  return (type===1?75+45*r:65+40*r)/3.6;
 }
-export function trafficRecipe(seed:number,length:number):readonly TrafficRecipe[]{
- const key=seed+':'+length,cached=recipes.get(key);if(cached)return cached;
- const out:TrafficRecipe[]=[];let distance=650+random(seed,0)*70,id=0;
+export function trafficRecipe(seed:number,length:number,opening?:FirstMapTraffic):readonly TrafficRecipe[]{
+ const key=seed+':'+length+':' +
+  (opening?`${opening.firstCivilianDistance}:${opening.firstCruiseKmh}:${opening.firstWaveCount}:${opening.nextWaveDistance}`:'legacy');
+ const cached=recipes.get(key);if(cached)return cached;
+ const out:TrafficRecipe[]=[];
+ let distance=(opening?.firstCivilianDistance??650)+random(seed,0)*70,id=0;
  for(let group=0;distance<length-100;group++){
   // Keep the first launch sector clear; thereafter present denser, seeded road traffic.
   // Groups never occupy every lane and the existing 12-car render pool stays bounded.
-  const count=group===0?3:random(seed^0x971,group)<.14?1:2+Math.floor(random(seed^0x91f,group)*3);
+  const count=group===0?(opening?.firstWaveCount??3):random(seed^0x971,group)<.14?1:2+Math.floor(random(seed^0x91f,group)*3);
   for(let member=0;member<count;member++){
-   const pick=random(seed^0x392,id),type=group===0?member:pick<.55?0:pick<.72?1:pick<.96?2:3;
-   out.push({id,type,distance:distance+member*(32+random(seed^0xa5,group)*24),speed:trafficCruise(seed,id,type),group,member});id++;
+   const teachingBus=!!opening&&group===0&&member===0;
+   const pick=random(seed^0x392,id),type=teachingBus?1:group===0?member:pick<.55?0:pick<.72?1:pick<.96?2:3;
+   const speed=teachingBus?worldSpeed(opening.firstCruiseKmh/3.6):trafficCruise(seed,id,type);
+   out.push({id,type,distance:distance+member*(32+random(seed^0xa5,group)*24),speed,group,member});id++;
   }
-  distance+=275+random(seed^0x4c2,group)*285+(random(seed^0x52a,group)<.09?450:0);
+  if(group===0&&opening){
+    distance=opening.nextWaveDistance+random(seed^0x4c2,group)*70;
+   }else{
+    distance+=275+random(seed^0x4c2,group)*285+(random(seed^0x52a,group)<.09?450:0);
+   }
  }
  if(recipes.size>=4)recipes.delete(recipes.keys().next().value!);recipes.set(key,out);return out;
 }
@@ -96,11 +106,12 @@ export class Traffic {
   envelope:[number,number];playerHeading:number;trafficYaw:number;}>=[];
  private rampDemoStartedAt?:number;private rampDemoFinished=false;
  private smokeWorldWeights:readonly number[]=[1,0,0];
- constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,private stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false,private geometryShadows=false,sessionVariation=0){
+ private smokeWind?:WindSampler;
+ constructor(private scene:THREE.Scene,private sample:ReturnType<typeof createTrack>['sample'],private halfAt:(d:number)=>number,private length:number,private seed:number,private roadReady:(d:number)=>boolean=()=>true,private stopped:readonly TrafficRecipe[]=[],private junction?:RoadInterchange,private dusk=false,private sunsetShadows=false,private geometryShadows=false,sessionVariation=0,private readonly onboarding?:FirstMapTraffic){
   if(dusk)lightCoastMaterial(scene,this.material);
   if(dusk)this.runningLights=new TrafficLights(scene,TRAFFIC_LIMIT);
   this.trafficSeed=(seed^sessionVariation)>>>0;
-  this.schedule=[...trafficRecipe(this.trafficSeed,length),...stopped];
+  this.schedule=[...trafficRecipe(this.trafficSeed,length,this.onboarding),...stopped];
   this.raceWorld=this.makeRaceWorld();
   this.lanes=new TrafficLanes(this.trafficSeed,dusk);this.indicators=new THREE.InstancedMesh(new THREE.BoxGeometry(.46,.25,.08),new THREE.MeshBasicMaterial({color:'#ffb000',toneMapped:false}),TRAFFIC_LIMIT*4);this.indicators.name='traffic-turn-signals';this.indicators.count=0;this.indicators.frustumCulled=false;scene.add(this.indicators);
   // One soft contact-shadow draw for the whole traffic pool; no player-relative shadow-map cutoff.
@@ -166,6 +177,11 @@ export class Traffic {
   this.breakdownSmoke.frustumCulled=false;this.breakdownSmoke.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
   scene.add(this.breakdownSmoke);
  }
+ /** All traffic collision effects share the stage wind; AI stays unchanged. */
+ setWind(sampler?:WindSampler){
+  this.smokeWind=sampler;
+  for(const reaction of this.reactions.values())reaction.effects.setWind(sampler);
+ }
  /** Share the player's biome-dependent palette with traffic collision smoke. */
  setSmokeScene(weights:readonly number[]){
   this.smokeWorldWeights=weights;
@@ -178,16 +194,19 @@ export class Traffic {
   * deterministic QA/reset tests; ?trafficSeed also locks replay results. */
  private makeRaceWorld(){
   const coast=this.racing&&this.dusk;
-  const source=coast?this.schedule.map(row=>({...row,speed:row.stationary?0:coastRaceCruise(this.trafficSeed,row.id,row.type)})):this.schedule;
+  const source=coast?this.schedule.map(row=>{
+   if(row.stationary||(this.onboarding&&row.group===0&&row.member===0))return row;
+   return {...row,speed:coastRaceCruise(this.trafficSeed,row.id,row.type)};
+  }):this.schedule;
   return new RaceTrafficWorld(source,this.trafficSeed,this.length,this.halfAt,
-    type=>({width:TRAFFIC_TYPES[type].width,length:TRAFFIC_TYPES[type].length}),coast);
+    type=>({width:TRAFFIC_TYPES[type].width,length:TRAFFIC_TYPES[type].length}),coast,!this.onboarding);
  }
  /** Non-racing contexts keep the existing local traffic behavior. */
  enableRaceMode(){if(this.racing)return;this.racing=true;this.raceWorld=this.makeRaceWorld();}
  private rivalBodies():RaceRoadUser[]{return (this.rivalLeaders?.()??[]).filter(r=>r.finishTime===null)
   .map((r,i)=>({id:-1000-i,distance:r.distance,lateral:r.lateral,
-   speed:worldSpeed(r.speed),width:r.entry.car.width,length:r.entry.car.length}));}
- reset(variation?:number){this.previousPlayer=undefined;this.passedIds.clear();this.retiredMotion.clear();if(variation!==undefined){this.trafficSeed=(this.seed^variation)>>>0;this.schedule=[...trafficRecipe(this.trafficSeed,this.length),...this.stopped];this.lanes=new TrafficLanes(this.trafficSeed,this.dusk);}this.raceWorld=this.makeRaceWorld();this.playerSnapshot=undefined;
+   speed:worldSpeed(r.speed),width:r.width,length:r.length}));}
+ reset(variation?:number){this.previousPlayer=undefined;this.passedIds.clear();this.retiredMotion.clear();if(variation!==undefined){this.trafficSeed=(this.seed^variation)>>>0;this.schedule=[...trafficRecipe(this.trafficSeed,this.length,this.onboarding),...this.stopped];this.lanes=new TrafficLanes(this.trafficSeed,this.dusk);}this.raceWorld=this.makeRaceWorld();this.playerSnapshot=undefined;
   this.highwaySlot=0;this.highwayRecipes=[];this.runningLights?.reset();this.rampDemoStartedAt=undefined;this.rampDemoFinished=false;this.history.clear();this.contactDebug.length=0;this.lanes.reset();this.indicators.count=0;this.shadows.count=0;if(this.sunsetCast)this.sunsetCast.count=0;this.breakdownSmoke.count=0;this.actors=[];this.time=this.impacts=0;for(const r of this.reactions.values())r.effects.dispose();this.reactions.clear();this.lastEvent=undefined;this.meshes.forEach(m=>m.count=0);this.outlineMeshes.forEach(m=>m.count=0);this.crestRims.forEach(m=>m.count=0);this.crestHints.forEach(h=>h.visible=false);this.hintCache.clear();this.nextHintCheck=0;if(this.sign)this.sign.count=0;}
  update(time:number,player:number,playerLateral=Infinity,playerSpeed=0,camera?:THREE.PerspectiveCamera,viewportHeight=412){
   this.runningLights?.begin();
@@ -319,6 +338,7 @@ export class Traffic {
     const body=this.raceWorld.get(a.id);
     if(!body)continue;
     a.distance=body.distance;a.speed=body.speed;a.lateral=body.lateral;
+    a.stopYaw=body.stopYaw;
     a.changing=Math.abs(body.targetLateral-body.lateral)>.2;
     a.signal=a.changing&&Math.floor(time/.30)%2===0
       ?Math.sign(body.targetLateral-body.lateral):0;
@@ -419,7 +439,8 @@ export class Traffic {
    const frontDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance+spec.axle):0;
    const rearDrop=enteringFromRamp&&this.junction?interchangeRampElevation(this.junction,'entry',a.distance-spec.axle):0;
    const frontY=front.position.y+front.right.y*a.lateral+frontDrop,rearY=rear.position.y+rear.right.y*a.lateral+rearDrop,bank=-Math.atan(p.right.y);a.grade=(frontY-rearY)/Math.hypot(front.position.x-rear.position.x,front.position.z-rear.position.z);a.y=(frontY+rearY)/2+.02;
-   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();if(this.shadows.visible){this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035+(frontDrop+rearDrop)/2;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+(reaction?.yaw??0),bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);}
+   const visualYaw=(a.stopYaw??0)+(reaction?.yaw??0);
+   this.dummy.position.copy(p.position).addScaledVector(p.right,a.lateral);this.dummy.position.y=a.y;this.dummy.rotation.set(-Math.atan(a.grade),-p.roadHeading+visualYaw,bank+(reaction?.roll??0),'YXZ');this.dummy.updateMatrix();if(this.shadows.visible){this.shadowPose.position.copy(this.dummy.position);this.shadowPose.position.y=p.position.y+p.right.y*a.lateral+.035+(frontDrop+rearDrop)/2;this.shadowPose.rotation.set(-Math.atan(a.grade),-p.roadHeading+visualYaw,bank,'YXZ');this.shadowPose.scale.set(spec.width*1.45,1,spec.length*1.15);this.shadowPose.updateMatrix();this.shadows.setMatrixAt(shadowCount++,this.shadowPose.matrix);}
    if(this.sunsetCast){
     const length=coastShadowLength(trafficOutlineHeight(a.type));
     this.sunsetPose.position.copy(p.position).addScaledVector(p.right,a.lateral).add(coastShadowOffset(length));
@@ -508,8 +529,9 @@ export class Traffic {
   for(const a of this.actors){
    if(!a.visible||!a.previousVisible||(this.junction&&a.id===INTERCHANGE_DEMO_CAR_ID&&a.distance<this.junction.entry.end))continue;
    const spec=TRAFFIC_TYPES[a.type],r=this.reactions.get(a.id);
+   const carYaw=(a.stopYaw??0)+(r?.yaw??0);
    // Conservative yaw envelopes keep the visible bodies apart throughout the response.
-   const width=halfWidth*Math.abs(Math.cos(heading))+halfLength*Math.abs(Math.sin(heading))+spec.width/2*Math.abs(Math.cos(r?.yaw??0))+spec.length/2*Math.abs(Math.sin(r?.yaw??0))+.12,length=halfLength*Math.abs(Math.cos(heading))+halfWidth*Math.abs(Math.sin(heading))+spec.length/2*Math.abs(Math.cos(r?.yaw??0))+spec.width/2*Math.abs(Math.sin(r?.yaw??0))+.12;
+   const width=halfWidth*Math.abs(Math.cos(heading))+halfLength*Math.abs(Math.sin(heading))+spec.width/2*Math.abs(Math.cos(carYaw))+spec.length/2*Math.abs(Math.sin(carYaw))+.12,length=halfLength*Math.abs(Math.cos(heading))+halfWidth*Math.abs(Math.sin(heading))+spec.length/2*Math.abs(Math.cos(carYaw))+spec.width/2*Math.abs(Math.sin(carYaw))+.12;
    const closing=(s.distance-previous.distance-(a.distance-(a.previousDistance??a.distance)))/Math.max(dt,.001);const x=s.lateral-a.lateral,z=s.distance-a.distance;
    if(r&&(Math.abs(x)>width+.7||Math.abs(z)>length+2))r.touching=false;
    const contact=sweptContact(previous.lateral-(a.previousLateral??a.lateral),previous.distance-(a.previousDistance??a.distance),x,z,width,length);
@@ -519,7 +541,7 @@ export class Traffic {
      playerFrom:[previous.distance,previous.lateral],playerTo:[s.distance,s.lateral],
      trafficFrom:[a.previousDistance??a.distance,a.previousLateral??a.lateral],
      trafficTo:[a.distance,a.lateral],envelope:[width,length],
-     playerHeading:heading,trafficYaw:r?.yaw??0});
+     playerHeading:heading,trafficYaw:carYaw});
     if(this.contactDebug.length>16)this.contactDebug.shift();
    }
    const side=Math.abs(x)>.2?Math.sign(x):(a.lateral>0?-1:1),kind=contact.kind;
@@ -534,7 +556,7 @@ export class Traffic {
    const relative=Math.abs(closing),outward=Math.abs(s.lateral-previous.lateral)/Math.max(dt,.001);
    const severity=THREE.MathUtils.clamp(kind==='rear'?relative/40:.15+outward/14,.12,1);
    const effects=r?.effects??new TireEffects(this.scene);
-   if(!r)effects.setSceneSmoke(this.smokeWorldWeights,this.dusk);
+   if(!r){effects.setSceneSmoke(this.smokeWorldWeights,this.dusk);effects.setWind(this.smokeWind);}
    const reaction=r??{offset:0,velocity:0,boost:0,yaw:0,roll:0,skid:new SkidFeedback(),effects,touching:false,lastHit:0,slide:0};
    const mass=a.type===0?1:a.type===1?3.2:a.type===2?2.3:1.6;
    const playerBehind=previous.distance<(a.previousDistance??a.distance);
@@ -544,7 +566,9 @@ export class Traffic {
    if(kind==='rear')a.speed*=playerBehind
     ?Math.max(.62,response.leadingSpeedMultiplier-(mass<1.5?.02:0))
     :response.trailingSpeedMultiplier;
-   this.raceWorld.impact(a.id,a.speed,a.lateral);
+   if(a.incidentId!==undefined&&a.stationary)
+    this.raceWorld.bumpIncident(a.id,Math.max(10,relative),-side);
+   else this.raceWorld.impact(a.id,a.speed,a.lateral);
    const leader=this.actors.filter(b=>b.id!==a.id&&b.distance>a.distance&&Math.abs(b.lateral-a.lateral)<2.7).sort((a,b)=>a.distance-b.distance)[0];
    const room=leader?Math.max(0,leader.distance-a.distance-18):120;
    reaction.boost=kind==='rear'&&playerBehind&&!a.stationary?Math.min(3,relative*.12,room/.85):0;reaction.touching=true;reaction.lastHit=time;this.reactions.set(a.id,reaction);
@@ -553,7 +577,7 @@ export class Traffic {
   }
   return event;
  }
- clearance(distance:number,lateral:number,halfWidth:number,halfLength:number,heading:number){return this.actors.filter(a=>a.visible).map(a=>{const spec=TRAFFIC_TYPES[a.type],yaw=this.reactions.get(a.id)?.yaw??0;return {id:a.id,gap:Math.max(Math.abs(distance-a.distance)-halfLength*Math.abs(Math.cos(heading))-halfWidth*Math.abs(Math.sin(heading))-spec.length/2*Math.abs(Math.cos(yaw))-spec.width/2*Math.abs(Math.sin(yaw)),Math.abs(lateral-a.lateral)-halfWidth*Math.abs(Math.cos(heading))-halfLength*Math.abs(Math.sin(heading))-spec.width/2*Math.abs(Math.cos(yaw))-spec.length/2*Math.abs(Math.sin(yaw)))};});}
+ clearance(distance:number,lateral:number,halfWidth:number,halfLength:number,heading:number){return this.actors.filter(a=>a.visible).map(a=>{const spec=TRAFFIC_TYPES[a.type],yaw=(a.stopYaw??0)+(this.reactions.get(a.id)?.yaw??0);return {id:a.id,gap:Math.max(Math.abs(distance-a.distance)-halfLength*Math.abs(Math.cos(heading))-halfWidth*Math.abs(Math.sin(heading))-spec.length/2*Math.abs(Math.cos(yaw))-spec.width/2*Math.abs(Math.sin(yaw)),Math.abs(lateral-a.lateral)-halfWidth*Math.abs(Math.cos(heading))-halfLength*Math.abs(Math.sin(heading))-spec.width/2*Math.abs(Math.cos(yaw))-spec.length/2*Math.abs(Math.sin(yaw)))};});}
  get skidIntensity(){let intensity=0;for(const r of this.reactions.values())intensity=Math.max(intensity,r.skid.intensity);return intensity;}
  contactPoints(){const matrix=new THREE.Matrix4(),counts=[0,0,0,0],out:{id:number;distance:number;point:number[]}[]=[];for(const a of this.actors){if(!a.visible)continue;this.meshes[a.type].getMatrixAt(counts[a.type]++,matrix);const spec=TRAFFIC_TYPES[a.type];for(const side of [-1,1])for(const end of [-1,1])out.push({id:a.id,distance:a.distance+end*spec.axle,point:new THREE.Vector3(side*(spec.width/2-.04),0,end*spec.axle).applyMatrix4(matrix).toArray()});}return out;}
  /** Render only the otherwise unrepresented traffic around a remote chase camera. */
@@ -586,7 +610,12 @@ export class Traffic {
  impactByRival(row:Obstacle,severity:number,side:number){
   if(row.type===undefined)return;
   const id=Number(row.id.slice(1)),body=this.raceWorld.get(id);
-  if(!body||body.stationary||body.finished)return;
+  if(!body||body.finished)return;
+  if(body.incidentId!==undefined){
+   this.raceWorld.bumpIncident(id,Math.max(12,severity*75),side);
+   return;
+  }
+  if(body.stationary)return;
   const kick=rearImpactResponse(severity);
   const actor=this.actors.find(a=>a.id===id);
   if(actor){
@@ -594,7 +623,7 @@ export class Traffic {
    let reaction=this.reactions.get(id);
    if(!reaction){
     const effects=new TireEffects(this.scene);
-    effects.setSceneSmoke(this.smokeWorldWeights,this.dusk);
+    effects.setSceneSmoke(this.smokeWorldWeights,this.dusk);effects.setWind(this.smokeWind);
     reaction={offset:0,velocity:0,boost:0,yaw:0,roll:0,skid:new SkidFeedback(),
      effects,touching:false,lastHit:this.time,slide:0};
     this.reactions.set(id,reaction);
@@ -618,6 +647,8 @@ export class Traffic {
   * RivalRace decides using the BEGINNING of a physics tick, after Traffic.update
   * has already advanced to the END of that tick. Advancing again here would
   * rewind the clock and throw on the very first GO! frame. */
+ /** Motion of nearby civilian bodies, used by dynamic road warnings. */
+ hazardSweeps(){return this.raceWorld.hazardSweeps;}
  raceObstacles(center:number,time:number,radius:number):Obstacle[]{
   const rows:Obstacle[]=this.raceWorld.obstacles(center,radius).map(a=>({
    id:'T'+a.id,type:a.type,distance:a.distance,lateral:a.lateral,speed:a.speed,
