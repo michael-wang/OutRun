@@ -11,7 +11,7 @@ it('accepts only approved diagnostics, positioning and replayable traffic seed',
  expect(canonicalGameQuery(new URLSearchParams('trafficSeed=not-a-number')).toString()).toBe('');
 });
 it('exposes authored-prefab QA only in development builds',()=>{
- expect(DEV_QUERY_KEYS).toEqual(['prefabdebug','r5qa','r6','hairWind','hairMid','hairUpper']);
+ expect(DEV_QUERY_KEYS).toEqual(['prefabdebug','r5qa','r6','hairWind','hairMid','hairUpper','hairStyle']);
  const keys=canonicalGameQuery(new URLSearchParams('at=985&prefabdebug=1'));
  expect(keys.get('at')).toBe('985');
  expect(keys.has('prefabdebug')).toBe(import.meta.env.DEV);
@@ -25,6 +25,8 @@ it('exposes authored-prefab QA only in development builds',()=>{
  expect(canonicalGameQuery(new URLSearchParams('hairMid=new')).has('hairMid')).toBe(false);
  expect(canonicalGameQuery(new URLSearchParams('hairUpper=old')).has('hairUpper')).toBe(import.meta.env.DEV);
  expect(canonicalGameQuery(new URLSearchParams('hairUpper=invalid')).has('hairUpper')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6c')).has('hairStyle')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=invalid')).has('hairStyle')).toBe(false);
 });
 it('defaults to a playable coast without the 0-speed FPS benchmark',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');

@@ -18,11 +18,12 @@ export function preloadBlondeGroom(spring=true):Promise<boolean>{
   springPending=(async()=>{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6000);
    try{
-    // Upper sculpt keeps R6b skin/wind; dev-only rollback preserves both earlier assets.
+    // One loader; preserved R6/R6b/R6c assets remain dev-only art comparisons.
     const oldMiddle=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairMid')==='old';
     const oldUpper=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairUpper')==='old';
-    const filename=oldMiddle?'coast-blonde-r6.glb':oldUpper?'coast-blonde-r6b.glb':'coast-blonde-r6b-upper.glb';
-    const triangleBudget=oldMiddle||oldUpper?2500:7500;
+    const r6c=import.meta.env.DEV&&typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('hairStyle')==='r6c';
+    const filename=oldMiddle?'coast-blonde-r6.glb':oldUpper?'coast-blonde-r6b.glb':r6c?'coast-blonde-r6b-upper.glb':'coast-blonde-r6d.glb';
+    const triangleBudget=oldMiddle||oldUpper?2500:r6c?7500:5000;
     const response=await fetch(`${import.meta.env.BASE_URL}assets/characters/${filename}`,{signal:controller.signal});
     if(!response.ok)throw new Error(`Spring hair HTTP ${response.status}`);
     const gltf=await new GLTFLoader().parseAsync(await response.arrayBuffer(),'');

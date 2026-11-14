@@ -1,0 +1,82 @@
+{
+  "before": {
+    "variant": "before",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 7424,
+      "bones": 25
+    },
+    "draw": {
+      "hairCalls": 1,
+      "frame": {
+        "frame": 6512,
+        "calls": 120,
+        "triangles": 585560,
+        "points": 668,
+        "lines": 0
+      },
+      "vertices": 4376
+    },
+    "errors": []
+  },
+  "after": {
+    "variant": "after",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 3559,
+      "bones": 25
+    },
+    "draw": {
+      "hairCalls": 1,
+      "frame": {
+        "frame": 6533,
+        "calls": 120,
+        "triangles": 581695,
+        "points": 668,
+        "lines": 0
+      },
+      "vertices": 2242
+    },
+    "errors": []
+  }
+}
