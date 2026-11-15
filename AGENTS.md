@@ -1,5 +1,18 @@
 # 極速漫遊 / OutRun — current project rules
 
+## CURRENT DIRECTIVE — production workflow reset (2026-11-16; overrides historical "CURRENT" sections below)
+
+**Authoritative current priorities / status:** [Production Pipeline Action Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md). **Read before starting any Codex work.** The historical R7 clothing/body/Hunyuan tasks below are records, NOT instructions to resume. **Issue #54 and further heroine fullbody/clothing/hair/facial polish are ON HOLD** unless Michael explicitly reopens. Preserve the currently playable v0.10.30 heroine and approved R6d wind-swept golden bob/gestures; do not change game assets to pursue unapproved character art. Do not claim Pixel 8 hair performance PASS without a real device check.
+
+**Near-term game experience:** arcade racing first, diverse scenery second, additional driving goals (coins, target-car impacts, obstacle courses) later. Focus on P0 production-pipeline governance and original asset tracking, then P1 Riviera 62 DCC→GLB→Three.js proof, then P2 portable scenic kit proof. Do not mass-create scenery, start new racing features, or expand character work until the relevant gate passes. Julia owns method/downstream requirement review; Codex researches/implements only bounded approved tasks; Michael accepts artistic/playable results and public release.
+
+**Budget:** the former blanket NT$0 rule below is superseded. Paid tools/services may be evaluated, but purchases/API fees require Michael's approval after a concrete cost/benefit/licensing recommendation. No unapproved spend.
+
+**Review discipline:** Use explicit RESEARCH/SPIKE vs PRODUCTION tickets; preserve editable originals (designs, Blender masters, source audio/music) with planned source control; proofs and screenshots are temporary evidence, not permanent art sources. Pipeline L0–L3 is separate from feature/test PASS. Stop and reconsider the method before repeatedly patching an unvalidated pipeline. Status-unknown Issue count, not necessarily Open Issue count, must reach zero at the end-of-day review. Work on dev only; main requires Michael approval.
+
+---
+
+
 ## CURRENT ART WORK — R7 Clothing P1 on approved MPFB body (2026-11-15)
 
 **Body foundation #53 ART/ENGINEERING PASS**: actual Blender four-view/wireframe/rig outputs prove the MPFB 2.0.18 model has a continuous human basemesh, separate feet/fingers/pelvis, functioning 53-bone rig (26,756 tris). It is accepted as a **BODY SUBSTRATE ONLY**. MPFB's TEMP face/head is not the final heroine identity, and the figure without clothes does not mean the final heroine art is approved. Do NOT generate any more bodies, graft old procedure limbs, retopo a broken Hunyuan skirt, or move head/hair now.
