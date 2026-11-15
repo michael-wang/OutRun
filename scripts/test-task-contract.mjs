@@ -16,7 +16,7 @@ function complete() {
   c.candidate = 'synthetic-test-revision';
   for (const [group, keys, state] of [['requirements', requirements, 'verified'], ['approvals', approvals, 'accepted']]) {
     for (const key of keys) {
-      const bytes = JSON.stringify({taskId:c.id, candidate:c.candidate, check:key, reviewer:'TEST ONLY', observations:'Synthetic record; no real asset reviewed.'});
+      const bytes = JSON.stringify({taskId:c.id, candidate:c.candidate, check:key, result:group === 'requirements' ? 'pass' : 'accepted', reviewer:'TEST ONLY', observations:'Synthetic record; no real asset reviewed.'});
       writeFileSync(join(dir, key + '.json'), bytes);
       c[group][key] = {state, note:'Synthetic test', evidence:{path:key + '.json', sha256:createHash('sha256').update(bytes).digest('hex')}};
     }
@@ -41,10 +41,28 @@ test('each pending or rejected approval blocks', () => {
     assert.deepEqual(checkContract(c,dir),[`${key}: ${state}`]);
   }
 });
-test('two unresolved correction passes force method review', () => {
-  const c=complete(); c.correctionPasses=2;
-  assert.match(checkContract(c,dir).join(), /method review/);
-  c.rootCauseResolved=true; assert.deepEqual(checkContract(c,dir),[]);
+test('pilot maximum two passes blocks regardless of resolved root cause', () => {
+  for (const count of [2,3]) for (const resolved of [true,false]) {
+    const c=complete(); c.correctionPasses=count; c.rootCauseResolved=resolved;
+    assert.match(checkContract(c,dir).join(), /pilot correction limit/);
+  }
+  for (const count of [0,1]) {
+    const c=complete(); c.correctionPasses=count;
+    assert.deepEqual(checkContract(c,dir),[]);
+  }
+});
+test('each receipt rejects failed, missing or incompatible outcomes despite matching hash', () => {
+  for (const [group,keys] of [['requirements',requirements],['approvals',approvals]]) {
+    for (const key of keys) for (const result of ['failed',undefined,'pending',group === 'requirements' ? 'accepted' : 'pass']) {
+      const c=complete(); const ref=c[group][key].evidence;
+      const row=JSON.parse(readFileSync(join(dir,ref.path),'utf8'));
+      if(result === undefined) delete row.result; else row.result=result;
+      const bytes=JSON.stringify(row);
+      writeFileSync(join(dir,ref.path),bytes);
+      ref.sha256=createHash('sha256').update(bytes).digest('hex');
+      assert.throws(()=>checkContract(c,dir),/receipt result/, `${key}: ${result}`);
+    }
+  }
 });
 test('example and research flags cannot be promoted just by filling records', () => {
   const c=complete(); c.exampleOnly=true; c.type='RESEARCH';

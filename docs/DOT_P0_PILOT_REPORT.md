@@ -8,9 +8,24 @@ Start `749f35ac8bc8d7f110c7566dbcb9fedbcee4436d`, same pilot branch, clean workt
 
 **Independent P0-3 review received:** Julia inspected actual storage inventory, deployment analysis, full restore script and diff; reran five-file trial against `30d2fea` (PASS/status unchanged) and `git diff --check`. She reports an additional reviewer repeated trial/refusal tests and inspected Netlify/Pages workflows with no blocking defect. Accepted technical scope only: same-machine byte restore, not native-master recovery, independent backup, LFS hydration or live deployment. No migration or deletion approved. No invented correction findings.
 
-Deliverables: [small task templates and limitations](TASK_CONTRACTS.md), [explicit example-only SPIKE contract](../asset-pipeline/riviera62-task.example.json), [record checker](../scripts/check-task-contract.mjs), [targeted tests](../scripts/test-task-contract.mjs). Six missing P1 prerequisites and four pending approvals each block production; example-only/non-PRODUCTION and two unresolved correction passes also block. Verified/accepted assertions require hash-checked, task/candidate/check-bound receipts with reviewer/observations. No command execution, production build, legacy enforcement, package change or build/CI integration.
+Deliverables: [small task templates and limitations](TASK_CONTRACTS.md), [explicit example-only SPIKE contract](../asset-pipeline/riviera62-task.example.json), [record checker](../scripts/check-task-contract.mjs), [targeted tests](../scripts/test-task-contract.mjs). Six missing P1 prerequisites and four pending approvals each block production; example-only/non-PRODUCTION and the absolute two-pass pilot correction limit also block. Verified/accepted assertions require hash-checked, task/candidate/check-bound receipts with reviewer/observations and successful result (requirement `pass`, approval `accepted`). No command execution, production build, legacy enforcement, package change or build/CI integration.
 
 This is record validation, not authentication or semantic proof of source editability, licensing, pivot/material quality or device performance. Synthetic complete test receipts are not real P1 approvals. Clearing records never grants execution, merge or release authorization. Windows execution remains untested.
+
+### P0-4 correction pass 1 — real independent defects
+
+Julia read actual gate/contract/fixture and reran the original 10 tests and example (exit 1 / 12 blockers). Additional adversarial review showed that all ten hashed receipts could explicitly say `result: "failed"` while their parent entries claimed readiness; the checker ignored the contradiction. This is a genuine record-integrity bug, not covered by the authenticity disclaimer. She also identified that `rootCauseResolved` bypassed the Brief's absolute maximum two supervisor correction passes per subtask. Both findings are accepted and corrected, not waived.
+
+Requirement receipts now require exact `result: "pass"`; approval receipts require exact `result: "accepted"`. Tests independently mutate all ten receipts to failed, missing, pending and cross-category outcomes, rehashing them to prove hash validity cannot conceal the contradiction (40 cases). The schema documentation defines `correctionPasses` as completed supervisor correction passes for this subtask; counts >=2 block further dispatch for either root-cause flag value. Counts 0/1 remain eligible when other records are complete. This does not prevent independent acceptance of the second correction, nor install a future generalized policy.
+
+Before fixing the gate, `node --test scripts/test-task-contract.mjs` returned **exit 1, 9 pass / 2 fail**: failed receipt incorrectly accepted and pilot limit regression. A focused `node --test --test-name-pattern='pilot maximum' scripts/test-task-contract.mjs` then tested resolved=true first and returned **exit 1**, showing the old checker returned no blocker at two passes. These expected red tests are preserved as defect evidence. After repair:
+
+- `node --test scripts/test-task-contract.mjs`: **exit 0; 11 pass, 0 fail, 0 skipped** (includes 40 contradictory-outcome cases).
+- `node --check scripts/check-task-contract.mjs` and `node --check scripts/test-task-contract.mjs`: **exit 0** each.
+- `node scripts/check-task-contract.mjs asset-pipeline/riviera62-task.example.json --production`: **exit 1 / exactly 12 blockers**, verified by subprocess and CLI tests.
+- `git diff --check`: **exit 0**. Python scope/link check: `PASS: exact 6-file correction scope; 41 local links; production CLI exit 1 / 12 blockers; asset validator/tests unchanged`.
+
+Changed only the contract checker/tests, example stop text, task-contract documentation, Tracker and this report. P0-2 asset validator, tests and manifest are unaffected and share no imports with this checker, so earlier asset tests were not rerun. No full build/verify:dev warranted for this isolated record-check change; no runtime/build dependencies changed. This is supervisor correction pass **1 of at most 2**; stop for Julia re-review, no further work or push.
 
 ### P0-4 commands/results
 

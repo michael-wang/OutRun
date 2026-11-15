@@ -9,7 +9,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const text = v => typeof v === 'string' && v.trim().length > 0;
 function need(ok, message) { if (!ok) throw new Error(message); }
 function strings(v, key) { need(Array.isArray(v) && v.length > 0 && v.every(text), `${key}: nonempty text list required`); }
-function receipt(ref, base, contract, key) {
+function receipt(ref, base, contract, key, expectedResult) {
   need(ref && text(ref.path) && /^[a-f0-9]{64}$/.test(ref.sha256), `${key}: hashed receipt required`);
   need(!isAbsolute(ref.path), `${key}: relative receipt path required`);
   const path = realpathSync(resolve(base, ref.path));
@@ -20,6 +20,7 @@ function receipt(ref, base, contract, key) {
   const r = JSON.parse(bytes);
   need(r.taskId === contract.id && r.candidate === contract.candidate && r.check === key,
     `${key}: receipt subject mismatch`);
+  need(r.result === expectedResult, `${key}: receipt result must be ${expectedResult}`);
   need(text(r.reviewer) && text(r.observations), `${key}: reviewer and observations required`);
 }
 export function checkContract(c, base = root) {
@@ -33,7 +34,8 @@ export function checkContract(c, base = root) {
   const blockers = [];
   if (c.exampleOnly) blockers.push('example only; not an executable production assignment');
   if (c.type !== 'PRODUCTION') blockers.push(`task type ${c.type}; production not requested`);
-  if (c.correctionPasses >= 2 && !c.rootCauseResolved) blockers.push('two correction passes without root cause: method review required');
+  // Absolute Brief limit for this pilot profile; rootCauseResolved is informational only.
+  if (c.correctionPasses >= 2) blockers.push('pilot correction limit reached: stop for independent review; no further correction dispatch');
   for (const [group, keys, states, ready] of [
     ['requirements', requirements, ['unknown', 'failed', 'verified'], 'verified'],
     ['approvals', approvals, ['pending', 'rejected', 'accepted'], 'accepted'],
@@ -42,7 +44,7 @@ export function checkContract(c, base = root) {
     for (const key of keys) {
       const row = c[group][key];
       need(row && states.includes(row.state) && text(row.note), `${key}: valid state and note required`);
-      if (row.state === ready) receipt(row.evidence, base, c, key);
+      if (row.state === ready) receipt(row.evidence, base, c, key, group === 'requirements' ? 'pass' : 'accepted');
       else { need(row.evidence === null, `${key}: unverified evidence must be null; describe failures in failedEvidence`); blockers.push(`${key}: ${row.state}`); }
     }
   }
