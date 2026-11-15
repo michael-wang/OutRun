@@ -1,0 +1,234 @@
+TAP version 13
+# Expected negative CLI exit=1: INVALID r6d-hair-pilot: production: traceable editable source file required
+# Subtest: existing opt-in pilot is valid with explicit source/device/license gaps and warnings
+ok 1 - existing opt-in pilot is valid with explicit source/device/license gaps and warnings
+  ---
+  duration_ms: 3.0546
+  type: 'test'
+  ...
+# Subtest: complete synthetic production record passes structural validation, not art certification
+ok 2 - complete synthetic production record passes structural validation, not art certification
+  ---
+  duration_ms: 28.2943
+  type: 'test'
+  ...
+# Subtest: promoting the real pilot to production without editable source is rejected
+ok 3 - promoting the real pilot to production without editable source is rejected
+  ---
+  duration_ms: 1.2732
+  type: 'test'
+  ...
+# Subtest: missing/changed source or export bytes cannot satisfy traceability
+    # Subtest: source
+    ok 1 - source
+      ---
+      duration_ms: 20.294
+      type: 'test'
+      ...
+    # Subtest: export
+    ok 2 - export
+      ---
+      duration_ms: 20.3745
+      type: 'test'
+      ...
+    # Subtest: missing source
+    ok 3 - missing source
+      ---
+      duration_ms: 18.2175
+      type: 'test'
+      ...
+    1..3
+ok 4 - missing/changed source or export bytes cannot satisfy traceability
+  ---
+  duration_ms: 59.3288
+  type: 'test'
+  ...
+# Subtest: production cannot use unknown licensing or omit provenance
+    # Subtest: license unresolved
+    ok 1 - license unresolved
+      ---
+      duration_ms: 21.2526
+      type: 'test'
+      ...
+    # Subtest: provenance missing
+    ok 2 - provenance missing
+      ---
+      duration_ms: 17.0981
+      type: 'test'
+      ...
+    1..2
+ok 5 - production cannot use unknown licensing or omit provenance
+  ---
+  duration_ms: 38.6357
+  type: 'test'
+  ...
+# Subtest: L3 needs every gate and cannot retain unresolved blockers
+    # Subtest: technical
+    ok 1 - technical
+      ---
+      duration_ms: 19.1889
+      type: 'test'
+      ...
+    # Subtest: visual
+    ok 2 - visual
+      ---
+      duration_ms: 19.3597
+      type: 'test'
+      ...
+    # Subtest: device
+    ok 3 - device
+      ---
+      duration_ms: 19.1528
+      type: 'test'
+      ...
+    # Subtest: repeatability
+    ok 4 - repeatability
+      ---
+      duration_ms: 19.7118
+      type: 'test'
+      ...
+    # Subtest: unresolved blocker
+    ok 5 - unresolved blocker
+      ---
+      duration_ms: 20.2452
+      type: 'test'
+      ...
+    1..5
+ok 6 - L3 needs every gate and cannot retain unresolved blockers
+  ---
+  duration_ms: 98.1135
+  type: 'test'
+  ...
+# Subtest: a recorded-pass assertion without a receipt is rejected
+ok 7 - a recorded-pass assertion without a receipt is rejected
+  ---
+  duration_ms: 18.3094
+  type: 'test'
+  ...
+# Subtest: receipt for another asset/source/export/gate cannot be reused even with a matching file hash
+    # Subtest: assetId
+    ok 1 - assetId
+      ---
+      duration_ms: 20.4349
+      type: 'test'
+      ...
+    # Subtest: sourceSha256
+    ok 2 - sourceSha256
+      ---
+      duration_ms: 19.7944
+      type: 'test'
+      ...
+    # Subtest: exportSha256
+    ok 3 - exportSha256
+      ---
+      duration_ms: 19.4352
+      type: 'test'
+      ...
+    # Subtest: gate
+    ok 4 - gate
+      ---
+      duration_ms: 20.1756
+      type: 'test'
+      ...
+    # Subtest: result
+    ok 5 - result
+      ---
+      duration_ms: 20.0792
+      type: 'test'
+      ...
+    1..5
+ok 8 - receipt for another asset/source/export/gate cannot be reused even with a matching file hash
+  ---
+  duration_ms: 100.4379
+  type: 'test'
+  ...
+# Subtest: L3 cannot omit required abilities, device measurements or repeated runs
+    # Subtest: technical
+    ok 1 - technical
+      ---
+      duration_ms: 22.8167
+      type: 'test'
+      ...
+    # Subtest: device
+    ok 2 - device
+      ---
+      duration_ms: 21.0026
+      type: 'test'
+      ...
+    # Subtest: repeatability
+    ok 3 - repeatability
+      ---
+      duration_ms: 21.271
+      type: 'test'
+      ...
+    1..3
+ok 9 - L3 cannot omit required abilities, device measurements or repeated runs
+  ---
+  duration_ms: 65.5388
+  type: 'test'
+  ...
+# Subtest: receipt needs a named reviewer and a review date in the past
+    # Subtest: reviewer
+    ok 1 - reviewer
+      ---
+      duration_ms: 19.0631
+      type: 'test'
+      ...
+    # Subtest: reviewedAt
+    ok 2 - reviewedAt
+      ---
+      duration_ms: 20.1213
+      type: 'test'
+      ...
+    1..2
+ok 10 - receipt needs a named reviewer and a review date in the past
+  ---
+  duration_ms: 39.4726
+  type: 'test'
+  ...
+# Subtest: runtime path must point to the same exported bytes
+ok 11 - runtime path must point to the same exported bytes
+  ---
+  duration_ms: 21.9992
+  type: 'test'
+  ...
+# Subtest: reference paths cannot escape the root through traversal or symlinks
+    # Subtest: traversal
+    ok 1 - traversal
+      ---
+      duration_ms: 18.6284
+      type: 'test'
+      ...
+    # Subtest: symlink
+    ok 2 - symlink
+      ---
+      duration_ms: 20.0357
+      type: 'test'
+      ...
+    1..2
+ok 12 - reference paths cannot escape the root through traversal or symlinks
+  ---
+  duration_ms: 38.9796
+  type: 'test'
+  ...
+# Subtest: malformed schema, duplicate identities and invalid level fail without a crash
+ok 13 - malformed schema, duplicate identities and invalid level fail without a crash
+  ---
+  duration_ms: 19.5705
+  type: 'test'
+  ...
+# Subtest: real CLI succeeds with caveats and exits nonzero for deliberately invalid production promotion
+ok 14 - real CLI succeeds with caveats and exits nonzero for deliberately invalid production promotion
+  ---
+  duration_ms: 102.746
+  type: 'test'
+  ...
+1..14
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 700.104

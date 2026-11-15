@@ -39,6 +39,35 @@ Top level: `schemaVersion: 1`, nonempty `assets` array. Only explicitly listed e
 
 All file references use `{ "path": "repo/relative/path", "sha256": "64 lowercase hex characters" }`. References must exist inside the repository (including after resolving symlinks); traversal/absolute paths are rejected. No external C: drive or URL is read. To use an external master, a future reviewed storage/retrieval policy must first make the exact source available; that policy is P0-3, not implemented here.
 
+## Exact bytes across Windows and POSIX checkouts
+
+Every SHA-256 is over the raw file bytes, including text. The validator never
+normalizes newlines, whitespace, Unicode, or binary data. The pilot's hashed
+`docs/art-review/r6d/README.md` is explicitly pinned to `text eol=lf` in
+`.gitattributes`, so Git materializes the same bytes with `core.autocrlf=true`
+or `false`. Its recorded hash and committed content are unchanged. This rule
+does not alter other Markdown or any playable asset. Future Git-tracked text
+references must likewise declare their exact checkout representation before
+their hashes are recorded; untracked receipts must retain their original bytes.
+
+For an existing checkout, Git may retain the old CRLF file until it is checked
+out again. Preserve any local edits first; refresh only that clean path from
+the index with the new attributes in effect. Do not change a declared hash to
+match a platform conversion or make the validator accept alternate byte forms.
+
+Containment is checked after resolving symlinks, using the native path separator
+returned by Node's `path.relative`. Parent traversal and cross-drive absolute
+results are rejected before file bytes are read. In-root links remain allowed.
+This is validation of a stable local checkout, not a sandbox against concurrent
+filesystem mutation between path resolution and reading.
+
+Run `node --test scripts/test-asset-manifest-portability.mjs` for matching-hash
+file-symlink and directory-link escapes, allowed in-root links, byte tampering,
+and actual Git LF/CRLF checkout coverage. It uses disposable local repositories
+without commits or network calls. Symlink creation must be supported; no tests
+are skipped to hide missing Windows privileges. See the bounded
+[Windows correction evidence](P0_WINDOWS_COMPATIBILITY.md) for execution results.
+
 ## Recorded review evidence, not inferred acceptance
 
 Statuses: `pending`, `failed`, `recorded-pass`. Pending/failed entries can retain a hashed evidence file; null explicitly means none recorded. A `recorded-pass` cannot be supported by an arbitrary existing image or a status string alone: it requires a hashed JSON receipt containing:

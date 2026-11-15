@@ -1,7 +1,7 @@
 /** Opt-in metadata/evidence gate only. Never certifies art, licensing or device performance. */
 import {readFileSync, realpathSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {resolve, relative, isAbsolute, dirname} from 'node:path';
+import {resolve, relative, isAbsolute, dirname, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -18,7 +18,7 @@ function readRef(ref, root, label) {
   require(!isAbsolute(ref.path) && !ref.path.includes('\\') && !ref.path.split('/').includes('..'), `${label}: repository-relative path required`);
   const file = realpathSync(resolve(root, ref.path));
   const rel = relative(realpathSync(root), file);
-  require(rel !== '..' && !rel.startsWith('../') && !isAbsolute(rel), `${label}: path escapes repository`);
+  require(rel !== '..' && !rel.startsWith('..' + sep) && !isAbsolute(rel), `${label}: path escapes repository`);
   const bytes = readFileSync(file);
   require(digest(bytes) === ref.sha256, `${label}: SHA-256 mismatch`);
   return bytes;
