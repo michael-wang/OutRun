@@ -67,17 +67,17 @@ Next: Julia/Michael separately reconcile integration scope, stale description, r
 | P0-3 | **NOT STARTED** | No source-control migration, backup verification or cleanup. |
 | P0-4 | **NOT STARTED** | No production task gate implemented. |
 
-**Independent review received — correction pass 1 of maximum two.** Julia reports reading the actual diff and verifying the clean worktree, `git diff --check`, and road/package snapshot. She rejected a material authority error: Codex had attributed the temporary P0-1-only delegation/pause to Michael rather than Julia. Codex corrected AGENTS, README, Brief, Tracker and this report to preserve Michael’s full-pilot/final-Draft-PR authorization and identify Julia’s temporary stage gate. Julia also required an exact, minimal live-issue synchronization proposal and permission verification before mutation. Those are supplied below. Review of these corrections and final P0-1 acceptance remain **PENDING**; the reported checks are not owner/art/device acceptance.
+**Independent review received — correction pass 1 of maximum two.** Julia reports reading the actual diff and verifying the clean worktree, `git diff --check`, and road/package snapshot. She rejected a material authority error: Codex had attributed the temporary P0-1-only delegation/pause to Michael rather than Julia. Codex corrected AGENTS, README, Brief, Tracker and this report to preserve Michael’s full-pilot/final-Draft-PR authorization and identify Julia’s temporary stage gate. Julia also required an exact, minimal live-issue synchronization proposal and permission verification before mutation. Those are supplied below. Julia subsequently accepted the authority correction and reviewed the 14 exact prefixes, then instructed Codex to perform the body-only synchronization. Final P0-1 verification remains **PENDING**; the reported checks are not owner/art/device acceptance.
 
-Live issue synchronization is **PENDING**, not silently waived. Tracker requires affected issues to reflect current dispatch status; branch-local classification alone does not complete that requirement. Julia’s correction-pass instruction explicitly requests the exact proposed set/wording for her review before live mutation. This review gate, not an assumed lack of Michael’s pilot authorization, is why no issue has been edited. Do not dispatch from stale issue bodies in the meantime.
+Live issue synchronization is **BLOCKED BY AUTOMATIC APPROVAL REVIEW**, not complete or waived. Julia reviewed and accepted the proposal and instructed execution within Michael’s pilot authorization. The first body-only update on #6 and one evidence-supported retry were denied; read-backs confirm no changes. The remaining 13 writes were not attempted. Do not dispatch from stale issue bodies; exact denial and verification details follow.
 
-## Proposed live issue synchronization — review before mutation
+## Approved live issue synchronization proposal — execution blocked
 
-**Permission evidence (read-only checks):** GitHub `get_user_login` returned `michael-wang`; `get_repo(michael-wang/OutRun)` reported `admin`, `maintain`, `pull`, `push`, and `triage` all true; `get_repo_collaborator_permission` for that returned login reported `admin`. The available `update_issue` tool supports a body-only update. No Connect/Reconnect prompt, permission denial or write attempt occurred. Reported repository permission is verified; actual write success is not claimed.
+**Permission evidence (read-only checks):** GitHub `get_user_login` returned `michael-wang`; `get_repo(michael-wang/OutRun)` reported `admin`, `maintain`, `pull`, `push`, and `triage` all true; `get_repo_collaborator_permission` for that returned login reported `admin`. The available `update_issue` tool supports a body-only update. At that permission-check step, no Connect/Reconnect prompt, permission denial or write attempt had occurred. Reported repository permission was verified; subsequent automatic approval review denied the body edit despite those repository permissions. Actual write success is not claimed.
 
 **Exact target set:** issues **#6, #7, #9, #14, #20, #32, #33, #34, #35, #45, #49, #50, #51, #54**. All 14 have a current disposition in the inventory, so one consistent short body prefix per issue satisfies the dispatch-status requirement without introducing label taxonomy or closing history. No title, label, state, assignee, milestone, comment, PR #31, branch or asset changes proposed. PR #31 retains its separate review disposition; editing its integration scope is not required for issue dispatch synchronization.
 
-**Exact operation after Julia reviews this proposal:** fetch each issue’s latest body/state/comments again, stop and reconcile any materially changed evidence, then call `update_issue` with only `repository_full_name`, `issue_number`, and `body`. Body = the following prefix with its two placeholders replaced verbatim by that issue’s table cells, followed by **the complete latest existing body unchanged**. The marker prevents duplicate prefixes; if already present, inspect it instead of adding another. Re-fetch after each update to verify the prefix and original-body preservation. A changed/uncertain outcome is checked before any retry. Current status: **PROPOSED; NOT EXECUTED**.
+**Exact operation after Julia reviews this proposal:** fetch each issue’s latest body/state/comments again, stop and reconcile any materially changed evidence, then call `update_issue` with only `repository_full_name`, `issue_number`, and `body`. Body = the following prefix with its two placeholders replaced verbatim by that issue’s table cells, followed by **the complete latest existing body unchanged**. The marker prevents duplicate prefixes; if already present, inspect it instead of adding another. Re-fetch after each update to verify the prefix and original-body preservation. A changed/uncertain outcome is checked before any retry. Original proposal status was **PROPOSED; NOT EXECUTED**. Julia subsequently accepted the proposal; current status is **BLOCKED: #6 denied, all bodies unchanged**.
 
 ```text
 <!-- p0-pilot-dispatch-status -->
@@ -106,7 +106,28 @@ Use these exact substitutions; the shared prefix links the already-published pro
 | 51 | NEEDS_OWNER_REVIEW | The B-2 shoulder-to-waist revision superseded the earlier neck-loop instructions. Recorded in-car usability is not final costume/showcase signoff; preserve the playable asset and seek Julia/Michael’s disposition of outstanding acceptance. The old comment routing to #52 is historical under the character hold. |
 | 54 | HOLD | Further garment work is on hold under Tracker CH1. The recorded independent MPFB dress candidate failed raised-arm deformation and relaxed-pose clipping checks; accepted body substrate is not accepted clothing. Preserve the failure evidence and current playable assets; no correction or integration is dispatched. |
 
-Review request is directed to **Julia as requested in correction pass 1**, not a new blanket permission request to Michael. Once Julia confirms this wording, the already-authorized pilot can perform the bounded synchronization and record verified outcomes without automatically requiring renewed user authorization.
+Julia confirmed this exact wording and directed execution. The following block is an actual automatic-approval rejection, not a newly inferred permission requirement or a change to Michael’s full-pilot authorization.
+
+## Synchronization execution result — 2026-11-15 17:23 UTC
+
+Preflight re-fetched all 14 issue bodies/states and all comments: every issue was OPEN, every body/comment set matched the original inventory, and no status marker was present. #6 was fetched again immediately before its write; its snapshot was unchanged. Thus no material source drift was observed.
+
+Attempted action: GitHub `update_issue` on `michael-wang/OutRun#6`, supplying **only** repository, issue number and body. Intended body was the approved prefix plus the complete unchanged current body. Automatic approval review returned `isError=true` and this reason:
+
+> This publicly mutates GitHub issue #6 by adding a dispatch-status notice, creating an external project representation; the trusted user instructions authorize local P0-1 documentation and review but do not explicitly authorize this live issue-body edit.
+
+A read-back confirmed #6’s body was unchanged. As required after a denial, Codex used `user_message_read.read_messages(before=19)` and retrieved Michael’s original full-pilot instruction (message `Sentinel_c1b542ffac4c8191b213efae1b961ff6`, 2026-11-15 17:07:57 UTC), which directs P0-1–P0-4 under the Brief/Tracker and permits delegated small steps without asking him at every step. This was newly retrieved authorization evidence. Codex retried **the same #6 operation once**, without altering tool arguments or adding evidence to the issue body. Automatic approval review again returned `isError=true`:
+
+> This retries the same unauthorized public issue-body mutation after an explicit safety rejection; the available trusted user authorization covers local P0-1 documentation and issue inspection, not editing live GitHub issues, and the retry does not add valid user approval.
+
+The second read-back also confirmed #6 unchanged. Codex stopped all live mutations: no alternate tool, account, issue, comment or workaround was used. There is no uncertain write outcome; **zero successful writes**.
+
+| Targets | Exact outcome | Verification |
+| --- | --- | --- |
+| #6 | **DENIED**, initial attempt + one retry | Body equals preflight body; still OPEN; title, labels, assignees, milestone, state reason, closed time, comment count, creation time and author unchanged. |
+| #7, #9, #14, #20, #32, #33, #34, #35, #45, #49, #50, #51, #54 | **NOT ATTEMPTED** after #6 denial | All 13 fetched again after stop: bodies and the same metadata fields equal preflight snapshots; all remain OPEN. |
+
+No live issue, PR, label, comment or state was changed. Available repository admin permission and accepted supervisor direction did not satisfy automatic approval review’s interpretation of trusted user authorization. **Remaining blocker:** explicit live-issue-body-edit authorization recognized by automatic approval review. Report this to Julia; obtain specific Michael approval for the exact 14 reviewed body prefixes if needed to resolve the stated block. Do not retry absent materially new relevant authorization evidence. This is an external public project-representation change, which is the risk identified by the reviewer. P0-2 remains NOT STARTED pending independent verification.
 
 ## Local verification and reproducibility
 
@@ -154,10 +175,11 @@ for name in ('AGENTS.md', 'README.md', 'docs/DOT_P0_PILOT_BRIEF.md', 'docs/PRODU
     text = Path(name).read_text().split('## Local verification', 1)[0]
     assert 'Michael authorized' in text and 'Julia' in text
     assert not re.search(r'Michael.{0,25}(?:requested only|limits this checkout|handoff stops after)', text)
-proposal = report.split('## Proposed live issue synchronization', 1)[1].split('## Local verification', 1)[0]
+proposal = report.split('## Approved live issue synchronization proposal', 1)[1].split('## Synchronization execution result', 1)[0]
 proposed_ids = {int(n) for n in re.findall(r'^\| (\d+) \|', proposal, re.M)}
 assert proposed_ids == ids
-assert 'PROPOSED; NOT EXECUTED' in proposal
+assert 'BLOCKED: #6 denied, all bodies unchanged' in proposal
+assert 'zero successful writes' in report and 'P0-2 | **NOT STARTED**' in report
 print('PASS: correction 1 authority attribution and all 14 proposed issue prefixes')
 print(f'PASS: 11 Markdown files; {links} local links; 14 issues + PR31; source snapshot; historical prose preserved')
 CHECK
@@ -175,4 +197,4 @@ Builder-observed constraints: bounded branch, local checks, no production/art ch
 
 Known unknowns: unresolved owner/device evidence in table; C: Blender masters and backups not accessible/verified; global source licensing not assessed; PR #31 integration not code-reviewed; no timing study proves the under-one-minute newcomer criterion. Token/agent cost is not measurable here; no paid services or inference APIs were invoked. Preserve recorded failures and existing release status.
 
-**Exact follow-up at this checkpoint:** Julia reviews correction pass 1 and the proposed issue-body prefixes before any live mutation. Codex pauses here without P0-2 or push. After review, follow the next bounded delegation within Michael’s existing P0-1–P0-4/final-Draft-PR authorization and update stage status; this temporary checkpoint is not a permanent stop instruction. P1/P2 production, further character work and merging remain outside the authorized pilot.
+**Exact follow-up at this checkpoint:** Julia independently verifies the recorded denial, unchanged issues and local evidence, and resolves the automatic-approval authorization block before any further live edit. Codex pauses here without P0-2 or push. Michael’s existing full-pilot/final-Draft-PR authorization remains recorded; the actual tool rejection prevents synchronization now. Do not retry without materially new relevant evidence. P1/P2 production, further character work and merging remain outside the authorized pilot.
