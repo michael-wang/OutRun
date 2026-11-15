@@ -4,7 +4,7 @@ Original Three.js + TypeScript arcade racing game. The first playable stage is *
 
 **Play the approved release:** https://michael-wang.github.io/OutRun/
 
-**Before taking work:** read the [Production Pipeline Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md) and [P0 checkpoint / review package](docs/DOT_P0_PILOT_REPORT.md). The current handoff stops after P0-1 for independent review; historical R7 work orders are on hold.
+**Before taking work:** read the [Production Pipeline Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md) and [P0 checkpoint / review package](docs/DOT_P0_PILOT_REPORT.md). Michael authorized P0-1–P0-4 and a final Draft PR; Julia’s current P0-1 checkpoint is paused for review before further delegated work. This temporary stage gate does not revoke the remaining pilot authorization. Historical R7 work orders are on hold.
 
 ## Local development
 

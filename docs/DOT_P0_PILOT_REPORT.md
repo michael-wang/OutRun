@@ -8,12 +8,12 @@ Type: **RESEARCH / documentation governance**. Observed 2026-11-15 UTC / 2026-11
 - Starting SHA: `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. `git ls-remote --heads origin dev p0/dot-pipeline-pilot` returned that dev SHA and no existing remote pilot branch. Local branch was new; initial worktree clean.
 - Initial checkpoint SHA: `c8dfb25298aad9e0d223db7b4fe393e18b837f0e`; a follow-up documentation correction fixes the UTC/Taiwan date label without rewriting history. Ending checkpoint SHA: obtain with `git rev-parse HEAD` on this branch after the checkpoint; the exact resulting SHA is supplied in the handoff. It cannot be embedded in its own commit without changing that SHA.
 - Sparse, blob-filtered local clone: docs and reference metadata only; binary art was not downloaded or modified. `git ls-tree -r --name-only HEAD .agents docs/AGENTS.md` returned no entries: no checkout `.agents/skills` or nested docs instructions were available. Root AGENTS was read completely, along with the Brief and Tracker.
-- Current explicit handoff authorizes **only P0-1**, focused local checks and one checkpoint commit; **no push or PR yet**. No Draft PR was created. Existing PR #31 is unrelated to this pilot.
+- **Michael authorized the full P0-1–P0-4 pilot and final Draft PR into dev. Julia delegated P0-1 first** with local checks/checkpoint commits, then a temporary review pause: no P0-2, push or PR yet. This stage gate does not revoke later pilot authorization or inherently require new Michael approval. No Draft PR was created; existing PR #31 is unrelated to this pilot.
 - No gameplay, runtime, shader, art, package version, main/dev ref, release, deployment, history rewrite, binary migration, issue/PR mutation or paid API operation.
 
 ## Active authority and stale directives
 
-Read [Tracker](PRODUCTION_PIPELINE_TRACKER.md) → [Brief](DOT_P0_PILOT_BRIEF.md) → top of [AGENTS](../AGENTS.md), subject to the narrower current Michael handoff. The next action is **independent review of this checkpoint**, not P0-2 or an old R7 task. README now links this route.
+Read [Tracker](PRODUCTION_PIPELINE_TRACKER.md) → [Brief](DOT_P0_PILOT_BRIEF.md) → top of [AGENTS](../AGENTS.md), with Julia’s current P0-1 stage review pause within Michael’s full-pilot authorization. The next action is **independent review of this checkpoint**, not P0-2 or an old R7 task. README now links this route.
 
 | Source / classification | Evidence and rationale | Next action / unknown |
 | --- | --- | --- |
@@ -67,9 +67,46 @@ Next: Julia/Michael separately reconcile integration scope, stale description, r
 | P0-3 | **NOT STARTED** | No source-control migration, backup verification or cleanup. |
 | P0-4 | **NOT STARTED** | No production task gate implemented. |
 
-Independent review is **PENDING**: Codex has prepared changes, but Julia/Dot must read the actual diff, inspect sources and reproduce focused checks. No fabricated review findings or approvals. Current correction passes: zero requested by independent reviewer. Maximum two focused correction passes under the Brief.
+**Independent review received — correction pass 1 of maximum two.** Julia reports reading the actual diff and verifying the clean worktree, `git diff --check`, and road/package snapshot. She rejected a material authority error: Codex had attributed the temporary P0-1-only delegation/pause to Michael rather than Julia. Codex corrected AGENTS, README, Brief, Tracker and this report to preserve Michael’s full-pilot/final-Draft-PR authorization and identify Julia’s temporary stage gate. Julia also required an exact, minimal live-issue synchronization proposal and permission verification before mutation. Those are supplied below. Review of these corrections and final P0-1 acceptance remain **PENDING**; the reported checks are not owner/art/device acceptance.
 
-Live issue synchronization is **PENDING**, not silently waived. Tracker requires affected issues to reflect current dispatch status; this checkpoint deliberately reports branch-local classifications for review and does not claim that requirement complete. Next decision: review proposed dispositions and explicitly authorize any external synchronization. Do not use stale issue bodies to dispatch work in the meantime.
+Live issue synchronization is **PENDING**, not silently waived. Tracker requires affected issues to reflect current dispatch status; branch-local classification alone does not complete that requirement. Julia’s correction-pass instruction explicitly requests the exact proposed set/wording for her review before live mutation. This review gate, not an assumed lack of Michael’s pilot authorization, is why no issue has been edited. Do not dispatch from stale issue bodies in the meantime.
+
+## Proposed live issue synchronization — review before mutation
+
+**Permission evidence (read-only checks):** GitHub `get_user_login` returned `michael-wang`; `get_repo(michael-wang/OutRun)` reported `admin`, `maintain`, `pull`, `push`, and `triage` all true; `get_repo_collaborator_permission` for that returned login reported `admin`. The available `update_issue` tool supports a body-only update. No Connect/Reconnect prompt, permission denial or write attempt occurred. Reported repository permission is verified; actual write success is not claimed.
+
+**Exact target set:** issues **#6, #7, #9, #14, #20, #32, #33, #34, #35, #45, #49, #50, #51, #54**. All 14 have a current disposition in the inventory, so one consistent short body prefix per issue satisfies the dispatch-status requirement without introducing label taxonomy or closing history. No title, label, state, assignee, milestone, comment, PR #31, branch or asset changes proposed. PR #31 retains its separate review disposition; editing its integration scope is not required for issue dispatch synchronization.
+
+**Exact operation after Julia reviews this proposal:** fetch each issue’s latest body/state/comments again, stop and reconcile any materially changed evidence, then call `update_issue` with only `repository_full_name`, `issue_number`, and `body`. Body = the following prefix with its two placeholders replaced verbatim by that issue’s table cells, followed by **the complete latest existing body unchanged**. The marker prevents duplicate prefixes; if already present, inspect it instead of adding another. Re-fetch after each update to verify the prefix and original-body preservation. A changed/uncertain outcome is checked before any retry. Current status: **PROPOSED; NOT EXECUTED**.
+
+```text
+<!-- p0-pilot-dispatch-status -->
+> **P0 pipeline dispatch status: {STATUS}.**
+> {ISSUE_NOTE}
+> The [Production Pipeline Tracker](https://github.com/michael-wang/OutRun/blob/098da47c485cb9521a6fb9c66b2e8bccd1f733b4/docs/PRODUCTION_PIPELINE_TRACKER.md) supersedes older work orders below. Michael authorized the P0-1–P0-4 pilot and final Draft PR into dev; this issue is not a separate implementation assignment. Character expansion remains on hold. This notice changes dispatch classification only, not GitHub open state or technical, visual, device, owner or release acceptance. Existing evidence and unresolved concerns below are retained.
+
+```
+
+Use these exact substitutions; the shared prefix links the already-published production reset, not the unpublished pilot branch. It deliberately does not embed Julia’s temporary stage pause as a permanent issue restriction.
+
+| Issue | STATUS | ISSUE_NOTE (verbatim) |
+| --- | --- | --- |
+| 6 | SUPERSEDED | The generated-trip bridge-frequency work order is superseded by the authored finite-coast direction. Preserve the scenic intent for future owner-led planning; do not restore procedural routes or infer the request was completed. |
+| 7 | NEEDS_OWNER_REVIEW | The recorded interim safety hotfix does not establish the original Pixel 8 trigger or full-journey verification. Keep this issue open; Julia/Michael must reconcile the remaining root-cause/device evidence with the current authored coast before any closure or release conclusion. |
+| 9 | NEEDS_OWNER_REVIEW | Scenery starvation and the full-drive Pixel 8 baseline remain unverified here. This overlaps #7 but is not a proven duplicate; reconcile remaining symptoms against the current authored coast before choosing follow-up work. |
+| 14 | SUPERSEDED | The old seeded-route/Scenic Director roadmap is superseded by the current Tracker and authored-coast direction. Retain design lessons and historical pending acceptance; do not restore retired generators or treat old next-step comments as dispatch. |
+| 20 | HOLD | This remains a deferred finish-screen UI request. Revalidate its relevance and acceptance criteria against the current finish screen when separately prioritized; no completion or new UI work is implied. |
+| 32 | HOLD | The startup-lag observation remains a deferred nonblocking performance follow-up. Device, startup phase and root cause are not established; profile cold/warm target-device startup when separately prioritized. |
+| 33 | NEEDS_OWNER_REVIEW | Later implementation records do not establish all requested AI, prop-landing and controller play acceptance. Julia/Michael must reconcile specific implementation and PS4/device evidence before deciding remaining work or closure; a newer version alone is not PASS. |
+| 34 | HOLD | The road-to-Blender/GLB rehearsal remains relevant to later P2 preparation, not current implementation dispatch. Verify actual import, round-trip and in-game evidence under a bounded later task; no completed rehearsal is inferred here. |
+| 35 | HOLD | The farmhouse/roadside kit remains a later P2 candidate dependent on #34. Julia must reconcile the older board-A wording with newer Option B direction before implementation; an existing farmhouse does not prove this art kit passed. |
+| 45 | BLOCKED | Keep the Pixel 8 R6d/WILD release-performance gate open. The recorded prior regression and absence of newer real-device evidence do not establish performance PASS. Older hair-art implementation/recovery orders below are historical; no new hair work or release readiness is implied. |
+| 49 | SUPERSEDED | The old occupant-first R7/R8 dispatch sequence is superseded by later #50/#51 work and the production reset. Preserve unfinished character concerns as deferred; current character work is on hold and Riviera proof follows P0 under the Tracker. |
+| 50 | SUPERSEDED | The original fullbody/backless generation order is superseded by the recorded costume revisions and production reset. Do not rerun fullbody generation; preserve existing gestures and identity. Remaining art/device acceptance is not inferred from implementation and #45 remains unresolved. |
+| 51 | NEEDS_OWNER_REVIEW | The B-2 shoulder-to-waist revision superseded the earlier neck-loop instructions. Recorded in-car usability is not final costume/showcase signoff; preserve the playable asset and seek Julia/Michael’s disposition of outstanding acceptance. The old comment routing to #52 is historical under the character hold. |
+| 54 | HOLD | Further garment work is on hold under Tracker CH1. The recorded independent MPFB dress candidate failed raised-arm deformation and relaxed-pose clipping checks; accepted body substrate is not accepted clothing. Preserve the failure evidence and current playable assets; no correction or integration is dispatched. |
+
+Review request is directed to **Julia as requested in correction pass 1**, not a new blanket permission request to Michael. Once Julia confirms this wording, the already-authorized pilot can perform the bounded synchronization and record verified outcomes without automatically requiring renewed user authorization.
 
 ## Local verification and reproducibility
 
@@ -112,11 +149,21 @@ old = git('show', base + ':AGENTS.md')
 old = old[old.index('## CURRENT ART WORK'):old.index('## Engineering')]
 new = Path('AGENTS.md').read_text()
 assert all(line in new for line in old.splitlines() if line and not line.startswith('## '))
+# Correction pass 1: authority attribution and exact proposal coverage.
+for name in ('AGENTS.md', 'README.md', 'docs/DOT_P0_PILOT_BRIEF.md', 'docs/PRODUCTION_PIPELINE_TRACKER.md', 'docs/DOT_P0_PILOT_REPORT.md'):
+    text = Path(name).read_text().split('## Local verification', 1)[0]
+    assert 'Michael authorized' in text and 'Julia' in text
+    assert not re.search(r'Michael.{0,25}(?:requested only|limits this checkout|handoff stops after)', text)
+proposal = report.split('## Proposed live issue synchronization', 1)[1].split('## Local verification', 1)[0]
+proposed_ids = {int(n) for n in re.findall(r'^\| (\d+) \|', proposal, re.M)}
+assert proposed_ids == ids
+assert 'PROPOSED; NOT EXECUTED' in proposal
+print('PASS: correction 1 authority attribution and all 14 proposed issue prefixes')
 print(f'PASS: 11 Markdown files; {links} local links; 14 issues + PR31; source snapshot; historical prose preserved')
 CHECK
 ```
 
-Final focused run: **exit 0**, `PASS: 11 Markdown files; 56 local links; 14 issues + PR31; source snapshot; historical prose preserved`.
+Correction pass 1 rerun: **exit 0**, `PASS: correction 1 authority attribution and all 14 proposed issue prefixes`; existing focused checks also returned `PASS: 11 Markdown files; 56 local links; 14 issues + PR31; source snapshot; historical prose preserved`.
 
 This checks local link targets against the tracked Git tree, not HTTP availability or anchor validity; binaries need not be downloaded. Evidence of live issue states came from direct connector reads, not this syntax check. Complete diff: `git diff e81272a0e3295c942ece8b3d305bc49b0337fbe0 HEAD`; checkpoint identity: `git rev-parse HEAD`; cleanliness: `git status --short`.
 
@@ -124,8 +171,8 @@ Changed files: `AGENTS.md`, `README.md`, `docs/ART_TECH_CO_DESIGN_PRINCIPLES.md`
 
 ## Dot Supervisor Evaluation — pending independent assessment
 
-Builder-observed constraints: bounded branch, local checks, no production/art changes, no paid calls and stopped after P0-1. This is **not** an independent supervisor score. Dot/Julia must assess diff review, correction quality, stop discipline, traceability and communication; supervisor effectiveness cannot be concluded from a documentation commit alone.
+Builder-observed constraints: bounded branch, local checks, no production/art changes, no paid calls and paused at Julia’s P0-1 gate. Julia’s independent review caught and rejected the authority-attribution defect; correction pass 1 addresses it and prepares issue synchronization for review. That is substantive review evidence, not a final supervisor score or P0-1 PASS. Julia/Michael still assess correction quality, stop discipline, traceability and communication.
 
 Known unknowns: unresolved owner/device evidence in table; C: Blender masters and backups not accessible/verified; global source licensing not assessed; PR #31 integration not code-reviewed; no timing study proves the under-one-minute newcomer criterion. Token/agent cost is not measurable here; no paid services or inference APIs were invoked. Preserve recorded failures and existing release status.
 
-**Exact follow-up:** Julia/Dot independently inspect this local checkpoint and its evidence, request bounded P0-1 corrections if needed, and resolve synchronization scope. Stop until that review; do not start P0-2, P1, P2, further character work, a push or PR.
+**Exact follow-up at this checkpoint:** Julia reviews correction pass 1 and the proposed issue-body prefixes before any live mutation. Codex pauses here without P0-2 or push. After review, follow the next bounded delegation within Michael’s existing P0-1–P0-4/final-Draft-PR authorization and update stage status; this temporary checkpoint is not a permanent stop instruction. P1/P2 production, further character work and merging remain outside the authorized pilot.
