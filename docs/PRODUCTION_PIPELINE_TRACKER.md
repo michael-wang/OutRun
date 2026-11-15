@@ -1,7 +1,7 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
 **決策日期：2026-11-15 深夜至 2026-11-16（台灣時間）**  
-**狀態：Michael / Julia 已確認方向；追蹤文件已建立，工作項目尚未驗收。**  
+**狀態：Michael 已驗收 P0-0 決策紀錄 PASS；P0-1～P0-4 待委派 Dot 試驗，尚未執行。**  
 **適用：第一關「海濱公路」在 dev 分支的製作；main 僅在 Michael 明確核准後更新。**  
 **使用方式：每次派 Codex 任務、驗收、收工盤點時，先查本文件，更新進度/證據/下一步。不得把「提交完成」當成「美術或 Pipeline PASS」。**
 
@@ -62,11 +62,11 @@
 
 | ID | 優先序／工作 | 狀態 | 交付／PASS 條件 | 責任 |
 | --- | --- | --- | --- | --- |
-| **P0-0** | 固化決策與防止舊指令繼續派工 | **文件建立；未驗收** | 本 Tracker 作為當前單一行動清單，根目錄 AGENTS 明示優先級；不改遊戲 | Julia |
-| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **TODO** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
-| **P0-2** | Asset Manifest + 最小自動守門 | **TODO** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
-| **P0-3** | Source Control & evidence lifecycle | **TODO** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
-| **P0-4** | Codex Research vs Production 關卡 | **TODO** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
+| **P0-0** | 固化決策與防止舊指令繼續派工 | **PASS — Michael 2026-11-16 驗收** | 本 Tracker 作為當前單一行動清單，根目錄 AGENTS 明示優先級；不改遊戲 | Julia |
+| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **DOT PILOT QUEUED — 未啟動** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
+| **P0-2** | Asset Manifest + 最小自動守門 | **DOT PILOT QUEUED — 未啟動** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
+| **P0-3** | Source Control & evidence lifecycle | **DOT PILOT QUEUED — 未啟動** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
+| **P0-4** | Codex Research vs Production 關卡 | **DOT PILOT QUEUED — 未啟動** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
 | **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **WAIT P0 最低限度守門** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
 | **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **WAIT P1/可並行研究** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
 | **G1** | 輕量 Game Experience Roadmap | **DEFER** | P1/P2 取得初步能力證明、或第一關下一次整體體驗檢討時再提；聚焦賽車/多景/駕駛小遊戲，不提前開做 | Julia + Michael |
@@ -102,7 +102,15 @@
 
 | 日期 | 項目 | 原狀態 → 新狀態 | 證據（commit / issue / 來源） | 下一步／阻礙 |
 | --- | --- | --- | --- | --- |
-| 2026-11-16 | P0-0 | 未建立 → 文件建立、待驗收 | 本文件與 AGENTS 頂部路由 | 開始 P0-1 文件與 Issue 審計 |
+| 2026-11-16 | P0-0 | 文件建立、待驗收 → **Michael PASS** | [098da47](https://github.com/michael-wang/OutRun/commit/098da47c485cb9521a6fb9c66b2e8bccd1f733b4) | 後續交由 Dot 試行監督 P0-1…P0-4 |
 | 2026-11-16 | P1 / P2 / CH1 | 新決策 → P1/P2 待驗證、CH1 ON HOLD | 2026-11-15/16 Michael–Julia 會議共識 | 不先花算力在角色精修 |
 
-**重要：** 更新本表時亦更新上方任務狀態。每個受影響的 Issue 必須反映同一個狀態；不只寫文件卻不改實際派工。
+### 2026-11-16 — Dot × Codex P0 pilot handoff
+
+Michael 明確同意以 **Dot 擔任 Codex 監督者**試行 P0-1…P0-4，完成後由 Michael + Julia 獨立 Review。詳細邊界、逐關 PASS 條件、兩次補丁停止規則、Draft PR 與監督績效報告要求，見 [Dot P0 Pilot Brief](DOT_P0_PILOT_BRIEF.md)。**目前僅準備好派工，尚未從此對話啟動 Dot 或 Codex，亦未開始 P0 實作。** P0 工作請在從 dev 分出的獨立分支進行；不得自動合併到 dev/main。
+
+| 日期 | 項目 | 狀態變更 | 證據 | 下一步 |
+| --- | --- | --- | --- | --- |
+| 2026-11-16 | P0-1…P0-4 | TODO → Dot Pilot QUEUED（未執行） | [Dot Pilot Brief](DOT_P0_PILOT_BRIEF.md) | Michael 在 Dot 對話中交付文件；Dot 啟動 Codex 小步驟並留下獨立審核報告 |
+
+**重要：** 更新本表時亦更新上方任務狀態。每個受影響的 Issue 必須反映同一個狀態；不只寫文件卻不改實際派工.
