@@ -4,7 +4,7 @@ Original Three.js + TypeScript arcade racing game. The first playable stage is *
 
 **Play the approved release:** https://michael-wang.github.io/OutRun/
 
-**Before taking work:** read the [Production Pipeline Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md) and [P0 checkpoint / review package](docs/DOT_P0_PILOT_REPORT.md). Michael authorized P0-1–P0-4 and a final Draft PR; P0-1 live issue sync is blocked; P0-2/P0-3 have limited technical acceptance, and the P0-4 task-contract checkpoint is paused for independent review. This temporary stage gate does not revoke the remaining pilot authorization. Historical R7 work orders are on hold.
+**Before taking work:** read the [Production Pipeline Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md) and [P0 checkpoint / review package](docs/DOT_P0_PILOT_REPORT.md). Michael authorized P0-1–P0-4 and a final Draft PR; P0-1 live issue sync is blocked; P0-2/P0-3/P0-4 have limited independent technical acceptance. The branch is review-ready, paused for Julia’s final report/diff review before push and Draft PR. This temporary stage gate does not revoke the remaining pilot authorization. Historical R7 work orders are on hold.
 
 **Task dispatch:** use the [RESEARCH/SPIKE and PRODUCTION contracts](docs/TASK_CONTRACTS.md); the Riviera 62 example mechanically blocks production.
 

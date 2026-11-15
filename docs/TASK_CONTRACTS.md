@@ -1,6 +1,6 @@
 # P0-4 — bounded task contracts and prerequisite check
 
-**Tooling checkpoint, awaiting independent review.** These templates govern dispatch records; they do not authorize P1/P2 work. Current Michael instructions, [Tracker](PRODUCTION_PIPELINE_TRACKER.md) and [Brief](DOT_P0_PILOT_BRIEF.md) govern scope. Existing playable assets remain unchanged; character work stays on hold.
+**Technical scope independently accepted by Julia after two correction passes; final branch report/diff review pending.** The final independent re-review inspected actual code/diff and reran 14 task tests plus 36 asset tests. Human approvals, claims, real car abilities and device evidence are not authenticated by these tools. These templates govern dispatch records; they do not authorize P1/P2 work. Current Michael instructions, [Tracker](PRODUCTION_PIPELINE_TRACKER.md) and [Brief](DOT_P0_PILOT_BRIEF.md) govern scope. Existing playable assets remain unchanged; character work stays on hold.
 
 ## RESEARCH / SPIKE template
 

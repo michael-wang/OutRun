@@ -1,8 +1,63 @@
-# P0 pilot — P0-4 task-contract checkpoint, independent review pending
+# P0 pilot — final branch review package
 
-Current type: **PRODUCTION / isolated P0-4 governance tooling**, with a RESEARCH/SPIKE P1 example only. Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
+Current task: **final documentation/status handoff only**; implementation and independent technical stage reviews are complete. Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **Overall PARTIAL because P0-1 live synchronization is unfulfilled; P0-2/3/4 independently accepted only within technical scope.**
 
-## P0-4 current checkpoint — bounded task-contract tooling
+## Final status, identity and independent acceptance
+
+Branch `p0/dot-pipeline-pilot`; starting dev SHA **`e81272a0e3295c942ece8b3d305bc49b0337fbe0`**. Last implementation SHA `93f05edeba1ff0b8645a34fdf221cb57a443ca26`. Final report commit identity must be obtained with `git rev-parse HEAD` and, once created, the Draft PR head SHA; this file deliberately does not try to embed its own commit SHA. Exact full diff: `git diff e81272a0e3295c942ece8b3d305bc49b0337fbe0 HEAD`. **Draft PR not created; branch not pushed.** Stop for Julia's final diff review before that authorized handoff.
+
+| Stage | Final technical status | Remaining boundary |
+| --- | --- | --- |
+| P0-1 | **PARTIAL** | Authority correction accepted, 14 Issues/PR31 inventoried; Issue synchronization denied and later explicitly prohibited. No writes succeeded. |
+| P0-2 | **PASS (technical only)** | Hash/reference and L3 record checks; no authenticated approvals, legal/native-source/art/device proof. Windows symlink-test privileges untested. |
+| P0-3 | **PASS (technical scope only)** | Same-machine five-file byte restore; no editable-master recovery, independent backup, LFS hydration or live deployment test. |
+| P0-4 | **PASS (technical scope only)** | Final independent code/diff review and 14+36 tests passed after exactly two corrections. No actual P1 abilities or human approval authentication. |
+
+**Final independent review:** Julia inspected correction 2 and actual code, confirmed failed/missing/incompatible receipt outcomes reject, reviewed second-pass advancement vs third-correction refusal and >2 violation, then reran **14 task tests, all 36 asset tests and `git diff --check`**, all passed. She accepted P0-4 technical scope only. Correction 1 fixed a real receipt bug but Julia's own over-restrictive instruction contributed to conflating correction dispatch with advancement; correction 2 repaired that distinction. Both actual findings, changes and red/green test evidence remain below. No third correction is permitted.
+
+**Issue mutation history:** #6 initial body update and one evidence-supported retry were denied; each read-back was unchanged. Other 13 writes never attempted; all 14 re-read unchanged. Exact automatic-review errors are retained below. Michael then explicitly prohibited live Issue edits because they take effect outside the Draft PR; this instruction is active, not a request to seek another approval or bypass. Keep branch-local recommendations for full Draft PR review.
+
+### Final local verification
+
+- `npm run assets:check`: **exit 0**, with explicit source/license/device gaps and metadata-only disclaimer.
+- `npm run assets:test`: **exit 0, 36 passed, 0 failed/skipped**; intentional invalid promotion CLI **exit 1** (`traceable editable source file required`).
+- `node --test scripts/test-task-contract.mjs`: **exit 0, 14 passed, 0 failed/skipped**, including all 40 incompatible receipt-result cases and separate correction/advancement checks.
+- `git diff --check e81272a0e3295c942ece8b3d305bc49b0337fbe0`: **exit 0**, no output. Final Python scope/link check: `PASS: 23-file full inventory; 6 Markdown-only final edits; 99 local links; runtime/assets/content/config/lock unchanged; package only 2 opt-in commands; exact denial quotations retained; 4 Node syntax checks`. The four syntax commands were `node --check` on `scripts/check-task-contract.mjs`, `scripts/test-task-contract.mjs`, `scripts/validate-asset-manifest.mjs`, and `scripts/test-asset-manifest.mjs`, all exit 0.
+- npm retained the environment warning `Unknown env config "http-proxy"`; suites still pass. No tests were silently waived.
+
+No full game build/verify:dev was run: opt-in built-in-only tooling is not imported by runtime/build/CI; no dependency, gameplay, assets, shader, deployment config or version changed. P1/P2 work, visual/device/owner acceptance, native-master recovery, independent source-backup verification and live deployment tests remain **unperformed**. No paid service/inference API, purchase or billing change; Codex/agent token usage and total cost are unavailable, not asserted zero. Further review of sources/licenses, Windows tooling, actual device gates and storage decisions needs separately bounded work, not inference from green metadata tests.
+
+### Complete changed-file inventory (23 paths versus starting dev)
+
+- `AGENTS.md`
+- `README.md`
+- `asset-pipeline/pilot.json`
+- `asset-pipeline/riviera62-task.example.json`
+- `docs/ART_TECH_CO_DESIGN_PRINCIPLES.md`
+- `docs/ASSET_MANIFEST_PILOT.md`
+- `docs/ASSET_STORAGE_AND_RETENTION.md`
+- `docs/COAST_HEROINE_FINAL_PRODUCTION.md`
+- `docs/COAST_HERO_ASSET_R7_PLAN.md`
+- `docs/COAST_SCENERY_PRODUCTION_PLAN.md`
+- `docs/CURRENT_ARCHITECTURE.md`
+- `docs/DOT_P0_PILOT_BRIEF.md`
+- `docs/DOT_P0_PILOT_REPORT.md`
+- `docs/P0_3_STORAGE_TRIAL.json`
+- `docs/PRODUCTION_PIPELINE_TRACKER.md`
+- `docs/R5C_30KM_ROAD_DIRECTOR.md`
+- `docs/TASK_CONTRACTS.md`
+- `package.json`
+- `scripts/check-task-contract.mjs`
+- `scripts/test-asset-manifest.mjs`
+- `scripts/test-task-contract.mjs`
+- `scripts/trial-asset-backup.py`
+- `scripts/validate-asset-manifest.mjs`
+
+Only docs, two JSON contracts plus trial-result JSON, isolated tooling/tests and two opt-in npm script entries changed. `package.json` version remains 0.10.30; dependencies/lockfile and existing commands unchanged. Existing historical documents/evidence remain; no binary migration/deletion.
+
+The remaining sections preserve stage-by-stage history. Their past tense/status/stop instructions are historical evidence, superseded for current dispatch by this final summary and the top authority pointers.
+
+## P0-4 historical checkpoint — bounded task-contract tooling
 
 Start `749f35ac8bc8d7f110c7566dbcb9fedbcee4436d`, same pilot branch, clean worktree. `git ls-remote --heads origin dev` returned unchanged `e81272a0e3295c942ece8b3d305bc49b0337fbe0`; Brief/current instructions re-read, no conflicts. No checkout `.agents/skills` or scripts-specific AGENTS exists.
 
@@ -12,7 +67,7 @@ Deliverables: [small task templates and limitations](TASK_CONTRACTS.md), [explic
 
 This is record validation, not authentication or semantic proof of source editability, licensing, pivot/material quality or device performance. Synthetic complete test receipts are not real P1 approvals. Clearing records never grants execution, merge or release authorization. Windows execution remains untested.
 
-### P0-4 correction pass 2 — final, independent re-review pending
+### P0-4 correction pass 2 — historical handoff, subsequently accepted
 
 Start `61721d076b2d4cf9811ce8f1ac8a860f8cedcf8b`. Julia independently accepted the receipt-result fix and reran 11 tests, but rejected the permanent production block at two corrections even after successful independent acceptance. The prior correction conflated **no third correction** with **no advancement after a successful second correction**. This real semantic defect is corrected, not waived. The pass-1 record below describes the historical implementation and is superseded by this section.
 
@@ -164,22 +219,22 @@ Next: Julia/Michael separately reconcile integration scope, stale description, r
 
 | Stage | Status | Evidence / caveat |
 | --- | --- | --- |
-| P0-1 | **PARTIAL** | Authority pointers, preserved history, all open issue/PR dispositions and local checks; independent review and live issue synchronization still pending. |
+| P0-1 | **PARTIAL** | Authority correction independently accepted; live synchronization never completed and Michael now prohibits Issue edits. Dispositions/errors retained for final review. |
 | P0-2 | **PASS (technical)** | Julia independent review and reproduced checks; limitations retained. |
 | P0-3 | **PASS (technical scope)** | Julia reviewed and reran trial; same-machine bytes only. No migration/native-master/independent-backup acceptance. |
-| P0-4 | **PARTIAL** | Contracts, blocked P1 example and tested record gate; independent review pending. |
+| P0-4 | **PASS (technical scope)** | Julia inspected final code/diff and reran 14 task + 36 asset tests; no authenticated human/actual-car/device acceptance. |
 
 **Independent review received — correction pass 1 of maximum two.** Julia reports reading the actual diff and verifying the clean worktree, `git diff --check`, and road/package snapshot. She rejected a material authority error: Codex had attributed the temporary P0-1-only delegation/pause to Michael rather than Julia. Codex corrected AGENTS, README, Brief, Tracker and this report to preserve Michael’s full-pilot/final-Draft-PR authorization and identify Julia’s temporary stage gate. Julia also required an exact, minimal live-issue synchronization proposal and permission verification before mutation. Those are supplied below. Julia subsequently accepted the authority correction and reviewed the 14 exact prefixes, then instructed Codex to perform the body-only synchronization. Final P0-1 verification remains **PENDING**; the reported checks are not owner/art/device acceptance.
 
 Live issue synchronization is **BLOCKED BY AUTOMATIC APPROVAL REVIEW**, not complete or waived. Julia reviewed and accepted the proposal and instructed execution within Michael’s pilot authorization. The first body-only update on #6 and one evidence-supported retry were denied; read-backs confirm no changes. The remaining 13 writes were not attempted. Do not dispatch from stale issue bodies; exact denial and verification details follow.
 
-## Approved live issue synchronization proposal — execution blocked
+## Historical approved issue-sync proposal — never executed successfully; do not retry
 
 **Permission evidence (read-only checks):** GitHub `get_user_login` returned `michael-wang`; `get_repo(michael-wang/OutRun)` reported `admin`, `maintain`, `pull`, `push`, and `triage` all true; `get_repo_collaborator_permission` for that returned login reported `admin`. The available `update_issue` tool supports a body-only update. At that permission-check step, no Connect/Reconnect prompt, permission denial or write attempt had occurred. Reported repository permission was verified; subsequent automatic approval review denied the body edit despite those repository permissions. Actual write success is not claimed.
 
 **Exact target set:** issues **#6, #7, #9, #14, #20, #32, #33, #34, #35, #45, #49, #50, #51, #54**. All 14 have a current disposition in the inventory, so one consistent short body prefix per issue satisfies the dispatch-status requirement without introducing label taxonomy or closing history. No title, label, state, assignee, milestone, comment, PR #31, branch or asset changes proposed. PR #31 retains its separate review disposition; editing its integration scope is not required for issue dispatch synchronization.
 
-**Exact operation after Julia reviews this proposal:** fetch each issue’s latest body/state/comments again, stop and reconcile any materially changed evidence, then call `update_issue` with only `repository_full_name`, `issue_number`, and `body`. Body = the following prefix with its two placeholders replaced verbatim by that issue’s table cells, followed by **the complete latest existing body unchanged**. The marker prevents duplicate prefixes; if already present, inspect it instead of adding another. Re-fetch after each update to verify the prefix and original-body preservation. A changed/uncertain outcome is checked before any retry. Original proposal status was **PROPOSED; NOT EXECUTED**. Julia subsequently accepted the proposal; current status is **BLOCKED: #6 denied, all bodies unchanged**.
+**Historical proposed operation (superseded by Michael’s no-live-edit direction; not an execution instruction):** fetch each issue’s latest body/state/comments again, stop and reconcile any materially changed evidence, then call `update_issue` with only `repository_full_name`, `issue_number`, and `body`. Body = the following prefix with its two placeholders replaced verbatim by that issue’s table cells, followed by **the complete latest existing body unchanged**. The marker prevents duplicate prefixes; if already present, inspect it instead of adding another. Re-fetch after each update to verify the prefix and original-body preservation. A changed/uncertain outcome is checked before any retry. Original proposal status was **PROPOSED; NOT EXECUTED**. Julia subsequently accepted the proposal; current status is **BLOCKED: #6 denied, all bodies unchanged**.
 
 ```text
 <!-- p0-pilot-dispatch-status -->
@@ -295,8 +350,10 @@ Changed files: `AGENTS.md`, `README.md`, `docs/ART_TECH_CO_DESIGN_PRINCIPLES.md`
 
 ## Dot Supervisor Evaluation — pending independent assessment
 
-Builder-observed constraints: bounded branch, local checks, no production/art changes, no paid calls and paused at Julia’s P0-1 gate. Julia’s independent review caught and rejected the authority-attribution defect; correction pass 1 addresses it and prepares issue synchronization for review. That is substantive review evidence, not a final supervisor score or P0-1 PASS. Julia/Michael still assess correction quality, stop discipline, traceability and communication.
+Builder-observed evaluation evidence: Julia required real diff inspection and local tests, caught the P0-1 owner/stage attribution error, and accepted its correction. She reviewed P0-2 and P0-3 with reproduced checks and explicit evidence limits. Her P0-4 adversarial review found the genuine failed-receipt defect. The first correction instruction also over-restricted the two-pass rule: it led to treating two successful corrections as a production blocker. Julia acknowledged her instruction's role and required correction 2 to separate no-third-correction from acceptance/advancement. Final actual-code re-review and both suites passed. No third correction was attempted. These findings support substantive supervision, but also expose an avoidable correction cycle; they are not a self-awarded supervisor score.
+
+The worker preserved failed-test/denial records, stopped at each review gate, used bounded local tools and left runtime/assets/releases intact. The issue update and one retry were denied by automatic approval review, with read-backs showing no changes; after Michael's explicit no-live-edit direction, no further attempts occurred. P0-1 therefore remains honestly PARTIAL. Communication and exact commits make decisions reviewable; token savings, latency and cost efficiency were not measured. Julia/Michael retain final judgement on adopting this supervision workflow.
 
 Known unknowns: unresolved owner/device evidence in table; C: Blender masters and backups not accessible/verified; global source licensing not assessed; PR #31 integration not code-reviewed; no timing study proves the under-one-minute newcomer criterion. Token/agent cost is not measurable here; no paid services or inference APIs were invoked. Preserve recorded failures and existing release status.
 
-**Exact follow-up at this checkpoint:** Julia independently reviews P0-4’s contracts, actual checker/tests/diff and blocked P1 example. No push or P1/P2 work yet; final Draft PR handoff follows review under the existing full-pilot authorization. Preserve P0-1’s PARTIAL/unsynchronized state and actual errors; Michael directs no public Issue changes/retries. The full pilot authorization remains in force through bounded delegations. No asset migration, cleanup or P1/P2 production is authorized by this checkpoint.
+**Exact follow-up:** Julia reviews the final branch documentation/status diff, then the already-authorized push and Draft PR into dev can proceed under bounded delegation. Stop at Draft PR for Julia + Michael review; no merge or P1/P2 execution. No push/PR has occurred at this report checkpoint. Preserve P0-1’s PARTIAL/unsynchronized state and actual errors; Michael directs no public Issue changes/retries. The full pilot authorization remains in force through bounded delegations. No asset migration, cleanup or P1/P2 production is authorized by this checkpoint.
