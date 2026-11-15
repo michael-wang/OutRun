@@ -23,6 +23,13 @@ function receipt(ref, base, contract, key, expectedResult) {
   need(r.result === expectedResult, `${key}: receipt result must be ${expectedResult}`);
   need(text(r.reviewer) && text(r.observations), `${key}: reviewer and observations required`);
 }
+export function checkCorrectionDispatch(c, base = root) {
+  checkContract(c, base); // Validate records/receipts, but production prerequisites are a separate decision.
+  const blockers = c.exampleOnly ? ['example only; not an executable correction assignment'] : [];
+  if (c.correctionPasses > 2) blockers.push('pilot correction count violation: more than two passes');
+  else if (c.correctionPasses === 2) blockers.push('third correction prohibited: two passes already completed');
+  return blockers;
+}
 export function checkContract(c, base = root) {
   need(c && c.schemaVersion === 1 && c.profile === 'riviera62-pilot', 'unsupported contract schema/profile');
   for (const key of ['id', 'goal', 'gameRelevance', 'candidate', 'toolRationale']) need(text(c[key]), `${key}: text required`);
@@ -31,11 +38,13 @@ export function checkContract(c, base = root) {
   for (const key of ['downstream', 'sourceOfTruth', 'stopCriteria', 'commands', 'expectedEvidence', 'failedEvidence']) strings(c[key], key);
   need(Number.isInteger(c.correctionPasses) && c.correctionPasses >= 0, 'correctionPasses: nonnegative integer required');
   need(typeof c.rootCauseResolved === 'boolean', 'rootCauseResolved: boolean required');
+  need(['pending', 'accepted', 'rejected'].includes(c.independentReview), 'independentReview: valid state required');
   const blockers = [];
   if (c.exampleOnly) blockers.push('example only; not an executable production assignment');
   if (c.type !== 'PRODUCTION') blockers.push(`task type ${c.type}; production not requested`);
-  // Absolute Brief limit for this pilot profile; rootCauseResolved is informational only.
-  if (c.correctionPasses >= 2) blockers.push('pilot correction limit reached: stop for independent review; no further correction dispatch');
+  if (c.correctionPasses > 2) blockers.push('pilot correction count violation: more than two passes');
+  else if (c.correctionPasses === 2 && (!c.rootCauseResolved || c.independentReview !== 'accepted'))
+    blockers.push('two passes completed: unresolved findings or independent review/method decision required');
   for (const [group, keys, states, ready] of [
     ['requirements', requirements, ['unknown', 'failed', 'verified'], 'verified'],
     ['approvals', approvals, ['pending', 'rejected', 'accepted'], 'accepted'],
@@ -53,11 +62,12 @@ export function checkContract(c, base = root) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const args = process.argv.slice(2);
-    need(args.length <= 2 && (args.length < 2 || args[1] === '--production'), 'usage: node scripts/check-task-contract.mjs [contract.json] [--production]');
+    need(args.length <= 2 && (args.length < 2 || ['--production', '--correction'].includes(args[1])), 'usage: node scripts/check-task-contract.mjs [contract.json] [--production|--correction]');
     const c = JSON.parse(readFileSync(resolve(root, args[0] || 'asset-pipeline/riviera62-task.example.json'), 'utf8'));
-    const blockers = checkContract(c);
+    const correction = args[1] === '--correction';
+    const blockers = correction ? checkCorrectionDispatch(c) : checkContract(c);
     console.log('VALID contract records only — NOT verified capability, approval authentication or execution authorization.');
-    console.log(blockers.length ? `PRODUCTION BLOCKED:\n- ${blockers.join('\n- ')}` : 'Production record prerequisites present; independent review still required.');
-    if (args[1] === '--production' && blockers.length) process.exitCode = 1;
+    console.log(blockers.length ? `${correction ? 'CORRECTION' : 'PRODUCTION'} BLOCKED:\n- ${blockers.join('\n- ')}` : 'Requested record prerequisites present; no execution authorization granted.');
+    if (['--production', '--correction'].includes(args[1]) && blockers.length) process.exitCode = 1;
   } catch (error) { console.error(`INVALID: ${error.message}`); process.exitCode = 1; }
 }

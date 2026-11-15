@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { checkContract, requirements, approvals } from './check-task-contract.mjs';
+import { checkContract, checkCorrectionDispatch, requirements, approvals } from './check-task-contract.mjs';
 const example = JSON.parse(readFileSync(new URL('../asset-pipeline/riviera62-task.example.json', import.meta.url)));
 const clone = () => structuredClone(example);
 // Synthetic receipts are test data only; never a real P1 acceptance.
@@ -41,14 +41,27 @@ test('each pending or rejected approval blocks', () => {
     assert.deepEqual(checkContract(c,dir),[`${key}: ${state}`]);
   }
 });
-test('pilot maximum two passes blocks regardless of resolved root cause', () => {
-  for (const count of [2,3]) for (const resolved of [true,false]) {
-    const c=complete(); c.correctionPasses=count; c.rootCauseResolved=resolved;
-    assert.match(checkContract(c,dir).join(), /pilot correction limit/);
+test('two passes permit advancement only when resolved and independently accepted', () => {
+  for (const resolved of [true,false]) for (const review of ['pending','rejected','accepted']) {
+    const c=complete(); c.correctionPasses=2; c.rootCauseResolved=resolved; c.independentReview=review;
+    const blockers=checkContract(c,dir);
+    if(resolved && review === 'accepted') assert.deepEqual(blockers,[]);
+    else assert.match(blockers.join(), /review\/method decision/);
+    assert.match(checkCorrectionDispatch(c,dir).join(), /third correction prohibited/);
   }
+});
+test('three passes violate pilot limit regardless of resolution or review', () => {
+  for (const resolved of [true,false]) for (const review of ['pending','accepted']) {
+    const c=complete(); c.correctionPasses=3; c.rootCauseResolved=resolved; c.independentReview=review;
+    assert.match(checkContract(c,dir).join(), /count violation/);
+    assert.match(checkCorrectionDispatch(c,dir).join(), /count violation/);
+  }
+});
+test('correction dispatch is separate from production capability prerequisites', () => {
   for (const count of [0,1]) {
-    const c=complete(); c.correctionPasses=count;
-    assert.deepEqual(checkContract(c,dir),[]);
+    const c=clone(); c.exampleOnly=false; c.correctionPasses=count;
+    assert.ok(checkContract(c,dir).length > 0);
+    assert.deepEqual(checkCorrectionDispatch(c,dir),[]);
   }
 });
 test('each receipt rejects failed, missing or incompatible outcomes despite matching hash', () => {
@@ -88,7 +101,7 @@ test('changed bytes, missing file, wrong subject and escaping path rejected', ()
   }
 });
 test('missing fields, invalid states and correction counters rejected', () => {
-  const mutations=[c=>delete c.requirements.wheelPivots,c=>c.requirements.materials.state='pass',c=>c.commands=[],c=>c.goal=' ',c=>c.correctionPasses=-1,c=>c.correctionPasses=1.5,c=>c.exampleOnly='false',c=>c.type='BUILD',c=>c.rootCauseResolved='true'];
+  const mutations=[c=>delete c.requirements.wheelPivots,c=>c.requirements.materials.state='pass',c=>c.commands=[],c=>c.goal=' ',c=>c.correctionPasses=-1,c=>c.correctionPasses=1.5,c=>c.exampleOnly='false',c=>c.type='BUILD',c=>c.rootCauseResolved='true',c=>delete c.independentReview,c=>c.independentReview=true];
   for(const mutate of mutations){const c=clone();mutate(c);assert.throws(()=>checkContract(c));}
 });
 test('CLI validates example but production command fails with all blockers', () => {
@@ -100,4 +113,14 @@ test('CLI validates example but production command fails with all blockers', () 
     assert.match(r.stdout,/PRODUCTION BLOCKED/);
     for(const key of [...requirements,...approvals]) assert.ok(r.stdout.includes(key+':'));
   }
+});
+
+test('CLI refuses a third correction even after accepted review', () => {
+  // Synthetic unknown prerequisites need no receipt reads; contract stays outside the repository.
+  const c=clone(); c.exampleOnly=false; c.correctionPasses=2;
+  c.rootCauseResolved=true; c.independentReview='accepted';
+  const path=join(dir,'correction.json'); writeFileSync(path,JSON.stringify(c));
+  const r=spawnSync(process.execPath,[fileURLToPath(new URL('./check-task-contract.mjs',import.meta.url)),path,'--correction'],{encoding:'utf8'});
+  assert.equal(r.status,1,r.stderr); assert.match(r.stdout,/CORRECTION BLOCKED/);
+  assert.match(r.stdout,/third correction prohibited/);
 });

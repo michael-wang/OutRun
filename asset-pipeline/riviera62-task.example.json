@@ -18,7 +18,7 @@
   "toolRationale": "Future Blender native editing/export is a candidate for editable geometry and pivots; no Blender execution or fallback generation authorized by this example. Node built-ins validate records only.",
   "stopCriteria": [
     "Stop before any P1 build; Julia must delegate a bounded spike after P0 review.",
-    "Pilot maximum: two completed supervisor correction passes per subtask, regardless of rootCauseResolved; stop for independent review and no further correction dispatch.",
+    "Pilot maximum: no third correction after two completed passes. Advancement at two needs resolved findings plus independent accepted review; more than two is a violation regardless of state.",
     "Stop on source/license uncertainty, missing downstream proof, performance regression, paid tool or tool substitution; retain failures."
   ],
   "commands": [
@@ -36,6 +36,7 @@
   ],
   "correctionPasses": 0,
   "rootCauseResolved": false,
+  "independentReview": "pending",
   "requirements": {
     "editableMaster": {
       "state": "unknown",
