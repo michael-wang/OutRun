@@ -1,8 +1,8 @@
 # Dot × Codex — P0 supervision pilot (2026-11-16)
 
-**Status: P0-1 checkpoint prepared on the pilot branch; independent review pending. P0-2–P0-4 NOT STARTED.**
+**Status: P0-1 PARTIAL (live issue sync BLOCKED); P0-2 tooling checkpoint awaiting independent review; P0-3–P0-4 NOT STARTED.**
 
-**Current stage checkpoint:** Michael authorized the full P0-1–P0-4 pilot and final Draft PR into dev described below. Julia delegated P0-1 first and requested a temporary pause for independent review before further stages, push or PR creation. Julia accepted correction pass 1 and the issue-prefix proposal; synchronization is now blocked by automatic approval review, with all issue bodies verified unchanged. The execution record awaits independent verification. The full-pilot authorization remains in force; proceed through subsequent bounded delegations after review, without treating this checkpoint as a requirement for new Michael authorization. See [checkpoint report](DOT_P0_PILOT_REPORT.md).
+**Current stage checkpoint:** Michael authorized the full P0-1–P0-4 pilot and final Draft PR into dev. Julia accepted P0-1’s authority correction and recorded the live issue-sync approval block; she instructed no further issue writes and delegated independent P0-2 PRODUCTION/tooling work on the same branch. Michael subsequently directed no modifications to any of the 14 public Issues; keep unsynchronized recommendations and actual approval errors on the branch for review after the full P0 Draft PR. Stop after P0-2 for independent review; no push or P0-3 yet. This temporary stage gate does not revoke later pilot authorization. See [checkpoint report](DOT_P0_PILOT_REPORT.md).
 **Owner:** Michael. **Art/technical acceptance:** Julia + Michael. **Coordinator:** Dot (once Michael launches the task). **Builder:** Codex.  
 **Source of truth:** [Production Pipeline Action Tracker](PRODUCTION_PIPELINE_TRACKER.md), followed by current top directive in \`AGENTS.md\`. This file authorizes only a bounded **P0 pipeline-governance pilot**, not P1/P2 production.
 

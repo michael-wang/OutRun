@@ -1,8 +1,35 @@
-# P0-1 local checkpoint — independent review pending
+# P0 pilot — P0-2 tooling checkpoint, independent review pending
 
-Type: **RESEARCH / documentation governance**. Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
+Current type: **PRODUCTION / isolated P0-2 tooling** (P0-1 was RESEARCH / documentation governance). Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
 
-## Scope and provenance
+## P0-2 current checkpoint — PRODUCTION/tooling
+
+Julia explicitly delegated P0-2 as safe independent work while P0-1 live synchronization remains blocked. **Michael subsequently instructed no changes to any of the 14 public Issues now, no retries or bypass, and review of branch-local recommendations after the full P0 Draft PR.** P0-1 stays PARTIAL/unsynchronized; actual rejection evidence remains below. This supersedes the earlier suggested approval/retry follow-up. **No issue retry or write was made in this stage.** Starting branch checkpoint: `e3ca36090634e75bacf3aa91d79eec41aeb30d82`. Re-read the current Brief and remote dev before work: `git ls-remote --heads origin dev` returned unchanged `e81272a0e3295c942ece8b3d305bc49b0337fbe0`; worktree was clean, no conflicts. Repository `.agents/skills` is absent; root AGENTS and relevant content/tests instructions were read. Same independent branch, no push. Ending SHA is supplied in the handoff and available with `git rev-parse HEAD`.
+
+Deliverables: [contract and limitations](ASSET_MANIFEST_PILOT.md), [one real pilot record](../asset-pipeline/pilot.json), [validator](../scripts/validate-asset-manifest.mjs), [behavior/CLI tests](../scripts/test-asset-manifest.mjs). `package.json` adds only `assets:check` and `assets:test`; version stays **0.10.30**, dependencies/lockfile and existing build/verify scripts unchanged.
+
+The R6d fixture is **pilot / L1**, with the existing GLB bytes/hash verified. Source `.blend` exists only as a reported C: location; file/hash are deliberately null. Source licensing, repeated export and current Pixel 8 evidence are not verified. Technical/visual/device/repeatability pipeline acceptance is pending, with explicit notes preserving historical art decisions. No fake source or owner acceptance was created.
+
+Production declarations require a hash-verified editable-source reference, author/tool, provenance and license record; exports/runtime bytes must match. L3 additionally requires no blockers and hash-bound technical, visual, device and repeatability review receipts for the exact asset/source/export. Naked pass assertions, mismatched receipt subjects, missing abilities/device measurements and single-run repeatability claims fail. A green validator checks **record integrity**, not the truth/authenticity of human assertions, license permission, visual quality or actual device behavior. Synthetic positive L3 tests are not real asset approvals. Independent inspection remains necessary; no receipt-signing or broad task-gate framework was added.
+
+### P0-2 commands and evidence
+
+- `node --version`: **v24.22.1**; `npm --version`: **11.9.0**.
+- `sha256sum public/assets/characters/coast-blonde-r6d.glb docs/art-review/r6d/README.md`: GLB `8273fe14b4f1c83a4c8b574bacd7d834a6142380013e6e8ebb6f7b447399f519`; report `c78b0cda2c9610b1619f3df424103f88cd5d3973eb394d5c3fb27f2ae960c823`. Matches manifest and historical export hash.
+- `npm run assets:check`: **exit 0**, emits pilot/blocker/incomplete-acceptance notes, then `VALID metadata/evidence references only — NOT art, license, device or release certification.`
+- `npm run assets:test`: **exit 0**, **36 passed, 0 failed, 0 skipped** (14 top-level tests plus nested cases). Its deliberately invalid production/L3 promotion invokes the real CLI and asserts **exit 1** with `INVALID r6d-hair-pilot: production: traceable editable source file required`.
+- `node --check scripts/validate-asset-manifest.mjs` and `node --check scripts/test-asset-manifest.mjs`: syntax checks before commit.
+- `git diff --check`: **exit 0**. Both `node --check` commands above also exited **0**. Python scope checks returned `PASS: exact 10-file P0-2 scope; 52 local doc links; package unchanged except two opt-in scripts; asset hash preserved; no runtime/assets/content/lockfile diff`.
+
+No dependencies were installed. `npm run build` / `npm run verify:dev` were **not run**: the utility/tests import only Node built-ins, are opt-in, and are not imported by runtime, Vite, existing build/verify or release gates. Existing command behavior is unchanged. Focused CLI and filesystem-integrity tests are the relevant execution path; this does not claim game regression, visual or device PASS. If later integration changes runtime/build behavior, run the corresponding full checks then.
+
+Setup failures retained: an initial read of unmaterialized Git blobs failed because the read-only sandbox could not write Git’s partial-clone object cache. Authorized sparse materialization resolved it. `git sparse-checkout add --no-cone ...` failed because this Git version does not accept that option on `add`; rerunning `add` with the existing non-cone configuration succeeded. Source/tests/content and one existing GLB were materialized, not modified. npm reports an existing `Unknown env config "http-proxy"` warning; checks still exit 0. Staging the new `asset-pipeline/pilot.json` initially stopped at the sparse-checkout boundary; `git add --sparse asset-pipeline/pilot.json` stages that explicitly authorized new file without expanding asset scope. No functional test failure was waived.
+
+Changed in P0-2: `asset-pipeline/pilot.json`, `scripts/validate-asset-manifest.mjs`, `scripts/test-asset-manifest.mjs`, `docs/ASSET_MANIFEST_PILOT.md`, `package.json` (two commands only), plus `AGENTS.md`, `README.md`, Brief, Tracker and this report for stage status. No runtime/gameplay/asset/shader/source-master/version changes, paid calls, source migration, legacy enrollment or P0-3/P0-4 implementation.
+
+**Stage result: PARTIAL / independent review pending.** Local technical checks passed; no independent/owner/art/device PASS asserted. P0-1 remains PARTIAL with live synchronization BLOCKED. Stop here for Julia’s review; no push or P0-3.
+
+## P0-1 scope and provenance (historical checkpoint)
 
 - Repository: `michael-wang/OutRun`; branch: `p0/dot-pipeline-pilot`.
 - Starting SHA: `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. `git ls-remote --heads origin dev p0/dot-pipeline-pilot` returned that dev SHA and no existing remote pilot branch. Local branch was new; initial worktree clean.
@@ -63,7 +90,7 @@ Next: Julia/Michael separately reconcile integration scope, stale description, r
 | Stage | Status | Evidence / caveat |
 | --- | --- | --- |
 | P0-1 | **PARTIAL** | Authority pointers, preserved history, all open issue/PR dispositions and local checks; independent review and live issue synchronization still pending. |
-| P0-2 | **NOT STARTED** | No manifest or validator implemented. |
+| P0-2 | **PARTIAL** | Opt-in manifest/validator checkpoint below; 36 focused tests pass, independent review pending. |
 | P0-3 | **NOT STARTED** | No source-control migration, backup verification or cleanup. |
 | P0-4 | **NOT STARTED** | No production task gate implemented. |
 
@@ -127,15 +154,15 @@ The second read-back also confirmed #6 unchanged. Codex stopped all live mutatio
 | #6 | **DENIED**, initial attempt + one retry | Body equals preflight body; still OPEN; title, labels, assignees, milestone, state reason, closed time, comment count, creation time and author unchanged. |
 | #7, #9, #14, #20, #32, #33, #34, #35, #45, #49, #50, #51, #54 | **NOT ATTEMPTED** after #6 denial | All 13 fetched again after stop: bodies and the same metadata fields equal preflight snapshots; all remain OPEN. |
 
-No live issue, PR, label, comment or state was changed. Available repository admin permission and accepted supervisor direction did not satisfy automatic approval review’s interpretation of trusted user authorization. **Remaining blocker:** explicit live-issue-body-edit authorization recognized by automatic approval review. Report this to Julia; obtain specific Michael approval for the exact 14 reviewed body prefixes if needed to resolve the stated block. Do not retry absent materially new relevant authorization evidence. This is an external public project-representation change, which is the risk identified by the reviewer. P0-2 remains NOT STARTED pending independent verification.
+No live issue, PR, label, comment or state was changed. Available repository admin permission and accepted supervisor direction did not satisfy automatic approval review’s interpretation of trusted user authorization. **Historical blocker at that attempt:** automatic approval review did not recognize live-issue-body-edit authorization. **Subsequent Michael decision supersedes any retry follow-up: leave all 14 Issues unchanged and retain unsynchronized recommendations/errors for the full P0 Draft PR review. Do not seek a workaround or retry.** This is an external public project-representation change, which is the risk identified by the reviewer. P0-2 remains NOT STARTED pending independent verification.
 
-## Local verification and reproducibility
+## Local verification and reproducibility — P0-1 historical commands
 
 Commands run from the repository root; results recorded after execution before committing. Documentation-only scope does not warrant npm install/build/verify:dev under Brief boundary 5. No JS/tooling changed, no app/device/visual tests were run, and no code-test PASS is claimed.
 
 Initial `git diff --check` failed (exit 2) on two newly edited Markdown lines with trailing spaces (Brief/Tracker); those spaces were removed. Because the shell used `&&`, the Python check did not run in that failed attempt. Rerun passed (exit 0): 11 Markdown-only files, 56 local links, all 14 issue IDs and PR31, package/road snapshot, and original R6/R7 prose preservation. No failures were waived.
 
-Final reproducible focused check (run from repository root; works before or after the checkpoint commit):
+Historical P0-1 focused check, as run before checkpoint `e3ca360` (not the current P0-2 scope check; it assumes 11 Markdown files and P0-2 not started):
 
 ```sh
 git diff --check e81272a0e3295c942ece8b3d305bc49b0337fbe0
@@ -197,4 +224,4 @@ Builder-observed constraints: bounded branch, local checks, no production/art ch
 
 Known unknowns: unresolved owner/device evidence in table; C: Blender masters and backups not accessible/verified; global source licensing not assessed; PR #31 integration not code-reviewed; no timing study proves the under-one-minute newcomer criterion. Token/agent cost is not measurable here; no paid services or inference APIs were invoked. Preserve recorded failures and existing release status.
 
-**Exact follow-up at this checkpoint:** Julia independently verifies the recorded denial, unchanged issues and local evidence, and resolves the automatic-approval authorization block before any further live edit. Codex pauses here without P0-2 or push. Michael’s existing full-pilot/final-Draft-PR authorization remains recorded; the actual tool rejection prevents synchronization now. Do not retry without materially new relevant evidence. P1/P2 production, further character work and merging remain outside the authorized pilot.
+**Exact follow-up at this checkpoint:** Julia independently reviews the P0-2 actual diff, validator boundaries, fixture and tests. Preserve P0-1’s PARTIAL/unsynchronized state and actual authorization errors. Per Michael’s latest instruction, do not modify any public Issue or retry; retain recommendations for Michael/Julia’s review after the full P0 Draft PR. Codex stops after P0-2 without push or P0-3. Michael’s full-pilot/final-Draft-PR authorization remains recorded; subsequent work proceeds through Julia’s bounded delegations. No P1/P2 production or character work.

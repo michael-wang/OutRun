@@ -19,7 +19,9 @@
     "test:p1": "vitest run tests/race-recovery.unit.ts tests/race-traffic-world.unit.ts tests/rival-race.unit.ts tests/traffic-impact.unit.ts",
     "scenic:check": "node scripts/build-scenic-layout.mjs --check",
     "scenic:build": "node scripts/build-scenic-layout.mjs --write",
-    "scenic:test": "node scripts/test-scenic-layout.mjs"
+    "scenic:test": "node scripts/test-scenic-layout.mjs",
+    "assets:check": "node scripts/validate-asset-manifest.mjs",
+    "assets:test": "node --test scripts/test-asset-manifest.mjs"
   },
   "dependencies": {
     "@pixiv/three-vrm-springbone": "3.5.5",

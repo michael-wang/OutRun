@@ -1,7 +1,7 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
 **決策日期：2026-11-15 深夜至 2026-11-16（台灣時間）**  
-**狀態：P0-0 維持原驗收紀錄；P0-1 分支文件盤點已準備，PARTIAL／待 Julia/Dot 獨立審核。P0-2～P0-4 未啟動。**
+**狀態：P0-0 維持原驗收紀錄；P0-1 PARTIAL／live issue sync BLOCKED；P0-2 tooling checkpoint 待獨立審查；P0-3～P0-4 未啟動。**
 **適用：第一關「海濱公路」在 dev 分支的製作；main 僅在 Michael 明確核准後更新。**  
 **使用方式：每次派 Codex 任務、驗收、收工盤點時，先查本文件，更新進度/證據/下一步。不得把「提交完成」當成「美術或 Pipeline PASS」。**
 
@@ -63,8 +63,8 @@
 | ID | 優先序／工作 | 狀態 | 交付／PASS 條件 | 責任 |
 | --- | --- | --- | --- | --- |
 | **P0-0** | 固化決策與防止舊指令繼續派工 | **PASS — Michael 2026-11-16 驗收** | 本 Tracker 作為當前單一行動清單，根目錄 AGENTS 明示優先級；不改遊戲 | Julia |
-| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **PARTIAL — 分支 checkpoint，待獨立審核** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
-| **P0-2** | Asset Manifest + 最小自動守門 | **DOT PILOT QUEUED — 未啟動** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
+| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **PARTIAL — live issue sync BLOCKED** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
+| **P0-2** | Asset Manifest + 最小自動守門 | **PARTIAL — tooling checkpoint，待獨立審核** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **DOT PILOT QUEUED — 未啟動** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **DOT PILOT QUEUED — 未啟動** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
 | **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **WAIT P0 最低限度守門** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
@@ -127,3 +127,19 @@ Type: **RESEARCH / documentation governance**. Branch: `p0/dot-pipeline-pilot`; 
 | GitHub issue synchronization | **BLOCKED — automatic approval review** | Julia accepted the 14 body prefixes and directed execution. #6 update and one evidence-supported retry denied; all 14 issues re-read and unchanged. Zero successful writes; remaining 13 not attempted. See report for exact reasons and verification. |
 
 No new owner/art/device/release PASS. #45 remains BLOCKED. No push, PR, issue closure/deletion, gameplay/asset/version change or paid calls performed. **Correction pass 1:** Julia identified and rejected the mistaken attribution of the P0-1-only pause to Michael. Michael’s full P0-1–P0-4/final-Draft-PR authorization remains valid; Julia’s temporary checkpoint review governs current execution. Julia accepted correction pass 1 and the exact issue prefixes, then directed synchronization. Live synchronization remains **unfulfilled / BLOCKED** because automatic approval review denied the #6 body update and one retry after retrieval of Michael’s original authorization. All 14 issue bodies/metadata were re-read unchanged; no other writes attempted. The report records exact rejection reasons, evidence and results. Next: Julia independently verifies this checkpoint and resolves the tool’s explicit-authorization block. No P0-2 or push before that verification.
+
+
+### P0-2 checkpoint — independent work while issue sync is blocked
+
+Julia explicitly delegated **PRODUCTION/tooling P0-2** after accepting the P0-1 authority correction. P0-1’s automatic-approval block is preserved; **no retry or further issue writes**. Latest remote dev remains `e81272a0e3295c942ece8b3d305bc49b0337fbe0`; work continues on the same independent branch from checkpoint `e3ca36090634e75bacf3aa91d79eec41aeb30d82`, with no conflict or uncommitted changes at start.
+
+| Item | Status | Evidence / next action |
+| --- | --- | --- |
+| P0-1 | **PARTIAL / live sync BLOCKED** | No live edits succeeded; do not retry. Earlier checkpoint tables above are historical stage snapshots. |
+| P0-2 | **PARTIAL / independent review pending** | [Manifest contract](ASSET_MANIFEST_PILOT.md), [one opt-in R6d pilot](../asset-pipeline/pilot.json), validator and 36 passing focused tests. Positive metadata check and deliberate negative production promotion tested. No new visual/device/owner approval. |
+| P0-3 / P0-4 | **NOT STARTED** | Stop after P0-2; await Julia’s next bounded delegation. No push. |
+
+Only metadata, isolated validation/tests, npm command entries and status documentation changed. No legacy-wide enforcement, gameplay/assets/version change or paid calls. Validator success checks referenced bytes and review records; it cannot authenticate reviewer assertions or prove art/license/device acceptance. Full limitations and exact commands/results are in the [pilot report](DOT_P0_PILOT_REPORT.md).
+
+
+**Latest Michael clarification (during P0-2):** do not modify any of the 14 public Issues now, retry, or bypass approval review. They change outside the Draft PR. Keep P0-1 **PARTIAL**, branch-local dispositions/recommendations and the unsynchronized state, plus the actual authorization errors for the final supervisor evaluation. Michael + Julia will review these after the full P0 Draft PR. This supersedes the earlier proposed next step of obtaining approval and retrying issue synchronization; continue only the current bounded P0-2 checkpoint, then stop for Julia’s review.
