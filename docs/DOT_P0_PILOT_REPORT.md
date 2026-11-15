@@ -1,12 +1,12 @@
 # P0-1 local checkpoint — independent review pending
 
-Type: **RESEARCH / documentation governance**. Observed 2026-11-16 UTC (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
+Type: **RESEARCH / documentation governance**. Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
 
 ## Scope and provenance
 
 - Repository: `michael-wang/OutRun`; branch: `p0/dot-pipeline-pilot`.
 - Starting SHA: `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. `git ls-remote --heads origin dev p0/dot-pipeline-pilot` returned that dev SHA and no existing remote pilot branch. Local branch was new; initial worktree clean.
-- Ending checkpoint SHA: obtain with `git rev-parse HEAD` on this branch after the checkpoint; the exact resulting SHA is supplied in the handoff. It cannot be embedded in its own commit without changing that SHA.
+- Initial checkpoint SHA: `c8dfb25298aad9e0d223db7b4fe393e18b837f0e`; a follow-up documentation correction fixes the UTC/Taiwan date label without rewriting history. Ending checkpoint SHA: obtain with `git rev-parse HEAD` on this branch after the checkpoint; the exact resulting SHA is supplied in the handoff. It cannot be embedded in its own commit without changing that SHA.
 - Sparse, blob-filtered local clone: docs and reference metadata only; binary art was not downloaded or modified. `git ls-tree -r --name-only HEAD .agents docs/AGENTS.md` returned no entries: no checkout `.agents/skills` or nested docs instructions were available. Root AGENTS was read completely, along with the Brief and Tracker.
 - Current explicit handoff authorizes **only P0-1**, focused local checks and one checkpoint commit; **no push or PR yet**. No Draft PR was created. Existing PR #31 is unrelated to this pilot.
 - No gameplay, runtime, shader, art, package version, main/dev ref, release, deployment, history rewrite, binary migration, issue/PR mutation or paid API operation.

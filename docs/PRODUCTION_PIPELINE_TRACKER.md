@@ -116,7 +116,7 @@ Michael 明確同意以 **Dot 擔任 Codex 監督者**試行 P0-1…P0-4，完�
 **重要：** 更新本表時亦更新上方任務狀態。每個受影響的 Issue 必須反映同一個狀態；不只寫文件卻不改實際派工.
 
 
-### P0-1 checkpoint — bounded handoff (2026-11-16 UTC)
+### P0-1 checkpoint — bounded handoff (2026-11-15 UTC / 2026-11-16 Taiwan time)
 
 Type: **RESEARCH / documentation governance**. Branch: `p0/dot-pipeline-pilot`; base: `e81272a0e3295c942ece8b3d305bc49b0337fbe0` (remote dev verified at start). [Evidence, authority map and all issue/PR dispositions](DOT_P0_PILOT_REPORT.md).
 
