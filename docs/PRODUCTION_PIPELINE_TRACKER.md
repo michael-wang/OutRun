@@ -1,7 +1,7 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
 **決策日期：2026-11-15 深夜至 2026-11-16（台灣時間）**  
-**狀態：P0-0 維持原驗收紀錄；P0-1 PARTIAL／live issue sync BLOCKED；P0-2 tooling checkpoint 待獨立審查；P0-3～P0-4 未啟動。**
+**狀態：P0-0 維持原驗收紀錄；P0-1 PARTIAL／Issues 未同步；P0-2 PASS（technical only）；P0-3 storage/trial checkpoint 待獨立審查；P0-4 未啟動。**
 **適用：第一關「海濱公路」在 dev 分支的製作；main 僅在 Michael 明確核准後更新。**  
 **使用方式：每次派 Codex 任務、驗收、收工盤點時，先查本文件，更新進度/證據/下一步。不得把「提交完成」當成「美術或 Pipeline PASS」。**
 
@@ -64,8 +64,8 @@
 | --- | --- | --- | --- | --- |
 | **P0-0** | 固化決策與防止舊指令繼續派工 | **PASS — Michael 2026-11-16 驗收** | 本 Tracker 作為當前單一行動清單，根目錄 AGENTS 明示優先級；不改遊戲 | Julia |
 | **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **PARTIAL — live issue sync BLOCKED** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
-| **P0-2** | Asset Manifest + 最小自動守門 | **PARTIAL — tooling checkpoint，待獨立審核** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
-| **P0-3** | Source Control & evidence lifecycle | **DOT PILOT QUEUED — 未啟動** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
+| **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
+| **P0-3** | Source Control & evidence lifecycle | **PARTIAL — storage/trial checkpoint，待獨立審核** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **DOT PILOT QUEUED — 未啟動** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
 | **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **WAIT P0 最低限度守門** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
 | **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **WAIT P1/可並行研究** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
@@ -143,3 +143,17 @@ Only metadata, isolated validation/tests, npm command entries and status documen
 
 
 **Latest Michael clarification (during P0-2):** do not modify any of the 14 public Issues now, retry, or bypass approval review. They change outside the Draft PR. Keep P0-1 **PARTIAL**, branch-local dispositions/recommendations and the unsynchronized state, plus the actual authorization errors for the final supervisor evaluation. Michael + Julia will review these after the full P0 Draft PR. This supersedes the earlier proposed next step of obtaining approval and retrying issue synchronization; continue only the current bounded P0-2 checkpoint, then stop for Julia’s review.
+
+
+### P0-3 checkpoint — source inventory and local restore trial
+
+Latest dev re-read: unchanged `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. Clean starting pilot checkpoint `30d2fea0693f86c20cbb023825cbdd9b2a6f2176`; no conflicts. Julia independently inspected P0-2’s actual manifest/validator/tests/package diff/docs and reran both commands (36 tests pass, intended invalid CLI exit 1) plus whitespace checks. She reports an adversarial malformed/false-L3/missing-source/path review with no blocking defect. **P0-2 technical PASS only**: no reviewer authentication, source-editability/license proof or art/device acceptance. Windows was not tested; symlink tests may require privileges.
+
+| Item | Current status | Evidence / next action |
+| --- | --- | --- |
+| P0-1 | **PARTIAL / unsynchronized** | Preserve actual approval errors. Michael says no public Issue changes or retries; review recommendations after full P0 Draft PR. |
+| P0-2 | **PASS (technical only)** | Independent review above; limitations retained in [contract](ASSET_MANIFEST_PILOT.md). |
+| P0-3 | **PARTIAL / independent review pending** | [Inventory, deployment analysis and retention proposal](ASSET_STORAGE_AND_RETENTION.md); [five-file trial result](P0_3_STORAGE_TRIAL.json). Same-machine restore is not backup proof for inaccessible Windows masters. |
+| P0-4 | **NOT STARTED** | Stop after P0-3 for Julia review; no push. |
+
+No migration/LFS configuration/history rewrite, upload, deletion, gameplay/art/config/version change, cost or Issue mutation. Actual source-backup coverage remains UNKNOWN; recommended future one-master native restore and independent storage choice require a separate bounded decision, not an inferred PASS.

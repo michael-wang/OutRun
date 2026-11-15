@@ -1,8 +1,35 @@
-# P0 pilot — P0-2 tooling checkpoint, independent review pending
+# P0 pilot — P0-3 storage checkpoint, independent review pending
 
-Current type: **PRODUCTION / isolated P0-2 tooling** (P0-1 was RESEARCH / documentation governance). Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
+Current type: **RESEARCH / P0-3 storage and local restore trial** (P0-2 was isolated PRODUCTION/tooling). Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
 
-## P0-2 current checkpoint — PRODUCTION/tooling
+## P0-3 current checkpoint — RESEARCH / non-destructive trial
+
+Starting branch checkpoint: `30d2fea0693f86c20cbb023825cbdd9b2a6f2176`; clean worktree and no conflicts. Latest dev rechecked unchanged at `e81272a0e3295c942ece8b3d305bc49b0337fbe0`; Brief and deploy/ignore configurations read. No `.agents/skills` in the checkout. Source inventory uses the Git tree rather than sparse file visibility. Art/masters, runtime, deployment configs and public Issues remain untouched.
+
+Deliverables: [inventory, source/backups recommendation, deployment impact and approval-driven retention](ASSET_STORAGE_AND_RETENTION.md), [machine-readable trial result](P0_3_STORAGE_TRIAL.json), [reproducible local trial](../scripts/trial-asset-backup.py). Snapshot has 1,033 paths, 17 GLBs, 333 PNG/JPGs, 18 videos and three runtime audio files. No tracked Blender/common layered-image/DAW project extensions; no tracked LFS config. Windows master references are documented/inaccessible, not backed-up by assertion. R7T’s documented overwritten early snapshot is retained as a loss caveat. Whole-history sizes, owner-disk inventory and source license/backup completeness are unknown.
+
+**Independent P0-2 review received:** Julia read actual manifest, validator, tests, package diff and docs; reran `assets:check`, `assets:test` (36 pass; expected invalid CLI exit 1) and `git diff --check`. She reports a separate adversarial review of malformed, false-L3, missing-source and path cases with no blocking defect. Accepted **technical PASS only**. No correction requested for appearance; no invented review findings. Records cannot authenticate reviewers, prove native editability/license rights or establish visual/device acceptance. Windows was not tested; symlink-test privilege portability remains a caveat.
+
+### P0-3 exact commands/results
+
+- `git ls-remote --heads origin dev`: `e81272a0e3295c942ece8b3d305bc49b0337fbe0 refs/heads/dev`.
+- `git ls-tree -r --name-only 30d2fea0693f86c20cbb023825cbdd9b2a6f2176`: 1,033 paths; extension counts reproduced by the trial JSON. `git ls-files --others --exclude-standard` and `git ls-files --others --ignored --exclude-standard` were empty before P0-3 changes (this Linux clone only).
+- `git check-ignore -v art-prototype/output/example.blend captures/example.png .cache/watercraft/example.zip docs/evidence/example.png`: matched `.gitignore` lines 38, 29, 50, 35 respectively. This does not prove owner-local files exist.
+- `python --version`: **Python 3.12.14**.
+- `python scripts/trial-asset-backup.py --ref 30d2fea0693f86c20cbb023825cbdd9b2a6f2176`: **exit 0**, five allowlisted committed files (2,376,952 bytes), ZIP/restore hashes match; repository status unchanged. Final archive `/tmp/outrun-p0-3-restore-jf7l2d97/sample.zip`, SHA-256 `60ded6a6d267251fdb5f4983b96dc501f181283318a231cbfae2a1122fc83ab5`; [full result](P0_3_STORAGE_TRIAL.json). Outputs retained, no deletion.
+- Intentional negative with `--output /tmp/outrun-p0-3-restore-7u1y8nyv` on the earlier trial: **exit 1 / FileExistsError**; existing archive hash unchanged. Refusal works without overwriting evidence. Final-script negatives also passed as recorded below.
+- Final focused Python heredoc check used `ast.parse` on the script, SHA-256 comparisons of all five originals/restores and archive, `git ls-tree` snapshot count, exact nine-path diff/untracked allowlist and Markdown local-link resolution. **Exit 0**: `PASS: Python syntax; 5 original/restored hashes + archive; 1033-path snapshot; exact 9-file scope; 71 local links; negative checks preserve status/archive`.
+- Final negative commands: `python scripts/trial-asset-backup.py --ref 30d2fea0693f86c20cbb023825cbdd9b2a6f2176 --output /tmp/outrun-p0-3-restore-jf7l2d97` returned **1 / FileExistsError**; the same command with `--output /workspace/scratch/09cfb53f0c02/OutRun` returned **1 / output must be outside repository**. Captured subprocess checks confirmed both expected failures, unchanged archive hash and identical Git status. No overwrite/deletion occurred.
+- `git diff --check`: **exit 0**, no output. P0-3 changes exactly nine files: `AGENTS.md`, `README.md`, `docs/ASSET_MANIFEST_PILOT.md`, Brief, Tracker, this report, `docs/ASSET_STORAGE_AND_RETENTION.md`, `docs/P0_3_STORAGE_TRIAL.json`, `scripts/trial-asset-backup.py`. Package, runtime, assets, content, workflows, Vite/Netlify config and ignore rules are unchanged from P0-2.
+- Evaluated the exact `netlify.toml` ignore command via `sh -c` with four explicit CONTEXT/BRANCH combinations: production/main exit **1** (build); deploy-preview/main, production/dev and branch-deploy/dev exit **0** (skip). No build or deployment triggered.
+
+Provider docs verified read-only: Vite public-copy behavior; checkout v4 LFS download default=false; GitHub Pages’ direct LFS limitation; Netlify LFS environment requirements and deprecated Large Media; GitHub mirror/LFS backup caveats. Links and concrete repository consequences are in the storage report. Account quotas/billing, Netlify UI variables, live deploys, a hydrated LFS build and Windows native restores remain unverified. No external storage or paid tool used.
+
+Failure record: initial direct `.gitignore` read failed because sparse checkout omitted it, resolved by materializing existing config. Initial restore trial failed on omitted `asset-pipeline/pilot.json` before output creation; existing committed metadata was materialized and trial passed. Final temp-directory guard was added to reject repository-local temporary roots before creating output; trial reran successfully. No functional failure waived.
+
+No full build/verify:dev warranted: only docs, a standalone Python local-trial script and its small JSON result were added/updated; no runtime or deployment integration changed. No source migration, history rewrite, LFS setup, asset edits, mass upload, deletion, paid calls or public Issue writes. **Local restore trial PASS is not disaster-recovery or editable-master PASS. P0-3 remains PARTIAL pending independent review.** Stop before P0-4.
+
+## P0-2 checkpoint — PRODUCTION/tooling, subsequently accepted technically
 
 Julia explicitly delegated P0-2 as safe independent work while P0-1 live synchronization remains blocked. **Michael subsequently instructed no changes to any of the 14 public Issues now, no retries or bypass, and review of branch-local recommendations after the full P0 Draft PR.** P0-1 stays PARTIAL/unsynchronized; actual rejection evidence remains below. This supersedes the earlier suggested approval/retry follow-up. **No issue retry or write was made in this stage.** Starting branch checkpoint: `e3ca36090634e75bacf3aa91d79eec41aeb30d82`. Re-read the current Brief and remote dev before work: `git ls-remote --heads origin dev` returned unchanged `e81272a0e3295c942ece8b3d305bc49b0337fbe0`; worktree was clean, no conflicts. Repository `.agents/skills` is absent; root AGENTS and relevant content/tests instructions were read. Same independent branch, no push. Ending SHA is supplied in the handoff and available with `git rev-parse HEAD`.
 
@@ -27,7 +54,7 @@ Setup failures retained: an initial read of unmaterialized Git blobs failed beca
 
 Changed in P0-2: `asset-pipeline/pilot.json`, `scripts/validate-asset-manifest.mjs`, `scripts/test-asset-manifest.mjs`, `docs/ASSET_MANIFEST_PILOT.md`, `package.json` (two commands only), plus `AGENTS.md`, `README.md`, Brief, Tracker and this report for stage status. No runtime/gameplay/asset/shader/source-master/version changes, paid calls, source migration, legacy enrollment or P0-3/P0-4 implementation.
 
-**Stage result: PARTIAL / independent review pending.** Local technical checks passed; no independent/owner/art/device PASS asserted. P0-1 remains PARTIAL with live synchronization BLOCKED. Stop here for Julia’s review; no push or P0-3.
+**Historical stage result at the P0-2 handoff: PARTIAL / independent review pending.** Subsequently Julia accepted technical PASS with the explicit limits recorded above and delegated P0-3. No owner/art/device PASS is asserted. P0-1 remains PARTIAL with live synchronization blocked and no Issue mutations permitted.
 
 ## P0-1 scope and provenance (historical checkpoint)
 
@@ -90,8 +117,8 @@ Next: Julia/Michael separately reconcile integration scope, stale description, r
 | Stage | Status | Evidence / caveat |
 | --- | --- | --- |
 | P0-1 | **PARTIAL** | Authority pointers, preserved history, all open issue/PR dispositions and local checks; independent review and live issue synchronization still pending. |
-| P0-2 | **PARTIAL** | Opt-in manifest/validator checkpoint below; 36 focused tests pass, independent review pending. |
-| P0-3 | **NOT STARTED** | No source-control migration, backup verification or cleanup. |
+| P0-2 | **PASS (technical)** | Julia independent review and reproduced checks; limitations retained. |
+| P0-3 | **PARTIAL** | Inventory/policy/local restore trial complete for independent review; no migration or true-master backup verification. |
 | P0-4 | **NOT STARTED** | No production task gate implemented. |
 
 **Independent review received — correction pass 1 of maximum two.** Julia reports reading the actual diff and verifying the clean worktree, `git diff --check`, and road/package snapshot. She rejected a material authority error: Codex had attributed the temporary P0-1-only delegation/pause to Michael rather than Julia. Codex corrected AGENTS, README, Brief, Tracker and this report to preserve Michael’s full-pilot/final-Draft-PR authorization and identify Julia’s temporary stage gate. Julia also required an exact, minimal live-issue synchronization proposal and permission verification before mutation. Those are supplied below. Julia subsequently accepted the authority correction and reviewed the 14 exact prefixes, then instructed Codex to perform the body-only synchronization. Final P0-1 verification remains **PENDING**; the reported checks are not owner/art/device acceptance.
@@ -224,4 +251,4 @@ Builder-observed constraints: bounded branch, local checks, no production/art ch
 
 Known unknowns: unresolved owner/device evidence in table; C: Blender masters and backups not accessible/verified; global source licensing not assessed; PR #31 integration not code-reviewed; no timing study proves the under-one-minute newcomer criterion. Token/agent cost is not measurable here; no paid services or inference APIs were invoked. Preserve recorded failures and existing release status.
 
-**Exact follow-up at this checkpoint:** Julia independently reviews the P0-2 actual diff, validator boundaries, fixture and tests. Preserve P0-1’s PARTIAL/unsynchronized state and actual authorization errors. Per Michael’s latest instruction, do not modify any public Issue or retry; retain recommendations for Michael/Julia’s review after the full P0 Draft PR. Codex stops after P0-2 without push or P0-3. Michael’s full-pilot/final-Draft-PR authorization remains recorded; subsequent work proceeds through Julia’s bounded delegations. No P1/P2 production or character work.
+**Exact follow-up at this checkpoint:** Julia independently reviews P0-3’s inventory, deployment evidence, policy and local trial. No P0-4 or push yet. Preserve P0-1’s PARTIAL/unsynchronized state and actual errors; Michael directs no public Issue changes/retries. The full pilot authorization remains in force through bounded delegations. No asset migration, cleanup or P1/P2 production is authorized by this checkpoint.

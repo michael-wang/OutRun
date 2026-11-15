@@ -1,6 +1,6 @@
 # P0-2 opt-in asset manifest
 
-**PRODUCTION/tooling checkpoint, awaiting independent review.** This adds a metadata/evidence integrity check, not an asset producer, runtime loader or acceptance authority. No legacy-wide enforcement, CI hook or build dependency is added.
+**PRODUCTION/tooling checkpoint — Julia technical PASS only.** This adds a metadata/evidence integrity check, not an asset producer, runtime loader or acceptance authority. No legacy-wide enforcement, CI hook or build dependency is added.
 
 ```sh
 npm run assets:check
@@ -57,3 +57,6 @@ These receipts are ordinary review records, not cryptographic signatures, media 
 Node built-ins only; no dependency install, API cost or runtime imports. `assets:test` covers the real pilot/CLI, a clearly synthetic complete production record, missing/tampered source, missing provenance/license, missing gates, naked pass assertions, stale evidence bindings, capability/device/repeatability omissions, blockers, duplicate IDs, malformed input and escaping paths.
 
 The intentional negative CLI test changes a temporary copy of the pilot to production/L3 and expects exit 1 (`production: traceable editable source file required`). This is a successful rejection, not a silently waived test failure. Existing npm build/test/verify:dev commands and all dependencies/versions remain unchanged. Full app build/verify:dev is not warranted for this isolated opt-in Node utility; no runtime/build integration was introduced. Run those if later work connects it to the app or changes existing tooling behavior.
+
+
+Independent review: Julia inspected the actual manifest, validator, tests, package diff and documentation; reran `assets:check`, `assets:test` (36 pass, negative CLI exit 1) and `git diff --check`. She reported a separate adversarial review of malformed/false-L3/missing-source/path cases with no blocking defect. Acceptance is limited to the technical contract above, not reviewer authentication, native editability, license rights or art/device acceptance. **Portability caveat:** symlink tests may require Windows privileges/Developer Mode; Windows was not tested. No portability PASS is implied.
