@@ -1,6 +1,8 @@
 # Dot × Codex — P0 supervision pilot (2026-11-16)
 
-**Status: READY FOR USER TO HAND OFF TO DOT; NOT STARTED.**  
+**Status: P0-1 checkpoint prepared on the pilot branch; independent review pending. P0-2–P0-4 NOT STARTED.**
+
+**Current handoff override:** Michael requested only P0-1, a local checkpoint commit, then STOP for independent review. Do not push or open a PR yet. The later Draft PR/supervision steps below remain the full-pilot plan, not authorization to continue this handoff. See [checkpoint report](DOT_P0_PILOT_REPORT.md).
 **Owner:** Michael. **Art/technical acceptance:** Julia + Michael. **Coordinator:** Dot (once Michael launches the task). **Builder:** Codex.  
 **Source of truth:** [Production Pipeline Action Tracker](PRODUCTION_PIPELINE_TRACKER.md), followed by current top directive in \`AGENTS.md\`. This file authorizes only a bounded **P0 pipeline-governance pilot**, not P1/P2 production.
 

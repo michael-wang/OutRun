@@ -1,4 +1,7 @@
 # OutRun — 美術 × 工程共同設計原則 R0
+
+> **Current authority:** the [Tracker](PRODUCTION_PIPELINE_TRACKER.md) supersedes the historical R6 integrated-work example and blanket NT$0 policy below. Technique/downstream/visual gates remain useful; character work is on hold. Research of paid options is permitted, but no paid calls or purchases are authorized in this pilot. Source backup/storage policy is pending P0-3, not established by keeping files outside Git.
+
 > **當前實例／授權取捨（2026-11-14）：** 使用者明確決定以一次整合版完成角色 1.0 比例、Spring Bones 髮尾與敞篷車風場，而非循序獨立 A/B。此為刻意接受較差歸因、優先追求玩家整體體驗的設計決策，不應被本文件的「每次只改一個變因」一般建議阻擋。仍應保留上一版、確保可回退、量測 Pixel 8 效能，並以 [R6 整合規格](COAST_HEROINE_R6_INTEGRATED_PASS.md) 作為現行施工準則。
 
 Date: 2026-11-14

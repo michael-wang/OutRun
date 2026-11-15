@@ -1,7 +1,7 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
 **決策日期：2026-11-15 深夜至 2026-11-16（台灣時間）**  
-**狀態：Michael 已驗收 P0-0 決策紀錄 PASS；P0-1～P0-4 待委派 Dot 試驗，尚未執行。**  
+**狀態：P0-0 維持原驗收紀錄；P0-1 分支文件盤點已準備，PARTIAL／待 Julia/Dot 獨立審核。P0-2～P0-4 未啟動。**
 **適用：第一關「海濱公路」在 dev 分支的製作；main 僅在 Michael 明確核准後更新。**  
 **使用方式：每次派 Codex 任務、驗收、收工盤點時，先查本文件，更新進度/證據/下一步。不得把「提交完成」當成「美術或 Pipeline PASS」。**
 
@@ -63,7 +63,7 @@
 | ID | 優先序／工作 | 狀態 | 交付／PASS 條件 | 責任 |
 | --- | --- | --- | --- | --- |
 | **P0-0** | 固化決策與防止舊指令繼續派工 | **PASS — Michael 2026-11-16 驗收** | 本 Tracker 作為當前單一行動清單，根目錄 AGENTS 明示優先級；不改遊戲 | Julia |
-| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **DOT PILOT QUEUED — 未啟動** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
+| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **PARTIAL — 分支 checkpoint，待獨立審核** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
 | **P0-2** | Asset Manifest + 最小自動守門 | **DOT PILOT QUEUED — 未啟動** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **DOT PILOT QUEUED — 未啟動** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **DOT PILOT QUEUED — 未啟動** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
@@ -107,10 +107,23 @@
 
 ### 2026-11-16 — Dot × Codex P0 pilot handoff
 
-Michael 明確同意以 **Dot 擔任 Codex 監督者**試行 P0-1…P0-4，完成後由 Michael + Julia 獨立 Review。詳細邊界、逐關 PASS 條件、兩次補丁停止規則、Draft PR 與監督績效報告要求，見 [Dot P0 Pilot Brief](DOT_P0_PILOT_BRIEF.md)。**目前僅準備好派工，尚未從此對話啟動 Dot 或 Codex，亦未開始 P0 實作。** P0 工作請在從 dev 分出的獨立分支進行；不得自動合併到 dev/main。
+Michael 明確同意以 **Dot 擔任 Codex 監督者**試行 P0-1…P0-4，完成後由 Michael + Julia 獨立 Review。詳細邊界、逐關 PASS 條件、兩次補丁停止規則、Draft PR 與監督績效報告要求，見 [Dot P0 Pilot Brief](DOT_P0_PILOT_BRIEF.md)。**此為原始 handoff 狀態；目前進度見下方 P0-1 checkpoint。** P0 工作請在從 dev 分出的獨立分支進行；不得自動合併到 dev/main。
 
 | 日期 | 項目 | 狀態變更 | 證據 | 下一步 |
 | --- | --- | --- | --- | --- |
 | 2026-11-16 | P0-1…P0-4 | TODO → Dot Pilot QUEUED（未執行） | [Dot Pilot Brief](DOT_P0_PILOT_BRIEF.md) | Michael 在 Dot 對話中交付文件；Dot 啟動 Codex 小步驟並留下獨立審核報告 |
 
 **重要：** 更新本表時亦更新上方任務狀態。每個受影響的 Issue 必須反映同一個狀態；不只寫文件卻不改實際派工.
+
+
+### P0-1 checkpoint — bounded handoff (2026-11-16 UTC)
+
+Type: **RESEARCH / documentation governance**. Branch: `p0/dot-pipeline-pilot`; base: `e81272a0e3295c942ece8b3d305bc49b0337fbe0` (remote dev verified at start). [Evidence, authority map and all issue/PR dispositions](DOT_P0_PILOT_REPORT.md).
+
+| 項目 | 狀態變更 | 證據／下一步 |
+| --- | --- | --- |
+| P0-1 | QUEUED → **PARTIAL / independent review pending** | 14 open issues + 1 draft PR inspected; local documentation checkpoint only. Julia/Dot must independently inspect actual diff and checks. |
+| P0-2–P0-4 | **NOT STARTED** | Current Michael handoff stops after P0-1; no automatic continuation. |
+| GitHub issue synchronization | **PENDING REVIEW** | Report dispositions are branch-local proposals, not applied labels/status changes. Live issue bodies still contain stale orders. Do not dispatch from them; review synchronization separately. |
+
+No new owner/art/device/release PASS. #45 remains BLOCKED. No push, PR, issue closure/deletion, gameplay/asset/version change or paid calls. The earlier requirement to synchronize every affected issue remains **unfulfilled**, explicitly tracked here; this local-review-only handoff does not pretend that GitHub has been reconciled. Next: independent review of P0-1, then a specific decision on issue synchronization and any later task.

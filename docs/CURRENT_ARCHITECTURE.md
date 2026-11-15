@@ -1,5 +1,7 @@
 # Current architecture — R4 accepted / map remake handoff (2026-11-12)
 
+> **Authority/status correction (P0-1):** this is a dated R3–R5 architecture record, not the active work queue. Its 10km/30km and version/next-work statements are historical. At pilot base, `content/stages/coast/road.json` defines 14,200m; current HUD range is 350–14,550 and package version is 0.10.30. Preserve shared road/Worker/lifecycle invariants. Use the [Tracker](PRODUCTION_PIPELINE_TRACKER.md) for current priorities and the [P0 report](DOT_P0_PILOT_REPORT.md) for review status.
+
 ## Goal and boundaries
 
 - **Engine:** Three.js geometry/road sampling, renderer, shadows, water,
