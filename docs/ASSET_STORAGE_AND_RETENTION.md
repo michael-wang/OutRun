@@ -1,6 +1,6 @@
 # P0-3 — source storage, restore trial and evidence retention
 
-**RESEARCH / non-destructive local trial; policy proposal awaiting independent review.** Snapshot: `30d2fea0693f86c20cbb023825cbdd9b2a6f2176`. Latest remote dev is still `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. No storage service, migration, retention automation, cleanup, upload, deployment or issue edit was performed.
+**RESEARCH / non-destructive local trial; technical scope independently accepted by Julia.** She inspected the actual inventory, deployment analysis and complete script/diff, reran the five-file trial against `30d2fea` and whitespace checks; an additional reviewer reran trial/refusal checks and inspected workflows without a blocking defect. This acceptance does not verify native master recovery, independent backups, LFS hydration or live deployment, and authorizes no migration/deletion. Policy adoption remains a separate decision. Snapshot: `30d2fea0693f86c20cbb023825cbdd9b2a6f2176`. Latest remote dev is still `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. No storage service, migration, retention automation, cleanup, upload, deployment or issue edit was performed.
 
 ## What was actually verified
 

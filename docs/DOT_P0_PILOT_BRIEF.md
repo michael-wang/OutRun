@@ -1,8 +1,8 @@
 # Dot × Codex — P0 supervision pilot (2026-11-16)
 
-**Status: P0-1 PARTIAL/unsynchronized; P0-2 PASS (technical only); P0-3 storage/trial checkpoint awaiting independent review; P0-4 NOT STARTED.**
+**Status: P0-1 PARTIAL/unsynchronized; P0-2 PASS (technical only); P0-3 PASS (technical scope only); P0-4 task-contract checkpoint awaiting independent review.**
 
-**Current stage checkpoint:** Michael authorized the full P0-1–P0-4 pilot and final Draft PR into dev. Julia independently reviewed P0-2 and accepted its limited metadata/evidence contract as technical PASS, then delegated P0-3. Michael directs no modifications to the 14 public Issues; preserve branch-local recommendations and actual approval errors for the full P0 Draft PR review. Stop after P0-3 for independent review; no push, migration, cleanup or P0-4 yet. This temporary stage gate does not revoke later pilot authorization. See [checkpoint report](DOT_P0_PILOT_REPORT.md).
+**Current stage checkpoint:** Michael authorized the full P0-1–P0-4 pilot and final Draft PR into dev. Julia independently reviewed P0-2 and accepted its limited metadata/evidence contract as technical PASS, then accepted P0-3’s limited same-machine restore scope and delegated P0-4. Michael directs no modifications to the 14 public Issues; preserve branch-local recommendations and actual approval errors for the full P0 Draft PR review. Stop after P0-4 for independent review; no push, migration, cleanup or P1/P2 work yet. This temporary stage gate does not revoke later pilot authorization. See [checkpoint report](DOT_P0_PILOT_REPORT.md).
 **Owner:** Michael. **Art/technical acceptance:** Julia + Michael. **Coordinator:** Dot (once Michael launches the task). **Builder:** Codex.  
 **Source of truth:** [Production Pipeline Action Tracker](PRODUCTION_PIPELINE_TRACKER.md), followed by current top directive in \`AGENTS.md\`. This file authorizes only a bounded **P0 pipeline-governance pilot**, not P1/P2 production.
 

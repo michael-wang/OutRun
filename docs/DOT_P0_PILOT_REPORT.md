@@ -1,8 +1,29 @@
-# P0 pilot — P0-3 storage checkpoint, independent review pending
+# P0 pilot — P0-4 task-contract checkpoint, independent review pending
 
-Current type: **RESEARCH / P0-3 storage and local restore trial** (P0-2 was isolated PRODUCTION/tooling). Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
+Current type: **PRODUCTION / isolated P0-4 governance tooling**, with a RESEARCH/SPIKE P1 example only. Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **PARTIAL, not self-approved.**
 
-## P0-3 current checkpoint — RESEARCH / non-destructive trial
+## P0-4 current checkpoint — bounded task-contract tooling
+
+Start `749f35ac8bc8d7f110c7566dbcb9fedbcee4436d`, same pilot branch, clean worktree. `git ls-remote --heads origin dev` returned unchanged `e81272a0e3295c942ece8b3d305bc49b0337fbe0`; Brief/current instructions re-read, no conflicts. No checkout `.agents/skills` or scripts-specific AGENTS exists.
+
+**Independent P0-3 review received:** Julia inspected actual storage inventory, deployment analysis, full restore script and diff; reran five-file trial against `30d2fea` (PASS/status unchanged) and `git diff --check`. She reports an additional reviewer repeated trial/refusal tests and inspected Netlify/Pages workflows with no blocking defect. Accepted technical scope only: same-machine byte restore, not native-master recovery, independent backup, LFS hydration or live deployment. No migration or deletion approved. No invented correction findings.
+
+Deliverables: [small task templates and limitations](TASK_CONTRACTS.md), [explicit example-only SPIKE contract](../asset-pipeline/riviera62-task.example.json), [record checker](../scripts/check-task-contract.mjs), [targeted tests](../scripts/test-task-contract.mjs). Six missing P1 prerequisites and four pending approvals each block production; example-only/non-PRODUCTION and two unresolved correction passes also block. Verified/accepted assertions require hash-checked, task/candidate/check-bound receipts with reviewer/observations. No command execution, production build, legacy enforcement, package change or build/CI integration.
+
+This is record validation, not authentication or semantic proof of source editability, licensing, pivot/material quality or device performance. Synthetic complete test receipts are not real P1 approvals. Clearing records never grants execution, merge or release authorization. Windows execution remains untested.
+
+### P0-4 commands/results
+
+- `node --test scripts/test-task-contract.mjs`: initial run **10 passed, 0 failed/skipped**, including CLI exit 0/1 checks, synthetic positive, every unknown/failed prerequisite and pending/rejected approval, two-pass stop, missing/changed/wrong-subject receipts and malformed contracts. Final rerun after relative path-escape coverage: **10 passed, 0 failed, 0 skipped; exit 0**.
+- `node scripts/check-task-contract.mjs asset-pipeline/riviera62-task.example.json`: **exit 0**, valid records with `PRODUCTION BLOCKED` and 12 reasons (example/type, six unknown capabilities, four pending approvals).
+- `node scripts/check-task-contract.mjs asset-pipeline/riviera62-task.example.json --production`: direct subprocess verification returned **exit 1 with exactly 12 blockers**, also asserted by CLI tests. No P1 execution.
+- `node --check scripts/check-task-contract.mjs` and `node --check scripts/test-task-contract.mjs`: **exit 0**.
+
+- `git diff --check`: **exit 0**, no output. Python scope/link check: `PASS: exact 10-file scope; 81 local links; package/runtime/assets/content/config unchanged`. Changed files: `AGENTS.md`, `README.md`, Brief, Tracker, this report, `docs/ASSET_STORAGE_AND_RETENTION.md`, `docs/TASK_CONTRACTS.md`, `asset-pipeline/riviera62-task.example.json`, `scripts/check-task-contract.mjs`, `scripts/test-task-contract.mjs`.
+
+Full build/verify:dev is not warranted: only opt-in Node-built-in tools/tests and docs/JSON, no runtime imports/build/dependency/package changes. Focused tests execute the actual CLI and integrity checks. No functional test failure waived. P0-4 remains PARTIAL awaiting independent review. P0-1 remains PARTIAL with no Issue edits/retries; prior denial evidence is retained below.
+
+## P0-3 historical checkpoint — subsequently accepted technical scope
 
 Starting branch checkpoint: `30d2fea0693f86c20cbb023825cbdd9b2a6f2176`; clean worktree and no conflicts. Latest dev rechecked unchanged at `e81272a0e3295c942ece8b3d305bc49b0337fbe0`; Brief and deploy/ignore configurations read. No `.agents/skills` in the checkout. Source inventory uses the Git tree rather than sparse file visibility. Art/masters, runtime, deployment configs and public Issues remain untouched.
 
@@ -27,7 +48,7 @@ Provider docs verified read-only: Vite public-copy behavior; checkout v4 LFS dow
 
 Failure record: initial direct `.gitignore` read failed because sparse checkout omitted it, resolved by materializing existing config. Initial restore trial failed on omitted `asset-pipeline/pilot.json` before output creation; existing committed metadata was materialized and trial passed. Final temp-directory guard was added to reject repository-local temporary roots before creating output; trial reran successfully. No functional failure waived.
 
-No full build/verify:dev warranted: only docs, a standalone Python local-trial script and its small JSON result were added/updated; no runtime or deployment integration changed. No source migration, history rewrite, LFS setup, asset edits, mass upload, deletion, paid calls or public Issue writes. **Local restore trial PASS is not disaster-recovery or editable-master PASS. P0-3 remains PARTIAL pending independent review.** Stop before P0-4.
+No full build/verify:dev warranted: only docs, a standalone Python local-trial script and its small JSON result were added/updated; no runtime or deployment integration changed. No source migration, history rewrite, LFS setup, asset edits, mass upload, deletion, paid calls or public Issue writes. **Local restore trial PASS is not disaster-recovery or editable-master PASS.** Historical handoff was PARTIAL pending review; Julia subsequently accepted technical scope and delegated P0-4, as recorded above.
 
 ## P0-2 checkpoint — PRODUCTION/tooling, subsequently accepted technically
 
@@ -118,8 +139,8 @@ Next: Julia/Michael separately reconcile integration scope, stale description, r
 | --- | --- | --- |
 | P0-1 | **PARTIAL** | Authority pointers, preserved history, all open issue/PR dispositions and local checks; independent review and live issue synchronization still pending. |
 | P0-2 | **PASS (technical)** | Julia independent review and reproduced checks; limitations retained. |
-| P0-3 | **PARTIAL** | Inventory/policy/local restore trial complete for independent review; no migration or true-master backup verification. |
-| P0-4 | **NOT STARTED** | No production task gate implemented. |
+| P0-3 | **PASS (technical scope)** | Julia reviewed and reran trial; same-machine bytes only. No migration/native-master/independent-backup acceptance. |
+| P0-4 | **PARTIAL** | Contracts, blocked P1 example and tested record gate; independent review pending. |
 
 **Independent review received — correction pass 1 of maximum two.** Julia reports reading the actual diff and verifying the clean worktree, `git diff --check`, and road/package snapshot. She rejected a material authority error: Codex had attributed the temporary P0-1-only delegation/pause to Michael rather than Julia. Codex corrected AGENTS, README, Brief, Tracker and this report to preserve Michael’s full-pilot/final-Draft-PR authorization and identify Julia’s temporary stage gate. Julia also required an exact, minimal live-issue synchronization proposal and permission verification before mutation. Those are supplied below. Julia subsequently accepted the authority correction and reviewed the 14 exact prefixes, then instructed Codex to perform the body-only synchronization. Final P0-1 verification remains **PENDING**; the reported checks are not owner/art/device acceptance.
 
@@ -251,4 +272,4 @@ Builder-observed constraints: bounded branch, local checks, no production/art ch
 
 Known unknowns: unresolved owner/device evidence in table; C: Blender masters and backups not accessible/verified; global source licensing not assessed; PR #31 integration not code-reviewed; no timing study proves the under-one-minute newcomer criterion. Token/agent cost is not measurable here; no paid services or inference APIs were invoked. Preserve recorded failures and existing release status.
 
-**Exact follow-up at this checkpoint:** Julia independently reviews P0-3’s inventory, deployment evidence, policy and local trial. No P0-4 or push yet. Preserve P0-1’s PARTIAL/unsynchronized state and actual errors; Michael directs no public Issue changes/retries. The full pilot authorization remains in force through bounded delegations. No asset migration, cleanup or P1/P2 production is authorized by this checkpoint.
+**Exact follow-up at this checkpoint:** Julia independently reviews P0-4’s contracts, actual checker/tests/diff and blocked P1 example. No push or P1/P2 work yet; final Draft PR handoff follows review under the existing full-pilot authorization. Preserve P0-1’s PARTIAL/unsynchronized state and actual errors; Michael directs no public Issue changes/retries. The full pilot authorization remains in force through bounded delegations. No asset migration, cleanup or P1/P2 production is authorized by this checkpoint.
