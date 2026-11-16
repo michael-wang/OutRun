@@ -2,7 +2,7 @@
 
 **日期：2026-11-16（台灣時間）**  
 **任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
-**最新狀態（2026-11-16）：P1-0 Michael PASS；P1-1 已由 Julia 驗收 PASS 並合併 [PR #58](https://github.com/michael-wang/OutRun/pull/58)；原 P1-2 [Issue #59](https://github.com/michael-wang/OutRun/issues/59) 因美術品質／瀏覽器驗證缺口及兩輪修正已用完而 STOPPED/BLOCKED。Michael 確認母檔存檔並另外授權 [P1-2R Visual-first Blender 方法重整 Issue #60](https://github.com/michael-wang/OutRun/issues/60)，待 Judy 啟動。P1-3／P1-4 未授權。**  
+**現行狀態（2026-11-17）：P1-0/P1-1 已 PASS；#59 舊 Blender 切片 STOPPED/BLOCKED、#60 Visual-first ART FAIL；Michael 已核准 Option B Modern Grand Roadster 設計方向並另行授權 [P1-2H 本地 Hunyuan3D 2.1 Shape → 有界 Paint 實驗（Issue #62）](https://github.com/michael-wang/OutRun/issues/62)。[正式多視角參考素材與單圖 Shape 輸入](https://chatgpt.com/space/page_cdb53387bb3c8191b794fa168c69ec7a) 須先核驗 bytes；P1-3／P1-4 未授權；沒有任何新車模型或像素效能 PASS。**  
 **負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
 **權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
 

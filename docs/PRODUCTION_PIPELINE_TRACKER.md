@@ -1,5 +1,11 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+**目前最上層工作（2026-11-17）：Michael 已核准 Riviera 62 的現代 Option B 造型與 [P1-2H 本地 Hunyuan3D 2.1 Shape→Paint 有界實驗 Issue #62](https://github.com/michael-wang/OutRun/issues/62)。** Judy 監督 Local Codex，先取得並核驗 [七張參考圖＋專用單圖輸入](https://chatgpt.com/space/page_cdb53387bb3c8191b794fa168c69ec7a) 的真正圖片 bytes；不能只用預覽或直接把舊 Style B 整張圖片丟入推論。可另從 Julia 對話下載 `riviera62_option_b_reference_pack_2026-11-17.zip` 作本地交接，但 GitHub Issue 需先能獨立核對 SHA-256。這些是 AI 繪製的多視角設計參考，**不是同一模型渲染的幾何正投影**，差異須誠實列出。
+
+**P1-2H Gate：** 先僅做 Hunyuan3D 2.1 Shape-only 一個完整車型，提供真正的 Blender 中性多視角／網格截圖接受外觀檢查；合格再嘗試分離程序的 2.1 Paint（16GB 顯卡可能 OOM），若失敗用 Blender 原生 PBR 備援，不為修 Paint 不斷重裝 CUDA，也不擅自使用雲端付費資源。騰訊模型與輸出的授權限制另行審查，**試驗模型不得直接升為公開全球商用資產**。不修改現有遊戲、主角、物理、`main`、不開 P1-3/4。
+
+**歷史保留：** 原手刻 Blender [#59](https://github.com/michael-wang/OutRun/issues/59) BLOCKED、Visual-first [#60](https://github.com/michael-wang/OutRun/issues/60) ART FAIL、[Draft PR #61](https://github.com/michael-wang/OutRun/pull/61) 部分失敗證據仍保留；兩次修正上限各自用完，不重新開始第三輪。Option A 是未來候選、Option C 不採用；新 **Option B** 取代舊 Riviera 62 外觀方向，但現有 runtime 車在完整下游驗收前仍為預設可玩車。
+
 **最新工作狀態（2026-11-16）：P1-2 [Issue #59](https://github.com/michael-wang/OutRun/issues/59) 在兩次修正後以 STOPPED／BLOCKED 收工，沒有 Draft PR、沒有 Three.js 互動驗證或美術 PASS；Michael 已確認可用母檔存檔，並授權**新的** [P1-2R Blender Visual-first 方法實驗 Issue #60](https://github.com/michael-wang/OutRun/issues/60)。Judy 尚未確認啟動新任務。**原 Issue 的兩次修正額度不得重置；新的研究方法有獨立、同樣最多兩輪的監督限制。** 遊戲 `dev`/ `main` 的 runtime 尚未受 P1-2 影響，P1-3/4 未授權。
 
 **P1-2R 先藝術後管線：** 保留 #59 所有已存檔 .blend、GLB 與診斷；新母檔先做自然連續的 Riviera 62 輪拱／前葉子板，提交可實際審核的 Blender 多角度、黃昏／中性燈與 wireframe 截圖。美術可接受才建獨立輪圈、完整大燈燈殼與發光鏡面，接著做兩次原生編輯／GLB 重匯／允許的 Three.js 離線結構檢查。**不要繞過瀏覽器安全審核，也不要用非瀏覽器測試冒稱 UI PASS。** 只需要可真正重新取得的版本化母檔，不先建立過度複雜的異地備份系統。
@@ -104,7 +110,7 @@
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
-| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-0 PASS；P1-1 PASS；P1-2 #59 STOPPED/BLOCKED；P1-2R #60 新方法已授權待 Judy 啟動；P1-3／P1-4 未授權** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-0/P1-1 PASS；#59 BLOCKED、#60 ART FAIL；P1-2H Hunyuan local #62 授權待 Judy 啟動；P1-3/4 未授權** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
 | **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **WAIT P1/可並行研究** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
 | **G1** | 輕量 Game Experience Roadmap | **DEFER** | P1/P2 取得初步能力證明、或第一關下一次整體體驗檢討時再提；聚焦賽車/多景/駕駛小遊戲，不提前開做 | Julia + Michael |
 | **CH1** | 女主角進一步動作／表情／服裝精修 | **ON HOLD** | 第一關場景製作成熟後，重新定義最終情境與角色完整 Pipeline Spike；現行可玩的 R6d 髮型與能力保留 | Julia + Michael |
