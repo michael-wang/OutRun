@@ -1,5 +1,66 @@
 # P0 pilot — final branch review package
 
+## Current closeout addendum — 2026-11-16 UTC
+
+**Current state: Linux checks passed; all 14 live Issue dispatch classifications synchronized and independently read back; documentation closeout awaits Julia's independent diff review.** This addendum supersedes the current-status wording in the preserved pre-publication checkpoint below, including its pending-push/PR, no-live-edits, unsynchronized and Windows/Linux-untested statements. Those statements remain evidence of their original stages, not assertions about this later checkpoint. P0 is not self-awarded final acceptance.
+
+### Identity, supervision and authorization sequence
+
+- [Draft PR #56](https://github.com/michael-wang/OutRun/pull/56) remains OPEN/Draft into `dev`, on `p0/dot-pipeline-pilot`. The remote head verified for this documentation task is `df6a198f38188fe44a288b56c383ea78e2151987`; remote dev is still `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. The original ten commits ending at `4c7e3b634bc52965c0e5d7f16791f290ef25302d` remain exact ancestors. Additive Windows fix `450896ec6ea4df03003b6b6a8c4106aeb8ad634a` and Julia's manual-workflow commit `df6a198` follow them without rewriting history.
+- The initial #6 update and one evidence-backed retry were denied by automatic approval review. Read-backs found no change; the other 13 were not attempted. Michael then explicitly prohibited live edits pending full Draft PR review. Those two denials and their exact quotations below remain unchanged; later success does not turn them into approved historical actions.
+- Michael subsequently authorized the bounded Windows correction. The [Windows checkpoint](P0_WINDOWS_COMPATIBILITY.md) preserves the initial 45/50 result, exact-byte rerun at 34/36 assets, expanded red regression at 34/42, CRLF hash mismatch and real symlink-containment defect. The native `path.sep` fix and scoped LF attribute preserve raw-byte hashing. Builder reruns passed 36 assets + 6 portability + 14 contracts, with no failures/skips. The independent Windows reviewer reported inspecting the actual nine-file diff and rerunning the same 56 tests: an initial sandbox junction-creation `EPERM` was followed by an approved scoped run of unchanged tests, all passing. This execution limitation was not a safety-review denial and no assertion was weakened. Linux had not run at that Windows checkpoint.
+- [Julia review 5914717721](https://github.com/michael-wang/OutRun/pull/56#pullrequestreview-5914717721), at `df6a198`, gave CONDITIONAL TECHNICAL PASS, not merge approval, and required Linux verification before Issue synchronization, then documentation reconciliation and a final review. Her GitHub review explicitly distinguished submitted Windows evidence from execution in that review chat; the separate Windows independent rerun is attributed above, not retroactively claimed as that chat's execution.
+- The local Windows worker used the official installed GitHub CLI after Michael completed login. It dispatched the requested workflow exactly once and returned both jobs and logs. The supervising parent then reported independently checking that exact Actions run, reviewed the read-only 14-Issue plan, and executed the body-only synchronization under Michael's later explicit conditional authorization. It reports using the same GitHub `update_issue` connector that previously denied #6, receiving successful responses and checking each read-back, with no alternate route or approval bypass. This worker did not perform those writes; it independently verified their resulting content and metadata below.
+- For this documentation task, the clean isolated worktree was fast-forwarded from `450896e` to the verified PR head `df6a198`. The user's original `C:/astra-dev/outrun` checkout remains on local dev `3fe62dc`, with its existing untracked files preserved. Only this report and the Tracker are changed; no Issue or PR write, push, workflow dispatch or runtime change belongs to this handoff.
+
+### Actual one-time Linux execution
+
+[Run 43812289125](https://github.com/michael-wang/OutRun/actions/runs/43812289125), attempt **1**, event `workflow_dispatch`, ref `p0/dot-pipeline-pilot`, actual head **`df6a198f38188fe44a288b56c383ea78e2151987`**, completed **success**. Created 2026-11-16 **05:45:25 UTC**; completed **05:46:09 UTC**. Command: `gh workflow run dev-checks.yml --ref p0/dot-pipeline-pilot`. No rerun was dispatched for this documentation change.
+
+| Job / command | Observed result |
+| --- | --- |
+| [p0-pipeline, job 133116414932](https://github.com/michael-wang/OutRun/actions/runs/43812289125/job/133116414932) | SUCCESS; actual Ubuntu 26.04, Node 22.23.4, npm 10.9.9 |
+| `npm run assets:check` | Exit 0; valid pilot with explicit source/license/device gaps and metadata-only limits |
+| `npm run assets:test` | Exit 0; 36 tests, 36 pass, 0 fail, 0 skipped |
+| `node --test scripts/test-asset-manifest-portability.mjs` | Exit 0; 6 tests, 6 pass, 0 fail, 0 skipped; actual POSIX symlink/path and checkout-byte checks |
+| `node --test scripts/test-task-contract.mjs` | Exit 0; 14 tests, 14 pass, 0 fail, 0 skipped |
+| [verify, job 133116414708](https://github.com/michael-wang/OutRun/actions/runs/43812289125/job/133116414708) | SUCCESS; `npm ci`, shore prebuild and `npm run build` (`tsc --noEmit && vite build`) succeeded |
+| Existing `npm run test:p0` | Exit 0; 44/44 tests, 8/8 files passed |
+| Existing `npm run test:p1` advisory | Exit 0; 47/47 tests, 4/4 files passed despite advisory `continue-on-error`; its conditional warning step was skipped because it did not fail |
+
+Observed caveats: runner Node-20 action-runtime deprecation/forced Node 24 for checkout/setup-node (distinct from test Node 22), `punycode`/`url.parse()` deprecation notices, ubuntu-latest image migration, and Vite's >500 kB chunk warning. No Linux test failure was hidden or retried. The existing advisory suite name does not mean the asset-pipeline P1 task was started. Workflow remains manual-only; no dev-push CI was enabled. Job logs and exact run metadata were retained locally outside the repo in `../p0-linux-verification/` relative to the isolated worktree, and the linked Actions jobs are the remote evidence.
+
+### Live Issue synchronization and independent read-back
+
+On 2026-11-16 UTC, this worker fetched all 14 live Issues and compared them with its saved pre-sync read-only snapshot and the exact historical proposal below. **14/14 bodies equal the proposed prefix plus the complete original body**, with exactly one marker each. All remain OPEN; title, state reason, labels, assignees, milestone, comment count and closed-at fields match the prior snapshot. All ten existing comments across six Issues were fetched again and their IDs, bodies and update timestamps matched. No closing, relabeling or new implementation assignment is inferred.
+
+| Issue | Verified dispatch classification | GitHub updated_at (2026-11-16 UTC) | State |
+| --- | --- | --- | --- |
+| [#6](https://github.com/michael-wang/OutRun/issues/6) | SUPERSEDED | 05:55:44 | OPEN |
+| [#7](https://github.com/michael-wang/OutRun/issues/7) | NEEDS_OWNER_REVIEW | 05:56:10 | OPEN |
+| [#9](https://github.com/michael-wang/OutRun/issues/9) | NEEDS_OWNER_REVIEW | 05:56:14 | OPEN |
+| [#14](https://github.com/michael-wang/OutRun/issues/14) | SUPERSEDED | 05:56:18 | OPEN |
+| [#20](https://github.com/michael-wang/OutRun/issues/20) | HOLD | 05:56:22 | OPEN |
+| [#32](https://github.com/michael-wang/OutRun/issues/32) | HOLD | 05:56:26 | OPEN |
+| [#33](https://github.com/michael-wang/OutRun/issues/33) | NEEDS_OWNER_REVIEW | 05:56:30 | OPEN |
+| [#34](https://github.com/michael-wang/OutRun/issues/34) | HOLD | 05:56:34 | OPEN |
+| [#35](https://github.com/michael-wang/OutRun/issues/35) | HOLD | 05:56:38 | OPEN |
+| [#45](https://github.com/michael-wang/OutRun/issues/45) | BLOCKED | 05:56:42 | OPEN |
+| [#49](https://github.com/michael-wang/OutRun/issues/49) | SUPERSEDED | 05:56:45 | OPEN |
+| [#50](https://github.com/michael-wang/OutRun/issues/50) | SUPERSEDED | 05:56:50 | OPEN |
+| [#51](https://github.com/michael-wang/OutRun/issues/51) | NEEDS_OWNER_REVIEW | 05:56:53 | OPEN |
+| [#54](https://github.com/michael-wang/OutRun/issues/54) | HOLD | 05:56:57 | OPEN |
+
+P0-1's live classification requirement is now fulfilled, with **final independent closeout acceptance pending**. This resolves the earlier synchronization blocker, not the Issues' underlying technical/art/device unknowns. SUPERSEDED identifies outdated work orders, not completed requirements; #7's no-close instruction, #45's Pixel 8 release blocker and #54's garment failures remain visible. No zero-unknown production claim or automatic closure is made.
+
+### Remaining boundaries and review stop
+
+P0-2/3/4 retain their accepted **bounded technical scope**. P0-3 is policy plus a same-machine five-file byte restore, not actual editable Blender-master recovery, independent backup, LFS hydration or deployment proof. P0-4 remains an opt-in record checker, not authenticated human approval or global Codex/CI enforcement. Native-source editability, licensing, real P1 car abilities, full `verify:dev`/all-regression execution, browser/controller play, Pixel 8 performance, art, owner and release acceptance are not established by this run. No P1/P2 production, character work, merge, deployment or dev/main push is authorized by these results.
+
+This two-file documentation increment requires scope/history-preservation, local-link and whitespace checks; it does not rerun runtime tests or claim a new Linux-tested commit. The Linux-tested SHA remains `df6a198`. Stop after the local additive documentation commit for Julia's actual diff/evidence review. Push and PR-description reconciliation remain pending under the current delegation; PR #56 stays Draft. Final acceptance belongs to Michael + Julia. The preceding supervision record attributes implementation, reviewer findings, actual executions and reported independent checks separately; the preserved history below includes both P0-4 corrections and the supervisor's over-restrictive first instruction rather than erasing unsuccessful steps.
+
+## Preserved pre-publication checkpoint — historical, superseded by addendum above
+
 Current task: **final documentation/status handoff only**; implementation and independent technical stage reviews are complete. Observed 2026-11-15 UTC / 2026-11-16 Taiwan time (project decision dates use Taiwan time). Builder: Codex; coordinator: Dot; independent review: Julia/Dot; final acceptance: Michael + Julia. **Overall PARTIAL because P0-1 live synchronization is unfulfilled; P0-2/3/4 independently accepted only within technical scope.**
 
 ## Final status, identity and independent acceptance

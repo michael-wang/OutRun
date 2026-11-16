@@ -1,9 +1,11 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
 **決策日期：2026-11-15 深夜至 2026-11-16（台灣時間）**  
-**狀態：P0-0 維持原驗收紀錄；P0-1 PARTIAL／Issues 未同步；P0-2 PASS（technical only）；P0-3 PASS（technical scope only）；P0-4 PASS（technical scope only）；final report/diff 待 Julia 審查後才 push / Draft PR。**
+**狀態（2026-11-16 UTC closeout）：P0-0 維持原驗收紀錄；P0-1 的 14 個 Issue 派工分類已同步並獨立回讀，全部保持 OPEN，最終驗收待 Julia；P0-2/3/4 維持 bounded technical PASS。Draft PR #56 已存在、base dev；Linux 手動驗證通過。本次文件增補僅作本地提交，待 Julia 審查，尚不 push／更新 PR 描述。**
 **適用：第一關「海濱公路」在 dev 分支的製作；main 僅在 Michael 明確核准後更新。**  
 **使用方式：每次派 Codex 任務、驗收、收工盤點時，先查本文件，更新進度/證據/下一步。不得把「提交完成」當成「美術或 Pipeline PASS」。**
+
+**現況證據：** [最新 closeout addendum](DOT_P0_PILOT_REPORT.md#current-closeout-addendum--2026-11-16-utc)、[Julia review](https://github.com/michael-wang/OutRun/pull/56#pullrequestreview-5914717721)、[Linux run 43812289125](https://github.com/michael-wang/OutRun/actions/runs/43812289125)。下方各 checkpoint 的「未同步／禁止修改／尚未 push 或建立 PR」是當時有效的歷史紀錄；後來 Michael 明確條件式授權、Linux 驗證及同步結果見末尾追加紀錄，不能用後來成功抹去先前拒絕。此狀態不解除 #45、母檔備份、美術或 release 關卡，亦不啟動 P1/P2。
 
 ## 0. 我們究竟在做什麼
 
@@ -63,7 +65,7 @@
 | ID | 優先序／工作 | 狀態 | 交付／PASS 條件 | 責任 |
 | --- | --- | --- | --- | --- |
 | **P0-0** | 固化決策與防止舊指令繼續派工 | **PASS — Michael 2026-11-16 驗收** | 本 Tracker 作為當前單一行動清單，根目錄 AGENTS 明示優先級；不改遊戲 | Julia |
-| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **PARTIAL — live issue sync BLOCKED** | 梳理過時「CURRENT」、權威文件與互相矛盾的規格，舊 Issue 標記 current/hold/superseded/blocked，不假裝已驗收 | Julia + Codex |
+| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **14/14 live classifications SYNCED；final review pending** | 文件權威與 14 項派工分類已整理／同步，原 body 與未知保留，全部 OPEN；不等於原問題已完成或美術／裝置驗收 | Julia + Codex |
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
@@ -179,3 +181,18 @@ P0-1 remains **PARTIAL/unsynchronized**, no public Issue edits or retries. P0-2/
 P0-1 **PARTIAL / unsynchronized**; P0-2, P0-3, P0-4 **PASS (technical scope only)**. Julia's final P0-4 re-review inspected actual correction code/diff and reran **14 task tests + 36 asset tests + whitespace check**, all passed. Receipt failures/missing/incompatible outcomes reject; second-pass advancement and third-correction dispatch are separated; >2 remains a violation. Both correction passes and Julia's acknowledged over-restrictive pass-1 instruction are preserved in the [final report](DOT_P0_PILOT_REPORT.md). No third P0-4 correction is allowed.
 
 Technical PASS authenticates neither human approvals/claims nor actual car abilities, source editability/license, visual/device acceptance, independent backups or live deployment. P1/P2 remain unperformed. Current task: final docs/status only, then **Julia final diff review before push and Draft PR into dev** under Michael's existing authorization; no merge. All stage-specific stop instructions above are historical checkpoint records. Michael's no-live-Issue-edit direction remains active; actual denials and unsynchronized recommendations remain for full Draft PR review.
+
+### 2026-11-16 UTC — closeout update after Linux verification and Issue synchronization
+
+本節與頂部狀態是最新紀錄；前述 pre-publication、Windows 未測與 Issue 禁止修改段落保留為歷史。PR #56 遠端 head `df6a198f38188fe44a288b56c383ea78e2151987`、Draft、base dev；原始十個 SHA 完整保留，後接 Windows 修正 `450896e` 與 Julia 的 manual-only workflow `df6a198`。本文件提交以該 head 為 parent，未 push；原本使用者 checkout／未提交檔案保持原狀。
+
+| 項目 | 已核實變化／證據 | 尚未完成／下一步 |
+| --- | --- | --- |
+| Windows 相容性 | 真實 symlink containment 與 CRLF hash 問題已修正；36 asset + 6 portability + 14 contract 全過，獨立 reviewer 亦報告 scoped rerun 全過 | [原失敗及 exact TAP](P0_WINDOWS_COMPATIBILITY.md) 完整保留；先前 junction EPERM 與後來 approved scoped execution 分開記錄，沒有弱化測試 |
+| Linux 一次性手動驗證 | [43812289125](https://github.com/michael-wang/OutRun/actions/runs/43812289125)，attempt 1，SHA `df6a198`；assets:check、36+6+14 全過；verify build、44 P0、47 advisory tests 全過；parent 已獨立核實 jobs/logs | 實際 Ubuntu 26.04／Node 22.23.4；平台及 bundle-size 警告見報告。未執行完整 verify:dev／裝置／美術驗收；本文件提交不是該測試 SHA |
+| P0-1 live synchronization | Michael 後來的明確條件式授權與 Julia review 前置關卡完成後，parent 回報經同一 update_issue connector 成功同步；本 worker 對原提案與 pre-sync 快照逐字比對 14/14 通過，十則留言與其他欄位未變 | 全部 OPEN：SUPERSEDED #6/#14/#49/#50；NEEDS_OWNER_REVIEW #7/#9/#33/#51；HOLD #20/#32/#34/#35/#54；BLOCKED #45。此為派工狀態同步，非完成／關閉原問題 |
+| 審核與失敗歷史 | 先前 #6 兩次自動審核拒絕、回讀未變、其餘 13 未嘗試及後來禁改指令原文保留；後來成功是新授權後的獨立事件，parent 回報未換工具繞過 | 本 worker 本輪只讀核實 Issues，沒有重試／寫入；不得把歷史拒絕改寫成成功 |
+| P0-3／P0-4 邊界 | 同機五檔 byte restore 與 opt-in record checker 的 technical PASS 維持 | 真實可編輯母檔獨立備份仍未證明；沒有全域強制守門／人類審批認證，沒有 P1 能力或來源授權 PASS |
+| 本地文件 handoff | 僅 Tracker／report 現況增補；歷史 report、Windows 失敗、兩次 P0-4 修正及 supervisor 自身修正原因保留 | 停待 Julia 獨立審查實際 diff／證據；之後的 push／PR 描述更新仍待處理。維持 Draft，不合併、不動 dev/main、不開始 P1/P2 |
+
+完整時間、job links、逐 Issue updated_at、監督與驗證責任歸屬見 [驗收報告最新增補](DOT_P0_PILOT_REPORT.md#current-closeout-addendum--2026-11-16-utc)。P0 最終驗收不自行宣告；#45 Pixel 8 release gate、角色 HOLD、來源／備份／裝置／美術未知仍保留。
