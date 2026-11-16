@@ -1,5 +1,7 @@
 # P1-1 Riviera 62 research — review candidate
 
+> **CURRENT REVIEW STATUS — 2026-11-16:** Judy independently re-reviewed the correction; Julia inspected the source/diff and gave [P1-1 RESEARCH TECHNICAL PASS](https://github.com/michael-wang/OutRun/pull/58#pullrequestreview-5918256565). [PR #58](https://github.com/michael-wang/OutRun/pull/58) has been merged to dev. The original candidate/handoff statements below (`independentReview: pending`, no PR, 11 production blockers) are **dated snapshot evidence**, not an ongoing P1-1 work order. There is **no P1-2 production authorization** and no proven native Blender/GLB/Pixel 8 capability. Reviewer clarifications: first L1 slice needs retrievable/versioned source and offline import, not an elaborate independent backup service or deterministic in-game replay harness (later gates).
+
 2026-11-16. Authority: Issue #57, P1_RIVIERA62_PIPELINE_BRIEF.md (B1/B2/B3), PRODUCTION_PIPELINE_TRACKER.md, TASK_CONTRACTS.md, COAST_ART_BIBLE.md and COAST_HERO_VEHICLE_ART.md. Source inspected at dev `b66d06e67580e1faf35ad9bdc358a694b0ac4a04`. This is a research decision proposal, not a DCC or production PASS. Judy independently reviewed def0da6 and requested a transform/capture clarification. Correction pass 1 is complete; independent re-review is pending. No P1-2 authorization.
 
 ## Decision and environment

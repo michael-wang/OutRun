@@ -2,7 +2,7 @@
 
 **日期：2026-11-16（台灣時間）**  
 **任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
-**狀態（2026-11-16）：P1-0 已獲 Michael 明確驗收 PASS；P1-1 RESEARCH / SPIKE 已授權，詳見 [Issue #57 — Judy → Local Codex](https://github.com/michael-wang/OutRun/issues/57)。Judy 尚未確認接案；P1-2／P1-3／P1-4 仍未授權施工。**  
+**最新狀態（2026-11-16）：P1-0 Michael PASS；P1-1 已由 Judy 監督本機 Codex 完成，經 Julia 獨立審查 PASS，合併 [PR #58](https://github.com/michael-wang/OutRun/pull/58) 並結案 [Issue #57](https://github.com/michael-wang/OutRun/issues/57)（僅研究完成）。P1-2／P1-3／P1-4 尚未授權施工。**  
 **負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
 **權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
 
@@ -101,6 +101,6 @@ Judy 應在每個 checkpoint **獨立**讀 diff、驗證實際結果，而非 Co
 - [ ] 車體／車輪／方向盤可變換的 GLB Hierarchy、座標慣例、Stage 燈光語意、可回退整合已列入後續需求。
 - [ ] 第一個切片、原始母檔、Hash／授權、裝置效能／美術驗收、失敗停止條件列入；沒有偷偷開始製作。
 - [ ] Judy 的 Codex reasoning effort 策略有預設值、升級理由及最高強度限制，且遵循 P0-4 任務契約。
-- [x] **Michael 已驗收 P1-0 PASS，並授權 [P1-1 RESEARCH Issue #57](https://github.com/michael-wang/OutRun/issues/57)**；不將文件提交當成 L2／L3 生產能力的證據。P1-1 仍需 Judy 實際接手，不能把 Issue 建立誤稱已完成研究。
+- [x] **Michael 已驗收 P1-0 PASS；P1-1 研究已完成且由 Julia 驗收，詳見 [PR #58](https://github.com/michael-wang/OutRun/pull/58)／[Issue #57](https://github.com/michael-wang/OutRun/issues/57)**。不將研究文件、結案或建立 Task Contract 當成 L2／L3 生產能力的證據；P1-2 必須另外授權。
 
 **P1-0 定義完成不等於 Riviera 62 製作流程通過。** 後續必須經真正的 DCC→GLB→遊戲內動態→Pixel 8 實驗證明。
