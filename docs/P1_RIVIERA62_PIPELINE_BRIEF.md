@@ -2,7 +2,7 @@
 
 **日期：2026-11-16（台灣時間）**  
 **任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
-**最新狀態（2026-11-16）：P1-0 Michael PASS；P1-1 Judy／Codex 研究經 Julia PASS，已合併 [PR #58](https://github.com/michael-wang/OutRun/pull/58) 並結案 [Issue #57](https://github.com/michael-wang/OutRun/issues/57)。Michael 已明確授權 [P1-2 單側前車角 DCC SPIKE Issue #59](https://github.com/michael-wang/OutRun/issues/59)，待 Judy 接手；P1-3／P1-4 未授權。**  
+**最新狀態（2026-11-16）：P1-0 Michael PASS；P1-1 已由 Julia 驗收 PASS 並合併 [PR #58](https://github.com/michael-wang/OutRun/pull/58)；原 P1-2 [Issue #59](https://github.com/michael-wang/OutRun/issues/59) 因美術品質／瀏覽器驗證缺口及兩輪修正已用完而 STOPPED/BLOCKED。Michael 確認母檔存檔並另外授權 [P1-2R Visual-first Blender 方法重整 Issue #60](https://github.com/michael-wang/OutRun/issues/60)，待 Judy 啟動。P1-3／P1-4 未授權。**  
 **負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
 **權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
 

@@ -1,5 +1,17 @@
 # 極速漫遊 / OutRun — current project rules
 
+## CURRENT WORK — P1-2R Blender visual-first method reset (2026-11-16)
+
+**Current authorization:** Michael confirmed the surviving P1-2 Blender files are saved and authorized a **different bounded modeling method**, [P1-2R Issue #60](https://github.com/michael-wang/OutRun/issues/60). Judy → authenticated Windows Local Codex. This issue is **AUTHORIZED/QUEUED, not proof of active work**. Prior [P1-2 Issue #59](https://github.com/michael-wang/OutRun/issues/59) remains **STOPPED/BLOCKED**, with its **two correction passes exhausted** and no Draft PR. **DO NOT start a third #59 correction, clear its old failure, override browser security review, or pretend its asset work passed.** The earlier P1-2 authorization below is historical.
+
+**New method / different hypothesis:** preserve saved #59 .blend, GLB and failure records without overwriting. Start a NEW .blend source revision, emphasize **editable connected fender/arch topology, smooth surface and plausible broad paint highlights** under neutral and dusk views. Deliver real native Blender multi-view and wireframe evidence first. Only if the art gate has credible evidence proceed to independently modeled wheel rim, complete headlamp housing/lens, two genuine source edits, repeated GLB export and legitimate **offline structural Three.js GLTFLoader** validation (when permitted). Don't let a cluster of primitives or a script-rebuilt car shell masquerade as an artist-editable hero model. Blender tools/scripts may assist, but final geometry must remain genuinely editable and visually suitable for Riviera 62.
+
+**Security and stop:** an earlier browser UI safety review stopped the interactive viewer. Do **not** bypass, weaken permissions, reroute prohibited access or claim browser PASS. A permitted in-process, offline Three.js parser check can establish *structural* behavior only; if unavailable mark it blocked honestly. Under the **new** independent method issue Judy can request at most two narrowly scoped corrections, then stop; no third or further self-authorized reset. Preserve existing game/player/character/physics/main; P1-3/P1-4 NOT authorized. Deliver an honest Draft PR with source and authentic evidence if possible, or mark blockers and expose reviewable artifacts.
+
+**Status discipline:** Judy updates [Issue #60](https://github.com/michael-wang/OutRun/issues/60) when actually running (`IN_PROGRESS`), stopped (`BLOCKED`) or when a Draft PR exists (`AWAITING_JULIA_REVIEW`). Record applied Codex reasoning effort (or UNKNOWN), model/tool version, source+export hashes. Michael should not need to copy Judy's chat messages to know if she is working.
+
+---
+
 ## CURRENT WORK — P1-2 DCC slice authorized (2026-11-16)
 
 Michael authorized [Issue #59](https://github.com/michael-wang/OutRun/issues/59): Judy supervises Windows Local Codex to create ONE artist-editable Riviera 62 front-wheel/arch/headlamp/paint Blender slice, save and version the native source, actually re-edit/re-export GLB twice, and demonstrate independent wheel yaw/roll and lamp-emission toggles in an OFFLINE Three.js importer. Submit a DRAFT PR for Julia/Michael review and STOP. Issue creation is not proof that Judy already began work.
