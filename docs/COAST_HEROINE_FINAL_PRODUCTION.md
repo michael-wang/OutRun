@@ -1,5 +1,7 @@
 # R7H — 女主角最終角色製作規格 / Heroine Completion Contract
 
+> **HISTORICAL production contract / HOLD:** preserve the existing playable B-2 heroine and R6d hair. “Ready” and “approved” statements below describe prior decisions, not permission to rebuild or a new acceptance verdict. Current priorities and unresolved gates are in the [Tracker](PRODUCTION_PIPELINE_TRACKER.md); further character work is on hold.
+
 ## Latest explicit owner clarification — B-2, v0.10.30
 
 The owner chose **「依附圖 B-2：取消繞頸，跨肩後向腰部收攏」** after the conflict between the attached B-2 illustration and Issue #51 / ZIP text was identified. This overrides ALL earlier halter/neck-loop instructions below. Use two volumetric ivory ribbons from the front bodice over the shoulders, converging toward the back waist; no neck loop, crossed X or independent horizontal bra band. Keep the lower back covered. The delivered trial lowers the center back edge from 1.100m to 1.000m and preserves the existing face/body, animations, scale, frozen hair and wild wind. [Review evidence and provenance](art-review/r7h-revb/README.md). Await Julia/owner acceptance after this costume-only pass.

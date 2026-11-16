@@ -1,5 +1,7 @@
 # R5c — Scenic Grand Tour, a 30km first-map road
 
+> **HISTORICAL / SUPERSEDED road plan:** 30,000m, HUD 350–30,350 and the old lesson coordinates below are archival. Current authored coast is 14,200m, HUD 350–14,550. Do not restore this geometry or treat its next-work line as authorization. See the [Tracker](PRODUCTION_PIPELINE_TRACKER.md).
+
 Status: **road whitebox, guardrails and art-direction anchors implemented on dev**.
 Build/Pixel 8/owner-driving acceptance is NOT yet complete.
 Next task after drive approval: physical Hero Scenery via Blender/Geometry Nodes.

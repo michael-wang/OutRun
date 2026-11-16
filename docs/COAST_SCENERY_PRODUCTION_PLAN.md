@@ -1,4 +1,7 @@
 # Coastal Highway — Scenery Production Plan v1.1
+
+> **Current scheduling authority:** the [Tracker](PRODUCTION_PIPELINE_TRACKER.md) supersedes the dated parallel hero/scenery delivery order below: P0 → P1 Riviera proof → P2 portable scenic proof; character expansion is on hold. Retain the asset/package/layout principles and acceptance criteria as reference, not permission for mass production. P0-1 does not execute #34/#35.
+
 Date: 2026-11-14
 Status: approved direction recorded; **production stages are proposed, not claimed complete**.
 Companion decisions: docs/COAST_ART_BIBLE.md, docs/COAST_PORTABLE_SITES.md and docs/COAST_HERO_VEHICLE_ART.md.

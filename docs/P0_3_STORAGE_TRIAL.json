@@ -1,0 +1,72 @@
+{
+  "status": "PASS local byte-restore trial only",
+  "snapshot": "30d2fea0693f86c20cbb023825cbdd9b2a6f2176",
+  "trackedPathCount": 1033,
+  "extensionCounts": {
+    ".css": 4,
+    ".glb": 17,
+    ".html": 1,
+    ".jpg": 224,
+    ".js": 4,
+    ".json": 116,
+    ".log": 1,
+    ".md": 68,
+    ".mjs": 58,
+    ".mp3": 2,
+    ".mp4": 17,
+    ".png": 109,
+    ".py": 21,
+    ".toml": 1,
+    ".ts": 374,
+    ".txt": 7,
+    ".wav": 1,
+    ".webm": 1,
+    ".webmanifest": 1,
+    ".yml": 2,
+    "<none>": 4
+  },
+  "masterCandidatesByExtension": [],
+  "trackedLfsConfig": [],
+  "files": [
+    {
+      "path": "art/reference/coast/03_STYLE_B_coastal_highway.png",
+      "gitBlob": "099530f6f2e1dc36c8c97a4b181152853b3f1b26",
+      "bytes": 2213841,
+      "sha256": "76136ce21f53802567ce44f996e9cc335db3f9f1a9b7b52a2927c793f6eac3e6"
+    },
+    {
+      "path": "art/reference/coast/README.md",
+      "gitBlob": "d8f3f9056b29353ea55106817deb1d54d7d62f3c",
+      "bytes": 1458,
+      "sha256": "0d99eca326ac723363175f2c5148bfc56f9c1233c07b5e7da07c82b016bbe569"
+    },
+    {
+      "path": "public/assets/characters/coast-blonde-r6d.glb",
+      "gitBlob": "19c32c1c9aa2a59e45b6b6141e0476a64ddb2a8e",
+      "bytes": 153240,
+      "sha256": "8273fe14b4f1c83a4c8b574bacd7d834a6142380013e6e8ebb6f7b447399f519"
+    },
+    {
+      "path": "docs/art-review/r6d/README.md",
+      "gitBlob": "0cb7b84ed438d3c330d78de36751c2dd39fd4dc3",
+      "bytes": 5883,
+      "sha256": "c78b0cda2c9610b1619f3df424103f88cd5d3973eb394d5c3fb27f2ae960c823"
+    },
+    {
+      "path": "asset-pipeline/pilot.json",
+      "gitBlob": "fd0610d082f8166768d33b4cb7f16f37ae5ca46a",
+      "bytes": 2530,
+      "sha256": "dcd03cebfddeb90a68a17f2d6d48e957e07d16611dc865368e141db8d802c677"
+    }
+  ],
+  "archive": "/tmp/outrun-p0-3-restore-jf7l2d97/sample.zip",
+  "archiveSha256": "60ded6a6d267251fdb5f4983b96dc501f181283318a231cbfae2a1122fc83ab5",
+  "restoredDirectory": "/tmp/outrun-p0-3-restore-jf7l2d97/restored",
+  "repositoryStatusUnchanged": true,
+  "limits": [
+    "same-machine copy, not an independent backup",
+    "no editable master available",
+    "no Blender/audio project open, deployment or LFS test",
+    "all trial files left in place; no deletion performed"
+  ]
+}

@@ -1,6 +1,8 @@
 # Dot × Codex — P0 supervision pilot (2026-11-16)
 
-**Status: READY FOR USER TO HAND OFF TO DOT; NOT STARTED.**  
+**Status: P0-1 PARTIAL/unsynchronized; P0-2 PASS (technical only); P0-3 PASS (technical scope only); P0-4 PASS (technical scope only); final branch report/diff review before push and Draft PR.**
+
+**Current review checkpoint:** Michael authorized the full P0-1–P0-4 pilot and final Draft PR into dev. Julia accepted P0-2/P0-3/P0-4 within their recorded technical limits, including both P0-4 correction passes. No third P0-4 correction is permitted. Michael directs no edits to the 14 public Issues; preserve branch-local recommendations/errors and P0-1 PARTIAL. Prepare final branch documentation/status, then stop for Julia’s final diff review before push/Draft PR. No P1/P2 work, migration, cleanup, paid calls or merge. This gate does not revoke existing full-pilot authorization. See [final report](DOT_P0_PILOT_REPORT.md).
 **Owner:** Michael. **Art/technical acceptance:** Julia + Michael. **Coordinator:** Dot (once Michael launches the task). **Builder:** Codex.  
 **Source of truth:** [Production Pipeline Action Tracker](PRODUCTION_PIPELINE_TRACKER.md), followed by current top directive in \`AGENTS.md\`. This file authorizes only a bounded **P0 pipeline-governance pilot**, not P1/P2 production.
 

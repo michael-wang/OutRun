@@ -35,3 +35,23 @@ jobs:
         run: |
           echo "::warning title=P1 Critical::Check critical race diagnostics before deciding to release."
           echo "⚠️ P1 diagnostics failed. Investigate and report to the owner." >> "$GITHUB_STEP_SUMMARY"
+
+  # This job runs ONLY when the existing dev-checks workflow is manually
+  # dispatched. It does not enable CI for dev pushes or P0 branch pushes.
+  p0-pipeline:
+    name: P0 manifest / portability / task contracts (Linux, manual only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Asset metadata and exact-byte verification
+        run: npm run assets:check
+      - name: Asset manifest tests
+        run: npm run assets:test
+      - name: POSIX path, symlink and LF portability tests
+        run: node --test scripts/test-asset-manifest-portability.mjs
+      - name: Research vs production task-contract tests
+        run: node --test scripts/test-task-contract.mjs

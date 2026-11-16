@@ -1,6 +1,14 @@
 # 極速漫遊 / OutRun — current project rules
 
-## CURRENT DIRECTIVE — production workflow reset (2026-11-16; overrides historical "CURRENT" sections below)
+## P0 pilot checkpoint — read this first
+
+**Current state: P0 branch review-ready; final report/diff review pending before push and Draft PR.** Michael authorized P0-1–P0-4 and a final Draft PR into dev. Julia independently accepted P0-2, P0-3 and P0-4 technical scope with explicit limits. P0-1 remains PARTIAL/unsynchronized; **Michael directs no public Issue edits or retries**. See [Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md), [Brief](docs/DOT_P0_PILOT_BRIEF.md), [final report](docs/DOT_P0_PILOT_REPORT.md) and [task contracts](docs/TASK_CONTRACTS.md). Current delegation is final documentation/status only, then stop for Julia’s final diff review before push/PR. P0-4 used its two correction passes; no third correction. No P1/P2, character work, migration, cleanup, runtime/art/version changes, paid calls, deploy or merge. Technical acceptance does not authenticate human approvals or prove actual car abilities, device results or independent source backups. This temporary review gate preserves the full-pilot authorization.
+
+Authority: current explicit Michael instructions → Tracker/current Brief → this top directive → applicable engineering constraints → dated historical specs. Historical “next”, “active”, “current”, version and acceptance statements below are records at their stated dates, not new work authorization. Preserve valid safety/identity constraints and failure evidence. Character work remains **ON HOLD**; #45 remains an unresolved device release gate.
+
+Snapshot at base `e81272a0e3295c942ece8b3d305bc49b0337fbe0`: package **0.10.30**; authored coast **14,200m**, HUD **350–14,550**. Use source data for current geometry, not old 10km/30km plans. No new visual, device, owner or release acceptance is asserted.
+
+## CURRENT DIRECTIVE — production workflow reset (2026-11-16; overrides historical work orders below)
 
 **Authoritative current priorities / status:** [Production Pipeline Action Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md). **Read before starting any Codex work.** The historical R7 clothing/body/Hunyuan tasks below are records, NOT instructions to resume. **Issue #54 and further heroine fullbody/clothing/hair/facial polish are ON HOLD** unless Michael explicitly reopens. Preserve the currently playable v0.10.30 heroine and approved R6d wind-swept golden bob/gestures; do not change game assets to pursue unapproved character art. Do not claim Pixel 8 hair performance PASS without a real device check.
 
@@ -8,12 +16,14 @@
 
 **Budget:** the former blanket NT$0 rule below is superseded. Paid tools/services may be evaluated, but purchases/API fees require Michael's approval after a concrete cost/benefit/licensing recommendation. No unapproved spend.
 
-**Review discipline:** Use explicit RESEARCH/SPIKE vs PRODUCTION tickets; preserve editable originals (designs, Blender masters, source audio/music) with planned source control; proofs and screenshots are temporary evidence, not permanent art sources. Pipeline L0–L3 is separate from feature/test PASS. Stop and reconsider the method before repeatedly patching an unvalidated pipeline. Status-unknown Issue count, not necessarily Open Issue count, must reach zero at the end-of-day review. Work on dev only; main requires Michael approval.
+**Review discipline:** Use explicit RESEARCH/SPIKE vs PRODUCTION tickets; preserve editable originals (designs, Blender masters, source audio/music) with planned source control; proofs and screenshots are temporary evidence, not permanent art sources. Pipeline L0–L3 is separate from feature/test PASS. Stop and reconsider the method before repeatedly patching an unvalidated pipeline. Status-unknown Issue count, not necessarily Open Issue count, must reach zero at the end-of-day review. Use the independent pilot branch for this handoff; main requires Michael approval.
 
 ---
 
 
-## CURRENT ART WORK — R7 Clothing P1 on approved MPFB body (2026-11-15)
+> **Historical art record:** all work orders in the following dated R6/R7 sections are inactive. Read for provenance and preservation constraints only; the Tracker and P0 checkpoint above govern dispatch.
+
+## HISTORICAL RECORD — ART WORK — R7 Clothing P1 on approved MPFB body (2026-11-15)
 
 **Body foundation #53 ART/ENGINEERING PASS**: actual Blender four-view/wireframe/rig outputs prove the MPFB 2.0.18 model has a continuous human basemesh, separate feet/fingers/pelvis, functioning 53-bone rig (26,756 tris). It is accepted as a **BODY SUBSTRATE ONLY**. MPFB's TEMP face/head is not the final heroine identity, and the figure without clothes does not mean the final heroine art is approved. Do NOT generate any more bodies, graft old procedure limbs, retopo a broken Hunyuan skirt, or move head/hair now.
 
@@ -25,7 +35,7 @@
 
 For MPFB, check official CC0 bundled assets / generated mesh licensing (addon code GPL but generated mesh not GPL), create **one standalone female full-body neutral A-pose**, adjust silhouette to owner-approved illustration, produce a functional simple rig with independent separated fingers/legs and intact pelvis, render 4 views + one relaxed pose with anatomical joint-bend proof, then **STOP for owner/Julia**. No new heroine head/face (frozen approved sculpt), no R6d hair edits, no B-2 dress yet, no game action changes. If MPFB unusable, REPORT and propose fallback licensed Blender Studio Rain v3 rig (CC-BY) rather than silent tool switching. No cloud/paid services (NT$0). Offline-only, no source/runtime GLB or package version changes, no verify:dev, no main. Playable v0.10.30 B-2 heroine stays untouched.
 
-## CURRENT R7T ART GATE — hybrid failure CONFIRMED; no automatic rebuild (2026-11-15)
+## HISTORICAL RECORD — R7T ART GATE — hybrid failure CONFIRMED; no automatic rebuild (2026-11-15)
 
 [Full R7T source-provenance audit](docs/art-review/r7t-audit/README.md) is now in dev. **NOT A HYPOTHESIS ANYMORE:** the failed fullbody combines the Hunyuan-generated torso/upper arms with OLD R7H mathematical forearms, hands, shoes and some dress geometry. The legs were derived from the Hunyuan mesh but cut, mirrored, straightened and voxel-remeshed, destroying knee/calf shape. Hunyuan's one-piece CLOTHED mesh did not contain a continuous anatomical waist/pelvis beneath the skirt, so cutting out the dress did not reveal an intact usable human body. Many cut boundaries and pose transforms caused disconnected arms / torn garment. Earlier 'just retopo/sculpt the Hunyuan candidate as a finished body' advice is superseded; the green source shape is useful silhouette evidence, NOT a validated complete underlying body.
 
@@ -33,7 +43,7 @@ For MPFB, check official CC0 bundled assets / generated mesh licensing (addon co
 
 **PROTECT PLAYABLE v0.10.30**: existing seated R7H B-2 heroine, R6d Spring hair + wild dev wind, 1.0 bodies, 8m camera, five gestures, runtime GLBs and source are unchanged. Continue using GitHub docs/images for remote Julia review; large C: Blender/GLB models stay local unless genuinely required for programmatic surgery. No main, NT$0 extra spend, conserve Codex quota.
 
-## CURRENT OWNER-AUTHORIZED R7S PRODUCTION PIVOT — IMAGE-to-3D BEFORE BLENDER (2026-11-15)
+## HISTORICAL RECORD — OWNER-AUTHORIZED R7S PRODUCTION PIVOT — IMAGE-to-3D BEFORE BLENDER (2026-11-15)
 
 **One authorized Shape-only attempt is now complete; STOP for owner/Julia review.** See [R7S image-to-3D evidence](docs/art-review/r7s-image3d/README.md). Torso/waist/hip improved, but legs are fused, hands/shoes lose detail and the unseen B-2 back ribbons are incorrect. Do not retry generation, sculpt a procedural body, or integrate this candidate without new authorization. Original v0.10.30 game assets and Blender master are unchanged.
 
@@ -43,7 +53,7 @@ The successful earlier head pipeline was **approved isolated 2D concept → alre
 
 **Important:** the R7H v0.10.30 in-car heroine is ACCEPTABLE and MUST NOT CHANGE in this trial: gameplay `src/`, `public/assets/`, events, 5 poses, B-2 shoulder-ribbons outfit (NO neck loop), 1.0 people, wild DEV wind, 8m camera all stay bit-for-bit; high-poly Hunyuan output under local ignored tool/workspace only. For offline art inference only, no `npm run verify:dev` and no version bump. Original Hunyuan/Tencent Community License requires separate global release review; no public ship implied.
 
-## CURRENT REVIEW CANDIDATE — R7H Rev. B-2 shoulder ribbons, v0.10.30 (2026-11-15)
+## HISTORICAL RECORD — REVIEW CANDIDATE — R7H Rev. B-2 shoulder ribbons, v0.10.30 (2026-11-15)
 
 **Owner explicitly resolved the reference conflict: use attached B-2, NO neck loop.** Two ivory ribbons start at the front bodice, pass over the shoulders and converge toward the back waist. This supersedes Issue #51's earlier nape-to-waist wording and the ZIP's older construction notes. The rear center edge is 1.000m (10cm below v0.10.29), with continuous lower-back coverage. See [B-2 review](docs/art-review/r7h-revb/README.md). Only costume geometry changed; exact non-cloth attributes, morphs, skin bind, clips and R6d hair are audited unchanged. Editable v0.10.29 master is preserved; use `scripts/blender/revise_r7h_revb.py` for this revision, not the older `build_r7h.py` recipe. STOP for Julia/owner art acceptance. No further character, hair or vehicle work authorized.
 
@@ -57,14 +67,14 @@ No face, hair, motion, five gestures, overtake event, seat, car or game changes.
 
 Latest owner direction supersedes the deep waist-level back opening below: ivory halter MINI DRESS with **bare shoulders / upper back only**, a continuous back panel rising below the shoulder blades, and fully covered lower back. No diagonal straps or separate underwear-like band. Only garment geometry changed; face/body, frozen R6d hair/wild, five clips, 1.0 scale, camera and overtake logic remain unchanged. See `docs/art-review/r7h-coverage/README.md` for before/after evidence. STOP for Julia/owner review.
 
-## R7H review candidate — v0.10.28 (2026-11-15)
+## HISTORICAL RECORD — R7H review candidate — v0.10.28 (2026-11-15)
 
 Issue #50 is implemented on dev for owner/Julia art review. See `docs/art-review/r7h/README.md` for fullbody/race sources, five rear-camera gestures, event/lifecycle evidence and remaining art limitations. DEV defaults to the R7H race GLB; `heroine=r7a` retains the prior model. R6d hair asset, Spring Bones, wild wind, 1.0 people and chase camera are frozen. Side targets follow actual rear view: +X driver/LEFT, -X passenger/RIGHT. Do not begin male/vehicle/hair work until explicitly requested. Pixel 8 was not connected; no mobile performance acceptance is claimed. Older R6 direction below is historical and does not authorize a new hair pass.
 
 Original Three.js / TypeScript / Vite arcade racing game. **Only the coastal race is playable.** Future stages will be hand-authored; the former L1/L2/L3 random route catalogs, procedural director and dead
 canyon asset loaders have been deleted; they are **not** requirements. See [current architecture](docs/CURRENT_ARCHITECTURE.md) only when making architectural changes.
 
-## CURRENT OWNER-AUTHORIZED WORK — finish the blonde heroine (2026-11-15)
+## HISTORICAL RECORD — OWNER-AUTHORIZED WORK — finish the blonde heroine (2026-11-15)
 
 **Canonical active Codex task: [Issue #50 — R7H fullbody/backless/5-gesture heroine](https://github.com/michael-wang/OutRun/issues/50)**. Full production contract at [docs/COAST_HEROINE_FINAL_PRODUCTION.md](docs/COAST_HEROINE_FINAL_PRODUCTION.md). This **supersedes the older R7A partial-bust and R7 roadmap advice** to defer fullbody until later. Owner has approved the final fullbody appearance and three rear-chase pose groups in ChatGPT and will provide the offline design-reference ZIP for local Codex use. NO more 2D character design needed; execute one 3D fullbody/editable master plus optimized race upperbody and LIVE rear-facing gesture animations.
 
@@ -72,7 +82,7 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 
 **Fashion:** Ivory front-tied halter-neck mini dress with genuinely BARE BACK **NO diagonal back straps**, waist-side wrap knot, gold earrings/bracelet and strappy heels for the fullbody master. Correct R7A shoulder/arm skin seam, lower garment joining and eyelid pigment edges; preserve approved heroine face identity. **Frozen R6d gold hair, wild DEV wind, person 1.0, 8m chase camera** absolutely untouched. R7A v0.10.27 is a playable first 30,502-tri / 1.3 MiB bust, NOT final. Run Pixel 8 when possible; old hair spring FPS issue and Hunyuan3D license territory remain release gates. No male or vehicle art in this task. NT$0 extra services, no `main` promotion.
 
-## CURRENT ART DECISION — hair FROZEN to R6d (owner, 2026-11-14)
+## HISTORICAL RECORD — ART DECISION — hair FROZEN to R6d (owner, 2026-11-14)
 
 **The owner rejects R6f (Medusa) and R6g (controlled layered) and chooses the last visually acceptable R6d from v0.10.23. R6e was a proposed concept only, never a shipped or tested game hair version.** In dev v0.10.26+, the **default heroine model is `coast-blonde-r6d.glb` (3,559 tris, 25 bones / 18 spring joints)** and the **default dev wind is `wild`**. Keep both seated characters at **1.0** and the existing **8m chase camera**. All later R6f/R6g GLBs remain DEV-only comparison assets under `?hairStyle=r6f|r6g`; they are not approved or production candidates. The R6d game URL accepts `?hairWind=wild` explicitly. Do not continue experimenting with hairstyle, hair count, hair physics or scalp colours without a *new explicit owner request*. Preserve existing morph fallback/restart.
 
@@ -80,11 +90,11 @@ canyon asset loaders have been deleted; they are **not** requirements. See [curr
 
 **NEXT: [R7 — heroine + driver upper-body identity and in-game seating](docs/COAST_HERO_ASSET_R7_PLAN.md).** Prioritize real approved 3D faces/heads + torsos, shoulder and clothing consistency, proper male character asset, expressive left/right head-turn pivots, and alignment with R6d hair; then art-direct an improvement pass on the Riviera 62 player car. NO more over-optimizing the hair. Budget NT$0 added services; Codex quota last reported around 50%. First get actual front / 45° / side + rear chase screenshots and owner approval before trying major car remodeling.
 
-## R7A dev candidate — v0.10.27
+## HISTORICAL RECORD — R7A dev candidate — v0.10.27
 
 Owner authorized Issue #49 female upper-body integration on dev. The approved coloured Blender bust now supplies the face/neck/shoulders/halter/earrings; see `docs/art-review/r7a/README.md` for actual six-view comparisons, source hashes and remaining shoulder/cloth seam defects. R6d hair/wild, 1.0 occupants and chase camera stay frozen. DEV defaults to this candidate; `heroine=previous` restores the preceding passenger. Production still uses the preceding passenger pending art and mobile acceptance. Local verify:dev passed 118 files / 512 tests; no Pixel 8 FPS claim. STOP for owner + Julia art review. Do not begin male character, Riviera 62 redesign or another hair pass without new authorization.
 
-## Coastal art production (November 14)
+## HISTORICAL RECORD — Coastal art production (November 14)
 
 **R6f delivered experiment, dev v0.10.24:** 16 independently sprung locks / 64 active joints / 8,000 triangles, dev-only default; `hairStyle=r6d` restores unchanged R6d. See `docs/art-review/r6f/README.md` for actual comparisons and negative art assessment: motion is independent, but excessive dark inner-layer exposure makes the hairstyle sparse and is NOT an accepted visual improvement. One prototype completed; stop for owner + Julia review, no automatic additional modelling. Wild field, 1.0 people and chase camera unchanged. Production remains R6d; Pixel 8 not retested.
 
@@ -113,6 +123,8 @@ Owner authorized Issue #49 female upper-body integration on dev. The approved co
 - Run only relevant verification for the task and state clearly what was not run. See [tests guidance](tests/AGENTS.md) for tests-only work.
 
 - Retired chapter handoff is removed from `main.ts`. Never restore it for future scene changes; extend authored stages only when an actual multi-region experience is specified.
+
+> **R3–R5 implementation history:** retain safety invariants, but dated “next” tasks, environment claims, versions and coordinates do not override current authority/source data.
 
 ## R3 closure
 - Only `content/stages/coast` is a playable stage. Removed Brick/L2/Pilot/Stage01/Trip generators and their old reviews and Journey-mode tests: do not restore dead pipelines.
@@ -171,7 +183,7 @@ Owner authorized Issue #49 female upper-body integration on dev. The approved co
   obstacle geometry, impact response, sound, particles, and road relief
   must meet via small explicit inputs, without a generic entity system.
  
-## R5 next phase — authored map remake
+## Historical R5 work order — authored map remake
 
 - Prioritize road driving feel: bold sustained sweeps, truly distinct S-bends,
   larger deliberate banking and height transitions, and readable recovery
@@ -327,7 +339,7 @@ Never mark a source-only static audit as passing Vitest.
 - Run `npm run verify:dev` and exercise these cases with local
   Codex and one real PS4/PC gamepad before shipping main.
 
-## Current sunset sprint — dev v0.10.13
+## Sunset sprint implementation record — v0.10.13 (not current package version)
 
 - The first 4.0km of racing teach the seven lessons (stations 350–4350m).
   The slow bus already moves during the opening sweeper. Test catching it on

@@ -1,4 +1,7 @@
 # OutRun R7+ — Hero occupants first, then Riviera 62 (art director's plan)
+
+> **HISTORICAL work order / character HOLD:** the occupant-first sequence and source-storage/budget directions below do not govern current dispatch. The [Tracker](PRODUCTION_PIPELINE_TRACKER.md) places character expansion on hold and P0 before P1 Riviera/P2 scenery. Preserve accepted identity and existing gameplay; no character or car work is authorized by this file.
+
 Date: 2026-11-14. Status: OWNER requests **stop blonde hair art and move on**. This is a roadmap/acceptance contract, **NOT a request for automatic multi-week Codex background work**.
 
 ## Frozen constraints
