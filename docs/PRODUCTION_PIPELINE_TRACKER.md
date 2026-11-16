@@ -1,5 +1,7 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+**現行狀態（2026-11-16，Julia 獨立驗收）：P0 Pilot 技術與治理範圍 PASS，PR #56 已於 2026-11-16 合併到 dev。** [最終 Review](https://github.com/michael-wang/OutRun/pull/56#pullrequestreview-5915763479) · [合併 PR](https://github.com/michael-wang/OutRun/pull/56) · [Linux GitHub Actions](https://github.com/michael-wang/OutRun/actions/runs/43812289125) 。P0-1 的 14 個 Issue 分類同步成功，全部維持 OPEN；P0-2 Asset Manifest、P0-4 Task Contract 為有限度技術 PASS，P0-3 為政策與同機還原試驗 PASS。**尚未完成真實 Blender／音樂母檔的版本化與獨立備份，未宣稱 L3/美術/Pixel 8 發行就緒。** 本頁後續 checkpoint 的「未推送、未同步、待驗收」均為保留的當時歷史快照，不是現況。P1/P2 尚未啟動。
+
 **決策日期：2026-11-15 深夜至 2026-11-16（台灣時間）**  
 **狀態快照（2026-11-16 UTC 本地審查 checkpoint 當時）：P0-0 維持原驗收紀錄；P0-1 的 14 個 Issue 派工分類已同步並獨立回讀，全部 OPEN，最終驗收當時待 Julia；P0-2/3/4 維持 bounded technical PASS。當時 PR #56 為 Draft、base dev，Linux 手動驗證通過；文件增補僅在本地提交，尚未 push／更新 PR 描述。後續交付現況以 [PR #56 實際 head／描述](https://github.com/michael-wang/OutRun/pull/56) 為準，最終驗收須有明確 review 紀錄；本快照不宣稱後來已推送或完成最終審查。**
 **適用：第一關「海濱公路」在 dev 分支的製作；main 僅在 Michael 明確核准後更新。**  
