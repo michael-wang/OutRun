@@ -1,7 +1,7 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
 **決策日期：2026-11-15 深夜至 2026-11-16（台灣時間）**  
-**狀態（2026-11-16 UTC closeout）：P0-0 維持原驗收紀錄；P0-1 的 14 個 Issue 派工分類已同步並獨立回讀，全部保持 OPEN，最終驗收待 Julia；P0-2/3/4 維持 bounded technical PASS。Draft PR #56 已存在、base dev；Linux 手動驗證通過。本次文件增補僅作本地提交，待 Julia 審查，尚不 push／更新 PR 描述。**
+**狀態快照（2026-11-16 UTC 本地審查 checkpoint 當時）：P0-0 維持原驗收紀錄；P0-1 的 14 個 Issue 派工分類已同步並獨立回讀，全部 OPEN，最終驗收當時待 Julia；P0-2/3/4 維持 bounded technical PASS。當時 PR #56 為 Draft、base dev，Linux 手動驗證通過；文件增補僅在本地提交，尚未 push／更新 PR 描述。後續交付現況以 [PR #56 實際 head／描述](https://github.com/michael-wang/OutRun/pull/56) 為準，最終驗收須有明確 review 紀錄；本快照不宣稱後來已推送或完成最終審查。**
 **適用：第一關「海濱公路」在 dev 分支的製作；main 僅在 Michael 明確核准後更新。**  
 **使用方式：每次派 Codex 任務、驗收、收工盤點時，先查本文件，更新進度/證據/下一步。不得把「提交完成」當成「美術或 Pipeline PASS」。**
 
@@ -65,7 +65,7 @@
 | ID | 優先序／工作 | 狀態 | 交付／PASS 條件 | 責任 |
 | --- | --- | --- | --- | --- |
 | **P0-0** | 固化決策與防止舊指令繼續派工 | **PASS — Michael 2026-11-16 驗收** | 本 Tracker 作為當前單一行動清單，根目錄 AGENTS 明示優先級；不改遊戲 | Julia |
-| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **14/14 live classifications SYNCED；final review pending** | 文件權威與 14 項派工分類已整理／同步，原 body 與未知保留，全部 OPEN；不等於原問題已完成或美術／裝置驗收 | Julia + Codex |
+| **P0-1** | Pipeline Authority / 文件與 Issue 盤點 | **2026-11-16 UTC checkpoint：14/14 SYNCED；final review 當時 pending** | 文件權威與 14 項派工分類已整理／同步，原 body 與未知保留，全部 OPEN；不等於原問題已完成或美術／裝置驗收 | Julia + Codex |
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
@@ -184,7 +184,7 @@ Technical PASS authenticates neither human approvals/claims nor actual car abili
 
 ### 2026-11-16 UTC — closeout update after Linux verification and Issue synchronization
 
-本節與頂部狀態是最新紀錄；前述 pre-publication、Windows 未測與 Issue 禁止修改段落保留為歷史。PR #56 遠端 head `df6a198f38188fe44a288b56c383ea78e2151987`、Draft、base dev；原始十個 SHA 完整保留，後接 Windows 修正 `450896e` 與 Julia 的 manual-only workflow `df6a198`。本文件提交以該 head 為 parent，未 push；原本使用者 checkout／未提交檔案保持原狀。
+本節與頂部狀態記錄 2026-11-16 UTC 本地審查 checkpoint 當時的事實；前述 pre-publication、Windows 未測與 Issue 禁止修改段落保留為歷史。當時 PR #56 遠端 head 為 `df6a198f38188fe44a288b56c383ea78e2151987`、Draft、base dev；原始十個 SHA 完整保留，後接 Windows 修正 `450896e` 與 Julia 的 manual-only workflow `df6a198`。初次文件提交 `b01f5692f5ed01708b94aa1813d173f8e867a1f2` 以 `df6a198` 為 parent，交付本地審查時尚未 push；原本使用者 checkout／未提交檔案保持原狀。後續交付請查 PR 實際 head／描述及明確 review，不從這份歷史快照推定已推送或已驗收。
 
 | 項目 | 已核實變化／證據 | 尚未完成／下一步 |
 | --- | --- | --- |
@@ -193,6 +193,6 @@ Technical PASS authenticates neither human approvals/claims nor actual car abili
 | P0-1 live synchronization | Michael 後來的明確條件式授權與 Julia review 前置關卡完成後，parent 回報經同一 update_issue connector 成功同步；本 worker 對原提案與 pre-sync 快照逐字比對 14/14 通過，十則留言與其他欄位未變 | 全部 OPEN：SUPERSEDED #6/#14/#49/#50；NEEDS_OWNER_REVIEW #7/#9/#33/#51；HOLD #20/#32/#34/#35/#54；BLOCKED #45。此為派工狀態同步，非完成／關閉原問題 |
 | 審核與失敗歷史 | 先前 #6 兩次自動審核拒絕、回讀未變、其餘 13 未嘗試及後來禁改指令原文保留；後來成功是新授權後的獨立事件，parent 回報未換工具繞過 | 本 worker 本輪只讀核實 Issues，沒有重試／寫入；不得把歷史拒絕改寫成成功 |
 | P0-3／P0-4 邊界 | 同機五檔 byte restore 與 opt-in record checker 的 technical PASS 維持 | 真實可編輯母檔獨立備份仍未證明；沒有全域強制守門／人類審批認證，沒有 P1 能力或來源授權 PASS |
-| 本地文件 handoff | 僅 Tracker／report 現況增補；歷史 report、Windows 失敗、兩次 P0-4 修正及 supervisor 自身修正原因保留 | 停待 Julia 獨立審查實際 diff／證據；之後的 push／PR 描述更新仍待處理。維持 Draft，不合併、不動 dev/main、不開始 P1/P2 |
+| 本地文件 handoff（2026-11-16 UTC 當時） | 僅 Tracker／report 現況增補；歷史 report、Windows 失敗、兩次 P0-4 修正及 supervisor 自身修正原因保留 | 當時停止等待 Julia 審查 diff／證據，push／PR 描述更新尚待處理；後續交付依 PR 實際 head／描述與 review 核實。這份紀錄不授權合併、dev/main 變更或 P1/P2 |
 
 完整時間、job links、逐 Issue updated_at、監督與驗證責任歸屬見 [驗收報告最新增補](DOT_P0_PILOT_REPORT.md#current-closeout-addendum--2026-11-16-utc)。P0 最終驗收不自行宣告；#45 Pixel 8 release gate、角色 HOLD、來源／備份／裝置／美術未知仍保留。
