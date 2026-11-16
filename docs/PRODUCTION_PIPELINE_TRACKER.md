@@ -1,5 +1,9 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+**最新授權（2026-11-17）：Michael 核准 [Issue #62 透明背景修正後唯一一次 Shape-only A/B 對照](https://github.com/michael-wang/OutRun/issues/62#issuecomment-6926838438)。** 第一版混元 Shape 在 RTX 5070 Ti 上完成，卻把原始**不透明 RGB 圖中的矩形背景**疑似一起生成為大底板，模型 ART FAIL；不是硬體/CUDA 失敗。Judy 現可在本機以原始圖產出真正透明 RGBA 遮罩，**先獨立檢查 mask**，若完整去除畫布／陰影且保住輪胎／座艙，才准固定相同模型/seed/steps再執行 **唯一一次**新 Shape。保存舊候選、比較底板是否消失及車身是否改善。**Paint、Tripo、P1-3 及額外重抽都未授權**，零新增費用，禁止修改遊戲或主分支。
+
+**素材公開限制：**Michael 此次只授權**本機 Shape A/B**，並未授權將原始 GLB、Blender、渲染圖及其他二進位證據公開推上 GitHub；安全審查前次要求的公開揭露許可仍未取得。Judy 可在 #62 留去識別的純文字紀錄與 hash；若要實際移交完整模型，須另行取得許可或走已授權的私人交付。**當前狀態：AUTHORIZED／待 Judy 接手，未宣稱已完成第二次推論。** 下方 Shape→Paint 原方案及 #62 初次候選報告屬當時歷史 checkpoint，以此最新 Gate 為準。
+
 **目前最上層工作（2026-11-17）：Michael 已核准 Riviera 62 的現代 Option B 造型與 [P1-2H 本地 Hunyuan3D 2.1 Shape→Paint 有界實驗 Issue #62](https://github.com/michael-wang/OutRun/issues/62)。** Judy 監督 Local Codex，先取得並核驗 [七張參考圖＋專用單圖輸入](https://chatgpt.com/space/page_cdb53387bb3c8191b794fa168c69ec7a) 的真正圖片 bytes；不能只用預覽或直接把舊 Style B 整張圖片丟入推論。可另從 Julia 對話下載 `riviera62_option_b_reference_pack_2026-11-17.zip` 作本地交接，但 GitHub Issue 需先能獨立核對 SHA-256。這些是 AI 繪製的多視角設計參考，**不是同一模型渲染的幾何正投影**，差異須誠實列出。
 
 **P1-2H Gate：** 先僅做 Hunyuan3D 2.1 Shape-only 一個完整車型，提供真正的 Blender 中性多視角／網格截圖接受外觀檢查；合格再嘗試分離程序的 2.1 Paint（16GB 顯卡可能 OOM），若失敗用 Blender 原生 PBR 備援，不為修 Paint 不斷重裝 CUDA，也不擅自使用雲端付費資源。騰訊模型與輸出的授權限制另行審查，**試驗模型不得直接升為公開全球商用資產**。不修改現有遊戲、主角、物理、`main`、不開 P1-3/4。

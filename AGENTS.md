@@ -1,5 +1,15 @@
 # 極速漫遊 / OutRun — current project rules
 
+## CURRENT GATE — one Hunyuan alpha-mask A/B rescue authorized (2026-11-17)
+
+**Michael explicitly approved ONE further local Hunyuan3D 2.1 Shape-only diagnostic for [Issue #62](https://github.com/michael-wang/OutRun/issues/62#issuecomment-6926838438).** The first Shape result was **ART FAIL** (solid slab, fused details) but the model ran successfully; the input was opaque RGB with an inner rectangular illustrated background. This is an **input-preprocessing root-cause test**, not proof the Shape model passed. The prior first candidate, all originals, failure reports and #59/#60 remain unchanged.
+
+**FIRST:** create real alpha cutout of the original primary image with locally authorized BackgroundRemover; independently inspect a checkerboard/alpha preview for no background rectangle/shadow and intact cockpit/wheels/contour. If mask fails, STOP without GPU run. **ONLY AFTER MASK PASS:** exactly one new Shape-only inference with identical first-run model/checkpoint/seed/steps/settings; only input transparency may change. Record original/new input hashes, actual results and genuine neutral Blender comparison renders. **Do not run Paint**, attempt further rerolls, advance P1-3 or restart Blender-from-scratch. Report ART PASS/FAIL separately from mask quality. Use appropriate Codex effort; no paid/cloud inference.
+
+**PUBLIC DISCLOSURE STILL NOT AUTHORIZED:** the user approved local A/B only, NOT publishing the raw GLB, sanitized Blender, screenshots or logs to the public GitHub repo. Judy may post sanitized **text** status / hashes in Issue #62. If she needs to share binary art evidence, ask for separate explicit disclosure authorization or an approved private handoff; no safety review bypasses. Mark IN_PROGRESS only once actually working, BLOCKED if cutout or Shape fails, and AWAITING_JULIA_REVIEW only with real shareable evidence. Existing prior instructions below are historical snapshots and do not permit extra scope.
+
+---
+
 ## CURRENT WORK — Option B Hunyuan3D 2.1 Shape→Paint pilot, Issue #62 (2026-11-17)
 
 Michael accepted the **Option B Modern Grand Roadster** visual direction and authorized a new [P1-2H Hunyuan3D 2.1 local image→3D spike, Issue #62](https://github.com/michael-wang/OutRun/issues/62), supervised by Judy using existing Windows Local Codex. This is **QUEUED** until Judy confirms source-image byte access and starts; it is *not* evidence any inference has run. [Reference image page](https://chatgpt.com/space/page_cdb53387bb3c8191b794fa168c69ec7a) contains original six angles, concept sheet, a prepared single-image 1024px Hunyuan input and SHA-256 handoff. **Verify actual source image bytes/hashes before using them.** If inaccessible, stop for a safe source handoff, do not use the older Style B collage as substitute.
