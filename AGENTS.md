@@ -1,5 +1,15 @@
 # 極速漫遊 / OutRun — current project rules
 
+## CURRENT WORK — P1-0 Riviera 62 Brief (2026-11-16)
+
+**P0 Pilot was reviewed and merged into dev as PR #56; the historical P0 checkpoint immediately below is superseded.** The active [P1-0 Riviera 62 Pipeline Brief](docs/P1_RIVIERA62_PIPELINE_BRIEF.md) is **document-only and awaiting Michael's review**. Do not initiate P1-1/P1-2 modeling, new GLB, gameplay runtime changes, or P2 until separately authorized. No main publication. Do not resume heroine hair/clothing/fullbody work; protect existing R6d and game behavior.
+
+**Carry forward:** left-hand-drive steering wheel + driver's right-hand grip and door-resting left hand; independent visible steering left/right; dark-scene front headlamps and permanently lit rear running lamps while headlights are enabled, separate from brake/indicator semantics; future independent left/right suspension travel and arcade body roll (structure now, dynamic effect later). Use an editable Blender source and traceable GLB for future proof, never present hand-coded TS body geometry as a validated DCC pipeline.
+
+**Judy -> Local Codex dispatch:** set a task-appropriate reasoning effort and record the actual choice/reason: Low for deterministic inventory, Medium by default, High for hard/high-rework pipeline tradeoffs, Extra High/xhigh only exceptionally with approval. Preserve tested source, bounded corrections and separate technical/art/device/owner PASS. The current P1-0 work changes only documentation.
+
+---
+
 ## P0 pilot checkpoint — read this first
 
 **Current state: P0 branch review-ready; final report/diff review pending before push and Draft PR.** Michael authorized P0-1–P0-4 and a final Draft PR into dev. Julia independently accepted P0-2, P0-3 and P0-4 technical scope with explicit limits. P0-1 remains PARTIAL/unsynchronized; **Michael directs no public Issue edits or retries**. See [Tracker](docs/PRODUCTION_PIPELINE_TRACKER.md), [Brief](docs/DOT_P0_PILOT_BRIEF.md), [final report](docs/DOT_P0_PILOT_REPORT.md) and [task contracts](docs/TASK_CONTRACTS.md). Current delegation is final documentation/status only, then stop for Julia’s final diff review before push/PR. P0-4 used its two correction passes; no third correction. No P1/P2, character work, migration, cleanup, runtime/art/version changes, paid calls, deploy or merge. Technical acceptance does not authenticate human approvals or prove actual car abilities, device results or independent source backups. This temporary review gate preserves the full-pilot authorization.

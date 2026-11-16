@@ -9,6 +9,16 @@
 
 **現況證據：** [最新 closeout addendum](DOT_P0_PILOT_REPORT.md#current-closeout-addendum--2026-11-16-utc)、[Julia review](https://github.com/michael-wang/OutRun/pull/56#pullrequestreview-5914717721)、[Linux run 43812289125](https://github.com/michael-wang/OutRun/actions/runs/43812289125)。下方各 checkpoint 的「未同步／禁止修改／尚未 push 或建立 PR」是當時有效的歷史紀錄；後來 Michael 明確條件式授權、Linux 驗證及同步結果見末尾追加紀錄，不能用後來成功抹去先前拒絕。此狀態不解除 #45、母檔備份、美術或 release 關卡，亦不啟動 P1/P2。
 
+### 2026-11-16 — P1-0 Riviera 62 新增下游需求與 Brief（不授權施工）
+
+**Julia 已將 [P1-0 主角車製作流程驗證 Brief](P1_RIVIERA62_PIPELINE_BRIEF.md) 寫入 dev，等待 Michael 確認；僅是規格完成，沒有新模型、GLB、遊戲程式、P1-1 施工或 Pixel 8 驗證。**
+
+- **方向盤：**保留現有男主角右手握盤、左手靠門與正反轉向的功能，要求 DCC 模型有穩定轉向軸、輪胎／乘坐接點；不重新製作人物。
+- **燈光：**黃昏／偏暗時主車能啟用前大燈並讓後方位置尾燈常亮；煞車增亮與方向燈保留獨立語意。既有 `dusk` 弱尾燈不是完整驗證。
+- **懸吊：**車體側傾及左右輪不同壓縮留待未來優化；第一版只守住車體／四輪獨立可動 Hierarchy，不建複雜物理。
+- **Judy 的 Codex 推理強度：**Low 用於例行盤點，Medium 作常態，High 用於真正複雜且高返工風險的選型/根因；最高檔只在證明必要並取得核准時使用，並於每張任務記錄理由與實際設定。
+- **下一個 Gate：**由 Michael/Julia Review P1-0，之後才另行授權 P1-1 Visual／Tool／Interface Spike。女主角仍凍結，P2 尚未啟動。
+
 ## 0. 我們究竟在做什麼
 
 短期北極星是類似 SEGA OutRun 2 的街機賽車**體驗**，不是角色展示或技術展示：
@@ -71,7 +81,7 @@
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
-| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **WAIT P0 最低限度守門** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-0 Brief 已提交／待 Michael Review；P1-1～P1-4 未啟動** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
 | **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **WAIT P1/可並行研究** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
 | **G1** | 輕量 Game Experience Roadmap | **DEFER** | P1/P2 取得初步能力證明、或第一關下一次整體體驗檢討時再提；聚焦賽車/多景/駕駛小遊戲，不提前開做 | Julia + Michael |
 | **CH1** | 女主角進一步動作／表情／服裝精修 | **ON HOLD** | 第一關場景製作成熟後，重新定義最終情境與角色完整 Pipeline Spike；現行可玩的 R6d 髮型與能力保留 | Julia + Michael |
