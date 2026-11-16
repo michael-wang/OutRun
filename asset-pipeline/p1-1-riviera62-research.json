@@ -32,9 +32,10 @@
   ],
   "failedEvidence": [
     "No DCC or device experiment performed. Production prerequisites remain unknown.",
-    "Official Blender manual retrieval failed; local exporter source inspected instead. No fresh manual verification claimed."
+    "Official Blender manual retrieval failed; local exporter source inspected instead. No fresh manual verification claimed.",
+    "Judy review of def0da6 found ambiguous sprungBody/steering transforms and unspecified capture fixture; correction pass 1 documents explicit transforms and prerequisites. Independent re-review pending; no native export or replay proof."
   ],
-  "correctionPasses": 0,
+  "correctionPasses": 1,
   "rootCauseResolved": false,
   "independentReview": "pending",
   "requirements": {

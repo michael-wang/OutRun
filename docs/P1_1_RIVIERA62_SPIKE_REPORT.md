@@ -1,6 +1,6 @@
 # P1-1 Riviera 62 research — review candidate
 
-2026-11-16. Authority: Issue #57, P1_RIVIERA62_PIPELINE_BRIEF.md (B1/B2/B3), PRODUCTION_PIPELINE_TRACKER.md, TASK_CONTRACTS.md, COAST_ART_BIBLE.md and COAST_HERO_VEHICLE_ART.md. Source inspected at dev `b66d06e67580e1faf35ad9bdc358a694b0ac4a04`. This is a research decision proposal, not a DCC or production PASS. Judy's independent review is pending; correction passes: 0. No P1-2 authorization.
+2026-11-16. Authority: Issue #57, P1_RIVIERA62_PIPELINE_BRIEF.md (B1/B2/B3), PRODUCTION_PIPELINE_TRACKER.md, TASK_CONTRACTS.md, COAST_ART_BIBLE.md and COAST_HERO_VEHICLE_ART.md. Source inspected at dev `b66d06e67580e1faf35ad9bdc358a694b0ac4a04`. This is a research decision proposal, not a DCC or production PASS. Judy independently reviewed def0da6 and requested a transform/capture clarification. Correction pass 1 is complete; independent re-review is pending. No P1-2 authorization.
 
 ## Decision and environment
 
@@ -43,19 +43,33 @@ Primary references: local Blender 4.5.13 addon io_scene_gltf2/__init__.py expose
 
 ## Proposed node and coordinate contract (not implemented)
 
-Use metres, unit scale, no negative scale. Author Blender X right in the game coordinate convention, Z up, -Y nose; standard Y-up export maps (x,y,z) Blender to (x,z,-y) game. Thus a front +X wheel is Blender (1.055,-1.38,.46). Verify three basis markers and wheel centers after import before accepting this mapping; only one conversion, no extra runtime corrective rotation. Root identity at existing car origin, never recenter to bounding box.
+Use metres and signed axes, independent of camera viewpoint: Blender +X maps to game +X (driver/vehicle-left), Blender +Y maps to game -Z, Blender +Z maps to game +Y. Blender -Y is the nose. Position mapping is G=(Bx,Bz,-By); inverse B=(Gx,-Gz,Gy). Thus front +X wheel G=(1.055,.46,1.38) maps to B=(1.055,-1.38,.46), and back to the audited center. Use one Y-up export conversion, no additional runtime corrective rotation. For rotations use matrix conjugation Rg=C*Rb*C^-1 with this basis matrix C; do not remap Euler components independently. Exported basis/origins still require an actual import test; this is a source-aligned proposal, not round-trip evidence.
 
-| Proposed parent / node | Game-space rest transform / role |
+All following T/R/S are **local transforms in exported game coordinates**, radians, right-handed THREE Euler XYZ. S=(1,1,1) for every node; R=(0,0,0) unless explicitly stated. vehicleRoot is identity in the asset; the existing runtime road pose acts on it later. No negative scales or bounding-box recentering. For any car-space surface vertex p assigned to a translated parent at q with zero rest rotation, store local vertex p-q; do not also translate its mesh by -q.
+
+| Complete node path | Local T and R / content |
 |---|---|
-| vehicleRoot | existing road placement and heading; physics remains outside asset |
-| vehicleRoot/sprungBody | identity initially; authored roll-origin proposal (0,.46,0), geometry compensated to keep world positions; dynamic roll deferred |
-| sprungBody/bodyPaint, trim, glass | editable surfaces; semantic shared materials, separate transparent glass |
-| vehicleRoot/wheelMount_FL, FR, RL, RR | FL=+X front; FR=-X front; RL=+X rear; RR=-X rear, centers above; future Y travel here |
-| each wheelMount/steerPivot/rollingAxle | zero offsets; front Y steering, rear zero; X roll, scale 1; wheel geometry local center origin |
-| sprungBody/cockpitAnchors | steering center, driver and passenger anchors at audited car-space positions (subtract parent origin); future common-frame adapter required |
-| steeringTilt/steeringSpin/gripRight | tilt X=.34, spin local Z; grip rest transform above. Existing arms stay in current TS system until separately tested adapter |
-| sprungBody/lamps/head_L, head_R | separate lens/emission slots plus forward -Y Blender / +Z game aim sockets |
-| sprungBody/lamps/tail_L, tail_R, indicator_L, indicator_R | independent semantic controls; running and brake may share lens with separate controller inputs; indicators never share overwritten uniform |
+| vehicleRoot | T=(0,0,0), R=(0,0,0), S=(1,1,1) at asset rest |
+| vehicleRoot/sprungBody | T=(0,.46,0), R=(0,0,0), S=(1,1,1); chosen roll origin, not identity translation; no dynamic roll implemented |
+| vehicleRoot/sprungBody/bodyPaint (also trim, glass) | T=(0,0,0), R=0; each car-space vertex p stored as p-(0,.46,0) |
+| vehicleRoot/wheelMount_FL | T=(1.055,.46,1.38), R=0 |
+| vehicleRoot/wheelMount_FR | T=(-1.055,.46,1.38), R=0 |
+| vehicleRoot/wheelMount_RL | T=(1.055,.46,-1.45), R=0 |
+| vehicleRoot/wheelMount_RR | T=(-1.055,.46,-1.45), R=0 |
+| vehicleRoot/wheelMount_{FL,FR,RL,RR}/steerPivot | T=0, R=0 at rest; front R=(0,steer,0), rear stays zero |
+| vehicleRoot/wheelMount_{FL,FR,RL,RR}/steerPivot/rollingAxle | T=0, R=0 at rest; motion R=(angle,0,0); wheel vertices centered on origin |
+| vehicleRoot/sprungBody/cockpitAnchors | T=0, R=0 |
+| vehicleRoot/sprungBody/cockpitAnchors/driver | T=(.41,.305,-.48), R=0; reference socket only, existing TS body not reparented |
+| vehicleRoot/sprungBody/cockpitAnchors/passenger | T=(-.32,.305,-.48), R=0; reference socket only |
+| vehicleRoot/sprungBody/cockpitAnchors/steeringTilt | T=(.41,.605,.075), R=(.34,0,0) |
+| vehicleRoot/sprungBody/cockpitAnchors/steeringTilt/steeringSpin | T=0, R=0 at rest; motion R=(0,0,turn*.98); rim centered on origin |
+| vehicleRoot/sprungBody/cockpitAnchors/steeringTilt/steeringSpin/gripRight | T=(-sin(pi/3)*.173,cos(pi/3)*.173,-.089), R=(0,0,pi/3); grip/hand reference |
+| vehicleRoot/sprungBody/lamps | T=0, R=0 |
+| vehicleRoot/sprungBody/lamps/head_L (head_R) | T=(.55,.12,2.32) (T=(-.55,.12,2.32)), R=0; aim along game +Z; independent lens/emission slots |
+| vehicleRoot/sprungBody/lamps/tail_L (tail_R) | T=0, R=0; lens vertices from existing car-space geometry minus (0,.46,0), grouped by sign X |
+| vehicleRoot/sprungBody/lamps/indicator_L (indicator_R) | T=0, R=0; empty reserved semantic sockets, no invented accepted indicator geometry |
+
+The steering chain composes to T(.41,1.065,.075)*Rx(.34)*Rz(turn*.98), matching the existing wheel matrix; the grip then composes exactly its existing local transform. The driver/passenger sockets sum to (.41,.765,-.48) and (-.32,.765,-.48), matching car.ts after seating adjustments. In Blender the sprungBody translation is (0,0,.46), steeringTilt local translation (.41,-.075,.605), and driver local translation (.41,.48,.305); applying G=(Bx,Bz,-By) recovers the table. Steering rotations must be converted as matrices. Existing arms remain in the current TS car frame until a separately tested adapter handles the common-frame conversion.
 
 P1-2 only authors a subset and empty documented sockets, not full occupants. Do not implement roll. For later integration preserve the existing TS car as default and explicit rollback; build a separate opt-in adapter only in P1-3, fail closed to TS on missing nodes/hash/material contracts. Keep old wheel animation APIs and car.userData controllers; do not silently replace all car instances. New roll would require common-frame arm/door conversion and independent regression tests, not reparenting alone.
 
@@ -70,7 +84,7 @@ Proposed acceptance sequence:
 1. Julia approves neutral front/side/45-degree shape and topology against original Riviera; full-car production is excluded. Capture orthographic dimensions and origin axes. Verify measured .46 radius and audited center within proposed 1mm tolerance (Julia must accept tolerance).
 2. Native-open saved master in fresh Blender process; adjust arch clearance, export A; reopen, change paint/bevel, export B. Preserve modifier controls, authored edits, separate wheel and lamp slots. Record tool/build, commands/settings and hashes for every revision; byte identity of GLBs is not required, semantic transform reproducibility is.
 3. Inspect imported node transforms, normals, UVs/material assignments. Sweep front yaw -0.3/0/+0.3 and axle rotation independently in an offline viewer; measure arch clearance and preserve body position. Synthetic future wheel Y +/- .05m is clearance exploration only, not approved suspension range or implemented simulation.
-4. Neutral and actual coast dusk, front/side/rear45 and true existing 8m chase camera, identical FOV/resolution/seed/HUD location. Capture baseline and candidate at HUD 350 and 3050, stopped and 65m/s; use same deterministic replay, turn inputs -1/0/+1, then reset. Any in-game adapter/capture requiring runtime changes waits for P1-3 authorization. Log exact resolved camera matrix/exposure/render settings, not just a label. Preserve FZR-123, red/white/seafoam and frozen people.
+4. Neutral and actual coast dusk, front/side/rear45 and true existing 8m chase camera, identical FOV/resolution/seed/HUD location. Capture baseline and candidate at HUD 350 and 3050, stopped and 65m/s; use the same proposed deterministic input trace, turn inputs -1/0/+1, then reset. No replay harness has been verified or built in this research. Before capture dispatch Julia must freeze a fixture manifest containing source/build SHA, stage and traffic seeds, initial state, timestamped input trace and timestep, exact HUD sample positions, camera world/projection matrices, FOV, resolution/DPR, lighting/exposure and renderer settings. An authorized capture implementation must first prove two baseline runs reproduce these states; otherwise report capture BLOCKED instead of claiming replay comparability. Any in-game adapter/capture requiring runtime changes waits for P1-3 authorization. Log exact resolved camera matrix/exposure/render settings, not just a label. Preserve FZR-123, red/white/seafoam and frozen people.
 5. Later P1-3 regressions: existing hero-car tests plus named GLB contracts, grip/door contact at existing .0001 criterion, actual left/right/reset video; head/tail/brake/indicator truth table. Existing tests alone cannot certify imported art.
 6. Pixel 8 future paired baseline: same build/browser/OS, thermal state, resolution/DPR, scene seed, replay and settings; three 60s runs after 30s warmup, separately record cold load. Record median/p95 frame time, FPS, available CPU/GPU timings (unavailable fields UNKNOWN), draw calls, triangles, material/texture counts, transfer bytes and load latency. Julia sets allowable deltas after baseline, before candidate acceptance; no fabricated 60 FPS or budget. #45 remains open.
 
@@ -95,3 +109,7 @@ Independently read src/main.ts: groundWheels (627 onward) resets each exposed wh
 The batch warning above is source-verified. previousLook is character QA rollback (including .84 character scale), NOT a car-model selector. The proposed TS/DCC car fallback does not exist today and must only be implemented/tested in separately authorized P1-3.
 
 Executed on Node 24.21.0 / Windows: default research contract checker VALID (11 production blockers); --production intentionally refuses RESEARCH, six unknown capabilities and four pending approvals. node --test scripts/test-task-contract.mjs: 14/14 pass, exit 0. No production capability or human approval is authenticated by those results. No game tests were run because this handoff changes documents/contract only. Judy's source observations were corroborated before first handoff; these are not completed post-handoff correction passes.
+
+### Correction pass 1 record
+
+Judy independently identified the contradictory sprungBody identity/origin, incomplete steering parent transforms and unspecified replay fixture in def0da6. This pass replaces them with one explicit local T/R/S contract and bidirectional signed mapping, source-matched steering composition, and a mandatory capture-fixture prerequisite. No DCC round trip or replay infrastructure is claimed. Correction count is 1; findings are addressed in this proposal but independent re-review remains pending, rootCauseResolved remains false until that review. All production approvals remain pending and capabilities unknown. Medium was requested; actual model/effort remains independently unverified.
