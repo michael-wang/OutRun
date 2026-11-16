@@ -1,0 +1,598 @@
+{
+  "retention": [
+    {
+      "relative": "art\\p1-2\\assemble-native.py",
+      "bytes": 3013,
+      "sha256": "12b7ae3c4f1a521b78fdc2b24e55cdbcfc2c3bb46db7e921372826d230b92d0f",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\audit-corrected.txt",
+      "bytes": 2109,
+      "sha256": "afc08d1bf68467b62fca59bfce9595221af3f29a22c1cf788918b54b0daf353c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\audit-native.py",
+      "bytes": 794,
+      "sha256": "e5297775ef1705ee29ff4498b79f1b8f130b2fe72df8108474d2d8be96d326a3",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\audit-original.txt",
+      "bytes": 2105,
+      "sha256": "4392447b037a6b5be983cdaaf6fe76ced0a3f75d1c3ecd9725e92652cce3451c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\export-native.py",
+      "bytes": 1339,
+      "sha256": "8232086f7161e2d45a67618aeb16ea2a7e1a22eaedfed38452ca386b91cbc8c2",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\native-diagnostic-02.blend",
+      "bytes": 537497,
+      "sha256": "0b1704bc268a5627b0992e772e59367ccd4396f7eda6bd3f2c5a8c33821a306c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\native-diagnostic-02.blend1",
+      "bytes": 537497,
+      "sha256": "97ee75326da2993241cc655deea92b8658eddb987ba76ddd63712038382350cd",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\native-draft-01.blend",
+      "bytes": 537497,
+      "sha256": "732881fb74b7625c818c2b988a4d2d3d22318ee0332b254f0a1e13445c617395",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\native-draft-01.blend1",
+      "bytes": 537497,
+      "sha256": "d95cf4a97c88ed6f1293466d5dcaf3a494f67b985a960eb44c44bd9b639b9728",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\assembly-05\\assembled-native-05.blend",
+      "bytes": 641006,
+      "sha256": "626b42e41827965fcf06e717475cf80389d1160349ec21bdcff527009416e4a0",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\assembly-05\\assembly-provenance.json",
+      "bytes": 624,
+      "sha256": "3d5f9accf81bd0681e36712565738abee8e9abbf1a539e0123368a20b08e6538",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\assembly-05\\corner-05.glb",
+      "bytes": 70320,
+      "sha256": "969d1a727e3d44f2688e7f90535460024adbdff1359913df9ac81256a83572dc",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-03\\audit-reopen.txt",
+      "bytes": 2126,
+      "sha256": "f8a9e269e5dc6b366389a0c9cf1845786b247058c2f1d6e3631346b506686596",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-03\\native-source-03.blend",
+      "bytes": 537497,
+      "sha256": "c7e08eddd974ed8d59a5811d346c534725c7fa43ce189457f72cbc3763618e9c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-04\\native-source-04.blend",
+      "bytes": 563419,
+      "sha256": "16ee96ec8bc6f4f78815a20effb875973d57b6e9f41fe82f3c8692f5ce5732f3",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-04\\native-source-04.blend1",
+      "bytes": 537497,
+      "sha256": "c7e08eddd974ed8d59a5811d346c534725c7fa43ce189457f72cbc3763618e9c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-06\\native-edit-06.audit.json",
+      "bytes": 10671,
+      "sha256": "9d4bf7e719a55656baa8883e9a68cc1e710afff855e936e5d9b1945b1282624d",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-06\\native-edit-06.blend",
+      "bytes": 641214,
+      "sha256": "ad1f502cb350aff4fdd6ef20ec7b15bbb62889479427190fd5ed595d85c070be",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-06\\native-edit-06.blend1",
+      "bytes": 641006,
+      "sha256": "626b42e41827965fcf06e717475cf80389d1160349ec21bdcff527009416e4a0",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-06\\native-edit-06.glb",
+      "bytes": 70324,
+      "sha256": "b32619ba1c0a10f565538ea5f9a9781670835150977c0ee71cea8bc5576e212e",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-07\\native-edit-07.audit.json",
+      "bytes": 10670,
+      "sha256": "dd7a2a5a235c0e18e47aa44de59a505be446f17c28b03059d14a21325e7f7d91",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-07\\native-edit-07.blend",
+      "bytes": 640606,
+      "sha256": "0b80f18318bccffbfccb69dfa4d1109464b88de7dec58e661995d5230a735aa5",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-07\\native-edit-07.blend1",
+      "bytes": 641214,
+      "sha256": "ad1f502cb350aff4fdd6ef20ec7b15bbb62889479427190fd5ed595d85c070be",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\revision-07\\native-edit-07.glb",
+      "bytes": 70320,
+      "sha256": "aaafaaa2a63f1c7a20a64d3f843b12f03a732c534cf473fe4627dcb23bad42d5",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\viewer\\index.html",
+      "bytes": 6106,
+      "sha256": "736d5934f6b67a2456d5ad562f8bcdf41fffa59d72409d43a6329bd04d09712a",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "art\\p1-2\\viewer\\server.mjs",
+      "bytes": 1682,
+      "sha256": "3aac7d47a39edbca68a9d3d2fb906e9b8418d06852a29ed86615e253b80c9b6a",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\manifest.json",
+      "bytes": 1655,
+      "sha256": "e3dc5a410f96d5670d6455d186665a8aee20929c6d4d55538dd82863425af3cc",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\audit-corrected.txt",
+      "bytes": 2109,
+      "sha256": "afc08d1bf68467b62fca59bfce9595221af3f29a22c1cf788918b54b0daf353c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\audit-native.py",
+      "bytes": 794,
+      "sha256": "e5297775ef1705ee29ff4498b79f1b8f130b2fe72df8108474d2d8be96d326a3",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\audit-original.txt",
+      "bytes": 2105,
+      "sha256": "4392447b037a6b5be983cdaaf6fe76ced0a3f75d1c3ecd9725e92652cce3451c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend",
+      "bytes": 537497,
+      "sha256": "0b1704bc268a5627b0992e772e59367ccd4396f7eda6bd3f2c5a8c33821a306c",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend1",
+      "bytes": 537497,
+      "sha256": "97ee75326da2993241cc655deea92b8658eddb987ba76ddd63712038382350cd",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend",
+      "bytes": 537497,
+      "sha256": "732881fb74b7625c818c2b988a4d2d3d22318ee0332b254f0a1e13445c617395",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend1",
+      "bytes": 537497,
+      "sha256": "d95cf4a97c88ed6f1293466d5dcaf3a494f67b985a960eb44c44bd9b639b9728",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\asset-pipeline\\p1-2-riviera62-spike.json",
+      "bytes": 5048,
+      "sha256": "56456fad05310fc876d3de2f43979656767158cf0dea270d3c3efbe2aa4bd3f2",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+      "bytes": 2880,
+      "sha256": "923ae79333a8f05ba454b131e045e8a3e33faa879902474bce59b0071d5631ae",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "preservation\\correction-2-snapshot\\docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+      "bytes": 3512,
+      "sha256": "54b57bfe2eb3a15d59b735d52f271591ff6c345b6ee33bdd1ab251fab218f943",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "asset-pipeline\\p1-2-riviera62-spike.json",
+      "bytes": 5895,
+      "sha256": "eff1233002c0b53be5eba3af112e0b079f47f0abafab7ad6b6143f33bbdec0ff",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+      "bytes": 2880,
+      "sha256": "923ae79333a8f05ba454b131e045e8a3e33faa879902474bce59b0071d5631ae",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "docs\\P1_2_CORRECTION_2_PRESERVATION.md",
+      "bytes": 2929,
+      "sha256": "a0eea9f7785535df5b35a633ba39665e6580076440fd5ab333799bef36c125a9",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    },
+    {
+      "relative": "docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+      "bytes": 3512,
+      "sha256": "54b57bfe2eb3a15d59b735d52f271591ff6c345b6ee33bdd1ab251fab218f943",
+      "originalUnchanged": true,
+      "snapshotUnchanged": true
+    }
+  ],
+  "exports": [
+    {
+      "revision": "06",
+      "sourceMatch": true,
+      "exportMatch": true,
+      "recordedBytes": 70324,
+      "actualBytes": 70324,
+      "generator": "Khronos glTF Blender I/O v4.5.51",
+      "meshes": [
+        "Circle",
+        "Sphere",
+        "Torus"
+      ],
+      "materials": [
+        "Paint_Riviera_Red",
+        "Headlamp_Emissive",
+        "Rubber"
+      ],
+      "nodes": [
+        {
+          "name": "archPaint_native",
+          "translation": [
+            1.1799999475479126,
+            0,
+            1.3799999952316284
+          ]
+        },
+        {
+          "name": "headlampLens_native",
+          "translation": [
+            0.550000011920929,
+            0.1199999749660492,
+            2.319999933242798
+          ]
+        },
+        {
+          "name": "sprungBody",
+          "children": [
+            0,
+            1
+          ],
+          "translation": [
+            0,
+            0.46000000834465027,
+            0
+          ]
+        },
+        {
+          "name": "tire_FL"
+        },
+        {
+          "name": "rollingAxle_FL",
+          "children": [
+            3
+          ]
+        },
+        {
+          "name": "steerPivot_FL",
+          "children": [
+            4
+          ]
+        },
+        {
+          "name": "wheelMount_FL",
+          "children": [
+            5
+          ],
+          "translation": [
+            1.0549999475479126,
+            0.46000000834465027,
+            1.3799999952316284
+          ]
+        },
+        {
+          "name": "vehicleRoot",
+          "children": [
+            2,
+            6
+          ]
+        }
+      ],
+      "recordedObjects": [
+        {
+          "name": "vehicleRoot"
+        },
+        {
+          "name": "sprungBody"
+        },
+        {
+          "name": "wheelMount_FL"
+        },
+        {
+          "name": "steerPivot_FL"
+        },
+        {
+          "name": "rollingAxle_FL"
+        },
+        {
+          "name": "tire_FL",
+          "geometry_sha256": "be4e44c0c9c1d0659ce92852c0415a6bf194d39141b87dc63ddf894436598e3a",
+          "bounds": [
+            [
+              -0.0920000672340393,
+              0.09199997782707214
+            ],
+            [
+              -0.4599998891353607,
+              0.46000000834465027
+            ],
+            [
+              -0.46000000834465027,
+              0.46000000834465027
+            ]
+          ]
+        },
+        {
+          "name": "archPaint_native",
+          "geometry_sha256": "47090d6af3f4f721cffd401c98f6d52955537bbded2d6490f74d2029e39c4571",
+          "bounds": [
+            [
+              -0.25999999046325684,
+              2.9802322387695312e-8
+            ],
+            [
+              -0.6412999629974365,
+              0.6412999629974365
+            ],
+            [
+              -0.08179393410682678,
+              0.5851579904556274
+            ]
+          ]
+        },
+        {
+          "name": "headlampLens_native",
+          "geometry_sha256": "939cd52e6a33133f8d69dfcbef6e088367e66a985fbd189ba95205a7f3a78752",
+          "bounds": [
+            [
+              -0.19999980926513672,
+              0.19999998807907104
+            ],
+            [
+              -0.059999942779541016,
+              0.06000003218650818
+            ],
+            [
+              -0.19999998807907104,
+              0.19999998807907104
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "revision": "07",
+      "sourceMatch": true,
+      "exportMatch": true,
+      "recordedBytes": 70320,
+      "actualBytes": 70320,
+      "generator": "Khronos glTF Blender I/O v4.5.51",
+      "meshes": [
+        "Circle",
+        "Sphere",
+        "Torus"
+      ],
+      "materials": [
+        "Paint_Riviera_Red",
+        "Headlamp_Emissive",
+        "Rubber"
+      ],
+      "nodes": [
+        {
+          "name": "archPaint_native",
+          "translation": [
+            1.1799999475479126,
+            0,
+            1.3799999952316284
+          ]
+        },
+        {
+          "name": "headlampLens_native",
+          "translation": [
+            0.550000011920929,
+            0.1199999749660492,
+            2.319999933242798
+          ]
+        },
+        {
+          "name": "sprungBody",
+          "children": [
+            0,
+            1
+          ],
+          "translation": [
+            0,
+            0.46000000834465027,
+            0
+          ]
+        },
+        {
+          "name": "tire_FL"
+        },
+        {
+          "name": "rollingAxle_FL",
+          "children": [
+            3
+          ]
+        },
+        {
+          "name": "steerPivot_FL",
+          "children": [
+            4
+          ]
+        },
+        {
+          "name": "wheelMount_FL",
+          "children": [
+            5
+          ],
+          "translation": [
+            1.0549999475479126,
+            0.46000000834465027,
+            1.3799999952316284
+          ]
+        },
+        {
+          "name": "vehicleRoot",
+          "children": [
+            2,
+            6
+          ]
+        }
+      ],
+      "recordedObjects": [
+        {
+          "name": "vehicleRoot"
+        },
+        {
+          "name": "sprungBody"
+        },
+        {
+          "name": "wheelMount_FL"
+        },
+        {
+          "name": "steerPivot_FL"
+        },
+        {
+          "name": "rollingAxle_FL"
+        },
+        {
+          "name": "tire_FL",
+          "geometry_sha256": "be4e44c0c9c1d0659ce92852c0415a6bf194d39141b87dc63ddf894436598e3a",
+          "bounds": [
+            [
+              -0.0920000672340393,
+              0.09199997782707214
+            ],
+            [
+              -0.4599998891353607,
+              0.46000000834465027
+            ],
+            [
+              -0.46000000834465027,
+              0.46000000834465027
+            ]
+          ]
+        },
+        {
+          "name": "archPaint_native",
+          "geometry_sha256": "47090d6af3f4f721cffd401c98f6d52955537bbded2d6490f74d2029e39c4571",
+          "bounds": [
+            [
+              -0.25999999046325684,
+              2.9802322387695312e-8
+            ],
+            [
+              -0.6412999629974365,
+              0.6412999629974365
+            ],
+            [
+              -0.08179393410682678,
+              0.5851579904556274
+            ]
+          ]
+        },
+        {
+          "name": "headlampLens_native",
+          "geometry_sha256": "478fcf6a9c853d88c9ce4183ec7e827e3847cc8a0b50e7e373a2754eebce5bbe",
+          "bounds": [
+            [
+              -0.19999980926513672,
+              0.19999998807907104
+            ],
+            [
+              -0.04800014570355415,
+              0.04799983650445938
+            ],
+            [
+              -0.19999998807907104,
+              0.19999998807907104
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": "GLB header/JSON inventory only; not Three.js parsing, browser or visual PASS"
+}

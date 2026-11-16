@@ -1,0 +1,16 @@
+{
+  "utc": "2026-11-16T12:39:57.5913337Z",
+  "originalAndSnapshotCount": 41,
+  "hashMismatches": 0,
+  "readonlySnapshotFiles": 41,
+  "incompleteFullCloneDirectoryExists": true,
+  "newBase": "e68abcfefb6766743c2fe164f10e9d1a4ad93b7d",
+  "branch": "spike/p1-2r-visual-first",
+  "originalStatusesUnchanged": true,
+  "contractCheck": "exit 0; valid records only; 11 production blockers",
+  "initialCheckerInvocation": "exit 1 because repository path repeated; corrected invocation from repository root passed",
+  "buildTests": "NOT RUN; no runtime changes and no push",
+  "modelCreated": false,
+  "issueWrites": 0,
+  "stageB": "NOT STARTED"
+}

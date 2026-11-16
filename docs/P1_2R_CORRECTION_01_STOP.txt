@@ -1,0 +1,19 @@
+Issue #60 new-method correction 1: STOPPED / incomplete.
+Requested High; actual model/effort UNKNOWN.
+
+Protected failure source before UI work:
+stage-b-input-failure-01.blend -> stage-b-failure-01-readonly.blend
+New independent editable copy: stage-b-correction-01.blend
+All three initially 473759 bytes, SHA256:
+19b3b29b3cd3d6f15d365e0afaf3015bfbca5c81a97173dbab70b0101a7c3d81
+Snapshot created with no overwrite and filesystem ReadOnly attribute. This is a same-machine guard, not immutable storage.
+
+Opened correction copy through Blender native File Open; title verified exact new path.
+Observed Edit Mode, vertex selection, Box Select tool, Global transform orientation, Top Orthographic. Initially eight outer-column vertices remained selected. Object Transform panel showed location 0, rotation 0, scale 1, consistent with previous fresh-open coordinates also being world coordinates.
+Pressed N to expose native Transform sidebar: no visible sidebar.
+Clicked outer-column vertex at screen 235,370 and pressed N again: single-vertex selection visibly changed, but still no sidebar. UI input reliability was not established. No coordinate was typed or changed and no geometry correction was attempted after this failure.
+Root cause UNKNOWN: evidence does not distinguish key delivery, keyboard layout, focus, or other UI/modal behavior. Do not claim any of those as diagnosis.
+
+Stopped as instructed when reliable control could not be demonstrated. Correction 1 consumed as attempted diagnosis; correction 2 not started. No further method substituted. No safety refusal occurred in correction 1.
+Correction copy remains open; only unsaved selection state differs from the saved failure copy. Original failure source and read-only snapshot not opened for editing or modified. No Stage C, GLB, render set, runtime, #59, P1-3, or Issue changes.
+Pending Judy disposition. Stage B remains incomplete, ART PASS not claimed.

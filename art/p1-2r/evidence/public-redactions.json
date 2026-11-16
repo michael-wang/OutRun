@@ -1,0 +1,97 @@
+{
+  "publicCopiesRedacted": true,
+  "privateOriginalsRetained": true,
+  "binaryUnchanged": false,
+  "records": [
+    {
+      "path": "art/p1-2r/evidence/compare-correction-02.py",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/P1_2R_CORRECTION_02_FINAL.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/P1_2R_STAGE_A_PREFLIGHT.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/P1_2R_STAGE_B_INPUT_FAILURE_01.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_assembly-05_assembled-native-05.blend.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_native-diagnostic-02.blend.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_native-diagnostic-02.blend1.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_native-draft-01.blend.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_native-draft-01.blend1.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_revision-03_native-source-03.blend.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_revision-04_native-source-04.blend.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_revision-04_native-source-04.blend1.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_revision-06_native-edit-06.blend.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_revision-06_native-edit-06.blend1.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_revision-07_native-edit-07.blend.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/art_p1-2_revision-07_native-edit-07.blend1.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/corner-05.glb.reopen.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/correction-02-art-audit.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/manifest.json",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/native-deltas.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/native-edit-06.glb.reopen.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    },
+    {
+      "path": "docs/p1-2r-stage-a/native-edit-07.glb.reopen.txt",
+      "redaction": "Internal authorization identifier/tool label, local machine root and/or unrelated initialization details removed. This public text is not byte-identical to private original."
+    }
+  ],
+  "originalBinaryUnchangedLocalOnly": true,
+  "publicBinary": "Native Blender UI-path-sanitized derivative; model equivalence verified separately"
+}
