@@ -1,5 +1,9 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+**最新工作決策（2026-11-16）：Michael 已授權 [P1-2 第一個 Riviera 62 Blender 母檔／GLB／離線 Three.js 切片](https://github.com/michael-wang/OutRun/issues/59)，交由 Judy 監督本機 Codex；正式接手／結果仍待回報。** P1-0／P1-1 均 PASS，P1-3／P1-4 未授權。這輪只做單側前輪、輪拱、大燈與紅色局部車漆的真實可編輯 Blender 模型，兩次修改重匯並離線測試獨立輪組／燈光材質；不觸碰現有遊戲角色、物理、主車 runtime、main 或部署。
+
+**後續獨立議題（暫緩）：** Michael 提出 Y 軸 Yaw 的轉向中心與漂移時車頭朝向／行進方向分離。前輪轉角不等於把整輛車固定繞前軸旋轉；GLB 的 vehicleRoot 是建模座標選擇，不是物理轉彎圓心。後續應在獨立賽車手感檢討中研究軌跡、轉角、Slip Angle 與現有整車 Roll／輪胎貼地；P1-2 只保留獨立 wheelMount 和 sprungBody，不改 Yaw 演算法。下面「P1-2 未授權」為歷史快照，現行權限以 [Issue #59](https://github.com/michael-wang/OutRun/issues/59) 為準。
+
 **目前最新（2026-11-16，P1-1 Julia 獨立驗收）：P1-1 RESEARCH 技術 PASS，已合併 [PR #58](https://github.com/michael-wang/OutRun/pull/58) 到 dev；[Issue #57](https://github.com/michael-wang/OutRun/issues/57) 已按「研究完成」結案。** 本專案仍是 Riviera 62 資產生產流程 **L1 未完成證明**，尚未製作 Blender 主車片段、匯出/匯入 GLB 或實測 Pixel 8。Julia 的審查與下一關約束見 [P1-1 final review](https://github.com/michael-wang/OutRun/pull/58#pullrequestreview-5918256565)。
 
 **下一個 P1-2 只有候選方案，尚未取得 Michael/Julia 施工授權。** 候選是前輪／輪拱／大燈／局部車漆的可編輯 Blender 母檔→GLB→離線 Three 載入實驗。先用最簡單可還原的版本管理保存母檔、設計圖、設定與 SHA；複雜異地雙服務備份、完整遊戲鏡頭自動重播和真機門檻保留到 L2／P1-3／P1-4，不應卡住第一個 L1 切片。不得宣稱真正車模管線已通過，或解凍女主角／關閉 Issue #45。Judy 未來須記錄 Codex 推理強度實際套用或明說無法驗證。
@@ -94,7 +98,7 @@
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
-| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-0 PASS；P1-1 RESEARCH PASS 且已合併 PR #58／結案 Issue #57；P1-2～P1-4 未獲授權** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-0 PASS；P1-1 PASS；P1-2 SPIKE Issue #59 已授權（待 Judy 啟動）；P1-3／P1-4 未授權** | 保持原遊戲；先選車體代表性部件/小原型，保留可編輯 .blend、輪子 pivot、烤漆/光影、基本剛體變換、GLB、場內替換、Pixel 8 性能證據與可重做步驟；成功後再談正式車體量產 | Julia 規格、Codex 製作、Michael 驗收 |
 | **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **WAIT P1/可並行研究** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
 | **G1** | 輕量 Game Experience Roadmap | **DEFER** | P1/P2 取得初步能力證明、或第一關下一次整體體驗檢討時再提；聚焦賽車/多景/駕駛小遊戲，不提前開做 | Julia + Michael |
 | **CH1** | 女主角進一步動作／表情／服裝精修 | **ON HOLD** | 第一關場景製作成熟後，重新定義最終情境與角色完整 Pipeline Spike；現行可玩的 R6d 髮型與能力保留 | Julia + Michael |

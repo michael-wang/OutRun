@@ -2,7 +2,7 @@
 
 **日期：2026-11-16（台灣時間）**  
 **任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
-**最新狀態（2026-11-16）：P1-0 Michael PASS；P1-1 已由 Judy 監督本機 Codex 完成，經 Julia 獨立審查 PASS，合併 [PR #58](https://github.com/michael-wang/OutRun/pull/58) 並結案 [Issue #57](https://github.com/michael-wang/OutRun/issues/57)（僅研究完成）。P1-2／P1-3／P1-4 尚未授權施工。**  
+**最新狀態（2026-11-16）：P1-0 Michael PASS；P1-1 Judy／Codex 研究經 Julia PASS，已合併 [PR #58](https://github.com/michael-wang/OutRun/pull/58) 並結案 [Issue #57](https://github.com/michael-wang/OutRun/issues/57)。Michael 已明確授權 [P1-2 單側前車角 DCC SPIKE Issue #59](https://github.com/michael-wang/OutRun/issues/59)，待 Judy 接手；P1-3／P1-4 未授權。**  
 **負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
 **權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
 
@@ -24,6 +24,8 @@
 | Blender → GLB → 既有玩家車型的可重複製作流程 | 尚未有被驗證的完整可編輯 Riviera 62 DCC 母檔 | **P1 的主要未知，不得宣稱 L2／L3** |
 
 座標重要現況：`src/car.ts` 的車頭沿 **+Z**，駕駛在車體 **+X**、乘客 **-X**，輪胎中心、乘坐點、方向盤與遊戲相機已有基準。任何 GLB 匯出需遵守或**明確用單一、可測的轉換適配**；不能在各元件內分散硬編碼補償。
+
+> **2026-11-16 P1-2 新增釐清：** 機械模型應維持獨立 wheelMount、車身 sprungBody 與車燈材質。駕駛 Yaw 的瞬時轉彎中心不等於前輪固定 pivot，也不能簡單視為車身中心；真正轉向／甩尾應分離軌跡、方向及橫向側滑，但本輪不改現有物理。只需真實可編輯 .blend → 可重現 GLB 匯出 → 離線 Three.js 載入；完整遊戲重播與複雜異地備份是後續關卡。
 
 ## B. 本次 Michael 明確新增的三項需求
 
@@ -67,7 +69,7 @@
 | **P1-3：Non-destructive in-game adapter** | 有界整合（另行授權） | 用獨立 dev/PR 或檢查模式將切片掛載進既有 Riviera 62，保留舊車一鍵回退；驗 steering contact、head/tail/brake state、光影及前輪動畫；不替換所有對手車或改玩法 | 若偏移靠隨處硬刻座標修補、破壞原角色／操控、或效能回退，停止 |
 | **P1-4：Acceptance / repeatability** | TEST / ART REVIEW | Windows + Pixel 8 基準對照，實際 8m 追車鏡頭的遠中近／左轉右轉／夜間燈光，原始母檔重新開啟及小修改可重匯，角色與路況無回歸；完整 Manifest 與 license | Julia 技術＋美術 Review；Michael 實玩選擇。最高只升到有證據的 L2/L3，不因單次成功自封 L3 |
 
-**本 Brief 原始授權範圍只有 P1-0；Michael 已於 2026-11-16 在 P1-0 PASS 後另外核准 [P1-1 研究委派 Issue #57](https://github.com/michael-wang/OutRun/issues/57)。** Judy 應依 P0-4 建立獨立 RESEARCH/SPIKE 任務契約、指定適當 Codex 推理強度，監督本機 Codex 進行工具／接口分析；**沒有授權 P1-2 建模、任何正式車模 GLB 或遊戲 runtime 修改**。新研究需交付 Draft PR，停下等待 Julia／Michael 審查。
+**授權歷程（2026-11-16）：P1-0 Michael PASS，P1-1 Julia RESEARCH PASS 後，Michael 現在另行批准 [P1-2 有界 DCC SPIKE Issue #59](https://github.com/michael-wang/OutRun/issues/59)。** Judy 依 P0-4 建立真實 SPIKE 契約，監督 Local Codex 完成獨立可編輯 Blender 模型片段、匯出 GLB 與離線 Three.js 載入；提交 Draft PR 停下等 Julia／Michael 驗收。**未授權**正式整車量產、P1-3 遊戲內整合、P1-4 真機驗收、主角人物更新及 main 發布。
 
 ## E. 資產母檔、驗證證據與效能紀錄
 
