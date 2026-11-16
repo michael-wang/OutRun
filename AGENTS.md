@@ -1,8 +1,12 @@
 # 極速漫遊 / OutRun — current project rules
 
-## CURRENT WORK — P1-0 Riviera 62 Brief (2026-11-16)
+## CURRENT WORK — P1-1 Riviera 62 RESEARCH, Judy → Local Codex (2026-11-16)
 
-**P0 Pilot was reviewed and merged into dev as PR #56; the historical P0 checkpoint immediately below is superseded.** The active [P1-0 Riviera 62 Pipeline Brief](docs/P1_RIVIERA62_PIPELINE_BRIEF.md) is **document-only and awaiting Michael's review**. Do not initiate P1-1/P1-2 modeling, new GLB, gameplay runtime changes, or P2 until separately authorized. No main publication. Do not resume heroine hair/clothing/fullbody work; protect existing R6d and game behavior.
+**P0 Pilot reviewed and merged via PR #56. Michael explicitly PASSed [P1-0 Riviera 62 Brief](docs/P1_RIVIERA62_PIPELINE_BRIEF.md) and authorized [Issue #57](https://github.com/michael-wang/OutRun/issues/57) for P1-1 bounded RESEARCH/SPIKE only.** Judy is the intended supervisor and should dispatch to existing Windows Local Codex after preflight, but Issue creation alone does not prove any Codex task was started. The historical P0/P1-0 checkpoints below are superseded as dispatch instructions.
+
+**P1-1 allowed:** existing model/animation/lighting/asset source inspection, 2–3 credible DCC tool routes, GLB hierarchy and pivot/interface design, small first P1-2 slice proposal, source-master retention and acceptance protocol, independent Judy review; record reasoning effort per Codex task (Low for routine inventory, Medium default, High for warranted complex decisions, Extra High only with approval). Deliver a Draft PR and stop.
+
+**NOT allowed:** production modeling, new runtime GLBs, changes to gameplay/physics/character/scene files, P1-2 onward, P2, main/release, paid services. Preserve approved playable Riviera 62 and frozen R6d heroine/hair; do not claim Pixel 8 performance or full asset-pipeline pass from a research report.
 
 **Carry forward:** left-hand-drive steering wheel + driver's right-hand grip and door-resting left hand; independent visible steering left/right; dark-scene front headlamps and permanently lit rear running lamps while headlights are enabled, separate from brake/indicator semantics; future independent left/right suspension travel and arcade body roll (structure now, dynamic effect later). Use an editable Blender source and traceable GLB for future proof, never present hand-coded TS body geometry as a validated DCC pipeline.
 

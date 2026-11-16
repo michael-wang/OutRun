@@ -2,7 +2,7 @@
 
 **日期：2026-11-16（台灣時間）**  
 **任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
-**狀態：Julia 已完成 P1-0 草案並納入 dev，等待 Michael 檢視；P1-1／P1-2／P1-3／P1-4 均未授權施工。**  
+**狀態（2026-11-16）：P1-0 已獲 Michael 明確驗收 PASS；P1-1 RESEARCH / SPIKE 已授權，詳見 [Issue #57 — Judy → Local Codex](https://github.com/michael-wang/OutRun/issues/57)。Judy 尚未確認接案；P1-2／P1-3／P1-4 仍未授權施工。**  
 **負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
 **權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
 
@@ -67,7 +67,7 @@
 | **P1-3：Non-destructive in-game adapter** | 有界整合（另行授權） | 用獨立 dev/PR 或檢查模式將切片掛載進既有 Riviera 62，保留舊車一鍵回退；驗 steering contact、head/tail/brake state、光影及前輪動畫；不替換所有對手車或改玩法 | 若偏移靠隨處硬刻座標修補、破壞原角色／操控、或效能回退，停止 |
 | **P1-4：Acceptance / repeatability** | TEST / ART REVIEW | Windows + Pixel 8 基準對照，實際 8m 追車鏡頭的遠中近／左轉右轉／夜間燈光，原始母檔重新開啟及小修改可重匯，角色與路況無回歸；完整 Manifest 與 license | Julia 技術＋美術 Review；Michael 實玩選擇。最高只升到有證據的 L2/L3，不因單次成功自封 L3 |
 
-**本 Brief 的授權範圍只到 P1-0。** P1-1 的實驗題目必須先由 Judy 產出一張符合 P0-4 的獨立 SPIKE 任務契約，並經 Julia/ Michael 適用的關卡批准；不以本 Brief 代替生產授權。
+**本 Brief 原始授權範圍只有 P1-0；Michael 已於 2026-11-16 在 P1-0 PASS 後另外核准 [P1-1 研究委派 Issue #57](https://github.com/michael-wang/OutRun/issues/57)。** Judy 應依 P0-4 建立獨立 RESEARCH/SPIKE 任務契約、指定適當 Codex 推理強度，監督本機 Codex 進行工具／接口分析；**沒有授權 P1-2 建模、任何正式車模 GLB 或遊戲 runtime 修改**。新研究需交付 Draft PR，停下等待 Julia／Michael 審查。
 
 ## E. 資產母檔、驗證證據與效能紀錄
 
@@ -101,6 +101,6 @@ Judy 應在每個 checkpoint **獨立**讀 diff、驗證實際結果，而非 Co
 - [ ] 車體／車輪／方向盤可變換的 GLB Hierarchy、座標慣例、Stage 燈光語意、可回退整合已列入後續需求。
 - [ ] 第一個切片、原始母檔、Hash／授權、裝置效能／美術驗收、失敗停止條件列入；沒有偷偷開始製作。
 - [ ] Judy 的 Codex reasoning effort 策略有預設值、升級理由及最高強度限制，且遵循 P0-4 任務契約。
-- [ ] **Michael/Julia 確認 P1-0 設計方向後才開立 P1-1 Spike**；不將文件提交當成 L2／L3 生產能力的證據。
+- [x] **Michael 已驗收 P1-0 PASS，並授權 [P1-1 RESEARCH Issue #57](https://github.com/michael-wang/OutRun/issues/57)**；不將文件提交當成 L2／L3 生產能力的證據。P1-1 仍需 Judy 實際接手，不能把 Issue 建立誤稱已完成研究。
 
 **P1-0 定義完成不等於 Riviera 62 製作流程通過。** 後續必須經真正的 DCC→GLB→遊戲內動態→Pixel 8 實驗證明。
