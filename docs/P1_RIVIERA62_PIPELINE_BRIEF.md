@@ -2,7 +2,7 @@
 
 **日期：2026-11-16（台灣時間）**  
 **任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
-**現行狀態（2026-11-17）：P1-0/P1-1 已 PASS；#59 舊 Blender 切片 STOPPED/BLOCKED、#60 Visual-first ART FAIL；Michael 已核准 Option B Modern Grand Roadster 設計方向並另行授權 [P1-2H 本地 Hunyuan3D 2.1 Shape → 有界 Paint 實驗（Issue #62）](https://github.com/michael-wang/OutRun/issues/62)。[正式多視角參考素材與單圖 Shape 輸入](https://chatgpt.com/space/page_cdb53387bb3c8191b794fa168c69ec7a) 須先核驗 bytes；P1-3／P1-4 未授權；沒有任何新車模型或像素效能 PASS。**  
+**現行狀態（2026-11-17）：P1-0/P1-1 PASS，混元 Shape 技術 PASS、獨立遊戲原型美術有條件 PASS，車尾下方幾何瑕疵列為延後優化。Michael 已核准 [P1-G1 Option B 原型可試駕自主 Goal Issue #63](https://github.com/michael-wang/OutRun/issues/63)：Judy 可以自主完成白模整理、材質、現有角色與輪胎整合及 dev-only 可回退遊戲內試駕；無須每小步等待驗收。原始 Hunyuan Shape 證據保留於 [#62](https://github.com/michael-wang/OutRun/issues/62)。正式 P1-4 手機驗收與 main 公開發行未授權，原始素材公開權限另行處理。**  
 **負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
 **權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
 
