@@ -1,5 +1,15 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+### 2026-11-17 — P1-G3 正式驗收 PASS；四項車身美術待辦延後
+
+Michael 於實際遊戲中檢查 Option B 前後／左右／側上方五張畫面，確認**目前設計圖落實到遊戲的程度已滿意**；Julia 同意結案 [P1-G3 Issue #66](https://github.com/michael-wang/OutRun/issues/66)，視為 **indie-game prototype PASS，非最終發行資產**。Judy 回報 `dev f29410d`、v0.10.33、`verify:dev` 122 files／524 tests PASS，實際 Chrome 15／15 PASS；**Pixel 8 真機、實體搖桿及全球商用授權尚未驗證**。右蘑菇頭環視、L3 回追車、R3 截圖映射原樣保留，玩家與女伴及競速維持可玩。
+
+**四項 Deferred Polish，均非目前阻擋：**（1）**中**：前燈造型與設計圖差異，LED 燈殼／線條待日後修；（2）**低**：車尾深色 `Coastal Highway Racing` 牌面比例偏大；（3）**低**：排氣管金屬／金色邊框太暗、不夠醒目；（4）**低**：座椅後方空洞，在一般遊戲追車角度不顯眼。原圖與驗收文字記錄於 [Issue #66 review](https://github.com/michael-wang/OutRun/issues/66#issuecomment-6942153067)。不要為這四項立即重啟車型美術工作。
+
+### 下一項 Julia 建議（尚未授權）：P2 英雄景點 Asset → Package → Layout
+
+第一個建議選用已存在的 `working-harbour`、道路 **4,600m** 錨點，以少數 **可重用** 3D 漁船／港邊房屋／碼頭設備組成一個可信的台灣海岸工作漁港景點包；**位置由 `scenic-layout.json` 管理，資產不含硬寫死的里程數**。採 Style Option B 夕陽海岸風格，驗收重點是 200–300 km/h 第三人稱追車鏡頭的辨識度、海岸層次、行車視線與真機效能，不是背景小道具數量。現有錨點有九個、目前只用一個 rural-hamlet-pilot package。完成這個 P2 見證後，再安排海濱市集／帆船灣等 Hero Scenic，並做第一關整體賽車節奏評估。**此為建議，Michael 尚未授權施工。** 不要在此之前恢復角色／車身微雕或建造第二關。
+
 ### 2026-11-17 — G3 最新授權：設計圖兌現＋環視鏡頭（L3 重置，R3 截圖）
 
 **G1＋G2 可玩原型已正式驗收 PASS 並將 [PR #64](https://github.com/michael-wang/OutRun/pull/64) 合併至 dev（`c0e63e8`）；[Issue #65](https://github.com/michael-wang/OutRun/issues/65) 結案。** Michael 試駕約 80 分，仍看到 **輪拱像外加隆起擋板**、**車尾舊 `FZR-123` 車牌／簡化燈條／排氣管與設計圖不同**。這些列入 [**G3 Issue #66**](https://github.com/michael-wang/OutRun/issues/66)，Judy 自主在 **dev 直接開發**，不再開長命 feature branch 或逐件等待批准。
@@ -148,8 +158,8 @@ Michael 已親自試駕 **Option B** 並接受 [P1-G1 #63](https://github.com/mi
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
-| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-G1/G2 已 PASS 並合併 PR #64 至 dev；G3 #66 美術設計一致化＋右蘑菇頭環視／L3 回正已授權；main 未授權** | Judy 直接在 dev 依設計圖比對輪拱曲面、車尾燈／深色品牌牌面／雙排氣口，並實作右蘑菇頭環視、L3 回追車／R3 截圖不變；交付真實遊戲畫面／測試 | Julia 規格、Codex 製作、Michael 驗收 |
-| **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **WAIT P1/可並行研究** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-G1/G2/G3 已完成 indie prototype PASS；G3 #66 結案，四項外觀 polishing 延後；main 未授權** | 已完成 Option B 形體／操控／環視初步可玩驗證；私人 .blend/.glb 保留，正式真機及發行授權仍是未完成下游關卡 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **Julia 建議先做 working-harbour 4600m；尚待 Michael 授權** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
 | **G1** | 輕量 Game Experience Roadmap | **DEFER** | P1/P2 取得初步能力證明、或第一關下一次整體體驗檢討時再提；聚焦賽車/多景/駕駛小遊戲，不提前開做 | Julia + Michael |
 | **CH1** | 女主角進一步動作／表情／服裝精修 | **ON HOLD** | 第一關場景製作成熟後，重新定義最終情境與角色完整 Pipeline Spike；現行可玩的 R6d 髮型與能力保留 | Julia + Michael |
 | **R1** | Pixel 8 重要效能關卡 | **OPEN BLOCKER** | Issue #45 R6d/WILD 真機證據尚未通過；不要誤以為角色已 release-ready | Codex 收集，Michael 實機確認 |
