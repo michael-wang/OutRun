@@ -1,5 +1,13 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+### 2026-11-17 — Owner 最新方向：先做墾丁記憶的海水浴場；混元車成為正常預設主角車
+
+**主線美術目標：[P2-G1 #67 南國海水浴場](https://github.com/michael-wang/OutRun/issues/67)**。Michael 明確要求**優先製作海水浴場，而非工作港口**。場景取自其記憶中墾丁沙灘的氛圍：寬闊沙地／海水淺灘過渡、成群彩傘、戲水人群、遠方山與海，配合 Style B 的暖色黃昏；不能僅堆小物。位置**尚未正式定案**，現有正式 `beach-market` 左海側海水浴場 hero anchor 在 HUD **5,980m**、5,300–6,120m 和緩長彎，是第一個可移動測試場。Judy 預先驗證近海地形與 Ultra Water 水位/岸線的實際連續性，先從 200–300km/h 追車鏡頭看出完整的沙灘，再擴充陽傘、救生站、泳客與租借用具。資產採 Asset Library → `packages.json` → `scenic-layout.json`，如需大面積岸線需局部重配海岸遮罩與 terrain 而不重做模型、不改整關公路；詳見 [正式美術 Brief](COAST_KENTING_BEACH_BRIEF.md)。以 `dev` 直接開發，一次完成真正可玩的景點再驗收。
+
+**平行整合目標：[P1-G4 #68 新混元車正式預設](https://github.com/michael-wang/OutRun/issues/68)**。Michael 不希望再輸入 `hero3d=1`；Judy 要讓正常遊戲自動載入已接受的 Option B，保留原車 fallback/QA，不可只修改 URL 判斷。原 GLB 僅本機 `.local` / loopback 服務，不在 production/PWA，所以須建置真實的正常載入／私有 staging／正式離線包流程。**全球公開 `main` 仍有授權關卡**：Hunyuan3D 2.1 Community License 的地域限制包含生成 Output；在釐清 EU/UK/South Korea 發布權利前不擅自讓全球網站散布此模型。優先完成 `dev` 無參數預設和手機／本機 production-like 測試，發行資產需要合法來源/許可與主人發布決策。不要讓法律/打包問題阻止海水浴場施工。
+
+**最新工作授權：**兩個完整 Goal，Judy 監督 Codex，自主施工、測試、修補，最後交真實遊戲照片給 Julia/Michael；不逐小件停止、也不先開新 feature branch。四項 G3 車體精修（前燈、尾牌尺寸、金框排氣、座後空洞）保留 Deferred Polish，不擋下一階段。工作港口改為較後順序；海水浴場已正式取得 owner 施工權限。
+
 ### 2026-11-17 — P1-G3 正式驗收 PASS；四項車身美術待辦延後
 
 Michael 於實際遊戲中檢查 Option B 前後／左右／側上方五張畫面，確認**目前設計圖落實到遊戲的程度已滿意**；Julia 同意結案 [P1-G3 Issue #66](https://github.com/michael-wang/OutRun/issues/66)，視為 **indie-game prototype PASS，非最終發行資產**。Judy 回報 `dev f29410d`、v0.10.33、`verify:dev` 122 files／524 tests PASS，實際 Chrome 15／15 PASS；**Pixel 8 真機、實體搖桿及全球商用授權尚未驗證**。右蘑菇頭環視、L3 回追車、R3 截圖映射原樣保留，玩家與女伴及競速維持可玩。
@@ -158,8 +166,8 @@ Michael 已親自試駕 **Option B** 並接受 [P1-G1 #63](https://github.com/mi
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
-| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-G1/G2/G3 已完成 indie prototype PASS；G3 #66 結案，四項外觀 polishing 延後；main 未授權** | 已完成 Option B 形體／操控／環視初步可玩驗證；私人 .blend/.glb 保留，正式真機及發行授權仍是未完成下游關卡 | Julia 規格、Codex 製作、Michael 驗收 |
-| **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **Julia 建議先做 working-harbour 4600m；尚待 Michael 授權** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-G3 prototype PASS；P1-G4 #68 已授權無參數預設新車，全球 main 發行待合法資產／真機驗證** | Judy 讓日常遊戲與 PWA 本機發行預覽無需 hero3d 直接載入新車；舊車為 QA/失敗 fallback；GLB 真實打包與 Hunyuan 地域商用發行權需明確處理 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **Michael 已授權 P2-G1 #67 海水浴場；5,980m 暫定，不是工作港口** | 墾丁記憶的海水浴場完整場景：沙灘／淺水／遊客／彩色傘及夕陽海岸；Asset→Package→Layout 可搬動；局部岸線與 Ultra Water 同步配合、真實追車畫面驗收 | Julia 規格、Codex 製作、Michael 驗收 |
 | **G1** | 輕量 Game Experience Roadmap | **DEFER** | P1/P2 取得初步能力證明、或第一關下一次整體體驗檢討時再提；聚焦賽車/多景/駕駛小遊戲，不提前開做 | Julia + Michael |
 | **CH1** | 女主角進一步動作／表情／服裝精修 | **ON HOLD** | 第一關場景製作成熟後，重新定義最終情境與角色完整 Pipeline Spike；現行可玩的 R6d 髮型與能力保留 | Julia + Michael |
 | **R1** | Pixel 8 重要效能關卡 | **OPEN BLOCKER** | Issue #45 R6d/WILD 真機證據尚未通過；不要誤以為角色已 release-ready | Codex 收集，Michael 實機確認 |
