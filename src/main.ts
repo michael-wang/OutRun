@@ -246,6 +246,13 @@ const world=createWorld({
  course:coastRuntime.course,
  narrowings:[],
 }); world.car.rotation.order="YXZ";
+if(import.meta.env.DEV&&params.get('hero3d')==='1'){
+ const {loadOptionB}=await import('./option-b-car');
+ const status=await loadOptionB(world.car,signal);
+ const badge=document.createElement('div');badge.id='option-b-status';badge.textContent=status.message;
+ badge.style.cssText='position:fixed;left:8px;bottom:8px;z-index:30;font:12px sans-serif;color:white;background:#17212bcc;padding:4px 8px;pointer-events:none';
+ document.body.append(badge);signal.addEventListener('abort',()=>badge.remove(),{once:true});
+}
 // Authored GLBs are optional art, loaded once before the start gate.
 // Preserve the approved road, traffic, physics and Ultra Water.
 const authoredStaticProps=coastUltraMode?
@@ -411,7 +418,9 @@ function persistRace(){
   stats:finishStats.snapshot(),rivalPassCount},GAME_VERSION);
 }
 let telemetry=stage?new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined):undefined;
-let inspectionView:'front'|'side'|'cockpit'|undefined;
+let inspectionView:'front'|'side'|'cockpit'|'rear3q'|undefined;
+let optionBDaylight=false;
+const optionBReviewLights=new Map<THREE.Light,{color:THREE.Color;intensity:number}>();
 let wheelContacts:(TireContact & {point:number[]})[]=[];
 let tireEffects=new TireEffects(world.scene),dustEffects=new TireEffects(world.scene,'dust'),impactSparks=new ImpactSparks(world.scene);
 // Farm shaders read elapsed, so all particles sample the same paused/resumed
@@ -1069,7 +1078,7 @@ function render(dt:number,draw=true){
   camera.position.copy(targets.eye);camera.lookAt(targets.look);
   if(import.meta.env.DEV&&inspectionView){
     world.car.updateMatrixWorld(true);
-    const offset=inspectionView==='front'?new THREE.Vector3(3,2.7,6):inspectionView==='side'?new THREE.Vector3(6,2.8,0):new THREE.Vector3(0,5.8,-2.3);
+    const offset=inspectionView==='rear3q'?new THREE.Vector3(4,2.7,-6):inspectionView==='front'?new THREE.Vector3(3,2.7,6):inspectionView==='side'?new THREE.Vector3(6,2.8,0):new THREE.Vector3(0,5.8,-2.3);
     camera.position.copy(world.car.localToWorld(offset));camera.lookAt(world.car.localToWorld(new THREE.Vector3(0,.8,0)));
   }
   if(import.meta.env.DEV&&bridgeInspection){const q=world.sample(state.distance);camera.position.copy(q.position).addScaledVector(q.right,140).addScaledVector(q.tangent,-100).add(new THREE.Vector3(0,18,0));camera.lookAt(q.position.clone().add(new THREE.Vector3(0,-7,0)));}
@@ -1157,6 +1166,7 @@ function render(dt:number,draw=true){
   if(ultraOcean?.mesh.visible)ultraOcean.boatShadow.update(renderer,camera,dt);
   if(fpsProfiling)driveFpsDiagnostics.cpu('boatShadow',performance.now()-boatShadowBegin);
   const sceneDrawBegin=fpsProfiling?performance.now():0;
+  if(import.meta.env.DEV&&optionBDaylight){world.scene.background=new THREE.Color('#b8d4e9');world.scene.fog?.color.set('#b8d4e9');}
   renderer.render(world.scene,camera);
   if(fpsProfiling){
    driveFpsDiagnostics.cpu('mainScene',performance.now()-sceneDrawBegin);
@@ -1493,6 +1503,19 @@ if(import.meta.env.DEV){(window as any).__drive={
     const screen=target.clone().project(camera);
     return {id:r.entry.id,side,lead,localX:world.car.worldToLocal(target).x,screen:[screen.x,screen.y]};
   },
+  optionBHeadlights:(enabled:boolean)=>world.car.userData.brakeLights.setHeadlights?.(enabled),
+  // Explicit QA lighting override, not a new stage/day-night gameplay mode.
+  optionBReviewDaylight:(enabled:boolean)=>{
+    if(world.car.userData.optionB?.state!=='ready')return;
+    optionBDaylight=enabled;
+    const sky=world.scene.getObjectByName('coast-dusk-sky');if(sky)sky.visible=!enabled;
+    world.scene.traverse(o=>{if(o instanceof THREE.HemisphereLight||o instanceof THREE.DirectionalLight){
+      if(!optionBReviewLights.has(o))optionBReviewLights.set(o,{color:o.color.clone(),intensity:o.intensity});
+      const old=optionBReviewLights.get(o)!;
+      o.color.copy(enabled?new THREE.Color('#f4f8ff'):old.color);o.intensity=enabled?(o instanceof THREE.HemisphereLight?2.2:old.intensity*1.25):old.intensity;
+    }});
+  },
+  optionB:()=>world.car.userData.optionB??{state:'default'},
   rivalEffects:()=>rivalView.inspectEffects(),
   rivalPassCount:()=>rivalPassCount,
   rivalTags:()=>rivalView.inspectTags(),
@@ -1502,7 +1525,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   driveState:()=>({...state,elapsed,mode,trackLength:world.length}),
   streamFrame:()=>({elapsed,distance:state.distance,held:streamHeld,road:world.streamer?.roadReady(state.distance)??true,cameraRoad:world.streamer?.roadReady(Math.max(0,state.distance-40))??true,safe:world.streamer?.canDrive(state.distance,state.speed*effectivePace(state.speed,highSpeedPace))??true,contextLost}),
   centerRoad:()=>{const p=world.sample(state.distance),ray=new THREE.Raycaster(p.position.clone().add(new THREE.Vector3(0,10,0)),down,0,20);return world.streamer?.raycastContacts(ray,state.distance).some(h=>Math.abs(h.point.y-p.position.y)<.08)??true;},
-  carView:(view:'front'|'side'|'cockpit')=>{
+  carView:(view:'front'|'side'|'cockpit'|'rear3q')=>{
     manual=true;inspectionView=view;render(1/60);
   },
   perf:()=>({...perf}),

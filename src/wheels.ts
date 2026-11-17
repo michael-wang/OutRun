@@ -1,13 +1,14 @@
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 export const TIRE_RADIUS=.46;
+export interface RoadWheelVisuals {tire:THREE.BufferGeometry;rim:THREE.BufferGeometry;spokes:THREE.BufferGeometry;color:string;}
 /** Pure presentation; longitudinal travel is already multiplied by the accepted world pace. */
 export function wheelRoll(angle:number,worldTravel:number){return angle+worldTravel/TIRE_RADIUS;}
 export function createRoadWheel(side:number,front:boolean){
  const pivot=new THREE.Group();pivot.name=front?`front-wheel-${side}`:`rear-wheel-${side}`;
  const rotor=new THREE.Group();rotor.name='rolling-axle';pivot.add(rotor);
- const tire=new THREE.Mesh(new THREE.CylinderGeometry(TIRE_RADIUS,TIRE_RADIUS,.27,28),new THREE.MeshStandardMaterial({color:'#192124',roughness:.9}));tire.rotation.z=Math.PI/2;rotor.add(tire);
- const rim=new THREE.Mesh(new THREE.CylinderGeometry(.3,.3,.282,20),new THREE.MeshStandardMaterial({color:'#c9dad4',metalness:.75,roughness:.3}));rim.rotation.z=Math.PI/2;rotor.add(rim);
+ const tire=new THREE.Mesh<THREE.BufferGeometry,THREE.MeshStandardMaterial>(new THREE.CylinderGeometry(TIRE_RADIUS,TIRE_RADIUS,.27,28),new THREE.MeshStandardMaterial({color:'#192124',roughness:.9}));tire.rotation.z=Math.PI/2;rotor.add(tire);
+ const rim=new THREE.Mesh<THREE.BufferGeometry,THREE.MeshStandardMaterial>(new THREE.CylinderGeometry(.3,.3,.282,20),new THREE.MeshStandardMaterial({color:'#c9dad4',metalness:.75,roughness:.3}));rim.rotation.z=Math.PI/2;rotor.add(rim);
  const parts:THREE.BufferGeometry[]=[];
  for(let i=0;i<5;i++){
   const a=i*2*Math.PI/5,g=new THREE.BoxGeometry(.015,.17,.045);g.translate(side*.15,.21,0);g.rotateX(a);parts.push(g);
@@ -22,7 +23,14 @@ export function createRoadWheel(side:number,front:boolean){
  const ghosts=Array.from({length:3},()=>{const m=new THREE.Mesh(spokesGeometry,blurMaterial);pivot.add(m);return m;});
  rotor.traverse(o=>{if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;}});
  let angle=0,steer=0,previousRendered=0,travel=0,pendingTime=0,blurAngle=0,blurAmount=0;
- return {pivot,advance:(ds:number,applied:number,dt:number,launchSlip=0,brakeSlip=0)=>{
+ return {pivot,setVisuals:(visuals:RoadWheelVisuals)=>{
+  tire.geometry.dispose();rim.geometry.dispose();spokes.geometry.dispose();
+  tire.geometry=visuals.tire;rim.geometry=visuals.rim;spokes.geometry=visuals.spokes;
+  tire.rotation.set(0,0,0);rim.rotation.set(0,0,0);
+  rim.material.color.set(visuals.color);spokes.material.color.set(visuals.color);spokes.material.metalness=.8;spokes.material.roughness=.29;
+  blurMaterial.color.set(visuals.color);ghosts.forEach(g=>g.geometry=visuals.spokes);
+  marker.scale.set(.4,.25,.4);marker.material.color.set('#b3a28b');
+ },advance:(ds:number,applied:number,dt:number,launchSlip=0,brakeSlip=0)=>{
   const rollingDistance=ds*(1-.85*brakeSlip)+(front?0:22*launchSlip*dt);
   pendingTime+=dt;travel+=ds;angle=wheelRoll(angle,rollingDistance);steer+=((front?-THREE.MathUtils.clamp(applied,-1,1)*.3:0)-steer)*(1-Math.exp(-dt/ .07));
  },render:()=>{
