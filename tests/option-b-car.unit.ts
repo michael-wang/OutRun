@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {createCar} from '../src/car';
 import {attachOptionB,loadOptionB} from '../src/option-b-car';
 import {canonicalGameQuery} from '../src/runtime-query';
+import {gtWheelVisuals,optionBLighting} from '../src/option-b-details';
 
 function asset(){
  const root=new THREE.Group();
@@ -24,6 +25,11 @@ it('swaps only body after validation and preserves controls, grip, wheel pivots 
  const replacement=asset();attachOptionB(car,replacement);
  expect(shell.visible).toBe(false);
  expect(car.userData.motion).toBe(motion);expect(car.userData.wheelPivots).toBe(pivots);
+ expect(car.getObjectByName('original-windshield')!.visible).toBe(false);
+ expect(car.getObjectByName('option-b-wheel-arches')).toBeUndefined();
+ expect(car.getObjectByName('option-b-glass')).toBeDefined();
+ expect(pivots).toHaveLength(4);
+ expect(pivots.every((p:THREE.Group)=>!!p.getObjectByName('option-b-brake-disc'))).toBe(true);
  expect(car.getObjectByName('driver')).toBe(driver);expect(car.getObjectByName('passenger')).toBe(passenger);
  expect((replacement.children[0] as THREE.Mesh).material).toBe(shell.material);
  car.userData.paintController.set('pure-white');
@@ -37,6 +43,24 @@ it('swaps only body after validation and preserves controls, grip, wheel pivots 
  const lamps=car.userData.brakeLights,idle=lamps.inspect().emissiveIntensity;
  lamps.set(true);expect(lamps.inspect().emissiveIntensity).toBeGreaterThan(idle);
  lamps.reset();expect(lamps.inspect().emissiveIntensity).toBe(idle);
+});
+it('keeps the GT contact envelope and separates headlight, running and brake states',()=>{
+ for(const side of [-1,1]){
+  const v=gtWheelVisuals(side);v.tire.computeBoundingBox();const box=v.tire.boundingBox!;
+  expect(box.max.y).toBeCloseTo(.46);expect(box.min.y).toBeCloseTo(-.46);
+  expect(box.max.z).toBeCloseTo(.46);expect(box.min.z).toBeCloseTo(-.46);
+  expect(box.max.x-box.min.x).toBeCloseTo(.29);
+ }
+ const front=new THREE.MeshStandardMaterial(),rear=new THREE.MeshStandardMaterial();
+ for(const dusk of [false,true]){
+  const lights=optionBLighting(front,rear,dusk);expect(lights.inspect().headlightsEnabled).toBe(dusk);
+  for(const enabled of [false,true])for(const braking of [false,true]){
+   lights.setHeadlights(enabled);lights.set(braking);const s=lights.inspect();
+   expect(s.tailRunningEnabled).toBe(enabled);expect(s.braking).toBe(braking);
+   expect(s.frontEmissiveIntensity).toBe(enabled?2.4:0);expect(s.emissiveIntensity).toBe(braking?1.7:enabled?.55:0);
+  }
+  lights.reset();expect(lights.inspect().braking).toBe(false);expect(lights.inspect().tailRunningEnabled).toBe(true);
+ }
 });
 it('leaves original fully visible for invalid geometry and missing local asset',async()=>{
  const car=createCar();const shell=car.getObjectByName('hero-classic-body-shell')!;

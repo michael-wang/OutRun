@@ -1,5 +1,7 @@
 # Option B playable prototype — LOCAL-DEMO ONLY
 
+**Current exterior: [G2 runbook and evidence](OPTION_B_G2.md).** The G1 measurements and source hashes below are retained history; use the G2 private export for current review.
+
 Issue #63 adds an optional local car body while the original car remains the default and load-error fallback. This is a development experiment, not a public vehicle release or final art/device acceptance. #62's original Shape evidence and #59/#60/#61 failures remain unchanged.
 
 ## Run locally

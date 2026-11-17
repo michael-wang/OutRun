@@ -419,6 +419,8 @@ function persistRace(){
 }
 let telemetry=stage?new DriveTelemetry(stage.stageCode,stage.seed,stage.generatorVersion,trip?'outrun-trip-drive-reports-v09':undefined):undefined;
 let inspectionView:'front'|'side'|'cockpit'|'rear3q'|undefined;
+let optionBDaylight=false;
+const optionBReviewLights=new Map<THREE.Light,{color:THREE.Color;intensity:number}>();
 let wheelContacts:(TireContact & {point:number[]})[]=[];
 let tireEffects=new TireEffects(world.scene),dustEffects=new TireEffects(world.scene,'dust'),impactSparks=new ImpactSparks(world.scene);
 // Farm shaders read elapsed, so all particles sample the same paused/resumed
@@ -1164,6 +1166,7 @@ function render(dt:number,draw=true){
   if(ultraOcean?.mesh.visible)ultraOcean.boatShadow.update(renderer,camera,dt);
   if(fpsProfiling)driveFpsDiagnostics.cpu('boatShadow',performance.now()-boatShadowBegin);
   const sceneDrawBegin=fpsProfiling?performance.now():0;
+  if(import.meta.env.DEV&&optionBDaylight){world.scene.background=new THREE.Color('#b8d4e9');world.scene.fog?.color.set('#b8d4e9');}
   renderer.render(world.scene,camera);
   if(fpsProfiling){
    driveFpsDiagnostics.cpu('mainScene',performance.now()-sceneDrawBegin);
@@ -1499,6 +1502,18 @@ if(import.meta.env.DEV){(window as any).__drive={
     const target=sample.position.clone().addScaledVector(sample.right,r.lateral);target.y+=1;
     const screen=target.clone().project(camera);
     return {id:r.entry.id,side,lead,localX:world.car.worldToLocal(target).x,screen:[screen.x,screen.y]};
+  },
+  optionBHeadlights:(enabled:boolean)=>world.car.userData.brakeLights.setHeadlights?.(enabled),
+  // Explicit QA lighting override, not a new stage/day-night gameplay mode.
+  optionBReviewDaylight:(enabled:boolean)=>{
+    if(world.car.userData.optionB?.state!=='ready')return;
+    optionBDaylight=enabled;
+    const sky=world.scene.getObjectByName('coast-dusk-sky');if(sky)sky.visible=!enabled;
+    world.scene.traverse(o=>{if(o instanceof THREE.HemisphereLight||o instanceof THREE.DirectionalLight){
+      if(!optionBReviewLights.has(o))optionBReviewLights.set(o,{color:o.color.clone(),intensity:o.intensity});
+      const old=optionBReviewLights.get(o)!;
+      o.color.copy(enabled?new THREE.Color('#f4f8ff'):old.color);o.intensity=enabled?(o instanceof THREE.HemisphereLight?2.2:old.intensity*1.25):old.intensity;
+    }});
   },
   optionB:()=>world.car.userData.optionB??{state:'default'},
   rivalEffects:()=>rivalView.inspectEffects(),

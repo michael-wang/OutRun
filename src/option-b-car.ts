@@ -1,8 +1,7 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {markCoastShadowCaster} from './coast-shadow-layers';
-import {createWheelBrow} from './hero-body';
-import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {gtWheelVisuals,gtBrakes,modernWindshield,modernLamps,optionBLighting} from './option-b-details';
 
 export const OPTION_B_URL = '/__local/option-b.glb';
 export type OptionBStatus = {state:'default'|'loading'|'ready'|'fallback';message:string;triangles?:number};
@@ -27,30 +26,20 @@ export function attachOptionB(car:THREE.Group,asset:THREE.Group){
  body.material=shell.material; // Existing color picker remains authoritative.
  for(const material of Array.isArray(oldMaterial)?oldMaterial:[oldMaterial])material.dispose();
  asset.name='option-b-local';
- const arches:THREE.BufferGeometry[]=[];
- for(const side of [-1,1])for(const z of [-1.45,1.38]){
-  arches.push(createWheelBrow(side).scale(1,1.18,1.08).translate(0,.46,z));
- }
- const archGeometry=mergeGeometries(arches)!;arches.forEach(g=>g.dispose());
- const arch=new THREE.Mesh(archGeometry,shell.material);arch.name='option-b-wheel-arches';asset.add(arch);
  asset.updateMatrixWorld(true);
- for(const side of [-1,1])for(const front of [true,false]){
-  const direction=new THREE.Vector3(0,0,front?-1:1);
-  const ray=new THREE.Raycaster(new THREE.Vector3(side*.65,front?.70:.85,front?3:-3),direction);
-  const hit=ray.intersectObject(body,false)[0];
-  if(!hit)continue;
-  const normal=hit.face!.normal.clone().transformDirection(body.matrixWorld);
-  if(normal.dot(direction)>0)normal.negate();
-  const lamp=new THREE.Mesh(new THREE.BoxGeometry(.34,.052,.03),car.userData.optionBLights[front?'front':'rear']);
-  lamp.position.copy(hit.point).addScaledVector(normal,.018);
-  lamp.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal);
-  lamp.name=front?'option-b-headlight':'option-b-running-brake-lamp';asset.add(lamp);
+ asset.add(modernWindshield());
+ asset.add(modernLamps(body,car.userData.optionBLights.front,car.userData.optionBLights.rear));
+ car.getObjectByName('original-windshield')!.visible=false;
+ for(const wheel of car.userData.optionBWheelControllers){
+  const side=wheel.inspect().side;wheel.setVisuals(gtWheelVisuals(side));wheel.pivot.add(gtBrakes(side));
  }
+ car.userData.brakeLights=optionBLighting(car.userData.optionBLights.front,car.userData.optionBLights.rear,car.userData.optionBDusk);
  car.userData.optionBSeatMaterial.color.set('#ad7042');
  asset.traverse(o=>{if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;markCoastShadowCaster(o,'dynamic','player');}});
  car.add(asset);
  hidden.forEach(o=>o.visible=false);
- return triangles+4*160+4*12;
+ let total=0;asset.traverse(o=>{if(o instanceof THREE.Mesh)total+=(o.geometry.index?.count??o.geometry.getAttribute('position').count)/3;});
+ return total;
 }
 
 function disposeAsset(asset:THREE.Group){

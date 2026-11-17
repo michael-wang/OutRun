@@ -98,12 +98,14 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
     dial.scale.set(.09,.04,.03);
   }
   // Slim tinted screen and brushed aluminium perimeter.
-  box(1.44,.075,.07,dark,0,.90,.71);
+  const windshield=new THREE.Group();windshield.name='original-windshield';car.add(windshield);
+  mesh(new THREE.BoxGeometry(1.44,.075,.07),dark,0,.90,.71,windshield);
   // Transparent swept windscreen, no rear glazing or opaque cabin/roof.
-  const screen=new THREE.BufferGeometry();screen.setAttribute('position',new THREE.Float32BufferAttribute([-.78,.9,.78,.78,.9,.78,-.68,1.43,.43,.68,1.43,.43],3));screen.setIndex([0,1,2,2,1,3]);screen.computeVertexNormals();mesh(screen,glass);
-  for(const side of [-1,1])bar([side*.78,.9,.78],[side*.68,1.43,.43],.035,silver);
-  bar([-.68,1.43,.43],[.68,1.43,.43],.03,silver);
-  bar([-.78,.9,.78],[.78,.9,.78],.03,dark);
+  const screen=new THREE.BufferGeometry();screen.setAttribute('position',new THREE.Float32BufferAttribute([-.78,.9,.78,.78,.9,.78,-.68,1.43,.43,.68,1.43,.43],3));screen.setIndex([0,1,2,2,1,3]);screen.computeVertexNormals();mesh(screen,glass,0,0,0,windshield);
+  for(const side of [-1,1])bar([side*.78,.9,.78],[side*.68,1.43,.43],.035,silver,windshield);
+  bar([-.68,1.43,.43],[.68,1.43,.43],.03,silver,windshield);
+  bar([-.78,.9,.78],[.78,.9,.78],.03,dark,windshield);
+  batch(windshield);
   const wheel=createCockpitWheel();car.add(wheel);
   bar([.41,.93,.46],wheel.position.toArray(),.030,silver);
   // +Z is the vehicle nose. In the rear chase view positive X appears
@@ -250,6 +252,8 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
   car.userData.optionBBodyMaterials=[paint,paintShade];
   car.userData.optionBLights={front:lamp,rear};
   car.userData.optionBSeatMaterial=seatHide;
+  car.userData.optionBWheelControllers=wheels;
+  car.userData.optionBDusk=dusk;
   const people=createOccupantMotion(travelers);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);
   car.userData.motion={
