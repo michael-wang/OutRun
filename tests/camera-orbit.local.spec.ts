@@ -9,7 +9,7 @@ test('actual game right-stick orbit, held angle, L3 reset and private red/white 
   const p={id:'QA standard pad',connected:true,mapping:'standard',buttons:Array.from({length:18},()=>({pressed:false,value:0})),axes:[0,0,0,0]};
   (window as any).__qaPad=p;Object.defineProperty(navigator,'getGamepads',{value:()=>[p]});
  });
- await page.goto('/?at=850&trafficSeed=1234&hero3d=1');
+ await page.goto('/?at=850&trafficSeed=1234');
  if(await page.locator('#boot-enter').isVisible())await page.locator('#boot-enter').click();
  await page.locator('#start-race').click();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:120000});

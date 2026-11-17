@@ -1,3 +1,4 @@
+import {OPTION_B_PATH} from './option-b-packaging';
 import type {Plugin} from 'vite';
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -5,7 +6,7 @@ import {resolve} from 'node:path';
 /** Fixed, loopback-only private art endpoint. No binary is copied into dist. */
 export function optionBLocalServer():Plugin{
  return {name:'option-b-private-art',apply:'serve',configureServer(server){
-  server.middlewares.use('/__local/option-b.glb',async(req,res)=>{
+  server.middlewares.use('/'+OPTION_B_PATH,async(req,res)=>{
    const address=req.socket.remoteAddress?.replace(/^::ffff:/,'');
    const site=req.headers['sec-fetch-site'];
    let host='';try{host=new URL(`http://${req.headers.host}`).hostname;}catch{/* rejected below */}

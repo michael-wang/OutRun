@@ -1,3 +1,4 @@
+import {optionBPackaging} from './scripts/option-b-packaging';
 import {optionBLocalServer} from './scripts/option-b-local-server';
 import {defineConfig, type Plugin} from 'vite';
 import {mkdir, open, realpath, lstat, link, unlink, readdir, readFile, writeFile} from 'node:fs/promises';
@@ -61,7 +62,7 @@ function offlineCoast():Plugin {
    const name=path.split(sep).join('/');
    if(/^(icons|ui)\/.*\.png$|^assets\/coast-(boats|nature|props)\/.*\.(glb|png)$/.test(name))files.add(name);
   }
-  for(const name of ['index.html','manifest.webmanifest','generated/coast-shore.shore','assets/coast-nature/models.json','assets/coast-nature/headland-grove.json','assets/coast-farm/rice-near.glb','assets/coast-farm/scarecrow.glb'])files.add(name);
+  for(const name of ['index.html','manifest.webmanifest','generated/coast-shore.shore','assets/coast-nature/models.json','assets/coast-nature/headland-grove.json','assets/coast-farm/rice-near.glb','assets/coast-farm/scarecrow.glb','assets/characters/coast-heroine-r7h-race.glb','assets/characters/coast-heroine-r7a.glb','assets/characters/coast-blonde-r6d.glb','assets/characters/coast-blonde-r6b-upper.glb','assets/characters/coast-blonde-bob.glb'])files.add(name);
   const paths=[...files].sort(),hash=createHash('sha256');
   for(const name of paths)hash.update(name).update('\0').update(await readFile(join(dir,name)));
   const template=await readFile('public/sw.js','utf8');
@@ -74,4 +75,4 @@ function buildCommit(){
  try{return execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',windowsHide:true,stdio:['ignore','pipe','ignore']}).trim();}
  catch{return null;}
 }
-export default defineConfig({define:{'import.meta.env.VITE_BUILD_SHA':JSON.stringify(buildCommit())},base:process.env.OUTRUN_SITE_BASE??'/',plugins:[optionBLocalServer(),captureArchive(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});
+export default defineConfig({define:{'import.meta.env.VITE_BUILD_SHA':JSON.stringify(buildCommit())},base:process.env.OUTRUN_SITE_BASE??'/',plugins:[optionBPackaging(),optionBLocalServer(),captureArchive(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});

@@ -4,7 +4,7 @@ import {markCoastShadowCaster} from './coast-shadow-layers';
 import {gtWheelVisuals,gtBrakes,modernWindshield,modernLamps,optionBLighting} from './option-b-details';
 import {optionBRear} from './option-b-rear';
 
-export const OPTION_B_URL = '/__local/option-b.glb';
+export const OPTION_B_URL = import.meta.env.BASE_URL+'runtime/option-b-01152cd6c938c2bf3298ba3ec18abcc1228e99db0ecae9f1f07a86a48ce6ab00.glb';
 export type OptionBStatus = {state:'default'|'loading'|'ready'|'fallback';message:string;triangles?:number};
 /** Validates the local recipe output before atomically hiding any default body. */
 export function attachOptionB(car:THREE.Group,asset:THREE.Group){
@@ -50,7 +50,7 @@ function disposeAsset(asset:THREE.Group){
  materials.forEach(m=>m.dispose());
 }
 
-/** Local R&D only: never requested by the default path or production build. */
+/** Default visual, awaited before start. Private packaging remains license-gated. */
 export async function loadOptionB(car:THREE.Group,signal:AbortSignal):Promise<OptionBStatus>{
  const status:OptionBStatus={state:'loading',message:'Loading local Option B…'};
  car.userData.optionB=status;
@@ -63,6 +63,8 @@ export async function loadOptionB(car:THREE.Group,signal:AbortSignal):Promise<Op
   const response=await fetch(OPTION_B_URL,{signal:controller.signal});
   if(!response.ok)throw Error('Local asset unavailable');
   const bytes=await response.arrayBuffer();
+  const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
+  if(digest!=='01152cd6c938c2bf3298ba3ec18abcc1228e99db0ecae9f1f07a86a48ce6ab00')throw Error('Runtime asset integrity mismatch');
   if(bytes.byteLength>8*1024*1024)throw Error('Local asset exceeds budget');
   // Only self-contained GLB from our local recipe; no external resources.
   const view=new DataView(bytes);

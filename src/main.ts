@@ -228,11 +228,11 @@ await loadingStep(38,'正在建立公路','準備道路與沿途景物。');
 const previousHeroLook=import.meta.env.DEV&&params.get('r6')==='previous';
 await preloadBlondeGroom(!previousHeroLook);
 // R7H is an owner-authorized playable DEV art candidate; R7A remains a rollback.
-if(import.meta.env.DEV&&!previousHeroLook&&params.get('heroine')!=='previous'){
+if(!previousHeroLook&&params.get('heroine')!=='previous'){
  if(!await preloadHeroineBust(params.get('heroine')==='r7a'?'r7a':'r7h'))await preloadHeroineBust('r7a');
 }
 const world=createWorld({
- optionBPreview:import.meta.env.DEV&&params.get('hero3d')==='1',
+ optionBPreview:params.get('car')!=='classic',
  previousHeroLook,
  track:coastRuntime.track,
  streamStage:coastRuntime.stage,
@@ -248,13 +248,16 @@ const world=createWorld({
  course:coastRuntime.course,
  narrowings:[],
 }); world.car.rotation.order="YXZ";
-if(import.meta.env.DEV&&params.get('hero3d')==='1'){
+if(params.get('car')!=='classic'){
  const {loadOptionB}=await import('./option-b-car');
  const status=await loadOptionB(world.car,signal);
- const badge=document.createElement('div');badge.id='option-b-status';badge.textContent=status.message;
+ document.documentElement.dataset.playerCar=status.state==='ready'?'option-b':'classic-fallback';
+ if(status.state==='fallback'){
+ const badge=document.createElement('div');badge.id='option-b-status';badge.setAttribute('role','status');badge.textContent=status.message;
  badge.style.cssText='position:fixed;left:8px;bottom:8px;z-index:30;font:12px sans-serif;color:white;background:#17212bcc;padding:4px 8px;pointer-events:none';
  document.body.append(badge);signal.addEventListener('abort',()=>badge.remove(),{once:true});
 }
+}else{document.documentElement.dataset.playerCar='classic';}
 // Authored GLBs are optional art, loaded once before the start gate.
 // Preserve the approved road, traffic, physics and Ultra Water.
 const authoredStaticProps=coastUltraMode?

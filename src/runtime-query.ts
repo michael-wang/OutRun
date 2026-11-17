@@ -1,9 +1,10 @@
 /** Public query contract: old debug URLs never change gameplay modes. */
-export const GAME_QUERY_KEYS=['fpsdiag','startupdiag','at','trafficSeed','rivaldebug'] as const;
+export const GAME_QUERY_KEYS=['car','fpsdiag','startupdiag','at','trafficSeed','rivaldebug'] as const;
 // Private dev-only visual marker for data-authored stage prefabs.
 export const DEV_QUERY_KEYS=['prefabdebug','r5qa','r6','hairWind','hairMid','hairUpper','hairStyle','heroine','hero3d'] as const;
 export function canonicalGameQuery(raw:URLSearchParams){
  const result=new URLSearchParams();
+ if(raw.get('car')==='classic')result.set('car','classic');
  if(raw.get('fpsdiag')==='1')result.set('fpsdiag','1');
  if(raw.get('startupdiag')==='1')result.set('startupdiag','1');
  const at=raw.get('at');

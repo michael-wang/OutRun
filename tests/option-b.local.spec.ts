@@ -7,9 +7,9 @@ test.skip(!evidence,'Explicit local-only evidence directory required; private ar
 for(const mode of ['default','option-b','fallback','malformed'])test(`${mode}: actual coast start, driving and restart`,async({page})=>{
  mkdirSync(evidence!,{recursive:true});
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
- if(mode==='fallback')await page.route('**/__local/option-b.glb',r=>r.fulfill({status:404,body:'missing'}));
- if(mode==='malformed')await page.route('**/__local/option-b.glb',r=>r.fulfill({status:200,body:'invalid GLB'}));
- await page.goto('/?at=850&trafficSeed=1234'+(mode==='default'?'':'&hero3d=1'));
+ if(mode==='fallback')await page.route('**/runtime/option-b-*',r=>r.fulfill({status:404,body:'missing'}));
+ if(mode==='malformed')await page.route('**/runtime/option-b-*',r=>r.fulfill({status:200,body:'invalid GLB'}));
+ await page.goto('/?at=850&trafficSeed=1234'+(mode==='default'?'&car=classic':''));
  if(await page.locator('#boot-enter').isVisible())await page.locator('#boot-enter').click();
  await page.locator('#start-race').click();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:120000});
