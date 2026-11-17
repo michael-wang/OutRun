@@ -1,12 +1,13 @@
 import type {InputLatch} from './input';
-export type PadAction='confirm'|'back'|'pause'|'fullscreen'|'up'|'down'|'left'|'right'|'camera-prev'|'camera-next'|'photo'|'qa';
+export type PadAction='confirm'|'back'|'pause'|'fullscreen'|'up'|'down'|'left'|'right'|'camera-prev'|'camera-next'|'camera-reset'|'photo'|'qa';
 function connectedPad(){
  try{return Array.from(navigator.getGamepads?.()??[]).find(p=>p?.connected);}
  catch{return undefined;}
 }
 function buttonDown(button:GamepadButton){return button.pressed||button.value>.5;}
-/** Standard Gamepad mapping only; all actions are edge-triggered. */
+/** Standard mapping: button actions are edges; orbitAxis is continuous. */
 export class GamepadInput {
+ orbitAxis=0;
  private stickDirection=0;
  private readonly onBlur=()=>this.release();
  dispose(){window.removeEventListener('blur',this.onBlur);this.release();this.status.remove();}
@@ -15,9 +16,9 @@ export class GamepadInput {
   // A newly mounted screen inherits physical buttons already held at creation.
   this.previous=connectedPad()?.buttons.map(buttonDown)??[];
  }
- private releaseDrive(){this.input.release('pad:axis');this.input.release('pad:gas');this.input.release('pad:brake');}
- neutralize(){this.releaseDrive();this.needsNeutral=true;}
- private release(){this.releaseDrive();this.previous=[];this.stickDirection=0;this.axisActive=false;this.meaningfulAxis=0;this.needsNeutral=true;}
+ private releaseDrive(){this.orbitAxis=0;this.input.release('pad:axis');this.input.release('pad:gas');this.input.release('pad:brake');}
+ neutralize(){this.releaseDrive();this.orbitAxis=0;this.needsNeutral=true;}
+ private release(){this.releaseDrive();this.orbitAxis=0;this.previous=[];this.stickDirection=0;this.axisActive=false;this.meaningfulAxis=0;this.needsNeutral=true;}
  private textUnsupported(){this.status.textContent='Gamepad connected · unsupported mapping';}
  poll(driving:boolean | 'stage-menu',qaAvailable=false){const pad=connectedPad();this.status.hidden=!pad||driving==='stage-menu';const diagnostic=document.getElementById('gamepad-diagnostic');if(!pad||!document.hasFocus()||document.hidden){if(!pad)this.disconnected();if(diagnostic)diagnostic.textContent='No focused connected gamepad.';this.release();return;}
  const pressed=pad.buttons.map(buttonDown),b=(i:number)=>!!pressed[i],edge=(i:number)=>pressed[i]&&!this.previous[i];const changed=pressed.flatMap((v,i)=>v!==!!this.previous[i]?[`${i}:${v?'down':'up'}`]:[]);if(changed.length)this.lastChanged=changed.join(', ');if(diagnostic)diagnostic.textContent=`${pad.id || 'Gamepad'} · mapping: ${pad.mapping || 'nonstandard'} · ${pad.buttons.length} buttons · changed: ${this.lastChanged}`;
@@ -36,9 +37,11 @@ export class GamepadInput {
   this.previous=pressed;return;
  }
  if(edge(8))this.action('fullscreen');
+ this.status.textContent+=' · 右搖桿 環視 · L3 追車';
  // Track-praise and issue reporting are retired from live gamepad controls.
  if(qaAvailable&&edge(3)){this.releaseDrive();this.needsNeutral=true;this.previous=pressed;this.action('qa');return;}
  if(edge(pad.buttons.length>17?17:11))this.action('photo');
+ if(edge(10))this.action('camera-reset');
  // L1/R1 select the previous or next observed racer, without releasing throttle.
  if(edge(4))this.action('camera-prev');
  if(edge(5))this.action('camera-next');
@@ -52,6 +55,7 @@ export class GamepadInput {
  // on the FIRST drive frame, not after several additional presses.
  this.needsNeutral=false;
  const axis=Math.abs(pad.axes[0]??0)>.16?pad.axes[0]:0,steer=Number(b(15))-Number(b(14))||axis;if(steer)this.input.setAnalog('pad:axis',steer);else this.input.release('pad:axis');if(b(7))this.input.press('pad:gas','gas');else this.input.release('pad:gas');if(b(6))this.input.press('pad:brake','brake');else this.input.release('pad:brake');}
+ this.orbitAxis=Number.isFinite(pad.axes[2])?pad.axes[2]:0;
  this.previous=pressed;
  }
 }

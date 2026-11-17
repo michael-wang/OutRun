@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {gtWheelVisuals,gtBrakes,modernWindshield,modernLamps,optionBLighting} from './option-b-details';
+import {optionBRear} from './option-b-rear';
 
 export const OPTION_B_URL = '/__local/option-b.glb';
 export type OptionBStatus = {state:'default'|'loading'|'ready'|'fallback';message:string;triangles?:number};
@@ -19,7 +20,7 @@ export function attachOptionB(car:THREE.Group,asset:THREE.Group){
  if(size.z<4||size.z>5.5||size.x<1.5||size.x>2.7||size.y>2||triangles>60000)throw Error('Unexpected Option B dimensions/budget');
  const shell=car.getObjectByName('hero-classic-body-shell') as THREE.Mesh;
  if(!shell)throw Error('Default car unavailable');
- const hidden=car.children.filter(o=>o===shell||o.name==='riviera-rear-trim'||o.name==='hero-classic-tail-lamps'||
+ const hidden=car.children.filter(o=>o===shell||o.name==='original-rear-hardware'||o.name==='riviera-rear-trim'||o.name==='hero-classic-tail-lamps'||
   (o instanceof THREE.Mesh&&o.material===car.userData.optionBLights.front)||
   (o instanceof THREE.Mesh&&car.userData.optionBBodyMaterials.includes(o.material)));
  const oldMaterial=body.material;
@@ -29,6 +30,7 @@ export function attachOptionB(car:THREE.Group,asset:THREE.Group){
  asset.updateMatrixWorld(true);
  asset.add(modernWindshield());
  asset.add(modernLamps(body,car.userData.optionBLights.front,car.userData.optionBLights.rear));
+ asset.add(optionBRear(shell.material as THREE.Material,car.userData.optionBLights.rear));
  car.getObjectByName('original-windshield')!.visible=false;
  for(const wheel of car.userData.optionBWheelControllers){
   const side=wheel.inspect().side;wheel.setVisuals(gtWheelVisuals(side));wheel.pivot.add(gtBrakes(side));

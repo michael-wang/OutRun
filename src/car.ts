@@ -28,7 +28,7 @@ export interface CarPaintController {
  * anchor stay unchanged while the focal-point body/cockpit receive detail.
  * Static meshes are merged by material alongside the articulated occupants.
  */
-export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',previousLook=false) {
+export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',previousLook=false,optionBPreview=false) {
   const car=new THREE.Group();car.name='coastal-roadster';
   const wheels:ReturnType<typeof createRoadWheel>[]=[];
   const travelers:Traveler[]=[];
@@ -183,6 +183,7 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
       poseHead:heroine?.performance?rotation=>heroine.performance!.syncHead(head,rotation):heroine?.poseHead,
       poseDriverArms:driver?createDriverArms(car,person,wheel,skin,suit):undefined});
   }
+  const beforeLegacyRear=new Set(car.children);
   // A sculpted tail, twin C-shaped LED signatures and dark diffuser
   // are readable at the normal chase distance (unlike single red cubes).
   box(1.80,.105,.15,dark,0,.32,-2.34);
@@ -224,6 +225,11 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
   }
   const numberPlate=mesh(new THREE.PlaneGeometry(.733,.190),plateMaterial,0,.570,-2.459);
   numberPlate.name='rear-license-FZR-123';numberPlate.rotation.y=Math.PI;
+  if(optionBPreview){
+   const legacyRear=new THREE.Group();legacyRear.name='original-rear-hardware';
+   for(const child of [...car.children])if(!beforeLegacyRear.has(child)&&child!==classicLamps&&!(child instanceof THREE.Mesh&&child.material===lamp))legacyRear.add(child);
+   car.add(legacyRear);batch(legacyRear);
+  }
   // Top deck vents are shallow dark slits; no solid roof.
   for(let i=0;i<4;i++)
    mesh(new THREE.BoxGeometry(.80,.023,.04),dark,0,.955-i*.012,-1.50-i*.115,rivieraTrim);

@@ -71,12 +71,12 @@ export function modernLamps(body:THREE.Mesh,front:THREE.MeshStandardMaterial,rea
  const housing=new THREE.MeshStandardMaterial({color:'#111b23',metalness:.35,roughness:.28,side:THREE.DoubleSide});
  const dark:THREE.BufferGeometry[]=[],white:THREE.BufferGeometry[]=[],red:THREE.BufferGeometry[]=[];
  front.side=rear.side=THREE.DoubleSide;
- for(const side of [-1,1])for(const isFront of [true,false]){
+ for(const side of [-1,1])for(const isFront of [true]){
   const y=isFront?.705:.825;
   dark.push(lampRibbon(body,isFront,side,y,isFront?.095:.09));
   const g=lampRibbon(body,isFront,side,y,.026);g.translate(0,0,isFront?.005:-.005);(isFront?white:red).push(g);
  }
- for(const [name,parts,mat] of [['housing',dark,housing],['headlights',white,front],['running-brake',red,rear]] as const){const m=new THREE.Mesh(merged(parts),mat);m.name=`option-b-${name}`;root.add(m);}
+ for(const [name,parts,mat] of [['housing',dark,housing],['headlights',white,front]] as const){const m=new THREE.Mesh(merged(parts),mat);m.name=`option-b-${name}`;root.add(m);}
  // Reserved local attachment points; no turn-signal mechanic in G2.
  for(const side of [-1,1]){const anchor=new THREE.Object3D();anchor.name=side>0?'indicatorLeft':'indicatorRight';anchor.position.set(side*.9,.82,2);root.add(anchor);}
  return root;

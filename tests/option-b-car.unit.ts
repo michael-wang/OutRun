@@ -16,7 +16,7 @@ it('keeps default path opt-in and rejects unknown flag values',()=>{
  expect(createCar().getObjectByName('hero-classic-body-shell')!.visible).toBe(true);
 });
 it('swaps only body after validation and preserves controls, grip, wheel pivots and paint',()=>{
- const car=createCar(true),motion=car.userData.motion,pivots=car.userData.wheelPivots;
+ const car=createCar(true,'driving',false,true),motion=car.userData.motion,pivots=car.userData.wheelPivots;
  const shell=car.getObjectByName('hero-classic-body-shell') as THREE.Mesh;
  const driver=car.getObjectByName('driver'),passenger=car.getObjectByName('passenger');
  const grip=car.getObjectByName('driver-right-hand-steering')!;
@@ -26,6 +26,9 @@ it('swaps only body after validation and preserves controls, grip, wheel pivots 
  expect(shell.visible).toBe(false);
  expect(car.userData.motion).toBe(motion);expect(car.userData.wheelPivots).toBe(pivots);
  expect(car.getObjectByName('original-windshield')!.visible).toBe(false);
+ expect(car.getObjectByName('original-rear-hardware')!.visible).toBe(false);
+ expect(car.getObjectByName('option-b-brand-plate')).toBeDefined();
+ expect((car.getObjectByName('option-b-painted-tail') as THREE.Mesh).material).toBe(shell.material);
  expect(car.getObjectByName('option-b-wheel-arches')).toBeUndefined();
  expect(car.getObjectByName('option-b-glass')).toBeDefined();
  expect(pivots).toHaveLength(4);

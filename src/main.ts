@@ -44,6 +44,7 @@ import {RivalOvertakes} from './rival-overtakes';
 import {HeroineOpportunities} from './heroine-opportunities';
 import {layoutRearRivalTags,formatRaceTime} from './race-hud';
 import {GamepadInput} from './gamepad';
+import {CameraOrbit} from './camera-orbit';
 import {RecentDrivingHistory} from './recent-history';
 import {advancePowertrain} from './powertrain';
 import { immersive, landscapeControl } from './immersive';
@@ -231,6 +232,7 @@ if(import.meta.env.DEV&&!previousHeroLook&&params.get('heroine')!=='previous'){
  if(!await preloadHeroineBust(params.get('heroine')==='r7a'?'r7a':'r7h'))await preloadHeroineBust('r7a');
 }
 const world=createWorld({
+ optionBPreview:import.meta.env.DEV&&params.get('hero3d')==='1',
  previousHeroLook,
  track:coastRuntime.track,
  streamStage:coastRuntime.stage,
@@ -405,6 +407,7 @@ renderer.domElement.addEventListener('webglcontextrestored',()=>{contextLost=fal
 
 let testControls:InputState|undefined;let hardDetents=false;let lastControls:InputState={gas:false,brake:false,steer:0};let usedExternalControls=false;
 const highSpeedPace=DEFAULT_PACE;
+const cameraOrbit=new CameraOrbit();
 let bridgeInspection=false;let cameraHeading=0;const scenicWeight=0;let initialized=false; let elapsed=0; let frames=0;
 const history=new RecentDrivingHistory();
 const finishStats=new FinishStats();
@@ -531,6 +534,7 @@ const backToResults=document.createElement('button');
 backToResults.textContent='返回結算';backToResults.onclick=()=>followRacer(-1);director.append(backToResults);
 raceWatch.onclick=()=>followRacer(race.rivals.findIndex(r=>r.finishTime===null));
 function resetRace(grid=atDistance??BRICK_START){
+ cameraOrbit.reset();
  heroineOpportunities.reset();heroineFinishPresentation=0;
  race.reset(grid);rivalOvertakes.reset(grid,race.rivals);rivalPassCount=0;
  startSignals.reset();sound.resetRaceStartCues();
@@ -1075,6 +1079,7 @@ function render(dt:number,draw=true){
   // Anchor translation to the car. World-position lerp would add v/tau trailing
   // distance and recreate a speed-dependent dolly despite a constant target offset.
   const targets=chaseTargets(world.car.position,cameraHeading,camera.aspect,p.tangent.y/Math.hypot(p.tangent.x,p.tangent.z));
+  if(observed<0&&!inspectionView&&!bridgeInspection)cameraOrbit.apply(targets,world.car.position);
   camera.position.copy(targets.eye);camera.lookAt(targets.look);
   if(import.meta.env.DEV&&inspectionView){
     world.car.updateMatrixWorld(true);
@@ -1187,6 +1192,7 @@ const photos=new PhotoCapture(renderer.domElement,()=>render(0),()=>{const p=wor
 function capturePhoto(){if(settingsOpen||l2UI?.feedbackOpen||mode==='countdown')return;const meta=photos.capture();if(meta){telemetry?.mark('photo',elapsed,state.distance-BRICK_START,meta);}}
 $('photo-button').onclick=capturePhoto;
 const pad=new GamepadInput(input,action=>{
+ if(action==='camera-reset'){if(!settingsOpen&&observed<0&&!sceneInspector?.isOpen)cameraOrbit.reset();return;}
  if(action==='qa'){toggleSceneQa();return;}
  if(brickCompleted&&observed>=0&&(action==='back'||action==='confirm')){followRacer(-1);return;}
  if(!settingsOpen&&trip&&mode==='paused'&&tripPauseDock?.isExpanded&&action==='back'){tripPauseDock.collapse();ui();tripPauseDock.moreButton.focus();return;}
@@ -1292,6 +1298,7 @@ function loop(now:number){
   // A gamepad confirm can leave the stage from inside this frame.
   if(signal.aborted)return;
   const dt=Math.min((now-last)/1000,.25);last=now;
+  cameraOrbit.advance(pad.orbitAxis,dt,!startupPending&&!replayPreparing&&document.hasFocus()&&!document.hidden&&!settingsOpen&&!sceneInspector?.isOpen&&observed<0&&!inspectionView&&!bridgeInspection&&(mode==='ready'||mode==='countdown'||mode==='playing'));
   // Integrate elapsed time in bounded physics steps; slow rendering must not
   // turn a 65m/s drive into slow motion by discarding every frame above 50ms.
   const fpsPhysicsStart=driveFpsDiagnostics.enabled&&mode==='playing'?performance.now():0;
@@ -1516,6 +1523,7 @@ if(import.meta.env.DEV){(window as any).__drive={
     }});
   },
   optionB:()=>world.car.userData.optionB??{state:'default'},
+  cameraOrbit:()=>({angle:cameraOrbit.angle,eye:camera.position.toArray(),rotation:camera.quaternion.toArray()}),
   rivalEffects:()=>rivalView.inspectEffects(),
   rivalPassCount:()=>rivalPassCount,
   rivalTags:()=>rivalView.inspectTags(),
