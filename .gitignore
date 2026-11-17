@@ -49,3 +49,6 @@ __pycache__/
 # Local source archives; selected licensed runtime models live in public/assets.
 /.cache/watercraft/
 /.cache/farm/
+
+# Private Issue 63 preview input; never part of public builds.
+/.local/

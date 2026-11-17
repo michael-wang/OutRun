@@ -1,3 +1,4 @@
+import {optionBLocalServer} from './scripts/option-b-local-server';
 import {defineConfig, type Plugin} from 'vite';
 import {mkdir, open, realpath, lstat, link, unlink, readdir, readFile, writeFile} from 'node:fs/promises';
 import {join,resolve,sep} from 'node:path';
@@ -73,4 +74,4 @@ function buildCommit(){
  try{return execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',windowsHide:true,stdio:['ignore','pipe','ignore']}).trim();}
  catch{return null;}
 }
-export default defineConfig({define:{'import.meta.env.VITE_BUILD_SHA':JSON.stringify(buildCommit())},base:process.env.OUTRUN_SITE_BASE??'/',plugins:[captureArchive(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});
+export default defineConfig({define:{'import.meta.env.VITE_BUILD_SHA':JSON.stringify(buildCommit())},base:process.env.OUTRUN_SITE_BASE??'/',plugins:[optionBLocalServer(),captureArchive(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});

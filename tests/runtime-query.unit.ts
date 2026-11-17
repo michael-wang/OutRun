@@ -11,7 +11,7 @@ it('accepts only approved diagnostics, positioning and replayable traffic seed',
  expect(canonicalGameQuery(new URLSearchParams('trafficSeed=not-a-number')).toString()).toBe('');
 });
 it('exposes authored-prefab QA only in development builds',()=>{
- expect(DEV_QUERY_KEYS).toEqual(['prefabdebug','r5qa','r6','hairWind','hairMid','hairUpper','hairStyle','heroine']);
+ expect(DEV_QUERY_KEYS).toEqual(['prefabdebug','r5qa','r6','hairWind','hairMid','hairUpper','hairStyle','heroine','hero3d']);
  const keys=canonicalGameQuery(new URLSearchParams('at=985&prefabdebug=1'));
  expect(keys.get('at')).toBe('985');
  expect(keys.has('prefabdebug')).toBe(import.meta.env.DEV);

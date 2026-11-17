@@ -247,6 +247,9 @@ export function createCar(dusk=false, passengerDetail:PassengerDetail='driving',
   };
   paintController.set(DEFAULT_CAR_COLOR);
   car.userData.paintController=paintController;
+  car.userData.optionBBodyMaterials=[paint,paintShade];
+  car.userData.optionBLights={front:lamp,rear};
+  car.userData.optionBSeatMaterial=seatHide;
   const people=createOccupantMotion(travelers);
   car.userData.wheelPivots=wheels.map(w=>w.pivot);
   car.userData.motion={
