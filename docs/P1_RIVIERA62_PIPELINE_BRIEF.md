@@ -2,7 +2,7 @@
 
 **日期：2026-11-16（台灣時間）**  
 **任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
-**現行狀態（2026-11-17）：P1-0/P1-1 PASS；Hunyuan Shape 技術 PASS；Michael 已試駕 Option B 並接受 [P1-G1 #63](https://github.com/michael-wang/OutRun/issues/63) 為本機可玩原型 PASS（[累積 Draft PR #64](https://github.com/michael-wang/OutRun/pull/64) 尚未合併 dev）。[P1-G2 外觀一致化 Issue #65](https://github.com/michael-wang/OutRun/issues/65) 已授權 Judy 在同一分支／PR 自主完成四輪與舊輪拱、現代擋風玻璃及前後燈具，最後才一次驗收。後車尾幾何粗糙仍延後；正式 P1-4 Pixel 8、main 發布、私人生成資產公開均未授權。**  
+**現行狀態（2026-11-17）：P1-0/P1-1 PASS；Hunyuan Shape 技術 PASS；Michael 實際試駕 Option B，Julia 給 G1/G2 dev-only 原型 PASS，累積 [PR #64](https://github.com/michael-wang/OutRun/pull/64) 已合併至 dev（`c0e63e8`）。[最新 P1-G3 Issue #66](https://github.com/michael-wang/OutRun/issues/66) 已授權 Judy 直接在 dev 推進兩大目標：依 [私人設計／遊戲對照頁](https://chatgpt.com/space/page_abf24af3c7808191b6bce5b8b2842bf4) 修正車尾牌面／LED／雙排氣與輪拱一體曲面；右蘑菇頭水平環視，**L3 按下回正常追車、R3 保留截圖**。G3 未宣稱已開工或 PASS；正式 Pixel 8、main 發布及 Hunyuan 私人模型公開仍未授權。**  
 **負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
 **權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
 
