@@ -1,5 +1,15 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+### 2026-11-17 — P1-G2：Judy 自主完成 Option B 外觀一致化（最新優先工作）
+
+Michael 已親自試駕 **Option B** 並接受 [P1-G1 #63](https://github.com/michael-wang/OutRun/issues/63) 為**本機可玩原型 PASS**。G1 的 [Draft PR #64](https://github.com/michael-wang/OutRun/pull/64) **尚未合併到 dev**。**最新授權是 [P1-G2 #65](https://github.com/michael-wang/OutRun/issues/65)**，Judy 應**直接沿用 G1 的 `task/issue63-option-b-local` 工作分支及同一個 Draft PR #64**，而不是從 dev 重新開工；中間不必分段要求 Julia／Michael 驗收，完成三大外觀項後再統一驗收。
+
+**P1-G2 一次完成、按優先順序：**（1）四個輪胎／輪圈＋輪胎上方舊式圓弧輪拱蓋一起替換成現代 GT 造型（**最高優先**，保留轉向、滾動及輪胎接地）；（2）貼合 Option B 車身的現代擋風玻璃、細框與座艙銜接，男女主角不遮擋、男主角握方向盤動作保留；（3）新款細長 LED 前燈＋後燈，黃昏前燈／尾燈常亮與煞車增亮分離。**車尾下方多孔凹凸是 deferred polish，不阻擋本次**。整台車仍只能用 `?hero3d=1` 在授權的本機環境試玩；未帶參數或模型遺失應回到舊版車。保留原本遊戲操控／競速、玩家與女伴、音效與流程。下一次驗收看真的追車畫面（含黃昏）、左右轉彎及完整遊戲，而非每個零件的孤立渲染。
+
+**授權與界線：** Judy 有自行選方法、修改 DCC/小型 runtime adapter、修復、測試的自主權；不必兩輪停工。仍不授權 `main` 發布、不授權將私人 Hunyuan GLB/.blend／參考圖／私人診斷截圖上傳公開 Repo、不擅自付費、改正式物理／女主角或放寬工具安全設定。可交本機可試駕版本＋安全程式/文件 Draft PR，實體素材維持本機私人存放。**正式 Pixel 8 與全球發行授權仍待確認**。詳細：[#65](https://github.com/michael-wang/OutRun/issues/65)。
+
+**歷史註記：** 下方 P1-G1、#62「不准進行 P1-3」「每次只跑一次」的文本是當時的階段 Gate，**不覆蓋最新的 G2 本機可回退整合授權**；Shape 不需重跑，且失敗證據仍保留。
+
 ### 2026-11-17 — P1-G1 委派升級：自主完成可試駕 Option B 原型（目前最高優先級）
 
 **Michael 已明確授權 [Issue #63 — Riviera 62 Option B 可試駕原型](https://github.com/michael-wang/OutRun/issues/63)。** Judy 由逐關監督轉為 **Goal Owner**：可以一次自主完成現有 Hunyuan 白模整理、簡單 PBR、保留既有輪胎／方向盤／角色動作、加上可回退遊戲載入 Flag、PC 真正試駕及必要效能處理，最後才提供 Draft PR 和正常追車畫面給 Julia／Michael **一次驗收**。**P1-3 的 dev-only 可切換試駕整合在此 Goal 內獲准，不再要求單獨的每一步人工批准；P1-4 正式 Pixel 8 最終驗收與 main 發布未授權。**
@@ -122,7 +132,7 @@
 | **P0-2** | Asset Manifest + 最小自動守門 | **PASS (technical) — Julia independent review** | 定義原始檔/版本/授權/製作工具/輸出/動作需求/驗收等級，新增有測試的驗證命令；缺來源不得標 L3，不誤傷 legacy | Codex，Julia 審查 |
 | **P0-3** | Source Control & evidence lifecycle | **PASS (technical scope) — Julia independent review** | 設計圖、.blend、音樂等重要創作母檔納入版本管理（大檔評估 Git LFS/獨立資產儲存及備份）；正式 GLB/部署先驗證相容性。臨時截圖/影片設定可追蹤但可到期的存放、驗收後移除。不得直接批次刪歷史證據 | Julia + Codex |
 | **P0-4** | Codex Research vs Production 關卡 | **PASS (technical scope) — Julia final independent re-review** | 每張任務標明型別、當前與下游需求、所選工具/原因、停止條件、測試、效能、藝術驗收、反例/缺口；兩次同類補丁無根因時強制策略檢討 | Julia + Codex |
-| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-0/P1-1 PASS；Hunyuan Shape 技術 PASS／原型美術有條件 PASS；P1-G1 #63 自主開發至可試駕已授權；正式 P1-4／main 尚未授權** | Judy 自主完成白模整理／簡單材質／可回退的遊戲內新車 preview／PC 真實試駕與安全回退；後保桿瑕疵延後，手機真機數據待 Michael 驗收 | Julia 規格、Codex 製作、Michael 驗收 |
+| **P1** | Riviera 62 DCC → GLB → Three.js 小型端到端實驗 | **P1-G1 #63 本機可玩原型 PASS；P1-G2 #65 外觀三件整合已授權、沿用 Draft PR #64；正式 P1-4／main 未授權** | Judy 在原 G1 分支自主完成四輪＋輪拱、現代擋風玻璃、前後 LED 燈具，一次交付一致外觀的實際可試駕版；車尾粗糙延後，PC/Pixel 8 依真實測試驗收 | Julia 規格、Codex 製作、Michael 驗收 |
 | **P2** | 一組代表性景點 Asset → Package → Layout 試驗 | **WAIT P1/可並行研究** | 2–3 個小資產構成可重用 kit；重放與移動景點只改 layout，不修改模型/硬刻 HUD 公尺；有實際畫面、位置正確、光影/效能/原始檔、可重現；大型海岸重配需另行驗證 | Julia 規格、Codex 製作、Michael 驗收 |
 | **G1** | 輕量 Game Experience Roadmap | **DEFER** | P1/P2 取得初步能力證明、或第一關下一次整體體驗檢討時再提；聚焦賽車/多景/駕駛小遊戲，不提前開做 | Julia + Michael |
 | **CH1** | 女主角進一步動作／表情／服裝精修 | **ON HOLD** | 第一關場景製作成熟後，重新定義最終情境與角色完整 Pipeline Spike；現行可玩的 R6d 髮型與能力保留 | Julia + Michael |
