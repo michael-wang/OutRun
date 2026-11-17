@@ -1,5 +1,13 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+### 2026-11-17 — Git 流程簡化：核心工作採 dev-first（Owner 最新決策）
+
+**Michael 指定：獨立遊戲的核心開發（包含 Riviera 62 建模、上色、可玩整合）以後預設**直接在 `dev` 小步提交，**不再每個里程碑開新 feature branch / PR**。Git commit 可保留基本回退能力；`main` 仍只用於已驗收公開版本；`dev` 不恢復每次 push 全套 CI。真正並行衝突／危險的實驗才暫用短命分支，完成後整理刪除。
+
+**這次 G2 例外：** Judy 已在 [Issue #65](https://github.com/michael-wang/OutRun/issues/65) 的 `task/issue63-option-b-local` 分支進行，保留現有 [Draft PR #64](https://github.com/michael-wang/OutRun/pull/64) 直到 G2 完成總驗收；不要半途要求改 checkout、reset/rebase。驗收整合進 dev 後，核對沒有獨有資料再刪此分支。**下一個核心任務預設直接在 dev 開工**。
+
+**整理待辦（未執行刪除）：** 現有 9 條遠端分支，已合併的 `p0/dot-pipeline-pilot`、`research/p1-1-riviera62` 與已關閉交付測試分支 `test/codex-cloud-delivery-20261115-6af9d406` 為初步清理候選；`spike/p1-2r-visual-first` 仍對應 Draft PR #61 的失敗證據、兩條 `checkpoint/r90-*` 尚須盤點。整理前先查 unique commits／引用／PR，不要盲刪。Judy 可在本輪 G2 完成後一併提出簡短的分支清理清單，**清理不應卡住車輛開發**。
+
 ### 2026-11-17 — P1-G2：Judy 自主完成 Option B 外觀一致化（最新優先工作）
 
 Michael 已親自試駕 **Option B** 並接受 [P1-G1 #63](https://github.com/michael-wang/OutRun/issues/63) 為**本機可玩原型 PASS**。G1 的 [Draft PR #64](https://github.com/michael-wang/OutRun/pull/64) **尚未合併到 dev**。**最新授權是 [P1-G2 #65](https://github.com/michael-wang/OutRun/issues/65)**，Judy 應**直接沿用 G1 的 `task/issue63-option-b-local` 工作分支及同一個 Draft PR #64**，而不是從 dev 重新開工；中間不必分段要求 Julia／Michael 驗收，完成三大外觀項後再統一驗收。

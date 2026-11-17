@@ -1,5 +1,17 @@
 # 極速漫遊 / OutRun — current project rules
 
+## GIT WORKFLOW — owner decision: dev-first, clean branches (2026-11-17)
+
+**Michael's latest explicit preference:** OutRun is a small, owner-led indie game. **Core work defaults to direct, incremental commits on `dev`**. New feature branches and PRs are **NOT mandatory** for routine car art, level authoring, game code, materials or other essential development. Build/test locally before meaningful commits; Git commits provide history and local rollback. Do not restore push-triggered dev-wide CI. `main` remains the separately validated public release branch, never a workspace.
+
+**Feature branch only with a specific reason:** genuinely parallel incompatible work, destructive architectural migration, or a high-risk external experiment requiring isolated inspection. If used, state the reason and expected lifetime, then integrate/close/delete promptly. No indefinite archive/checkpoint branch accumulation; preserve useful evidence in commits, an approved tag or a concise record instead of evergreen branch refs. Do not force-rewrite or delete a branch with unmerged changes/active PR until its purpose and backing evidence are verified.
+
+**Already-running G2 exception:** [Issue #65](https://github.com/michael-wang/OutRun/issues/65) began on `task/issue63-option-b-local`, [Draft PR #64](https://github.com/michael-wang/OutRun/pull/64). **Do not interrupt or rebase/reset Judy's active work.** Finish G2 on that branch, give the agreed consolidated owner/Julia review, integrate into dev when accepted and only then retire the G1/G2 branch after confirming no unique unmerged work. The next core task should normally work **directly on dev**.
+
+**Branch hygiene backlog:** remote old `p0/dot-pipeline-pilot` (#56 merged), `research/p1-1-riviera62` (#58 merged) and `test/codex-cloud-delivery-20261115-6af9d406` (#55 closed test) are strong delete candidates **after confirming they are not uniquely needed**; `spike/p1-2r-visual-first` still backs Draft PR #61 (failure evidence) and the two `checkpoint/r90-*` refs require review before deletion. No branches are being deleted in this policy edit. Private Hunyuan model binaries and worldwide license questions remain separate from branch strategy.
+
+---
+
 ## ACTIVE WORK — P1-G2 Option B Exterior Convergence: Judy owns end-to-end (2026-11-17)
 
 **MICHAEL'S LATEST AUTHORIZATION:** [Issue #65 — G2 Modern wheels+arches, windshield and lamps](https://github.com/michael-wang/OutRun/issues/65) is the next **ONE BIG AUTONOMOUS GOAL**. Michael *test-drove* the privately staged Hunyuan Option B and accepted [G1 Issue #63](https://github.com/michael-wang/OutRun/issues/63) as a playable local-prototype PASS (now closed). Existing [Draft PR #64](https://github.com/michael-wang/OutRun/pull/64) remains **NOT MERGED** and is the correct cumulative G1+G2 branch: `task/issue63-option-b-local` at its actual latest head (recheck before any work). Judy should append G2 commits to the SAME PR / branch, not start G2 from bare dev or discard previous art/test work. No second overlapping PR required.
