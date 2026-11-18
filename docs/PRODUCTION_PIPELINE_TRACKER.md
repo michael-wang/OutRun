@@ -1,5 +1,10 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+### 2026-11-18 — P2-G1 原創美術圖公開納入 Git（不改現有 Macro 驗收狀態）
+
+Michael 已授權將原創設計圖放進公開 repo，實際 PNG / SHA-256 / 來源目錄為 [`art/reference/coast/kenting-beach/`](../art/reference/coast/kenting-beach/README.md)（00–04 五圖及 05 本人道路揭幕草圖）。更新 Issue #67 以此為優先概念來源，不再將已入庫的概念板當作本機 ZIP 阻擋。*但*目前右彎揭幕、沙灘整體配置、遊玩感受與 3D 建模／手機效能仍以 Issue #67 對應實際版本的驗收決策為準；概念圖不會自動解鎖下一階段。第三方參考照片／私人混元模型仍不在公開授權範圍。
+
+
 ### 2026-11-18 — 女主角最新設計圖核准（DOCUMENTATION ONLY / CHARACTER HOLD）
 
 Michael 核准新 [R7A 風格女主角全身設計圖，頸後蝴蝶結版本](https://chatgpt.com/space/page_856b88a66e808191b39426c84396ddd3)（原始 PNG SHA-256 `abfecddcc8a36ea5c31372df25ff5e505d7ba5dafe5f90e2b144a820687c8dae`）。此設計在**角色美術視覺規格**上優先於 11/15 的 B-2 雙背帶與其他探索稿。維持原短金髮、臉、耳環、象牙白交疊掛頸短裙、側腰結、露背與身形，取消兩條平行肩背帶，在後頸以小蝴蝶結收束。**目前只更新設計基準／文件**：舊 3D 賽車 GLB、Blender 來源、動畫、手機驗收與正式上線狀態全部未變；角色建模仍 HOLD，不取代 11/17 海水浴場與車輛的工作優先級。舊角色設計圖與 B-2 實作證據保存為歷史，不作當前造型施工依據。

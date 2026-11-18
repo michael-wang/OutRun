@@ -1,5 +1,10 @@
 # 極速漫遊 / OutRun — current project rules
 
+## 2026-11-18 — Canonical P2-G1 beach design images in public repo
+
+**Michael explicitly authorized publication of our original concept artwork.** The five original P2-G1 beach design PNGs, survey-linked layout and Michael's road/reveal sketch are now versioned in [art/reference/coast/kenting-beach](art/reference/coast/kenting-beach/README.md), with verified SHA-256 manifest. Use those actual repo files for art/scene decisions instead of requesting the old handoff ZIP or assuming image bytes exist only in Julia's Page. **No publication authorization for third-party lighthouse photography, privately held Hunyuan model files, or assets with separate licensing issues.** The art sheets are not live road measurements or a signoff of the current Macro; Issue #67 remains the active gameplay-experience gate.
+
+
 ## ACTIVE GOALS — Kenting swimming beach P2-G1 + Option B default P1-G4 (2026-11-17)
 
 **Michael's LATEST owner decision:** Instead of beginning with a harbour, **BUILD THE KENTING-MEMORY SWIMMING BEACH FIRST** via [Issue #67](https://github.com/michael-wang/OutRun/issues/67). Prototype site is existing coast `beach-market` hero anchor **HUD 5,980m**, side left; **location not locked** until live camera views are checked. Scene inspiration is Kenting/Nanwan wide sand, bathers, clustered colorful parasols, shallow turquoise-to-deep ocean, surf and green hills under accepted Style B sunset. High-impact near/mid/far composition first, not tiny props. Keep Asset Library → Scenic Package → Stage Layout; member meshes never hard-code metres, adapt local shore terrain AND Ultra Water waterline together, don't globally rewrite coast/AI/road/guardrails. This is **owner-authorized core dev**, not an unapproved Julia harbour suggestion. Judy can autonomously produce one complete playable beach on dev and then request Julia/Michael review.
