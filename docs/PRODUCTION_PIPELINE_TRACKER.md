@@ -1,5 +1,10 @@
 # 極速漫遊｜製作流程重整與 Action Tracker
 
+### 2026-11-18 — 女主角最新設計圖核准（DOCUMENTATION ONLY / CHARACTER HOLD）
+
+Michael 核准新 [R7A 風格女主角全身設計圖，頸後蝴蝶結版本](https://chatgpt.com/space/page_856b88a66e808191b39426c84396ddd3)（原始 PNG SHA-256 `abfecddcc8a36ea5c31372df25ff5e505d7ba5dafe5f90e2b144a820687c8dae`）。此設計在**角色美術視覺規格**上優先於 11/15 的 B-2 雙背帶與其他探索稿。維持原短金髮、臉、耳環、象牙白交疊掛頸短裙、側腰結、露背與身形，取消兩條平行肩背帶，在後頸以小蝴蝶結收束。**目前只更新設計基準／文件**：舊 3D 賽車 GLB、Blender 來源、動畫、手機驗收與正式上線狀態全部未變；角色建模仍 HOLD，不取代 11/17 海水浴場與車輛的工作優先級。舊角色設計圖與 B-2 實作證據保存為歷史，不作當前造型施工依據。
+
+
 ### 2026-11-17 — Owner 最新方向：先做墾丁記憶的海水浴場；混元車成為正常預設主角車
 
 **主線美術目標：[P2-G1 #67 南國海水浴場](https://github.com/michael-wang/OutRun/issues/67)**。Michael 明確要求**優先製作海水浴場，而非工作港口**。場景取自其記憶中墾丁沙灘的氛圍：寬闊沙地／海水淺灘過渡、成群彩傘、戲水人群、遠方山與海，配合 Style B 的暖色黃昏；不能僅堆小物。位置**尚未正式定案**，現有正式 `beach-market` 左海側海水浴場 hero anchor 在 HUD **5,980m**、5,300–6,120m 和緩長彎，是第一個可移動測試場。Judy 預先驗證近海地形與 Ultra Water 水位/岸線的實際連續性，先從 200–300km/h 追車鏡頭看出完整的沙灘，再擴充陽傘、救生站、泳客與租借用具。資產採 Asset Library → `packages.json` → `scenic-layout.json`，如需大面積岸線需局部重配海岸遮罩與 terrain 而不重做模型、不改整關公路；詳見 [正式美術 Brief](COAST_KENTING_BEACH_BRIEF.md)。以 `dev` 直接開發，一次完成真正可玩的景點再驗收。
