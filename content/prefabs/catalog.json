@@ -1,9 +1,39 @@
 {
   "schemaVersion": 1,
   "prefabs": {
+    "kenting-white-lighthouse": {
+      "model": "generated/kenting-lighthouse.glb",
+      "castShadow": false,
+      "receiveShadow": true
+    },
     "taiwan-farmhouse": {
       "model": "assets/coast-props/r1-farmhouse.glb",
       "castShadow": true,
+      "receiveShadow": true
+    },
+    "kenting-parasol-coral": {
+      "model": "generated/kenting-parasol-coral.glb",
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    "kenting-parasol-blue": {
+      "model": "generated/kenting-parasol-blue.glb",
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    "kenting-parasol-gold": {
+      "model": "generated/kenting-parasol-gold.glb",
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    "kenting-lifeguard": {
+      "model": "generated/kenting-lifeguard.glb",
+      "castShadow": false,
+      "receiveShadow": true
+    },
+    "kenting-rental": {
+      "model": "generated/kenting-rental.glb",
+      "castShadow": false,
       "receiveShadow": true
     }
   }

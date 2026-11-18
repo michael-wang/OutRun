@@ -108,20 +108,21 @@ test('a racing rival sweeps the A4 sign and its mesh stays flat in the real scen
  }
 });
 
-test('pause restart returns the field to the grid and begins a fresh countdown',async({page})=>{
+test('pause restart returns the field to the grid and waits for START',async({page})=>{
  await openCoast(page);
  await page.locator('#race-start').click();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
  await page.locator('#pause').click();
  const restart=page.locator('#tp-restart');
  await expect(restart).toHaveText('重新開始');await restart.click();
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready');
  const grid=await page.evaluate(()=>{
   const g=(window as any).__drive;
   return {distance:g.driveState().distance,time:g.race().time,rivals:g.race().rivals.map((r:any)=>r.distance)};
  });
  expect(grid.distance).toBe(350);expect(grid.time).toBe(0);
  expect(grid.rivals).toEqual([362,362,377,377,377,392,392]);
+ await page.locator('#race-start').click();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
 });
 

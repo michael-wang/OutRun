@@ -1,0 +1,50 @@
+import * as THREE from 'three';
+import {beachMacro,beachVista,beachFlow,macroRoadRise,macroBeachBow,macroRoadOffset,macroBounds} from '../beach-macro';
+import type {createTrack} from '../track';
+/** Compactly supported alignment study: exact original sample outside the site.
+ * Route stations remain the authored coordinate; local world arc length differs.
+ */
+export function beachMacroTrack(base:ReturnType<typeof createTrack>){
+ if(beachMacro()==='none')return base;
+ const [start,end]=macroBounds();
+ const revised=beachMacro()==='right'?singleRightPositions(base):undefined;
+ const position=(d:number)=>{if(revised)return revised(d);const s=base.sample(d);return s.position.addScaledVector(new THREE.Vector3(s.right.x,0,s.right.z),macroRoadOffset(d));};
+ const heading=(d:number)=>{const v=position(d+.5).sub(position(d-.5));return Math.atan2(-v.x,v.z);};
+ return {...base,sample:(d:number)=>{
+  const s=base.sample(d);if(d<=start||d>=end)return s;
+  const tangent=position(d+.5).sub(position(d-.5)).normalize(),h=heading(d);
+  const delta=Math.atan2(Math.sin(heading(d+1)-heading(d-1)),Math.cos(heading(d+1)-heading(d-1)));
+  const curvature=delta/position(d+1).distanceTo(position(d-1));
+  return {...s,position:position(d),tangent,right:new THREE.Vector3(-Math.cos(h),s.right.y,-Math.sin(h)),roadHeading:h,curvature};
+ }};
+}
+
+/** One positive-curvature braking turn, then 1.7km straight/gentle right.
+ * A smooth exit connector AFTER the beach returns to the untouched route.
+ * No offset lobes and no compensating left bend on the approach. */
+function singleRightPositions(base:ReturnType<typeof createTrack>){
+ const vista=beachVista(),flow=beachFlow();
+ const start=4350,exit=6550,end=8450,h0=base.sample(start).roadHeading;
+ const ease=(v:number)=>{const t=Math.max(0,Math.min(1,v));return t*t*t*(10+t*(-15+6*t));};
+ const angle=(d:number)=>h0+.20*ease((d-4570)/280)+(vista?.61:.70)*ease((d-4635)/150)+.02*ease((d-4850)/(exit-4850));
+ const table=[base.sample(start).position.clone()];
+ for(let d=start;d<exit;d++){
+  const h=angle(d+.5);table.push(table.at(-1)!.clone().add(new THREE.Vector3(-Math.sin(h),0,Math.cos(h))));
+ }
+ const a=table.at(-1)!,b=base.sample(end),span=end-exit;
+ const v0=new THREE.Vector3(-Math.sin(angle(exit)),0,Math.cos(angle(exit))).multiplyScalar(span);
+ const v1=new THREE.Vector3(b.tangent.x,0,b.tangent.z).normalize().multiplyScalar(span);
+ const a1=new THREE.Vector3(-Math.cos(b.roadHeading),0,-Math.sin(b.roadHeading)).multiplyScalar(b.curvature*span*span);
+ const delta=b.position.clone().sub(a).setY(0),c3=delta.clone().multiplyScalar(10).addScaledVector(v0,-6).addScaledVector(v1,-4).addScaledVector(a1,.5);
+ const c4=delta.clone().multiplyScalar(-15).addScaledVector(v0,8).addScaledVector(v1,7).addScaledVector(a1,-1);
+ const c5=delta.clone().multiplyScalar(6).addScaledVector(v0,-3).addScaledVector(v1,-3).addScaledVector(a1,.5);
+ return (d:number)=>{
+  const original=base.sample(d);if(d<=start||d>=end)return original.position;
+  let p:THREE.Vector3;
+  if(d<exit){const i=Math.floor(d-start);p=table[i].clone().lerp(table[i+1],d-start-i);}
+  else {const t=(d-exit)/span;p=a.clone().addScaledVector(v0,t).addScaledVector(c3,t**3).addScaledVector(c4,t**4).addScaledVector(c5,t**5);}
+  const bow=macroBeachBow(d,flow),h=angle(Math.min(d,exit));
+  p.add(new THREE.Vector3(-Math.cos(h),0,-Math.sin(h)).multiplyScalar(bow));
+  return p.setY(original.position.y+macroRoadRise(d,flow));
+ };
+}

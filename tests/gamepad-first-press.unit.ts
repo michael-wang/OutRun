@@ -73,3 +73,26 @@ it('reads held gas/brake on the first driving frame, with no neutralization pres
   expect(input.snapshot().gas).toBe(false);
  }finally{gamepad.dispose();}
 });
+
+it('does not replay held confirm on focus recovery or reconnection, but accepts a fresh press',()=>{
+ const status={setAttribute(){},remove(){},hidden:false,textContent:''};let focused=true,connected=true;
+ const buttons=Array.from({length:18},()=>({pressed:false,value:0})),pad={id:'pad',index:0,connected:true,mapping:'standard',buttons,axes:[0,0,0,0]};
+ vi.stubGlobal('document',{hidden:false,hasFocus:()=>focused,createElement:()=>status,querySelector:()=>({append(){}}),getElementById:()=>null});vi.stubGlobal('window',{addEventListener(){},removeEventListener(){}});vi.stubGlobal('navigator',{getGamepads:()=>connected?[pad]:[]});
+ const actions:string[]=[],g=new GamepadInput(new InputLatch(),a=>actions.push(a));g.poll(false);
+ focused=false;g.poll(false);buttons[0].pressed=true;focused=true;g.poll(false);g.poll(false);expect(actions).toEqual([]);
+ buttons[0].pressed=false;g.poll(false);buttons[0].pressed=true;g.poll(false);expect(actions).toEqual(['confirm']);
+ connected=false;g.poll(false);connected=true;g.poll(false);g.poll(false);expect(actions).toEqual(['confirm']);
+ buttons[0].pressed=false;g.poll(false);buttons[0].pressed=true;g.poll(false);expect(actions).toEqual(['confirm','confirm']);g.dispose();
+});
+
+it('handles OPTIONS as a transition without reinserting held throttle after pausing',()=>{
+ const status={setAttribute(){},remove(){},hidden:false,textContent:''},buttons=Array.from({length:18},()=>({pressed:false,value:0}));
+ const pad={connected:true,mapping:'standard',buttons,axes:[0,0]};vi.stubGlobal('document',{hidden:false,hasFocus:()=>true,createElement:()=>status,querySelector:()=>({append(){}}),getElementById:()=>null});vi.stubGlobal('window',{addEventListener(){},removeEventListener(){}});vi.stubGlobal('navigator',{getGamepads:()=>[pad]});
+ const input=new InputLatch(),actions:string[]=[],g=new GamepadInput(input,a=>{actions.push(a);input.clear();});buttons[7].pressed=true;g.poll(true);expect(input.snapshot().gas).toBe(true);buttons[9].pressed=true;g.poll(true);expect(actions).toEqual(['pause']);expect(input.snapshot().gas).toBe(false);g.poll(false);expect(actions).toEqual(['pause']);g.dispose();
+});
+
+it('accepts a fresh D-pad edge immediately after keyboard/mouse pause neutralization',()=>{
+ const status={setAttribute(){},remove(){},hidden:false,textContent:''},buttons=Array.from({length:18},()=>({pressed:false,value:0})),pad={connected:true,mapping:'standard',buttons,axes:[0,0]};
+ vi.stubGlobal('document',{hidden:false,hasFocus:()=>true,createElement:()=>status,querySelector:()=>({append(){}}),getElementById:()=>null});vi.stubGlobal('window',{addEventListener(){},removeEventListener(){}});vi.stubGlobal('navigator',{getGamepads:()=>[pad]});
+ const actions:string[]=[],g=new GamepadInput(new InputLatch(),a=>actions.push(a));g.poll(true);g.neutralize();buttons[13].pressed=true;g.poll(false);expect(actions).toEqual(['down']);g.dispose();
+});

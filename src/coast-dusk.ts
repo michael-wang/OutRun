@@ -5,7 +5,8 @@ import {COAST_EFFECTS} from './content/coast-effects';
 
 import {COAST_LAMP_RANGE,registerCoastLamps} from './coast-lamp-lighting';
 
-export const COAST_SUN=new THREE.Vector3(...COAST_EFFECTS.lighting.sunDirection).normalize();
+import {COAST_SUN} from './coast-sun-direction';
+export {COAST_SUN} from './coast-sun-direction';
 // Shared low-sun shadow projection scale for shoreline geometry and ocean rocks.
 export const COAST_SHADOW_STRETCH=COAST_EFFECTS.lighting.shadowStretch;
 /** Shared sky radiance for the coast dome and its water reflection. */

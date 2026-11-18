@@ -1,3 +1,5 @@
+import {beachZoneBlend} from './beach-zone-layout';
+import {macroBeachExtra,macroReefDistance,beachFlow,macroCoastRise,macroCoastCloseBlend} from './beach-macro';
 import {coastDrainAt,coastDrainCovered,COAST_DRAIN_X} from './coast-roadside-layout';
 
 /** Coast-only visitor beaches: a large relaxed second act, two lively
@@ -40,7 +42,14 @@ export function coastBeachExtra(d:number){
   extra+=point.reach*t*t*(3-2*t);
   break;
  }
- return extra+2*(1+Math.sin(d*.019+Math.sin(d*.007)));
+ const width=extra+macroBeachExtra(d)+2*(1+Math.sin(d*.019+Math.sin(d*.007)));
+ const regional=beachFlow()?Math.max(width,150*macroCoastRise(d)/22):width;
+ // A short grass shoulder and cliff, not a wide empty plateau behind the tower.
+ const close=macroCoastCloseBlend(d),narrow=30+3*Math.sin((d-6900)/220);
+ const coast=regional+(Math.min(regional,narrow)-regional)*close;
+ // Low beach activity stays broad but within a readable near/midground band.
+ const zone=beachZoneBlend(d),beachWidth=55+5*Math.sin(d*.006);
+ return coast+(Math.min(coast,beachWidth)-coast)*zone;
 }
 /** Remap the old cross-section, preserving the inner dry shoulder exactly. */
 export function coastBeachX(x:number,d:number){
@@ -174,3 +183,7 @@ export function coastBarrierStoneAt(d:number,side:-1|1){
  * lights are now a sparse attribute of COAST_UTILITY_POLES instead.
  */
 export const COAST_LAMPS:readonly number[]=[];
+
+/** Reversible macro exit: keep original arrays as the accepted default. */
+export const coastRocks=()=>COAST_ROCKS.map(r=>({...r,d:macroReefDistance(r.d)}));
+export const coastReefRocks=()=>COAST_REEF_ROCKS.map(r=>({...r,d:macroReefDistance(r.d)}));

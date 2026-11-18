@@ -1,8 +1,7 @@
 import * as THREE from 'three';
-import {COAST_SUN} from './coast-dusk';
-import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
+import {coastShadowLength,coastShadowOffset,coastShadowYaw,makeCoastShadowMaterial} from './coast-sun-shadow';
 export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
+import {COAST_BEACHES,coastRocks,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
 import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainAt} from './coast-roadside-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
@@ -12,8 +11,8 @@ type Sample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3;tangent?:THR
 type Kind='umbrella'|'visitor'|'bench'|'home'|'shop'|'rock'|'concrete'|'rail'|'rail-beam'|'lamp';
 export type CoastShadowAnchor={d:number;x:number;width:number;length:number;kind?:Kind};
 const rawRandom=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
-const away=new THREE.Vector3(-COAST_SUN.x,0,-COAST_SUN.z).normalize();
-const across=new THREE.Vector3(-away.z,0,away.x);
+import {COAST_SHADOW_AWAY as away,COAST_SHADOW_ACROSS as across} from './coast-sun-direction';
+import {macroHidePreRevealBeach,beachRailHidden} from './beach-macro';
 
 /** Share the actual scene seed, beach pocket spacing and authored prop coordinates.
  * No independently randomized umbrella placements or shadows on the wrong beach.
@@ -53,9 +52,9 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
  }
  // Offshore rock occlusion is performed in the existing Ultra-Water shader;
  // these optional footprints only show where rock surfaces touch dry ground.
- for(const rock of COAST_ROCKS)
+ for(const rock of coastRocks())
   anchors.push({d:rock.d,x:coastRockX(rock),width:rock.r*1.4,length:coastShadowLength(rock.r*.82),kind:'rock'});
- return anchors;
+ return anchors.filter(a=>!(a.x<0&&macroHidePreRevealBeach(a.d)&&['umbrella','visitor','bench','shop'].includes(a.kind??'')));
 }
 
 /** Match coast-resort.ts's real 12m cadence. Each rail section has THREE
@@ -65,6 +64,7 @@ export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>numbe
  const anchors:CoastShadowAnchor[]=[];
  for(let d=0;d<length;d+=12){
   for(const side of [-1,1] as const){
+   if(beachRailHidden(d,side))continue;
    const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
    if(style==='block'){
     const stone=coastBarrierStoneAt(d,side);
@@ -210,7 +210,7 @@ export class CoastDuskShadows {
  // Black ink never brightens the near-black coastal asphalt.
  private readonly playerMaterial=makeCoastShadowMaterial(.78);
  private readonly staticMaterial=makeCoastGroundShadowMaterial();
- private readonly angle=COAST_SHADOW_YAW;
+ private readonly angle=coastShadowYaw();
  private readonly ranges:{d:number;start:number;count:number}[];
  private visibleStatic=0;
  constructor(scene:THREE.Scene,sample:Sample,routeLength=10000,halfAt:(d:number)=>number=()=>8.75,seed=0){

@@ -11,7 +11,17 @@ it('accepts only approved diagnostics, positioning and replayable traffic seed',
  expect(canonicalGameQuery(new URLSearchParams('trafficSeed=not-a-number')).toString()).toBe('');
 });
 it('exposes authored-prefab QA only in development builds',()=>{
- expect(DEV_QUERY_KEYS).toEqual(['prefabdebug','r5qa','r6','hairWind','hairMid','hairUpper','hairStyle','heroine','hero3d']);
+ expect(canonicalGameQuery(new URLSearchParams('beachMacro=b')).get('beachMacro')).toBe(import.meta.env.DEV?'b':null);
+ for(const variant of ['right'])expect(canonicalGameQuery(new URLSearchParams('beachMacro='+variant)).get('beachMacro')).toBe(import.meta.env.DEV?variant:null);
+ expect(canonicalGameQuery(new URLSearchParams('beachMacro=left')).has('beachMacro')).toBe(false);
+ expect(DEV_QUERY_KEYS).toContain('sunsetRoute');
+ expect(canonicalGameQuery(new URLSearchParams('sunsetRoute=1')).has('sunsetRoute')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('beachMacro=b&sunsetRoute=1')).has('sunsetRoute')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('beachMacro=right&sunsetRoute=1')).has('sunsetRoute')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('beachBlockout=1&beachAnchor=6100')).has('beachBlockout')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('beachBlockout=0')).get('beachBlockout')).toBe(import.meta.env.DEV?'0':null);
+ expect(canonicalGameQuery(new URLSearchParams('beachAnchor=6100')).has('beachAnchor')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('beachBlockout=1&beachAnchor=NaN')).has('beachAnchor')).toBe(false);
  const keys=canonicalGameQuery(new URLSearchParams('at=985&prefabdebug=1'));
  expect(keys.get('at')).toBe('985');
  expect(keys.has('prefabdebug')).toBe(import.meta.env.DEV);

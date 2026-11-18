@@ -1,3 +1,6 @@
+import {sunsetRoute} from '../beach-macro';
+import {coastSunsetTrack} from './coast-sunset-track';
+import {beachMacroTrack} from './beach-macro-track';
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY,type CoastStageContent} from './coast-stage';
 import {sampleAuthoredRoad} from './authored-road';
 import {createAuthoredCoastTrack,authoredRoadCourse} from './authored-track';
@@ -23,7 +26,8 @@ export function coastWorkerRoad(content:CoastStageContent=COAST_STAGE,bank?:Bank
   scenicLandmarks:[] as JourneyLandmark[],
  };
  const identity={id:stage.id,name:manifest.name,sceneryAct:stage.sceneryAct};
- const track=createAuthoredCoastTrack(road,identity,bank);
+ const aligned=beachMacroTrack(createAuthoredCoastTrack(road,identity,bank));
+ const track=sunsetRoute()?coastSunsetTrack(aligned):aligned;
  const course=authoredRoadCourse(road,identity);
  return {
   stage,track,course,

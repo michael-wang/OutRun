@@ -1,4 +1,5 @@
-import {coastProfileX} from './coast-layout';
+import {macroLandHeight,beachFlow,macroCoastRise} from './beach-macro';
+import {coastProfileX,coastBeachX} from './coast-layout';
 import {coastHillHeight,farmBasinCut} from './coast-terrain';
 import {coastRuralCreekCut} from './coast-rural-layout';
 import {coastDrainDepth} from './coast-roadside-layout';
@@ -109,6 +110,20 @@ export const COAST_SHORE_OFFSET=-26;
  * Keep a dry shoulder, a sloping wet-sand band and a submerged sand bottom.
  * Do not extend road banking indefinitely across inland terrain. */
 export function coastBeachHeight(x:number,roadY:number,rightY:number,distance?:number):number{
+ const base=baseBeachHeight(x,roadY,rightY,distance);
+ if(beachFlow()&&distance!==undefined&&x<-13){
+  const rise=macroCoastRise(distance),shore=coastBeachX(COAST_SHORE_OFFSET,distance);
+  if(rise>0&&x>shore){
+   // Continuous elevated coastal shelf, joining the road inland and the real
+   // waterline seaward. Never lift the ocean or the submerged swimming bottom.
+   const blend=smooth(rise/6)*smooth((distance-6200)/220),plateau=lerp(roadY+rightY*x-.2,rise,smooth((-x-13)/22));
+   const coastal=lerp(COAST_SEA_LEVEL,plateau,smooth((x-shore)/28));
+   return Math.max(base,lerp(base,coastal,blend));
+  }
+ }
+ return Math.max(base,distance===undefined?-Infinity:macroLandHeight(x,distance));
+}
+function baseBeachHeight(x:number,roadY:number,rightY:number,distance?:number):number{
  if(distance!==undefined)x=coastProfileX(x,distance);
  const dry=roadY+rightY*-11-.2;
  if(x<=-100)return COAST_SEA_LEVEL-15;

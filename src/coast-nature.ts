@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {beachMacro} from './beach-macro';
 import {markCoastShadowCaster} from './coast-shadow-layers';
 import {natureGeometry,roadsideTrees,TREE_DRAW_DISTANCE,type NaturePart} from './tree-models';
 import {farmClearing,FARM_YARDS,FARM_PLOTS} from './coast-farm-layout';
@@ -63,6 +64,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch;shadowGroup:'rocks'|'vegetation'}>();
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
  function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false){
+  if(x<0&&beachMacro()==='right'&&d>=4000&&d<=6550&&!name.startsWith('Rock_'))return;
   if(!authored&&farmClearing(d,x))return;
   const p=sample(d),model=assets![name];
   if(!model)throw Error('Missing coast nature model '+name);

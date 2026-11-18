@@ -114,7 +114,7 @@ test('keyboard Enter begins countdown and remapped hints follow their control',a
  await page.keyboard.press('Enter');
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
 });
-test('pause restart returns to the grid and starts a fresh countdown',async({page})=>{
+test('pause restart waits at START on the original grid',async({page})=>{
  test.setTimeout(180000);
  await enterReady(page);
  await page.locator('#race-start').tap();
@@ -124,10 +124,8 @@ test('pause restart returns to the grid and starts a fresh countdown',async({pag
  await page.keyboard.up('Space');
  await page.locator('#pause').tap();
  await page.keyboard.press('KeyR');
- // Pause-menu restart has explicitly confirmed a new race since R5b.4.
- // The result-screen replay remains the separate unconfirmed START route.
- await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown',{timeout:120000});
- await expect(page.locator('#race-start')).toBeHidden();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:120000});
+ await expect(page.locator('#race-start')).toBeVisible();
  const time=await page.evaluate(()=>(window as any).__drive.race().time);
  expect(time).toBe(0);
  await expect(page.locator('.control-cue:visible')).toHaveCount(3);

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {macroClearApproach} from './beach-macro';
 import type {createTrack} from './track';
 import {coastBeachHeight} from './scenery-cross-section';
 import {COAST_TOWN_SIDE_STREETS,TOWN_BACK_LANE} from './coast-town-access';
@@ -43,6 +44,7 @@ export function buildCoastTownStreets(
   indices.push(startIndex,startIndex+1,startIndex+2,startIndex,startIndex+2,startIndex+3);
  };
  for(const site of COAST_TOWN_SIDE_STREETS){
+  if(macroClearApproach(site.d))continue;
   if(site.d<start||site.d>=end)continue;
   const half=site.width*.5;
   // From the far edge of the existing asphalt to the homes, not across
@@ -65,6 +67,7 @@ export function buildCoastTownStreets(
    quad(site.d-.06,site.d+.06,x,x+2.5,.082,'#d1cabb');
  }
  for(const district of COAST_DISTRICTS){
+  if(macroClearApproach((district.start+district.end)/2))continue;
   if(district.kind!=='homes')continue;
   const from=Math.max(start,district.start+12),to=Math.min(end,district.end-10);
   const half=TOWN_BACK_LANE.width*.5;

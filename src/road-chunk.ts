@@ -1,4 +1,6 @@
+import {beachZoneBlend} from './beach-zone-layout';
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
+import {beachMacro,beachFlow,macroCoastRise,macroLandHeight} from './beach-macro';
 import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
 import {lawnWeight,meadowCover} from './coast-meadow-layout';
 import {coastDrainAt,coastDrainOverlaps,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
@@ -96,11 +98,22 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
     if(coastUltra&&kind==='sand'){
      const x=coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d);
      color.set('#dfc894').lerp(new THREE.Color('#a58e68'),Math.max(0,Math.min(1,(-x-15)/11)));
+     const zone=beachZoneBlend(d);
+     if(zone>0){const wet=THREE.MathUtils.smoothstep(-x,18,26),shallow=THREE.MathUtils.smoothstep(-x,26,40);
+      const beach=new THREE.Color('#ebd6a8').lerp(new THREE.Color('#a59879'),wet).lerp(new THREE.Color('#a9c5ad'),shallow);
+      color.lerp(beach,zone);}
      // Static low-frequency sand colour grain; no extra GPU layer or blinking.
      // The water remains brightest, but dry land no longer reads as flat paper.
      const grain=Math.sin(d*.047+x*.21)*Math.sin(d*.011-x*.43);
      const broad=Math.sin(d*.0093+x*.071);
      color.multiplyScalar(.97+.055*grain+.025*broad);
+     const mass=macroLandHeight(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d);
+     if(mass>0)color.lerp(new THREE.Color('#69714a'),Math.min(1,mass/4));
+     if(beachFlow()&&macroCoastRise(d)>0&&height>0){
+      const physicalX=roadOffset(o,cachedWidth(d),cachedShoulders(d)),shore=coastBeachX(-26,d);
+      const land=new THREE.Color('#817e6b').lerp(new THREE.Color('#69714a'),THREE.MathUtils.smoothstep(physicalX,shore+8,shore+28));
+      color.lerp(land,Math.min(1,macroCoastRise(d)/5,height/4));
+     }
     }
     if(coastUltra&&kind==='grass'){
      const x=roadOffset(o,cachedWidth(d),cachedShoulders(d)),hill=coastHillHeight(x,d);
@@ -145,8 +158,14 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  if(coastUltra){
   // Physical beach stations survive the variable-width shoulder conversion.
   const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-coastBeachX(metres,d)-cachedWidth(d),cachedShoulders(d)!);
-  for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11]])
+  // Local macro hills need cross-slope samples, not just the old six flat
+  // beach strips. Keep the default and distant terrain tessellation exact.
+  const sections=(beachMacro()==='right'?end>4850&&start<(beachFlow()?8450:6950):beachMacro()==='b'&&end>5280&&start<6330)
+   ?[-100,-46,...Array.from({length:47},(_,i)=>-34+i*.5)]
+   :[-100,-46,-34,-26,-22,-18,-11];
+  for(let i=1;i<sections.length;i++){const [a,b]=[sections[i-1],sections[i]];
    append('sand',rawAt(a),rawAt(b),0,0,start,end,2.5);
+  }
   // The SEA-SIDE shoulder is blacktop too, right up to its -11m edge.
   // Beach sand starts OUTSIDE this apron rather than intruding into traffic.
   // This reuses the existing asphalt render material and leaves 5 lanes

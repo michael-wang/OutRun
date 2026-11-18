@@ -7,12 +7,12 @@ test('R1 coast prefab loads from its stage/prefab JSON at the authored site',asy
  await expect(page.locator('#game-loading')).toBeHidden({timeout:120000});
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready');
  const props=await page.evaluate(()=>(window as any).__drive.authoredProps());
- expect(props).toHaveLength(1);
- expect(props[0]).toMatchObject({
+ const house=props.find((p:any)=>p.id==='hamlet-farmhouse');
+ expect(house).toMatchObject({
   id:'hamlet-farmhouse',prefab:'taiwan-farmhouse',
   model:'assets/coast-props/r1-farmhouse.glb',meshes:1,
  });
- expect(props[0].position).toHaveLength(3);
+ expect(house.position).toHaveLength(3);
  const asset=await page.request.get('/assets/coast-props/r1-farmhouse.glb');
  expect(asset.ok()).toBe(true);
  await page.locator('#race-start').click();
@@ -28,6 +28,6 @@ test('dev prefab QA identifies the actual loaded GLB with road metres',async({pa
  await expect(page.locator('#prefab-qa')).toContainText('GLB 已載入');
  await expect(page.locator('#prefab-qa')).toContainText('1085m');
  await expect(page.locator('#prefab-qa')).toContainText('hamlet-farmhouse');
- await expect(page.locator('.prefab-qa-marker')).toHaveCount(1);
+ await expect(page.locator('.prefab-qa-marker[data-prefab-id="hamlet-farmhouse"]')).toHaveCount(1);
  await page.screenshot({path:test.info().outputPath('prefab-qa-r1-target-985.png')});
 });

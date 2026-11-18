@@ -1,3 +1,4 @@
+import {beachMacro} from './beach-macro';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
@@ -124,7 +125,7 @@ export async function addCoastBoats(scene:THREE.Scene,sample:Sample,water?:Reado
  for(const source of [...models.map(g=>g.scene),fishingSource])source.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.MeshStandardMaterial)materials.add(m);});
  materials.forEach(m=>{m.roughness=Math.max(.7,m.roughness);m.metalness=Math.min(.15,m.metalness);m.emissive.set(0);m.emissiveIntensity=0;if(m.name==='colormap')m.side=THREE.DoubleSide;});
  const root=new THREE.Group();root.name='coast-boats';
- const vessels=COAST_BOATS.map(spec=>{
+ const vessels=COAST_BOATS.filter(s=>!(beachMacro()==='right'&&s.distance>=4700&&s.distance<=6750)).map(spec=>{
   const source=spec.kind==='fishing'?fishingSource:models[spec.kind==='sail'?0:1].scene,model=source.clone(true);
   const sail=model.getObjectByName('sail');
   if(sail){

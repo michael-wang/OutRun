@@ -11,16 +11,16 @@ describe('R1 static stage assets — data, not per-house engine code',()=>{
   const catalog=structuredClone(staticPrefabCatalog);
   validateStageStaticContent(stage,catalog);
   expect(stage.id).toBe('coast');
-  expect(stage.staticProps).toHaveLength(1);
-  expect(stage.staticProps[0].prefab).toBe('taiwan-farmhouse');
+  const house=stage.staticProps.find(p=>p.prefab==='taiwan-farmhouse')!;
+  expect(house).toBeDefined();
   expect(replacesLegacySite(stage,'coast-rural-house',1085)).toBe(true);
   catalog.prefabs['taiwan-farmhouse'].model='assets/coast-props/alternate.glb';
-  stage.staticProps[0].lateral=60;
-  stage.staticProps[0].roadDistance=1170;
+  house.lateral=60;
+  house.roadDistance=1170;
   validateStageStaticContent(stage,catalog);
   // Replaced source is unchanged even when the new authored house moves.
   expect(replacesLegacySite(stage,'coast-rural-house',1085)).toBe(true);
-  expect(stage.staticProps[0].roadDistance).toBe(1170);
+  expect(house.roadDistance).toBe(1170);
   expect(catalog.prefabs['taiwan-farmhouse'].model).toBe('assets/coast-props/alternate.glb');
  });
  it('rejects unsafe paths, duplicate IDs and unknown prefabs',()=>{

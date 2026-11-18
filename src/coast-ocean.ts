@@ -1,7 +1,8 @@
+import {macroReefDistance} from './beach-macro';
 import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
 import {COAST_EFFECTS,oceanVisualSettings,coastShadowSettings,type OceanStageEffects} from './content/coast-effects';
 import {addCoastSwimmers} from './coast-swimmers';
-import {COAST_REEF_ROCKS,COAST_ROCKS,coastRockX,coastBeachX} from './coast-layout';
+import {coastReefRocks,coastRocks,coastRockX,coastBeachX} from './coast-layout';
 import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
 import {COAST_SEA_LEVEL} from './scenery-cross-section';
@@ -248,9 +249,9 @@ export class UltraCoastOcean {
    const p=coast.sample(r.d),v=p.position.clone().addScaledVector(p.right,coastRockX(r));
    return new THREE.Vector3(v.x,v.z,r.r);
   };
-  const rockPositions=COAST_ROCKS.map(rockPosition);
+  const rockPositions=coastRocks().map(rockPosition);
   const reef=settings.reefBreakers;
-  const waterline=(d:number)=>{
+  const waterline=(station:number)=>{const d=macroReefDistance(station);
    const p=coast.sample(d),point=p.position.clone().addScaledVector(p.right,coastBeachX(-26,d));
    return new THREE.Vector2(point.x,point.z);
   };
@@ -283,7 +284,7 @@ export class UltraCoastOcean {
   // A single small point batch for local spray; illustrative wave impacts, no fluid solver.
   const sprayPositions:number[]=[],seeds:number[]=[];
   // Smaller outcrops share the wave field. Only exposed heads emit plumes.
-  const breakers=[...rockPositions,...COAST_REEF_ROCKS.filter(r=>r.r>=4).map(rockPosition)];
+  const breakers=[...rockPositions,...coastReefRocks().filter(r=>r.r>=4).map(rockPosition)];
   for(const [i,r] of breakers.entries())for(let j=0;j<32;j++){
    sprayPositions.push(r.x,level+.12,r.y);seeds.push((j+.5)/32,r.z,i*.73+j*2.39996);
   }

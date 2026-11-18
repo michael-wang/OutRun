@@ -13,6 +13,7 @@
     { "id": "finish-beacon", "roadDistance": 14200 }
   ],
   "sites": [
+    {"id":"kenting-beach","package":"kenting-beach","heroId":"beach-market","lateral":0,"yaw":0,"scale":1},
     {
       "id": "hamlet",
       "package": "rural-hamlet-pilot",

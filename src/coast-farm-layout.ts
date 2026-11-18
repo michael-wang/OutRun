@@ -1,3 +1,4 @@
+import {beachMacro} from './beach-macro';
 import {COAST_EFFECTS} from './content/coast-effects';
 
 /** The farming story begins immediately: a broad opening rice plain and
@@ -98,7 +99,7 @@ export function farmPlotEdges(p:FarmPlot,d:number){
  return {left,right};
 }
 export const farmClearing=(d:number,x:number)=>FARM_ZONES.some(z=>d>=z.start&&d<z.end&&x<10+(d>=z.flowerApproach&&d<=z.flowers[1]?z.flowerRight:z.right));
-export const farmPlotsInChunk=(start:number,end:number)=>FARM_PLOTS.filter(p=>p.start>=start&&p.start<end);
+export const farmPlotsInChunk=(start:number,end:number)=>FARM_PLOTS.filter(p=>p.start>=start&&p.start<end&&!(beachMacro()==='right'&&p.end>3950&&p.start<5350));
 /** Horizontal planting benches separated by planted earth banks. The fine
  * terrain columns include these transitions; crops never follow the steep bank. */
 export function farmTerraceHeight(x:number){
