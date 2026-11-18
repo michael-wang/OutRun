@@ -1,5 +1,14 @@
 # R7H — 女主角最終角色製作規格 / Heroine Completion Contract
 
+## 最新女主角設計圖 — 2026-11-18（OWNER APPROVED, DESIGN ONLY）
+
+**目前唯一最新的全身服裝／造型視覺設計基準：**[2026-11-18 女主角設計圖（實際 PNG 附檔）](https://chatgpt.com/space/page_856b88a66e808191b39426c84396ddd3)；PNG SHA-256 `abfecddcc8a36ea5c31372df25ff5e505d7ba5dafe5f90e2b144a820687c8dae`，1672×941。
+
+Michael 明確選擇「盡量接近原始 R7A 全角色設計圖，僅微調頸後的蝴蝶結」。保留：**短波浪金髮**、原女主角臉部身形、金色菱形耳環、象牙白掛頸前領、交疊不對稱短裙、側腰結、涼鞋、開朗表情與五個遊戲動作。**脖子後方新增優雅的象牙白小蝴蝶結**，後背保持開放，腰臀須由裙身遮蔽。**不要再採用兩條獨立背部肩帶（B-2／吊帶褲感）**；也不重設為單肩斜裁、長髮或 2D 動畫新角色。圖中多視角是美術參考，不是嚴格正投影或可直接作為衣料拓樸的數據。
+
+本節**取代以下所有 Rev. B、B-2 或無背帶歷史文字的「最新服裝設計」宣稱**；下面段落保留作為已實作 v0.10.30 的來源與技術驗收紀錄，不再是當前造型權威。現有遊戲內 GLB／角色動畫**尚未更新為新圖**；角色建模與導入仍維持 Tracker 的 HOLD，不代表本輪已完成 3D、手機效能或主線發行。不得因本次設計文件更新重啟過去的 Codex 角色任務。設計圖原始 PNG 已存於上方頁面，舊 PNG 保留為歷史參考，不強行覆蓋回溯證據。
+
+
 > **HISTORICAL production contract / HOLD:** preserve the existing playable B-2 heroine and R6d hair. “Ready” and “approved” statements below describe prior decisions, not permission to rebuild or a new acceptance verdict. Current priorities and unresolved gates are in the [Tracker](PRODUCTION_PIPELINE_TRACKER.md); further character work is on hold.
 
 ## Latest explicit owner clarification — B-2, v0.10.30
