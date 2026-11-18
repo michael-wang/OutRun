@@ -1,5 +1,8 @@
 # R7H Rev. B-2 — shoulder ribbons, v0.10.30
 
+> **2026-11-18 設計更新（B-2 歷史存證）：** Michael 已選定新的 [女主角全身設計圖（含頸後蝴蝶結，實際 PNG）](https://chatgpt.com/space/page_856b88a66e808191b39426c84396ddd3)，SHA-256 `abfecddcc8a36ea5c31372df25ff5e505d7ba5dafe5f90e2b144a820687c8dae`。這裡的 v0.10.30 B-2 雙肩帶驗收圖及規格**保留作為當時實際遊戲資產的紀錄**，不再是現行服裝視覺定稿。最新圖回到原 R7A 金髮、掛頸前領、交疊短洋裝、側腰結與露背比例，唯一主要變更為頸後小蝴蝶結，移除兩條吊帶褲感背帶。**尚未修改 GLB／Blender 模型或五組動畫**；請勿把概念圖當作 3D 實作完成。
+
+
 2026-11-15 · Issue #51 · costume-only review candidate. Stop here for Julia / owner art acceptance.
 
 ## Owner clarification and references
