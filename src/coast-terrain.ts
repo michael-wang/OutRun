@@ -1,4 +1,5 @@
 import {fbm2,ridged2,smoothstep} from './vendor/procedural-terrains/cpuNoise.js';
+import {beach2} from './beach2-profile';
 import {macroMountainBlend} from './beach-macro';
 import {COAST_DISTRICTS} from './coast-layout';
 import {FARM_ZONES,farmPlainMask,farmTerraceHeight} from './coast-farm-layout';
@@ -41,6 +42,10 @@ export function coastWildness(d:number){
 /** ProceduralTerrains' rotated-domain FBM and erosion-aware ridges, evaluated
  * during worker preparation only. Absolute route coordinates join all chunks.
  * The road and beach are deliberately outside this inland height field. */
+export function beachApproachWeight(d:number){
+ return beach2()?smoothstep(4050,4320,d)*(1-smoothstep(4760,4990,d)):0;
+}
+
 export function coastHillHeight(x:number,d:number){
  const extension=macroMountainBlend(d),farm=farmPlainMask(x,d)*(1-extension),bench=farmTerraceHeight(x);
  const grassland=meadowRelief(x,d);
@@ -49,12 +54,29 @@ export function coastHillHeight(x:number,d:number){
  const wild=Math.max(coastWildness(d),extension);
  // Slide the foothills inland through inhabited districts, tapering the
  // displacement at each town entrance so the plain joins the countryside.
- const hillX=x-105*(1-wild)+135*extension,behindTown=smoothstep(140,220,hillX);
+ const approach=beachApproachWeight(d);
+ // Vary the crest and toe along the route; keep the two inland ridges behind it.
+ const fold=approach*(15*Math.sin((d-4200)/91)+9*Math.sin((d-4360)/47));
+ const hillX=x+fold-105*(1-wild)+135*extension,behindTown=smoothstep(140,220,hillX);
  const envelope=Math.max(wild,behindTown);
  const broad=fbm2(x/115+8.04,d/180+17.3,4,.48,2.03,.6,.35);
  const ridge=ridged2(x/170+31.7,d/260+4.2,3,.5,2.1,1.7,.3,.25);
  const crest=200+32*fbm2(8.04,d/230,3,.5,2);
  const near=Math.exp(-(((hillX-crest)/(65+20*broad))**2))*(12+28*ridge);
  const back=Math.exp(-(((hillX-355)/125)**2))*(15+32*broad);
- return envelope*smoothstep(88,155,hillX)*(near+back)*(1-extension+extension*smoothstep(13,48,x))*(1-farm)+farm*bench+grassland;
+ const toe=13+approach*(5+4*Math.sin(d/59));
+ const skirt=smoothstep(toe,48+approach*(14+8*broad),x);
+ const hills=envelope*smoothstep(88,155,hillX)*(near+back)*(1-extension+extension*skirt)*(1-farm);
+ if(!approach)return hills+farm*bench+grassland;
+ // Two oblique spurs share a broad apron. The gully between them stays
+ // open; far inland the existing ridgelines retain their elevation.
+ const toeX=13+75*(1-extension);
+ const mask=approach*smoothstep(toeX,toeX+16,x)*(1-smoothstep(145,225,x));
+ const spurAxis=46+11*Math.sin((d-4430)/51)+.042*(d-4590);
+ const shoulder=Math.exp(-(((x-spurAxis)/23)**2));
+ const second=Math.exp(-(((x-spurAxis-43)/35)**2));
+ const fingers=shoulder*(3.1+2.6*Math.cos((d-4460)/36))
+  +second*(2.2+2.1*Math.sin((d-4520)/56));
+ const gully=Math.exp(-(((x-spurAxis-20)/18)**2));
+ return hills*(1-mask*(.20+.19*gully))+mask*fingers+farm*bench+grassland;
 }

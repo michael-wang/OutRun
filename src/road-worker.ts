@@ -1,3 +1,4 @@
+import {setBeach2} from './beach2-profile';
 import {setBeachMacro,setSunsetRoute,setSunSide,setBeachLife,setBeachPlan,setCoastClose,setBeachFlow,setBeachVista} from './beach-macro';
 import {buildCoastGroundShadows,type CoastShadowAnchor} from './coast-dusk-shadows';
 import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
@@ -29,7 +30,7 @@ import {interchangeSceneryClear,type RoadInterchange} from './road-interchange';
 
 const hasModernShoulders=(v:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
-type InitRequest={type:'init';beachMacro?:string;sunsetRoute?:boolean;sunSide?:string;beachVista?:boolean;beachFlow?:boolean;coastClose?:boolean;beachPlan?:boolean;beachLife?:boolean;generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;beachBlockoutAnchor?:number;faults?:Faults}
+type InitRequest={type:'init';beach2?:boolean;beachMacro?:string;sunsetRoute?:boolean;sunSide?:string;beachVista?:boolean;beachFlow?:boolean;coastClose?:boolean;beachPlan?:boolean;beachLife?:boolean;generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;beachBlockoutAnchor?:number;faults?:Faults}
  & {coastStage:'coast'};
 type Request=InitRequest|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let farmGround:Awaited<ReturnType<typeof loadFarmGround>>|undefined;
@@ -65,6 +66,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
 setCoastClose(import.meta.env.DEV?request.coastClose:null);
 setBeachPlan(import.meta.env.DEV?request.beachPlan:null);
 setBeachLife(import.meta.env.DEV?request.beachLife:null);
+setBeach2(import.meta.env.DEV?request.beach2:null);
    mobileShadows=!!request.mobileShadows;
    beachBlockoutAnchor=import.meta.env.DEV?request.beachBlockoutAnchor:undefined;
    farmGround=undefined;

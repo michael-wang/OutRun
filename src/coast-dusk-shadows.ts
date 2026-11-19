@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {coastShadowLength,coastShadowOffset,coastShadowYaw,makeCoastShadowMaterial} from './coast-sun-shadow';
 export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
-import {COAST_BEACHES,coastRocks,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
+import {COAST_BEACHES,coastRocks,coastRockX,coastVisibleBarrierStyle,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
 import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainAt} from './coast-roadside-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
@@ -12,7 +12,7 @@ type Kind='umbrella'|'visitor'|'bench'|'home'|'shop'|'rock'|'concrete'|'rail'|'r
 export type CoastShadowAnchor={d:number;x:number;width:number;length:number;kind?:Kind};
 const rawRandom=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 import {COAST_SHADOW_AWAY as away,COAST_SHADOW_ACROSS as across} from './coast-sun-direction';
-import {macroHidePreRevealBeach,beachRailHidden} from './beach-macro';
+import {macroHidePreRevealBeach} from './beach-macro';
 
 /** Share the actual scene seed, beach pocket spacing and authored prop coordinates.
  * No independently randomized umbrella placements or shadows on the wrong beach.
@@ -64,9 +64,8 @@ export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>numbe
  const anchors:CoastShadowAnchor[]=[];
  for(let d=0;d<length;d+=12){
   for(const side of [-1,1] as const){
-   if(beachRailHidden(d,side))continue;
-   const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
-   if(style==='block'){
+   const style=coastVisibleBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
+   if(style==='block'||style==='stone-post'){
     const stone=coastBarrierStoneAt(d,side);
     const x=side*(halfAt(stone.d)+coastBarrierClearance(stone.d,side));
     anchors.push({d:stone.d,x,width:1.25,length:coastShadowLength(stone.height),kind:'concrete'});

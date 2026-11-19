@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
-import {GAME_QUERY_KEYS,DEV_QUERY_KEYS,canonicalGameQuery} from '../src/runtime-query';
+import {GAME_QUERY_KEYS,DEV_QUERY_KEYS,canonicalGameQuery,isDevelopmentRace} from '../src/runtime-query';
 it('accepts only approved diagnostics, positioning and replayable traffic seed',()=>{
  expect(GAME_QUERY_KEYS).toEqual(['car','fpsdiag','startupdiag','at','trafficSeed','rivaldebug']);
  expect(canonicalGameQuery(new URLSearchParams('showcase=coast&qa=1&fpsbench=1&autobench=1&fpsdiag=1&startupdiag=1&at=6500')).toString()).toBe('fpsdiag=1&startupdiag=1&at=6500');
@@ -54,3 +54,9 @@ it('defaults to a playable coast without the 0-speed FPS benchmark',()=>{
 });
 
 it('preserves explicit classic rollback and defaults all other values',()=>{expect(canonicalGameQuery(new URLSearchParams('car=classic')).get('car')).toBe('classic');expect(canonicalGameQuery(new URLSearchParams('car=unknown')).has('car')).toBe(false);});
+
+it('auto-runs only effective, validated options in development',()=>{
+ const selected=(query:string)=>isDevelopmentRace(canonicalGameQuery(new URLSearchParams(query)));
+ for(const query of ['', 'utm_source=test','hero3d=1','sunSide=left','at=0x1200','at=14550','at=1e3','fpsdiag=false','trafficSeed=-1'])expect(selected(query)).toBe(false);
+ for(const query of ['at=350','at=4600.25','at=14549','trafficSeed=0','fpsdiag=1','utm_source=test&beach2=1','car=classic'])expect(selected(query)).toBe(import.meta.env.DEV);
+});

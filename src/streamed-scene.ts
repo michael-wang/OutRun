@@ -1,3 +1,4 @@
+import {beach2} from './beach2-profile';
 import {beachMacro,sunsetRoute,sunSide,beachVista,beachFlow,coastClose,beachPlan,beachLife} from './beach-macro';
 import {beachPreviewAnchor} from './beach-blockout-config';
 import {visitContactRows} from './wheel-contact-patch';
@@ -162,7 +163,7 @@ export class StreamedScene {
   if(this.stage.kind!=='authored-coast')throw Error('Only authored coast stages can stream');
   this.worker.postMessage({type:'init',generation:this.generation,
     // Worker resolves the same authored stage ID without cloning its contents.
-    coastStage:'coast' as const,beachMacro:beachMacro(),sunsetRoute:sunsetRoute(),sunSide:sunSide(),beachVista:beachVista(),beachFlow:beachFlow(),coastClose:coastClose(),beachPlan:beachPlan(),beachLife:beachLife(),
+    coastStage:'coast' as const,beach2:beach2(),beachMacro:beachMacro(),sunsetRoute:sunsetRoute(),sunSide:sunSide(),beachVista:beachVista(),beachFlow:beachFlow(),coastClose:coastClose(),beachPlan:beachPlan(),beachLife:beachLife(),
     bank:this.bank,mobileShadows:this.mobile&&!!this.farmSample,blenderArt:this.blenderArt,
     bakedFarmGround:beachMacro()==='none'&&this.bank===undefined&&!this.blenderArt,
     ...(import.meta.env.DEV?{faults:this.testFaults,beachBlockoutAnchor:beachPreviewAnchor(new URLSearchParams(typeof location==='undefined'?'':location.search),this.length)}:{})});

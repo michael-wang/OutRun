@@ -14,14 +14,18 @@ Original Three.js + TypeScript arcade racing game. The first playable stage is *
 
 ```powershell
 npm ci
-npm run dev -- --host 0.0.0.0
+npm run dev
 ```
 
-Use the LAN address printed by Vite for mobile device playtesting (subject to firewall). The active supported query parameters are `fpsdiag`, `startupdiag`, `at`, `trafficSeed` and `rivaldebug`. Retired lab/showcase URLs are not product features.
+Use the loopback address printed by Vite. An ordinary visit opens the existing coast and waits for START (or offers the normal saved-race recovery). In development, `?beach2=1&at=4600` opens the accepted Kenting Beach 2 composition before the reveal; `?beach2=1&at=5549` starts alongside the swimmers. `at` is a track station in metres; the HUD reads 350 m less. Effective developer options start driving when ready, bypass ordinary race saves, and restart at the selected station. Unrecognised tracking parameters alone keep the ordinary startup flow. The right stick looks around, R3 returns to chase, and F8 or the photo control takes a screenshot.
+
+`npm run dev` bakes the shoreline caches from the tracked road and terrain sources. The Beach 2 scenery is built from the project's Three.js geometry and stage layouts. A clean checkout shows the explicit classic-car fallback when the private Option B is unavailable. An authorised local workspace can use its existing loopback-only Option B model. The private model and personal preview builds are excluded from Git; public release packaging remains license-gated.
 
 ```powershell
-npm run verify:dev # before pushing to dev: build + all retained unit tests
-npm run build       # TypeScript + Vite
+# For an authorised private build, stage the approved model first (see docs/OPTION_B_LOCAL_DEMO.md).
+$env:OUTRUN_PRIVATE_PREVIEW="1"
+npm run verify:dev # authorised private build plus all retained unit tests
+npm run build       # TypeScript + Vite, subject to the same packaging gate
 npm run test:p0     # minimal deterministic release safeguards
 npm run test:p1     # advisory Critical diagnostics
 npm test            # all retained unit tests, manually

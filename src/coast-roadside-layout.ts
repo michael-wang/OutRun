@@ -157,3 +157,7 @@ export function coastPoleLinks(start:number,end:number){
   return [{from:prev,to:next,start:Math.max(prev.d,start),end:Math.min(next.d,end)}];
  });
 }
+
+/** Shared rendered insulator tip centres, in the pole local frame. */
+export const COAST_WIRE_ACROSS=[-1.05,0,1.05] as const;
+export const COAST_WIRE_TIP_DROP=.13;

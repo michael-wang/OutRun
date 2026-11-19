@@ -1,3 +1,4 @@
+import {beach2VillageClearing} from './beach2-composition-layout';
 import {blockoutReplacesStall} from './beach-blockout-config';
 import {macroLandHeight,macroClearApproach,macroHidePreRevealBeach} from './beach-macro';
 import {COAST_BEACHES,COAST_BEACH_STALLS,COAST_LANDINGS,coastReefRocks,coastRocks,coastBeachX,coastRockX} from './coast-layout';
@@ -10,7 +11,7 @@ import {FARM_HOMES,FARM_YARDS} from './coast-farm-layout';
 import {coastStaticStage,replacesLegacySite} from './content/stage-data';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek,buildPaddyToolShed} from './coast-rural-vignette';
-import {COAST_DRAIN_X,COAST_LAMP_HEAD,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_DRAIN_X,COAST_LAMP_HEAD,COAST_UTILITY_POLES,COAST_WIRE_ACROSS,COAST_WIRE_TIP_DROP,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
 import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
@@ -211,6 +212,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    b.matrices.push(dummy.matrix.clone());
  }
  function placeTree(species:RoadTree,height:number,seed:number,width=height){
+  const frame=sample(anchorDistance),lateral=base.clone().sub(frame.position).dot(frame.right);
+  if(beach2VillageClearing(anchorDistance,lateral))return;
   let parts=treeGeometry.get(species);
   if(!parts){
    parts=roadsideTrees[species].parts.map((data:NaturePart)=>{
@@ -522,9 +525,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    part(cylinder,'#373d3e',0,1.03,0,.266,2.06,.266);
    for(const y of [.50,.98,1.46])part(cylinder,'#dbb245',0,y,0,.283,.27,.283);
    part(boxes,'#687174',0,h-.54,0,3.05,.17,.22);
-   for(const across of [-1.05,0,1.05]){
+   for(const across of COAST_WIRE_ACROSS){
     part(cylinder,'#dad6c7',across,h-.31,0,.105,.32,.105);
-    part(cylinder,'#4d5051',across,h-.13,0,.045,.07,.045);
+    part(cylinder,'#4d5051',across,h-COAST_WIRE_TIP_DROP,0,.045,.07,.045);
    }
    if(pole.transformer){
     part(cylinder,'#71807c',.64,h-2.20,0,.48,1.42,.48);

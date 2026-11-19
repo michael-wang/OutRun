@@ -1,3 +1,4 @@
+import {beach2Weight,beach2Ground} from './beach2-profile';
 import {macroLandHeight,beachFlow,macroCoastRise} from './beach-macro';
 import {coastProfileX,coastBeachX} from './coast-layout';
 import {coastHillHeight,farmBasinCut} from './coast-terrain';
@@ -110,6 +111,10 @@ export const COAST_SHORE_OFFSET=-26;
  * Keep a dry shoulder, a sloping wet-sand band and a submerged sand bottom.
  * Do not extend road banking indefinitely across inland terrain. */
 export function coastBeachHeight(x:number,roadY:number,rightY:number,distance?:number):number{
+ const original=legacyCoastBeachHeight(x,roadY,rightY,distance);
+ return distance!==undefined&&beach2Weight(distance)>0?beach2Ground(x,distance,roadY,rightY,original,coastBeachX(-26,distance)):original;
+}
+function legacyCoastBeachHeight(x:number,roadY:number,rightY:number,distance?:number):number{
  const base=baseBeachHeight(x,roadY,rightY,distance);
  if(beachFlow()&&distance!==undefined&&x<-13){
   const rise=macroCoastRise(distance),shore=coastBeachX(COAST_SHORE_OFFSET,distance);

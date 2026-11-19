@@ -1,5 +1,6 @@
+import {beach2,BEACH2,beach2Weight,beach2Shore} from './beach2-profile';
 import {beachZoneBlend} from './beach-zone-layout';
-import {macroBeachExtra,macroReefDistance,beachFlow,macroCoastRise,macroCoastCloseBlend} from './beach-macro';
+import {beachRailHidden,macroBeachExtra,macroReefDistance,beachFlow,macroCoastRise,macroCoastCloseBlend} from './beach-macro';
 import {coastDrainAt,coastDrainCovered,COAST_DRAIN_X} from './coast-roadside-layout';
 
 /** Coast-only visitor beaches: a large relaxed second act, two lively
@@ -49,7 +50,8 @@ export function coastBeachExtra(d:number){
  const coast=regional+(Math.min(regional,narrow)-regional)*close;
  // Low beach activity stays broad but within a readable near/midground band.
  const zone=beachZoneBlend(d),beachWidth=55+5*Math.sin(d*.006);
- return coast+(Math.min(coast,beachWidth)-coast)*zone;
+ const old=coast+(Math.min(coast,beachWidth)-coast)*zone;
+ return old+(-26-beach2Shore(d)-old)*beach2Weight(d);
 }
 /** Remap the old cross-section, preserving the inner dry shoulder exactly. */
 export function coastBeachX(x:number,d:number){
@@ -139,6 +141,15 @@ export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
   }
  }
  return coastDistrictAt(d)!==undefined||coastCrosswalkNear(d,65)?'block':'rail';
+}
+/** Visual treatment only. The physics sampler keeps its original barrier style. */
+export function coastVisibleBarrierStyle(d:number,side:-1|1):CoastBarrierStyle|'stone-post' {
+ if(!beachRailHidden(d,side))return coastBarrierStyle(d,side);
+ if(!beach2())return 'none';
+ // Leave the three beach approaches and the cape path accessible on foot.
+ const s=d-BEACH2.core;
+ if([140,650,745,1018].some(access=>Math.abs(s-access)<7))return 'opening';
+ return 'stone-post';
 }
 /** The sea-side collision limit is backed by continuous VISIBLE protection:
  * low steel guardrails between public beaches, linked bollard/beam parapets

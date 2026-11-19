@@ -56,3 +56,7 @@ __pycache__/
 
 /public/generated/coast-shore-macro-*.shore
 /public/generated/coast-shore-macro-*.build-key
+
+# Isolated Kenting Beach 2 waterline caches remain local.
+/public/generated/coast-shore-beach2-*.shore
+/public/generated/coast-shore-beach2-*.build-key

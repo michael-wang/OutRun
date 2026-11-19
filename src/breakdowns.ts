@@ -25,6 +25,7 @@ export function warningLeaders(rows:readonly Breakdown[]){
 export function breakdownLayout(
  sample:Sample,halfAt:(d:number)=>number,length:number,seed:number,coast=false,
  minimumDistance=coast?COAST_BREAKDOWN.startClearance:1800,
+ protectedView?:Readonly<{start:number;end:number}>,
 ):Breakdown[]{
  const out:Breakdown[]=[];
  let next=coast
@@ -33,6 +34,11 @@ export function breakdownLayout(
   const last=length-(coast?COAST_BREAKDOWN.finishClearance:900);
  for(let d=Math.ceil(next/25)*25;d<last;d+=25){
   if(d<next)continue;
+  // Include the first warning triangle and the trailing stopped vehicle.
+  if(protectedView && d+19>=protectedView.start && d-240<=protectedView.end){
+   next=protectedView.end+241+trafficRandom(seed,1301)*520;
+   continue;
+  }
   const width=halfAt(d),end=sample(d);
   if(width<6.9||Math.abs(end.right.y)>.15)continue;
   let safe=true;

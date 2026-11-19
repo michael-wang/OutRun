@@ -1,3 +1,4 @@
+import {beach2,beach2Site} from './beach2-profile';
 import {configureCoastSun} from './coast-sun-direction';
 /** Reversible local spatial study; never changes the default route. */
 export type BeachMacro='none'|'b'|'right';
@@ -14,7 +15,7 @@ export function setBeachCrowdStyle(value:unknown){crowdStyle=value==='dense'?'de
 export const beachLife=()=>beachPlan()&&life;
 export function setBeachLife(value:unknown){life=value===true||value==='1';}
 /** Visual-only opening: never used by coastDriveBounds or contact solvers. */
-export const beachRailHidden=(d:number,side:number)=>beachLife()&&side===-1&&d>=4850&&d<=6050;
+export const beachRailHidden=(d:number,side:number)=>beachLife()&&side===-1&&d>=(beach2()?4680:4850)&&d<=6050;
 export const beachPlan=()=>coastClose()&&plan;
 export function setBeachPlan(value:unknown){plan=value===true||value==='1';}
 export const coastClose=()=>beachFlow()&&closeCoast;
@@ -40,7 +41,7 @@ export const sunsetRoute=()=>oriented&&active==='right';
 export function setSunsetRoute(value:unknown){oriented=value===true||value==='1';}
 export const beachMacro=()=>active;
 export function setBeachMacro(value:unknown){active=value==='b'||value==='right'?value:'none';configureCoastSun(active);}
-export const macroHidePreRevealBeach=(d:number)=>active==='right'&&d>=4000&&d<4850;
+export const macroHidePreRevealBeach=(d:number)=>beach2Site(d)||(active==='right'&&d>=4000&&d<4850);
 export const macroComparison=()=>active==='right';
 /** Keep the cape, authored lighthouse and its gull/fallback root together. */
 export const macroLighthouseX=()=>active==='right'?-105:-50;
@@ -48,7 +49,7 @@ export const macroBounds=()=>macroComparison()?[4350,8450] as const:[5270,6570] 
 const smooth=(v:number)=>{const t=Math.max(0,Math.min(1,v));return t*t*(3-2*t);};
 /** Continuous extension of the existing inland hills, not a separate mound. */
 export const macroMountainBlend=(d:number)=>active==='right'?smooth((d-3950)/400)*(1-smooth((d-4850)/400)):0;
-export const macroClearApproach=(d:number)=>active==='right'&&d>=4000&&d<=5350;
+export const macroClearApproach=(d:number)=>beach2Site(d)||(active==='right'&&d>=4000&&d<=5350);
 export const macroScenicDistance=(d:number,anchor=5980)=>active==='right'?anchor-980+(d-anchor+120)*(1560/315):d;
 export const macroReefDistance=(d:number)=>active==='right'&&d>=6320&&d<=6884?6750+(d-6320)*.8:d;
 export function macroBump(d:number,centre:number,radius:number){const t=Math.abs(d-centre)/radius;return t>=1?0:Math.pow(Math.cos(t*Math.PI/2),4);}

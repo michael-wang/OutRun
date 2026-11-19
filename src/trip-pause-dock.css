@@ -19,7 +19,9 @@
 }
 #trip-pause-dock #tp-resume,#preferences.trip-settings-drawer #close-settings{background:#e19b5f32;border:1.5px solid #ffc092;color:#fff1d9}
 #trip-pause-dock #tp-back{background:transparent;color:#e6cebd}
-#trip-pause-dock button:focus-visible,#preferences.trip-settings-drawer :focus-visible{outline:2px solid #ffcf9e;outline-offset:1px}
+#trip-pause-dock button:focus-visible,#preferences.trip-settings-drawer :focus-visible,
+html[data-input-mode="gamepad"] #trip-pause-dock button:focus,
+html[data-input-mode="gamepad"] #preferences.trip-settings-drawer :focus{outline:2px solid #ffcf9e;outline-offset:1px}
 #preferences.trip-settings-drawer{width:min(350px,52vw)}
 #preferences.trip-settings-drawer .eyebrow{display:none}
 #preferences.trip-settings-drawer .setting{font-size:15px}

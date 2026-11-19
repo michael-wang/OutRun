@@ -17,6 +17,27 @@ it('supports vertical/diagonal stick selection, repeat, hysteresis and release a
  const nav=new PadMenuNavigation(),b=Array(18).fill(false);
  expect(nav.poll(.2,.8,b,0)).toBe('down');expect(nav.poll(.2,.8,b,200)).toBe(null);expect(nav.poll(.2,.8,b,420)).toBe('down');
  expect(nav.poll(.2,.4,b,500)).toBe(null);expect(nav.poll(.2,.4,b,580)).toBe('down');
- nav.reset(true);expect(nav.poll(0,1,b,1000)).toBe(null);nav.poll(0,0,b,1001);expect(nav.poll(0,-1,b,1002)).toBe('up');
+ nav.capture(0,1,b);expect(nav.poll(0,1,b,1000)).toBe(null);nav.poll(0,0,b,1001);expect(nav.poll(0,-1,b,1002)).toBe('up');
  nav.poll(0,0,b,1003);b[15]=true;expect(nav.poll(0,0,b,1004)).toBe('right');
+});
+
+it('accepts fresh vertical stick and D-pad navigation independently of inherited steering',()=>{
+ const nav=new PadMenuNavigation(),buttons=Array(18).fill(false);
+ nav.capture(.8,0,buttons);
+ expect(nav.poll(.8,0,buttons,0)).toBeNull();
+ expect(nav.poll(.8,.9,buttons,16)).toBe('down');
+ expect(nav.poll(.8,0,buttons,32)).toBeNull();
+ expect(nav.poll(.8,-.9,buttons,48)).toBe('up');
+ buttons[13]=true;expect(nav.poll(.8,0,buttons,64)).toBe('down');
+ buttons[13]=false;expect(nav.poll(.8,0,buttons,1000)).toBeNull();
+ expect(nav.poll(.8,0,buttons,1600)).toBeNull();
+ expect(nav.poll(-.8,0,buttons,1616)).toBe('left');
+});
+it('ignores an inherited D-pad direction until released without blocking a new one',()=>{
+ const nav=new PadMenuNavigation(),buttons=Array(18).fill(false);
+ buttons[14]=true;nav.capture(0,0,buttons);buttons[12]=true;
+ expect(nav.poll(0,0,buttons,0)).toBe('up');
+ buttons[12]=false;expect(nav.poll(0,0,buttons,1000)).toBeNull();
+ buttons[14]=false;nav.poll(0,0,buttons,1016);
+ buttons[14]=true;expect(nav.poll(0,0,buttons,1032)).toBe('left');
 });

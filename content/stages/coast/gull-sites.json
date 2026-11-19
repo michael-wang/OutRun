@@ -1,0 +1,35 @@
+[
+  {
+    "id": "lantern-cape",
+    "anchor": "lighthouse",
+    "offset": 0,
+    "lateral": 0,
+    "altitude": 17,
+    "radius": 17,
+    "count": 5,
+    "seed": 421,
+    "range": 420
+  },
+  {
+    "id": "bay-mouth",
+    "anchor": "bay-entrance",
+    "offset": -50,
+    "lateral": -53,
+    "altitude": 34,
+    "radius": 15,
+    "count": 3,
+    "seed": 73,
+    "range": 330
+  },
+  {
+    "id": "cliff-updraft",
+    "anchor": "sea-cliff",
+    "offset": -35,
+    "lateral": -33,
+    "altitude": 12,
+    "radius": 16,
+    "count": 2,
+    "seed": 931,
+    "range": 350
+  }
+]

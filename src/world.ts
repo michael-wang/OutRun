@@ -33,7 +33,7 @@ import type {ScenerySection} from './scenery-cross-section';
 
 const hasModernShoulders=(v?:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 
-export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;breakdownStart?:number;accident?:CoastAccident;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:CoastRuntimeStage;interchange?:RoadInterchange;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean;previousHeroLook?:boolean;optionBPreview?:boolean}={}) {
+export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme?:number;seed?:number;trafficVariation?:number;breakdownStart?:number;breakdownProtectedView?:Readonly<{start:number;end:number}>;accident?:CoastAccident;roadWidth?:number;halfAt?:(d:number)=>number;narrowings?:number[];course?:typeof COURSE;notice?:{distance:number;text:string};weightsAt?:(d:number)=>number[];chunked?:boolean;streamStage?:CoastRuntimeStage;interchange?:RoadInterchange;bank?:BankStrength;blenderArt?:boolean;dawn?:boolean;deferCar?:boolean;previousHeroLook?:boolean;optionBPreview?:boolean}={}) {
   const course=options.course??COURSE,half=(options.roadWidth??14)/2,halfAt=options.halfAt??(()=>half),shoulders=hasModernShoulders(options.streamStage?.generatorVersion)?(d:number)=>bridgeShoulders(d,options.seed??1,bridge):undefined,offsetAt=(d:number,o:number)=>roadObjectOffset(o,halfAt(d),shoulders?.(d));
   const weightsAt=(d:number)=>options.weightsAt?options.weightsAt(d):options.theme===undefined?actWeights(d):[0,1,2].map(i=>i===options.theme?1:0);
   const scene=new THREE.Scene(); scene.background=new THREE.Color('#9bd8ea'); scene.fog=new THREE.Fog('#b7dce5',180,1100);
@@ -177,7 +177,7 @@ export function createWorld(options:{track?:ReturnType<typeof createTrack>;theme
   // not the extra 600m of track-generation relief used after credits.
   const breakdowns=options.streamStage?.generatorVersion==='canyon-roadlock-v1'?[]:(options.streamStage?.generatorVersion==='v0.9-r5'||(options.streamStage?.generatorVersion==='v0.9-r6'||hasModernShoulders(options.streamStage?.generatorVersion)))?breakdownLayout(sample,halfAt,
    coastUltra?(stageSections?.find(section=>section.id==='coast-ultra-left-sea')?.end??length):length,
-   (options.seed??1)^(options.trafficVariation??0),!!coastUltra,options.breakdownStart):[];
+   (options.seed??1)^(options.trafficVariation??0),!!coastUltra,options.breakdownStart,options.breakdownProtectedView):[];
   // A4 enters the same Traffic + rival collision world as regular stalled cars.
   if(options.accident)breakdowns.unshift(...coastAccidentLayout(
    halfAt,options.accident,(options.seed??1)^(options.trafficVariation??0)));

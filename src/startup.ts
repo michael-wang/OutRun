@@ -4,6 +4,7 @@ import { immersive, landscapeControl } from './immersive';
 import {mountRuntimeReadout} from './runtime-readout';
 import {GAME_VERSION} from './build-info';
 import {readRaceCheckpoint,type RaceCheckpoint} from './race-recovery';
+import {canonicalGameQuery,isDevelopmentRace} from './runtime-query';
 import {revealStageSelect} from './stage-navigation';
 
 mountRuntimeReadout();
@@ -68,6 +69,10 @@ async function enter(stage: RacingStage,recovery?:RaceCheckpoint) {
 }
 
 async function bootMenu(firstEntry: boolean) {
+  if(firstEntry&&isDevelopmentRace(canonicalGameQuery(new URLSearchParams(location.search)))){
+    const coast=stages.find(stage=>stage.id==='coast'&&stage.enter);
+    if(coast){await enter(coast);return;}
+  }
   const recovery=firstEntry ? readRaceCheckpoint(GAME_VERSION) : null;
   const retry = stages.find(stage => stage.enter && stage.id === history.state?.retryStage);
   if (history.state?.retryStage) {

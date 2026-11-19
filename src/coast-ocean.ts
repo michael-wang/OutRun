@@ -1,6 +1,7 @@
 import {macroReefDistance} from './beach-macro';
 import {COAST_SUN,COAST_SKY_GLSL,COAST_SHADOW_STRETCH} from './coast-dusk';
 import {COAST_EFFECTS,oceanVisualSettings,coastShadowSettings,type OceanStageEffects} from './content/coast-effects';
+import {shoreGLSL,surfaceGLSL,waterRings} from './coast-water-surface';
 import {addCoastSwimmers} from './coast-swimmers';
 import {coastReefRocks,coastRocks,coastRockX,coastBeachX} from './coast-layout';
 import * as THREE from 'three';
@@ -14,12 +15,7 @@ import {OceanSim, defaultOceanParams} from './ultra-water/water/OceanSim.js';
 
 /** Ultra-Water FFT + small coast-only shading adapter. No secondary render pipeline,
  * depth buffer resolves, underwater, caustics, physics or post-processing. */
-function polarGrid(segments:number){
- const radii:number[]=[];
- for(let r=.06;r<1;r*=1.23)radii.push(r);
- const q=1+2*Math.PI/segments;
- for(let r=1;r<2400;r*=q)radii.push(r);
- radii.push(6500);
+function polarGrid(segments:number,radii:number[]){
  const vertices=new Float32Array((1+radii.length*segments)*3);
  let v=3;
  for(const radius of radii)for(let a=0;a<segments;a++){
@@ -43,38 +39,9 @@ function polarGrid(segments:number){
  return g;
 }
 
-const shoreGLSL=/* glsl */`
-uniform sampler2D uShore;
-uniform vec4 uShoreBounds;
-uniform float uTime;
-uniform vec4 uReefAxis; // shoreline start and unit direction in world XZ
-uniform vec3 uReefProfile; // alongshore length, wave gain, spray gain
-float reefExposure(vec2 xz,float offshore){
- vec2 delta=xz-uReefAxis.xy;
- float along=dot(delta,uReefAxis.zw);
- float across=abs(dot(delta,vec2(-uReefAxis.w,uReefAxis.z)));
- return smoothstep(0.,45.,along)*(1.-smoothstep(uReefProfile.x-45.,uReefProfile.x,along))
-       *(1.-smoothstep(100.,155.,across))*smoothstep(0.,5.,offshore)*(1.-smoothstep(27.,52.,offshore));
-}
-vec4 shoreAt(vec2 xz){return texture(uShore,(xz-uShoreBounds.xy)/uShoreBounds.zw);}
-float hash21(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-float noise2(vec2 p){
- vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);
- return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+1.0),f.x),f.y);
-}
-float shorePhase(float d,vec2 xz){return d*.46+uTime*1.4+noise2(xz*.035)*1.7+sin(xz.x*.018+xz.y*.012)*.5;}
-float shoreWave(float d,vec2 xz){
- float p=shorePhase(d,xz);
- return (sin(p)+.3*sin(2.0*p-.6))*.32*mix(1.,uReefProfile.y,reefExposure(xz,d))*exp(-max(0.0,d)/38.0)*smoothstep(-2.0,2.0,d);
-}
-`;
 const vertex=/* glsl */`
 ${shoreGLSL}
-uniform sampler2D uDisp0;
-uniform sampler2D uDisp1;
-uniform sampler2D uDisp2;
-uniform float uSpacing;
-uniform float uResolution;
+${surfaceGLSL}
 out vec3 vWorld;
 out float vChurn;
 out float vDistance;
@@ -82,25 +49,9 @@ out float vDistance;
 void main(){
  vec3 world=(modelMatrix*vec4(position,1.0)).xyz;
  float ring=max(length(position.xz),1.0);
- float spacing=max(0.35,ring*uSpacing);
- float maxLod=log2(uResolution);
- float l0=clamp(log2(max(1.0,spacing*uResolution/600.0)),0.0,maxLod);
- float l1=clamp(log2(max(1.0,spacing*uResolution/85.0)),0.0,maxLod);
- float l2=clamp(log2(max(1.0,spacing*uResolution/12.0)),0.0,maxLod);
- vec4 d0=textureLod(uDisp0,world.xz/600.0,l0);
- vec4 d1=textureLod(uDisp1,world.xz/85.0,l1);
- vec4 d2=textureLod(uDisp2,world.xz/12.0,l2);
- float fade=1.0-smoothstep(1300.0,2300.0,ring);
- vec4 shore=shoreAt(world.xz);
- float nearshore=smoothstep(0.0,55.0,shore.x);
- vec3 disp=d0.xyz+d1.xyz+d2.xyz;
- // Keep deep-water FFT energy offshore. Bounded waves cannot reach the road.
- disp.y=disp.y/(1.0+abs(disp.y)/.9);
- disp.xz=disp.xz/(1.0+length(disp.xz)/1.2);
- world+=disp*fade*nearshore;
- world.y+=shoreWave(shore.x,world.xz);
+ world=displacedVertex(world,ring,vChurn);
  vWorld=world;
- vChurn=min(d0.w,min(d1.w,d2.w));
+
  vDistance=ring;
  gl_Position=projectionMatrix*viewMatrix*vec4(world,1.0);
 }`;
@@ -257,10 +208,13 @@ export class UltraCoastOcean {
   };
   const start=waterline(reef.start),axis=waterline(reef.end).sub(start),reefLength=axis.length();
   axis.normalize();
+  const segments=this.mobile?128:192,radii=waterRings(segments);
   this.uniforms={
+   uLastRings:{value:new THREE.Vector2(radii[radii.indexOf(1)-1],radii[radii.length-2])},
    ...this.boatShadow.uniforms,
    uDisp0:{value:null},uDisp1:{value:null},uDisp2:{value:null},
    uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
+   uGridOrigin:{value:new THREE.Vector2()},
    uSpacing:{value:2*Math.PI/(this.mobile?128:192)},
    uResolution:{value:this.sim.resolution},
    uSun:{value:COAST_SUN.clone()},
@@ -274,13 +228,13 @@ export class UltraCoastOcean {
    uniforms:this.uniforms,vertexShader:vertex,fragmentShader:fragment,
    glslVersion:THREE.GLSL3,side:THREE.DoubleSide,depthTest:true,depthWrite:true,
   });
-  this.mesh=new THREE.Mesh(polarGrid(this.mobile?128:192),material);
+  this.mesh=new THREE.Mesh(polarGrid(segments,radii),material);
   this.mesh.name='ultra-water-fft-coast';
   this.mesh.position.y=level;
   this.mesh.frustumCulled=false;
   this.mesh.renderOrder=1;
   scene.add(this.mesh);
-  addCoastSwimmers(scene,coast.sample,this.uniforms,shoreGLSL);
+  addCoastSwimmers(scene,coast.sample,this.uniforms);
   // A single small point batch for local spray; illustrative wave impacts, no fluid solver.
   const sprayPositions:number[]=[],seeds:number[]=[];
   // Smaller outcrops share the wave field. Only exposed heads emit plumes.
@@ -345,6 +299,7 @@ export class UltraCoastOcean {
  /** Read-only bindings for decorative hulls/contact patches; simulation stays here. */
  get boatSurfaceUniforms():Readonly<Record<string,THREE.IUniform>>{return this.uniforms;}
  update(camera:THREE.Camera,dt:number){
+  this.uniforms.uGridOrigin.value.set(camera.position.x,camera.position.z);
   this.mesh.position.x=camera.position.x;
   this.mesh.position.z=camera.position.z;
   const delta=Math.max(0,Math.min(dt,.08));

@@ -42,6 +42,15 @@ it('seeds up to two coastal breakdowns across the whole road, in any lane',()=>{
  expect(allLanes.has(0)).toBe(true);expect(allLanes.has(4)).toBe(true);
  expect([...allLanes].some(lane=>lane>0&&lane<4)).toBe(true);
 });
+it('keeps generated warning approaches and both wrecks out of a protected sightline',()=>{
+ const view={start:4780,end:6170};
+ for(const seed of [23,804,9876,38241]){
+  const rows=breakdownLayout(flat,()=>8.75,14550,seed,true,5250,view);
+  expect(warningLeaders(rows)).toHaveLength(2);
+  for(const lead of warningLeaders(rows))
+   expect(lead.distance+19<view.start||lead.distance-240>view.end).toBe(true);
+ }
+});
 it('preserves earlier non-coast stopped-car design and scans the real coast safely',()=>{
  const legacy=breakdownLayout(flat,()=>8.75,69000,1,false);
  expect(legacy.length).toBeGreaterThan(1);

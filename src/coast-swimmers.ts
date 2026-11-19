@@ -1,3 +1,6 @@
+import {beach2,BEACH2} from './beach2-profile';
+import {BEACH2_COVE_PARTIES} from './beach2-composition-layout';
+import {floatGLSL} from './coast-water-surface';
 import * as THREE from 'three';
 import {COAST_MARKET_BEACHES,coastBeachX} from './coast-layout';
 import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from './scenery-cross-section';
@@ -7,10 +10,10 @@ type BeachSample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};
 /** Each swim area has one culled draw. Body parts and marker buoys share a
  * low-poly sphere. The whole stroke follows the same breaker as the water. */
 export function addCoastSwimmers(scene:THREE.Scene,sample:BeachSample,
- uniforms:Record<string,THREE.IUniform>,shoreGLSL:string){
+ uniforms:Record<string,THREE.IUniform>){
  const material=new THREE.ShaderMaterial({
   uniforms,vertexShader:`
-   ${shoreGLSL}
+   ${floatGLSL}
    attribute vec3 lane;
    attribute float piece;
    varying vec3 tint;
@@ -29,7 +32,7 @@ export function addCoastSwimmers(scene:THREE.Scene,sample:BeachSample,
      local.y+=.32*sin(arm)+local.z*sin(arm);
      local.z=local.z*cos(arm)+.33*cos(arm);
     }
-    origin.y+=shoreWave(shoreAt(origin.xz).x,origin.xz);
+    origin+=floatDelta(origin.xz);
     vec3 p=origin+vec3(0.0,local.y,0.0);
     p.xz+=local.z*direction+local.x*side;
     tint=instanceColor*(.78+.22*normal.y);
@@ -40,10 +43,11 @@ export function addCoastSwimmers(scene:THREE.Scene,sample:BeachSample,
    #include <colorspace_fragment>
   }`,
  });
- for(const centre of COAST_MARKET_BEACHES){
+ type Lane={station:number;offshore:number;phase:number;lift:number};
+ function addArea(strokes:Lane[],markers:number[],name:string){
   const geometry=new THREE.SphereGeometry(1,8,6);
   const lanes:number[]=[],pieces:number[]=[];
-  const count=8*5+5,mesh=new THREE.InstancedMesh(geometry,material,count);
+  const count=strokes.length*5+markers.length,mesh=new THREE.InstancedMesh(geometry,material,count);
   const matrix=new THREE.Matrix4(),color=new THREE.Color();
   function part(d:number,offshore:number,phase:number,type:number,height:number,
    width:number,rise:number,length:number,paint:string){
@@ -52,18 +56,31 @@ export function addCoastSwimmers(scene:THREE.Scene,sample:BeachSample,
    mesh.setMatrixAt(pieces.length,matrix);mesh.setColorAt(pieces.length,color.set(paint));
    pieces.push(type);lanes.push(-frame.right.z,frame.right.x,phase);
   }
-  for(let i=0;i<8;i++){
-   const d=centre-110+i*13,depth=8+(i%3)*3,phase=i*2.4;
+  for(const [i,{station:d,offshore,phase,lift}] of strokes.entries()){
    const skin=i%2?'#b97953':'#e1ab83',cap=i%2?'#ffd643':'#ee723e';
-   part(d,depth,phase,0,.09,.28,.19,.63,i%3?'#26959d':'#c94c47');
-   part(d,depth,phase,1,.19,.18,.20,.22,skin);
-   part(d,depth,phase,2,.32,.19,.12,.21,cap);
-   for(const arm of [3,4])part(d,depth,phase,arm,.17,.085,.09,.29,skin);
+   part(d,offshore,phase,0,.09+lift,.28,.19,.63,i%3?'#26959d':'#c94c47');
+   part(d,offshore,phase,1,.19+lift,.18,.20,.22,skin);
+   part(d,offshore,phase,2,.32+lift,.19,.12,.21,cap);
+   for(const arm of [3,4])part(d,offshore,phase,arm,.17+lift,.085,.09,.29,skin);
   }
-  for(let i=0;i<5;i++)part(centre-125+i*32,23,i,5,.24,.46,.52,.46,'#ff823c');
+  for(const [i,d] of markers.entries())part(d,23,i,5,.24,.46,.52,.46,'#ff823c');
   geometry.setAttribute('lane',new THREE.InstancedBufferAttribute(new Float32Array(lanes),3));
   geometry.setAttribute('piece',new THREE.InstancedBufferAttribute(new Float32Array(pieces),1));
   mesh.computeBoundingSphere();mesh.boundingSphere!.radius+=6;
-  mesh.name='coast-swim-area';scene.add(mesh);
+  mesh.name=name;scene.add(mesh);
+ }
+ for(const centre of COAST_MARKET_BEACHES){
+  const markers=Array.from({length:5},(_,i)=>centre-125+i*32);
+  if(beach2()&&centre===BEACH2.core+BEACH2.tower){
+   // Beach 2 has no marked swim lane at the cape after the swimmers move to the cove.
+   const strokes:Lane[]=[];
+   for(const party of BEACH2_COVE_PARTIES)for(const [s,offshore,activity] of party){
+    if(activity==='stroke')strokes.push({station:BEACH2.core+s,offshore,phase:1.1+strokes.length*2.4,lift:.075});
+   }
+   addArea(strokes,[],'cove-crawl-lanes');
+  }else{
+   const strokes=Array.from({length:8},(_,i)=>({station:centre-110+i*13,offshore:8+(i%3)*3,phase:i*2.4,lift:0}));
+   addArea(strokes,markers,'coast-swim-area');
+  }
  }
 }

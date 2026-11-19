@@ -9,16 +9,12 @@ import type {createTrack} from '../src/track';
 
 describe('disposable beach sightline blockout',()=>{
  const sample=((d:number)=>({position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(-1,0,0),roadHeading:0})) as ReturnType<typeof createTrack>['sample'];
- it('removes placeholder masonry only after authored asset loads and keeps gulls independently moving',()=>{
+ it('removes placeholder masonry only after authored asset loads',()=>{
   const root=addBeachBlockout(new THREE.Scene(),sample,5980,true);
   const tower=root.getObjectByName('lighthouse-proxy')!;
-  expect(tower.children).toHaveLength(5);
-  const before=tower.children.map(b=>b.position.clone());
-  root.userData.update(2);
-  expect(tower.children.every((b,i)=>b.position.distanceTo(before[i])>.1)).toBe(true);
-  expect(tower.children[0].position.distanceTo(tower.children[1].position)).toBeGreaterThan(1);
+  expect(tower.children).toHaveLength(0);
   const fallback=addBeachBlockout(new THREE.Scene(),sample);
-  expect(fallback.getObjectByName('lighthouse-proxy')!.children.length).toBeGreaterThan(5);
+  expect(fallback.getObjectByName('lighthouse-proxy')!.children.length).toBeGreaterThan(0);
  });
  it('keeps occupants partially immersed and the tower on the sea side when relocated',()=>{
   for(const anchor of [5980,8000]){

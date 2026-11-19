@@ -22,10 +22,12 @@ try{
  (await server.ssrLoadModule('/src/beach-macro.ts')).setCoastClose(close);
  const plan=close&&process.argv.includes('--beach-plan');
  (await server.ssrLoadModule('/src/beach-macro.ts')).setBeachPlan(plan);
+ const beach2=process.argv.includes('--beach2');
+ (await server.ssrLoadModule('/src/beach2-profile.ts')).setBeach2(beach2);
  const track=coastWorkerRoad().track;
  // This expensive 30km offline bake is invalidated by relevant sources,
  // never rebuilt on every unchanged npm run dev / build.
- const sourcePaths=[
+ const sourcePaths=['src/beach2-profile.ts','src/content/beach2-track.ts',
   'content/stages/coast/road.json','src/beach-macro.ts','src/content/beach-macro-track.ts','src/content/coast-worker-road.ts',
   'src/content/coast-sunset-track.ts','src/coast-shore.ts','src/coast-shore-index.ts','src/coast-shore-asset.ts',
   'src/coast-layout.ts','src/scenery-cross-section.ts','src/coast-terrain.ts',
@@ -39,8 +41,8 @@ try{
  checksum.update(COAST_SHORE_KEY);
  for(const file of sourcePaths)checksum.update(await readFile(file));
  const stamp=COAST_SHORE_KEY+':'+checksum.digest('hex');
- const assetPath=`public/generated/coast-shore${macro?'-macro-'+macro+(oriented?'-sunset':'')+(vista?'-vista':'')+(flow?'-flow':'')+(close?'-close':'')+(plan?'-plan':''):''}.shore`;
- const stampPath=`public/generated/coast-shore${macro?'-macro-'+macro+(oriented?'-sunset':'')+(vista?'-vista':'')+(flow?'-flow':'')+(close?'-close':'')+(plan?'-plan':''):''}.build-key`;
+ const assetPath=`public/generated/coast-shore${beach2?'-beach2':''}${macro?'-macro-'+macro+(oriented?'-sunset':'')+(vista?'-vista':'')+(flow?'-flow':'')+(close?'-close':'')+(plan?'-plan':''):''}.shore`;
+ const stampPath=`public/generated/coast-shore${beach2?'-beach2':''}${macro?'-macro-'+macro+(oriented?'-sunset':'')+(vista?'-vista':'')+(flow?'-flow':'')+(close?'-close':'')+(plan?'-plan':''):''}.build-key`;
  let reusable=false;
  try{
   const [oldStamp,existing]=await Promise.all([readFile(stampPath,'utf8'),stat(assetPath)]);

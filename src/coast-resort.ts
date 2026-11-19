@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {beachFlow,beachRailHidden} from './beach-macro';
-import {coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance} from './coast-layout';
+import {beachFlow} from './beach-macro';
+import {coastVisibleBarrierStyle,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance} from './coast-layout';
 import {coastBeachHeight} from './scenery-cross-section';
 import type {createTrack} from './track';
 
@@ -26,14 +26,13 @@ export function addCoastResort(scene:THREE.Scene,sample:ReturnType<typeof create
  }
  for(let d=Math.ceil(start/12)*12;d<end;d+=12){
   for(const side of [-1,1] as const){
-   if(beachRailHidden(d,side))continue;
-   const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
-   if(style==='block'){
+   const style=coastVisibleBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
+   if(style==='block'||style==='stone-post'){
     const stone=coastBarrierStoneAt(d,side);
     part('block',stone.d,side,stone.height/2,.56,stone.height,stone.length);
     // Link seaward stones with a low continuous beam. No more invisible
     // wall between isolated bollards; keep ocean visible over the railing.
-    if(side===-1)part('rail',d,side,.51,.15,.15,12.15);
+    if(side===-1&&style==='block')part('rail',d,side,.51,.15,.15,12.15);
    }else{
     // Slightly overlapping 12m modules close the old 1.2m visual gaps.
     for(const y of [.42,.70])part('rail',d,side,y,.12,.10,12.15);

@@ -71,13 +71,3 @@ export function addLighthouseBeacon(tower:THREE.Group){
  rotor.userData={angle:0,periodSeconds:12,method:'rotating emissive heads plus translucent light volumes, not a dynamic shadow-casting sun',update:(time:number)=>{rotor.rotation.y=(time*Math.PI/6)%(Math.PI*2);rotor.userData.angle=rotor.rotation.y;}};
  return rotor;
 }
-
-/** A few simple gliding silhouettes over two activity pockets, outside the tower flock. */
-export function addBeachGulls(parent:THREE.Group,sample:ReturnType<typeof createTrack>['sample'],anchor:number){
- const shape=new THREE.Shape();shape.moveTo(-1.1,-.35);shape.lineTo(-.55,.07);shape.lineTo(0,0);shape.lineTo(.55,.07);shape.lineTo(1.1,-.35);shape.lineTo(.48,-.14);shape.lineTo(0,-.09);shape.lineTo(-.48,-.14);shape.closePath();
- const geometry=new THREE.ShapeGeometry(shape);geometry.rotateX(-Math.PI/2);
- const flock=new THREE.InstancedMesh(geometry,new THREE.MeshBasicMaterial({color:0xf4ead4,side:THREE.DoubleSide}),6);flock.name='beach-activity-gulls';flock.frustumCulled=false;parent.add(flock);
- const object=new THREE.Object3D(),centres=[0,2].map(z=>{const d=anchor+BEACH_ZONES.zones[z].forwardM,p=sample(d),position=p.position.clone().addScaledVector(p.right,coastBeachX(-26,d)-8);position.y=COAST_SEA_LEVEL+13;return position;});
- const positions:number[][]=[];const update=(time:number)=>{positions.length=0;for(let i=0;i<6;i++){const a=time*(.13+i*.011)+i*2.1,r=10+(i%3)*6;object.position.copy(centres[Math.floor(i/3)]).add(new THREE.Vector3(Math.cos(a)*r,Math.sin(a*1.3)+i%3,Math.sin(a)*r));object.rotation.set(0,-a,Math.sin(time*.7+i)*.1);object.scale.setScalar(1.25);object.updateMatrix();flock.setMatrixAt(i,object.matrix);positions.push(object.position.toArray());}flock.instanceMatrix.needsUpdate=true;};
- update(0);flock.userData={positions,update};return flock;
-}

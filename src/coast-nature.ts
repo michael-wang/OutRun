@@ -1,3 +1,4 @@
+import {beach2VillageClearing} from './beach2-composition-layout';
 import * as THREE from 'three';
 import {beachMacro} from './beach-macro';
 import {markCoastShadowCaster} from './coast-shadow-layers';
@@ -64,6 +65,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch;shadowGroup:'rocks'|'vegetation'}>();
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
  function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false){
+  if(!name.startsWith('Rock_')&&beach2VillageClearing(d,x))return;
   if(x<0&&beachMacro()==='right'&&d>=4000&&d<=6550&&!name.startsWith('Rock_'))return;
   if(!authored&&farmClearing(d,x))return;
   const p=sample(d),model=assets![name];

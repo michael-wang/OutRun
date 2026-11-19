@@ -4,7 +4,7 @@ import {InputLatch} from '../src/input';
 
 afterEach(()=>vi.unstubAllGlobals());
 
-it('keeps Touchpad-first/R3 photo and independent L3 reset, clearing orbit on focus loss/disconnect',()=>{
+it('keeps Touchpad-first/L3 photo and independent R3 reset, clearing orbit on focus loss/disconnect',()=>{
  const status={setAttribute(){},remove(){},hidden:false,textContent:''};
  let focused=true,connected=true;
  const pad={connected:true,mapping:'standard',buttons:Array.from({length:18},()=>({pressed:false,value:0})),axes:[0,0,.8]};
@@ -13,11 +13,14 @@ it('keeps Touchpad-first/R3 photo and independent L3 reset, clearing orbit on fo
  vi.stubGlobal('navigator',{getGamepads:()=>connected?[pad]:[]});
  const actions:string[]=[],controller=new GamepadInput(new InputLatch(),a=>actions.push(a));
  controller.poll(false);expect(controller.orbitAxis).toBe(.8);
- pad.buttons[11].pressed=true;controller.poll(true);expect(actions).toEqual([]);
+ pad.buttons[10].pressed=true;controller.poll(true);expect(actions).toEqual([]);
  pad.buttons[17].pressed=true;controller.poll(true);expect(actions).toEqual(['photo']);
- pad.buttons[10].pressed=true;controller.poll(true);controller.poll(true);expect(actions).toEqual(['photo','camera-reset']);
- pad.buttons=pad.buttons.slice(0,17);pad.buttons[11].pressed=false;controller.poll(true);
- pad.buttons[11].pressed=true;controller.poll(true);expect(actions.at(-1)).toBe('photo');
+ pad.buttons[11].pressed=true;controller.poll(true);controller.poll(true);expect(actions).toEqual(['photo','camera-reset']);
+ pad.buttons=pad.buttons.slice(0,17);pad.buttons[10].pressed=false;controller.poll(true);
+ pad.buttons[10].pressed=true;controller.poll(true);expect(actions.at(-1)).toBe('photo');
+ controller.poll(true);pad.buttons[10].pressed=false;pad.buttons[11].pressed=false;controller.poll(true);
+ pad.buttons[10].pressed=true;controller.poll(true);pad.buttons[11].pressed=true;controller.poll(true);controller.poll(true);
+ expect(actions).toEqual(['photo','camera-reset','photo','photo','camera-reset']);
  focused=false;controller.poll(true);expect(controller.orbitAxis).toBe(0);
  focused=true;controller.poll(true);expect(controller.orbitAxis).toBe(.8);
  connected=false;controller.poll(true);expect(controller.orbitAxis).toBe(0);controller.dispose();

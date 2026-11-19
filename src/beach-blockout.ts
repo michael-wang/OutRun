@@ -1,5 +1,5 @@
 import {beachLife,beachMacro,beachVista,beachFlow,beachPlan,macroScenicDistance,macroLighthouseX,macroLighthouseStation,macroLighthouseScale} from './beach-macro';
-import {addBeachFestival,addLighthouseBeacon,addBeachGulls} from './beach-festival';
+import {addBeachFestival,addLighthouseBeacon} from './beach-festival';
 import {beachKitPose,beachSwimSites} from './beach-zone-layout';
 import {addBeachShoreActivity} from './beach-shore-activity';
 import * as THREE from 'three';
@@ -37,7 +37,6 @@ export function addBeachBlockout(scene:THREE.Scene,sample:ReturnType<typeof crea
  if(!beachPlan())for(let i=0;i<12;i++){const x=-12-i*1.4,g=at(-60,x);mesh(box,0,g,0,.08,0,3,.16,1.5);}
  const shoreActivity=beachPlan()?addBeachShoreActivity(root,sample,anchor,mats):undefined;
  const festival=beachLife()?addBeachFestival(root,sample,anchor):undefined;
- const beachGulls=beachLife()?addBeachGulls(root,sample,anchor):undefined;
  const sea=COAST_SEA_LEVEL;
  // Four small irregular pockets extend the water activity along the existing sandy shore.
  // Keep the last pocket before the lighthouse foundation and reef transition.
@@ -59,21 +58,10 @@ export function addBeachBlockout(scene:THREE.Scene,sample:ReturnType<typeof crea
  mesh(new THREE.ConeGeometry(2,.8,12),0,tower,0,16.6,0);
  mesh(box,0,tower,5,3,0,6,2,4);
  }
- // Separate low-poly gulls; each has its own orbit/wing phase rather than a rigid carousel.
  const beacon=beachLife()?addLighthouseBeacon(tower):undefined;
- const gullWhite=mats[0].clone();gullWhite.side=THREE.DoubleSide;
- const gulls=Array.from({length:5},(_,i)=>{
-  const bird=new THREE.Group();tower.add(bird);
-  mesh(ball,0,bird,0,0,0,.13,.14,.38);
-  mesh(ball,0,bird,0,.09,.32,.13,.13,.15);
-  const wings=[-1,1].map(side=>{
-   const pivot=new THREE.Group();bird.add(pivot);
-   const shape=new THREE.Shape();shape.moveTo(0,0);shape.lineTo(side*.65,-.25);shape.lineTo(side*1.05,-.55);shape.lineTo(side*.65,-.43);shape.lineTo(side*.18,-.08);shape.closePath();
-   const wing=new THREE.Mesh(new THREE.ShapeGeometry(shape),gullWhite);wing.rotation.x=-Math.PI/2;pivot.add(wing);return pivot;
-  });return {bird,wings,i};
- });
- root.userData={anchor,beachGulls:beachGulls?.userData,festival:festival?.userData,beacon:beacon?.userData,scope:'reversible beach activity with authored assets; shore follows shared site adapter',swimmers:swims.length,lighthouseReady,shoreActivity:shoreActivity?.userData,
- update:(time:number)=>{beachGulls?.userData.update(time);beacon?.userData.update(time);festival?.userData.update(time);for(const {bird,wings,i} of gulls){const a=time*(.17+i*.017)+i*1.6,r=5+i*.8;bird.position.set(Math.cos(a)*r,18+i*.6+Math.sin(a*2)*.3,Math.sin(a)*r);bird.rotation.y=-a;wings.forEach((w,j)=>w.rotation.z=(j?1:-1)*(.14+Math.sin(time*2.7+i)*.19));}}
+ root.userData={anchor,festival:festival?.userData,beacon:beacon?.userData,scope:'reversible beach activity with authored assets; shore follows shared site adapter',swimmers:swims.length,lighthouseReady,shoreActivity:shoreActivity?.userData,
+  tower:{station:beachVista()?macroLighthouseStation():macroScenicDistance(anchor+195,anchor),world:tower.position.clone()},
+  update:(time:number)=>{beacon?.userData.update(time);festival?.userData.update(time);}
  };
  root.userData.update(0);
  return root;

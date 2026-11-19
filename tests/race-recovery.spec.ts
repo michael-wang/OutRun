@@ -3,7 +3,7 @@ import {RACE_CHECKPOINT_KEY} from '../src/race-recovery';
 
 test.use({viewport:{width:915,height:412},isMobile:true,hasTouch:true,serviceWorkers:'block'});
 async function raceMenu(page:Page){
- await page.goto('/?trafficSeed=17');
+ await page.goto('/');
  await page.locator('#boot-enter').tap();
  await page.locator('#start-race').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:120000});
