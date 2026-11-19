@@ -1,6 +1,6 @@
 import {advancePowertrain,createPowertrain} from './powertrain';
 import {MAX_SPEED} from './handling';
-import {DEFAULT_PACE,effectivePace} from './pace';
+import {DEFAULT_PACE,effectivePace,worldSpeed} from './pace';
 import {sweptContact,type TrafficCollision} from './traffic-impact';
 import {rearImpactResponse} from './arcade-contact';
 import {CURVATURE_PER_STEER} from './challenges';
@@ -58,7 +58,7 @@ export class RivalState {
 const clamp=(v:number,lo:number,hi:number)=>Math.max(lo,Math.min(hi,v));
 const driftBend=(curvature:number)=>clamp((Math.abs(curvature)/CURVATURE_PER_STEER-.48)/.36,0,1);
 const MAX_DRIFT_YAW=.54;
-export const worldSpeed=(v:number)=>v*effectivePace(v,DEFAULT_PACE);
+export {worldSpeed} from './pace';
 /** Emission comes from actual stressful maneuvers, not a continuously-curved road.
  * Ordinary high-speed cruising/gradual cornering must never smoke indefinitely. */
 export function rivalSkidDemand(r:Pick<RivalState,'speed'|'targetSpeed'|'braking'|'lateralRate'|'targetX'|'lateral'|'impulse'>):number {

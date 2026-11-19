@@ -42,3 +42,18 @@ describe('race interruption recovery storage',()=>{
   expect(readRaceCheckpoint('build-a',s,1000)).toBeNull();
  });
 });
+
+it('starts a fresh natural race while preserving the previous pace checkpoint and preferences',()=>{
+ const storage=memoryStore(),oldKey='outrun-coast-race-checkpoint-v1';
+ saveRaceCheckpoint(stub(),'same-build',storage,1000);
+ const original=storage.getItem(RACE_CHECKPOINT_KEY)!;
+ storage.setItem(oldKey,original);
+ storage.removeItem(RACE_CHECKPOINT_KEY);
+ storage.setItem('preference','muted');
+ expect(readRaceCheckpoint('same-build',storage,1010)).toBeNull();
+ expect(saveRaceCheckpoint({...stub(),elapsed:3},'same-build',storage,1020)).toBe(true);
+ expect(readRaceCheckpoint('same-build',storage,1030)?.elapsed).toBe(3);
+ clearRaceCheckpoint(storage);
+ expect(storage.getItem(oldKey)).toBe(original);
+ expect(storage.getItem('preference')).toBe('muted');
+});

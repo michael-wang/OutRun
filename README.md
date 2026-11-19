@@ -1,5 +1,7 @@
 # 極速漫遊 (OutRun)
 
+The normal coastal race uses 1:1 indicated-to-route speed for the player, rivals and traffic. The 8 m chase camera widens smoothly from 76° to 81° horizontally at speed. A short stretch of shoulder gravel accompanies the flower fields (track 1180–1760 m). Start and resume normally at the bare URL, or use a valid `?at=` station for a local development start. A saved 1.50× race stays available to the old build. This baseline starts its own timed race and resumes its own checkpoints. The A/B/C pace selectors belong to the separate comparison build.
+
 Original Three.js + TypeScript arcade racing game. The first playable stage is **海濱公路** (sunset coast), featuring eight race entrants, AI traffic, a two-thumb mobile control layout, keyboard and PS4 support.
 
 **Play the approved release:** https://michael-wang.github.io/OutRun/

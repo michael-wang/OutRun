@@ -1,4 +1,4 @@
-import {effectivePace} from './pace';
+import {DEFAULT_PACE,worldSpeed} from './pace';
 import {steeringAuthority,curvePressure,requiredSteering} from './challenges';
 import {quantizeSteering,actuateSteering} from './steering';
 import {bodyYawTarget} from './body-pose';
@@ -28,7 +28,7 @@ export function updateFootprint(s:DrivingState,roadHalfWidth=ROAD_HALF_WIDTH){
 }
 /** Arcade balance remains the target; grip converges lateral velocity over a brief
  * speed-dependent interval. Banking relieves pressure without automatic steering. */
-export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=1,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH,grade=0,bank=0,rightSafety?:(d:number,usualLimit:number)=>number){
+export function step(s:DrivingState,input:InputState,dt:number,curvature:number,highSpeedPace=DEFAULT_PACE,width:number|((distance:number)=>number)=ROAD_HALF_WIDTH,grade=0,bank=0,rightSafety?:(d:number,usualLimit:number)=>number){
  const halfAt=typeof width==='number'?()=>width:width,roadHalfWidth=halfAt(s.distance);
  const corridorLimit=roadHalfWidth+(CORRIDOR_LIMIT-ROAD_HALF_WIDTH);
  // Optional side-specific *invisible* limit for the unguarded Taiwan U-ditch.
@@ -67,7 +67,7 @@ export function step(s:DrivingState,input:InputState,dt:number,curvature:number,
  if(attempted>=rightLimit)s.corridorSide=1;
  else if(attempted<=-corridorLimit)s.corridorSide=-1;
  s.lateralRate=s.corridorSide?0:rate;s.lateral=s.corridorSide?(s.corridorSide>0?rightLimit:-corridorLimit):attempted;
- const ds=s.speed*effectivePace(s.speed,highSpeedPace)*dt;s.distance+=ds;
+ const ds=worldSpeed(s.speed,highSpeedPace)*dt;s.distance+=ds;
  const load=Math.sign(s.appliedSteer)===Math.sign(s.requiredSteer)?Math.min(Math.abs(s.appliedSteer),Math.abs(s.requiredSteer)):0;
  const body=bodyYawTarget(s.appliedSteer,s.requiredSteer,s.speed);
  const oldHeading=s.heading;s.heading+=(body-s.heading)*(1-Math.exp(-dt/(body===0?.14:.12)));

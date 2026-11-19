@@ -1,6 +1,6 @@
 import {approachTrafficSpeed,roadLaneCenters,nearestTrafficLane,plannedTrafficLateral,trafficFollowingTarget,trafficStopBeforeLeader} from './traffic-flow';
 import type {TrafficSlot} from './traffic-flow';
-import {DEFAULT_PACE,effectivePace} from './pace';
+import {worldSpeed} from './pace';
 import {sweptContact} from './traffic-impact';
 
 /** Course-wide traffic truth. Rendering/streaming are only consumers of this state.
@@ -62,10 +62,7 @@ export function coastRaceCruise(seed:number,id:number,type:number):number{
  // The three curves share a ~200 km/h average, but their behaviors differ.
  const indicated=(style==='safe'?150+30*factor:
   style==='normal'?185+33*factor:220+45*factor)-(type===1?8:0);
- // Traffic and race cars must use the same route-distance calibration:
- // 200 indicated km/h means 200 km/h × the approved arcade travel pace.
- const meters=indicated/3.6;
- return meters*effectivePace(meters,DEFAULT_PACE);
+ return worldSpeed(indicated/3.6);
 }
 export class RaceTrafficWorld {
  readonly cars:TrafficWorldCar[];

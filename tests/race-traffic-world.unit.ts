@@ -98,8 +98,8 @@ describe('arcade rear impact momentum and sideslip',()=>{
 });
 
 describe('Racing R0.2h continuous coast traffic',()=>{
- it('uses world-distance arcade pace for a traffic average near 200 indicated km/h',()=>{
-  const speeds=Array.from({length:1200},(_,id)=>coastRaceCruise(804,id,id%4)*3.6/1.5);
+ it('cruises near 200 km/h on average in world units',()=>{
+  const speeds=Array.from({length:1200},(_,id)=>coastRaceCruise(804,id,id%4)*3.6);
   const average=speeds.reduce((sum,s)=>sum+s,0)/speeds.length;
   expect(average).toBeGreaterThan(185);
   expect(average).toBeLessThan(220);
@@ -150,7 +150,7 @@ describe('Racing R0.2i traffic driver personalities and early overtakes',()=>{
   expect(count('dangerous')).toBeGreaterThan(260);
   const avg=(style:TrafficDriverStyle)=>{
    const ids=styles.flatMap((s,id)=>s===style?[id]:[]);
-   return ids.reduce((total,id)=>total+coastRaceCruise(804,id,id%4)*3.6/1.5,0)/ids.length;
+   return ids.reduce((total,id)=>total+coastRaceCruise(804,id,id%4)*3.6,0)/ids.length;
   };
   expect(avg('safe')).toBeLessThan(avg('normal'));
   expect(avg('normal')).toBeLessThan(avg('dangerous'));
