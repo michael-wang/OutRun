@@ -3,7 +3,7 @@ const flags='';
 async function open(page:Page,at?:number){
  await page.addInitScript(()=>{const w=window as any;w.__pad={id:'QA standard',index:0,connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:18},()=>({pressed:false,value:0}))};Object.defineProperty(navigator,'getGamepads',{value:()=>w.__pad.connected?[w.__pad]:[]});});
  await page.goto('/?'+flags+(at===undefined?'':'&at='+at));if(at!==undefined){await running(page);return;}if(await page.locator('#boot-enter').isVisible())await page.locator('#boot-enter').click();await page.locator('#start-race').click();await ready(page);
- expect(await page.evaluate(()=>(window as any).__drive.optionB().state)).toBe('ready');expect(await page.evaluate(()=>(window as any).__drive.macroInspect().beachLife)).toBe(true);
+ expect(await page.evaluate(()=>(window as any).__drive.optionB().state)).toBe('ready');expect(await page.evaluate(()=>(window as any).__drive.macroInspect().beach2)).toBe(true);
 }
 async function running(page:Page){await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});await expect(page.locator('#game-loading')).toBeHidden();}
 async function ready(page:Page){await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:60000});await expect(page.locator('#game-loading')).toBeHidden({timeout:120000});await expect(page.locator('#race-start')).toBeVisible();}

@@ -1,5 +1,5 @@
 import {beach2VillageClearing} from './beach2-composition-layout';
-import {blockoutReplacesStall} from './beach-blockout-config';
+import {beachMarketFrontage} from './beach-zone-layout';
 import {macroLandHeight,macroClearApproach,macroHidePreRevealBeach} from './beach-macro';
 import {COAST_BEACHES,COAST_BEACH_STALLS,COAST_LANDINGS,coastReefRocks,coastRocks,coastBeachX,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
@@ -94,7 +94,7 @@ export function planJourneyLandmarks(length:number,weightsAt:(d:number)=>readonl
  return sites.sort((a,b)=>a.distance-b.distance);
 }
 /** Original, baked roadside art. One instanced draw per geometry/material family. */
-export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut;coastUltra?:boolean;essentialShadows?:CoastShadowAnchor[];beachBlockoutAnchor?:number}={start:0,end:length}){
+export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,theme?:number,seed=0,halfAt:(d:number)=>number=()=>7,customWeights?:(d:number)=>number[],range:{start:number;end:number;roadSamples?:THREE.Vector3[];openRoad?:boolean;clearance?:RoadClearance;rocky?:boolean;rockSections?:readonly RockySection[];shoulders?:(d:number)=>Shoulders;bridge?:BridgeSpan;junction?:RoadInterchange;landmarkSites?:readonly JourneyLandmark[];scenerySections?:readonly ScenerySection[];denseCity?:boolean;canyonPrototype?:GrandCanyonScene;designerCut?:DesignerCut;coastUltra?:boolean;essentialShadows?:CoastShadowAnchor[]}={start:0,end:length}){
  const weightsAt=(d:number)=>customWeights?customWeights(d):theme===undefined?actWeights(d):[0,1,2].map(i=>i===theme?1:0);
  const acts=theme===undefined?ACTS:ACTS.map((a,i)=>({...a,start:0,end:length,landmarks:!range.openRoad&&i===theme?a.landmarks:[]}));
  const canyon=range.openRoad&&seed===1;
@@ -554,7 +554,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   coastShadowGroup='beach';
   for(const stall of COAST_BEACH_STALLS){
    if(stall.x<0&&macroHidePreRevealBeach(stall.d))continue;
-   if(!inChunk(stall.d)||(import.meta.env.DEV&&blockoutReplacesStall(stall.d,stall.x,range.beachBlockoutAnchor)))continue;
+   if(!inChunk(stall.d)||beachMarketFrontage(stall.d,stall.x))continue;
    if(stall.x>13&&(macroClearApproach(stall.d)||macroLandHeight(stall.x,stall.d)>0))continue;
    beachAnchor(stall.d,stall.x);
    if(!clear(4)||base.y<COAST_SEA_LEVEL+1)continue;

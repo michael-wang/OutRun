@@ -1,14 +1,13 @@
 import * as THREE from 'three';
-import {beachMacro,beachVista,beachFlow,macroRoadRise,macroBeachBow,macroRoadOffset,macroBounds} from '../beach-macro';
+import {beachMacro,beachVista,beachFlow,macroRoadRise,macroBeachBow} from '../beach-macro';
 import type {createTrack} from '../track';
 /** Compactly supported alignment study: exact original sample outside the site.
  * Route stations remain the authored coordinate; local world arc length differs.
  */
 export function beachMacroTrack(base:ReturnType<typeof createTrack>){
  if(beachMacro()==='none')return base;
- const [start,end]=macroBounds();
- const revised=beachMacro()==='right'?singleRightPositions(base):undefined;
- const position=(d:number)=>{if(revised)return revised(d);const s=base.sample(d);return s.position.addScaledVector(new THREE.Vector3(s.right.x,0,s.right.z),macroRoadOffset(d));};
+ const start=4350,end=8450;
+ const position=singleRightPositions(base);
  const heading=(d:number)=>{const v=position(d+.5).sub(position(d-.5));return Math.atan2(-v.x,v.z);};
  return {...base,sample:(d:number)=>{
   const s=base.sample(d);if(d<=start||d>=end)return s;

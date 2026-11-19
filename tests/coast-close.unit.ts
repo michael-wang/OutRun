@@ -4,7 +4,6 @@ import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {coastBeachX} from '../src/coast-layout';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {COAST_SUN} from '../src/coast-sun-direction';
-import {canonicalGameQuery} from '../src/runtime-query';
 afterEach(()=>{setCoastClose(false);setBeachFlow(false);setBeachVista(false);setSunsetRoute(false);setSunSide(null);setBeachMacro('none');});
 function setup(){setBeachMacro('right');setSunsetRoute(true);setSunSide('left');setBeachVista(true);setBeachFlow(true);}
 it('narrows only the post-tower shore while retaining every driven road sample and fixed sun',()=>{
@@ -28,9 +27,4 @@ it('preserves tower support, connected high shoulder and submerged waterline thr
   expect(y(d,-13)).toBeGreaterThan(y(d,shore));
  }
  for(const d of [6800,7000,7400]){expect(y(d,-23)).toBeGreaterThan(18);expect(y(d,coastBeachX(-26,d)+5)).toBeLessThan(0);}
-});
-it('requires the existing private flow comparison, leaving previous query routes intact',()=>{
- for(const q of ['coastClose=1','beachMacro=b&coastClose=1','beachMacro=right&sunsetRoute=1&beachVista=1&coastClose=1'])expect(canonicalGameQuery(new URLSearchParams(q)).has('coastClose')).toBe(false);
- expect(canonicalGameQuery(new URLSearchParams('beachMacro=right&sunsetRoute=1&beachVista=1&beachFlow=1&coastClose=1')).has('coastClose')).toBe(import.meta.env.DEV);
- setCoastClose(true);expect(coastClose()).toBe(false);
 });

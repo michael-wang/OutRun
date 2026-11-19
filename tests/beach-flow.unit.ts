@@ -4,7 +4,6 @@ import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {coastBeachX} from '../src/coast-layout';
 import {COAST_SUN} from '../src/coast-sun-direction';
-import {canonicalGameQuery} from '../src/runtime-query';
 import * as THREE from 'three';
 import {addCoastResort} from '../src/coast-resort';
 import {coastBarrierClearance} from '../src/coast-layout';
@@ -30,11 +29,6 @@ it('continues the elevated coast behind the tower and leaves the real waterline 
  expect(t.sample(7000).position.y).toBeGreaterThan(t.sample(6450).position.y+3.5);
  for(let at=5800;at<=8450;at+=20){const shore=coastBeachX(-26,at);expect(height(at,shore)).toBeCloseTo(-5,8);expect(height(at,shore-2)).toBeLessThan(-5);}
  for(const offset of [-50,8,69,128])for(let i=0;i<3;i++){const at=macroScenicDistance(5980+offset+i*3),shore=coastBeachX(-26,at)-1.1-(i%2)*1.5;expect(height(at,shore)).toBeLessThan(-5);}
-});
-it('gates the new comparison without altering old URLs',()=>{
- for(const q of ['beachFlow=1','beachMacro=b&beachFlow=1','beachMacro=right&sunsetRoute=1&beachFlow=1'])expect(canonicalGameQuery(new URLSearchParams(q)).has('beachFlow')).toBe(false);
- expect(canonicalGameQuery(new URLSearchParams('beachMacro=right&sunsetRoute=1&beachVista=1&beachFlow=1')).has('beachFlow')).toBe(import.meta.env.DEV);
- setBeachFlow(true);expect(beachFlow()).toBe(false);
 });
 it('supports both ends of long visible guardrail beams on the new uphill road',()=>{
  setup();setBeachFlow(true);const road=coastWorkerRoad(),scene=new THREE.Scene();

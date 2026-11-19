@@ -6,7 +6,7 @@ import {BEACH2,beach2Shore} from './beach2-profile';
 import {coastBeachHeight} from './scenery-cross-section';
 import {beachSurfacePaint,parasolGround,coral,cream,teal} from './beach2-phase-b-art';
 import {capeWalk} from './kenting-cape-walk';
-import {addLighthouseBeacon} from './beach-festival';
+import {addLighthouseBeacon} from './lighthouse-beacon';
 import {beachSupport,type BeachPose,type SupportProp} from './assets/kenting-support';
 import {kentingHero} from './assets/kenting-hero-kit';
 import {kentingReef} from './assets/kenting-reef';

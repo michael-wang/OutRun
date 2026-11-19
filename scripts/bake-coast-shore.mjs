@@ -10,20 +10,9 @@ try{
  const {bakeCoastShore}=await server.ssrLoadModule('/src/coast-shore.ts');
  const {packCoastShore,COAST_SHORE_KEY}=await server.ssrLoadModule('/src/coast-shore-asset.ts');
 
- const macro=['b','right'].find(v=>process.argv.includes('--macro-'+v));
- if(macro)(await server.ssrLoadModule('/src/beach-macro.ts')).setBeachMacro(macro);
- const oriented=macro==='right'&&process.argv.includes('--sunset-route');
- (await server.ssrLoadModule('/src/beach-macro.ts')).setSunsetRoute(oriented);
- const vista=oriented&&process.argv.includes('--beach-vista');
- (await server.ssrLoadModule('/src/beach-macro.ts')).setBeachVista(vista);
- const flow=vista&&process.argv.includes('--beach-flow');
- (await server.ssrLoadModule('/src/beach-macro.ts')).setBeachFlow(flow);
- const close=flow&&process.argv.includes('--coast-close');
- (await server.ssrLoadModule('/src/beach-macro.ts')).setCoastClose(close);
- const plan=close&&process.argv.includes('--beach-plan');
- (await server.ssrLoadModule('/src/beach-macro.ts')).setBeachPlan(plan);
- const beach2=process.argv.includes('--beach2');
- (await server.ssrLoadModule('/src/beach2-profile.ts')).setBeach2(beach2);
+ const farmTrack=coastWorkerRoad().track;
+ const {configureKentingCoast}=await server.ssrLoadModule('/src/beach-macro.ts');
+ configureKentingCoast();
  const track=coastWorkerRoad().track;
  // This expensive 30km offline bake is invalidated by relevant sources,
  // never rebuilt on every unchanged npm run dev / build.
@@ -41,8 +30,8 @@ try{
  checksum.update(COAST_SHORE_KEY);
  for(const file of sourcePaths)checksum.update(await readFile(file));
  const stamp=COAST_SHORE_KEY+':'+checksum.digest('hex');
- const assetPath=`public/generated/coast-shore${beach2?'-beach2':''}${macro?'-macro-'+macro+(oriented?'-sunset':'')+(vista?'-vista':'')+(flow?'-flow':'')+(close?'-close':'')+(plan?'-plan':''):''}.shore`;
- const stampPath=`public/generated/coast-shore${beach2?'-beach2':''}${macro?'-macro-'+macro+(oriented?'-sunset':'')+(vista?'-vista':'')+(flow?'-flow':'')+(close?'-close':'')+(plan?'-plan':''):''}.build-key`;
+ const assetPath='public/generated/coast-shore.shore';
+ const stampPath='public/generated/coast-shore.build-key';
  let reusable=false;
  try{
   const [oldStamp,existing]=await Promise.all([readFile(stampPath,'utf8'),stat(assetPath)]);
@@ -61,14 +50,11 @@ try{
    console.log(`Coast mask ${COAST_SHORE_KEY}: ${(compressed.length/1024/1024).toFixed(2)} MiB; prepared off-device.`);
   }finally{shore.texture.dispose();}
  }
- if(macro)process.exitCode=0;
- if(!macro){
  const {FARM_PLOTS}=await server.ssrLoadModule('/src/coast-farm-layout.ts');
  const {sampleFarmGround}=await server.ssrLoadModule('/src/coast-farm-prep.ts');
- const rows=FARM_PLOTS.map(plot=>Buffer.from(sampleFarmGround(plot,track.sample).buffer));
+ const rows=FARM_PLOTS.map(plot=>Buffer.from(sampleFarmGround(plot,farmTrack.sample).buffer));
  const ground=gzipSync(Buffer.concat(rows),{level:9});
  await mkdir('src/generated',{recursive:true});
  await writeFile('src/generated/coast-farm-ground.bin',ground);
  console.log(`Coastal farm ground: ${FARM_PLOTS.length} plots, ${ground.byteLength} bytes.`);
-}
 }finally{await server.close();}

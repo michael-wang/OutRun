@@ -1,7 +1,7 @@
-import {beach2,beach2Site} from './beach2-profile';
+import {beach2,beach2Site,setBeach2} from './beach2-profile';
 import {configureCoastSun} from './coast-sun-direction';
-/** Reversible local spatial study; never changes the default route. */
-export type BeachMacro='none'|'b'|'right';
+/** Geometry layers used by the authored Kenting coast. */
+export type BeachMacro='none'|'right';
 let active:BeachMacro='none';
 let oriented=false;
 let vista=false;
@@ -9,9 +9,18 @@ let flow=false;
 let closeCoast=false;
 let plan=false;
 let life=false;
-let crowdStyle:'dense'|'balanced'='dense';
-export const beachCrowdStyle=()=>crowdStyle;
-export function setBeachCrowdStyle(value:unknown){crowdStyle=value==='dense'?'dense':'balanced';}
+/** Apply the same authored geometry and fixed sun on the main thread, Worker and shore bake. */
+export function configureKentingCoast(){
+ setBeachMacro('right');
+ setSunsetRoute(true);
+ setSunSide('left');
+ setBeachVista(true);
+ setBeachFlow(true);
+ setCoastClose(true);
+ setBeachPlan(true);
+ setBeachLife(true);
+ setBeach2(true);
+}
 export const beachLife=()=>beachPlan()&&life;
 export function setBeachLife(value:unknown){life=value===true||value==='1';}
 /** Visual-only opening: never used by coastDriveBounds or contact solvers. */
@@ -40,12 +49,11 @@ export function setSunSide(value:unknown){side=sunsetRoute()&&(value==='left'||v
 export const sunsetRoute=()=>oriented&&active==='right';
 export function setSunsetRoute(value:unknown){oriented=value===true||value==='1';}
 export const beachMacro=()=>active;
-export function setBeachMacro(value:unknown){active=value==='b'||value==='right'?value:'none';configureCoastSun(active);}
+export function setBeachMacro(value:unknown){active=value==='right'?value:'none';configureCoastSun(active);}
 export const macroHidePreRevealBeach=(d:number)=>beach2Site(d)||(active==='right'&&d>=4000&&d<4850);
 export const macroComparison=()=>active==='right';
 /** Keep the cape, authored lighthouse and its gull/fallback root together. */
 export const macroLighthouseX=()=>active==='right'?-105:-50;
-export const macroBounds=()=>macroComparison()?[4350,8450] as const:[5270,6570] as const;
 const smooth=(v:number)=>{const t=Math.max(0,Math.min(1,v));return t*t*(3-2*t);};
 /** Continuous extension of the existing inland hills, not a separate mound. */
 export const macroMountainBlend=(d:number)=>active==='right'?smooth((d-3950)/400)*(1-smooth((d-4850)/400)):0;
@@ -53,26 +61,17 @@ export const macroClearApproach=(d:number)=>beach2Site(d)||(active==='right'&&d>
 export const macroScenicDistance=(d:number,anchor=5980)=>active==='right'?anchor-980+(d-anchor+120)*(1560/315):d;
 export const macroReefDistance=(d:number)=>active==='right'&&d>=6320&&d<=6884?6750+(d-6320)*.8:d;
 export function macroBump(d:number,centre:number,radius:number){const t=Math.abs(d-centre)/radius;return t>=1?0:Math.pow(Math.cos(t*Math.PI/2),4);}
-export function macroRoadOffset(d:number){
- // The revised right route is built from headings; a displacement bump
- // would introduce the unwanted opposite-sign approach turn.
- if(macroComparison())return 0;
- return active==='b'?32*macroBump(d,5500,230)-65*macroBump(d,6050,520):0;
-}
 export function macroBeachExtra(d:number){
  if(active==='right')return 65*smooth((d-4850)/250)*(1-smooth((d-6550)/400));
- return active==='b'?38*macroBump(d,6000,470)+35*macroBump(d,6175,160):0;
+ return 0;
 }
 /** Physical coastal heights, always outside the retained road/verge. */
 export function macroLandHeight(x:number,d:number){
  if(active==='none'||beachFlow()||Math.abs(x)<=13)return -Infinity;
- // New comparison uses an inland/right hill. The accepted B sea-side
- // screen remains exactly as authored, accessible through its old URL.
  if(x>0)return -Infinity;
- const screen=active==='b'?25*macroBump(d,5500,220)*macroBump(x,-38,26):0;
  // A small level summit supports the existing 15m-wide foundation; slopes
  // continue into the real shoreline rather than leaving a floating plinth.
  const capeAt=macroLighthouseStation();
  const cape=(beachVista()?23:17)*macroBump(Math.max(0,Math.abs(d-capeAt)-25),0,130)*macroBump(Math.max(0,Math.abs(x-macroLighthouseX())-(beachVista()?15:10)),0,35);
- return Math.max(screen,cape)>0?-5+Math.max(screen,cape):-Infinity;
+ return cape>0?-5+cape:-Infinity;
 }

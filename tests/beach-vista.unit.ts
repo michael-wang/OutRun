@@ -4,7 +4,6 @@ import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {COAST_SUN} from '../src/coast-sun-direction';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {coastBeachX} from '../src/coast-layout';
-import {canonicalGameQuery} from '../src/runtime-query';
 afterEach(()=>{setBeachVista(false);setSunsetRoute(false);setSunSide(null);setBeachMacro('none');});
 it('locally adjusts the beach with fixed sun, same start and exact remote route',()=>{
  setBeachMacro('right');setSunsetRoute(true);setSunSide('left');const old=coastWorkerRoad().track,sun=COAST_SUN.clone();
@@ -21,9 +20,4 @@ it('supports the enlarged existing landmark and keeps bathers immersed',()=>{
  setBeachMacro('right');setSunsetRoute(true);setBeachVista(true);const t=coastWorkerRoad().track,d=macroLighthouseStation();
  for(const dz of [-11,0,11])for(const dx of [-11,0,11]){const p=t.sample(d+dz);expect(coastBeachHeight(macroLighthouseX()+dx,p.position.y,p.right.y,d+dz)).toBe(18);}
  for(const offset of [-50,8,69,128])for(let i=0;i<3;i++){const at=macroScenicDistance(5980+offset+i*3),p=t.sample(at),x=coastBeachX(-26,at)-1.1-(i%2)*1.5;expect(coastBeachHeight(x,p.position.y,p.right.y,at)).toBeLessThan(-5);}
-});
-it('only permits the local comparison with the oriented right layout',()=>{
- for(const query of ['beachVista=1','beachMacro=b&beachVista=1','beachMacro=right&beachVista=1'])expect(canonicalGameQuery(new URLSearchParams(query)).has('beachVista')).toBe(false);
- expect(canonicalGameQuery(new URLSearchParams('beachMacro=right&sunsetRoute=1&beachVista=1')).has('beachVista')).toBe(import.meta.env.DEV);
- setBeachVista(true);setBeachMacro('none');expect(beachVista()).toBe(false);
 });

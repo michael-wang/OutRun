@@ -11,17 +11,6 @@ it('accepts only approved diagnostics, positioning and replayable traffic seed',
  expect(canonicalGameQuery(new URLSearchParams('trafficSeed=not-a-number')).toString()).toBe('');
 });
 it('exposes authored-prefab QA only in development builds',()=>{
- expect(canonicalGameQuery(new URLSearchParams('beachMacro=b')).get('beachMacro')).toBe(import.meta.env.DEV?'b':null);
- for(const variant of ['right'])expect(canonicalGameQuery(new URLSearchParams('beachMacro='+variant)).get('beachMacro')).toBe(import.meta.env.DEV?variant:null);
- expect(canonicalGameQuery(new URLSearchParams('beachMacro=left')).has('beachMacro')).toBe(false);
- expect(DEV_QUERY_KEYS).toContain('sunsetRoute');
- expect(canonicalGameQuery(new URLSearchParams('sunsetRoute=1')).has('sunsetRoute')).toBe(false);
- expect(canonicalGameQuery(new URLSearchParams('beachMacro=b&sunsetRoute=1')).has('sunsetRoute')).toBe(false);
- expect(canonicalGameQuery(new URLSearchParams('beachMacro=right&sunsetRoute=1')).has('sunsetRoute')).toBe(import.meta.env.DEV);
- expect(canonicalGameQuery(new URLSearchParams('beachBlockout=1&beachAnchor=6100')).has('beachBlockout')).toBe(import.meta.env.DEV);
- expect(canonicalGameQuery(new URLSearchParams('beachBlockout=0')).get('beachBlockout')).toBe(import.meta.env.DEV?'0':null);
- expect(canonicalGameQuery(new URLSearchParams('beachAnchor=6100')).has('beachAnchor')).toBe(false);
- expect(canonicalGameQuery(new URLSearchParams('beachBlockout=1&beachAnchor=NaN')).has('beachAnchor')).toBe(false);
  const keys=canonicalGameQuery(new URLSearchParams('at=985&prefabdebug=1'));
  expect(keys.get('at')).toBe('985');
  expect(keys.has('prefabdebug')).toBe(import.meta.env.DEV);
@@ -57,6 +46,13 @@ it('preserves explicit classic rollback and defaults all other values',()=>{expe
 
 it('auto-runs only effective, validated options in development',()=>{
  const selected=(query:string)=>isDevelopmentRace(canonicalGameQuery(new URLSearchParams(query)));
- for(const query of ['', 'utm_source=test','hero3d=1','sunSide=left','at=0x1200','at=14550','at=1e3','fpsdiag=false','trafficSeed=-1'])expect(selected(query)).toBe(false);
- for(const query of ['at=350','at=4600.25','at=14549','trafficSeed=0','fpsdiag=1','utm_source=test&beach2=1','car=classic'])expect(selected(query)).toBe(import.meta.env.DEV);
+ for(const query of ['', 'beach2=1', 'utm_source=test&beach2=1', 'utm_source=test','hero3d=1','sunSide=left','at=0x1200','at=14550','at=1e3','fpsdiag=false','trafficSeed=-1'])expect(selected(query)).toBe(false);
+ for(const query of ['at=350','at=4600.25','at=14549','trafficSeed=0','fpsdiag=1','beach2=1&at=4600','car=classic'])expect(selected(query)).toBe(import.meta.env.DEV);
+});
+
+it('discards retired beach selectors without touching an independent valid shortcut',()=>{
+ const legacy='beach2=1&beachBlockout=1&beachAnchor=5980&beachMacro=right&sunsetRoute=1&sunSide=left&beachVista=1&beachFlow=1&coastClose=1&beachPlan=1&beachLife=1&coast=original&beach=dense';
+ expect(canonicalGameQuery(new URLSearchParams(legacy)).size).toBe(0);
+ expect(canonicalGameQuery(new URLSearchParams(legacy+'&at=4600')).toString()).toBe('at=4600');
+ expect(DEV_QUERY_KEYS).not.toContain('beach2');
 });

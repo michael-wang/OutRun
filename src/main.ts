@@ -1,7 +1,6 @@
-import {beach2,setBeach2,BEACH2_INCIDENT_SIGHTLINE} from './beach2-profile';
-import {resolveDevCoast} from './dev-coast-profile';
+import {beach2,BEACH2_INCIDENT_SIGHTLINE} from './beach2-profile';
 import {DeparturePreparation} from './departure-preparation';
-import {setBeachMacro,beachMacro,setSunsetRoute,sunsetRoute,setSunSide,sunSide,setBeachCrowdStyle,setBeachLife,beachLife,setBeachPlan,setCoastClose,setBeachFlow,setBeachVista,beachVista,beachFlow,coastClose,beachPlan} from './beach-macro';
+import {configureKentingCoast,beachMacro,sunsetRoute,sunSide,beachLife,beachVista,beachFlow,coastClose,beachPlan} from './beach-macro';
 import {coastLampPoleShadowsActive} from './coast-lamp-lighting';
 import {mountCoastStaticProps} from './content/coast-static-props';
 import {coastStaticStage} from './content/stage-data';
@@ -114,17 +113,7 @@ const coastGeometryShadows=()=>coastUltraMode&&sunsetShadowsEnabled&&geometrySha
 const coastUltraWater=true;
 await loadingStep(12,'正在規劃路線','安排這趟旅程的道路、彎道與沿途風景。');
 // Worker and live coast game share one authored road runtime contract.
-const coastParams=resolveDevCoast(params,import.meta.env.DEV);
-setBeachCrowdStyle(params.get('beach'));
-setBeachMacro(import.meta.env.DEV?coastParams.get('beachMacro'):null);
-setSunsetRoute(import.meta.env.DEV?coastParams.get('sunsetRoute'):null);
-setSunSide(import.meta.env.DEV?coastParams.get('sunSide'):null);
-setBeachVista(import.meta.env.DEV?coastParams.get('beachVista'):null);
-setBeachFlow(import.meta.env.DEV?coastParams.get('beachFlow'):null);
-setCoastClose(import.meta.env.DEV?coastParams.get('coastClose'):null);
-setBeachPlan(import.meta.env.DEV?coastParams.get('beachPlan'):null);
-setBeachLife(import.meta.env.DEV?coastParams.get('beachLife'):null);
-setBeach2(import.meta.env.DEV?params.get('beach2'):null);
+configureKentingCoast();
 const coastRuntime=coastWorkerRoad();
 startupDiagnostics.mark('route-plan-ready');
 // Narrow game/QA identity. The authored content and shared runtime supply
@@ -259,7 +248,7 @@ const world=createWorld({
  seed:coastRuntime.stage.seed,
  trafficVariation:trafficSessionVariation,
  breakdownStart:COAST_STAGE.onboarding.breakdownsAfter,
- breakdownProtectedView:beach2()?BEACH2_INCIDENT_SIGHTLINE:undefined,
+ breakdownProtectedView:BEACH2_INCIDENT_SIGHTLINE,
  accident:COAST_STAGE.onboarding.accident,
  roadWidth:coastRuntime.halfAt(COAST_STAGE.road.startDistance)*2,
  halfAt:coastRuntime.halfAt,
@@ -279,10 +268,8 @@ if(params.get('car')!=='classic'){
 }else{document.documentElement.dataset.playerCar='classic';}
 // Authored GLBs are optional art, loaded once before the start gate.
 // Preserve the approved road, traffic, physics and Ultra Water.
-const kentingPreview=import.meta.env.DEV&&!beach2()&&params.get('beachBlockout')!=='0';
-const kentingAnchor=kentingPreview?(await import('./beach-blockout-config')).beachPreviewAnchor(params,world.length):undefined;
 const authoredStaticProps=coastUltraMode?
- await mountCoastStaticProps(world.scene,world.sample,signal,kentingPreview,kentingAnchor):[];
+ await mountCoastStaticProps(world.scene,world.sample,signal):[];
 let selectedCarColor=readCarColor();
 (world.car.userData.paintController as CarPaintController|undefined)?.set(selectedCarColor);
 ($('car-paint') as HTMLSelectElement).value=selectedCarColor;
@@ -315,14 +302,8 @@ if(ultraOcean){
 startupDiagnostics.mark('coast-boats-start');
 let coastBoats=coastUltraMode?await (await import('./coast-boats')).addCoastBoats(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms,ultraOcean?.boatShadow):null;
 startupDiagnostics.mark('coast-boats-ready',{active:!!coastBoats});
-let beachStudy:THREE.Group|undefined;
-if(beach2())beachStudy=(await import('./beach2-macro')).addBeach2Macro(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms);
-if(kentingPreview){
- const {beachPreviewAnchor}=await import('./beach-blockout-config');
- beachStudy=(await import('./beach-blockout')).addBeachBlockout(world.scene,world.sample,beachPreviewAnchor(params,world.length),authoredStaticProps.some(p=>p.id==='kenting-beach-lighthouse'),new Set(authoredStaticProps.map(p=>p.id)));
-}
-// The current stage owns one flight system, shared by both beach presentations.
-const flightAnchor=beachStudy?.userData.tower;
+const beachStudy=(await import('./beach2-macro')).addBeach2Macro(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms);
+const flightAnchor=beachStudy.userData.tower;
 const coastalFlights=flightAnchor?(await import('./coast-gull-flights')).addCoastGullFlights(world.scene,world.sample,{station:flightAnchor.station,position:flightAnchor.world}):undefined;
 // Compile even the distance-hidden reflections before departure, not when the
 // first nearby vessel enters their fade range. Replay uses chapter prewarming.
@@ -1096,7 +1077,7 @@ function render(dt:number,draw=true){
   const fpsProfiling=driveFpsDiagnostics.enabled&&mode==='playing';
   const prepStart=fpsProfiling?performance.now():0;
   coastBoats?.update(elapsed,camera);
-  beachStudy?.userData.update?.(elapsed);
+  beachStudy.userData.update(elapsed);
   coastalFlights?.update(elapsed,state.distance);
   const p=world.sample(state.distance);
   world.car.position.copy(p.position).addScaledVector(p.right,state.lateral);
@@ -1602,7 +1583,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   authoredProps:()=>authoredStaticProps.map(item=>({...item})),
   macroInspect:()=>({beach2:beach2(),variant:beachMacro(),sunsetRoute:sunsetRoute(),sunSide:sunSide(),beachVista:beachVista(),beachFlow:beachFlow(),coastClose:coastClose(),beachPlan:beachPlan(),beachLife:beachLife(),samples:[5200,5500,5800,6000,6175,6570,7000].map(d=>({d,p:world.sample(d).position.toArray(),k:world.sample(d).curvature}))}),
   macroOverhead:(enabled:boolean)=>{macroOverhead=enabled;manual=true;render(1/60);},
-  beachInspect:()=>beachStudy?{anchor:beachStudy.userData.anchor,activity:beachStudy.userData.shoreActivity,festival:beachStudy.userData.festival,flights:coastalFlights?.inspect(),walk:beachStudy.userData.walk,beacon:beachStudy.userData.beacon,poses:beachStudy.userData.poses,swimmers:beachStudy.userData.waterActors??beachStudy.children.filter(o=>o.name==='swimmer-proxy').map(o=>({station:o.userData.station,lateral:o.userData.lateral,bounds:new THREE.Box3().setFromObject(o),water:o.position.y}))}:null,
+  beachInspect:()=>({anchor:beachStudy.userData.anchor,activity:beachStudy.userData.shoreActivity,flights:coastalFlights?.inspect(),walk:beachStudy.userData.walk,beacon:beachStudy.userData.beacon,poses:beachStudy.userData.poses,swimmers:beachStudy.userData.waterActors}),
   coastBoats:()=>coastBoats?.inspect(elapsed)??[],
   coastBoatShadow:(enabled?:boolean)=>{if(enabled!==undefined&&ultraOcean){ultraOcean.boatShadow.enabled=enabled;render(0);}return ultraOcean?.boatShadow.stats;},
   coastWater:()=>({mode:ultraOcean?'ultra':coastUltraMode?'basic':'disabled',...ultraOcean?.stats}),

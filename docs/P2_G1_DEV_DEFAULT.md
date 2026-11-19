@@ -1,4 +1,6 @@
-# Accepted coastal route: local dev default
+# Historical coastal-route preview (2026-11-18)
+
+The comparison URLs and restart behavior below describe the earlier preview. Kenting Beach 2 now ships as the default scene on dev. See the [current launch instructions](../README.md) for ordinary START, saved races and the optional station shortcut.
 
 Michael accepted the route and START/restart/menu fixes on 2026-11-18. The new balanced beach composition is still awaiting his visual review. This is a local Macro prototype, not a public release or final asset pass.
 

@@ -1,5 +1,3 @@
-import {beach2} from './beach2-profile';
-import {beachMacro,sunsetRoute,beachVista,beachFlow,coastClose,beachPlan} from './beach-macro';
 import * as THREE from 'three';
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
 import {authoredRoadPlacements} from './content/authored-road';
@@ -45,7 +43,7 @@ export function unpackCoastShore(packed:Uint8Array):Shore{
 }
 
 export async function loadCoastShore(onProgress:(p:number)=>void){
- const response=await fetch(`${import.meta.env.BASE_URL}generated/coast-shore${beach2()?'-beach2':''}${beachMacro()!=='none'?'-macro-'+beachMacro()+(sunsetRoute()?'-sunset':'')+(beachVista()?'-vista':'')+(beachFlow()?'-flow':'')+(coastClose()?'-close':'')+(beachPlan()?'-plan':''):''}.shore?v=${COAST_SHORE_KEY}`,{cache:'no-cache'});
+ const response=await fetch(`${import.meta.env.BASE_URL}generated/coast-shore.shore?v=${COAST_SHORE_KEY}`,{cache:'no-cache'});
  if(!response.ok||!response.body)throw Error(`Coast mask download failed (${response.status})`);
  const total=Number(response.headers.get('content-length'))||0;let received=0;
  const progress=new TransformStream<Uint8Array<ArrayBuffer>,BufferSource>({transform(chunk,controller){received+=chunk.length;if(total)onProgress(Math.min(.75,.75*received/total));controller.enqueue(chunk);}});

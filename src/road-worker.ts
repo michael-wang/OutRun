@@ -1,5 +1,4 @@
-import {setBeach2} from './beach2-profile';
-import {setBeachMacro,setSunsetRoute,setSunSide,setBeachLife,setBeachPlan,setCoastClose,setBeachFlow,setBeachVista} from './beach-macro';
+import {configureKentingCoast} from './beach-macro';
 import {buildCoastGroundShadows,type CoastShadowAnchor} from './coast-dusk-shadows';
 import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
 import {addVergeGrass} from './coast-verge-grass';
@@ -30,12 +29,11 @@ import {interchangeSceneryClear,type RoadInterchange} from './road-interchange';
 
 const hasModernShoulders=(v:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
-type InitRequest={type:'init';beach2?:boolean;beachMacro?:string;sunsetRoute?:boolean;sunSide?:string;beachVista?:boolean;beachFlow?:boolean;coastClose?:boolean;beachPlan?:boolean;beachLife?:boolean;generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;beachBlockoutAnchor?:number;faults?:Faults}
+type InitRequest={type:'init';generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;faults?:Faults}
  & {coastStage:'coast'};
 type Request=InitRequest|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let farmGround:Awaited<ReturnType<typeof loadFarmGround>>|undefined;
 let blenderArt=false,mobileShadows=false;
-let beachBlockoutAnchor:number|undefined;
 let roadLockArt=false;
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;let junction:RoadInterchange|undefined;
 /** Worker renderer needs scene metadata, not the Trip/Pilot authoring shape. */
@@ -58,17 +56,8 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   if(import.meta.env.DEV&&request.type==='init'&&request.faults)faults=request.faults;
   if(request.type==='init'){
    // A slow or offline fetch must never hold up the road or the first field.
-   setBeachMacro(import.meta.env.DEV?request.beachMacro:null);
-   setSunsetRoute(import.meta.env.DEV?request.sunsetRoute:null);
-   setSunSide(import.meta.env.DEV?request.sunSide:null);
-   setBeachVista(import.meta.env.DEV?request.beachVista:null);
-   setBeachFlow(import.meta.env.DEV?request.beachFlow:null);
-setCoastClose(import.meta.env.DEV?request.coastClose:null);
-setBeachPlan(import.meta.env.DEV?request.beachPlan:null);
-setBeachLife(import.meta.env.DEV?request.beachLife:null);
-setBeach2(import.meta.env.DEV?request.beach2:null);
+   configureKentingCoast();
    mobileShadows=!!request.mobileShadows;
-   beachBlockoutAnchor=import.meta.env.DEV?request.beachBlockoutAnchor:undefined;
    farmGround=undefined;
    if(request.bakedFarmGround)void loadFarmGround().then(rows=>{
     if(generation===request.generation)farmGround=rows;
@@ -103,7 +92,7 @@ setBeach2(import.meta.env.DEV?request.beach2:null);
    const essentialShadows:CoastShadowAnchor[]|undefined=coastUltra&&mobileShadows?[]:undefined;
    const before={...clearance.stats};const scene=new THREE.Scene();const scenery=addJourneyScenery(scene,current.sample,current.length,candidate.sceneryAct,candidate.seed,halfAt,weightsAt,{start:request.start,end:request.end,roadSamples,clearance,openRoad:candidate.id==='ROAD-TRIP-10M',rocky:candidate.generatorVersion==='v0.9-r5',rockSections:rocks,shoulders,bridge,junction,landmarkSites:candidate.scenicLandmarks,scenerySections:candidate.scenerySections,
     denseCity:candidate.generatorVersion==='v0.9-r10'||candidate.generatorVersion==='v0.9-r11'||candidate.generatorVersion==='v0.9-r12',
-    canyonPrototype:candidate.canyonPrototype,designerCut:candidate.designerCut,coastUltra,essentialShadows,beachBlockoutAnchor});
+    canyonPrototype:candidate.canyonPrototype,designerCut:candidate.designerCut,coastUltra,essentialShadows});
    if(coastUltra){
     const end=Math.min(request.end,current.length);
     const batches=[addCoastNature(scene,current.sample,request.start,end),addCoastResort(scene,current.sample,halfAt,request.start,end),

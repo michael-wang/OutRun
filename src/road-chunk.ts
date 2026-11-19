@@ -203,7 +203,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
   const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-coastBeachX(metres,d)-cachedWidth(d),cachedShoulders(d)!);
   // Local macro hills need cross-slope samples, not just the old six flat
   // beach strips. Keep the default and distant terrain tessellation exact.
-  const sections=(beachMacro()==='right'?end>4850&&start<(beachFlow()?8450:6950):beachMacro()==='b'&&end>5280&&start<6330)
+  const sections=(beachMacro()==='right'&&end>4850&&start<(beachFlow()?8450:6950))
    ?[-100,-46,...Array.from({length:47},(_,i)=>-34+i*.5)]
    :[-100,-46,-34,-26,-22,-18,-11];
   for(let i=1;i<sections.length;i++){const [a,b]=[sections[i-1],sections[i]];
