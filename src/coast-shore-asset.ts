@@ -12,10 +12,10 @@ let hash=2166136261;
 for(const c of JSON.stringify([version,COAST_RUNTIME_IDENTITY.contentFingerprint,COAST_STAGE.road.length,
  COAST_STAGE.road.baseHeight,COAST_STAGE.road.lanes*LANE_WIDTH,authoredRoadPlacements(COAST_STAGE.road),
  COAST_BEACHES,COAST_SAND_POINTS]))hash=Math.imul(hash^c.charCodeAt(0),16777619);
-if(KENTING_INSTALLATION.relocated){
+if(KENTING_INSTALLATION.shifted){
  for(const c of JSON.stringify(KENTING_INSTALLATION))hash=Math.imul(hash^c.charCodeAt(0),16777619);
 }
-export const COAST_SHORE_NAME=KENTING_INSTALLATION.relocated?'coast-shore-beach2-r1':'coast-shore';
+export const COAST_SHORE_NAME=KENTING_INSTALLATION.shifted?'coast-shore-beach2-r1':'coast-shore';
 export const COAST_SHORE_KEY=(hash>>>0).toString(16);
 type Shore={texture:THREE.DataTexture;bounds:THREE.Vector4};
 
