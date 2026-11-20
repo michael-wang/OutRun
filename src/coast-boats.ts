@@ -30,6 +30,16 @@ export const COAST_BOATS:readonly Boat[]=[
 };});
 
 // Read-only use of the existing FFT textures, with the ocean adapter's same
+/** Never let a relocated beach's reference-space footprint swallow a
+ * separate Sail Bay vessel. Working-harbour vessels are independently deferred
+ * until R2 places their own segment. */
+export function coastBoatAdmitted(boat:Pick<Boat,'id'|'distance'>):boolean {
+ if(boatDeferred(boat.id))return false;
+ if(boat.id.startsWith('bay-sail-'))return true;
+ const ref=kentingReference(boat.distance);
+ return !(beachMacro()==='right'&&ref>=4700&&ref<=6750);
+}
+
 // camera-dependent mip selection and bounded displacement. No CPU readback.
 const waterVertex=/* glsl */`
 uniform sampler2D uDisp0; uniform sampler2D uDisp1; uniform sampler2D uDisp2;
@@ -127,10 +137,7 @@ export async function addCoastBoats(scene:THREE.Scene,sample:Sample,water?:Reado
  for(const source of [...models.map(g=>g.scene),fishingSource])source.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.MeshStandardMaterial)materials.add(m);});
  materials.forEach(m=>{m.roughness=Math.max(.7,m.roughness);m.metalness=Math.min(.15,m.metalness);m.emissive.set(0);m.emissiveIntensity=0;if(m.name==='colormap')m.side=THREE.DoubleSide;});
  const root=new THREE.Group();root.name='coast-boats';
- const vessels=COAST_BOATS.filter(s=>{
-  const ref=kentingReference(s.distance);
-  return !boatDeferred(s.id)&&!(beachMacro()==='right'&&ref>=4700&&ref<=6750);
- }).map(spec=>{
+ const vessels=COAST_BOATS.filter(coastBoatAdmitted).map(spec=>{
   const source=spec.kind==='fishing'?fishingSource:models[spec.kind==='sail'?0:1].scene,model=source.clone(true);
   const sail=model.getObjectByName('sail');
   if(sail){
