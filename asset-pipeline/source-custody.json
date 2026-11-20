@@ -12,14 +12,15 @@
       "editableSource": {
         "kind": "blend",
         "path": "art-prototype/output/r6d-cover-locks.blend",
-        "sha256": null
+        "sha256": "5f45360a12be38a7a02777b5b9599964d051a05370f4ab5dd974e56c8017f261",
+        "hashEvidence": "Owner's Windows Git Bash sha256sum output on 2026-11-21; source bytes not independently inspected via GitHub connection."
       },
       "exportRecipe": "scripts/blender/export_r6d_locks.py",
       "provenance": "docs/art-review/r6d/README.md",
       "custody": "AT_RISK_UNVERIFIED",
       "limitations": [
-        "Owner-local Blender path documented but exact bytes were not checked by remote review.",
-        "No pinned editable-source SHA-256 and no independently recovered private backup.",
+        "Owner reported local Blender master exists (229 KiB) and supplied SHA-256; source content/native editability not independently reviewed.",
+        "Pinned source SHA-256 is now documented; independently recoverable private backup and actual native restore still unverified.",
         "Tracked export script actually reads R6b core and R6c upper GLB inputs; exact native .blend edit/re-export parity remains unverified.",
         "This source custody issue does not change the owner-accepted R6d visual/gameplay choice."
       ],
