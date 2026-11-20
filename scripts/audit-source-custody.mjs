@@ -53,7 +53,7 @@ export function auditSourceCustody(asset,{root=ROOT,backupPath}={}){
   else sourceOK=true;
  }
  if(!backupPath)gaps.push('no private backup path supplied for byte-level verification');
- else if(!isAbsolute(resolve(backupPath)))gaps.push('invalid backup path');
+ else if(typeof backupPath!=='string'||!isAbsolute(backupPath))gaps.push('backup path must be absolute');
  else if(!existsSync(backupPath))gaps.push('backup copy does not exist');
  else {
   const realRoot=realpathSync(root),realBackup=realpathSync(backupPath);
