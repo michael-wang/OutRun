@@ -1,4 +1,5 @@
-import {beach2,BEACH2} from './beach2-profile';
+import {kentingStation} from './kenting-installation';
+import {beach2} from './beach2-profile';
 import {BEACH2_COVE_PARTIES} from './beach2-composition-layout';
 import {floatGLSL} from './coast-water-surface';
 import * as THREE from 'three';
@@ -69,18 +70,18 @@ export function addCoastSwimmers(scene:THREE.Scene,sample:BeachSample,
   mesh.computeBoundingSphere();mesh.boundingSphere!.radius+=6;
   mesh.name=name;scene.add(mesh);
  }
- for(const centre of COAST_MARKET_BEACHES){
+ function addMarketLanes(centre:number){
+  const strokes=Array.from({length:8},(_,i)=>({station:centre-110+i*13,offshore:8+(i%3)*3,phase:i*2.4,lift:0}));
   const markers=Array.from({length:5},(_,i)=>centre-125+i*32);
-  if(beach2()&&centre===BEACH2.core+BEACH2.tower){
-   // Beach 2 has no marked swim lane at the cape after the swimmers move to the cove.
-   const strokes:Lane[]=[];
-   for(const party of BEACH2_COVE_PARTIES)for(const [s,offshore,activity] of party){
-    if(activity==='stroke')strokes.push({station:BEACH2.core+s,offshore,phase:1.1+strokes.length*2.4,lift:.075});
-   }
-   addArea(strokes,[],'cove-crawl-lanes');
-  }else{
-   const strokes=Array.from({length:8},(_,i)=>({station:centre-110+i*13,offshore:8+(i%3)*3,phase:i*2.4,lift:0}));
-   addArea(strokes,markers,'coast-swim-area');
-  }
+  addArea(strokes,markers,'coast-swim-area');
  }
+ const [townMarket,kentingMarket]=COAST_MARKET_BEACHES;
+ addMarketLanes(townMarket);
+ if(!beach2()){addMarketLanes(kentingMarket);return;}
+ // The cove belongs to Kenting. Its two animated strokes have no cape marker row.
+ const strokes:Lane[]=[];
+ for(const party of BEACH2_COVE_PARTIES)for(const [s,offshore,activity] of party){
+  if(activity==='stroke')strokes.push({station:kentingStation(s),offshore,phase:1.1+strokes.length*2.4,lift:.075});
+ }
+ addArea(strokes,[],'cove-crawl-lanes');
 }

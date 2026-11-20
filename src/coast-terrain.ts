@@ -1,5 +1,6 @@
+import {kentingReference} from './kenting-installation';
 import {fbm2,ridged2,smoothstep} from './vendor/procedural-terrains/cpuNoise.js';
-import {beach2} from './beach2-profile';
+import {beach2,kentingGroundBlend} from './beach2-profile';
 import {macroMountainBlend} from './beach-macro';
 import {COAST_DISTRICTS} from './coast-layout';
 import {FARM_ZONES,farmPlainMask,farmTerraceHeight} from './coast-farm-layout';
@@ -10,6 +11,15 @@ export const COAST_HILL_STRIPS=[13,18,23,29,36,48,51,53,55,58,70,88,94,97,99,101
 /** Cut the dry flower beds into the verge; retain a slight drainage slope.
  * The flooded rice benches instead cancel the crossfall across each paddy. */
 export function farmBasinCut(x:number,d:number,roadBank:number){
+ const blend=kentingGroundBlend(d);
+ if(!blend)return farmCutAt(x,d,roadBank);
+ const fitted=farmCutAt(x,kentingReference(d),roadBank);
+ if(blend===1)return fitted;
+ const ordinary=farmCutAt(x,d,roadBank);
+ return ordinary+(fitted-ordinary)*blend;
+}
+
+function farmCutAt(x:number,d:number,roadBank:number){
  if(x<=15)return 0;
  for(const zone of FARM_ZONES){
   // Outer terrain rows are sampled every 20 m. Finish the transition one
@@ -43,18 +53,29 @@ export function coastWildness(d:number){
  * during worker preparation only. Absolute route coordinates join all chunks.
  * The road and beach are deliberately outside this inland height field. */
 export function beachApproachWeight(d:number){
- return beach2()?smoothstep(4050,4320,d)*(1-smoothstep(4760,4990,d)):0;
+ const ref=kentingReference(d);
+ return beach2()?smoothstep(4050,4320,ref)*(1-smoothstep(4760,4990,ref)):0;
 }
 
-export function coastHillHeight(x:number,d:number){
- const extension=macroMountainBlend(d),farm=farmPlainMask(x,d)*(1-extension),bench=farmTerraceHeight(x);
+// Retain the accepted ridge and terrace profiles inside the installed scene.
+// Its two skirts mix heights instead of warping noise through many metres at once.
+export function coastHillHeight(x:number,station:number){
+ const extension=macroMountainBlend(station),approach=beachApproachWeight(station);
+ const blend=kentingGroundBlend(station);
+ if(!blend)return hillAt(x,station,extension,approach);
+ const fitted=hillAt(x,kentingReference(station),extension,approach);
+ if(blend===1)return fitted;
+ const ordinary=hillAt(x,station,extension,approach);
+ return ordinary+(fitted-ordinary)*blend;
+}
+function hillAt(x:number,d:number,extension:number,approach:number){
+ const farm=farmPlainMask(x,d)*(1-extension),bench=farmTerraceHeight(x);
  const grassland=meadowRelief(x,d);
  if(x<=88-75*extension)return farm*bench+grassland;
  if(farm===1)return bench+grassland;
  const wild=Math.max(coastWildness(d),extension);
  // Slide the foothills inland through inhabited districts, tapering the
  // displacement at each town entrance so the plain joins the countryside.
- const approach=beachApproachWeight(d);
  // Vary the crest and toe along the route; keep the two inland ridges behind it.
  const fold=approach*(15*Math.sin((d-4200)/91)+9*Math.sin((d-4360)/47));
  const hillX=x+fold-105*(1-wild)+135*extension,behindTown=smoothstep(140,220,hillX);

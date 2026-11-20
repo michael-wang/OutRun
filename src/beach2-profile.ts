@@ -1,15 +1,22 @@
+import {KENTING_INSTALLATION,kentingLocal,kentingStation} from './kenting-installation';
 /** Isolated Kenting 2 Macro. Stations are track coordinates (HUD = track - 350).
  * Composition revision removes the redundant left nose and lengthens the bay.
  */
 let enabled=false;
 export const beach2=()=>enabled;
 export function setBeach2(value:unknown){enabled=value===true||value==='1';}
-export const BEACH2={start:4800,core:4850,length:1400,end:6800,cameras:[0,180,743,1072],tower:1170} as const;
-// Track stations: HUD 4550..5700 plus 120 m for the visible approach/exit.
-export const BEACH2_INCIDENT_SIGHTLINE={start:4780,end:6170} as const;
+export const BEACH2={start:kentingStation(-50),core:kentingStation(0),length:1400,end:kentingStation(1950),cameras:[0,180,743,1072],tower:1170} as const;
+// Visible approach/exit buffer and incident exclusion move with the installed core.
+export const BEACH2_INCIDENT_SIGHTLINE={start:kentingStation(-70),end:kentingStation(1320)} as const;
 export const ease=(v:number)=>{const t=Math.max(0,Math.min(1,v));return t*t*t*(10+t*(-15+6*t));};
-export const beach2Weight=(d:number)=>enabled?ease((d-BEACH2.start)/50)*(1-ease((d-6250)/550)):0;
-export const beach2Site=(d:number)=>enabled&&d>=4800&&d<=6500;
+export const beach2Weight=(d:number)=>enabled?ease((d-BEACH2.start)/50)*(1-ease((d-kentingStation(1400))/550)):0;
+/** Blend the host's ordinary ground and the accepted approach/core ground at their skirts. */
+export function kentingGroundBlend(d:number){
+ if(!KENTING_INSTALLATION.relocated||!enabled)return 0;
+ const s=kentingLocal(d);
+ return ease((s+1100)/200)*(1-ease((s-1400)/550));
+}
+export const beach2Site=(d:number)=>enabled&&d>=BEACH2.start&&d<=kentingStation(1650);
 export function interpolate(rows:readonly (readonly [number,number])[],s:number){
  if(s<=rows[0][0])return rows[0][1];
  for(let i=1;i<rows.length;i++)if(s<rows[i][0]){const [a,x]=rows[i-1],[b,y]=rows[i];return x+(y-x)*ease((s-a)/(b-a));}
@@ -20,8 +27,8 @@ export const beach2RoadHeight=(s:number)=>-5+interpolate([[0,4],[300,3.7],[700,3
 export const beach2PreviousShore=(d:number)=>interpolate([[0,-55],[180,-57],[450,-48],[650,-33],[800,-32],[970,-40],[1170,-57],[1400,-48]],d-BEACH2.core);
 /** Revision 3 Macro: two smooth seaward pockets; the near-swimming cove stays put. */
 export const beach2Widening=(d:number)=>30*Math.max(
- ease((d-5070)/100)*(1-ease((d-5280)/90)),
- ease((d-5350)/80)*(1-ease((d-5500)/85)),
+ ease((d-kentingStation(220))/100)*(1-ease((d-kentingStation(430))/90)),
+ ease((d-kentingStation(500))/80)*(1-ease((d-kentingStation(650))/85)),
 );
 export const beach2Shore=(d:number)=>beach2PreviousShore(d)-beach2Widening(d);
 /** Continuous cross-section: beach and shelf end at actual sea level, not a

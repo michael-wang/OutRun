@@ -1,3 +1,5 @@
+import {heroDeferred} from './content/kenting-neighbours';
+import {kentingReference,KENTING_INSTALLATION} from './kenting-installation';
 import {beach2VillageClearing} from './beach2-composition-layout';
 import * as THREE from 'three';
 import {beachMacro} from './beach-macro';
@@ -66,7 +68,9 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
  function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false){
   if(!name.startsWith('Rock_')&&beach2VillageClearing(d,x))return;
-  if(x<0&&beachMacro()==='right'&&d>=4000&&d<=6550&&!name.startsWith('Rock_'))return;
+  const ref=kentingReference(d);
+  if(x<0&&beachMacro()==='right'&&!name.startsWith('Rock_')&&
+     ((d>=4000&&d<=KENTING_INSTALLATION.tutorialExit)||(ref>=4000&&ref<=6550)))return;
   if(!authored&&farmClearing(d,x))return;
   const p=sample(d),model=assets![name];
   if(!model)throw Error('Missing coast nature model '+name);
@@ -113,12 +117,12 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  }
  // Bring the canopy to the verge at each end. Through town the taller row
  // sits behind the roofs and leaves the side street open.
- for(const [d,x,h] of [[5325,38,14],[5374,61,17],[5414,67,19],[5454,61,16],
+ if(!heroDeferred('coastal-woods'))for(const [d,x,h] of [[5325,38,14],[5374,61,17],[5414,67,19],[5454,61,16],
   [5492,72,18],[5592,69,18],[5634,61,17],[5688,48,15],[5714,37,12]])
   copse(d,x,h,d*23,9,16);
  // The sandy headland carries the windbreak across the driver's view for
  // a few seconds, then opens onto the bathing beach.
- for(const centre of [5530,5563,5598,5630,5671,5710]){
+ if(!heroDeferred('coastal-woods'))for(const centre of [5530,5563,5598,5630,5671,5710]){
   if(centre+16<start||centre-16>=end)continue;
   for(let i=0;i<9;i++){
    const key=centre*19+i*43,at=centre+(random(key)-.5)*32;

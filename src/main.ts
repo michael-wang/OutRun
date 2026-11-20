@@ -1,3 +1,4 @@
+import {kentingPlaced} from './kenting-installation';
 import {beach2,BEACH2_INCIDENT_SIGHTLINE} from './beach2-profile';
 import {DeparturePreparation} from './departure-preparation';
 import {configureKentingCoast,beachMacro,sunsetRoute,sunSide,beachLife,beachVista,beachFlow,coastClose,beachPlan} from './beach-macro';
@@ -1119,7 +1120,7 @@ function render(dt:number,draw=true){
     camera.position.copy(world.car.localToWorld(offset));camera.lookAt(world.car.localToWorld(new THREE.Vector3(0,.8,0)));
   }
   if(import.meta.env.DEV&&bridgeInspection){const q=world.sample(state.distance);camera.position.copy(q.position).addScaledVector(q.right,140).addScaledVector(q.tangent,-100).add(new THREE.Vector3(0,18,0));camera.lookAt(q.position.clone().add(new THREE.Vector3(0,-7,0)));}
-  if(import.meta.env.DEV&&macroOverhead){const q=world.sample(5920);camera.position.copy(q.position).add(new THREE.Vector3(0,1700,0));camera.up.copy(world.sample(7000).tangent);camera.lookAt(q.position);}
+  if(import.meta.env.DEV&&macroOverhead){const q=world.sample(kentingPlaced(5920));camera.position.copy(q.position).add(new THREE.Vector3(0,1700,0));camera.up.copy(world.sample(kentingPlaced(7000)).tangent);camera.lookAt(q.position);}
   const followed=race.rivals[observed];
   const cameraOnRival=!!followed&&(!world.streamer||world.streamer.spectatorReady(followed.distance));
   if(cameraOnRival){playerCamera.copy(camera);rivalView.chase(observed,camera);}
@@ -1590,7 +1591,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   departurePreparation:()=>({state:departurePreparation.state,warning:departurePreparation.warning}),
   coastFarm:()=>world.streamer?.farmStats??[],
   authoredProps:()=>authoredStaticProps.map(item=>({...item})),
-  macroInspect:()=>({beach2:beach2(),variant:beachMacro(),sunsetRoute:sunsetRoute(),sunSide:sunSide(),beachVista:beachVista(),beachFlow:beachFlow(),coastClose:coastClose(),beachPlan:beachPlan(),beachLife:beachLife(),samples:[5200,5500,5800,6000,6175,6570,7000].map(d=>({d,p:world.sample(d).position.toArray(),k:world.sample(d).curvature}))}),
+  macroInspect:()=>({beach2:beach2(),variant:beachMacro(),sunsetRoute:sunsetRoute(),sunSide:sunSide(),beachVista:beachVista(),beachFlow:beachFlow(),coastClose:coastClose(),beachPlan:beachPlan(),beachLife:beachLife(),samples:[5200,5500,5800,6000,6175,6570,7000].map(kentingPlaced).map(d=>({d,p:world.sample(d).position.toArray(),k:world.sample(d).curvature}))}),
   macroOverhead:(enabled:boolean)=>{macroOverhead=enabled;manual=true;render(1/60);},
   beachInspect:()=>({anchor:beachStudy.userData.anchor,activity:beachStudy.userData.shoreActivity,flights:coastalFlights?.inspect(),walk:beachStudy.userData.walk,beacon:beachStudy.userData.beacon,poses:beachStudy.userData.poses,swimmers:beachStudy.userData.waterActors}),
   coastBoats:()=>coastBoats?.inspect(elapsed)??[],
@@ -1635,6 +1636,27 @@ if(import.meta.env.DEV){(window as any).__drive={
     const p=world.sample(state.distance),travel=worldSpeed(state.speed),rows=[];
     for(let t=0;t<=seconds+.001;t+=.1){const q=world.sample(state.distance+travel*t),projected=q.position.clone().project(camera);rows.push({seconds:t,position:q.position.toArray(),screenX:projected.x,screenY:projected.y,headingChange:angleDifference(q.roadHeading-p.roadHeading)});}
     return {curvature:p.curvature,requiredSteer:requiredSteering(p.curvature,state.speed),renderedBodyYaw:state.heading,skidState:state.drifting,rows};
+  },
+  roadSight:(offsets:number[])=>{
+    // Static sight preview for a moved connector, sampled only on request.
+    // Traffic can further reduce visibility during the actual drive.
+    const eye=camera.position;
+    world.scene.updateMatrixWorld(true);
+    const objects=world.scene.children.filter(o=>['driving-surface','terrain','shoulder','inland-ridge','distant-ridge'].includes(o.name));
+    return offsets.filter(m=>Number.isFinite(m)&&m>0&&m<=300).map(m=>{
+      const d=state.distance+m,point=world.sample(d).position.clone();
+      point.y+=.6; // Centre of a low obstacle on the road.
+      const delta=point.clone().sub(eye),range=delta.length();
+      const ndc=point.clone().project(camera);
+      const ray=new THREE.Raycaster(eye,delta.normalize(),.1,Math.max(.1,range-.1));
+      const obstruction=ray.intersectObjects(objects,true).find(hit=>{
+        for(let node:THREE.Object3D|null=hit.object;node;node=node.parent)if(!node.visible)return false;
+        return true;
+      });
+      return {station:d,ahead:m,range,loaded:world.streamer?.roadReady(d)??true,
+        inFrame:Math.abs(ndc.x)<=1&&Math.abs(ndc.y)<=1&&ndc.z>=-1&&ndc.z<=1,
+        hitM:obstruction?.distance??null};
+    });
   },
   sunSight:(azimuths:number[])=>{
     // Read-only DEV diagnostic against the actual loaded terrain/prop meshes.

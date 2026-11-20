@@ -1,3 +1,5 @@
+import {installKentingRoad} from './kenting-installed-road';
+import {beach2} from '../beach2-profile';
 import {beach2Track} from './beach2-track';
 import {sunsetRoute} from '../beach-macro';
 import {coastSunsetTrack} from './coast-sunset-track';
@@ -28,7 +30,8 @@ export function coastWorkerRoad(content:CoastStageContent=COAST_STAGE,bank?:Bank
  };
  const identity={id:stage.id,name:manifest.name,sceneryAct:stage.sceneryAct};
  const aligned=beachMacroTrack(createAuthoredCoastTrack(road,identity,bank));
- const track=beach2Track(sunsetRoute()?coastSunsetTrack(aligned):aligned);
+ const reference=beach2Track(sunsetRoute()?coastSunsetTrack(aligned):aligned);
+ const track=beach2()?installKentingRoad(reference):reference;
  const course=authoredRoadCourse(road,identity);
  return {
   stage,track,course,

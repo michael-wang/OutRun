@@ -1,7 +1,8 @@
+import {kentingPlaced} from './kenting-installation';
 import packages from '../content/scenery/packages.json';
 import {beachPlan} from './beach-macro';
 import layout from '../content/stages/coast/scenic-layout.json';
-const KENTING_ANCHOR=layout.heroAnchors.find(a=>a.id==='beach-market')!.roadDistance;
+const KENTING_ANCHOR=kentingPlaced(layout.heroAnchors.find(a=>a.id==='beach-market')!.roadDistance);
 export function beachMarketFrontage(d:number,x:number){
  return x< -11&&Math.abs(d-KENTING_ANCHOR)<=160;
 }

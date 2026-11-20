@@ -32,3 +32,7 @@
 | `onboarding.json`、`src/main.ts`、`src/beach2-profile.ts` | A0–A6 課程、事故 eligibility 與一般交通分工 | 4780–6170 是海灘對生成故障的視線保護，真實碰撞照常。相對起點的 chapters、固定站號的教程、終點與復原存檔須在更換場序後明確映射 |
 
 **責任結論。** Tutorial 擁有教學規則。Beach 擁有揭景、泳灣、燈塔與它們需要的海岸剖面。Harbour、Woods 先列作待定場址。Connector 只擁有雙方同意交出的過渡區；既有視線權重交疊可作雙方約束，不能被兩段各自計入長度。其餘英雄錨點沿用現役位置，尚待分段設計。
+
+## R1 搬移試駕
+
+[原址與 Kenting 搬移候選的邊界、路線疊圖、斷面與已知駕駛差異](r1/README.md)。本頁的 Master Route 與 CSV 繼續描述原址配置。

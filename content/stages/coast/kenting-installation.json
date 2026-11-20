@@ -1,0 +1,20 @@
+{
+  "id": "kenting-beach",
+  "referenceCore": 4850,
+  "coreLength": 1400,
+  "local": {
+    "roadEntry": -500,
+    "roadExit": 1950,
+    "mountainStart": -900,
+    "coastFadeEnd": 3600
+  },
+  "deferredScenery": {
+    "heroIds": ["working-harbour", "coastal-woods"],
+    "harbourLandingStations": [4490, 4570, 4775],
+    "harbourBoatIds": ["quay-trawler", "quay-longliner"]
+  },
+  "sites": {
+    "original": {"coreStart": 4850, "offsetHeadingDeg": 0, "tutorialExit": 4350, "connectedAt": 8450},
+    "relocated": {"coreStart": 5500, "offsetHeadingDeg": 16, "tutorialExit": 4350, "connectedAt": 8450}
+  }
+}

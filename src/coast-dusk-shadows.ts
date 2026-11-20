@@ -12,7 +12,8 @@ type Kind='umbrella'|'visitor'|'bench'|'home'|'shop'|'rock'|'concrete'|'rail'|'r
 export type CoastShadowAnchor={d:number;x:number;width:number;length:number;kind?:Kind};
 const rawRandom=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
 import {COAST_SHADOW_AWAY as away,COAST_SHADOW_ACROSS as across} from './coast-sun-direction';
-import {macroHidePreRevealBeach} from './beach-macro';
+import {macroClearApproach,macroHidePreRevealBeach,macroLandHeight} from './beach-macro';
+import {KENTING_INSTALLATION} from './kenting-installation';
 
 /** Share the actual scene seed, beach pocket spacing and authored prop coordinates.
  * No independently randomized umbrella placements or shadows on the wrong beach.
@@ -25,6 +26,7 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
   if(site.children)for(let j=0;j<2;j++)anchors.push({d:site.d+(j?5:-5),x:site.x-4-j,width:.85,length:coastShadowLength(.98),kind:'visitor'});
  }
  for(const site of COAST_VILLAGE_SITES){
+  if(KENTING_INSTALLATION.relocated&&site.d>KENTING_INSTALLATION.tutorialExit&&site.x>13&&(macroClearApproach(site.d)||macroLandHeight(site.x,site.d)>0))continue;
   anchors.push({d:site.d,x:site.x,width:site.kind==='home'?9:4.5,
    length:coastShadowLength(site.kind==='home'?7.5:4.05),kind:site.kind==='home'?'home':'shop'});
   if(site.kind!=='home'){
@@ -35,7 +37,10 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
    });
   }
  }
- for(const site of FARM_HOMES)anchors.push({d:site.d,x:site.x,width:10,length:coastShadowLength(7.5),kind:'home'});
+ for(const site of FARM_HOMES){
+  if(KENTING_INSTALLATION.relocated&&site.d>KENTING_INSTALLATION.tutorialExit&&macroClearApproach(site.d))continue;
+  anchors.push({d:site.d,x:site.x,width:10,length:coastShadowLength(7.5),kind:'home'});
+ }
  for(const bay of COAST_BEACHES){
   const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
   for(let j=0;j<count;j++){

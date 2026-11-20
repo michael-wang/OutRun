@@ -1,3 +1,4 @@
+import {KENTING_INSTALLATION} from './kenting-installation';
 import * as THREE from 'three';
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
 import {authoredRoadPlacements} from './content/authored-road';
@@ -11,6 +12,10 @@ let hash=2166136261;
 for(const c of JSON.stringify([version,COAST_RUNTIME_IDENTITY.contentFingerprint,COAST_STAGE.road.length,
  COAST_STAGE.road.baseHeight,COAST_STAGE.road.lanes*LANE_WIDTH,authoredRoadPlacements(COAST_STAGE.road),
  COAST_BEACHES,COAST_SAND_POINTS]))hash=Math.imul(hash^c.charCodeAt(0),16777619);
+if(KENTING_INSTALLATION.relocated){
+ for(const c of JSON.stringify(KENTING_INSTALLATION))hash=Math.imul(hash^c.charCodeAt(0),16777619);
+}
+export const COAST_SHORE_NAME=KENTING_INSTALLATION.relocated?'coast-shore-beach2-r1':'coast-shore';
 export const COAST_SHORE_KEY=(hash>>>0).toString(16);
 type Shore={texture:THREE.DataTexture;bounds:THREE.Vector4};
 
@@ -43,7 +48,7 @@ export function unpackCoastShore(packed:Uint8Array):Shore{
 }
 
 export async function loadCoastShore(onProgress:(p:number)=>void){
- const response=await fetch(`${import.meta.env.BASE_URL}generated/coast-shore.shore?v=${COAST_SHORE_KEY}`,{cache:'no-cache'});
+ const response=await fetch(`${import.meta.env.BASE_URL}generated/${COAST_SHORE_NAME}.shore?v=${COAST_SHORE_KEY}`,{cache:'no-cache'});
  if(!response.ok||!response.body)throw Error(`Coast mask download failed (${response.status})`);
  const total=Number(response.headers.get('content-length'))||0;let received=0;
  const progress=new TransformStream<Uint8Array<ArrayBuffer>,BufferSource>({transform(chunk,controller){received+=chunk.length;if(total)onProgress(Math.min(.75,.75*received/total));controller.enqueue(chunk);}});

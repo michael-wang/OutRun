@@ -1,5 +1,5 @@
 // Static vector map. Equal scales on world X and Z preserve the plan geometry.
-export function masterMap({rows,lessons,anchors,b,turns,provenance}) {
+export function masterMap({rows,lessons,anchors,b,turns,provenance,installation}) {
   const parts=[];
   const add=s=>parts.push(s);
   const n=x=>x.toFixed(2);
@@ -17,15 +17,19 @@ export function masterMap({rows,lessons,anchors,b,turns,provenance}) {
   const at=d=>rows[Math.max(0,Math.min(rows.length-1,Math.round((d-first)/5)))];
   const stationX=d=>82+(d-first)/(last-first)*1192;
   add('<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="1130" viewBox="0 0 1360 1130" role="img" aria-labelledby="title desc">');
-  add('<title id="title">Coast master route — accepted runtime</title><desc id="desc">Plan in world X/Z, tutorial and scenic anchor key, overlapping beach systems, signed curvature and elevation by distance.</desc>');
+  add('<title id="title">Coast master route — '+(installation?'R1 candidate':'accepted runtime')+'</title><desc id="desc">Plan in world X/Z, tutorial and scenic anchor key, overlapping beach systems, signed curvature and elevation by distance.</desc>');
   add('<rect width="1360" height="1130" fill="#f7f6ed"/><g font-family="Segoe UI,Arial,sans-serif">');
-  label(42,49,'Coast master route',36,'#122f37','font-weight="bold"');
+  label(42,49,installation?'Coast master route  /  Kenting R1':'Coast master route',36,'#122f37','font-weight="bold"');
   label(42,78,'First stage  /  '+((last-first)/1000).toFixed(1)+' km  /  Pace C 1.0×  /  Runtime geometry sampled every 5 m',17);
   line(42,97,1318,97,'#a9b9b2');
   label(42,129,'Plan  ·  +X right, +Z up',19);
   const route=(a,z,c,w)=>path(rows.filter(p=>p.trackM>=a&&p.trackM<=z).map(xy),c,w);
   route(first,last,'#586d77',4);
   route(first,4350,'#635988',5);
+  if(installation){
+    route(installation.connectorStart,installation.roadEntry,'#bd774a',7);
+    route(installation.roadExit,installation.connectedAt,'#bd774a',7);
+  }
   route(b.start,b.end,'#4f9d94',8);
   route(b.core,b.core+b.length,'#11695e',8);
   for(const d of [1650,3850,6960,9370,11950,13750]){
@@ -53,7 +57,14 @@ export function masterMap({rows,lessons,anchors,b,turns,provenance}) {
   label(991,131,'Scenic anchors  ·  track metres',20);
   anchors.forEach((h,i)=>label(991,162+i*24,(i+1)+'   '+h.roadDistance+'   '+h.id,16));
   label(650,411,'Kenting boundary layers',23,'#11695e','font-weight="bold"');
-  const notes=[
+  const notes=installation ? [
+    installation.connectorStart+'–'+installation.roadEntry+'    Entry connector after A6.',
+    installation.roadEntry+'–'+installation.roadExit+'    Installed approach, bay and outer cape.',
+    b.core+'–'+(b.core+b.length)+'    Core profile. Local 0–'+b.length+' m.',
+    installation.roadExit+'–'+installation.connectedAt+'    Exit connector back into the race.',
+    'Ochre = connectors. Teal = protected road. Dark teal = core.',
+    'Old anchors: harbour 4,600 / woods 5,420. Future sites await R2.'
+  ] : [
     '3,950–8,450    Outer mountain, rise and base alignment influence.',
     '4,350–8,450    Underlying Macro road transform.',
     '4,800–6,800    Beach2 road override, including its two joins.',
@@ -85,7 +96,7 @@ export function masterMap({rows,lessons,anchors,b,turns,provenance}) {
     line(x,1015,x,1021,'#496068');label(x,1040,Number((d/1000).toFixed(1))+'',15,'#213f44','text-anchor="middle"');
   }
   label(44,1068,'HUD km   /   Short bars show authored left (violet) and right (ochre) turn windows. The curve above includes all runtime transforms.',15);
-  label(44,1103,'Runtime source '+provenance.revision+'   ·   '+provenance.dataDate+'   ·   Rebuild with node scripts/route/export-coast.mjs',14);
+  label(44,1103,'Runtime source '+provenance.revision+'   ·   '+provenance.dataDate+('   ·   Rebuild with node scripts/route/'+(installation?'survey-kenting.mjs':'export-coast.mjs')),14);
   add('</g></svg>');
   return parts.join('\n')+'\n';
 }

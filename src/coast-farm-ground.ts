@@ -1,3 +1,4 @@
+import {KENTING_INSTALLATION} from './kenting-installation';
 import {FARM_PLOTS,type FarmPlot} from './coast-farm-layout';
 import {farmGroundLength} from './coast-farm-prep';
 
@@ -19,7 +20,9 @@ export function readFarmGround(buffer:ArrayBuffer){
 }
 
 export async function loadFarmGround(){
- const response=await fetch(new URL('./generated/coast-farm-ground.bin',import.meta.url));
+ const url=KENTING_INSTALLATION.relocated?
+  `${import.meta.env.BASE_URL}generated/coast-farm-ground-r1.bin`:new URL('./generated/coast-farm-ground.bin',import.meta.url);
+ const response=await fetch(url);
  if(!response.ok||!response.body)throw Error('Coastal farm ground download failed');
  const decoded=response.body.pipeThrough(new DecompressionStream('gzip'));
  return readFarmGround(await new Response(decoded).arrayBuffer());
