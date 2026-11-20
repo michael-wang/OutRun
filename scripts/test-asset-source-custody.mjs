@@ -81,3 +81,14 @@ test('unsafe paths and malformed source digests are rejected',()=>{
   assert.throws(()=>auditSourceCustody(record,{root,backupPath:backup}),/invalid editable source SHA-256/);
  });
 });
+
+test('checks exporter prerequisites instead of treating one committed script as complete source',()=>{
+ fixture(({record,root,backup})=>{
+  record.upstreamInputs=['public/assets/earlier-r6b.glb'];
+  const missing=auditSourceCustody(record,{root,backupPath:backup});
+  assert.match(missing.gaps.join(' '),/authoring input missing/);
+  writeFileSync(join(root,'public/assets/earlier-r6b.glb'),'BASE');
+  const present=auditSourceCustody(record,{root,backupPath:backup});
+  assert.equal(present.gaps.length,0);
+ });
+});
