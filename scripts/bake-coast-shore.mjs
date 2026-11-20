@@ -52,7 +52,7 @@ try{
  const rows=FARM_PLOTS.map(plot=>Buffer.from(sampleFarmGround(plot,farmTrack.sample).buffer));
  const ground=gzipSync(Buffer.concat(rows),{level:9});
  await mkdir('src/generated',{recursive:true});
- const farmPath=KENTING_INSTALLATION.relocated?'public/generated/coast-farm-ground-r1.bin':'src/generated/coast-farm-ground.bin';
+ const farmPath=KENTING_INSTALLATION.shifted?'public/generated/coast-farm-ground-r1.bin':'src/generated/coast-farm-ground.bin';
  const priorGround=await readFile(farmPath).catch(error=>{
   if(error.code!=='ENOENT')throw error;
   return undefined;
