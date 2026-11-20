@@ -13,8 +13,10 @@ try{
  const {coastWorkerRoad}=await server.ssrLoadModule('/src/content/coast-worker-road.ts');
  const {coastLessonAt}=await server.ssrLoadModule('/src/content/coast-onboarding.ts');
  const {road,onboarding,direction}=COAST_STAGE;
+ const {configureKentingCoast}=await server.ssrLoadModule('/src/beach-macro.ts');
+ configureKentingCoast();
  const {track,halfAt}=coastWorkerRoad();
- // R5c exports the FULL 30km authored grand tour from the same exact
+ // Export the current finite coast from the same configured
  // road sampler used by the browser game, physics and road Worker.
  const start=road.startDistance,end=road.startDistance+road.length;
  const stations=new Set([start,end]);
@@ -40,7 +42,7 @@ try{
   schemaVersion:1,
   stage:'coast',revision:onboarding.revision,
   coordinates:'Three.js world X/Y-up/Z-forward, absolute metres',
-  source:'coastWorkerRoad().track.sample / stage authored road.json',
+  source:'configureKentingCoast -> coastWorkerRoad().track.sample',
   heroSlots:direction.heroSlots.map(hero=>{
    const frame=track.sample(hero.distance);
    return {...hero,position:frame.position.toArray(),
