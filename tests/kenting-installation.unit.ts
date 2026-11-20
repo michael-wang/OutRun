@@ -57,3 +57,14 @@ it('joins A6 to the original big right-hand reveal without inventing a connector
  const curve=immediate.track.sample(4700);
  expect(curve.curvature).toBeGreaterThan(.005); // Existing main right-turn reveal.
 });
+
+it('uses the accepted no-extra-connector Kenting layout by default',async()=>{
+  vi.resetModules();
+  vi.stubEnv('VITE_KENTING_INSTALLATION','');
+  const {KENTING_INSTALLATION}=await import('../src/kenting-installation');
+  expect(KENTING_INSTALLATION.mode).toBe('immediate');
+  expect(KENTING_INSTALLATION.delta).toBe(0);
+  expect(KENTING_INSTALLATION.roadEntry).toBe(KENTING_INSTALLATION.tutorialExit);
+  expect(KENTING_INSTALLATION.shifted).toBe(false);
+  expect(KENTING_INSTALLATION.relocated).toBe(true); // Old harbour/woods stay deferred.
+});
