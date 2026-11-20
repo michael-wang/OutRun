@@ -1,5 +1,5 @@
 import {beachMacro} from './beach-macro';
-import {boatDeferred} from './content/kenting-neighbours';
+import {boatDeferred,COAST_WORKING_HARBOUR_BOATS} from './content/kenting-neighbours';
 import {kentingReference} from './kenting-installation';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -16,7 +16,7 @@ export const COAST_BOATS:readonly Boat[]=[
  ['opening-distant-sail','sail',1290,210,16],
  ['beach-yacht','yacht',2070,130,18],['beach-sail','sail',2740,175,16],
  ['town-sail-one','sail',3560,112,17],['town-sail-two','sail',4010,168,16],
- ['quay-trawler','fishing',4520,67,20],['quay-longliner','fishing',4780,64,17],['town-sail-three','sail',5110,122,16],
+ ...COAST_WORKING_HARBOUR_BOATS.map(b=>[b.id,b.kind,b.d,b.offshore,b.length] as const),['town-sail-three','sail',5110,122,16],
  ['town-sail-four','sail',5900,175,16],
  ['bay-sail-entry','sail',7080,72,27],['bay-sail-inlet','sail',7420,72,29],
  ['bay-sail-west','sail',7770,72,31],['bay-sail-east','sail',8080,72,28],
