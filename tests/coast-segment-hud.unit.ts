@@ -1,7 +1,7 @@
 import {afterEach,expect,it,vi} from 'vitest';
 import {coastAuthoredRoad} from '../src/content/authored-road';
 
-async function segmentName(site:'original'|'relocated'){
+async function segmentName(site:'original'|'relocated'|'immediate'){
  vi.resetModules();
  vi.stubEnv('VITE_KENTING_INSTALLATION',site);
  const {coastSegmentNameAt}=await import('../src/coast-journey-layout');
@@ -41,4 +41,14 @@ it('keeps the original beach footprint when the R1 connector pair is not install
  expect(name(4350)).toBe('墾丁海水浴場');
  expect(name(6799.99)).toBe('墾丁海水浴場');
  expect(name(6800)).toBe('漁港到帆船灣');
+});
+
+it('does not invent an entry connector when the Beach and A6 ports already coincide',async()=>{
+ const name=await segmentName('immediate');
+ expect(name(4349.99)).toContain('教學');
+ expect(name(4350)).toBe('墾丁海水浴場');
+ expect(name(4800)).toBe('墾丁海水浴場');
+ expect(name(6799.99)).toBe('墾丁海水浴場');
+ expect(name(6800)).toBe('海岬沿岸');
+ expect(name(8450)).toBe('岬口搶位');
 });
