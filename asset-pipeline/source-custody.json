@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "scope": "Initial accepted-player-asset custody audit; NOT an exhaustive inventory of all game assets.",
+  "assets": [
+    {
+      "id": "r6d-hair",
+      "role": "active-player-companion-hair",
+      "runtimeExport": {
+        "path": "public/assets/characters/coast-blonde-r6d.glb",
+        "sha256": "8273fe14b4f1c83a4c8b574bacd7d834a6142380013e6e8ebb6f7b447399f519"
+      },
+      "editableSource": {
+        "kind": "blend",
+        "path": "art-prototype/output/r6d-cover-locks.blend",
+        "sha256": null
+      },
+      "exportRecipe": "scripts/blender/export_r6d_locks.py",
+      "provenance": "docs/art-review/r6d/README.md",
+      "custody": "AT_RISK_UNVERIFIED",
+      "limitations": [
+        "Owner-local Blender path documented but exact bytes were not checked by remote review.",
+        "No pinned editable-source SHA-256 and no independently recovered private backup.",
+        "Export script reportedly depends on earlier R6b/R6c inputs: native source-to-export reproducibility not validated.",
+        "This source custody issue does not change the owner-accepted R6d visual/gameplay choice."
+      ]
+    }
+  ]
+}
