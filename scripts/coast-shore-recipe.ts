@@ -19,5 +19,5 @@ export function prepareBakeTracks(){
     const y=track.sample(BEACH2.core+s).position.y;
     if(Math.abs(y-beach2RoadHeight(s))>1e-7)throw Error('Shore bake loaded a road without the installed Kenting profile.');
   }
-  return {track,farmTrack:KENTING_INSTALLATION.relocated?track:referenceFarmTrack};
+  return {track,farmTrack:KENTING_INSTALLATION.shifted?track:referenceFarmTrack};
 }
