@@ -117,7 +117,7 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  }
  // Bring the canopy to the verge at each end. Through town the taller row
  // sits behind the roofs and leaves the side street open.
- if(!heroDeferred('coastal-woods'))for(const [d,x,h] of COAST_WOODS_INLAND_SITES
+ if(!heroDeferred('coastal-woods'))for(const [d,x,h] of COAST_WOODS_INLAND_SITES)
   copse(d,x,h,d*23,9,16);
  // The sandy headland carries the windbreak across the driver's view for
  // a few seconds, then opens onto the bathing beach.
