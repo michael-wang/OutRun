@@ -3,11 +3,18 @@ import layout from '../content/stages/coast/kenting-installation.json';
 /** Local s is measured from the accepted R0 core entry. The reference station
  * is retained only to consume the existing authored profile and site recipes. */
 export const KENTING_SEGMENT = layout;
-const relocated = import.meta.env?.VITE_KENTING_INSTALLATION === 'relocated';
-const site = relocated ? layout.sites.relocated : layout.sites.original;
+/** The immediate candidate retains the approved physical road: no connector is
+ * created where the tutorial and Kenting already meet. Relocated is retained as
+ * the separate 650m R1 portability stress test. */
+const requested = import.meta.env?.VITE_KENTING_INSTALLATION;
+const mode = requested === 'immediate' || requested === 'relocated' ? requested : 'original';
+const relocated = mode !== 'original'; // Isolate the legacy harbour/woods in both R1 candidates.
+const site = layout.sites[mode];
 export const KENTING_INSTALLATION = Object.freeze({
   id: layout.id,
+  mode,
   relocated,
+  shifted: site.coreStart !== layout.referenceCore,
   delta: site.coreStart - layout.referenceCore,
   offsetHeadingDeg: site.offsetHeadingDeg,
   coreStart: site.coreStart,
