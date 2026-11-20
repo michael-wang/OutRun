@@ -44,6 +44,13 @@ export function auditSourceCustody(asset,{root=ROOT,backupPath}={}){
  else exportOK=true;
  const recipe=inRepo(root,asset.exportRecipe);
  if(!existsSync(recipe))gaps.push('authoring/export recipe missing');
+ if(asset.upstreamInputs!==undefined){
+  if(!Array.isArray(asset.upstreamInputs)||!asset.upstreamInputs.every(s=>typeof s==='string'))
+   throw Error('invalid upstreamInputs for '+asset.id);
+  for(const path of asset.upstreamInputs){
+   if(!existsSync(inRepo(root,path)))gaps.push('authoring input missing: '+path);
+  }
+ }
  const master=inRepo(root,source.path);
  if(!existsSync(master))gaps.push('editable master is not available at its reported local path');
  else {
