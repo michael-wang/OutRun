@@ -6,6 +6,7 @@
 
 - 遊戲正式選用 R6d（R6f/R6g 只是可選 QA）。GLB `public/assets/characters/coast-blonde-r6d.glb`、匯出腳本 `scripts/blender/export_r6d_locks.py` 及 Spring Bone 遊戲程式已受 Git 追蹤。
 - [R6d 報告](art-review/r6d/README.md) 指向本機可編輯來源 `art-prototype/output/r6d-cover-locks.blend`，但該路徑位於 `.gitignore` 的 `/art-prototype/output/` 之下。
+- **補充：R6d 並非完全無法重建。** 實際的 `export_r6d_locks.py` 會讀取已追蹤的 `coast-blonde-r6b.glb` 和 `coast-blonde-r6b-upper.glb`，再產生新髮束；但必須實跑重建、核對輸出並保留可編輯 `.blend`，不能把「有腳本」直接等同於「原生母檔與依賴可恢復」。
 - [P0 Manifest](../asset-pipeline/pilot.json) 將 `source.file` 明列為 `null`，證實當時**沒有在版控內核實這份母檔**；P0-3 也只測試少數已提交檔案的同機位元組還原。不能推論主人電腦上的 `.blend` 已遺失，也不能推論它已有獨立備份。
 - [目前資產保管清單](../asset-pipeline/source-custody.json) 將它列為 `AT_RISK_UNVERIFIED`。這是**製作流程風險**，不撤回 Michael 對遊戲外觀的既有驗收。
 
