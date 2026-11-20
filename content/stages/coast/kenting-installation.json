@@ -8,14 +8,24 @@
     "mountainStart": -900,
     "coastFadeEnd": 3600
   },
-  "deferredScenery": {
-    "heroIds": ["working-harbour", "coastal-woods"],
-    "harbourLandingStations": [4490, 4570, 4775],
-    "harbourBoatIds": ["quay-trawler", "quay-longliner"]
-  },
   "sites": {
-    "original": {"coreStart": 4850, "offsetHeadingDeg": 0, "tutorialExit": 4350, "connectedAt": 8450},
-    "relocated": {"coreStart": 5500, "offsetHeadingDeg": 16, "tutorialExit": 4350, "connectedAt": 8450},
-    "immediate": {"coreStart": 4850, "offsetHeadingDeg": 0, "tutorialExit": 4350, "connectedAt": 8450}
+    "original": {
+      "coreStart": 4850,
+      "offsetHeadingDeg": 0,
+      "tutorialExit": 4350,
+      "connectedAt": 8450
+    },
+    "relocated": {
+      "coreStart": 5500,
+      "offsetHeadingDeg": 16,
+      "tutorialExit": 4350,
+      "connectedAt": 8450
+    },
+    "immediate": {
+      "coreStart": 4850,
+      "offsetHeadingDeg": 0,
+      "tutorialExit": 4350,
+      "connectedAt": 8450
+    }
   }
 }
