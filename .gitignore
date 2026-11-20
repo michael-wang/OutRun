@@ -51,6 +51,8 @@ __pycache__/
 # Local source archives; selected licensed runtime models live in public/assets.
 /.cache/watercraft/
 /.cache/farm/
+# Generated Vite dependency prebundle for LAN playtesting; not an art source.
+/.cache/vite-lan-playtest/
 
 # Private Issue 63 preview input; never part of public builds.
 /.local/
