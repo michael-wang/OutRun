@@ -1,6 +1,16 @@
 # 極速漫遊 / OutRun — current project rules
 
 
+## ACTIVE ASSET SOURCE CUSTODY GATE — applies to every important art Goal (2026-11-21)
+
+**Canonical rules:** [Asset Source Custody](docs/ASSET_SOURCE_CUSTODY.md). The accepted R6d Spring Bone hair export and Blender authoring script are tracked, but its editable `art-prototype/output/r6d-cover-locks.blend` is ignored; [the public custody registry](asset-pipeline/source-custody.json) correctly records **AT_RISK_UNVERIFIED** until the actual master and a recoverable independent copy are checked. Never infer source protection from a tracked GLB or green game tests.
+
+**Roles / mandatory handoff:** the **Asset Producer (Codex or artist)** saves and identifies the editable master, dependencies, exporter and hashes; the **Asset Librarian / Production Supervisor (Judy)** owns versioned private storage, independent backup, a real native-app restore/re-export test and the custody record; **Julia** independently reviews the evidence and keeps risks visible; **Michael** approves the look, storage permissions and public licensing, not routine copying. Any role without local machine access must report UNKNOWN. Do not publish private masters into this public repository without explicit authorization.
+
+**No false completion:** a playable or owner-approved LOOK is not a recoverable SOURCE. An important asset with no verified master/backup is `BLOCKED_ASSET_CUSTODY` for production-source closure (gameplay may remain accepted), and its local source/worktree must not be destroyed. At Goal handoff run `npm run assets:source:audit`, for source-ready candidates run `node scripts/audit-source-custody.mjs --asset ID --backup PRIVATE_PATH --strict` plus a documented Blender native restore; add each new critical asset to the registry. Strict byte checks alone do not certify offsite backups or editability. Do not globally block existing gameplay CI on preexisting R6d custody debt; explicitly track and remedy it.
+
+---
+
 ## CURRENT WORKFLOW RULE — documentation lifecycle and clean handoff (2026-11-20)
 
 **Applies to Judy, Codex and every collaborator, for each Goal, experiment and art iteration.** This is an active operating rule; older dated checklists remain history, not permission to create another permanent report for each A/B attempt. Michael's explicit current directions and asset/privacy rules still take precedence.
