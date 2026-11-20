@@ -15,6 +15,7 @@
   },
   "sites": {
     "original": {"coreStart": 4850, "offsetHeadingDeg": 0, "tutorialExit": 4350, "connectedAt": 8450},
-    "relocated": {"coreStart": 5500, "offsetHeadingDeg": 16, "tutorialExit": 4350, "connectedAt": 8450}
+    "relocated": {"coreStart": 5500, "offsetHeadingDeg": 16, "tutorialExit": 4350, "connectedAt": 8450},
+    "immediate": {"coreStart": 4850, "offsetHeadingDeg": 0, "tutorialExit": 4350, "connectedAt": 8450}
   }
 }
