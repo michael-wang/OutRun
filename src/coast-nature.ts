@@ -1,4 +1,4 @@
-import {heroDeferred} from './content/kenting-neighbours';
+import {heroDeferred,COAST_WOODS_INLAND_SITES,COAST_WOODS_SHORE_CENTERS} from './content/kenting-neighbours';
 import {kentingReference,KENTING_INSTALLATION} from './kenting-installation';
 import {beach2VillageClearing} from './beach2-composition-layout';
 import * as THREE from 'three';
@@ -117,12 +117,11 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
  }
  // Bring the canopy to the verge at each end. Through town the taller row
  // sits behind the roofs and leaves the side street open.
- if(!heroDeferred('coastal-woods'))for(const [d,x,h] of [[5325,38,14],[5374,61,17],[5414,67,19],[5454,61,16],
-  [5492,72,18],[5592,69,18],[5634,61,17],[5688,48,15],[5714,37,12]])
+ if(!heroDeferred('coastal-woods'))for(const [d,x,h] of COAST_WOODS_INLAND_SITES
   copse(d,x,h,d*23,9,16);
  // The sandy headland carries the windbreak across the driver's view for
  // a few seconds, then opens onto the bathing beach.
- if(!heroDeferred('coastal-woods'))for(const centre of [5530,5563,5598,5630,5671,5710]){
+ if(!heroDeferred('coastal-woods'))for(const centre of COAST_WOODS_SHORE_CENTERS){
   if(centre+16<start||centre-16>=end)continue;
   for(let i=0;i<9;i++){
    const key=centre*19+i*43,at=centre+(random(key)-.5)*32;
