@@ -20,7 +20,7 @@ export function readFarmGround(buffer:ArrayBuffer){
 }
 
 export async function loadFarmGround(){
- const url=KENTING_INSTALLATION.relocated?
+ const url=KENTING_INSTALLATION.shifted?
   `${import.meta.env.BASE_URL}generated/coast-farm-ground-r1.bin`:new URL('./generated/coast-farm-ground.bin',import.meta.url);
  const response=await fetch(url);
  if(!response.ok||!response.body)throw Error('Coastal farm ground download failed');
