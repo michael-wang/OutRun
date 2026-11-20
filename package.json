@@ -21,7 +21,10 @@
     "scenic:build": "node scripts/build-scenic-layout.mjs --write",
     "scenic:test": "node scripts/test-scenic-layout.mjs",
     "assets:check": "node scripts/validate-asset-manifest.mjs",
-    "assets:test": "node --test scripts/test-asset-manifest.mjs"
+    "assets:test": "node --test scripts/test-asset-manifest.mjs",
+    "assets:source:audit": "node scripts/audit-source-custody.mjs",
+    "assets:source:check": "node scripts/audit-source-custody.mjs --strict",
+    "assets:source:test": "node --test scripts/test-asset-source-custody.mjs"
   },
   "dependencies": {
     "@pixiv/three-vrm-springbone": "3.5.5",
