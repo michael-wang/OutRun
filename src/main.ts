@@ -10,7 +10,7 @@ import {coastGameplayAt,coastFeedbackPhases} from './content/coast-gameplay-samp
 import {coastWorkerRoad} from './content/coast-worker-road';
 import {coastLessonAt} from './content/coast-onboarding';
 import {coastHeroNear} from './content/coast-direction';
-import {coastScenicActAt} from './coast-journey-layout';
+import {coastScenicActAt,coastSegmentNameAt} from './coast-journey-layout';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {GAME_VERSION} from './build-info';
@@ -162,7 +162,7 @@ document.querySelector('#app')!.innerHTML = `
 <aside id="race-director" hidden><div id="race-cameras"></div><output id="race-data"></output></aside><div class="vignette"></div>
 <div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??GAME_VERSION}</small></div>
 
-<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
+<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav><span id="race-segment" hidden></span></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <div id="qa-tools" aria-label="測試工具列"><button id="photo-button" aria-label="截圖" data-key-hint="F8" data-pad-hint="TOUCHPAD" hidden>📷 截圖</button></div><button type="button" id="unlock-audio" hidden>點一下或按鍵開啟音效</button><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
 <section id="race-ready" aria-label="準備起跑" hidden>
@@ -520,6 +520,11 @@ const startSignals=new RaceStartSignals();
 const playerCamera=new THREE.PerspectiveCamera();
 const debugRace=params.get('rivaldebug')==='1';
 const positionHud=$('race-position'),positionNumber=positionHud.querySelector('b')!,raceClock=$('race-clock'),raceDistance=$('race-distance');
+const segmentHud=$('race-segment');
+function showSegmentAt(station:number){
+ const name=coastSegmentNameAt(station,coastStart);
+ if(segmentHud.textContent!==name)segmentHud.textContent=name;
+}
 let raceHudSafeRect:RaceHudBounds|null=null;
 function refreshRaceHudSafeRect(){
  if(!mobile()||positionHud.hidden){raceHudSafeRect=null;return;}
@@ -577,6 +582,7 @@ function raceHud(){
  rivalView.updateRanks(race.standings(state));
  // Race progress belongs beside position and time, not the global version/FPS.
  const tracked=race.rivals[observed]?.distance??state.distance;
+ showSegmentAt(tracked);
  const traveled=Math.max(0,Math.min(coastEnd-coastStart,tracked-coastStart));
  const total=Math.max(1,coastEnd-coastStart);
  const elapsedRace=Math.max(0,race.time);
@@ -780,6 +786,8 @@ function ui(){
   $('race-ready').hidden=!readyVisible;
   const pausedDrive=mode==='paused'&&!brickCompleted&&!replayPreparing;
   const showDrivingHud=!settingsOpen&&(mode==='playing'||mode==='countdown'||pausedDrive||readyVisible);
+  segmentHud.hidden=!showDrivingHud;
+  if(showDrivingHud)showSegmentAt(race.rivals[observed]?.distance??state.distance);
   if(playerUi)$('speed').hidden=!showDrivingHud;
   const touch=$('touch');
   touch.classList.toggle('active',showDrivingHud);
