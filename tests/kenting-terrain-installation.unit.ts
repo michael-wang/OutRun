@@ -1,6 +1,6 @@
 import {afterEach, expect, it, vi} from 'vitest';
 
-async function loadSite(site:'original'|'relocated') {
+async function loadSite(site:'original'|'relocated'|'immediate') {
   vi.resetModules();
   vi.stubEnv('VITE_KENTING_INSTALLATION',site);
   const macro=await import('../src/beach-macro');
@@ -55,4 +55,17 @@ it('clears the old reveal and admits only the installed beach and cap with a fin
       expect(moved.height(s,x)).toBeCloseTo(old.height(s,x),8);
     }
   }
+});
+
+it('reuses the accepted shore cache and starts the inland screening mountain during A6',async()=>{
+ const original=await loadSite('original'),immediate=await loadSite('immediate'),late=await loadSite('relocated');
+ expect(immediate.mask).toBe(original.mask);
+ expect(immediate.key).toBe(original.key);
+ for(const d of [3900,4000,4100,4200,4300,4350,4500,4700,4850,5500,6020,6800]){
+  for(const x of [-90,-55,-20,11,35,75,150]){
+   expect(immediate.height(d,x)).toBeCloseTo(original.height(d,x),7);
+  }
+ }
+ expect(immediate.macro.macroMountainBlend(4200)).toBeGreaterThan(0);
+ expect(late.macro.macroMountainBlend(4200)).toBe(0);
 });
