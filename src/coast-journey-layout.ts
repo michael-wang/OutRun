@@ -18,7 +18,7 @@ export function coastSegmentNameAt(track:number,startDistance:number):string {
  if(track<site.tutorialExit) return '教學 · '+coastScenicActAt(track-startDistance).label;
  if(site.relocated && track<site.roadEntry) return '海灘入口連接道';
  if(track>=site.roadEntry && track<site.roadExit) return '墾丁海水浴場';
- if(site.relocated && track<site.connectedAt) return '海岬出口連接道';
+ if(site.relocated && track<site.connectedAt) return site.shifted?'海岬出口連接道':'海岬沿岸';
  return coastScenicActAt(track-startDistance).label;
 }
 const smooth=(a:number,b:number,v:number)=>{
