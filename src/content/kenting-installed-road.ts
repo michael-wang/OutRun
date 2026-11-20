@@ -64,7 +64,9 @@ function makeJoin(first:Sample,last:Sample,a:number,b:number) {
  * by the same consumer as the tutorial and the untouched rest of the stage. */
 export function installKentingRoad(reference:Track, installation=KENTING_INSTALLATION):Track {
   const {relocated,delta,tutorialExit,roadEntry,roadExit,connectedAt}=installation;
-  if (!relocated) return reference;
+  // A coincident port is already joined; building a zero-length Hermite connector
+  // would divide by zero and manufacture a seam at the tutorial exit.
+  if (!relocated || delta === 0) return reference;
   const anchor=reference.sample(tutorialExit);
   const bearing=anchor.roadHeading+installation.offsetHeadingDeg*Math.PI/180;
   const translation=new THREE.Vector3(-Math.sin(bearing),0,Math.cos(bearing)).multiplyScalar(delta);
