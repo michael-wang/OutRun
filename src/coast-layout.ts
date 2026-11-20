@@ -1,4 +1,5 @@
 import {kentingPlaced,kentingReference,kentingRoadsideStation,kentingTransitionReference} from './kenting-installation';
+import {COAST_WORKING_HARBOUR_LANDINGS} from './content/kenting-neighbours';
 import {beach2,BEACH2,beach2Weight,beach2Shore,kentingGroundBlend} from './beach2-profile';
 import {beachZoneBlend} from './beach-zone-layout';
 import {beachRailHidden,macroBeachExtra,macroReefDistance,beachFlow,macroCoastRise,macroCoastCloseBlend} from './beach-macro';
@@ -75,7 +76,7 @@ export function coastProfileX(x:number,d:number){
 export const COAST_MARKET_BEACHES=[2560,kentingPlaced(6020)] as const;
 export const COAST_BEACH_STALLS=COAST_MARKET_BEACHES.flatMap(centre=>
  [-128,-111,-78,-28,3,19].map((offset,i)=>({d:centre+offset,x:-21-i%2*3})));
-export const COAST_LANDINGS=[4490,4570,4775,8920].map(d=>({d,x:-25,radius:7}));
+export const COAST_LANDINGS=[...COAST_WORKING_HARBOUR_LANDINGS,{d:8920,x:-25,radius:7}];
 
 /** Ten main breakers carry the detailed water contact and long sunset shadows.
  * The reefs between them share the local surf and the streamed rock batches. */
