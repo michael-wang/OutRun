@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_OWNERSHIP_ONLY_UNPLACED",
+  "preferredSequence": [
+    "tutorial",
+    "kenting-beach",
+    "working-harbour",
+    "coastal-woods"
+  ],
+  "note": "Source local stations are not a promise of a future placement or road interval. Runtime place remains deferred until R2b reviews ports and connectors.",
+  "segments": {
+    "working-harbour": {
+      "id": "working-harbour",
+      "heroId": "working-harbour",
+      "referenceAnchorM": 4600,
+      "environment": "working quay on the left sea",
+      "landings": [
+        {
+          "localM": -110,
+          "lateral": -25,
+          "radius": 7
+        },
+        {
+          "localM": -30,
+          "lateral": -25,
+          "radius": 7
+        },
+        {
+          "localM": 175,
+          "lateral": -25,
+          "radius": 7
+        }
+      ],
+      "boats": [
+        {
+          "id": "quay-trawler",
+          "localM": -80,
+          "kind": "fishing",
+          "offshoreM": 67,
+          "lengthM": 20
+        },
+        {
+          "id": "quay-longliner",
+          "localM": 180,
+          "kind": "fishing",
+          "offshoreM": 64,
+          "lengthM": 17
+        }
+      ],
+      "entryPort": null,
+      "exitPort": null,
+      "productionStatus": "SOURCE_ONLY",
+      "notes": "Existing landing at track 8920 and non-quay town/sail boats remain independent of this harbour."
+    },
+    "coastal-woods": {
+      "id": "coastal-woods",
+      "heroId": "coastal-woods",
+      "referenceAnchorM": 5420,
+      "environment": "inland copse, seaward low windbreak",
+      "inlandCopses": [
+        {
+          "localM": -95,
+          "x": 38,
+          "h": 14
+        },
+        {
+          "localM": -46,
+          "x": 61,
+          "h": 17
+        },
+        {
+          "localM": -6,
+          "x": 67,
+          "h": 19
+        },
+        {
+          "localM": 34,
+          "x": 61,
+          "h": 16
+        },
+        {
+          "localM": 72,
+          "x": 72,
+          "h": 18
+        },
+        {
+          "localM": 172,
+          "x": 69,
+          "h": 18
+        },
+        {
+          "localM": 214,
+          "x": 61,
+          "h": 17
+        },
+        {
+          "localM": 268,
+          "x": 48,
+          "h": 15
+        },
+        {
+          "localM": 294,
+          "x": 37,
+          "h": 12
+        }
+      ],
+      "shoreWindbreakCentersLocalM": [
+        110,
+        143,
+        178,
+        210,
+        251,
+        290
+      ],
+      "entryPort": null,
+      "exitPort": null,
+      "productionStatus": "SOURCE_ONLY",
+      "notes": "Grove at track 2800–3000 and ordinary roadside vegetation belong to other scenery, not this future woods segment."
+    }
+  }
+}
