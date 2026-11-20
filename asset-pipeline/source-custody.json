@@ -20,8 +20,12 @@
       "limitations": [
         "Owner-local Blender path documented but exact bytes were not checked by remote review.",
         "No pinned editable-source SHA-256 and no independently recovered private backup.",
-        "Export script reportedly depends on earlier R6b/R6c inputs: native source-to-export reproducibility not validated.",
+        "Tracked export script actually reads R6b core and R6c upper GLB inputs; exact native .blend edit/re-export parity remains unverified.",
         "This source custody issue does not change the owner-accepted R6d visual/gameplay choice."
+      ],
+      "upstreamInputs": [
+        "public/assets/characters/coast-blonde-r6b.glb",
+        "public/assets/characters/coast-blonde-r6b-upper.glb"
       ]
     }
   ]
