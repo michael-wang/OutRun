@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "profile": "riviera62-pilot",
+  "id": "p1-2r-visual-first",
+  "type": "SPIKE",
+  "exampleOnly": false,
+  "goal": "Issue #60 BLOCKED / Partial Evidence SPIKE. Preserve final native failure for independent review; no production or Stage C authorization.",
+  "gameRelevance": "Improve readable racing car silhouette/materials while preserving current handling and playable Riviera 62.",
+  "candidate": "art/p1-2r/source/correction-02-art-fail-sanitized.blend SHA256 e98889ddb5be236570133226e3d040fb419a19a2047da8b850ea0539e36ffc7d",
+  "downstream": [
+    "Replaceable car parts; wheel steer/roll pivots; scale and coordinate conventions.",
+    "Paint/glass lighting, shadow response, future LOD and bounded Pixel 8 cost; preserve collision/handling separation."
+  ],
+  "sourceOfTruth": [
+    "Issue #60; Stage A delegation and scoped escalation follow-up; current root AGENTS/Tracker/P1-0/P1-1",
+    "Style B SHA256 76136ce21f53802567ce44f996e9cc335db3f9f1a9b7b52a2927c793f6eac3e6",
+    "docs/P1_2R_STAGE_A_PREFLIGHT.txt and docs/p1-2r-stage-a/manifest.json",
+    "docs/P1_2R_PARTIAL_EVIDENCE.txt; docs/P1_2R_CORRECTION_02_FINAL.txt; art/p1-2r/evidence/manifest.json",
+    "art/p1-2r/evidence/privacy-derivative.json; original binary local-only"
+  ],
+  "toolRationale": "Native shared-vertex quad patch; Blender 4.5.13 LTS. Stage B High requested; actual model/effort UNKNOWN. Explicit UI numeric fields recovered verifiable axis control; resulting art failed.",
+  "stopCriteria": [
+    "Two #60 corrections consumed; no third correction or Stage C. Judy independent review required before push/PR.",
+    "#59 remains STOPPED/BLOCKED with its own two corrections exhausted; original files and Stage A snapshots protected.",
+    "No runtime/P1-3, GLB, performance, art or owner PASS; no safety bypass."
+  ],
+  "commands": [
+    "node scripts/check-task-contract.mjs asset-pipeline/p1-2r-visual-first.json",
+    "Fresh Blender readonly commands and exact snapshot roots in docs/P1_2R_STAGE_A_PREFLIGHT.txt; no new export command executed."
+  ],
+  "expectedEvidence": [
+    "Final failure source, byte size and SHA, fresh-open audit, correction history and partial evidence manifest.",
+    "Real multi-view render files remain MISSING; no camera/light provenance or highlight acceptance."
+  ],
+  "failedEvidence": [
+    "Correction 1: N sidebar hotkey ineffective; no geometry repair.",
+    "Original UI auto-review rejected missing Stage A approval evidence. Judy supplied new trusted approval; exactly one retry in same UI tool was allowed. No bypass.",
+    "Correction 2: visible View > Sidebar and Global numeric fields verified single Z edit and eight-point repair. Original hotkey misrouting cause UNKNOWN. Subsequent native curve failed ART gate: polygonal arch, rectangular ends and inner edge visible across opening.",
+    "No GLB, wheel/rim/lamp, world placement/clearance, render evidence, performance or remote source retention achieved. #59 missing evidence remains preserved."
+  ],
+  "correctionPasses": 2,
+  "rootCauseResolved": false,
+  "independentReview": "pending",
+  "requirements": {
+    "editableMaster": {
+      "state": "unknown",
+      "note": "Partial failure evidence only; no independent requirement verification. See final report.",
+      "evidence": null
+    },
+    "provenanceLicense": {
+      "state": "unknown",
+      "note": "Partial failure evidence only; no independent requirement verification. See final report.",
+      "evidence": null
+    },
+    "wheelPivots": {
+      "state": "unknown",
+      "note": "Partial failure evidence only; no independent requirement verification. See final report.",
+      "evidence": null
+    },
+    "materials": {
+      "state": "unknown",
+      "note": "Partial failure evidence only; no independent requirement verification. See final report.",
+      "evidence": null
+    },
+    "glbExport": {
+      "state": "unknown",
+      "note": "Partial failure evidence only; no independent requirement verification. See final report.",
+      "evidence": null
+    },
+    "devicePerformance": {
+      "state": "unknown",
+      "note": "Partial failure evidence only; no independent requirement verification. See final report.",
+      "evidence": null
+    }
+  },
+  "approvals": {
+    "technical": {
+      "state": "pending",
+      "note": "Independent technical review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "visual": {
+      "state": "pending",
+      "note": "Independent visual review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "device": {
+      "state": "pending",
+      "note": "Independent device review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "owner": {
+      "state": "pending",
+      "note": "Independent owner review has not occurred for this P1 candidate.",
+      "evidence": null
+    }
+  }
+}

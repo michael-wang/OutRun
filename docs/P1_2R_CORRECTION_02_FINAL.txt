@@ -1,0 +1,35 @@
+Issue #60 bounded correction 2 / final permitted correction
+Result: INPUT REPAIR VERIFIED; subsequent Stage B ART FAIL / STOPPED.
+Requested High. Actual model/effort UNKNOWN. No xhigh.
+
+Preservation: original failure, read-only snapshot and correction 1 remain unchanged.
+Independent correction 2 created no-overwrite from original SHA
+19b3b29b3cd3d6f15d365e0afaf3015bfbca5c81a97173dbab70b0101a7c3d81.
+Opened through native File Open, verified title. Discarded only unsaved selection state from correction 1.
+
+Different input method:
+Clicked a known vertex in viewport, then View > Sidebar, avoiding N hotkey.
+Transform displayed vertex X=-1.7, Y=.57143, Z=0. Selected Global.
+Direct numeric Z field entry .02 succeeded. Fresh Blender read-only audit found only vertex 41 Z=.019999999552965164; all other vertex coordinates unchanged. Test source SHA was 63dfb4833418df904cbd128ac9b53dc91dd016cf5412dc4d1f0c240d691735fd, 445177 bytes (subsequently saved as .blend1 backup).
+Reset single test vertex Z=0 through same field. Box-selected eight outer column vertices; read median X=-1.7,Y=0,Z=0. Set X=.3, then Z=-.2 through separate visible fields with readback.
+Fresh-process comparison script compare-correction-02.py verified identical vertex count and all face indices, only vertices 5,11,17,23,29,35,41,47 changed; X=-1.7000000477 -> .2999999523; Z=0 -> -.200000003; Y unchanged. Other 40 vertices unchanged.
+Repaired diagnostic source retained as stage-b-correction-02.blend, SHA b9247fd68581479cad2aca3a5ab34cde8e0154fdb7ccaf6681810da5f2f086d9.
+Original hotkey misrouting root cause remains UNKNOWN. Successful field entry does not prove a keyboard/focus diagnosis.
+
+Stage B continuation:
+Manually edited eight outer boundary stations in native numeric Z fields:
+Y=-.8,-.571429,-.342857,-.114286,.114286,.342857,.571429,.8
+Z=-.55,-.55,-.17,-.02,-.02,-.17,-.55,-.55.
+All edits made through UI, no geometry-generation script.
+Native non-applied Catmull-Clark modifier viewport level 1, render level 2; Shade Smooth. One shared mesh, 48 vertices, 35 quads. No rim/lamp/GLB.
+Observed real top/right-side and near-side perspective viewport images. The silhouette retains obvious polygonal arch segments and rectangular hanging ends; a straight inner boundary remains visible across the upper opening. This is not the natural Style B fender volume required. Strict ART FAIL declared and no further reshaping attempted.
+The successful input repair is not an art acceptance. Modifier level 2 was not inspected; no claim that it would cure silhouette/design defects.
+
+Final saved evidence via native File > Save As, new filename:
+<LOCAL_WORKSPACE>\stage-b-correction-02-art-fail.blend
+445630 bytes; SHA256 17f10d21424863ce379b104952e43f5c425adbc011043456fc0570a259c2a78f
+Fresh Blender 4.5.13 LTS reopen succeeded exit 0, one Grid mesh with 48 vertices / 35 quads and SUBSURF modifier. Audit text stored alongside this report.
+Final .blend remains an origin-centered patch: vehicle world placement, clearance check, lip support/turn-in and tapered front-body envelope were not completed.
+No scene cameras/lights or neutral/front/45-degree/dusk/close-up render set was created. UI tool screenshots are actual observed evidence; no standalone screenshot file or successful lighting/highlight proof is claimed.
+
+STOP: corrections 2/2 used. No third correction, Stage C, GLB, runtime, #59 alteration, P1-3, Issue update, commit/push or PR. No safety refusal occurred in this correction; fresh-process read-only audit used formal approved escalation. Judy owns status update and disposition.

@@ -1,0 +1,26 @@
+Issue #60: BLOCKED / Partial Evidence -- local Draft PR preparation only
+
+The new native shared-vertex quad method reached an editable failure artifact, not an accepted Riviera 62 fender. Two bounded corrections are exhausted. No further modeling or Stage C is authorized.
+
+Review entry points:
+- art/p1-2r/source/correction-02-art-fail-sanitized.blend: 445630 bytes, SHA256 e98889ddb5be236570133226e3d040fb419a19a2047da8b850ea0539e36ffc7d.
+- art/p1-2r/evidence/manifest.json: relative paths, byte sizes and SHA256 of partial evidence. Manifest excludes itself.
+- P1_2R_STAGE_B_INPUT_FAILURE_01.txt: original UI denial, newly supplied trusted Stage A approval and single same-tool permitted retry; wrong-axis result.
+- P1_2R_CORRECTION_01_STOP.txt and P1_2R_CORRECTION_02_FINAL.txt: complete correction history and limitations.
+- p1-2r-stage-a/correction-02-art-audit.txt: fresh-process final native-source reopen.
+
+Correction 1 could not expose Transform using N. Correction 2 used visible View > Sidebar and Global numeric fields. Single-point Z movement and eight-point column repair were read back from a fresh Blender process; unchanged face indices and other vertices were checked. Original hotkey failure cause remains UNKNOWN. Subsequent real native arch shaping and non-applied subdivision failed the art gate: visibly polygonal arch, rectangular ends, inner edge across opening. Editable cage has 48 vertices / 35 quads.
+
+Original UI safety denial was preserved and respected. Retry followed materially new trusted supervisory/user evidence and was allowed through the same tool once. No permission changes or alternate environment bypass. Later read-only Blender audits used formally approved sandbox escalation.
+
+No standalone multiview image files are included. Existing real UI screenshots remain in the conversation, not portable evidence. No new native image-capture workflow was established for this packaging step, so images are explicitly MISSING. No charts, AI images or reconstructed screenshots substitute for Blender evidence. No cameras/lights/render settings are claimed.
+
+#59 originals, its exhausted two corrections and Stage A snapshots remain unchanged. Historical Stage A records are retained as dated evidence; their Stage-A-only/count-0 statements do not describe the final checkpoint. Current SPIKE contract records count 2 and unresolved findings. No GLB, art, performance, device, runtime, P1-3 or owner PASS. High requested; actual model/effort UNKNOWN.
+
+Branch spike/p1-2r-visual-first; base e68abcfefb6766743c2fe164f10e9d1a4ad93b7d. Scope is source/evidence/docs/contract only. Native source is below 1 MB and suitable as an ordinary Git blob; no LFS or new storage service needed. Local staging is not remote retention. Judy reviews before any push or Draft PR; neither has been performed.
+
+Public-copy disclosure: Internal conversation identifiers, private machine roots and unrelated initialization details have been redacted from copied text evidence. Unmodified private originals remain outside the repository. These public text copies are NOT all byte-identical to historical originals. Historical source/snapshot hashes describe the original artifacts; the delivery manifest hashes describe current public copies. Local paths are symbolic placeholders; audit scripts may require local path configuration. The original Blender binary remains unchanged locally; only the privacy-sanitized derivative is included publicly.
+
+Whitespace validation: ordinary git diff --cached --check exits 2 because retained CRLF evidence is reported as trailing whitespace. It is NOT a PASS. The explicit cr-at-eol variant exits 0. Retained CRLF bytes are intentional; no global whitespace setting changed.
+
+Binary privacy derivative: The original SHA256 17f10d21424863ce379b104952e43f5c425adbc011043456fc0570a259c2a78f is local-only and is NOT included in this PR. The public derivative has SHA256 e98889ddb5be236570133226e3d040fb419a19a2047da8b850ea0539e36ffc7d. Only saved File Browser UI paths were sanitized through native Blender save-copy. Two fresh-process captures verified identical topology, coordinates, transforms, modifier settings and material data; uncompressed ASCII/UTF-16 scanning found no Windows absolute paths or internal identifiers. See art/p1-2r/evidence/privacy-derivative.json. Historical reports/audits refer to the local-only original. This is privacy cleanup, not a third modeling correction.

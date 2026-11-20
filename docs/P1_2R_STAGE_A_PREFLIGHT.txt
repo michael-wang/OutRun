@@ -1,0 +1,183 @@
+P1-2R / Issue #60 — Stage A preflight, 2026-11-16 UTC
+Status: STAGE A EVIDENCE READY FOR JUDY REVIEW. Stage B NOT STARTED.
+Type: independent SPIKE / method preflight, not production or correction 3 of #59.
+
+Authority and limits
+Read Issue #60 and all its comments, #59 and its failure/method-reset comments;
+latest dev root AGENTS, Tracker, P1-0 Brief, P1-1 research, Task Contracts,
+Art Bible, Hero Vehicle Art, R5 Art Pipeline, Art/Tech Co-design principles,
+reference README and H0 capture provenance. Latest changes were compared against
+the old worktree: only the current authority prefixes/status changed in AGENTS,
+Tracker and P1-0; other inspected reference documents and vehicle sources match.
+Tracked/local search found no SKILL.md, .agents/skills or repository skills.
+Only root AGENTS applies to these documentation/evidence paths; no tests/content
+work. Dated character/scenery instructions are historical, not new assignments.
+
+The initial sandbox git -C <old-worktree> status/worktree/remote commands failed
+with Permission denied. That was a sandbox execution failure, not an auto-review
+rejection. Judy then requested formal minimal escalation. Approved scoped commands
+succeeded. No security settings changed, browser access retried or tool route used
+to bypass a denial. Issue updates remain Judy's responsibility; zero Issue writes.
+
+Requested effort Low for Stage A. Actual model and applied effort UNKNOWN: no
+reliable execution telemetry. Proposed future export verification: Medium;
+native topology work: High only with a specific difficulty rationale in its
+dispatch; no xhigh request or claim. No token-savings claim.
+
+Original state and isolation
+Original checkout <ORIGINAL_CHECKOUT> remains dev at
+3fe62dcdb07bde88f212adbdacc5cf092f0e2817, no tracked edits, 11 existing untracked
+entries (.cache, four reference ZIPs, art-prototype, four art-review directories,
+public/generated). No checkout/reset/clean/stash/fetch performed there.
+#59 worktree <LEGACY_WORKTREE> remains
+spike/p1-2-riviera62 at 9fd493ac42838184b0a65129ff56252f43431114. Its six untracked
+entries are art/p1-2, contract, three reports and preservation. No tracked edits.
+
+Remote dev ls-remote and newly cloned HEAD agree:
+e68abcfefb6766743c2fe164f10e9d1a4ad93b7d.
+New isolated checkout/worktree: task-4/outrun-p1-2r-stage-a;
+branch spike/p1-2r-visual-first. This is an independent shallow clone, with its own
+.git, not a linked worktree that writes into the owner's primary Git metadata.
+An initially attempted full-history clone was deliberately interrupted after
+repository metadata showed roughly 2GB history; its incomplete task-4/outrun-p1-2r
+directory is unused and retained. The shallow clone completed successfully.
+No push, PR, merge, runtime changes or model creation occurred in Stage A.
+
+Evidence protection
+Original evidence root:
+<LEGACY_WORKTREE>
+Protected snapshot outside the new working repository/model directory:
+<LOCAL_WORKSPACE>/stage-a-preservation
+41 files include all art/p1-2 files, prior preservation snapshot, reports and
+contract. Destination must not exist; File.Copy overwrite=false; every copied
+SHA-256 checked and each copy plus manifest marked ReadOnly. Full exact original
+and snapshot paths, bytes and SHA-256: stage-a-preservation/manifest.json, also
+copied into this report's evidence directory. This is a same-machine accidental
+overwrite guard, NOT tamper-proof immutable storage, independent backup or remote
+retention. No missing historical bytes were reconstructed.
+Verification found all 41 originals and all 41 snapshot copies unchanged after
+native reopen. Lost initial SHA 78fc298958b0f780bb589c6f15c40007af7fd75f6ad9ec86922ff1dc790a8c77
+is not present among inventoried files; old failure remains preserved.
+
+Fresh Blender reopen
+Blender executable: <LOCAL_TOOLS>/blender-4.5.13-windows-x64/blender.exe
+4.5.13 LTS, build daeeeca98fb0; imported bundled glTF addon version 4.5.51.
+12 distinct live-source .blend/.blend1 snapshot copies each opened in a separate
+fresh --factory-startup --background --disable-autoexec process, audit only, exit 0.
+Three preserved GLBs (assembly-05, revision-06, revision-07) imported in separate
+fresh Blender processes, exit 0. No source saves or GLB exports were performed.
+Prior-snapshot duplicate files were hash-verified; not all duplicates reopened.
+Commands: blender.exe --factory-startup --background --disable-autoexec <copy.blend>
+  --python <task-4>/audit-stage-a.py
+GLB: same startup flags --python <task-4>/audit-stage-a-glb.py -- <copy.glb>.
+The scripts and complete stdout logs are in the compact evidence directory.
+This proves native file readability, not art approval, original UI event history,
+Three.js loading, browser interaction or GPU rendering quality.
+
+Two identifiable historical edit/export pairs (NOT two new corrections)
+Relative to old root:
+art/p1-2/revision-06/native-edit-06.blend: 641214 bytes
+SHA256 ad1f502cb350aff4fdd6ef20ec7b15bbb62889479427190fd5ed595d85c070be
+art/p1-2/revision-06/native-edit-06.glb: 70324 bytes
+SHA256 b32619ba1c0a10f565538ea5f9a9781670835150977c0ee71cea8bc5576e212e
+art/p1-2/revision-07/native-edit-07.blend: 640606 bytes
+SHA256 0b80f18318bccffbfccb69dfa4d1109464b88de7dec58e661995d5230a735aa5
+art/p1-2/revision-07/native-edit-07.glb: 70320 bytes
+SHA256 aaafaaa2a63f1c7a20a64d3f843b12f03a732c534cf473fe4627dcb23bad42d5
+
+Both original *.audit.json source/export hashes and byte counts match actual files.
+Assembly-05 -> 06 changes all 68 arch vertices, leaving tire/lens unchanged;
+local arch Z bounds change [-.0664734,.5748265] -> [-.0817939,.5851580].
+06 -> 07 changes all 482 lens vertices; local depth Y ~[-.06,.06] -> [-.048,.048],
+while arch/tire stay identical. Detailed fresh comparison: native-deltas.txt.
+Semantic parents/materials persist: vehicleRoot/sprungBody/archPaint_native and
+headlampLens_native, independent wheelMount_FL/steerPivot_FL/rollingAxle_FL/tire_FL.
+The source has only three mesh objects: arch (68 vertices/48 faces), lens
+(482/512), tire (576/576). No independent wheel rim/hub or lamp housing exists.
+Saved scripts show assembly adds parenting/materials/thickness/bevel without
+replacing authored vertices. Export recipe uses export_format=GLB, export_yup=True,
+export_apply=True; old source/export hash assertions are present. Scripts were
+read, not rerun. GLB generator is Khronos glTF Blender I/O v4.5.51.
+
+Missing evidence: earliest overwritten draft bytes; durable native UI edit
+screenshots/video for the two revisions; verified neutral/dusk multi-view art
+captures; complete fender surface, rim and housing; browser/Three.js manipulation
+proof; remote retained editable source; art/device/owner acceptance. Existing
+reports and contract stop at earlier checkpoints and are preserved unchanged;
+the revision files corroborate later edits, not a completed #59 pipeline.
+#59 correction count stays 2, STOPPED/BLOCKED. #60 correction count is 0.
+
+Tool/delivery preflight
+Git 2.50.1.windows.1; LFS 3.7.0; Node 24.21.0; gh 2.104.0; existing primary
+checkout's Three.js package 0.180.0. No installs or game builds/tests performed.
+Local gh API and GitHub connector both report repository push permission true.
+This is permission metadata, not a successful push/PR or branch-policy guarantee.
+New art/p1-2r/source/*.blend and exports/*.glb paths are not ignored and have no
+LFS filter. Existing source ~0.64MB and GLB ~70KB make normal Git a feasible
+delivery candidate: review, commit source/recipe/hash plus compact captures,
+Draft PR into dev when later authorized stage is complete; independently fetch
+the exact commit and reopen bytes before calling source remotely retained.
+No LFS provisioning, paid service, storage migration or upload now. New model
+size is unknown. If it grows, reassess delivery instead of silently changing tools.
+
+Visual reference actually observed
+Style B PNG opened and pixels inspected; SHA256
+76136ce21f53802567ce44f996e9cc335db3f9f1a9b7b52a2927c793f6eac3e6.
+Its red roadster has a convex shoulder rolling into a broad hood, a coherent
+dark wheel opening beneath that volume, broad warm reflections and sparse trim.
+The arch is a boundary of a volume, not the sole painted object. The board's
+round headlights/grille/stripes are not permission to redesign Riviera 62.
+Also observed actual H0 03-front.jpg pixels: historical v0.10.17, not a new or
+current runtime capture. It shows Riviera's low tapering nose, raised fender
+shoulders and horizontal front lamps. Its old characters are not current targets.
+Current dev car.ts/hero-body.ts corroborate wheel center G=(1.055,.46,1.38),
+radius .46, outer brow ~X=1.20, lamp G=(.55,.58,2.32), hood narrowing forward
+(profile width/height at Gz=1.05:1.06/.86; 1.58:1.00/.79; 2.31:.72/.61).
+These are dimensional guides, not a script to regenerate the old car.
+
+Proposed materially different method — not executed
+One new native file, no append/copy of #59 arch. Use a sparse longitudinal QUAD
+SURFACE PATCH shaped in native Edit Mode, covering hood-side shoulder through
+outer fender and the wheel-opening boundary. Start with a plane/grid, then
+manually shape roughly 6-8 fore/aft stations with 4-5 cross-surface control rows:
+hood-side boundary, shoulder crown, outer roll, side wall and arch lip boundary.
+The station spacing follows curvature; broad shoulder faces stay broad. Connect
+the crown and side into one shared-vertex sheet; native loop cuts/edge slides
+control transitions and a short native extrusion turns the opening inward.
+Do not extrude a semicircle repeatedly into another concentric ribbon. Do not
+create a Python/Geometry Nodes complete fender or repair #59's primitive cluster.
+Use explicit numeric fields with immediate readback; native menu Save As into
+new revision paths, never hotkey-only saves over prior evidence.
+
+Guides may mark the fixed wheel center/radius and current shell envelope. Keep
+Blender basis B=(Gx,-Gz,Gy); +X driver, -Y nose, +Z up. Model only +X front
+quarter (approximately Gz .7 to 2.31), retain outer width/stance. Need a local
+clearance check at wheel reference, not an invented suspension specification.
+Catmull-Clark subdivision preview level 1, compare level 2 only if needed;
+restrained support loops at lip/boundary, optional thin Solidify after surface
+approval. Keep editable cage/modifiers; no destructive conversion to conceal
+pinching, no poles on the broad highlight path. Numerical plan is provisional,
+not accepted topology or a face-count budget.
+
+Hypothesis: longitudinal control of a broad crown-to-side surface allows a
+continuous reflection to travel from hood-side shoulder to arch flank. This
+directly tests the old missing surface/primitive silhouette failure. Merely
+successful saving/exporting cannot support this hypothesis.
+Falsify if actual neutral front/side/front-three-quarter plus dusk-ish and
+wireframe views reveal a detached ribbon, faceting, dents, pinches, stretched
+quads, wrong stance, intersecting tire, or highlight continuity only at one angle.
+Require real Blender captures of cage and shaded result, modifier stack, close-up
+highlight, camera/light/exposure settings and saved-source SHA. No AI screenshots.
+Move a large area light across the shoulder for diagnostic highlight inspection;
+keep neutral and dusk camera comparisons matched. Exact chosen camera transforms
+and lights must be recorded during Stage B, not invented as executed in Stage A.
+If the native patch cannot be authored/re-edited honestly, declare capability
+gap. ART FAIL stops before rim/lamp/export work; at most two Judy-bounded NEW
+method corrections. Continued failure goes to Julia/Michael for human-assisted
+native modeling or a properly licensed editable base-mesh decision. No automatic
+third correction, no new fallback implementation, no P1-3.
+
+Handoff
+Stage A evidence only. Judy must inspect actual manifest, source/GLB copies and
+logs independently and decide on this method before Stage B. No art PASS, source
+remote-retention PASS, L1/L2/L3, Three.js/browser PASS or mobile PASS is asserted.

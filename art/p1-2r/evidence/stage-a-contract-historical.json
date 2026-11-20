@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "profile": "riviera62-pilot",
+  "id": "p1-2r-visual-first",
+  "type": "SPIKE",
+  "exampleOnly": false,
+  "goal": "Issue #60 independent visual-first method spike; this checkpoint is Stage A only, no modeling.",
+  "gameRelevance": "Improve readable racing car silhouette/materials while preserving current handling and playable Riviera 62.",
+  "candidate": "Stage A evidence at dev e68abcfefb6766743c2fe164f10e9d1a4ad93b7d; no new native model yet.",
+  "downstream": [
+    "Replaceable car parts; wheel steer/roll pivots; scale and coordinate conventions.",
+    "Paint/glass lighting, shadow response, future LOD and bounded Pixel 8 cost; preserve collision/handling separation."
+  ],
+  "sourceOfTruth": [
+    "Issue #60; Stage A delegation and scoped escalation follow-up; current root AGENTS/Tracker/P1-0/P1-1",
+    "Style B SHA256 76136ce21f53802567ce44f996e9cc335db3f9f1a9b7b52a2927c793f6eac3e6",
+    "docs/P1_2R_STAGE_A_PREFLIGHT.txt and docs/p1-2r-stage-a/manifest.json"
+  ],
+  "toolRationale": "Proposed native longitudinal quad surface patch, not the old concentric arch ribbon. Stage A requested Low; actual model/effort UNKNOWN. Blender 4.5.13 / exporter 4.5.51 readonly reopen completed.",
+  "stopCriteria": [
+    "Stop after Stage A for Judy review; no Stage B modeling without gate confirmation. No Issue edits by Codex.",
+    "Preserve #59 STOPPED/BLOCKED and its exhausted 2 corrections. New #60 correction count 0, cap 2.",
+    "No original model/runtime/src/public/assets/content/main/physics changes, paid calls, browser-security bypass or P1-3."
+  ],
+  "commands": [
+    "node scripts/check-task-contract.mjs asset-pipeline/p1-2r-visual-first.json",
+    "Fresh Blender readonly commands and exact snapshot roots in docs/P1_2R_STAGE_A_PREFLIGHT.txt; no new export command executed."
+  ],
+  "expectedEvidence": [
+    "Stage A: 41 original/snapshot hashes, 12 blend/backup fresh opens, 3 GLB native imports, old revision identity comparison, actual Style B inspection, isolated branch and method falsification plan.",
+    "Stage B/C evidence is future and gated, not claimed complete."
+  ],
+  "failedEvidence": [
+    "Initial sandbox git Permission denied resolved by formally approved scoped escalation, not auto-review denial or safety bypass.",
+    "#59 missing first overwritten bytes, full surface/rim/housing, durable edit UI captures, verified Three.js/browser art evidence and remote source retention remain missing.",
+    "Full-history clone interrupted for size; independent shallow clone completed. No source model created."
+  ],
+  "correctionPasses": 0,
+  "rootCauseResolved": false,
+  "independentReview": "pending",
+  "requirements": {
+    "editableMaster": {
+      "state": "unknown",
+      "note": "Not verified for new #60 model; Stage A has no newly authored model. See preflight for preserved #59 evidence and remaining gate.",
+      "evidence": null
+    },
+    "provenanceLicense": {
+      "state": "unknown",
+      "note": "Not verified for new #60 model; Stage A has no newly authored model. See preflight for preserved #59 evidence and remaining gate.",
+      "evidence": null
+    },
+    "wheelPivots": {
+      "state": "unknown",
+      "note": "Not verified for new #60 model; Stage A has no newly authored model. See preflight for preserved #59 evidence and remaining gate.",
+      "evidence": null
+    },
+    "materials": {
+      "state": "unknown",
+      "note": "Not verified for new #60 model; Stage A has no newly authored model. See preflight for preserved #59 evidence and remaining gate.",
+      "evidence": null
+    },
+    "glbExport": {
+      "state": "unknown",
+      "note": "Not verified for new #60 model; Stage A has no newly authored model. See preflight for preserved #59 evidence and remaining gate.",
+      "evidence": null
+    },
+    "devicePerformance": {
+      "state": "unknown",
+      "note": "Not verified for new #60 model; Stage A has no newly authored model. See preflight for preserved #59 evidence and remaining gate.",
+      "evidence": null
+    }
+  },
+  "approvals": {
+    "technical": {
+      "state": "pending",
+      "note": "Independent technical review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "visual": {
+      "state": "pending",
+      "note": "Independent visual review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "device": {
+      "state": "pending",
+      "note": "Independent device review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "owner": {
+      "state": "pending",
+      "note": "Independent owner review has not occurred for this P1 candidate.",
+      "evidence": null
+    }
+  }
+}

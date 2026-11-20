@@ -1,0 +1,41 @@
+OutRun Issue #60 / P1-2R / Stage B -- STOPPED, NOT ART-PASSED
+Date: 2026-11-16
+Requested effort: High. Actual model/effort telemetry: UNKNOWN. No xhigh requested.
+
+Authorization and review history
+Stage A was independently accepted by Judy: 41/41 original/snapshot hashes and revision-07 fresh-open verified. Stage B was explicitly authorized. #59 remains a separate failed method with its two corrections exhausted.
+The UI transform originally received an automatic approval rejection:
+"此 UI 編輯本身可逆且低風險，但可見授權要求 Stage A 審查後才進入 Stage B，且未提供可信的審查核准證據。"
+No alternate tool/environment was used to perform that denied operation.
+Judy supplied materially new supervisory evidence and authorized exactly one retry of the same operation in the same formal UI tool. Michael's original user-authored authorization was verified; Judy's independent Stage A approval supplied the missing evidence.
+The single retry was allowed and executed. The prior rejection is retained, not erased or relabeled.
+
+New native work performed
+In a fresh Blender 4.5.13 LTS unsaved scene, removed only default objects and added a native Grid. It contains 48 shared vertices and 35 quadrilateral faces. Started a shoulder patch using Edit Mode vertex transforms. No model-generation script was used. No primitives from #59 were reused. No subdivision, wheel arch cutout, final fender shaping, wheel, rim, lamp housing, or GLB export was reached.
+
+Failure and stop
+Intended final operation: select the outer column, G Z -0.2.
+Tool key sequence: Alt_L+a; box drag [986,265] to [1013,904]; g; z; minus; period; 2; Return.
+Observed top-orthographic UI after retry: outer column moved horizontally across the mesh, producing overlapping/reversed strip geometry. Modeling stopped immediately; no Undo, repair, additional art iteration, or Stage C action was performed.
+Root cause of the wrong effective input is UNKNOWN. It is not established whether key delivery, modal state, or another UI behavior caused it.
+
+Preserved source
+<LOCAL_WORKSPACE>\stage-b-input-failure-01.blend
+473759 bytes
+SHA256 19b3b29b3cd3d6f15d365e0afaf3015bfbca5c81a97173dbab70b0101a7c3d81
+Saved through Blender Save As to a new filename outside original worktrees. UI title and Saved message verified. The scene remains visible in Blender for independent review.
+
+Fresh-process read-only verification
+Installed Blender 4.5.13 LTS, build daeeeca98fb0, --background --disable-autoexec with audit-stage-b-input-failure.py. No model edits, saves, or exports in audit script.
+Initial sandbox execution exited 1 without output. Formal require_escalated execution was approved and succeeded with exit 0; this was not a safety-review bypass.
+Fresh-open found one mesh object Grid: 48 vertices, 35 faces, all 35 quads, no modifiers.
+Unique X coordinates: -1.7, -0.3, -0.18, -0.06, 0.06, 0.18.
+Unique Y coordinates: -0.8, -0.571429, -0.342857, -0.114286, 0.114286, 0.342857, 0.571429, 0.8.
+Unique Z coordinates: -0.1, 0, 0.1.
+The outer column formerly X=+0.3 is X=-1.7 and Z=0 throughout. Thus the final effective displacement was -2 on X, not -0.2 on Z. Earlier inner and central Z edits are present.
+
+Delivery status / remaining blocker
+Stage B is incomplete and not eligible for ART PASS. No neutral front/side/45-degree renders, dusk render, close-up set, or lighting/camera provenance exists. UI screenshots in the tool conversation show the actual failure; no standalone screenshot file was fabricated or claimed.
+This source is failure evidence only, not an accepted fender or production candidate.
+No #60 method correction was performed (count 0); Judy must decide the disposition before any repair/restart. #59's original files and two correction records were not modified. No runtime, P1-3, Issue edit, GLB, commit, push, or Draft PR was made in Stage B.
+Waiting for Judy's independent review and next instruction.

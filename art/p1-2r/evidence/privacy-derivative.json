@@ -1,0 +1,39 @@
+{
+  "status": "privacy derivative verified; ART FAIL unchanged",
+  "original": {
+    "localOnly": true,
+    "bytes": 445630,
+    "sha256": "17f10d21424863ce379b104952e43f5c425adbc011043456fc0570a259c2a78f"
+  },
+  "derivative": {
+    "path": "art/p1-2r/source/correction-02-art-fail-sanitized.blend",
+    "bytes": 445630,
+    "sha256": "e98889ddb5be236570133226e3d040fb419a19a2047da8b850ea0539e36ffc7d"
+  },
+  "operation": "Blender 4.5.13 LTS --background --disable-autoexec; set only FILE_BROWSER params.directory to // and filename to empty; native save_as_mainfile(copy=True,compress=False,relative_remap=False). Original not saved.",
+  "equivalence": {
+    "freshProcesses": 2,
+    "identical": true,
+    "captureFileSha256": "c9266022279e988f8f0c4c449f619fc7cbc39c5f41bf7e4416d8c1ce12ee7750",
+    "checks": [
+      "vertex coordinates",
+      "edge and polygon indices",
+      "object scalar RNA properties and transforms",
+      "world and parent inverse matrices",
+      "modifier scalar/enum/array properties",
+      "material slots",
+      "material scalar properties, node properties/inputs/links",
+      "polygon smoothing and material index"
+    ]
+  },
+  "privacyScan": {
+    "uncompressed": true,
+    "encodings": [
+      "ASCII/Latin1",
+      "UTF-16LE"
+    ],
+    "windowsAbsolutePathMatches": 0,
+    "internalIdentifierMatches": 0
+  },
+  "limitations": "This proves captured model equivalence, not ART PASS. UI state intentionally differs. Initial audit serialization errors were fixed in the read-only audit script; neither blend was modified during verification."
+}

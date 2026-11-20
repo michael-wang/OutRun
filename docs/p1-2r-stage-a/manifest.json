@@ -1,0 +1,289 @@
+[
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\assemble-native.py",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\assemble-native.py",
+    "relative": "art\\p1-2\\assemble-native.py",
+    "bytes": 3013,
+    "sha256": "12B7AE3C4F1A521B78FDC2B24E55CDBCFC2C3BB46DB7E921372826D230B92D0F"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\audit-corrected.txt",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\audit-corrected.txt",
+    "relative": "art\\p1-2\\audit-corrected.txt",
+    "bytes": 2109,
+    "sha256": "AFC08D1BF68467B62FCA59BFCE9595221AF3F29A22C1CF788918B54B0DAF353C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\audit-native.py",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\audit-native.py",
+    "relative": "art\\p1-2\\audit-native.py",
+    "bytes": 794,
+    "sha256": "E5297775EF1705EE29FF4498B79F1B8F130B2FE72DF8108474D2D8BE96D326A3"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\audit-original.txt",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\audit-original.txt",
+    "relative": "art\\p1-2\\audit-original.txt",
+    "bytes": 2105,
+    "sha256": "4392447B037A6B5BE983CDAAF6FE76CED0A3F75D1C3ECD9725E92652CCE3451C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\export-native.py",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\export-native.py",
+    "relative": "art\\p1-2\\export-native.py",
+    "bytes": 1339,
+    "sha256": "8232086F7161E2D45A67618AEB16EA2A7E1A22EAEDFED38452CA386B91CBC8C2"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\native-diagnostic-02.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\native-diagnostic-02.blend",
+    "relative": "art\\p1-2\\native-diagnostic-02.blend",
+    "bytes": 537497,
+    "sha256": "0B1704BC268A5627B0992E772E59367CCD4396F7EDA6BD3F2C5A8C33821A306C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\native-diagnostic-02.blend1",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\native-diagnostic-02.blend1",
+    "relative": "art\\p1-2\\native-diagnostic-02.blend1",
+    "bytes": 537497,
+    "sha256": "97EE75326DA2993241CC655DEEA92B8658EDDB987BA76DDD63712038382350CD"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\native-draft-01.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\native-draft-01.blend",
+    "relative": "art\\p1-2\\native-draft-01.blend",
+    "bytes": 537497,
+    "sha256": "732881FB74B7625C818C2B988A4D2D3D22318EE0332B254F0A1E13445C617395"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\native-draft-01.blend1",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\native-draft-01.blend1",
+    "relative": "art\\p1-2\\native-draft-01.blend1",
+    "bytes": 537497,
+    "sha256": "D95CF4A97C88ED6F1293466D5DCAF3A494F67B985A960EB44C44BD9B639B9728"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\assembly-05\\assembled-native-05.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\assembly-05\\assembled-native-05.blend",
+    "relative": "art\\p1-2\\assembly-05\\assembled-native-05.blend",
+    "bytes": 641006,
+    "sha256": "626B42E41827965FCF06E717475CF80389D1160349EC21BDCFF527009416E4A0"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\assembly-05\\assembly-provenance.json",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\assembly-05\\assembly-provenance.json",
+    "relative": "art\\p1-2\\assembly-05\\assembly-provenance.json",
+    "bytes": 624,
+    "sha256": "3D5F9ACCF81BD0681E36712565738ABEE8E9ABBF1A539E0123368A20B08E6538"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\assembly-05\\corner-05.glb",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\assembly-05\\corner-05.glb",
+    "relative": "art\\p1-2\\assembly-05\\corner-05.glb",
+    "bytes": 70320,
+    "sha256": "969D1A727E3D44F2688E7F90535460024ADBDFF1359913DF9AC81256A83572DC"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-03\\audit-reopen.txt",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-03\\audit-reopen.txt",
+    "relative": "art\\p1-2\\revision-03\\audit-reopen.txt",
+    "bytes": 2126,
+    "sha256": "F8A9E269E5DC6B366389A0C9CF1845786B247058C2F1D6E3631346B506686596"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-03\\native-source-03.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-03\\native-source-03.blend",
+    "relative": "art\\p1-2\\revision-03\\native-source-03.blend",
+    "bytes": 537497,
+    "sha256": "C7E08EDDD974ED8D59A5811D346C534725C7FA43CE189457F72CBC3763618E9C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-04\\native-source-04.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-04\\native-source-04.blend",
+    "relative": "art\\p1-2\\revision-04\\native-source-04.blend",
+    "bytes": 563419,
+    "sha256": "16EE96EC8BC6F4F78815A20EFFB875973D57B6E9F41FE82F3C8692F5CE5732F3"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-04\\native-source-04.blend1",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-04\\native-source-04.blend1",
+    "relative": "art\\p1-2\\revision-04\\native-source-04.blend1",
+    "bytes": 537497,
+    "sha256": "C7E08EDDD974ED8D59A5811D346C534725C7FA43CE189457F72CBC3763618E9C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-06\\native-edit-06.audit.json",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-06\\native-edit-06.audit.json",
+    "relative": "art\\p1-2\\revision-06\\native-edit-06.audit.json",
+    "bytes": 10671,
+    "sha256": "9D4BF7E719A55656BAA8883E9A68CC1E710AFFF855E936E5D9B1945B1282624D"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-06\\native-edit-06.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-06\\native-edit-06.blend",
+    "relative": "art\\p1-2\\revision-06\\native-edit-06.blend",
+    "bytes": 641214,
+    "sha256": "AD1F502CB350AFF4FDD6EF20EC7B15BBB62889479427190FD5ED595D85C070BE"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-06\\native-edit-06.blend1",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-06\\native-edit-06.blend1",
+    "relative": "art\\p1-2\\revision-06\\native-edit-06.blend1",
+    "bytes": 641006,
+    "sha256": "626B42E41827965FCF06E717475CF80389D1160349EC21BDCFF527009416E4A0"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-06\\native-edit-06.glb",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-06\\native-edit-06.glb",
+    "relative": "art\\p1-2\\revision-06\\native-edit-06.glb",
+    "bytes": 70324,
+    "sha256": "B32619BA1C0A10F565538EA5F9A9781670835150977C0EE71CEA8BC5576E212E"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-07\\native-edit-07.audit.json",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-07\\native-edit-07.audit.json",
+    "relative": "art\\p1-2\\revision-07\\native-edit-07.audit.json",
+    "bytes": 10670,
+    "sha256": "DD7A2A5A235C0E18E47AA44DE59A505BE446F17C28B03059D14A21325E7F7D91"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-07\\native-edit-07.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-07\\native-edit-07.blend",
+    "relative": "art\\p1-2\\revision-07\\native-edit-07.blend",
+    "bytes": 640606,
+    "sha256": "0B80F18318BCCFFBFCCB69DFA4D1109464B88DE7DEC58E661995D5230A735AA5"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-07\\native-edit-07.blend1",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-07\\native-edit-07.blend1",
+    "relative": "art\\p1-2\\revision-07\\native-edit-07.blend1",
+    "bytes": 641214,
+    "sha256": "AD1F502CB350AFF4FDD6EF20EC7B15BBB62889479427190FD5ED595D85C070BE"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\revision-07\\native-edit-07.glb",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\revision-07\\native-edit-07.glb",
+    "relative": "art\\p1-2\\revision-07\\native-edit-07.glb",
+    "bytes": 70320,
+    "sha256": "AAAFAAA2A63F1C7A20A64D3F843B12F03A732C534CF473FE4627DCB23BAD42D5"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\viewer\\index.html",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\viewer\\index.html",
+    "relative": "art\\p1-2\\viewer\\index.html",
+    "bytes": 6106,
+    "sha256": "736D5934F6B67A2456D5AD562F8BCDF41FFFA59D72409D43A6329BD04D09712A"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\art\\p1-2\\viewer\\server.mjs",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\art\\p1-2\\viewer\\server.mjs",
+    "relative": "art\\p1-2\\viewer\\server.mjs",
+    "bytes": 1682,
+    "sha256": "3AAC7D47A39EDBCA68A9D3D2FB906E9B8418D06852A29ED86615E253B80C9B6A"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\manifest.json",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\manifest.json",
+    "relative": "preservation\\correction-2-snapshot\\manifest.json",
+    "bytes": 1655,
+    "sha256": "E3DC5A410F96D5670D6455D186665A8AEE20929C6D4D55538DD82863425AF3CC"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\art\\p1-2\\audit-corrected.txt",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\art\\p1-2\\audit-corrected.txt",
+    "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\audit-corrected.txt",
+    "bytes": 2109,
+    "sha256": "AFC08D1BF68467B62FCA59BFCE9595221AF3F29A22C1CF788918B54B0DAF353C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\art\\p1-2\\audit-native.py",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\art\\p1-2\\audit-native.py",
+    "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\audit-native.py",
+    "bytes": 794,
+    "sha256": "E5297775EF1705EE29FF4498B79F1B8F130B2FE72DF8108474D2D8BE96D326A3"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\art\\p1-2\\audit-original.txt",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\art\\p1-2\\audit-original.txt",
+    "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\audit-original.txt",
+    "bytes": 2105,
+    "sha256": "4392447B037A6B5BE983CDAAF6FE76CED0A3F75D1C3ECD9725E92652CCE3451C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend",
+    "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend",
+    "bytes": 537497,
+    "sha256": "0B1704BC268A5627B0992E772E59367CCD4396F7EDA6BD3F2C5A8C33821A306C"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend1",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend1",
+    "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-diagnostic-02.blend1",
+    "bytes": 537497,
+    "sha256": "97EE75326DA2993241CC655DEEA92B8658EDDB987BA76DDD63712038382350CD"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend",
+    "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend",
+    "bytes": 537497,
+    "sha256": "732881FB74B7625C818C2B988A4D2D3D22318EE0332B254F0A1E13445C617395"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend1",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend1",
+    "relative": "preservation\\correction-2-snapshot\\art\\p1-2\\native-draft-01.blend1",
+    "bytes": 537497,
+    "sha256": "D95CF4A97C88ED6F1293466D5DCAF3A494F67B985A960EB44C44BD9B639B9728"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\asset-pipeline\\p1-2-riviera62-spike.json",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\asset-pipeline\\p1-2-riviera62-spike.json",
+    "relative": "preservation\\correction-2-snapshot\\asset-pipeline\\p1-2-riviera62-spike.json",
+    "bytes": 5048,
+    "sha256": "56456FAD05310FC876D3DE2F43979656767158CF0DEA270D3C3EFBE2AA4BD3F2"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+    "relative": "preservation\\correction-2-snapshot\\docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+    "bytes": 2880,
+    "sha256": "923AE79333A8F05BA454B131E045E8A3E33FAA879902474BCE59B0071D5631AE"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\preservation\\correction-2-snapshot\\docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\preservation\\correction-2-snapshot\\docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+    "relative": "preservation\\correction-2-snapshot\\docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+    "bytes": 3512,
+    "sha256": "54B57BFE2EB3A15D59B735D52F271591FF6C345B6EE33BDD1AB251FAB218F943"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\asset-pipeline\\p1-2-riviera62-spike.json",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\asset-pipeline\\p1-2-riviera62-spike.json",
+    "relative": "asset-pipeline\\p1-2-riviera62-spike.json",
+    "bytes": 5895,
+    "sha256": "EFF1233002C0B53BE5EBA3AF112E0B079F47F0ABAFAB7AD6B6143F33BBDEC0FF"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+    "relative": "docs\\P1_2_CORRECTION_1_DIAGNOSTIC.md",
+    "bytes": 2880,
+    "sha256": "923AE79333A8F05BA454B131E045E8A3E33FAA879902474BCE59B0071D5631AE"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\docs\\P1_2_CORRECTION_2_PRESERVATION.md",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\docs\\P1_2_CORRECTION_2_PRESERVATION.md",
+    "relative": "docs\\P1_2_CORRECTION_2_PRESERVATION.md",
+    "bytes": 2929,
+    "sha256": "A0EEA9F7785535DF5B35A633BA39665E6580076440FD5AB333799BEF36C125A9"
+  },
+  {
+    "original": "<LEGACY_WORKTREE>\\docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+    "snapshot": "<LOCAL_WORKSPACE>\\stage-a-preservation\\docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+    "relative": "docs\\P1_2_RIVIERA62_DCC_SLICE_REPORT.md",
+    "bytes": 3512,
+    "sha256": "54B57BFE2EB3A15D59B735D52F271591FF6C345B6EE33BDD1AB251FAB218F943"
+  }
+]
