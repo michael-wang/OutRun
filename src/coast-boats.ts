@@ -29,7 +29,6 @@ export const COAST_BOATS:readonly Boat[]=[
  phase:1.1+i*.31,draft:length*(kind==='sail'?.15:kind==='fishing'?.09:.075),
 };});
 
-// Read-only use of the existing FFT textures, with the ocean adapter's same
 /** Never let a relocated beach's reference-space footprint swallow a
  * separate Sail Bay vessel. Working-harbour vessels are independently deferred
  * until R2 places their own segment. */
@@ -40,6 +39,7 @@ export function coastBoatAdmitted(boat:Pick<Boat,'id'|'distance'>):boolean {
  return !(beachMacro()==='right'&&ref>=4700&&ref<=6750);
 }
 
+// Read-only use of the existing FFT textures, with the ocean adapter's same
 // camera-dependent mip selection and bounded displacement. No CPU readback.
 const waterVertex=/* glsl */`
 uniform sampler2D uDisp0; uniform sampler2D uDisp1; uniform sampler2D uDisp2;
