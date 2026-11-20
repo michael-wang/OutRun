@@ -1,10 +1,11 @@
+import {kentingRoadsideStation} from './kenting-installation';
 import {townStreetAt} from './coast-town-access';
 /** Taiwan roadside drainage R2 — almost the entire ten-kilometre coast.
  * An uninterrupted inland-side roadside theme; coast-side beach/sea untouched.
  * Fields and open country have open U-drains, town fronts have flush covers;
  * tiny cover crossings/driveway spans are encoded by coastDrainCovered().
  */
-export const COAST_SIDE_DRAINS=[
+const referenceDrains=[
  {start:60,end:1900,kind:'open'},
  {start:1900,end:3400,kind:'mixed'},
  {start:3400,end:4435,kind:'covered'},
@@ -18,6 +19,7 @@ export const COAST_SIDE_DRAINS=[
  {start:7000,end:9600,kind:'mixed'},
  {start:9600,end:11200,kind:'covered'},
 ] as const;
+export const COAST_SIDE_DRAINS=referenceDrains.map(site=>({...site,start:kentingRoadsideStation(site.start),end:kentingRoadsideStation(site.end)}));
 export type CoastDrain=(typeof COAST_SIDE_DRAINS)[number];
 /** Physical metres right of the road centre on the five-lane coast.
  * Asphalt ends immediately beside the 10.26m lip. The previous channel
@@ -61,7 +63,7 @@ export const COAST_DRAIN_BRIDGES:readonly {d:number;width:number}[]=[
  {d:7885,width:6},{d:8160,width:7},
  {d:8430,width:7},{d:8660,width:6},{d:8880,width:6},
  {d:9100,width:6},{d:9325,width:6},{d:9550,width:6},{d:9670,width:7},
-];
+].map(bridge=>({...bridge,d:kentingRoadsideStation(bridge.d)}));
 export function coastDrainBridgeAt(d:number){
  return COAST_DRAIN_BRIDGES.find(bridge=>Math.abs(d-bridge.d)<bridge.width*.5);
 }

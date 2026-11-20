@@ -1,4 +1,6 @@
-import {beach2,BEACH2,beach2Weight,beach2Shore} from './beach2-profile';
+import {kentingPlaced,kentingReference,kentingRoadsideStation,kentingTransitionReference} from './kenting-installation';
+import {COAST_WORKING_HARBOUR_LANDINGS} from './content/kenting-neighbours';
+import {beach2,BEACH2,beach2Weight,beach2Shore,kentingGroundBlend} from './beach2-profile';
 import {beachZoneBlend} from './beach-zone-layout';
 import {beachRailHidden,macroBeachExtra,macroReefDistance,beachFlow,macroCoastRise,macroCoastCloseBlend} from './beach-macro';
 import {coastDrainAt,coastDrainCovered,COAST_DRAIN_X} from './coast-roadside-layout';
@@ -10,7 +12,7 @@ import {coastDrainAt,coastDrainCovered,COAST_DRAIN_X} from './coast-roadside-lay
 export const COAST_BEACHES=[
  {distance:2560,radius:740,extra:50},
  {distance:4310,radius:440,extra:34},
- {distance:6020,radius:420,extra:32},
+ {distance:kentingPlaced(6020),radius:420,extra:32},
  {distance:8150,radius:275,extra:19},
  {distance:9610,radius:240,extra:16},
 ] as const;
@@ -33,9 +35,11 @@ export const COAST_SAND_POINTS=[
  {start:11640,tip:11850,end:12050,reach:28},
  {start:12410,tip:12600,end:12880,reach:38},
 ] as const;
-export function coastBeachExtra(d:number){
+const marketBay=kentingPlaced(6020);
+function backgroundWidth(d:number,installed:number,macro:number){
  let extra=0;
- for(const bay of COAST_BEACHES){const t=Math.max(0,1-Math.abs(d-bay.distance)/bay.radius);extra+=bay.extra*t*t*(3-2*t);}
+ for(const bay of COAST_BEACHES){const distance=bay.distance===marketBay?installed:d;
+  const t=Math.max(0,1-Math.abs(distance-bay.distance)/bay.radius);extra+=bay.extra*t*t*(3-2*t);}
  for(const point of COAST_SAND_POINTS){
   if(d<point.start)break;
   if(d>point.end)continue;
@@ -43,13 +47,18 @@ export function coastBeachExtra(d:number){
   extra+=point.reach*t*t*(3-2*t);
   break;
  }
- const width=extra+macroBeachExtra(d)+2*(1+Math.sin(d*.019+Math.sin(d*.007)));
+ return extra+macro+2*(1+Math.sin(d*.019+Math.sin(d*.007)));
+}
+export function coastBeachExtra(d:number){
+ const blend=kentingGroundBlend(d),macro=macroBeachExtra(d),ref=kentingReference(d);
+ let width=backgroundWidth(blend===1?ref:d,d,macro);
+ if(blend>0&&blend<1)width+=(backgroundWidth(ref,d,macro)-width)*blend;
  const regional=beachFlow()?Math.max(width,150*macroCoastRise(d)/22):width;
  // A short grass shoulder and cliff, not a wide empty plateau behind the tower.
- const close=macroCoastCloseBlend(d),narrow=30+3*Math.sin((d-6900)/220);
+ const close=macroCoastCloseBlend(d),narrow=30+3*Math.sin((kentingTransitionReference(d)-6900)/220);
  const coast=regional+(Math.min(regional,narrow)-regional)*close;
  // Low beach activity stays broad but within a readable near/midground band.
- const zone=beachZoneBlend(d),beachWidth=55+5*Math.sin(d*.006);
+ const zone=beachZoneBlend(d),beachWidth=55+5*Math.sin(ref*.006);
  const old=coast+(Math.min(coast,beachWidth)-coast)*zone;
  return old+(-26-beach2Shore(d)-old)*beach2Weight(d);
 }
@@ -64,10 +73,10 @@ export function coastProfileX(x:number,d:number){
  const e=coastBeachExtra(d);
  return x<-26-e?x+e:-11+(x+11)*15/(15+e);
 }
-export const COAST_MARKET_BEACHES=[2560,6020] as const;
+export const COAST_MARKET_BEACHES=[2560,kentingPlaced(6020)] as const;
 export const COAST_BEACH_STALLS=COAST_MARKET_BEACHES.flatMap(centre=>
  [-128,-111,-78,-28,3,19].map((offset,i)=>({d:centre+offset,x:-21-i%2*3})));
-export const COAST_LANDINGS=[4490,4570,4775,8920].map(d=>({d,x:-25,radius:7}));
+export const COAST_LANDINGS=[...COAST_WORKING_HARBOUR_LANDINGS,{d:8920,x:-25,radius:7}];
 
 /** Ten main breakers carry the detailed water contact and long sunset shadows.
  * The reefs between them share the local surf and the streamed rock batches. */
@@ -104,7 +113,7 @@ export const COAST_DISTRICTS=[
 ] as const;
 export const coastDistrictAt=(d:number)=>COAST_DISTRICTS.find(s=>d>=s.start&&d<s.end);
 /** Resort pedestrian links, absolute distances so chunk seams never reset paint. */
-export const COAST_CROSSWALKS=[1050,2410,3690,4180,5460,6640,7940,9600] as const;
+export const COAST_CROSSWALKS=[1050,2410,3690,4180,5460,6640,7940,9600].map(kentingRoadsideStation);
 export const coastCrosswalkNear=(d:number,margin=8)=>COAST_CROSSWALKS.some(at=>Math.abs(d-at)<margin);
 /** Choose barriers from coastal life, not a 144m checkerboard.
  * Seaward public beach pockets need walkable low stone; remote coastline
@@ -129,7 +138,8 @@ export function coastBarrierStyle(d:number,side:-1|1=-1):CoastBarrierStyle {
   // Continuous, low visible protection lets the player understand why
   // they cannot leave the coastal highway without blocking the sea view.
   // Promenades get concrete/steel posts and a low linking beam.
-  if(COAST_BEACHES.some(b=>Math.abs(d-b.distance)<Math.min(440,b.radius*.70)))return 'block';
+  const ordinary=kentingGroundBlend(d)>=.5?kentingReference(d):d;
+  if(COAST_BEACHES.some(b=>Math.abs((b.distance===marketBay?d:ordinary)-b.distance)<Math.min(440,b.radius*.70)))return 'block';
   return 'rail';
  }
  if(coastCrosswalkNear(d,14))return 'opening';

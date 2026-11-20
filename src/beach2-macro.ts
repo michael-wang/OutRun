@@ -1,4 +1,5 @@
 import {floatGLSL} from './coast-water-surface';
+import {kentingStation} from './kenting-installation';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {createTrack} from './track';
@@ -21,7 +22,7 @@ export function addBeach2Macro(scene:THREE.Scene,sample:ReturnType<typeof create
   new THREE.MeshStandardMaterial({color:0x657345,roughness:1}));
  const box=new THREE.BoxGeometry(1,1,1),ball=new THREE.SphereGeometry(1,8,6),cylinder=new THREE.CylinderGeometry(1,1,1,8);
  const placements:Record<string,unknown>[]=[];
- function place(s:number,x:number,kind:string,water=false){const station=BEACH2.core+s,p=sample(station);if(!water&&x<0&&kind!=='beach2-lighthouse'){while(x<-14&&coastBeachHeight(x,p.position.y,p.right.y,station)<-4.45)x+=.25;}const g=new THREE.Group();g.position.copy(p.position).addScaledVector(p.right,x);const ground=coastBeachHeight(x,p.position.y,p.right.y,station);g.position.y=water?-5:ground;g.rotation.y=-p.roadHeading;g.name=kind;g.userData={station,lateral:x,ground,water,depth:-5-ground,kind};placements.push(g.userData);root.add(g);return g;}
+ function place(s:number,x:number,kind:string,water=false){const station=kentingStation(s),p=sample(station);if(!water&&x<0&&kind!=='beach2-lighthouse'){while(x<-14&&coastBeachHeight(x,p.position.y,p.right.y,station)<-4.45)x+=.25;}const g=new THREE.Group();g.position.copy(p.position).addScaledVector(p.right,x);const ground=coastBeachHeight(x,p.position.y,p.right.y,station);g.position.y=water?-5:ground;g.rotation.y=-p.roadHeading;g.name=kind;g.userData={station,lateral:x,ground,water,depth:-5-ground,kind};placements.push(g.userData);root.add(g);return g;}
  function part(g:THREE.Object3D,geo:THREE.BufferGeometry,m:number,x:number,y:number,z:number,sx=1,sy=1,sz=1){const o=new THREE.Mesh(geo,mats[m]);o.position.set(x,y,z);o.scale.set(sx,sy,sz);g.add(o);return o;}
  const instances=new Map<THREE.BufferGeometry,{model:THREE.Mesh;buoyant:boolean;nodes:THREE.Object3D[]}>();
  const poses:Record<string,number>={};
@@ -70,21 +71,21 @@ export function addBeach2Macro(scene:THREE.Scene,sample:ReturnType<typeof create
    if(j===3||k>6&&j===1)continue;
    if(i===2&&j===3)continue;
    const g=person(d+ds,x+dx,k*5+i+j,j===2&&(i+k)%2===0);
-   g.rotation.y=-sample(BEACH2.core+d+ds).roadHeading+Math.atan2(dx,-ds);
+   g.rotation.y=-sample(kentingStation(d+ds)).roadHeading+Math.atan2(dx,-ds);
   }
  }
  // Uneven pairs and trios connect pockets without a promenade fence.
  for(const [i,d]of [90,163,248,281,335,387,468,490,553,570,688,710,778,802,868,895,925].entries()){
   const x=[-18,-28,-21,-35,-24][i%5];for(let j=0;j<(i%3===0?3:2);j++){
    const g=person(d+j*1.9,x+j*(i%2?1.4:-1.8),i+j,j===2);
-   g.rotation.y=-sample(BEACH2.core+d+j*1.9).roadHeading+(i%2?.25:Math.PI+.25);
+   g.rotation.y=-sample(kentingStation(d+j*1.9)).roadHeading+(i%2?.25:Math.PI+.25);
   }
  }
  // A few central play / picnic groups exploit the newly reclaimed sand.
  for(const [k,[d,x]]of [[282,-42],[365,-60],[430,-39],[596,-49]].entries()){
   const mat=place(d,x,'picnic-mat');part(mat,box,k%2?2:1,0,.045,0,3.4,.09,2.3);
   for(const[j,[ds,dx]]of [[0,-2],[2,1],[-2,1],[4,-3]].entries()){
-   const g=person(d+ds,x+dx,20+k+j,j<2);g.rotation.y=-sample(BEACH2.core+d+ds).roadHeading+Math.atan2(dx,-ds);
+   const g=person(d+ds,x+dx,20+k+j,j<2);g.rotation.y=-sample(kentingStation(d+ds)).roadHeading+Math.atan2(dx,-ds);
   }
   const b=place(d+5,x-2,'play-ball');part(b,ball,5,0,.22,0,.22,.22,.22);
  }
@@ -143,23 +144,23 @@ export function addBeach2Macro(scene:THREE.Scene,sample:ReturnType<typeof create
   }
   node.updateWorldMatrix(true,false);
   const geom=beachSupport(pose,variant).geometry;
-  waterActors.push({station:BEACH2.core+s,lateral:x,water:g.position.y,depth,pose,pod,
+  waterActors.push({station:kentingStation(s),lateral:x,water:g.position.y,depth,pose,pod,
    bounds:geom.boundingBox!.clone().applyMatrix4(node.matrixWorld)});
  }
  for(const [k,pod] of BEACH2_SWIM_PODS.entries())for(const [i,[ds,offset,pose]] of pod.members.entries()){
-  const s=pod.s+ds;swimmer(s,beach2Shore(BEACH2.core+s)-offset,pose,i,k,true);
+  const s=pod.s+ds;swimmer(s,beach2Shore(kentingStation(s))-offset,pose,i,k,true);
  }
  const waterGroups=[{s:300,n:4},{s:475,n:5},{s:745,n:7},{s:875,n:4}];
  for(const[k,p]of waterGroups.entries())for(let i=0;i<p.n;i++){
   const s=p.s+[0,5,8,15,22,26,31][i];
-  swimmer(s,beach2Shore(BEACH2.core+s)-5.8-(i%3)*1.7,(['raised','ring','swim'] as const)[(i+k)%3],i,k,false);
+  swimmer(s,beach2Shore(kentingStation(s))-5.8-(i%3)*1.7,(['raised','ring','swim'] as const)[(i+k)%3],i,k,false);
  }
  // Six former tower swimmers use the existing wading and ring batches.
  // The other two keep their animated stroke in coast-swimmers.
  if(waterUniforms)for(const [k,party] of BEACH2_COVE_PARTIES.entries()){
   for(const [i,[s,offshore,activity,facing]] of party.entries()){
    if(activity==='stroke')continue;
-   swimmer(s,beach2Shore(BEACH2.core+s)-offshore,activity==='ring'?'ring':'raised',i,k,true,facing);
+   swimmer(s,beach2Shore(kentingStation(s))-offshore,activity==='ring'?'ring':'raised',i,k,true,facing);
   }
  }
  // Road-facing local façades share templates across both village groups.
@@ -184,7 +185,7 @@ export function addBeach2Macro(scene:THREE.Scene,sample:ReturnType<typeof create
  }
  root.add(beachSurfacePaint(sample),parasolGround(sample,shadeSites));
  const surface=(s:number,x:number,lift:number)=>{
-  const d=BEACH2.core+s,p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
+  const d=kentingStation(s),p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
   v.y=coastBeachHeight(x,p.position.y,p.right.y,d)+lift;return v;
  };
  // Bury the broad faces into small drifts. Long gaps retain walking access.
@@ -249,6 +250,6 @@ export function addBeach2Macro(scene:THREE.Scene,sample:ReturnType<typeof create
  root.add(actors);
  const beaconMount=new THREE.Group();beaconMount.position.copy(tower.position);beaconMount.rotation.copy(tower.rotation);root.add(beaconMount);
  const beacon=addLighthouseBeacon(beaconMount);beacon.position.y=28.66;beacon.scale.set(1.45,1.12,1.45);
- root.userData={scope:'Beach arrival, hillside and lighthouse walk.',beacon:beacon.userData,update:beacon.userData.update,walk:walk.profile,poses,anchor:BEACH2.core,tower:{...tower.userData,world:tower.position.clone()},waterActors,swimmers:waterActors.filter(a=>!a.pod),shoreActivity:{placements,pockets,waterGroups,quietFrom:BEACH2.core+950,village:BEACH2_VILLAGE,clearIntervals:[[5800,5990]]}};
+ root.userData={scope:'Beach arrival, hillside and lighthouse walk.',beacon:beacon.userData,update:beacon.userData.update,walk:walk.profile,poses,anchor:BEACH2.core,tower:{...tower.userData,world:tower.position.clone()},waterActors,swimmers:waterActors.filter(a=>!a.pod),shoreActivity:{placements,pockets,waterGroups,quietFrom:BEACH2.core+950,village:BEACH2_VILLAGE,clearIntervals:[[kentingStation(950),kentingStation(1140)]]}};
  return root;
 }

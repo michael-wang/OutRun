@@ -1,3 +1,5 @@
+import {kentingPlaced,KENTING_INSTALLATION} from '../kenting-installation';
+import {heroDeferred} from './kenting-neighbours';
 import directionFile from '../../content/stages/coast/direction.json';
 import type {AuthoredRoad} from './authored-road';
 
@@ -54,6 +56,14 @@ export function validateCoastDirection(direction:CoastDirection,road:AuthoredRoa
   seen.add(gate.id);lastGate=gate.end;
  }
 }
+/** Materialize the layout's active hero observations once. Source anchors also
+ * serve as the authoring inventory for sites deferred from the trial. */
+export const COAST_INSTALLED_HEROES=KENTING_INSTALLATION.relocated
+ ?COAST_DIRECTION.heroSlots.filter(slot=>!heroDeferred(slot.id)).map(slot=>
+   slot.id==='beach-market'||slot.id==='boulder-surf'?{...slot,distance:kentingPlaced(slot.distance)}:slot)
+ :COAST_DIRECTION.heroSlots;
+
 export function coastHeroNear(distance:number,direction:CoastDirection=COAST_DIRECTION){
- return direction.heroSlots.find(slot=>distance>=slot.distance-slot.lookAheadM&&distance<slot.distance+160);
+ const slots=direction===COAST_DIRECTION?COAST_INSTALLED_HEROES:direction.heroSlots;
+ return slots.find(slot=>distance>=slot.distance-slot.lookAheadM&&distance<slot.distance+160);
 }

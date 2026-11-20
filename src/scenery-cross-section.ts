@@ -1,3 +1,4 @@
+import {kentingTransitionReference} from './kenting-installation';
 import {beach2Weight,beach2Ground} from './beach2-profile';
 import {macroLandHeight,beachFlow,macroCoastRise} from './beach-macro';
 import {coastProfileX,coastBeachX} from './coast-layout';
@@ -121,7 +122,7 @@ function legacyCoastBeachHeight(x:number,roadY:number,rightY:number,distance?:nu
   if(rise>0&&x>shore){
    // Continuous elevated coastal shelf, joining the road inland and the real
    // waterline seaward. Never lift the ocean or the submerged swimming bottom.
-   const blend=smooth(rise/6)*smooth((distance-6200)/220),plateau=lerp(roadY+rightY*x-.2,rise,smooth((-x-13)/22));
+   const blend=smooth(rise/6)*smooth((kentingTransitionReference(distance)-6200)/220),plateau=lerp(roadY+rightY*x-.2,rise,smooth((-x-13)/22));
    const coastal=lerp(COAST_SEA_LEVEL,plateau,smooth((x-shore)/28));
    return Math.max(base,lerp(base,coastal,blend));
   }

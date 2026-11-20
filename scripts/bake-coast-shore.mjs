@@ -4,19 +4,15 @@ import {createHash} from 'node:crypto';
 import {gzipSync} from 'node:zlib';
 
 // Run before dev/build. Generated binary stays out of Git and ships with dist.
-const server=await createServer({configFile:false,server:{middlewareMode:true},appType:'custom',logLevel:'error',optimizeDeps:{noDiscovery:true,include:[]}});
+const server=await createServer({configFile:false,server:{middlewareMode:true,watch:null,hmr:false,ws:false},appType:'custom',logLevel:'error',optimizeDeps:{noDiscovery:true,include:[]}});
 try{
- const {coastWorkerRoad}=await server.ssrLoadModule('/src/content/coast-worker-road.ts');
- const {bakeCoastShore}=await server.ssrLoadModule('/src/coast-shore.ts');
- const {packCoastShore,COAST_SHORE_KEY}=await server.ssrLoadModule('/src/coast-shore-asset.ts');
-
- const farmTrack=coastWorkerRoad().track;
- const {configureKentingCoast}=await server.ssrLoadModule('/src/beach-macro.ts');
- configureKentingCoast();
- const track=coastWorkerRoad().track;
+ const {prepareBakeTracks,bakeCoastShore,packCoastShore,COAST_SHORE_KEY,COAST_SHORE_NAME,KENTING_INSTALLATION,FARM_PLOTS,sampleFarmGround}=
+  await server.ssrLoadModule('/scripts/coast-shore-recipe.ts');
+ const {track,farmTrack}=prepareBakeTracks();
  // This expensive 30km offline bake is invalidated by relevant sources,
  // never rebuilt on every unchanged npm run dev / build.
- const sourcePaths=['src/beach2-profile.ts','src/content/beach2-track.ts',
+ const sourcePaths=['scripts/coast-shore-recipe.ts','src/beach-zone-layout.ts','src/kenting-installation.ts','content/stages/coast/kenting-installation.json','src/content/kenting-installed-road.ts',
+  'src/beach2-profile.ts','src/content/beach2-track.ts',
   'content/stages/coast/road.json','src/beach-macro.ts','src/content/beach-macro-track.ts','src/content/coast-worker-road.ts',
   'src/content/coast-sunset-track.ts','src/coast-shore.ts','src/coast-shore-index.ts','src/coast-shore-asset.ts',
   'src/coast-layout.ts','src/scenery-cross-section.ts','src/coast-terrain.ts',
@@ -28,10 +24,13 @@ try{
  ];
  const checksum=createHash('sha256');
  checksum.update(COAST_SHORE_KEY);
+ for(const d of [350,KENTING_INSTALLATION.roadEntry,KENTING_INSTALLATION.coreStart,KENTING_INSTALLATION.roadExit,14550]){
+  checksum.update(JSON.stringify(track.sample(d).position.toArray()));
+ }
  for(const file of sourcePaths)checksum.update(await readFile(file));
  const stamp=COAST_SHORE_KEY+':'+checksum.digest('hex');
- const assetPath='public/generated/coast-shore.shore';
- const stampPath='public/generated/coast-shore.build-key';
+ const assetPath=`public/generated/${COAST_SHORE_NAME}.shore`;
+ const stampPath=`public/generated/${COAST_SHORE_NAME}.build-key`;
  let reusable=false;
  try{
   const [oldStamp,existing]=await Promise.all([readFile(stampPath,'utf8'),stat(assetPath)]);
@@ -50,11 +49,14 @@ try{
    console.log(`Coast mask ${COAST_SHORE_KEY}: ${(compressed.length/1024/1024).toFixed(2)} MiB; prepared off-device.`);
   }finally{shore.texture.dispose();}
  }
- const {FARM_PLOTS}=await server.ssrLoadModule('/src/coast-farm-layout.ts');
- const {sampleFarmGround}=await server.ssrLoadModule('/src/coast-farm-prep.ts');
  const rows=FARM_PLOTS.map(plot=>Buffer.from(sampleFarmGround(plot,farmTrack.sample).buffer));
  const ground=gzipSync(Buffer.concat(rows),{level:9});
  await mkdir('src/generated',{recursive:true});
- await writeFile('src/generated/coast-farm-ground.bin',ground);
+ const farmPath=KENTING_INSTALLATION.shifted?'public/generated/coast-farm-ground-r1.bin':'src/generated/coast-farm-ground.bin';
+ const priorGround=await readFile(farmPath).catch(error=>{
+  if(error.code!=='ENOENT')throw error;
+  return undefined;
+ });
+ if(!priorGround?.equals(ground))await writeFile(farmPath,ground);
  console.log(`Coastal farm ground: ${FARM_PLOTS.length} plots, ${ground.byteLength} bytes.`);
 }finally{await server.close();}

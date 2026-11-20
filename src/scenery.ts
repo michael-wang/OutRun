@@ -1,4 +1,5 @@
 import {beach2VillageClearing} from './beach2-composition-layout';
+import {landingDeferred} from './content/kenting-neighbours';
 import {beachMarketFrontage} from './beach-zone-layout';
 import {macroLandHeight,macroClearApproach,macroHidePreRevealBeach} from './beach-macro';
 import {COAST_BEACHES,COAST_BEACH_STALLS,COAST_LANDINGS,coastReefRocks,coastRocks,coastBeachX,coastRockX} from './coast-layout';
@@ -582,7 +583,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
    for(let j=0;j<count;j++){
     const d=bay.distance-half+j*33+rand(j+bay.distance)*15;
-    if(!inChunk(d)||macroHidePreRevealBeach(d)||COAST_LANDINGS.some(landing=>Math.abs(d-landing.d)<28))continue;
+    if(!inChunk(d)||macroHidePreRevealBeach(d)||COAST_LANDINGS.some(landing=>!landingDeferred(landing.d)&&Math.abs(d-landing.d)<28))continue;
     const x=-19-rand(j*11+bay.distance)*17;
     if(macroLandHeight(x,d)>0)continue; // macro headland is not a beach-chair terrace
     if(COAST_BEACH_STALLS.some(s=>Math.abs(s.d-d)<12&&Math.abs(s.x-x)<9))continue;
@@ -620,7 +621,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   // Working harbours share fish sheds, drying racks and timber piers.
   coastShadowGroup='buildings';
   for(const {d,x,radius} of COAST_LANDINGS){
-   if(!inChunk(d))continue;
+   if(!inChunk(d)||landingDeferred(d))continue;
    beachAnchor(d,x);
    if(!clear(radius))continue;
    yaw+=Math.PI/2;

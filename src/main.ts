@@ -1,3 +1,4 @@
+import {kentingPlaced} from './kenting-installation';
 import {beach2,BEACH2_INCIDENT_SIGHTLINE} from './beach2-profile';
 import {DeparturePreparation} from './departure-preparation';
 import {configureKentingCoast,beachMacro,sunsetRoute,sunSide,beachLife,beachVista,beachFlow,coastClose,beachPlan} from './beach-macro';
@@ -9,7 +10,7 @@ import {coastGameplayAt,coastFeedbackPhases} from './content/coast-gameplay-samp
 import {coastWorkerRoad} from './content/coast-worker-road';
 import {coastLessonAt} from './content/coast-onboarding';
 import {coastHeroNear} from './content/coast-direction';
-import {coastScenicActAt} from './coast-journey-layout';
+import {coastScenicActAt,coastSegmentNameAt} from './coast-journey-layout';
 import {MobileCarShadow} from './mobile-car-shadow';
 import {WheelContactPatch} from './wheel-contact-patch';
 import {GAME_VERSION} from './build-info';
@@ -161,7 +162,7 @@ document.querySelector('#app')!.innerHTML = `
 <aside id="race-director" hidden><div id="race-cameras"></div><output id="race-data"></output></aside><div class="vignette"></div>
 <div id="drive-hud" hidden>0:00 · — FPS</div><div id="route-name" hidden><span id="route-title"></span><small id="release-version">${trip?.generatorVersion??GAME_VERSION}</small></div>
 
-<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav></header>
+<header><span class="wordmark">FIRST DRIVE <small>ARCADE VELOCITY / 03</small></span><nav><button id="pause" aria-label="${playerUi?'暫停／選單':'Pause / Menu'}">Ⅱ Menu</button></nav><span id="race-segment" hidden></span></header>
 <div id="immersive-note" role="status" hidden></div><aside id="speed" aria-label="Speedometer">${speedometerMarkup()}</aside>
 <div id="qa-tools" aria-label="測試工具列"><button id="photo-button" aria-label="截圖" data-key-hint="F8" data-pad-hint="TOUCHPAD" hidden>📷 截圖</button></div><button type="button" id="unlock-audio" hidden>點一下或按鍵開啟音效</button><div id="photo-status" role="status" hidden>Photo saved locally</div><div id="ready-countdown" role="status" hidden>READY</div>
 <section id="race-ready" aria-label="準備起跑" hidden>
@@ -519,6 +520,11 @@ const startSignals=new RaceStartSignals();
 const playerCamera=new THREE.PerspectiveCamera();
 const debugRace=params.get('rivaldebug')==='1';
 const positionHud=$('race-position'),positionNumber=positionHud.querySelector('b')!,raceClock=$('race-clock'),raceDistance=$('race-distance');
+const segmentHud=$('race-segment');
+function showSegmentAt(station:number){
+ const name=coastSegmentNameAt(station,coastStart);
+ if(segmentHud.textContent!==name)segmentHud.textContent=name;
+}
 let raceHudSafeRect:RaceHudBounds|null=null;
 function refreshRaceHudSafeRect(){
  if(!mobile()||positionHud.hidden){raceHudSafeRect=null;return;}
@@ -576,6 +582,7 @@ function raceHud(){
  rivalView.updateRanks(race.standings(state));
  // Race progress belongs beside position and time, not the global version/FPS.
  const tracked=race.rivals[observed]?.distance??state.distance;
+ showSegmentAt(tracked);
  const traveled=Math.max(0,Math.min(coastEnd-coastStart,tracked-coastStart));
  const total=Math.max(1,coastEnd-coastStart);
  const elapsedRace=Math.max(0,race.time);
@@ -779,6 +786,8 @@ function ui(){
   $('race-ready').hidden=!readyVisible;
   const pausedDrive=mode==='paused'&&!brickCompleted&&!replayPreparing;
   const showDrivingHud=!settingsOpen&&(mode==='playing'||mode==='countdown'||pausedDrive||readyVisible);
+  segmentHud.hidden=!showDrivingHud;
+  if(showDrivingHud)showSegmentAt(race.rivals[observed]?.distance??state.distance);
   if(playerUi)$('speed').hidden=!showDrivingHud;
   const touch=$('touch');
   touch.classList.toggle('active',showDrivingHud);
@@ -1119,7 +1128,7 @@ function render(dt:number,draw=true){
     camera.position.copy(world.car.localToWorld(offset));camera.lookAt(world.car.localToWorld(new THREE.Vector3(0,.8,0)));
   }
   if(import.meta.env.DEV&&bridgeInspection){const q=world.sample(state.distance);camera.position.copy(q.position).addScaledVector(q.right,140).addScaledVector(q.tangent,-100).add(new THREE.Vector3(0,18,0));camera.lookAt(q.position.clone().add(new THREE.Vector3(0,-7,0)));}
-  if(import.meta.env.DEV&&macroOverhead){const q=world.sample(5920);camera.position.copy(q.position).add(new THREE.Vector3(0,1700,0));camera.up.copy(world.sample(7000).tangent);camera.lookAt(q.position);}
+  if(import.meta.env.DEV&&macroOverhead){const q=world.sample(kentingPlaced(5920));camera.position.copy(q.position).add(new THREE.Vector3(0,1700,0));camera.up.copy(world.sample(kentingPlaced(7000)).tangent);camera.lookAt(q.position);}
   const followed=race.rivals[observed];
   const cameraOnRival=!!followed&&(!world.streamer||world.streamer.spectatorReady(followed.distance));
   if(cameraOnRival){playerCamera.copy(camera);rivalView.chase(observed,camera);}
@@ -1590,7 +1599,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   departurePreparation:()=>({state:departurePreparation.state,warning:departurePreparation.warning}),
   coastFarm:()=>world.streamer?.farmStats??[],
   authoredProps:()=>authoredStaticProps.map(item=>({...item})),
-  macroInspect:()=>({beach2:beach2(),variant:beachMacro(),sunsetRoute:sunsetRoute(),sunSide:sunSide(),beachVista:beachVista(),beachFlow:beachFlow(),coastClose:coastClose(),beachPlan:beachPlan(),beachLife:beachLife(),samples:[5200,5500,5800,6000,6175,6570,7000].map(d=>({d,p:world.sample(d).position.toArray(),k:world.sample(d).curvature}))}),
+  macroInspect:()=>({beach2:beach2(),variant:beachMacro(),sunsetRoute:sunsetRoute(),sunSide:sunSide(),beachVista:beachVista(),beachFlow:beachFlow(),coastClose:coastClose(),beachPlan:beachPlan(),beachLife:beachLife(),samples:[5200,5500,5800,6000,6175,6570,7000].map(kentingPlaced).map(d=>({d,p:world.sample(d).position.toArray(),k:world.sample(d).curvature}))}),
   macroOverhead:(enabled:boolean)=>{macroOverhead=enabled;manual=true;render(1/60);},
   beachInspect:()=>({anchor:beachStudy.userData.anchor,activity:beachStudy.userData.shoreActivity,flights:coastalFlights?.inspect(),walk:beachStudy.userData.walk,beacon:beachStudy.userData.beacon,poses:beachStudy.userData.poses,swimmers:beachStudy.userData.waterActors}),
   coastBoats:()=>coastBoats?.inspect(elapsed)??[],
@@ -1635,6 +1644,27 @@ if(import.meta.env.DEV){(window as any).__drive={
     const p=world.sample(state.distance),travel=worldSpeed(state.speed),rows=[];
     for(let t=0;t<=seconds+.001;t+=.1){const q=world.sample(state.distance+travel*t),projected=q.position.clone().project(camera);rows.push({seconds:t,position:q.position.toArray(),screenX:projected.x,screenY:projected.y,headingChange:angleDifference(q.roadHeading-p.roadHeading)});}
     return {curvature:p.curvature,requiredSteer:requiredSteering(p.curvature,state.speed),renderedBodyYaw:state.heading,skidState:state.drifting,rows};
+  },
+  roadSight:(offsets:number[])=>{
+    // Static sight preview for a moved connector, sampled only on request.
+    // Traffic can further reduce visibility during the actual drive.
+    const eye=camera.position;
+    world.scene.updateMatrixWorld(true);
+    const objects=world.scene.children.filter(o=>['driving-surface','terrain','shoulder','inland-ridge','distant-ridge'].includes(o.name));
+    return offsets.filter(m=>Number.isFinite(m)&&m>0&&m<=300).map(m=>{
+      const d=state.distance+m,point=world.sample(d).position.clone();
+      point.y+=.6; // Centre of a low obstacle on the road.
+      const delta=point.clone().sub(eye),range=delta.length();
+      const ndc=point.clone().project(camera);
+      const ray=new THREE.Raycaster(eye,delta.normalize(),.1,Math.max(.1,range-.1));
+      const obstruction=ray.intersectObjects(objects,true).find(hit=>{
+        for(let node:THREE.Object3D|null=hit.object;node;node=node.parent)if(!node.visible)return false;
+        return true;
+      });
+      return {station:d,ahead:m,range,loaded:world.streamer?.roadReady(d)??true,
+        inFrame:Math.abs(ndc.x)<=1&&Math.abs(ndc.y)<=1&&ndc.z>=-1&&ndc.z<=1,
+        hitM:obstruction?.distance??null};
+    });
   },
   sunSight:(azimuths:number[])=>{
     // Read-only DEV diagnostic against the actual loaded terrain/prop meshes.

@@ -1,4 +1,6 @@
 import {beachMacro} from './beach-macro';
+import {boatDeferred,COAST_WORKING_HARBOUR_BOATS} from './content/kenting-neighbours';
+import {kentingReference} from './kenting-installation';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
@@ -14,7 +16,7 @@ export const COAST_BOATS:readonly Boat[]=[
  ['opening-distant-sail','sail',1290,210,16],
  ['beach-yacht','yacht',2070,130,18],['beach-sail','sail',2740,175,16],
  ['town-sail-one','sail',3560,112,17],['town-sail-two','sail',4010,168,16],
- ['quay-trawler','fishing',4520,67,20],['quay-longliner','fishing',4780,64,17],['town-sail-three','sail',5110,122,16],
+ ...COAST_WORKING_HARBOUR_BOATS.map(b=>[b.id,b.kind,b.d,b.offshore,b.length] as const),['town-sail-three','sail',5110,122,16],
  ['town-sail-four','sail',5900,175,16],
  ['bay-sail-entry','sail',7080,72,27],['bay-sail-inlet','sail',7420,72,29],
  ['bay-sail-west','sail',7770,72,31],['bay-sail-east','sail',8080,72,28],
@@ -26,6 +28,16 @@ export const COAST_BOATS:readonly Boat[]=[
  speed:kind==='sail'?.8:kind==='fishing'?.55:1.2,
  phase:1.1+i*.31,draft:length*(kind==='sail'?.15:kind==='fishing'?.09:.075),
 };});
+
+/** Never let a relocated beach's reference-space footprint swallow a
+ * separate Sail Bay vessel. Working-harbour vessels are independently deferred
+ * until R2 places their own segment. */
+export function coastBoatAdmitted(boat:Pick<Boat,'id'|'distance'>):boolean {
+ if(boatDeferred(boat.id))return false;
+ if(boat.id.startsWith('bay-sail-'))return true;
+ const ref=kentingReference(boat.distance);
+ return !(beachMacro()==='right'&&ref>=4700&&ref<=6750);
+}
 
 // Read-only use of the existing FFT textures, with the ocean adapter's same
 // camera-dependent mip selection and bounded displacement. No CPU readback.
@@ -125,7 +137,7 @@ export async function addCoastBoats(scene:THREE.Scene,sample:Sample,water?:Reado
  for(const source of [...models.map(g=>g.scene),fishingSource])source.traverse(o=>{if(o instanceof THREE.Mesh)for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof THREE.MeshStandardMaterial)materials.add(m);});
  materials.forEach(m=>{m.roughness=Math.max(.7,m.roughness);m.metalness=Math.min(.15,m.metalness);m.emissive.set(0);m.emissiveIntensity=0;if(m.name==='colormap')m.side=THREE.DoubleSide;});
  const root=new THREE.Group();root.name='coast-boats';
- const vessels=COAST_BOATS.filter(s=>!(beachMacro()==='right'&&s.distance>=4700&&s.distance<=6750)).map(spec=>{
+ const vessels=COAST_BOATS.filter(coastBoatAdmitted).map(spec=>{
   const source=spec.kind==='fishing'?fishingSource:models[spec.kind==='sail'?0:1].scene,model=source.clone(true);
   const sail=model.getObjectByName('sail');
   if(sail){

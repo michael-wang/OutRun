@@ -12,7 +12,13 @@ const trackedInputs = ['src','content','package-lock.json'];
 if (git('status','--porcelain','--',...trackedInputs)) {
   throw Error('Commit or isolate changed route inputs before assigning a source revision.');
 }
-const revision = git('log','-1','--format=%H','--',...trackedInputs);
+// Verify against the historical capture when later work only adds an opt-in layout.
+// The complete regenerated CSV, SVG, terrain ports and calibration still have to match.
+const revision = check
+  ? JSON.parse(await readFile(dir+'/kenting-ports.json','utf8')).provenance.revision
+  : git('log','-1','--format=%H','--',...trackedInputs);
+if (!/^[a-f0-9]{40}$/.test(revision)) throw Error('Invalid capture commit');
+git('merge-base','--is-ancestor',revision,'HEAD');
 const dataDate = git('show','-s','--format=%cs',revision);
 const provenance = {revision, dataDate};
 const round = n => Number(n.toFixed(8));
@@ -22,7 +28,7 @@ async function output(name, data) {
   if (!check) return writeFile(file, data);
   if ((await readFile(file,'utf8')).replaceAll('\r\n','\n') !== data) throw Error('Stale artifact: ' + file);
 }
-const server = await createServer({configFile:false,server:{middlewareMode:true},appType:'custom',
+const server = await createServer({configFile:false,server:{middlewareMode:true,watch:null,hmr:false,ws:false},appType:'custom',
   logLevel:'error',optimizeDeps:{noDiscovery:true,include:[]}});
 try {
   const load = path => server.ssrLoadModule('/src/' + path + '.ts');

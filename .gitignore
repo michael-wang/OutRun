@@ -42,6 +42,7 @@ __pycache__/
 /public/generated/coast-shore.shore
 /public/generated/coast-shore.build-key
 /src/generated/coast-farm-ground.bin
+/public/generated/coast-farm-ground-r1.bin
 
 # Release-hosted runtime art is verified and copied into the deployment at build time.
 /public/generated/*.glb

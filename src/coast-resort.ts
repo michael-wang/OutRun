@@ -1,3 +1,4 @@
+import {kentingTransitionReference} from './kenting-installation';
 import * as THREE from 'three';
 import {beachFlow} from './beach-macro';
 import {coastVisibleBarrierStyle,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance} from './coast-layout';
@@ -12,7 +13,7 @@ export function addCoastResort(scene:THREE.Scene,sample:ReturnType<typeof create
   dummy.position.copy(p.position).addScaledVector(p.right,x);
   dummy.position.y=coastBeachHeight(x,p.position.y,p.right.y,d)+y;
   dummy.rotation.set(0,Math.atan2(p.tangent.x,p.tangent.z)+roll,0);dummy.scale.set(sx,sy,sz);
-  if(beachFlow()&&d>=5800&&d<=8450&&kind==='rail'&&sz>10){
+  if(beachFlow()&&kentingTransitionReference(d)>=5800&&kentingTransitionReference(d)<=8450&&kind==='rail'&&sz>10){
    // Long beams must follow the actual sloped verge, not staircase as
    // horizontal 12m cantilevers. Keep posts upright and collision unchanged.
    const end=(at:number)=>{const q=sample(at),offset=side*(halfAt(at)+coastBarrierClearance(at,side));
