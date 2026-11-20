@@ -1,6 +1,6 @@
 import {afterEach,expect,it,vi} from 'vitest';
 
-async function build(site:'original'|'relocated') {
+async function build(site:'original'|'relocated'|'immediate') {
   vi.resetModules();
   vi.stubEnv('VITE_KENTING_INSTALLATION',site);
   const {configureKentingCoast}=await import('../src/beach-macro');
@@ -38,4 +38,22 @@ it('installs the complete protected road with one rigid translation and rejoins 
     expect(Math.abs(a.curvature-b.curvature)).toBeLessThan(.00003);
     expect(a.right.distanceTo(b.right)).toBeLessThan(.0001);
   }
+});
+
+it('joins A6 to the original big right-hand reveal without inventing a connector',async()=>{
+ const baseline=await build('original'),immediate=await build('immediate');
+ expect(immediate.site.mode).toBe('immediate');
+ expect(immediate.site.relocated).toBe(true); // Legacy harbour/woods are isolated.
+ expect(immediate.site.shifted).toBe(false);
+ expect(immediate.site.delta).toBe(0);
+ expect(immediate.site.tutorialExit).toBe(immediate.site.roadEntry);
+ for(const d of [350,4000,4150,4200,4350,4550,4635,4738,4800,4850,6020,6800,7600,8450,14550]){
+  const a=baseline.track.sample(d),b=immediate.track.sample(d);
+  expect(a.position.distanceTo(b.position)).toBeLessThan(1e-8);
+  expect(a.tangent.distanceTo(b.tangent)).toBeLessThan(1e-8);
+  expect(a.right.distanceTo(b.right)).toBeLessThan(1e-8);
+  expect(a.curvature).toBeCloseTo(b.curvature,10);
+ }
+ const curve=immediate.track.sample(4700);
+ expect(curve.curvature).toBeGreaterThan(.005); // Existing main right-turn reveal.
 });
