@@ -7,12 +7,13 @@ export const WORKING_HARBOUR_ACTIVE=KENTING_INSTALLATION.mode==='immediate';
 /** Gate 2 whitebox, on the unchanged 7100–7540 road. Only this installation
  * knows absolute track stations. Local s and lateral setbacks describe the kit. */
 export const WORKING_HARBOUR = {
- entry:harbour.entryPort,exit:harbour.exitPort,rockStart:harbour.rockApproachStart,rockEnd:harbour.rockExitBlendEnd,quayStart:258,quayEnd:411,
- shoreVersion:3, // increment if the analytic surface changes
- breakwater:[[229,1],[244,14],[277,36],[317,45],[360,44],[400,36]] as const,
- outerWorkS:369,outerWorkOut:33,
- berths:[[306,21,20],[349,22,23],[386,17,18]] as const,
- scrubSites:[[-94,.66],[-40,.58],[28,.67],[82,.43],[121,.47],[160,.32],[425,.46],[477,.62],[526,.54]] as const,
+ entry:harbour.entryPort,exit:harbour.exitPort,rockStart:harbour.rockApproachStart,rockEnd:harbour.rockExitBlendEnd,quayStart:-83,quayEnd:425,
+ shoreVersion:4, // increment if the analytic surface changes
+ breakwater:[[-167,1],[-135,47],[-73,78],[24,95],[112,103],[200,108],[280,101],[336,90],[392,74]] as const,
+ outerWorkS:357,outerWorkOut:67,outerWorkJoin:84,
+ berths:[[-47,27,19],[-4,42,18],[42,28,24],[89,38,21],[139,26,22],[193,46,19],[243,26,24],[296,36,22],[354,26,18]] as const,
+ scrubSites:[[-260,.59],[-217,.42],[-150,.64],[-106,.61],[-43,.43],[36,.36],[101,.39],[152,.34],[425,.46],[477,.62],[526,.54]] as const,
+ lighthouse:[407,.78] as const,
 } as const;
 
 const mix=(a:number,b:number,t:number)=>a+(b-a)*t;
@@ -31,11 +32,11 @@ export function harbourShoreWidth(d:number,original:number){
  if(!w)return original;
  // The first rocky nose reaches into the sea, followed by a recessed but
  // still offshore working bay and a quieter, asymmetric exit shoulder.
- const nose=smooth(-122,126,s)*(1-smooth(143,249,s));
- const turnout=smooth(294,424,s)*(1-smooth(453,593,s));
- const basin=smooth(190,272,s)*(1-smooth(380,486,s));
+ const nose=smooth(-295,-145,s)*(1-smooth(-90,145,s));
+ const turnout=smooth(210,399,s)*(1-smooth(452,598,s));
+ const basin=smooth(-165,-64,s)*(1-smooth(380,518,s));
  const rough=2.4*Math.sin(s*.061)+1.8*Math.sin(s*.017+1.5);
- return mix(original,41+54*nose+31*turnout+27*basin+rough,w);
+ return mix(original,72+70*nose+55*turnout+22*basin+rough,w);
 }
 
 export function harbourGround(d:number,x:number,shore:number,sea:number,road:number,bank:number,original:number){
@@ -48,7 +49,7 @@ export function harbourGround(d:number,x:number,shore:number,sea:number,road:num
  // meets the same shared mask; only the landward slope approaches road level.
  const t=(x-shore)/(-13-shore);
  const s=d-WORKING_HARBOUR.entry;
- const sightWindow=smooth(-70,20,s)*(1-smooth(268,363,s));
+ const sightWindow=smooth(-230,-125,s)*(1-smooth(268,363,s));
  const ledge=.43+.08*Math.sin(s*.044)+.045*Math.sin(s*.107)+.09*sightWindow;
  const ledgeEdge=ledge+.22+.035*Math.cos(s*.032);
  const face=.10*smooth(0,.10,t)+.065*smooth(.13,.32,t)+.62*smooth(ledge,ledgeEdge,t)+.215*smooth(.76,1,t);

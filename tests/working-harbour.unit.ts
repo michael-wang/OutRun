@@ -26,12 +26,12 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
   }
  });
  it('extends actual dry ground into two headland lobes around a waterline harbour',()=>{
-  const nose=shore(h.entry+130),bay=shore(h.entry+303),exit=shore(h.entry+415);
-  expect(nose).toBeLessThan(-110);
-  expect(bay).toBeLessThan(-94);
-  expect(exit).toBeLessThan(bay-8);
+  const nose=shore(h.entry-80),bay=shore(h.entry+116),exit=shore(h.entry+415);
+  expect(nose).toBeLessThan(-150);
+  expect(bay).toBeLessThan(-117);
+  expect(exit).toBeLessThan(bay-30);
   expect(nose).toBeLessThan(bay-15);
-  for(const s of [130,303,415]){
+  for(const s of [-117,116,415]){
    const d=h.entry+s,r=track.sample(d);
    const ground=(x:number)=>coastBeachHeight(x,r.position.y,r.right.y,d);
    expect(ground(shore(d)+13)).toBeGreaterThan(COAST_SEA_LEVEL+1.8);
@@ -63,13 +63,13 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
  });
  it('holds the quay and sparse scrub on their respective ground levels and culls the kit',()=>{
   const harbour=addWorkingHarbourMacro(new Scene(),track.sample);
-  expect(harbour.root.children).toHaveLength(5);
-  expect(harbour.inspect.berths).toBe(3);
+  expect(harbour.root.children).toHaveLength(10);
+  expect(harbour.inspect.berths).toBe(9);
   expect(harbour.inspect.quayY).toBeCloseTo(COAST_SEA_LEVEL+1.75);
   expect(harbour.inspect.beacon[1]-COAST_SEA_LEVEL).toBeLessThan(6);
   const bases=harbour.inspect.scrubBases;
   expect(bases.length).toBeGreaterThan(12);
-  expect(bases.length).toBeLessThanOrEqual(27);
+  expect(bases.length).toBeLessThanOrEqual(33);
   for(const [d,f,px,py,pz] of bases){
    const r=track.sample(d),edge=shore(d),x=edge+(-13-edge)*f;
    const projected=r.position.clone().addScaledVector(r.right,x);
@@ -77,6 +77,12 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
    expect(py).toBeCloseTo(coastBeachHeight(x,r.position.y,r.right.y,d),8);
    expect(py).toBeGreaterThan(COAST_SEA_LEVEL+1.4);
   }
+  const lighthouse=harbour.inspect.lighthouse;
+  const road=track.sample(lighthouse.station),x=lighthouse.lateral;
+  expect(lighthouse.station).toBeGreaterThan(7490);
+  expect(x).toBeLessThan(-25);
+  expect(lighthouse.base[1]).toBeCloseTo(coastBeachHeight(x,road.position.y,road.right.y,lighthouse.station),8);
+  expect(lighthouse.top).toBeGreaterThan(road.position.y+2.6);
   harbour.update(h.entry-1000,0);expect(harbour.root.visible).toBe(false);
   harbour.update(h.entry,0);expect(harbour.root.visible).toBe(true);
   harbour.update(8410,0);expect(harbour.root.visible).toBe(false);

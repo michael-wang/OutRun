@@ -82,9 +82,9 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  }
  // A work head on the downstream arm lets the derrick lead the vista before
  // the road passes it. The open end remains unobstructed.
- const {outerWorkS:s,outerWorkOut:o}=h;
+ const {outerWorkS:s,outerWorkOut:o,outerWorkJoin}=h;
  const y0=sea+1.45;
- for(const [a,b,width] of [[place(s,o,y0-8.5),place(s,42,y0-8.5),10],
+ for(const [a,b,width] of [[place(s,o,y0-8.5),place(s,outerWorkJoin,y0-8.5),10],
                          [place(s-9,o,y0-8.5),place(s+7,o,y0-8.5),12]] as const)
   span(blocks,a,b,width,17,'#8b8984');
  const derrick=place(s,o,y0+.03);
@@ -114,7 +114,7 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
   piece(blocks,p.clone().addScaledVector(f,l*.10).add(vec(0,2.2,0)),vec(.24,4.2,.26),y,'#3d4f50');
  }
  // The roof volumes and crane read as working infrastructure, not finished art.
- for(const [s,out,w,l] of [[284,5,8,21],[328,5,10,26],[380,5,9,23]]){
+ for(const [s,out,w,l] of [[-58,5,10,41],[46,5,11,36],[179,5,10,32],[291,5,11,30],[380,5,9,23]]){
   const y=angle(place(s-2,out,sea),place(s+2,out,sea));
   piece(blocks,place(s,out,quayTop+2.5),vec(w,5,l),y,'#b8b0a1');
   piece(blocks,place(s,out,quayTop+5.15),vec(w+1.1,.55,l+1.3),y,'#6e5148');
@@ -125,6 +125,25 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  const lightMaterial=new THREE.MeshBasicMaterial({color:'#ff9e78'});
  const light=new THREE.Mesh(new THREE.SphereGeometry(.61,8,6),lightMaterial);
  light.position.copy(beacon).add(vec(0,3.17,0));root.add(light);
+ // A smaller, red-roofed final headland lighthouse, distinct from Kenting's
+ // taller all-white landmark and the small lamp at the breakwater mouth.
+ const [towerS,towerAcross]=h.lighthouse;
+ const towerBase=shoreGround(towerS,towerAcross);
+ const towerRadius=3.3,towerHeight=11.7;
+ const cylinder=(geo:THREE.BufferGeometry,color:string,y:number)=>{
+  const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color,roughness:.83}));
+  m.position.copy(towerBase).add(vec(0,y,0));root.add(m);
+ };
+ const labelY=towerBase.y+towerHeight+4.8;
+ cylinder(new THREE.CylinderGeometry(4.85,5.2,3.2,10),'#877c70',-.8);
+ cylinder(new THREE.CylinderGeometry(2.3,towerRadius,towerHeight,12),'#f5e0bb',towerHeight/2-.08);
+ cylinder(new THREE.CylinderGeometry(3.55,3.15,.52,12),'#b3624a',towerHeight+.16);
+ cylinder(new THREE.CylinderGeometry(2.23,2.23,2.35,10),'#4c4240',towerHeight+1.52);
+ cylinder(new THREE.ConeGeometry(3.3,2.75,10),'#9d3f32',towerHeight+3.425);
+ for(const turn of [-.25,.2,.66,1.1,1.55]){
+  const a=turn*Math.PI, p=towerBase.clone().add(vec(2.15*Math.sin(a),towerHeight+1.48,2.15*Math.cos(a)));
+  piece(blocks,p,vec(1.15,1.27,.19),a,'#d29f5b');
+ }
  const mesh=(g:THREE.BufferGeometry,p:Piece[])=>{
   const m=new THREE.InstancedMesh(g,new THREE.MeshStandardMaterial({roughness:.88}),p.length);
   const o=new THREE.Object3D();
@@ -139,8 +158,9 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  mesh(new THREE.IcosahedronGeometry(1,0),stones);
  const hull=new THREE.SphereGeometry(.5,7,4);mesh(hull,hulls);
  mesh(new THREE.DodecahedronGeometry(.65,0),scrub);
- return {root,inspect:{parts:stones.length+blocks.length+hulls.length+scrub.length+1,berths:h.berths.length,
-  beacon:light.position.toArray(),outerDerrick:mastTop.toArray(),quayY:quayTop,scrubBases},update:(station:number,time:number)=>{
+ return {root,inspect:{parts:stones.length+blocks.length+hulls.length+scrub.length+6,berths:h.berths.length,
+  beacon:light.position.toArray(),outerDerrick:mastTop.toArray(),quayY:quayTop,scrubBases,
+  lighthouse:{station:h.entry+towerS,lateral:coastBeachX(COAST_SHORE_OFFSET,h.entry+towerS)*(1-towerAcross)-13*towerAcross,base:towerBase.toArray(),top:labelY}},update:(station:number,time:number)=>{
   root.visible=station>=h.rockStart-450&&station<=h.rockEnd+100;
   const pulse=Math.pow(Math.max(0,Math.cos(time*Math.PI*.72)),7);
   lightMaterial.color.setRGB(.54+pulse*.46,.10+pulse*.52,.06+pulse*.28);
