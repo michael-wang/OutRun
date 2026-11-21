@@ -1,5 +1,8 @@
 # P0-3 — source storage, restore trial and evidence retention
 
+> **CURRENT NOTE (2026-11-21):** 以下是 2026-11-16 的 P0-3 歷史研究與提案，並非現行 R6d 的執行門檻。Michael 已決定個人 Hobby Project 對可公開的小型原生母檔採 [GitHub-first 方案 A](ASSET_SOURCE_CUSTODY.md)；不強制 D 槽、私人 Repo 或多地備份。歷史風險分析與試驗證據保留，但不要再拿它要求 Judy 找外接硬碟才能將 R6d 提交到 Git。
+
+
 **RESEARCH / non-destructive local trial; technical scope independently accepted by Julia.** She inspected the actual inventory, deployment analysis and complete script/diff, reran the five-file trial against `30d2fea` and whitespace checks; an additional reviewer reran trial/refusal checks and inspected workflows without a blocking defect. This acceptance does not verify native master recovery, independent backups, LFS hydration or live deployment, and authorizes no migration/deletion. Policy adoption remains a separate decision. Snapshot: `30d2fea0693f86c20cbb023825cbdd9b2a6f2176`. Latest remote dev is still `e81272a0e3295c942ece8b3d305bc49b0337fbe0`. No storage service, migration, retention automation, cleanup, upload, deployment or issue edit was performed.
 
 ## What was actually verified
