@@ -11,23 +11,26 @@
       },
       "editableSource": {
         "kind": "blend",
-        "path": "art-prototype/output/r6d-cover-locks.blend",
+        "path": "art/source/characters/r6d-cover-locks.blend",
         "sha256": "5f45360a12be38a7a02777b5b9599964d051a05370f4ab5dd974e56c8017f261",
-        "hashEvidence": "Owner's Windows Git Bash sha256sum output on 2026-11-21; source bytes not independently inspected via GitHub connection."
+        "hashEvidence": "Michael's Windows Git Bash sha256sum on the ignored original file, 2026-11-21; Git tracked copy is pending verification.",
+        "previousLocalPath": "art-prototype/output/r6d-cover-locks.blend"
       },
       "exportRecipe": "scripts/blender/export_r6d_locks.py",
       "provenance": "docs/art-review/r6d/README.md",
-      "custody": "AT_RISK_UNVERIFIED",
+      "custody": "PENDING_GIT_CHECKIN",
       "limitations": [
-        "Owner reported local Blender master exists (229 KiB) and supplied SHA-256; source content/native editability not independently reviewed.",
-        "Pinned source SHA-256 is now documented; independently recoverable private backup and actual native restore still unverified.",
-        "Tracked export script actually reads R6b core and R6c upper GLB inputs; exact native .blend edit/re-export parity remains unverified.",
-        "This source custody issue does not change the owner-accepted R6d visual/gameplay choice."
+        "The authoritative Git path art/source/characters/r6d-cover-locks.blend is a planned check-in; the file is not yet committed or pushed.",
+        "Recorded SHA-256 is from the original Windows-local .blend; verify the committed Git blob has exactly these bytes.",
+        "Independent native Blender open/edit/restore from committed Git data is not yet verified.",
+        "R6d exporter consumes already-tracked R6b core and R6c upper GLBs; full source-to-export parity is not established.",
+        "Owner-accepted gameplay look is unchanged; GitHub-first custody does not certify licensing of unrelated private third-party artwork."
       ],
       "upstreamInputs": [
         "public/assets/characters/coast-blonde-r6b.glb",
         "public/assets/characters/coast-blonde-r6b-upper.glb"
-      ]
+      ],
+      "publicationApproval": "Michael approved storing this specific small R6d editable hair master in the existing public OutRun GitHub repo on 2026-11-21; not blanket approval for third-party/private models."
     }
   ]
 }
