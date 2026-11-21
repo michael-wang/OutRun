@@ -50,11 +50,13 @@ export function auditSourceCustody(asset,{root=ROOT}={}){
  else exportOK=true;
  const recipe=inRepo(root,asset.exportRecipe);
  if(!existsSync(recipe))gaps.push('authoring/export recipe missing');
+ else if(!isCommittedInHead(root,asset.exportRecipe))gaps.push('authoring/export recipe not committed in HEAD');
  if(asset.upstreamInputs!==undefined){
   if(!Array.isArray(asset.upstreamInputs)||!asset.upstreamInputs.every(s=>typeof s==='string'))
    throw Error('invalid upstreamInputs for '+asset.id);
   for(const path of asset.upstreamInputs){
    if(!existsSync(inRepo(root,path)))gaps.push('authoring input missing: '+path);
+   else if(!isCommittedInHead(root,path))gaps.push('authoring input not committed in HEAD: '+path);
   }
  }
  const master=inRepo(root,source.path);
