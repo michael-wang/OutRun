@@ -1,13 +1,16 @@
 # 極速漫遊 / OutRun — current project rules
 
 
-## ACTIVE ASSET SOURCE CUSTODY GATE — applies to every important art Goal (2026-11-21)
+## ACTIVE ASSET SOURCE CUSTODY — simple GitHub-first policy (2026-11-21)
 
-**Canonical rules:** [Asset Source Custody](docs/ASSET_SOURCE_CUSTODY.md). The accepted R6d Spring Bone hair export and Blender authoring script are tracked, but its editable `art-prototype/output/r6d-cover-locks.blend` is ignored; [the public custody registry](asset-pipeline/source-custody.json) correctly records **AT_RISK_UNVERIFIED** until the actual master and a recoverable independent copy are checked. Never infer source protection from a tracked GLB or green game tests.
+**Owner decision:** 《極速漫遊》是個人 hobby project。對 Michael 已准許公開且已檢查來源／授權的小型可編輯資產，**現有 public OutRun GitHub repository 的 `dev` 就是版本化 Source of Truth**；不必先建立私人 Asset Vault、D 槽備份、第二個 GitHub Repo 或 LFS（超過 GitHub 一般 Git 大小限制才另議）。正式角色頭髮母檔預定 `art/source/characters/r6d-cover-locks.blend`；舊版工作路徑 `art-prototype/output/r6d-cover-locks.blend` 仍在忽略目錄，直到提交驗收成功前不得刪除。這項公開許可**僅適用已經確認可公開的 R6d 母檔**，不自動延伸到 Hunyuan 原始模型、第三方素材、未核准私人檔案。
 
-**Roles / mandatory handoff:** the **Asset Producer (Codex or artist)** saves and identifies the editable master, dependencies, exporter and hashes; the **Asset Librarian / Production Supervisor (Judy)** owns versioned private storage, independent backup, a real native-app restore/re-export test and the custody record; **Julia** independently reviews the evidence and keeps risks visible; **Michael** approves the look, storage permissions and public licensing, not routine copying. Any role without local machine access must report UNKNOWN. Do not publish private masters into this public repository without explicit authorization.
+**責任：** Technical Artist／Codex 製作並交付原生母檔與依賴；**Judy = Asset Librarian**，在本機檢查檔案、來源／授權／雜湊，將獲准公開的小型母檔以 Git 提交並 **Push 到 GitHub**，確認遠端 blob 可取得；**Julia** 審查來源鏈、Manifest、測試與實際 GitHub 路徑；**Michael** 決定美術與公開授權。Judy 不需要為此任務等 Codex 額度或先詢問 D 槽位置。
 
-**No false completion:** a playable or owner-approved LOOK is not a recoverable SOURCE. An important asset with no verified master/backup is `BLOCKED_ASSET_CUSTODY` for production-source closure (gameplay may remain accepted), and its local source/worktree must not be destroyed. At Goal handoff run `npm run assets:source:audit`, for source-ready candidates run `node scripts/audit-source-custody.mjs --asset ID --backup PRIVATE_PATH --strict` plus a documented Blender native restore; add each new critical asset to the registry. Strict byte checks alone do not certify offsite backups or editability. Do not globally block existing gameplay CI on preexisting R6d custody debt; explicitly track and remedy it.
+**關閉門檻：** R6d 的可編輯 Blender 母檔必須從 GitHub 版本還原至暫存位置，實際使用 Blender 開啟、確認基本網格／骨架／材質並做最小可編輯性測試；來源雜湊與原檔一致、必要上游 GLB／匯出腳本仍可取得、回報真實結果。執行 `npm run assets:source:check` 是 Git HEAD 及內容雜湊的機械檢查，不是 Blender 美術、法律或可編輯性 PASS。**未 Push 成功、遠端不存在或 Blender 還原未驗證，不可關閉 Issue #70**。原檔保留直到驗收完成；禁止在 public Repo 上傳未獲准素材。參照 [資產保管制度](docs/ASSET_SOURCE_CUSTODY.md) 與 [保管清單](asset-pipeline/source-custody.json)。
+
+**備註：** GitHub + 工作電腦提供這個 hobby project 的基本版本保存，但不是跨平台災難復原的完整保證。若將來需要額外離線備份再另行決定，不阻擋目前 R6d 任務。美術驗收與來源保管驗收仍分開。
+
 
 ---
 
