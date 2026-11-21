@@ -1,6 +1,18 @@
 # 極速漫遊 / OutRun — current project rules
 
 
+## ACTIVE STAGE GOAL — R2b Working Harbour after Kenting (2026-11-21)
+
+**Latest Michael direction:** leave the uniquely valuable `OutRun-local-archive/` evidence in place; archive cleanup is not today's work. The next coastal scene is **Working Harbour, naturally following Kenting's lighthouse and rocky headland**. [Issue #72](https://github.com/michael-wang/OutRun/issues/72) is the authoritative work order: **Judy independently performs route planning → playable Macro Layout → (only after Michael's personal Macro acceptance) existing/proxy-asset Composition Pass**. No Codex is needed for the phases Judy can really execute; **new Blender/DCC source production remains deferred until Codex returns**, even if Judy can inspect existing files.
+
+**Do not conflate authorization with PASS:** the Harbour's actual entry/exit ports, length and position remain **UNPLACED** in `content/scenery/coast-neighbours.json`. Do not use historical 4600m anchor as current. Preserve approved `immediate` A6→Kenting arrival, white lighthouse near track6020, original ocean and sunset, five-lane race and stream/Worker/AI safety. The existing rocky continuation 6800–8450m may be refitted or extended as a genuine segment, **not automatically used as a mandatory Connector**. Road grades and harbour basin/shore elevations must be coherent; existing cliff challenge begins track8410 and must be intentionally preserved/moved if affected. Old 14.2km stage length is not binding. Update the **existing** [canonical stage composition](docs/route/stage-composition.md) and minimal source data; no repeated trial Markdown.
+
+**Review sequence:** Judy supplies actual moving road Macro before art detail; Michael alone accepts gameplay rhythm/feel. Composition reviews require real game views with non-Blender proxies; cannot mark Composition PASS from schematic or code tests alone. When finished, hand off a small asset-production list to Codex for a separate future Goal, without creating unapproved GLB/Blender assets or publishing `main`.
+
+---
+
+
+
 ## ACTIVE ASSET SOURCE CUSTODY — simple GitHub-first policy (2026-11-21)
 
 **Owner decision:** 《極速漫遊》是個人 hobby project。對 Michael 已准許公開且已檢查來源／授權的小型可編輯資產，**現有 public OutRun GitHub repository 的 `dev` 就是版本化 Source of Truth**；不必先建立私人 Asset Vault、D 槽備份、第二個 GitHub Repo 或 LFS（超過 GitHub 一般 Git 大小限制才另議）。正式角色頭髮母檔預定 `art/source/characters/r6d-cover-locks.blend`；舊版工作路徑 `art-prototype/output/r6d-cover-locks.blend` 仍在忽略目錄，直到提交驗收成功前不得刪除。這項公開許可**僅適用已經確認可公開的 R6d 母檔**，不自動延伸到 Hunyuan 原始模型、第三方素材、未核准私人檔案。
