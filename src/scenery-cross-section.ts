@@ -6,6 +6,7 @@ import {coastHillHeight,farmBasinCut} from './coast-terrain';
 import {coastRuralCreekCut} from './coast-rural-layout';
 import {coastDrainDepth} from './coast-roadside-layout';
 import {ROAD_START} from './road-profile';
+import {harbourGround} from './working-harbour-profile';
 /** Legacy section projection accepts plain authored beat descriptors. */
 export interface SceneryBeat {id:string;startS:number;endS:number;world:'coast'|'city'|'canyon'}
 
@@ -113,7 +114,9 @@ export const COAST_SHORE_OFFSET=-26;
  * Do not extend road banking indefinitely across inland terrain. */
 export function coastBeachHeight(x:number,roadY:number,rightY:number,distance?:number):number{
  const original=legacyCoastBeachHeight(x,roadY,rightY,distance);
- return distance!==undefined&&beach2Weight(distance)>0?beach2Ground(x,distance,roadY,rightY,original,coastBeachX(-26,distance)):original;
+ if(distance===undefined)return original;
+ if(beach2Weight(distance)>0)return beach2Ground(x,distance,roadY,rightY,original,coastBeachX(-26,distance));
+ return harbourGround(distance,x,coastBeachX(COAST_SHORE_OFFSET,distance),COAST_SEA_LEVEL,roadY,rightY,original);
 }
 function legacyCoastBeachHeight(x:number,roadY:number,rightY:number,distance?:number):number{
  const base=baseBeachHeight(x,roadY,rightY,distance);

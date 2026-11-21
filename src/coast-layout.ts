@@ -4,6 +4,7 @@ import {beach2,BEACH2,beach2Weight,beach2Shore,kentingGroundBlend} from './beach
 import {beachZoneBlend} from './beach-zone-layout';
 import {beachRailHidden,macroBeachExtra,macroReefDistance,beachFlow,macroCoastRise,macroCoastCloseBlend} from './beach-macro';
 import {coastDrainAt,coastDrainCovered,COAST_DRAIN_X} from './coast-roadside-layout';
+import {harbourShoreWidth} from './working-harbour-profile';
 
 /** Coast-only visitor beaches: a large relaxed second act, two lively
  * bays beside town, and just two quiet pockets on the fishing coast.
@@ -60,7 +61,7 @@ export function coastBeachExtra(d:number){
  // Low beach activity stays broad but within a readable near/midground band.
  const zone=beachZoneBlend(d),beachWidth=55+5*Math.sin(ref*.006);
  const old=coast+(Math.min(coast,beachWidth)-coast)*zone;
- return old+(-26-beach2Shore(d)-old)*beach2Weight(d);
+ return harbourShoreWidth(d,old+(-26-beach2Shore(d)-old)*beach2Weight(d));
 }
 /** Remap the old cross-section, preserving the inner dry shoulder exactly. */
 export function coastBeachX(x:number,d:number){

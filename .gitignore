@@ -63,3 +63,7 @@ __pycache__/
 # Isolated Kenting Beach 2 waterline caches remain local.
 /public/generated/coast-shore-beach2-*.shore
 /public/generated/coast-shore-beach2-*.build-key
+
+# Working Harbour Macro uses its own baked local waterline.
+/public/generated/coast-shore-working-harbour.shore
+/public/generated/coast-shore-working-harbour.build-key

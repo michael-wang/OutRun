@@ -57,10 +57,12 @@ it('clears the old reveal and admits only the installed beach and cap with a fin
   }
 });
 
-it('reuses the accepted shore cache and starts the inland screening mountain during A6',async()=>{
+it('isolates the harbour shore cache while preserving the A6 and Kenting terrain',async()=>{
  const original=await loadSite('original'),immediate=await loadSite('immediate'),late=await loadSite('relocated');
- expect(immediate.mask).toBe(original.mask);
- expect(immediate.key).toBe(original.key);
+ expect(immediate.mask).toBe('coast-shore-working-harbour');
+ expect(immediate.mask).not.toBe(original.mask);
+ expect(immediate.mask).not.toBe(late.mask);
+ expect(immediate.key).not.toBe(original.key);
  for(const d of [3900,4000,4100,4200,4300,4350,4500,4700,4850,5500,6020,6800]){
   for(const x of [-90,-55,-20,11,35,75,150]){
    expect(immediate.height(d,x)).toBeCloseTo(original.height(d,x),7);

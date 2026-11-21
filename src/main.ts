@@ -8,6 +8,7 @@ import {coastStaticStage} from './content/stage-data';
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY} from './content/coast-stage';
 import {coastGameplayAt,coastFeedbackPhases} from './content/coast-gameplay-sample';
 import {coastWorkerRoad} from './content/coast-worker-road';
+import {WORKING_HARBOUR_ACTIVE} from './working-harbour-profile';
 import {coastLessonAt} from './content/coast-onboarding';
 import {coastHeroNear} from './content/coast-direction';
 import {coastScenicActAt,coastSegmentNameAt} from './coast-journey-layout';
@@ -305,6 +306,8 @@ startupDiagnostics.mark('coast-boats-start');
 let coastBoats=coastUltraMode?await (await import('./coast-boats')).addCoastBoats(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms,ultraOcean?.boatShadow):null;
 startupDiagnostics.mark('coast-boats-ready',{active:!!coastBoats});
 const beachStudy=(await import('./beach2-macro')).addBeach2Macro(world.scene,world.sample,ultraOcean?.boatSurfaceUniforms);
+const workingHarbour=WORKING_HARBOUR_ACTIVE?(await import('./working-harbour-macro')).addWorkingHarbourMacro(world.scene,world.sample):undefined;
+workingHarbour?.update(-1000,0);
 const flightAnchor=beachStudy.userData.tower;
 const coastalFlights=flightAnchor?(await import('./coast-gull-flights')).addCoastGullFlights(world.scene,world.sample,{station:flightAnchor.station,position:flightAnchor.world}):undefined;
 // Compile even the distance-hidden reflections before departure, not when the
@@ -1096,6 +1099,7 @@ function render(dt:number,draw=true){
   const prepStart=fpsProfiling?performance.now():0;
   coastBoats?.update(elapsed,camera);
   beachStudy.userData.update(elapsed);
+  workingHarbour?.update(state.distance,elapsed);
   coastalFlights?.update(elapsed,state.distance);
   const p=world.sample(state.distance);
   world.car.position.copy(p.position).addScaledVector(p.right,state.lateral);
@@ -1603,6 +1607,7 @@ if(import.meta.env.DEV){(window as any).__drive={
   macroOverhead:(enabled:boolean)=>{macroOverhead=enabled;manual=true;render(1/60);},
   beachInspect:()=>({anchor:beachStudy.userData.anchor,activity:beachStudy.userData.shoreActivity,flights:coastalFlights?.inspect(),walk:beachStudy.userData.walk,beacon:beachStudy.userData.beacon,poses:beachStudy.userData.poses,swimmers:beachStudy.userData.waterActors}),
   coastBoats:()=>coastBoats?.inspect(elapsed)??[],
+  workingHarbour:()=>workingHarbour?{...workingHarbour.inspect,visible:workingHarbour.root.visible}:null,
   coastBoatShadow:(enabled?:boolean)=>{if(enabled!==undefined&&ultraOcean){ultraOcean.boatShadow.enabled=enabled;render(0);}return ultraOcean?.boatShadow.stats;},
   coastWater:()=>({mode:ultraOcean?'ultra':coastUltraMode?'basic':'disabled',...ultraOcean?.stats}),
   coastNature:()=>{let batches=0,visible=0,instances=0,triangles=0;const materials=new Set(),textures=new Set();world.scene.traverse(o=>{if(!(o instanceof THREE.InstancedMesh)||!o.userData.nature)return;batches++;const m=o.material as THREE.MeshStandardMaterial;materials.add(m);if(m.map)textures.add(m.map);if(o.visible){visible++;instances+=o.count;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3*o.count;}});return {batches,visible,instances,triangles,materials:materials.size,textures:textures.size};},

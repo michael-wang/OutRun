@@ -18,6 +18,7 @@ import type {createTrack} from './track';
 import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 import {canyonGroundY,canyonRiverRaw,canyonSceneEnvelope,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonStratumColor} from './canyon-language';
+import {harbourRockWeight} from './working-harbour-profile';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
@@ -121,6 +122,14 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
       const physicalX=roadOffset(o,cachedWidth(d),cachedShoulders(d)),shore=coastBeachX(-26,d);
       const land=new THREE.Color('#817e6b').lerp(new THREE.Color('#69714a'),THREE.MathUtils.smoothstep(physicalX,shore+8,shore+28));
       color.lerp(land,Math.min(1,macroCoastRise(d)/5,height/4));
+     }
+     const rockWeight=harbourRockWeight(d);
+     if(rockWeight>0&&o< -13){
+      const physicalX=roadOffset(o,cachedWidth(d),cachedShoulders(d));
+      const shore=coastBeachX(-26,d);
+      const rock=THREE.MathUtils.smoothstep(-physicalX,13,18)*THREE.MathUtils.smoothstep(physicalX,shore-4,shore+4);
+      const strata=.5+.5*Math.sin(height*.76+d*.083+.65*Math.sin(d*.051));
+      color.lerp(new THREE.Color('#6c655e').lerp(new THREE.Color('#998376'),strata),rock*rockWeight);
      }
     }
 

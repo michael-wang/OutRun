@@ -48,3 +48,24 @@ Original R1 relocation comparison SVG/CSV were **throwaway trial snapshots**, no
 4. Validate world/Worker/physics/shore single-source agreement and restore every deferred entity exactly once (none left at the old overlapping site). Renew the versioned Master Route SVG, grade/curvature charts and scene inventory when real positions are approved.
 
 **Tests not certified in the GitHub-only editing session.** The owner has personally accepted R1b visual/drive pacing. Before treating *these merged source changes* as fully validated, run `npm run verify:dev` and targeted Vitest tests including `tests/kenting-installation.unit.ts`, `tests/kenting-terrain-installation.unit.ts`, `tests/kenting-boat-admission.unit.ts`, `tests/coast-segment-hud.unit.ts`, and `tests/coast-neighbour-segments.unit.ts`. Verify default start → A6 → Kenting → lighthouse → remaining race, restart, traffic/AI and mobile FPS. Main release stays separate.
+
+### #72 Gate 1 — High rocky coast, then port, then descent
+
+**Local Macro candidate only; NOT accepted or integrated into the regular dev build.** Keep the accepted R1b beach, white lighthouse and existing road centreline. The new harbour never becomes sandy within its own ports; the race stays on top, the working quay stays down by the real water. Commit baseline: `877fc319`. Stations are track metres; HUD = track − 350 m. Heights are world Y, with sea at −5 m.
+
+| Beat | Track / HUD (m) | Road Y | Intent |
+| --- | --- | ---: | --- |
+| Rocky approach | 6930 / 6580 | 25.42 | Carry the lighthouse headland forward; allow the outer arm to emerge before the whole basin. |
+| Entry port | 7100 / 6750 | 25.68 | Existing broad descending-radius turn, not a separate Connector or a new braking challenge. |
+| Hero observation | 7260 / 6910 | 25.71 | Near rock lip, forward-left quay and vessel silhouettes, sheltered basin, outer mouth with small navigation beacon. |
+| Exit port | 7540 / 7190 | 25.24 | The harbour ends while the road is still on the high shelf. |
+| Post-port coast | 7720 → 8250 / 7370 → 7900 | 21.36 → 1.14 | Continue the existing descent, blend rock into sand. The road is ~6.14 m above the sea at 8250. |
+| Existing cliff contest | 8410–9220 / 8060–8870 | ~−0.16 at entry | Keep existing braking challenge, later gates, on-road events, finish and traffic stations unmoved. |
+
+**Why this candidate:** The working stretch is 440 station-metres (7.9–5.3 seconds at constant HUD 200–300 km/h before the approach and exit), with grade magnitude ≤0.93% and roughly 19° of heading change. Join length is zero. Existing descent reaches ~4.33% grade outside the harbour. Avoid a tall foreground silhouette that occludes the harbour; the normal chase camera, not plan view, will judge whether the quay can read from ~30 m above water. Existing Sail Bay boat paths and 8920 landing are outside the new port's ownership. The wet/dry shore mask and rendered terrain must share the local profile; the mask alone cannot make a cliff or sheltered sea state.
+
+**Alternatives:** A harbour on the existing 7580–8250 descent keeps the same track length but falls from Y24.75 to Y1.14 inside the port, contradicting the high-rocky-shore brief. Extending the plateau and moving the descent downstream can lengthen the hero view, but affects the 8410 contest and may require remapping all later gates, events, traffic ownership, checkpoints, stream limits, and finish as one change. Revisit this only if the elevated existing-road candidate cannot give a legible and physically coherent view at speed.
+
+Gate 2 must validate actual normal-chase approach/reveal/hero/exit, independent Sail Bay patrol clearance, seawall waterline and rock-to-sand join, prior beach regression, and race/recovery. Stage and future Asset Production decisions remain separate.
+
+**Local Macro experience evidence:** Windows Chrome normal START (no development query) drove from track 350 through beach, lighthouse, rock approach, harbour, sand return and cliff entry; 7 active rivals, speed about 234–235 km/h in the port and 190 km/h at track 8431. All 25 one-second samples from track 6800 onward reported valid road and stream, with no hold or off-road in those samples. Restart returned to track 350 READY. The hook used ordinary throttle/brake/steer input, not seeks or free camera. The preview is a *playable review candidate*: the higher road and sand exit read clearly, but at 235 km/h the pier crane is briefly visible at the left edge and the rock lip still obscures part of the quay and basin. The Sail Bay sail silhouettes are not harbour evidence. Do not begin Composition on this basis. If owner also wants a longer port read, prefer reorienting the basin/outer arm into forward-left or a bounded road sightline correction on the same high plateau, before detailing art. Physical Pixel 8 performance and controller remain unverified.

@@ -50,5 +50,9 @@ it('does not invent an entry connector when the Beach and A6 ports already coinc
  expect(name(4800)).toBe('墾丁海水浴場');
  expect(name(6799.99)).toBe('墾丁海水浴場');
  expect(name(6800)).toBe('海岬沿岸');
+ expect(name(7099.99)).toBe('海岬沿岸');
+ expect(name(7100)).toBe('工作漁港');
+ expect(name(7539.99)).toBe('工作漁港');
+ expect(name(7540)).toBe('海岬沿岸');
  expect(name(8450)).toBe('岬口搶位');
 });

@@ -16,6 +16,7 @@ try{
   'content/stages/coast/road.json','src/beach-macro.ts','src/content/beach-macro-track.ts','src/content/coast-worker-road.ts',
   'src/content/coast-sunset-track.ts','src/coast-shore.ts','src/coast-shore-index.ts','src/coast-shore-asset.ts',
   'src/coast-layout.ts','src/scenery-cross-section.ts','src/coast-terrain.ts',
+  'src/working-harbour-profile.ts','content/stages/coast/working-harbour.json',
   'src/coast-farm-layout.ts','src/coast-rural-layout.ts',
   'src/coast-roadside-layout.ts','src/coast-town-access.ts',
   'src/content/authored-road.ts','src/content/authored-track.ts',

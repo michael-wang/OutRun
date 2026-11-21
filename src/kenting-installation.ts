@@ -7,7 +7,7 @@ export const KENTING_SEGMENT = layout;
  * Kenting directly. Explicit original/relocated modes remain regression-only
  * until the next independently placed Scenic Segment exists. */
 const requested = import.meta.env?.VITE_KENTING_INSTALLATION;
-const mode = requested === 'original' || requested === 'relocated' ? requested : 'immediate';
+const mode:keyof typeof layout.sites = requested === 'original' || requested === 'relocated' ? requested : 'immediate';
 const relocated = mode !== 'original'; // Quay and windbreak are intentionally deferred.
 const site = layout.sites[mode];
 export const KENTING_INSTALLATION = Object.freeze({
