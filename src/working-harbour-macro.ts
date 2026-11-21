@@ -111,7 +111,7 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
   const p=place(s,x,sea+1.08);
   const f=vec(Math.sin(y),0,Math.cos(y));
   const hullWidth=l*.233;
-  const hue=s%2?'#38646a':'#894f3c';
+  const hue=s<65?'#32646c':s<240?'#995843':'#536d66';
   piece(hulls,p,vec(hullWidth,3.55,l),y,hue);
   piece(blocks,p.clone().add(vec(0,1.33,0)),vec(hullWidth*.76,.48,l*.72),y,'#986f50');
   const deckhouse=p.clone().addScaledVector(f,-l*.12).add(vec(0,2.7,0));
@@ -120,12 +120,47 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
   piece(blocks,deckhouse.clone().add(vec(0,1.49,0)),vec(hullWidth*.84,.4,l*.265),y,hue);
   piece(blocks,p.clone().addScaledVector(f,l*.133).add(vec(0,3.63,0)),vec(.29,5.15,.32),y,'#414749',-.12);
  }
- // The roof volumes and crane read as working infrastructure, not finished art.
- for(const [s,out,w,l] of [[-58,5,10,41],[46,5,11,36],[179,5,10,32],[291,5,11,30],[380,5,9,23]]){
+ // A muted harbour palette: darker roofs hold the silhouettes, warm stone
+ // joins the rock and blue-green painted steel distinguishes the ice shed.
+ const sheds=[[-58,5,10,41,'#b5b4a7','#335f69'],[46,5,11,36,'#a7aba0','#55534b'],
+  [179,5,10,32,'#a99d86','#50655d'],[291,5,11,30,'#b1a894','#66544a'],
+  [380,5,9,23,'#b1a894','#5d5148']] as const;
+ for(const [s,out,w,l,cladding,roof] of sheds){
   const y=angle(place(s-2,out,sea),place(s+2,out,sea));
-  piece(blocks,place(s,out,quayTop+2.5),vec(w,5,l),y,'#b8b0a1');
-  piece(blocks,place(s,out,quayTop+5.15),vec(w+1.1,.55,l+1.3),y,'#6e5148');
+  piece(blocks,place(s,out,quayTop+2.5),vec(w,5,l),y,cladding);
+  piece(blocks,place(s,out,quayTop+5.15),vec(w+1.1,.55,l+1.3),y,roof);
  }
+ // The first working beat is a blue ice shed with a short unloading canopy.
+ // Keep the apron open; two intentionally uneven stacks show scale and use.
+ const iceS=-57, apronOut=10.9;
+ const along=(s:number,out:number)=>angle(place(s-2,out,sea),place(s+2,out,sea));
+ const iceYaw=along(iceS,apronOut);
+ piece(blocks,place(iceS,apronOut,quayTop+3.85),vec(4.95,.43,27),iceYaw,'#3e7178');
+ piece(blocks,place(iceS,10.1,quayTop+1.74),vec(.22,3.15,17),iceYaw,'#3e4d4b');
+ for(const z of [-69,-53,-45]){
+  piece(blocks,place(z,12.53,quayTop+1.85),vec(.38,3.7,.39),iceYaw,'#45626a');
+ }
+ const crates=(s:number,out:number,paint:string,high:boolean)=>{
+  const yaw=along(s,out);
+  piece(blocks,place(s,out,quayTop+.62),vec(2.2,1.24,3.35),yaw,paint);
+  piece(blocks,place(s+3.6,out+.5,quayTop+.46),vec(1.6,.92,2.55),yaw-.11,'#9d876b');
+  if(high)piece(blocks,place(s+.55,out-.3,quayTop+1.58),vec(1.48,.68,2.0),yaw+.14,'#c2b496');
+ };
+ crates(-81,9.1,'#60857c',true);
+ crates(-38,10.3,'#bcb49c',false);
+ // Separate second beat: a small berth crane serving the moored workboats,
+ // not a competing landmark. Load is suspended above open water.
+ const loaderS=153,loaderOut=10.1;
+ const loaderBase=place(loaderS,loaderOut,quayTop);
+ piece(blocks,loaderBase.clone().add(vec(0,3.95,0)),vec(1.04,7.9,1.22),along(loaderS,loaderOut),'#ac8c49');
+ const loaderHead=loaderBase.clone().add(vec(0,7.77,0));
+ const loaderTip=place(loaderS+3,21,quayTop+6.34);
+ truss(loaderHead,loaderTip,.72,'#ba994e');
+ truss(loaderBase.clone().add(vec(0,4.65,0)),loaderTip,.37,'#736344');
+ piece(blocks,loaderTip.clone().add(vec(0,-1.8,0)),vec(.15,3.6,.16),0,'#4a4841');
+ piece(blocks,loaderTip.clone().add(vec(0,-3.92,0)),vec(2.3,.75,1.9),along(loaderS,loaderOut),'#85846b');
+ crates(140,9.3,'#758b77',true);
+ crates(160,8.6,'#b1a18a',false);
  const [bS,bOut]=h.breakwater[h.breakwater.length-1];
  const beacon=place(bS,bOut,sea+2.2);
  piece(blocks,beacon.clone().add(vec(0,1.35,0)),vec(1.6,2.7,1.6),0,'#84453f');
@@ -153,7 +188,8 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  mesh(new THREE.DodecahedronGeometry(.65,0),scrub);
  return {root,inspect:{parts:stones.length+blocks.length+hulls.length+scrub.length+3,berths:h.berths.length,
   beacon:light.position.toArray(),outerDerrick:mastTop.toArray(),quayY:quayTop,scrubBases,
-  lighthouse},update:(station:number,time:number)=>{
+  lighthouse,composition:[{kind:'ice-shed',station:h.entry+iceS,anchor:place(iceS,apronOut,quayTop).toArray()},
+   {kind:'loading-berth',station:h.entry+loaderS,anchor:loaderBase.toArray()}]},update:(station:number,time:number)=>{
   root.visible=station>=h.rockStart-450&&station<=h.rockEnd+100;
   const pulse=Math.pow(Math.max(0,Math.cos(time*Math.PI*.72)),7);
   lightMaterial.color.setRGB(.54+pulse*.46,.10+pulse*.52,.06+pulse*.28);

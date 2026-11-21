@@ -81,6 +81,14 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
   const harbour=addWorkingHarbourMacro(new Scene(),track.sample);
   expect(harbour.root.children).toHaveLength(7);
   expect(harbour.inspect.berths).toBe(9);
+  const beats=harbour.inspect.composition;
+  expect(beats.map(({kind})=>kind)).toEqual(['ice-shed','loading-berth']);
+  expect(beats[1].station-beats[0].station).toBeGreaterThan(180);
+  for(const beat of beats){
+   expect(beat.station).toBeGreaterThan(h.entry+h.quayStart);
+   expect(beat.station).toBeLessThan(h.entry+h.quayEnd);
+   expect(beat.anchor[1]).toBeCloseTo(harbour.inspect.quayY,8);
+  }
   expect(harbour.inspect.quayY).toBeCloseTo(COAST_SEA_LEVEL+1.75);
   expect(harbour.inspect.beacon[1]-COAST_SEA_LEVEL).toBeLessThan(6);
   const bases=harbour.inspect.scrubBases;

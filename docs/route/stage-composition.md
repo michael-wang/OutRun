@@ -1,12 +1,8 @@
 # Coast Route · Accepted R1b and R2 handoff
 
-**State (2026-11-20): R1b's direct A6 → Kenting arrival is owner accepted. R2a source ownership is prepared; R2b full scene relocation is NOT implemented.**
+**Status:** R1b Kenting stays accepted. On [Issue #72](https://github.com/michael-wang/OutRun/issues/72), Michael explicitly accepted the playable Working Harbour Macro V4 (`bf6a467`). The separate Composition candidate is local and remains subject to Michael/Julia review. This does not authorize production Blender assets, publication, or Coastal Woods placement.
 
-**Owner direction (2026-11-21):** [Issue #72 — R2b Working Harbour after Kenting](https://github.com/michael-wang/OutRun/issues/72) is now **AUTHORIZED for Judy's route study → playable Macro Layout → owner experience acceptance → existing-asset/proxy Composition Pass**. New Blender/DCC asset production is **DEFERRED to Codex availability**. This is authorization of the **workflow and scene order**, not approval of specific new station metres, a finished road, a playable harbour or Composition PASS. The rocky-coast transition and first white lighthouse are retained. A second small **breakwater navigation beacon** is a preferred composition cue, not a second competing landmark tower. Legacy working-harbour reference 4600 remains unplaced.
-
-**Road profile preflight:** Kenting's first lighthouse is around **track 6020**, rocky coast continues **6800–8450**; road elevation is about **24.25m at track 6800**, versus about **−0.17m at track 8450**, with sea level **−5m**. Existing cliff contest gate begins **track 8410**. Judy must reconcile safe road descent, harbour water basin, old gate and later scene positions before assigning actual harbour entry/exit ports or moving runtime geometry. Do not silently restore the earlier 650m beach entry Connector. Absolute track values differ from HUD by **350m**.
-
- The GitHub source integration remains subject to local build/drive regression. This document replaces the temporary R1 candidate screenshots/surveys, which are recoverable from Git history.
+**Road frame:** Kenting lighthouse track 6020; Working Harbour track 7100–7540, use the seaward early reveal and the existing descent to the unchanged cliff contest at 8410. Exit lighthouse track 7507. HUD = track − 350 m. No added connectors, road reshaping, progress Pace, or camera changes. In published `dev` the older Working Harbour anchor is still historical; the new layout discussed below is the isolated local candidate.
 
 ## Active runtime order and boundaries
 
@@ -18,10 +14,10 @@ Default Vite/production selection: `VITE_KENTING_INSTALLATION` unset → `immedi
 | Kenting reveal | screening mountain starts ~3950; high-curvature right turn ~4635–4785 | Mountain begins during A6; no forced entry Connector. |
 | Kenting scenic core | 4850–6250 | Sand, swimmers, shops, nearshore, lighthouse at 6020, shared world sunset. |
 | Coast beyond Kenting | 6800–8450 is a continued shoreline, NOT a newly required Connector | Retain the natural post-lighthouse coast to the next race act; no premature harbour/woods packing. |
-| Working Harbour | UNPLACED | Historical 4600 marker is a source inventory reference, **not** an active scene. |
+| Working Harbour | 7100–7540 (local #72 only) | Owner-accepted Macro V4; Composition pending review. The historical 4600 marker remains inactive. |
 | Coastal Woods | UNPLACED | Historical 5420 marker is a source inventory reference, **not** an active scene. |
 
-The working harbour and windbreak are deferred from the *active* immediate scene, without deleting their reusable boat/tree models. `content/stages/coast/scenic-layout.json` and `direction.json` still contain legacy authoring anchors, so **do not mistake those historical marker metres for active R2 placements**; `COAST_INSTALLED_HEROES` filters them in the current game. R2b must establish authoritative stage-wide segment placement and regenerate the map/hero projections together. The current R0 route SVG still accurately portrays the current native road centreline/elevation/curvature because R1b's immediate road transform is identity, but the full set of numbered Hero marker labels is not a final scene sequence.
+The legacy harbour and windbreak source anchors remain filtered, not deleted. The local #72 harbour is rendered from its own ports and harbour runtime, not the historical 4600 marker. Coastal Woods remains unplaced. The R0 route SVG represents the unmodified shared road, not the added seaward basins or final scenic label sequence.
 
 ## R2a source ownership
 
@@ -38,9 +34,9 @@ The working harbour and windbreak are deferred from the *active* immediate scene
 
 Original R1 relocation comparison SVG/CSV were **throwaway trial snapshots**, not source-of-truth stage art. The versioned R0 `docs/route/coast-master-route.svg` and `coast-profile.csv` remain the current road geometry reference until a later road change.
 
-## R2b — next local construction gate
+## R2b — original construction brief (historical)
 
-**Current authorized state:** Judy owns Gate 1 route study and Gate 2 playable Macro Layout; after Michael personally accepts the Macro, Judy may perform Gate 3 Composition using **existing assets/proxy geometry only**. Blender/GLB asset production is postponed. Exact ports and road changes remain unapproved until grounded in the actual route/profile and playable evidence. Suggested narrative:
+**Original workflow:** Judy owns Gate 1 route study and Gate 2 playable Macro Layout; after Michael personally accepts the Macro, Judy may perform Gate 3 Composition using **existing assets/proxy geometry only**. Blender/GLB asset production is postponed. Exact ports and road changes remain unapproved until grounded in the actual route/profile and playable evidence. Suggested narrative:
 
 1. Place the **Working Harbour** after Kenting, with realistic quay/waterline, usable vessel patrols, a visually readable approach and a seamless height transition down from the lighthouse high coast.
 2. Place **Coastal Woods** after the harbour, maintaining natural inland hills, gradual windbreak, readable roads and re-opening the view before the next contest gate.
@@ -87,3 +83,11 @@ The arm projects toward open water and encloses nine spaced fishing berths. Comp
 Keep the V3 harbour plan and road geometry. Hold the road shoulder constant, then drop the sea-facing rock face more quickly throughout the bay, retaining the dry pedestal only at the exit lighthouse headland. At track 7210, road Y≈25.70 and terrain 16 m left is Y≈24.31; by 39 m left it is about Y−0.13, with shared sea level Y−5. Keep nine moored fishing proxies; their 33–41 m hulls, decks and cabins now read larger than the 27–31 m offshore sails. Neither fleet is repositioned into the other's area.
 
 The harbour exposure envelope fades in past the beach and out at the mouth and offshore. The existing Ultra Water pass reduces basin FFT amplitude to 0.24 and local shore wave contribution to 0.14 of baseline at full shelter. Foam and spray fade in the same geographic region, small ripples and sunset glare remain, and the offshore/bathing-beach baseline is unchanged. Reuse the actual approximately 31.7 m Kenting tower mesh at the port exit, with only a local red roof variant and terrain-footed base; the source beach tower is unchanged. This remains Macro, not polished materials or finished art acceptance.
+
+### #72 Gate 3 — working-waterfront Composition candidate
+
+Michael accepted V4 Macro; the pass locks its road, chase camera, rocky cut, port and pier location, nine berths, sheltered-water envelope and both lighthouses. Pace the actual chase view as **Kenting exit / rocky transition → arm and operating dock at first reveal → unloading sheds and boats → red-roof exit tower → descent and the existing cliff contest**. The first quay work zone (track 7043, HUD 6693) groups an ice shed, shaded apron and a few crates. Farther around the quay (track 7253, HUD 6903), an ochre crane and load pick up the second beat. Warm roof/neutral deck colors contrast with low cool hulls, light wheelhouses and clear gaps of sheltered water. Tower mesh, placement and profile remain the accepted V4 versions.
+
+The candidate uses 20 extra elements in the existing static batch (+240 triangles and no additional draw batches), no new external assets, textures, lights or render passes. Model the near quay readable at road speed before adding detail down by the water. Do not exchange beach sailboats for work boats.
+
+**Production handoff only, not authorization:** (1) test one real-looking rock/ledge slice and vegetation independently with the existing profiler before committing higher density; (2) make one batched low-poly work-fleet kit from two reusable trawler silhouettes with consistent waterline/scale, silhouette accents and lower-detail variants; (3) make reusable dock roof, working crane and delivery props with a shared palette/material budget. Keep the reused V4 lighthouse; no new lighthouse asset needed. Pixel 8 performance remains unverified. No Blender/DCC, new GLB, branch push or public deployment without a later decision.
