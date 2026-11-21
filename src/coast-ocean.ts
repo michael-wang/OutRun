@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import {loadCoastShore,type unpackCoastShore} from './coast-shore-asset';
 import {COAST_SEA_LEVEL} from './scenery-cross-section';
 import {OceanCadence} from './coast-performance';
+import {harbourWaterUniforms} from './working-harbour-water';
 import {CoastBoatShadow,BOAT_SHADOW_GLSL} from './coast-boat-shadow';
 // MIT-licensed upstream simulation, with configurable FFT size for mobile.
 // @ts-ignore - vendored upstream JavaScript has no TypeScript declarations.
@@ -85,16 +86,18 @@ void main(){
  if(shore.x< -1.5||vWorld.y<shore.y+.015)discard;
  float nearshore=smoothstep(0.0,55.0,shore.x);
  float depth=max(0.0,vWorld.y-shore.y);
+ float shelter=harbourShelter(vWorld.xz,shore.x);
  // FFT slopes from the original four independent wavelength cascades.
  vec2 slope=
    texture(uSlope0,vWorld.xz/600.0).xy+
    texture(uSlope1,vWorld.xz/85.0).xy+
-   texture(uSlope2,vWorld.xz/12.0).xy+
-   texture(uSlope3,vWorld.xz/2.1).xy*.24;
+   texture(uSlope2,vWorld.xz/12.0).xy;
+ // The protected basin keeps a little moving capillary texture and sun sheen.
+ slope=slope*mix(1.,.29,shelter)+texture(uSlope3,vWorld.xz/2.1).xy*.24*mix(1.,.72,shelter);
  slope*=mix(.12,1.0,nearshore);
  float phase=shorePhase(shore.x,vWorld.xz);
  float exposure=reefExposure(vWorld.xz,shore.x);
- slope+=shore.zw*(cos(phase)+.6*cos(2.0*phase-.6))*.15*exp(-max(0.0,shore.x)/38.0)*mix(1.,uReefProfile.y,exposure);
+ slope+=shore.zw*(cos(phase)+.6*cos(2.0*phase-.6))*.15*exp(-max(0.0,shore.x)/38.0)*mix(1.,uReefProfile.y,exposure)*mix(1.,.14,shelter);
  vec3 normal=normalize(vec3(-slope.x,1.0,-slope.y));
  vec3 viewDir=normalize(cameraPosition-vWorld);
  vec3 sunDir=normalize(uSun);
@@ -160,6 +163,7 @@ void main(){
   foam=max(foam,wash*pulse*(.6+.4*lace));
  }
  foam=max(foam,exposure*smoothstep(-.16,.78,sin(phase)+breakup*.36)*(.67+.33*lace));
+ foam*=mix(1.,.16,shelter);
  color=mix(color,mix(vec3(.64,.64,.57),vec3(.92,.95,.93),exposure),clamp(foam,0.0,.98));
  color*=1.0-uRockShadowStrength*rockShadow*.80;
  // The parent game uses a bright coastal horizon; blend distant water into it.
@@ -178,12 +182,12 @@ export class UltraCoastOcean {
  private readonly renderer:THREE.WebGLRenderer;
  readonly boatShadow:CoastBoatShadow;
 
- static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},onProgress:(p:number)=>void,settings:OceanStageEffects=COAST_EFFECTS.ocean){
+ static async create(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3;tangent:THREE.Vector3};length:number},onProgress:(p:number)=>void,settings:OceanStageEffects=COAST_EFFECTS.ocean){
   const shore=await loadCoastShore(onProgress);
   try{return new UltraCoastOcean(renderer,scene,coast,shore,COAST_SEA_LEVEL,settings);}
   catch(error){shore.texture.dispose();throw error;}
  }
- private constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};length:number},shore:ReturnType<typeof unpackCoastShore>,level=COAST_SEA_LEVEL,settings:OceanStageEffects=COAST_EFFECTS.ocean){
+ private constructor(renderer:THREE.WebGLRenderer,scene:THREE.Scene,coast:{sample:(d:number)=>{position:THREE.Vector3;right:THREE.Vector3;tangent:THREE.Vector3};length:number},shore:ReturnType<typeof unpackCoastShore>,level=COAST_SEA_LEVEL,settings:OceanStageEffects=COAST_EFFECTS.ocean){
   if(!renderer.capabilities.isWebGL2)throw new Error('Ultra-Water experiment requires WebGL2');
   this.renderer=renderer;
   this.mobile=matchMedia('(pointer: coarse)').matches;
@@ -212,6 +216,7 @@ export class UltraCoastOcean {
   this.uniforms={
    uLastRings:{value:new THREE.Vector2(radii[radii.indexOf(1)-1],radii[radii.length-2])},
    ...this.boatShadow.uniforms,
+   ...harbourWaterUniforms(coast.sample),
    uDisp0:{value:null},uDisp1:{value:null},uDisp2:{value:null},
    uSlope0:{value:null},uSlope1:{value:null},uSlope2:{value:null},uSlope3:{value:null},
    uGridOrigin:{value:new THREE.Vector2()},
@@ -261,9 +266,11 @@ export class UltraCoastOcean {
      vec2 face=position.xz+outwards*seed.y*.9;
      float depth=shoreAt(face).x;
      float gain=mix(1.,uReefProfile.z,reefExposure(face,depth));
+     float shelter=harbourShelter(face,depth);
      float phase=shorePhase(depth,face);
      float cycle=fract((phase-.75)/6.28318-seed.x*mix(.07,.22,(gain-1.)/2.));
      float t=clamp(cycle/.36,0.0,1.0);
+     gain*=mix(1.,.60,shelter);
      mist=step(.48,seed.x);
      turbulence=seed.z;
      float spread=sin(seed.z*3.7)*.4+.6;
@@ -273,7 +280,7 @@ export class UltraCoastOcean {
      vec4 mv=modelViewMatrix*vec4(p,1.0);
      gl_Position=projectionMatrix*mv;
      gl_PointSize=clamp(mix(1420.,520.,mist)*gain*sqrt(gain)/max(1.,-mv.z),1.2,48.0);
-     alpha=sin(t*3.14159)*.94*(1.0-smoothstep(150.0,450.0,-mv.z));
+     alpha=sin(t*3.14159)*.94*(1.0-smoothstep(150.0,450.0,-mv.z))*mix(1.,.18,shelter);
     }`,
    fragmentShader:`varying float alpha;varying float mist;varying float turbulence;
     void main(){

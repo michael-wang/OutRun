@@ -8,10 +8,10 @@ export const WORKING_HARBOUR_ACTIVE=KENTING_INSTALLATION.mode==='immediate';
  * knows absolute track stations. Local s and lateral setbacks describe the kit. */
 export const WORKING_HARBOUR = {
  entry:harbour.entryPort,exit:harbour.exitPort,rockStart:harbour.rockApproachStart,rockEnd:harbour.rockExitBlendEnd,quayStart:-83,quayEnd:425,
- shoreVersion:4, // increment if the analytic surface changes
+ shoreVersion:5, // increment if the analytic surface changes
  breakwater:[[-167,1],[-135,47],[-73,78],[24,95],[112,103],[200,108],[280,101],[336,90],[392,74]] as const,
  outerWorkS:357,outerWorkOut:67,outerWorkJoin:84,
- berths:[[-47,27,19],[-4,42,18],[42,28,24],[89,38,21],[139,26,22],[193,46,19],[243,26,24],[296,36,22],[354,26,18]] as const,
+ berths:[[-47,29,34],[-4,45,36],[42,28,39],[89,42,34],[139,29,41],[193,49,37],[243,30,40],[296,38,36],[354,30,33]] as const,
  scrubSites:[[-260,.59],[-217,.42],[-150,.64],[-106,.61],[-43,.43],[36,.36],[101,.39],[152,.34],[425,.46],[477,.62],[526,.54]] as const,
  lighthouse:[407,.78] as const,
 } as const;
@@ -53,6 +53,15 @@ export function harbourGround(d:number,x:number,shore:number,sea:number,road:num
  const ledge=.43+.08*Math.sin(s*.044)+.045*Math.sin(s*.107)+.09*sightWindow;
  const ledgeEdge=ledge+.22+.035*Math.cos(s*.032);
  const face=.10*smooth(0,.10,t)+.065*smooth(.13,.32,t)+.62*smooth(ledge,ledgeEdge,t)+.215*smooth(.76,1,t);
- const coast=mix(sea,dry,face);
+ // Reveal the water by dropping the ground, not the approved driving road.
+ // Beyond the retained shoulder this loses most of its height in ~35 metres
+ // and then descends more gently to the measured waterline. Preserve the
+ // high, dry exit headland under the lighthouse; it lies past the main reveal.
+ const distanceFromShoulder=-13-x;
+ const reveal=smooth(-258,-137,s)*(1-smooth(335,401,s));
+ const edge=30+4*Math.sin(s*.037)+2.5*Math.cos(s*.069);
+ const talus=.205*Math.pow(t,1.36)+(.025+.012*Math.sin(s*.047))*smooth(.10,.42,t);
+ const rapid=talus+(1-talus)*(1-smooth(3.5,edge,distanceFromShoulder));
+ const coast=mix(sea,dry,mix(face,rapid,reveal));
  return mix(original,coast,w*smooth(0,3,-13-x));
 }

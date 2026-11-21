@@ -1,5 +1,6 @@
 import {describe,expect,it} from 'vitest';
-import {Line3,Scene,Vector3} from 'three';
+import {InstancedMesh,Line3,Matrix4,Mesh,Scene,Vector3} from 'three';
+import {kentingHero} from '../src/assets/kenting-hero-kit';
 import {configureKentingCoast} from '../src/beach-macro';
 import {coastBeachX} from '../src/coast-layout';
 import {coastWorkerRoad} from '../src/content/coast-worker-road';
@@ -34,7 +35,7 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
   for(const s of [-117,116,415]){
    const d=h.entry+s,r=track.sample(d);
    const ground=(x:number)=>coastBeachHeight(x,r.position.y,r.right.y,d);
-   expect(ground(shore(d)+13)).toBeGreaterThan(COAST_SEA_LEVEL+1.8);
+   expect(ground(shore(d)+13)).toBeGreaterThan(COAST_SEA_LEVEL+.18);
    expect(ground(shore(d)+13)).toBeLessThan(r.position.y-12);
    expect(ground(shore(d)-2)).toBeLessThan(COAST_SEA_LEVEL);
   }
@@ -51,7 +52,12 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
   const lines=wall.slice(1).map((b,i)=>new Line3(wall[i],b));
   expect(h.breakwater[0][1]).toBeLessThan(2);
   expect(h.breakwater.at(-1)![1]).toBeGreaterThan(30);
+  for(let i=1;i<h.berths.length;i++){
+   const [s0,o0,l0]=h.berths[i-1],[s1,o1,l1]=h.berths[i];
+   expect(coastalPoint(s1,o1).distanceTo(coastalPoint(s0,o0))).toBeGreaterThan((l0+l1)/2+5);
+  }
   for(const [s,out,length] of h.berths){
+   expect(length).toBeGreaterThan(31);
    for(const z of [s-length/2,s,s+length/2]){
     const d=h.entry+z,r=track.sample(d),x=shore(d)-out;
     const hull=coastalPoint(z,out);
@@ -61,9 +67,19 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
    }
   }
  });
+ it('drops toward the basin soon after the unchanged guardrail shoulder',()=>{
+  for(const d of [7040,7120,7210,7290,7380]){
+   const r=track.sample(d),y=(x:number)=>coastBeachHeight(x,r.position.y,r.right.y,d);
+   expect(y(-16)).toBeGreaterThan(r.position.y-3);
+   expect(y(-49)).toBeLessThan(r.position.y-15);
+   expect(y(-57)).toBeLessThan(y(-49)+.1);
+   expect(y(shore(d)+10)).toBeLessThan(y(-57));
+   expect(y(shore(d))).toBeCloseTo(COAST_SEA_LEVEL,7);
+  }
+ });
  it('holds the quay and sparse scrub on their respective ground levels and culls the kit',()=>{
   const harbour=addWorkingHarbourMacro(new Scene(),track.sample);
-  expect(harbour.root.children).toHaveLength(10);
+  expect(harbour.root.children).toHaveLength(7);
   expect(harbour.inspect.berths).toBe(9);
   expect(harbour.inspect.quayY).toBeCloseTo(COAST_SEA_LEVEL+1.75);
   expect(harbour.inspect.beacon[1]-COAST_SEA_LEVEL).toBeLessThan(6);
@@ -83,6 +99,27 @@ describe('Working Harbour whitebox uses the existing high road',()=>{
   expect(x).toBeLessThan(-25);
   expect(lighthouse.base[1]).toBeCloseTo(coastBeachHeight(x,road.position.y,road.right.y,lighthouse.station),8);
   expect(lighthouse.top).toBeGreaterThan(road.position.y+2.6);
+  expect(lighthouse.top-lighthouse.base[1]).toBeGreaterThan(29);
+  expect(lighthouse.footingTop).toBeGreaterThan(lighthouse.base[1]);
+  expect(lighthouse.footingBottom).toBeLessThan(lighthouse.footprintGroundMin);
+  const shared=kentingHero('gallery-lighthouse');
+  const gallery=harbour.root.getObjectByName('working-harbour-gallery-lighthouse');
+  expect(gallery).toBeInstanceOf(Mesh);
+  if(gallery instanceof Mesh){
+   expect(gallery.geometry).toBe(shared.geometry);
+   expect(gallery.material).not.toBe(shared.material);
+  }
+  const fleet=harbour.root.children.find(n=>n instanceof InstancedMesh&&n.geometry.type==='SphereGeometry');
+  expect(fleet).toBeInstanceOf(InstancedMesh);
+  if(fleet instanceof InstancedMesh){
+   const matrix=new Matrix4(),p=new Vector3(),s=new Vector3();
+   for(let i=0;i<h.berths.length;i++){
+    fleet.getMatrixAt(i,matrix);p.setFromMatrixPosition(matrix);s.setFromMatrixScale(matrix);
+    expect(s.z).toBeCloseTo(h.berths[i][2],4);
+    expect(p.y-s.y/2).toBeLessThan(COAST_SEA_LEVEL);
+    expect(p.y+s.y/2).toBeGreaterThan(COAST_SEA_LEVEL);
+   }
+  }
   harbour.update(h.entry-1000,0);expect(harbour.root.visible).toBe(false);
   harbour.update(h.entry,0);expect(harbour.root.visible).toBe(true);
   harbour.update(8410,0);expect(harbour.root.visible).toBe(false);

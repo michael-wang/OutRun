@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {coastBeachX} from './coast-layout';
 import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET,coastBeachHeight} from './scenery-cross-section';
 import {WORKING_HARBOUR as h,harbourRockWeight} from './working-harbour-profile';
+import {addWorkingHarbourLighthouse} from './working-harbour-lighthouse';
 
 type Sample=(station:number)=>{position:THREE.Vector3;right:THREE.Vector3};
 type Piece={position:THREE.Vector3;size:THREE.Vector3;yaw:number;color:string;roll?:number};
@@ -103,15 +104,21 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  truss(mastTop,tip,1.20,'#ab7140');
  truss(derrick.clone().add(vec(0,4.5,0)),tip,.48,'#635850');
  piece(blocks,tip.clone().add(vec(0,-2.3,0)),vec(.16,4.5,.16),0,'#453b31');
- // Three inexpensive silhouettes: hull, wheelhouse and mast. The calm basin
- // boats are moored; Sail Bay patrols remain independent in coast-boats.ts.
+ // Staggered moorings with substantial trawler bows, longer working decks
+ // and blocky wheelhouses. Sail Bay patrols remain independent.
  for(const [s,x,l] of h.berths){
   const y=angle(place(s-3,x,sea),place(s+3,x+3,sea));
-  const p=place(s,x,sea+.67);
+  const p=place(s,x,sea+1.08);
   const f=vec(Math.sin(y),0,Math.cos(y));
-  piece(hulls,p,vec(l*.31,2.1,l),y,s%2?'#33626a':'#6b483c');
-  piece(blocks,p.clone().addScaledVector(f,-l*.1).add(vec(0,1.25,0)),vec(l*.21,2.1,l*.25),y,'#ddd1af');
-  piece(blocks,p.clone().addScaledVector(f,l*.10).add(vec(0,2.2,0)),vec(.24,4.2,.26),y,'#3d4f50');
+  const hullWidth=l*.233;
+  const hue=s%2?'#38646a':'#894f3c';
+  piece(hulls,p,vec(hullWidth,3.55,l),y,hue);
+  piece(blocks,p.clone().add(vec(0,1.33,0)),vec(hullWidth*.76,.48,l*.72),y,'#986f50');
+  const deckhouse=p.clone().addScaledVector(f,-l*.12).add(vec(0,2.7,0));
+  piece(blocks,deckhouse,vec(hullWidth*.75,2.6,l*.24),y,'#e3d6b9');
+  piece(blocks,deckhouse.clone().addScaledVector(f,l*.068).add(vec(0,.58,0)),vec(hullWidth*.788,.75,l*.122),y,'#465d61');
+  piece(blocks,deckhouse.clone().add(vec(0,1.49,0)),vec(hullWidth*.84,.4,l*.265),y,hue);
+  piece(blocks,p.clone().addScaledVector(f,l*.133).add(vec(0,3.63,0)),vec(.29,5.15,.32),y,'#414749',-.12);
  }
  // The roof volumes and crane read as working infrastructure, not finished art.
  for(const [s,out,w,l] of [[-58,5,10,41],[46,5,11,36],[179,5,10,32],[291,5,11,30],[380,5,9,23]]){
@@ -125,25 +132,11 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  const lightMaterial=new THREE.MeshBasicMaterial({color:'#ff9e78'});
  const light=new THREE.Mesh(new THREE.SphereGeometry(.61,8,6),lightMaterial);
  light.position.copy(beacon).add(vec(0,3.17,0));root.add(light);
- // A smaller, red-roofed final headland lighthouse, distinct from Kenting's
- // taller all-white landmark and the small lamp at the breakwater mouth.
+ // Reuse the full-size, red-roofed gallery tower on the end headland.
  const [towerS,towerAcross]=h.lighthouse;
- const towerBase=shoreGround(towerS,towerAcross);
- const towerRadius=3.3,towerHeight=11.7;
- const cylinder=(geo:THREE.BufferGeometry,color:string,y:number)=>{
-  const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color,roughness:.83}));
-  m.position.copy(towerBase).add(vec(0,y,0));root.add(m);
- };
- const labelY=towerBase.y+towerHeight+4.8;
- cylinder(new THREE.CylinderGeometry(4.85,5.2,3.2,10),'#877c70',-.8);
- cylinder(new THREE.CylinderGeometry(2.3,towerRadius,towerHeight,12),'#f5e0bb',towerHeight/2-.08);
- cylinder(new THREE.CylinderGeometry(3.55,3.15,.52,12),'#b3624a',towerHeight+.16);
- cylinder(new THREE.CylinderGeometry(2.23,2.23,2.35,10),'#4c4240',towerHeight+1.52);
- cylinder(new THREE.ConeGeometry(3.3,2.75,10),'#9d3f32',towerHeight+3.425);
- for(const turn of [-.25,.2,.66,1.1,1.55]){
-  const a=turn*Math.PI, p=towerBase.clone().add(vec(2.15*Math.sin(a),towerHeight+1.48,2.15*Math.cos(a)));
-  piece(blocks,p,vec(1.15,1.27,.19),a,'#d29f5b');
- }
+ const towerStation=h.entry+towerS;
+ const towerLateral=THREE.MathUtils.lerp(coastBeachX(COAST_SHORE_OFFSET,towerStation),-13,towerAcross);
+ const lighthouse=addWorkingHarbourLighthouse(root,sample,towerStation,towerLateral);
  const mesh=(g:THREE.BufferGeometry,p:Piece[])=>{
   const m=new THREE.InstancedMesh(g,new THREE.MeshStandardMaterial({roughness:.88}),p.length);
   const o=new THREE.Object3D();
@@ -158,9 +151,9 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  mesh(new THREE.IcosahedronGeometry(1,0),stones);
  const hull=new THREE.SphereGeometry(.5,7,4);mesh(hull,hulls);
  mesh(new THREE.DodecahedronGeometry(.65,0),scrub);
- return {root,inspect:{parts:stones.length+blocks.length+hulls.length+scrub.length+6,berths:h.berths.length,
+ return {root,inspect:{parts:stones.length+blocks.length+hulls.length+scrub.length+3,berths:h.berths.length,
   beacon:light.position.toArray(),outerDerrick:mastTop.toArray(),quayY:quayTop,scrubBases,
-  lighthouse:{station:h.entry+towerS,lateral:coastBeachX(COAST_SHORE_OFFSET,h.entry+towerS)*(1-towerAcross)-13*towerAcross,base:towerBase.toArray(),top:labelY}},update:(station:number,time:number)=>{
+  lighthouse},update:(station:number,time:number)=>{
   root.visible=station>=h.rockStart-450&&station<=h.rockEnd+100;
   const pulse=Math.pow(Math.max(0,Math.cos(time*Math.PI*.72)),7);
   lightMaterial.color.setRGB(.54+pulse*.46,.10+pulse*.52,.06+pulse*.28);

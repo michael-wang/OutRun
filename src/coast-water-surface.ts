@@ -1,4 +1,7 @@
+import {harbourWaterGLSL} from './working-harbour-water';
+
 export const shoreGLSL=/* glsl */`
+${harbourWaterGLSL}
 uniform sampler2D uShore;
 uniform vec4 uShoreBounds;
 uniform float uTime;
@@ -47,8 +50,9 @@ vec3 displacedVertex(vec3 world, float ring, out float churn){
  // Keep deep-water FFT energy offshore. Bounded waves cannot reach the road.
  disp.y=disp.y/(1.0+abs(disp.y)/.9);
  disp.xz=disp.xz/(1.0+length(disp.xz)/1.2);
- world+=disp*fade*nearshore;
- world.y+=shoreWave(shore.x,world.xz);
+ float shelter=harbourShelter(world.xz,shore.x);
+ world+=disp*fade*nearshore*harbourSwell(shelter);
+ world.y+=shoreWave(shore.x,world.xz)*mix(1.,.14,shelter);
  churn=min(d0.w,min(d1.w,d2.w));
  return world;
 }
