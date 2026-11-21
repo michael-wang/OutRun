@@ -1,6 +1,12 @@
 # Coast Route · Accepted R1b and R2 handoff
 
-**State (2026-11-20): R1b's direct A6 → Kenting arrival is owner accepted. R2a source ownership is prepared; R2b full scene relocation is NOT implemented.** The GitHub source integration remains subject to local build/drive regression. This document replaces the temporary R1 candidate screenshots/surveys, which are recoverable from Git history.
+**State (2026-11-20): R1b's direct A6 → Kenting arrival is owner accepted. R2a source ownership is prepared; R2b full scene relocation is NOT implemented.**
+
+**Owner direction (2026-11-21):** [Issue #72 — R2b Working Harbour after Kenting](https://github.com/michael-wang/OutRun/issues/72) is now **AUTHORIZED for Judy's route study → playable Macro Layout → owner experience acceptance → existing-asset/proxy Composition Pass**. New Blender/DCC asset production is **DEFERRED to Codex availability**. This is authorization of the **workflow and scene order**, not approval of specific new station metres, a finished road, a playable harbour or Composition PASS. The rocky-coast transition and first white lighthouse are retained. A second small **breakwater navigation beacon** is a preferred composition cue, not a second competing landmark tower. Legacy working-harbour reference 4600 remains unplaced.
+
+**Road profile preflight:** Kenting's first lighthouse is around **track 6020**, rocky coast continues **6800–8450**; road elevation is about **24.25m at track 6800**, versus about **−0.17m at track 8450**, with sea level **−5m**. Existing cliff contest gate begins **track 8410**. Judy must reconcile safe road descent, harbour water basin, old gate and later scene positions before assigning actual harbour entry/exit ports or moving runtime geometry. Do not silently restore the earlier 650m beach entry Connector. Absolute track values differ from HUD by **350m**.
+
+ The GitHub source integration remains subject to local build/drive regression. This document replaces the temporary R1 candidate screenshots/surveys, which are recoverable from Git history.
 
 ## Active runtime order and boundaries
 
@@ -34,7 +40,7 @@ Original R1 relocation comparison SVG/CSV were **throwaway trial snapshots**, no
 
 ## R2b — next local construction gate
 
-Pending *owner-approved* placement and local real-game construction, in suggested narrative order:
+**Current authorized state:** Judy owns Gate 1 route study and Gate 2 playable Macro Layout; after Michael personally accepts the Macro, Judy may perform Gate 3 Composition using **existing assets/proxy geometry only**. Blender/GLB asset production is postponed. Exact ports and road changes remain unapproved until grounded in the actual route/profile and playable evidence. Suggested narrative:
 
 1. Place the **Working Harbour** after Kenting, with realistic quay/waterline, usable vessel patrols, a visually readable approach and a seamless height transition down from the lighthouse high coast.
 2. Place **Coastal Woods** after the harbour, maintaining natural inland hills, gradual windbreak, readable roads and re-opening the view before the next contest gate.
