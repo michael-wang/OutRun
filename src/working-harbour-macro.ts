@@ -12,7 +12,7 @@ const sea=COAST_SEA_LEVEL;
  * nothing depends on frame rate, procedural world changes or new asset downloads. */
 export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  const root=new THREE.Group();root.name='working-harbour-whitebox';scene.add(root);
- const blocks:Piece[]=[],stones:Piece[]=[],hulls:Piece[]=[];
+ const blocks:Piece[]=[],stones:Piece[]=[],hulls:Piece[]=[],scrub:Piece[]=[];
  const place=(s:number,out:number,y:number)=>{
   const d=h.entry+s,r=sample(d),x=coastBeachX(COAST_SHORE_OFFSET,d)-out;
   return r.position.clone().addScaledVector(r.right,x).setY(y);
@@ -26,25 +26,43 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
   piece(list,a.clone().lerp(b,.5),vec(w,y,depth),angle(a,b),colour);
  };
  const quayTop=sea+1.75;
+ const shoreGround=(s:number,fraction:number)=>{
+  const d=h.entry+s,r=sample(d),shore=coastBeachX(COAST_SHORE_OFFSET,d);
+  const x=THREE.MathUtils.lerp(shore,-13,fraction);
+  return r.position.clone().addScaledVector(r.right,x).setY(coastBeachHeight(x,r.position.y,r.right.y,d));
+ };
  const quayFoundation=sea-5,quayDepth=quayTop-quayFoundation;
  // Continuous apron lower than the road, backed by the sampled coastal rock.
  // Chord increments follow the native road in the plan; deck uses world Y.
  for(let s=h.quayStart;s<h.quayEnd;s+=13){
   const e=Math.min(s+13,h.quayEnd);
-  span(blocks,place(s,3.6,quayTop-quayDepth/2),place(e,3.6,quayTop-quayDepth/2),10,quayDepth,'#8b8984');
-  span(blocks,place(s,8.4,quayTop-.19),place(e,8.4,quayTop-.19),.5,.38,'#c2b399');
+  span(blocks,place(s,6.1,quayTop-quayDepth/2),place(e,6.1,quayTop-quayDepth/2),15,quayDepth,'#9b9081');
+  span(blocks,place(s,13.35,quayTop-.19),place(e,13.35,quayTop-.19),.55,.38,'#d4bfa3');
  }
  // Grounded rubble strips, sparse and broad. The underlying surface is still
  // the contiguous Worker height field and uses the very same waterline.
- for(let d=h.rockStart+12;d<h.rockEnd;d+=10){
+ for(let d=h.rockStart+12;d<h.rockEnd;d+=12){
   const s=d-h.entry,w=harbourRockWeight(d);
   if(w<.08)continue;
-  const r=sample(d),shore=coastBeachX(COAST_SHORE_OFFSET,d);
-  for(const i of [0,1]){
-   const x=shore+(i===0?.16:.55)*(-13-shore),y=coastBeachHeight(x,r.position.y,r.right.y,d);
+  for(const i of [0,1,2]){
    if(i===0&&s>=h.quayStart-6&&s<=h.quayEnd+5)continue;
-   piece(stones,r.position.clone().addScaledVector(r.right,x).setY(y),vec((2.6+i)*w,(1.8+i)*w,6.8+Math.sin(d)*1.4),.077*d,
-    ['#827974','#777873','#8d7770'][Math.abs(Math.round(Math.sin(d)*100))%3],.25*Math.sin(d*.13));
+   const p=shoreGround(s+(i-1)*3,(i===0?.12:i===1?.35:.61)+Math.sin(d*.126+i)*.073);
+   const spread=w*(i===0?5.6:i===1?8.8:5.5);
+   piece(stones,p.add(vec(0,-.6,0)),vec(spread,(1.25+i*.72)*w,7.2+Math.sin(d)*2.1),.077*d,
+    ['#827974','#777873','#8d7770'][Math.abs(Math.round(Math.sin(d)*100))%3],.28*Math.sin(d*.13));
+  }
+ }
+ // Sparse ledge groups, not a pattern draped all over the rock face.
+ const scrubBases:number[][]=[];
+ for(const [s,t] of h.scrubSites){
+  for(let i=0;i<3;i++){
+   const at=s+(i===0?-3:i===1?3:8),side=t+Math.sin(i*2.9+s)*.052;
+   const base=shoreGround(at,side);
+   if(base.y<sea+1.45)continue;
+   scrubBases.push([h.entry+at,side,...base.toArray()]);
+   const width=i===0?2.9:1.6+Math.abs(Math.sin(s+i)),height=1.35+Math.abs(Math.cos(s*i+4));
+   piece(scrub,base.clone().add(vec(0,height*.36,0)),vec(width,height,1.25+width*.42),s*.49+i,
+    ['#637049','#727b4a','#6a6744'][(i+Math.abs(Math.round(s)))%3],.21*Math.sin(s));
   }
  }
  // The attached arm leads offshore, then guards the seaward side of the
@@ -62,17 +80,17 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
     vec(2.6,1.55+1.2*Math.abs(Math.sin(i+j)),3.3),j*2.1,'#7b716b',j*.29);
   }
  }
- // A working pier head, just before the independent Sail Bay patrol. Its
- // 8.5 m derrick provides a readable silhouette above the cliff sight line.
+ // A work head on the downstream arm lets the derrick lead the vista before
+ // the road passes it. The open end remains unobstructed.
  const {outerWorkS:s,outerWorkOut:o}=h;
  const y0=sea+1.45;
- for(const [a,b,width] of [[place(s,o,y0-8.5),place(s,92,y0-8.5),10],
+ for(const [a,b,width] of [[place(s,o,y0-8.5),place(s,42,y0-8.5),10],
                          [place(s-9,o,y0-8.5),place(s+7,o,y0-8.5),12]] as const)
   span(blocks,a,b,width,17,'#8b8984');
  const derrick=place(s,o,y0+.03);
- const boom=place(s-12,o-2,y0+9.1);
- const tip=place(s+4,o-9,y0+5.15);
- piece(blocks,derrick.clone().add(vec(0,4.3,0)),vec(1.35,8.6,1.35),0,'#ab7140');
+ const boom=place(s-13,o-2,y0+11.9);
+ const tip=place(s+5,o-12,y0+6.65);
+ piece(blocks,derrick.clone().add(vec(0,5.15,0)),vec(1.45,10.3,1.45),0,'#b17b46');
  const truss=(a:THREE.Vector3,b:THREE.Vector3,thickness:number,color:string)=>{
   // Derive the roll with local X along the chord and keep the batch static.
   const horizontal=Math.hypot(b.x-a.x,b.z-a.z);
@@ -80,7 +98,7 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
   const rise=Math.atan2(b.y-a.y,horizontal);
   piece(blocks,a.clone().lerp(b,.5),vec(a.distanceTo(b),thickness,thickness),yaw,color,rise);
  };
- const mastTop=derrick.clone().add(vec(0,8.55,0));
+ const mastTop=derrick.clone().add(vec(0,10.25,0));
  truss(mastTop,boom,1.05,'#ab7140');
  truss(mastTop,tip,1.20,'#ab7140');
  truss(derrick.clone().add(vec(0,4.5,0)),tip,.48,'#635850');
@@ -96,7 +114,7 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
   piece(blocks,p.clone().addScaledVector(f,l*.10).add(vec(0,2.2,0)),vec(.24,4.2,.26),y,'#3d4f50');
  }
  // The roof volumes and crane read as working infrastructure, not finished art.
- for(const [s,out,w,l] of [[196,3,6,19],[251,2,7,23],[301,2,7,16]]){
+ for(const [s,out,w,l] of [[284,5,8,21],[328,5,10,26],[380,5,9,23]]){
   const y=angle(place(s-2,out,sea),place(s+2,out,sea));
   piece(blocks,place(s,out,quayTop+2.5),vec(w,5,l),y,'#b8b0a1');
   piece(blocks,place(s,out,quayTop+5.15),vec(w+1.1,.55,l+1.3),y,'#6e5148');
@@ -120,8 +138,9 @@ export function addWorkingHarbourMacro(scene:THREE.Scene,sample:Sample){
  mesh(new THREE.BoxGeometry(1,1,1),blocks);
  mesh(new THREE.IcosahedronGeometry(1,0),stones);
  const hull=new THREE.SphereGeometry(.5,7,4);mesh(hull,hulls);
- return {root,inspect:{parts:stones.length+blocks.length+hulls.length+1,berths:h.berths.length,
-  beacon:light.position.toArray(),outerDerrick:mastTop.toArray(),quayY:quayTop},update:(station:number,time:number)=>{
+ mesh(new THREE.DodecahedronGeometry(.65,0),scrub);
+ return {root,inspect:{parts:stones.length+blocks.length+hulls.length+scrub.length+1,berths:h.berths.length,
+  beacon:light.position.toArray(),outerDerrick:mastTop.toArray(),quayY:quayTop,scrubBases},update:(station:number,time:number)=>{
   root.visible=station>=h.rockStart-450&&station<=h.rockEnd+100;
   const pulse=Math.pow(Math.max(0,Math.cos(time*Math.PI*.72)),7);
   lightMaterial.color.setRGB(.54+pulse*.46,.10+pulse*.52,.06+pulse*.28);

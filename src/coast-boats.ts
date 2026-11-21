@@ -1,6 +1,6 @@
 import {beachMacro} from './beach-macro';
 import {boatDeferred,COAST_WORKING_HARBOUR_BOATS} from './content/kenting-neighbours';
-import {kentingReference} from './kenting-installation';
+import {KENTING_INSTALLATION,kentingReference} from './kenting-installation';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
@@ -10,6 +10,13 @@ import type {CoastBoatShadow} from './coast-boat-shadow';
 
 type Sample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3};
 export type Boat={id:string;kind:'sail'|'yacht'|'fishing';distance:number;offshore:number;travel:number;sway:number;speed:number;phase:number;length:number;draft:number};
+/** Move the five independent sailing patrols to the open water off Kenting
+ * in the current layout. Original/relocated remain historical QA fixtures.
+ * Offsets are from the beach core and the shared wet/dry shoreline. */
+const kentingSailPatrols:Readonly<Record<string,readonly [number,number]>>={
+ 'bay-sail-entry':[250,179], 'bay-sail-inlet':[460,231],
+ 'bay-sail-west':[690,188], 'bay-sail-east':[930,215], 'bay-sail-point':[1200,199],
+};
 /** Five nearshore sailing patrols lead the driver through the bay.
  * Working boats use shorter patrols near the quay and open water beyond the bay. */
 export const COAST_BOATS:readonly Boat[]=[
@@ -22,7 +29,10 @@ export const COAST_BOATS:readonly Boat[]=[
  ['bay-sail-west','sail',7770,72,31],['bay-sail-east','sail',8080,72,28],
  ['bay-sail-point','sail',8415,72,30],
  ['fishing-five','fishing',9000,150,16],['fishing-six','fishing',9640,120,16],
-].map((row,i)=>{const [id,kind,distance,offshore,length]=row as [string,Boat['kind'],number,number,number];return {
+].map((row,i)=>{const [id,kind,oldDistance,oldOffshore,length]=row as [string,Boat['kind'],number,number,number];
+ const moved=KENTING_INSTALLATION.mode==='immediate'?kentingSailPatrols[id]:undefined;
+ const distance=moved?KENTING_INSTALLATION.coreStart+moved[0]:oldDistance,offshore=moved?moved[1]:oldOffshore;
+ return {
  id,kind,distance,offshore,length,travel:id.startsWith('quay-')?24:id.startsWith('bay-sail')?32:65+i%3*15,
  sway:id.startsWith('quay-')?7:id.startsWith('bay-sail')?12:(kind==='sail'?38:kind==='fishing'?14:18)+i%3*6,
  speed:kind==='sail'?.8:kind==='fishing'?.55:1.2,

@@ -112,7 +112,7 @@ it('preserves the fishing-village pocket before the new hero coastline',()=>{
  const chapter={start:7000,end:10000};
  const fishing=COAST_BOATS.filter(b=>b.distance>=chapter.start&&b.distance<chapter.end&&b.kind==='fishing');
  expect(fishing.length).toBeGreaterThanOrEqual(2);
- expect(COAST_BOATS.filter(b=>b.kind==='sail'&&b.distance>=7000&&b.distance<8450)).toHaveLength(5);
+ expect(COAST_BOATS.filter(b=>b.kind==='sail'&&b.distance>=7000&&b.distance<8450)).toHaveLength(0);
  expect(COAST_BOATS.every(b=>b.kind!=='fishing'||(b.distance>=4350&&b.distance<4950)||b.distance>=8450)).toBe(true);
  const lateFarms=FARM_ZONES.filter(z=>z.start>=chapter.start&&z.end<=10720);
  expect(lateFarms).toHaveLength(2);

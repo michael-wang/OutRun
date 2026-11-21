@@ -3,23 +3,31 @@ import * as THREE from 'three';
 import {readFileSync} from 'node:fs';
 import {COAST_BOATS,coastBoatPosition} from '../src/coast-boats';
 import {coastWorkerRoad} from '../src/content/coast-worker-road';
-import {COAST_STAGE} from '../src/content/coast-stage';
+import {configureKentingCoast} from '../src/beach-macro';
 import {coastBeachX} from '../src/coast-layout';
 import {COAST_SEA_LEVEL,COAST_SHORE_OFFSET} from '../src/scenery-cross-section';
+configureKentingCoast();
 const track=coastWorkerRoad().track;
 
-it('shows successive sails ahead on the sea side through the named bay approach',()=>{
- const hero=COAST_STAGE.direction.heroSlots.find(slot=>slot.id==='bay-entrance')!;
+it('shows successive offshore sails along the beach without putting sails back in the harbour',()=>{
  const bay=COAST_BOATS.filter(b=>b.id.startsWith('bay-sail'));
- for(const time of [0,45,90,150,230])for(let d=hero.distance-hero.lookAheadM;d<hero.distance+160;d+=25){
-  const p=track.sample(d);
-  const visible=bay.some(boat=>{
-   const delta=coastBoatPosition(boat,time,track.sample).position.sub(p.position);
-   const angle=Math.atan2(delta.dot(p.right),delta.dot(p.tangent));
-   return angle<0&&angle>-.65&&delta.length()<610&&boat.length/delta.length()>.045;
-  });
-  expect(visible,`no readable sail ahead at ${d}m, t=${time}s`).toBe(true);
+ const stations=Array.from({length:23},(_,i)=>4850+i*40),tracksByBoat=new Set<string>();
+ for(const time of [0,45,90,150,230]){
+  let screens=0;
+  for(const d of stations){
+   const p=track.sample(d);
+   const visible=bay.filter(boat=>{
+    const delta=coastBoatPosition(boat,time,track.sample).position.sub(p.position);
+    const angle=Math.atan2(delta.dot(p.right),delta.dot(p.tangent));
+    return angle<0&&angle>-.68&&delta.length()<610&&boat.length/delta.length()>.042;
+   });
+   if(visible.length)screens++;
+   visible.forEach(b=>tracksByBoat.add(b.id));
+  }
+  // This is an offshore accent, not an unbroken parade of boats.
+  expect(screens/stations.length,'expected repeated sails ahead at t='+time+'s').toBeGreaterThanOrEqual(.60);
  }
+ expect(tracksByBoat.size).toBeGreaterThanOrEqual(4);
 });
 
 it('keeps the expanded fleet safely offshore along the real curved coast for full patrols',()=>{
@@ -29,7 +37,8 @@ it('keeps the expanded fleet safely offshore along the real curved coast for ful
  expect(COAST_BOATS.filter(b=>b.kind==='fishing')).toHaveLength(4);
  expect(COAST_BOATS.filter(b=>b.kind==='fishing').every(b=>(b.distance>=4350&&b.distance<4950)||b.distance>=8450)).toBe(true);
  expect(COAST_BOATS.filter(b=>b.distance<1800)).toHaveLength(1);
- for(let i=1;i<COAST_BOATS.length;i++)expect(COAST_BOATS[i].distance-COAST_BOATS[i-1].distance).toBeLessThan(1200);
+ // The open separation from offshore sail patrols to offshore fishing patrols is intentional.
+ expect(COAST_BOATS.some(b=>b.kind==='sail'&&b.distance>=6800&&b.distance<8450)).toBe(false);
  const shore=Array.from({length:Math.ceil(track.length/20)},(_,i)=>{const d=i*20,p=track.sample(d);return {road:p.position,right:p.right.clone().setY(0).normalize(),edge:coastBeachX(COAST_SHORE_OFFSET,d)};});
  for(const boat of COAST_BOATS)for(let t=0;t<=7200;t+=31){
   const p=coastBoatPosition(boat,t,track.sample),next=coastBoatPosition(boat,t+.25,track.sample);

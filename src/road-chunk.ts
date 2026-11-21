@@ -129,7 +129,15 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
       const shore=coastBeachX(-26,d);
       const rock=THREE.MathUtils.smoothstep(-physicalX,13,18)*THREE.MathUtils.smoothstep(physicalX,shore-4,shore+4);
       const strata=.5+.5*Math.sin(height*.76+d*.083+.65*Math.sin(d*.051));
-      color.lerp(new THREE.Color('#6c655e').lerp(new THREE.Color('#998376'),strata),rock*rockWeight);
+      const stone=new THREE.Color('#525b5a').lerp(new THREE.Color('#7f7b70'),strata);
+      // Ground-cover colour follows dry, irregular shelves. Bare wet toes and
+      // exposed cliff faces keep their stone; no extra material or draw pass.
+      const shelf=(physicalX-shore)/Math.max(1,-13-shore);
+      const dry=THREE.MathUtils.smoothstep(height,-2.4,.7);
+      const patch=.50+.30*Math.sin(d*.026+shelf*11)+.20*Math.sin(d*.067-shelf*4);
+      const upper=THREE.MathUtils.smoothstep(shelf,.36,.70);
+      stone.lerp(new THREE.Color('#5e6945'),.78*dry*upper*THREE.MathUtils.smoothstep(patch,.42,.83));
+      color.lerp(stone,rock*rockWeight);
      }
     }
 
