@@ -4,7 +4,8 @@ import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {Grass} from './vendor/three-stylized/Grass';
 import {acquireSharedFlowerMask,releaseSharedFlowerMask} from './vendor/three-stylized/flowerShapes';
 import {shadeRipeRice,shadePaddyWater} from './coast-rice-material';
-import {createFarmWindTexture} from './coast-farm-wind';
+import {createFarmWindTexture} from './coast-wind';
+import {COAST_EFFECTS} from './content/coast-effects';
 import {loadMeadowTexture} from './coast-meadow-texture';
 import {flowerCanopyGeometry,flowerCrownTexture,flowerSoilTexture,shadeFlowerBeds,shapeCoastalFlowers} from './coast-flowers';
 import {RICE_ROW_PITCH,RICE_HILL_PITCH,RICE_FIRST_HILL} from './coast-rice-layout';
@@ -17,7 +18,9 @@ import type {createTrack} from './track';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 const bytes=new Map<string,Promise<ArrayBuffer>>();
-const wind={strength:.12,speed:.65,frequency:.13,turbulence:.18,lean:.025,direction:65};
+// Grass cadence is a visual sway rate, but its heading follows the breeze.
+const wind={strength:.12,speed:.65,frequency:.13,turbulence:.18,lean:.025,
+ direction:Math.atan2(COAST_EFFECTS.wind.direction[1],COAST_EFFECTS.wind.direction[0])*180/Math.PI};
 const up=new THREE.Vector3(0,1,0);
 /** Replays reuse downloads, but own and dispose their GPU resources. */
 export async function loadCoastFarm(){

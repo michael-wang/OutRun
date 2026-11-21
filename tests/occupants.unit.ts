@@ -1,6 +1,7 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
 import {createCar} from '../src/car';
+import {CHEER_END} from '../src/passenger-cheer';
 it('keeps the neckline clipped while the longer forelock responds to lateral load',()=>{
  const car=createCar(),motion=car.userData.motion;
  const crop=car.getObjectByName('driver-side-part-crop') as THREE.Mesh;
@@ -58,4 +59,19 @@ it('holds the parting still while the nape streams back and the ends lag a direc
  expect(read(0)).toEqual(part);
  drive(180,0,0);expect(read(nape).distanceTo(rest)).toBeLessThan(.001);
  motion.reset();expect(read(nape)).toEqual(rest);
+});
+
+it('uses the same passenger smile in the cockpit and the portrait, and relaxes after a wave',()=>{
+ for(const detail of ['driving','portrait'] as const){
+  const car=createCar(false,detail),motion=car.userData.motion;
+  const face=car.getObjectByName('passenger-sculpted-face') as THREE.Mesh;
+  expect(face.parent).toBe(car.getObjectByName('passenger-head'));
+  const weight=()=>face.morphTargetInfluences![0];
+  const resting=weight();
+  motion.posePassenger(CHEER_END/2,'wave');
+  expect(weight()).toBeGreaterThan(resting);
+  expect(weight()).toBeLessThanOrEqual(1);
+  motion.reset();
+  expect(weight()).toBeCloseTo(resting);
+ }
 });

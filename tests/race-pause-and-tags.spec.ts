@@ -2,8 +2,9 @@ import {test,expect,type Page} from '@playwright/test';
 
 test.use({viewport:{width:915,height:412},isMobile:true,hasTouch:true,serviceWorkers:'block'});
 
-async function ready(page:Page,query='trafficSeed=17'){
+async function ready(page:Page,query=''){
  await page.goto('/?'+query);
+ if(query){await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:120000});return;}
  await page.locator('#boot-enter').tap();
  await page.locator('#start-race').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:120000});

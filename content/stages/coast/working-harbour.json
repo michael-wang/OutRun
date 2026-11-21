@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "working-harbour",
+  "entryPort": 7100,
+  "exitPort": 7540,
+  "rockApproachStart": 6800,
+  "rockExitBlendEnd": 7720,
+  "heroStation": 7260,
+  "shoreSide": "left"
+}

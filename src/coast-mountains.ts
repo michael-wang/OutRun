@@ -46,11 +46,15 @@ export function coastMountainHeight(layer:0|1,d:number,u:number){
  * Extra silhouette and color detail is baked; no additional material passes. */
 export function addCoastMountains(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],length:number){
  const meadowTile=new THREE.Uniform<THREE.Texture|null>(null);
+ // R5c extends the DRIVE to 30km but this legacy two-layer chord-art
+ // belongs to the first ~10km. Never stretch it to 30km or triple its
+ // static vertex budget: later hero valleys need true world-space art.
+ const legacyEnd=Math.min(length,10950);
  const origin=sample(0).position.clone();
- const axis=sample(length).position.clone().sub(origin).setY(0).normalize();
+ const axis=sample(legacyEnd).position.clone().sub(origin).setY(0).normalize();
  const right=new THREE.Vector3(axis.z,0,-axis.x);
- if(right.dot(sample(length*.5).right)<0)right.negate();
- const count=Math.ceil((length+7000)/COAST_MOUNTAIN_STEP_M);
+ if(right.dot(sample(legacyEnd*.5).right)<0)right.negate();
+ const count=Math.ceil((legacyEnd+7000)/COAST_MOUNTAIN_STEP_M);
  // The backdrop is in chord coordinates, while the towns use route metres.
  const townAxisAt=(d:number)=>sample(d).position.clone().sub(origin).dot(axis);
  const townStart=townAxisAt(COAST_DISTRICTS[0].start),townEnd=townAxisAt(COAST_DISTRICTS[COAST_DISTRICTS.length-1].end);

@@ -60,7 +60,7 @@ export function shirtCollar(){
 }
 
 /** Bodice edge and straps follow the same cross sections as the bare shoulders. */
-export function createSundress(){
+export function createSundress(includeStraps=true){
  const p:number[]=[],index:number[]=[],sides=20;
  const rings=[[.625,.267,.245,.1],[.78,.228,.20,.04],[.908,.161,.134,0],
   [1.055,.177,.151,0],[1.138,.194,.154,0],[1.189,.202,.154,0]];
@@ -76,7 +76,7 @@ export function createSundress(){
    if(row)index.push(here-sides,next-sides,here,next-sides,next,here);
   }
  });
- for(const side of [-1,1]){
+  for(const side of includeStraps?[-1,1]:[]){
   const start=p.length/3;
   // Cross the rounded ridge at the exact height where the yoke narrows to x.
   for(let step=0;step<=10;step++){

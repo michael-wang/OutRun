@@ -17,8 +17,8 @@ describe('hero spider focal-point art',()=>{
   expect(car.getObjectByName('passenger')!.position.x).toBeLessThan(0);
   for(const name of ['driver','passenger']){
    const person=car.getObjectByName(name)!;
-   expect(person.scale.x).toBeCloseTo(.84);
-   expect(person.scale.y).toBeCloseTo(.84);
+   expect(person.scale.x).toBeCloseTo(1);
+   expect(person.scale.y).toBeCloseTo(1);
   }
   expect(arm).toBeDefined();expect(hand).toBeDefined();expect(hair).toBeDefined();
   const armBox=new THREE.Box3().setFromObject(arm!);

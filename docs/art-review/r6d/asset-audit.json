@@ -1,0 +1,40 @@
+{
+  "triangles": 3559,
+  "vertices": 2242,
+  "coreVertices": 1592,
+  "bytes": 153240,
+  "materials": 1,
+  "bones": 25,
+  "locks": [
+    {
+      "name": "forelock",
+      "vertices": 130,
+      "triangles": 256,
+      "widthMeters": 0.062
+    },
+    {
+      "name": "temple",
+      "vertices": 130,
+      "triangles": 256,
+      "widthMeters": 0.058
+    },
+    {
+      "name": "left-rear",
+      "vertices": 130,
+      "triangles": 256,
+      "widthMeters": 0.08
+    },
+    {
+      "name": "centre-rear",
+      "vertices": 130,
+      "triangles": 256,
+      "widthMeters": 0.083
+    },
+    {
+      "name": "right-rear",
+      "vertices": 130,
+      "triangles": 256,
+      "widthMeters": 0.07
+    }
+  ]
+}

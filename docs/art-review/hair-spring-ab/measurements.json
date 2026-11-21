@@ -1,0 +1,153 @@
+{
+  "experiment": "one isolated same-geometry A/B; no gameplay integration",
+  "viewport": {
+    "width": 1920,
+    "height": 540,
+    "panelWidth": 960,
+    "panelHeight": 540,
+    "chaseDistanceM": 8
+  },
+  "geometryIdentical": true,
+  "resetPassed": true,
+  "measurements": [
+    {
+      "mode": "A",
+      "cpuMeanMs": 0.0013141426775320078,
+      "cpuP95Ms": 0,
+      "gpuMeanMs": 0.15054835744680845,
+      "gpuP95Ms": 0.383456,
+      "gpuSamples": 470,
+      "sceneDraws": 48,
+      "sceneTriangles": 12577,
+      "triangles": 979,
+      "vertices": 709,
+      "materialCount": 1,
+      "bones": 0,
+      "morphTargets": 5
+    },
+    {
+      "mode": "B",
+      "cpuMeanMs": 0.14430538172809143,
+      "cpuP95Ms": 0.2999999998137355,
+      "gpuMeanMs": 0.15652534468085103,
+      "gpuP95Ms": 0.40864,
+      "gpuSamples": 470,
+      "sceneDraws": 48,
+      "sceneTriangles": 12577,
+      "triangles": 979,
+      "vertices": 709,
+      "materialCount": 1,
+      "bones": 19,
+      "morphTargets": 0
+    }
+  ],
+  "maxJointAngleDeg": 20.38811995078661,
+  "errors": [],
+  "checks": {
+    "finite": true,
+    "maxLocalDeformationM": [
+      0.09383416881334819,
+      0.06578723141518772
+    ],
+    "maxCrownDeformationM": [
+      0,
+      1.3517848686956847e-15
+    ],
+    "maxAngle": 20.38811995078661,
+    "clampedSteps": 6,
+    "resetError": [
+      0,
+      0
+    ]
+  },
+  "asset": {
+    "sourceVertices": 7934,
+    "sourceTriangles": 12000,
+    "sourceKeys": [
+      "Basis",
+      "Wind • backward and lift",
+      "Sway • body of lock",
+      "TipSway • delayed ends",
+      "Flutter • cos",
+      "Flutter • sin"
+    ],
+    "sourceGroups": [
+      "Crown and fringe • pinned",
+      "Side.R",
+      "Back.R",
+      "Nape.R",
+      "Nape.L",
+      "Back.L",
+      "Side.L"
+    ],
+    "triangles": 979,
+    "vertices": 709,
+    "bones": 19,
+    "dynamicJoints": 12,
+    "materials": 1,
+    "changedTipVertices": 386,
+    "maxShapeEditMeters": 0.017894457676092476,
+    "chains": [
+      {
+        "bones": [
+          "tip-0-0",
+          "tip-0-1",
+          "tip-0-2"
+        ],
+        "top": 0.005,
+        "bottom": -0.1225486993963758,
+        "radius": 0.08567215493093235
+      },
+      {
+        "bones": [
+          "tip-1-0",
+          "tip-1-1",
+          "tip-1-2"
+        ],
+        "top": 0.005,
+        "bottom": -0.15476632499694826,
+        "radius": 0.07045399433600817
+      },
+      {
+        "bones": [
+          "tip-2-0",
+          "tip-2-1",
+          "tip-2-2"
+        ],
+        "top": 0.005,
+        "bottom": -0.15369676166772844,
+        "radius": 0.08157113657311901
+      },
+      {
+        "bones": [
+          "tip-3-0",
+          "tip-3-1",
+          "tip-3-2"
+        ],
+        "top": 0.005,
+        "bottom": -0.14982161039114,
+        "radius": 0.0677130370252022
+      },
+      {
+        "bones": [
+          "tip-4-0",
+          "tip-4-1",
+          "tip-4-2"
+        ],
+        "top": 0.005,
+        "bottom": -0.14628885889053345,
+        "radius": 0.07241809506229273
+      },
+      {
+        "bones": [
+          "tip-5-0",
+          "tip-5-1",
+          "tip-5-2"
+        ],
+        "top": 0.005,
+        "bottom": -0.13510238470269184,
+        "radius": 0.10771676750000715
+      }
+    ]
+  }
+}

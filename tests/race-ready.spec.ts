@@ -114,7 +114,7 @@ test('keyboard Enter begins countdown and remapped hints follow their control',a
  await page.keyboard.press('Enter');
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','countdown');
 });
-test('replay waits for START again instead of launching automatically',async({page})=>{
+test('pause restart waits at START on the original grid',async({page})=>{
  test.setTimeout(180000);
  await enterReady(page);
  await page.locator('#race-start').tap();

@@ -1,0 +1,142 @@
+{
+  "variant": "after",
+  "meta": {
+    "viewport": [
+      1600,
+      900
+    ],
+    "drawingBuffer": [
+      1600,
+      900
+    ],
+    "dpr": 1,
+    "scale": [
+      [
+        1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        1
+      ]
+    ],
+    "hairTriangles": 3559,
+    "bones": 25,
+    "heroine": true
+  },
+  "costs": [
+    {
+      "view": "front",
+      "draw": {
+        "frame": 6218,
+        "calls": 178,
+        "triangles": 352607,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "front45",
+      "draw": {
+        "frame": 6264,
+        "calls": 172,
+        "triangles": 322571,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "side",
+      "draw": {
+        "frame": 6309,
+        "calls": 66,
+        "triangles": 219135,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "back",
+      "draw": {
+        "frame": 6355,
+        "calls": 469,
+        "triangles": 750628,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "cockpit",
+      "draw": {
+        "frame": 6400,
+        "calls": 179,
+        "triangles": 353183,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "chase",
+      "draw": {
+        "frame": 6445,
+        "calls": 472,
+        "triangles": 782785,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "neutral",
+      "draw": {
+        "frame": 6491,
+        "calls": 178,
+        "triangles": 352607,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "cheer",
+      "draw": {
+        "frame": 6536,
+        "calls": 178,
+        "triangles": 352607,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "look-left",
+      "draw": {
+        "frame": 6581,
+        "calls": 178,
+        "triangles": 352607,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    },
+    {
+      "view": "look-right",
+      "draw": {
+        "frame": 6627,
+        "calls": 178,
+        "triangles": 352607,
+        "points": 714,
+        "lines": 0
+      },
+      "bustCalls": 4
+    }
+  ],
+  "errors": []
+}

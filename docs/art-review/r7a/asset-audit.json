@@ -1,0 +1,21 @@
+{
+  "source": "C:\\astra-dev\\tools\\outrun-h1ar3d\\heroine-color-study.blend",
+  "sourceSha256": "4ec7144aa55e7b4e27dbdd87c26a28ab6667b9cfc911d2a3057b9c95e3fd8e97",
+  "sourceUnchanged": true,
+  "blend": "C:\\astra-dev\\outrun\\art-prototype\\output\\r7a-heroine-upper-body.blend",
+  "vertices": 16202,
+  "triangles": 30502,
+  "materialTriangles": {
+    "R7A Skin and painted features": 21050,
+    "R7A Ivory halter": 5806,
+    "R7A Gold earrings": 276,
+    "R7A Brown eyes": 3370
+  },
+  "bytes": 1361900,
+  "bones": 2,
+  "morphs": [
+    "smile",
+    "mouthOpen"
+  ],
+  "runtimeHair": "unchanged coast-blonde-r6d.glb"
+}

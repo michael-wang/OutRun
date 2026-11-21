@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import {COAST_LAMP_HEAD,COAST_UTILITY_POLES} from './coast-roadside-layout';
 import {coastBeachHeight} from './scenery-cross-section';
+import {COAST_EFFECTS} from './content/coast-effects';
 
 import {COAST_LAMP_RANGE,registerCoastLamps} from './coast-lamp-lighting';
 
-export const COAST_SUN=new THREE.Vector3(.66,.085,.75).normalize();
+import {COAST_SUN} from './coast-sun-direction';
+export {COAST_SUN} from './coast-sun-direction';
 // Shared low-sun shadow projection scale for shoreline geometry and ocean rocks.
-export const COAST_SHADOW_STRETCH=.70;
+export const COAST_SHADOW_STRETCH=COAST_EFFECTS.lighting.shadowStretch;
 /** Shared sky radiance for the coast dome and its water reflection. */
 export const COAST_SKY_GLSL=/* glsl */`
 float skyHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}

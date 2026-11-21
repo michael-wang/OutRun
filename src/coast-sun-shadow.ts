@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import {COAST_SUN,COAST_SHADOW_STRETCH} from './coast-dusk';
 
 // Shared low-sun geometry for beach props, player, traffic, and road cones.
-const away=new THREE.Vector3(-COAST_SUN.x,0,-COAST_SUN.z).normalize();
-export const COAST_SHADOW_YAW=Math.atan2(away.x,away.z);
+import {COAST_SHADOW_AWAY as away} from './coast-sun-direction';
+export {coastShadowYaw,COAST_SHADOW_YAW} from './coast-sun-direction';
 export function coastShadowLength(height:number){
  return Math.min(76,Math.max(0,height)*Math.hypot(COAST_SUN.x,COAST_SUN.z)/
   Math.max(.02,COAST_SUN.y)*COAST_SHADOW_STRETCH);

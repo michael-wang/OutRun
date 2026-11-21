@@ -1,0 +1,29 @@
+{
+  "frozenOriginalsAndRuntimeMatch": true,
+  "files": {
+    "r7s-heroine-standing-neutral.blend": {
+      "opens": true,
+      "finiteCoordinates": true,
+      "bodyBones": 14,
+      "bytes": 5893468,
+      "sha256": "5c3a1143f09b77092f57067f8c532eeaa7bd2a2627b3c8d79eaa1a759a8f1992"
+    },
+    "r7s-heroine-standing-study.blend": {
+      "opens": true,
+      "finiteCoordinates": true,
+      "bodyBones": 14,
+      "bytes": 6701532,
+      "sha256": "0a4a64cd3eefa17f9acc39afeed3f38f4d3fc39a532b4b3a803e5e418a7c4495"
+    },
+    "r7s-heroine-standing-review.blend": {
+      "opens": true,
+      "finiteCoordinates": true,
+      "bodyBones": 14,
+      "bytes": 10332197,
+      "sha256": "d64822e29ee6f4151224a45e7de2e45c43567a282584e65f55e15bc307f01dc0"
+    }
+  },
+  "fullVerifyDevRun": false,
+  "reason": "Offline standing art only; no runtime exports/code/version change",
+  "artAcceptance": "NOT PASSED by agent; stop for Julia/owner review; see README limitations"
+}

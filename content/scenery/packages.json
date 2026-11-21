@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "packages": {
+    "kenting-beach": {
+      "description": "Local authored lighthouse, open lifeguard/rental and three parasol-chair variants. Water activity is procedural and shore-sampled.",
+      "members": [
+        {
+          "id": "lighthouse",
+          "prefab": "kenting-white-lighthouse",
+          "forwardM": 195,
+          "rightM": -50,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-0",
+          "prefab": "kenting-parasol-coral",
+          "forwardM": -120,
+          "rightM": -23,
+          "yaw": -0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-1",
+          "prefab": "kenting-parasol-blue",
+          "forwardM": -120,
+          "rightM": -19,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-2",
+          "prefab": "kenting-parasol-gold",
+          "forwardM": -115,
+          "rightM": -23,
+          "yaw": 0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-3",
+          "prefab": "kenting-parasol-coral",
+          "forwardM": -115,
+          "rightM": -19,
+          "yaw": -0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-4",
+          "prefab": "kenting-parasol-coral",
+          "forwardM": 10,
+          "rightM": -30,
+          "yaw": -0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-5",
+          "prefab": "kenting-parasol-blue",
+          "forwardM": 10,
+          "rightM": -26,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-6",
+          "prefab": "kenting-parasol-gold",
+          "forwardM": 15,
+          "rightM": -30,
+          "yaw": 0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-7",
+          "prefab": "kenting-parasol-coral",
+          "forwardM": 15,
+          "rightM": -26,
+          "yaw": -0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-8",
+          "prefab": "kenting-parasol-coral",
+          "forwardM": 110,
+          "rightM": -26,
+          "yaw": -0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-9",
+          "prefab": "kenting-parasol-blue",
+          "forwardM": 110,
+          "rightM": -22,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-10",
+          "prefab": "kenting-parasol-gold",
+          "forwardM": 115,
+          "rightM": -26,
+          "yaw": 0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "parasol-11",
+          "prefab": "kenting-parasol-coral",
+          "forwardM": 115,
+          "rightM": -22,
+          "yaw": -0.2,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "lifeguard",
+          "prefab": "kenting-lifeguard",
+          "forwardM": 65,
+          "rightM": -24,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        },
+        {
+          "id": "rental",
+          "prefab": "kenting-rental",
+          "forwardM": -100,
+          "rightM": -18,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        }
+      ],
+      "macroLayout": {
+        "description": "Reversible low-cost activity zoning; metres relative to the stage beach anchor. Shoreline refit is separate from reusable assets.",
+        "zones": [
+          {
+            "forwardM": -820,
+            "rightM": -28
+          },
+          {
+            "forwardM": -540,
+            "rightM": -31
+          },
+          {
+            "forwardM": -270,
+            "rightM": -27
+          }
+        ],
+        "entryForwardM": -900,
+        "rentalForwardM": -940,
+        "lifeguardForwardM": -520,
+        "shoreStartM": -1080,
+        "shoreEndM": 80,
+        "lively": {
+          "description": "Low-cost crowd clusters relative to existing zone centres; same ground/water fit, no route edits.",
+          "shorePerZone": 300,
+          "swimmersPerZone": 72,
+          "parasolsPerZone": 30,
+          "alongHalfSpanM": 100,
+          "balanced": {
+            "description": "Three social pockets with clear entry/lifeguard corridors, irregular canopy clusters and open sand between groups.",
+            "zones": [
+              {
+                "shore": 85,
+                "water": 24,
+                "parasols": 9,
+                "span": 70,
+                "shoreOffset": -35
+              },
+              {
+                "shore": 110,
+                "water": 36,
+                "parasols": 8,
+                "span": 75,
+                "shoreOffset": 30
+              },
+              {
+                "shore": 55,
+                "water": 18,
+                "parasols": 6,
+                "span": 55,
+                "shoreOffset": 25
+              }
+            ],
+            "clearanceM": 14
+          }
+        }
+      }
+    },
+    "rural-hamlet-pilot": {
+      "description": "Portable farmhouse proof. Add approved buildings and vegetation after visual review.",
+      "members": [
+        {
+          "id": "farmhouse",
+          "prefab": "taiwan-farmhouse",
+          "forwardM": 0,
+          "rightM": 0,
+          "yaw": 0,
+          "scale": 1,
+          "heightOffset": 0
+        }
+      ]
+    }
+  }
+}

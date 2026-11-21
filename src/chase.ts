@@ -2,9 +2,16 @@ import * as THREE from 'three';
 // Keep a near plane large enough to separate asphalt from its 10cm-deep sand bed at the far crest.
 export const CHASE_NEAR=1;
 export const CHASE = Object.freeze({horizontalFov:76, fov:47.44840036542012, distance:8, height:2.6, lookAhead:39.168,lookHeight:0});
-/** Aspect alone selects the composition. No speed-dependent camera parameters. */
+/** Change only the field of view. The chase rig keeps its distance and aim. */
+export function chaseHorizontalFov(current:number, speedMps:number, dt:number):number {
+  const target=CHASE.horizontalFov+5*THREE.MathUtils.smoothstep(speedMps*3.6,130,245);
+  return THREE.MathUtils.lerp(current,target,1-Math.exp(-3*Math.max(0,dt)));
+}
+export function chaseVerticalFov(horizontal:number,aspect:number):number {
+  return 2*Math.atan(Math.tan(horizontal*Math.PI/360)/aspect)*180/Math.PI;
+}
 export function chaseComposition(aspect:number) {
-  const fov=2*Math.atan(Math.tan(CHASE.horizontalFov*Math.PI/360)/aspect)*180/Math.PI;
+  const fov=chaseVerticalFov(CHASE.horizontalFov,aspect);
   const pitch=THREE.MathUtils.clamp(.055066+(aspect-16/9)*.14959,.035,.2);
   return {...CHASE,fov,lookAhead:CHASE.height/Math.tan(pitch)-CHASE.distance};
 }

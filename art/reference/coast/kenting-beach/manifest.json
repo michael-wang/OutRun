@@ -1,0 +1,51 @@
+{
+  "schema": "outrun-visual-reference-v1",
+  "site": "P2-G1 Kenting bathing beach",
+  "approved_publication_date": "2026-11-18",
+  "source_page": "https://chatgpt.com/space/page_b61e7b0d270081918ca2e58abc96a9cb",
+  "status": "design references only, not gameplay/3D acceptance",
+  "images": [
+    {
+      "file": "00-site-layout-survey-constrained.png",
+      "bytes": 447307,
+      "sha256": "8241f88f37f370fc9ec413d104d6fa43ac8926c400f8b37aeb1a66a527a375ce",
+      "git_blob_sha1": "908520f98df5a9a102fdb41dd1d490a3d2ae5487",
+      "role": "Survey-constrained site map; historical physical candidate."
+    },
+    {
+      "file": "01-overall-art-direction.png",
+      "bytes": 2643106,
+      "sha256": "3b25ecadb8ac45c7411c0810e212d0f9733ac36fc62c31a54134c7baf5ef69e2",
+      "git_blob_sha1": "04d509d7a824a5fe042010e0565bde59a4c1fa89",
+      "role": "Whole-site illustration; cinematic atmosphere, not physical survey."
+    },
+    {
+      "file": "02-player-sightline-storyboard.png",
+      "bytes": 2635544,
+      "sha256": "48dc9d6d94e18696cb3c529cf0605dfc64becc2d577a582435ec402a56cc2639",
+      "git_blob_sha1": "6bd97a8dab8debb99ba3fe4f1fa6b79e696c1bb7",
+      "role": "Approach / hero / exit storyboard; not real chase captures."
+    },
+    {
+      "file": "03-key-assets-and-zones.png",
+      "bytes": 2507840,
+      "sha256": "5e777712e78af9afec05f002b6d27d355bcc41e5dc44855cbecfeb97d4c9d6d8",
+      "git_blob_sha1": "1c05a2f0eb9707dbe53af63779b6c3acac545b92",
+      "role": "Main beach asset and spatial composition reference."
+    },
+    {
+      "file": "04-lookdev-and-asset-reference.png",
+      "bytes": 2490733,
+      "sha256": "0dc0744f6f07a49a02f08698316e650dfd51485d5c4906d321ce15cbde41a2be",
+      "git_blob_sha1": "0f1b3dd8a5c19b7999a3765274933d8b62af7c89",
+      "role": "Modeling/look-dev reference for reusable assets."
+    },
+    {
+      "file": "05-michael-approach-sketch.png",
+      "bytes": 245177,
+      "sha256": "3a3ab8629b7bd12710df268403acf4a941641009e54497c29bfa86fdae3ca905",
+      "git_blob_sha1": "95b40c6511950cce74f4340cbe6e3a28956797f5",
+      "role": "Michael's road/reveal alternative sketch; A trees, B hill. Not a command to restore an obsolete route."
+    }
+  ]
+}

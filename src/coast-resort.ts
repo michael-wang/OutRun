@@ -1,5 +1,7 @@
+import {kentingTransitionReference} from './kenting-installation';
 import * as THREE from 'three';
-import {coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance} from './coast-layout';
+import {beachFlow} from './beach-macro';
+import {coastVisibleBarrierStyle,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance} from './coast-layout';
 import {coastBeachHeight} from './scenery-cross-section';
 import type {createTrack} from './track';
 
@@ -10,16 +12,31 @@ export function addCoastResort(scene:THREE.Scene,sample:ReturnType<typeof create
   const p=sample(d),x=side*(halfAt(d)+(kind==='rock'?(rockOffset??coastBarrierRockAt(d).offset):coastBarrierClearance(d,side)));
   dummy.position.copy(p.position).addScaledVector(p.right,x);
   dummy.position.y=coastBeachHeight(x,p.position.y,p.right.y,d)+y;
-  dummy.rotation.set(0,Math.atan2(p.tangent.x,p.tangent.z)+roll,0);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();matrices[kind].push(dummy.matrix.clone());
+  dummy.rotation.set(0,Math.atan2(p.tangent.x,p.tangent.z)+roll,0);dummy.scale.set(sx,sy,sz);
+  if(beachFlow()&&kentingTransitionReference(d)>=5800&&kentingTransitionReference(d)<=8450&&kind==='rail'&&sz>10){
+   // Long beams must follow the actual sloped verge, not staircase as
+   // horizontal 12m cantilevers. Keep posts upright and collision unchanged.
+   const end=(at:number)=>{const q=sample(at),offset=side*(halfAt(at)+coastBarrierClearance(at,side));
+    const v=q.position.clone().addScaledVector(q.right,offset);v.y=coastBeachHeight(offset,q.position.y,q.right.y,at)+y;return v;};
+   const a=end(d-sz/2),b=end(d+sz/2),delta=b.clone().sub(a);
+   dummy.position.copy(a).add(b).multiplyScalar(.5);
+   dummy.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),delta.clone().normalize());
+   dummy.scale.z=delta.length();
+  }
+  dummy.updateMatrix();matrices[kind].push(dummy.matrix.clone());
  }
  for(let d=Math.ceil(start/12)*12;d<end;d+=12){
   for(const side of [-1,1] as const){
-   const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
-   if(style==='block'){
+   const style=coastVisibleBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
+   if(style==='block'||style==='stone-post'){
     const stone=coastBarrierStoneAt(d,side);
     part('block',stone.d,side,stone.height/2,.56,stone.height,stone.length);
+    // Link seaward stones with a low continuous beam. No more invisible
+    // wall between isolated bollards; keep ocean visible over the railing.
+    if(side===-1&&style==='block')part('rail',d,side,.51,.15,.15,12.15);
    }else{
-    for(const y of [.42,.70])part('rail',d,side,y,.12,.10,10.8);
+    // Slightly overlapping 12m modules close the old 1.2m visual gaps.
+    for(const y of [.42,.70])part('rail',d,side,y,.12,.10,12.15);
     for(const offset of [-5,0,5])part('rail',d+offset,side,.36,.13,.72,.13);
    }
   }

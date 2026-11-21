@@ -1,0 +1,111 @@
+{
+  "locks": 16,
+  "independentChains": 16,
+  "activeJoints": 64,
+  "bones": 81,
+  "triangles": 8000,
+  "vertices": 4034,
+  "capTriangles": 768,
+  "capVertices": 386,
+  "capTrianglePercent": 9.6,
+  "bytes": 300940,
+  "materials": 1,
+  "strands": [
+    {
+      "name": "swept-fringe",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.052
+    },
+    {
+      "name": "left-crown",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.05
+    },
+    {
+      "name": "left-upper",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.049
+    },
+    {
+      "name": "left-temple",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.04
+    },
+    {
+      "name": "left-nape",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.036
+    },
+    {
+      "name": "left-rear",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.048
+    },
+    {
+      "name": "rear-crown",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.05
+    },
+    {
+      "name": "right-rear",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.047
+    },
+    {
+      "name": "right-crown",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.05
+    },
+    {
+      "name": "right-fringe",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.045
+    },
+    {
+      "name": "right-temple",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.038
+    },
+    {
+      "name": "right-nape",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.035
+    },
+    {
+      "name": "lower-left",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.036
+    },
+    {
+      "name": "lower-centre",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.034
+    },
+    {
+      "name": "lower-right",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.036
+    },
+    {
+      "name": "rear-overlap",
+      "vertices": 228,
+      "triangles": 452,
+      "widthMeters": 0.043
+    }
+  ]
+}

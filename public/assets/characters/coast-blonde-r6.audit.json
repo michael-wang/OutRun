@@ -1,0 +1,71 @@
+{
+  "triangles": 2279,
+  "vertices": 1690,
+  "bones": 25,
+  "dynamicJoints": 18,
+  "materials": 1,
+  "bytes": 109144,
+  "maxTipSculptMeters": 0.027402558590003304,
+  "chains": [
+    {
+      "bones": [
+        "lock-0-0",
+        "lock-0-1",
+        "lock-0-2",
+        "lock-0-3"
+      ],
+      "top": 0.045,
+      "bottom": -0.1338394714573309
+    },
+    {
+      "bones": [
+        "lock-1-0",
+        "lock-1-1",
+        "lock-1-2",
+        "lock-1-3"
+      ],
+      "top": 0.045,
+      "bottom": -0.1579141852259636
+    },
+    {
+      "bones": [
+        "lock-2-0",
+        "lock-2-1",
+        "lock-2-2",
+        "lock-2-3"
+      ],
+      "top": 0.045,
+      "bottom": -0.15796309530735014
+    },
+    {
+      "bones": [
+        "lock-3-0",
+        "lock-3-1",
+        "lock-3-2",
+        "lock-3-3"
+      ],
+      "top": 0.045,
+      "bottom": -0.1548209571838379
+    },
+    {
+      "bones": [
+        "lock-4-0",
+        "lock-4-1",
+        "lock-4-2",
+        "lock-4-3"
+      ],
+      "top": 0.045,
+      "bottom": -0.15319901585578918
+    },
+    {
+      "bones": [
+        "lock-5-0",
+        "lock-5-1",
+        "lock-5-2",
+        "lock-5-3"
+      ],
+      "top": 0.045,
+      "bottom": -0.14071886573776146
+    }
+  ]
+}

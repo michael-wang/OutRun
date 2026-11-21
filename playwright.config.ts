@@ -1,6 +1,4 @@
 import { defineConfig } from '@playwright/test';
-import {mkdirSync} from 'node:fs';
-for(const version of ['v0.2','v0.2.1','v0.3','v0.3.1','v0.3.2','v0.4','v0.4.1'])mkdirSync(`docs/evidence/v0.8.4/regressions/v0.8.3/regressions/v0.8.2/regressions/v0.8.1/regressions/v0.8/regressions/v0.7d2/regressions/v0.7d1/regressions/v0.7d/regressions/v0.7c1/regressions/v0.7c/regressions/${version}`,{recursive:true});
 export default defineConfig({testDir:'tests',outputDir:'test-results/playwright', timeout:120000, workers:1, use:{baseURL:'http://127.0.0.1:5173',headless:true,channel:process.env.OUTRUN_BROWSER||undefined,launchOptions:{args:['--use-angle=swiftshader','--enable-webgl','--ignore-gpu-blocklist']}},webServer:[
   ...(process.env.OUTRUN_SITE_BASE&&process.env.OUTRUN_PREFLIGHT!=='1'?[]:[{command:'npm run dev',url:'http://127.0.0.1:5173',reuseExistingServer:true}]),
   ...(process.env.OUTRUN_PREFLIGHT==='1'?[]:[{command:'npm run preview -- --port 4173 --strictPort',url:'http://127.0.0.1:4173'+(process.env.OUTRUN_SITE_BASE??'/'),reuseExistingServer:false}])

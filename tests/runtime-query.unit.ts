@@ -1,14 +1,36 @@
 import {it,expect} from 'vitest';
 import {readFileSync} from 'node:fs';
-import {GAME_QUERY_KEYS,canonicalGameQuery} from '../src/runtime-query';
+import {GAME_QUERY_KEYS,DEV_QUERY_KEYS,canonicalGameQuery,isDevelopmentRace} from '../src/runtime-query';
 it('accepts only approved diagnostics, positioning and replayable traffic seed',()=>{
- expect(GAME_QUERY_KEYS).toEqual(['fpsdiag','startupdiag','at','trafficSeed','rivaldebug']);
+ expect(GAME_QUERY_KEYS).toEqual(['car','fpsdiag','startupdiag','at','trafficSeed','rivaldebug']);
  expect(canonicalGameQuery(new URLSearchParams('showcase=coast&qa=1&fpsbench=1&autobench=1&fpsdiag=1&startupdiag=1&at=6500')).toString()).toBe('fpsdiag=1&startupdiag=1&at=6500');
  expect(canonicalGameQuery(new URLSearchParams('showcase=canyon&at=NaN&fpsdiag=0')).toString()).toBe('');
  expect(canonicalGameQuery(new URLSearchParams('at=349')).toString()).toBe('');
  expect(canonicalGameQuery(new URLSearchParams('at=850&trafficSeed=2026&foo=1')).toString()).toBe('at=850&trafficSeed=2026');
  expect(canonicalGameQuery(new URLSearchParams('rivaldebug=1')).toString()).toBe('rivaldebug=1');
  expect(canonicalGameQuery(new URLSearchParams('trafficSeed=not-a-number')).toString()).toBe('');
+});
+it('exposes authored-prefab QA only in development builds',()=>{
+ const keys=canonicalGameQuery(new URLSearchParams('at=985&prefabdebug=1'));
+ expect(keys.get('at')).toBe('985');
+ expect(keys.has('prefabdebug')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('prefabdebug=0')).has('prefabdebug')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('r5qa=1')).has('r5qa')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('r6=previous')).has('r6')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('r6=unknown')).has('r6')).toBe(false);
+ for(const preset of ['baseline','dramatic','wild'])expect(canonicalGameQuery(new URLSearchParams('hairWind='+preset)).has('hairWind')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairWind=unknown')).has('hairWind')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('hairMid=old')).has('hairMid')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairMid=new')).has('hairMid')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('hairUpper=old')).has('hairUpper')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairUpper=invalid')).has('hairUpper')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6c')).has('hairStyle')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6d')).has('hairStyle')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6f')).has('hairStyle')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=r6g')).has('hairStyle')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('hairStyle=invalid')).has('hairStyle')).toBe(false);
+ expect(canonicalGameQuery(new URLSearchParams('heroine=previous')).has('heroine')).toBe(import.meta.env.DEV);
+ expect(canonicalGameQuery(new URLSearchParams('heroine=invalid')).has('heroine')).toBe(false);
 });
 it('defaults to a playable coast without the 0-speed FPS benchmark',()=>{
  const main=readFileSync(new URL('../src/main.ts',import.meta.url),'utf8');
@@ -18,4 +40,19 @@ it('defaults to a playable coast without the 0-speed FPS benchmark',()=>{
  expect(main).not.toContain('fpsBenchDistance');
  expect(main).not.toContain('autoShadowBenchmark');
  expect(main).not.toContain("params.get('showcase')");
+});
+
+it('preserves explicit classic rollback and defaults all other values',()=>{expect(canonicalGameQuery(new URLSearchParams('car=classic')).get('car')).toBe('classic');expect(canonicalGameQuery(new URLSearchParams('car=unknown')).has('car')).toBe(false);});
+
+it('auto-runs only effective, validated options in development',()=>{
+ const selected=(query:string)=>isDevelopmentRace(canonicalGameQuery(new URLSearchParams(query)));
+ for(const query of ['', 'beach2=1', 'utm_source=test&beach2=1', 'utm_source=test','hero3d=1','sunSide=left','at=0x1200','at=14550','at=1e3','fpsdiag=false','trafficSeed=-1'])expect(selected(query)).toBe(false);
+ for(const query of ['at=350','at=4600.25','at=14549','trafficSeed=0','fpsdiag=1','beach2=1&at=4600','car=classic'])expect(selected(query)).toBe(import.meta.env.DEV);
+});
+
+it('discards retired beach selectors without touching an independent valid shortcut',()=>{
+ const legacy='beach2=1&beachBlockout=1&beachAnchor=5980&beachMacro=right&sunsetRoute=1&sunSide=left&beachVista=1&beachFlow=1&coastClose=1&beachPlan=1&beachLife=1&coast=original&beach=dense';
+ expect(canonicalGameQuery(new URLSearchParams(legacy)).size).toBe(0);
+ expect(canonicalGameQuery(new URLSearchParams(legacy+'&at=4600')).toString()).toBe('at=4600');
+ expect(DEV_QUERY_KEYS).not.toContain('beach2');
 });

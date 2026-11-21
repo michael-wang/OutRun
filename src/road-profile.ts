@@ -1,5 +1,7 @@
 /** One cross-section for asphalt, paint, shoulders, scenery and handling. */
 export const LANE_WIDTH=3.5;
+/** Absolute start of the finite authored coast (the first HUD road metre). */
+export const ROAD_START=350;
 export type LaneKnot=readonly [number,number];
 export function laneProfile(knots:readonly LaneKnot[],seconds:number){
  let i=1;while(i<knots.length-1&&seconds>knots[i][0])i++;

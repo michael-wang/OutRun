@@ -55,7 +55,7 @@ self.addEventListener('fetch', event => {
 
   if (urls.has(key)) {
     event.respondWith(caches.open(cacheName).then(async cache =>
-      (await cache.match(key)) || fetch(event.request)
+      (await cache.match(key)) || (async()=>{const response=await fetch(event.request);if(response.ok)await cache.put(key,response.clone());return response;})()
     ));
     return;
   }

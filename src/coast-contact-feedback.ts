@@ -1,8 +1,8 @@
 import {coastBarrierStyle,coastBarrierStoneAt} from './coast-layout';
 
-/** Actual roadside contact material. A 'block' district only has discrete
- * 12m concrete bollards: the gaps are STILL invisible safety edges, never
- * imaginary concrete. StoneContact handles the physical stone first.
+/** Match road-edge feedback to the actual visible materials.
+ * Seaward bollards are linked by a steel beam, so a non-stone gap is metal;
+ * inland culvert stones remain discrete, with no invented concrete wall.
  */
 export type CoastContactSurface='metal'|'concrete'|'soft';
 export function coastContactSurface(distance:number,side:number):CoastContactSurface{
@@ -17,6 +17,7 @@ export function coastContactSurface(distance:number,side:number):CoastContactSur
    // Only its actual finite concrete length can sound like concrete.
    if(Math.abs(stone.d-distance)<stone.length*.5+.4)return 'concrete';
   }
+  if(laneSide===-1)return 'metal'; // seaward connecting guardrail
  }
  return 'soft';
 }

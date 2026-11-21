@@ -1,8 +1,7 @@
 import * as THREE from 'three';
-import {COAST_SUN} from './coast-dusk';
-import {coastShadowLength,coastShadowOffset,COAST_SHADOW_YAW,makeCoastShadowMaterial} from './coast-sun-shadow';
+import {coastShadowLength,coastShadowOffset,coastShadowYaw,makeCoastShadowMaterial} from './coast-sun-shadow';
 export {coastShadowLength,coastShadowOffset} from './coast-sun-shadow';
-import {COAST_BEACHES,COAST_ROCKS,coastRockX,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
+import {COAST_BEACHES,coastRocks,coastRockX,coastVisibleBarrierStyle,coastBarrierStyle,coastBarrierStoneAt,coastBarrierRockAt,coastBarrierClearance,COAST_LAMPS} from './coast-layout';
 import {COAST_DRAIN_X,COAST_UTILITY_POLES,coastDrainAt} from './coast-roadside-layout';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {FARM_HOMES} from './coast-farm-layout';
@@ -12,8 +11,9 @@ type Sample=(d:number)=>{position:THREE.Vector3;right:THREE.Vector3;tangent?:THR
 type Kind='umbrella'|'visitor'|'bench'|'home'|'shop'|'rock'|'concrete'|'rail'|'rail-beam'|'lamp';
 export type CoastShadowAnchor={d:number;x:number;width:number;length:number;kind?:Kind};
 const rawRandom=(n:number)=>{const x=Math.sin(n*127.1+43.7)*43758.5453;return x-Math.floor(x);};
-const away=new THREE.Vector3(-COAST_SUN.x,0,-COAST_SUN.z).normalize();
-const across=new THREE.Vector3(-away.z,0,away.x);
+import {COAST_SHADOW_AWAY as away,COAST_SHADOW_ACROSS as across} from './coast-sun-direction';
+import {macroClearApproach,macroHidePreRevealBeach,macroLandHeight} from './beach-macro';
+import {KENTING_INSTALLATION} from './kenting-installation';
 
 /** Share the actual scene seed, beach pocket spacing and authored prop coordinates.
  * No independently randomized umbrella placements or shadows on the wrong beach.
@@ -26,6 +26,7 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
   if(site.children)for(let j=0;j<2;j++)anchors.push({d:site.d+(j?5:-5),x:site.x-4-j,width:.85,length:coastShadowLength(.98),kind:'visitor'});
  }
  for(const site of COAST_VILLAGE_SITES){
+  if(KENTING_INSTALLATION.relocated&&site.d>KENTING_INSTALLATION.tutorialExit&&site.x>13&&(macroClearApproach(site.d)||macroLandHeight(site.x,site.d)>0))continue;
   anchors.push({d:site.d,x:site.x,width:site.kind==='home'?9:4.5,
    length:coastShadowLength(site.kind==='home'?7.5:4.05),kind:site.kind==='home'?'home':'shop'});
   if(site.kind!=='home'){
@@ -36,7 +37,10 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
    });
   }
  }
- for(const site of FARM_HOMES)anchors.push({d:site.d,x:site.x,width:10,length:coastShadowLength(7.5),kind:'home'});
+ for(const site of FARM_HOMES){
+  if(KENTING_INSTALLATION.relocated&&site.d>KENTING_INSTALLATION.tutorialExit&&macroClearApproach(site.d))continue;
+  anchors.push({d:site.d,x:site.x,width:10,length:coastShadowLength(7.5),kind:'home'});
+ }
  for(const bay of COAST_BEACHES){
   const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
   for(let j=0;j<count;j++){
@@ -53,9 +57,9 @@ export function coastBeachShadowAnchors(seed=0):CoastShadowAnchor[]{
  }
  // Offshore rock occlusion is performed in the existing Ultra-Water shader;
  // these optional footprints only show where rock surfaces touch dry ground.
- for(const rock of COAST_ROCKS)
+ for(const rock of coastRocks())
   anchors.push({d:rock.d,x:coastRockX(rock),width:rock.r*1.4,length:coastShadowLength(rock.r*.82),kind:'rock'});
- return anchors;
+ return anchors.filter(a=>!(a.x<0&&macroHidePreRevealBeach(a.d)&&['umbrella','visitor','bench','shop'].includes(a.kind??'')));
 }
 
 /** Match coast-resort.ts's real 12m cadence. Each rail section has THREE
@@ -65,8 +69,8 @@ export function coastBarrierShadowAnchors(length:number,halfAt:(d:number)=>numbe
  const anchors:CoastShadowAnchor[]=[];
  for(let d=0;d<length;d+=12){
   for(const side of [-1,1] as const){
-   const style=coastBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
-   if(style==='block'){
+   const style=coastVisibleBarrierStyle(d,side);if(style==='opening'||style==='none'||style==='rock')continue;
+   if(style==='block'||style==='stone-post'){
     const stone=coastBarrierStoneAt(d,side);
     const x=side*(halfAt(stone.d)+coastBarrierClearance(stone.d,side));
     anchors.push({d:stone.d,x,width:1.25,length:coastShadowLength(stone.height),kind:'concrete'});
@@ -210,7 +214,7 @@ export class CoastDuskShadows {
  // Black ink never brightens the near-black coastal asphalt.
  private readonly playerMaterial=makeCoastShadowMaterial(.78);
  private readonly staticMaterial=makeCoastGroundShadowMaterial();
- private readonly angle=COAST_SHADOW_YAW;
+ private readonly angle=coastShadowYaw();
  private readonly ranges:{d:number;start:number;count:number}[];
  private visibleStatic=0;
  constructor(scene:THREE.Scene,sample:Sample,routeLength=10000,halfAt:(d:number)=>number=()=>8.75,seed=0){

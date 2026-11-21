@@ -1,0 +1,44 @@
+{
+  "lifecycle": [
+    {
+      "disposed": {
+        "geometry": 1,
+        "material": 1
+      },
+      "geometry": "28d6bde6-9fad-480d-9733-e11b91c0c31e",
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "memory": {
+        "geometries": 281,
+        "textures": 57
+      }
+    },
+    {
+      "disposed": {
+        "geometry": 1,
+        "material": 1
+      },
+      "geometry": "48a3fa19-d34c-4905-ba2c-3b4015cf54d0",
+      "weights": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "memory": {
+        "geometries": 281,
+        "textures": 57
+      }
+    }
+  ],
+  "errors": [],
+  "requests": [
+    "http://127.0.0.1:5194/assets/characters/coast-blonde-bob.glb"
+  ]
+}

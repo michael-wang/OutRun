@@ -1,0 +1,33 @@
+{
+  "race": {
+    "before": {
+      "bytes": 1559060,
+      "triangles": 28647,
+      "sha256": "3e41cd11305fcc4ad51a69116d9c5737ed3d809ec68a024834977d6009c1a9f7"
+    },
+    "after": {
+      "bytes": 1567480,
+      "triangles": 28943,
+      "sha256": "9314e2694e098b57e8f8731382f36b1fb7bab3c7a879b7a7b6da354b22af78d0"
+    },
+    "nonClothMeshesIdentical": true,
+    "animationsIdentical": true,
+    "skinBindIdentical": true
+  },
+  "full": {
+    "before": {
+      "bytes": 2049728,
+      "triangles": 40238,
+      "sha256": "c7fc9182ec863429da05019edd298dbfeb8deef37cbd93686da4136b47c4215e"
+    },
+    "after": {
+      "bytes": 2058164,
+      "triangles": 40534,
+      "sha256": "8b17cc773798f2f017a810061745e30639f314b38f9d0bedccb1aef2220e6e95"
+    },
+    "nonClothMeshesIdentical": true,
+    "animationsIdentical": true,
+    "skinBindIdentical": true
+  },
+  "hairSha256": "8273fe14b4f1c83a4c8b574bacd7d834a6142380013e6e8ebb6f7b447399f519"
+}

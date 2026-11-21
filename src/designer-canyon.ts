@@ -1,9 +1,5 @@
-import {REFERENCE_TRAVEL} from './challenges';
-import {LANE_WIDTH} from './road-profile';
-import type {Placement} from './pilot-composer';
-import type {TripCandidate} from './trip';
+import {ROAD_START as BRICK_START} from './road-profile';
 import type {GrandCanyonScene} from './grand-canyon-scene';
-import {BRICK_START} from './bricks';
 
 /** Hand-authored design data, included in the Vite bundle at build time.
  * No seed, brick lottery, runtime composer or scenic-position search.
@@ -58,23 +54,6 @@ export const DESIGNER_CUT:DesignerCut=Object.freeze({
  props:DESIGNER_CANYON_PROPS,
 });
 
-const BEATS:TripCandidate['beats']=[
- {id:'CUT-01',startS:0,endS:560,world:'canyon',verticality:'gentle',role:'Intro · rock corridor'},
- {id:'CUT-02',startS:560,endS:1300,world:'canyon',verticality:'rolling',role:'Left arc · first canyon reveal'},
- {id:'CUT-03',startS:1300,endS:1910,world:'canyon',verticality:'rolling',role:'Canyon river overlook'},
- {id:'CUT-04',startS:1910,endS:2680,world:'canyon',verticality:'gentle',role:'Return to layered cliffs'},
- {id:'CUT-05',startS:2680,endS:3200,world:'canyon',verticality:'gentle',role:'Open-road farewell'},
-];
-const CURVES:Placement[]=[
- {channel:'curvature',id:'C02',startS:280,endS:900,parameters:{effort:.30,direction:1,start:0,end:1,secondary:.7},transition:'smooth',beat:'CUT-01'},
- {channel:'curvature',id:'C02',startS:1010,endS:1590,parameters:{effort:.39,direction:1,start:0,end:1,secondary:.7},transition:'smooth',beat:'CUT-02'},
- {channel:'curvature',id:'C02',startS:1720,endS:2290,parameters:{effort:.35,direction:-1,start:0,end:1,secondary:.7},transition:'smooth',beat:'CUT-03'},
- {channel:'curvature',id:'C02',startS:2400,endS:2870,parameters:{effort:.32,direction:-1,start:0,end:1,secondary:.7},transition:'smooth',beat:'CUT-04'},
-];
-const ELEVATION:Placement[]=[
- {channel:'elevation',id:'E05',startS:400,endS:1510,parameters:{base:120,amplitude:18,direction:1,shelfStart:.36,shelfEnd:.63},transition:'smooth',beat:'CUT-02'},
- {channel:'elevation',id:'E03',startS:1660,endS:2630,parameters:{base:120,amplitude:13,direction:1,shelfStart:.32,shelfEnd:.68},transition:'smooth',beat:'CUT-04'},
-];
 /** Fixed valley, fixed river elevation above the old global ocean.
  * The river and rock layers belong to this one authored composition. */
 export const DESIGNER_CANYON_LANDSCAPE:GrandCanyonScene=Object.freeze({
@@ -83,28 +62,3 @@ export const DESIGNER_CANYON_LANDSCAPE:GrandCanyonScene=Object.freeze({
  valleySide:-1,riverY:56,riverWidth:24,seed:714,
  authored:true,
 });
-/** A static object, produced by source authoring and bundled with the game.
- * Unlike generateTrip(), opening this route never invokes a runtime composer. */
-export const DESIGNER_CANYON_STAGE:TripCandidate={
- id:'ROAD-TRIP-10M',revision:13,
- name:'Grand Canyon · Designer’s Cut',
- intent:'A hand-composed left canyon reveal, river overlook and sandstone return.',
- emotionalRole:'hand-authored-showcase',sceneryAct:1,
- seed:714,world:'canyon',generatorVersion:DESIGNER_CANYON_VERSION,
- contentFingerprint:'designer-canyon-v1-714',
- stageCode:'CUT-CANYON-01',tripCode:'CUT-CANYON-01',
- beats:BEATS,buffers:[{startS:0,endS:250,role:'launch'},{startS:2960,endS:DESIGNER_CANYON_LENGTH,role:'finish'}],
- baseHeight:120,baseLanes:4,
- length:DESIGNER_CANYON_LENGTH,
- placements:[...CURVES,...ELEVATION].sort((a,b)=>a.startS-b.startS),
- worldPhases:[{startS:0,endS:DESIGNER_CANYON_LENGTH,world:'canyon',beat:'Designed canyon route'}],
- scenerySections:Object.freeze([{id:'CUT-CANYON-SECTION',kind:'canyon',start:BRICK_START,end:BRICK_START+DESIGNER_CANYON_LENGTH,left:'canyon',right:'canyon'}]),
- scenicLandmarks:[],canyonPrototype:DESIGNER_CANYON_LANDSCAPE,
- designerCut:DESIGNER_CUT,
- referenceSpeed:230,entrySpeed:0,nominalDuration:DESIGNER_CANYON_LENGTH/REFERENCE_TRAVEL,
- roadWidth:4*LANE_WIDTH,lanes:[[0,4],[DESIGNER_CANYON_LENGTH/REFERENCE_TRAVEL,4]],
- elevation:[[0,120],[DESIGNER_CANYON_LENGTH/REFERENCE_TRAVEL,120]],requiredSteerProfile:[[0,0]],
- entry:'Grand Canyon · starting overlook',exit:'Return to the open road',
- warning:{leadMeters:260,text:'LEFT CURVE · CANYON OVERLOOK'},tags:['designer-cut','grand-canyon'],
- antiAdjacency:[],autoValidation:'PENDING',
-};

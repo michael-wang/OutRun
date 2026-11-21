@@ -1,0 +1,294 @@
+{
+  "version": "0.10.20",
+  "status": "playable integration; art and mobile performance NOT accepted",
+  "sourceCommit": "fb52490",
+  "pixelHardware": [
+    2400,
+    1080
+  ],
+  "perf": {
+    "previous": {
+      "meta": {
+        "viewport": [
+          732,
+          262
+        ],
+        "devicePixelRatio": 3.278917074203491,
+        "rendererDpr": 1,
+        "drawingBuffer": [
+          732,
+          262
+        ],
+        "scale": [
+          [
+            0.84,
+            0.84,
+            0.84
+          ],
+          [
+            0.84,
+            0.84,
+            0.84
+          ]
+        ],
+        "triangles": 13871,
+        "draws": 59,
+        "hair": "morph",
+        "camera": [
+          -2818.3025165693716,
+          2.3886001088559112,
+          6609.247888080999
+        ],
+        "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36"
+      },
+      "movingFps": 22.868669922206582,
+      "frameP95Ms": 66.59999999999854,
+      "motionCpu": {
+        "scope": "all occupant/wheel advance; 299 warm updates, no rendering",
+        "meanMs": 0.03645484956809908,
+        "p95Ms": 0.10000000894069672
+      },
+      "gpuTimerSupported": false
+    },
+    "new": {
+      "meta": {
+        "viewport": [
+          732,
+          262
+        ],
+        "devicePixelRatio": 3.278917074203491,
+        "rendererDpr": 1,
+        "drawingBuffer": [
+          732,
+          262
+        ],
+        "scale": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "triangles": 15171,
+        "draws": 59,
+        "hair": "blender-blonde-spring",
+        "camera": [
+          -2818.3025165693716,
+          2.3886001088559112,
+          6609.247888080999
+        ],
+        "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36"
+      },
+      "movingFps": 18.047841737378977,
+      "frameP95Ms": 82.89999999999782,
+      "motionCpu": {
+        "scope": "all occupant/wheel advance; 299 warm updates, no rendering",
+        "meanMs": 0.9344481605052151,
+        "p95Ms": 1.699999988079071
+      },
+      "gpuTimerSupported": false
+    }
+  },
+  "scenes": [
+    {
+      "label": "idle",
+      "actualSpeedRange": [
+        0,
+        0
+      ],
+      "maxJointAngleDegrees": 2.353420083887842,
+      "sourceVideoRange": [
+        8.839,
+        9.872
+      ]
+    },
+    {
+      "label": "60",
+      "actualSpeedRange": [
+        59.31736799999999,
+        61.52526662568004
+      ],
+      "maxJointAngleDegrees": 14.111589857387944,
+      "sourceVideoRange": [
+        11.059000000000001,
+        12.599
+      ]
+    },
+    {
+      "label": "80",
+      "actualSpeedRange": [
+        79.60445731163844,
+        80.73287186042566
+      ],
+      "maxJointAngleDegrees": 16.751703766417663,
+      "sourceVideoRange": [
+        13.779,
+        15.331999999999999
+      ]
+    },
+    {
+      "label": "120",
+      "actualSpeedRange": [
+        119.77291200000003,
+        121.01720946676525
+      ],
+      "maxJointAngleDegrees": 20.333294812794826,
+      "sourceVideoRange": [
+        16.486,
+        18.086
+      ]
+    },
+    {
+      "label": "220",
+      "actualSpeedRange": [
+        219.32222339788012,
+        220.043623060945
+      ],
+      "maxJointAngleDegrees": 28.466602439782356,
+      "sourceVideoRange": [
+        19.306,
+        20.876
+      ]
+    },
+    {
+      "label": "300",
+      "actualSpeedRange": [
+        299.5458239999999,
+        299.96033453614973
+      ],
+      "maxJointAngleDegrees": 27.808944577834918,
+      "sourceVideoRange": [
+        22.059,
+        23.647
+      ]
+    },
+    {
+      "label": "left",
+      "actualSpeedRange": [
+        279.49341504312395,
+        280.12313745680245
+      ],
+      "maxJointAngleDegrees": 28.060962291436063,
+      "sourceVideoRange": [
+        29.186,
+        31.316
+      ]
+    },
+    {
+      "label": "right",
+      "actualSpeedRange": [
+        279.3218357057511,
+        280.2185986832155
+      ],
+      "maxJointAngleDegrees": 27.791004467161045,
+      "sourceVideoRange": [
+        35.851,
+        37.992
+      ]
+    },
+    {
+      "label": "braking",
+      "actualSpeedRange": [
+        0,
+        279.4192527369495
+      ],
+      "maxJointAngleDegrees": 25.20540232730548,
+      "sourceVideoRange": [
+        39.117999999999995,
+        43.26
+      ]
+    }
+  ],
+  "asset": {
+    "triangles": 2279,
+    "vertices": 1690,
+    "bones": 25,
+    "dynamicJoints": 18,
+    "materials": 1,
+    "bytes": 109144,
+    "maxTipSculptMeters": 0.027402558590003304,
+    "chains": [
+      {
+        "bones": [
+          "lock-0-0",
+          "lock-0-1",
+          "lock-0-2",
+          "lock-0-3"
+        ],
+        "top": 0.045,
+        "bottom": -0.1338394714573309
+      },
+      {
+        "bones": [
+          "lock-1-0",
+          "lock-1-1",
+          "lock-1-2",
+          "lock-1-3"
+        ],
+        "top": 0.045,
+        "bottom": -0.1579141852259636
+      },
+      {
+        "bones": [
+          "lock-2-0",
+          "lock-2-1",
+          "lock-2-2",
+          "lock-2-3"
+        ],
+        "top": 0.045,
+        "bottom": -0.15796309530735014
+      },
+      {
+        "bones": [
+          "lock-3-0",
+          "lock-3-1",
+          "lock-3-2",
+          "lock-3-3"
+        ],
+        "top": 0.045,
+        "bottom": -0.1548209571838379
+      },
+      {
+        "bones": [
+          "lock-4-0",
+          "lock-4-1",
+          "lock-4-2",
+          "lock-4-3"
+        ],
+        "top": 0.045,
+        "bottom": -0.15319901585578918
+      },
+      {
+        "bones": [
+          "lock-5-0",
+          "lock-5-1",
+          "lock-5-2",
+          "lock-5-3"
+        ],
+        "top": 0.045,
+        "bottom": -0.14071886573776146
+      }
+    ]
+  },
+  "lifecycle": {
+    "pauseFrozen": true,
+    "restartReady": true,
+    "disposed": {
+      "geometry": 1,
+      "material": 1,
+      "skeleton": 1
+    },
+    "reentry": true,
+    "errors": []
+  },
+  "tests": {
+    "files": 113,
+    "passed": 498
+  },
+  "errors": []
+}
