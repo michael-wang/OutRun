@@ -1,4 +1,6 @@
 import {configureKentingCoast} from './beach-macro';
+import {parseSlopeArtMode,type SlopeArtMode} from './kenting-slope-art';
+import {KENTING_INSTALLATION} from './kenting-installation';
 import {buildCoastGroundShadows,type CoastShadowAnchor} from './coast-dusk-shadows';
 import {loadCoastNature,addCoastNature,type NatureBatch} from './coast-nature';
 import {addVergeGrass} from './coast-verge-grass';
@@ -29,11 +31,12 @@ import {interchangeSceneryClear,type RoadInterchange} from './road-interchange';
 
 const hasModernShoulders=(v:string)=>v==='designer-canyon-v1'||v==='canyon-roadlock-v1'||v==='v0.9-r7'||v==='v0.9-r8'||v==='v0.9-r9'||v==='v0.9-r10'||v==='v0.9-r11'||v==='v0.9-r12';
 type Faults={delayMs:number;fromIndex:number;fail:boolean};let faults:Faults={delayMs:0,fromIndex:0,fail:false};
-type InitRequest={type:'init';generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;faults?:Faults}
+type InitRequest={type:'init';generation:number;bank?:BankStrength;blenderArt?:boolean;bakedFarmGround?:boolean;mobileShadows?:boolean;slopeArt?:SlopeArtMode;faults?:Faults}
  & {coastStage:'coast'};
 type Request=InitRequest|{type:'faults';generation:number;faults:Faults}|{type:'prepare'|'scenery';generation:number;index:number;start:number;end:number};
 let farmGround:Awaited<ReturnType<typeof loadFarmGround>>|undefined;
 let blenderArt=false,mobileShadows=false;
+let slopeArt:SlopeArtMode='baseline';
 let roadLockArt=false;
 let rocks:RockySection[]=[];let bridge:BridgeSpan|undefined;let junction:RoadInterchange|undefined;
 /** Worker renderer needs scene metadata, not the Trip/Pilot authoring shape. */
@@ -57,6 +60,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
   if(request.type==='init'){
    // A slow or offline fetch must never hold up the road or the first field.
    configureKentingCoast();
+   slopeArt=import.meta.env.DEV&&KENTING_INSTALLATION.mode==='immediate'?parseSlopeArtMode(request.slopeArt):'baseline';
    mobileShadows=!!request.mobileShadows;
    farmGround=undefined;
    if(request.bakedFarmGround)void loadFarmGround().then(rows=>{
@@ -81,7 +85,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    junction=undefined;
    roadSamples=Array.from({length:Math.ceil(current.length/25)},(_,i)=>current.sample(i*25).position);
    clearance=new RoadClearance(roadSamples,halfAt,stage.id==='ROAD-TRIP-10M');
-   worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart});return;
+   worker.postMessage({type:'initialized',generation,cpuMs:performance.now()-initStart,...(import.meta.env.DEV?{slopeArt}:{})});return;
   }
   if(request.generation!==generation||!stage||!track)return;
   const t=performance.now(),candidate=stage,current=track,coastUltra=candidate.scenerySections?.some(s=>s.id==='coast-ultra-left-sea')??false,shoulders=hasModernShoulders(candidate.generatorVersion)?(d:number)=>bridgeShoulders(d,candidate.seed,bridge):undefined;
@@ -95,7 +99,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
     canyonPrototype:candidate.canyonPrototype,designerCut:candidate.designerCut,coastUltra,essentialShadows});
    if(coastUltra){
     const end=Math.min(request.end,current.length);
-    const batches=[addCoastNature(scene,current.sample,request.start,end),addCoastResort(scene,current.sample,halfAt,request.start,end),
+    const batches=[addCoastNature(scene,current.sample,request.start,end,slopeArt),addCoastResort(scene,current.sample,halfAt,request.start,end),
      addVergeGrass(scene,current.sample,halfAt,shoulders,request.start,end)];
     for(const batch of batches){scenery.instances+=batch.instances;scenery.draws+=batch.draws;}
    }
@@ -130,7 +134,7 @@ worker.onmessage=async(event:MessageEvent<Request>)=>{
    const visibleScenery=blenderArt?{...scenery,instances:instances.reduce((n,i)=>n+i.matrices.length/16,0),draws:instances.length}:scenery;
    worker.postMessage({type:'sceneryPrepared',generation,index:request.index,definitions,instances,farmPreps,farmPrepCpuMs,essentialProjection,scenery:visibleScenery,clearance:{queries:clearance.stats.queries-before.queries,checks:clearance.stats.checks-before.checks,rejected:clearance.stats.rejected-before.rejected},cpuMs:performance.now()-t},transfer);return;
   }
-  const rawMeshes=prepareRoadChunk(current.sample,halfAt,weightsAt,request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||hasModernShoulders(candidate.generatorVersion)))) ,rocks,shoulders,bridge,true,junction,candidate.scenerySections,candidate.canyonPrototype,blenderArt,candidate.generatorVersion==='canyon-roadlock-v1');
+  const rawMeshes=prepareRoadChunk(current.sample,halfAt,weightsAt,request.start,request.end,current.length,candidate.id==='ROAD-TRIP-10M'&&candidate.seed===1,(candidate.generatorVersion==='v0.9-r4'||(candidate.generatorVersion==='v0.9-r5'||(candidate.generatorVersion==='v0.9-r6'||hasModernShoulders(candidate.generatorVersion)))) ,rocks,shoulders,bridge,true,junction,candidate.scenerySections,candidate.canyonPrototype,blenderArt,candidate.generatorVersion==='canyon-roadlock-v1',slopeArt);
   // Full-route static art replaces only visual terrain. Original sand remains a contact surface.
   const meshes=roadLockArt?rawMeshes.filter(m=>!['grass','water','surf','support'].includes(m.kind)).map(m=>m.kind==='sand'?{...m,artContactOnly:true}:m):blenderArt?blenderRoadVisuals(rawMeshes,request.start,request.end):rawMeshes;
   const matrices=[[],[],[],[]] as number[][],dummy=new THREE.Object3D();

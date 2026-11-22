@@ -19,13 +19,14 @@ import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,sceneryFarReach,type
 import {canyonGroundY,canyonRiverRaw,canyonSceneEnvelope,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonStratumColor} from './canyon-language';
 import {harbourRockWeight} from './working-harbour-profile';
+import {SLOPE_ART,slopeArtEnvelope,slopeArtMix,type SlopeArtMode} from './kenting-slope-art';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
 export interface RoadMeshData {artContactOnly?:boolean;artVisualOnly?:boolean;normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'center-line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false,mountainPaint=false):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false,mountainPaint=false,slopeArt:SlopeArtMode='baseline'):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  const coastUltra=!!scenerySections?.some(s=>s.id==='coast-ultra-left-sea');
  // S2B experiment: repeated absolute-distance queries across ribbons and markings.
@@ -94,9 +95,15 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    // Coast sand's currently unused UV.x can encode the true widened beach
    // cross-section for the wet-sand reflection in the existing PBR material.
    const profileX=coastUltra&&kind==='sand'?coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d):undefined;
+   let slope:ReturnType<typeof slopeArtMix>|undefined;
    if(coastUltra&&kind==='grass'){
     const x=roadOffset(o,cachedWidth(d),cachedShoulders(d));
-    const grass=meadowCover(x,d);
+    let grass=meadowCover(x,d);
+    if(slopeArt!=='baseline'&&beach2()&&d>SLOPE_ART.start&&d<SLOPE_ART.end&&slopeArtEnvelope(d,x)>0){
+     const tilt=Math.abs(point(d,o+1.55,h).y-point(d,o-1.55,h).y)/3.1;
+     slope=slopeArtMix(d,x,height-p.position.y,tilt);
+     grass*=1-Math.min(.93,slope.rock*1.44+slope.soil*.85);
+    }
     const apron=beachApproachWeight(d)*THREE.MathUtils.smoothstep(x,16,38)*(1-THREE.MathUtils.smoothstep(x,105,180));
     const exposure=.5+.5*Math.sin((ref-4390)/32+x/12+.8*Math.sin(ref/48));
     uvs.push(grass*(1-.48*apron*exposure*exposure),lawnWeight(x,d));
@@ -186,6 +193,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
       const shoulder=THREE.MathUtils.smoothstep(x,14,30)*(1-THREE.MathUtils.smoothstep(x,120,185));
       const fold=.5+.5*Math.sin((ref-4390)/32+x/12+.8*Math.sin(ref/48));
       color.lerp(new THREE.Color('#ac936d'),approach*shoulder*(.08+.33*fold*fold));
+     }
+     if(slope){
+      const bedding=.5+.5*Math.cos((height-p.position.y)*.43-x*.062+d*.028);
+      color.lerp(new THREE.Color('#4f6b4d'),slope.grass);
+      color.lerp(new THREE.Color('#a48361'),slope.soil);
+      color.lerp(new THREE.Color('#786c57').lerp(new THREE.Color('#a79577'),bedding),slope.rock);
      }
     }
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){

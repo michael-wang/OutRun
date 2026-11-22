@@ -11,6 +11,7 @@ import {coastVegetationDensity} from './coast-journey-layout';
 import {COAST_SEA_LEVEL,coastBeachHeight} from './scenery-cross-section';
 import {roadOffset,shoulderProfile} from './road-profile';
 import type {createTrack} from './track';
+import {SLOPE_STRUCTURE,type SlopeArtMode} from './kenting-slope-art';
 
 export interface NatureBatch {texture?:string;leafCutout?:boolean;verge?:boolean;center:number;near:number;far:number}
 type Model={parts:NaturePart[]};
@@ -62,11 +63,11 @@ export function coastNatureGround(sample:ReturnType<typeof createTrack>['sample'
 }
 /** Fixed 200m batches with shared source meshes/materials. Placement and LOD
  * never depend on worker request order. The streamer culls whole batches. */
-export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],start:number,end:number){
+export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof createTrack>['sample'],start:number,end:number,slopeArt:SlopeArtMode='baseline'){
  if(!assets)throw Error('Coast nature must load before scenery preparation');
  const buckets=new Map<string,{g:THREE.BufferGeometry;m:THREE.MeshStandardMaterial;matrices:THREE.Matrix4[];nature:NatureBatch;shadowGroup:'rocks'|'vegetation'}>();
  const geometries=new Map<string,THREE.BufferGeometry>(),materials=new Map<string,THREE.MeshStandardMaterial>(),dummy=new THREE.Object3D();
- function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false){
+ function plant(name:string,d:number,x:number,height:number,key:number,far:number,authored=false,ledge?:{yaw:number;rock:boolean}){
   if(!name.startsWith('Rock_')&&beach2VillageClearing(d,x))return;
   const ref=kentingReference(d);
   if(x<0&&beachMacro()==='right'&&!name.startsWith('Rock_')&&
@@ -78,7 +79,12 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
   const ground=x<0?coastBeachHeight(x,p.position.y,p.right.y,d):coastNatureGround(sample,d,x,start,end);
   if(x<0&&ground<COAST_SEA_LEVEL+1.1)return;
   dummy.position.y=ground-.06;
-  dummy.rotation.set(0,random(key+32)*Math.PI*2,0);dummy.scale.set(height*(.82+random(key+7)*.3),height,height*(.82+random(key+7)*.3));dummy.updateMatrix();
+  dummy.rotation.set(0,random(key+32)*Math.PI*2,0);dummy.scale.set(height*(.82+random(key+7)*.3),height,height*(.82+random(key+7)*.3));
+  if(ledge){
+   dummy.rotation.y=ledge.yaw;
+   if(ledge.rock){dummy.position.y-=height*.24;dummy.rotation.z=.13;dummy.scale.set(height*.80,height*.73,height*1.06);}
+  }
+  dummy.updateMatrix();
   const center=Math.floor(d/200)*200+100;
   for(const [i,part] of model.parts.entries()){
    const id=name+':'+i;
@@ -161,6 +167,11 @@ export function addCoastNature(scene:THREE.Scene,sample:ReturnType<typeof create
    if(farmClearing(at,x))continue;
    copse(at,x,(upland?9:6)+random(key+2)*4,key,upland?7:4,upland?20:13);
   }
+ }
+ if(slopeArt==='structure')for(const s of SLOPE_STRUCTURE){
+  if(s.d<start||s.d>=end)continue;
+  const rock=s.kind==='rock';
+  plant(rock?'Rock_Medium_2':'RoadOak',s.d,s.x,s.h,s.key,rock?195:182,true,{yaw:s.yaw,rock});
  }
  for(const b of buckets.values()){
   const mesh=new THREE.InstancedMesh(b.g,b.m,b.matrices.length);
