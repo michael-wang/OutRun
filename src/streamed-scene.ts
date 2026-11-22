@@ -55,7 +55,7 @@ export class StreamedScene {
  private terrainDemoSeam:number|null=null;
  private terrainDemoError:string|null=null;
  private initTerrainDemo(){
-  if(!terrainDemoRequested(new URLSearchParams(location.search)))return undefined;
+  if(!import.meta.env.DEV||!terrainDemoRequested(new URLSearchParams(location.search)))return undefined;
   const badge=document.createElement('output');
   badge.setAttribute('aria-live','polite');badge.id='terrain-demo-status';
   badge.style.cssText='position:fixed;right:12px;top:72px;z-index:20;padding:5px 9px;border-radius:4px;background:#24252be8;color:#f2dfbe;pointer-events:none;font:12px system-ui';

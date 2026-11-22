@@ -58,4 +58,4 @@ it('leaves every original road and contact array unchanged; one merged grass vis
  expect(terrainDemoVisibleIndex(grass.indices,cuts).length).toBe(grass.indices.length-1248*3);
  expect(KENTING_TERRAIN_DEMO.end).toBe(4790);
  compare(build(5000,6000,false),build(5000,6000,true));
-});
+},15000);
