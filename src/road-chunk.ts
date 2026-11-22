@@ -19,13 +19,14 @@ import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,sceneryFarReach,type
 import {canyonGroundY,canyonRiverRaw,canyonSceneEnvelope,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonStratumColor} from './canyon-language';
 import {harbourRockWeight} from './working-harbour-profile';
+import {terrainDemoRibbon} from './kenting-terrain-demo';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
-export interface RoadMeshData {artContactOnly?:boolean;artVisualOnly?:boolean;normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'center-line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
+export interface RoadMeshData {terrainDemoCuts?:NonNullable<ReturnType<typeof terrainDemoRibbon>>[];artContactOnly?:boolean;artVisualOnly?:boolean;normals?:Float32Array;rayRanges?:RayRange[];kind:'asphalt'|'sand'|'grass'|'line'|'center-line'|'rail'|'support'|'edge-white'|'edge-red'|'surf'|'steel'|'deck'|'water';positions:Float32Array;uvs:Float32Array;colors:Float32Array;indices:Uint32Array}
 type Edge=number|((d:number)=>number);
 /** Numeric road preparation. Every endpoint uses the original absolute sampler. */
-export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false,mountainPaint=false):RoadMeshData[]{
+export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weightsAt:(d:number)=>number[],start:number,end:number,length:number,canyon=false,seamless=false,rocks:readonly RockySection[]=[],shoulders?:(d:number)=>Shoulders,bridge?:BridgeSpan,cacheExactSamples=true,interchange?:RoadInterchange,scenerySections?:readonly ScenerySection[],grandCanyon?:GrandCanyonScene,blenderPaint=false,mountainPaint=false,terrainDemo=false):RoadMeshData[]{
  const out:RoadMeshData[]=[];
  const coastUltra=!!scenerySections?.some(s=>s.id==='coast-ultra-left-sea');
  // S2B experiment: repeated absolute-distance queries across ribbons and markings.
@@ -210,7 +211,9 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    }
   }}
   for(let i=0;i<n;i++){const k=i*2;indices.push(k,k+1,k+2,k+1,k+3,k+2);}
-  out.push({kind,...(seamless&&kind!=='support'?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
+  const terrainDemoCut=terrainDemo&&coastUltra&&kind==='grass'&&typeof a==='number'&&typeof b==='number'?
+   terrainDemoRibbon(from,to,a,b,n):undefined;
+  out.push({kind,...(terrainDemoCut?{terrainDemoCuts:[terrainDemoCut]}:{}),...(seamless&&kind!=='support'?{normals:new Float32Array(normals)}:{}),...((kind==='asphalt'||kind==='sand')?{rayRanges:[{start:from,end:to,offset:0,count:indices.length}]}:{}),positions:new Float32Array(positions),uvs:new Float32Array(uvs),colors:new Float32Array(colors),indices:new Uint32Array(indices)});
  };
  // Only the 1.5km demonstration corridor gets additional cross-section
  // vertices. Existing r10 sections and the complete asphalt mesh are untouched.
@@ -471,9 +474,9 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  // Merge by material before upload; dashes are not individual draw calls.
  const merged:RoadMeshData[]=[];
  for(const kind of new Set(out.map(x=>x.kind))){
-  const pieces=out.filter(x=>x.kind===kind),positions=new Float32Array(pieces.reduce((n,x)=>n+x.positions.length,0)),uvs=new Float32Array(pieces.reduce((n,x)=>n+x.uvs.length,0)),colors=new Float32Array(pieces.reduce((n,x)=>n+x.colors.length,0)),indices=new Uint32Array(pieces.reduce((n,x)=>n+x.indices.length,0));const normals=new Float32Array(pieces.reduce((n,x)=>n+(x.normals?.length??0),0));const rayRanges:RayRange[]=[];let normalOffset=0;let p=0,u=0,c=0,k=0;
-  for(const x of pieces){if(x.normals){normals.set(x.normals,normalOffset);normalOffset+=x.normals.length;}for(const r of x.rayRanges??[])rayRanges.push({...r,offset:r.offset+k});positions.set(x.positions,p);uvs.set(x.uvs,u);colors.set(x.colors,c);for(let i=0;i<x.indices.length;i++)indices[k+i]=x.indices[i]+p/3;p+=x.positions.length;u+=x.uvs.length;c+=x.colors.length;k+=x.indices.length;}
-  merged.push({kind,positions,uvs,colors,indices,...(normals.length?{normals}:{}),...(rayRanges.length?{rayRanges}:{})});
+  const pieces=out.filter(x=>x.kind===kind),positions=new Float32Array(pieces.reduce((n,x)=>n+x.positions.length,0)),uvs=new Float32Array(pieces.reduce((n,x)=>n+x.uvs.length,0)),colors=new Float32Array(pieces.reduce((n,x)=>n+x.colors.length,0)),indices=new Uint32Array(pieces.reduce((n,x)=>n+x.indices.length,0));const normals=new Float32Array(pieces.reduce((n,x)=>n+(x.normals?.length??0),0));const rayRanges:RayRange[]=[],terrainDemoCuts:NonNullable<RoadMeshData['terrainDemoCuts']>=[];let normalOffset=0;let p=0,u=0,c=0,k=0;
+  for(const x of pieces){if(x.normals){normals.set(x.normals,normalOffset);normalOffset+=x.normals.length;}for(const r of x.rayRanges??[])rayRanges.push({...r,offset:r.offset+k});for(const cut of x.terrainDemoCuts??[])terrainDemoCuts.push({firstIndex:cut.firstIndex+k,lastIndex:cut.lastIndex+k,perimeter:cut.perimeter.map(i=>i+p/3)});positions.set(x.positions,p);uvs.set(x.uvs,u);colors.set(x.colors,c);for(let i=0;i<x.indices.length;i++)indices[k+i]=x.indices[i]+p/3;p+=x.positions.length;u+=x.uvs.length;c+=x.colors.length;k+=x.indices.length;}
+  merged.push({kind,positions,uvs,colors,indices,...(normals.length?{normals}:{}),...(rayRanges.length?{rayRanges}:{}),...(terrainDemoCuts.length?{terrainDemoCuts}:{})});
  }
  return merged;
 }

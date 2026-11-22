@@ -1,4 +1,7 @@
 import {beachMacro} from './beach-macro';
+import {KENTING_INSTALLATION} from './kenting-installation';
+import {KENTING_TERRAIN_DEMO,terrainDemoRequested,terrainDemoVisibleIndex} from './kenting-terrain-demo';
+import type {TerrainDemoPatch} from './kenting-terrain-demo-asset';
 import {visitContactRows} from './wheel-contact-patch';
 import {makeCoastGroundShadowMaterial} from './coast-dusk-shadows';
 import {coastShadowTechniqueEnabled} from './coast-shadow-techniques';
@@ -44,6 +47,46 @@ export class StreamedScene {
  readonly chunkLength=1000;readonly ahead=5000;readonly behind=1000;
  readonly groups:Record<string,THREE.Group>={};
  readonly history:{kind:string;index:number;ms:number}[]=[];
+ private terrainDemoPatch?:TerrainDemoPatch;
+ private terrainDemoBadge?:HTMLOutputElement;
+ private terrainDemoWorker=false;
+ private terrainDemoStatus='not-requested';
+ private terrainDemoRemoved=0;
+ private terrainDemoSeam:number|null=null;
+ private terrainDemoError:string|null=null;
+ private initTerrainDemo(){
+  if(!terrainDemoRequested(new URLSearchParams(location.search)))return undefined;
+  const badge=document.createElement('output');
+  badge.setAttribute('aria-live','polite');badge.id='terrain-demo-status';
+  badge.style.cssText='position:fixed;right:12px;top:72px;z-index:20;padding:5px 9px;border-radius:4px;background:#24252be8;color:#f2dfbe;pointer-events:none;font:12px system-ui';
+  this.terrainDemoBadge=badge;document.body.append(badge);
+  if(this.blenderArt||KENTING_INSTALLATION.mode!=='immediate'){
+   this.setTerrainDemoStatus('fallback','Unsupported stage layout');return undefined;
+  }
+  this.setTerrainDemoStatus('loading');
+  return import('./kenting-terrain-demo-asset').then(async({loadTerrainDemoPatch,terrainDemoSeamGap})=>{
+   const p=await loadTerrainDemoPatch();
+   if(this.disposed){p.mesh.geometry.dispose();p.mesh.material.dispose();return;}
+   this.terrainDemoPatch=p;this.checkTerrainSeam=terrainDemoSeamGap;
+   this.setTerrainDemoStatus('ready');
+  }).catch(e=>{if(!this.disposed)this.setTerrainDemoStatus('fallback',String(e));});
+ }
+ private checkTerrainSeam?:typeof import('./kenting-terrain-demo-asset').terrainDemoSeamGap;
+ private setTerrainDemoStatus(status:string,error?:string){
+  this.terrainDemoStatus=status;this.terrainDemoError=error??null;
+  if(this.terrainDemoBadge)this.terrainDemoBadge.textContent=({
+   loading:'Terrain Demo: loading',ready:'Terrain Demo: patch loaded',
+   active:'Terrain Demo: active',fallback:'Terrain Demo unavailable; original terrain',
+  } as Record<string,string>)[status]??'';
+ }
+ private terrainDemoDiagnostics(){
+  const p=this.terrainDemoPatch,group=p?.mesh.parent;
+  const active=!!(this.terrainDemoWorker&&group?.parent===this.groups.terrain&&this.terrainDemoRemoved);
+  return {activeTerrainDemo:active,terrainDemo:{requested:!!this.terrainDemoBadge,workerEnabled:this.terrainDemoWorker,
+   status:active?'active':this.terrainDemoStatus==='active'?'ready':this.terrainDemoStatus,error:this.terrainDemoError,
+   triangles:p?.triangles??0,bytes:p?.bytes??0,loadMs:p?.loadMs??null,
+   removedTriangles:active?this.terrainDemoRemoved:0,seamMaxGapM:this.terrainDemoSeam}};
+ }
  private worker!:Worker;private bank?:BankStrength;private pending?:{kind:string;index:number;since:number};private retries=0;private failures:{message:string;kind:string;index:number;at:number}[]=[];private testFaults={delayMs:0,fromIndex:0,fail:false};private chunks=new Map<number,Chunk>();private desired=new Set<number>();private work:Work[]=[];
  private retiring:Work[]=[];
   private staticShadowRevision=0;
@@ -148,7 +191,9 @@ export class StreamedScene {
   this.markerMaterials=[roadMaterials.rail,roadMaterials.line,new THREE.MeshStandardMaterial({color:'#f5a53c',roughness:1}),new THREE.MeshStandardMaterial({color:'#263d43',roughness:1})];
   for(const name of ['driving-surface','shoulder','terrain','road-detail','road-support','lane-markings','scenery']){const group=new THREE.Group();group.name=name;this.groups[name]=group;scene.add(group);}
   this.bank=bank;
-  if(this.farmSample)loadCoastFarm().then(assets=>{if(this.disposed){assets.dispose();return;}this.farmAssets=assets;if(ridgeMeadow)ridgeMeadow.value=assets.meadowTile;shadeMeadowGround(this.roadMaterials.grass,assets);this.launch();}).catch(e=>{this.errorMessage=`Farm assets failed: ${String(e)}`;console.error(this.errorMessage);});else this.launch();
+  const terrain=import.meta.env.DEV&&typeof location!=='undefined'?this.initTerrainDemo():undefined;
+  const launchWhenReady=()=>{if(terrain)void terrain.then(()=>{if(!this.disposed)this.launch();});else this.launch();};
+  if(this.farmSample)loadCoastFarm().then(assets=>{if(this.disposed){assets.dispose();return;}this.farmAssets=assets;if(ridgeMeadow)ridgeMeadow.value=assets.meadowTile;shadeMeadowGround(this.roadMaterials.grass,assets);launchWhenReady();}).catch(e=>{this.errorMessage=`Farm assets failed: ${String(e)}`;console.error(this.errorMessage);});else launchWhenReady();
   this.update(350);
  }
  private launch(){
@@ -164,7 +209,7 @@ export class StreamedScene {
     coastStage:'coast' as const,
     bank:this.bank,mobileShadows:this.mobile&&!!this.farmSample,blenderArt:this.blenderArt,
     bakedFarmGround:beachMacro()==='none'&&this.bank===undefined&&!this.blenderArt,
-    ...(import.meta.env.DEV?{faults:this.testFaults}:{})});
+    ...(import.meta.env.DEV?{faults:this.testFaults,terrainDemo:!!this.terrainDemoPatch}:{})});
   }catch(error){this.fail('Worker launch failed: '+String(error));}
  }
  private fail(message:string){
@@ -225,7 +270,7 @@ export class StreamedScene {
   for(const kind of ['road','scenery'] as const)for(const index of indices){const c=this.chunk(index);if(c[kind]!=='missing')continue;c[kind]='working';this.busy=true;this.pending={kind:kind==='road'?'prepare':'scenery',index,since:performance.now()};this.recordRequest(index,kind,this.pending.since);try{this.worker.postMessage({type:kind==='road'?'prepare':'scenery',generation:this.generation,index,start:index*this.chunkLength,end:Math.min(this.length,(index+1)*this.chunkLength)});}catch(error){this.fail('Worker dispatch failed: '+String(error));}return;}
  }
  private receive(data:any){
-  if(data.generation!==this.generation){this.discardedResponses++;return;}if(data.type==='initialized'){this.note('init-cpu',-1,data.cpuMs);this.initialized=true;this.busy=false;this.pending=undefined;this.dispatch();return;}if(data.type==='error'){this.fail(data.message);return;}
+  if(data.generation!==this.generation){this.discardedResponses++;return;}if(data.type==='initialized'){this.note('init-cpu',-1,data.cpuMs);if(import.meta.env.DEV)this.terrainDemoWorker=data.terrainDemo===true;this.initialized=true;this.busy=false;this.pending=undefined;this.dispatch();return;}if(data.type==='error'){this.fail(data.message);return;}
   const record=this.activeRecord;if(record){record.responseAt=performance.now();record.responseMs=record.responseAt-record.requestedAt;record.workerCpuMs=data.cpuMs;}
   if(this.pending)this.note('worker-wall',data.index,performance.now()-this.pending.since);const c=this.chunks.get(data.index);if(!c||!this.desired.has(data.index)){this.discardedResponses++;if(record)record.error='Response discarded outside desired window';this.activeRecord=undefined;this.busy=false;this.pending=undefined;this.dispatch();return;}
   if(data.type!=='prepared'&&data.type!=='sceneryPrepared')throw Error('Unexpected worker result '+data.type);
@@ -274,15 +319,43 @@ export class StreamedScene {
     if(record)record.readyAt=performance.now();
    }});this.busy=false;this.pending=undefined;this.dispatch();
  }
- private roadWork(c:Chunk,meshes:RoadData[],roadside:Float32Array[]){const tasks=meshes.map(m=>()=>{
+ private roadWork(c:Chunk,meshes:RoadData[],roadside:Float32Array[]){
+  const cuts:{m:RoadData;geometry:THREE.BufferGeometry}[]=[];
+  const tasks=meshes.map(m=>()=>{
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(m.positions,3));g.setAttribute('normal',new THREE.BufferAttribute(m.normals,3));if(m.uvs.length)g.setAttribute('uv',new THREE.BufferAttribute(m.uvs,2));if(m.colors.length)g.setAttribute('color',new THREE.BufferAttribute(m.colors,3));g.setIndex(new THREE.BufferAttribute(m.indices,1));
+  if(import.meta.env.DEV&&m.terrainDemoCuts)cuts.push({m,geometry:g});
   this.registerGeometry(g,c.index);const mesh=new THREE.Mesh(g,this.roadMaterials[m.kind]);mesh.userData.chunkIndex=c.index;mesh.userData.roadKind=m.kind;mesh.userData.rayRanges=m.rayRanges;mesh.userData.artVisualOnly=m.artVisualOnly;mesh.visible=!m.artContactOnly;mesh.receiveShadow=true;mesh.castShadow=!!this.farmSample&&(m.kind==='rail'||m.kind==='support'||m.kind==='deck');
    if(mesh.castShadow)markCoastShadowCaster(mesh,'static',m.kind==='rail'?'barriers':'other');const name=m.kind==='asphalt'?'driving-surface':m.kind==='sand'?'shoulder':m.kind==='grass'?'terrain':m.kind==='support'?'road-support':(m.kind==='line'||m.kind==='center-line')?'lane-markings':'road-detail';mesh.name=name;this.attach(c,name,mesh);c.geometries.add(g);
  });for(let i=0;i<roadside.length;i++)tasks.push(()=>{const matrices=roadside[i],mesh=new THREE.InstancedMesh(this.markerGeometries[i],this.markerMaterials[i],matrices.length/16);mesh.instanceMatrix.array.set(matrices);this.uploadOwners.set(mesh.instanceMatrix.array,c.index);mesh.instanceMatrix.needsUpdate=true;mesh.castShadow=true;mesh.receiveShadow=true;
     if(this.farmSample)markCoastShadowCaster(mesh,'static','barriers');
     this.attach(c,'road-detail',mesh);});for(const annotation of this.annotations)if(Math.floor(annotation.distance/this.chunkLength)===c.index)tasks.push(()=>{for(const mesh of annotation.create()){for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material])this.annotationMaterials.add(material);this.registerGeometry(mesh.geometry,c.index);mesh.castShadow=!!this.farmSample;
     if(mesh.castShadow)markCoastShadowCaster(mesh,'static','other');
-    this.attach(c,'road-detail',mesh);c.geometries.add(mesh.geometry);}});return tasks;}
+    this.attach(c,'road-detail',mesh);c.geometries.add(mesh.geometry);}});
+  if(import.meta.env.DEV&&this.terrainDemoWorker&&this.terrainDemoPatch&&c.index===Math.floor(KENTING_TERRAIN_DEMO.start/this.chunkLength))tasks.push(()=>{
+   const patch=this.terrainDemoPatch;
+   if(!patch||!this.checkTerrainSeam||!cuts.length){this.setTerrainDemoStatus('fallback','Missing native footprint');return;}
+   const seam:number[]=[];
+   let removed=0;
+   for(const {m} of cuts)for(const cut of m.terrainDemoCuts!){
+    for(const row of cut.perimeter)seam.push(m.positions[row*3],m.positions[row*3+1],m.positions[row*3+2]);
+    removed+=(cut.lastIndex-cut.firstIndex)/3;
+   }
+   this.terrainDemoSeam=this.checkTerrainSeam(Float32Array.from(seam),patch.seamVertices);
+   if(removed!==1248||this.terrainDemoSeam>.03){
+    this.setTerrainDemoStatus('fallback','Export does not match native footprint');return;
+   }
+   // Commit the visual index edits and replacement together. The contact
+   // groups and the original ribbon positions, heights and normals are untouched.
+   for(const {m,geometry} of cuts){
+    const visible=terrainDemoVisibleIndex(m.indices,m.terrainDemoCuts!);
+    geometry.setIndex(new THREE.BufferAttribute(visible,1));
+    this.registerGeometry(geometry,c.index);
+   }
+   this.attach(c,'terrain',patch.mesh);this.registerGeometry(patch.mesh.geometry,c.index);
+   this.terrainDemoRemoved=removed;this.setTerrainDemoStatus('active');
+  });
+  return tasks;
+ }
  private sceneryWork(c:Chunk,definitions:Definition[],instances:Instance[],farmPreps?:PreparedFarmPlot[]){
   const prepared=new Map((farmPreps??[]).map(p=>[p.id,p]));
   const plots=this.farmSample&&this.farmAssets?farmPlotsInChunk(c.index*this.chunkLength,(c.index+1)*this.chunkLength):[];
@@ -435,8 +508,8 @@ export class StreamedScene {
   const chunks=[...this.chunks.values()].map(c=>{const group=c.groups.scenery,attached=group?.parent===this.groups.scenery;let instances=0,draws=0,recentSubmittedInstances=0;for(const o of group?.children??[])if(o instanceof THREE.InstancedMesh&&attached){instances+=o.count;draws++;if(now-(o.userData.lastRenderSubmission??-Infinity)<250)recentSubmittedInstances+=o.count;}return {index:c.index,start:c.index*this.chunkLength,end:Math.min(this.length,(c.index+1)*this.chunkLength),road:c.road,scenery:c.scenery,generatedInstances:this.sceneryCounts.get(c.index)?.instances??null,attachedInstances:instances,attachedDraws:draws,recentSubmittedInstances};});
   return {enabled:this.diagnostics,recordLimit:256,records,distributions,distributionScope:'retained requests; incomplete requests excluded from ready latency',roadAheadM:roadAhead,roadHeadroomSeconds:travelSpeed>0?roadAhead/travelSpeed:null,travelSpeedMps:travelSpeed,nearby:chunks.filter(c=>this.nearby.includes(c.index)),chunks,queues:{road:this.work.filter(w=>w.priority===0).length,scenery:this.work.filter(w=>w.priority===1).length,retirement:this.retiring.length,workerPending:this.pending?1:0,roadUnrequested:[...this.desired].filter(i=>!this.chunks.get(i)||this.chunks.get(i)?.road==='missing').length,sceneryUnrequested:[...this.desired].filter(i=>!this.chunks.get(i)||this.chunks.get(i)?.scenery==='missing').length},discardedResponses:this.discardedResponses,discardedTasks:this.discardedTasks,gpuCompletion:null,visiblePixelCount:null,submissionMeaning:'Instances in meshes submitted within 250ms; not GPU completion, per-instance visibility or occlusion'};
  }
- get stats(){return {retries:this.retries,errors:[...this.failures],fatal:this.errorMessage,pending:this.pending?{...this.pending,ageMs:performance.now()-this.pending.since}:null,currentRoad:this.roadReady(this.position),nextRoad:this.roadReady(this.position+this.chunkLength),nearby:this.nearby,fullyReady:this.fullyReady,sceneryCounts:[...this.sceneryCounts].map(([index,counts])=>({index,...counts})),desired:[...this.desired],chunks:[...this.chunks.values()].map(c=>({index:c.index,road:c.road,scenery:c.scenery})),queued:this.work.length,retiring:this.retiring.length,busy:this.busy,history:[...this.history]};}
- dispose(){this.essentialMaterial?.dispose();this.waffleTexture?.dispose();this.disposed=true;for(const patches of this.farms.values())for(const p of patches)p.dispose();this.farms.clear();this.farmAssets?.dispose();for(const material of new Set([...Object.values(this.roadMaterials),...this.annotationMaterials])){for(const value of Object.values(material))if(value instanceof THREE.Texture)value.dispose();material.dispose();}this.annotationMaterials.clear();this.generation++;this.worker?.terminate();for(const task of this.retiring)task.run();this.retiring=[];for(const c of this.chunks.values()){for(const group of Object.values(c.groups))group?.removeFromParent();for(const o of c.objects)if(o instanceof THREE.InstancedMesh)o.dispose();for(const g of c.geometries)g.dispose();}for(const t of this.natureTextures.values())t.dispose();this.natureTextures.clear();for(const m of this.materials.values()){
+ get stats(){return {...(import.meta.env.DEV?this.terrainDemoDiagnostics():{}),retries:this.retries,errors:[...this.failures],fatal:this.errorMessage,pending:this.pending?{...this.pending,ageMs:performance.now()-this.pending.since}:null,currentRoad:this.roadReady(this.position),nextRoad:this.roadReady(this.position+this.chunkLength),nearby:this.nearby,fullyReady:this.fullyReady,sceneryCounts:[...this.sceneryCounts].map(([index,counts])=>({index,...counts})),desired:[...this.desired],chunks:[...this.chunks.values()].map(c=>({index:c.index,road:c.road,scenery:c.scenery})),queued:this.work.length,retiring:this.retiring.length,busy:this.busy,history:[...this.history]};}
+ dispose(){if(import.meta.env.DEV){this.terrainDemoBadge?.remove();this.terrainDemoPatch?.mesh.geometry.dispose();this.terrainDemoPatch?.mesh.material.dispose();}this.essentialMaterial?.dispose();this.waffleTexture?.dispose();this.disposed=true;for(const patches of this.farms.values())for(const p of patches)p.dispose();this.farms.clear();this.farmAssets?.dispose();for(const material of new Set([...Object.values(this.roadMaterials),...this.annotationMaterials])){for(const value of Object.values(material))if(value instanceof THREE.Texture)value.dispose();material.dispose();}this.annotationMaterials.clear();this.generation++;this.worker?.terminate();for(const task of this.retiring)task.run();this.retiring=[];for(const c of this.chunks.values()){for(const group of Object.values(c.groups))group?.removeFromParent();for(const o of c.objects)if(o instanceof THREE.InstancedMesh)o.dispose();for(const g of c.geometries)g.dispose();}for(const t of this.natureTextures.values())t.dispose();this.natureTextures.clear();for(const m of this.materials.values()){
   const localAtlas=m.userData.coastCanalReflectionTexture as THREE.Texture|undefined;
   localAtlas?.dispose();
   m.dispose();
