@@ -23,3 +23,9 @@ their large 3D assets are not yet modeled. The entire ocean
 edge has low visible protective railing, so the driving boundary
 is visually credible. Rival competitiveness comes from actual
 braking, line selection and traffic, never rank-based rubber banding.
+
+## 2026-11-23 — Scene Studio as the next production workflow
+
+Michael's desired environment production workflow is a **browser-based, segment-scoped authoring tool on the actual running Three.js stage**, inspired by STREETFORM's selectable building, free 3D camera, sliders, and PBR/clay/wireframe views. Every scenic stretch should ultimately be browsable, editable, and **persistable to the actual stage source**; the designer then drives the same scene to accept it. This is not the same as improving individual geometry generators or building a separate impressive static demo.
+
+**Priority order for scenery:** prove a high-quality PC look (asphalt, rock coast, near mountains, real forest layers and cohesive sunlight) before systematically optimizing the approved look for Pixel 8 ~30 FPS. Preserve the existing authored road/physics, Ultra Water, existing accepted content and dev-first release policy. Scope, save safety, staged M0 implementation and evidence gates: [Scene Studio](SCENE_STUDIO.md); [Issue #77](https://github.com/michael-wang/OutRun/issues/77). **Recorded design direction only; editor is not implemented or accepted yet.**
