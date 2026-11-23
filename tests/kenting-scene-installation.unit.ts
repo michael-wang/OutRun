@@ -51,10 +51,9 @@ it('installs one tower, its birds, its dry and immersed activity, and both offsh
     const actual=new THREE.Vector3().setFromMatrixPosition(matrix);
     expect(actual.x).toBeCloseTo(pos.x,3);expect(actual.z).toBeCloseTo(pos.z,3);
   }
-  if(KENTING_INSTALLATION.relocated){
-    expect(rows.some(row=>row.kind==='beach2-lighthouse'&&row.station===6020)).toBe(false);
-    expect(Math.min(...rows.map(row=>row.station))).toBe(kentingStation(-375));
-  }
+  // Immediate uses the relocated build pipeline without shifting the accepted tower.
+  if(KENTING_INSTALLATION.shifted)expect(towers[0].station).not.toBe(6020);
+  if(KENTING_INSTALLATION.relocated)expect(Math.min(...rows.map(row=>row.station))).toBe(kentingStation(-375));
 });
 
 it('isolates only the unfinished harbour and woods placements in the trial layout',()=>{
@@ -88,6 +87,9 @@ it('moves every beach placement and instance while removing the vacated footprin
     const shift=moved.tower.clone().sub(original.tower);
     expect(shift.length()).toBeCloseTo(650,6);
     expect(moved.rows.length).toBe(original.rows.length);
+    expect(original.rows.find(row=>row.kind==='beach2-lighthouse')?.station).toBe(6020);
+    expect(moved.rows.find(row=>row.kind==='beach2-lighthouse')?.station).toBe(6670);
+    expect(moved.rows.some(row=>row.kind==='beach2-lighthouse'&&row.station===6020)).toBe(false);
     for(const [i,p] of original.rows.entries()){
       const at=moved.rows[i];
       expect(at.kind).toBe(p.kind);expect(at.station).toBe(p.station+650);

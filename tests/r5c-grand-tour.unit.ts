@@ -2,7 +2,7 @@ import {expect,it} from 'vitest';
 import * as THREE from 'three';
 import {COAST_STAGE,validateCoastStage} from '../src/content/coast-stage';
 import {coastWorkerRoad} from '../src/content/coast-worker-road';
-import {validateCoastDirection,coastHeroNear} from '../src/content/coast-direction';
+import {validateCoastDirection,coastHeroNear,COAST_INSTALLED_HEROES} from '../src/content/coast-direction';
 import {coastBarrierStyle,coastBarrierClearance,coastDriveBounds} from '../src/coast-layout';
 import {requiredSteering} from '../src/challenges';
 import {COAST_SCENIC_ACTS} from '../src/coast-journey-layout';
@@ -85,9 +85,10 @@ it('R5c: the map director alternates scenic, pressure and the last sprint',()=>{
  for(const hero of direction.heroSlots){
   const target=track.sample(hero.distance);
   expect(target.position.toArray().every(Number.isFinite)).toBe(true);
-  expect(coastHeroNear(hero.distance)?.id).toBe(hero.id);
   expect(hero.distance-hero.lookAheadM).toBeGreaterThanOrEqual(COAST_STAGE.onboarding.driftLessons[1].end);
  }
+ // Runtime lookup excludes deferred legacy slots and follows installed positions.
+ for(const hero of COAST_INSTALLED_HEROES)expect(coastHeroNear(hero.distance)?.id).toBe(hero.id);
  const bad=structuredClone(direction);bad.chapters.at(-1)!.end-=1;
  expect(()=>validateCoastDirection(bad,road)).toThrow();
  bad.chapters.at(-1)!.end=road.length;bad.heroSlots[2].distance=bad.heroSlots[1].distance-10;
