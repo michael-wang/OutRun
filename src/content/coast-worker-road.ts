@@ -5,7 +5,7 @@ import {sunsetRoute} from '../beach-macro';
 import {coastSunsetTrack} from './coast-sunset-track';
 import {beachMacroTrack} from './beach-macro-track';
 import {COAST_STAGE,COAST_RUNTIME_IDENTITY,type CoastStageContent} from './coast-stage';
-import {sampleAuthoredRoad} from './authored-road';
+import {authoredHalfWidth} from './authored-road';
 import {createAuthoredCoastTrack,authoredRoadCourse} from './authored-track';
 import type {ScenerySection} from '../scenery-cross-section';
 import type {JourneyLandmark} from '../scenery';
@@ -32,10 +32,10 @@ export function coastWorkerRoad(content:CoastStageContent=COAST_STAGE,bank?:Bank
  const aligned=beachMacroTrack(createAuthoredCoastTrack(road,identity,bank));
  const reference=beach2Track(sunsetRoute()?coastSunsetTrack(aligned):aligned);
  const track=beach2()?installKentingRoad(reference):reference;
- const course=authoredRoadCourse(road,identity);
+ const course=authoredRoadCourse(road,identity),halfWidth=authoredHalfWidth(road);
  return {
   stage,track,course,
-  halfAt:(distance:number)=>sampleAuthoredRoad(road,distance).halfWidth,
+  halfAt:(_distance:number)=>halfWidth,
   weightsAt:(_distance:number)=>[1,0,0],
  };
 }

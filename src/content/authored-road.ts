@@ -149,6 +149,8 @@ function prepareRoad(road:AuthoredRoad):PreparedRoad{
  return prepared;
 }
 
+export const authoredHalfWidth=(road:AuthoredRoad)=>road.lanes*LANE_WIDTH/2;
+
 /** Road sampler for authored finite stages. The existing C02/E02 curves are
  * shared mathematical capabilities, not a second road placement planner.
  * Distance is absolute; the road is clamped at its finite ends. */
@@ -168,5 +170,5 @@ export function sampleAuthoredRoad(road:AuthoredRoad,distance:number){
   height=q.value;
   grade=q.derivative/(part.end-part.start);
  }
- return {demand,height,grade,lanes:road.lanes,halfWidth:road.lanes*LANE_WIDTH/2};
+ return {demand,height,grade,lanes:road.lanes,halfWidth:authoredHalfWidth(road)};
 }

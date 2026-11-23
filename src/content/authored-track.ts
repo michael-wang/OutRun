@@ -47,12 +47,20 @@ export function createAuthoredCoastTrack(
 ){
  const course=authoredRoadCourse(road,stage);
  const coastWeights=[1,0,0] as const;
+ // The normalized station is read for height, curvature and challenge during
+ // one sample. Reuse exact scalar profile data, never mutable track vectors.
+ let lastDistance:number|undefined,lastProfile:ReturnType<typeof sampleAuthoredRoad>|undefined;
+ const profileAt=(distance:number)=>{
+  if(lastProfile&&Object.is(lastDistance,distance))return lastProfile;
+  lastDistance=distance;
+  return lastProfile=sampleAuthoredRoad(road,distance);
+ };
  const bankAt=seamlessBank(course.at(-1)!.end,
-  d=>generatedBank(curvatureForDemand(sampleAuthoredRoad(road,d).demand),coastWeights,3),
+  d=>generatedBank(curvatureForDemand(profileAt(d).demand),coastWeights,3),
   stage.bankFeatures??road.banks??[]);
  return createTrack({course,
-  heightAt:d=>sampleAuthoredRoad(road,d),
-  demandAt:d=>sampleAuthoredRoad(road,d).demand,
+  heightAt:profileAt,
+  demandAt:d=>profileAt(d).demand,
   loop:false,banking:bank===undefined,smoothBank:true,bankAt,
  });
 }

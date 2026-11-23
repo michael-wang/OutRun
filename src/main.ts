@@ -479,6 +479,11 @@ const race=new RivalRace(coastEnd,d=>{
 race.reset(state.distance);
 const rivalOvertakes=new RivalOvertakes();rivalOvertakes.reset(state.distance,race.rivals);
 const heroineOpportunities=new HeroineOpportunities(),heroineTargetPosition=new THREE.Vector3();
+const resolveHeroineRivalLateral=(_candidate:unknown,index:number)=>{
+ const rival=race.rivals[index],sample=world.sample(rival.distance);
+ heroineTargetPosition.copy(sample.position).addScaledVector(sample.right,rival.lateral);
+ return world.car.worldToLocal(heroineTargetPosition).x;
+};
 let heroineFinishPresentation=0;
 let rivalPassCount=0;
 if(traffic){traffic.rivalLeaders=()=>race.rivals;traffic.enableRaceMode();}
@@ -995,7 +1000,7 @@ function advance(dt:number,override?:InputState){
  // The selected five-lane merge moves the road frame right; moving the car
  // left by the exact delta keeps the four old lanes physically stationary.
  if(world.junction)state.lateral-=interchangeCenterOffset(world.junction,state.distance)-interchangeCenterOffset(world.junction,beforeDistance);
- if(isHighRevUpshift(previousGear,state.gear,controls.gas,controls.brake,previousRpm))pendingExhaustRpm=Math.max(pendingExhaustRpm,previousRpm);trafficImpact.update(state,dt,world.halfAt(state.distance));const coneCollisions=cones?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2)??0;if(coneCollisions){finishStats.addCollisions(coneCollisions);state.speed*=.995;sound.coneHit(state.speed);}const triangleCollisions=triangles?.update(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2)??0;if(triangleCollisions){finishStats.addCollisions(triangleCollisions);state.speed*=.995;sound.coneHit(state.speed);}
+ if(isHighRevUpshift(previousGear,state.gear,controls.gas,controls.brake,previousRpm))pendingExhaustRpm=Math.max(pendingExhaustRpm,previousRpm);trafficImpact.update(state,dt,world.halfAt(state.distance));const coneCollisions=cones?.stepContacts(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2)??0;if(coneCollisions){finishStats.addCollisions(coneCollisions);state.speed*=.995;sound.coneHit(state.speed);}const triangleCollisions=triangles?.stepContacts(elapsed+dt,state.distance,state.lateral,state.speed,{distance:beforeDistance,lateral:beforeLateral},carBounds.x/2)??0;if(triangleCollisions){finishStats.addCollisions(triangleCollisions);state.speed*=.995;sound.coneHit(state.speed);}
  const trafficStepStart=driveFpsDiagnostics.enabled?performance.now():0;
  const cleanPass=traffic?.update(elapsed+dt,state.distance,state.lateral,worldSpeed(state.speed));
  if(driveFpsDiagnostics.enabled)physicsTrafficMs+=performance.now()-trafficStepStart;
@@ -1059,11 +1064,9 @@ function advance(dt:number,override?:InputState){
  const motion=world.car.userData.motion;
  if(motion.hasHeroine){
   const blocked=!!(rivalHit||collision||impact||rockHit||stoneHit||coneCollisions||triangleCollisions||state.offRoad||race.playerFinish!==null);
-  const opportunity=heroineOpportunities.update(dt,race.rivals.map(r=>{
-   const sample=world.sample(r.distance);heroineTargetPosition.copy(sample.position).addScaledVector(sample.right,r.lateral);
-   world.car.worldToLocal(heroineTargetPosition);
-   return {id:r.entry.id,lead:r.distance-state.distance,localX:heroineTargetPosition.x,finished:r.finishTime!==null};
-  }),blocked||!!motion.heroineActive);
+  const opportunity=heroineOpportunities.update(dt,race.rivals.map(r=>({
+   id:r.entry.id,lead:r.distance-state.distance,finished:r.finishTime!==null,
+  })),blocked||!!motion.heroineActive,resolveHeroineRivalLateral);
   if(blocked)motion.cancelHeroine();else if(opportunity)motion.heroineAction(opportunity.action);
  }
  // Racing opponents are separate from random road traffic; real overtakes always earn applause.

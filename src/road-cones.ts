@@ -113,20 +113,32 @@ export class RoadCones {
   }
   return hits;
  }
+ /** Fixed-step contact only. The next camera frame rebuilds poses from throw time. */
+ stepContacts(time:number,player:number,lateral:number,speed:number,previous:{distance:number;lateral:number},halfWidth=1.55){
+  let hits=0;
+  const delta=player-previous.distance;
+  // A swept hit must stay within this conservative longitudinal interval.
+  const start=Math.max(player-161,Math.min(player,previous.distance)-3.201);
+  const end=Math.min(player+650,Math.max(player,previous.distance)+3.201);
+  for(const c of this.recipe){
+   if(c.distance<start||c.distance>end||this.throws.has(c.id)||!this.ready(c.distance))continue;
+   const x=c.lateral??c.side*(this.halfAt(c.distance)-c.inset);
+   const t=Math.max(0,Math.min(1,(c.distance-previous.distance)/(Math.abs(delta)<1e-6?1e-6:delta)));
+   const near=previous.distance+delta*t,px=previous.lateral+(lateral-previous.lateral)*t;
+   if(Math.abs(near-c.distance)<3.2&&Math.abs(px-x)<halfWidth+(this.triangles?1.15:.43)){
+    if(this.knock(c,time,speed))hits++;
+   }
+  }
+  this.lastTime=time;
+  return hits;
+ }
  update(time:number,player:number,lateral:number,speed:number,previous?:{distance:number;lateral:number},halfWidth=1.55){
-  let hits=0,count=0;this.shown=[];
+  const hits=previous?this.stepContacts(time,player,lateral,speed,previous,halfWidth):0;
+  let count=0;this.shown=[];
   for(const c of this.recipe){
    // Maximum forward displacement is 84 * .72 metres.
    if(c.distance<player-161||c.distance>player+650)continue;
    const x=c.lateral??c.side*(this.halfAt(c.distance)-c.inset);
-   if(previous&&!this.throws.has(c.id)&&this.ready(c.distance)){
-    const delta=player-previous.distance;
-    const t=Math.max(0,Math.min(1,(c.distance-previous.distance)/(Math.abs(delta)<1e-6?1e-6:delta)));
-    const near=previous.distance+delta*t,px=previous.lateral+(lateral-previous.lateral)*t;
-    if(Math.abs(near-c.distance)<3.2&&Math.abs(px-x)<halfWidth+(this.triangles?1.15:.43)){
-     if(this.knock(c,time,speed))hits++;
-    }
-   }
    const f=this.throws.get(c.id),age=f?travelAge(f,time):0;
    const d=Math.min(this.length-.001,c.distance+(f?throwTravel(f.forward,age,.72):0));
    if(d<player-100||!this.ready(d))continue;
