@@ -7,8 +7,7 @@ import {lawnWeight,meadowCover} from '../src/coast-meadow-layout';
 import {addVergeGrass} from '../src/coast-verge-grass';
 import {COAST_DISTRICTS} from '../src/coast-layout';
 import {farmPlainMask} from '../src/coast-farm-layout';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {addCoastNature,loadCoastNature,COAST_HERO_TREE_SITES} from '../src/coast-nature';
 import {roadsideTrees,TREE_DRAW_DISTANCE} from '../src/tree-models';
@@ -16,22 +15,29 @@ import {addJourneyScenery} from '../src/scenery';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {shoulderProfile} from '../src/road-profile';
 
-const track=createPilotTrack(stage),assets=JSON.parse(readFileSync('public/assets/coast-nature/models.json','utf8'));
+const runtime=coastWorkerRoad(),track=runtime.track,stage=runtime.stage,assets=JSON.parse(readFileSync('public/assets/coast-nature/models.json','utf8'));
 const woods=JSON.parse(readFileSync('public/assets/coast-nature/headland-grove.json','utf8'));
 afterAll(()=>vi.unstubAllGlobals());
 describe('sunset coast nature',()=>{
- it('returns the fixed sun to four forward-left bays with safe shallow bends',()=>{
-  for(const [a,b] of [[1100,1950],[3900,4800],[6550,7250],[10175,10350]])for(let d=a;d<b;d+=25){
-   const p=track.sample(d),angle=p.roadHeading+Math.atan2(.66,.75);
-   expect(angle).toBeGreaterThan(.3);expect(angle).toBeLessThan(.45);
+ it('keeps a fixed sunset and continuous world-space heading on the reauthored opening',()=>{
+  // The old test fixed four seaside vistas to 0.3..0.45 rad. R5a explicitly
+  // replaces the road before scenic vistas are laid out, so only geometry
+  // continuity and bounded cornering are asserted at the whitebox stage.
+  const sunAzimuth=Math.atan2(.66,.75);
+  let minimum=Infinity,maximum=-Infinity;
+  for(let d=350;d<=10350;d+=25){
+   const p=track.sample(d),angle=p.roadHeading+sunAzimuth;
+   expect(Number.isFinite(angle+p.curvature+p.right.y)).toBe(true);
+   expect(Math.abs(p.curvature)).toBeLessThan(.006); // includes authored drift corners
+   minimum=Math.min(minimum,angle);maximum=Math.max(maximum,angle);
   }
-  // The fishing point brings the sunset toward the windscreen centre,
-  // then opens the old forward-left vista again on the finish approach.
-  for(let d=8950;d<=10350;d+=20){
-   const angle=track.sample(d).roadHeading+Math.atan2(.66,.75);
-   expect(angle).toBeGreaterThan(0);expect(angle).toBeLessThan(.45);
+  // Player orientation relative to the same sun changes significantly.
+  expect(maximum-minimum).toBeGreaterThan(.3);
+  for(const edge of [1400,2320,3050,3810,3950,4710]){
+   const before=track.sample(edge-.05),after=track.sample(edge+.05);
+   expect(Math.abs(before.roadHeading-after.roadHeading)).toBeLessThan(.01);
+   expect(before.position.distanceTo(after.position)).toBeLessThan(.2);
   }
-  for(let d=350;d<10350;d+=5)expect(Math.abs(track.sample(d).curvature)).toBeLessThan(.0016);
  });
  it('leaves a broad flat coastal plain and district forecourts, with hills in the middle distance',()=>{
   for(let d=350;d<10350;d+=25)for(const x of [-60,-13,0,13,18,45,70,88])if(x<=18||(!farmPlainMask(x,d)&&!meadowCover(x,d)))expect(coastHillHeight(x,d)).toBe(0);

@@ -1,4 +1,4 @@
-import type {FeedbackAnchor} from './l2-feedback';
+import type {FeedbackAnchor} from './feedback-types';
 /** In-memory samples of simulated driving only; never persisted wholesale. */
 export class RecentDrivingHistory {
  private samples:FeedbackAnchor[]=[];

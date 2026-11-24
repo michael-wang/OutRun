@@ -1,5 +1,6 @@
 import {coastBeachX} from './coast-layout';
 import * as THREE from 'three';
+import {createShoreSegmentIndex} from './coast-shore-index';
 import {coastBeachHeight,COAST_SHORE_OFFSET} from './scenery-cross-section';
 
 type ShoreSample={position:THREE.Vector3;right:THREE.Vector3};
@@ -32,21 +33,20 @@ export function bakeCoastShore(sample:(d:number)=>ShoreSample,length:number){
   return {a,b,outA:outward[i],outB:outward[i+1],d:Math.min(i*20,length),end:Math.min((i+1)*20,length),dx,dz,inv:1/(dx*dx+dz*dz),lo,hi,
    minZ:Math.min(a.position.z+dz*lo,a.position.z+dz*hi),maxZ:Math.max(a.position.z+dz*lo,a.position.z+dz*hi)};
  });
+ // Offline BVH: query exact nearest shoreline segments in WORLD XZ.
+ // The former Z-only candidate scan became prohibitively expensive once
+ // a full 30km highway stretched over a ~20km by ~6km coastal region.
+ // The FFT/wet-sand shaders and bake resolution remain unchanged.
+ const index=createShoreSegmentIndex(segments.map(seg=>({
+  ax:seg.a.position.x,az:seg.a.position.z,
+  bx:seg.b.position.x,bz:seg.b.position.z,lo:seg.lo,hi:seg.hi,
+ })));
  const data=new Uint16Array(width*height*4);
  for(let j=0;j<height;j++){
   const z=minZ+(j+.5)*sz/height;
-  // Exact nearest-segment search: a row's Z separation is a lower bound on
-  // world distance. Stop once no remaining segment can improve the result.
-  const row=segments.map(seg=>({seg,bound:Math.max(seg.minZ-z,0,z-seg.maxZ)**2})).sort((a,b)=>a.bound-b.bound);
   for(let i=0;i<width;i++){
   const x=minX+(i+.5)*sx/width;
-  let best=Infinity,chosen=segments[0],fraction=0;
-  for(const {seg,bound} of row){
-   if(bound>best)break;
-   const t=Math.max(seg.lo,Math.min(seg.hi,((x-seg.a.position.x)*seg.dx+(z-seg.a.position.z)*seg.dz)*seg.inv));
-   const dx=x-seg.a.position.x-seg.dx*t,dz=z-seg.a.position.z-seg.dz*t,dist=dx*dx+dz*dz;
-   if(dist<best){best=dist;chosen=seg;fraction=t;}
-  }
+  const closest=index.nearest(x,z),chosen=segments[closest.index],fraction=closest.fraction;
   const {a,b,dx,dz}=chosen,t=Math.max(0,Math.min(1,fraction));
   const rx=a.right.x+(b.right.x-a.right.x)*t,rz=a.right.z+(b.right.z-a.right.z)*t,n=Math.hypot(rx,rz);
   const lateral=((x-a.position.x-dx*fraction)*rx+(z-a.position.z-dz*fraction)*rz)/n;

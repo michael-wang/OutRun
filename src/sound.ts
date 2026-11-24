@@ -1,4 +1,4 @@
-import {takeStageAudio} from './stage-audio';
+import {resumeStageAudio, takeStageAudio} from './stage-audio';
 import type {RaceStartSignal} from './race-start-signals';
 import {PassBy,PASS_AUDIO,type PassActor} from './pass-by';
 import {RivalAudio,type RivalAudioState,type RivalAudioListener} from './rival-audio';
@@ -42,9 +42,13 @@ export class EngineSound {
   private windLevel = 0;
   private active = false;
   readonly skidFeedback=new SkidFeedback();
-  async unlock(waitForPassenger=false) {
+  constructor(private readonly onContextStateChange: () => void = () => {}) {}
+  get contextState() { return this.context?.state ?? 'locked'; }
+
+  async unlock(waitForPassenger=false, activated?: boolean) {
     if (!this.context) {
       const context = this.context = takeStageAudio() ?? new AudioContext();
+      context.addEventListener('statechange', this.onContextStateChange);
       this.master = context.createGain();
       this.master.gain.value = this.muted ? 0 : 0.35;
       this.analyser = context.createAnalyser();
@@ -90,7 +94,7 @@ export class EngineSound {
         .catch(()=>{}).finally(()=>this.loadingClips.delete(cue));
       this.loadingClips.set(cue,loaded);
     }
-    await context.resume();
+    await resumeStageAudio(context, activated);
     if(waitForPassenger)await Promise.all(this.loadingClips.values());
   }
   /** Familiar 3 low countdown ticks and a higher, sustained GO chime.
@@ -224,6 +228,7 @@ export class EngineSound {
     this.pause();
     this.rivalAudio?.dispose();this.rivalAudio=undefined;
     const context=this.context ?? takeStageAudio();
+    context?.removeEventListener('statechange', this.onContextStateChange);
     if(context && context.state!=='closed')void context.close().catch(()=>{});
   }
   inspect() {

@@ -5,7 +5,7 @@ import {COAST_RURAL_SHOWCASE,coastRuralCreekCut} from './coast-rural-layout';
 import {COAST_DRAIN_X} from './coast-roadside-layout';
 
 // Uncultivated headlands between the farmyards, the town and the finish.
-const rollingHeadlands=[[1764,3408],[6995,7137],[8182,8405],[9700,10012]] as const;
+const rollingHeadlands=[[1764,3408],[6995,7137],[8182,8405],[10550,10862]] as const;
 
 const cropland=FARM_ZONES.flatMap(z=>[
   {start:z.rice[0],end:z.rice[1],right:z.right+3},

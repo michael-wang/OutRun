@@ -1,0 +1,108 @@
+# P1-0 — Riviera 62 主角車製作流程驗證 Brief
+
+**日期：2026-11-16（台灣時間）**  
+**任務類型：DESIGN / PIPELINE BRIEF（文件與下游契約；不是建模、製作、發布任務）**  
+**現行狀態（2026-11-17）：P1-0/P1-1 PASS；Hunyuan Shape 技術 PASS；Michael 實際試駕 Option B，Julia 給 G1/G2 dev-only 原型 PASS，累積 [PR #64](https://github.com/michael-wang/OutRun/pull/64) 已合併至 dev（`c0e63e8`）。[最新 P1-G3 Issue #66](https://github.com/michael-wang/OutRun/issues/66) 已授權 Judy 直接在 dev 推進兩大目標：依 [私人設計／遊戲對照頁](https://chatgpt.com/space/page_abf24af3c7808191b6bce5b8b2842bf4) 修正車尾牌面／LED／雙排氣與輪拱一體曲面；右蘑菇頭水平環視，**L3 按下回正常追車、R3 保留截圖**。G3 未宣稱已開工或 PASS；正式 Pixel 8、main 發布及 Hunyuan 私人模型公開仍未授權。**  
+**負責：Michael＝體驗與美術最終裁決；Julia＝美術／技術路線、驗收；Judy＝後續監督 Codex 派工及資源；Local Codex＝已授權的有界實作／測試。**  
+**權威：** [Production Pipeline Tracker](PRODUCTION_PIPELINE_TRACKER.md) → 本 Brief → [Art Bible](COAST_ART_BIBLE.md)／[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) → [P0 Task Contracts](TASK_CONTRACTS.md)。如新要求與歷史 R7 人物施工文件衝突，以目前 Michael 的決策為準。
+
+> **目標不是「讓 Codex 再造出一輛看起來像車的東西」，而是驗證從美術設計／可編輯 Blender 母檔 → 結構化模型／材質 → GLB → Three.js 既有玩法 → 真機效能／版本管理的製作流程。**
+>
+> 《極速漫遊》當前重心：**賽車第一、風景第二、額外駕駛玩法以後再做**。女主角的現有可玩版本及 R6d 受風金色短髮凍結；不要以改造主角車為由重啟角色建模或修改原本核准的駕駛體驗。
+
+## A. 目前驗證到哪裡？不要重做既有能力
+
+本 Brief 的技術盤點依據 2026-11-16 的 GitHub `dev` 原始程式碼，並非聲稱已實機驗收新 DCC 流程：
+
+| 現有能力／接口 | 位置／證據 | P1 須維持 |
+| --- | --- | --- |
+| Riviera 62 主車殼、敞篷座艙、輪拱與尾部 | `src/car.ts`, `src/hero-classic-geometry.ts`, `src/hero-body.ts`；目前主要為 Three.js / TS 幾何 | 既有車型辨識度與敞篷輪廓、車寬／軸距／相機座標，不得偷換成別的車 |
+| 左駕、右手握住方向盤、右手隨盤轉；左手靠門 | `src/hero-hands.ts`、`src/occupants.ts`、`tests/hero-car.unit.ts`；已測正／反轉向 | **保留而且讓新模型接口支援**；不是要求重建男主角或把雙手都硬改到方向盤 |
+| 四個可獨立操控的輪胎 Pivot，前輪轉向與輪胎滾動 | `src/wheels.ts`、`src/car.ts`（`wheelPivots`, `motion.advance`） | 模型輪心、轉軸、世界座標需可延續；不可把輪胎烘成無法轉動的車身 |
+| 既有油漆顏色與煞車尾燈 | `src/car-appearance.ts`：紅／白／湖水綠；`src/car.ts`：`brakeLights`，黃昏時低亮度、煞車時增亮 | 保留換色、獨立煞車語意；**目前黃昏尾燈微亮不是正式「開大燈＋尾燈常亮」狀態機的驗證** |
+| 現有玩家、女伴、相機、R6d 頭髮、轉向、碰撞及競速 | `src/main.ts`／相關測試與目前可玩 `dev` | **零回歸**，不改玩法、車輛物理、鏡頭基準或角色資產 |
+| Blender → GLB → 既有玩家車型的可重複製作流程 | 尚未有被驗證的完整可編輯 Riviera 62 DCC 母檔 | **P1 的主要未知，不得宣稱 L2／L3** |
+
+座標重要現況：`src/car.ts` 的車頭沿 **+Z**，駕駛在車體 **+X**、乘客 **-X**，輪胎中心、乘坐點、方向盤與遊戲相機已有基準。任何 GLB 匯出需遵守或**明確用單一、可測的轉換適配**；不能在各元件內分散硬編碼補償。
+
+> **2026-11-16 P1-2 新增釐清：** 機械模型應維持獨立 wheelMount、車身 sprungBody 與車燈材質。駕駛 Yaw 的瞬時轉彎中心不等於前輪固定 pivot，也不能簡單視為車身中心；真正轉向／甩尾應分離軌跡、方向及橫向側滑，但本輪不改現有物理。只需真實可編輯 .blend → 可重現 GLB 匯出 → 離線 Three.js 載入；完整遊戲重播與複雜異地備份是後續關卡。
+
+## B. 本次 Michael 明確新增的三項需求
+
+### B1. 方向盤和男主角的轉向操作 — **P1 第一版必須維持**
+
+- 男主角手**真正握住方向盤**，玩家左彎／右彎時能看到方向盤左右轉動，握住的手與手腕隨之移動、手臂維持自然可接受的連續性；回正時恢復。
+- **當前已通過程式測試的方案：右手掌握盤、左手靠車門。先保留此核准設計。** 「雙手握盤」不是本次新增強制要求；日後要改手勢是獨立的角色／動作設計決策。
+- 車模必須提供穩定的 `steering-wheel` Pivot / 掛載點、駕駛座坐標與輪心；不能把方向盤、手臂或車輪烘成無法獨立變換的車殼。P1-1 先訂命名與局部座標契約，P1-3 才驗遊戲內完整動態。
+- 正向／反向／回正的 GIF／影片或真實遊戲截圖 + 最小程式測試，需檢查手沒有離盤、轉向方向沒有反轉、方向盤不穿過身體；若既有功能本就符合，**驗證並重用，不重做**。
+
+### B2. 黃昏／暗光時開啟大燈及後方常亮尾燈 — **P1 第一版必須支援**
+
+- 需要明確區分至少四種**獨立語意**：`headlightsEnabled`（前大燈）、`tailRunningEnabled`（後方位置／常亮尾燈）、`braking`（煞車增亮）、`indicatorLeft/Right`（未來或既有方向燈，應預留獨立通道；目前沒有從此 Brief 確認完成的方向燈 API）。
+- 前大燈開啟時，**前方發光辨識清楚**，在偏暗場景能看出對前方道路／鄰近物件的有效照明或經過美術審核的低成本替代效果。不得只因增加一個高耗能光源便無視 Pixel 8 幀時間。
+- 前大燈啟用時，**左右後方位置尾燈應持續發光**（無論是否煞車），煞車可在常亮基礎上進一步明顯增亮。方向燈不得被常亮狀態蓋過；四者材料／控制必須可獨立更新。日間不開大燈的預設行為與自動啟用條件在 P1-1 設計明確，不在此稿假定固定環境亮度數值。
+- 暗光判斷應來自**遊戲／Stage 的光照或明確設定**（未來可有人工開關），不在 GLB 裡烘入特定時間／黃昏色。預留乾淨的燈具 Pivot/鏡面／發光材質分區及必要的光源掛載點；保留目前 `brakeLights` 行為直到新版通過驗收。
+- 建議用「共享控制器＋可切換材質發光＋受控的局部光源／假光暈」評估**畫面與手機成本的折衷**，不預先規定一定使用 SpotLight、陰影光源或後處理。避免每幀建立新 Material、Shadow Pass、獨立燈光節點。
+
+### B3. 未來可見的左右懸吊壓縮與車體側傾 — **P1 第一版不實作動態，但不可堵死**
+
+- 後續希望左右彎時車身產生可感覺到的側傾，左右側輪懸吊有不同程度的壓縮／回彈（街機手感，不要求複雜模擬物理）。
+- **本次不要求寫懸吊模擬器、避震器骨架或完整 Wheel Physics。** 但車體與四輪必須保留獨立可動層級、合理輪拱間隙及車身側傾中心，使日後能以簡單視覺動畫／每輪 vertical offset 實作。
+- 在 P1-1／P1-2 的 GLB hierarchy 規劃中，提出 `vehicleRoot`（沿路位置／方向）、`sprungBody`（視覺車體側傾）、四個 `wheelMount`（轉向／滾動／未來上下行程）等**概念分層**；只要求可行且可編輯，不強迫現在重構現有程式或將角色全部塞入同一層。
+- P1 的結構檢查需證明「若未來新增 body roll、左右不同輪高時，哪些節點能單獨變換」；**若單一 GLB 把車殼＋四輪烘成一體，即使畫面漂亮也判未通過管線。**
+
+## C. 美術北極星、不能動的內容與待研究問題
+
+- 視覺方向：以 [Style B 核准概念板](../art/reference/coast/03_STYLE_B_coastal_highway.png)、[Art Bible](COAST_ART_BIBLE.md)、[Hero Vehicle Art](COAST_HERO_VEHICLE_ART.md) 為準：**stylized semi-realistic、乾淨有魅力的經典敞篷跑車**，不是模型展示用的微細節或玩具化 NPC 汽車。
+- 對象是**既有原創 Riviera 62**：維持身形、敞篷、左駕、司機／乘客座位、FZR-123 車牌、現有漆色（紅色為代表樣品；白／湖水綠可重用換色）、輪子比例及現有駕駛／鏡頭行為；除非有對照證據顯示應修改，否則不憑空調整玩家熟悉的比例。
+- 主要美術驗收角度：**遊戲正常 8m chase camera** 與真實黃昏海岸光照（靜止／移動、後 3/4）；補充中性光源的前／後／側／45° Turntable、車頭燈與尾燈狀態、車內方向盤操控特寫；不能用只在棚拍漂亮取代正常遊玩中的畫面。
+- 不提前鎖死的事項：建模工具和技法的組合、燈光效率方案、車身側傾的角度、貼圖解析度、面數／draw-call 絕對預算，以及暗光啟用閾值。應先測量既有車的 PC/Pixel 8 基準，再由 Julia 訂出可驗收的差異門檻；**不可憑空編造「一定 60 FPS」或面數上限**。
+- P1-1 工具研究優先比較「Blender hard-surface 手工＋可重複匯出」與「Blender Geometry Nodes／腳本輔助明確可編輯母檔」；AI 影像轉 3D 只能作候選草模／形狀研究，除非證明拓樸、輪子、材質、授權、可修改與重複匯出。**TypeScript 幾何可做合理的路面／機制／簡單物件，不得以另一份手刻 TS 車殼冒充 DCC 母檔工作流。**
+
+## D. P1 階段規劃與每一道硬停止關卡
+
+| 階段 | 性質 | 交付範圍／決策 | 不達標如何處理 |
+| --- | --- | --- | --- |
+| **P1-0：本 Brief** | DESIGN | 現況與下游需求、第一版／延後需求、視覺＋技術驗收、資產保存規則、Judy 推理強度治理 | **只產出文件；未經 Michael/Julia Review，不開工建模** |
+| **P1-1：Visual + Tool + Interface Spike** | RESEARCH / SPIKE（另行授權） | 座標／Hierarchy 草案、2–3 方案的工具與授權取捨、首個切片提案、neutral+dusk 對照與基準量測方案 | 先確認哪個方案能支撐 B1/B2/B3；遇高返工風險先停 |
+| **P1-2：First DCC vertical slice** | SPIKE（另行授權） | **建議候選：單側前車角的小切片**（輪拱＋獨立前輪 pivot＋頭燈座／發光材料＋局部車漆），至少一份可編輯 Blender 母檔、一份 GLB、可重現匯出命令、尺寸／權限記錄與兩次修改／重匯證據；片段選擇須先經 P1-1 確認，不是現在就大量建模 | 若只有漂亮靜態截圖、無獨立輪組或沒有母檔，**不得稱為 Pipeline PASS** |
+| **P1-3：Non-destructive in-game adapter** | 有界整合（另行授權） | 用獨立 dev/PR 或檢查模式將切片掛載進既有 Riviera 62，保留舊車一鍵回退；驗 steering contact、head/tail/brake state、光影及前輪動畫；不替換所有對手車或改玩法 | 若偏移靠隨處硬刻座標修補、破壞原角色／操控、或效能回退，停止 |
+| **P1-4：Acceptance / repeatability** | TEST / ART REVIEW | Windows + Pixel 8 基準對照，實際 8m 追車鏡頭的遠中近／左轉右轉／夜間燈光，原始母檔重新開啟及小修改可重匯，角色與路況無回歸；完整 Manifest 與 license | Julia 技術＋美術 Review；Michael 實玩選擇。最高只升到有證據的 L2/L3，不因單次成功自封 L3 |
+
+**授權歷程（2026-11-16）：P1-0 Michael PASS，P1-1 Julia RESEARCH PASS 後，Michael 現在另行批准 [P1-2 有界 DCC SPIKE Issue #59](https://github.com/michael-wang/OutRun/issues/59)。** Judy 依 P0-4 建立真實 SPIKE 契約，監督 Local Codex 完成獨立可編輯 Blender 模型片段、匯出 GLB 與離線 Three.js 載入；提交 Draft PR 停下等 Julia／Michael 驗收。**未授權**正式整車量產、P1-3 遊戲內整合、P1-4 真機驗收、主角人物更新及 main 發布。
+
+## E. 資產母檔、驗證證據與效能紀錄
+
+**Source of truth 不能只剩 runtime GLB。**
+
+- P1-1 指定正式模型母檔的版本管理：優先受控的 Git LFS（如需要）或明確可還原的獨立版本化資產儲存。**P1-2 進入技術驗收時，必須能讀取、編輯、保存、重新匯出並追溯到精確 source SHA / export SHA。** 本機 `C:\...\*.blend` 的口頭路徑不是已備份證據；不得把未驗證來源標記為 L3。
+- 正式創作成果：批准的設計圖、Blender 母檔、匯出 GLB、需要的貼圖及來源／授權記錄；暫時性證據：Turntable、遊戲截圖影片、測試 Log，應限時留存並在驗收後整理，不做大批永久進 Repo（P0-3 遺留治理工作須誠實追蹤）。
+- 參考 P0-2 [Asset Manifest Pilot](ASSET_MANIFEST_PILOT.md)、[Storage / Retention](ASSET_STORAGE_AND_RETENTION.md)；不要把檢查過的 Hash 誤當成已驗證美術、來源合法或備份完成。
+- 性能核對紀錄至少要列：相同場景 seed、視角和速度、`draw calls`、三角面／材質／貼圖數、GPU/CPU 幀時間或可測 FPS、冷啟動與模型載入大小；真正的 Pixel 8 數據需由實機提供。手機新光源／陰影禁止不經量測即長駐。
+- 正常遊戲版本、現有車體資產與已核准角色必須可回退。現在不動 `main`，不部署、不重設賽車物理、不修改 `src/`、`public/assets/` 或 `content/`。
+
+## F. Judy → Codex 推理強度（reasoning effort）與算力守門
+
+**原則：根據任務難度、未知數、失敗代價選擇推理強度，記錄選擇原因，不以「最高強度保證最好」作預設。** 每個 Codex 子任務的委派說明都需記錄「實際可用模型／推理強度、選擇理由、預計範圍、修正輪次與退出條件」；實際選項以當前 Local Codex UI / CLI 支援為準，不要假稱設定成功。
+
+| 任務類型／範例 | 建議初始 Effort | 原因／升級條件 |
+| --- | --- | --- |
+| 讀檔盤點、比對設定、檔名／SHA／授權紀錄、簡單測試執行、文件排版 | **Low**（不支援則可用的最低相近值） | 範圍明確，靠驗證命令而非加深推理 |
+| 寫 P1-1 Spike 契約、協調 GLB 接口、一般 Blender 匯出腳本、解讀正常測試 | **Medium（預設）** | 大多數 coding／設計決策可在品質與用量間平衡 |
+| 第一次建立硬表面模型流程、輪組/車身 hierarchy 選型、複雜光學/效能取捨、跨工具根因分析 | **High（有理由時）** | 高返工風險；Judy 說明為何 Medium 不足 |
+| **Extra High / xhigh** 等最高等級 | **非常例外** | 必須先證明在本題能降低返工或重大風險，並取得 Julia／Michael 對額外消耗的明確核准；不可所有任務直接開最高 |
+
+Judy 應在每個 checkpoint **獨立**讀 diff、驗證實際結果，而非 Codex 自報成功；兩次同類修補還不能解決根因，進行方法檢討而不是無限加大 Effort。不要讓模型為了「多想」而擴張目標，先改善任務切分／參考／工具選擇。無法取得使用額度的精確消耗時，直說 unknown，不宣稱省下多少 token。
+
+## G. P1-0 文件驗收／交接
+
+本輪只需確認文件達到：
+
+- [ ] 既有主車與角色/方向盤接口有真實盤點（不是承諾重做）。
+- [ ] B1 左右轉向／握盤、B2 暗光前燈＋常亮尾燈、B3 延後但保留的左右懸吊行程，各有獨立檢查條件。
+- [ ] 車體／車輪／方向盤可變換的 GLB Hierarchy、座標慣例、Stage 燈光語意、可回退整合已列入後續需求。
+- [ ] 第一個切片、原始母檔、Hash／授權、裝置效能／美術驗收、失敗停止條件列入；沒有偷偷開始製作。
+- [ ] Judy 的 Codex reasoning effort 策略有預設值、升級理由及最高強度限制，且遵循 P0-4 任務契約。
+- [x] **Michael 已驗收 P1-0 PASS；P1-1 研究已完成且由 Julia 驗收，詳見 [PR #58](https://github.com/michael-wang/OutRun/pull/58)／[Issue #57](https://github.com/michael-wang/OutRun/issues/57)**。不將研究文件、結案或建立 Task Contract 當成 L2／L3 生產能力的證據；P1-2 必須另外授權。
+
+**P1-0 定義完成不等於 Riviera 62 製作流程通過。** 後續必須經真正的 DCC→GLB→遊戲內動態→Pixel 8 實驗證明。

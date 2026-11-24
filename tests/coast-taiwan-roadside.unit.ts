@@ -1,7 +1,6 @@
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {shoulderProfile} from '../src/road-profile';
 import {addJourneyScenery} from '../src/scenery';
 import {coastBeachHeight} from '../src/scenery-cross-section';
@@ -13,7 +12,7 @@ import {rotatedHouseExtent} from '../src/coast-house-facing';
 import {COAST_TOWN_SIDE_STREETS} from '../src/coast-town-access';
 import {buildCoastTownStreets} from '../src/coast-town-streets';
 
-const track=createPilotTrack(COAST_ULTRA_STAGE),sample=track.sample;
+const runtime=coastWorkerRoad(),track=runtime.track,sample=track.sample;
 const ground=(d:number,x:number)=>{
  const p=sample(d);
  return coastBeachHeight(x,p.position.y,p.right.y,d);
@@ -86,11 +85,11 @@ it('batches three gently sagging cables into a bounded one-draw chunk source',()
  expect(buildCoastUtilityWires(sample,2250,2300)).not.toBeNull();
 });
 it('materializes local roadside facilities with existing instancing, never per-grate meshes',()=>{
- const stage=COAST_ULTRA_STAGE;
+ const stage=runtime.stage;
  for(const [start,end] of [[0,1000],[1000,2000],[4000,5000]]){
   const scene=new THREE.Scene();
   const result=addJourneyScenery(scene,sample,track.length,stage.sceneryAct,stage.seed,
-   d=>pilotSample(stage,d).halfWidth,d=>pilotWeights(stage,d),{
+   runtime.halfAt,runtime.weightsAt,{
     start,end,openRoad:true,coastUltra:true,
     shoulders:d=>shoulderProfile(d,804),scenerySections:stage.scenerySections,
    });
@@ -146,9 +145,12 @@ it('town side roads cross the covered gutter flush and utility poles avoid their
   const g=buildCoastTownStreets(sample,chunk,chunk+1000)!;
   try{
    const attr=g.getAttribute('position'),centre=sample(site.d);
+   // Clearance is measured in the horizontal road plane. Projecting a
+   // full 3D vertex on the banked right vector overestimates the setback.
+   const horizontalRight=centre.right.clone().setY(0).normalize();
    const offsets=Array.from({length:attr.count},(_,i)=>{
     const p=new THREE.Vector3().fromBufferAttribute(attr,i);
-    return p.sub(centre.position).dot(centre.right);
+    return p.sub(centre.position).setY(0).dot(horizontalRight);
    });
    expect(offsets.some(x=>x<COAST_DRAIN_X.leftLip-.2)).toBe(true);
    expect(offsets.some(x=>x>COAST_DRAIN_X.rightLip+.2)).toBe(true);

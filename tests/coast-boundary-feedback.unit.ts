@@ -10,7 +10,7 @@ import {ImpactSparks} from '../src/impact-sparks';
 
 it('distinguishes actual metal, concrete and invisible coast boundaries on both sides',()=>{
  expect(coastContactSurface(500,-1)).toBe('metal');
- expect(coastContactSurface(850,-1)).toBe('soft');
+ expect(coastContactSurface(850,-1)).toBe('metal');
  expect(coastContactSurface(coastBarrierStoneAt(2508,-1).d,-1)).toBe('concrete');
  expect(coastContactSurface(coastBarrierStoneAt(852,1).d,1)).toBe('concrete');
  // Between visible bollards, the fallback is not made of fake stone.
@@ -22,7 +22,7 @@ it('distinguishes actual metal, concrete and invisible coast boundaries on both 
  expect(collision).toBeGreaterThan(0);
  expect(g.contactSide).toBe(-1);
  expect(g.contactDistance).toBeGreaterThan(8715);
- expect(coastContactSurface(g.contactDistance,g.contactSide)).toBe('soft');
+ expect(coastContactSurface(g.contactDistance,g.contactSide)).toBe('metal');
  g.reset();expect(g.contactDistance).toBe(0);
 });
 it('makes a visible concrete stone the first physical contact before fallback safety wall',()=>{

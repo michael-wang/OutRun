@@ -1,0 +1,95 @@
+{
+  "source": "C:\\astra-dev\\outrun\\art-prototype\\output\\r7h-heroine-fullbody.blend",
+  "frozenFiles": {
+    "art-prototype\\output\\r7h-heroine-fullbody.blend": "fc26a84cec7e83cf6f30c19348700b692978ebf5d82435b86dfdf31d1534830b",
+    "art-prototype\\output\\r7h-heroine-review.blend": "820a50120eafd9591f47f32ef87525721862b7d431cc5084873a69f16d06659a",
+    "public\\assets\\characters\\coast-blonde-bob.glb": "1b54b9823e299519295923d4ca7fe7ae0968acaf7d101f826e0dd250ffdd1070",
+    "public\\assets\\characters\\coast-blonde-r6.glb": "f20fefe1a0deba703e7f298ff50e07e277950ef06c7c194a8d8730cd0512555b",
+    "public\\assets\\characters\\coast-blonde-r6b-upper.glb": "eb5cf1b2082327ca6052474019fae7549070774e1f42632948410a4915085a20",
+    "public\\assets\\characters\\coast-blonde-r6b.glb": "188b5914f3247ca283179655b90bc6949fae530b9a7e9ba4889c8703b15fd8c9",
+    "public\\assets\\characters\\coast-blonde-r6d.glb": "8273fe14b4f1c83a4c8b574bacd7d834a6142380013e6e8ebb6f7b447399f519",
+    "public\\assets\\characters\\coast-blonde-r6f.glb": "f117ff7bcd24594af0b7676194b6694e1c52428e7df7805e61b6d96e331d896e",
+    "public\\assets\\characters\\coast-blonde-r6g.glb": "b47904ef20a1b08774889f7660a3dbc74949483dfa8da9fe2a592f8ac1aa33fd",
+    "public\\assets\\characters\\coast-heroine-r7a.glb": "09ecb996f889fcefd1e264b7dc112895d051449006975e1da741ab0a730da3ad",
+    "public\\assets\\characters\\coast-heroine-r7h-full.glb": "8b17cc773798f2f017a810061745e30639f314b38f9d0bedccb1aef2220e6e95",
+    "public\\assets\\characters\\coast-heroine-r7h-race.glb": "9314e2694e098b57e8f8731382f36b1fb7bab3c7a879b7a7b6da354b22af78d0"
+  },
+  "headGeometryIdentical": true,
+  "hairGeometryIdentical": true,
+  "originalVertices": 19639,
+  "studyVertices": 94129,
+  "bodyTriangles": 183887,
+  "sourceJoints": {
+    "root": [
+      0.0,
+      0.800000011920929,
+      -0.47999998927116394
+    ],
+    "head": [
+      0.0,
+      1.2999999523162842,
+      -0.46000000834465027
+    ],
+    "upper-1": [
+      -0.1993330717086792,
+      1.1894665956497192,
+      -0.47999998927116394
+    ],
+    "fore-1": [
+      -0.46000000834465027,
+      1.190000057220459,
+      -0.47999998927116394
+    ],
+    "hand-1": [
+      -0.699999988079071,
+      1.190000057220459,
+      -0.47999998927116394
+    ],
+    "thigh-1": [
+      -0.10497938841581345,
+      0.8349721431732178,
+      -0.47999998927116394
+    ],
+    "shin-1": [
+      -0.10599999874830246,
+      0.47000011801719666,
+      -0.4699999988079071
+    ],
+    "foot-1": [
+      -0.10899999737739563,
+      0.10000000149011612,
+      -0.4699999988079071
+    ],
+    "upper1": [
+      0.1993330717086792,
+      1.1894665956497192,
+      -0.47999998927116394
+    ],
+    "fore1": [
+      0.46000000834465027,
+      1.190000057220459,
+      -0.47999998927116394
+    ],
+    "hand1": [
+      0.699999988079071,
+      1.190000057220459,
+      -0.47999998927116394
+    ],
+    "thigh1": [
+      0.10497938841581345,
+      0.8349721431732178,
+      -0.47999998927116394
+    ],
+    "shin1": [
+      0.10599999874830246,
+      0.47000011801719666,
+      -0.4699999988079071
+    ],
+    "foot1": [
+      0.10899999737739563,
+      0.10000000149011612,
+      -0.4699999988079071
+    ]
+  },
+  "runtimeExported": false
+}

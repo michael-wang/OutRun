@@ -1,0 +1,449 @@
+{
+  "variant": "new",
+  "view": "chase",
+  "errors": [],
+  "requests": [
+    "http://127.0.0.1:5194/assets/characters/coast-blonde-bob.glb"
+  ],
+  "segments": [
+    {
+      "label": "rest",
+      "seconds": 2,
+      "maxDeformationPixels": 0,
+      "carTriangles": 13871,
+      "carDraws": 59,
+      "memory": {
+        "geometries": 143,
+        "textures": 59
+      },
+      "render": {
+        "frame": 8311,
+        "calls": 120,
+        "triangles": 579115,
+        "points": 668,
+        "lines": 0
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "speedRangeKmh": [
+        0,
+        0
+      ],
+      "samples": [
+        {
+          "speed": 0,
+          "distance": 14000,
+          "lateral": 0,
+          "wind": 0,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 0,
+          "distance": 14000,
+          "lateral": 0,
+          "wind": 0,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 0,
+          "distance": 14000,
+          "lateral": 0,
+          "wind": 0,
+          "sway": 0,
+          "tipSway": 0
+        }
+      ]
+    },
+    {
+      "label": "120 km/h",
+      "seconds": 5,
+      "maxDeformationPixels": 3.21612561146478,
+      "carTriangles": 13871,
+      "carDraws": 59,
+      "memory": {
+        "geometries": 143,
+        "textures": 59
+      },
+      "render": {
+        "frame": 15483,
+        "calls": 123,
+        "triangles": 509301,
+        "points": 668,
+        "lines": 0
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "speedRangeKmh": [
+        119.77154400000003,
+        120.36642477017007
+      ],
+      "samples": [
+        {
+          "speed": 119.77154400000003,
+          "distance": 14000.68049155174,
+          "lateral": 0,
+          "wind": 0.04733974742086402,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 120.00012187239997,
+          "distance": 14041.551830039754,
+          "lateral": 0,
+          "wind": 0.47888530177485944,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 120.2233931069553,
+          "distance": 14082.425988630552,
+          "lateral": 0,
+          "wind": 0.47968780595799915,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 119.85062216462707,
+          "distance": 14123.293654276611,
+          "lateral": 0,
+          "wind": 0.4796065380831623,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 120.07943663942852,
+          "distance": 14164.177494814232,
+          "lateral": 0,
+          "wind": 0.47978064795100683,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 120.31445516390806,
+          "distance": 14205.053123650048,
+          "lateral": 0,
+          "wind": 0.47978170895167155,
+          "sway": 0,
+          "tipSway": 0
+        }
+      ]
+    },
+    {
+      "label": "294 km/h",
+      "seconds": 4,
+      "maxDeformationPixels": 5.9651362127381145,
+      "carTriangles": 13871,
+      "carDraws": 59,
+      "memory": {
+        "geometries": 143,
+        "textures": 59
+      },
+      "render": {
+        "frame": 21335,
+        "calls": 111,
+        "triangles": 478263,
+        "points": 664,
+        "lines": 0
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "speedRangeKmh": [
+        293.772912,
+        294.0220777770953
+      ],
+      "samples": [
+        {
+          "speed": 293.772912,
+          "distance": 13912.032321974666,
+          "lateral": 0,
+          "wind": 0.09854936808880436,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 293.96239602970803,
+          "distance": 14034.500725696184,
+          "lateral": 0,
+          "wind": 0.9982608781898963,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 293.89962814770496,
+          "distance": 14156.957412422928,
+          "lateral": 0,
+          "wind": 0.9999966427051082,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 293.839120899838,
+          "distance": 14279.416247556615,
+          "lateral": 0,
+          "wind": 0.9999999935188959,
+          "sway": 0,
+          "tipSway": 0
+        },
+        {
+          "speed": 293.7818687698515,
+          "distance": 14401.87557425165,
+          "lateral": 0,
+          "wind": 0.9999999999874886,
+          "sway": 0,
+          "tipSway": 0
+        }
+      ]
+    },
+    {
+      "label": "left turn",
+      "seconds": 3,
+      "maxDeformationPixels": 11.457957663941556,
+      "carTriangles": 13871,
+      "carDraws": 59,
+      "memory": {
+        "geometries": 273,
+        "textures": 63
+      },
+      "render": {
+        "frame": 25938,
+        "calls": 636,
+        "triangles": 941369,
+        "points": 714,
+        "lines": 0
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "speedRangeKmh": [
+        293.77146310424956,
+        294.0276622226097
+      ],
+      "samples": [
+        {
+          "speed": 293.77146310424956,
+          "distance": 3307.0445589054193,
+          "lateral": -0.0000012402280892293714,
+          "wind": 0.09911259870584876,
+          "sway": -0.000002090929694422648,
+          "tipSway": -1.5949856317651528e-7
+        },
+        {
+          "speed": 293.8173596262498,
+          "distance": 3437.6677413754282,
+          "lateral": 0.2113129141025556,
+          "wind": 0.9988537390711494,
+          "sway": 0.9888828082022405,
+          "tipSway": 0.9968896485240738
+        },
+        {
+          "speed": 294.01109114080646,
+          "distance": 3560.138947263282,
+          "lateral": 1.8272332161459788,
+          "wind": 0.9999977885784193,
+          "sway": 0.9999417379889493,
+          "tipSway": 0.999927701257811
+        },
+        {
+          "speed": 293.77780450231916,
+          "distance": 3670.3520395136625,
+          "lateral": 2.0744157964022443,
+          "wind": 0.9999999920243684,
+          "sway": -0.6977448567713268,
+          "tipSway": -0.18362093437065213
+        }
+      ]
+    },
+    {
+      "label": "right turn",
+      "seconds": 3,
+      "maxDeformationPixels": 9.476083367048577,
+      "carTriangles": 13871,
+      "carDraws": 59,
+      "memory": {
+        "geometries": 313,
+        "textures": 65
+      },
+      "render": {
+        "frame": 30528,
+        "calls": 667,
+        "triangles": 1239873,
+        "points": 714,
+        "lines": 0
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "speedRangeKmh": [
+        293.77144058183774,
+        293.9939609048932
+      ],
+      "samples": [
+        {
+          "speed": 293.77144058183774,
+          "distance": 4002.0445587880267,
+          "lateral": 0.0000014021712544437189,
+          "wind": 0.09911259870584876,
+          "sway": 0.0000019924541721453637,
+          "tipSway": 1.5198661851145338e-7
+        },
+        {
+          "speed": 293.9625162305119,
+          "distance": 4124.500036648455,
+          "lateral": 0.45025242576541474,
+          "wind": 0.9982608781898964,
+          "sway": -0.988401759746002,
+          "tipSway": -0.9988429168409588
+        },
+        {
+          "speed": 293.89525525938336,
+          "distance": 4246.958723314242,
+          "lateral": 0.3590184158659495,
+          "wind": 0.9999966427051084,
+          "sway": -0.9999278639258893,
+          "tipSway": -0.9999251261449805
+        },
+        {
+          "speed": 293.8217062383576,
+          "distance": 4369.431574740429,
+          "lateral": -0.27944350568581927,
+          "wind": 0.9999999935229456,
+          "sway": 0.4511688968042623,
+          "tipSway": 0.04088870735755968
+        }
+      ]
+    },
+    {
+      "label": "braking",
+      "seconds": 6,
+      "maxDeformationPixels": 5.920416375808505,
+      "carTriangles": 13871,
+      "carDraws": 59,
+      "memory": {
+        "geometries": 320,
+        "textures": 65
+      },
+      "render": {
+        "frame": 38594,
+        "calls": 617,
+        "triangles": 1559855,
+        "points": 714,
+        "lines": 0
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "speedRangeKmh": [
+        0,
+        293.59313820812565
+      ],
+      "samples": [
+        {
+          "speed": 293.59313820812565,
+          "distance": 4371.47489285614,
+          "lateral": -0.2883592127664957,
+          "wind": 0.9999999941649033,
+          "sway": 0.47537380282636504,
+          "tipSway": 0.1040043702616164
+        },
+        {
+          "speed": 157.5063691675793,
+          "distance": 4464.697335089112,
+          "lateral": -0.31293658468236424,
+          "wind": 0.9201578590536069,
+          "sway": 0.1633034815062678,
+          "tipSway": 0.20972316666218244
+        },
+        {
+          "speed": 21.419532948376883,
+          "distance": 4493.933799429048,
+          "lateral": -0.16921165392853635,
+          "wind": 0.06916520784530915,
+          "sway": -0.0007073374202829692,
+          "tipSway": -0.03186989222734141
+        },
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 0.00014452274305573002,
+          "sway": 0.00029418517887589427,
+          "tipSway": -0.00004774225962629822
+        },
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 2.788202100112275e-7,
+          "sway": 0.000002218288885016059,
+          "tipSway": 0.0000018795362871047274
+        },
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 5.382496276800508e-10,
+          "sway": 4.748125691687071e-9,
+          "tipSway": 1.4770552299405279e-8
+        },
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 1.0390662200779738e-12,
+          "sway": -4.6946661941400104e-11,
+          "tipSway": 3.44710228416982e-11
+        }
+      ]
+    },
+    {
+      "label": "settled",
+      "seconds": 3,
+      "maxDeformationPixels": 0.000002813438628345135,
+      "carTriangles": 13871,
+      "carDraws": 59,
+      "memory": {
+        "geometries": 320,
+        "textures": 65
+      },
+      "render": {
+        "frame": 42650,
+        "calls": 617,
+        "triangles": 1559855,
+        "points": 714,
+        "lines": 0
+      },
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "speedRangeKmh": [
+        0,
+        0
+      ],
+      "samples": [
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 9.360816667785824e-13,
+          "sway": -5.0305995781838126e-11,
+          "tipSway": 2.2109631849585525e-11
+        },
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 1.807062725479637e-15,
+          "sway": -4.5156250527265155e-13,
+          "tipSway": -3.177528747794171e-13
+        },
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 3.486272111700882e-18,
+          "sway": -1.3087550625982951e-15,
+          "tipSway": -2.9877188647731427e-15
+        },
+        {
+          "speed": 0,
+          "distance": 4494.377465630542,
+          "lateral": -0.1725422396408302,
+          "wind": 6.7300884180482444e-21,
+          "sway": 7.182009436155563e-18,
+          "tipSway": -9.213938440771991e-18
+        }
+      ]
+    }
+  ]
+}

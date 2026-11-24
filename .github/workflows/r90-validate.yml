@@ -1,22 +1,19 @@
 name: Validate OutRun
-# Minimal public release gate. The full regression suite remains manually runnable
-# through dev-checks.yml and local playtesting; browser timing, aesthetics and
-# controller feel are owner-validated, not a reason to block approved releases.
-# GitHub Pages deploy and immutable tag creation happen only on main pushes.
+# Automatic checks are ONLY for owner-approved main releases.
+# Draft PR changes and ordinary dev pushes must not consume CI minutes.
+# Validate locally via npm run verify:dev; manual dev-checks.yml is opt-in.
+# GitHub Pages deploy and immutable tags are restricted to main pushes.
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
 
 permissions:
   contents: read
 
-# Superseded PR checks should not consume minutes installing the same tools.
-# A main release is never cancelled by a later PR or dev push.
+# A main release must not be cancelled by later development activity.
 concurrency:
-  group: outrun-release-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: outrun-release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build-and-unit:
@@ -33,6 +30,7 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Verify unique stable release identity
+        if: github.event_name == 'push'
         uses: actions/github-script@v7
         with:
           script: |
@@ -57,17 +55,18 @@ jobs:
         run: npm ci
       - name: TypeScript + Vite project-site build
         run: npm run build
-      # Only deterministic invariants that can corrupt or prevent a playable race.
-      # Other unit/E2E cases are intentionally advisory and available on demand.
-      - name: Essential safety checks — race state, road reliability and collisions
-        run: >-
-          npm test --
-          tests/race-recovery.unit.ts
-          tests/race-start-signals.unit.ts
-          tests/race-traffic-world.unit.ts
-          tests/stream-reliability.unit.ts
-          tests/rival-race.unit.ts
-          tests/traffic-impact.unit.ts
+      # P0 remains a release gate. P1 is visible and reported, never blocking.
+      - name: P0 — road availability and essential stream safety
+        run: npm run test:p0
+      - name: P1 — critical race diagnostics (advisory)
+        id: critical
+        continue-on-error: true
+        run: npm run test:p1
+      - name: Report P1 problems without blocking the owner's release
+        if: steps.critical.outcome == 'failure'
+        run: |
+          echo "::warning title=P1 Critical diagnostics::Potential serious gameplay regression detected; owner review required, release remains permitted."
+          echo "⚠️ P1 Critical diagnostics failed. Check the test log and notify the owner." >> "$GITHUB_STEP_SUMMARY"
       - name: Upload the approved branch's site
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4

@@ -1,25 +1,10 @@
+import {optionBPackaging} from './scripts/option-b-packaging';
+import {optionBLocalServer} from './scripts/option-b-local-server';
 import {defineConfig, type Plugin} from 'vite';
 import {mkdir, open, realpath, lstat, link, unlink, readdir, readFile, writeFile} from 'node:fs/promises';
 import {join,resolve,sep} from 'node:path';
 import {createHash, randomUUID} from 'node:crypto';
 import {execFileSync,spawn} from 'node:child_process';
-import {createReadStream} from 'node:fs';
-
-/** Local-only asset handoff: never copies the GLB into a build or Git. */
-function localBlenderArt():Plugin {
- const install=(server:{middlewares:import('vite').Connect.Server})=>{
-  for(const [asset,local] of [['canyon_art_only.glb','canyon_art_only.glb'],['canyon_roadlock_art.glb','roadlock/canyon_roadlock_art.glb'],['grand_canyon_final.glb','grand_canyon_final.glb'],['canyon_terrain_first.glb','terrain-first/canyon_terrain_first.glb'],['canyon_cliff_pass_r4.glb','cliff-pass-r4/canyon_cliff_pass_r4.glb']])server.middlewares.use('/__local_art/'+asset,async(req,res)=>{
-   if(req.method!=='GET'&&req.method!=='HEAD'){res.statusCode=405;res.end();return;}
-   const file=resolve('art-prototype/output',local);
-   try{const info=await lstat(file);if(!info.isFile())throw Error('Not a file');
-    res.setHeader('Content-Type','model/gltf-binary');res.setHeader('Content-Length',info.size);res.setHeader('Cache-Control','no-store');
-    if(req.method==='HEAD'){res.end();return;}
-    const stream=createReadStream(file);stream.on('error',()=>res.destroy());stream.pipe(res);
-   }catch{res.statusCode=404;res.end('Local Blender GLB not found');}
-  });
- };
- return {name:'outrun-local-blender-art',configureServer:install,configurePreviewServer:install};
-}
 
 /** Dev-only, same-origin screenshot archive. The client never supplies a path. */
 function captureArchive():Plugin {
@@ -75,9 +60,14 @@ function offlineCoast():Plugin {
   const files=new Set(Object.keys(bundle));
   for(const path of await readdir(dir,{recursive:true})){
    const name=path.split(sep).join('/');
-   if(/^(icons|ui)\/.*\.png$|^assets\/coast-(boats|nature)\/.*\.(glb|png)$/.test(name))files.add(name);
+   if(/^(icons|ui)\/.*\.png$|^assets\/coast-(boats|nature|props)\/.*\.(glb|png)$/.test(name))files.add(name);
   }
-  for(const name of ['index.html','manifest.webmanifest','generated/coast-shore.shore','assets/coast-nature/models.json','assets/coast-nature/headland-grove.json','assets/coast-farm/rice-near.glb','assets/coast-farm/scarecrow.glb'])files.add(name);
+  const mode=process.env.VITE_KENTING_INSTALLATION;
+  const relocated=mode==='relocated';
+  if(relocated)files.add('generated/coast-farm-ground-r1.bin');
+  const shore=relocated?'generated/coast-shore-beach2-r1.shore':
+   mode==='original'?'generated/coast-shore.shore':'generated/coast-shore-working-harbour.shore';
+  for(const name of ['index.html','manifest.webmanifest',shore,'assets/coast-nature/models.json','assets/coast-nature/headland-grove.json','assets/coast-farm/rice-near.glb','assets/coast-farm/scarecrow.glb','assets/characters/coast-heroine-r7h-race.glb','assets/characters/coast-heroine-r7a.glb','assets/characters/coast-blonde-r6d.glb','assets/characters/coast-blonde-r6b-upper.glb','assets/characters/coast-blonde-bob.glb'])files.add(name);
   const paths=[...files].sort(),hash=createHash('sha256');
   for(const name of paths)hash.update(name).update('\0').update(await readFile(join(dir,name)));
   const template=await readFile('public/sw.js','utf8');
@@ -90,4 +80,4 @@ function buildCommit(){
  try{return execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',windowsHide:true,stdio:['ignore','pipe','ignore']}).trim();}
  catch{return null;}
 }
-export default defineConfig({define:{'import.meta.env.VITE_BUILD_SHA':JSON.stringify(buildCommit())},base:process.env.OUTRUN_SITE_BASE??'/',plugins:[captureArchive(),localBlenderArt(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});
+export default defineConfig({define:{'import.meta.env.VITE_BUILD_SHA':JSON.stringify(buildCommit())},base:process.env.OUTRUN_SITE_BASE??'/',plugins:[optionBPackaging(),optionBLocalServer(),captureArchive(),offlineCoast()],server:{watch:{ignored:['**/art-prototype/output/**','**/docs/evidence/**','**/captures/**','**/test-results/**','**/*.log']}}});

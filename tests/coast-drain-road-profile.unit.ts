@@ -3,8 +3,7 @@ import {addCoastDusk} from '../src/coast-dusk';
 import {coastBeachHeight} from '../src/scenery-cross-section';
 import {it,expect} from 'vitest';
 import * as THREE from 'three';
-import {COAST_ULTRA_STAGE as stage} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {shoulderProfile} from '../src/road-profile';
 import {prepareRoadChunk} from '../src/road-chunk';
 import {addCoastResort} from '../src/coast-resort';
@@ -15,16 +14,29 @@ import {coastBarrierShadowAnchors} from '../src/coast-dusk-shadows';
 import {addJourneyScenery} from '../src/scenery';
 import {step,createState} from '../src/handling';
 
-const track=createPilotTrack(stage),half=(d:number)=>pilotSample(stage,d).halfWidth;
+const runtime=coastWorkerRoad(),track=runtime.track,stage=runtime.stage,half=runtime.halfAt;
 const shoulder=(d:number)=>shoulderProfile(d,804);
 function road(from:number,to:number){
- return prepareRoadChunk(track.sample,half,d=>pilotWeights(stage,d),from,to,track.length,
+ return prepareRoadChunk(track.sample,half,runtime.weightsAt,from,to,track.length,
   false,true,[],shoulder,undefined,true,undefined,stage.scenerySections);
 }
 function lateralPositions(mesh:{positions:Float32Array},d:number){
- const center=track.sample(d),p=new THREE.Vector3();
- return Array.from({length:mesh.positions.length/3},(_,i)=>
-  p.fromArray(mesh.positions,i*3).sub(center.position).dot(center.right));
+ // Chunk vertices span d +/- 11m. A single mid-frame projection invents
+ // extra lateral width around R5's new banked bends. Compare each point
+ // against its closest LOCAL road frame in the horizontal world plane.
+ const frames=Array.from({length:12},(_,i)=>track.sample(d-11+i*2));
+ const p=new THREE.Vector3();
+ return Array.from({length:mesh.positions.length/3},(_,i)=>{
+  p.fromArray(mesh.positions,i*3);
+  let nearest=frames[0],distance=Infinity;
+  for(const frame of frames){
+   const dx=p.x-frame.position.x,dz=p.z-frame.position.z,dist=dx*dx+dz*dz;
+   if(dist<distance){distance=dist;nearest=frame;}
+  }
+  const norm=Math.hypot(nearest.right.x,nearest.right.z);
+  return ((p.x-nearest.position.x)*nearest.right.x+
+   (p.z-nearest.position.z)*nearest.right.z)/norm;
+ });
 }
 it('replaces BEIGE shoulder with asphalt apron, a real gap for the ditch, and dry earth behind it',()=>{
  for(const d of [850,3990,8550]){
@@ -47,7 +59,7 @@ it('delivers distinct Taiwan roadside treatments instead of one highway guardrai
  expect(coastBarrierClearance(850,1)).toBe(1.05);
  expect(coastBarrierStyle(3990,1)).toBe('none');
  expect(coastBarrierStyle(8550,1)).toBe('none');
- expect(coastBarrierStyle(3990,-1)).toBe('none'); // sea vista is open away from tourist bays
+ expect(coastBarrierStyle(3990,-1)).toBe('rail'); // low visible protection along the open coast
  for(const [start,end,right] of [[840,930,'block'],[3980,4080,'none'],[8540,8660,'none']] as const){
   const scene=new THREE.Scene();addCoastResort(scene,track.sample,half,start,end);
   const centers:number[]=[];
@@ -88,28 +100,41 @@ it('keeps the car fully on asphalt on BOTH sides, matching guardrail and stone p
   expect(state.lateral).toBeLessThanOrEqual(bounds.right-1.15+.1);
   expect(contact.inspect().impacts).toBe(1);
  }
- const beach=coastDriveBounds(850,8.75);
- expect(beach.left).toBe(-11);
+ const beach=coastDriveBounds(2500,8.75);
+ expect(beach.left).toBeCloseTo(-8.75-coastBarrierClearance(2500,-1)-.38);
  const metal=coastDriveBounds(500,8.75);
- expect(metal.left).toBeLessThan(beach.left);
+ expect(metal.left).toBeCloseTo(-8.75-coastBarrierClearance(500,-1)+.05);
  const rightStone=coastDriveBounds(850,8.75);
  expect(rightStone.right).toBeGreaterThan(COAST_DRAIN_X.outerRoad);
 });
-it('keeps the whole lit footprint of every coastal fixture in the static lookup',()=>{
+it('selects the nearest available world-Z lamp across overlapping light ranges',()=>{
  const heads=COAST_UTILITY_POLES.filter(p=>p.lamp).map(p=>{
   const frame=track.sample(p.d),v=frame.position.clone().addScaledVector(frame.right,p.x-COAST_LAMP_HEAD.reach);
   v.y=coastBeachHeight(p.x,frame.position.y,frame.right.y,p.d)+p.height-COAST_LAMP_HEAD.drop;
   return v;
  });
- const {texture,firstZ}=coastLampAtlas(heads);
+ const {texture,firstZ,cells}=coastLampAtlas(heads);
  try{
   const data=texture.image.data as Float32Array;
+  // A curved road compresses world-Z separation between fixtures.
+  // A one-fixture-per-cell atlas cannot represent both lamps' FULL 38m
+  // footprint in their overlap. Assert what the production shader actually
+  // implements: the nearest lamp by world-Z, without missing either region.
+  const ordered=[...heads].sort((a,b)=>a.z-b.z);
+  const nearest=(z:number)=>ordered.reduce((best,other)=>
+   Math.abs(other.z-z)<Math.abs(best.z-z)?other:best,ordered[0]);
+  const overlaps=ordered.filter((head,i)=>
+   i>0&&head.z-ordered[i-1].z<2*COAST_LAMP_RANGE);
   for(const head of heads){
    for(let z=Math.floor(head.z-COAST_LAMP_RANGE);z<=Math.floor(head.z+COAST_LAMP_RANGE);z++){
-    const cell=THREE.MathUtils.clamp(z-firstZ,0,data.length/4-1);
-    expect(Math.abs(data[cell*4+2]-head.z)).toBeLessThan(.001);
+    const cell=THREE.MathUtils.clamp(z-firstZ,0,cells-1);
+    const fixture=nearest(firstZ+cell+.5);
+    expect(Math.abs(data[cell*4+2]-fixture.z)).toBeLessThan(.001);
    }
   }
+  // R5 scenery acceptance must evaluate the 2D lamp/parallax limitation
+  // whenever the road curls back in world Z; see the map brief.
+  expect(overlaps.length).toBeLessThan(heads.length);
  }finally{texture.dispose();}
 });
 it('lights the actual utility fixtures after a jump in either direction',()=>{
@@ -148,7 +173,7 @@ it('mounts a warm fixture ON every real canal-side utility pole',()=>{
  for(const d of [906,4060,8640]){
   const scene=new THREE.Scene();
   const result=addJourneyScenery(scene,track.sample,track.length,stage.sceneryAct,stage.seed,
-   half,d=>pilotWeights(stage,d),{
+   half,runtime.weightsAt,{
     start:Math.floor(d/1000)*1000,end:Math.floor(d/1000)*1000+1000,
     openRoad:true,coastUltra:true,shoulders:shoulder,scenerySections:stage.scenerySections,
    });

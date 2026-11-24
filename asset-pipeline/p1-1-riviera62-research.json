@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "profile": "riviera62-pilot",
+  "id": "p1-1-riviera62-research",
+  "type": "RESEARCH",
+  "exampleOnly": false,
+  "goal": "Issue #57: compare DCC routes and propose interfaces and a bounded P1-2 experiment; no production.",
+  "gameRelevance": "Improve readable racing car silhouette/materials while preserving current handling and playable Riviera 62.",
+  "candidate": "research-base-b66d06e67580e1faf35ad9bdc358a694b0ac4a04",
+  "downstream": [
+    "Replaceable car parts; wheel steer/roll pivots; scale and coordinate conventions.",
+    "Paint/glass lighting, shadow response, future LOD and bounded Pixel 8 cost; preserve collision/handling separation."
+  ],
+  "sourceOfTruth": [
+    "Issue #57; docs/P1_RIVIERA62_PIPELINE_BRIEF.md B1/B2/B3; current supervisor delegation",
+    "docs/P1_1_RIVIERA62_SPIKE_REPORT.md; pinned source b66d06e67580e1faf35ad9bdc358a694b0ac4a04"
+  ],
+  "toolRationale": "Read-only source audit and Blender tool inventory; recommend native editable master with bounded export helpers. Medium requested, actual model/effort unverified.",
+  "stopCriteria": [
+    "Stop at local research commit for Judy independent review; no push/PR/Issue edits. No src/assets/content/version changes or paid calls.",
+    "No P1-2 or production authorization. Stop on major unknown, rights/backup failure or regressions; retain failures.",
+    "Maximum two supervisor correction passes; no third dispatch."
+  ],
+  "commands": [
+    "node scripts/check-task-contract.mjs asset-pipeline/p1-1-riviera62-research.json",
+    "node scripts/check-task-contract.mjs asset-pipeline/p1-1-riviera62-research.json --production",
+    "node --test scripts/test-task-contract.mjs"
+  ],
+  "expectedEvidence": [
+    "Valid records exit 0; production enforcement exit 1 with RESEARCH plus six unknown capabilities and four pending approvals.",
+    "Source-audited report; proposed acceptance and backup plan, not executed native or device evidence."
+  ],
+  "failedEvidence": [
+    "No DCC or device experiment performed. Production prerequisites remain unknown.",
+    "Official Blender manual retrieval failed; local exporter source inspected instead. No fresh manual verification claimed.",
+    "Judy review of def0da6 found ambiguous sprungBody/steering transforms and unspecified capture fixture; correction pass 1 documents explicit transforms and prerequisites. Independent re-review pending; no native export or replay proof."
+  ],
+  "correctionPasses": 1,
+  "rootCauseResolved": false,
+  "independentReview": "pending",
+  "requirements": {
+    "editableMaster": {
+      "state": "unknown",
+      "note": "No verified editable Riviera 62 DCC master; native reopen and change/re-export proof needed.",
+      "evidence": null
+    },
+    "provenanceLicense": {
+      "state": "unknown",
+      "note": "Author, original design, dependencies and rights records not verified.",
+      "evidence": null
+    },
+    "wheelPivots": {
+      "state": "unknown",
+      "note": "Independent wheel axes/origins, steering and rolling transforms need end-to-end proof.",
+      "evidence": null
+    },
+    "materials": {
+      "state": "unknown",
+      "note": "Paint, glass and trim response under game lighting require reviewed visuals.",
+      "evidence": null
+    },
+    "glbExport": {
+      "state": "unknown",
+      "note": "Repeatable DCC export, scale/orientation, scene substitution and asset manifest not verified.",
+      "evidence": null
+    },
+    "devicePerformance": {
+      "state": "unknown",
+      "note": "Pixel 8 representative moving-scene frame time/memory evidence and agreed budget absent.",
+      "evidence": null
+    }
+  },
+  "approvals": {
+    "technical": {
+      "state": "pending",
+      "note": "Independent technical review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "visual": {
+      "state": "pending",
+      "note": "Independent visual review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "device": {
+      "state": "pending",
+      "note": "Independent device review has not occurred for this P1 candidate.",
+      "evidence": null
+    },
+    "owner": {
+      "state": "pending",
+      "note": "Independent owner review has not occurred for this P1 candidate.",
+      "evidence": null
+    }
+  }
+}

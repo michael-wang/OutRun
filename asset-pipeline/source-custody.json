@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "scope": "Initial accepted-player-asset custody audit; NOT an exhaustive inventory of all game assets.",
+  "assets": [
+    {
+      "id": "r6d-hair",
+      "role": "active-player-companion-hair",
+      "runtimeExport": {
+        "path": "public/assets/characters/coast-blonde-r6d.glb",
+        "sha256": "8273fe14b4f1c83a4c8b574bacd7d834a6142380013e6e8ebb6f7b447399f519"
+      },
+      "editableSource": {
+        "kind": "blend",
+        "path": "art/source/characters/r6d-cover-locks.blend",
+        "sha256": "5f45360a12be38a7a02777b5b9599964d051a05370f4ab5dd974e56c8017f261",
+        "hashEvidence": "SHA-256 independently checked against the original Windows .blend by the Asset Librarian on 2026-11-21 before check-in.",
+        "previousLocalPath": "art-prototype/output/r6d-cover-locks.blend"
+      },
+      "exportRecipe": "scripts/blender/export_r6d_locks.py",
+      "provenance": "docs/art-review/r6d/README.md",
+      "custody": "PENDING_GIT_CHECKIN",
+      "limitations": [
+        "This commit adds the canonical binary at art/source/characters/r6d-cover-locks.blend. Remote and native restore evidence, and independent review, are tracked in Issue #70.",
+        "The SHA-256 is pinned to the original Windows-local .blend; any future binary change requires fresh identity and review.",
+        "Custody status is intentionally held pending independent review by Julia of the Git and native restore evidence.",
+        "R6d exporter consumes already-tracked R6b core and R6c upper GLBs; full source-to-export parity is not established.",
+        "Owner-accepted gameplay look is unchanged; GitHub-first custody does not certify licensing of unrelated private third-party artwork."
+      ],
+      "upstreamInputs": [
+        "public/assets/characters/coast-blonde-r6b.glb",
+        "public/assets/characters/coast-blonde-r6b-upper.glb"
+      ],
+      "publicationApproval": "Michael approved storing this specific small R6d editable hair master in the existing public OutRun GitHub repo on 2026-11-21; not blanket approval for third-party/private models."
+    }
+  ]
+}

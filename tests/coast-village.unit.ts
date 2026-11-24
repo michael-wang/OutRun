@@ -4,8 +4,7 @@ import {COAST_DISTRICTS} from '../src/coast-layout';
 import {TOWN_BACK_LANE} from '../src/coast-town-access';
 import {coastHillHeight} from '../src/coast-terrain';
 import {coastBeachHeight} from '../src/scenery-cross-section';
-import {createPilotTrack} from '../src/pilot-composer';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 
 it('places clustered frontages and waffle carts inside districts with unique chunk ownership',()=>{
  const front=COAST_VILLAGE_SITES.filter(s=>!s.rear);
@@ -33,7 +32,7 @@ it('places clustered frontages and waffle carts inside districts with unique chu
  expect(COAST_VILLAGE_SITES.filter(s=>s.kind!=='home').length).toBeGreaterThan(55);
 });
 it('keeps seaside benches and children on dry beach outside the driving corridor',()=>{
- const track=createPilotTrack(COAST_ULTRA_STAGE);
+ const track=coastWorkerRoad().track;
  expect(COAST_REST_SPOTS.length).toBeGreaterThanOrEqual(12);
  for(const spot of COAST_REST_SPOTS){
   expect(spot.x).toBeLessThan(-14);expect(spot.x).toBeGreaterThan(-18);const p=track.sample(spot.d);

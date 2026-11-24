@@ -6,14 +6,66 @@ import * as THREE from 'three';
 import {Traffic,trafficRecipe} from '../src/traffic';
 import {TrafficImpact} from '../src/traffic-impact';
 import {plannedTrafficLateral} from '../src/traffic-flow';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample} from '../src/pilot-composer';
-import {BRICK_START} from '../src/bricks';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {COAST_STAGE} from '../src/content/coast-stage';
+import {ROAD_START} from '../src/road-profile';
 const flat=()=>({curvature:0,grade:0,half:7});
 const parked=()=>({distance:350,lateral:0,speed:0});
 const dt=1/120;
 function ticks(seconds:number,fn:()=>void){for(let i=0;i<Math.round(seconds/dt);i++)fn();}
 describe('Rival tire smoke should communicate actual traction events',()=>{
+ it('carries speed through clear technical bends but uses the grip line with a car alongside',()=>{
+  const {track,halfAt}=coastWorkerRoad(),player=parked();
+  for(const turn of COAST_STAGE.road.turns.slice(4,6)){
+   function run(beside:boolean){
+    const race=new RivalRace(track.length,d=>({curvature:track.sample(d).curvature,grade:0,half:halfAt(d)}),
+     ()=>[],[raceEntries[3]]);
+    race.reset(turn.start-180);
+    const r=race.rivals[0];r.speed=73;
+    let apexSpeed=0,peak=0,startTime=0,entered=false;
+    while(r.distance<turn.end&&race.time<12){
+     // An adjacent pace car has room when both cars hold normal grip,
+     // but would overlap the additional space reserved for a slide.
+     const traffic=beside?{distance:r.distance,lateral:3.65,speed:r.speed}:player;
+     const old={...traffic};
+     race.step(dt,traffic,old);
+     if(!entered&&r.distance>=turn.start){entered=true;startTime=race.time;}
+     if(!apexSpeed&&r.distance>=(turn.start+turn.end)/2)apexSpeed=r.speed;
+     peak=Math.max(peak,Math.sign(turn.steer)*r.driftYaw);
+     expect(Math.abs(r.lateral)+r.width/2).toBeLessThanOrEqual(r.half);
+    }
+    expect(r.distance).toBeGreaterThanOrEqual(turn.end);
+    return {apexSpeed,peak,time:race.time-startTime};
+   }
+   const clear=run(false),crowded=run(true);
+   expect(clear.peak).toBeGreaterThan(.4);
+   expect(crowded.peak).toBe(0);
+   // A clear line must still confer a measurable advantage at natural travel speed.
+   expect(clear.apexSpeed-crowded.apexSpeed).toBeGreaterThan(2);
+   expect(crowded.time-clear.time).toBeGreaterThan(.1);
+  }
+ });
+ it('slides on both loaded drift corners and regains straight-line grip on exit',()=>{
+  const {track,halfAt}=coastWorkerRoad(),player=parked();
+  for(const turn of COAST_STAGE.road.turns.slice(4,6)){
+   const race=new RivalRace(track.length,d=>({curvature:track.sample(d).curvature,grade:0,half:halfAt(d)}),()=>[],[raceEntries[0]]);
+   race.reset(turn.start);
+   const r=race.rivals[0];r.speed=60;
+   let peak=0;
+   while(r.distance<turn.end){
+    race.step(dt,player,player);
+    peak=Math.max(peak,Math.sign(turn.steer)*r.driftYaw);
+    if(Math.abs(r.driftYaw)>.12){
+     expect(r.width).toBeGreaterThan(r.entry.car.width+.45);
+     expect(r.slip).toBeGreaterThan(.3);
+    }
+    expect(race.time).toBeLessThan(15);
+   }
+   expect(peak).toBeGreaterThan(.12);
+   ticks(.6,()=>race.step(dt,player,player));
+   expect(Math.abs(r.driftYaw)).toBeLessThan(.06);
+  }
+ });
  type Sample=Parameters<typeof rivalSkidDemand>[0];
  const state=(overrides:Partial<Sample>={}):Sample=>({
   speed:80,targetSpeed:78,braking:false,lateralRate:0,targetX:0,lateral:0,impulse:0,
@@ -109,7 +161,21 @@ describe('Riviera GT race',()=>{
    const ratio=(r.speed-v)/(p.speed-v);expect(ratio).toBeGreaterThan(min);expect(ratio).toBeLessThan(max);
   }
  });
- it('brakes on approach to a tight bend and clears a stalled or slow car without overlap',()=>{
+ it('brakes before the tight bend when approaching above its grip speed',()=>{
+  const p=parked();
+  const race=new RivalRace(4000,d=>({...flat(),curvature:d>720&&d<920?.015:0}),()=>[],[raceEntries[0]]);
+  race.reset(660);
+  const rival=race.rivals[0];rival.speed=78;
+  let brakedBeforeEntry=false;
+  while(rival.distance<720&&race.time<4){
+   race.step(dt,p,p);
+   brakedBeforeEntry||=rival.braking;
+  }
+  expect(rival.distance).toBeGreaterThanOrEqual(720);
+  expect(brakedBeforeEntry).toBe(true);
+  expect(rival.speed).toBeLessThan(75);
+ });
+ it('brakes in the bend and clears a stalled or slow car without overlap',()=>{
   for(const speed of [0,10]){
    const p=parked(),hazard:Obstacle={id:'van',speed,lateral:-5.25,distance:530,width:2.2,length:5.5};
    const race=new RivalRace(4000,d=>({...flat(),curvature:d>720&&d<920?.015:0}),(_d,t)=>[{...hazard,distance:530+t*speed}],[raceEntries[0]]);
@@ -117,7 +183,7 @@ describe('Riviera GT race',()=>{
    ticks(35,()=>{race.step(dt,p,p);const r=race.rivals[0],gap=r.distance-(530+race.time*speed);
     if(Math.abs(gap)<5)expect(Math.abs(r.lateral-hazard.lateral)).toBeGreaterThan(2.18);
     if(r.targetLane!==0)changed=true;if(gap>6)passed=true;
-    if(r.distance>720&&r.distance<920&&r.targetSpeed<45)slowed=true;
+    if(r.distance>720&&r.distance<920&&r.braking)slowed=true;
    });expect({passed,slowed,changed}).toEqual({passed:true,slowed:true,changed:true});
   }
  });
@@ -160,7 +226,10 @@ describe('Riviera GT race',()=>{
   race.step(.04,p,{distance:99.99,lateral:0});
   expect(race.playerFinish).toBeLessThan(race.rivals[0].finishTime!);
   expect(race.rank(p.distance,race.playerFinish,'PLAYER',p)).toBe(1);
+  const firstRivalTime=race.rivals[0].finishTime;
   ticks(12,()=>race.step(dt,p,p));expect(race.rivals.every(r=>r.finishTime!==null)).toBe(true);
+  expect(race.rivals[0].distance).toBeGreaterThan(100);
+  expect(race.rivals[0].finishTime).toBe(firstRivalTime);
  });
  it('safely changes the race order while catching a slower player from behind',()=>{
   const p={distance:410,lateral:-5.25,speed:7},race=new RivalRace(10350,flat,()=>[],[raceEntries[0],raceEntries[1]]);race.reset(350);
@@ -235,12 +304,12 @@ describe('Riviera GT race',()=>{
   expect(traffic.inspectWorld().time).toBeCloseTo(1.1,6);
   traffic.dispose();
  });
- it('finishes the authored 10 km with the player parked under three traffic seeds',()=>{
-  const track=createPilotTrack(COAST_ULTRA_STAGE),end=BRICK_START+COAST_ULTRA_STAGE.length;
+ it('finishes the authored coastal race with the player parked under three traffic seeds',()=>{
+  const runtime=coastWorkerRoad(),track=runtime.track,end=ROAD_START+COAST_STAGE.road.length;
   for(const seed of [17,945,1206]){
    const recipes=trafficRecipe(seed,end),p=parked();
-   const race=new RivalRace(end,d=>{const q=track.sample(d);return {curvature:q.curvature,grade:q.tangent.y,half:pilotSample(COAST_ULTRA_STAGE,d).halfWidth};},
-    (center,t,radius)=>recipes.flatMap(row=>{const d=row.distance+row.speed*t;return Math.abs(d-center)<radius?[{id:'T'+row.id,distance:d,lateral:plannedTrafficLateral(seed,row.group,row.member??0,pilotSample(COAST_ULTRA_STAGE,d).halfWidth),width:2.1,length:5,speed:row.speed}]:[];}));
+   const race=new RivalRace(end,d=>{const q=track.sample(d);return {curvature:q.curvature,grade:q.tangent.y,half:runtime.halfAt(d)};},
+    (center,t,radius)=>recipes.flatMap(row=>{const d=row.distance+row.speed*t;return Math.abs(d-center)<radius?[{id:'T'+row.id,distance:d,lateral:plannedTrafficLateral(seed,row.group,row.member??0,runtime.halfAt(d)),width:2.1,length:5,speed:row.speed}]:[];}));
    race.reset(350);
    for(let i=0;i<300*60&&!race.rivals.every(r=>r.finishTime!==null);i++){
     race.step(1/60,p,p);

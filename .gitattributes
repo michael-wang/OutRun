@@ -1,0 +1,3 @@
+# This text is hashed by asset-pipeline/pilot.json. Preserve exact LF bytes
+# across checkouts; do not normalize text or binary bytes inside the validator.
+/docs/art-review/r6d/README.md text eol=lf

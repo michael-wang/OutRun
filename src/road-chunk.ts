@@ -1,5 +1,10 @@
+import {kentingStation,kentingReference,kentingTransitionReference} from './kenting-installation';
+import {beach2,BEACH2,capeOutcrop} from './beach2-profile';
+import {BEACH2_VERGE_PATCHES} from './beach2-composition-layout';
+import {beachZoneBlend} from './beach-zone-layout';
 import {coastBeachX,coastProfileX,COAST_CROSSWALKS} from './coast-layout';
-import {coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
+import {beachMacro,beachFlow,macroCoastRise,macroLandHeight} from './beach-macro';
+import {beachApproachWeight,coastHillHeight,COAST_HILL_STRIPS} from './coast-terrain';
 import {lawnWeight,meadowCover} from './coast-meadow-layout';
 import {coastDrainAt,coastDrainOverlaps,COAST_SIDE_DRAINS,COAST_DRAIN_X} from './coast-roadside-layout';
 import {bridgeMeshes,onBridge,type BridgeSpan} from './bridge';
@@ -13,6 +18,7 @@ import type {createTrack} from './track';
 import {sceneryGroundMixAt,sceneryGroundY,coastUltraGroundY,sceneryFarReach,type ScenerySection} from './scenery-cross-section';
 import {canyonGroundY,canyonRiverRaw,canyonSceneEnvelope,GRAND_CANYON_VALLEY_STRIPS,GRAND_CANYON_RIDGE_STRIPS,type GrandCanyonScene} from './grand-canyon-scene';
 import {canyonStratumColor} from './canyon-language';
+import {harbourRockWeight} from './working-harbour-profile';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 export interface RayRange {start:number;end:number;offset:number;count:number}
@@ -78,6 +84,7 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    v.y=sectionGround?surfaceY(d,o,h,kind):o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,w[1]):v.y+h;
    if(canyon&&kind==='grass')v.y-=canyonBlend(d)*Math.max(0,(o-13)/147)*65;if(vertical)v.y+=vertical(d);return v;};
   for(let i=0;i<=n;i++){const d=from+(to-from)*i/n,p=sampled(d);for(const [raw,h] of [[a,ha],[b,hb]] as [Edge,number][]){
+   const ref=kentingReference(d);
    const o=typeof raw==='number'?raw:raw(d),v=p.position.clone().addScaledVector(p.right,roadOffset(o,cachedWidth(d),cachedShoulders(d))),weights=cachedWeights(d);
    const coastal=o<=-27?(h<-10?-4.88:-5.05):v.y+h;
    const legacyHeight=o<=-27?THREE.MathUtils.lerp(coastal,v.y-2-Math.abs(o)*.015,weights[1]):v.y+h;
@@ -89,18 +96,80 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
    const profileX=coastUltra&&kind==='sand'?coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d):undefined;
    if(coastUltra&&kind==='grass'){
     const x=roadOffset(o,cachedWidth(d),cachedShoulders(d));
-    uvs.push(meadowCover(x,d),lawnWeight(x,d));
+    const grass=meadowCover(x,d);
+    const apron=beachApproachWeight(d)*THREE.MathUtils.smoothstep(x,16,38)*(1-THREE.MathUtils.smoothstep(x,105,180));
+    const exposure=.5+.5*Math.sin((ref-4390)/32+x/12+.8*Math.sin(ref/48));
+    uvs.push(grass*(1-.48*apron*exposure*exposure),lawnWeight(x,d));
    }else uvs.push(profileX??o/4,d/4);
-   if(seamless){const cross=point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
+   if(seamless){const roundSlope=coastUltra&&beach2()&&((kind==='grass'&&ref>=4050&&ref<=4990)||(kind==='sand'&&o < -11&&ref>=5750&&ref<=6435));
+    const cross=roundSlope?point(d,o+.75,h).sub(point(d,o-.75,h)):point(d,b,hb).sub(point(d,a,ha)),along=point(Math.min(length,d+.5),raw,h).sub(point(Math.max(0,d-.5),raw,h)),normal=cross.cross(along).normalize();normals.push(normal.x,normal.y,normal.z);}
    if(kind==='sand'||kind==='grass'){const color=new THREE.Color(0,0,0);weights.forEach((w,j)=>color.add(new THREE.Color(kind==='sand'?ACTS[j].shoulder:ACTS[j].ground).multiplyScalar(w)));if(canyon&&kind==='grass')color.lerp(new THREE.Color('#987e68'),canyonBlend(d)*Math.max(0,Math.min(1,(o-13)/90)));
     if(coastUltra&&kind==='sand'){
      const x=coastProfileX(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d);
      color.set('#dfc894').lerp(new THREE.Color('#a58e68'),Math.max(0,Math.min(1,(-x-15)/11)));
+     const zone=beachZoneBlend(d);
+     if(zone>0){const wet=THREE.MathUtils.smoothstep(-x,18,26),shallow=THREE.MathUtils.smoothstep(-x,26,40);
+      const beach=new THREE.Color('#ebd6a8').lerp(new THREE.Color('#a59879'),wet).lerp(new THREE.Color('#a9c5ad'),shallow);
+      color.lerp(beach,zone);}
      // Static low-frequency sand colour grain; no extra GPU layer or blinking.
      // The water remains brightest, but dry land no longer reads as flat paper.
      const grain=Math.sin(d*.047+x*.21)*Math.sin(d*.011-x*.43);
      const broad=Math.sin(d*.0093+x*.071);
      color.multiplyScalar(.97+.055*grain+.025*broad);
+     const mass=macroLandHeight(roadOffset(o,cachedWidth(d),cachedShoulders(d)),d);
+     if(mass>0)color.lerp(new THREE.Color('#69714a'),Math.min(1,mass/4));
+     if(beachFlow()&&macroCoastRise(d)>0&&height>0){
+      const physicalX=roadOffset(o,cachedWidth(d),cachedShoulders(d)),shore=coastBeachX(-26,d);
+      const land=new THREE.Color('#817e6b').lerp(new THREE.Color('#69714a'),THREE.MathUtils.smoothstep(physicalX,shore+8,shore+28));
+      color.lerp(land,Math.min(1,macroCoastRise(d)/5,height/4));
+     }
+     const rockWeight=harbourRockWeight(d);
+     if(rockWeight>0&&o< -13){
+      const physicalX=roadOffset(o,cachedWidth(d),cachedShoulders(d));
+      const shore=coastBeachX(-26,d);
+      const rock=THREE.MathUtils.smoothstep(-physicalX,13,18)*THREE.MathUtils.smoothstep(physicalX,shore-4,shore+4);
+      const strata=.5+.5*Math.sin(height*.76+d*.083+.65*Math.sin(d*.051));
+      const stone=new THREE.Color('#525b5a').lerp(new THREE.Color('#7f7b70'),strata);
+      // Ground-cover colour follows dry, irregular shelves. Bare wet toes and
+      // exposed cliff faces keep their stone; no extra material or draw pass.
+      const shelf=(physicalX-shore)/Math.max(1,-13-shore);
+      const dry=THREE.MathUtils.smoothstep(height,-2.4,.7);
+      const patch=.50+.30*Math.sin(d*.026+shelf*11)+.20*Math.sin(d*.067-shelf*4);
+      const upper=THREE.MathUtils.smoothstep(shelf,.36,.70);
+      stone.lerp(new THREE.Color('#5e6945'),.78*dry*upper*THREE.MathUtils.smoothstep(patch,.42,.83));
+      color.lerp(stone,rock*rockWeight);
+     }
+    }
+
+    // Mix compacted sand and gravel into the same opaque ribbon that
+    // supports the tufts. The nonuniform patches taper into uninterrupted sand.
+    if(coastUltra&&kind==='sand'&&beach2()&&ref>4845&&ref<5840){
+     const lateral=roadOffset(o,cachedWidth(d),cachedShoulders(d));
+     if(lateral < -11 && lateral > -21)for(const [s,x,span] of BEACH2_VERGE_PATCHES){
+      const along=(d-BEACH2.core-s)/(span+9);
+      if(Math.abs(along)>=1)continue;
+      const across=(lateral-x-.9*Math.sin(along*3+s)) / (3.1+.6*Math.cos(s));
+      const weight=1-THREE.MathUtils.smoothstep(along*along+across*across,0,1);
+      color.lerp(new THREE.Color('#847b5d'),.69*weight);
+     }
+    }
+    if(coastUltra&&kind==='sand'&&beach2()&&ref>5740&&ref<6435){
+     const x=roadOffset(o,cachedWidth(d),cachedShoulders(d)),reach=x-coastBeachX(-26,d);
+     if(x < -10 && reach>0){
+      const smooth=THREE.MathUtils.smoothstep;
+      const weight=smooth(ref,5740,5880)*(1-smooth(ref,6280,6435))*smooth(-x,10,16)*smooth(reach,0,3);
+      // Tilted sediment seams remain readable in the indirect sunset light.
+      const bedding=height*.94-reach*.24+.64*Math.sin((ref-5840)/29)+.24*Math.sin(ref/9);
+      const breakUp=.5+.5*Math.sin(ref/18+x/6)*Math.cos(ref/42-x/9);
+      const seam=smooth(Math.cos(bedding*2.25),.25,.94)*(.14+.57*breakUp);
+      const outcrop=capeOutcrop(d-BEACH2.core,x);
+      const stone=new THREE.Color('#c5a07d').lerp(new THREE.Color('#806d6b'),seam*.78);
+      stone.lerp(new THREE.Color('#766a64'),(1-smooth(reach,1,7))*.7);
+      const turf=smooth(height+1.15*Math.sin(ref/31+x/9),1.2,5)*smooth(reach,9,21);
+      stone.lerp(new THREE.Color('#929268'),turf*.93);
+      stone.lerp(new THREE.Color('#bf9879'),outcrop*(.58+.25*breakUp));
+      color.lerp(stone,weight);
+     }
     }
     if(coastUltra&&kind==='grass'){
      const x=roadOffset(o,cachedWidth(d),cachedShoulders(d)),hill=coastHillHeight(x,d);
@@ -112,6 +181,12 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
      color.set('#758452').lerp(new THREE.Color('#4d6141'),relief);
      color.lerp(new THREE.Color('#9a8866'),.055*(1-inland));
      color.multiplyScalar(.95-.025*relief);
+     const approach=beachApproachWeight(d);
+     if(approach && x>14 && x<185){
+      const shoulder=THREE.MathUtils.smoothstep(x,14,30)*(1-THREE.MathUtils.smoothstep(x,120,185));
+      const fold=.5+.5*Math.sin((ref-4390)/32+x/12+.8*Math.sin(ref/48));
+      color.lerp(new THREE.Color('#ac936d'),approach*shoulder*(.08+.33*fold*fold));
+     }
     }
     if(grandCanyon&&d>grandCanyon.start&&d<grandCanyon.end&&Math.abs(o)>13){
      const blend=Math.min(1,(d-grandCanyon.start)/180,(grandCanyon.end-d)/180);
@@ -145,8 +220,14 @@ export function prepareRoadChunk(sample:Sample,halfAt:(d:number)=>number,weights
  if(coastUltra){
   // Physical beach stations survive the variable-width shoulder conversion.
   const rawAt=(metres:number)=>(d:number)=>tripBarrierRawOffset(-1,-coastBeachX(metres,d)-cachedWidth(d),cachedShoulders(d)!);
-  for(const [a,b] of [[-100,-46],[-46,-34],[-34,-26],[-26,-22],[-22,-18],[-18,-11]])
+  // Local macro hills need cross-slope samples, not just the old six flat
+  // beach strips. Keep the default and distant terrain tessellation exact.
+  const sections=(beachMacro()==='right'&&end>kentingStation(0)&&kentingTransitionReference(start)<(beachFlow()?8450:6950))
+   ?[-100,-46,...Array.from({length:47},(_,i)=>-34+i*.5)]
+   :[-100,-46,-34,-26,-22,-18,-11];
+  for(let i=1;i<sections.length;i++){const [a,b]=[sections[i-1],sections[i]];
    append('sand',rawAt(a),rawAt(b),0,0,start,end,2.5);
+  }
   // The SEA-SIDE shoulder is blacktop too, right up to its -11m edge.
   // Beach sand starts OUTSIDE this apron rather than intruding into traffic.
   // This reuses the existing asphalt render material and leaves 5 lanes

@@ -3,7 +3,7 @@ import {RACE_CHECKPOINT_KEY} from '../src/race-recovery';
 
 test.use({viewport:{width:915,height:412},isMobile:true,hasTouch:true,serviceWorkers:'block'});
 async function raceMenu(page:Page){
- await page.goto('/?trafficSeed=17');
+ await page.goto('/');
  await page.locator('#boot-enter').tap();
  await page.locator('#start-race').tap();
  await expect(page.locator('html')).toHaveAttribute('data-drive-mode','ready',{timeout:120000});
@@ -47,4 +47,25 @@ test('a deliberate return to stage select clears the checkpoint',async({page})=>
  await page.locator('#tp-exit').tap();
  await expect(page.locator('#racing-menu')).toBeVisible();
  expect(await page.evaluate(key=>localStorage.getItem(key),RACE_CHECKPOINT_KEY)).toBeNull();
+});
+
+test('a legacy beach link recovers the ordinary race after an independent development restart',async({page})=>{
+ test.setTimeout(240000);
+ await raceMenu(page);
+ await page.keyboard.down('Space');
+ await expect.poll(()=>page.evaluate(()=>(window as any).__drive.snapshot().distance)).toBeGreaterThan(355);
+ await page.keyboard.up('Space');
+ await page.locator('#pause').tap();
+ await page.goto('/?beach2=1&at=4600');
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing',{timeout:90000});
+ const checkpoint=()=>page.evaluate(key=>localStorage.getItem(key),RACE_CHECKPOINT_KEY);
+ const saved=await checkpoint();expect(saved).not.toBeNull();
+ expect(await page.evaluate(()=>(window as any).__drive.snapshot().distance)).toBe(4600);
+ await page.locator('#pause').tap();await page.locator('#tp-restart').tap();
+ await expect(page.locator('html')).toHaveAttribute('data-drive-mode','playing');
+ expect(await checkpoint()).toBe(saved);
+ await page.goto('/?beach2=1');
+ await expect(page.locator('#trip-pause-dock')).toBeVisible({timeout:90000});
+ expect(await page.evaluate(()=>(window as any).__drive.snapshot().distance)).toBeCloseTo(JSON.parse(saved!).player.distance,3);
+ expect(await page.evaluate(()=>(window as any).__drive.macroInspect().beach2)).toBe(true);
 });

@@ -1,0 +1,32 @@
+{
+  "blendOpens": true,
+  "editModeAccessible": true,
+  "vertices": 115228,
+  "faces": 230460,
+  "nonmanifoldEdges": 0,
+  "finite": true,
+  "materials": 1,
+  "rigged": false,
+  "generatedHead": "Unapproved proportion proxy only; original accepted head/hair are untouched",
+  "blendBytes": 5260382,
+  "blendSha256": "3cd7f4786a2130603a5be20f838a02adb0bb2faae4cd217a4dc8f4d14016b82e",
+  "frozenOriginalsMatch": true,
+  "frozenFiles": [
+    {
+      "Path": "C:\\astra-dev\\outrun\\public\\assets\\characters\\coast-heroine-r7h-race.glb",
+      "Hash": "9314E2694E098B57E8F8731382F36B1FB7BAB3C7A879B7A7B6DA354B22AF78D0"
+    },
+    {
+      "Path": "C:\\astra-dev\\outrun\\public\\assets\\characters\\coast-heroine-r7h-full.glb",
+      "Hash": "8B17CC773798F2F017A810061745E30639F314B38F9D0BEDCCB1AEF2220E6E95"
+    },
+    {
+      "Path": "C:\\astra-dev\\outrun\\public\\assets\\characters\\coast-blonde-r6d.glb",
+      "Hash": "8273FE14B4F1C83A4C8B574BACD7D834A6142380013E6E8EBB6F7B447399F519"
+    },
+    {
+      "Path": "C:\\astra-dev\\outrun\\art-prototype\\output\\r7h-heroine-fullbody.blend",
+      "Hash": "FC26A84CEC7E83CF6F30C19348700B692978EBF5D82435B86DFDF31D1534830B"
+    }
+  ]
+}

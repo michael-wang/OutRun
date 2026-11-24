@@ -1,0 +1,72 @@
+
+> first-drive@0.10.20 verify:dev
+> npm run scenic:check && npm run scenic:test && npm run build && npm test
+
+
+> first-drive@0.10.20 scenic:check
+> node scripts/build-scenic-layout.mjs --check
+
+Scenic layout OK: 9 hero anchors, 1 sites, 1 GLB props
+
+> first-drive@0.10.20 scenic:test
+> node scripts/test-scenic-layout.mjs
+
+Scenic portable-site contract PASS: hero position + generated GLB location move together; asset recipe/catalog unchanged.
+
+> first-drive@0.10.20 prebuild
+> npm run coast:shore
+
+
+> first-drive@0.10.20 coast:shore
+> node scripts/bake-coast-shore.mjs
+
+Coast mask 340a609b: cached; skipping unchanged 30km bake.
+Coastal farm ground: 183 plots, 17661 bytes.
+
+> first-drive@0.10.20 build
+> tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 206 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                 2.70 kB │ gzip:   1.35 kB
+dist/assets/passenger-nice-pass-Cu06_-vq.mp3    6.19 kB
+dist/assets/passenger-yes-YjxtziVK.mp3          7.82 kB
+dist/assets/passenger-palm-Bvjv8j29.wav        11.85 kB
+dist/assets/coast-farm-ground-Cu0Q-pFO.bin     17.66 kB
+dist/assets/road-worker-DHHLZOgQ.js           420.97 kB
+dist/assets/coast-meadow-LQ3Ifaps.png         555.76 kB
+dist/assets/main-CtzWo4tw.css                   8.34 kB │ gzip:   2.63 kB
+dist/assets/index-CrBmo7iR.css                 12.39 kB │ gzip:   3.67 kB
+dist/assets/loading-BjMYfWaB.js                 9.39 kB │ gzip:   3.86 kB
+dist/assets/index-CYSKTAZH.js                   9.62 kB │ gzip:   3.90 kB
+dist/assets/coast-boats-Uc_KwHa_.js            10.12 kB │ gzip:   4.13 kB
+dist/assets/coast-ocean-BUSlcUaQ.js            30.44 kB │ gzip:  12.06 kB
+dist/assets/racing-menu-CKhMdPsX.js            34.84 kB │ gzip:  10.01 kB
+dist/assets/html2canvas.esm-DXEQVQnt.js       201.04 kB │ gzip:  47.43 kB
+dist/assets/gamepad-2NzDFhDD.js               574.90 kB │ gzip: 147.12 kB
+dist/assets/main-Di0zcsu_.js                  790.17 kB │ gzip: 262.31 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.96s
+
+> first-drive@0.10.20 test
+> vitest run
+
+
+ RUN  v5.0.5 C:/astra-dev/outrun
+
+
+ Test Files  113 passed (113)
+      Tests  498 passed (498)
+   Start at  17:05:08
+   Duration  6.95s (tests 62%, import 26%, transform 10%, worker 1%)
+
+    Isolate  113 workers spawned · ~232ms startup each (spawn + environment, per file)
+             at least ~613ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -2,10 +2,8 @@ import * as THREE from 'three';
 import {expect,it} from 'vitest';
 import {WheelContactPatch} from '../src/wheel-contact-patch';
 import {prepareRoadChunk,type RoadMeshData} from '../src/road-chunk';
-import {PILOTS,createPilotTrack,pilotSample,pilotWeights} from '../src/pilot-composer';
-import {generateTrip} from '../src/trip';
-import {bridgeSpan,bridgeShoulders} from '../src/bridge';
-import {selectRoadInterchange,interchangeRampSpan} from '../src/road-interchange';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
+import {bridgeShoulders} from '../src/bridge';
 
 function surfaces(data:RoadMeshData[]){
  const group=new THREE.Group();
@@ -21,7 +19,7 @@ function surfaces(data:RoadMeshData[]){
  return group;
 }
 
-function checkSection(group:THREE.Group,distance:number,track:ReturnType<typeof createPilotTrack>){
+function checkSection(group:THREE.Group,distance:number,track:ReturnType<typeof coastWorkerRoad>['track']){
  const patch=new WheelContactPatch();
  expect(patch.prepare([group],distance)).toBe(true);
  let hits=0;
@@ -43,22 +41,23 @@ function checkSection(group:THREE.Group,distance:number,track:ReturnType<typeof 
  expect(hits).toBeGreaterThan(0);
 }
 
-it('matches full mesh rays across two chunks on a 10-degree bank',()=>{
- const stage=PILOTS[1],track=createPilotTrack(stage,10);
- const section=(a:number,b:number)=>prepareRoadChunk(track.sample,d=>pilotSample(stage,d).halfWidth,d=>pilotWeights(stage,d),a,b,track.length);
+it('matches exact road/shoulder rays across two adjacent authored coast chunks',()=>{
+ const runtime=coastWorkerRoad(),track=runtime.track;
+ const section=(a:number,b:number)=>prepareRoadChunk(track.sample,
+  runtime.halfAt,runtime.weightsAt,a,b,track.length,
+  false,true,[],d=>bridgeShoulders(d,runtime.stage.seed),undefined,true,
+  undefined,runtime.stage.scenerySections);
  const group=surfaces([...section(980,1000),...section(1000,1020)]);
  for(const d of [999,1000,1001])checkSection(group,d,track);
 });
 
-it('matches actual generated bridge ends and both interchange ramps',()=>{
- const stage=generateTrip(1),track=createPilotTrack(stage);
- const half=(d:number)=>pilotSample(stage,d).halfWidth,weights=(d:number)=>pilotWeights(stage,d);
- const bridge=bridgeSpan(track.sample,half,weights,track.length)!;
- const junction=selectRoadInterchange(stage,bridge)!;
- const entry=interchangeRampSpan(junction,'entry'),exit=interchangeRampSpan(junction,'exit');
- for(const d of [bridge.start,bridge.end,(entry.from+entry.to)/2,(exit.from+exit.to)/2]){
-  const data=prepareRoadChunk(track.sample,half,weights,d-20,d+20,track.length,false,true,[],
-   s=>bridgeShoulders(s,stage.seed,bridge),bridge,true,junction);
+it('retains wheel contact accuracy at real coast terrain/roadside stations',()=>{
+ const runtime=coastWorkerRoad(),track=runtime.track;
+ for(const d of [850,3150]){
+  const data=prepareRoadChunk(track.sample,runtime.halfAt,runtime.weightsAt,
+   d-20,d+20,track.length,false,true,[],
+   v=>bridgeShoulders(v,runtime.stage.seed),undefined,true,
+   undefined,runtime.stage.scenerySections);
   checkSection(surfaces(data),d,track);
  }
 });

@@ -1,13 +1,18 @@
-import {COAST_BEACHES,COAST_ROCKS,coastRockX} from './coast-layout';
+import {beach2VillageClearing} from './beach2-composition-layout';
+import {landingDeferred} from './content/kenting-neighbours';
+import {beachMarketFrontage} from './beach-zone-layout';
+import {macroLandHeight,macroClearApproach,macroHidePreRevealBeach} from './beach-macro';
+import {COAST_BEACHES,COAST_BEACH_STALLS,COAST_LANDINGS,coastReefRocks,coastRocks,coastBeachX,coastRockX} from './coast-layout';
 import type {CoastShadowGroup} from './coast-shadow-layers';
 import {COAST_VILLAGE_SITES,COAST_REST_SPOTS} from './coast-village-layout';
 import {buildCoastTownStreets} from './coast-town-streets';
 import {coastHomeFacingYaw} from './coast-house-facing';
 import type {CoastShadowAnchor} from './coast-dusk-shadows';
 import {FARM_HOMES,FARM_YARDS} from './coast-farm-layout';
+import {coastStaticStage,replacesLegacySite} from './content/stage-data';
 import {COAST_RURAL_SHOWCASE,COAST_RURAL_HOUSES,RURAL_CREEK,ruralShowcaseReplacesFarmHome} from './coast-rural-layout';
 import {buildCoastRuralHouse,buildCoastRuralCreek,buildPaddyToolShed} from './coast-rural-vignette';
-import {COAST_DRAIN_X,COAST_LAMP_HEAD,COAST_UTILITY_POLES,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_DRAIN_X,COAST_LAMP_HEAD,COAST_UTILITY_POLES,COAST_WIRE_ACROSS,COAST_WIRE_TIP_DROP,coastDrainOverlaps,coastPoleLinks} from './coast-roadside-layout';
 import {buildCoastRoadsideDrain,buildCoastRoadsideWater,buildCoastUtilityWires} from './coast-roadside-geometry';
 import {vehicleGeometry,waffleSignGeometry,waffleSignTexture} from './vehicle-model';
 import type {BridgeSpan} from './bridge';
@@ -208,6 +213,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    b.matrices.push(dummy.matrix.clone());
  }
  function placeTree(species:RoadTree,height:number,seed:number,width=height){
+  const frame=sample(anchorDistance),lateral=base.clone().sub(frame.position).dot(frame.right);
+  if(beach2VillageClearing(anchorDistance,lateral))return;
   let parts=treeGeometry.get(species);
   if(!parts){
    parts=roadsideTrees[species].parts.map((data:NaturePart)=>{
@@ -368,6 +375,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   let waffle:THREE.BufferGeometry|undefined,waffleSign:THREE.BufferGeometry|undefined;
   for(const [index,site] of COAST_VILLAGE_SITES.entries()){
    const {d,key}=site;if(!inChunk(d))continue;
+   if(site.x>13&&(macroClearApproach(d)||macroLandHeight(site.x,d)>0))continue;
    beachAnchor(d,site.x);yaw+=site.yaw;
    if(site.kind==='home'){
     if(clear(10)){
@@ -408,14 +416,14 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
   coastShadowGroup='buildings';
   let toolshed:THREE.BufferGeometry|undefined;
   for(const yard of FARM_YARDS){
-   if(!inChunk(yard.d))continue;
+   if(!inChunk(yard.d)||macroClearApproach(yard.d))continue;
    beachAnchor(yard.d,yard.x);yaw+=Math.PI+yard.yaw;
    if(clear(5))part(toolshed??=buildPaddyToolShed(),'#ffffff',0,0,0,1,1,1);
   }
   let taiwanFarmPrefab:THREE.BufferGeometry|undefined;
   for(const site of FARM_HOMES){
    // The demonstration hamlet replaces only these two primitive farm houses.
-   if(ruralShowcaseReplacesFarmHome(site.d))continue;
+   if(ruralShowcaseReplacesFarmHome(site.d)||macroClearApproach(site.d))continue;
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,site.x);yaw+=site.yaw;if(!clear(10))continue;
    if(site.x<50)range.essentialShadows?.push({kind:'home',d:site.d,x:site.x,width:10,length:16});
@@ -443,6 +451,8 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const ruralPrefabs=new Map<string,THREE.BufferGeometry>();
    if(taiwanFarmPrefab)ruralPrefabs.set('farmhouse',taiwanFarmPrefab);
    for(const site of COAST_RURAL_HOUSES){
+    // The new GLB replaces this legacy house by data (no duplicate mesh).
+    if(replacesLegacySite(coastStaticStage,'coast-rural-house',site.d))continue;
     beachAnchor(site.d,site.x);
     // The PI turn faces each local -X entrance toward the actual road;
     // the authored positive yaw tilts the hero gate toward incoming cars.
@@ -516,9 +526,9 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    part(cylinder,'#373d3e',0,1.03,0,.266,2.06,.266);
    for(const y of [.50,.98,1.46])part(cylinder,'#dbb245',0,y,0,.283,.27,.283);
    part(boxes,'#687174',0,h-.54,0,3.05,.17,.22);
-   for(const across of [-1.05,0,1.05]){
+   for(const across of COAST_WIRE_ACROSS){
     part(cylinder,'#dad6c7',across,h-.31,0,.105,.32,.105);
-    part(cylinder,'#4d5051',across,h-.13,0,.045,.07,.045);
+    part(cylinder,'#4d5051',across,h-COAST_WIRE_TIP_DROP,0,.045,.07,.045);
    }
    if(pole.transformer){
     part(cylinder,'#71807c',.64,h-2.20,0,.48,1.42,.48);
@@ -543,7 +553,22 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
   }
   coastShadowGroup='beach';
+  for(const stall of COAST_BEACH_STALLS){
+   if(stall.x<0&&macroHidePreRevealBeach(stall.d))continue;
+   if(!inChunk(stall.d)||beachMarketFrontage(stall.d,stall.x))continue;
+   if(stall.x>13&&(macroClearApproach(stall.d)||macroLandHeight(stall.x,stall.d)>0))continue;
+   beachAnchor(stall.d,stall.x);
+   if(!clear(4)||base.y<COAST_SEA_LEVEL+1)continue;
+   yaw-=Math.PI;
+   nightStall(stall.d);
+   for(const offset of [-1.3,1.2]){
+    beachAnchor(stall.d+offset,stall.x+4);
+    beachPerson(stall.d,offset>0);
+   }
+  }
   for(const spot of COAST_REST_SPOTS){
+   if(spot.x<0&&macroHidePreRevealBeach(spot.d))continue;
+   if(COAST_BEACH_STALLS.some(s=>Math.abs(s.d-spot.d)<8&&Math.abs(s.x-spot.x)<8))continue;
    if(!inChunk(spot.d))continue;
    beachAnchor(spot.d,spot.x);if(base.y< -3.7||!clear(3))continue;
    yaw+=Math.PI/2+(random(spot.key+83)-.5)*.22;restingBench(spot.key,spot.people);
@@ -558,8 +583,10 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    const half=Math.min(370,bay.radius*.7),count=Math.floor(half*2/33)+1;
    for(let j=0;j<count;j++){
     const d=bay.distance-half+j*33+rand(j+bay.distance)*15;
-    if(!inChunk(d))continue;
+    if(!inChunk(d)||macroHidePreRevealBeach(d)||COAST_LANDINGS.some(landing=>!landingDeferred(landing.d)&&Math.abs(d-landing.d)<28))continue;
     const x=-19-rand(j*11+bay.distance)*17;
+    if(macroLandHeight(x,d)>0)continue; // macro headland is not a beach-chair terrace
+    if(COAST_BEACH_STALLS.some(s=>Math.abs(s.d-d)<12&&Math.abs(s.x-x)<9))continue;
     if(COAST_REST_SPOTS.some(s=>Math.abs(s.d-d)<11&&Math.abs(s.x-x)<7))continue;
     beachAnchor(d,x);if(!clear(4)||base.y<-4.05)continue;
     if(x>=-27)range.essentialShadows?.push({kind:'umbrella',d,x,width:4.8,length:8});
@@ -578,7 +605,7 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     if(j%3===0){beachAnchor(d+8,x-3);if(base.y>-4.2&&clear(2))beachPerson(j+1,true);}
    }
    const d=bay.distance-55;
-   if(inChunk(d)){
+   if(inChunk(d)&&!macroHidePreRevealBeach(d)){
     beachAnchor(d,-16.8);if(clear(4)){
      part(boxes,'#fff0d3',0,.6,0,3.7,1.2,2.6);
      part(boxes,'#36a8b1',0,1.25,-1.4,3.9,.18,.8);
@@ -591,17 +618,17 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     }
    }
   }
-  // Final chapter: two tiny working-boat landings punctuate the coast.
-  // These are sparse fishing sheds/net racks, not another resort village.
+  // Working harbours share fish sheds, drying racks and timber piers.
   coastShadowGroup='buildings';
-  for(const landing of [{d:7730,x:-17.5},{d:8920,x:-17.5}]){
-   if(!inChunk(landing.d))continue;
-   beachAnchor(landing.d,landing.x);
-   if(!clear(6))continue;
+  for(const {d,x,radius} of COAST_LANDINGS){
+   if(!inChunk(d)||landingDeferred(d))continue;
+   beachAnchor(d,x);
+   if(!clear(radius))continue;
    yaw+=Math.PI/2;
    part(boxes,'#a69a81',0,.28,0,8,.56,10);
    part(boxes,'#c0b095',0,1.95,0,5,3.5,6.4);
-   part(boxes,'#6b6964',0,3.83,0,6.3,.40,7.4);
+   part(boxes,'#317f87',0,3.83,0,6.3,.40,7.4);
+   part(boxes,'#665d61',0,1.60,-3.22,3.6,2.7,.12);
    for(const z of [-2.8,2.8]){
     part(cylinder,'#776a57',-4,1.6,z,.11,3.2,.11);
     part(boxes,'#847d6c',-4,3.20,z,.45,.20,2.2);
@@ -609,18 +636,22 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
    }
    for(const z of [-2.4,0,2.4])part(boxes,'#8b6d52',-5,.55,z,1.5,.8,1.5);
    // Short low pier extending seaward from above water level. It stays outside
-   // the drivable corridor and only these two locations have this structure.
-   const frame=sample(landing.d);
-   base.copy(frame.position).addScaledVector(frame.right,-25);
+   // the drivable corridor, anchored to the local wet shoreline.
+   const frame=sample(d);
+   base.copy(frame.position).addScaledVector(frame.right,coastBeachX(-26,d));
    base.y=COAST_SEA_LEVEL+.75;
    yaw=-frame.roadHeading;
-   part(boxes,'#a9a192',-8,.05,0,18,.36,3.4);
-   for(const x of [-15,-9,-3]){
-    for(const z of [-1.45,1.45])part(cylinder,'#827866',x,-.70,z,.12,1.60,.12);
+   part(boxes,'#a9a192',6,.05,0,26,.36,4.2);
+   part(cylinder,'#776a57',11,3.1,0,.23,6.2,.23);
+   part(boxes,'#aa8960',13,5.85,0,5.6,.27,.24,0,0,.35);
+   part(cylinder,'#665d61',15.4,4.6,0,.045,4.1,.045);
+   part(boxes,'#317f87',15.4,2.3,0,1.5,.68,1.25);
+   for(const x of [-5,2,9,18]){
+    for(const z of [-1.45,1.45])part(cylinder,'#827866',x,-2,z,.16,4.2,.16);
    }
   }
   coastShadowGroup='rocks';
-  for(const site of COAST_ROCKS){
+  for(const site of coastRocks()){
    if(!inChunk(site.d))continue;
    beachAnchor(site.d,coastRockX(site));
    if(clear(site.r+2)){
@@ -628,6 +659,18 @@ export function addJourneyScenery(scene:THREE.Scene,sample:Sample,length:number,
     part(boulder,'#8d9185',0,site.r*.34,0,site.r,site.r*.94,site.r*.85,.13,rand(site.d)*6,.1);
     part(boulder,'#a5a48f',site.r*.5,0,site.r*.65,site.r*.48,site.r*.44,site.r*.42);
    }
+  }
+  for(const site of coastReefRocks()){
+   if(!inChunk(site.d))continue;
+   beachAnchor(site.d,coastRockX(site));
+   const r=site.r;
+   if(!clear(r*1.6+2))continue;
+   const h=.55+rand(site.d+1)*.62;
+   // Embed long fractured slabs in the shoal, with just the crest exposed
+   // on the outer row even where the seabed slopes below the waterline.
+   const rise=r*h,depth=Math.max(0,COAST_SEA_LEVEL-rise*.5-base.y);
+   part(boulder,'#72766d',0,rise*.18+depth*.5,0,r*1.45,rise+depth*.5,r*.85,.17,rand(site.d)*6,.13);
+   part(boulder,'#8d9185',r*.76,depth*.5,r*.64,r*.74,rise*.60+depth*.5,r*.59,.12,rand(site.d+2)*6);
   }
   coastShadowGroup='other';
  }

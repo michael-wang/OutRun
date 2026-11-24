@@ -1,0 +1,11 @@
+{
+  "note": "final review entry, may be HTTP cached; excludes GPU shader warmup",
+  "load": [
+    {
+      "file": "/assets/characters/coast-blonde-r6.glb",
+      "durationMs": 27.799999997019768,
+      "transferSize": 300,
+      "encodedBodySize": 109144
+    }
+  ]
+}

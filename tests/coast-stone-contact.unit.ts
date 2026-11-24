@@ -6,13 +6,11 @@ import {coastBarrierStyle,coastBarrierStoneAt,COAST_LAMPS} from '../src/coast-la
 import {COAST_DRAIN_X,COAST_SIDE_DRAINS,COAST_UTILITY_POLES,coastDrainAt,coastDrainCovered} from '../src/coast-roadside-layout';
 import {buildCoastRoadsideDrain,buildCoastRoadsideWater} from '../src/coast-roadside-geometry';
 import {makeCoastDrainWaterMaterial,COAST_DRAIN_FLOW_METRES_PER_SECOND} from '../src/coast-drain-water';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 import {addJourneyScenery} from '../src/scenery';
-import {pilotSample,pilotWeights} from '../src/pilot-composer';
 import {shoulderProfile} from '../src/road-profile';
 
-const half=()=>8.75,track=createPilotTrack(COAST_ULTRA_STAGE);
+const runtime=coastWorkerRoad(),half=()=>8.75,track=runtime.track;
 
 it('uses the same physical concrete-stone slots as the visible right-side resort blocks',()=>{
  const slot=852,stone=coastBarrierStoneAt(slot,1);
@@ -114,9 +112,9 @@ it('mounts a working roadside lamp on every canal-side utility pole',()=>{
  const separations=poles.slice(1).map((p,i)=>p.d-poles[i].d);
  expect(Math.min(...separations)).toBeGreaterThan(40);
  expect(Math.max(...separations)-Math.min(...separations)).toBeGreaterThan(50);
- const scene=new THREE.Scene(),stage=COAST_ULTRA_STAGE;
+ const scene=new THREE.Scene(),stage=runtime.stage;
  addJourneyScenery(scene,track.sample,track.length,stage.sceneryAct,stage.seed,
-  d=>pilotSample(stage,d).halfWidth,d=>pilotWeights(stage,d),{
+  runtime.halfAt,runtime.weightsAt,{
    start:0,end:1000,openRoad:true,coastUltra:true,
    shoulders:d=>shoulderProfile(d,804),scenerySections:stage.scenerySections,
   });

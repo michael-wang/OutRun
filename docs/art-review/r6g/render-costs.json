@@ -1,0 +1,203 @@
+{
+  "before": {
+    "variant": "before",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 3559,
+      "bones": 25
+    },
+    "draw": {
+      "hairCalls": 1,
+      "frame": {
+        "frame": 6667,
+        "calls": 120,
+        "triangles": 581695,
+        "points": 668,
+        "lines": 0
+      },
+      "vertices": 2242
+    },
+    "exposure": [
+      {
+        "view": "chase",
+        "fixedPercent": 23.828920570264767,
+        "hairPixels": 1964
+      },
+      {
+        "view": "front45",
+        "fixedPercent": 65.68836741607473,
+        "hairPixels": 185969
+      },
+      {
+        "view": "rear45",
+        "fixedPercent": 29.097446901245537,
+        "hairPixels": 238612
+      },
+      {
+        "view": "side",
+        "fixedPercent": 48.651367216991545,
+        "hairPixels": 430473
+      },
+      {
+        "view": "back",
+        "fixedPercent": 28.920277818035874,
+        "hairPixels": 448495
+      }
+    ],
+    "errors": []
+  },
+  "extreme": {
+    "variant": "extreme",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 8000,
+      "bones": 81
+    },
+    "draw": {
+      "hairCalls": 1,
+      "frame": {
+        "frame": 6491,
+        "calls": 120,
+        "triangles": 586136,
+        "points": 668,
+        "lines": 0
+      },
+      "vertices": 4034
+    },
+    "exposure": [
+      {
+        "view": "chase",
+        "fixedPercent": 33.8851526125194,
+        "hairPixels": 1933
+      },
+      {
+        "view": "front45",
+        "fixedPercent": 43.890074310241545,
+        "hairPixels": 201991
+      },
+      {
+        "view": "rear45",
+        "fixedPercent": 32.36344504320653,
+        "hairPixels": 250888
+      },
+      {
+        "view": "side",
+        "fixedPercent": 34.015531350852925,
+        "hairPixels": 416448
+      },
+      {
+        "view": "back",
+        "fixedPercent": 26.453458348488727,
+        "hairPixels": 445386
+      }
+    ],
+    "errors": []
+  },
+  "after": {
+    "variant": "after",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 10120,
+      "bones": 73
+    },
+    "draw": {
+      "hairCalls": 1,
+      "frame": {
+        "frame": 6535,
+        "calls": 120,
+        "triangles": 588256,
+        "points": 668,
+        "lines": 0
+      },
+      "vertices": 5098
+    },
+    "exposure": [
+      {
+        "view": "chase",
+        "fixedPercent": 22.214809873248832,
+        "hairPixels": 1499
+      },
+      {
+        "view": "front45",
+        "fixedPercent": 36.15868421594112,
+        "hairPixels": 145799
+      },
+      {
+        "view": "rear45",
+        "fixedPercent": 15.779097133677464,
+        "hairPixels": 178033
+      },
+      {
+        "view": "side",
+        "fixedPercent": 18.55143416285063,
+        "hairPixels": 309658
+      },
+      {
+        "view": "back",
+        "fixedPercent": 16.53176419691376,
+        "hairPixels": 342099
+      }
+    ],
+    "errors": []
+  }
+}

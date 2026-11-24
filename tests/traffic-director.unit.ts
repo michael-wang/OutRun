@@ -7,8 +7,7 @@ import {newTrafficSessionSeed,roadLaneCenters,plannedTrafficLane,plannedTrafficL
  trafficCanEnter,trafficFollowingTarget,approachTrafficSpeed,trafficStopBeforeLeader,
  TRAFFIC_FLOW} from '../src/traffic-flow';
 import {breakdownLayout,COAST_BREAKDOWN} from '../src/breakdowns';
-import {COAST_ULTRA_STAGE} from '../src/coast-ultra-stage';
-import {createPilotTrack,pilotSample} from '../src/pilot-composer';
+import {coastWorkerRoad} from '../src/content/coast-worker-road';
 
 const sample=(d:number)=>({
  position:new THREE.Vector3(0,0,d),right:new THREE.Vector3(1,0,0),
@@ -205,8 +204,8 @@ it('keeps a practical passing lane during three varied 10km encounter simulation
 });
 
 it('places seeded breakdowns in any safe coastal lane, outside start and finish zones',()=>{
- const stage=COAST_ULTRA_STAGE,track=createPilotTrack(stage);
- const half=(d:number)=>pilotSample(stage,d).halfWidth;
+ const runtime=coastWorkerRoad(),stage=runtime.stage,track=runtime.track;
+ const half=runtime.halfAt;
  const layouts=[1473,9923,62018].map(salt=>
   breakdownLayout(track.sample,half,track.length,stage.seed^salt,true));
  expect(layouts.some(layout=>layout.length>0)).toBe(true);
@@ -227,7 +226,7 @@ it('places seeded breakdowns in any safe coastal lane, outside start and finish 
 it('samples game-speed coastal traffic within pool capacity with seeded any-lane breakdowns',()=>{
  const breakdowns=breakdownLayout(sample,()=>8.75,10000,804^1473,true);
  expect(breakdowns.length).toBeGreaterThanOrEqual(1);
- expect(breakdowns.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxCount);
+ expect(breakdowns.length).toBeLessThanOrEqual(COAST_BREAKDOWN.maxSites*2);
  expect(breakdowns.every(b=>
   b.distance>=COAST_BREAKDOWN.startClearance
   &&b.distance<10000-COAST_BREAKDOWN.finishClearance

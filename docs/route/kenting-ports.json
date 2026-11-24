@@ -1,0 +1,172 @@
+{
+  "provenance": {
+    "revision": "023cb5469945bcb83fda7be1acda5ab4d804bfdd",
+    "dataDate": "2026-11-20"
+  },
+  "status": "Proposed core ports; surrounding approach and exit are shared dependencies",
+  "id": "kenting-beach",
+  "displayName": "Kenting swimming beach",
+  "localLengthM": 1400,
+  "coreLocalM": [
+    0,
+    1400
+  ],
+  "environment": "left sea / right inland ridge",
+  "assetPackages": [
+    "kenting-beach"
+  ],
+  "requiredSceneLayers": [
+    "beach2-macro and production batches",
+    "water-following swimmers",
+    "cape path and gull flights"
+  ],
+  "placement": {
+    "fixedWorldSun": [
+      -0.17302425,
+      0.08469461,
+      0.9812693
+    ],
+    "seaWorldY": -5,
+    "protectedViews": [
+      "right mountain reveal",
+      "sunlit left swimming bay",
+      "distant tower approaching the connected cape"
+    ],
+    "relocatedVisibility": "UNKNOWN"
+  },
+  "entry": {
+    "referenceTrackM": 4850,
+    "localStationM": 0,
+    "world": {
+      "trackM": 4850,
+      "hudM": 4500,
+      "x": -1389.87157093,
+      "y": -1,
+      "z": 4321.24150338,
+      "headingDeg": 39.0400905,
+      "curvaturePerM": 0.00004169,
+      "grade": -6.1e-7,
+      "bankDeg": 6.00014354,
+      "widthM": 17.5
+    },
+    "local": {
+      "rightM": 0,
+      "upM": 0,
+      "forwardM": 0,
+      "headingDeg": 0
+    },
+    "lanes": 5,
+    "laneWidthM": 3.5,
+    "shoreLateralM": -55,
+    "seaWorldY": -5,
+    "terrainSamples": [
+      {
+        "lateralM": -100,
+        "worldY": -12.2
+      },
+      {
+        "lateralM": -55,
+        "worldY": -5
+      },
+      {
+        "lateralM": -11,
+        "worldY": -0.18607781
+      },
+      {
+        "lateralM": 11,
+        "worldY": -3.37617445
+      },
+      {
+        "lateralM": 55,
+        "worldY": 20.9913372
+      },
+      {
+        "lateralM": 150,
+        "worldY": 35.97283427
+      }
+    ]
+  },
+  "exit": {
+    "referenceTrackM": 6250,
+    "localStationM": 1400,
+    "world": {
+      "trackM": 6250,
+      "hudM": 5900,
+      "x": -2314.34440749,
+      "y": 6,
+      "z": 5366.18446357,
+      "headingDeg": 53.04017014,
+      "curvaturePerM": -0.00000628,
+      "grade": 4.4e-7,
+      "bankDeg": 2.02848532,
+      "widthM": 17.5
+    },
+    "local": {
+      "rightM": 59.87110291,
+      "upM": 7,
+      "forwardM": 1393.90504218,
+      "headingDeg": 14.00007965
+    },
+    "lanes": 5,
+    "laneWidthM": 3.5,
+    "shoreLateralM": -48,
+    "seaWorldY": -5,
+    "terrainSamples": [
+      {
+        "lateralM": -100,
+        "worldY": -13.32
+      },
+      {
+        "lateralM": -48,
+        "worldY": -5
+      },
+      {
+        "lateralM": -11,
+        "worldY": 5.88520788
+      },
+      {
+        "lateralM": 11,
+        "worldY": 4.63039598
+      },
+      {
+        "lateralM": 55,
+        "worldY": 5.77555889
+      },
+      {
+        "lateralM": 150,
+        "worldY": 6.53555889
+      }
+    ]
+  },
+  "calibration": {
+    "absK": {
+      "p95": 0.00463086,
+      "max": 0.00896271
+    },
+    "absGrade": {
+      "p95": 0.03196102,
+      "max": 0.05361536
+    },
+    "absBankDeg": {
+      "p95": 11.05835271,
+      "max": 13.50000505
+    },
+    "deltaKPerM": {
+      "p95": 0.00007093,
+      "max": 0.00037618
+    },
+    "deltaGradePerM": {
+      "p95": 0.0002277,
+      "max": 0.00054255
+    },
+    "deltaBankDegPerM": {
+      "p95": 0.06864098,
+      "max": 0.15281043
+    },
+    "steerAtUnitCurvature": {
+      "100": 76.38350759,
+      "200": 171.32631371,
+      "250": 233.45139594
+    }
+  }
+}

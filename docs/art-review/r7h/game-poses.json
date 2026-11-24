@@ -1,0 +1,111 @@
+{
+  "samples": [
+    {
+      "action": "shoutRight",
+      "clipTime": 0.8122000000044699,
+      "target": {
+        "id": "RIVAL 1",
+        "side": "right",
+        "lead": 1,
+        "localX": -4.953091601143171,
+        "screen": [
+          0.7062865906613998,
+          -0.39866333930469444
+        ]
+      },
+      "distance": 3318.8790516023982,
+      "speed": 223.7868385869981,
+      "render": {
+        "frame": 20028,
+        "calls": 529,
+        "triangles": 849580,
+        "points": 714,
+        "lines": 0
+      }
+    },
+    {
+      "action": "kissRight",
+      "clipTime": 1.1334000000000013,
+      "target": {
+        "id": "RIVAL 1",
+        "side": "right",
+        "lead": 1,
+        "localX": -4.376410445989678,
+        "screen": [
+          0.7349973645521103,
+          -0.4349150041883816
+        ]
+      },
+      "distance": 3611.2515093822944,
+      "speed": 223.85616214585443,
+      "render": {
+        "frame": 32466,
+        "calls": 653,
+        "triangles": 964740,
+        "points": 714,
+        "lines": 0
+      }
+    },
+    {
+      "action": "shoutLeft",
+      "clipTime": 0.8167000000000008,
+      "target": {
+        "id": "RIVAL 1",
+        "side": "left",
+        "lead": 1,
+        "localX": 4.993564269829222,
+        "screen": [
+          -0.7048857742735607,
+          -0.29482342198500383
+        ]
+      },
+      "distance": 3842.988733425996,
+      "speed": 223.90690240791326,
+      "render": {
+        "frame": 42324,
+        "calls": 656,
+        "triangles": 1016130,
+        "points": 714,
+        "lines": 0
+      }
+    },
+    {
+      "action": "kissLeft",
+      "clipTime": 1.1334000000000013,
+      "target": {
+        "id": "RIVAL 1",
+        "side": "left",
+        "lead": 1,
+        "localX": 3.0148866279735103,
+        "screen": [
+          -0.6784342601713574,
+          -0.528845185917342
+        ]
+      },
+      "distance": 4133.83174980791,
+      "speed": 223.85815176235567,
+      "render": {
+        "frame": 54720,
+        "calls": 569,
+        "triangles": 847994,
+        "points": 714,
+        "lines": 0
+      }
+    },
+    {
+      "action": "victory",
+      "clipTime": 0.8167000000000008,
+      "target": null,
+      "distance": 4365.56209186745,
+      "speed": 223.91001008550992,
+      "render": {
+        "frame": 63038,
+        "calls": 666,
+        "triangles": 1268534,
+        "points": 714,
+        "lines": 0
+      }
+    }
+  ],
+  "errors": []
+}

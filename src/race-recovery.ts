@@ -1,11 +1,15 @@
+import {KENTING_INSTALLATION} from './kenting-installation';
 import type {DrivingState} from './handling';
 import type {RivalRace} from './rival-race';
 import type {Traffic} from './traffic';
 import type {RoadCones} from './road-cones';
 import type {FinishStats} from './finish-stats';
 
-/** The one bounded local checkpoint for a race interrupted by the OS/browser. */
-export const RACE_CHECKPOINT_KEY='outrun-coast-race-checkpoint-v1';
+/** A timing rule change starts a new checkpoint namespace. Keep the old boosted
+ * race intact for the build that recorded it, including its elapsed time and ranking. */
+const baseKey='outrun-coast-race-checkpoint-natural-v1';
+export const RACE_CHECKPOINT_KEY=KENTING_INSTALLATION.relocated
+ ? baseKey+'-kenting-r1-'+KENTING_INSTALLATION.delta : baseKey;
 export const CHECKPOINT_MAX_AGE_MS=24*60*60*1000;
 
 export interface RaceCheckpoint {

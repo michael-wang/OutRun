@@ -40,7 +40,9 @@ __pycache__/
 
 # Fixed coast mask is baked before dev/build; phones only load the compressed result.
 /public/generated/coast-shore.shore
+/public/generated/coast-shore.build-key
 /src/generated/coast-farm-ground.bin
+/public/generated/coast-farm-ground-r1.bin
 
 # Release-hosted runtime art is verified and copied into the deployment at build time.
 /public/generated/*.glb
@@ -49,3 +51,19 @@ __pycache__/
 # Local source archives; selected licensed runtime models live in public/assets.
 /.cache/watercraft/
 /.cache/farm/
+# Generated Vite dependency prebundle for LAN playtesting; not an art source.
+/.cache/vite-lan-playtest/
+
+# Private Issue 63 preview input; never part of public builds.
+/.local/
+
+/public/generated/coast-shore-macro-*.shore
+/public/generated/coast-shore-macro-*.build-key
+
+# Isolated Kenting Beach 2 waterline caches remain local.
+/public/generated/coast-shore-beach2-*.shore
+/public/generated/coast-shore-beach2-*.build-key
+
+# Working Harbour Macro uses its own baked local waterline.
+/public/generated/coast-shore-working-harbour.shore
+/public/generated/coast-shore-working-harbour.build-key

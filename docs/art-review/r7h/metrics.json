@@ -1,0 +1,193 @@
+{
+  "r7a": {
+    "bytes": 1361900,
+    "sha256": "09ecb996f889fcefd1e264b7dc112895d051449006975e1da741ab0a730da3ad",
+    "triangles": 30502,
+    "primitives": 4,
+    "skinBones": [
+      2
+    ],
+    "clips": []
+  },
+  "r7h-full": {
+    "bytes": 2049392,
+    "sha256": "4afdebca24bbe710e5171758f57eb80d8810c7274f0c91cedc1e6830ce0a0983",
+    "triangles": 40238,
+    "primitives": 5,
+    "skinBones": [
+      25,
+      14
+    ],
+    "clips": [
+      "shoutRight",
+      "kissRight",
+      "shoutLeft",
+      "kissLeft",
+      "victory",
+      "wave",
+      "applause"
+    ]
+  },
+  "r7h-race": {
+    "bytes": 1558724,
+    "sha256": "efa2870b6cd27234da59d2ebb17b136628e4e8010daa427c27bd31284e77589c",
+    "triangles": 28647,
+    "primitives": 4,
+    "skinBones": [
+      14
+    ],
+    "clips": [
+      "shoutRight",
+      "kissRight",
+      "shoutLeft",
+      "kissLeft",
+      "victory",
+      "wave",
+      "applause"
+    ]
+  },
+  "before": {
+    "variant": "before",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 3559,
+      "bones": 25,
+      "heroine": true
+    },
+    "costs": [
+      {
+        "view": "front",
+        "draw": {
+          "frame": 6105,
+          "calls": 178,
+          "triangles": 352607,
+          "points": 714,
+          "lines": 0
+        },
+        "bustCalls": 4
+      },
+      {
+        "view": "rear45",
+        "draw": {
+          "frame": 6196,
+          "calls": 75,
+          "triangles": 237309,
+          "points": 714,
+          "lines": 0
+        },
+        "bustCalls": 4
+      },
+      {
+        "view": "chase",
+        "draw": {
+          "frame": 6333,
+          "calls": 472,
+          "triangles": 782785,
+          "points": 714,
+          "lines": 0
+        },
+        "bustCalls": 4
+      }
+    ],
+    "cpu": {
+      "scope": "car motion + world matrices; 120-step batch mean; no render/GPU timing",
+      "samples": 30,
+      "medianMs": 0.06750000001241764,
+      "p95BatchMeanMs": 0.06999999998758237,
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+    },
+    "errors": []
+  },
+  "after": {
+    "variant": "after",
+    "meta": {
+      "viewport": [
+        1600,
+        900
+      ],
+      "drawingBuffer": [
+        1600,
+        900
+      ],
+      "dpr": 1,
+      "scale": [
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ]
+      ],
+      "hairTriangles": 3559,
+      "bones": 25,
+      "heroine": true
+    },
+    "costs": [
+      {
+        "view": "front",
+        "draw": {
+          "frame": 6104,
+          "calls": 175,
+          "triangles": 349634,
+          "points": 714,
+          "lines": 0
+        },
+        "bustCalls": 4
+      },
+      {
+        "view": "rear45",
+        "draw": {
+          "frame": 6195,
+          "calls": 72,
+          "triangles": 234336,
+          "points": 714,
+          "lines": 0
+        },
+        "bustCalls": 4
+      },
+      {
+        "view": "chase",
+        "draw": {
+          "frame": 6354,
+          "calls": 469,
+          "triangles": 779812,
+          "points": 714,
+          "lines": 0
+        },
+        "bustCalls": 4
+      }
+    ],
+    "cpu": {
+      "scope": "car motion + world matrices; 120-step batch mean; no render/GPU timing",
+      "samples": 30,
+      "medianMs": 0.08916666662941376,
+      "p95BatchMeanMs": 0.09166666666666666,
+      "gpu": "ANGLE (NVIDIA, NVIDIA GeForce RTX 5070 Ti (0x00002C05) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+    },
+    "errors": []
+  }
+}

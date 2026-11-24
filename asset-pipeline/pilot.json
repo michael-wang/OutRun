@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "id": "r6d-hair-pilot",
+      "description": "Opt-in P0-2 fixture for the existing R6d export; not a new production or release approval.",
+      "declaration": "pilot",
+      "level": "L1",
+      "source": {
+        "kind": "blend",
+        "file": null,
+        "reportedLocation": "C:/astra-dev/outrun/art-prototype/output/r6d-cover-locks.blend (documented only; not available in this checkout)",
+        "author": "Codex (reported by the existing R6d review; authorship/provenance not independently audited)",
+        "tool": "Blender 4.5.13; scripts/blender/export_r6d_locks.py (reported workflow; not executed in P0-2)",
+        "provenance": {
+          "path": "docs/art-review/r6d/README.md",
+          "sha256": "c78b0cda2c9610b1619f3df424103f88cd5d3973eb394d5c3fb27f2ae960c823"
+        },
+        "license": {
+          "identifier": "UNVERIFIED",
+          "evidence": null
+        }
+      },
+      "export": {
+        "path": "public/assets/characters/coast-blonde-r6d.glb",
+        "sha256": "8273fe14b4f1c83a4c8b574bacd7d834a6142380013e6e8ebb6f7b447399f519"
+      },
+      "runtimePath": "public/assets/characters/coast-blonde-r6d.glb",
+      "downstream": [
+        "skinned head-following",
+        "spring wind motion",
+        "opaque vertex-color material"
+      ],
+      "acceptance": {
+        "technical": {
+          "status": "pending",
+          "evidence": null,
+          "notes": "Historical report records export/tests; editable source and complete reproduction are not verified here."
+        },
+        "visual": {
+          "status": "pending",
+          "evidence": null,
+          "notes": "R6d identity is frozen by later owner direction; this metadata pilot does not issue a new visual verdict or full-pipeline approval."
+        },
+        "device": {
+          "status": "pending",
+          "evidence": null,
+          "notes": "Issue #45 remains open: newer R6d/WILD Pixel 8 moving performance has not been verified."
+        },
+        "repeatability": {
+          "status": "pending",
+          "evidence": null,
+          "notes": "A script and local source path are documented; original inputs and repeated exports are not verified here."
+        }
+      },
+      "blockers": [
+        "Editable Blender source is documented on C: only; no verified local source hash/backup.",
+        "License/provenance of all source inputs remains unverified.",
+        "Pixel 8 R6d/WILD release-performance evidence is missing."
+      ]
+    }
+  ]
+}

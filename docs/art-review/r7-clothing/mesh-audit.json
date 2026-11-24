@@ -1,0 +1,50 @@
+{
+  "body_mesh_keys_weights_source_sha256": "9da2262df31937edd58f64a02a8f809f0c78f3e924fedfdbf3e8c5228afa2a0b",
+  "body_mesh_keys_weights_candidate_sha256": "9da2262df31937edd58f64a02a8f809f0c78f3e924fedfdbf3e8c5228afa2a0b",
+  "body_data_unchanged": true,
+  "body_file_sha256": "150c8fc78d22742231eefe9054e4bad886e85d86ec8871c0171752bf7cae9560",
+  "candidate_sha256": "34720d3f07a9521c14a121b1f21c53f46d0f88cd38ceff0cec0e8c7f697c8227",
+  "candidate_bytes": 11711909,
+  "cloth_vertices": 4116,
+  "cloth_quads": 3842,
+  "cloth_cage_triangles": 7684,
+  "rig_bones": 53,
+  "unweighted_vertices": 0,
+  "weight_sum_range": [
+    0.9999999511055648,
+    1.0000000454019755
+  ],
+  "nonzero_bone_vertex_counts": {
+    "pelvis": 3452,
+    "spine_01": 2618,
+    "spine_02": 1632,
+    "spine_03": 1737,
+    "clavicle_l": 198,
+    "upperarm_l": 223,
+    "clavicle_r": 198,
+    "upperarm_r": 223,
+    "neck_01": 132,
+    "head": 86,
+    "thigh_l": 2071,
+    "calf_l": 3,
+    "thigh_r": 1793,
+    "calf_r": 51
+  },
+  "modifiers": [
+    [
+      "Armature",
+      "ARMATURE"
+    ],
+    [
+      "Cloth surface subdivision - cage editable",
+      "SUBSURF"
+    ],
+    [
+      "Fabric thickness 1.8 mm",
+      "SOLIDIFY"
+    ]
+  ],
+  "relaxed_penetration_nearest_body_bone": {
+    "spine_03": 632
+  }
+}

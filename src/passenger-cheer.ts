@@ -14,7 +14,7 @@ const shoulderX=.20,shoulderY=1.173,shoulderZ=-.47;
 
 /** The two halves meet on the sagittal plane. Each shoulder opening shares
  * its perimeter vertices with the arm, so lifting the arm cannot open a seam. */
-function shoulderAndArm(side:1|-1){
+function shoulderAndArm(side:1|-1,includeYoke=true){
  const p:number[]=[],index:number[]=[],ids:number[]=[],weights:number[]=[];
  const vertex=(x:number,y:number,z:number,bone:number,other=bone,mix=0)=>{
   p.push(x,y,z);ids.push(bone,other,0,0);weights.push(1-mix,mix,0,0);
@@ -25,7 +25,7 @@ function shoulderAndArm(side:1|-1){
   for(let i=0;i<columns;i++){
    const a=i*Math.PI/(columns-1);
    vertex(side*(w*Math.sin(a)-shoulderX),y-shoulderY,z+d*Math.cos(a)-shoulderZ,3);
-   if(!row||!i||(row>=2&&row<=3&&i>=3&&i<=6))continue;
+   if(!includeYoke||!row||!i||(row>=2&&row<=3&&i>=3&&i<=6))continue;
    const n=row*columns+i;
    index.push(n-columns-1,n-columns,n-1,n-columns,n,n-1);
   }
@@ -64,10 +64,10 @@ function shoulderAndArm(side:1|-1){
  return g;
 }
 
-export function passengerArm(side:1|-1,skin:THREE.Material){
+export function passengerArm(side:1|-1,skin:THREE.Material,includeYoke=true){
  const root=new THREE.Group();root.name='passenger-arm-'+side;
  const bones=Array.from({length:4},()=>new THREE.Bone());
- const flesh=shoulderAndArm(side),hand=handGeometry('lap',side===1?-1:1);
+ const flesh=shoulderAndArm(side,includeYoke),hand=handGeometry('lap',side===1?-1:1);
  const ids=new Uint16Array(hand.attributes.position.count*4),weights=new Float32Array(ids.length);
  for(let i=0;i<ids.length;i+=4){ids[i]=2;weights[i]=1;}
  hand.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(ids,4));

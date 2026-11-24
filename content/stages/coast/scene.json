@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "id": "coast",
+  "staticProps": [
+    {
+      "id": "kenting-beach-lighthouse",
+      "prefab": "kenting-white-lighthouse",
+      "roadDistance": 6175,
+      "lateral": -50,
+      "yaw": 0,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-0",
+      "prefab": "kenting-parasol-coral",
+      "roadDistance": 5860,
+      "lateral": -23,
+      "yaw": -0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-1",
+      "prefab": "kenting-parasol-blue",
+      "roadDistance": 5860,
+      "lateral": -19,
+      "yaw": 0,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-2",
+      "prefab": "kenting-parasol-gold",
+      "roadDistance": 5865,
+      "lateral": -23,
+      "yaw": 0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-3",
+      "prefab": "kenting-parasol-coral",
+      "roadDistance": 5865,
+      "lateral": -19,
+      "yaw": -0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-4",
+      "prefab": "kenting-parasol-coral",
+      "roadDistance": 5990,
+      "lateral": -30,
+      "yaw": -0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-5",
+      "prefab": "kenting-parasol-blue",
+      "roadDistance": 5990,
+      "lateral": -26,
+      "yaw": 0,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-6",
+      "prefab": "kenting-parasol-gold",
+      "roadDistance": 5995,
+      "lateral": -30,
+      "yaw": 0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-7",
+      "prefab": "kenting-parasol-coral",
+      "roadDistance": 5995,
+      "lateral": -26,
+      "yaw": -0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-8",
+      "prefab": "kenting-parasol-coral",
+      "roadDistance": 6090,
+      "lateral": -26,
+      "yaw": -0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-9",
+      "prefab": "kenting-parasol-blue",
+      "roadDistance": 6090,
+      "lateral": -22,
+      "yaw": 0,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-10",
+      "prefab": "kenting-parasol-gold",
+      "roadDistance": 6095,
+      "lateral": -26,
+      "yaw": 0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-parasol-11",
+      "prefab": "kenting-parasol-coral",
+      "roadDistance": 6095,
+      "lateral": -22,
+      "yaw": -0.2,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-lifeguard",
+      "prefab": "kenting-lifeguard",
+      "roadDistance": 6045,
+      "lateral": -24,
+      "yaw": 0,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "kenting-beach-rental",
+      "prefab": "kenting-rental",
+      "roadDistance": 5880,
+      "lateral": -18,
+      "yaw": 0,
+      "scale": 1,
+      "heightOffset": 0
+    },
+    {
+      "id": "hamlet-farmhouse",
+      "prefab": "taiwan-farmhouse",
+      "roadDistance": 1085,
+      "lateral": 45,
+      "yaw": 0.62,
+      "scale": 1,
+      "heightOffset": 0,
+      "replaces": {
+        "source": "coast-rural-house",
+        "distance": 1085
+      }
+    }
+  ]
+}

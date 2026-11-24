@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type {createTrack} from './track';
 import {coastBeachHeight} from './scenery-cross-section';
-import {COAST_SIDE_DRAINS,COAST_DRAIN_X,COAST_DRAIN_FREEBOARD,COAST_DRAIN_BRIDGES,coastDrainBridgeAt,coastDrainCovered,coastPoleLinks} from './coast-roadside-layout';
+import {COAST_SIDE_DRAINS,COAST_DRAIN_X,COAST_DRAIN_FREEBOARD,COAST_DRAIN_BRIDGES,coastDrainBridgeAt,coastDrainCovered,coastPoleLinks,COAST_WIRE_ACROSS,COAST_WIRE_TIP_DROP,type CoastUtilityPole} from './coast-roadside-layout';
 
 type Sample=ReturnType<typeof createTrack>['sample'];
 type V=[number,number,number];
@@ -191,29 +191,43 @@ export function buildCoastRoadsideWater(sample:Sample,start:number,end:number){
  * Three near-black wires per route span are integrated into ONE mesh/chunk;
  * d subdivisions at chunk boundaries use global t so the sag is seamless.
  */
+/** Exact pole-local tip transformed like scenery.ts (local +X faces the road). */
+export function coastWireAttachment(sample:Sample,pole:CoastUtilityPole,across:number):V{
+ const p=sample(pole.d),base=ground(sample,pole.d,pole.x);
+ return [base[0]+Math.cos(p.roadHeading)*across,base[1]+pole.height-COAST_WIRE_TIP_DROP,base[2]+Math.sin(p.roadHeading)*across];
+}
+/** One complete physical span, independent of scenery chunk boundaries. */
+export function coastWirePoint(sample:Sample,from:CoastUtilityPole,to:CoastUtilityPole,across:number,d:number):V{
+ const a=coastWireAttachment(sample,from,across),b=coastWireAttachment(sample,to,across);
+ const t=(d-from.d)/(to.d-from.d),sag=(.28+(to.d-from.d)*.007)*4*t*(1-t);
+ return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t-sag,a[2]+(b[2]-a[2])*t];
+}
+/** A straight overhead span may cross the road legitimately. Only reject
+ * insufficient vertical road/terrain clearance, never plan overlap alone.
+ * Full-span check is independent of the caller's chunk clipping range. */
+export function coastWireSpanRenderable(sample:Sample,from:CoastUtilityPole,to:CoastUtilityPole){
+ const A=coastWireAttachment(sample,from,0),B=coastWireAttachment(sample,to,0),count=Math.ceil((to.d-from.d)/8);
+ for(let i=0;i<=count;i++){
+  const u=i/count,d=from.d+(to.d-from.d)*u,P=new THREE.Vector3(A[0]+(B[0]-A[0])*u,A[1]+(B[1]-A[1])*u-(.28+(to.d-from.d)*.007)*4*u*(1-u),A[2]+(B[2]-A[2])*u);
+  let closest=sample(d),station=d,best=Infinity;
+  for(let offset=-20;offset<=20;offset+=5){const q=sample(d+offset),dist=Math.hypot(P.x-q.position.x,P.z-q.position.z);if(dist<best){best=dist;closest=q;station=d+offset;}}
+  const x=(P.x-closest.position.x)*closest.right.x+(P.z-closest.position.z)*closest.right.z;
+  if(Math.abs(x)<=COAST_DRAIN_X.outerRoad+1.05&&P.y-(closest.position.y+closest.right.y*x)<6)return false;
+  for(const side of [-1.05,1.05])if(P.y-coastBeachHeight(x+side,closest.position.y,closest.right.y,station)<1)return false;
+ }
+ return true;
+}
 export function buildCoastUtilityWires(sample:Sample,start:number,end:number){
  const batch=new RoadsideBatch();
  for(const link of coastPoleLinks(start,end)){
-  const distance=link.to.d-link.from.d;
-  const floor0=ground(sample,link.from.d,link.from.x)[1],floor1=ground(sample,link.to.d,link.to.x)[1];
-  const divisions=Math.ceil((link.end-link.start)/11);
-  for(const [wire,offset] of [-1.05,0,1.05].entries()){
-   const wirePoint=(d:number,raise=0):V=>{
-    const t=(d-link.from.d)/distance;
-    const x=link.from.x+(link.to.x-link.from.x)*t+offset;
-    const p=sample(d),v=p.position.clone().addScaledVector(p.right,x);
-    const h=(link.from.height+(link.to.height-link.from.height)*t)-.52+wire*.20;
-    const sag=(.28+distance*.007)*(4*t*(1-t));
-    v.y=floor0+(floor1-floor0)*t+h-sag+raise;
-    return [v.x,v.y,v.z];
-   };
-   for(let i=0;i<divisions;i++){
-    const a=link.start+(link.end-link.start)*i/divisions;
-    const b=link.start+(link.end-link.start)*(i+1)/divisions;
-    // Small vertical quad; no line-width WebGL compatibility issues on Pixel 8.
-    batch.quad(wirePoint(a,-.018),wirePoint(b,-.018),
-     wirePoint(b,.018),wirePoint(a,.018),'#42484b');
-   }
+  if(!coastWireSpanRenderable(sample,link.from,link.to))continue;
+  // Use the complete-span grid even when clipped: adjacent chunks render the
+  // same underlying curve, not separately resampled approximations.
+  const count=Math.ceil((link.to.d-link.from.d)/11),step=(link.to.d-link.from.d)/count;
+  const cuts=[link.start];for(let i=1;i<count;i++){const d=link.from.d+i*step;if(d>link.start&&d<link.end)cuts.push(d);}cuts.push(link.end);
+  for(const across of COAST_WIRE_ACROSS){
+   const point=(d:number,raise:number):V=>{const p=coastWirePoint(sample,link.from,link.to,across,d);p[1]+=raise;return p;};
+   for(let i=1;i<cuts.length;i++){const a=cuts[i-1],b=cuts[i];batch.quad(point(a,-.018),point(b,-.018),point(b,.018),point(a,.018),'#42484b');}
   }
  }
  return batch.finish('coast-taiwan-utility-wires');
