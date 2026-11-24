@@ -219,10 +219,15 @@ export class StreamedScene {
   }
   this.work=this.work.filter(task=>{if(this.desired.has(task.index))return true;this.discardedTasks++;if(task.record)task.record.discardedTasks++;return false;});this.dispatch();
  }
+ private departurePriority=false;
+ setDeparturePriority(enabled:boolean){this.departurePriority=enabled;}
  private dispatch(){
   if(this.errorMessage||!this.initialized||this.busy)return;const current=Math.floor(this.position/this.chunkLength);
   const indices=[...this.desired].sort((a,b)=>Math.abs(a-current)-Math.abs(b-current)||a-b);
-  for(const kind of ['road','scenery'] as const)for(const index of indices){const c=this.chunk(index);if(c[kind]!=='missing')continue;c[kind]='working';this.busy=true;this.pending={kind:kind==='road'?'prepare':'scenery',index,since:performance.now()};this.recordRequest(index,kind,this.pending.since);try{this.worker.postMessage({type:kind==='road'?'prepare':'scenery',generation:this.generation,index,start:index*this.chunkLength,end:Math.min(this.length,(index+1)*this.chunkLength)});}catch(error){this.fail('Worker dispatch failed: '+String(error));}return;}
+  // At departure the START gate needs both road and scenery in the near
+  // window. Do not fill kilometres of invisible road before those jobs.
+  const windows=this.departurePriority?[this.nearby.filter(i=>this.desired.has(i)),indices]:[indices];
+  for(const window of windows)for(const kind of ['road','scenery'] as const)for(const index of window){const c=this.chunk(index);if(c[kind]!=='missing')continue;c[kind]='working';this.busy=true;this.pending={kind:kind==='road'?'prepare':'scenery',index,since:performance.now()};this.recordRequest(index,kind,this.pending.since);try{this.worker.postMessage({type:kind==='road'?'prepare':'scenery',generation:this.generation,index,start:index*this.chunkLength,end:Math.min(this.length,(index+1)*this.chunkLength)});}catch(error){this.fail('Worker dispatch failed: '+String(error));}return;}
  }
  private receive(data:any){
   if(data.generation!==this.generation){this.discardedResponses++;return;}if(data.type==='initialized'){this.note('init-cpu',-1,data.cpuMs);this.initialized=true;this.busy=false;this.pending=undefined;this.dispatch();return;}if(data.type==='error'){this.fail(data.message);return;}
@@ -334,7 +339,7 @@ export class StreamedScene {
   });
   return tasks;
  }
- pump(){
+ pump(budgetMs=SCENE_TASK_SOFT_BUDGET_MS){
   if(this.pending&&performance.now()-this.pending.since>30000)this.fail('Worker response timed out after 30 seconds');
   const start=performance.now(),current=Math.floor(this.position/this.chunkLength);
   this.work.sort((a,b)=>a.priority-b.priority||Math.abs(a.index-current)-Math.abs(b.index-current));
@@ -343,7 +348,7 @@ export class StreamedScene {
   let taskWallMs=0;
   // Soft 3ms frame budget; individual synchronous callbacks can still exceed it.
   // The task profiler reveals exactly which kind/chunk must later be split or moved to a Worker.
-  while((this.work.length||this.retiring.length)&&performance.now()-start<SCENE_TASK_SOFT_BUDGET_MS){
+  while((this.work.length||this.retiring.length)&&performance.now()-start<budgetMs){
    const disposing=!!this.retiring.length&&(!this.work.length||this.work[0].priority>0);
    const task=disposing?this.retiring.shift()!:this.work.shift()!;
    if(!disposing&&!this.desired.has(task.index))continue;

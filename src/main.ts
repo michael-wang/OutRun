@@ -340,6 +340,7 @@ for (const event of ['keydown','pointerdown','pointerup','click']) {
 }
 if(atDistance!==null){state.distance=atDistance;state.speed=0;}
 advancePowertrain(state,state.speed,false,0);state.worldHeading=world.sample(state.distance).roadHeading;
+world.streamer?.setDeparturePriority(true);
 world.streamer?.update(state.distance);
 startupDiagnostics.mark('road-streaming-active');
 // The expensive diagnostic snapshot runs only once per second when ?fpsdiag=1.
@@ -1361,7 +1362,14 @@ function loop(now:number){
    driveFpsDiagnostics.cpu('physics',performance.now()-fpsPhysicsStart-physicsTrafficMs);
    driveFpsDiagnostics.cpu('trafficUpdate',physicsTrafficMs);
   }
-  render(dt);
+  // The opaque loading artwork already covers the canvas. Commit the near
+  // chunks first; render the complete departure view before the warmup gate.
+  if((startupPending||replayPreparing)&&document.documentElement.dataset.loading&&world.streamer&&!world.streamer.ready){
+    world.streamer.update(state.distance);
+    world.streamer.pump(8);
+  }else{
+    render(dt);
+  }
   if(mode==='playing'&&!manual&&now-lastCheckpointAt>5000){
    lastCheckpointAt=now;persistRace();
   }
@@ -1370,6 +1378,7 @@ function loop(now:number){
   // Finish the first loaded-neighbourhood shader pass behind loading artwork.
   // This is bounded CPU/driver preparation, not a claim of GPU completion or reboot-cold immunity.
   if((startupPending||replayPreparing)&&(!world.streamer||world.streamer.ready)&&departurePreparation.state==='idle'){
+   world.streamer?.setDeparturePriority(false);
    startupDiagnostics.mark('departure-warmup-start');
    void departurePreparation.begin(async()=>{
     await world.streamer?.warmFarm(renderer,camera);
