@@ -27,36 +27,9 @@ export function addStreetStudy(p, tools) {
  }
 }
 export function addPlaces({box,grade,physicalPos,link,label,edge,walker,windingPath}){
- // A pair of municipal wholesale halls behind the bus stop leave daylight
- // between loading courts. The broken roof profiles face the approaching car.
- for(const [at,bays] of [[3723,5],[3805,4]]){
-  for(let j=0;j<bays;j++){
-   const z=at+j*7.6, y=grade(z), inner=edge(z,1)+19;
-   box(z,inner+8,y+.16,15.8,5.7,7.62,'plinth',0x9da59c);
-   box(z,inner-4,y+.06,9,.78,7.62,'curb');
-   box(z,inner-.1,y+.97,.26,3.92,5.3,'metal',0x677675);
-   box(z,inner+5,y+7.03,23,.34,8.13,'canopy',0xb2bbaf,-Math.atan2(2.8,7.6));
-   box(z+3.52,inner+5,y+5.8,22,2.68,.30,'metal',0x879b9a);
-   box(z-2.8,inner-6,y+.80,.29,4.70,.3,'metal');
-   if(j%2===0)for(let k=0;k<3;k++)box(z-1.4+k*1.25,inner-3.1,y+.86,1.4,.87+(k%2)*.65,1.12,'trim',0xaa9983);
-  }
-  const x=edge(at,1)+18.5;
-  label(at-3.99,x+4.3,grade(at)+5.05,10,1.25,'批發市場  /  MARKET','#506562');
- }
  windingPath('market-apron',3704,3850,d=>edge(d,1)+12,10,.24,0xacada1);
- // A sheltered pick-up court and parcels wing flank the station square.
+ // The City kit supplies the shelters; these service wings flank the square.
  // The sightline to the clock face stays open from the square entrance.
- for(const [at,bays] of [[7006,4],[7053,5]]){
-  for(let j=0;j<bays;j++){
-   const z=at+j*6, y=grade(z), x=-edge(z,-1)-12;
-   box(z,x-2,y+.21,11,.47,6.07,'walk');
-   for(const s of [-1,1]){
-    box(z,x-2+s*2.65,y+4.815,5.46,.22,6.07,'canopy',0xa7b8b8,0,s*Math.atan2(1.25,5.3));
-   }
-   box(z,x-2,y+.68,.36,3.70,.36,'metal');
-   if(j%2===0)box(z,x-3.4,y+1.12,1,.24,3.4,'trim');
-  }
- }
  for(const at of [7019,7063]){
   const x=-edge(at,-1)-35,y=grade(at);
   box(at,x,y+.1,12,6.9,27,'loft',0xa7b2b0);

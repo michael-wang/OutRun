@@ -1,3 +1,4 @@
+import {addCityStreetKit} from './city-street-kit.mjs';
 import {decisions,drawConnections,frontageEdge,junctionFurniture,openMouth,roadsideEdge,streetEdge} from './junctions.mjs';
 import {PadMenuNavigation,menuFaceButtons} from '../pad-menu-navigation';
 import {sampleFrontages,streetFront,avenueTrees,crossings,signals,streetSigns} from './street-samples.mjs';
@@ -526,6 +527,7 @@ for(const at of [5920,5928,5967]){
 addPlaces({box,grade,physicalPos,link,label,edge,walker,windingPath});
 addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,riverside,nearEnd,alongX,alongZ});
 addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge});
+addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge});
 composeDistricts({T,box,grade,edge,grove,physicalPos,pose,scene,cityChunks});
 for(const {geom,mat,at,items} of shapes.values()){const o=new T.InstancedMesh(geom,mat,items.length);items.forEach((m,i)=>o.setMatrixAt(i,m));o.castShadow=o.receiveShadow=true;o.computeBoundingSphere();scene.add(o);cityChunks.push({at,mesh:o});}
 
