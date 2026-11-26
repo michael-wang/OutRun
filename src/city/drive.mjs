@@ -295,7 +295,7 @@ for(let d=1200;d<2150;d+=30){for(const side of [-1,1])box(d,side*((streetEdge(d,
 for(const at of [1400,1660,1910]){const y=grade(at);for(let row=0;row<5;row++)box(at,-(23+row*2.2),y+.1,2.4,.4+row*.52,45+row*2.5,'trim');}
 for(const at of [1435,1840]){const y=grade(at);shape(round,material('pavilion',0xc1c7c0),at,41,y+3.5,16,7,24);shape(round,material('pavilion-rim',steel),at,41,y+7.3,24,.6,32);}
 // The mall's plinth, rounded atrium, setback upper floors and projecting entrance form one landmark.
-for(const [at,side] of [[5820,-1],[6100,1],[6380,-1]]){
+for(const [at,side] of [[5820,-1],[6152,1],[6380,-1]]){
  const y=grade(at),x=side*(edge(at,side)+29);
  box(at,x,y,27,13,82,'arcade',0xb7b6a6);box(at+8,x+side*5,y+12.8,20,9,59,'loft',0xbac2bc);
  shape(round,material('atrium',0x81999e),at-30,x-side*5,y+9,16,18,21);
@@ -421,7 +421,7 @@ for(let z=5700;z<6170;z+=5){const x=quayPath(z)+3.0,y=grade(z);
  link(physicalPos(z-2.5,quayPath(z-2.5)+3,grade(z-2.5)+1.16),physicalPos(z+2.5,quayPath(z+2.5)+3,grade(z+2.5)+1.16),.12,.12,'metal',z);}
 }
 for(let z=5713;z<6200;z+=32)promenadeLight(z,quayPath(z)-3.0,4.2);
-for(const [z,off] of [[5755,37],[5815,47],[5882,29],[5990,46],[6125,39]])grove(z,1,off,[10,7,12,8]);
+for(const [z,off] of [[5755,37],[5815,47],[5882,29],[5930,66],[6125,39]])grove(z,1,off,[10,7,12,8]);
 for(const at of [5780,5976]){shelter(at,quayPath(at)+12,4);}
 lawnGate(5908,1,'河濱步道');
 {const at=5952,x=45,y=grade(at);
@@ -482,7 +482,7 @@ for(const original of sampleFrontages(layout())){
  if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos,label});
  else buildParcel(parcel);
 }
-for(const [at,side,off,kind] of [[1195,-1,48,'row'],[1300,-1,62,'commerce'],[1400,-1,82,'row'],[1270,1,100,'commerce'],[1525,1,120,'row'],[1820,1,103,'commerce'],[1560,-1,111,'commerce'],[1710,-1,120,'tower'],[1855,-1,115,'row'],[5860,1,104,'commerce'],[5950,1,118,'row'],[6085,1,97,'commerce']])buildParcel(backdrop(at,side,off,kind));
+for(const [at,side,off,kind] of [[1195,-1,48,'row'],[1300,-1,62,'commerce'],[1400,-1,82,'row'],[1270,1,100,'commerce'],[1525,1,120,'row'],[1820,1,103,'commerce'],[1560,-1,111,'commerce'],[1710,-1,120,'tower'],[1855,-1,115,'row'],[5860,1,104,'commerce'],[5950,1,118,'row'],[6090,1,149,'commerce']])buildParcel(backdrop(at,side,off,kind));
 
 
 // Raised grass terraces catch the light at chase-camera height. Open edges show where
@@ -500,7 +500,7 @@ function walker(at,x,height,turn=0){
 }
 for(const [at,x,dep,len] of [[1439,-18,4,9],[1452,-22,5,13],[1478,-25,7,15],[1510,-28,5,16],[1565,-22,6,12],[1629,-24,6,14]]){
  planter(at,x,dep,len,.56);grove(at-1, -1,Math.abs(x),[7.1,5.7]);}
-for(const [at,x] of [[1448,-16],[1450,-16.9],[1471,-17.3],[1526,-18.7],[5907,19],[5910,18.2],[5943,18],[5994,19.2]])walker(at,x,1.8+(at%3)*.05,at);
+for(const [at,x] of [[1448,-16],[1450,-16.9],[1471,-17.3],[1526,-18.7],[5907,19],[5910,18.2],[5943,18],[5977,39]])walker(at,x,1.8+(at%3)*.05,at);
 // A low bandstand opens toward the grass; its asymmetric upturned roof is visible over the lawn.
 {const at=1470,x=-32,y=grade(at);box(at,x,y+.25,16,1.28,20,'walk');
  for(const off of [-7,7]){box(at+off,x-5,y+1.5,.4,8.5,.45,'metal');box(at+off,x+5,y+1.5,.4,4.5,.45,'metal');}

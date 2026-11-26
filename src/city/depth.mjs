@@ -107,7 +107,7 @@ export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,
   }
   flush(far?'landing':'embankment',null);
  }
- for(const at of [5800,5980,6210,6450,6720,6930]){site(at,-85,36,50,flats);site(at+50,110,36,50,hall);if(at===6210)flush('quay-streets',6100);}
+ for(const at of [5800,5980,6210,6450,6720,6930]){site(at,-85,36,50,flats);site(at+50,at===5980?184:110,36,50,hall);if(at===6210)flush('quay-streets',6100);}
  site(6685,66,34,50,(box,tree)=>{
   box(0,0,0,33,.42,48,0xa6a890);
   for(const x of [-9,9]){box(x,0,.42,3,.22,45,0xc4b49c);for(const z of [-15,0,15])tree(x+3,z,7.4);}

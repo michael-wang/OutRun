@@ -50,7 +50,7 @@ export function composeDistricts({T,box,grade,edge,grove,physicalPos,pose,scene,
  }
  // The park stays open on the waterside. Terraces and a glazed conservatory
  // turn the landward end toward the mall, rather than a flat empty horizon.
- for(const [d,x,len] of [[6022,41,28],[6156,43,42],[6247,38,32],[6306,45,34]]){
+ for(const [d,x,len] of [[6022,78,24],[6156,43,42],[6247,38,32],[6296,27,20]]){
   const y=grade(d);
   for(let j=0;j<3;j++)box(d,x+j*2.6,y+.2,3.2,.55+j*.53,len-2*j,'trim',0xafa89a);
   grove(d-7,1,x+5,[6.8,9.4,7.1]);

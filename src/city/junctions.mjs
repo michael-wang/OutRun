@@ -6,7 +6,7 @@ const places=[
   {inlet:'轉運中心',outlet:'公園東門',lead:56,tail:54,rise:.32},
   {inlet:'市場卸貨街',outlet:'東市街',exit:[96,36,0],entry:[103,30,0]},
   {inlet:'港務道路',outlet:'碼頭聯絡道',lead:59,tail:131,rise:.36},
-  {inlet:'百貨高架道',outlet:'站前支路',exit:[100,29,5.8],entry:[98,27,0]}
+  {inlet:'百貨高架道',outlet:'站前支路',exit:[79,29,5.8],entry:[98,27,0]}
 ];
 export const connections=[],decisions=[];
 zones.forEach(([a,b,side,delta],i)=>{
@@ -34,7 +34,7 @@ export function section(c,d){
     const dx=c.reach*(2*u)/c.length;
     const half=laneWidth*.5*Math.hypot(1,dx);
     const middle=c.wide-laneWidth*.5+c.reach*u*u;
-    const lift=c.rise*smooth(u,.34,.84) + .10*smooth(u,.35,.65);
+    const lift=c.rise*smooth(u,.22,1.25) + .10*smooth(u,.35,.65);
     return {race,inner:Math.max(race,middle-half),outer:middle+half,middle,lift};
   }
   const separate=Math.min(1,Math.max(0,(c.wide-race)/laneWidth));
@@ -45,18 +45,46 @@ export function section(c,d){
   const lift=lifted;
   return {race,inner,outer,lift,middle:outer-laneWidth/2};
 }
-// Behind the corner the street turns out of the track corridor. Rotate from
-// the station-clipped seam into a constant-width transverse road under the wing.
+// A continuous cross street behind each at-grade fork. The first section is
+// cut on the same station plane as the main strip. Its outer lanes and kerbs
+// turn together into the street; no fascia or overhead lintel crosses it.
 function turnEnd(c,t){
-  const tail=section(c,c.to), seam=(tail.outer-tail.inner)/2;
-  const start=Math.atan(2*c.reach/c.length), bend=Math.PI/2-start, radius=9;
-  const a=start+Math.min(t,1)*bend;
-  const d=c.to+radius*(Math.sin(a)-Math.sin(start));
-  const x=tail.middle+radius*(Math.cos(start)-Math.cos(a))+Math.max(0,t-1)*22;
-  const h=grade(c.to)+tail.lift;
-  const wd=-2.4*Math.sin(a)*Math.min(t,1);
-  const wx=seam*(1-Math.min(t,1))+2.4*Math.cos(a)*Math.min(t,1);
-  return {d,x,h,wd,wx};
+  const dir=c.outgoing?1:-1, at=c.outgoing?c.to:c.from, tail=section(c,at);
+  const seam=(tail.outer-tail.inner)/2, start=Math.atan(2*c.reach/c.length);
+  const u=Math.min(t,1),angle=start+u*(Math.PI/2-start),radius=c.rise?30:c.outgoing?23:16;
+  const d=at+dir*radius*(Math.sin(angle)-Math.sin(start));
+  const x=tail.middle+radius*(Math.cos(start)-Math.cos(angle))+Math.max(0,t-1)*35;
+  return {d,x,h:grade(at)+tail.lift+(c.rise?2.48*u+.20*Math.sin(Math.PI*u):0),wd:-dir*2.85*Math.sin(angle)*u,
+    wx:seam*(1-u)+2.85*Math.cos(angle)*u};
+}
+// The flyover approaches from beyond the junction, bends across the view and
+// carries on across the district. Build the ramp elbow and the receiving deck
+// in the same coordinates; each pair of joining vertices is shared exactly.
+const deckBegin=-96,deckEnd=112;
+function collector(c,t){
+  const e=turnEnd(c,1),r=29, angle=Math.min(Math.PI/2,Math.max(0,-t/r));
+  const spare=Math.max(0,-t-r*Math.PI/2);
+  const dd=t>0?.003*t*t:0, dx=Math.max(0,t);
+  const d=e.d+7.35+r*(1-Math.cos(angle))+spare+dd;
+  const x=e.x-r*Math.sin(angle)+dx;
+  const slope=t>0?.006*t:0;
+  const normalD=t>0?1/Math.hypot(1,slope):Math.cos(angle);
+  const normalX=t>0?-slope*normalD:Math.sin(angle);
+  const h=e.h+.024*t;
+  const lift=smooth(t,deckBegin,-45)*(1-smooth(t,65,deckEnd));
+  return {d,x,nd:normalD,nx:normalX,h:grade(d)+(h-grade(d))*lift,
+    near:-4.5-(t<0?0:5.7*(1-smooth(t,2,48))),far:4.5};
+}
+// Once the ramp leaves the mainline, keep its local street frame straight.
+// A changing race-road heading would shear the viaduct at this large offset.
+function offRoad(c,d,x,y,physicalPos){
+  if(!c.rise)return physicalPos(d,c.side*x,y);
+  const base=physicalPos(c.to,0,y),right=physicalPos(c.to,1,y);
+  const rx=right[0]-base[0],rz=right[2]-base[2],step=d-c.to;
+  return [base[0]+rx*c.side*x-rz*step,y,base[2]+rz*c.side*x+rx*step];
+}
+function deckPoint(c,row,w,height,physicalPos){
+  return offRoad(c,row.d+row.nd*w,row.x+row.nx*w,row.h+height,physicalPos);
 }
 function court(c,d){
   const t=(d-c.terminal)*c.dir;
@@ -89,8 +117,20 @@ export function streetEdge(d,side){
 export function frontageEdge(d,side){
   let clear=streetEdge(d,side);
   for(const c of connections){
-    if(!c.outgoing||c.side!==side||d<c.to-4||d>c.to+12)continue;
-    clear=Math.max(clear,turnEnd(c,2).x+2.4);
+    if(!c.pair||c.side!==side)continue;
+    if(c.rise){
+      if(d>=c.to-5&&d<=c.to+100){
+        for(let t=deckBegin;t<=deckEnd;t+=4){
+          const row=collector(c,t);
+          if(Math.abs(row.d-d)<13)clear=Math.max(clear,row.x+11);
+        }
+      }
+    }else{
+      const at=c.outgoing?c.to:c.from;
+      if(Math.abs(d-at)<22)clear=Math.max(clear,turnEnd(c,2).x+5);
+      // Leave an open sight triangle on the outside of the market bend.
+      if(c.outgoing&&d>c.mouth+30&&d<at+8)clear+=6;
+    }
   }
   return clear;
 }
@@ -125,6 +165,12 @@ export function drawConnections({quad,tri,roadUV,physicalPos}){
         quad('junctions',concrete,p(d,s[k],y-.56),p(e,n[k],Y-.56),p(d,s[k],y),p(e,n[k],Y));
       }
       if(d<c.from||e>c.to)continue;
+      if(c.pair&&!c.rise&&Math.min(s.inner-s.race,n.inner-n.race)>1.0){
+        for(const [key,dir] of [['outer',1],['inner',-1]]){
+          band(d,e,s[key],s[key]+dir*.82,n[key],n[key]+dir*.82,y+.14,Y+.14,concrete);
+          quad('junctions',concrete,p(d,s[key],y),p(e,n[key],Y),p(d,s[key],y+.14),p(e,n[key],Y+.14));
+        }
+      }
       const w=s.outer-s.inner,W=n.outer-n.inner;
       if(Math.min(w,W)>.33)band(d,e,s.outer-.22,s.outer-.105,n.outer-.22,n.outer-.105,y+.015,Y+.015,edgePaint);
       if(Math.min(s.inner-s.race,n.inner-n.race)>.60)
@@ -137,16 +183,50 @@ export function drawConnections({quad,tri,roadUV,physicalPos}){
         if(i%3===0)band(d,e,s.race+.11,s.race+.35,n.inner-.39,n.inner-.15,.068,.068,edgePaint);
       }
     }
-    if(c.outgoing){
+    if(c.pair){
       let last=turnEnd(c,0);
-      for(const t of [.25,.5,.75,1,1.5,2]){
+      for(const t of [.125,.25,.375,.5,.625,.75,.875,1,1.25,1.5,1.75,2]){
+        if(c.rise&&t>1)break;
         const next=turnEnd(c,t);
-        const corner=(v,k,lift)=>physicalPos(v.d+k*v.wd,c.side*(v.x+k*v.wx),v.h+.004+lift);
+        const corner=(v,k,lift)=>offRoad(c,v.d+k*v.wd,v.x+k*v.wx,v.h+.004+lift,physicalPos);
         const points=[corner(last,-1,0),corner(next,-1,0),corner(last,1,0),corner(next,1,0)];
         quad('road',asphalt,...points);
         for(const v of [points[0],points[2],points[1],points[1],points[2],points[3]])roadUV.push(v[0],v[2],1,0);
-        for(const k of [-1,1])quad('junctions',concrete,corner(last,k,-.56),corner(next,k,-.56),corner(last,k,0),corner(next,k,0));
+        for(const k of [-1,1]){
+          if(c.rise){
+            quad('junctions',0x80908d,corner(last,k,-.65),corner(next,k,-.65),corner(last,k,0),corner(next,k,0));
+            // The far side opens onto the adjoining collector right at the join.
+            const high=k>0||t<.88?.43:.09;
+            quad('junctions',concrete,corner(last,k,0),corner(next,k,0),corner(last,k,high),corner(next,k,high));
+            quad('junctions',0xd8d4be,corner(last,k,high),corner(next,k,high),corner(last,k*.93,high),corner(next,k*.93,high));
+            continue;
+          }
+          quad('junctions',concrete,corner(last,k,-.38),corner(next,k,-.38),corner(last,k,.14),corner(next,k,.14));
+          quad('junctions',concrete,corner(last,k,.14),corner(next,k,.14),corner(last,k*1.38,.14),corner(next,k*1.38,.14));
+        }
         last=next;
+      }
+    }
+    if(c.rise&&c.pair){
+      const pt=(v,w,up)=>deckPoint(c,v,w,up+.004,physicalPos);
+      // Keep the upstream half on its own edge at t=0. The downstream first
+      // section contains both lanes plus the ramp, with an open joining seam.
+      for(let t=deckBegin;t<deckEnd;t+=2){
+        const a=collector(c,t),b=collector(c,t+2);
+        if(t<0&&t+2===0)b.near=-4.5;
+        const pts=[pt(a,a.near,0),pt(b,b.near,0),pt(a,a.far,0),pt(b,b.far,0)];
+        quad('road',asphalt,...pts);
+        for(const v of [pts[0],pts[2],pts[1],pts[1],pts[2],pts[3]])roadUV.push(v[0],v[2],1,0);
+        for(const k of ['near','far']){
+          const w=a[k],W=b[k],inward=k==='near'?1:-1;
+          const high=k==='near'&&t<0&&t>=-8?.08:.60;
+          quad('junctions',0x677b79,pt(a,w,-.78),pt(b,W,-.78),pt(a,w,high),pt(b,W,high));
+          quad('junctions',0xe0dfcb,pt(a,w,high),pt(b,W,high),pt(a,w+.32*inward,high),pt(b,W+.32*inward,high));
+          quad('junctions',edgePaint,pt(a,w+.42*inward,.028),pt(b,W+.42*inward,.028),pt(a,w+.56*inward,.028),pt(b,W+.56*inward,.028));
+        }
+        for(const w of [0,...(t>=0&&t<42?[-4.5]:[])]){
+          if((t-deckBegin)%12<4)quad('junctions',edgePaint,pt(a,w-.09,.03),pt(b,w-.09,.03),pt(a,w+.09,.03),pt(b,w+.09,.03));
+        }
       }
     }
     if(!c.pair){
@@ -198,57 +278,40 @@ export function junctionFurniture({box,link,label,physicalPos}){
       box(d-.40,lampX,y+6.46,.53,.075,.48,'metal',0x383f40);
     }
   }
-  // The near wing stands inside the bend in the auxiliary street. The second
-  // volume is across the street, set back from the full road cross-section.
-  // Keep the clear gap between the wings at vehicle eye height.
   function cornerBuildings(c){
-    const dir=c.outgoing?1:-1;
-    const z=u=>c.mouth+dir*c.length*u;
-    const mall=c.rise>0, h=mall?22:c.outgoing?11.2:14;
-    const warm=mall?0xb7ab98:c.outgoing?0xa3927e:0x9baba4;
-    function wing(u,depth,span,front,height){
-      const at=z(u),y=grade(at),x=c.side*(front+depth/2);
-      box(at,x,y-.12,depth,height+.12,span,'loft',warm);
-      box(at,x,y+height,depth+.42,.46,span+.45,'trim',0xc8c1b2);
-      box(at,c.side*(front+.10),y+3.65,1.24,.52,span+.30,'canopy',0x64746c);
-      for(let dz=-span*.37;dz<=span*.38;dz+=4.15)
-        box(at+dz,c.side*(front-.08),y+.52,.22,2.72,2.75,'metal',0x576965);
-      if(mall){
-        box(at+dir*2,x+c.side*1.15,y+height,depth*.70,5.6,span*.68,'tower',0x889ba0);
-        for(let floor=6.4;floor<height;floor+=4)box(at,c.side*(front+.08),y+floor,.64,.32,span,'trim',0xd4cbb9);
+    if(c.rise){
+      // Open the view under and across the elevated road. Only the distant
+      // landing sits behind a street block. Supports carry the receiving
+      // roadway, independently of the piers on the ramp.
+      for(const t of [-76,-52,-28,-4,20,44,68,91]){
+        const row=collector(c,t),y=grade(row.d);
+        if(row.h-y<1.35)continue;
+        const top=deckPoint(c,row,0,-.55,physicalPos),basePoint=[top[0],y-.22,top[2]];
+        link(basePoint,top,1.55,1.75,'plinth',row.d,0x97a4a0,true);
+        link(deckPoint(c,row,-4,-.78,physicalPos),deckPoint(c,row,4,-.78,physicalPos),1.4,.60,'metal',row.d,0x647774,true);
+        if(t===-76||t===91)continue;
+        // Road lamps on the far parapet cue the direction and scale of the flyover.
+        const foot=deckPoint(c,row,row.far,.42,physicalPos);
+        const head=[foot[0],foot[1]+4.75,foot[2]];
+        link(foot,head,.14,.14,'post',row.d,post,true);
+        link(head,deckPoint(c,row,row.far-1.75,5.28,physicalPos),.19,.17,'metal',row.d,post,true);
       }
+      const e=turnEnd(c,1),far=e.d-21,x=c.side*(e.x+78),y=grade(far);
+      box(far,x,y-.08,23,17,16,'loft',0x919b9c);
+      box(far+2,x+c.side*3,y+17,16,5,11,'tower',0x869998);
+      return;
     }
-    // The taller terminal wing is landward of the main sidewalk, not on the ramp.
-    const nearAt=z(.91),front=edge(nearAt,c.side)+4.65;
-    wing(.91,mall?8.4:9.6,c.outgoing?31:26,front,h);
-    // Ordinary market/shop fronts already line the far side. The mall has an open plaza.
-    if(mall)wing(.54,5.5,15,section(c,z(.62)).outer+2.2,6.6);
-    // Last metres run behind an opaque upper storey with open, clear vehicle space below.
-    // The track-facing return hides the cut end even when approaching along the branch tangent.
-    const tail=c.outgoing?c.to:c.from,prior=z(.83);
-    const along=(at,offset,up)=>{const s=section(c,at);return physicalPos(at,c.side*(s.middle+offset),grade(at)+s.lift+up);};
-    const returns=c.outgoing?[prior,z(.93),tail]:[prior,z(.93),tail,tail+dir*7];
-    const point=(at,offset,up)=>{
-      if(dir*(at-tail)<=0)return along(at,offset,up);
-      const last=section(c,tail),more=Math.abs(at-tail)*2*c.reach/c.length;
-      return physicalPos(at,c.side*(last.middle+more+offset),grade(at)+last.lift+up);
-    };
-    for(let i=1;i<returns.length;i++){
-      const a=returns[i-1],b=returns[i],at=(a+b)/2;
-      link(point(a,0,6.3),point(b,0,6.3),11.3,1.85,'plinth',at,warm,true);
-      link(point(a,-5.3,3.35),point(b,-5.3,3.35),1.25,6.7,'loft',at,warm,true);
-      if(!c.outgoing||i===1)link(point(a,5.2,3.35),point(b,5.2,3.35),1.1,6.7,'loft',at,warm,true);
-    }
-    if(c.outgoing){
-      // In the final transverse street, the long facade is between the player
-      // and the hidden cut. The deck and lintel keep its opening navigable.
-      const bend=turnEnd(c,1),end=turnEnd(c,2),center=(bend.x+end.x)/2;
-      const y=grade(bend.d),level=bend.h-y;
-      box(bend.d-6.50,c.side*(center+1.3),y-.12,23.0,13+level,6.80,'loft',warm);
-      box(bend.d+6.25,c.side*center,y-.12,24.5,11+level,6.2,'loft',warm);
-      box(bend.d,c.side*(center+4.8),bend.h+6.3,19,2.6,8.8,'plinth',warm);
-      if(mall)box(bend.d+6.25,c.side*(center+6),y+11+level,12.5,8,5.8,'tower',0x889ba0);
-    }
+    // Set the building back on the inside of the *far* corner. The wider
+    // radius, open sky and two kerbs show the diverging street before it
+    // passes the block. Nothing spans the street or faces its first tangent.
+    const dir=c.outgoing?1:-1, end=turnEnd(c,1);
+    const at=end.d+dir*22,y=grade(at),x=c.side*(end.x-22);
+    box(at,x,y-.12,17,6.7,12,'loft',0xa3a798);
+    box(at,x,y+6.55,17.5,.36,12.4,'trim',0xc2c0ad);
+    for(const dx of [-5,0,5])box(at-dir*6.05,x+dx,y+.22,3.55,3.1,.18,'metal',0x626e6a);
+    const far=end.d-16,farX=c.side*(end.x+32),base=grade(far);
+    box(far,farX,base-.10,19,5.6,7,'loft',0x80918b);
+    box(far,farX,base+5.50,19.5,.22,7.45,'trim',0xb2b5a9);
   }
   for(const c of connections){
     if(c.pair)cornerBuildings(c);
