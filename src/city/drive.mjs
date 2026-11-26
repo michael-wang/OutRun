@@ -1,4 +1,4 @@
-import {decisions,drawConnections,junctionFurniture,openMouth,streetEdge} from './junctions.mjs';
+import {decisions,drawConnections,frontageEdge,junctionFurniture,openMouth,roadsideEdge,streetEdge} from './junctions.mjs';
 import {PadMenuNavigation,menuFaceButtons} from '../pad-menu-navigation';
 import {sampleFrontages,streetFront,avenueTrees,crossings,signals,streetSigns} from './street-samples.mjs';
 import {CameraOrbit} from '../camera-orbit';
@@ -146,7 +146,7 @@ function facade(kind){
  faces.set(kind,mat);return mat;
 }
 for(let d=-20;d<L+36;d+=4){
- for(const side of [-1,1]){const w=streetEdge(d,side),y=grade(d);
+ for(const side of [-1,1]){const w=roadsideEdge(d,side),y=grade(d);
  box(d,side*(w+.14),y-.04,.29,.34,4.10,'curb');box(d,side*(w+2.15),y-.08,4.15,.32,4.17,'walk');
  if(w<8.65)box(d,side*(w+.27),y+.22,.45,.49,4.06,'plinth');
  if(w<8.65&&d%12===0)box(d,side*(w+.27),y+.70,.48,.10,1.35,'guide');
@@ -157,7 +157,7 @@ function reserved(d,side,pad=0){return [[1050,1420,0],[4300,5740,0],[305,375,-1]
 // The elevated metro shadows the entry to the reversing bends. Its supports remain outside the curb.
 for(let d=2160;d<=4320;d+=18){
  const x=-edge(d,-1)-2.9,y=grade(d);
- const pier=-streetEdge(d,-1)-2.9;
+ const pier=-roadsideEdge(d,-1)-2.9;
  box(d,pier,y-.22,1.38,7.65,2.1,'curb');
  if(x-pier>.1)box(d,(x+pier)/2,y+6.93,x-pier+1.2,.64,1.65,'metal');box(d,x+2.7,y+7.35,9.0,1.15,18.5,'plinth');
  box(d,x+6.95,y+8.37,.38,.67,18.6,'metal');
@@ -409,7 +409,7 @@ for(const [at,x] of [[1496,-64],[1658,-61]]){const y=grade(at);
 
 // Promenade starts at the landward abutment, crosses the last pier plaza and
 // follows the dry levee to a boating club. Its upper planting frames the mall corner.
-const quayPath=d=>streetEdge(d,1)+10.5+3.4*Math.sin((d-5710)/57);
+const quayPath=d=>roadsideEdge(d,1)+10.5+3.4*Math.sin((d-5710)/57);
 ribbon('floodplain',5685,6230,d=>streetEdge(d,1)+4,d=>edge(d,1)+67,.27,0x8d9b8d);
 windingPath('upper-quay',5686,6230,quayPath,5.0,.33,0xc2bcac);
 windingPath('lower-quay',5710,6165,d=>edge(d,1)+38+6*Math.sin((d-5730)/75),3.5,.34,0xaab0a1);
@@ -477,7 +477,7 @@ for(const original of sampleFrontages(layout())){
  // Fit the entire frontage, including both corners, to the outside pavement.
  let shift=0;
  for(let d=original.at-original.width/2-2;d<=original.at+original.width/2+3;d+=2)
-   shift=Math.max(shift,streetEdge(d,original.side)-edge(original.at,original.side));
+   shift=Math.max(shift,frontageEdge(d,original.side)-edge(original.at,original.side));
  const parcel=shift>.05?{...original,setback:original.setback+shift}:original;
  if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos,label});
  else buildParcel(parcel);
