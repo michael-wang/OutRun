@@ -116,3 +116,23 @@ test('city enters through stage two, releases input and can re-enter',async({pag
     await expect(page.locator('[data-stage=coast]')).toHaveAttribute('aria-pressed','true');
   }
 });
+
+test('stage selector discovers a standard pad beside an idle device and consumes held confirm once',async({page})=>{
+  await page.addInitScript(()=>{
+    const make=(index:number,mapping:string)=>({index,id:'pad'+index,mapping,connected:true,axes:[0,0,0,0],
+      buttons:Array.from({length:17},()=>({pressed:false,value:0}))});
+    const pad=make(1,'standard'),pads=[make(0,''),pad];
+    Object.assign(window,{selectorPad:pad});
+    Object.defineProperty(navigator,'getGamepads',{value:()=>pads});
+  });
+  await page.goto(site.href);
+  await expect(page.locator('[data-stage=coast]')).toHaveAttribute('aria-pressed','true');
+  await page.evaluate(()=>{(window as any).selectorPad.axes[1]=.9;});
+  await expect(page.locator('[data-stage=city]')).toBeFocused();
+  await page.evaluate(()=>{const pad=(window as any).selectorPad;pad.axes[1]=0;pad.buttons[0].pressed=true;});
+  await expect(page.locator('#go')).toBeVisible();
+  await page.waitForTimeout(300);
+  await expect(page.locator('#go')).toBeVisible();
+  await page.evaluate(()=>{const pad=(window as any).selectorPad;pad.buttons[0].pressed=false;pad.buttons[1].pressed=true;});
+  await expect(page.locator('[data-stage=coast]')).toHaveAttribute('aria-pressed','true');
+});

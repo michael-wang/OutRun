@@ -1,3 +1,4 @@
+import {addCityInteriors} from './blocks.mjs';
 import {composeDistricts,districtAt} from './districts.mjs';
 import {districtFinish,localKinds,finishWeight,quarterMaterial,leafyFinish} from './quarter.mjs';
 import {arcadeStudy,addStreetStudy,addPlaces} from './streets.mjs';
@@ -559,6 +560,7 @@ for(const at of [5920,5928,5967]){
 }
 
 addPlaces({box,grade,physicalPos,link,label,edge,walker,windingPath});
+addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge});
 composeDistricts({T,box,grade,edge,grove,physicalPos,pose,scene,cityChunks});
 for(const {geom,mat,at,items} of shapes.values()){const o=new T.InstancedMesh(geom,mat,items.length);items.forEach((m,i)=>o.setMatrixAt(i,m));o.castShadow=o.receiveShadow=true;o.computeBoundingSphere();scene.add(o);cityChunks.push({at,mesh:o});}
 
@@ -834,6 +836,8 @@ window.addEventListener("keydown",e=>{
 function controls(pad,now){
  const buttons=Array.from(pad?.buttons||[],b=>!!b?.pressed),edge=i=>buttons[i]&&!previousButtons[i];
  const nav=buttons[12]?-1:buttons[13]?1:Math.abs(pad?.axes[1]||0)>.57?Math.sign(pad.axes[1]):0;
+ const identity=pad?pad.index+':'+pad.id:null;
+ if(identity!==menuPadIdentity){menuPadIdentity=identity;previousButtons=buttons;previousNav=nav;return;}
  if(edge(11))shotRequested=true;
  if(edge(9)&&now-lastOption>320){
   lastOption=now;if(phase==='paused')resumeRace(now);else if(phase==='drive')pauseRace(now);
@@ -898,7 +902,7 @@ async function toggleFull(){
 }
 for(const button of fullButtons)button.onclick=toggleFull;
 document.addEventListener('fullscreenchange',()=>{clearPhoneInput();reflectFull();},scope);reflectFull();
-let preferredPad=null;
+let preferredPad=null, menuPadIdentity;
 function drivingPad(){const pads=Array.from(navigator.getGamepads?.()||[]).filter(p=>p&&p.connected!==false);
  const pushed=pads.find(p=>[0,1,2,6,7,9,11,12,13,14,15].some(i=>p.buttons[i]?.pressed||p.buttons[i]?.value>.12)||Math.abs(p.axes[0]||0)>.16);
  preferredPad=pushed||pads.find(p=>p.index===preferredPad?.index)||pads.find(p=>p.mapping==='standard')||pads[0];return preferredPad;

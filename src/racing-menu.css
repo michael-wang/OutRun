@@ -148,3 +148,8 @@ html:not([data-manual-landscape]) .landscape-fallback{display:none}
 @media (orientation:portrait){
  #racing-menu .mode-mark{display:none}
 }
+
+/* Keep portrait-to-landscape thumbnail hit areas inside their own grid row. */
+.stage-grid{min-height:0;overflow:hidden}
+.cabinet-footer{position:relative;z-index:1}
+.model-view canvas{pointer-events:none}

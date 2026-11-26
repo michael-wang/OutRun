@@ -32,7 +32,7 @@ export async function mountMenu(enter: (stage: RacingStage) => void, waitForEntr
   const start=menu.querySelector<HTMLButtonElement>('#start-race')!;
   const status=menu.querySelector<HTMLElement>('.racing-sr')!;
   const events=new AbortController();
-  let selected=0, closed=false, frame=0;
+  let selected=0, closed=false, frame=0, discovery=0;
   function select(index:number,focus=false) {
     selected=(index+stages.length)%stages.length;
     buttons.forEach((button,i)=>{
@@ -56,34 +56,36 @@ export async function mountMenu(enter: (stage: RacingStage) => void, waitForEntr
       return;
     }
     closed=true;
-    events.abort();cancelAnimationFrame(frame);pad.dispose();menu.remove();
+    events.abort();cancelAnimationFrame(frame);clearTimeout(discovery);pad.dispose();menu.remove();
     enter(stage);
   }
   function navigate(action: PadAction) {
     if(action==='left'||action==='right')select(selected+(action==='left'?-1:1),true);
+    if(action==='back')select(0,true);
     if(action==='confirm')confirm();
   }
   const pad=new GamepadInput(new InputLatch(),navigate);
   function poll() {
     frame=0;
+    if(closed||document.hidden)return;
+    let connected=false;
+    try{connected=Array.from(navigator.getGamepads?.()??[]).some(p=>p?.connected);}catch{}
     pad.poll('stage-menu');
-    if(!closed)frame=requestAnimationFrame(poll);
+    if(closed)return;
+    if(connected)frame=requestAnimationFrame(poll);
+    else discovery=window.setTimeout(poll,250);
   }
   function syncGamepads() {
-    cancelAnimationFrame(frame);
-    frame=0;
-    try {
-      if(!closed&&!document.hidden&&Array.from(navigator.getGamepads?.()??[]).some(p=>p?.connected))
-        frame=requestAnimationFrame(poll);
-    } catch { /* Some embedded browsers block the Gamepad API. */ }
+    cancelAnimationFrame(frame);clearTimeout(discovery);
+    if(!closed&&!document.hidden)frame=requestAnimationFrame(poll);
   }
   for(const event of ['gamepadconnected','gamepaddisconnected'])window.addEventListener(event,syncGamepads,{signal:events.signal});
   document.addEventListener('visibilitychange',syncGamepads,{signal:events.signal});
   window.addEventListener('keydown',e=>{
-    if(!['ArrowLeft','ArrowRight','Enter'].includes(e.key)||e.isComposing||e.altKey||e.ctrlKey||e.metaKey)return;
+    if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Enter','Escape'].includes(e.key)||e.isComposing||e.altKey||e.ctrlKey||e.metaKey)return;
     if(e.key==='Enter' && (e.target as HTMLElement)?.closest('.landscape-control'))return;
     e.preventDefault();
-    if(!e.repeat)navigate(e.key==='Enter'?'confirm':e.key==='ArrowLeft'?'left':'right');
+    if(!e.repeat)navigate(e.key==='Enter'?'confirm':e.key==='Escape'?'back':e.key==='ArrowLeft'||e.key==='ArrowUp'?'left':'right');
   },{signal:events.signal});
   buttons.forEach((button,i)=>button.onclick=()=>select(i));
   start.onclick=confirm;
