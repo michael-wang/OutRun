@@ -63,13 +63,40 @@ export function addAddresses({site,edge,frontages}){
     return;
    }
    if(p.use==='workshop'){
-    const h=p.crown?roof:5.7+variant*1.25;
-    floorplate(1.3,0,span,h,.15,3,0xb8bbaf);
-    const bay=span/(w>16?3:2);
-    for(let z=-span*.5+bay*.5;z<span*.5;z+=bay){
-     poster(1.27,.22,z,bay*.76,3.45,10);block(1.04,3.76,z,.80,.3,bay*.88,0x9c6f52);
+    // Roofed loading courts recede into the plot. Each unit has a daylight strip,
+    // one staffed receiving opening, and service doors along its other bays.
+    const h=p.crown?roof:6.5+variant*1.25,portal=1.45,inner=Math.min(back-1.1,portal+3.75);
+    const count=w>20?3:2,bay=span/count,open=Math.abs(Math.round(at*.18))%count;
+    const brick=variant===0,steel=brick?0x456765:variant===1?0x797e7d:0x537378;
+    floorplate(inner,0,span,3.70,.15,28,0xced1c7);
+    const cornice=Math.min(h-1.70,4.50);
+    floorplate(portal,0,span,cornice-3.70,3.85,brick?1:26,brick?0xe5d1bc:0xe3e6df);
+    const courses=Math.max(1,Math.round((h-cornice)/3));
+    for(let f=0;f<courses;f++){
+     const pitch=(h-cornice)/courses;
+     floorplate(portal+.55,0,span,pitch,cornice+.15+f*pitch,brick?29:27,0xe9e7d8);
     }
-    poster(1.27,h-1.8,0,span*.87,1.24,7);
+    for(let j=0;j<=count;j++)block((inner+portal)/2,.14,-span/2+j*bay,inner-portal,3.73,.26,steel);
+    block((inner+portal)*.5,.12,0,inner-portal+.30,.23,span,0xb9b7a8,3);
+    for(let j=0;j<count;j++){
+     const z=(j+.5)*bay-span/2;
+     if(j===open){
+      poster(inner-.04,.37,z,bay*.91,3.18,30);
+      for(const [dz,n] of [[-.22,2],[.15,1]])for(let k=0;k<n;k++){
+       block(inner-1.36,.35+k*.63,z+dz*bay,1.04,.61,bay*.22,k?0xb89169:0xb6a478,15);
+      }
+      const bracket=brick?0x437775:0xb48753;
+      block(portal+.32,3.68,z,2.20,.27,bay+.04,bracket);
+      for(const sideZ of [-.40,.40])block(portal+.40,.34,z+sideZ*bay,.15,.83,.15,0xe8be50);
+     }else{
+      const door=portal+.57+.46*variant;
+      poster(door,.34,z,bay*.88,3.38,10,variant===2?0x98afaf:0xe4e0cb);
+      block(door-.06,.84,z,.11,.25,bay*.82,brick?0x587f77:0x9f7c54);
+     }
+    }
+    // Light steel gutter and returns frame the doorways; far facades share this material.
+    block(portal-.08,cornice+.02,0,.31,.17,span,steel);
+    for(const z of [-span*.47,span*.47])block(portal-.11,.35,z,.21,cornice,.20,steel);
     if(!p.crown){
      for(const z of [-.30,.02,.32]){const a=z*span,len=span*.28;
       panel([side*2,h+.08,a-len*.5],[side*back,h+.08,a-len*.5],[side*back,h+1.20,a+len*.5],[side*2,h+1.20,a+len*.5],3,0xb4c2b7);

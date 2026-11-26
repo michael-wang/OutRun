@@ -40,6 +40,19 @@ try{
    else if(tile===10||tile===15){rect(0,0,128,128,tile===10?'#899793':'#a08568');for(let y=1;y<128;y+=tile===10?5:9)rect(0,y,128,2,tile===10?'#6d807b':'#776858');}
    else if(tile===11||tile===13){rect(0,0,128,128,'#637e7b');for(let y=24;y<122;y+=24){for(let x=3;x<127;x+=9){const h=8+noise()*11;rect(x,y-h,6,h,['#f1c687','#e4e5c8','#bd7660','#92b1a8','#a9afb9'][Math.floor(noise()*5)]);}rect(0,y,128,3,'#c0b6a1');}for(const x of [0,40,83,125])rect(x,0,3,128,'#617772');}
    else if(tile===12){rect(0,0,128,128,'#f5e6b9');rect(0,0,128,18,'#16766b');rect(0,104,128,15,'#145f5e');rect(0,119,128,9,'#d39547');text('汐光',64,75,54,'#1e5d59');text('TIDE MART',64,98,18,'#7b533c');}
+   else if(tile===26){rect(0,0,128,128,'#b5bfbb');for(let x=2;x<128;x+=6)rect(x,0,1.7,128,'#92a3a0');}
+   else if(tile===27||tile===29){
+    const brick=tile===29;rect(0,0,128,128,brick?'#b1886d':'#bec6bf');
+    if(brick){for(let y=0;y<128;y+=9)for(let x=-20;x<128;x+=24)rect(x+(y%18?12:0),y,23,7.7,'#a8795f');}
+    else for(let x=0;x<128;x+=6)rect(x,0,1.3,128,'#a6b4ad');
+    rect(3,20,122,69,'#657675');for(let j=0;j<6;j++)for(let k=0;k<2;k++){
+     const x=5+j*20,y=23+k*32;rect(x,y,17,28,k===0?'#93aba7':'#6e8685');
+     rect(x,y,16,4,'#a9b9ab');if(k===1&&j%3===1)rect(x+2,y+4,13,18,'#697f7c');
+    }rect(0,91,128,6,'#a4a598');rect(0,119,128,5,'#7a817a');
+   }
+   else if(tile===28||tile===30){rect(0,0,128,128,'#555f59');for(let j=0;j<4;j++){
+    rect(j*32+1,12,27,96,'#616e64');for(let k=0;k<3;k++)rect(j*32+4,22+k*27,21,13,k%2?'#9d9070':'#83988d');}
+    rect(5,6,118,4,'#b3bc9f');rect(0,108,128,20,'#77796c');}
    else if(tile===14){rect(0,0,128,128,'#466d65');text('安 居',64,67,28,'#e4d9b6');text('R E S I D E N C E',64,93,12,'#d5d9c4');}
    for(let n=0;n<1450;n++){const k=noise()<.5?30:245;rect(noise()*128,noise()*128,1,1,'rgba('+k+','+k+','+k+',.045)');}
    g.restore();
