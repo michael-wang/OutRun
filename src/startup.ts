@@ -69,6 +69,10 @@ async function enter(stage: RacingStage,recovery?:RaceCheckpoint) {
 }
 
 async function bootMenu(firstEntry: boolean) {
+  if(firstEntry&&import.meta.env.DEV&&new URLSearchParams(location.search).has('cityView')){
+    const city=stages.find(stage=>stage.id==='city');
+    if(city){await enter(city);return;}
+  }
   if(firstEntry&&isDevelopmentRace(canonicalGameQuery(new URLSearchParams(location.search)))){
     const coast=stages.find(stage=>stage.id==='coast'&&stage.enter);
     if(coast){await enter(coast);return;}

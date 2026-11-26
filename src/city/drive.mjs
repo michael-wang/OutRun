@@ -1,3 +1,4 @@
+import {createReviewLines} from './review-lines.mjs';
 import {addCityInteriors} from './blocks.mjs';
 import {composeDistricts,districtAt} from './districts.mjs';
 import {districtFinish,localKinds,finishWeight,quarterMaterial,leafyFinish} from './quarter.mjs';
@@ -156,10 +157,14 @@ function box(d,x,base,w,h,len,kind,tint=palette[kind],pitch=0,roll=0){
  unit.position.fromArray(physicalPos(d,x,base+h/2));unit.rotation.set(pitch,pose(d)[2],roll,"YXZ");unit.scale.set(w,h,len);unit.updateMatrix();
  batches.get(key).items.push([unit.matrix.clone(),new T.Color(tint),amount]);
 }
-function link(a,b,w,h,kind,d,tint){
+function link(a,b,w,h,kind,d,tint,levelAcross=false){
  const amount=finishWeight(d);if(amount>0&&localKinds.has(kind))kind='quarter-'+kind;
  const key=Math.floor(d/160)+'/'+kind;if(!batches.has(key))batches.set(key,{at:d,kind,items:[]});
- const v=new T.Vector3(...a),end=new T.Vector3(...b),dir=end.clone().sub(v);unit.position.copy(v.lerp(end,.5));unit.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),dir.clone().normalize());unit.scale.set(w,h,dir.length());unit.updateMatrix();batches.get(key).items.push([unit.matrix.clone(),new T.Color(tint),amount]);
+ const v=new T.Vector3(...a),end=new T.Vector3(...b),dir=end.clone().sub(v);unit.position.copy(v.lerp(end,.5));if(levelAcross){
+  // A wide roof panel keeps its transverse eave level even when this road
+  // points back towards -Z. A shortest-arc rotation can roll that axis.
+  unit.rotation.set(-Math.atan2(dir.y,Math.hypot(dir.x,dir.z)),Math.atan2(dir.x,dir.z),0,'YXZ');
+ }else unit.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),dir.clone().normalize());unit.scale.set(w,h,dir.length());unit.updateMatrix();batches.get(key).items.push([unit.matrix.clone(),new T.Color(tint),amount]);
 }
 const block=(parent,w,h,d,color,x,y,z)=>{const m=new T.Mesh(cube,material('m'+color,color));m.scale.set(w,h,d);m.position.set(x,y,z);parent.add(m);return m;};
 function railside(group,d,x){group.position.fromArray(pos(d,x,grade(d)));group.rotation.y=pose(d)[2];scene.add(group);}
@@ -419,7 +424,7 @@ function shelter(at,x,bays){
  const y=grade(at);
  for(let j=0;j<bays;j++){const z=at+(j-(bays-1)/2)*6.8;
  for(const side of [-1,1])box(z,x+side*3.55,y+.22,.28,4.1,.34,'metal');
- link(physicalPos(z,x-4.8,y+4.65),physicalPos(z,x+4.8,y+3.85),6.67,.34,'canopy',z,0xb7bab1);
+ link(physicalPos(z,x-4.8,y+4.65),physicalPos(z,x+4.8,y+3.85),6.67,.34,'canopy',z,0xb7bab1,true);
  box(z,x+1.6,y+.53,1,.30,4.4,'trim');
  }}
 function promenadeLight(at,x,h){
@@ -510,8 +515,8 @@ function buildParcel(p){
   const count=roof==='saw'?2:1,part=depth/count;
   for(let j=0;j<count;j++){
    const u=x0+j*part;
-   link(physicalPos(at,cx(u),h+.12),physicalPos(at,cx(u+part*.54),h+1.9),rw-.40,.35,'canopy',at,f.base);
-   link(physicalPos(at,cx(u+part*.54),h+1.9),physicalPos(at,cx(u+part),h+.14),rw-.40,.35,'canopy',at,f.base);}
+   link(physicalPos(at,cx(u),h+.12),physicalPos(at,cx(u+part*.54),h+1.9),rw-.40,.35,'canopy',at,f.base,true);
+   link(physicalPos(at,cx(u+part*.54),h+1.9),physicalPos(at,cx(u+part),h+.14),rw-.40,.35,'canopy',at,f.base,true);}
  }else if(roof==='steps'){
   for(let j=0;j<3;j++)box(at,cx(x0+.54),h+j*.38,1.05,.4,rw*(1-j*.20),'trim',f.trim);
  }else{box(at+rw*.06,cx(x0+depth*.56),h,depth*.50,roof==='lantern'?3.5:1.8,rw*.53,'plinth',f.base);}
@@ -797,8 +802,22 @@ const meterCells=Array.from(ui.querySelectorAll('#steerMeter i'));
 let previousButtons=[],previousNav=0,lastOption=-Infinity,pauseAt=0,menuChoice=0,confirming=false;
 const wheelBar=createSteerBar();
 let driftLatch=0,snapshotBusy=false,shotRequested=false;
-const previewAt=Number(labQuery.get('at'));
+const reviewQuery=new URLSearchParams(location.search);
+const previewAt=import.meta.env.DEV?Number(reviewQuery.get('cityView')):0;
 const entry=Number.isFinite(previewAt)?clamp(previewAt,0,L-100):0;
+d=entry;
+const layerSwitch=$('cityLayers'),layerKey=$('layerKey');let removeLines;
+function showLayers(on){
+ if(removeLines){removeLines();removeLines=undefined;}
+ if(on)removeLines=createReviewLines(scene);
+ layerSwitch.setAttribute('aria-pressed',String(on));layerKey.hidden=!on;
+ if(phase==='paused')renderer.render(scene,camera);
+}
+layerSwitch.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='Enter')e.stopPropagation();},scope);
+layerSwitch.addEventListener('click',()=>showLayers(!removeLines),scope);
+window.addEventListener('keydown',e=>{if(e.code==='F6'){e.preventDefault();if(!e.repeat)showLayers(!removeLines);}},scope);
+teardown.push(()=>{removeLines?.();});
+if(reviewQuery.get('layers')==='1')showLayers(true);
 const pauseMenu=$('pauseMenu'),menuButtons=[...pauseMenu.querySelectorAll('button')];
 function drawMenu(){
  $('pauseTitle').textContent=confirming?'放棄這一趟？':'已暫停';

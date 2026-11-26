@@ -6,7 +6,12 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
  const crown=new T.IcosahedronGeometry(1,1);
  const material=new T.MeshLambertMaterial({vertexColors:true,side:T.DoubleSide});
  const transform=new T.Object3D(),point=new T.Vector3(),ink=new T.Color();
- let vertices=[],colors=[];
+ let vertices=[],colors=[],groups=[],insideGroup=false;
+ function reviewGroup(layer,at,build){
+  if(insideGroup){build();return;}
+  const first=vertices.length/3;insideGroup=true;build();insideGroup=false;
+  groups.push({layer,first,last:vertices.length/3,yaw:pose(at)[2]});
+ }
  function form(geom,d,x,lift,w,h,len,yaw,col){
   transform.position.fromArray(physicalPos(d,x,grade(d)+lift));transform.rotation.y=pose(d)[2]+yaw;
   transform.scale.set(w,h,len);transform.updateMatrix();const attr=geom.attributes.position;ink.setHex(col);
@@ -22,28 +27,32 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
   }
  }
  // Broad crowns merge in small copses; the changing gaps preserve glimpses beyond.
- function copse(d,x,n,scale=1){
+ function copse(d,x,n,scale=1){return reviewGroup(Math.abs(x)>85?'far':'mid',d,()=>plantCopse(d,x,n,scale));}
+ function plantCopse(d,x,n,scale,ground=()=>0){
   for(let i=0;i<n;i++){
    const at=d+i*4.85+2*Math.sin(d+i),dx=x+4.6*Math.sin(i*1.74+d);
    const h=(8+3*Math.sin(d*.3+i*1.97))*scale;
-   block(at,dx,0,.48,h*.74,.55,0x766657);
-   form(crown,at,dx,h*.70,h*.53,h*.38,h*.61,at,0x637965);
-   form(crown,at+1.6,dx-1.8,h*.85,h*.36,h*.34,h*.43,at*.51,0x859773);
+   const base=ground(at,dx);
+   block(at,dx,base,.48,h*.74,.55,0x766657);
+   form(crown,at,dx,base+h*.70,h*.53,h*.38,h*.61,at,0x637965);
+   form(crown,at+1.6,dx-1.8,base+h*.85,h*.36,h*.34,h*.43,at*.51,0x859773);
   }
  }
- function pavilion(d,x,w,len,h,col){
+ function pavilion(d,x,w,len,h,col){return reviewGroup(Math.abs(x)>65?'far':'mid',d,()=>buildPavilion(d,x,w,len,h,col));}
+ function buildPavilion(d,x,w,len,h,col){
   const inward=-Math.sign(x);
   block(d,x,0,w,h,len,col);
   block(d,x+inward*(w*.5+.08),.82,.24,h*.66,len*.86,0x50696a);
   block(d,x+inward*1.2,h,w+3,.55,len+2,0xc8bba2);
   for(let j=-1;j<=1;j++)block(d+j*len*.36,x+inward*(w*.5+2.0),.05,.35,h,.35,0xa49c88);
  }
- function terrace(d,x,w,l,h,c){
+ function terrace(d,x,w,l,h,c){return reviewGroup('far',d,()=>buildTerrace(d,x,w,l,h,c));}
+ function buildTerrace(d,x,w,l,h,c){
   block(d,x,0,w,h,l,c);block(d+2,x-1,h,w*.74,h*.33,l*.65,c);
   for(let y=2.2;y<h-.8;y+=3.4)block(d,x,y,w+.18,.32,l+.18,0x859394);
  }
  function flush(at){
-  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vertices,3));g.setAttribute('color',new T.Float32BufferAttribute(colors,3));g.computeVertexNormals();g.computeBoundingSphere();const mesh=new T.Mesh(g,material);mesh.name='city-interior-'+at;scene.add(mesh);cityChunks.push({at,mesh});vertices=[];colors=[];
+  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vertices,3));g.setAttribute('color',new T.Float32BufferAttribute(colors,3));g.computeVertexNormals();g.computeBoundingSphere();const mesh=new T.Mesh(g,material);mesh.name='city-interior-'+at;mesh.userData.reviewGroups=groups;groups=[];scene.add(mesh);cityChunks.push({at,mesh});vertices=[];colors=[];
  }
  // Exchange square. Set-back market wings frame a walk crossing the bus concourse.
  strip(995,1280,d=>-edge(d,-1)-5,()=>-76,()=>.16,0xb1a896);
@@ -80,5 +89,67 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
  pavilion(6382,67,19,35,7.4,0xb99b82);
  for(const [d,x,n] of [[6296,39,4],[6342,78,4],[6386,36,4],[6441,58,6]])copse(d,x,n,.95);
  terrace(6430,121,27,35,19,0xabb2a6);flush(6350);
+ // The nursery grounds cover the outside of the civic right-hander; a second
+ // landform turns inward around the market approach. Crest and toes are shared
+ // across all cross sections so the land reads continuously from either lane.
+ function crestHeight(d,a,b,height){
+  const fade=Math.min(1,Math.max(0,(d-a)/32),Math.max(0,(b-d)/42));
+  return .35+height*(.86+.14*Math.sin((d-a)/27))*fade;
+ }
+ function bankGround(a,b,center,width,height){
+  return (d,x)=>{
+   const t=(x-center(d))/width,h=crestHeight(d,a,b,height);
+   if(t<-.22)return T.MathUtils.lerp(.24,h*.81,T.MathUtils.clamp((t+1)/.78,0,1));
+   if(t<.16)return T.MathUtils.lerp(h*.81,h,(t+.22)/.38);
+   return T.MathUtils.lerp(h,.21,T.MathUtils.clamp((t-.16)/.84,0,1));
+  };
+ }
+ function plantedBank(a,b,center,width,height) {
+  const toe=d=>center(d)-width,shoulder=d=>center(d)-width*.22,crest=d=>center(d)+width*.16,back=d=>center(d)+width;
+  const elevation=d=>crestHeight(d,a,b,height);
+  // An accessible path follows the foot of the hill. A gravel verge and
+  // benches give the foreground a readable human scale from the driving lanes.
+  const pathEdge=d=>toe(d)-1.8-.9*Math.sin((d-a)/17);
+  strip(a,b,d=>pathEdge(d)-1.7,d=>pathEdge(d)+1.7,()=>.29,0xbcb09a);
+  strip(a,b,d=>pathEdge(d)+1.7,d=>pathEdge(d)+2.1,()=>.30,0x909474);
+  for(const f of [.21,.56,.79]){
+   const d=a+(b-a)*f,x=pathEdge(d)+2.9;
+   block(d,x,.32,.63,.42,2.8,0x886f55);
+   block(d,x+.28,.72,.10,.36,2.8,0xb69470);
+  }
+  slope(a,b,toe,shoulder,()=>.24,d=>elevation(d)*.81,0x81936b);
+  slope(a,b,shoulder,crest,d=>elevation(d)*.81,elevation,0x93a279);
+  slope(a,b,crest,back,elevation,()=>.21,0x6b8265);
+ }
+ function yard(at,x,w,len,h,tint) {
+  pavilion(at,x,w,len,h,tint);
+  // Raised clerestory above the middle glazing, with two visible roof planes.
+  block(at,x+.5,h+.15,w*.5,1.65,len*.78,0x819591);
+  block(at,x+.5,h+1.8,w*.58,.36,len*.84,0xd1c3a6);
+ }
+ const nursery=d=>39+4.6*Math.sin((d-1180)/48)+2.1*Math.sin(d/22);
+ // Enclose discrete scenery groups. A single box around curved ground would
+ // span the carriageway and suggest that empty space contains an object.
+ plantedBank(1170,1480,nursery,16,7.4);
+ for(const [at,n,off] of [[1196,4,4],[1240,5,5],[1277,6,3],[1322,4,7],[1369,6,4],[1424,5,7]])
+  reviewGroup('mid',at,()=>plantCopse(at,nursery(at)+off,n,1.12,bankGround(1170,1480,nursery,16,7.4)));
+ for(const [at,x,w,len,h] of [[1293,76,18,32,11],[1361,89,24,35,8],[1438,105,22,43,13]])
+  reviewGroup('far',at,()=>yard(at,x,w,len,h,0xa19b83));
+ reviewGroup('far',1330,()=>terrace(1340,146,32,41,21,0xa2aaa1));
+ flush(1330);
+
+ // At the opposite end a shallow amphitheatre sits across the viewshed. Its
+ // planted back and covered concourse face the park, away from the driving lane.
+ const garden=d=>36+3.8*Math.sin((d-1870)/36);
+ plantedBank(1818,2210,garden,14,9.8);
+ for(const [at,n] of [[1861,4],[1930,7],[2000,5],[2040,4],[2082,5],[2130,4],[2172,5]])
+  reviewGroup('mid',at,()=>plantCopse(at,garden(at)+3,n,1.13,bankGround(1818,2210,garden,14,9.8)));
+ for(const [at,x,w,len,h] of [[1945,70,17,40,11],[2035,68,19,34,13],[2093,66,18,32,16],[2151,62,18,38,12],[2195,65,20,28,15]])
+  reviewGroup('far',at,()=>yard(at,x,w,len,h,0xad9c86));
+ reviewGroup('mid',2120,()=>{
+  for(let i=0;i<6;i++)block(2124,52+i*1.35,.15,1.46,1.05+i*.68,38-i*.9,0xb4ab95);
+ });
+ flush(2070);
+
  unitBox.dispose();crown.dispose();
 }
