@@ -540,7 +540,7 @@ function buildParcel(p){
  if(index%3===0&&p.offset===undefined){box(at-w*.32,cx(street+.18),y+ground+.4,.96,2.5,.38,'metal',f.base);}
 }
 for(const parcel of sampleFrontages(layout())){
- if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos});
+ if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos,label});
  else buildParcel(parcel);
 }
 for(const [at,side,off,kind] of [[1195,-1,48,'row'],[1300,-1,62,'commerce'],[1400,-1,82,'row'],[1270,1,100,'commerce'],[1525,1,120,'row'],[1820,1,103,'commerce'],[1560,-1,111,'commerce'],[1710,-1,120,'tower'],[1855,-1,115,'row'],[5860,1,104,'commerce'],[5950,1,118,'row'],[6085,1,97,'commerce']])buildParcel(backdrop(at,side,off,kind));
