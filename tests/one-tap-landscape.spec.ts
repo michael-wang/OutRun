@@ -105,7 +105,7 @@ for(const pending of ['fullscreen','orientation'] as const){
       await page.setViewportSize({width:915,height:412});
       await expect(page.locator('#boot')).toBeHidden();
       await expect(page.locator('#racing-menu canvas')).toHaveCount(3);
-      await page.locator('[data-stage=city]').tap();
+      await page.locator('[data-stage=canyon]').tap();
       await expect(page.locator('#start-race')).toHaveText(/製作中/);
       await page.locator('[data-stage=coast]').tap();
       if(pending==='orientation'){

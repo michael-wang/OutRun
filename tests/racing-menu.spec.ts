@@ -32,9 +32,11 @@ test('boot, three previews and input ownership before the coast module',async({p
   await page.evaluate(()=>{(window as any).menuPad.buttons[0].pressed=false;});
   await page.keyboard.press('ArrowRight');
   await expect(stage('city')).toBeFocused();
+  await expect(page.locator('#start-race')).toHaveAttribute('aria-disabled','false');
+  await page.keyboard.press('ArrowRight');
   await page.keyboard.press('Enter');
   await expect(page.locator('#start-race')).toHaveAttribute('aria-disabled','true');
-  await expect(page.locator('.racing-sr')).toHaveText('城市製作中');
+  await expect(page.locator('.racing-sr')).toContainText('製作中');
   await stage('canyon').click();
   await page.waitForTimeout(260); // Capture the settled colour and scale.
   await shot(page,'menu-canyon');
@@ -49,8 +51,7 @@ test('boot, three previews and input ownership before the coast module',async({p
   }
   await pulse(14);
   await expect(stage('city')).toHaveAttribute('aria-pressed','true');
-  await pulse(0);
-  await expect(page.locator('.racing-sr')).toHaveText('城市製作中');
+  await expect(page.locator('#start-race')).toHaveAttribute('aria-disabled','false');
   const axis=(x:number)=>page.evaluate(x=>{(window as any).menuPad.axes[0]=x;},x);
   await axis(.22);
   await page.waitForTimeout(80);
@@ -98,4 +99,20 @@ test('boot retry recovers when the entry script is unavailable',async({page})=>{
   await page.unroute('**/assets/index-*.js');
   await page.locator('#boot-error button').click();
   await expect(page.locator('[data-stage=coast]')).toHaveAttribute('aria-pressed','true');
+});
+
+test('city enters through stage two, releases input and can re-enter',async({page})=>{
+  await page.goto(site.href);
+  for(let visit=0;visit<2;visit++){
+    await page.locator('[data-stage=city]').click();
+    await page.locator('#start-race').click();
+    const city=page.locator('#city-stage');
+    await expect(city.locator('#title')).toContainText('城際快線');
+    await city.locator('#go').click();
+    await expect(city.locator('#info')).toContainText('km/h');
+    await page.keyboard.press('Escape');
+    await city.locator('#pauseMenu button').nth(2).click();
+    await expect(city).toHaveCount(0);
+    await expect(page.locator('[data-stage=coast]')).toHaveAttribute('aria-pressed','true');
+  }
 });
