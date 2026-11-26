@@ -1,4 +1,6 @@
 import * as T from 'three';
+import {addAddresses} from './neighbourhood.mjs';
+import neighbourhoodURL from './assets/neighbourhood.png?url';
 import {addMetropolitanBuildings} from './metropolitan.mjs';
 import {finishCityDistricts} from './district-assets.mjs';
 import {addStreetLife} from './street-life.mjs';
@@ -27,6 +29,8 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
  const towerMaterial=new T.MeshStandardMaterial({map:towerAtlas,roughness:.71,metalness:.06,side:T.DoubleSide,vertexColors:true});
  // Build a rigid bay on the local tangent. One mesh per site uses the game's
  // existing chunk visibility and review bounds. No per-frame model generation.
+ const districtAtlas=new T.TextureLoader().load(neighbourhoodURL);districtAtlas.colorSpace=T.SRGBColorSpace;districtAtlas.anisotropy=4;
+ const districtMaterial=new T.MeshStandardMaterial({map:districtAtlas,roughness:.84,side:T.DoubleSide,vertexColors:true});
  const shopBatches=new Map();
  function site(at,offset,name,build){
   const origin=physicalPos(at,offset,grade(at)),angle=pose(at)[2],cs=Math.cos(angle),sn=Math.sin(angle);
@@ -60,10 +64,11 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
   build({panel,box,brace});
   const group={layer:'mid', first:0,last:positions.length/3,yaw:angle};
   // Group shops on the same side and streaming cell while keeping review bounds per lot.
-  if(name==='arcade-shop'||name==='address'||name==='upper-floors'){
+  if(['arcade-shop','address','upper-floors','neighbourhood'].includes(name)){
    const tower=name==='upper-floors';
-   const key=(tower?'tower-':'shop-')+(Math.floor(at/95)*2+Number(offset>0));
-   if(!shopBatches.has(key))shopBatches.set(key,{at,tower,positions:[],uv:[],colors:[],groups:[]});
+   const family=tower?'upper-floors':name==='neighbourhood'?name:'arcade-shop';
+   const key=family+'-'+(Math.floor(at/95)*2+Number(offset>0));
+   if(!shopBatches.has(key))shopBatches.set(key,{at,family,positions:[],uv:[],colors:[],groups:[]});
    const batch=shopBatches.get(key),first=batch.positions.length/3;
    batch.groups.push({...group,first,last:first+group.last});
    for(const [dest,src] of [[batch.positions,positions],[batch.uv,uv],[batch.colors,colors]])for(const v of src)dest.push(v);
@@ -73,7 +78,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
   const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));
   geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));
   geo.computeVertexNormals();geo.computeBoundingSphere();
-  const mesh=new T.Mesh(geo,name==='upper-floors'?towerMaterial:material);mesh.name='city-interior-kit-'+name+'-'+at;
+  const mesh=new T.Mesh(geo,name==='upper-floors'?towerMaterial:name==='neighbourhood'?districtMaterial:material);mesh.name='city-interior-kit-'+name+'-'+at;
   mesh.userData.reviewGroups=groups;
   mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);cityChunks.push({at,mesh});
  }
@@ -233,7 +238,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
  // wall, clerestory and projecting shop blades belong to each actual parcel.
  for(const p of frontages){
   const centralRow=p.at<310||(p.side===1&&p.at>=574&&p.at<=713)||(p.side<0&&p.at>=723&&p.at<=866);
-  if(!centralRow||p.style||p.offset!==undefined)continue;
+  if(p.use||!centralRow||p.style||p.offset!==undefined)continue;
   const {side,width:w,at,arcade,bays,storey,index}=p,trade=(index+(side===1?1:3))%4;
   const paint=[0xa65f48,0x356b64,0x8a6d57,0x4b697e][trade];
   site(at,side*(edge(at,side)+p.setback),'arcade-shop',({box,panel,brace})=>{
@@ -268,11 +273,12 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
  }
  finishCityDistricts({site,M,edge,frontages});
  addMetropolitanBuildings({site,M,edge,frontages});
- for(const b of shopBatches.values())emit(b.at,b.tower?'upper-floors':'arcade-shop',b.positions,b.uv,b.colors,b.groups);
+ addAddresses({site,edge,frontages});
+ for(const b of shopBatches.values())emit(b.at,b.family,b.positions,b.uv,b.colors,b.groups);
  // The wholesale approach has doors along an existing row of actual shops.
  // Their front setbacks are assigned by the parcel generator and clear the road.
  for(const p of frontages){
-  if(p.at<3080||p.at>3290||p.side!==1||p.style||p.offset!==undefined||p.index%3===0)continue;
+  if(p.use||p.at<3080||p.at>3290||p.side!==1||p.style||p.offset!==undefined||p.index%3===0)continue;
   site(p.at,p.side*(edge(p.at,p.side)+p.setback),'metal-shops',({box,panel})=>{
    const n=Math.max(1,Math.floor(p.width/7)),span=p.width/n;
    for(let i=0;i<n;i++){const z=(i+.5)*span-p.width/2;

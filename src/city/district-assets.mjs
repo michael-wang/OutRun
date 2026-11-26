@@ -14,7 +14,7 @@ export function finishCityDistricts({site,M,edge,frontages}){
  // Alternate addresses and upper-storey finishes according to parcel use.
  // Signs project into the arcade; the back of each display sits against its own shop.
  for(const p of frontages){
-  if(p.offset!==undefined||p.at>7095||p.width<5)continue;
+  if(p.use||p.offset!==undefined||p.at>7095||p.width<5)continue;
   const {at,side,width:w}=p,id=p.index??p.seed??0,trade=Math.abs(id*5+(side>0?2:0)+Math.floor(at/430))%8;
   const ground=p.style?(p.style==='market'||p.style==='workshop'?4.7:3.8):p.storey+.65;
   const arc=p.style?2.7:p.arcade,street=edge(at,side)+p.setback;

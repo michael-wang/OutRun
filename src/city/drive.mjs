@@ -1,4 +1,6 @@
 import {addMarketMetro,metroFront} from './market-metro.mjs';
+import {civilianCar,cityFleet} from './civilian-cars.mjs';
+import {addressUse} from './neighbourhood.mjs';
 import {towerFor, mallPedestals} from './metropolitan.mjs';
 import {addBallpark} from './ballpark.mjs';
 import {createParkTrees} from './park-trees.mjs';
@@ -204,14 +206,6 @@ function craneBeam(a,b,w,col){
  quayUnit.position.copy(start.lerp(end,.5));quayUnit.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),dir.clone().normalize());
  quayUnit.scale.set(w,w,dir.length());quayPart(col);
 }
-for(const far of [false,true]){const sg=far?1:-1;for(let i=-8;i<=8;i++){
- const u=i*86+(i%2)*11;if(Math.abs(u)<235)continue;
- const boundary=bank(u,far),y=far?5.5:4.3;
- const p=backdrop(5000+i*43,sg,80,i%3===0?'tower':'commerce'),mat=finishes[p.material],v=boundary+sg*(70+p.setback);
- waterfrontBlock(u,v,y,p.width,p.storey*2,p.depth+4,mat.base);
- waterfrontBlock(u,v+sg*2,y+p.storey*2,p.width*.78,p.storey*(p.levels-2),p.depth,mat.wall);
- if(p.roof==='lantern')waterfrontBlock(u+1,v,y+p.storey*p.levels,p.width*.49,2.5,p.depth*.5,mat.trim);
- }}
 // Quays, a pair of lifting frames, and a terminal roof mark the far bank above the waterline.
 for(const u of [235,380,-270]){
  const v=bank(u,true)+25,y=5.5;
@@ -525,8 +519,9 @@ for(const original of sampleFrontages(layout())){
    shift=Math.max(shift,frontageEdge(d,original.side)-edge(original.at,original.side),original.side<0?metroFront(d)-edge(original.at,-1):0);
  if(original.at<310)shift+=1.4+(original.index%3||0)*.56;
  const crown=towerFor(original);
- const parcel={...original,setback:original.setback+shift,...(crown?{crown,levels:3,roof:'podium'}:{})};
+ const parcel={...original,use:addressUse(original),setback:original.setback+shift,...(crown?{crown,levels:3,roof:'podium'}:{})};
  frontages.push(parcel);
+ if(parcel.use)continue; // complete replacement, including its ground floor
  if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos,label});
  else buildParcel(parcel);
 }
@@ -707,10 +702,7 @@ const {rival,ghostAlpha}=makePacer(enabled('traffic')?0x3495a3:0xf3b92d);const l
 
 // Deterministic overtakes: one lane occupied at a time near each encounter.
 const pack=enabled('traffic')?[[360,38,.8,0x9f695a],[735,36,-3.6,0xb9a372],[1340,38,3.4,0x547b81],[1980,41,-3.6,0xab746b],[2770,38,.7,0x698091],[3610,40,3.5,0xaca07c],[4600,39,-3.4,0x83907b],[5460,35,.8,0xb0a477]].map(([lead,pace,lane,color],i)=>{
- const g=new T.Group();const van=i%2===1;
- block(g,1.92,.65,4.25,color,0,.71,0);block(g,1.65,van?1.12:.68,van?2.95:2.04,0x43575d,0,1.27,-.16);
- block(g,1.64,.12,van?2.90:1.73,color,0,van?1.85:1.62,-.18);
- for(const x of [-.73,.73]){block(g,.36,.18,.075,0xe14c36,x,.70,-2.15);for(const z of [-1.25,1.22])block(g,.28,.54,.67,0x282a28,x*1.24,.35,z);}
+ const g=civilianCar(cityFleet[i],color);
  const opacity={value:1},paints=new Map();
  g.traverse(o=>{if(!o.isMesh)return;const base=o.material;if(!paints.has(base)){const mat=base.clone();
  mat.onBeforeCompile=shader=>{shader.uniforms.nearFade=opacity;shader.fragmentShader='uniform float nearFade;\n'+shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(nearFade<.999 && fract(dot(gl_FragCoord.xy,vec2(.75487766,.56984029)))>nearFade)discard;');};
@@ -1079,7 +1071,7 @@ previousButtons=Array.from(drivingPad()?.buttons??[],button=>!!button.pressed);
  orbit.apply({eye:camera.position,look:orbitLook},car.position);camera.lookAt(orbitLook);
  const aim=new T.Vector3(...pos(d+38,0,grade(d)));sun.target.position.copy(aim);sun.position.copy(aim).add(sunOffset);sky.position.copy(camera.position);visibleCity(d);metro.update(d,elapsed,entry);$('beat').textContent=district(d)[1];$('info').textContent=Math.round(speed*3.6)+' km/h　 ·　'+(d/1000).toFixed(2)+' km　 ·　'+elapsed.toFixed(2)+' s';
  if(ac){labMix(speed,gas,brake);squeal.gain.setTargetAtTime(phase==='drive'?Math.abs(slip)*2.7:0,ac.currentTime,.055);const rpm=phase==='drive'?52+speed*.82+(speed%16)*1.4+8*gas:30;engine.frequency.setTargetAtTime(rpm,ac.currentTime,.09);filter.frequency.setTargetAtTime(170+speed*4,ac.currentTime,.1);windGain.gain.setTargetAtTime(.1+speed*.017,ac.currentTime,.2);}renderer.render(scene,camera);if(shotRequested){shotRequested=false;snapshot();}if(!closed)raf=requestAnimationFrame(frame);}
-function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener("resize",resize,scope);resize();if(import.meta.env.DEV)window.cityDrive=()=>({orbit:orbit.angle,variant,bar:{...wheelBar},modules:[...activeModules],flowCount:densityMarks.filter(s=>s>=425&&s<=680).length,traffic:pack.map(t=>({d:t.lead+elapsed*t.pace,x:t.lane,visible:t.g.visible,opacity:t.opacity.value})),passes:[...encounters],transfers:[...transfers],fov:camera.fov,nearMix,audioNodes:!!engineBed,phase,d,speed,x,vel,elapsed,edgeTime,splits:[...splits],best,leaderDistance:referenceAt(elapsed)+(leader?148:0),ghostDistance:referenceAt(elapsed),ghostFinish,curvature:bend(d),steering,slip,driftDir,driftEnds:[...driftEnds],hits:[...hits],impact});if(!closed)raf=requestAnimationFrame(frame);
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener("resize",resize,scope);resize();if(import.meta.env.DEV)window.cityDrive=()=>({orbit:orbit.angle,variant,bar:{...wheelBar},modules:[...activeModules],flowCount:densityMarks.filter(s=>s>=425&&s<=680).length,traffic:pack.map(t=>({body:t.g.userData.bodyType,d:t.lead+elapsed*t.pace,x:t.lane,visible:t.g.visible,opacity:t.opacity.value})),passes:[...encounters],transfers:[...transfers],fov:camera.fov,nearMix,audioNodes:!!engineBed,phase,d,speed,x,vel,elapsed,edgeTime,splits:[...splits],best,leaderDistance:referenceAt(elapsed)+(leader?148:0),ghostDistance:referenceAt(elapsed),ghostFinish,curvature:bend(d),steering,slip,driftDir,driftEnds:[...driftEnds],hits:[...hits],impact});if(!closed)raf=requestAnimationFrame(frame);
 
  teardown.push(()=>{delete window.cityDrive;delete window.teaFrames;delete window.teaAudio;clearTimeout(phoneToastTimer);});
  loadingFinished();
