@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {finishCityDistricts} from './district-assets.mjs';
 import {addStreetLife} from './street-life.mjs';
 import atlasURL from './assets/street-kit.png?url';
 
@@ -13,10 +14,10 @@ const properties=[
 export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,frontages}){
  const atlas=new T.TextureLoader().load(atlasURL);
  atlas.colorSpace=T.SRGBColorSpace;atlas.anisotropy=4;
- const data=new Uint8Array(64);
- properties.forEach(([rough,metal],i)=>data.set([255,Math.round(rough*255),Math.round(metal*255),255],
-   ((3-(i>>2))*4+i%4)*4));
- const propertiesMap=new T.DataTexture(data,4,4);propertiesMap.needsUpdate=true;
+ const data=new Uint8Array(128);
+ [...properties,...Array.from({length:16},(_,i)=>i<8?[.61,.10]:i<12?[.29,.21]:[.74,.16])].forEach(([rough,metal],i)=>data.set([255,Math.round(rough*255),Math.round(metal*255),255],
+   ((7-(i>>2))*4+i%4)*4));
+ const propertiesMap=new T.DataTexture(data,4,8);propertiesMap.needsUpdate=true;
  const material=new T.MeshStandardMaterial({map:atlas,roughnessMap:propertiesMap,metalnessMap:propertiesMap,
   roughness:1,metalness:1,side:T.DoubleSide,vertexColors:true});
  material.shadowSide=T.FrontSide;
@@ -27,10 +28,10 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
   const origin=physicalPos(at,offset,grade(at)),angle=pose(at)[2],cs=Math.cos(angle),sn=Math.sin(angle);
   const positions=[],uv=[],colors=[];
   function panel(a,b,c,d,tile,tint=0xffffff){
-   const col=new T.Color(tint),u=tile%4*.25,v=(3-(tile>>2))*.25,lo=.004,hi=.246;
+   const col=new T.Color(tint),u=tile%4*.25,v=(7-(tile>>2))*.125,lo=.004,hi=.246;
    for(const [p,s,t] of [[a,lo,lo],[b,hi,lo],[c,hi,hi],[a,lo,lo],[c,hi,hi],[d,lo,hi]]){
     positions.push(origin[0]+cs*p[0]+sn*p[2],origin[1]+p[1],origin[2]-sn*p[0]+cs*p[2]);
-    uv.push(u+s,v+t);colors.push(col.r,col.g,col.b);
+    uv.push(u+s,v+t*.5);colors.push(col.r,col.g,col.b);
    }
   }
   function box(x,y,z,w,h,l,tile,tint,front=tile){
@@ -55,7 +56,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
   build({panel,box,brace});
   const group={layer:'mid', first:0,last:positions.length/3,yaw:angle};
   // Group shops on the same side and streaming cell while keeping review bounds per lot.
-  if(name==='arcade-shop'){
+  if(name==='arcade-shop'||name==='address'){
    const key=Math.floor(at/95)*2+Number(offset>0);
    if(!shopBatches.has(key))shopBatches.set(key,{at,positions:[],uv:[],colors:[],groups:[]});
    const batch=shopBatches.get(key),first=batch.positions.length/3;
@@ -260,6 +261,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
    }
   });
  }
+ finishCityDistricts({site,M,edge,frontages});
  for(const b of shopBatches.values())emit(b.at,'arcade-shop',b.positions,b.uv,b.colors,b.groups);
  // The wholesale approach has doors along an existing row of actual shops.
  // Their front setbacks are assigned by the parcel generator and clear the road.

@@ -8,7 +8,7 @@ const browser=await chromium.launch({channel:'chrome',args:['--disable-accelerat
 try {
  const page=await browser.newPage();
  const png=await page.evaluate(()=>{
-  const atlas=document.createElement('canvas');atlas.width=atlas.height=1024;
+  const atlas=document.createElement('canvas');atlas.width=1024;atlas.height=2048;
   const g=atlas.getContext('2d',{willReadFrequently:true});let seed=30871;
   function random(){seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;}
   function rect(x,y,w,h,col){g.fillStyle=col;g.fillRect(x,y,w,h);}
@@ -34,7 +34,52 @@ try {
    }
    if(t===14){for(let y=10;y<256;y+=30){rect(0,y,256,16,'#edc784');rect(0,y+4,256,4,'#f7dfaa');}}
    g.restore();
-  }return atlas.toDataURL('image/png').split(',')[1];
+  }
+// Original second sheet: hand-set family of shop fascia, merchandise,
+// district enamel and cast-metal surfaces. No external image inputs.
+const trades=[
+ ['春織','TEXTILE','1936','#823d38'],['茶作','TEA ROOM','008','#365e50'],
+ ['日光','OPTICAL','1968','#366274'],['友製','WORKSHOP','026','#94552d'],
+ ['活版','LETTERPRESS','019','#394855'],['米藏','GRAIN HALL','036','#875840'],
+ ['花庭','ATELIER','051','#6f5065'],['島書','BOOKSHOP','043','#425456']
+];
+for(let tile=0;tile<16;tile++){
+ g.save();g.translate(tile%4*256,1024+Math.floor(tile/4)*256);
+ g.beginPath();g.rect(0,0,256,256);g.clip();
+ if(tile<8){
+  const [name,trade,id,paper]=trades[tile];
+  rect(0,0,256,256,paper);rect(11,10,234,236,'#ceb68d');rect(15,14,226,228,paper);
+  letters(id,25,43,21,'#e7cf9c');
+  g.font='bold 86px Microsoft JhengHei, sans-serif';g.fillStyle='#f4dfb5';g.fillText(name,37,153,183);
+  rect(30,171,196,2,'#d7bd89');letters(trade,29,205,23,'#f5e5c2');
+  rect(30,220,48,4,'#ddb779');grain(3800,.11);
+ }else if(tile<12){
+  // Recessed display window with ceiling glow, shelves, stock and transom reflection.
+  const cool=tile%2===0,gr=g.createLinearGradient(0,0,0,256);
+  gr.addColorStop(0,'#203439');gr.addColorStop(.40,cool?'#798d83':'#bb9a6c');gr.addColorStop(1,'#303f3f');
+  g.fillStyle=gr;g.fillRect(0,0,256,256);
+  for(let row=0;row<3;row++){
+   const y=85+row*52;for(let x=10;x<247;){let w=8+random()*18,h=11+random()*24;
+    rect(x,y-h,w,h,['#e1c493','#927155','#956648','#50645b','#d6bb88'][Math.floor(random()*5)]);
+    rect(x+2,y-h+2,w*.5,3,'#deca9d');x+=w+2+random()*5;
+   }rect(0,y,256,5,'#4a3e36');
+  }
+  for(const x of [0,123,249])rect(x,0,7,256,'#3c4a49');
+  line(15,5,100,150,'rgba(239,247,230,.19)',15);rect(0,8,256,4,'#ddbe88');grain(3000,.07);
+ }else if(tile===12){
+  rect(0,0,256,256,'#ac795e');for(let y=0;y<256;y+=16)for(let x=-32+(y%32?32:0);x<256;x+=64){
+   rect(x+1,y+1,62,14,['#a46b51','#b87c63','#b58268','#aa755b'][Math.floor(random()*4)]);
+  }grain(7000,.20);
+ }else if(tile===13){
+  rect(0,0,256,256,'#879b92');for(let x=0;x<256;x+=32){rect(x,0,3,256,'#566f69');rect(x+3,0,2,256,'#b3b5a0');}
+  grain(6500,.16);
+ }else if(tile===14){
+  rect(0,0,256,256,'#324851');for(let j=0;j<8;j++){rect(2,j*32+3,252,27,'#546b72');rect(4,j*32+4,240,4,'#879a98');}grain(4500,.07);
+ }else{
+  rect(0,0,256,256,'#efe1bd');for(let y=1;y<256;y+=12)line(0,y,256,y,'#d8c69f',1);grain(7000,.13);
+ }g.restore();
+}
+return atlas.toDataURL('image/png').split(',')[1];
  });
  const bytes=Buffer.from(png,'base64');
  const prior=await readFile(destination).catch(error=>{if(error.code!=='ENOENT')throw error;});

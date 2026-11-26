@@ -188,7 +188,19 @@ for(let n=0;n<1800;n++){
  surface(riffles,riverside(u-len,v,1.035),riverside(u,v+w,1.035),riverside(u,v-w,1.035),riverside(u+len,v,1.035));
 }
 riversheet(riffles,0x87abb0);riversheet(sheets[1],0x9e9c86);riversheet(sheets[2],0xd0c6ad);riversheet(sheets[3],0x819185);
-function waterfrontBlock(u,v,y,w,h,len,col){const obj=new T.Mesh(cube,material('quay-'+col,col));obj.position.fromArray(riverside(u,v,y+h/2));obj.scale.set(w,h,len);obj.rotation.y=riverAngle;scene.add(obj);}
+// The far bank is visible from several approaches. Keep its entire silhouette
+// in world coordinates and batch the quay blocks and crane trusses together.
+const quayParts=[],quayUnit=new T.Object3D();
+function quayPart(col){quayUnit.updateMatrix();quayParts.push([quayUnit.matrix.clone(),new T.Color(col)]);}
+function waterfrontBlock(u,v,y,w,h,len,col){
+ quayUnit.position.fromArray(riverside(u,v,y+h/2));quayUnit.rotation.set(0,riverAngle,0);
+ quayUnit.scale.set(w,h,len);quayPart(col);
+}
+function craneBeam(a,b,w,col){
+ const end=new T.Vector3(...b),start=new T.Vector3(...a),dir=end.clone().sub(start);
+ quayUnit.position.copy(start.lerp(end,.5));quayUnit.quaternion.setFromUnitVectors(new T.Vector3(0,0,1),dir.clone().normalize());
+ quayUnit.scale.set(w,w,dir.length());quayPart(col);
+}
 for(const far of [false,true]){const sg=far?1:-1;for(let i=-8;i<=8;i++){
  const u=i*86+(i%2)*11;if(Math.abs(u)<235)continue;
  const boundary=bank(u,far),y=far?5.5:4.3;
@@ -202,14 +214,39 @@ for(const u of [235,380,-270]){
  const v=bank(u,true)+25,y=5.5;
  waterfrontBlock(u,v,y,47,3.0,14,0x948c7c);
  for(const w of [-12,12]){waterfrontBlock(u+w,v,y+3,2.4,19,2.4,0x9c856c);waterfrontBlock(u+w,v-8,y+20,2.2,2.2,19,0x9c856c);}
+ // Trolley rail and lifting boom above the existing landward crane legs.
+ const steel=0x6f807a,ochre=0xaf8457,rail=(U,V,Y)=>riverside(u+U,v+V,Y+y);
+ for(const dx of [-12,12]){
+  craneBeam(rail(dx,0,22),rail(dx,-20,31),.78,ochre);
+  craneBeam(rail(dx,-20,31),rail(dx,-33,24),.55,steel);
+  craneBeam(rail(dx,-33,24),rail(dx,-8,21),.70,ochre);
+ }
+ craneBeam(rail(-12,-20,31),rail(12,-20,31),.70,ochre);
+ for(const dx of [-2.7,2.7])craneBeam(rail(dx,-20,30.8),rail(dx,-20,19),.19,steel);
+ waterfrontBlock(u,v-20,y+18.4,6.4,1.0,2.1,ochre);
  waterfrontBlock(u,v,y+23,29,2.4,3,0xa9967d);
  waterfrontBlock(u+37,bank(u+37,true)+49,y,40,7,19,0x8e9b95);
 }
 // Only navigation aids and working craft occupy the channel.
+const hullVertices=[],hullColors=[];
+function bargeHull(u,v){
+ const ink=new T.Color();const sections=[[-16,1.1],[-11,3.45],[10.8,3.45],[15.7,.62]];
+ function plank(a,b,c,d,col){ink.setHex(col);for(const [x,z,h] of [a,b,c,c,b,d]){hullVertices.push(...riverside(u+x,v+z,h));hullColors.push(ink.r,ink.g,ink.b);}}
+ for(let i=0;i<3;i++){const [a,w]=sections[i],[b,W]=sections[i+1];
+  for(const k of [-1,1])plank([a,k*w*.79,.88],[b,k*W*.79,.88],[a,k*w,2.65],[b,k*W,2.65],0x4e6669);
+  plank([a,-w,2.64],[b,-W,2.64],[a,w,2.64],[b,W,2.64],0x927d65);
+ }
+ for(const [x,w] of [sections[0],sections[3]])plank([x,-w*.79,.88],[x,w*.79,.88],[x,-w,2.65],[x,w,2.65],0x4e6669);
+}
 for(const [u,v] of [[-220,span*.55],[245,span*.65],[325,span*.25]]){
- waterfrontBlock(u,v,1.05,28,1.5,6.5,0x54676d);waterfrontBlock(u-6,v,2.55,6,3.2,4.8,0xccccc1);
+ bargeHull(u,v);waterfrontBlock(u-6,v,5.65,5.65,1.05,4.25,0x516e73);waterfrontBlock(u-6,v,2.55,6,3.2,4.8,0xccccc1);
  for(let j=0;j<3;j++)waterfrontBlock(u+2+j*5,v,2.55,4.5,1.75,4.5,0x828b83);
 }
+const hullMesh=new T.Mesh(geometry(hullVertices,hullColors),new T.MeshLambertMaterial({vertexColors:true,side:T.DoubleSide}));
+hullMesh.name='working-barges';scene.add(hullMesh);
+const quayMesh=new T.InstancedMesh(cube,new T.MeshLambertMaterial({color:0xffffff}),quayParts.length);
+quayParts.forEach(([mat,tint],i)=>{quayMesh.setMatrixAt(i,mat);quayMesh.setColorAt(i,tint);});
+quayMesh.name='city-working-waterfront';quayMesh.computeBoundingSphere();scene.add(quayMesh);
 for(let at=4390;at<5680;at+=12){const y=grade(at);
  for(const s of [-1,1]){const curb=s<0&&at>=5444&&at<5490?Math.max(...[at-6.2,at,at+6.2].map(d=>streetEdge(d,s)))+.22:streetEdge(at,s);box(at,s*(curb+.65),y,.23,.52,12.2,'curb');box(at,s*(curb+.72),y+.87,.15,.16,12.25,'metal');box(at,s*(curb+.72),y+.42,.14,.48,.18,'post');}
  if((at-4390)%96===0)box(at,0,.8,4,Math.max(.5,y-1),5,'plinth');
@@ -383,6 +420,10 @@ function lawnGate(at,side,title){
  box(at,x,y+.2,1,4.1,.85,'metal');box(at,x+side*4,y+.2,.53,4.05,.65,'metal');
  box(at,x+side*2,y+3.9,5.1,.62,1.4,'trim');label(at-.48,x+side*2,y+3.15,4.5,1.12,title,'#50615d');
 }
+// The departure forecourt connects the ticket windows and boarding area.
+ribbon('station-forecourt',6796,6940,d=>-edge(d,-1)-5.9,()=>-48,.245,0xa99b87);
+windingPath('ticket-walk',6797,6939,d=>-23.0-1.9*Math.sin((d-6797)/31),3.6,.285,0xccbd9e);
+for(const at of [6810,6873])windingPath('ticket-approach',at,at+25,d=>-17-(d-at)*.60,3.5,.30,0xcbbba1);
 const civicPath=d=>-23-5*Math.sin((d-1330)/72);
 ribbon('lawn',1275,2070,d=>-edge(d,-1)-4.0,d=>-87,.295,0x94a392);
 windingPath('civic-walk',1278,2068,civicPath,3.9,.32,0xc2bbab);

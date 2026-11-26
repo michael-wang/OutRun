@@ -47,7 +47,11 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,p
  function terrace(d,x,w,l,h,c){return reviewGroup('far',d,()=>buildTerrace(d,x,w,l,h,c));}
  function buildTerrace(d,x,w,l,h,c){
   block(d,x,0,w,h,l,c);block(d+2,x-1,h,w*.74,h*.33,l*.65,c);
-  for(let y=2.2;y<h-.8;y+=3.4)block(d,x,y,w+.18,.32,l+.18,0x859394);
+  for(let y=2.2;y<h-.8;y+=3.4){
+   block(d,x,y,w+.18,.32,l+.18,0x859394);
+   block(d,x-Math.sign(x)*(w*.5+.10),y+.4,.32,1.28,l*.76,0x697f81);
+   block(d-l*.5-.12,x,y+.42,w*.62,1.23,.28,0x708487);
+  }
  }
  function flush(at){
   const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vertices,3));g.setAttribute('color',new T.Float32BufferAttribute(colors,3));g.computeVertexNormals();g.computeBoundingSphere();const mesh=new T.Mesh(g,material);mesh.name='city-interior-'+at;mesh.userData.reviewGroups=groups;groups=[];scene.add(mesh);cityChunks.push({at,mesh});vertices=[];colors=[];

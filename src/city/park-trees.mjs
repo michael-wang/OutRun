@@ -31,11 +31,24 @@ export function createParkTrees(scene, cityChunks, physicalPos) {
   }
   crown.setAttribute('color',new T.Float32BufferAttribute(colors,3));crown.computeVertexNormals();
   const leaf=new T.MeshLambertMaterial({map,vertexColors:true}), wood=new T.MeshLambertMaterial({color:0x796952});
+  // Small, opaque-tested leaf sprays break the smooth outline of the shared
+  // crown without multiplying its solid geometry or its shadow passes.
+  const stamp=document.createElement('canvas');stamp.width=stamp.height=64;
+  const brush=stamp.getContext('2d');
+  for(let j=0;j<32;j++){const angle=noise()*Math.PI*2,r=Math.sqrt(noise());
+    const x=32+Math.cos(angle)*r*23,y=32+Math.sin(angle)*r*17;
+    brush.fillStyle=['#5d744c','#758959','#879760','#687e54'][j%4];
+    brush.beginPath();brush.ellipse(x,y,4+noise()*3,2.2+noise()*1.6,angle*.58,0,Math.PI*2);brush.fill();
+  }
+  const sprayMap=new T.CanvasTexture(stamp);sprayMap.colorSpace=T.SRGBColorSpace;
+  const sprayMaterial=new T.MeshLambertMaterial({map:sprayMap,alphaTest:.46,side:T.DoubleSide});
+  const spray=new T.PlaneGeometry(1,1);const normals=spray.attributes.normal;
+  for(let i=0;i<normals.count;i++)normals.setXYZ(i,0,1,0);
   const trunk=new T.CylinderGeometry(.64,1,1,6),unit=new T.Object3D(),up=new T.Vector3(0,1,0);
   const cells=new Map(),palette=[0x8ca96e,0x96aa6b,0x829e76,0x9daa75];
   function plantWorld(d,position,h,width=1){
     const origin=new T.Vector3(...position),key=Math.floor(d/190);
-    const cell=cells.get(key)||{wood:[],crowns:[],tones:[]};cells.set(key,cell);
+    const cell=cells.get(key)||{wood:[],crowns:[],tones:[],sprays:[]};cells.set(key,cell);
     const phase=position[0]*.193+position[2]*.117, broad=(.86+.17*Math.cos(phase*2.3))*width;
     const tilt=new T.Vector3(.055*h*Math.sin(phase),0,.039*h*Math.cos(phase));
     function branch(a,b,w){
@@ -53,15 +66,21 @@ export function createParkTrees(scene, cityChunks, physicalPos) {
       const size=(central?.30:.31+.035*Math.sin(i+phase))*h;
       unit.scale.set(size*broad,size*(.69+.13*Math.cos(angle)),size*broad*(.82+.12*Math.sin(angle)));
       unit.updateMatrix();cell.crowns.push(unit.matrix.clone());
+      if(!central){for(const fan of [-.68,.63]){
+        const a=angle+fan;
+        unit.position.copy(center).add(new T.Vector3(Math.cos(a)*size*broad*.83,size*(fan<0?.19:-.20),Math.sin(a)*size*broad*.83));
+        unit.rotation.set(-.29,Math.PI/2-a,.19*fan);unit.scale.set(size*.98,size*.79,1);
+        unit.updateMatrix();cell.sprays.push(unit.matrix.clone());
+      }}
       cell.tones.push(new T.Color(palette[(Math.floor(Math.abs(phase)*.7)+(central?1:i%2))%palette.length]));
     }
   }
   function plant(d,x,y,h,width=1){plantWorld(d,physicalPos(d,x,y),h,width);}
   function finish(){for(const [key,cell] of cells){
-    for(const [geom,material,matrices,tones] of [[trunk,wood,cell.wood,null],[crown,leaf,cell.crowns,cell.tones]]){
+    for(const [geom,material,matrices,tones] of [[trunk,wood,cell.wood,null],[crown,leaf,cell.crowns,cell.tones],[spray,sprayMaterial,cell.sprays,null]]){
       const mesh=new T.InstancedMesh(geom,material,matrices.length);
       matrices.forEach((m,i)=>{mesh.setMatrixAt(i,m);if(tones)mesh.setColorAt(i,tones[i]);});
-      mesh.computeBoundingSphere();mesh.name=tones?'city tree crowns':'city tree branches';
+      mesh.computeBoundingSphere();mesh.name=geom===spray?'city leaf sprays':tones?'city tree crowns':'city tree branches';
       mesh.castShadow=Boolean(tones);mesh.receiveShadow=true;scene.add(mesh);cityChunks.push({at:key*190+95,mesh});
     }
   }}

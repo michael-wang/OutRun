@@ -136,5 +136,8 @@ export function addStreetLife({site,M,edge}){
   t.box(-4.85,7.52,-14,5.35,.32,10.2,M.enamel,0x728c81);
   for(let i=0;i<4;i++)person(t,2+i%2,.36,-4+i*1.4,Math.PI*.38,'walk',i);
  });
+ for(const [at,x] of [[6830,-34],[6895,-31]])site(at,x,'ticket-queue',t=>{
+  for(let i=0;i<4;i++)person(t,.70+(i%2)*1.17,.54,i*1.72,Math.PI*.48,'walk',i+1);
+ });
  site(6977,-22.3,'arrivals',t=>{for(let i=0;i<5;i++)person(t,1.1*Math.cos(i),.26,i*1.9,i%2*.9,'walk',i);});
 }
