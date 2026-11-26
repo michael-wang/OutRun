@@ -226,7 +226,8 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
  // Opening blocks keep their original upper mass. The sidewalk face, return
  // wall, clerestory and projecting shop blades belong to each actual parcel.
  for(const p of frontages){
-  if(p.at>310||p.style||p.offset!==undefined)continue;
+  const centralRow=p.at<310||(p.side===1&&p.at>=574&&p.at<=713)||(p.side<0&&p.at>=723&&p.at<=866);
+  if(!centralRow||p.style||p.offset!==undefined)continue;
   const {side,width:w,at,arcade,bays,storey,index}=p,trade=(index+(side===1?1:3))%4;
   const paint=[0xa65f48,0x356b64,0x8a6d57,0x4b697e][trade];
   site(at,side*(edge(at,side)+p.setback),'arcade-shop',({box,panel,brace})=>{
@@ -260,6 +261,19 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
   });
  }
  for(const b of shopBatches.values())emit(b.at,'arcade-shop',b.positions,b.uv,b.colors,b.groups);
+ // The wholesale approach has doors along an existing row of actual shops.
+ // Their front setbacks are assigned by the parcel generator and clear the road.
+ for(const p of frontages){
+  if(p.at<3080||p.at>3290||p.side!==1||p.style||p.offset!==undefined||p.index%3===0)continue;
+  site(p.at,p.side*(edge(p.at,p.side)+p.setback),'metal-shops',({box,panel})=>{
+   const n=Math.max(1,Math.floor(p.width/7)),span=p.width/n;
+   for(let i=0;i<n;i++){const z=(i+.5)*span-p.width/2;
+    box(.27,.27,z,.52,3.43,span-.8,M.zinc,0xa9b4a8);
+    for(const y of [1.12,1.87,2.62])box(-.016,y,z,.10,.09,span-.9,M.steel);
+    panel([.45,4.10,z-span*.47],[.45,4.10,z+span*.47],[-1.44,3.55,z+span*.47],[-1.44,3.55,z-span*.47],M.zinc,0x8eaa9d);
+   }
+  });
+ }
  addStreetLife({site,M,edge});
  wholesale(3723,5);wholesale(3805,4);parcelsWing();terminalFront();
 

@@ -12,8 +12,9 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,p
   const first=vertices.length/3;insideGroup=true;build();insideGroup=false;
   if(vertices.length/3>first)groups.push({layer,first,last:vertices.length/3,yaw:pose(at)[2]});
  }
- function form(geom,d,x,lift,w,h,len,yaw,col){
-  transform.position.fromArray(physicalPos(d,x,grade(d)+lift));transform.rotation.y=pose(d)[2]+yaw;
+ function form(geom,d,x,lift,w,h,len,yaw,col,along=0){
+  transform.position.fromArray(physicalPos(d,x,grade(d)+lift));const heading=pose(d)[2];transform.rotation.y=heading+yaw;
+  transform.position.x+=Math.sin(heading)*along;transform.position.z+=Math.cos(heading)*along;
   transform.scale.set(w,h,len);transform.updateMatrix();const attr=geom.attributes.position;ink.setHex(col);
   for(let i=0;i<attr.count;i++){point.fromBufferAttribute(attr,i).applyMatrix4(transform.matrix);vertices.push(point.x,point.y,point.z);colors.push(ink.r,ink.g,ink.b);}
  }
@@ -247,6 +248,111 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,p
   }
  });
  flush(6180);
+
+ // Two municipal works frontages stand on the street side of the railway.
+ // Reserve the actual track behind them. Their offices step up toward the depot.
+ function works(at,x,w,len,h,stone){
+  // The whole building belongs to one parcel frame, including glazing on the
+  // narrow ends. Re-sampling road yaw per window detaches it on tight bends.
+  const fixedBox=(d,x,b,w,h,l,col)=>form(unitBox,at,x,b+h/2,w,h,l,0,col,d-at);
+  reviewGroup('mid',at,()=>{
+   const face=x+w/2;
+   fixedBox(at,x,.10,w,h,len,stone);fixedBox(at,x,h+.1,w+.54,.50,len+.8,0xc2baa7);
+   for(let i=0;i<3;i++){
+    const d=at+(i-1)*len*.29;
+    fixedBox(d,face+.16,.55,.4,3.62,len*.22,0x526967);
+    fixedBox(d,face+.9,4.12,2.4,.38,len*.26,0x99aba2);
+   }
+   // Both returns matter: these broad end elevations face the player in a bend.
+   for(const end of [-1,1]){
+    const z=at+end*(len/2+.16);
+    fixedBox(z,x,.3,w*.8,3.6,.40,0x857c68);
+    fixedBox(z+end*.33,x+1,.5,w*.47,2.85,.43,0x607576);
+    fixedBox(z+end*.61,x+1,3.35,w*.60,.32,1.9,0x9eaa9d);
+    for(let y=6;y<h-1;y+=3.7){
+     fixedBox(z,x,y,w*.72,1.6,.43,0x566f74);
+     fixedBox(z+end*.15,x,y+1.59,w*.78,.22,.65,0xc5baa3);
+    }
+   }
+   for(let y=6;y<h-1;y+=3.7){
+    fixedBox(at,face+.13,y,.32,1.52,len*.84,0x728184);
+    for(const k of [-.28,-.09,.10,.29])fixedBox(at+k*len,face+.34,y,.20,1.54,.28,0xb5ad97);
+   }
+   fixedBox(at-2,x-1.2,h+.52,w*.57,2.46,len*.64,0xa1a799);
+  });
+ }
+ works(2494,-25.8,13,35,12,0xad9f88);
+ works(2514,-21.5,9,12,7,0xb6b09b);
+ flush(2498);
+ works(2944,-23.3,12,29,13,0xb09e88);
+ works(2978,-27.4,18,39,18.2,0xa49b88);
+ works(3003,-33.5,13,13,11,0xc1b59e);
+ strip(2925,3014,()=>-16.8,()=>-21.4,()=>.24,0xb5ac99);
+ flush(2971);
+
+ // At the end of the courts, two walks converge beside a neighbourhood club.
+ const walk=d=>-24-(d-2025)*.13;
+ strip(2025,2149,d=>walk(d)-2.18,d=>walk(d)+2.18,()=>.34,0xcfc0a0);
+ for(const [d,x] of [[2040,-29],[2087,-36],[2123,-43]])copse(d,x,3,.82);
+ pavilion(2078,-57,13,31,5.7,0xb0a18d);yard(2141,-73,18,30,8.4,0xc2b09a);
+ for(const d of [2060,2082,2115])block(d,walk(d)-3,.33,.8,.55,5.2,0xa48369);
+ flush(2085);
+
+ // Municipal waterworks establish the transition from warehouses to the bridge.
+ // The two low halls lead into the landward levee; the bridge deck stays open.
+ yard(4095,67,21,38,8.4,0xa2b0a7);yard(4142,52,16,34,6.9,0xa5a69b);
+ for(const at of [4112,4134]){const x=36;
+  form(cylinder,at,x,4.9,6.1,9.6,6.1,0,0x859e9c);
+  form(cylinder,at,x,9.77,6.45,.34,6.45,0,0xb7b7a6);
+ }
+ copse(4170,69,3,.89);flush(4132);
+ // A covered walk links the plaza to the terminal neighbourhood. Its distinct
+ // groups turn within the block; they do not extend the roadside furniture line.
+ strip(6435,6568,d=>-29-.11*(d-6435),d=>-33-.11*(d-6435),()=>.38,0xc0ae96);
+ for(const [at,x,bays] of [[6450,-33.3,3],[6514,-40.1,4]]){
+  for(let i=0;i<bays;i++){const z=at+i*5.5,dx=x-i*.6;
+   block(z,dx-2.0,.38,.42,3.8,.40,0x697972);block(z,dx+1.8,.38,.35,3.7,.36,0x697972);
+   roof(z,dx,5.6,5.43,4.12,4.58,0xbebbaa,0x788e87);
+  }
+ }
+ copse(6476,-47,3,.86);copse(6557,-48,4,.92);flush(6510);
+
+ // The harbour overlook sits on the dry abutment, before the open bridge span.
+ reviewGroup('mid',4351,()=>{
+  const x=23.3;
+  block(4351,x,-1.42,10,1.87,17.2,0xa6a898);
+  block(4352,x,.43,8.8,2.3,13.7,0x879f9a);
+  block(4352,x,2.72,8.87,2.45,13.76,0x57787e);
+  block(4352,x,5.17,10.1,.48,15,0xc9cab4);
+  for(const z of [4347,4352,4357])block(z,x-4.46,2.76,.22,2.43,.30,0xc3c4af);
+  block(4355,x+3,5.65,.18,3.12,.19,0x82938d);
+ });
+ flush(4351);
+ // On the descent the river-facing steps and shaded landing mark the return
+ // to inhabited ground. Keep the left through view and water between banks.
+ reviewGroup('mid',5710,()=>{
+  const x=33;
+  for(let i=0;i<4;i++)block(5712,x-i*1.3,.25,1.36,.38+i*.26,33-i*.7,0xb8ac96);
+  for(const d of [5698,5716,5737]){
+   block(d,x-4.3,.3,.42,4.8,.41,0x6a827d);
+   block(d,x+1.3,.3,.39,4.5,.41,0x6a827d);
+   roof(d,x-1.45,7.4,8.7,5.08,4.57,0xb3beab,0x78908b);
+  }
+ });
+ flush(5713);
+ // A clock on the existing arrivals forecourt makes the station readable before
+ // the bus bays. The dial is geometry and can be seen against a bright sky.
+ reviewGroup('mid',6953,()=>{
+  const d=6953,x=-21.3;
+  block(d,x,.18,3.8,.6,3.8,0xa59a83);
+  block(d,x,.78,.85,7.6,.83,0x607574);
+  block(d,x,8.1,3.6,3.62,.88,0x496967);
+  block(d-.50,x,8.35,3.11,3.12,.19,0xe6d8af);
+  block(d-.63,x-.08,9.78,.20,1.23,.11,0x556663);
+  block(d-.66,x+.40,9.60,.99,.18,.12,0x556663);
+  block(d,x,11.71,3.87,.23,1.1,0x647e78);
+ });
+ flush(6953);
  cylinder.dispose();
 
  unitBox.dispose();crown.dispose();

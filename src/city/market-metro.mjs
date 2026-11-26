@@ -54,9 +54,16 @@ export function addMarketMetro({scene,cityChunks,physicalPos,box,link,label}){
   }
   // Rail covers and the approach curves physically conceal both reversing berths.
   if(d<first+50||d>=last-50){
-   for(const x of [-3.25,3.25])band(a,b,x,x,-.31,4.9,0x797f77);
-   band(a,b,-3.25,3.25,4.9,4.9,0x9ca69b);
-   if(d===first||d===last-2){const f=d===first?a:b;quad(pt(f,-3.25,-.35),pt(f,3.25,-.35),pt(f,3.25,4.9),pt(f,-3.25,4.9),0x777d74);}
+   // The reversing track passes inside a ground-supported maintenance building.
+   // Keep the swept rail volume open. All walls lie outside the vehicle gauge.
+   for(const x of [-5.4,5.4]){
+    const ground=(f)=>{const p=pt(f,x,0);p.y=grade(f.at)-.35;return p;};
+    quad(ground(a),ground(b),pt(b,x,6),pt(a,x,6),0xb7ae95);
+    band(a,b,x*1.003,x*1.003,2.9,4.2,0x768a88);
+    band(a,b,x*1.006,x*1.006,4.3,4.58,0xc5bd9f);
+   }
+   band(a,b,-5.55,5.55,6,6,0xa8ada2);
+   if(d===first||d===last-2){const f=d===first?a:b;const lo=pt(f,-5.4,0),hi=pt(f,5.4,0);lo.y=hi.y=grade(f.at)-.35;quad(lo,hi,pt(f,5.4,6),pt(f,-5.4,6),0xb7ae95);}
   }
   if(d>=platform-20&&d<platform+20){
    band(a,b,-5.9,-1.53,.96,.96,0xbfb398);band(a,b,-1.76,-1.53,.982,.982,0xf3c25c);

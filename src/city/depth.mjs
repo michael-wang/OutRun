@@ -105,6 +105,19 @@ export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,
     parcel(riverside(u+(row?23:0),bank(u,far)+sign*off,ground),riverYaw,38,52,'mid',row?flats:hall);
    }
   }
+  // A rowing club and boathouse turn the near end of each bank into an address.
+  // Use the bank's own elevation and frame so both banks remain dry and level.
+  for(const u of (far?[-143,103]:[-117,152])){
+   const off=far?114:118;
+   parcel(riverside(u,bank(u,far)+sign*off,ground),riverYaw,42,30,'mid',(box,tree)=>{
+    box(0,0,-.14,41,.5,29,0xb69f82);box(2,3,.36,33,6.35,15,0x94a6a0);
+    box(1,2,6.7,37,.54,18,0xd2c9ad);
+    for(const a of [-10,-2,6,14]){
+     box(a,-4.65,.55,5.35,4.13,.55,0x4f6a6c);box(a,-7.5,4.94,6.7,.39,7,0xa8a995);
+    }
+    for(const a of [-15,13])tree(a,12,6.4);
+   });
+  }
   flush(far?'landing':'embankment',null);
  }
  for(const at of [5800,5980,6210,6450,6720,6930]){site(at,-85,36,50,flats);site(at+50,at===5980?184:110,36,50,hall);if(at===6210)flush('quay-streets',6100);}
