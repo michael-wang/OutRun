@@ -1,4 +1,6 @@
 import {addMarketMetro,metroFront} from './market-metro.mjs';
+import {towerFor, mallPedestals} from './metropolitan.mjs';
+import {addBallpark} from './ballpark.mjs';
 import {createParkTrees} from './park-trees.mjs';
 import {addCityStreetKit} from './city-street-kit.mjs';
 import {decisions,drawConnections,frontageEdge,junctionFurniture,openMouth,roadsideEdge,streetEdge} from './junctions.mjs';
@@ -181,6 +183,7 @@ for(let u=-2000;u<2000;u+=20){const v=u+20;
  }
 }
 riversheet(sheets[0],0x397e91);
+addBallpark({scene,cityChunks,riverside,span});
 const riffles=[];
 for(let n=0;n<1800;n++){
  const u=Math.sin(n*197.19)*1050,v=span*(.5+.49*Math.sin(n*51.93));
@@ -328,7 +331,7 @@ for(let d=1200;d<2150;d+=30){for(const side of [-1,1])box(d,side*((streetEdge(d,
 for(const at of [1400,1660,1910]){const y=grade(at);for(let row=0;row<5;row++)box(at,-(23+row*2.2),y+.1,2.4,.4+row*.52,45+row*2.5,'trim');}
 for(const at of [1435,1840]){const y=grade(at);shape(round,material('pavilion',0xc1c7c0),at,41,y+3.5,16,7,24);shape(round,material('pavilion-rim',steel),at,41,y+7.3,24,.6,32);}
 // The mall's plinth, rounded atrium, setback upper floors and projecting entrance form one landmark.
-for(const [at,side] of [[5820,-1],[6152,1],[6380,-1]]){
+for(const [at,side] of mallPedestals){
  const y=grade(at),x=side*(edge(at,side)+29);
  box(at,x,y,27,13,82,'arcade',0xb7b6a6);box(at+8,x+side*5,y+12.8,20,9,59,'loft',0xbac2bc);
  shape(round,material('atrium',0x81999e),at-30,x-side*5,y+9,16,18,21);
@@ -502,7 +505,8 @@ function buildParcel(p){
   }
  }
  const h=upper+(levels-1)*storey,x0=face+(levels>tier?shift:0),rw=levels>tier?w*.74:w;
- if(roof==='gable'||roof==='saw'){
+ if(roof==='podium'){box(at,cx(face+depth*.5),h-.13,depth,.13,w-.12,'trim',f.trim);}
+ else if(roof==='gable'||roof==='saw'){
   const count=roof==='saw'?2:1,part=depth/count;
   for(let j=0;j<count;j++){
    const u=x0+j*part;
@@ -520,7 +524,9 @@ for(const original of sampleFrontages(layout())){
  for(let d=original.at-original.width/2-2;d<=original.at+original.width/2+3;d+=2)
    shift=Math.max(shift,frontageEdge(d,original.side)-edge(original.at,original.side),original.side<0?metroFront(d)-edge(original.at,-1):0);
  if(original.at<310)shift+=1.4+(original.index%3||0)*.56;
- const parcel=shift>.05?{...original,setback:original.setback+shift}:original;frontages.push(parcel);
+ const crown=towerFor(original);
+ const parcel={...original,setback:original.setback+shift,...(crown?{crown,levels:3,roof:'podium'}:{})};
+ frontages.push(parcel);
  if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos,label});
  else buildParcel(parcel);
 }

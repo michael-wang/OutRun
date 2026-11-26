@@ -1,8 +1,10 @@
 import * as T from 'three';
+import {parkOccupies} from './ballpark.mjs';
 
 // All parcels are measured in metres in the same world frame as the carriageway.
 // The riverfront follows the actual bank, independently of the viaduct alignment.
 export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,riverside,nearEnd,alongX,alongZ,parkTrees}){
+ const finish=physicalPos(5650,0,0),span=(finish[0]-nearEnd[0])*alongX+(finish[2]-nearEnd[2])*alongZ;
  const road=[];
  for(let d=0;d<=7110;d+=10){const [x,z]=pose(d);road.push([x,z,Math.max(edge(d,1),edge(d,-1))]);}
  const cube=new T.BoxGeometry().toNonIndexed();
@@ -18,6 +20,7 @@ export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,
   for(const [rx,rz,half] of road)if((x-rx)**2+(z-rz)**2<(r+half+4)**2)return;
   const dx=x-nearEnd[0],dz=z-nearEnd[2],u=dx*alongZ-dz*alongX,v=dx*alongX+dz*alongZ;
   if(Math.abs(u)<2000+r&&v>bank(u,false)-r*1.4&&v<bank(u,true)+r*1.4)return;
+  if(parkOccupies(u,v-span,r))return;
   const first=vertices.length/3;
   function box(a,b,bottom,w,h,l,col){solid(cube,x+c*a+s*b,y+bottom+h/2,z-s*a+c*b,yaw,w,h,l,col);}
   function tree(a,b,h){
