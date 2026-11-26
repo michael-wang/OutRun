@@ -1,3 +1,5 @@
+import {PadMenuNavigation,menuFaceButtons} from '../pad-menu-navigation';
+import {sampleFrontages,streetFront,avenueTrees,crossings,signals,streetSigns} from './street-samples.mjs';
 import {CameraOrbit} from '../camera-orbit';
 import {addCityDepth} from './depth.mjs';
 import {createReviewLines} from './review-lines.mjs';
@@ -304,11 +306,11 @@ function shape(geom,mat,d,x,y,w,h,len,angle=0){
 const round=new T.CylinderGeometry(.5,.5,1,18),crown=new T.IcosahedronGeometry(1,1);
 const bark=material('civic-bark',0x706e62),greens=[olive,0x778b82,0x92a294].map((c,i)=>material('civic-leaf'+i,c,true));
 const leafSets=[greens,...[.33,.67,1].map(weight=>greens.map(m=>leafyFinish(m,weight)))];
-function tree(d,x,h){
+function tree(d,x,h,crownScale=1){
  const leaves=leafSets[Math.round(3*finishWeight(d))];
  const y=grade(d)+.16;shape(round,bark,d,x,y+h*.39,.46,h*.78,.46);
  for(let j=0;j<3;j++){const u=Math.sin(d*1.3+j*2.1);
- shape(crown,leaves[j],d+Math.cos(j*2.1+d)*h*.13,x+u*h*.16,y+h*(.69+j*.09),h*(.29+.025*j),h*.23,h*.31,j+d*.03);}
+ shape(crown,leaves[j],d+Math.cos(j*2.1+d)*h*.13,x+u*h*.16,y+h*(.69+j*.09),h*(.29+.025*j)*crownScale,h*.23,h*.31*crownScale,j+d*.03);}
 }
 function label(d,x,y,w,h,text,bg='#495b61',fg='#f0e9d5'){
  const c=document.createElement('canvas');c.width=640;c.height=150;const a=c.getContext('2d');a.fillStyle=bg;a.fillRect(0,0,640,150);
@@ -316,8 +318,19 @@ function label(d,x,y,w,h,text,bg='#495b61',fg='#f0e9d5'){
  const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;
  const o=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tex,side:T.DoubleSide}));o.rotation.y=pose(d)[2]+Math.PI;o.position.fromArray(physicalPos(d,x,y));scene.add(o);cityChunks.push({at:d,mesh:o});
 }
-for(const [start,end,side,spacing] of [[110,600,1,37],[1150,1300,-1,28],[1330,2000,1,41],[3300,3900,1,34],[6060,6500,-1,32],[6650,6845,1,32]]){
- for(let d=start;d<end;d+=spacing+next()*7){const off=edge(d,side)+6.25+next()*1.7;tree(d,side*off,6.5+next()*3);}
+for(const {from,to,side,spacing,height,offset,crown} of avenueTrees){
+ for(let d=from;d<to;d+=spacing+next()*7){const off=edge(d,side)+offset+next()*1.7;tree(d,side*off,height+next()*3,crown);}
+}
+for(const {at,side,offset,height,arm,style} of signals){
+ const x=side*(edge(at,side)+offset),y=grade(at),sx=x-side*arm;
+ box(at,x,y,.19,height,.19,'post');box(at,x-side*arm*.5,y+height-.14,arm,.15,.18,'metal');
+ const horizontal=style==='horizontal';
+ box(at,sx,y+height-.86,horizontal?1.5:.52,horizontal?.56:1.34,.39,'metal',0x374444);
+ for(let i=0;i<3;i++)box(at-.21,sx+(horizontal?(i-1)*.42:0),y+height-.76+(horizontal?.08:i*.39),.25,.23,.065,'trim',i===0?0x71c9a0:0x43514c);
+}
+for(const {at,side,offset,height,width,text,color} of streetSigns){
+ const x=side*(edge(at,side)+offset),y=grade(at);
+ box(at,x,y,.16,height,.16,'post');label(at-.13,x,y+height-.25,width,.83,text,color);
 }
 // Transit pull-outs live behind the kerb, with a bench, shelter glazing, stop flag and route disc.
 for(const [at,side] of [[340,-1],[1172,1],[2770,1],[3700,1],[5765,1],[6860,-1]]){
@@ -347,19 +360,19 @@ for(const [at,side] of [[5820,-1],[6100,1],[6380,-1]]){
  for(let k=0;k<5;k++)box(at-20+k*9,side*(edge(at,side)+6.2),y+.2,2,.68,3.3,'trim');
 }
 // Pedestrian bridges have a visible open truss and stairs descending parallel to the sidewalk.
-for(const at of [900,3880,5835,6575]){
- const y=grade(at),left=-edge(at,-1)-4.1,right=edge(at,1)+4.1,mid=(right+left)/2,w=right-left;
- box(at,mid,y+6.35,w+.6,.5,4.8,'plinth');
+for(const {at,clearance,offset,depth,bays} of crossings){
+ const y=grade(at),left=-edge(at,-1)-offset,right=edge(at,1)+offset,mid=(right+left)/2,w=right-left;
+ box(at,mid,y+clearance,w+.6,.5,depth,'plinth');
  for(const side of [-1,1]){
  const x=side<0?left:right;
- box(at,x,y+.12,.67,6.28,4.0,'post');
- for(let i=0;i<19;i++)box(at+2.7+i*.64,x,y+.15,2.4,6.3*(1-i/19),.70,'trim');
+ box(at,x,y+.12,.67,clearance-.07,depth-.8,'post');
+ for(let i=0;i<19;i++)box(at+2.7+i*.64,x,y+.15,2.4,(clearance-.05)*(1-i/19),.70,'trim');
  }
- for(const dz of [-2.22,2.22]){
- box(at+dz,mid,y+8.55,w,.22,.22,'metal');
- for(let i=0;i<8;i++){
- const a=left+i*w/8,b=a+w/8;
- link(physicalPos(at+dz,a,y+6.86+(i%2)*1.68),physicalPos(at+dz,b,y+6.86+((i+1)%2)*1.68),.17,.17,'metal',at,steel);
+ for(const dz of [-depth*.46,depth*.46]){
+ box(at+dz,mid,y+clearance+2.2,w,.22,.22,'metal');
+ for(let i=0;i<bays;i++){
+ const a=left+i*w/bays,b=a+w/bays;
+ link(physicalPos(at+dz,a,y+clearance+.51+(i%2)*1.68),physicalPos(at+dz,b,y+clearance+.51+((i+1)%2)*1.68),.17,.17,'metal',at,steel);
  }}
 }
 
@@ -526,7 +539,10 @@ function buildParcel(p){
  }else{box(at+rw*.06,cx(x0+depth*.56),h,depth*.50,roof==='lantern'?3.5:1.8,rw*.53,'plinth',f.base);}
  if(index%3===0&&p.offset===undefined){box(at-w*.32,cx(street+.18),y+ground+.4,.96,2.5,.38,'metal',f.base);}
 }
-for(const parcel of layout())buildParcel(parcel);
+for(const parcel of sampleFrontages(layout())){
+ if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos});
+ else buildParcel(parcel);
+}
 for(const [at,side,off,kind] of [[1195,-1,48,'row'],[1300,-1,62,'commerce'],[1400,-1,82,'row'],[1270,1,100,'commerce'],[1525,1,120,'row'],[1820,1,103,'commerce'],[1560,-1,111,'commerce'],[1710,-1,120,'tower'],[1855,-1,115,'row'],[5860,1,104,'commerce'],[5950,1,118,'row'],[6085,1,97,'commerce']])buildParcel(backdrop(at,side,off,kind));
 
 
@@ -801,14 +817,14 @@ function passSplit(now){
  $('split').textContent='S'+(i+1)+'　'+elapsed.toFixed(2)+' s'+diff;splitUntil=now+2300;
  if(i!==2)return;
  phase='finish';d=L;const faster=!best||elapsed<best[2];if(faster&&!entry){best=splits.slice();try{localStorage.setItem(recordKey,JSON.stringify(best));}catch{}}
- $('panel').hidden=false;$('title').textContent=faster?'個人最佳':'抵達埡口';$('copy').textContent='本趟 '+elapsed.toFixed(2)+' s　·　最佳 '+best[2].toFixed(2)+' s';
+ $('panel').hidden=false;selectPanel($('go'),true);$('title').textContent=faster&&!entry?'個人最佳':'抵達中央車站';$('copy').textContent='本趟 '+elapsed.toFixed(2)+' s'+(best?'　·　最佳 '+best[2].toFixed(2)+' s':'');
  $('best').textContent='';$('go').textContent='再跑一趟　↵';
 }
 $('title').textContent='城際快線｜城市大道';$('go').onclick=start;
 for(const btn of ui.querySelectorAll('[data-key]')){btn.onpointerdown=e=>{e.preventDefault();btn.setPointerCapture(e.pointerId);keys.add(btn.dataset.key);};btn.onlostpointercapture=()=>keys.delete(btn.dataset.key);}
 window.teaFrames=[];
 const meterCells=Array.from(ui.querySelectorAll('#steerMeter i'));
-let previousButtons=[],previousNav=0,lastOption=-Infinity,pauseAt=0,menuChoice=0,confirming=false;
+let previousButtons=[],inputFocused=false,lastOption=-Infinity,pauseAt=0,menuChoice=0,confirming=false;
 const wheelBar=createSteerBar();
 let driftLatch=0,snapshotBusy=false,shotRequested=false;
 const reviewQuery=new URLSearchParams(location.search);
@@ -831,12 +847,26 @@ window.addEventListener('keydown',e=>{if(e.code==='F6'){e.preventDefault();if(!e
 teardown.push(()=>{removeLines?.();});
 if(reviewQuery.get('layers')==='1')showLayers(true);
 const pauseMenu=$('pauseMenu'),menuButtons=[...pauseMenu.querySelectorAll('button')];
+const panelButtons=[...$('panel').querySelectorAll('button')],menuNav=new PadMenuNavigation();
+let panelChoice=$('go');
+function selectPanel(button,focus=false){
+ panelChoice=button;
+ for(const b of panelButtons)b.classList.toggle('city-selected',b===button);
+ if(focus)button.focus({preventScroll:true});
+}
+function movePanel(delta){
+ const available=panelButtons.filter(b=>b.getClientRects().length&&!b.disabled);
+ selectPanel(available[(available.indexOf(panelChoice)+delta+available.length)%available.length],true);
+}
+for(const b of panelButtons)b.addEventListener('focus',()=>selectPanel(b),scope);
+selectPanel(panelChoice,document.hasFocus());
 function drawMenu(){
  $('pauseTitle').textContent=confirming?'放棄這一趟？':'已暫停';
  menuButtons[0].textContent=confirming?'返回暫停選單':'繼續行駛';
  menuButtons[1].textContent=confirming?'確認重新開始':'重新開始…';
  menuButtons[2].disabled=confirming;
  menuButtons.forEach((b,i)=>b.setAttribute('aria-pressed',String(i===menuChoice)));
+ menuButtons[menuChoice].focus({preventScroll:true});
 }
 function moveMenu(delta){const size=confirming?2:3;menuChoice=(menuChoice+delta+size)%size;drawMenu();}
 function pauseRace(now){if(phase!=='drive')return;phase='paused';pauseAt=now;orbitNeedsNeutral=true;menuChoice=0;confirming=false;pauseMenu.hidden=false;keys.clear();drawMenu();if(volume)volume.gain.setTargetAtTime(0,ac.currentTime,.025);}
@@ -855,29 +885,44 @@ function choose(i){
 }
 menuButtons.forEach((b,i)=>b.onclick=()=>choose(i));
 window.addEventListener("keydown",e=>{
- if(e.composedPath()[0]?.id==="city-exit")return;
+ if(e.composedPath()[0]?.id==='citySnapshot'||e.composedPath()[0]?.id==='cityLayers')return;
  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
  if(e.repeat)return;
  if(e.code==='Escape'&&(phase==='finish'||phase==='ready')){leave();return;}
  if(e.code==='Escape'){if(phase==='paused')resumeRace(performance.now());else pauseRace(performance.now());return;}
  if(e.code==='F8'){e.preventDefault();shotRequested=true;return;}
- if(phase==='paused'){if(['ArrowUp','ArrowDown'].includes(e.key)){moveMenu(e.key==='ArrowUp'?-1:1);}if(e.key==='Enter')choose(menuChoice);return;}
- if(phase!=='drive'&&(e.key==='Enter'||e.key===' '))return start();keys.add(e.key);
+ if(phase==='paused'){if(['ArrowUp','ArrowDown'].includes(e.key)){moveMenu(e.key==='ArrowUp'?-1:1);}if(e.key==='Enter'){e.preventDefault();choose(menuChoice);}return;}
+ if(phase==='ready'||phase==='finish'){
+  if(['ArrowLeft','ArrowUp','ArrowRight','ArrowDown'].includes(e.key)){e.preventDefault();movePanel(['ArrowLeft','ArrowUp'].includes(e.key)?-1:1);return;}
+  if(e.key==='Enter'||e.key===' '){e.preventDefault();panelChoice.click();return;}
+ }
+ keys.add(e.key);
 },scope);window.addEventListener("keyup",e=>keys.delete(e.key),scope);window.addEventListener("blur",()=>keys.clear(),scope);
 function controls(pad,now){
- const buttons=Array.from(pad?.buttons||[],b=>!!b?.pressed),edge=i=>buttons[i]&&!previousButtons[i];
- const nav=buttons[12]?-1:buttons[13]?1:Math.abs(pad?.axes[1]||0)>.57?Math.sign(pad.axes[1]):0;
- const identity=pad?pad.index+':'+pad.id:null;
- if(identity!==menuPadIdentity){menuPadIdentity=identity;orbitNeedsNeutral=true;previousButtons=buttons;previousNav=nav;return;}
+ const buttons=Array.from(pad?.buttons||[],b=>!!b?.pressed||b?.value>.5),edge=i=>buttons[i]&&!previousButtons[i];
+ const ax=Number.isFinite(pad?.axes[0])?pad.axes[0]:0,ay=Number.isFinite(pad?.axes[1])?pad.axes[1]:0;
+ const identity=pad?pad.index+':'+pad.id:null,focused=document.hasFocus()&&!document.hidden;
+ const capture=()=>menuNav.capture(ax,ay,buttons);
+ if(!focused||!inputFocused||identity!==menuPadIdentity){
+  inputFocused=focused;menuPadIdentity=identity;orbitNeedsNeutral=true;previousButtons=buttons;capture();return;
+ }
+ const face=pad&&menuFaceButtons(pad),confirm=face&&edge(face.confirm),back=face&&edge(face.back);
+ const direction=phase==='drive'?null:menuNav.poll(ax,ay,buttons,now);
+ const delta=direction==='up'||direction==='left'?-1:direction?1:0;
+ if(phase==='drive'||delta)capture();
  if(edge(9)&&now-lastOption>320){
-  lastOption=now;if(phase==='paused')resumeRace(now);else if(phase==='drive')pauseRace(now);
- }else if(phase==='paused'){
-  if(nav&&!previousNav){moveMenu(nav);}
-  if(edge(0))choose(menuChoice);
-  else if(edge(1)){if(confirming){confirming=false;menuChoice=0;drawMenu();}else resumeRace(now);}
+  capture();lastOption=now;if(phase==='paused')resumeRace(now);else if(phase==='drive')pauseRace(now);
+ }else if(face&&edge(10)){shotRequested=true;}
+ else if(phase==='paused'){
+  if(delta)moveMenu(delta);
+  if(confirm)choose(menuChoice);
+  else if(back){if(confirming){confirming=false;menuChoice=0;drawMenu();}else resumeRace(now);}
  }else if(edge(11)&&phase==='drive'){orbit.reset();}
- else if(edge(1)&&phase!=='drive')leave();else if(edge(0)&&phase!=='drive')start();
- previousNav=nav;previousButtons=buttons;
+ else if(phase==='ready'||phase==='finish'){
+  if(delta)movePanel(delta);
+  if(back)leave();else if(confirm)panelChoice.click();
+ }
+ previousButtons=buttons;
 }
 function snapshot(){
  if(snapshotBusy)return;snapshotBusy=true;
@@ -935,7 +980,7 @@ for(const button of fullButtons)button.onclick=toggleFull;
 document.addEventListener('fullscreenchange',()=>{clearPhoneInput();reflectFull();},scope);reflectFull();
 let preferredPad=null, menuPadIdentity;
 function drivingPad(){const pads=Array.from(navigator.getGamepads?.()||[]).filter(p=>p&&p.connected!==false);
- const pushed=pads.find(p=>[0,1,2,6,7,9,11,12,13,14,15].some(i=>p.buttons[i]?.pressed||p.buttons[i]?.value>.12)||Math.abs(p.axes[0]||0)>.16);
+ const pushed=pads.find(p=>[0,1,2,6,7,9,11,12,13,14,15].some(i=>p.buttons[i]?.pressed||p.buttons[i]?.value>.12)||Math.abs(p.axes[0]||0)>.16||Math.abs(p.axes[1]||0)>.55||Math.abs(p.axes[2]||0)>.55||p.buttons[10]?.pressed);
  preferredPad=pushed||pads.find(p=>p.index===preferredPad?.index)||pads.find(p=>p.mapping==='standard')||pads[0];return preferredPad;
 }
 previousButtons=Array.from(drivingPad()?.buttons??[],button=>!!button.pressed);

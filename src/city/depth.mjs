@@ -63,6 +63,15 @@ export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,
   site(at,52,36,50,hall);site(at+26,103,36,50,at%3?hall:flats);
   if(at===2840)flush('market-west',2630);
  }
+ // A covered produce court gives the rear market street a recognizable use.
+ site(3450,75,30,50,(box,tree)=>{
+  box(0,0,0,29,.55,48,0xb6aa92);
+  for(const z of [-15,0,15]){
+   for(const x of [-9,9])box(x,z,.55,.55,6,.55,0x736959);
+   box(0,z,6.4,22,.48,12,0xb1896a);box(0,z,.6,6,1.55,6.2,0x8a805f);
+  }
+  tree(13,19,7);
+ });
  flush('market-east',3510);
  for(const at of [435,655,895])site(at,-82,36,50,flats);flush('central',720);
  // Two streets inland and a lower boat-service terrace leave the river open.
@@ -99,6 +108,11 @@ export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,
   flush(far?'landing':'embankment',null);
  }
  for(const at of [5800,5980,6210,6450,6720,6930]){site(at,-85,36,50,flats);site(at+50,110,36,50,hall);if(at===6210)flush('quay-streets',6100);}
+ site(6685,66,34,50,(box,tree)=>{
+  box(0,0,0,33,.42,48,0xa6a890);
+  for(const x of [-9,9]){box(x,0,.42,3,.22,45,0xc4b49c);for(const z of [-15,0,15])tree(x+3,z,7.4);}
+  box(0,1,.45,7,.55,25,0x8e9d8c);
+ });
  flush('terminus',6740);
  // A shared city beyond the track. One deterministic world grid is visible from
  // multiple districts and from the reverse view; it never follows the camera.

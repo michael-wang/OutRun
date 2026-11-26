@@ -23,3 +23,5 @@
 #layerKey i,#layerKey b{display:inline-block;width:10px;height:9px;border:2px solid #51ff80;vertical-align:middle}
 #layerKey b{border-color:#409dff;margin-left:4px}
 @media(pointer:coarse){#layerTools{top:45px}#cityLayers{min-height:34px}}
+
+.city-pad-hint{display:block;margin:0 0 9px;color:#fff0cb}#panel button.city-selected{outline:3px solid white;outline-offset:2px;background:#ffd795}#panel button:not(.city-selected){background:#48595d;color:white}

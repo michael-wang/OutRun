@@ -1,11 +1,11 @@
-import {PadMenuNavigation} from './pad-menu-navigation';
+import {menuFaceButtons,PadMenuNavigation} from './pad-menu-navigation';
 import type {InputLatch} from './input';
 export type PadAction='confirm'|'back'|'pause'|'fullscreen'|'up'|'down'|'left'|'right'|'camera-prev'|'camera-next'|'camera-reset'|'photo'|'qa';
-function connectedPad(preferred?:number){
+function connectedPad(preferred?:number,stageMenu=false){
  try{
   const pads=Array.from(navigator.getGamepads?.()??[]).filter((p):p is Gamepad=>!!p?.connected);
-  const standard=pads.filter(p=>p.mapping==='standard');
-  const active=standard.filter(p=>p.buttons.some(b=>b.pressed||b.value>.5)||p.axes.some(a=>Math.abs(a)>.55));
+  const standard=pads.filter(p=>p.mapping==='standard'||(stageMenu&&menuFaceButtons(p)));
+  const active=standard.filter(p=>p.buttons.some(b=>b.pressed||b.value>.5)||(stageMenu?[p.axes[0],p.axes[1]]:p.axes).some(a=>Math.abs(a)>.55));
   const pool=active.length?active:standard.length?standard:pads;
   return pool.find(p=>p.index===preferred)??pool[0];
  }
@@ -35,13 +35,13 @@ export class GamepadInput {
  neutralize(){this.releaseDrive();const pad=connectedPad();this.menuNavigation.capture(pad?.axes[0]??0,pad?.axes[1]??0,pad?.buttons.map(buttonDown)??[]);this.needsNeutral=true;}
  private release(){this.resync=true;this.releaseDrive();this.orbitAxis=0;this.previous=[];this.stickDirection=0;this.axisActive=false;this.meaningfulAxis=0;this.needsNeutral=true;}
  private textUnsupported(){this.status.textContent='Gamepad connected · unsupported mapping';}
- poll(driving:boolean | 'stage-menu',qaAvailable=false){const pad=connectedPad(this.preferredIndex);this.preferredIndex=pad?.index;this.status.hidden=!pad||driving==='stage-menu';const diagnostic=document.getElementById('gamepad-diagnostic');if(!pad||!document.hasFocus()||document.hidden){if(!pad)this.disconnected();if(diagnostic)diagnostic.textContent='No focused connected gamepad.';this.release();return;}
+ poll(driving:boolean | 'stage-menu',qaAvailable=false){const pad=connectedPad(this.preferredIndex,driving==='stage-menu');this.preferredIndex=pad?.index;this.status.hidden=!pad||driving==='stage-menu';const diagnostic=document.getElementById('gamepad-diagnostic');if(!pad||!document.hasFocus()||document.hidden){if(!pad)this.disconnected();if(diagnostic)diagnostic.textContent='No focused connected gamepad.';this.release();return;}
  const identity=`${pad.index}:${pad.id}`,pressed=pad.buttons.map(buttonDown);
  if(this.resync||(this.padIdentity&&this.padIdentity!==identity)){this.resync=false;this.stickDirection=stageDirection(pad);this.padIdentity=identity;this.previous=pressed;this.menuNavigation.capture(pad.axes[0]??0,pad.axes[1]??0,pressed);this.releaseDrive();this.orbitAxis=Number.isFinite(pad.axes[2])?pad.axes[2]:0;return;}
  this.padIdentity=identity;
  if(driving)this.menuNavigation.capture(pad.axes[0]??0,pad.axes[1]??0,pressed);
  const b=(i:number)=>!!pressed[i],edge=(i:number)=>pressed[i]&&!this.previous[i];const changed=pressed.flatMap((v,i)=>v!==!!this.previous[i]?[`${i}:${v?'down':'up'}`]:[]);if(changed.length)this.lastChanged=changed.join(', ');if(diagnostic)diagnostic.textContent=`${pad.id || 'Gamepad'} · mapping: ${pad.mapping || 'nonstandard'} · ${pad.buttons.length} buttons · changed: ${this.lastChanged}`;
- if(pad.mapping!=='standard'){this.releaseDrive();this.needsNeutral=true;this.textUnsupported();this.disconnected();this.previous=pressed;return;}
+ if(pad.mapping!=='standard'&&driving!=='stage-menu'){this.releaseDrive();this.needsNeutral=true;this.textUnsupported();this.disconnected();this.previous=pressed;return;}
  const cameraKey=pad.buttons.length>17?'TOUCHPAD':'L3';
  const photoButton=document.getElementById('photo-button');
  if(photoButton&&photoButton.dataset.padHint!==cameraKey)photoButton.dataset.padHint=cameraKey;
@@ -55,7 +55,8 @@ export class GamepadInput {
   if(edge(12)||edge(14)||(direction===-1&&this.stickDirection!==-1))this.action('left');
   else if(edge(13)||edge(15)||(direction===1&&this.stickDirection!==1))this.action('right');
   this.stickDirection=direction;
-  if(edge(0))this.action('confirm');else if(edge(1))this.action('back');
+  const face=menuFaceButtons(pad);
+  if(face&&edge(face.confirm))this.action('confirm');else if(face&&edge(face.back))this.action('back');
   this.previous=pressed;return;
  }
  if(edge(8))this.action('fullscreen');

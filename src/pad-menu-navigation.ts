@@ -62,3 +62,13 @@ export class PadMenuNavigation {
     return null;
   }
 }
+
+const standardFaces={confirm:0,back:1} as const;
+const sonyRawFaces={confirm:1,back:2} as const;
+
+/** Some Windows drivers expose the original Sony face-button order. */
+export function menuFaceButtons(pad: Pick<Gamepad,'mapping'|'id'>) {
+  if(pad.mapping==='standard')return standardFaces;
+  if(/054c.*(?:05c4|09cc)|dualshock.?4/i.test(pad.id))return sonyRawFaces;
+  return null;
+}
