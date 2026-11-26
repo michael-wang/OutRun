@@ -5,7 +5,8 @@ import {addCityDepth} from './depth.mjs';
 import {createReviewLines} from './review-lines.mjs';
 import {addCityInteriors} from './blocks.mjs';
 import {composeDistricts,districtAt} from './districts.mjs';
-import {districtFinish,localKinds,finishWeight,quarterMaterial,leafyFinish} from './quarter.mjs';
+import {finishCityAsphalt,paintAge} from './road-surface.mjs';
+import {localKinds,finishWeight,quarterMaterial,leafyFinish} from './quarter.mjs';
 import {arcadeStudy,addStreetStudy,addPlaces} from './streets.mjs';
 import {layout,finishes,backdrop} from './city-data.mjs';
 import {createSteerBar,stepSteerBar,fullLock} from './steer-bar.mjs';
@@ -57,24 +58,26 @@ function physicalPos(d,x,y){let [a,b,h]=pose(d);return [a+x*Math.cos(h),y,b-x*Ma
 const mats={};function material(name,c,flat=false){return mats[name]??=new T.MeshStandardMaterial({color:c,roughness:.96,flatShading:flat,side:T.DoubleSide});}
 function geometry(vertices,colors=null){const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vertices,3));if(colors)g.setAttribute('color',new T.Float32BufferAttribute(colors,3));g.computeVertexNormals();return g;}
 const roadUV=[];
-function pavementCoords(d0,d1,x0,x1,wear){
- for(const [x,d] of [[x0,d0],[x1,d0],[x0,d1],[x0,d1],[x1,d0],[x1,d1]]) roadUV.push(x*1.59,d,wear);
-}
 const grid=new Map();function tri(k,col,a,b,c){let g=grid.get(k);if(!g){g=[[],[]];grid.set(k,g);}g[0].push(...a,...b,...c);let color=new T.Color(col);for(let i=0;i<3;i++)g[1].push(color.r,color.g,color.b);}
 function quad(k,c,a,b,v,w){tri(k,c,a,v,b);tri(k,c,b,v,w);}
 for(let d=-120;d<L+232;d+=4){
- function strip(x0,x1,y,color,key,wear=0){
+ function strip(x0,x1,y,color,key,paintExposure){
  const far=d+4;const p=(at,x)=>physicalPos(at,x,grade(at)+y);
  const a=x0(d),b=x1(d),c=x0(far),e=x1(far);
  quad(key,color,p(d,a),p(far,c),p(d,b),p(far,e));
- if(key==='road')roadUV.push(a,d,wear,b,d,wear,c,far,wear,c,far,wear,b,d,wear,e,far,wear);
+ if(key==='road'){
+   // Positive Z marks asphalt; paint stores its weathering as a negative value.
+   const start=paintExposure===undefined?1:-paintAge(d)*paintExposure;
+   const end=paintExposure===undefined?1:-paintAge(far)*paintExposure;
+   roadUV.push(a,d,start,-1,b,d,start,1,c,far,end,-1,c,far,end,-1,b,d,start,1,e,far,end,1);
+ }
  }
  const landWidth=z=>Math.min(150-134*smoothBank(z),150-129*sm(z,5515,5630)*(1-sm(z,5890,6065)));function smoothBank(z){return sm(z,4330,4440)*(1-sm(z,5590,5710));}
- strip(z=>-landWidth(z),z=>landWidth(z),-.17,0x8d9494,'base');strip(z=>-edge(z,-1),z=>edge(z,1),0,0x565857,'road',1);
+ strip(z=>-landWidth(z),z=>landWidth(z),-.17,0x8d9494,'base');strip(z=>-edge(z,-1),z=>edge(z,1),0,0x565857,'road');
  for(const sign of [-1,1]){
- const side=z=>sign*(edge(z,sign)-.22);strip(z=>side(z)-.062,z=>side(z)+.062,.033,0xe4dba8,'road');
+ const side=z=>sign*(edge(z,sign)-.22);strip(z=>side(z)-.062,z=>side(z)+.062,.033,0xe4dba8,'road',.75);
  if(d%16===0)for(const x of (sign>0?[0,laneWidth,2*laneWidth]:[-laneWidth,-2*laneWidth])){
- if(Math.abs(x)+.65<Math.min(edge(d,sign),edge(d+4,sign)))strip(()=>x-.076,()=>x+.076,.035,0xe6e3d7,'road');}
+ if(Math.abs(x)+.65<Math.min(edge(d,sign),edge(d+4,sign)))strip(()=>x-.076,()=>x+.076,.035,0xe6e3d7,'road',1);}
  }
 }
 // Two pavement arrows show which adjacent lane continues before each closure.
@@ -83,73 +86,11 @@ for(const [a,b,side,delta] of zones){const drop=delta<0?a:b-100,outer=side*laneW
  const at=drop-lead,w=-side;const pts=[[0,-3.2],[.32,-3.2],[.32,-.85],[1.28,1.26],[1.70,.95],[1.42,3.20],[.19,1.88],[.64,1.67],[-.16,-.75],[-.16,-3.2]];
  const shape=pts.map(([x,z])=>new T.Vector2(x*w,z));
  for(const f of T.ShapeUtils.triangulateShape(shape,[])){const p=f.map(i=>{const q=shape[i];return physicalPos(at+q.y,outer+q.x,grade(at+q.y)+.048);});
- tri('road',0xe4d7b4,...p);for(const i of f)roadUV.push(outer+shape[i].x,at+shape[i].y,0);}
+ tri('road',0xe4d7b4,...p);for(const i of f)roadUV.push(outer+shape[i].x,at+shape[i].y,-paintAge(at+shape[i].y)*.48,0);}
  }}
 const tileMaps={road:await new T.TextureLoader().loadAsync(asphalt)};
 tileMaps.road.wrapS=tileMaps.road.wrapT=T.RepeatWrapping;tileMaps.road.colorSpace=T.SRGBColorSpace;tileMaps.road.anisotropy=8;
-function finishSurface(m,kind){
- m.onBeforeCompile=sh=>{
-  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 surfacePoint;').replace('#include <begin_vertex>','#include <begin_vertex>\nsurfacePoint=position;');
-  if(kind==='road'){
-   sh.vertexShader='attribute vec3 roadCoord;varying vec3 pavement;\n'+sh.vertexShader.replace('surfacePoint=position;','surfacePoint=position;pavement=roadCoord;');
-   sh.fragmentShader='varying vec3 pavement;\n'+sh.fragmentShader;
-  }
-  sh.uniforms.surveyTile={value:tileMaps[kind]};const common='uniform sampler2D surveyTile;varying vec3 surfacePoint;float grainHash(vec2 p){vec3 a=fract(vec3(p.xyx)*.1031);a+=dot(a,a.yzx+33.33);return fract((a.x+a.y)*a.z);}float noiseAt(vec2 p){vec2 c=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(grainHash(c),grainHash(c+vec2(1.,0)),f.x),mix(grainHash(c+vec2(0,1)),grainHash(c+1.),f.x),f.y);}';
-  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\n'+common);
-  let body='vec3 p=surfacePoint;vec2 u=p.xz;float nearDetail=1.-smoothstep(.03,.30,max(fwidth(u.x),fwidth(u.y)));';
-  if(kind==='bedrock')body+='float layer=p.y*.82+dot(u,vec2(.087,-.12))+.82*noiseAt(u*.18);float fracture=abs(fract(layer)-.5)*2.;float chipped=noiseAt(u*.85+p.y*.12);diffuseColor.rgb*=vec3(.92,.94,.96)*(.66+.32*noiseAt(u*.13)+.25*chipped+.17*smoothstep(.02,.17,fracture));';
-  else if(kind==='road')body+='float grain=grainHash(floor(u*54.))-.5;diffuseColor.rgb*=(.94+.09*noiseAt(u*.18)+grain*.31*nearDetail);';
-  else body+='float brush=noiseAt(u*.14),stone=noiseAt(u*.70);diffuseColor.rgb*=.79+.29*brush+.16*stone;';
-    if(kind==='road')body+='if(pavement.z>.5){vec3 t=texture2D(surveyTile,p.xz*.19).rgb;float light=dot(t,vec3(.21,.72,.07));diffuseColor.rgb*=clamp(.54+light*1.90,.6,1.65);}';
-  if(kind==='road')body+=`
- if(pavement.z>.5){
-  vec2 st=pavement.xy;float x=st.x,d=st.y;
-  float grit=noiseAt(st*vec2(3.4,2.5));
-  // Old paving passes, worn wheel paths and a feathered gravel fringe in metres.
-  float wander=.15*sin(d*.057)+.11*sin(d*.21)+.09*(grit-.5);
-  float lane=mod(x+wander,4.80)-2.40;
-  float tracks=1.-smoothstep(.13,.71,abs(abs(lane)-.95));
-  float edge=.10*noiseAt(st*.31);
-  diffuseColor.rgb*=1.-tracks*(.16+.16*noiseAt(st*vec2(.49,.07)));
-  diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.22,.196,.15)*(.58+.84*grit),edge*.76);
-  // Offset service patches and intermittent repairs. Resurfaced areas cross the wheel paths.
-  float demo=smoothstep(${districtFinish.begin}.,${districtFinish.begin+districtFinish.fade}.,d)*(1.-smoothstep(${districtFinish.end-districtFinish.fade}.,${districtFinish.end}.,d));
-  if(demo>0.) {
-   float aggregate=texture2D(surveyTile,st*vec2(.67,.50)).r;
-   vec3 warmMix=vec3(1.13,1.03,.90)*(.76+clamp(aggregate*2.6,.02,.62));
-   diffuseColor.rgb*=mix(vec3(1.),warmMix,demo);
-   float outerEdge=9.60;
-   ${zones.map(([a,b,side,delta])=>`outerEdge+=${(delta*laneWidth).toFixed(3)}*step(0.,x*${side.toFixed(1)})*smoothstep(${a}.,${a+115}.,d)*(1.-smoothstep(${b-100}.,${b}.,d));`).join('\n')}
-   float deck=smoothstep(4320.,4430.,d)*(1.-smoothstep(5570.,5680.,d));
-   float expansion=abs(mod(d+7.,41.)-20.5);
-   diffuseColor.rgb*=mix(vec3(1.),vec3(.86,.98,1.11)*(1.-.47*(1.-smoothstep(.054,.054+max(.03,fwidth(d)),expansion))),deck);
-  float gutter=smoothstep(outerEdge-.68,outerEdge-.18,abs(x));
-   float joint=smoothstep(.20,.27,abs(fract(d/1.8)-.5));
-   diffuseColor.rgb=mix(diffuseColor.rgb,vec3(.19,.17,.14)*(.78+.25*joint+.15*grit),demo*gutter*.72);
-  }
-  float course=floor(x/4.80);
-  float shift=grainHash(vec2(course,19.))*39.;
-  float cell=floor((d+shift)/44.);vec2 seed=vec2(course,cell);
-  float centre=(course+.5)*4.8+(grainHash(seed)-.5)*2.9;
-  float distanceInCell=mod(d+shift,44.)-15.-7.*grainHash(seed+2.);
-  vec2 footprint=abs(vec2(x-centre,distanceInCell))-
-   vec2(1.+1.65*grainHash(seed+3.),2.5+7.*grainHash(seed+4.));
-  float rim=max(footprint.x,footprint.y)+.10*(grit-.5);
-  float aa=max(.045,fwidth(rim));
-  float patchMask=1.-smoothstep(-aa,aa,rim);
-  float repaired=step(.35,grainHash(seed+9.));
-  diffuseColor.rgb*=1.-patchMask*repaired*(.17+.16*grainHash(seed+1.));
-  float seal=1.-smoothstep(.035,.035+aa,abs(rim));
-  diffuseColor.rgb*=1.-.38*seal*repaired;
-  float stitch=abs(x-(course+.5)*4.8-2.32-.39*sin(d*.069+course)-.22*noiseAt(vec2(d*.53,course)));
-  diffuseColor.rgb*=1.-.41*(1.-smoothstep(.037,.037+max(.036,fwidth(stitch)),stitch))*smoothstep(.42,.65,noiseAt(vec2(d*.093,course)));
- }
- `;
-  else{body+='vec2 sideUV=vec2(p.x*.63+p.z*.78,p.y+dot(p.xz,vec2(.27,-.19)));vec3 n=normalize(cross(dFdx(p),dFdy(p)));vec3 photo=mix(texture2D(surveyTile,sideUV*.135).rgb,texture2D(surveyTile,p.xz*.136).rgb,smoothstep(.35,.88,abs(n.y)));float lum=dot(photo,vec3(.21,.72,.07));';
-   body+=kind==='bedrock'?'diffuseColor.rgb=mix(vec3(.060,.062,.050),vec3(.25,.24,.19),clamp(lum*2.65,0.,1.));':'diffuseColor.rgb*=clamp(.53+lum*2.6,.57,1.55);';}sh.fragmentShader=sh.fragmentShader.replace('#include <color_fragment>','#include <color_fragment>\n'+body);
- };m.customProgramCacheKey=()=>kind;
-}
-for(const [k,[v,c]] of grid){const m=material(k,0xffffff,true);m.vertexColors=true;if(k==="road")finishSurface(m,k);const geo=geometry(v,c);if(k==='road')geo.setAttribute('roadCoord',new T.Float32BufferAttribute(roadUV,3));let strip=new T.Mesh(geo,m);strip.receiveShadow=true;scene.add(strip);}
+for(const [k,[v,c]] of grid){const m=material(k,0xffffff,true);m.vertexColors=true;if(k==="road")finishCityAsphalt(m,tileMaps.road,zones,laneWidth);const geo=geometry(v,c);if(k==='road')geo.setAttribute('roadCoord',new T.Float32BufferAttribute(roadUV,4));let strip=new T.Mesh(geo,m);strip.receiveShadow=true;scene.add(strip);}
 
 // All geometry is in the same road frame as collision. Keep the centreline clear.
 const cube=new T.BoxGeometry(1,1,1), cityChunks=[], batches=new Map(), unit=new T.Object3D();
