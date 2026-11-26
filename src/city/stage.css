@@ -17,8 +17,8 @@
 
 :host{display:block;position:fixed;inset:0;z-index:500}[hidden]{display:none!important} #city-exit{margin-left:8px} #pauseMenu button:disabled{display:none}
 #layerTools{position:absolute;top:14%;left:12px;display:flex;align-items:center;gap:4px;z-index:3;font:12px system-ui;color:white}
-#cityLayers,#layerKey{background:#18282ce0;border:1px solid #87999b;border-radius:4px;padding:4px 7px;color:white}
-#cityLayers{cursor:pointer;touch-action:manipulation;min-height:26px}
+#citySnapshot,#cityLayers,#layerKey{background:#18282ce0;border:1px solid #87999b;border-radius:4px;padding:4px 7px;color:white}
+#citySnapshot,#cityLayers{cursor:pointer;touch-action:manipulation;min-height:26px}
 #cityLayers[aria-pressed=true]{border-color:white}
 #layerKey i,#layerKey b{display:inline-block;width:10px;height:9px;border:2px solid #51ff80;vertical-align:middle}
 #layerKey b{border-color:#409dff;margin-left:4px}
