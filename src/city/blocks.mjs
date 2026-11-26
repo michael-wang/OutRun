@@ -155,5 +155,151 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
  });
  flush(2070);
 
+ const cylinder=new T.CylinderGeometry(.5,.5,1,10).toNonIndexed();
+
+ // Cantilevered shelters share the district mesh with their surroundings.
+ // Front and back roof edges are four real points, so both fascia and soffit
+ // stay continuous even on the sloping, curved approach to the station.
+ function roof(at,x,width,length,front,back,color,edgeColor){
+  const corners=[[-1,-1],[-1,1],[1,1],[1,-1]].map(([along,across])=>{
+   const station=at+along*length*.5;
+   return physicalPos(station,x+across*width*.5,grade(station)+(across<0?front:back));
+  });
+  const underside=corners.map(([a,y,b])=>[a,y-.37,b]);
+  function face(a,b,c,d,tint){
+   ink.setHex(tint);
+   for(const v of [a,b,c,a,c,d]){vertices.push(...v);colors.push(ink.r,ink.g,ink.b);}
+  }
+  face(...corners,color);face(...underside,0x6b7264);
+  for(let i=0;i<4;i++){const j=(i+1)%4;face(corners[i],corners[j],underside[j],underside[i],edgeColor);}
+ }
+ // Athletic park: the covered bleachers face the existing school courts.
+ // Open ends and unroofed sections give glimpses into the playing grounds.
+ for(const [at,modules] of [[1749,4],[1889,3]]){
+  reviewGroup('mid',at,()=>{
+   const x=-31;
+   for(let bay=0;bay<modules;bay++){
+    const z=at+bay*7.2;
+    for(let row=0;row<4;row++){
+     block(z,x-row*.91,.40,.98,.48+row*.55,7.16,0xb6ab91);
+     block(z,x-row*.91,.88+row*.55,.66,.14,6.86,bay%3===1?0xb17e57:0x698983);
+    }
+    block(z-2.8,x-4.6,.35,.26,5.9,.26,0x515f5c);
+    roof(z,x-2.2,8.4,7.18,6.15,7.65,0xa9b5a7,0xe5cf9b);
+   }
+   for(const dz of [-6,modules*7.2+1]){
+    block(at+dz,-40,.35,.39,12,.44,0x667772);
+    block(at+dz,-40,12.20,3.25,.72,.50,0x4d6060);
+    for(const xx of [-1,0,1])block(at+dz-.27,-40+xx,12.36,.77,.38,.12,0xe5d9a7);
+   }
+  });
+ }
+
+ // Scoreboards face the approach; one high, silhouette-sized board is legible
+ // from the road while the lower court remains visible through the stands.
+ reviewGroup('mid',1820,()=>{
+  const at=1821,x=-26;
+  for(const dx of [-3.4,3.4])block(at,x+dx,.35,.33,6.4,.39,0x5c6c63);
+  block(at,x,6.27,8.35,3.7,.50,0x354d49);
+  block(at-.27,x,8.96,7.95,.62,.10,0xd6b177);
+  for(const [dx,score] of [[-2.15,2],[2.0,1]]){
+   block(at-.28,x+dx,6.78,.33,1.61,.12,0xe2c896);
+   if(score===2)for(const lift of [6.73,7.48,8.17])block(at-.29,x+dx+.38,lift,.91,.18,.12,0xe2c896);
+  }
+ });
+ flush(1830);
+ // Low perimeter of the auction yard: small vendors trade from the street
+ // edge, beneath a single open shed; the existing depot remains its back wall.
+ function marketShed(at,x,bays){
+  reviewGroup('mid',at,()=>{
+   for(let i=0;i<bays;i++){
+    const z=at+i*8.2;
+    block(z,x,.18,10.0,.65,8.16,0xb4a68e);
+    block(z-3.4,x+4.2,.80,.26,5.4,.32,0x52665c);
+    block(z-3.4,x-3.9,.80,.25,4.55,.31,0x52665c);
+    roof(z,x,11.2,8.18,5.35,6.60,i%3===0?0xb09268:0xbfa47b,0x755844);
+    block(z,x-4.95,4.28,.20,.80,7.86,i%3===0?0xa96343:0x52786a);
+    for(const [dz,xx] of [[-1.8,-1.3],[1.35,.2]]){
+     block(z+dz,x+xx,.84,2.0,.65,2.13,0x8a7556);
+     block(z+dz,x+xx,1.49,1.87,.42,1.99,i%2?0xb59a4f:0xbc7956);
+    }
+   }
+  });
+ }
+ marketShed(2730,24,4);marketShed(2779,27,3);flush(2760);
+ // Cold-store roof monitors and loading doors give the larger wholesale
+ // court its own profile as the road leaves the covered street.
+ reviewGroup('mid',3640,()=>{
+  const x=36;
+  for(let i=0;i<5;i++){
+   const z=3609+i*9.5;
+   block(z,x+2,.14,18.5,8.0,9.48,0xa5afa3);
+   block(z,x-7.34,.92,.20,4.7,6.4,0x516966);
+   block(z,x-6.9,.3,4.8,.65,9.4,0xb1ac97);
+   roof(z,x+1.7,19.6,9.49,8.37,11.9,0xb7c6b8,0x57716f);
+   block(z-4.60,x+6.8,8.21,8.2,1.10,.22,0x688688);
+   roof(z,x-7.6,5.2,9.39,5.78,6.33,0xc4ac7e,0xa37b51);
+  }
+  for(const dx of [0,6.8]){
+   form(cylinder,3679,x+dx,9.2,6.4,18.0,6.4,0,0xadbaae);
+   form(cylinder,3679,x+dx,18.37,6.65,.5,6.65,0,0x677f7b);
+  }
+ });
+ flush(3640);
+ // A stepped pocket square on the inside of the mall turn: an open arcade
+ // marks the pedestrian route to the station. Keep the opposite ramp visible.
+ reviewGroup('mid',6180,()=>{
+  const walk=d=>-22.8-2.1*Math.sin((d-6118)/29);
+  strip(6098,6245,d=>walk(d)-7,d=>walk(d)+5.4,()=>.39,0xb9a799);
+  strip(6098,6245,d=>walk(d)+2.75,d=>walk(d)+3.1,()=>.405,0xd9c9af);
+  for(const [at,bays] of [[6125,3],[6179,4],[6222,2]]){
+   for(let i=0;i<bays;i++){
+    const z=at+i*5.8,x=walk(z);
+    block(z-2.4,x-.8,.40,.35,4.8,.35,0x635d59);
+    roof(z,x,7.0,5.67,4.7,5.8,0xc2aa99,0x895c54);
+    block(z,x-2,.41,2.8,.52,4.7,0xa38b79);
+    block(z,x-2,.93,2.5,.47,4.30,0x73806a);
+   }
+  }
+ });
+
+ // Angular bronze ribbon and a low plinth mark the plaza entrance at speed.
+ // Successive slates sit on a single footing and stay below the mall roof.
+ reviewGroup('mid',6214,()=>{
+  const at=6214,x=-17.8;
+  block(at,x,.3,3.4,.65,6.7,0xb4a28b);
+  for(let i=0;i<9;i++){
+   const wave=Math.sin(i*Math.PI/8);
+   block(at+i*.62-2.5,x+.64*Math.cos(i*.48),.94,.32,2.15+wave*6.2,.47,
+     i%3===0?0xc18957:0x98704e,i*.12-.37);
+  }
+ });
+ flush(6180);
+ // Bookend the transit entrance and station exit with the same roof profile.
+ for(const [at,side,count] of [[1084,-1,3],[6937,-1,4]]){
+  reviewGroup('mid',at,()=>{
+   for(let i=0;i<count;i++){
+    const z=at+i*6.9,x=side*(edge(z,side)+9.4);
+    block(z,x+.4,.24,.48,5.3,.48,0x4f6767);
+    roof(z,x,7.2,6.8,5.23,6.4,0xa8b9b1,0x587877);
+    block(z,x-.7,.51,1.13,.37,3.2,0xa69176);
+   }
+  });flush(at);
+ }
+
+ // The station clock remains the tallest landmark. A recessed concourse wall
+ // terminates the view at platform level, with four coloured departure bays.
+ reviewGroup('mid',7038,()=>{
+  const at=7040,x=-31;
+  for(let i=0;i<4;i++){
+   const z=at+i*7.8;
+   block(z,x,.25,1.20,7.65,7.79,0x647d7d);
+   block(z,x+.85,4.65,.6,1.1,7.4,0xccad79);
+   block(z,x+.78,.7,.36,3.32,6.1,0x384f56);
+  }
+ });
+ flush(7050);
+ cylinder.dispose();
+
  unitBox.dispose();crown.dispose();
 }
