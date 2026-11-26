@@ -3,7 +3,6 @@ import * as T from 'three';
 
 export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,parkTrees}){
  const unitBox=new T.BoxGeometry(1,1,1).toNonIndexed();
- const crown=new T.IcosahedronGeometry(1,1);
  const material=new T.MeshLambertMaterial({vertexColors:true,side:T.DoubleSide});
  const transform=new T.Object3D(),point=new T.Vector3(),ink=new T.Color();
  let vertices=[],colors=[],groups=[],insideGroup=false;
@@ -34,10 +33,7 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,p
    const at=d+i*4.85+2*Math.sin(d+i),dx=x+4.6*Math.sin(i*1.74+d);
    const h=(8+3*Math.sin(d*.3+i*1.97))*scale;
    const base=ground(at,dx);
-   if(at>=1450&&at<2040){parkTrees.plant(at,dx,grade(at)+base,h);continue;}
-   block(at,dx,base,.48,h*.74,.55,0x766657);
-   form(crown,at,dx,base+h*.70,h*.53,h*.38,h*.61,at,0x637965);
-   form(crown,at+1.6,dx-1.8,base+h*.85,h*.36,h*.34,h*.43,at*.51,0x859773);
+   parkTrees.plant(at,dx,grade(at)+base,h);
   }
  }
  function pavilion(d,x,w,len,h,col){return reviewGroup(Math.abs(x)>65?'far':'mid',d,()=>buildPavilion(d,x,w,len,h,col));}
@@ -355,5 +351,5 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,p
  flush(6953);
  cylinder.dispose();
 
- unitBox.dispose();crown.dispose();
+ unitBox.dispose();
 }

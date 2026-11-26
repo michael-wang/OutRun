@@ -27,19 +27,27 @@ zones.forEach(([a,b,side,delta],i)=>{
   }
 });
 
+// Transfer the early part of a scenic exit outward. The extra term and
+// its derivative vanish at both ends, preserving the accepted receiving street.
+function exitBend(u){
+ const end=.42, t=Math.min(1,u/end), v=1-u, eased=t*t*t*(t*(6*t-15)+10);
+ const rate=u<end?30*t*t*(1-t)*(1-t)/end:0;
+ return {offset:u*u+.48*eased*v*v, slope:2*u+.48*(rate*v*v-2*eased*v)};
+}
 export function section(c,d){
   const race=edge(d,c.side);
   if(c.pair){
     const u=Math.min(1,Math.max(0,Math.abs(d-c.mouth)/c.length));
-    const dx=c.reach*(2*u)/c.length;
+    const bend=c.outgoing?exitBend(u):{offset:u*u,slope:2*u};
+    const t=bend.offset,dx=c.reach*bend.slope/c.length;
     const half=laneWidth*.5*Math.hypot(1,dx);
-    const middle=c.wide-laneWidth*.5+c.reach*u*u;
+    const middle=c.wide-laneWidth*.5+c.reach*t;
     const lift=c.rise*smooth(u,.22,1.25) + .10*smooth(u,.35,.65);
     return {race,inner:Math.max(race,middle-half),outer:middle+half,middle,lift};
   }
   const separate=Math.min(1,Math.max(0,(c.wide-race)/laneWidth));
   const approach=1-smooth((d-c.terminal)*-c.dir,0,Math.abs(c.terminal-(c.dir<0?c.a:c.b)));
-  const offset=separate*separate*4.3+approach*4.0;
+  const offset=c.dir>0?6.7*smooth(d,c.a,c.a+37)+1.6*smooth(d,c.a+26,c.terminal):separate*separate*4.3+approach*4.0;
   const outer=c.wide+offset,inner=Math.max(race,outer-laneWidth);
   const lifted=.42*smooth(inner-race,0,1.7);
   const lift=lifted;
@@ -99,7 +107,7 @@ function bounds(c,d){
   return c.pair?null:court(c,d);
 }
 export function openMouth(d,side){
-  return decisions.some(j=>j.side===side && d>j.start && d<j.end &&
+  return decisions.some(j=>j.gain>0 && j.side===side && d>j.start && d<j.end &&
     Math.abs(edge(d,side)-edge(j.gain>0?j.end:j.start,side))>.12 &&
     Math.abs(edge(d,side)-edge(j.gain>0?j.end:j.start,side))<laneWidth*.60);
 }
@@ -143,8 +151,10 @@ export function roadsideEdge(d,side){
   return streetEdge(d,side);
 }
 export function drawConnections({quad,tri,roadUV,physicalPos}){
-  const asphalt=0x565857,concrete=0x959991,edgePaint=0xd8d2b5;
+  const concrete=0x959991;
   for(const c of connections){
+    const outbound=c.pair?c.outgoing:c.dir>0;
+    const asphalt=outbound?0x666459:0x565857,edgePaint=outbound?0xb9b3a2:0xd8d2b5;
     const begin=c.from-(c.dir===-1?25:0),end=c.to+(c.dir===1?25:0);
     const p=(d,x,h)=>physicalPos(d,c.side*x,grade(d)+h);
     function band(d,e,a,b,A,B,y,Y,color){
@@ -177,6 +187,16 @@ export function drawConnections({quad,tri,roadUV,physicalPos}){
         band(d,e,s.inner+.13,s.inner+.23,n.inner+.13,n.inner+.23,y+.018,Y+.018,edgePaint);
       if(Math.min(s.inner-s.race,n.inner-n.race)>.18){
         // Closed wedge between the race edge and the physically separated route.
+        // A low, kerbed splitter tapers away beside the race pavement.
+        // Its inner lip follows the playable edge through the entire fork.
+        if(outbound){
+          const aw=Math.min(2.65,s.inner-s.race-.10),bw=Math.min(2.65,n.inner-n.race-.10);
+          const ha=.045+Math.min(.16,aw*.11),hb=.045+Math.min(.16,bw*.11);
+          band(d,e,s.race+.06,s.race+aw,n.race+.06,n.race+bw,ha,hb,0xb6b3a2);
+          quad('junctions',0x888d83,p(d,s.race+.06,.035),p(e,n.race+.06,.035),p(d,s.race+.06,ha),p(e,n.race+.06,hb));
+          if(Math.min(aw,bw)>1.05&&i%3===0)band(d,e,s.race+.20,s.race+.44,n.race+bw-.34,n.race+bw-.08,ha+.014,hb+.014,0xdcd5bb);
+          continue;
+        }
         const limit=c.pair?4.2:100;
         if(s.inner-s.race>limit||n.inner-n.race>limit)continue;
         band(d,e,s.race+.05,s.inner,n.race+.05,n.inner,.045,.045,0x868985);
@@ -240,9 +260,19 @@ export function drawConnections({quad,tri,roadUV,physicalPos}){
         band(d,e,s.outer+3.9,s.outer+4.19,n.outer+3.9,n.outer+4.19,.451,.451,edgePaint);
       }
     }
+    // Reaffirm the last THROUGH lane before and after the outer lane leaves.
+    if(outbound){
+      const mouth=c.pair?c.mouth:c.a;
+      for(const station of [mouth-38,mouth+6,mouth+47]){
+        const through=c.wide-1.5*laneWidth;
+        const tip=(x,z)=>p(station+z,through+x,.088);
+        quad('junctions',0xd7d3c3,tip(-.15,-3.1),tip(-.15,.7),tip(.15,-3.1),tip(.15,.7));
+        tri('junctions',0xd7d3c3,tip(-.71,.6),tip(.71,.6),tip(0,3.3));
+      }
+    }
     // Forward arrows are printed on the separated branch only. Its outer edge
     // carries on tangentially into the wide lane while the through lanes keep their IDs.
-    for(let d=c.from+18;d<c.to-7;d+=57){
+    for(let d=c.from+18;!outbound&&d<c.to-7;d+=57){
       const sec=section(c,d);
       if(sec.middle-sec.race<1.35)continue;
       const vertices=[[-.18,-2.7],[.18,-2.7],[.18,.25],[.86,.25],[0,2.35],[-.86,.25],[-.18,.25]];

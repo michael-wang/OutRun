@@ -2,10 +2,10 @@ import * as T from 'three';
 
 // All parcels are measured in metres in the same world frame as the carriageway.
 // The riverfront follows the actual bank, independently of the viaduct alignment.
-export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,riverside,nearEnd,alongX,alongZ}){
+export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,riverside,nearEnd,alongX,alongZ,parkTrees}){
  const road=[];
  for(let d=0;d<=7110;d+=10){const [x,z]=pose(d);road.push([x,z,Math.max(edge(d,1),edge(d,-1))]);}
- const cube=new T.BoxGeometry().toNonIndexed(),leaf=new T.IcosahedronGeometry(1,0);
+ const cube=new T.BoxGeometry().toNonIndexed();
  const mat=new T.MeshLambertMaterial({vertexColors:true}),part=new T.Object3D(),p=new T.Vector3(),ink=new T.Color();
  let vertices=[],colors=[],groups=[];
  function solid(geom,x,y,z,yaw,w,h,l,color){
@@ -20,7 +20,11 @@ export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,
   if(Math.abs(u)<2000+r&&v>bank(u,false)-r*1.4&&v<bank(u,true)+r*1.4)return;
   const first=vertices.length/3;
   function box(a,b,bottom,w,h,l,col){solid(cube,x+c*a+s*b,y+bottom+h/2,z-s*a+c*b,yaw,w,h,l,col);}
-  function tree(a,b,h){box(a,b,0,.55,h*.67,.55,0x73685a);solid(leaf,x+c*a+s*b,y+h*.72,z-s*a+c*b,yaw,h*.41,h*.35,h*.46,0x718575);}
+  function tree(a,b,h){
+   const position=[x+c*a+s*b,y,z-s*a+c*b];let nearest=0,min=Infinity;
+   for(let i=0;i<road.length;i++){const dx=road[i][0]-position[0],dz=road[i][1]-position[2],distance=dx*dx+dz*dz;if(distance<min){min=distance;nearest=i;}}
+   parkTrees.plantWorld(nearest*10,position,h,.88);
+  }
   build(box,tree);groups.push({layer,first,last:vertices.length/3,yaw});return true;
  }
  function flush(id,at){
@@ -149,5 +153,5 @@ export function addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,
  }
  flush('skyline-'+band,null);
  }
- cube.dispose();leaf.dispose();
+ cube.dispose();
 }

@@ -1,41 +1,69 @@
 import * as T from 'three';
-// A cut-out spray of leaves. The same ink stamp forms the near park trees
-// viewed from any direction. Crossed sprays are fixed to the branches.
-export function createParkTrees(scene,cityChunks,physicalPos){
- const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
- const g=canvas.getContext('2d');let seed=49277;
- const rand=()=>((seed=Math.imul(seed,1664525)+1013904223|0)>>>0)/4294967296;
- for(let j=0;j<150;j++){
-  const angle=rand()*Math.PI*2,r=Math.sqrt(rand()),x=64+52*Math.cos(angle)*r,y=65+43*Math.sin(angle)*r;
-  const green=Math.round(103+54*(1-y/128)+rand()*49);
-  g.fillStyle='rgb('+Math.round(green*.76)+','+green+','+Math.round(green*.58)+')';
-  for(let i=0;i<3;i++){
-   g.beginPath();g.ellipse(x+rand()*10-5,y+rand()*8-4,4+rand()*5,2+rand()*3,rand()*2,0,2*Math.PI);g.fill();
+
+// Shared city foliage. Opaque lobes, forked trunks and a mipmapped leaf pattern
+// survive oblique, high-speed views without alpha sorting or camera-facing cards.
+export function createParkTrees(scene, cityChunks, physicalPos) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 96;
+  const g = canvas.getContext('2d');
+  let seed = 74329;
+  const noise = () => ((seed = Math.imul(seed, 1664525) + 1013904223 | 0) >>> 0) / 4294967296;
+  g.fillStyle = '#bbc3a7';
+  g.fillRect(0, 0, 96, 96);
+  for (let i = 0; i < 670; i++) {
+    const value = Math.round(145 + noise() * 95);
+    g.fillStyle = 'rgb(' + value + ',' + Math.min(255,value+7) + ',' + (value-19) + ')';
+    const x = noise()*96, y = noise()*96, angle = noise()*3, length = 1.8+noise()*4;
+    for(const dx of [0,x<8?96:-96]) for(const dy of [0,y<8?96:-96]){
+      g.beginPath(); g.ellipse(x+dx,y+dy,length,.7+length*.28,angle,0,Math.PI*2); g.fill();
+    }
   }
- }
- const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;
- const leaves=new T.MeshLambertMaterial({map,alphaTest:.47,side:T.DoubleSide});
- const bark=new T.MeshLambertMaterial({color:0x796957});
- const twig=new T.CylinderGeometry(.64,1,1,6),spray=new T.PlaneGeometry(1,1);
- const normals=spray.attributes.normal;for(let i=0;i<normals.count;i++)normals.setXYZ(i,0,1,0);
- const cells=new Map(),unit=new T.Object3D(),up=new T.Vector3(0,1,0);
- function plant(d,x,y,h){
-  const key=Math.floor(d/155),cell=cells.get(key)||{trunks:[],canopy:[]};cells.set(key,cell);
-  const origin=new T.Vector3(...physicalPos(d,x,y));
-  function branch(a,b,w){const v=b.clone().sub(a);unit.position.copy(a).lerp(b,.5);unit.quaternion.setFromUnitVectors(up,v.clone().normalize());unit.scale.set(w,v.length(),w);unit.updateMatrix();cell.trunks.push(unit.matrix.clone());}
-  const fork=origin.clone().add(new T.Vector3(.22,h*.43,.24));branch(origin,fork,h*.030);
-  const phase=d*.726+x;
-  for(let i=0;i<6;i++){
-   const az=phase+i*2.4,height=h*(.72+.055*(i%4)),r=h*(.21+.11*(i%3));
-   const top=origin.clone().add(new T.Vector3(Math.cos(az)*r,height,Math.sin(az)*r));branch(fork,top,h*.016);
-   for(let k=0;k<3;k++){
-    unit.position.copy(top);unit.position.y+=h*.04*k;unit.rotation.set(.12+.19*k,az+k*Math.PI/3,-.12+.12*k);
-    unit.scale.set(h*(.63+.09*Math.sin(az)),h*.47,1);unit.updateMatrix();cell.canopy.push(unit.matrix.clone());
-   }
+  const map = new T.CanvasTexture(canvas);
+  map.wrapS=map.wrapT=T.RepeatWrapping; map.repeat.set(3,2); map.colorSpace=T.SRGBColorSpace;
+  const crown = new T.SphereGeometry(1,10,5);
+  const positions=crown.attributes.position, colors=[];
+  const shadow=new T.Color(0x849377), tip=new T.Color(0xe7ebbd);
+  for(let i=0;i<positions.count;i++){
+    const x=positions.getX(i),y=positions.getY(i),z=positions.getZ(i);
+    const edge=1+.117*Math.sin(6*x+3*y+2*z)+.095*Math.cos(5*z-3*x+4*y)+.052*Math.sin(13*x+5*z);
+    positions.setXYZ(i,x*edge+.12*y,y*(edge*.47+.53)+.08*Math.sin(5*x-4*z),z*edge);
+    const tone=shadow.clone().lerp(tip,T.MathUtils.clamp(.47+.42*y+.12*Math.sin(7*x+5*z),0,1));colors.push(tone.r,tone.g,tone.b);
   }
- }
- function finish(){for(const [cell,parts] of cells){for(const [g,m,arr] of [[twig,bark,parts.trunks],[spray,leaves,parts.canopy]]){
-   const mesh=new T.InstancedMesh(g,m,arr.length);arr.forEach((v,i)=>mesh.setMatrixAt(i,v));mesh.computeBoundingSphere();mesh.name='park tree';scene.add(mesh);cityChunks.push({at:cell*155+77,mesh});
-  }}}
- return {plant,finish};
+  crown.setAttribute('color',new T.Float32BufferAttribute(colors,3));crown.computeVertexNormals();
+  const leaf=new T.MeshLambertMaterial({map,vertexColors:true}), wood=new T.MeshLambertMaterial({color:0x796952});
+  const trunk=new T.CylinderGeometry(.64,1,1,6),unit=new T.Object3D(),up=new T.Vector3(0,1,0);
+  const cells=new Map(),palette=[0x8ca96e,0x96aa6b,0x829e76,0x9daa75];
+  function plantWorld(d,position,h,width=1){
+    const origin=new T.Vector3(...position),key=Math.floor(d/190);
+    const cell=cells.get(key)||{wood:[],crowns:[],tones:[]};cells.set(key,cell);
+    const phase=position[0]*.193+position[2]*.117, broad=(.86+.17*Math.cos(phase*2.3))*width;
+    const tilt=new T.Vector3(.055*h*Math.sin(phase),0,.039*h*Math.cos(phase));
+    function branch(a,b,w){
+      const v=b.clone().sub(a);unit.position.copy(a).lerp(b,.5);
+      unit.quaternion.setFromUnitVectors(up,v.clone().normalize());unit.scale.set(w,v.length(),w);
+      unit.updateMatrix();cell.wood.push(unit.matrix.clone());
+    }
+    const fork=origin.clone().addScaledVector(up,h*.43).add(tilt);branch(origin,fork,h*.028);
+    for(let i=0;i<5;i++){
+      const angle=phase+2.4*i, central=i===4;
+      const radius=h*broad*(central?.04:.20+.06*Math.cos(i+phase));
+      const center=origin.clone().add(tilt).add(new T.Vector3(Math.cos(angle)*radius,h*(central?.85:.66+.085*Math.sin(angle*1.7)),Math.sin(angle)*radius));
+      if(!central)branch(fork,center,h*.011);
+      unit.position.copy(center);unit.rotation.set(.13*Math.sin(angle),angle,.12*Math.cos(angle));
+      const size=(central?.30:.31+.035*Math.sin(i+phase))*h;
+      unit.scale.set(size*broad,size*(.69+.13*Math.cos(angle)),size*broad*(.82+.12*Math.sin(angle)));
+      unit.updateMatrix();cell.crowns.push(unit.matrix.clone());
+      cell.tones.push(new T.Color(palette[(Math.floor(Math.abs(phase)*.7)+(central?1:i%2))%palette.length]));
+    }
+  }
+  function plant(d,x,y,h,width=1){plantWorld(d,physicalPos(d,x,y),h,width);}
+  function finish(){for(const [key,cell] of cells){
+    for(const [geom,material,matrices,tones] of [[trunk,wood,cell.wood,null],[crown,leaf,cell.crowns,cell.tones]]){
+      const mesh=new T.InstancedMesh(geom,material,matrices.length);
+      matrices.forEach((m,i)=>{mesh.setMatrixAt(i,m);if(tones)mesh.setColorAt(i,tones[i]);});
+      mesh.computeBoundingSphere();mesh.name=tones?'city tree crowns':'city tree branches';
+      mesh.castShadow=Boolean(tones);mesh.receiveShadow=true;scene.add(mesh);cityChunks.push({at:key*190+95,mesh});
+    }
+  }}
+  return {plant,plantWorld,finish};
 }

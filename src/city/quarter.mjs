@@ -55,19 +55,3 @@ export function quarterMaterial(base,kind,ground=false){
  };
  m.customProgramCacheKey=()=>kind+(ground?'ground':'lot');return m;
 }
-
-export function leafyFinish(base,weight){
- const m=base.clone();m.flatShading=false;
- m.onBeforeCompile=sh=>{
-  sh.vertexShader='varying vec3 leafPos;varying vec3 leafDir;\n'+sh.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
- leafPos=(instanceMatrix*vec4(position,1.)).xyz;leafDir=normalize(mat3(instanceMatrix)*position);`);
-  sh.fragmentShader='varying vec3 leafPos;varying vec3 leafDir;\n'+sh.fragmentShader.replace('#include <color_fragment>',`#include <color_fragment>
- vec3 dir=normalize(leafDir);vec2 uv=leafPos.xz+leafPos.y*vec2(.38,-.57);
- float vein=sin(uv.x*5.1+1.9*sin(uv.y*4.2))+cos(uv.y*6.6+sin(uv.x*2.9));
- float detail=1.-smoothstep(.035,.24,max(fwidth(uv.x),fwidth(uv.y)));
- float mottled=.50+.23*vein*detail;
- float light=.5+.5*dot(dir,normalize(vec3(-.62,.68,-.40)));
- vec3 clump=mix(vec3(.58,.72,.58),vec3(1.17,1.15,.78),clamp(.68*light+.46*mottled,0.,1.));
- diffuseColor.rgb*=mix(vec3(1.),clump,${weight.toFixed(2)});`);};
- m.customProgramCacheKey=()=>'canopy-leaves-'+weight;return m;
-}
