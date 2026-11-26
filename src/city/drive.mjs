@@ -1,3 +1,5 @@
+import {addMarketMetro,metroFront} from './market-metro.mjs';
+import {createParkTrees} from './park-trees.mjs';
 import {addCityStreetKit} from './city-street-kit.mjs';
 import {decisions,drawConnections,frontageEdge,junctionFurniture,openMouth,roadsideEdge,streetEdge} from './junctions.mjs';
 import {PadMenuNavigation,menuFaceButtons} from '../pad-menu-navigation';
@@ -155,14 +157,7 @@ for(let d=-20;d<L+36;d+=4){
 // A repeating urban unit is a block with two ends, buildings, a setback and an intersection.
 function reserved(d,side,pad=0){return [[1050,1420,0],[4300,5740,0],[305,375,-1],[2725,2810,1],[6820,6900,-1],[9050,9120,1],[10420,10500,-1],[1110,2180,0],[3610,3950,1],[5660,6580,0],[7480,8540,0],[10650,11180,-1]].some(([a,b,s])=>(!s||side===s)&&d>=a-pad&&d<=b+pad);}
 
-// The elevated metro shadows the entry to the reversing bends. Its supports remain outside the curb.
-for(let d=2160;d<=4320;d+=18){
- const x=-edge(d,-1)-2.9,y=grade(d);
- const pier=-roadsideEdge(d,-1)-2.9;
- box(d,pier,y-.22,1.38,7.65,2.1,'curb');
- if(x-pier>.1)box(d,(x+pier)/2,y+6.93,x-pier+1.2,.64,1.65,'metal');box(d,x+2.7,y+7.35,9.0,1.15,18.5,'plinth');
- box(d,x+6.95,y+8.37,.38,.67,18.6,'metal');
-}
+// Only scenery uses the market shuttle. The eight race merges use junctions.mjs.
 // Low riverfront and two portal pylons create a contrasting long sightline.
 // A river runs across the bridge in a fixed world frame; banks do not turn with the deck.
 const nearEnd=physicalPos(4380,0,0),farEnd=physicalPos(5650,0,0);
@@ -253,7 +248,9 @@ function shape(geom,mat,d,x,y,w,h,len,angle=0){
 const round=new T.CylinderGeometry(.5,.5,1,18),crown=new T.IcosahedronGeometry(1,1);
 const bark=material('civic-bark',0x706e62),greens=[olive,0x778b82,0x92a294].map((c,i)=>material('civic-leaf'+i,c,true));
 const leafSets=[greens,...[.33,.67,1].map(weight=>greens.map(m=>leafyFinish(m,weight)))];
+const parkTrees=createParkTrees(scene,cityChunks,physicalPos);
 function tree(d,x,h,crownScale=1){
+ if(d>=1450&&d<2040){parkTrees.plant(d,x,grade(d)+.16,h*crownScale);return;}
  const leaves=leafSets[Math.round(3*finishWeight(d))];
  const y=grade(d)+.16;shape(round,bark,d,x,y+h*.39,.46,h*.78,.46);
  for(let j=0;j<3;j++){const u=Math.sin(d*1.3+j*2.1);
@@ -352,6 +349,7 @@ label(1154,edge(1154,1)+37,grade(1154)+4.35,9,1.7,'轉乘  /  TRANSIT');
 
 
 junctionFurniture({box,link,label,physicalPos});
+const metro=addMarketMetro({scene,cityChunks,physicalPos,box,link,label});
 
 // Distances and widths are in road metres. Ground ribbons follow the local grade
 // and the road normal at both ends, so the path can run straight through a tight curve.
@@ -474,12 +472,14 @@ function buildParcel(p){
  }else{box(at+rw*.06,cx(x0+depth*.56),h,depth*.50,roof==='lantern'?3.5:1.8,rw*.53,'plinth',f.base);}
  if(index%3===0&&p.offset===undefined){box(at-w*.32,cx(street+.18),y+ground+.4,.96,2.5,.38,'metal',f.base);}
 }
+const frontages=[];
 for(const original of sampleFrontages(layout())){
  // Fit the entire frontage, including both corners, to the outside pavement.
  let shift=0;
  for(let d=original.at-original.width/2-2;d<=original.at+original.width/2+3;d+=2)
-   shift=Math.max(shift,frontageEdge(d,original.side)-edge(original.at,original.side));
- const parcel=shift>.05?{...original,setback:original.setback+shift}:original;
+   shift=Math.max(shift,frontageEdge(d,original.side)-edge(original.at,original.side),original.side<0?metroFront(d)-edge(original.at,-1):0);
+ if(original.at<310)shift+=1.4+(original.index%3||0)*.56;
+ const parcel=shift>.05?{...original,setback:original.setback+shift}:original;frontages.push(parcel);
  if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos,label});
  else buildParcel(parcel);
 }
@@ -526,8 +526,9 @@ for(const at of [5920,5928,5967]){
 
 addPlaces({box,grade,physicalPos,link,label,edge,walker,windingPath});
 addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,riverside,nearEnd,alongX,alongZ});
-addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge});
-addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge});
+addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,parkTrees});
+parkTrees.finish();
+addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,frontages});
 composeDistricts({T,box,grade,edge,grove,physicalPos,pose,scene,cityChunks});
 for(const {geom,mat,at,items} of shapes.values()){const o=new T.InstancedMesh(geom,mat,items.length);items.forEach((m,i)=>o.setMatrixAt(i,m));o.castShadow=o.receiveShadow=true;o.computeBoundingSphere();scene.add(o);cityChunks.push({at,mesh:o});}
 
@@ -1029,7 +1030,7 @@ previousButtons=Array.from(drivingPad()?.buttons??[],button=>!!button.pressed);
  if(!canLook)orbitNeedsNeutral=true;else if(Math.abs(lookAxis)<=.18)orbitNeedsNeutral=false;
  orbit.advance(lookAxis,dt,canLook&&!orbitNeedsNeutral);
  orbit.apply({eye:camera.position,look:orbitLook},car.position);camera.lookAt(orbitLook);
- const aim=new T.Vector3(...pos(d+38,0,grade(d)));sun.target.position.copy(aim);sun.position.copy(aim).add(new T.Vector3(-100,138,-73));sky.position.copy(camera.position);visibleCity(d);$('beat').textContent=district(d)[1];$('info').textContent=Math.round(speed*3.6)+' km/h　 ·　'+(d/1000).toFixed(2)+' km　 ·　'+elapsed.toFixed(2)+' s';
+ const aim=new T.Vector3(...pos(d+38,0,grade(d)));sun.target.position.copy(aim);sun.position.copy(aim).add(new T.Vector3(-100,138,-73));sky.position.copy(camera.position);visibleCity(d);metro.update(d,elapsed,entry);$('beat').textContent=district(d)[1];$('info').textContent=Math.round(speed*3.6)+' km/h　 ·　'+(d/1000).toFixed(2)+' km　 ·　'+elapsed.toFixed(2)+' s';
  if(ac){labMix(speed,gas,brake);squeal.gain.setTargetAtTime(phase==='drive'?Math.abs(slip)*2.7:0,ac.currentTime,.055);const rpm=phase==='drive'?52+speed*.82+(speed%16)*1.4+8*gas:30;engine.frequency.setTargetAtTime(rpm,ac.currentTime,.09);filter.frequency.setTargetAtTime(170+speed*4,ac.currentTime,.1);windGain.gain.setTargetAtTime(.1+speed*.017,ac.currentTime,.2);}renderer.render(scene,camera);if(shotRequested){shotRequested=false;snapshot();}if(!closed)raf=requestAnimationFrame(frame);}
 function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener("resize",resize,scope);resize();if(import.meta.env.DEV)window.cityDrive=()=>({orbit:orbit.angle,variant,bar:{...wheelBar},modules:[...activeModules],flowCount:densityMarks.filter(s=>s>=425&&s<=680).length,traffic:pack.map(t=>({d:t.lead+elapsed*t.pace,x:t.lane,visible:t.g.visible,opacity:t.opacity.value})),passes:[...encounters],transfers:[...transfers],fov:camera.fov,nearMix,audioNodes:!!engineBed,phase,d,speed,x,vel,elapsed,edgeTime,splits:[...splits],best,leaderDistance:referenceAt(elapsed)+(leader?148:0),ghostDistance:referenceAt(elapsed),ghostFinish,curvature:bend(d),steering,slip,driftDir,driftEnds:[...driftEnds],hits:[...hits],impact});if(!closed)raf=requestAnimationFrame(frame);
 

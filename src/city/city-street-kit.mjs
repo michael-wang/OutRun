@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {addStreetLife} from './street-life.mjs';
 import atlasURL from './assets/street-kit.png?url';
 
 // Original metre-scale modules. The slots match art/source/city/bake-street-atlas.mjs.
@@ -9,7 +10,7 @@ const properties=[
  [.85,0],[.85,0],[.48,.17],[.55,.12],[.67,.03],[.48,.24],[.50,.07],[.64,.48]
 ];
 
-export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge}){
+export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,frontages}){
  const atlas=new T.TextureLoader().load(atlasURL);
  atlas.colorSpace=T.SRGBColorSpace;atlas.anisotropy=4;
  const data=new Uint8Array(64);
@@ -21,6 +22,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge})
  material.shadowSide=T.FrontSide;
  // Build a rigid bay on the local tangent. One mesh per site uses the game's
  // existing chunk visibility and review bounds. No per-frame model generation.
+ const shopBatches=new Map();
  function site(at,offset,name,build){
   const origin=physicalPos(at,offset,grade(at)),angle=pose(at)[2],cs=Math.cos(angle),sn=Math.sin(angle);
   const positions=[],uv=[],colors=[];
@@ -51,11 +53,22 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge})
    panel(...far,tile,tint);panel(...near,tile,tint);
   }
   build({panel,box,brace});
+  const group={layer:'mid', first:0,last:positions.length/3,yaw:angle};
+  // Group shops on the same side and streaming cell while keeping review bounds per lot.
+  if(name==='arcade-shop'){
+   const key=Math.floor(at/95)*2+Number(offset>0);
+   if(!shopBatches.has(key))shopBatches.set(key,{at,positions:[],uv:[],colors:[],groups:[]});
+   const batch=shopBatches.get(key),first=batch.positions.length/3;
+   batch.groups.push({...group,first,last:first+group.last});
+   for(const [dest,src] of [[batch.positions,positions],[batch.uv,uv],[batch.colors,colors]])for(const v of src)dest.push(v);
+  }else emit(at,name,positions,uv,colors,[group]);
+ }
+ function emit(at,name,positions,uv,colors,groups){
   const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));
   geo.setAttribute('uv',new T.Float32BufferAttribute(uv,2));geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));
   geo.computeVertexNormals();geo.computeBoundingSphere();
   const mesh=new T.Mesh(geo,material);mesh.name='city-interior-kit-'+name+'-'+at;
-  mesh.userData.reviewGroups=[{layer:'mid',first:0,last:positions.length/3,yaw:angle}];
+  mesh.userData.reviewGroups=groups;
   mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);cityChunks.push({at,mesh});
  }
  function grandstand(at,bays){
@@ -209,6 +222,45 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge})
    }
   });
  }
+
+ // Opening blocks keep their original upper mass. The sidewalk face, return
+ // wall, clerestory and projecting shop blades belong to each actual parcel.
+ for(const p of frontages){
+  if(p.at>310||p.style||p.offset!==undefined)continue;
+  const {side,width:w,at,arcade,bays,storey,index}=p,trade=(index+(side===1?1:3))%4;
+  const paint=[0xa65f48,0x356b64,0x8a6d57,0x4b697e][trade];
+  site(at,side*(edge(at,side)+p.setback),'arcade-shop',({box,panel,brace})=>{
+   const y=storey+.65,bay=w/bays;
+   for(let i=0;i<bays;i++){
+    const z=bay*(i+.5)-w/2;
+    box(side*(arcade-.40),.35,z,.14,2.85,bay-.62,M.glazing);
+    box(side*(arcade-.57),.28,z,.26,.48,bay-.49,trade===0?M.timber:M.stone);
+    box(side*.06,.22,z-bay*.43,.45,.87,.48,M.stone);
+    box(side*.05,.96,z-bay*.43,.30,y-1.26,.30,M.enamel,0xccb89a);
+    // Projecting lintel, shaded reveals and awnings are readable at a grazing angle.
+    box(-side*.22,y-.49,z,.75,.48,bay-.14,M.timber,paint);
+    if((i+trade)%3!==1){
+     panel([side*.12,y-.24,z-bay*.45],[side*.12,y-.24,z+bay*.45],[-side*1.45,y-.92,z+bay*.45],[-side*1.45,y-.92,z-bay*.45],trade%2?M.jadeCanvas:M.rustCanvas);
+    }
+    for(let level=0;level<Math.min(p.levels-1,3);level++){
+     const h=y+level*storey+1.02,x=side*.21;
+     box(x,h,z,.22,1.62,bay*.63,M.glazing);
+     box(x-side*.24,h+1.60,z,.71,.18,bay*.71,M.stone);
+     box(x-side*.31,h-.10,z,.81,.22,bay*.72,M.enamel,0xb5aea0);
+    }
+   }
+   if(index%3!==2){
+    const z=-w*.35,x=-side*1.07;
+    box(x,y+.12,z,1.62,2.65,.32,M.enamel,paint);
+    const glyph=0xf2d4a2;
+    if(trade===0){box(x,y+.64,z-.18,.30,1.38,.08,M.enamel,glyph);box(x,y+1.13,z-.19,.99,.29,.08,M.enamel,glyph);}
+    else if(trade===1){box(x,y+.58,z-.18,.91,.67,.08,M.enamel,glyph);for(const dx of [-.24,.12])brace([x+dx,y+1.40,z-.20],[x+dx+.10,y+1.82,z-.20],.08,M.enamel,glyph);}
+    else for(let j=0;j<3;j++)box(x+(j-1)*.30,y+.61,z-.18,.19,.8+.24*(j%2),.08,M.enamel,glyph);
+   }
+  });
+ }
+ for(const b of shopBatches.values())emit(b.at,'arcade-shop',b.positions,b.uv,b.colors,b.groups);
+ addStreetLife({site,M,edge});
  wholesale(3723,5);wholesale(3805,4);parcelsWing();terminalFront();
 
 

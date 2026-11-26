@@ -1,7 +1,7 @@
 // Each location is one stationary, vertex-coloured mesh. The bridge span stays clear.
 import * as T from 'three';
 
-export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge}){
+export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,parkTrees}){
  const unitBox=new T.BoxGeometry(1,1,1).toNonIndexed();
  const crown=new T.IcosahedronGeometry(1,1);
  const material=new T.MeshLambertMaterial({vertexColors:true,side:T.DoubleSide});
@@ -10,7 +10,7 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
  function reviewGroup(layer,at,build){
   if(insideGroup){build();return;}
   const first=vertices.length/3;insideGroup=true;build();insideGroup=false;
-  groups.push({layer,first,last:vertices.length/3,yaw:pose(at)[2]});
+  if(vertices.length/3>first)groups.push({layer,first,last:vertices.length/3,yaw:pose(at)[2]});
  }
  function form(geom,d,x,lift,w,h,len,yaw,col){
   transform.position.fromArray(physicalPos(d,x,grade(d)+lift));transform.rotation.y=pose(d)[2]+yaw;
@@ -33,6 +33,7 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
    const at=d+i*4.85+2*Math.sin(d+i),dx=x+4.6*Math.sin(i*1.74+d);
    const h=(8+3*Math.sin(d*.3+i*1.97))*scale;
    const base=ground(at,dx);
+   if(at>=1450&&at<2040){parkTrees.plant(at,dx,grade(at)+base,h);continue;}
    block(at,dx,base,.48,h*.74,.55,0x766657);
    form(crown,at,dx,base+h*.70,h*.53,h*.38,h*.61,at,0x637965);
    form(crown,at+1.6,dx-1.8,base+h*.85,h*.36,h*.34,h*.43,at*.51,0x859773);
