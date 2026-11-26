@@ -94,7 +94,8 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
  // across all cross sections so the land reads continuously from either lane.
  function crestHeight(d,a,b,height){
   const fade=Math.min(1,Math.max(0,(d-a)/32),Math.max(0,(b-d)/42));
-  return .35+height*(.86+.14*Math.sin((d-a)/27))*fade;
+  const crest=typeof height==='function'?height(d):height;
+  return .35+crest*(.86+.14*Math.sin((d-a)/27))*fade;
  }
  function bankGround(a,b,center,width,height){
   return (d,x)=>{
@@ -141,9 +142,12 @@ export function addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge})
  // At the opposite end a shallow amphitheatre sits across the viewshed. Its
  // planted back and covered concourse face the park, away from the driving lane.
  const garden=d=>36+3.8*Math.sin((d-1870)/36);
- plantedBank(1818,2210,garden,14,9.8);
- for(const [at,n] of [[1861,4],[1930,7],[2000,5],[2040,4],[2082,5],[2130,4],[2172,5]])
-  reviewGroup('mid',at,()=>plantCopse(at,garden(at)+3,n,1.13,bankGround(1818,2210,garden,14,9.8)));
+ // The park gate crosses a shallow saddle in the bank. The road apron is
+ // 0.424 m above local grade; the saddle stays at 0.35 m through the gate.
+ const gateBank=d=>9.8*(1-T.MathUtils.smoothstep(d,1978,2010)*(1-T.MathUtils.smoothstep(d,2058,2090)));
+ plantedBank(1818,2210,garden,14,gateBank);
+ for(const [at,n] of [[1861,4],[1930,7],[2000,5],[1960,4],[2082,5],[2130,4],[2172,5]])
+  reviewGroup('mid',at,()=>plantCopse(at,garden(at)+3,n,1.13,bankGround(1818,2210,garden,14,gateBank)));
  for(const [at,x,w,len,h] of [[1945,70,17,40,11],[2035,68,19,34,13],[2093,66,18,32,16],[2151,62,18,38,12],[2195,65,20,28,15]])
   reviewGroup('far',at,()=>yard(at,x,w,len,h,0xad9c86));
  reviewGroup('mid',2120,()=>{

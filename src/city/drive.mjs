@@ -1,3 +1,4 @@
+import {decisions,drawConnections,junctionFurniture,openMouth,streetEdge} from './junctions.mjs';
 import {PadMenuNavigation,menuFaceButtons} from '../pad-menu-navigation';
 import {sampleFrontages,streetFront,avenueTrees,crossings,signals,streetSigns} from './street-samples.mjs';
 import {CameraOrbit} from '../camera-orbit';
@@ -75,7 +76,8 @@ for(let d=-120;d<L+232;d+=4){
  const landWidth=z=>Math.min(150-134*smoothBank(z),150-129*sm(z,5515,5630)*(1-sm(z,5890,6065)));function smoothBank(z){return sm(z,4330,4440)*(1-sm(z,5590,5710));}
  strip(z=>-landWidth(z),z=>landWidth(z),-.17,0x8d9494,'base');strip(z=>-edge(z,-1),z=>edge(z,1),0,0x565857,'road');
  for(const sign of [-1,1]){
- const side=z=>sign*(edge(z,sign)-.22);strip(z=>side(z)-.062,z=>side(z)+.062,.033,0xe4dba8,'road',.75);
+ const side=z=>sign*(edge(z,sign)-.22);
+ if(!openMouth(d+2,sign)||d%12===0)strip(z=>side(z)-.062,z=>side(z)+.062,.033,0xe4dba8,'road',.75);
  if(d%16===0)for(const x of (sign>0?[0,laneWidth,2*laneWidth]:[-laneWidth,-2*laneWidth])){
  if(Math.abs(x)+.65<Math.min(edge(d,sign),edge(d+4,sign)))strip(()=>x-.076,()=>x+.076,.035,0xe6e3d7,'road',1);}
  }
@@ -88,6 +90,7 @@ for(const [a,b,side,delta] of zones){const drop=delta<0?a:b-100,outer=side*laneW
  for(const f of T.ShapeUtils.triangulateShape(shape,[])){const p=f.map(i=>{const q=shape[i];return physicalPos(at+q.y,outer+q.x,grade(at+q.y)+.048);});
  tri('road',0xe4d7b4,...p);for(const i of f)roadUV.push(outer+shape[i].x,at+shape[i].y,-paintAge(at+shape[i].y)*.48,0);}
  }}
+drawConnections({quad,tri,roadUV,physicalPos});
 const tileMaps={road:await new T.TextureLoader().loadAsync(asphalt)};
 tileMaps.road.wrapS=tileMaps.road.wrapT=T.RepeatWrapping;tileMaps.road.colorSpace=T.SRGBColorSpace;tileMaps.road.anisotropy=8;
 for(const [k,[v,c]] of grid){const m=material(k,0xffffff,true);m.vertexColors=true;if(k==="road")finishCityAsphalt(m,tileMaps.road,zones,laneWidth);const geo=geometry(v,c);if(k==='road')geo.setAttribute('roadCoord',new T.Float32BufferAttribute(roadUV,4));let strip=new T.Mesh(geo,m);strip.receiveShadow=true;scene.add(strip);}
@@ -143,7 +146,7 @@ function facade(kind){
  faces.set(kind,mat);return mat;
 }
 for(let d=-20;d<L+36;d+=4){
- for(const side of [-1,1]){const w=edge(d,side),y=grade(d);
+ for(const side of [-1,1]){const w=streetEdge(d,side),y=grade(d);
  box(d,side*(w+.14),y-.04,.29,.34,4.10,'curb');box(d,side*(w+2.15),y-.08,4.15,.32,4.17,'walk');
  if(w<8.65)box(d,side*(w+.27),y+.22,.45,.49,4.06,'plinth');
  if(w<8.65&&d%12===0)box(d,side*(w+.27),y+.70,.48,.10,1.35,'guide');
@@ -154,7 +157,9 @@ function reserved(d,side,pad=0){return [[1050,1420,0],[4300,5740,0],[305,375,-1]
 // The elevated metro shadows the entry to the reversing bends. Its supports remain outside the curb.
 for(let d=2160;d<=4320;d+=18){
  const x=-edge(d,-1)-2.9,y=grade(d);
- box(d,x,y-.22,1.38,7.65,2.1,'curb');box(d,x+2.7,y+7.35,9.0,1.15,18.5,'plinth');
+ const pier=-streetEdge(d,-1)-2.9;
+ box(d,pier,y-.22,1.38,7.65,2.1,'curb');
+ if(x-pier>.1)box(d,(x+pier)/2,y+6.93,x-pier+1.2,.64,1.65,'metal');box(d,x+2.7,y+7.35,9.0,1.15,18.5,'plinth');
  box(d,x+6.95,y+8.37,.38,.67,18.6,'metal');
 }
 // Low riverfront and two portal pylons create a contrasting long sightline.
@@ -207,7 +212,7 @@ for(const [u,v] of [[-220,span*.55],[245,span*.65],[325,span*.25]]){
  for(let j=0;j<3;j++)waterfrontBlock(u+2+j*5,v,2.55,4.5,1.75,4.5,0x828b83);
 }
 for(let at=4390;at<5680;at+=12){const y=grade(at);
- for(const s of [-1,1]){box(at,s*(edge(at,s)+.65),y,.23,.52,12.2,'curb');box(at,s*(edge(at,s)+.72),y+.87,.15,.16,12.25,'metal');box(at,s*(edge(at,s)+.72),y+.42,.14,.48,.18,'post');}
+ for(const s of [-1,1]){box(at,s*(streetEdge(at,s)+.65),y,.23,.52,12.2,'curb');box(at,s*(streetEdge(at,s)+.72),y+.87,.15,.16,12.25,'metal');box(at,s*(streetEdge(at,s)+.72),y+.42,.14,.48,.18,'post');}
  if((at-4390)%96===0)box(at,0,.8,4,Math.max(.5,y-1),5,'plinth');
 }
 
@@ -260,7 +265,7 @@ function label(d,x,y,w,h,text,bg='#495b61',fg='#f0e9d5'){
  const o=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tex,side:T.DoubleSide}));o.rotation.y=pose(d)[2]+Math.PI;o.position.fromArray(physicalPos(d,x,y));scene.add(o);cityChunks.push({at:d,mesh:o});
 }
 for(const {from,to,side,spacing,height,offset,crown} of avenueTrees){
- for(let d=from;d<to;d+=spacing+next()*7){const off=edge(d,side)+offset+next()*1.7;tree(d,side*off,height+next()*3,crown);}
+ for(let d=from;d<to;d+=spacing+next()*7){const off=streetEdge(d,side)+offset+next()*1.7;tree(d,side*off,height+next()*3,crown);}
 }
 for(const {at,side,offset,height,arm,style} of signals){
  const x=side*(edge(at,side)+offset),y=grade(at),sx=x-side*arm;
@@ -275,7 +280,7 @@ for(const {at,side,offset,height,width,text,color} of streetSigns){
 }
 // Transit pull-outs live behind the kerb, with a bench, shelter glazing, stop flag and route disc.
 for(const [at,side] of [[340,-1],[1172,1],[2770,1],[3700,1],[5765,1],[6860,-1]]){
- const y=grade(at),x=side*(edge(at,side)+3.1);
+ const y=grade(at),x=side*(streetEdge(at,side)+3.1);
  box(at,x,y+.18,3.9,.18,14,'curb');box(at,x,y+3.10,4.55,.28,14.6,'canopy',0x64838a);
  for(const z of [-5.8,0,5.8])box(at+z,x+side*1.3,y+.3,.16,2.8,.24,'metal');
  box(at,x+side*1.55,y+.85,.18,1.72,10.8,'trim',0xa4b5b5);
@@ -286,7 +291,7 @@ for(const [at,side] of [[340,-1],[1172,1],[2770,1],[3700,1],[5765,1],[6860,-1]])
 
 }
 // The civic lawn opens on both sides. A low amphitheatre and oval pavilion replace the street wall.
-for(let d=1200;d<2150;d+=30){for(const side of [-1,1])box(d,side*(edge(d,side)+22),grade(d)+.02,38,.18,31,'green',0x97a293);}
+for(let d=1200;d<2150;d+=30){for(const side of [-1,1])box(d,side*((streetEdge(d,side)+edge(d,side))*.5+22),grade(d)+.02,Math.max(8,38-streetEdge(d,side)+edge(d,side)),.18,31,'green',0x97a293);}
 for(const at of [1400,1660,1910]){const y=grade(at);for(let row=0;row<5;row++)box(at,-(23+row*2.2),y+.1,2.4,.4+row*.52,45+row*2.5,'trim');}
 for(const at of [1435,1840]){const y=grade(at);shape(round,material('pavilion',0xc1c7c0),at,41,y+3.5,16,7,24);shape(round,material('pavilion-rim',steel),at,41,y+7.3,24,.6,32);}
 // The mall's plinth, rounded atrium, setback upper floors and projecting entrance form one landmark.
@@ -328,7 +333,7 @@ for(const {at,clearance,offset,depth,bays} of crossings){
   box(z+4.5,cx,grade(z)+6.54,16,.42,9.45,'canopy',0xcac3af,Math.atan2(2.7,9));
  }}
 // Bus 02 forecourt opens to a covered interchange, followed by a public lawn.
-for(let at=1075;at<=1390;at+=10){const y=grade(at),w=edge(at,1);
+for(let at=1075;at<=1390;at+=10){const y=grade(at),w=streetEdge(at,1);
  box(at,w+23,y+.04,42,.17,10.1,'walk',0xb4afa1);
  box(at,w+12.8,y+.22,2.4,.08,10.1,'trim',0xd5c6a6);
  if((at-1075)%30===0){box(at,w+7.2,y+.3,2.2,.45,8.5,'green',0x7f907d);tree(at+2,w+7.5,6+(at%3));}
@@ -345,19 +350,7 @@ for(const [at,off,modules] of [[1168,39,4],[1228,43,5],[1300,51,4]]){
 label(1154,edge(1154,1)+37,grade(1154)+4.35,9,1.7,'轉乘  /  TRANSIT');
 
 
-for(const [a,b,side,delta] of zones){
- for(const [station,change,duration] of [[a,delta,115],[b-100,-delta,100]]){
-  const outer=station+(change>0?duration:0),maxEdge=edge(outer,side);
-  for(let offset=5;offset<duration;offset+=12){
-   const at=station+offset,w=edge(at,side);
-   box(at,side*(w+.48),grade(at)+.20,.21,.87,.24,'post');box(at,side*(w+.48),grade(at)+.84,.30,.19,.29,'guide');
-   const available=maxEdge-w;
-   if(available>1.1){const p1=physicalPos(at,side*(w+.64),grade(at)+.30);
-    const p2=physicalPos(at+2,side*(w+available-.15),grade(at+2)+.30);
-    link(p1,p2,.25,.065,'roadPaint',at,0xe8dda8);}
-  }
- }
-}
+junctionFurniture({box,link,label,physicalPos});
 
 // Distances and widths are in road metres. Ground ribbons follow the local grade
 // and the road normal at both ends, so the path can run straight through a tight curve.
@@ -416,8 +409,8 @@ for(const [at,x] of [[1496,-64],[1658,-61]]){const y=grade(at);
 
 // Promenade starts at the landward abutment, crosses the last pier plaza and
 // follows the dry levee to a boating club. Its upper planting frames the mall corner.
-const quayPath=d=>edge(d,1)+10.5+3.4*Math.sin((d-5710)/57);
-ribbon('floodplain',5685,6230,d=>edge(d,1)+4,d=>edge(d,1)+67,.27,0x8d9b8d);
+const quayPath=d=>streetEdge(d,1)+10.5+3.4*Math.sin((d-5710)/57);
+ribbon('floodplain',5685,6230,d=>streetEdge(d,1)+4,d=>edge(d,1)+67,.27,0x8d9b8d);
 windingPath('upper-quay',5686,6230,quayPath,5.0,.33,0xc2bcac);
 windingPath('lower-quay',5710,6165,d=>edge(d,1)+38+6*Math.sin((d-5730)/75),3.5,.34,0xaab0a1);
 for(const z of [5740,5845,5930,6060]){
@@ -480,7 +473,12 @@ function buildParcel(p){
  }else{box(at+rw*.06,cx(x0+depth*.56),h,depth*.50,roof==='lantern'?3.5:1.8,rw*.53,'plinth',f.base);}
  if(index%3===0&&p.offset===undefined){box(at-w*.32,cx(street+.18),y+ground+.4,.96,2.5,.38,'metal',f.base);}
 }
-for(const parcel of sampleFrontages(layout())){
+for(const original of sampleFrontages(layout())){
+ // Fit the entire frontage, including both corners, to the outside pavement.
+ let shift=0;
+ for(let d=original.at-original.width/2-2;d<=original.at+original.width/2+3;d+=2)
+   shift=Math.max(shift,streetEdge(d,original.side)-edge(original.at,original.side));
+ const parcel=shift>.05?{...original,setback:original.setback+shift}:original;
  if(parcel.style)streetFront(parcel,{box,link,grade,edge,physicalPos,label});
  else buildParcel(parcel);
 }
@@ -586,30 +584,30 @@ function roadsidePanel(at,x,label,chevron){
  block(g,.12,2.2,.12,0x676860,0,1.1,0);railside(g,at,x);
 }
 for(const c of corners){
- roadsidePanel(c.entry-95,-c.side*(edge(c.entry-95,-c.side)+1.65)/1.59,'100 m',false);
- for(const delta of [-32,0,34])roadsidePanel(c.at+delta,-c.side*(edge(c.at+delta,-c.side)+1.65)/1.59,c.side>0?'←':'→',true);
+ roadsidePanel(c.entry-95,-c.side*(streetEdge(c.entry-95,-c.side)+1.65)/1.59,'100 m',false);
+ for(const delta of [-32,0,34])roadsidePanel(c.at+delta,-c.side*(streetEdge(c.at+delta,-c.side)+1.65)/1.59,c.side>0?'←':'→',true);
 }
-for(const [a,b,side,delta] of zones){
- for(const [station,change] of [[a,delta],[b-100,-delta]]){
-  for(const advance of [142,58]){
-   const at=station-advance,tot=4+(station===a?0:delta);
-   laneBoard(at,side,change,tot,advance);
-  }
- }
+for(const {start,side,gain,from,title} of decisions){
+ for(const advance of [142,58])laneBoard(start-advance,side,gain,from,advance,title);
 }
-function laneBoard(at,side,change,lanes,advance){
- const c=document.createElement('canvas');c.width=320;c.height=220;
- const ctx=c.getContext('2d');ctx.fillStyle=change<0?'#e3b75c':'#467370';ctx.fillRect(0,0,320,220);
- ctx.strokeStyle=ctx.fillStyle=change<0?'#302e2a':'#f1efdf';ctx.lineWidth=8;ctx.lineJoin='round';
- const count=Math.max(lanes,lanes+change),dx=38,base=160-(count-1)*dx/2;const outer=side>0?0:count-1;
- for(let j=0;j<count;j++){const xx=base+j*dx,idir=outer===0?1:-1;
- const lower=j===outer&&change>0?xx+idir*dx:xx,upper=j===outer&&change<0?xx+idir*dx:xx;
- ctx.beginPath();ctx.moveTo(lower,152);ctx.lineTo(lower,122);ctx.lineTo(upper,72);ctx.lineTo(upper,50);ctx.stroke();
- ctx.beginPath();ctx.moveTo(upper,37);ctx.lineTo(upper-10,59);ctx.lineTo(upper+10,59);ctx.fill();}
- ctx.font='bold 34px system-ui';ctx.textAlign='center';ctx.fillText(lanes+' → '+(lanes+change)+'    '+advance+' m',160,199);
+function laneBoard(at,side,change,lanes,advance,title){
+ const c=document.createElement('canvas');c.width=640;c.height=284;const g=c.getContext('2d');
+ g.fillStyle='#164d48';g.fillRect(0,0,640,284);g.strokeStyle='#dce8db';g.lineWidth=6;g.strokeRect(6,6,628,272);
+ const mainX=side>0?466:166,branchX=640-mainX;
+ g.textAlign='center';g.fillStyle='#fff8d9';g.font='bold 52px system-ui';g.fillText('↑ 主線',mainX,75);
+ g.font='bold 39px system-ui';g.fillText(lanes+' → '+(lanes+change)+' 車道',mainX,147);
+ g.fillStyle='#f5cd80';g.font='bold 48px system-ui';g.fillText(title,branchX,75,285);
+ const symbol=change<0?(side>0?'↖':'↗'):(side>0?'↗':'↖');
+ g.font='bold 41px system-ui';g.fillText(symbol+(change<0?' 分出':' 匯入'),branchX,148);
+ g.fillStyle='#f9f5da';g.font='bold 43px system-ui';g.fillText(advance+' m',mainX,239);g.font='bold 35px system-ui';g.fillText('一般道路',branchX,239);
  const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;
- const g=new T.Group(),panel=new T.Mesh(new T.PlaneGeometry(3.65,2.52),new T.MeshBasicMaterial({map:tex}));panel.rotation.y=Math.PI;panel.position.set(0,3.65,0);g.add(panel);block(g,.16,3.8,.20,0x727c77,0,1.9,0);
- railside(g,at,side*(edge(at,side)+2.85)/1.59);
+ const group=new T.Group(),large=advance===142,w=large?6.4:4.55,h=w*284/640;
+ const offset=streetEdge(at,side)+1.45,faceAt=large?edge(at,side)-1.50:offset+.8;
+ const height=large?7.30:4.45,arm=side*(faceAt-offset);
+ const panel=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:tex}));panel.rotation.y=Math.PI;panel.position.set(arm,height,-.12);group.add(panel);
+ block(group,.20,height+.10,.23,0x677876,0,height*.5,0);
+ block(group,Math.abs(arm)+.25,.20,.25,0x677876,arm*.5,height,.14);
+ railside(group,at,side*offset/1.59);
 }
 const railSpans=[{side:-1},{side:1}];
 const railOffset=(span,at)=>(edge(at,span.side)+.12)/1.59;
