@@ -1,3 +1,4 @@
+import {CityTraffic,civilianCount,rivalStart,incidents} from './city-traffic.mjs';
 import {addMarketMetro,metroFront} from './market-metro.mjs';
 import {civilianCar,cityFleet} from './civilian-cars.mjs';
 import {addressUse} from './neighbourhood.mjs';
@@ -46,10 +47,10 @@ const modules=['camera','flow','drift','traffic','sound'];
 const activeModules=new Set(variant==='control'?(labQuery.get('probe')||'').split(',').filter(k=>modules.includes(k)):modules);
 const enabled=k=>activeModules.has(k);
 const technical=variant==='B', trialKey=[variant,...activeModules].join('-');
-const densityMarks=[],transfers=[],encounters=[];
+const densityMarks=[],transfers=[];
 const orbit=new CameraOrbit(), orbitLook=new T.Vector3();
 let orbitNeedsNeutral=true;
-let cameraFov=62,transferAge=1,trafficContact=null,nearMix=0,engineBed,windEdge,passTone;
+let cameraFov=62,transferAge=1,nearMix=0,engineBed,windEdge,passTone;
 
 const renderer=new T.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));ui.prepend(renderer.domElement);teardown.push(()=>{renderer.dispose();renderer.forceContextLoss();});
 const scene=new T.Scene(),camera=new T.PerspectiveCamera(62,1,.3,4000);
@@ -569,7 +570,7 @@ for(const at of [5920,5928,5967]){
 addPlaces({box,grade,physicalPos,link,label,edge,walker,windingPath});
 addCityDepth({scene,cityChunks,pose,grade,physicalPos,edge,bank,riverside,nearEnd,alongX,alongZ,parkTrees});
 addCityInteriors({scene,cityChunks,pose,physicalPos,grade,edge,parkTrees});
-addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,frontages});
+const updateWalkers=addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,frontages});
 composeDistricts({T,box,grade,edge,grove,physicalPos,pose,scene,cityChunks});
 parkTrees.finish();
 for(const {geom,mat,at,items} of shapes.values()){const o=new T.InstancedMesh(geom,mat,items.length);items.forEach((m,i)=>o.setMatrixAt(i,m));o.castShadow=o.receiveShadow=true;o.computeBoundingSphere();scene.add(o);cityChunks.push({at,mesh:o});}
@@ -700,60 +701,94 @@ const ghostAlpha={value:1};const ghostPaint=new Map();rival.traverse(o=>{if(!o.i
 scene.add(rival);return {rival,ghostAlpha};}
 const {rival,ghostAlpha}=makePacer(enabled('traffic')?0x3495a3:0xf3b92d);const leader=enabled('traffic')?makePacer(0xf3b92d):null;
 
-// Deterministic overtakes: one lane occupied at a time near each encounter.
-const pack=enabled('traffic')?[[360,38,.8,0x9f695a],[735,36,-3.6,0xb9a372],[1340,38,3.4,0x547b81],[1980,41,-3.6,0xab746b],[2770,38,.7,0x698091],[3610,40,3.5,0xaca07c],[4600,39,-3.4,0x83907b],[5460,35,.8,0xb0a477]].map(([lead,pace,lane,color],i)=>{
- const g=civilianCar(cityFleet[i],color);
+
+const seedParam=new URLSearchParams(location.search).get('trafficSeed');
+const trafficSeed=seedParam!==null&&/^\d{1,10}$/.test(seedParam)?Number(seedParam)>>>0:5390;
+let cityTraffic=new CityTraffic(trafficSeed),trafficKick=0;
+const shades=[0x9f695a,0xb9a372,0x547b81,0xab746b,0x698091,0xaca07c,0x83907b,0xb0a477];
+const fleetTemplates=new Map();
+const pack=cityTraffic.actors.slice(0,rivalStart).map((actor,i)=>{
+ const kind=actor.stationary?incidents[i-civilianCount].body:cityFleet[i%cityFleet.length],colour=shades[i%shades.length];
+ const key=kind+'-'+colour;if(!fleetTemplates.has(key))fleetTemplates.set(key,civilianCar(kind,colour));
+ const g=fleetTemplates.get(key).clone(true);
  const opacity={value:1},paints=new Map();
  g.traverse(o=>{if(!o.isMesh)return;const base=o.material;if(!paints.has(base)){const mat=base.clone();
  mat.onBeforeCompile=shader=>{shader.uniforms.nearFade=opacity;shader.fragmentShader='uniform float nearFade;\n'+shader.fragmentShader.replace('#include <dithering_fragment>','#include <dithering_fragment>\nif(nearFade<.999 && fract(dot(gl_FragCoord.xy,vec2(.75487766,.56984029)))>nearFade)discard;');};
  mat.customProgramCacheKey=()=>'city-occlusion';paints.set(base,mat);}o.material=paints.get(base);});
- scene.add(g);return {lead,pace,lane,g,opacity,slot:[1,-2,3,-1,1,2,-3,1][i]};
-}):[];
-function trafficStep(at,now){
- nearMix=0;
- for(const [i,t] of pack.entries()){
-  const forward=t.lead+t.pace*at,gap=forward-d;t.lane=trafficX(forward,t.slot);const side=t.lane-x;
- // Only fade the traffic silhouette in the chase corridor. Its collision remains active.
- const longitudinal=sm(gap,-17,-11)*(1-sm(gap,.65,5.6));
- t.opacity.value=1-longitudinal*(1-sm(Math.abs(side),3.75,5.4));
-  t.g.visible=t.opacity.value>.012&&gap>-18&&gap<610&&forward<L+60;if(t.g.visible){t.g.position.fromArray(physicalPos(forward,t.lane,grade(forward)));t.g.rotation.set(-Math.atan(grade(forward+1)-grade(forward)),pose(forward)[2],0,'YXZ');}
-  if(phase!=='drive')continue;
-  nearMix=Math.max(nearMix,Math.exp(-Math.abs(gap)/12)*Math.max(0,1-Math.abs(side)/11));
-  if(gap<0&&!encounters.includes(i))encounters.push(i);
-  if(trafficContact===i&&(Math.abs(gap)>8||Math.abs(side)>2.8))trafficContact=null;
-  if(Math.abs(gap)<4.2&&Math.abs(side)<1.87&&trafficContact!==i&&now>rearmAt){
-   const before=speed,closing=Math.max(0,speed-t.pace),loss=Math.min(before*.42,2+.55*closing+.36*Math.abs(vel));
-   speed-=loss;impact=clamp(loss/20,.10,1);trafficContact=i;rearmAt=now+750;driveRecovery=impact;hitSound(impact);driveFeedback('擦撞車流',now);
-   hits.push({d,before,after:speed,normalSpeed:closing,traffic:i,force:impact});endSlide('contact');
-   // Separate to the passing side so contact never traps the player behind a car.
-   x=t.lane+(x>=t.lane?1:-1)*1.90;
+
+ let lamps=null;
+ if(actor.stationary){
+  const amber=new T.MeshBasicMaterial({color:0xffae29,toneMapped:false});
+  lamps=new T.Group();for(const sign of [-1,1]){
+   const light=new T.Mesh(cube,amber);light.scale.set(.30,.16,.075);
+   light.position.set(sign*.73,.88,-2.17);lamps.add(light);
+  }g.add(lamps);
+  if(kind==='hatch'){
+   // A tilted bonnet breaks the parked silhouette; its hinge and prop stay inside the vehicle footprint.
+   const bonnet=block(g,1.49,.10,1.08,colour,0,1.36,1.28);bonnet.rotation.x=-1.04;
+   const prop=block(g,.045,.65,.045,0x656456,-.53,1.26,1.48);prop.rotation.x=.25;
+  }else{
+   block(g,1.54,.78,.76,0xc49968,0,1.46,-.9);
+   const box=block(g,.93,.48,.65,0x8f7257,-.22,2.03,-.98);box.rotation.z=.12;
   }
  }
+ scene.add(g);return {g,opacity,lamps};
+});
+// Free-standing roadside warning triangles and reflective taper drums precede each stopped car.
+for(const [i,stop] of incidents.entries()){
+ const parkedX=cityTraffic.actors[civilianCount+i].lateral;
+ for(const [n,offset] of [115,48,18].entries()){
+  const at=stop.distance-offset,sign=new T.Group();
+  const x=parkedX+stop.side*(n===0?.50:.22);
+  block(sign,1.12,.095,.36,0x484e52,0,.06,0);
+  block(sign,.13,.30,.12,0x68645e,0,.22,0);
+  block(sign,1.05,.15,.10,0xff5e29,0,.36,0);
+  for(const k of [-1,1])block(sign,.14,.96,.10,0xff622e,k*.255,.76,0).rotation.z=k*.54;
+  if(n>0){block(sign,.39,.45,.39,0xdb6838,stop.side*.9,.26,.3);block(sign,.40,.14,.40,0xffe6b3,stop.side*.9,.31,.3);}
+  sign.position.fromArray(physicalPos(at,x,grade(at)+.04));sign.rotation.y=pose(at)[2];scene.add(sign);cityChunks.push({at,mesh:sign});
+ }
 }
-
-const paceSamples=[{s:20,t:0}];
-for(let s=20,t=0,v=49;s<L+190;){let wanted=69;for(let ahead=0;ahead<=96;ahead+=12)wanted=Math.min(wanted,Math.sqrt(15.8/Math.max(.00012,Math.abs(bend(s+ahead)))+2*17*ahead));v+=clamp(wanted-v,-18,5)*.025;s+=v*.025;t+=.025;paceSamples.push({s,t});}
-function referenceAt(t){const idx=Math.min(paceSamples.length-2,Math.floor(Math.max(0,t)/.025));return T.MathUtils.lerp(paceSamples[idx].s,paceSamples[idx+1].s,clamp(t/.025-idx,0,1));}
-const ghostFinish=paceSamples.find(p=>p.s>=L).t;
-let previousRivalS=20;function showRival(t){
- const s=referenceAt(t),lane=trafficX(s,-1)+.60*Math.sin(s/89);
- rival.userData.motion.advance(Math.max(0,s-previousRivalS),0,.016);previousRivalS=s;rival.userData.brakeLights.set(s>350&&s<460);rival.position.fromArray(physicalPos(s,lane,grade(s)+.05));rival.rotation.set(-Math.atan(grade(s+1)-grade(s)),pose(s)[2],0,'YXZ');
- // The pacing car is a non-contact target; leave the road readable while passing through it.
- const ahead=s-d;
- const opacity=sm(ahead,-.8,5.0)*(.22+.78*sm(Math.abs(lane-x)+.65*Math.abs(ahead),1.5,5));
- rival.visible=opacity>.015;
- ghostAlpha.value=opacity;
- let gap=s-d;let rank=d>=s?1:2;
- if(leader){
- const lead=s+148,leadLane=trafficX(lead,2)+.22*Math.sin(lead/141),delta=lead-d;
- leader.rival.position.fromArray(physicalPos(lead,leadLane,grade(lead)+.05));leader.rival.rotation.set(-Math.atan(grade(lead+1)-grade(lead)),pose(lead)[2],0,'YXZ');
- leader.rival.visible=delta>-.8&&delta<470;leader.ghostAlpha.value=sm(delta,-.8,5)*(.22+.78*sm(Math.abs(leadLane-x)+.65*Math.abs(delta),1.5,5));leader.rival.userData.brakeLights.set(lead>2880&&lead<3000);
- if(delta>0)rank++;if(gap<=0)gap=delta;
+function advanceRoadUsers(h,oldD,oldX,now){
+ const p={d,x,speed,vel,oldD,oldX,kick:0};
+ const e=cityTraffic.step(h,p);d=p.d;x=p.x;speed=p.speed;
+ if(e){
+  trafficKick=p.kick;impact=e.force;driveRecovery=Math.max(driveRecovery,.15+e.force*.65);
+  hitSound(e.force);driveFeedback(e.type==='incident'?'碰撞事故車':e.type==='rival'?'對手接觸':'車流接觸',now);
+  hits.push({d,before:e.before,after:speed,normalSpeed:e.before-speed,traffic:e.b,kind:e.kind,force:e.force});
+  endSlide('contact');
+ }
+}
+const pacers=[{rival,ghostAlpha},leader];
+function renderTraffic(){
+ nearMix=0;
+ for(const [i,t] of pack.entries()){
+  const c=cityTraffic.actors[i],gap=c.distance-d,side=c.lateral-x;
+  t.opacity.value=1-sm(gap,-17,-11)*(1-sm(gap,.65,5.6))*(1-sm(Math.abs(side),3.75,5.4));
+  t.g.visible=!c.finished&&gap>-18&&gap<610&&c.distance<L+40&&t.opacity.value>.012;
+  if(t.g.visible){t.g.position.fromArray(physicalPos(c.distance,c.lateral,grade(c.distance)));
+   t.g.rotation.set(-Math.atan(grade(c.distance+1)-grade(c.distance)),pose(c.distance)[2]+(c.stopYaw||0),0,'YXZ');
+   if(t.lamps)t.lamps.visible=(cityTraffic.time+i*.12)% .85<.43;
+  }
+  if(!c.stationary)nearMix=Math.max(nearMix,Math.exp(-Math.abs(gap)/12)*Math.max(0,1-Math.abs(side)/11));
+ }
+ let rank=1,gap=0;
+ for(const [i,visual] of pacers.entries()){
+  if(!visual)continue;
+  const c=cityTraffic.actors[rivalStart+i],a=c.distance-d,side=c.lateral-x;
+  if(a>0){rank++;if(!gap||a<gap)gap=a;}else if(!gap)gap=a;
+  visual.rival.visible=a>-13&&a<470;
+  const driven=phase==='drive'?Math.max(0,c.distance-(visual.lastDistance??c.distance)):0;
+  visual.lastDistance=c.distance;
+  if(visual.rival.visible){
+   visual.ghostAlpha.value=1-sm(a,-13,-7)*(1-sm(a,.2,5))*(1-sm(Math.abs(side),2.7,4.5));
+   visual.rival.userData.motion.advance(driven,0,.016);
+   visual.rival.userData.brakeLights.set(c.targetSpeed<c.speed-.7);
+   visual.rival.position.fromArray(physicalPos(c.distance,c.lateral,grade(c.distance)+.05));
+   visual.rival.rotation.set(-Math.atan(grade(c.distance+1)-grade(c.distance)),pose(c.distance)[2],0,'YXZ');
+  }
  }
  $('rival').textContent='P'+rank+' / '+(leader?3:2)+'　'+(gap>=0?'追距 ':'領先 ')+Math.abs(gap).toFixed(0)+' m';
-
 }
-
 // Open timing gates give the exit a target without blocking the view into the next bend.
 function timingGate(at,sector){
  const group=new T.Group();for(const x of [-edge(at,-1)-1.45,edge(at,1)+1.45]){block(group,.22,5.4,.26,0x3b5557,x,2.7,0);block(group,.32,.55,.33,0xe9a236,x,1.15,0);}
@@ -785,7 +820,7 @@ try{const saved=JSON.parse(localStorage.getItem(recordKey));if(Array.isArray(sav
 let splits=[],splitUntil=0,steering=0,headingError=0,edgeTime=0,previousStart=false,driveRecovery=0;
 function start(){
  orbit.reset();
- transfers.length=0;encounters.length=0;trafficContact=null;nearMix=0;transferAge=1;coupling=0;slip=0;driftDir=0;driftAge=0;driftEnds=[];hits=[];contact=null;rearmAt=0;impact=0;feedbackUntil=0;$('feedback').textContent='';
+ transfers.length=0;trafficKick=0;cityTraffic=new CityTraffic(trafficSeed,entry);nearMix=0;transferAge=1;coupling=0;slip=0;driftDir=0;driftAge=0;driftEnds=[];hits=[];contact=null;rearmAt=0;impact=0;feedbackUntil=0;$('feedback').textContent='';
  rubberCount=0;tirePair=null;rubberGeo.setDrawRange(0,0);driveRecovery=0;soundStart();Object.assign(wheelBar,createSteerBar());driftLatch=0;d=entry;x=laneWidth*.5;vel=0;speed=49;steering=0;headingError=0;edgeTime=0;
  if(volume)volume.gain.setTargetAtTime(.20,ac.currentTime,.04);phase='drive';elapsed=0;splits=splitMarks.filter(n=>n<entry).map(()=>0);splitUntil=0;window.teaFrames.length=0;startTime=performance.now();
  $('panel').hidden=true;$('split').textContent='';$('best').textContent=best?'個人最佳 '+best[2].toFixed(2)+' s':'';
@@ -811,7 +846,7 @@ let driftLatch=0,snapshotBusy=false,shotRequested=false;
 const reviewQuery=new URLSearchParams(location.search);
 const previewAt=import.meta.env.DEV?Number(reviewQuery.get('cityView')):0;
 const entry=Number.isFinite(previewAt)?clamp(previewAt,0,L-100):0;
-d=entry;
+d=entry;cityTraffic=new CityTraffic(trafficSeed,entry);
 const layerSwitch=$('cityLayers'),layerKey=$('layerKey');let removeLines;
 function showLayers(on){
  if(removeLines){removeLines();removeLines=undefined;}
@@ -994,6 +1029,7 @@ previousButtons=Array.from(drivingPad()?.buttons??[],button=>!!button.pressed);
  if(phase==='drive'){
   const steps=Math.max(1,Math.ceil(dt/.018)),h=dt/steps;
   for(let n=0;n<steps;n++){
+   const oldD=d,oldX=x;
    const k=bend(d),slope=grade(d+1)-grade(d),gravel=sm(Math.abs(x)-edge(d,Math.sign(x)||1),-.80,.85);
    // Retain the accepted slide and keyboard mapping. Bring forward small analogue inputs
    // progressively with speed, with full steering authority unchanged at both locks.
@@ -1042,7 +1078,7 @@ previousButtons=Array.from(drivingPad()?.buttons??[],button=>!!button.pressed);
    const turnIn=1+freeGrip*2.70;
    const align=1.08+freeGrip*(1.20+7.0*centre);
    headingError=clamp(headingError+h*(yawRate*turnIn-k*advance-headingError*align),-.61,.61);
-   vel=speed*Math.sin(headingError);x+=vel*h;
+   trafficKick*=Math.exp(-h*2.9);vel=speed*Math.sin(headingError)+trafficKick;x+=vel*h;
    const span=railSpans[x<0?0:1];strikeRail(span,d,h,now);
    // Riding the concrete through an overloaded bend scrubs the outer tyres.
    if(contact===span && span.side*x>edge(d,span.side)-1.6){
@@ -1050,11 +1086,11 @@ previousButtons=Array.from(drivingPad()?.buttons??[],button=>!!button.pressed);
     speed=Math.max(0,speed-h*(1.3+.78*scrub));
    }
    x=clamp(x,-edge(d,-1),edge(d,1));
-   d+=advance*h;if(gravel>.55)edgeTime+=h;
+   d+=advance*h;advanceRoadUsers(h,oldD,oldX,now);if(gravel>.55)edgeTime+=h;
   }
   elapsed=(now-startTime)/1000;passSplit(now);if(now>splitUntil)$('split').textContent='';
  }
- car.userData.motion.advance(phase==='drive'?speed*dt:0,vel*.04,dt);car.userData.brakeLights.set(keys.has('ArrowDown')||!!pad?.buttons[6]?.pressed);trafficStep(elapsed,now);showRival(elapsed);rubberAt();car.position.fromArray(physicalPos(d,x,grade(d)+.05));car.rotation.set(-Math.atan((grade(d+1)-grade(d))),pose(d)[2]+headingError*.84+slip,steering*-.023+impact*.035,'YXZ');
+ car.userData.motion.advance(phase==='drive'?speed*dt:0,vel*.04,dt);car.userData.brakeLights.set(keys.has('ArrowDown')||!!pad?.buttons[6]?.pressed);renderTraffic();updateWalkers(d,elapsed);rubberAt();car.position.fromArray(physicalPos(d,x,grade(d)+.05));car.rotation.set(-Math.atan((grade(d+1)-grade(d))),pose(d)[2]+headingError*.84+slip,steering*-.023+impact*.035,'YXZ');
  if(enabled('camera')){
  const driftAmount=sm(Math.abs(slip),.06,.75),fast=sm(speed,44,77);
  const distance=(technical?7.48:6.57)+driftAmount*(technical?.65:.58);
@@ -1071,7 +1107,7 @@ previousButtons=Array.from(drivingPad()?.buttons??[],button=>!!button.pressed);
  orbit.apply({eye:camera.position,look:orbitLook},car.position);camera.lookAt(orbitLook);
  const aim=new T.Vector3(...pos(d+38,0,grade(d)));sun.target.position.copy(aim);sun.position.copy(aim).add(sunOffset);sky.position.copy(camera.position);visibleCity(d);metro.update(d,elapsed,entry);$('beat').textContent=district(d)[1];$('info').textContent=Math.round(speed*3.6)+' km/h　 ·　'+(d/1000).toFixed(2)+' km　 ·　'+elapsed.toFixed(2)+' s';
  if(ac){labMix(speed,gas,brake);squeal.gain.setTargetAtTime(phase==='drive'?Math.abs(slip)*2.7:0,ac.currentTime,.055);const rpm=phase==='drive'?52+speed*.82+(speed%16)*1.4+8*gas:30;engine.frequency.setTargetAtTime(rpm,ac.currentTime,.09);filter.frequency.setTargetAtTime(170+speed*4,ac.currentTime,.1);windGain.gain.setTargetAtTime(.1+speed*.017,ac.currentTime,.2);}renderer.render(scene,camera);if(shotRequested){shotRequested=false;snapshot();}if(!closed)raf=requestAnimationFrame(frame);}
-function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener("resize",resize,scope);resize();if(import.meta.env.DEV)window.cityDrive=()=>({orbit:orbit.angle,variant,bar:{...wheelBar},modules:[...activeModules],flowCount:densityMarks.filter(s=>s>=425&&s<=680).length,traffic:pack.map(t=>({body:t.g.userData.bodyType,d:t.lead+elapsed*t.pace,x:t.lane,visible:t.g.visible,opacity:t.opacity.value})),passes:[...encounters],transfers:[...transfers],fov:camera.fov,nearMix,audioNodes:!!engineBed,phase,d,speed,x,vel,elapsed,edgeTime,splits:[...splits],best,leaderDistance:referenceAt(elapsed)+(leader?148:0),ghostDistance:referenceAt(elapsed),ghostFinish,curvature:bend(d),steering,slip,driftDir,driftEnds:[...driftEnds],hits:[...hits],impact});if(!closed)raf=requestAnimationFrame(frame);
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener("resize",resize,scope);resize();if(import.meta.env.DEV)window.cityDrive=()=>({orbit:orbit.angle,variant,bar:{...wheelBar},modules:[...activeModules],flowCount:densityMarks.filter(s=>s>=425&&s<=680).length,trafficSeed,traffic:pack.map((t,i)=>{const c=cityTraffic.actors[i];return {id:i,body:t.g.userData.bodyType,d:c.distance,x:c.lateral,speed:c.speed,stationary:!!c.stationary,visible:t.g.visible,opacity:t.opacity.value}}),rivals:cityTraffic.actors.slice(rivalStart).map(c=>({id:c.id,d:c.distance,x:c.lateral,speed:c.speed})),roadContacts:cityTraffic.contacts.slice(),passes:[...cityTraffic.passIds],transfers:[...transfers],fov:camera.fov,nearMix,audioNodes:!!engineBed,phase,d,speed,x,vel,elapsed,edgeTime,splits:[...splits],best,leaderDistance:cityTraffic.actors[rivalStart+1].distance,ghostDistance:cityTraffic.actors[rivalStart].distance,ghostFinish:cityTraffic.finishedRivals.get(rivalStart)??null,curvature:bend(d),steering,slip,driftDir,driftEnds:[...driftEnds],hits:[...hits],impact});if(!closed)raf=requestAnimationFrame(frame);
 
  teardown.push(()=>{delete window.cityDrive;delete window.teaFrames;delete window.teaAudio;clearTimeout(phoneToastTimer);});
  loadingFinished();

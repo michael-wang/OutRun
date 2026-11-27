@@ -79,7 +79,7 @@ export class RaceTrafficWorld {
  constructor(recipes:readonly TrafficWorldRecipe[],private seed:number,
   private length:number,private halfAt:(distance:number)=>number,
   private dimensions:(type:number)=>{width:number;length:number},private racing=false,
-   private readonly entryTraffic=true){
+   private readonly entryTraffic=true,private readonly courseLanes?:(distance:number)=>number[]){
   this.cars=recipes.map(row=>{
    const half=this.halfAt(row.distance);
    const lateral=row.stationary
@@ -214,7 +214,7 @@ export class RaceTrafficWorld {
     else if(car.targetSpeed>8||car.speed>8)car.blockedFor=0;
     if(car.blockedFor>(this.racing?TRAFFIC_DRIVER_PROFILES[car.driverStyle].reverseAfter:2.1)
      &&this.time>car.escapeCooldown){
-     const lanes=roadLaneCenters(this.halfAt(car.distance));
+     const lanes=this.courseLanes?.(car.distance)??roadLaneCenters(this.halfAt(car.distance));
      const lane=nearestTrafficLane(car.lateral,lanes);
      const dir=randomized(this.seed^0x3af,car.id+Math.floor(this.time))<.5?-1:1;
      const target=lanes[lane+dir]??lanes[lane-dir]??lanes[lane];
@@ -277,7 +277,7 @@ export class RaceTrafficWorld {
   ordered.sort((a,b)=>b.distance-a.distance||a.id-b.id);
   for(let i=0;i<ordered.length;i++){
    const car=ordered[i];if(car.stationary)continue;
-   const lanes=roadLaneCenters(this.halfAt(Math.min(this.length-1,Math.max(0,car.distance))));
+   const lanes=this.courseLanes?.(car.distance)??roadLaneCenters(this.halfAt(Math.min(this.length-1,Math.max(0,car.distance))));
    let nearest:TrafficWorldCar|RaceRoadUser|undefined;
    for(let j=i-1;j>=0;j--){
     const lead=ordered[j];if(lead.distance-car.distance>300)break;

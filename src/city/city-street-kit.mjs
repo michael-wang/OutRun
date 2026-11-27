@@ -4,6 +4,7 @@ import neighbourhoodURL from './assets/neighbourhood.png?url';
 import {addMetropolitanBuildings} from './metropolitan.mjs';
 import {finishCityDistricts} from './district-assets.mjs';
 import {addStreetLife} from './street-life.mjs';
+import {roadsideEdge} from './junctions.mjs';
 import towerURL from './assets/tower-atlas.png?url';
 import atlasURL from './assets/street-kit.png?url';
 
@@ -64,7 +65,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
   build({panel,box,brace});
   const group={layer:'mid', first:0,last:positions.length/3,yaw:angle};
   // Group shops on the same side and streaming cell while keeping review bounds per lot.
-  if(['arcade-shop','address','upper-floors','neighbourhood'].includes(name)){
+  if(['arcade-shop','address','upper-floors','neighbourhood','promenade'].includes(name)){
    const tower=name==='upper-floors';
    const family=tower?'upper-floors':name==='neighbourhood'?name:'arcade-shop';
    const key=family+'-'+(Math.floor(at/95)*2+Number(offset>0));
@@ -72,7 +73,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
    const batch=shopBatches.get(key),first=batch.positions.length/3;
    batch.groups.push({...group,first,last:first+group.last});
    for(const [dest,src] of [[batch.positions,positions],[batch.uv,uv],[batch.colors,colors]])for(const v of src)dest.push(v);
-  }else emit(at,name,positions,uv,colors,[group]);
+  }else return emit(at,name,positions,uv,colors,[group]);
  }
  function emit(at,name,positions,uv,colors,groups){
   const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(positions,3));
@@ -80,7 +81,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
   geo.computeVertexNormals();geo.computeBoundingSphere();
   const mesh=new T.Mesh(geo,name==='upper-floors'?towerMaterial:name==='neighbourhood'?districtMaterial:material);mesh.name='city-interior-kit-'+name+'-'+at;
   mesh.userData.reviewGroups=groups;
-  mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);cityChunks.push({at,mesh});
+  mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);cityChunks.push({at,mesh});return mesh;
  }
  function grandstand(at,bays){
   site(at,-31,'athletics',({panel,box,brace})=>{
@@ -274,7 +275,7 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
  finishCityDistricts({site,M,edge,frontages});
  addMetropolitanBuildings({site,M,edge,frontages});
  addAddresses({site,edge,frontages});
- for(const b of shopBatches.values())emit(b.at,b.family,b.positions,b.uv,b.colors,b.groups);
+
  // The wholesale approach has doors along an existing row of actual shops.
  // Their front setbacks are assigned by the parcel generator and clear the road.
  for(const p of frontages){
@@ -288,8 +289,10 @@ export function addCityStreetKit({scene,cityChunks,pose,physicalPos,grade,edge,f
    }
   });
  }
- addStreetLife({site,M,edge});
+ const updateWalkers=addStreetLife({site,M,edge,roadsideEdge,pose,grade,physicalPos});
+ for(const b of shopBatches.values())emit(b.at,b.family,b.positions,b.uv,b.colors,b.groups);
  wholesale(3723,5);wholesale(3805,4);parcelsWing();terminalFront();
 
 
+ return updateWalkers;
 }

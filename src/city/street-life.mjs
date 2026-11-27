@@ -1,6 +1,6 @@
 // Original fixed poses share the facade atlas and one mesh per activity group.
 // Local +x is toward the player's left. Figure positions are in metres.
-export function addStreetLife({site,M,edge}){
+export function addStreetLife({site,M,edge,roadsideEdge,pose,grade,physicalPos}){
  const cloth=[0x376b7b,0xd08858,0x8e5255,0x57734d,0xc49b52,0x6a6583];
  function person({box,brace,panel},x,y,z,angle,pose,look){
   const c=Math.cos(angle),s=Math.sin(angle),turn=([a,b,d])=>[x+a*c+d*s,y+b,z-a*s+d*c];
@@ -140,4 +140,62 @@ export function addStreetLife({site,M,edge}){
   for(let i=0;i<4;i++)person(t,.70+(i%2)*1.17,.54,i*1.72,Math.PI*.48,'walk',i+1);
  });
  site(6977,-22.3,'arrivals',t=>{for(let i=0;i<5;i++)person(t,1.1*Math.cos(i),.26,i*1.9,i%2*.9,'walk',i);});
+
+ // Width and kerb come from the same roadside surface that is used by the street builder.
+ // Short contiguous lengths follow the curve; the tactile strip stays on the pavement.
+ const footways=[
+  {start:222,end:300,side:1,kind:'shop',base:0xc5ab91},
+  {start:1380,end:1464,side:-1,kind:'park',base:0xb6b9a4},
+  {start:2690,end:2774,side:1,kind:'market',base:0xbdab94},
+  {start:6912,end:6996,side:-1,kind:'station',base:0xb0b4b0},
+ ];
+ const walkers=[];
+ for(const [district,way] of footways.entries()){
+  const {start,end,side,kind,base}=way;
+  for(let at=start+3;at<end;at+=6){
+   const curb=roadsideEdge(at,side);
+   site(at,side*(curb+2.28),'promenade',t=>{
+    t.box(0,.242,0,3.76,.075,5.99,M.stone,base);
+    t.box(-side*.94,.318,0,.26,.018,5.98,M.enamel,0xd1ad68);
+    t.box(0,.318,2.70,3.63,.014,.027,M.steel,0xa5a398);
+   });
+  }
+  // Groups face each other or their destination. Chairs and bags stay against the back edge.
+  for(const [j,along] of [13,35,60].entries()){
+   const at=start+along,curb=roadsideEdge(at,side);
+   site(at,side*(curb+2.22),'promenade',t=>{
+    const face=side*1.18,look=district+j;
+    person(t,.44*side,.32,0,face,'wait',look);
+    person(t,1.08*side,.32,.78,face+2.2,j===1?'shop':'wait',look+3);
+    if(j!==1){
+     person(t,.65*side,.32,-1.12,face+.70,'walk',look+2);
+     if(kind==='park'&&j===0){dog(t,.36*side,.32,-2.14);t.brace([.60*side,1.26,-1.12],[.36*side,1,-1.88],.032,M.graphite);}
+    }else if(kind==='station')trolley(t,1.18*side,.32,2.31);
+    else if(kind==='shop'||kind==='market'){
+     t.box(1.24*side,.32,2.28,.65,.58,.92,M.timber);t.box(1.24*side,.90,2.28,.70,.11,.96,M.steel);
+    }
+   });
+  }
+  for(const [lane,offset] of [[0,20],[1,50]]){
+   const at=start+offset,across=lane===0?1.02:1.72,origin=physicalPos(at,side*(roadsideEdge(at,side)+across),grade(at));
+   const mesh=site(at,side*(roadsideEdge(at,side)+across),'promenade-walker',t=>{
+    person(t,0,0,0,0,'walk',district+lane+1);
+    if(lane===1)person(t,.33,0,1.03,.21,'walk',district+3);
+   });
+   mesh.geometry.translate(-origin[0],-origin[1],-origin[2]);mesh.geometry.rotateY(-pose(at)[2]);
+   mesh.geometry.computeBoundingSphere();
+   walkers.push({mesh,at,side,across,phase:district*2.83+lane*6.14,period:lane?28:33});
+  }
+ }
+ return (playerAt,time)=>{
+  for(const w of walkers){
+   if(Math.abs(w.at-playerAt)>650)continue;
+   const phase=(time+w.phase)*Math.PI*2/w.period,at=w.at+6.6*Math.sin(phase);
+   const lateral=w.side*(roadsideEdge(at,w.side)+w.across),stride=Math.cos(phase);
+   w.mesh.position.fromArray(physicalPos(at,lateral,grade(at)+.32+.022*Math.abs(stride*Math.sin(time*6+w.phase))));
+   // Pause and turn at each end rather than sliding backwards on the return walk.
+   const turn=Math.max(0,Math.min(1,(.16-stride)/.32));
+   w.mesh.rotation.y=pose(at)[2]+Math.PI*turn;
+  }
+ };
 }
