@@ -1,4 +1,5 @@
 import {landscapeControl} from './immersive';
+import {takeMenuHandoff} from './pad-menu-navigation';
 import { GamepadInput, type PadAction } from './gamepad';
 import { InputLatch } from './input';
 import { renderMiniatures } from './racing-miniatures';
@@ -65,6 +66,7 @@ export async function mountMenu(enter: (stage: RacingStage) => void, waitForEntr
     if(action==='confirm')confirm();
   }
   const pad=new GamepadInput(new InputLatch(),navigate);
+  pad.startStageMenu(takeMenuHandoff());
   function poll() {
     frame=0;
     if(closed||document.hidden)return;
@@ -73,7 +75,7 @@ export async function mountMenu(enter: (stage: RacingStage) => void, waitForEntr
     pad.poll('stage-menu');
     if(closed)return;
     if(connected)frame=requestAnimationFrame(poll);
-    else discovery=window.setTimeout(poll,250);
+    else discovery=window.setTimeout(poll,32);
   }
   function syncGamepads() {
     cancelAnimationFrame(frame);clearTimeout(discovery);

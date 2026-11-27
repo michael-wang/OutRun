@@ -25,3 +25,12 @@
 @media(pointer:coarse){#layerTools{top:45px}#cityLayers{min-height:34px}}
 
 .city-pad-hint{display:block;margin:0 0 9px;color:#fff0cb}#panel button.city-selected{outline:3px solid white;outline-offset:2px;background:#ffd795}#panel button:not(.city-selected){background:#48595d;color:white}
+
+#info{background:linear-gradient(105deg,#15202bf0,#13212bdc);padding:5px 12px 6px;border-left:3px solid #efbd70;line-height:1.15;pointer-events:none;color:#fff7e6}
+.speedline{display:flex;align-items:baseline;gap:5px}.speedline strong{font:750 clamp(40px,5.3vw,68px)/1 system-ui;font-variant-numeric:tabular-nums;letter-spacing:-.055em}.speedline>span{font-size:12px}
+#gearLabel{margin-left:auto;padding:3px 5px;color:#f5c878;font-size:18px}#cityGear{font-size:1.25em}
+#tach{margin:3px 0;height:4px;background:#667079}#tach i{display:block;height:100%;background:#f0bh69;transform-origin:left;transform:scaleX(var(--rpm,.14))}#tach.shifting i{background:#fff9c4}
+#runClock{text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+.music-control{display:flex;align-items:center;gap:4px;background:#172632db;color:white;padding:3px 6px;border-radius:4px;font-size:12px}.music-control input{width:62px;accent-color:#edb75a}
+#citySound[hidden]{display:none}
+@media (max-height:500px){.speedline strong{font-size:36px}#info{right:12px;bottom:86px;padding:3px 8px}#runClock{font-size:10px}.music-control input{width:43px}}

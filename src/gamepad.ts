@@ -1,4 +1,4 @@
-import {menuFaceButtons,PadMenuNavigation} from './pad-menu-navigation';
+import {type MenuHandoff,menuFaceButtons,PadMenuNavigation} from './pad-menu-navigation';
 import type {InputLatch} from './input';
 export type PadAction='confirm'|'back'|'pause'|'fullscreen'|'up'|'down'|'left'|'right'|'camera-prev'|'camera-next'|'camera-reset'|'photo'|'qa';
 function connectedPad(preferred?:number,stageMenu=false){
@@ -31,12 +31,22 @@ export class GamepadInput {
   // A newly mounted screen inherits physical buttons already held at creation.
   const mounted=connectedPad();this.previous=mounted?.buttons.map(buttonDown)??[];this.menuNavigation.capture(mounted?.axes[0]??0,mounted?.axes[1]??0,this.previous);this.stickDirection=mounted?stageDirection(mounted):0;this.padIdentity=mounted?`${mounted.index}:${mounted.id}`:'';
  }
+ startStageMenu(inherited:MenuHandoff|null){
+  this.previous=inherited?.buttons??[];
+  this.stickDirection=inherited&&Math.max(Math.abs(inherited.x),Math.abs(inherited.y))>.55?Math.sign(Math.abs(inherited.x)>=Math.abs(inherited.y)?inherited.x:inherited.y):0;
+  this.padIdentity=inherited?.id??'';
+ }
  private releaseDrive(){this.orbitAxis=0;this.input.release('pad:axis');this.input.release('pad:gas');this.input.release('pad:brake');}
  neutralize(){this.releaseDrive();const pad=connectedPad();this.menuNavigation.capture(pad?.axes[0]??0,pad?.axes[1]??0,pad?.buttons.map(buttonDown)??[]);this.needsNeutral=true;}
  private release(){this.resync=true;this.releaseDrive();this.orbitAxis=0;this.previous=[];this.stickDirection=0;this.axisActive=false;this.meaningfulAxis=0;this.needsNeutral=true;}
  private textUnsupported(){this.status.textContent='Gamepad connected · unsupported mapping';}
- poll(driving:boolean | 'stage-menu',qaAvailable=false){const pad=connectedPad(this.preferredIndex,driving==='stage-menu');this.preferredIndex=pad?.index;this.status.hidden=!pad||driving==='stage-menu';const diagnostic=document.getElementById('gamepad-diagnostic');if(!pad||!document.hasFocus()||document.hidden){if(!pad)this.disconnected();if(diagnostic)diagnostic.textContent='No focused connected gamepad.';this.release();return;}
+ poll(driving:boolean | 'stage-menu',qaAvailable=false){const pad=connectedPad(this.preferredIndex,driving==='stage-menu');this.preferredIndex=pad?.index;this.status.hidden=!pad||driving==='stage-menu';const diagnostic=document.getElementById('gamepad-diagnostic');if(!pad&&driving==='stage-menu'&&document.hasFocus()&&!document.hidden){
+  // Chrome may only expose a controller with the very press the menu needs.
+  // Preserve previously observed edges across a disconnect of the same pad.
+  this.releaseDrive();return;
+ }if(!pad||!document.hasFocus()||document.hidden){if(!pad)this.disconnected();if(diagnostic)diagnostic.textContent='No focused connected gamepad.';this.release();return;}
  const identity=`${pad.index}:${pad.id}`,pressed=pad.buttons.map(buttonDown);
+ if(driving==='stage-menu'&&this.padIdentity&&this.padIdentity!==identity){this.previous=[];this.stickDirection=0;this.padIdentity='';}
  if(this.resync||(this.padIdentity&&this.padIdentity!==identity)){this.resync=false;this.stickDirection=stageDirection(pad);this.padIdentity=identity;this.previous=pressed;this.menuNavigation.capture(pad.axes[0]??0,pad.axes[1]??0,pressed);this.releaseDrive();this.orbitAxis=Number.isFinite(pad.axes[2])?pad.axes[2]:0;return;}
  this.padIdentity=identity;
  if(driving)this.menuNavigation.capture(pad.axes[0]??0,pad.axes[1]??0,pressed);
