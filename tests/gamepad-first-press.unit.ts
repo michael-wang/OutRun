@@ -99,3 +99,21 @@ it('accepts a fresh D-pad edge immediately after keyboard/mouse pause neutraliza
  vi.stubGlobal('document',{hidden:false,hasFocus:()=>true,createElement:()=>status,querySelector:()=>({append(){}}),getElementById:()=>null});vi.stubGlobal('window',{addEventListener(){},removeEventListener(){}});vi.stubGlobal('navigator',{getGamepads:()=>[pad]});
  const actions:string[]=[],g=new GamepadInput(new InputLatch(),a=>actions.push(a));g.poll(true);g.neutralize();buttons[13].pressed=true;g.poll(false);expect(actions).toEqual(['down']);g.dispose();
 });
+
+it.each(['stick','confirm'] as const)('accepts a first exposed %s on the stage selector, including after reconnect',kind=>{
+ const button={pressed:false,value:0};
+ const pad={id:'PS4',index:0,connected:true,mapping:'standard',buttons:[button],axes:[0,0]};
+ let visible=false;
+ vi.stubGlobal('document',{hidden:false,hasFocus:()=>true,createElement:()=>({setAttribute(){},remove(){}}),querySelector:()=>({append(){}}),getElementById:()=>null});
+ vi.stubGlobal('window',{addEventListener(){},removeEventListener(){}});
+ vi.stubGlobal('navigator',{getGamepads:()=>visible?[pad]:[]});
+ const actions:string[]=[],controller=new GamepadInput(new InputLatch(),a=>actions.push(a));
+ controller.startStageMenu(null);
+ const set=(on:boolean)=>{button.pressed=kind==='confirm'&&on;pad.axes[0]=kind==='stick'&&on?.85:0;};
+ for(let i=0;i<2;i++){
+  visible=false;controller.poll('stage-menu');
+  set(true);visible=true;controller.poll('stage-menu');controller.poll('stage-menu');
+  set(false);controller.poll('stage-menu');
+ }
+ expect(actions).toEqual(kind==='stick'?['right','right']:['confirm','confirm']);controller.dispose();
+});

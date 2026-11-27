@@ -16,7 +16,7 @@ test('touch selection, portrait guide, results, replay and repeated menu returns
   await page.screenshot({path:test.info().outputPath('menu-portrait.png')});
   await page.setViewportSize({width:915,height:412});
   await page.screenshot({path:test.info().outputPath('menu-pixel8-landscape.png')});
-  await page.locator('[data-stage=city]').tap();
+  await page.locator('[data-stage=canyon]').tap();
   await expect(start).toHaveText(/製作中/);
   await page.locator('[data-stage=coast]').tap();
   await page.setViewportSize({width:412,height:915});

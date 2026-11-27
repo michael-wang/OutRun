@@ -1,4 +1,5 @@
 import { stages, type RacingStage } from './racing-stages';
+import {prepareMenuHandoff} from './pad-menu-navigation';
 import { armStageAudio } from './stage-audio';
 import { immersive, landscapeControl } from './immersive';
 import {mountRuntimeReadout} from './runtime-readout';
@@ -47,6 +48,7 @@ async function enter(stage: RacingStage,recovery?:RaceCheckpoint) {
     loading.loadingStarted(recovery?'正在恢復賽事':'正在載入關卡', '');
     await loading.loadingStep(0, '正在載入關卡', '');
     try { await stage.enter(() => {
+      prepareMenuHandoff();
       activeRace=false;
       // The loading overlay is z-index 10000 and would hide the actual
       // stage selector (z-index 200) even though showMenu() re-mounted it.
@@ -69,6 +71,10 @@ async function enter(stage: RacingStage,recovery?:RaceCheckpoint) {
 }
 
 async function bootMenu(firstEntry: boolean) {
+  if(firstEntry&&import.meta.env.DEV&&new URLSearchParams(location.search).has('cityView')){
+    const city=stages.find(stage=>stage.id==='city');
+    if(city){await enter(city);return;}
+  }
   if(firstEntry&&isDevelopmentRace(canonicalGameQuery(new URLSearchParams(location.search)))){
     const coast=stages.find(stage=>stage.id==='coast'&&stage.enter);
     if(coast){await enter(coast);return;}
@@ -105,6 +111,7 @@ async function bootMenu(firstEntry: boolean) {
     button.onclick=null;
   }
   await mountMenu(stage => {
+    if(stage.id==='city')prepareMenuHandoff();
     armStageAudio();
     void enter(stage);
   }, waitForEntry);
