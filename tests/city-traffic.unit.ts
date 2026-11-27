@@ -14,7 +14,7 @@ describe('City physical traffic and seeded incident approaches',()=>{
  it('replays a seed and leaves two through lanes at every stopped vehicle',()=>{
   const digest=(seed:number)=>new CityTraffic(seed).actors.map((c:any)=>[c.distance,c.lateral,c.speed]);
   expect(digest(5390)).toEqual(digest(5390));expect(digest(1)).not.toEqual(digest(2));
-  const t=new CityTraffic();expect(t.actors.filter((c:any)=>!c.stationary&&c.id<rivalStart)).toHaveLength(24);
+  const t=new CityTraffic();expect(t.actors.filter((c:any)=>!c.stationary&&c.id<rivalStart)).toHaveLength(40);
   for(const [i,s] of incidents.entries()){
    const c=t.actors[civilianCount+i];
    for(let d=s.distance-115;d<=s.distance+30;d+=5){

@@ -8,7 +8,10 @@ export const incidents=[
  {distance:1618,side:1,yaw:-.13,body:'hatch'},
  {distance:4040,side:-1,yaw:.16,body:'dropside'},
 ];
-const leads=[205,355,510,715,846,1078,1258,1475,1645,1870,2022,2235,2442,2575,2760,3022,3270,3530,3870,4230,4700,5260,5740,6250];
+// Short groups on the early boulevards, with passing room between them. Metres ahead at race start.
+const leads=[85,182,279,347,437,529,624,709,814,912,1022,1145,1250,1372,1486,1588,1690,1800,1935,2060,2188,2298,2430,2575,2720,2850,3010,3180,3350,3510,3730,3950,4210,4490,4780,5075,5390,5690,6010,6330];
+const serviceTypes=new Map([[0,3],[3,2],[12,2],[17,3],[24,2],[33,2]]);
+export const cityVehicleSize=type=>type===2?{width:2.49,length:10.60}:type===3?{width:2.12,length:5.76}:{width:1.92,length:4.38};
 const finishes=finish+580;
 export const civilianCount=leads.length;
 export const rivalStart=civilianCount+incidents.length;
@@ -22,8 +25,8 @@ export function cityLanesAt(d){
 function jitter(seed,i){let x=Math.imul(seed^(i*193+17),0x45d9f3b);x=Math.imul(x^(x>>>16),0x45d9f3b);return ((x^(x>>>16))>>>0)/4294967296;}
 function entryRecipes(seed,entry){
  // Bookmarks stage the same pack relative to the driver. Incident locations are course landmarks.
- const cars=leads.map((lead,id)=>({id,type:0,distance:entry+lead+Math.round(35*jitter(seed,id)),
-  speed:27+Math.round(10*jitter(seed^924,id)),group:id>>1,member:id%2}));
+ const cars=leads.map((lead,id)=>({id,type:serviceTypes.get(id)??0,distance:entry+lead+Math.round(35*jitter(seed,id)),
+  speed:serviceTypes.get(id)===3?53:serviceTypes.get(id)===2?24:27+Math.round(10*jitter(seed^924,id)),group:id>>1,member:id%2}));
  for(const [i,stop] of incidents.entries())cars.push({id:civilianCount+i,type:0,distance:stop.distance,speed:0,group:40+i,
   stationary:true,stopYaw:stop.yaw,stopSide:stop.side,incidentId:i+1});
  for(let i=0;i<2;i++)cars.push({id:rivalStart+i,type:1,distance:entry+(i?164:22),speed:50+i*2,group:50+i});
@@ -36,7 +39,7 @@ export class CityTraffic {
   this.time=0;this.contacts=[];this.passIds=new Set();this.latched=new Map();
   const recipes=entryRecipes(seed,entry);
   this.world=new RaceTrafficWorld(recipes,seed,finishes,()=>14.4,
-   ()=>({width:1.92,length:4.38}),true,false,cityLanesAt);
+   cityVehicleSize,true,false,cityLanesAt);
   this.actors=this.world.cars;
   this.before=this.actors.map(()=>({x:0,d:0,speed:0}));
   this.finishedRivals=new Map();
@@ -44,7 +47,8 @@ export class CityTraffic {
    const lanes=cityLanesAt(c.distance);
    const index=c.stationary?(c.stopSide>0?lanes.length-1:0):
     c.id>=rivalStart?(c.id===rivalStart?1:lanes.length-1):plannedTrafficLane(seed,c.group,c.member,lanes.length*1.75);
-   c.lateral=c.targetLateral=lanes[Math.min(index,lanes.length-1)];
+   const chosen=c.type===2?0:c.type===3?lanes.length-2:Math.min(index,lanes.length-1);
+   c.lateral=c.targetLateral=lanes[chosen];
    if(!c.stationary&&c.id<rivalStart){
     const nearby=incidents.find(stop=>Math.abs(stop.distance-c.distance)<95);
     if(nearby&&Math.sign(c.lateral)===nearby.side)c.lateral=c.targetLateral=lanes[nearestTrafficLane(-c.lateral,lanes)];
@@ -99,7 +103,7 @@ export class CityTraffic {
  resolve(a,b){
   const player=a.id===undefined,aid=player?playerID:a.id,key=aid*128+b.id;
   const was=this.before[b.id],dx=(player?a.x:a.lateral)-b.lateral,dz=(player?a.d:a.distance)-b.distance;
-  const halfW=(1.92+b.width)*.5,halfL=(4.38+b.length)*.5;
+  const halfW=((player?1.92:a.width)+b.width)*.5,halfL=((player?4.38:a.length)+b.length)*.5;
   const held=this.latched.get(key);
   if(held!==undefined){
    if((Math.abs(dx)>halfW+.44||Math.abs(dz)>halfL+1.60)&&this.time-held>.38)this.latched.delete(key);

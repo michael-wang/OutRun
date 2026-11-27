@@ -1,3 +1,6 @@
+import {gates,checkpointRace,advanceCheckpoints} from './checkpoint-race.mjs';
+import {citySpeedDial} from './speed-dial.mjs';
+import {addStationCrossing,stationCrossing} from './station-crossing.mjs';
 import {CityTraffic,civilianCount,rivalStart,incidents} from './city-traffic.mjs';
 import {addMarketMetro,metroFront} from './market-metro.mjs';
 import {civilianCar,cityFleet} from './civilian-cars.mjs';
@@ -386,6 +389,7 @@ label(1154,edge(1154,1)+37,grade(1154)+4.35,9,1.7,'轉乘  /  TRANSIT');
 
 junctionFurniture({box,link,label,physicalPos});
 const metro=addMarketMetro({scene,cityChunks,physicalPos,box,link,label});
+const terminalLine=addStationCrossing({scene,physicalPos,pose,link,market:metro});
 
 // Distances and widths are in road metres. Ground ribbons follow the local grade
 // and the road normal at both ends, so the path can run straight through a tight curve.
@@ -517,6 +521,8 @@ function buildParcel(p){
 }
 const frontages=[];
 for(const original of sampleFrontages(layout())){
+ // Reserve the cross-line right of way across the two station-side parcels.
+ if(Math.abs(original.at-(stationCrossing+original.side*5))<original.width*.5+10)continue;
  // Fit the entire frontage, including both corners, to the outside pavement.
  let shift=0;
  for(let d=original.at-original.width/2-2;d<=original.at+original.width/2+3;d+=2)
@@ -711,7 +717,7 @@ let cityTraffic=new CityTraffic(trafficSeed),trafficKick=0;
 const shades=[0x9f695a,0xb9a372,0x547b81,0xab746b,0x698091,0xaca07c,0x83907b,0xb0a477];
 const fleetTemplates=new Map();
 const pack=cityTraffic.actors.slice(0,rivalStart).map((actor,i)=>{
- const kind=actor.stationary?incidents[i-civilianCount].body:cityFleet[i%cityFleet.length],colour=shades[i%shades.length];
+ const kind=actor.stationary?incidents[i-civilianCount].body:actor.type===2?'bus':actor.type===3?'ambulance':cityFleet[i%cityFleet.length],colour=shades[i%shades.length];
  const key=kind+'-'+colour;if(!fleetTemplates.has(key))fleetTemplates.set(key,civilianCar(kind,colour));
  const g=fleetTemplates.get(key).clone(true);
  let lamps=null;
@@ -730,7 +736,12 @@ const pack=cityTraffic.actors.slice(0,rivalStart).map((actor,i)=>{
    const box=block(g,.93,.48,.65,0x8f7257,-.22,2.03,-.98);box.rotation.z=.12;
   }
  }
- scene.add(g);return {g,lamps};
+ let beacon=null;
+ if(kind==='ambulance'){
+  beacon=new T.Mesh(new T.BoxGeometry(.57,.13,.36),new T.MeshBasicMaterial({color:0xffaa42,toneMapped:false}));
+  beacon.position.set(.29,2.58,1.36);g.add(beacon);
+ }
+ scene.add(g);return {g,lamps,beacon};
 });
 // Free-standing roadside warning triangles and reflective taper drums precede each stopped car.
 for(const [i,stop] of incidents.entries()){
@@ -757,6 +768,13 @@ function advanceRoadUsers(h,oldD,oldX,now){
  }
 }
 const pacers=[firstPacer,leader];
+const namePlate=document.createElement('canvas');namePlate.width=192;namePlate.height=52;
+const pen=namePlate.getContext('2d');pen.fillStyle='#18383e';pen.beginPath();pen.moveTo(13,2);pen.lineTo(190,2);pen.lineTo(179,48);pen.lineTo(2,48);pen.closePath();pen.fill();
+pen.fillStyle='#ffba62';pen.fillRect(15,9,5,30);pen.font='italic bold 36px Arial';pen.textAlign='center';pen.fillStyle='#fff3d7';pen.fillText('RIVAL',100,38);
+const nameMap=new T.CanvasTexture(namePlate);nameMap.colorSpace=T.SRGBColorSpace;
+const nameMaterial=new T.SpriteMaterial({map:nameMap,depthTest:true,depthWrite:false,transparent:true});
+for(const v of pacers){if(!v)continue;v.tag=new T.Sprite(nameMaterial);v.tag.name='rival identifier';v.tag.position.y=2.23;v.rival.add(v.tag);}
+
 function renderTraffic(){
  nearMix=0;
  for(const [i,t] of pack.entries()){
@@ -764,25 +782,30 @@ function renderTraffic(){
   t.g.visible=!c.finished&&gap>-18&&gap<610&&c.distance<L+40;
   if(t.g.visible){t.g.position.fromArray(physicalPos(c.distance,c.lateral,grade(c.distance)));
    t.g.rotation.set(-Math.atan(grade(c.distance+1)-grade(c.distance)),pose(c.distance)[2]+(c.stopYaw||0),0,'YXZ');
+   if(t.beacon)t.beacon.material.color.setRGB(1,.29+.28*(1+Math.sin(cityTraffic.time*Math.PI*2*.85)),.12);
    if(t.lamps)t.lamps.visible=(cityTraffic.time+i*.12)% .85<.43;
   }
   if(!c.stationary)nearMix=Math.max(nearMix,Math.exp(-Math.abs(gap)/12)*Math.max(0,1-Math.abs(side)/11));
  }
- let rank=1,gap=0;
+ let rank=1,nearestAhead=Infinity,nearestBehind=-Infinity;
  for(const [i,visual] of pacers.entries()){
   if(!visual)continue;
   const c=cityTraffic.actors[rivalStart+i],a=c.distance-d;
-  if(a>0){rank++;if(!gap||a<gap)gap=a;}else if(!gap)gap=a;
+  if(a>0){rank++;nearestAhead=Math.min(nearestAhead,a);}else nearestBehind=Math.max(nearestBehind,a);
   visual.rival.visible=a>-13&&a<470;
   const driven=phase==='drive'?Math.max(0,c.distance-(visual.lastDistance??c.distance)):0;
   visual.lastDistance=c.distance;
   if(visual.rival.visible){
+   visual.tag.visible=phase==='drive'&&a>-5&&a<155;
+   const tagHeight=clamp((a+8)*.025,.23,1.65);
+   visual.tag.scale.set(tagHeight*3.69,tagHeight,1);
    visual.rival.userData.motion.advance(driven,0,.016);
    visual.rival.userData.brakeLights.set(c.targetSpeed<c.speed-.7);
    visual.rival.position.fromArray(physicalPos(c.distance,c.lateral,grade(c.distance)+.05));
    visual.rival.rotation.set(-Math.atan(grade(c.distance+1)-grade(c.distance)),pose(c.distance)[2],0,'YXZ');
   }
  }
+ const gap=Number.isFinite(nearestAhead)?nearestAhead:nearestBehind;
  $('rival').textContent='P'+rank+' / '+(leader?3:2)+'　'+(gap>=0?'追距 ':'領先 ')+Math.abs(gap).toFixed(0)+' m';
 }
 // Open timing gates give the exit a target without blocking the view into the next bend.
@@ -790,12 +813,12 @@ function timingGate(at,sector){
  const group=new T.Group();for(const x of [-edge(at,-1)-1.45,edge(at,1)+1.45]){block(group,.22,5.4,.26,0x3b5557,x,2.7,0);block(group,.32,.55,.33,0xe9a236,x,1.15,0);}
  block(group,edge(at,-1)+edge(at,1)+3.1,.18,.26,0x405457,(edge(at,1)-edge(at,-1))/2,5.4,0);
  const plate=document.createElement('canvas');plate.width=640;plate.height=96;const ctx=plate.getContext('2d');
- ctx.fillStyle='#1a343c';ctx.fillRect(0,0,640,96);ctx.fillStyle='#ffca6a';ctx.fillRect(0,0,18,96);ctx.font='bold 63px system-ui';ctx.fillText(sector===3?'FINISH':'SPLIT   '+sector,95,70);
+ ctx.fillStyle='#1a343c';ctx.fillRect(0,0,640,96);ctx.fillStyle='#ffca6a';ctx.fillRect(0,0,18,96);ctx.font='bold 63px system-ui';ctx.fillText(sector===gates.length?'FINISH':'CHECK   '+sector,95,70);
  const map=new T.CanvasTexture(plate);map.colorSpace=T.SRGBColorSpace;
  const p=new T.Mesh(new T.PlaneGeometry(6.0,.9),new T.MeshBasicMaterial({map}));p.rotation.y=Math.PI;p.position.set(0,5.3,-.20);group.add(p);
  group.position.fromArray(physicalPos(at,0,grade(at)));group.rotation.y=pose(at)[2];scene.add(group);
 }
-timingGate(2320,1);timingGate(5280,2);timingGate(L,3);
+gates.forEach((gate,i)=>timingGate(gate.at,i+1));
 // Real rear-axle contacts leave a short pair of rubber trails on the pavement.
 const rubberPositions=new Float32Array(1200*18),rubberGeo=new T.BufferGeometry();
 const rubberAttr=new T.BufferAttribute(rubberPositions,3).setUsage(T.DynamicDrawUsage);rubberGeo.setAttribute('position',rubberAttr);rubberGeo.setDrawRange(0,0);
@@ -810,28 +833,43 @@ function rubberAt(){
  rubberGeo.setDrawRange(0,Math.min(1200,rubberCount)*6);rubberAttr.needsUpdate=true;}
  tirePair=tracks;
 }
-const splitMarks=[2320,5280,L],recordKey='city-gray-5-'+trialKey;
+const recordKey='city-checkpoints-1-'+trialKey;
+let clockRace;const drawDial=citySpeedDial($('speedDial'));
 let best=null;
-try{const saved=JSON.parse(localStorage.getItem(recordKey));if(Array.isArray(saved)&&saved.length===3&&saved.every((v,i)=>Number.isFinite(v)&&v>0&&(!i||v>saved[i-1])))best=saved;}catch{}
+try{const saved=JSON.parse(localStorage.getItem(recordKey));if(Array.isArray(saved)&&saved.length===gates.length&&saved.every((v,i)=>Number.isFinite(v)&&v>0&&(!i||v>saved[i-1])))best=saved;}catch{}
 let splits=[],splitUntil=0,steering=0,headingError=0,edgeTime=0,previousStart=false,driveRecovery=0;
 function start(){
  orbit.reset();
  transfers.length=0;trafficKick=0;cityTraffic=new CityTraffic(trafficSeed,entry);nearMix=0;transferAge=1;coupling=0;slip=0;driftDir=0;driftAge=0;driftEnds=[];hits=[];contact=null;rearmAt=0;impact=0;feedbackUntil=0;$('feedback').textContent='';
  rubberCount=0;tirePair=null;rubberGeo.setDrawRange(0,0);driveRecovery=0;Object.assign(gearbox,createPowertrain());advancePowertrain(gearbox,49,true,0);soundStart();Object.assign(wheelBar,createSteerBar());driftLatch=0;d=entry;x=laneWidth*.5;vel=0;speed=49;steering=0;headingError=0;edgeTime=0;
- if(volume)volume.gain.setTargetAtTime(.20,ac.currentTime,.04);phase='drive';elapsed=0;splits=splitMarks.filter(n=>n<entry).map(()=>0);splitUntil=0;window.teaFrames.length=0;startTime=performance.now();
- $('panel').hidden=true;$('split').textContent='';$('best').textContent=best?'個人最佳 '+best[2].toFixed(2)+' s':'';
+ if(volume)volume.gain.setTargetAtTime(.20,ac.currentTime,.04);phase='drive';elapsed=0;clockRace=checkpointRace(entry);splits=Array(clockRace.next).fill(0);splitUntil=0;window.teaFrames.length=0;startTime=performance.now();
+ $('panel').removeAttribute('data-result');$('extend').hidden=true;$('panel').hidden=true;$('split').textContent='';$('best').textContent=best?'個人最佳 '+best.at(-1).toFixed(2)+' s':'';
 }
-function passSplit(now){
- const i=splits.length;if(i>=splitMarks.length||d<splitMarks[i])return;
- splits.push(elapsed);
- const delta=best?elapsed-best[i]:null;
- const diff=delta===null?'':('　'+(delta>=0?'+':'−')+Math.abs(delta).toFixed(2)+' s');
- $('split').textContent='S'+(i+1)+'　'+elapsed.toFixed(2)+' s'+diff;splitUntil=now+2300;
- if(i!==2)return;
- phase='finish';raceSound?.pause();d=L;const faster=!best||elapsed<best[2];if(faster&&!entry){best=splits.slice();try{localStorage.setItem(recordKey,JSON.stringify(best));}catch{}}
- $('panel').hidden=false;selectPanel($('go'),true);$('title').textContent=faster&&!entry?'個人最佳':'抵達中央車站';$('copy').textContent='本趟 '+elapsed.toFixed(2)+' s'+(best?'　·　最佳 '+best[2].toFixed(2)+' s':'');
- $('best').textContent='';$('go').textContent='再跑一趟　↵';
+function checkGate(now,from,begin,rivalFrom){
+ const end=(now-startTime)/1000;
+ const e=advanceCheckpoints(clockRace,from,d,begin,end,cityTraffic.actors.slice(rivalStart).map((r,i)=>({id:r.id,from:rivalFrom[i],to:r.distance})));
+ elapsed=end;
+ if(!e)return;
+ if(e.kind==='gate'){
+  splits.push(e.time);const timeAdded=Math.round(clockRace.deadline-previousDeadline);
+  $('extend').textContent='TIME EXTEND  +'+timeAdded+' s';$('extend').hidden=false;
+  $('split').textContent='CP '+e.gate+'  ·  '+e.time.toFixed(2)+' s'+(e.bonus?'  /  RIVAL +'+e.bonus+' s':'');
+  splitUntil=now+2400;return;
+ }
+ phase=e.kind;host.dataset.race=phase;elapsed=e.time;raceSound?.pause();$('extend').hidden=true;
+ const panel=$('panel');panel.hidden=false;panel.dataset.result=e.kind;selectPanel($('go'),true);
+ if(e.kind==='finish'){
+  d=L;splits.push(e.time);const faster=!best||e.time<best.at(-1);
+  if(faster&&!entry){best=splits.slice();try{localStorage.setItem(recordKey,JSON.stringify(best));}catch{}}
+  $('title').textContent=e.rank===1?'VICTORY':'FINISH';
+  $('copy').textContent='第 '+e.rank+' 名　・　'+elapsed.toFixed(2)+' 秒'+(best?'　／　個人最佳 '+best.at(-1).toFixed(2)+' 秒':'')+(clockRace.awards?'　／　對手獎勵 +'+clockRace.awards+' 秒':'');
+ }else{
+  if(end>begin)d=from+(d-from)*clamp((e.time-begin)/(end-begin),0,1);
+  speed=0;$('title').textContent='TIME UP';$('copy').textContent='距離'+(clockRace.next===gates.length-1?'終點':'下一個檢查點')+'還有 '+Math.max(0,Math.ceil(gates[clockRace.next].at-d))+' m　・　已通過 '+clockRace.events.length+' 個檢查點';
+ }
+ $('best').textContent='';$('split').textContent='';$('go').textContent='再跑一趟';
 }
+let previousDeadline=0;
 $('title').textContent='城際快線｜城市大道';$('go').onclick=start;
 for(const btn of ui.querySelectorAll('[data-key]')){btn.onpointerdown=e=>{e.preventDefault();btn.setPointerCapture(e.pointerId);keys.add(btn.dataset.key);};btn.onlostpointercapture=()=>keys.delete(btn.dataset.key);}
 window.teaFrames=[];
@@ -842,7 +880,7 @@ const wheelBar=createSteerBar();
 let driftLatch=0,snapshotBusy=false,shotRequested=false;
 const reviewQuery=new URLSearchParams(location.search);
 const previewAt=import.meta.env.DEV?Number(reviewQuery.get('cityView')):0;
-const entry=Number.isFinite(previewAt)?clamp(previewAt,0,L-100):0;
+const entry=Number.isFinite(previewAt)?clamp(previewAt,0,L-100):0;clockRace=checkpointRace(entry);
 d=entry;cityTraffic=new CityTraffic(trafficSeed,entry);
 const layerSwitch=$('cityLayers'),layerKey=$('layerKey');let removeLines;
 function showLayers(on){
@@ -902,11 +940,11 @@ window.addEventListener("keydown",e=>{
  if(e.composedPath()[0]?.id==='citySnapshot'||e.composedPath()[0]?.id==='cityLayers')return;
  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
  if(e.repeat)return;
- if(e.code==='Escape'&&(phase==='finish'||phase==='ready')){leave();return;}
+ if(e.code==='Escape'&&(phase==='finish'||phase==='timeout'||phase==='ready')){leave();return;}
  if(e.code==='Escape'){if(phase==='paused')resumeRace(performance.now());else pauseRace(performance.now());return;}
  if(e.code==='F8'){e.preventDefault();shotRequested=true;return;}
  if(phase==='paused'){if(['ArrowUp','ArrowDown'].includes(e.key)){moveMenu(e.key==='ArrowUp'?-1:1);}if(e.key==='Enter'){e.preventDefault();choose(menuChoice);}return;}
- if(phase==='ready'||phase==='finish'){
+ if(phase==='ready'||phase==='finish'||phase==='timeout'){
   if(['ArrowLeft','ArrowUp','ArrowRight','ArrowDown'].includes(e.key)){e.preventDefault();movePanel(['ArrowLeft','ArrowUp'].includes(e.key)?-1:1);return;}
   if(e.key==='Enter'||e.key===' '){e.preventDefault();panelChoice.click();return;}
  }
@@ -933,7 +971,7 @@ function controls(pad,now){
   if(confirm)choose(menuChoice);
   else if(back){if(confirming){confirming=false;menuChoice=0;drawMenu();}else resumeRace(now);}
  }else if(edge(11)&&phase==='drive'){orbit.reset();}
- else if(phase==='ready'||phase==='finish'){
+ else if(phase==='ready'||phase==='finish'||phase==='timeout'){
   if(delta)movePanel(delta);
   if(back)leave();else if(confirm)panelChoice.click();
  }
@@ -945,7 +983,8 @@ function snapshot(){
  const g=c.getContext('2d');g.drawImage(src,0,0);g.scale(c.width/innerWidth,c.height/innerHeight);
  const overlay=phase==='paused'?pauseMenu:phase==='drive'?null:$('panel');
  if(overlay){const r=overlay.getBoundingClientRect();g.fillStyle='#182a32ef';g.fillRect(r.x,r.y,r.width,r.height);}
- const ids=['#hud small','#beat','#rival','#split','#feedback','#best','#velocity','#speedUnit','#gearLabel','#runClock'];
+ if(phase==='drive'){const disc=$('speedDial'),r=disc.getBoundingClientRect();g.drawImage(disc,r.x,r.y,r.width,r.height);}
+ const ids=['#seconds','#gateNum','#goalDist','#extend','#hud small','#beat','#rival','#split','#feedback','#best','#velocity','#speedUnit','#gearLabel','#runClock'];
  const elems=ids.map(s=>ui.querySelector(s));
  if(overlay)elems.push(...overlay.querySelectorAll('h1,h2,button,p,a'));
  for(const el of elems){if(!el||!el.offsetWidth||!el.textContent.trim())continue;
@@ -1003,7 +1042,7 @@ function drivingPad(){const pads=Array.from(navigator.getGamepads?.()||[]).filte
  window.addEventListener('outrun:back-attempt',()=>{if(phase==='drive')pauseRace(performance.now());else if(phase!=='paused')leave();},scope);
  let last=performance.now();function frame(now){
  if(import.meta.env.DEV&&phase==='drive')window.teaFrames.push([d,now-last]);const dt=Math.min(.085,(now-last)/1000);last=now;
- const pad=drivingPad(),wasPaused=phase==='paused';controls(pad,now);
+ const pad=drivingPad(),wasPaused=phase==='paused';controls(pad,now);if(host.dataset.race!==phase)host.dataset.race=phase;
  if(closed)return;
  if(phase==='paused'||wasPaused){phoneControls.hidden=true;if(shotRequested){shotRequested=false;renderer.render(scene,camera);snapshot();}if(!closed)raf=requestAnimationFrame(frame);return;}
  const gas=keys.has('ArrowUp')||keys.has('w')?1:pad?.buttons[7]?.value??0,brake=keys.has('ArrowDown')||keys.has('s')?1:pad?.buttons[6]?.value??0;
@@ -1027,6 +1066,8 @@ function drivingPad(){const pads=Array.from(navigator.getGamepads?.()||[]).filte
  if(now>feedbackUntil)$('feedback').textContent=driftDir?(driftOver?'甩尾過度':'甩尾　'+Math.round(Math.abs(slip)*180/Math.PI)+'°'):'';
  impact*=Math.exp(-dt*9);
  if(phase==='drive'){
+  const frameStartD=d,beginElapsed=elapsed,rivalFrom=cityTraffic.actors.slice(rivalStart).map(r=>r.distance);
+  previousDeadline=clockRace.deadline;
   const steps=Math.max(1,Math.ceil(dt/.018)),h=dt/steps;
   for(let n=0;n<steps;n++){
    const oldD=d,oldX=x;
@@ -1090,7 +1131,7 @@ function drivingPad(){const pads=Array.from(navigator.getGamepads?.()||[]).filte
    x=clamp(x,-edge(d,-1),edge(d,1));
    d+=advance*h;advanceRoadUsers(h,oldD,oldX,now);if(gravel>.55)edgeTime+=h;
   }
-  elapsed=(now-startTime)/1000;passSplit(now);if(now>splitUntil)$('split').textContent='';
+  checkGate(now,frameStartD,beginElapsed,rivalFrom);if(now>splitUntil){$('split').textContent='';$('extend').hidden=true;}
  }
  car.userData.motion.advance(phase==='drive'?speed*dt:0,vel*.04,dt);car.userData.brakeLights.set(keys.has('ArrowDown')||!!pad?.buttons[6]?.pressed);renderTraffic();updateWalkers(d,elapsed);rubberAt();car.position.fromArray(physicalPos(d,x,grade(d)+.05));car.rotation.set(-Math.atan((grade(d+1)-grade(d))),pose(d)[2]+headingError*.84+slip,steering*-.023+impact*.035,'YXZ');
  if(enabled('camera')){
@@ -1107,13 +1148,19 @@ function drivingPad(){const pads=Array.from(navigator.getGamepads?.()||[]).filte
  if(!canLook)orbitNeedsNeutral=true;else if(Math.abs(lookAxis)<=.18)orbitNeedsNeutral=false;
  orbit.advance(lookAxis,dt,canLook&&!orbitNeedsNeutral);
  orbit.apply({eye:camera.position,look:orbitLook},car.position);camera.lookAt(orbitLook);
- const aim=new T.Vector3(...pos(d+38,0,grade(d)));sun.target.position.copy(aim);sun.position.copy(aim).add(sunOffset);sky.position.copy(camera.position);visibleCity(d);metro.update(d,elapsed,entry);$('beat').textContent=district(d)[1];$('velocity').textContent=String(Math.round(speed*3.6));
+ const aim=new T.Vector3(...pos(d+38,0,grade(d)));sun.target.position.copy(aim);sun.position.copy(aim).add(sunOffset);sky.position.copy(camera.position);visibleCity(d);metro.update(d,elapsed,entry);terminalLine.update(d,elapsed);$('beat').textContent=district(d)[1];$('velocity').textContent=String(Math.round(speed*3.6));
+ drawDial(speed*3.6);
+ const next=gates[clockRace.next],secs=Math.max(0,clockRace.deadline-elapsed);
+ $('seconds').textContent=secs<10?secs.toFixed(1):String(Math.ceil(secs));
+ $('raceTimer').classList.toggle('urgent',secs<=8);
+ $('goalDist').textContent=next?(next.at-d>=1000?((next.at-d)/1000).toFixed(2)+' km':Math.max(0,Math.ceil(next.at-d))+' m'):'0 m';
+ $('gateNum').textContent=next?(clockRace.next===gates.length-1?'FINISH':'CP '+(clockRace.next+1)+' / '+(gates.length-1)):'FINISH';
  $('cityGear').textContent=String(gearbox.gear);$('tach').style.setProperty('--rpm',String(gearbox.rpm/7200));
  $('tach').classList.toggle('shifting',gearbox.shiftRemaining>0);
  $('runClock').textContent=(d/1000).toFixed(2)+' km  ·  '+elapsed.toFixed(2)+' s';
  raceSound?.update(speed,gas,gearbox.rpm,gearbox.tractionFactor,slip,nearMix,phase==='drive');
  renderer.render(scene,camera);if(shotRequested){shotRequested=false;snapshot();}if(!closed)raf=requestAnimationFrame(frame);}
-function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener("resize",resize,scope);resize();if(import.meta.env.DEV)window.cityDrive=()=>({orbit:orbit.angle,variant,bar:{...wheelBar},modules:[...activeModules],flowCount:densityMarks.filter(s=>s>=425&&s<=680).length,trafficSeed,traffic:pack.map((t,i)=>{const c=cityTraffic.actors[i];return {id:i,body:t.g.userData.bodyType,d:c.distance,x:c.lateral,speed:c.speed,stationary:!!c.stationary,visible:t.g.visible,opacity:1}}),rivals:cityTraffic.actors.slice(rivalStart).map(c=>({id:c.id,d:c.distance,x:c.lateral,speed:c.speed})),roadContacts:cityTraffic.contacts.slice(),passes:[...cityTraffic.passIds],transfers:[...transfers],fov:camera.fov,nearMix,audioNodes:!!raceSound,audio:raceSound?.state(),gear:gearbox.gear,rpm:gearbox.rpm,traction:gearbox.tractionFactor,phase,d,speed,x,vel,elapsed,edgeTime,splits:[...splits],best,leaderDistance:cityTraffic.actors[rivalStart+1].distance,ghostDistance:cityTraffic.actors[rivalStart].distance,ghostFinish:cityTraffic.finishedRivals.get(rivalStart)??null,curvature:bend(d),steering,slip,driftDir,driftEnds:[...driftEnds],hits:[...hits],impact});if(!closed)raf=requestAnimationFrame(frame);
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}window.addEventListener("resize",resize,scope);resize();if(import.meta.env.DEV)window.cityDrive=()=>({orbit:orbit.angle,variant,bar:{...wheelBar},modules:[...activeModules],flowCount:densityMarks.filter(s=>s>=425&&s<=680).length,trafficSeed,checkpoint:{next:clockRace.next,deadline:clockRace.deadline,outcome:clockRace.outcome,awards:clockRace.awards,events:[...clockRace.events]},metroCross:terminalLine.centre,traffic:pack.map((t,i)=>{const c=cityTraffic.actors[i];return {id:i,body:t.g.userData.bodyType,d:c.distance,x:c.lateral,speed:c.speed,stationary:!!c.stationary,visible:t.g.visible,opacity:1}}),rivals:cityTraffic.actors.slice(rivalStart).map(c=>({id:c.id,d:c.distance,x:c.lateral,speed:c.speed})),roadContacts:cityTraffic.contacts.slice(),passes:[...cityTraffic.passIds],transfers:[...transfers],fov:camera.fov,nearMix,audioNodes:!!raceSound,audio:raceSound?.state(),gear:gearbox.gear,rpm:gearbox.rpm,traction:gearbox.tractionFactor,phase,d,speed,x,vel,elapsed,edgeTime,splits:[...splits],best,leaderDistance:cityTraffic.actors[rivalStart+1].distance,ghostDistance:cityTraffic.actors[rivalStart].distance,ghostFinish:cityTraffic.finishedRivals.get(rivalStart)??null,curvature:bend(d),steering,slip,driftDir,driftEnds:[...driftEnds],hits:[...hits],impact});if(!closed)raf=requestAnimationFrame(frame);
 
  teardown.push(()=>{delete window.cityDrive;delete window.teaFrames;delete window.teaAudio;clearTimeout(phoneToastTimer);});
  loadingFinished();

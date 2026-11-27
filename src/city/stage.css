@@ -29,8 +29,28 @@
 #info{background:linear-gradient(105deg,#15202bf0,#13212bdc);padding:5px 12px 6px;border-left:3px solid #efbd70;line-height:1.15;pointer-events:none;color:#fff7e6}
 .speedline{display:flex;align-items:baseline;gap:5px}.speedline strong{font:750 clamp(40px,5.3vw,68px)/1 system-ui;font-variant-numeric:tabular-nums;letter-spacing:-.055em}.speedline>span{font-size:12px}
 #gearLabel{margin-left:auto;padding:3px 5px;color:#f5c878;font-size:18px}#cityGear{font-size:1.25em}
-#tach{margin:3px 0;height:4px;background:#667079}#tach i{display:block;height:100%;background:#f0bh69;transform-origin:left;transform:scaleX(var(--rpm,.14))}#tach.shifting i{background:#fff9c4}
+#tach{margin:3px 0;height:4px;background:#667079}#tach i{display:block;height:100%;background:#f3bf69;transform-origin:left;transform:scaleX(var(--rpm,.14))}#tach.shifting i{background:#fff9c4}
 #runClock{text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
 .music-control{display:flex;align-items:center;gap:4px;background:#172632db;color:white;padding:3px 6px;border-radius:4px;font-size:12px}.music-control input{width:62px;accent-color:#edb75a}
 #citySound[hidden]{display:none}
 @media (max-height:500px){.speedline strong{font-size:36px}#info{right:12px;bottom:86px;padding:3px 8px}#runClock{font-size:10px}.music-control input{width:43px}}
+
+/* City timing cabinet: the dial hugs the rear quarter at normal chase height. */
+#info{--dial:clamp(117px,20vh,179px);left:min(calc(50% + 27vh),calc(100% - var(--dial) - 7px));right:auto;bottom:3.8vh;width:var(--dial);height:var(--dial);padding:0;background:transparent;border:0;text-align:center;z-index:2;color:#fff7dd}
+#speedDial{position:absolute;inset:0;width:100%;height:100%}
+#info .speedline{position:absolute;top:48%;left:0;width:100%;display:flex;flex-direction:column;gap:0;align-items:center;line-height:1}
+#info .speedline strong{font:italic 700 calc(var(--dial)*.31)/.94 Arial,sans-serif;color:#fff9dc;letter-spacing:-.03em;text-shadow:2px 2px 0 #16262d,-1px -1px 0 #16262d}
+#info #speedUnit{position:absolute;left:52%;top:calc(var(--dial)*.285);font:bold italic calc(var(--dial)*.079)/1 system-ui;color:#f8dba3;letter-spacing:.03em}
+#info #gearLabel{position:absolute;top:calc(var(--dial)*.278);right:51%;margin:0;padding:0 3px;text-shadow:none;color:#172a31;background:#ffc669;font:italic 900 calc(var(--dial)*.11)/1.16 system-ui;transform:skewX(-9deg)}
+#info #cityGear{font-size:1em}#info #tach{position:absolute;top:91%;left:38%;width:24%;margin:0;height:3px}#info #runClock{position:absolute;top:99%;width:130%;left:-15%;white-space:nowrap;text-align:center;font:600 11px/1 system-ui}
+#raceTimer{position:fixed;left:50%;top:max(11px,2vh);transform:translateX(-50%) skewX(-9deg);display:flex;align-items:stretch;background:#153038ee;color:#fff5d8;border-bottom:3px solid #ffc563;pointer-events:none;z-index:2;text-shadow:none;box-shadow:4px 3px 0 #18333c6b;font:800 italic 14px/1.03 system-ui;font-variant-numeric:tabular-nums}
+.timeFace{padding:3px 12px 4px 10px;min-width:78px;display:flex;align-items:center;gap:7px;background:#ffe0a1;color:#17292d}
+.timeFace small{font:900 italic 11px/1 system-ui;letter-spacing:.04em}#seconds{font:italic 750 38px/.96 Arial,sans-serif}.goalFace{display:grid;gap:3px;align-content:center;padding:2px 12px 2px 9px;min-width:72px}#goalDist{font-size:12px;color:#a0e2d3}
+#raceTimer.urgent .timeFace{background:#ff824e}#extend{position:fixed;left:50%;top:max(68px,9vh);transform:translateX(-50%) skewX(-8deg);background:#ffcc6d;color:#192e35;border-left:5px solid #ee7e45;padding:3px 13px 5px;font:italic 750 clamp(18px,3vh,29px)/1.15 Arial,sans-serif;z-index:2;pointer-events:none}
+#extend[hidden],:host(:not([data-race="drive"])) #raceTimer,:host(:not([data-race="drive"])) #info,:host(:not([data-race="drive"])) #extend{display:none}
+#panel[data-result]{border-left:6px solid #fbb955;border-top:2px solid #7cb5a9;background:#16343cec}#panel[data-result] h1{font:italic 800 clamp(32px,5.6vw,65px)/1 Arial,sans-serif;color:#ffd488;letter-spacing:.025em}#panel[data-result="timeout"]{border-left-color:#f18c59}
+#timing{right:16px;top:60px}
+@media (max-height:500px){#info{--dial:clamp(85px,23.8vh,112px);bottom:5.6vh}#raceTimer{top:7px}.timeFace{min-width:59px;padding:3px 7px;gap:4px}#seconds{font-size:27px}.timeFace small{font-size:9px}.goalFace{min-width:56px;padding:2px 8px;font-size:11px}#goalDist{font-size:10px}#extend{top:49px}#timing{top:48px}#info #runClock{font-size:9px}}
+@media(pointer:coarse){#phonePause,#phoneFullRun{top:8px;width:40px;min-width:0;height:36px;min-height:36px;padding:0}#phonePause{right:97px}#phoneFullRun{right:142px}}
+@media(pointer:coarse) and (max-width:730px){#info{bottom:calc(96px + env(safe-area-inset-bottom));--dial:82px}}
+@media(prefers-reduced-motion:reduce){#raceTimer,#extend,#info{animation:none;transition:none}}

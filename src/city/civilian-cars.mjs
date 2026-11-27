@@ -1,7 +1,7 @@
 import * as T from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 
-// Same eight driving slots as the City traffic plan. All silhouettes fit its common collision envelope.
+// Common passenger-car silhouettes. Service vehicles have distinct physical footprints.
 export const cityFleet=['taxi','parcel-van','crossover','dropside','saloon','hatch','parcel-van','saloon'];
 export function civilianCar(kind,bodyColour){
  const parts=[],rubber=0x262d30,alloy=0xc2c3b9,glass=0x526c76,trim=0x424d50;
@@ -30,6 +30,44 @@ export function civilianCar(kind,bodyColour){
   wheel(r,.20,rubber,0);wheel(.219,.018,alloy,.105);wheel(.147,.02,0x64727a,.118);
   for(let i=0;i<5;i++){const a=i*Math.PI*.4;box(.022,.04,.04,alloy,x+sign*.132,r+Math.cos(a)*.105,z+Math.sin(a)*.105);}
  }
+ const service=kind==='bus'||kind==='ambulance';
+ if(service){
+  const bus=kind==='bus',w=bus?2.49:2.12,l=bus?10.6:5.76,h=bus?3.06:2.40;
+  const white=bus?0xe4dabe:0xf3f1d9,accent=bus?0x267b83:0xe7802c;
+  box(w-.10,h-.65,l-.12,white,0,(h+.55)/2,0);
+  box(w-.12,.48,l-.07,accent,0,.89,0);box(w-.26,.13,l-.38,0xb5bdba,0,h,0);
+  for(const sign of [-1,1]){
+   const x=sign*(w/2-.035);
+   if(bus){
+    box(.055,1.04,l-.58,0x263e48,x,2.04,0);
+    for(let j=0;j<7;j++)box(.062,1.09,.093,white,x,2.02,-4.08+j*1.31);
+    for(const z of [-1.65,3.72]){box(.067,1.99,.93,trim,x,1.59,z);box(.074,.80,.70,glass,x,2.08,z);}
+   }else{
+    box(.07,.70,1.35,glass,x,1.85,1.55);
+    box(.07,.14,2.35,accent,x,1.46,-.58);
+    box(.081,.57,.24,0x277ca0,x,1.90,-.80);box(.081,.20,.64,0x277ca0,x,1.90,-.80);
+   }
+   for(const z of [-l*.30,l*.30]){const geo=new T.CylinderGeometry(bus?.49:.39,bus?.49:.39,.19,14);geo.rotateZ(Math.PI/2);
+    const r=bus?.49:.39;part(geo,rubber,sign*(w/2-.10),r,z);
+    box(.021,.32,.32,alloy,sign*(w/2-.001),r,z);}
+   box(.32,.19,.07,0xe13732,sign*w*.33,1.07,-l/2+.035);
+   box(.31,.15,.07,0xffe3a2,sign*w*.33,1.03,l/2-.035);
+  }
+  for(const sign of [-1,1])box(w-.30,bus?.94:.72,.068,glass,0,h-.63,sign*(l/2-.035));
+  if(bus){
+   box(w*.72,.30,.082,0x293435,0,h-.18,-l/2+.041);
+   for(let i=0;i<3;i++)box(.20,.095,.089,0xffcf60,-.29+i*.29,h-.18,-l/2+.044);
+   box(1.41,.28,2.5,0xb7b9ac,0,h+.16,-.75);
+   }else{
+   box(1.32,.15,.37,0x326999,0,h+.12,1.36);
+   // Rear door crease and blue medical emblem read from the driver's approach.
+   const rear=-l/2-.012;
+   box(.03,1.32,.046,trim,0,1.38,rear);
+   box(.20,.54,.050,0x277ca0,-.47,1.36,rear-.012);
+   box(.54,.20,.052,0x277ca0,-.47,1.36,rear-.013);
+   box(1.68,.12,.056,0xffb94a,0,.81,rear-.013);
+  }
+ }else{
  const van=kind==='parcel-van',truck=kind==='dropside',tall=kind==='hatch'||kind==='crossover',notch=kind==='taxi'||kind==='saloon';
  const tail=notch||truck?-2.13:van?-2.08:-1.94,nose=truck?2.09:2.12,belt=van?1.02:truck?.91:tall?.99:.86;
  const rows=[[tail,.77,.40,.84,belt-.15,.77,belt-.05],[tail+.20,.85,.36,.94,belt-.03,.86,belt+.05],
@@ -76,6 +114,7 @@ export function civilianCar(kind,bodyColour){
  }
  box(1.54,.14,.07,trim,0,.46,tail+.005);box(.45,.135,.06,0xebead7,0,.62,tail-.025);
  box(.66,.11,.05,trim,0,.54,nose+.008);
+ }
  const geometry=mergeGeometries(parts);for(const p of parts)p.dispose();
  const mat=new T.MeshStandardMaterial({vertexColors:true,side:T.DoubleSide,roughness:.53,metalness:.12});
  const car=new T.Mesh(geometry,mat);car.name='city-civilian-'+kind;
@@ -83,6 +122,6 @@ export function civilianCar(kind,bodyColour){
  // A soft contact under the chassis keeps the tyre patches legible in the sun. One small unlit quad per visible car.
  const canvas=document.createElement('canvas');canvas.width=canvas.height=32;const ctx=canvas.getContext('2d');
  const shadow=ctx.createRadialGradient(16,16,5,16,16,16);shadow.addColorStop(0,'rgba(29,34,37,.53)');shadow.addColorStop(.65,'rgba(31,36,38,.37)');shadow.addColorStop(1,'rgba(35,38,38,0)');ctx.fillStyle=shadow;ctx.fillRect(0,0,32,32);
- const decal=new T.Mesh(new T.PlaneGeometry(2.28,4.56),new T.MeshBasicMaterial({map:new T.CanvasTexture(canvas),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}));
+ const decal=new T.Mesh(new T.PlaneGeometry(service?(kind==='bus'?2.7:2.3):2.28,service?(kind==='bus'?10.85:5.9):4.56),new T.MeshBasicMaterial({map:new T.CanvasTexture(canvas),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}));
  decal.rotation.x=-Math.PI/2;decal.position.y=.027;group.add(decal);group.userData.bodyType=kind;return group;
 }
